@@ -2,123 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9C4341007
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A019434100A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhCRVnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbhCRVnW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:43:22 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB08C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:43:21 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id e13so2379049vsl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rfHwrQyYaFFNRaf/CvYeB2LRT6h3FeiX5O3UtAqnQiA=;
-        b=D2ijjP5ePIfYIDEXrOl6SDjSdjWjga6MRV8x79wzTLPOVqUpfTJnY2QYInFiUQe300
-         7Wd0/IAuihmXXNGJNDqs9nk9heQzahphl4UNIcCz0UvOFNTtXMXihJAT4F3fY2MkU9tP
-         anRJPdXyTpdcRVy1iVvr5R3m6pZbhB3eIjk8ak7rAUjS5dmaRT40Vve02NnL2PJ0bpOv
-         vfy6ZmelVNhYlyWj1owJSp8hEW9w0mXHGHES9YqGKthabTM77JnbUtneR9a9qfjT+7l3
-         TvPo6wJhx8LTr1JrQPctmfiHr8yymDGcyklaDaW6+jKBDnPLjVNDVuW0ElWvM5MEXohP
-         81lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfHwrQyYaFFNRaf/CvYeB2LRT6h3FeiX5O3UtAqnQiA=;
-        b=EICZEew/z0tcv8oLeYKMaNgXB8SDmEaC2VxHuhHHxugx9cUwmuhGHeZMY8D0YkkVpz
-         2x0SEIW0v75BNqo1Jus6aWAwNijoE9rMD2AxLpZTnawcOVQz1zcIcCWVpjDq7YgQaR19
-         jl9JRYt66v3U7U9Ip+U0mnC2Y6o+m/Divq1/U0Q4EBhS8XOm8T57fu/AbfTvfE7Kep7t
-         ReKVVxehQemcOJdcBDYzY4yYHu7VzlAxuHkV4dcR3qcCx55QOH/p7bS+GLTY2oV4iZ4/
-         8ZdNzY+fS0D2VFN5sV3eRFCRhrh+04vESrdD3c0xCnQ7YA+z26204h6YTFDR6vgAulnp
-         32ew==
-X-Gm-Message-State: AOAM530l3kPfFWKhhAeAU2614QEMhdUZpOIQtFwsUcp9oEhRGVOjQNZy
-        vnvZoFuf2kOimhGGQZwBIHGoskvoR130u7xxbqnIHA==
-X-Google-Smtp-Source: ABdhPJy9nS3adGHPZWSvJ9275dmkHoQl55Y6NziJFaephhWth/YdK5K0qI8noGx0c2z+S/anWDkygwUMfNbI12wJXp8=
-X-Received: by 2002:a05:6102:124e:: with SMTP id p14mr1004922vsg.14.1616103800982;
- Thu, 18 Mar 2021 14:43:20 -0700 (PDT)
+        id S230506AbhCRVrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:47:35 -0400
+Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:33466 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230297AbhCRVrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:47:13 -0400
+Received: from oxapps-33-150.iol.local ([10.101.8.196])
+        by smtp-17.iol.local with ESMTPA
+        id N0U1lu0o0tpGHN0U1lgazL; Thu, 18 Mar 2021 22:47:10 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1616104030; bh=zU1WLLpE0lA50jM3MsK5RrXJ+mqo3UY4TvgZN01Q8MQ=;
+        h=From;
+        b=OfGisVIgW3s9Cv541xGM3eph9PCdbmSzYs4cdtPtyWzWSQu2iXOS0/AjpzoFLVSBe
+         mgxDfETx2VO0IYW2dxPIklejH5TIIknc4PEAXwDJIw3wtLvSoLradMbUwAMqvgevOH
+         zhVCbkNOTUXSvQGM2YRWbIKzJgn8WkjYRTBpA4AkgxVw5KVfLkZOx3bChZqRASidk5
+         e9L6VoFVVRAGZES0bspb2a5wLi/MA88CEbtQtn2qBYsr1jNe9TQZsOKzHoRWyqL+To
+         Tsj3/TnExPjYlRpI0HsQWdbk/4QlzCPmRhhNqDB155pIL3f9yhRy4kG6M7xEq38BES
+         j5HIT85uqkNPQ==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6053ca5e cx=a_exe
+ a=jCUSjkGoK4+H1w5URwD4kw==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
+ a=_gZzKa99_6AA:10 a=VwQbUJbxAAAA:8 a=Cpx6WUeuaVtrzDQEF6EA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+Date:   Thu, 18 Mar 2021 22:47:09 +0100 (CET)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Tomi Valkeinen <tomba@kernel.org>, linux-kernel@vger.kernel.org,
+        Jyri Sarha <jyri.sarha@iki.fi>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Message-ID: <1180006566.16525.1616104029554@mail1.libero.it>
+In-Reply-To: <7df3a270-1cc4-7a71-5e55-49a0dfb2c21f@kernel.org>
+References: <20210314151342.23404-1-dariobin@libero.it>
+ <7df3a270-1cc4-7a71-5e55-49a0dfb2c21f@kernel.org>
+Subject: Re: [PATCH] drm/tilcdc: fix LCD pixel clock setting
 MIME-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-5-samitolvanen@google.com> <CAKwvOdkbok-BoYGfvHH1HR=cMztaBYZKB-UHRDZ4g5YjSCuq2A@mail.gmail.com>
-In-Reply-To: <CAKwvOdkbok-BoYGfvHH1HR=cMztaBYZKB-UHRDZ4g5YjSCuq2A@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 18 Mar 2021 14:43:09 -0700
-Message-ID: <CABCJKuektSxnfcPxadj-eA3qdVkqBaXQAGC40vvR-eBjzZguvw@mail.gmail.com>
-Subject: Re: [PATCH v2 04/17] module: ensure __cfi_check alignment
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
+X-Originating-IP: 87.20.116.197
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: jcRFwHSewQzI0vrj1avgPo+KJzlCx/Nw
+x-libjamv: bgul+MiGx2U=
+X-CMAE-Envelope: MS4xfChI96gLjikM0Juy1Jf+WHh/deHymc/eQCyjleA4QKoTlWfrxIg5QYkfsG+xs/bi0NW4e0tEab4TXaUPeNCJe7TQTrsSUR1BE3x56DkGcd1KeUSSt19y
+ d9OJ1Zd0x9Ygvp9JtVDs+wJHPVW+nZdsAQSfdHQFXReU53yh9FBXoT181m0lUcpiDR/C5yNcgPmiMrZdcUBohSNjNwmB9Cma2y1qOdQNHfcpXsVka4ym0Pm7
+ JCd2CBw2yPvbLeAMA03ZZDaRis5ZPNQm1/Pf7SygPiJ6M4SOlBLVVUoas4RIEoeP2agFJG56r54RNAuzDrtHtyOITET4+TvHydkoZlxX4MYdrrZqEOFco8uR
+ ekkIPbAw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 12:27 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > CONFIG_CFI_CLANG_SHADOW assumes the __cfi_check() function is page
-> > aligned and at the beginning of the .text section. While Clang would
-> > normally align the function correctly, it fails to do so for modules
-> > with no executable code.
-> >
-> > This change ensures the correct __cfi_check() location and
-> > alignment. It also discards the .eh_frame section, which Clang can
-> > generate with certain sanitizers, such as CFI.
-> >
-> > Link: https://bugs.llvm.org/show_bug.cgi?id=46293
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+
+> Il 17/03/2021 09:19 Tomi Valkeinen <tomba@kernel.org> ha scritto:
+> 
+>  
+> On 14/03/2021 17:13, Dario Binacchi wrote:
+> > As reported by TI spruh73x RM, the LCD pixel clock (LCD_PCLK) frequency
+> > is obtained by dividing LCD_CLK, the LCD controller reference clock,
+> > for CLKDIV:
+> > 
+> > LCD_PCLK = LCD_CLK / CLKDIV
+> > 
+> > where CLKDIV must be greater than 1.
+> > 
+> > Therefore LCD_CLK must be set to 'req_rate * CLKDIV' instead of req_rate
+> 
+> The above doesn't make sense, the code already sets LCD_CLK to 'req_rate 
+> * clkdiv', not req_rate.
+> 
+> > and the real LCD_CLK rate must be compared with 'req_rate * CLKDIV' and
+> > not with req_rate.
+> 
+> This is true, the code looks at the wrong value.
+> 
+> > Passing req_rate instead of 'req_rate * CLKDIV' to the tilcdc_pclk_diff
+> > routine caused it to fail even if LCD_CLK was properly set.
+> > 
+> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> > 
 > > ---
-> >  scripts/module.lds.S | 18 +++++++++++++++++-
-> >  1 file changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-> > index 168cd27e6122..93518579cf5d 100644
-> > --- a/scripts/module.lds.S
-> > +++ b/scripts/module.lds.S
-> > @@ -3,10 +3,19 @@
-> >   * Archs are free to supply their own linker scripts.  ld will
-> >   * combine them automatically.
-> >   */
-> > +#include <asm/page.h>
-> > +
-> > +#ifdef CONFIG_CFI_CLANG
-> > +# define ALIGN_CFI ALIGN(PAGE_SIZE)
-> > +#else
-> > +# define ALIGN_CFI
-> > +#endif
-> > +
-> >  SECTIONS {
-> >         /DISCARD/ : {
-> >                 *(.discard)
-> >                 *(.discard.*)
-> > +               *(.eh_frame)
->
-> Do we want to unconditionally discard this section from modules for
-> all arches/configs?  I like how we conditionally do so on
-> SANITIZER_DISCARDS in include/asm-generic/vmlinux.lds.h for example.
+> > 
+> >   drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++----
+> >   1 file changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> > index 30213708fc99..02f56c9a5da5 100644
+> > --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> > +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> > @@ -203,7 +203,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+> >   	struct drm_device *dev = crtc->dev;
+> >   	struct tilcdc_drm_private *priv = dev->dev_private;
+> >   	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
+> > -	unsigned long clk_rate, real_rate, req_rate;
+> > +	unsigned long clk_rate, real_rate, req_rate, clk_div_rate;
+> >   	unsigned int clkdiv;
+> >   	int ret;
+> >   
+> > @@ -211,10 +211,11 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+> >   
+> >   	/* mode.clock is in KHz, set_rate wants parameter in Hz */
+> >   	req_rate = crtc->mode.clock * 1000;
+> > -
+> > -	ret = clk_set_rate(priv->clk, req_rate * clkdiv);
+> > +	/* LCD clock divisor input rate */
+> > +	clk_div_rate = req_rate * clkdiv;
+> 
+> "clk_div_rate" sounds a bit odd to me. Why not lcd_fck_rate, as that's 
+> the name used later? Or lcd_clk_rate. Or maybe lcd_clk_req_rate...
 
-I think nothing should generate this section unless one of the
-sanitizers is enabled, but I'm fine with using the same logic as
-vmlinux.lds.h here. I'll change this in v3.
+I prefer lcd_clk_rate.
 
-Sami
+How about adding an additional patch that changes the variable names to make 
+the code more readable?
+
+req_rate -> lcd_pclk_rate
+clk_rate -> real_lcd_clk_rate
+
+And add a comment to the function which highlights the relationship 
+LCD_CLK = LCD_PCLK * CLDIV ?
+
+> 
+> > +	ret = clk_set_rate(priv->clk, clk_div_rate);
+> >   	clk_rate = clk_get_rate(priv->clk);
+> > -	if (ret < 0 || tilcdc_pclk_diff(req_rate, clk_rate) > 5) {
+> > +	if (ret < 0 || tilcdc_pclk_diff(clk_div_rate, clk_rate) > 5) {
+> >   		/*
+> >   		 * If we fail to set the clock rate (some architectures don't
+> >   		 * use the common clock framework yet and may not implement
+> > 
+> 
+> I think this fix is fine, but looking at the current code, it's calling 
+> tilcdc_pclk_diff(), but doesn't actually provide pixel clocks to the 
+> function, but fclk.
+
+Yes, I agree.
+
+Thanks and regards,
+Dario
+
+> 
+>   Tomi
