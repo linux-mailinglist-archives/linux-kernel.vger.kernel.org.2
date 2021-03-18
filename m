@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177E2340821
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA33340824
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCROu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:50:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14398 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhCROuB (ORCPT
+        id S231556AbhCROvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhCROuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:50:01 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F1VJT3grTzkbMB;
-        Thu, 18 Mar 2021 22:48:25 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 22:49:55 +0800
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
-To:     Dmitry Vyukov <dvyukov@google.com>
-CC:     syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <00000000000056b18b05bd7c6511@google.com>
- <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
- <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com>
- <CACT4Y+ZpfAiQKagp5xr0HY85SRr2h6pe10emm4_B5RLfVraN9A@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <093ff4d1-3977-1085-404f-ec46a3b1d8f0@huawei.com>
-Date:   Thu, 18 Mar 2021 22:49:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 18 Mar 2021 10:50:55 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9F3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:50:55 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id w65so1725924oie.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=og89K6jV3HFX8PE96KX/c5Zy0nyRjtFamlhCSJhcZac=;
+        b=BbZoR5bKJdUlBsWePVP9pZFO52LSwx83bqvlA+iFEHEJbXRLCIjazsIWJ7Viy6/Dqg
+         ms11HMn9qzvtUSKYV7kiYroJ8GoudjnuRaAotpDXCJkiH2454Zsrw0r8xOeT1eDT6YxS
+         q+3+MBnu38qnO454OYLGBpBP8Gq2YHx7vcVu1igvYYB7TkhTKWyAqpE95EEQZcA7yNgB
+         R/S0blHSK+wctWLHT5XamyOYHV+RON+tPa7QPNHdEwmYkO7LDY4BJHU3BGXMaxeArqVY
+         EZJyG7pBZFDAX8JWQxpbOFMez+cg1l1eLriE/6/arkjyVorRKAMnxrrUHlTsEIB5mVvO
+         PCAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=og89K6jV3HFX8PE96KX/c5Zy0nyRjtFamlhCSJhcZac=;
+        b=nvY0Vyxz6xa6XbOOwsweblPIRmdXv8uqRqG9082EZMQWAuOcgO5hZoOHEHyWoLIeN8
+         rDBWHZoRWHcHhJFTpug9356iIP5maRkzRpMS8Hdub7b4Z/dawdRNacFp1nrduhiIKCyk
+         JN1SOfOzsMY58GlGSiQG17pHXdmj+2OUruyBUAnbSLonJJSfPNAo/MpGyQ03N2trY1pJ
+         8HNreQGpCtuJ6TtNuaeKxKH3ggZcYpOPEZRuRkXPQKM5JnR/YsT5tmEq0GMhol8fHDP5
+         0v1SVqbG4BLvRvw7lxbiOHv4ZVFTQhA08M+dKrhK1712fv4ecOrWrltXNPmn2mRzK6IT
+         RFyg==
+X-Gm-Message-State: AOAM531k6/tvRUxaEMt9ru8zww0yWVa+mYz/KZr5+90TYYyvOwHy3llv
+        lP3MkDqyuVw+MRtr6+MP3j6w6NkPb3wlsA==
+X-Google-Smtp-Source: ABdhPJw88D0okVHzO8aCSbNOnCSK+c61zfhIoBhm9ubX4GrgcqtKVy0DZAl00IvFZIUH6e7eT8sHOA==
+X-Received: by 2002:a05:6808:987:: with SMTP id a7mr3198012oic.162.1616079054839;
+        Thu, 18 Mar 2021 07:50:54 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r13sm594897oot.41.2021.03.18.07.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 07:50:54 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 09:50:52 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: msm8916: Enable modem and WiFi
+Message-ID: <YFNozCCa4fdR5kSb@builder.lan>
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <20210312003318.3273536-6-bjorn.andersson@linaro.org>
+ <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZpfAiQKagp5xr0HY85SRr2h6pe10emm4_B5RLfVraN9A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 15 Mar 07:01 CDT 2021, Bryan O'Donoghue wrote:
 
-On 2021/3/18 22:11, Dmitry Vyukov wrote:
-> On Thu, Mar 18, 2021 at 1:21 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> On 2021/3/14 18:47, Dmitry Vyukov wrote:
->>> On Sun, Mar 14, 2021 at 11:14 AM syzbot
->>> <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com> wrote:
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
->>>> userspace arch: riscv64
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>> Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
->>>>
->>>> ==================================================================
->>>> BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
->>>> Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
->>>>
->>>> CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->>>> Hardware name: riscv-virtio,qemu (DT)
->>>> Workqueue: events nsim_dev_trap_report_work
->>>> Call Trace:
->>>> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
->>>>
->>>> Allocated by task 76347056:
->>>> (stack is not available)
->>>>
->>>> Last potentially related work creation:
->>> There seems to be some issue with riscv stack unwinder.
->>> This does not have stacks.
->> Hi, could you test with the following  patch about the no stack
->> issue(from v5.11-rc4), I made a mistake when do some cleanup...
->>
->> https://lore.kernel.org/linux-riscv/ce5b3533-b75d-c31c-4319-9d29769bbbd5@huawei.com/T/#t
-> Hi Kefeng,
->
-> Please see:
-> http://bit.do/syzbot#no-custom-patches
->
-> Is a unit-test for this possible? Fuzzing is not a replacement for unit testing.
+> On 12/03/2021 00:33, Bjorn Andersson wrote:
+> > Enable the modem and WiFi subsystems and specify msm8916 specific
+> > firmware path for these and the WCNSS control service.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >   arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 12 ++++++++++++
+> >   arch/arm64/boot/dts/qcom/msm8916.dtsi     |  2 +-
+> >   2 files changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > index 6aef0c2e4f0a..448e3561ef63 100644
+> > --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > @@ -305,6 +305,12 @@ &mdss {
+> >   	status = "okay";
+> >   };
+> > +&mpss {
+> > +	status = "okay";
+> > +
+> > +	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mbn";
+> > +};
+> > +
+> >   &pm8916_resin {
+> >   	status = "okay";
+> >   	linux,code = <KEY_VOLUMEDOWN>;
+> > @@ -312,6 +318,8 @@ &pm8916_resin {
+> >   &pronto {
+> >   	status = "okay";
+> > +
+> > +	firmware-name = "qcom/msm8916/wcnss.mbn";
+> >   };
+> 
+> On Debian I have to do this
+> 
+> 
+> index 2a6a23cb14ca..597cdc8f51cc 100644
+> --- a/drivers/remoteproc/qcom_wcnss.c
+> +++ b/drivers/remoteproc/qcom_wcnss.c
+> @@ -33,7 +33,7 @@
+>  #include "qcom_wcnss.h"
+> 
+>  #define WCNSS_CRASH_REASON_SMEM                422
+> -#define WCNSS_FIRMWARE_NAME            "wcnss.mdt"
+> +#define WCNSS_FIRMWARE_NAME            "qcom/msm8916/wcnss.mdt"
+> 
+> so I guess wcnss_probe() -> rproc_alloc() wants this fix too.
+> 
 
-ok, I mean that the issue about stack unwinder which may cause by my 
-previous patch,
+Can you confirm that you're saying that you want below patch, which I
+just merged?
 
-if some one want the stack back, it could try the bugfix.
+https://lore.kernel.org/linux-remoteproc/20210312002441.3273183-1-bjorn.andersson@linaro.org/
 
-> .
->
+(Which makes it possible to specify firmware name per platform/board)
+
+Regards,
+Bjorn
