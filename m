@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199533408D2
+	by mail.lfdr.de (Postfix) with ESMTP id 660DC3408D3
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhCRP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
+        id S231894AbhCRP1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbhCRP0x (ORCPT
+        with ESMTP id S231805AbhCRP06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:26:53 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AF9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:26:53 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v11so5967990wro.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:26:53 -0700 (PDT)
+        Thu, 18 Mar 2021 11:26:58 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA096C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:26:57 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so7111306wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MUnZPR9KH0cya06g4iCxL1syilN/kEp01BxfNl+HC9M=;
-        b=uw1GTq65IGa2H8mq5fGQpyTGrg5ePQzskJTS1qt8BewmrN2wqFD3rZ3dJ/lvzGj8o4
-         wvOAB+0XzoakbPYhqKKqDS+Q0lPqgt8vsjmjuonlLOGLqwRSP1ChJ+//+cO/XOQc/RlD
-         Hogz41WW5DFNV83Ej8kydFck0TQHvRPj44A3aIDOb+sm4LH5vKCM+GHQxVY1s+kW9E+s
-         X7k26soZ1seZbvz9dK8PXyOqKH+NchazmfAEU0ZTUGh38VQ/1Dtu+kGcVnqefDh1qz6K
-         Hakg7td6uFlrr0EZhFrWejFz/kxolx4YYqPKr6aSfrYMQFKybDmLlJ0KS/uYFcom395j
-         pTHA==
+        bh=0qS9Nz47GTA8hTM4G9C1C/c06jObHEFBEpZEFEihqQM=;
+        b=GHvqEhNZPk7En0bu8SNS4PHj7+qaRQIKk/GyeuFTF7DBSKZIVYJTS+0OeGN8PKdZsK
+         hWv3avjboz6t+nLbeMZGu8BRrwQ5VTF8a4GPJytJ7aaOWXUQSaaOahvquWOgYXgLdH5P
+         FDUNPbnimEMnOQyz3B2pp/sePtX0Do325iCaPbm4yBzTRryM5ExXQC74fv4wjrzosaMP
+         jPJ/BRWREWLuhW06cqH2yvAPZMwqxtdeD6zwfj/8dxTYSSAXkp+BC+aOj418E3jlGRDH
+         YDEdptLM3lTBLnNjJOA/c9JoOYWM8U8GCYP37FrheUcn/BGgSKGtMXFp+OC6tEmvMhW1
+         YDPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MUnZPR9KH0cya06g4iCxL1syilN/kEp01BxfNl+HC9M=;
-        b=AAjkNIo+E4+MPpUZSf+BqO+i8QwECq390IchuHr2eu/nErh17UnZHPIQJ/WF+6Qg1/
-         OOs0/4g+WRa2N2I0OXaeb5m3FSLFARphWO5bWAH0PFwplQ8nRVtvsPO03Lz8DZj8kMoh
-         il73joBTdMTaWAJuwen6cjDS2CHfgbqnTAUihXlTHfpkQ/08wZRiaAxhEF1uqrRjYEij
-         X0y2y8LLFFl+Apki8FZEzoAsZ1/1mISlfzGCdBAZfXlHsJlT8YSVHNuFNWui25vufD+n
-         m9JH/fQIEN4FFw1Kesde04foFCmUe74jl16D58QpKeK66dF1IomLATNmHZCHSEakUyu8
-         hddg==
-X-Gm-Message-State: AOAM532cu4NMu8qLV2iRkfoLmce90SrDNki/WlnYmIShmIX90/qttcCW
-        2Nr635uQWk6K2UlHddk98FQ=
-X-Google-Smtp-Source: ABdhPJxRstMxhMoa/t/Nuivxd/u0UkhL0TG8AVb7D+zDFU9SiYmq7xZfSdHXflhdO+/GFasfhW53Xw==
-X-Received: by 2002:a5d:65cd:: with SMTP id e13mr10484538wrw.334.1616081211975;
-        Thu, 18 Mar 2021 08:26:51 -0700 (PDT)
+        bh=0qS9Nz47GTA8hTM4G9C1C/c06jObHEFBEpZEFEihqQM=;
+        b=TtT4XpXd5qIOx7sscdJPSIQ+5WRdJLtKna1RPMkjLFeAt9OIJgqhrnx0Y0x4wK3DLN
+         JFSxjIcm86j/04EarcQN4qWtWaA4ge6yjYGM/E/g3+vR29NSh8ak2SanOqhS6cQpEdLy
+         ZZukRqNjJDe3vuylTjfkG7TZ0aGk8yXhMwrzTlNy2jYxSxd0g3JYMCtFO0XzroKsnAXV
+         l3oWKZ+hXG91eI8khjwGU4WafLl2IiDYJKum04NCg3AKeXM1MOz5rak8DGdlZsBhx35p
+         EcyJCngzw/kDB0OHbbqhCL9qhrzmMV/9AZa2lUiOpQ0zwvYrc/90jt0n7FYWFM2C1MOT
+         NfRQ==
+X-Gm-Message-State: AOAM530HYTske/hlmqTvwHiMufvF/JiVWSnZenWcrEYMPxJj8MSdIkEA
+        jQpGKXNq2VD+JM1k+U6UoCk=
+X-Google-Smtp-Source: ABdhPJwiZkQjE8LoYd0zm415v3NGd4TK/aoNr2cdHbGBz7nBN+bhrv8Hfn+BheuvQNPal/gZ8+M7UA==
+X-Received: by 2002:a05:600c:2053:: with SMTP id p19mr4143861wmg.87.1616081216478;
+        Thu, 18 Mar 2021 08:26:56 -0700 (PDT)
 Received: from agape ([151.46.162.59])
-        by smtp.gmail.com with ESMTPSA id l8sm3442773wrx.83.2021.03.18.08.26.51
+        by smtp.gmail.com with ESMTPSA id e17sm4202947wra.65.2021.03.18.08.26.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 08:26:51 -0700 (PDT)
+        Thu, 18 Mar 2021 08:26:56 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 04/15] staging: rtl8723bs: remove unnecessary logging in core/rtw_pwrctrl.c
-Date:   Thu, 18 Mar 2021 16:25:59 +0100
-Message-Id: <20210318152610.16758-5-fabioaiuto83@gmail.com>
+Subject: [PATCH 05/15] staging: rtl8723bs: remove unnecessary logging in core/rtw_wlan_util.c
+Date:   Thu, 18 Mar 2021 16:26:00 +0100
+Message-Id: <20210318152610.16758-6-fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210318152610.16758-1-fabioaiuto83@gmail.com>
 References: <YFMb+7jjmj7Oty8B@kroah.com>
@@ -68,52 +68,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 fix the following checkpatch.pl issues:
 
 WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-185: FILE: drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:185:
-+		DBG_871X("==>%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-606: FILE: drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:606:
-+	DBG_871X("%s.....\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-753: FILE: drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:753:
-+	/* DBG_871X("%s\n", __func__); */
+1140: FILE: drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1140:
++	DBG_871X("%s\n", __func__);
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_pwrctrl.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-index 2e6c522b74e3..908591a8f3c2 100644
---- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-@@ -182,7 +182,6 @@ void rtw_ps_processor(struct adapter *padapter)
- 		goto exit;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index 355e43c4cf9a..c267f1b546a4 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -1137,8 +1137,6 @@ void HTOnAssocRsp(struct adapter *padapter)
+ 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+ 	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
  
- 	if ((pwrpriv->rf_pwrstate == rf_on) && ((pwrpriv->pwr_state_check_cnts%4) == 0)) {
--		DBG_871X("==>%s\n", __func__);
- 		pwrpriv->change_rfpwrstate = rf_off;
- 		{
- 			ips_enter(padapter);
-@@ -603,8 +602,6 @@ void LeaveAllPowerSaveModeDirect(struct adapter *Adapter)
- 	struct mlme_priv *pmlmepriv = &(Adapter->mlmepriv);
- 	struct pwrctrl_priv *pwrpriv = adapter_to_pwrctl(Adapter);
- 
--	DBG_871X("%s.....\n", __func__);
+-	DBG_871X("%s\n", __func__);
 -
- 	if (Adapter->bSurpriseRemoved) {
- 		DBG_871X(FUNC_ADPT_FMT ": bSurpriseRemoved =%d Skip!\n",
- 			FUNC_ADPT_ARG(Adapter), Adapter->bSurpriseRemoved);
-@@ -750,8 +747,6 @@ static void cpwm_event_callback(struct work_struct *work)
- 	struct adapter *adapter = dvobj->if1;
- 	struct reportpwrstate_parm report;
- 
--	/* DBG_871X("%s\n", __func__); */
--
- 	report.state = PS_STATE_S2;
- 	cpwm_int_hdl(adapter, &report);
- }
+ 	if ((pmlmeinfo->HT_info_enable) && (pmlmeinfo->HT_caps_enable)) {
+ 		pmlmeinfo->HT_enable = 1;
+ 	} else {
 -- 
 2.20.1
 
