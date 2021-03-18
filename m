@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0102434050F
+	by mail.lfdr.de (Postfix) with ESMTP id 72E87340510
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCRMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhCRMAY (ORCPT
+        id S230397AbhCRMAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:00:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13195 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhCRMAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:00:24 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B678CC06174A;
-        Thu, 18 Mar 2021 05:00:23 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso2995019pjb.4;
-        Thu, 18 Mar 2021 05:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1n8VJuZ5LIE4mmJ/U2z0wAE75pe1NtOJnkRjFceP1Kk=;
-        b=m4V3qJNHV9zTfL7enYp6wXNqSlwWJomDx4t3Wujdgv21iRwuycSuE1JVg1okpiRFPz
-         rWhmXvBMSNgaaxYXigQpPeOCxnS/XKwm/2EeR/BAZ6tLHUTJiA5epBEB41DZsb6f+qz4
-         AIavO7aqmwI+qH01JpWoAu7HdGNvqSwZmSyaQJENoJyXIuyWnCYFbNbjOLsJkbWAAOga
-         DYatKwz9XWOlwhsx6T6j8YcYmWOD2TPIE8sclPipGs3A1zRh+ojqDjFE2p2p1yKA7mFe
-         xC7kNd7YtE7vxlZdKB9YNkgz2Q5SnSlyEYdOjk+D/m8my0x40LZiHeS0pIH1DsNzYM3l
-         kd0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1n8VJuZ5LIE4mmJ/U2z0wAE75pe1NtOJnkRjFceP1Kk=;
-        b=XjLseCyIKVvL21oA1TAIhmgtubWOBeoNSFrAI8POdoVWREQ9Ng00J2NdchXd+ipUVe
-         Cne7RPKrxFsspmBCHxqjNj9NLR3fOagqOSEVZqxsqvtkz+s8pwPZ4wuUzqJB8XDvXGAo
-         mvoyg9ffW75uHLRROGLoiSK6ubXUvAc0V5PVbDmtc1xjjR0fK2EbJvWaHHs8tT8RF38Y
-         3+ps+b8ySRodRu/KcTlW8CGSbAm7T1qUjXczai3vMmh7MGfqMMx9v+B5qn27TD2BDV3m
-         3U0p6rkdBLgaZOm+C7FEZKbtFhy9E1RjuEGF6Hdt7tMUMeJsu4tucUlO/ojZuCbNXLDJ
-         gm7A==
-X-Gm-Message-State: AOAM530U0ERMWwyPlVUB/K3grt0tEUBKZvFB5Iu/6c9FqHYiGTcPvC+2
-        PPziVrqflFvTF9zN5frpApQ=
-X-Google-Smtp-Source: ABdhPJwbLHvhlpx4bOM/CtfIq5YILHJVbBrUCFKjLqHnGjDt6Ff9/F1f8yHL8EXRQdD1epOncqOUOA==
-X-Received: by 2002:a17:90b:1c0e:: with SMTP id oc14mr3986655pjb.188.1616068823294;
-        Thu, 18 Mar 2021 05:00:23 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id a20sm2456176pfl.97.2021.03.18.05.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 05:00:22 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: xiong.zhenwu@zte.com.cn
-To:     serge@hallyn.com
-Cc:     jmorris@namei.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
-Subject: [PATCH] security: fix misspellings using codespell tool
-Date:   Thu, 18 Mar 2021 05:00:17 -0700
-Message-Id: <20210318120017.474770-1-xiong.zhenwu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Mar 2021 08:00:23 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1QWn1C5wzmYLc;
+        Thu, 18 Mar 2021 19:57:57 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Mar 2021 20:00:20 +0800
+Subject: Re: [PATCH 4.14 00/95] 4.14.226-rc1 review
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210315135740.245494252@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <39278f2a-ef03-fc33-e81b-c8063d0d64ef@huawei.com>
+Date:   Thu, 18 Mar 2021 20:00:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315135740.245494252@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 
-A typo is found out by codespell tool:
 
-$ codespell ./security
+On 2021/3/15 21:56, gregkh@linuxfoundation.org wrote:
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This is the start of the stable review cycle for the 4.14.226 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Mar 2021 13:57:24 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.226-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-./security/commoncap.c:1135: capabilties  ==> capabilities
+Tested on x86 for 4.14.226,
 
-Fix a typo found by codespell.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.226
+Commit: cb83ddcd5332fcc3efd52ba994976efc4dd6061e
+Compiler: gcc version 7.3.0 (GCC)
 
-Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
----
- security/commoncap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4714
+passed: 4710
+failed: 4
+--------------------------------------------------------------------
+Failed cases:
+ltp test_robind07
+ltp test_robind13
+ltp test_robind14
+ltp test_robind15
 
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 1c519c875217..598d077572c0 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -1132,7 +1132,7 @@ int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags)
- 		break;
- 
- 	case LSM_SETID_FS:
--		/* juggle the capabilties to follow FSUID changes, unless
-+		/* juggle the capabilities to follow FSUID changes, unless
- 		 * otherwise suppressed
- 		 *
- 		 * FIXME - is fsuser used for all CAP_FS_MASK capabilities?
--- 
-2.25.1
+The 4 failed cases are caused by insufficient disk space in the test 
+environment, no kernel failures
+--------------------------------------------------------------------
 
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
