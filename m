@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E08340F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFF7340F5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhCRUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+        id S233119AbhCRUnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhCRUmL (ORCPT
+        with ESMTP id S229958AbhCRUmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:42:11 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D29FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:11 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id f12so5172818qtq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:11 -0700 (PDT)
+        Thu, 18 Mar 2021 16:42:37 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46651C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:37 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id l1so2212088pgb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yOAtzI6XfjgzBwIu+EtPFo8QNNgd7hESHH8Nk+Ja34k=;
-        b=YiuPthPTj9K4DZzonYzJpHPIHwQFHfF2KQ1rQlIwX6jagxxhiwkVQ7qtZWE6Sh//gx
-         kVneIcG1TrbLMGNO4Qv0mCX5ZXOmsuWbmsfv5A6djSOfChuDMzqK3uIEADvP9IDBF5zv
-         8mj2R9ABhCWW9j9570+xb0MtoF6XCFuohQqyVDDs701NHJjZE5jOVk76/vjLM7iutOnd
-         MiOTzt/LpoK+PxTYfrebP1jIj7az8gvF/Uq5jJuT4hJkyVos7Njz9nzh/iHJYP9PuDDY
-         zLTcNSZWa07fgNa8VnsVKJmMvf4mcT2bWjtYXEybPS/DORjvuvb0dvf9KAAPpeqT9f1M
-         dKHA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DWaSlg6oRWJqHUVbQpRW1jMSvQBI7bpCNdpPwyZ5tv8=;
+        b=E5IBzCjxOylBWqbMJk+0k7tNFv+BhGw0bpB1rKkTnMVqomQZgrru2n5DE2ak1zFWw8
+         vsL2fzTeU0zdwAvpDPu+D0nLASjWg5UgVDAklH3niWuqWsmxPqBRc1Nr4kUmZhZlHn/7
+         u+P5qyDz5QnR2KiC9QqPCvboQAkGrsK6wq0EiLm9H0zUFoLxTIDjCn59Mzz1ifddar11
+         zvIHPbQMNB+DePF0PU5tQ7sytS4dRaibhDjUZpIg/sZiel+Udaudzg8NEXzZVNBW88jZ
+         wz5GXmV1P4GAOuj/7frp5jycae+fNSOslqw37zcLJ5HyApHwfRBLtiSLiBD6SGCMSDv8
+         +v0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yOAtzI6XfjgzBwIu+EtPFo8QNNgd7hESHH8Nk+Ja34k=;
-        b=nqo/pOOgBAsEUgi10htXNHsch4XFPTII9SAFNQG/lLjQ0ZLfD4jBd3H5a/+VDWzrir
-         juYMyoFPADWLIljSqfjKuaAHQK+f3+9dnPHoSxRrCwkt9cvBD6C49f3Dtsd7mIPaIG8X
-         El/q/Z2wJEAvi8SPSIUb53J5RA1Wfq5bfXdU6xkIJsOkHk/aH5m/75RohPAuSbb+0F2J
-         C/p2gntNP8w3+aKEFkGW9M2d5fXI4Gn9gMTqto9NfEK5SlzXf/rW9m6I/vtINKDaB1+3
-         o+ZPHDVaa5B0JQ856shYLb0zQFfUu+3dlnY02TNfyAuwdI+BRhcvLtF+eOOFz+3AdzwT
-         60hw==
-X-Gm-Message-State: AOAM530xJbhxFEXrn92UjfvLc17V7Kx5zUgw6PaCIy3uHEnOljaTXqId
-        5R0mzLhO2f/0P1JbSD2e2GItP6Q1cD+5LjNoP9kmsA==
-X-Google-Smtp-Source: ABdhPJwbbwbQtsKdXGidS0XzrLmAq2xIk32hRRm0JCeqaQMKwgMzpgTOHvND+KsVFVSUU6lW++UO6E5dgGWp55eEBMQ=
-X-Received: by 2002:aed:2b06:: with SMTP id p6mr5496809qtd.101.1616100130193;
- Thu, 18 Mar 2021 13:42:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DWaSlg6oRWJqHUVbQpRW1jMSvQBI7bpCNdpPwyZ5tv8=;
+        b=ItmOlqAgFslW90Gy6E3APGagX2M/8MsxObWRI45Qp8uBWTDIqI6QC41N5I7pJ2ldBR
+         4KF7nIxXJcw9Xh6WjsPSA0gfLLFfJJNgIQY1oX2IQLICYoV7hI1UlGJSzAiYEUgMsmHW
+         FYn1f/tP1ILNQnEboN5NUvd+gF9nK/rLvkWbg1K0IR11rUYDas7eSRyMeHfWEehuFSNR
+         1gpf87WHY57S7vK5M7p/++Izf2iPRPndU2W09B82tbFNhs33y/derytTteHN1042k+2l
+         fYJjwgsibHyGeiQing8sKaSYA0OxMvSxy2x2PDdz1D+IYMSTrw5W7iBep7SuvGaE/RCD
+         qFaA==
+X-Gm-Message-State: AOAM530kZelEKJfkDf9gnD5lsopxQ63EkaNfXwxxBbOoLQtAfNT2OOO3
+        Dwi9MMcc36N+/1ltikTI47fWh8B3ExUXoQ==
+X-Google-Smtp-Source: ABdhPJwottvNmX24kN/kLJmNJK5xak//3AaeHe0lM3N2xPXIsboak8d6CXZqWF+UEXJWS8xIonsk1w==
+X-Received: by 2002:a63:905:: with SMTP id 5mr8396543pgj.337.1616100156472;
+        Thu, 18 Mar 2021 13:42:36 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id gm9sm3078201pjb.13.2021.03.18.13.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 13:42:35 -0700 (PDT)
+Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
+ alloc_workqueue call
+To:     Colin Ian King <colin.king@canonical.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210318151626.17442-1-colin.king@canonical.com>
+ <13a1d187-4d6d-9e06-b94a-553d872de756@kernel.dk>
+ <62cd71bc-86e1-412d-b2b9-716c0f8021be@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <d32641ca-e34a-2bfd-9b86-28c95546f434@kernel.dk>
+Date:   Thu, 18 Mar 2021 14:42:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210317045949.1584952-1-joshdon@google.com> <20210318143158.GB17012@xsang-OptiPlex-9020>
-In-Reply-To: <20210318143158.GB17012@xsang-OptiPlex-9020>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 18 Mar 2021 13:41:59 -0700
-Message-ID: <CABk29Nu0+k3dLa5T-Z99EE7FdVSa1wb_OT3zTbXKUaf5Tb-iWA@mail.gmail.com>
-Subject: Re: [sched] 663017c554: WARNING:at_kernel/sched/core.c:#scheduler_tick
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Paul Turner <pjt@google.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <62cd71bc-86e1-412d-b2b9-716c0f8021be@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The warning is WAI (holding spinlock for 100ms). However, since this
-is expected for locktorture, it makes sense to not have the warning
-enabled while the test is running. I can add that to the patch.
+On 3/18/21 2:24 PM, Colin Ian King wrote:
+> On 18/03/2021 20:12, Jens Axboe wrote:
+>> On 3/18/21 9:16 AM, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> The 3rd argument to alloc_workqueue should be the max_active count,
+>>> however currently it is the lo->lo_number that is intended for the
+>>> loop%d number. Fix this by adding in the missing max_active count.
+>>
+>> Dan, please fold this (or something similar) in when you're redoing the
+>> series.
+>>
+> Appreciate this fix being picked up. Are we going to lose the SoB?
+
+If it's being redone, would be silly to have that error in there. Do
+we have a tag that's appropriate for this? I often wonder when I'm
+folding in a fix. Ala Fixes-by: or something like that.
+
+-- 
+Jens Axboe
+
