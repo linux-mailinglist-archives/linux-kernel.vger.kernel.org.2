@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A8D340AD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282A9340ADB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbhCRRCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:02:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47733 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232125AbhCRRCQ (ORCPT
+        id S230338AbhCRRDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232220AbhCRRDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:02:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616086935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aaIWi/Aa75Hr56eti79lKQowFccyYMrkVkBuTxfGEhk=;
-        b=YVFz/JDRMjCqyoJcJDVcmOr6RvTFR6PiV2rcja1ksY6aMF+ftFMRCePXb7mqeOX+13uXvM
-        GeF+e1QVIhJzID11OTOztHmkmkZC9NG1P7bxWpGaoRUlM62JVtQssm44jps4GCSRn1QkpT
-        S270WycbgrVK4tUVbCLFtOJ9snqN5Do=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-QzJu-dWLNPiT0vYhS6dp9g-1; Thu, 18 Mar 2021 13:02:11 -0400
-X-MC-Unique: QzJu-dWLNPiT0vYhS6dp9g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB50B190A7A1;
-        Thu, 18 Mar 2021 17:02:09 +0000 (UTC)
-Received: from Whitewolf.lyude.net (ovpn-113-18.rdu2.redhat.com [10.10.113.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1192019D9B;
-        Thu, 18 Mar 2021 17:02:07 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sean Paul <seanpaul@chromium.org>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless specified by VBT
-Date:   Thu, 18 Mar 2021 13:02:02 -0400
-Message-Id: <20210318170204.513000-1-lyude@redhat.com>
+        Thu, 18 Mar 2021 13:03:13 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583B7C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:03:13 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id u4so7551368edv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ncWZPnyeBiWOdZ1rqhn/kolCjnyW0fSBUFhdCHieBDM=;
+        b=t7GWySP7B7GjasZeOxZIv+aUzBxCH4W8Be/Cy5Zw06Sb0yLfg7nYnjvi+LMPGBm+iy
+         XU1pC+kO/ONtX1X5jRrh3oWqaYzP8VrOMDMSdbE3sEb/K2OPCuj32WF8LUbnS7WUUkER
+         f/4lOy6HJMClpiu6qjhKKZtFhrjrVQKGnwMR9WtL5EBd/KCh9of1N1ll67hR0YZeKLV3
+         KK/KNTdOTBqCM8AiipskMe6qhvDgT+aMxNjpBn2xW5c+VJQ6/8OIeFu7onCvsXGWhx2J
+         VnXJ1RI+QZOWD8OVrk9m6l/pxM2WFTO5fyo5bQSttDcPLA4PDtmJKUqI3QzfSqUqh75G
+         Wkuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ncWZPnyeBiWOdZ1rqhn/kolCjnyW0fSBUFhdCHieBDM=;
+        b=X0Mrr7OoYzQZ3IIb3t2EcA2fjaW6a11dlo2gmfS4hkjQfQ8Wx3OfJ+H66FR1gQTlHy
+         +oHl6iL1KhsIXYzkiWYCN8ghFblTVp/Bs4XaOCEqHt85tF+gbsETKQ42obnmaRTb8h8+
+         XEA2QCdzN51gzJo7v2VZcNiwN4vs+7JmYxdzsTP7mOZL3YcwFzQaF4TACabwhGZfIuGe
+         AtzUVUuswtTJUTs0kGXmSppYZu6I5QKJZAx6E01Nf/osSd6YADSIvmoxGWZoYucuuXXH
+         VzQKdzgKAcwHM1dAZ2QyxRuGwe4HuRhPbEkyRtyZGZGvAtPjiOmKympWE+vKjouHXKl8
+         jfwQ==
+X-Gm-Message-State: AOAM532gohJOmH3pRS/ueh853XIKE5+PU+9fgZ5yaVlhr41jslA+seNB
+        sSoVVi0h24zvpaSD745FxKMStJcKRgchdwOafHpwyA==
+X-Google-Smtp-Source: ABdhPJxuNsdRluFA0/M5LLOxZ8cJZSLdLyy24eAaZULCocflm5Th9Ab5OwvvWKq3EP121Lq2ytUniLx2mfNJE2c/9s0=
+X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr3827680edu.52.1616086991914;
+ Thu, 18 Mar 2021 10:03:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
+In-Reply-To: <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 18 Mar 2021 10:03:06 -0700
+Message-ID: <CAPcyv4g8=kGoQiY14CDEZryb-7T1_tePnC_-21w-wTfA7fQcDg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
+ get_user_pages_fast() path
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like that there actually are another subset of laptops on the market
-that don't support the Intel HDR backlight interface, but do advertise
-support for the VESA DPCD backlight interface despite the fact it doesn't
-seem to work.
+On Thu, Mar 18, 2021 at 3:02 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>
+> On 3/18/21 4:08 AM, Dan Williams wrote:
+> > Now that device-dax and filesystem-dax are guaranteed to unmap all user
+> > mappings of devmap / DAX pages before tearing down the 'struct page'
+> > array, get_user_pages_fast() can rely on its traditional synchronization
+> > method "validate_pte(); get_page(); revalidate_pte()" to catch races with
+> > device shutdown. Specifically the unmap guarantee ensures that gup-fast
+> > either succeeds in taking a page reference (lock-less), or it detects a
+> > need to fall back to the slow path where the device presence can be
+> > revalidated with locks held.
+>
+> [...]
+>
+> > @@ -2087,21 +2078,26 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+> >  #endif /* CONFIG_ARCH_HAS_PTE_SPECIAL */
+> >
+> >  #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+> > +
+> >  static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+> >                            unsigned long end, unsigned int flags,
+> >                            struct page **pages, int *nr)
+> >  {
+> >       int nr_start = *nr;
+> > -     struct dev_pagemap *pgmap = NULL;
+> >
+> >       do {
+> > -             struct page *page = pfn_to_page(pfn);
+> > +             struct page *page;
+> > +
+> > +             /*
+> > +              * Typically pfn_to_page() on a devmap pfn is not safe
+> > +              * without holding a live reference on the hosting
+> > +              * pgmap. In the gup-fast path it is safe because any
+> > +              * races will be resolved by either gup-fast taking a
+> > +              * reference or the shutdown path unmapping the pte to
+> > +              * trigger gup-fast to fall back to the slow path.
+> > +              */
+> > +             page = pfn_to_page(pfn);
+> >
+> > -             pgmap = get_dev_pagemap(pfn, pgmap);
+> > -             if (unlikely(!pgmap)) {
+> > -                     undo_dev_pagemap(nr, nr_start, flags, pages);
+> > -                     return 0;
+> > -             }
+> >               SetPageReferenced(page);
+> >               pages[*nr] = page;
+> >               if (unlikely(!try_grab_page(page, flags))) {
+>
+> So for allowing FOLL_LONGTERM[0] would it be OK if we used page->pgmap after
+> try_grab_page() for checking pgmap type to see if we are in a device-dax
+> longterm pin?
+>
 
-Note though I'm not entirely clear on this - on one of the machines where
-this issue was observed, I also noticed that we appeared to be rejecting
-the VBT defined backlight frequency in
-intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
-
-/* Use highest possible value of Pn for more granularity of brightness
- * adjustment while satifying the conditions below.
- * ...
- * - FxP is within 25% of desired value.
- *   Note: 25% is arbitrary value and may need some tweak.
- */
-
-So it's possible that this value might just need to be tweaked, but for now
-let's just disable the VESA backlight interface unless it's specified in
-the VBT just to be safe. We might be able to try enabling this again by
-default in the future.
-
-Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces through enable_dpcd_backlight")
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-index 651884390137..4f8337c7fd2e 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-@@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
- 			break;
- 		case INTEL_BACKLIGHT_DISPLAY_DDI:
- 			try_intel_interface = true;
--			try_vesa_interface = true;
- 			break;
- 		default:
- 			return -ENODEV;
--- 
-2.29.2
-
+Yes. I still need to answer the question of whether mapping
+invalidation triggers longterm pin holders to relinquish their hold,
+but that's a problem regardless of whether gup-fast is supported or
+not.
