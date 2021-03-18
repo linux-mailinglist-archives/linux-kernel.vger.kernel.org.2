@@ -2,74 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C37D34108D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D5E34108F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhCRW41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 18:56:27 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:45143 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhCRW4I (ORCPT
+        id S233169AbhCRW47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 18:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhCRW4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 18:56:08 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N17l4-1lotDg0UlG-012ZqQ; Thu, 18 Mar 2021 23:56:06 +0100
-Received: by mail-oi1-f173.google.com with SMTP id n140so2742027oig.9;
-        Thu, 18 Mar 2021 15:56:05 -0700 (PDT)
-X-Gm-Message-State: AOAM533efNNV5cf8edVY5uOMMr885pkbswE9vvU2Pq3SDQQnwmvLrQfG
-        y2Lej9DK1PpuqO+vBwBAlXrl40TpCT6YbKuJaxU=
-X-Google-Smtp-Source: ABdhPJzF+BOjv5UApfsqhmVhd0NbItbf2o91DJI9ybHCy3fIIrAnZLbN8+p0+u6MltDrASl16jwBg8tCH+5O81fvSlg=
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr4812049oie.4.1616108164854;
- Thu, 18 Mar 2021 15:56:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210308185741.56900784@canb.auug.org.au> <20210316084342.13b804f3@canb.auug.org.au>
-In-Reply-To: <20210316084342.13b804f3@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 18 Mar 2021 23:55:48 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a31py=31dMgb+XKOwJo70v6Cab1yUJAB5zaF-0_ReP4sw@mail.gmail.com>
-Message-ID: <CAK8P3a31py=31dMgb+XKOwJo70v6Cab1yUJAB5zaF-0_ReP4sw@mail.gmail.com>
-Subject: Re: linux-next: error fetching the arm-soc-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Olof Johansson <olof@lixom.net>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+        Thu, 18 Mar 2021 18:56:43 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517EAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:56:43 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id h126so32656382qkd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9QoP9965eN6KfleHPxoTcP8X4PcKzAfBQoWsgVWtjyk=;
+        b=KdN9vnUgMhpYZGkGDJfe6+gOWXOb4Zp/3ue54E8kyK8AJz89TEGYEm/SSlKjv7WXNd
+         PXuceVBB+DnIS5CHWd01BmfyhjfAjiG9gvbujZGa+4s8Oow/Z4Ne0sAueUe0XaGU39FS
+         WqHzJOnytd6QR88SSJ48VewDwof1506Y/QBP8gOr/DFL88QmfCmHL7ovPzbqD3DEl5kK
+         rNKcEt4bOsCWI/MbeTvpzap3oi8LP8oiY0bm98b+pn32u7o1/KUxa8u3NNKqJTB2d+Tq
+         J6fCOVhG47pd8BnSefa2nAtGWE6Ls/wDGvjSG9Hz6zzRvjT1QJGKCeJEFUMRwondd+WU
+         gDGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9QoP9965eN6KfleHPxoTcP8X4PcKzAfBQoWsgVWtjyk=;
+        b=UUvCvfAvnA0i7d/LTeAvZZFGrtrCXW3B1EgcC3smRJlrvdHCkkvJ5RV0/na/0wIK7A
+         6bsHRDwMWOll/pPu3x0aIkJXRseeQ89kdyhyGuTLa+MJlfk6yeCnXSb4//SDtdNWOgK/
+         rXu+XOvxkxAd1cAJYIdbsrFEzRKrDQ3tcAQ+kRd8/n7Xprxs+0S3EJNepBKFo6hzeMJU
+         PViVdoeypvt1WwEkqX0cgbk3KBPYe41KuPLtP1w7f3CYRU5rm/Ij2zmrcfavLGe7J4pN
+         iiqpQY6xsH1of8DfL910qnhb48ydZWi7i5B/ia23GQeaVBN6RpxvBlU09NLdiwLnW5kA
+         nvcw==
+X-Gm-Message-State: AOAM531uZGZt1g95e7riDeteq2tFo4OS8UFVyjdoEzQozLGJC4YjdNDc
+        uORAqVMh8bPlVSfri85UReoxDD3dArQ=
+X-Google-Smtp-Source: ABdhPJzomk8qAhSEpE6QXe3u36oZYsNOLbz+iAPniGwSM2nX6SdAByOD3zjAaIS3kVhG6uLdnTDidcPBpRw=
+X-Received: from jollys.svl.corp.google.com ([2620:15c:2c5:13:84f3:414f:d94c:e1e1])
+ (user=jollys job=sendgmr) by 2002:a0c:8f09:: with SMTP id z9mr6481323qvd.25.1616108202527;
+ Thu, 18 Mar 2021 15:56:42 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 15:56:32 -0700
+Message-Id: <20210318225632.2481291-1-jollys@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
+From:   Jolly Shah <jollys@google.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        john.garry@huawei.com, a.darwish@linutronix.de,
+        yanaijie@huawei.com, luojiaxing@huawei.com,
+        dan.carpenter@oracle.com, b.zolnierkie@samsung.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jolly Shah <jollys@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VNKPocAmQmiVayj+NcUtQcLC1/k+0+WBmw/m6OyWT+KGmeAMtN5
- TWc9YUzblY5vCFvgc2l57NElPscM3sLyCCEgdM3FGO6mWWPvNki8Um2ZTUqr5IU8UMx5L7s
- 8QFwcrhgPuZwgfssNfXGB214NsMOIt/tXWGkMjWfdiSS66ZhL8YqYbOY1PVUWKTQ/4ERQvk
- 0AllGY4QjbovJjO/ZCkeQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:y7dEi7I/Wzg=:NK+DXl17R/n01B5jX5lDJs
- vRvrCcIc2StbuywHxBVEZ5sMbx1sV1+41GDU+8uJ3vlove72nyfTTiDizGTArNXFEc4IGcprp
- z88G4YuzkNAwm4BO6sxfxKPod0WryHqABG4A+NgjuNugA7TqEjQfgIIJgK8oavk1FCUPxG0U0
- lGhGYwDdUtljHEau3JuDm/XRPcEOYuSxYwQxk3Sc0TqRT53ngdWJkca4kAxvyqQAxtN/4/Y6b
- uihh9AaKzREXQnw/s0Tf3lJdCBile+V30K5tU9+Zq6krIffKD7Aykz/ZL1aR8GhX9TD6HavNs
- maSPT6F126+Ax2t2oZfYvj8ZVLh/PgprS64g0JG8Z9byaOuAkY5V0H4Nf6d0PTq5IuoiMGFpd
- mS3cOg01utbjBx49XPUcBkJeIe1rhgUzxyNo2E8vDp7XcicmWbCM+8vU8RjPvW5RhrYlqvYjd
- GFGcMdkQ4ZsVaJAEtvysQp7tpxbhCewJTitSCzWKb+WshcZ4PuvewGmArXjAtyRoV19yc7NlD
- qYwDSplyK0Rsn1xbB4sey+n/QtMgYlFknszfkSXSPCzyXefQyM72q9ovVtomxClsg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:43 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Mon, 8 Mar 2021 18:57:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Fetching the arm-soc-fixes tree
-> > (git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git#arm/fixes)
-> > produces this error:
-> >
-> > fatal: couldn't find remote ref refs/heads/arm/fixes
->
-> Ping?
+When the cache_type for the scsi device is changed, the scsi layer
+issues a MODE_SELECT command. The caching mode details are communicated
+via a request buffer associated with the scsi command with data
+direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+reaches the libata layer, as a part of generic initial setup, libata
+layer sets up the scatterlist for the command using the scsi command
+(ata_scsi_qc_new). This command is then translated by the libata layer
+into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+treats this as a non data command (ata_mselect_caching), since it only
+needs an ata taskfile to pass the caching on/off information to the
+device. It does not need the scatterlist that has been setup, so it does
+not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
+when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+layer sees it as a non data command with a scatterlist. It cannot
+extract the correct dma length, since the scatterlist has not been
+mapped with dma_map_sg for a DMA operation. When this partially
+constructed SAS task reaches pm80xx LLDD, it results in below warning.
 
-Sorry for the delay. I had cleaned out the old branches while updating to -rc2
-and forgot to upload the new fixes. I just pushed the branch with the latest
-fixes.
+"pm80xx_chip_sata_req 6058: The sg list address
+start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+end_addr_low=0xffffffff has crossed 4G boundary"
 
-        Arnd
+This patch updates code to handle ata non data commands separately so
+num_scatter and total_xfer_len remain 0.
+
+Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA")
+Signed-off-by: Jolly Shah <jollys@google.com>
+---
+v2:
+- reorganized code to avoid setting num_scatter twice
+
+ drivers/scsi/libsas/sas_ata.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 024e5a550759..8b9a39077dba 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+ 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
+ 		task->total_xfer_len = qc->nbytes;
+ 		task->num_scatter = qc->n_elem;
++		task->data_dir = qc->dma_dir;
++	} else if (qc->tf.protocol == ATA_PROT_NODATA) {
++		task->data_dir = DMA_NONE;
+ 	} else {
+ 		for_each_sg(qc->sg, sg, qc->n_elem, si)
+ 			xfer += sg_dma_len(sg);
+ 
+ 		task->total_xfer_len = xfer;
+ 		task->num_scatter = si;
+-	}
+-
+-	if (qc->tf.protocol == ATA_PROT_NODATA)
+-		task->data_dir = DMA_NONE;
+-	else
+ 		task->data_dir = qc->dma_dir;
++	}
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
