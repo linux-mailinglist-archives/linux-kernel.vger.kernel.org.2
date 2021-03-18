@@ -2,62 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB703340CDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E3A340CF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhCRSYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:24:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232336AbhCRSYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4EA4B64E2E;
-        Thu, 18 Mar 2021 18:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616091851;
-        bh=RDhFZjLNet2EdmO3I9YsHaj5bym3mRlsIzr4283Ahws=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RmtDNbH0qb6cnSwQ9fuxFKauWa2fcYK1OrPUYW3lj1LFdSAsXS9m1WdHZyY+3E5k2
-         RW8nfL+yQ5ouyq8Doe+p4OaPuWkuuINdPioNMv2j5pamW4PKaagmVipDNSRJ0PEYNh
-         8r/5y2Sigwd6foRmtY+5IJUj8m35MXo/BUYOQ+gbW/8ZWkvvBIT2aqrktBmZiJsMm9
-         CpKl9e4M+XR2MYIfxfaUfFoC61INejd0dAPjzPiOWXXvi/PPWUWav79ZJ5Ej2Dysip
-         bNQwcGq8BZKu3G62mJ2kChm4ewTGAdsvTgWAR4AQzl6A9+5Y/fTKetPJF8VcoZ+LFK
-         D4krdNHlngg1A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3E50D600E8;
-        Thu, 18 Mar 2021 18:24:11 +0000 (UTC)
-Subject: Re: [GIT PULL] iomap: fixes for 5.12-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210318160545.GK22100@magnolia>
-References: <20210318160545.GK22100@magnolia>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210318160545.GK22100@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git iomap-5.12-fixes
-X-PR-Tracked-Commit-Id: 5808fecc572391867fcd929662b29c12e6d08d81
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8ff0f3bf5d6513dfb7462246d9c656da7c02b37e
-Message-Id: <161609185119.1841.14290945236600692021.pr-tracker-bot@kernel.org>
-Date:   Thu, 18 Mar 2021 18:24:11 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, linux-btrfs@vger.kernel.org,
-        naohiro.aota@wdc.com, riteshh@linux.ibm.com
+        id S232486AbhCRS3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:29:16 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:63892 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232262AbhCRS3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:29:10 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 820c3476cb80a778; Thu, 18 Mar 2021 19:29:08 +0100
+Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 42D9D668FA9;
+        Thu, 18 Mar 2021 19:29:08 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        David Box <david.e.box@linux.intel.com>
+Subject: [PATCH v2 1/2] ACPI: scan: Turn off unused power resources during initialization
+Date:   Thu, 18 Mar 2021 19:25:12 +0100
+Message-ID: <9860889.nUPlyArG6x@kreacher>
+In-Reply-To: <3108574.44csPzL39Z@kreacher>
+References: <3108574.44csPzL39Z@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfekveffledtuefgueevudetgfeukeegudeufeeljeetgfetleefudevledvtdejnecuffhomhgrihhnpehuvghfihdrohhrghenucfkphepkeelrdeigedrkedtrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvhedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrvhhiugdrvgdrsghogieslhhinhhugidrihhnthgvlhdrtgho
+ mh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 18 Mar 2021 09:05:45 -0700:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git iomap-5.12-fixes
+It is reported that on certain platforms there are power resources
+that are not associated with any devices physically present in the
+platform.  Those power resources are expected to be turned off by
+the OS in accordance with the ACPI specification (section 7.3 of
+ACPI 6.4) which currently is not done by Linux and that may lead
+to obscure issues.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8ff0f3bf5d6513dfb7462246d9c656da7c02b37e
+For instance, leaving those power resources in the "on" state may
+prevent the platform from reaching the lowest power state in
+suspend-to-idle which leads to excessive power draw.
 
-Thank you!
+For this reason, turn all of the unused ACPI power resources off
+at the end of the initial namespace scan for devices in analogy with
+resume from suspend-to-RAM.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Link: https://uefi.org/specs/ACPI/6.4/07_Power_and_Performance_Mgmt/device-power-management-objects.html
+Reported-by: David Box <david.e.box@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+-> v2: Expand the changelog somewhat and make it build with CONFIG_PM_SLEEP
+       unset.
+
+---
+ drivers/acpi/internal.h |    1 +
+ drivers/acpi/power.c    |    2 +-
+ drivers/acpi/scan.c     |    2 ++
+ drivers/acpi/sleep.h    |    1 -
+ 4 files changed, 4 insertions(+), 2 deletions(-)
+
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -139,6 +139,7 @@ int acpi_device_sleep_wake(struct acpi_d
+ int acpi_power_get_inferred_state(struct acpi_device *device, int *state);
+ int acpi_power_on_resources(struct acpi_device *device, int state);
+ int acpi_power_transition(struct acpi_device *device, int state);
++void acpi_turn_off_unused_power_resources(void);
+ 
+ /* --------------------------------------------------------------------------
+                               Device Power Management
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -2360,6 +2360,8 @@ int __init acpi_scan_init(void)
+ 		}
+ 	}
+ 
++	acpi_turn_off_unused_power_resources();
++
+ 	acpi_scan_initialized = true;
+ 
+  out:
+Index: linux-pm/drivers/acpi/sleep.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/sleep.h
++++ linux-pm/drivers/acpi/sleep.h
+@@ -8,7 +8,6 @@ extern struct list_head acpi_wakeup_devi
+ extern struct mutex acpi_device_lock;
+ 
+ extern void acpi_resume_power_resources(void);
+-extern void acpi_turn_off_unused_power_resources(void);
+ 
+ static inline acpi_status acpi_set_waking_vector(u32 wakeup_address)
+ {
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -996,6 +996,7 @@ void acpi_resume_power_resources(void)
+ 
+ 	mutex_unlock(&power_resource_list_lock);
+ }
++#endif
+ 
+ void acpi_turn_off_unused_power_resources(void)
+ {
+@@ -1025,4 +1026,3 @@ void acpi_turn_off_unused_power_resource
+ 
+ 	mutex_unlock(&power_resource_list_lock);
+ }
+-#endif
+
+
+
