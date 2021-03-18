@@ -2,238 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36000340010
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B64E340014
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhCRHK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCRHKf (ORCPT
+        id S229704AbhCRHOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:14:22 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:52810 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCRHNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:10:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9FAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:10:35 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lMmnf-0005EN-GI; Thu, 18 Mar 2021 08:10:31 +0100
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, olteanv@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <70d9f281-3b39-a760-1c2b-3598251f5770@pengutronix.de>
-Date:   Thu, 18 Mar 2021 08:10:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Thu, 18 Mar 2021 03:13:47 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210318071345epoutp031dace22954decc07af1a36e4679dbe35~tXmRAZxWm2677626776epoutp03W
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:13:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210318071345epoutp031dace22954decc07af1a36e4679dbe35~tXmRAZxWm2677626776epoutp03W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616051626;
+        bh=gySNewq6n0vk9lDqd9Ugaboa63g5WLsXWopfrDwchzc=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=sW2vcPiJjikJu07KVbdKErnCvrgHfdVBjWcSgMJaDgFRbMvrobRRi8ZLjcJISUYAp
+         8dvs/KFN6Ec5KhO5KgHlibG6NmH8B4NUvF46V3Vl2U2QgiBeNRqRcrrLBD+oO/dM9M
+         Bp//dSqVEZ6tEbOgZSMVILlhqV/m19z9EwquU8uA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210318071344epcas2p17ba53d7753fea635c387a9bc92015e1c~tXmP5WrWD0101901019epcas2p1f;
+        Thu, 18 Mar 2021 07:13:44 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4F1JCq2p2Gz4x9QH; Thu, 18 Mar
+        2021 07:13:43 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-8c-6052fda75b5a
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.29.05262.7ADF2506; Thu, 18 Mar 2021 16:13:43 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <4f34cad55311137d1b28d897187a69df@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210318071342epcms2p12f1c6664bb62ed58fded46c20ee01f07@epcms2p1>
+Date:   Thu, 18 Mar 2021 16:13:42 +0900
+X-CMS-MailID: 20210318071342epcms2p12f1c6664bb62ed58fded46c20ee01f07
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJsWRmVeSWpSXmKPExsWy7bCmue7yv0EJBi1bhSwezNvGZrG37QS7
+        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
+        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gcRDwuX/H2uNzXy+Sxc9Zd
+        do8Jiw4weuyfu4bdo+XkfhaPj09vsXj0bVnF6PF5k5xH+4FupgCuqBybjNTElNQihdS85PyU
+        zLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKDnlBTKEnNKgUIBicXFSvp2NkX5
+        pSWpChn5xSW2SqkFKTkFhoYFesWJucWleel6yfm5VoYGBkamQJUJORlXe6+yFXzzr7h3cwdj
+        A+MXuy5GTg4JAROJtqUX2boYuTiEBHYwSvy+vpO5i5GDg1dAUOLvDmGQGmEBe4mvG7axgthC
+        AkoS6y/OYoeI60nceriGEcRmE9CRmH7iPlhcRMBT4uvk1awgM5kFlrNJNC7bzwqxjFdiRvtT
+        FghbWmL78q1gzZwCdhLHPl5jhohrSPxY1gtli0rcXP2WHcZ+f2w+I4QtItF67yxUjaDEg5+7
+        oeKSEsd2f2CCsOsltt75xQhyhIRAD6PE4Z23oI7Ql7jWsZEF4klfiZ6JYHNYBFQlDs+5xQZR
+        4iJx9fFusL3MAvIS29/OAYcJs4CmxPpd+iCmhICyxJFbLDBfNWz8zY7OZhbgk+g4/BcuvmPe
+        E6jL1CTW/VzPNIFReRYioGch2TULYdcCRuZVjGKpBcW56anFRgXGyHG7iRGczrXcdzDOePtB
+        7xAjEwfjIUYJDmYlEV7TvIAEId6UxMqq1KL8+KLSnNTiQ4ymQF9OZJYSTc4HZpS8knhDUyMz
+        MwNLUwtTMyMLJXHeYoMH8UIC6YklqdmpqQWpRTB9TBycUg1Mu9jXO09KWbTM8z5zwcYS9dUL
+        H6wo+rtk7XfF9sqd+yeuaF5Q8n//L08nm+Zz3ov4gibxXq2M9utv2sO/29TqdYRESbDLqU95
+        F74t49w9aZ8x45tZC7ZuPMl9PXnmrQ4W6frWuf+E8gunsBjeEmfm38Z11rrqiBhLjZmMXehp
+        xZop3nHvHm+/mn5iu2Lvmy33VLi0/UMiQx0fdsXVu2vzzY1omcTjWjch38VtzbL9kbZ+b39M
+        vLFzJcdn1c6svPm3F/JOP7/P5vurr0UK1r8n9d990i1l8MHmkYhaQj/715c5Zt58x3I8YpUv
+        f+B3jW2/21wjENn9/sr5PG0tph2cK9SuLMx8u37Hgb2rfTNvKbEUZyQaajEXFScCAHZfinZw
+        BAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210315012850epcms2p361447b689e925561c48aa9ca54434eb5
+References: <4f34cad55311137d1b28d897187a69df@codeaurora.org>
+        <79aea8a80c1be2ff7f05683c2f4918ce@codeaurora.org>
+        <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
+        <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
+        <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+        <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+        <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
+        <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
+        <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
+        <20210318020243epcms2p8259fa1d5e99e3c463c6b9e9106693476@epcms2p8>
+        <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 04:10, Yunsheng Lin wrote:
-> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-> flag set, but queue discipline by-pass does not work for lockless
-> qdisc because skb is always enqueued to qdisc even when the qdisc
-> is empty, see __dev_xmit_skb().
+>On 2021-03-18 10:02, Daejun Park wrote:
+>>> On 2021-03-17 09:42, Daejun Park wrote:
+>>>>> On 2021-03-15 15:23, Can Guo wrote:
+>>>>>> On 2021-03-15 15:07, Daejun Park wrote:
+>>>>>>>>> This patch supports the HPB 2.0.
+>>>>>>>>> 
+>>>>>>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
+>>>>>>>>> In the case of Read (<= 32KB) is supported as single HPB read.
+>>>>>>>>> In the case of Read (36KB ~ 512KB) is supported by as a
+>>>>>>>>> combination
+>>>>>>>>> of
+>>>>>>>>> write buffer command and HPB read command to deliver more PPN.
+>>>>>>>>> The write buffer commands may not be issued immediately due to
+>>>>>>>>> busy
+>>>>>>>>> tags.
+>>>>>>>>> To use HPB read more aggressively, the driver can requeue the
+>>>>>>>>> write
+>>>>>>>>> buffer
+>>>>>>>>> command. The requeue threshold is implemented as timeout and can
+>>>>>>>>> be
+>>>>>>>>> modified with requeue_timeout_ms entry in sysfs.
+>>>>>>>>> 
+>>>>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>>>>>>>>> ---
+>>>>>>>>> +static struct attribute *hpb_dev_param_attrs[] = {
+>>>>>>>>> +        &dev_attr_requeue_timeout_ms.attr,
+>>>>>>>>> +        NULL,
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
+>>>>>>>>> +        .name = "hpb_param_sysfs",
+>>>>>>>>> +        .attrs = hpb_dev_param_attrs,
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+>>>>>>>>> +{
+>>>>>>>>> +        struct ufshpb_req *pre_req = NULL;
+>>>>>>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+>>>>>>>>> +        int i, j;
+>>>>>>>>> +
+>>>>>>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+>>>>>>>>> +
+>>>>>>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
+>>>>>>>>> GFP_KERNEL);
+>>>>>>>>> +        hpb->throttle_pre_req = qd;
+>>>>>>>>> +        hpb->num_inflight_pre_req = 0;
+>>>>>>>>> +
+>>>>>>>>> +        if (!hpb->pre_req)
+>>>>>>>>> +                goto release_mem;
+>>>>>>>>> +
+>>>>>>>>> +        for (i = 0; i < qd; i++) {
+>>>>>>>>> +                pre_req = hpb->pre_req + i;
+>>>>>>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
+>>>>>>>>> +                pre_req->req = NULL;
+>>>>>>>>> +                pre_req->bio = NULL;
+>>>>>>>> 
+>>>>>>>> Why don't prepare bio as same as wb.m_page? Won't that save more
+>>>>>>>> time
+>>>>>>>> for ufshpb_issue_pre_req()?
+>>>>>>> 
+>>>>>>> It is pre_req pool. So although we prepare bio at this time, it 
+>>>>>>> just
+>>>>>>> only for first pre_req.
+>>>>>> 
+>>>>>> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and
+>>>>>> bio_put()
+>>>>>> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a
+>>>>>> page.
+>>>>>> So, prepare 16 (if queue depth is 32) bios here, just use them 
+>>>>>> along
+>>>>>> with
+>>>>>> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall 
+>>>>>> it
+>>>>>> work?
+>>>>>> 
+>>>>> 
+>>>>> If it works, you can even have the bio_add_pc_page() called here.
+>>>>> Later
+>>>>> in
+>>>>> ufshpb_execute_pre_req(), you don't need to call
+>>>>> ufshpb_pre_req_add_bio_page(),
+>>>>> just call ufshpb_prep_entry() once instead - it save many repeated
+>>>>> steps
+>>>>> for a
+>>>>> pre_req, and you don't even need to call bio_reset() in this case,
+>>>>> since
+>>>>> for a
+>>>>> bio, nothing changes after it is binded with a specific page...
+>>>> 
+>>>> Hi, Can Guo
+>>>> 
+>>>> I tried the idea that you suggested, but it doesn't work properly.
+>>>> This optimization should be done next time for enhancement.
+>>> 
+>>> Can you elaborate please? Any error seen?
+>>> 
+>>> Per my understanding, in the case for pre_reqs, a bio is no different
+>>> from a page. Here it can reserve 16 pages for later use, which can be
+>>> done the same for bios.
+>> 
+>> I found some problem with re-using pre allocated bio.
+>> 
+>> The following kernel message is related with problem.
+>> [    2.750530] ------------[ cut here ]------------
+>> [    2.751404] WARNING: CPU: 4 PID: 170 at
+>> drivers/scsi/scsi_lib.c:1020 scsi_alloc_sgtables+0x253/0x2b0
+>> [    2.753054] Modules linked in:
+>> [    2.753651] CPU: 4 PID: 170 Comm: mount Not tainted 5.12.0-rc1+ #331
+>> [    2.754752] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+>> [    2.756813] RIP: 0010:scsi_alloc_sgtables+0x253/0x2b0
+>> [    2.757699] Code: 85 c0 74 19 41 0f b6 44 24 18 8d 50 e0 83 fa 03
+>> 76 30 41 bd 01 00 00 00 e9 1f fe ff ff be 01 00 00 00 45 31 ed e9 19
+>> fe ff ff <0f> 0b b8 0a f
+>> [    2.761021] RSP: 0018:ffffb06e0027f538 EFLAGS: 00010246
+>> [    2.761902] RAX: 0000000000000000 RBX: ffff9c3a42d424d0 RCX: 
+>> ffffb06e0027f5e0
+>> [    2.763184] RDX: ffff9c3a42d426a8 RSI: 0000000000000000 RDI: 
+>> ffff9c3a42d424d0
+>> [    2.764446] RBP: ffffb06e0027f570 R08: 0000000000000000 R09: 
+>> 0000000000000000
+>> [    2.765704] R10: ffffffff8eb0dda0 R11: 00000000fffb7675 R12: 
+>> ffff9c3a42d423c0
+>> [    2.766976] R13: 0000000000000000 R14: ffff9c3a41bed000 R15: 
+>> ffff9c3a420f4000
+>> [    2.768225] FS:  00007f42d1eab100(0000) GS:ffff9c3b77c00000(0000)
+>> knlGS:0000000000000000
+>> [    2.769666] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [    2.770719] CR2: 00007f42d1ac1000 CR3: 0000000104bee006 CR4: 
+>> 0000000000370ee0
+>> [    2.771997] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+>> 0000000000000000
+>> [    2.773288] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+>> 0000000000000400
+>> [    2.774543] Call Trace:
+>> [    2.775092]  scsi_queue_rq+0x9b6/0xb20
+>> [    2.775754]  __blk_mq_try_issue_directly+0x150/0x1f0
+>> [    2.776636]  blk_mq_request_issue_directly+0x49/0x80
+>> [    2.777616]  blk_insert_cloned_request+0x85/0xd0
+>> [    2.778470]  ufshpb_prep.cold+0x793/0x7be
+>> [    2.779179]  ufshcd_queuecommand+0x114/0x690
+>> [    2.779986]  scsi_queue_rq+0x38a/0xb20
+>> [    2.780755]  blk_mq_dispatch_rq_list+0x13d/0x760
+>> [    2.781605]  ? dd_dispatch_request+0x67/0x1c0
+>> [    2.782337]  __blk_mq_do_dispatch_sched+0xb5/0x2c0
+>> [    2.783291]  __blk_mq_sched_dispatch_requests+0x13c/0x180
+>> [    2.784209]  blk_mq_sched_dispatch_requests+0x30/0x60
+>> [    2.785195]  __blk_mq_run_hw_queue+0x49/0x90
+>> [    2.786024]  __blk_mq_delay_run_hw_queue+0x162/0x180
+>> [    2.786890]  blk_mq_run_hw_queue+0x85/0xe0
+>> [    2.787590]  blk_mq_sched_insert_requests+0xdf/0x2b0
+>> [    2.788558]  blk_mq_flush_plug_list+0x118/0x240
+>> [    2.789405]  blk_flush_plug_list+0xde/0x110
+>> [    2.790225]  blk_finish_plug+0x21/0x30
+>> [    2.790878]  read_pages+0x16a/0x1d0
+>> [    2.791534]  page_cache_ra_unbounded+0x123/0x1c0
+>> [    2.792392]  do_page_cache_ra+0x38/0x40
+>> [    2.793183]  force_page_cache_ra+0x97/0x110
+>> [    2.793875]  page_cache_sync_ra+0x26/0x50
+>> [    2.794671]  filemap_get_pages+0xc8/0x4b0
+>> [    2.795482]  filemap_read+0xc9/0x340
+>> [    2.796144]  ? find_held_lock+0x31/0x90
+>> [    2.796809]  generic_file_read_iter+0xcc/0x130
+>> [    2.797644]  blkdev_read_iter+0x30/0x40
+>> [    2.798436]  new_sync_read+0x10e/0x190
+>> [    2.799112]  vfs_read+0x178/0x1d0
+>> [    2.799732]  ksys_read+0x6b/0xf0
+>> [    2.800361]  __x64_sys_read+0x15/0x20
+>> [    2.801027]  do_syscall_64+0x38/0x50
+>> [    2.801770]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> [    2.802655] RIP: 0033:0x7f42d209a461
+>> [    2.803313] Code: fe ff ff 50 48 8d 3d fe d0 09 00 e8 e9 03 02 00
+>> 66 0f 1f 84 00 00 00 00 00 48 8d 05 99 62 0d 00 8b 00 85 c0 75 13 31
+>> c0 0f 05 <48> 3d 00 f0 8
+>> [    2.806632] RSP: 002b:00007ffe7b88bc88 EFLAGS: 00000246 ORIG_RAX:
+>> 0000000000000000
+>> [    2.807942] RAX: ffffffffffffffda RBX: 000055ccb2e070d0 RCX: 
+>> 00007f42d209a461
+>> [    2.809218] RDX: 0000000000040000 RSI: 00007f42d1ac1038 RDI: 
+>> 0000000000000004
+>> [    2.810482] RBP: 000055ccb2e07120 R08: 00007f42d1ac1010 R09: 
+>> 0000000000000000
+>> [    2.811729] R10: 0000000000000022 R11: 0000000000000246 R12: 
+>> 0000003b95fc0000
+>> [    2.813005] R13: 0000000000040000 R14: 00007f42d1ac1028 R15: 
+>> 00007f42d1ac1010
+>> [    2.814276] irq event stamp: 9319
+>> [    2.814868] hardirqs last  enabled at (9327): [<ffffffff8c4d2033>]
+>> console_unlock+0x4d3/0x5e0
+>> [    2.816349] hardirqs last disabled at (9336): [<ffffffff8c4d1fa6>]
+>> console_unlock+0x446/0x5e0
+>> [    2.817837] softirqs last  enabled at (8674): [<ffffffff8d4002ec>]
+>> __do_softirq+0x2ec/0x40f
+>> [    2.819298] softirqs last disabled at (8669): [<ffffffff8c46ad9e>]
+>> irq_exit_rcu+0xae/0xb0
+>> [    2.820744] ---[ end trace af3986a7787eeecf ]---
+>> 
+>> It is related to bi_iter value of bio is changed after use it.
 > 
-> This patch calls sch_direct_xmit() to transmit the skb directly
-> to the driver for empty lockless qdisc too, which aviod enqueuing
-> and dequeuing operation. qdisc->empty is set to false whenever a
-> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
-> skb dequeuing return NULL, see pfifo_fast_dequeue(), a spinlock is
-> added to avoid the race between enqueue/dequeue and qdisc->empty
-> setting.
+>Understood the problem now, let's take the 1st way -
+>1. prepare bios in ufshpb_pre_req_mempool_init() (leave 
+>bio_add_pc_page() where it was)
+>2. call bio_reset() in ufshpb_put_pre_req()
 > 
-> If there is requeued skb in q->gso_skb, and qdisc->empty is true,
-> do not allow bypassing requeued skb. enqueuing and dequeuing in
-> q->gso_skb is always protected by qdisc->seqlock, so is the access
-> of q->gso_skb by skb_queue_empty();
-> 
-> Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
-> is false to avoid packet stuck problem.
-> 
-> The performance for ip_forward test increases about 10% with this
-> patch.
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> RFC V2: fix requeued skb out of order and data race problem.
+>This should work.
 
-cansequence didn't find any frame reordering with 2 FlexCAN's communicating
-with each other on a dual core i.MX6. Feel free to add:
+OK, I will try this.
 
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Thanks,
+Daejuin
 
-> ---
->  include/net/pkt_sched.h   |  2 ++
->  include/net/sch_generic.h |  7 +++++--
->  net/core/dev.c            | 14 ++++++++++++++
->  net/sched/sch_generic.c   | 31 ++++++++++++++++++++++++++++++-
->  4 files changed, 51 insertions(+), 3 deletions(-)
+
+>Thanks,
+>Can Guo.
 > 
-> diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-> index f5c1bee..c760f6a 100644
-> --- a/include/net/pkt_sched.h
-> +++ b/include/net/pkt_sched.h
-> @@ -122,6 +122,8 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
->  bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
->  		     struct net_device *dev, struct netdev_queue *txq,
->  		     spinlock_t *root_lock, bool validate);
-> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
-> +			    struct net_device *dev);
->  
->  void __qdisc_run(struct Qdisc *q);
->  
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index 2d6eb60..6591356 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		if (!spin_trylock(&qdisc->seqlock))
->  			return false;
-> -		WRITE_ONCE(qdisc->empty, false);
->  	} else if (qdisc_is_running(qdisc)) {
->  		return false;
->  	}
-> @@ -176,8 +175,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  static inline void qdisc_run_end(struct Qdisc *qdisc)
->  {
->  	write_seqcount_end(&qdisc->running);
-> -	if (qdisc->flags & TCQ_F_NOLOCK)
-> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		spin_unlock(&qdisc->seqlock);
-> +
-> +		if (unlikely(!READ_ONCE(qdisc->empty)))
-> +			__netif_schedule(qdisc);
-> +	}
->  }
->  
->  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 2bfdd52..8f4afb6 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3791,6 +3791,20 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->  	qdisc_calculate_pkt_len(skb, q);
->  
->  	if (q->flags & TCQ_F_NOLOCK) {
-> +		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
-> +		    qdisc_run_begin(q)) {
-> +			qdisc_bstats_cpu_update(q, skb);
-> +
-> +			if (sch_may_need_requeuing(skb, q, dev))
-> +				__qdisc_run(q);
-> +			else if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
-> +				 !READ_ONCE(q->empty))
-> +				__qdisc_run(q);
-> +
-> +			qdisc_run_end(q);
-> +			return NET_XMIT_SUCCESS;
-> +		}
-> +
->  		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->  		qdisc_run(q);
->  
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 49eae93..0df1462 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -273,6 +273,23 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->  	return skb;
->  }
->  
-> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
-> +			    struct net_device *dev)
-> +{
-> +	bool again = false;
-> +
-> +	if (likely(skb_queue_empty(&q->gso_skb)))
-> +		return false;
-> +
-> +	/* need validating before requeuing */
-> +	skb = validate_xmit_skb_list(skb, dev, &again);
-> +	if (unlikely(!skb))
-> +		return true;
-> +
-> +	dev_requeue_skb(skb, q);
-> +	return true;
-> +}
-> +
->  /*
->   * Transmit possibly several skbs, and handle the return status as
->   * required. Owning running seqcount bit guarantees that
-> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
->   */
->  struct pfifo_fast_priv {
->  	struct skb_array q[PFIFO_FAST_BANDS];
-> +
-> +	/* protect against data race between enqueue/dequeue and
-> +	 * qdisc->empty setting
-> +	 */
-> +	spinlock_t lock;
->  };
->  
->  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
-> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
->  	unsigned int pkt_len = qdisc_pkt_len(skb);
->  	int err;
->  
-> -	err = skb_array_produce(q, skb);
-> +	spin_lock(&priv->lock);
-> +	err = __ptr_ring_produce(&q->ring, skb);
-> +	WRITE_ONCE(qdisc->empty, false);
-> +	spin_unlock(&priv->lock);
->  
->  	if (unlikely(err)) {
->  		if (qdisc_is_percpu_stats(qdisc))
-> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->  	struct sk_buff *skb = NULL;
->  	int band;
->  
-> +	spin_lock(&priv->lock);
->  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->  		struct skb_array *q = band2list(priv, band);
->  
-> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->  	} else {
->  		WRITE_ONCE(qdisc->empty, true);
->  	}
-> +	spin_unlock(&priv->lock);
->  
->  	return skb;
->  }
-> @@ -739,6 +766,8 @@ static int pfifo_fast_init(struct Qdisc *qdisc, struct nlattr *opt,
->  
->  	/* Can by-pass the queue discipline */
->  	qdisc->flags |= TCQ_F_CAN_BYPASS;
-> +
-> +	spin_lock_init(&priv->lock);
->  	return 0;
->  }
->  
+>> 
+>> Thanks,
+>> Daejun
+>> 
+>>> This is not an enhancement, but a doubt - why not? Unless it is not
+>>> doable.
+>>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>>> 
+>>>> Thanks
+>>>> Daejun
+>>>> 
+>>>>> Can Guo.
+>>>>> 
+>>>>>> Thanks,
+>>>>>> Can Guo.
+>>>>>> 
+>>>>>>> After use it, it should be prepared bio at issue phase.
+>>>>>>> 
+>>>>>>> Thanks,
+>>>>>>> Daejun
+>>>>>>> 
+>>>>>>>> 
+>>>>>>>> Thanks,
+>>>>>>>> Can Guo.
+>>>>>>>> 
+>>>>>>>>> +
+>>>>>>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL |
+>>>>>>>>> __GFP_ZERO);
+>>>>>>>>> +                if (!pre_req->wb.m_page) {
+>>>>>>>>> +                        for (j = 0; j < i; j++)
+>>>>>>>>> +
+>>>>>>>>> __free_page(hpb->pre_req[j].wb.m_page);
+>>>>>>>>> +
+>>>>>>>>> +                        goto release_mem;
+>>>>>>>>> +                }
+>>>>>>>>> +                list_add_tail(&pre_req->list_req,
+>>>>>>>>> &hpb->lh_pre_req_free);
+>>>>>>>>> +        }
+>>>>>>>>> +
+>>>>>>>>> +        return 0;
+>>>>>>>>> +release_mem:
+>>>>>>>>> +        kfree(hpb->pre_req);
+>>>>>>>>> +        return -ENOMEM;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>> 
+>>>>>>>> 
+>>>>>>>> 
+>>>>> 
+>>>>> 
+>>>>> 
+>>> 
+>>> 
+>>> 
 > 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
+>  
