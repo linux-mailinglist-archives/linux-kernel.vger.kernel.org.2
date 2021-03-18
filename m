@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B643402AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AEF3402B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCRKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhCRKDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9943E64F38;
-        Thu, 18 Mar 2021 10:03:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616061795;
-        bh=Y/zho4pO/HrvXMC2z788pqM+I0PtlEGD9khRdFhixBA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cjb+OD0qlseE3PZxPmt6qVaS8TEdR170Kx0d6qs43JoMzhbtyRYFf+YwcyKa6OEsu
-         lz+Hh5KxxbJeY5/L27qm5m+7IcHitBspRVufjmO/BOWrx128IaiS0gCEWyd1HrK8d7
-         Zuuztdhv5eC4a/1WICq637mYyZYw2GbUpXe2/6ZzVoVDRlgAIkaJ3AnvHzQVexL+7M
-         R7dPVu4oMDSs3Kzkv7BG+x57PO2NRF4wMdL+DYRZ5gDqREQRIQXsCiUvlm7V/9qZoA
-         zz3JvKyUmAeO9k8IZd8akIxdZgadEbRA4JWMdtaiLfsy5CeMHdN5+eD6P5zrCYrmmu
-         z9qo8n7lWM9mg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next 0/6] Fix memory corruption in CM
-Date:   Thu, 18 Mar 2021 12:03:03 +0200
-Message-Id: <20210318100309.670344-1-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S229912AbhCRKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhCRKHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:07:10 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BC1C06174A;
+        Thu, 18 Mar 2021 03:07:10 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id f124so1377198qkj.5;
+        Thu, 18 Mar 2021 03:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELc6LnMGSIijIid0UDHN3y6THIKo2hcD8fRWSaU7IrM=;
+        b=S+R+4up1j6qe1BtwsNDMxnGOBQ4mi0+0lvMzh5dQhlOMqQzX2BUcADOeOmKjgukeVF
+         dkYEeInXy7MzmtQk6vC8Gm51MXI8SY47lC6YHO0dshgmreXjDcjFPD5UpCRk8IldxaXf
+         h+Byv0MIrnPIWaFAjq/6zt+mYLCsZzi7jWPV/B/3o/PoLocOCjIX0BPrfGq3SlmDDYCj
+         l5CapMtPSMdPHdvdZDHspg0LD1oq/ZjaxCRTYFeS2bNpmQ3aFyOPdTbzDpvF6OlPcDBl
+         zkw+e8wBqcX2dxKhY654WRY1IXZZbLZ5djFfgF7rmlyPAcbbVSKfNj1hBdv//aLUk4MM
+         G9ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELc6LnMGSIijIid0UDHN3y6THIKo2hcD8fRWSaU7IrM=;
+        b=PHYXROelaqsC/8lYdBs1V0qj3PCYsRRrJcOhA/yzYhnHnr5P4HkFhfgliEVcZzGyne
+         5Y3KdniYsQMjWBvL5BaB1qSZJpdJSuyTvxIh2sxJdDCI68/Hf74JhqFKD9mrKKmPOK7f
+         VEK+Nm0b6KtLQOReIxUgRWXcCS8QLziLxHZ2YM3f03kxVxjx3snYuxf2JLL2l1s+SJ4j
+         hiDlpvwfSrFrsBAbW2uPBfJBPmgYX76LF0Iz+HF+SQDXPdH4wcZtIp2hFvLapyg5ym9n
+         meVtbSBUg0ef8ahOmFBBnUfEWkoNcZMq58badr/HNgrjZsQ99bAIC/MCKMURX/i9K94g
+         xNWw==
+X-Gm-Message-State: AOAM533unhyYy6wrRxc/8Lk1UrQxdmFzAEC4irGML3Od38+DaMtcH2Wb
+        0A0543X9rDkIntdIn5xJGiZx9FBDr8+h0RWT
+X-Google-Smtp-Source: ABdhPJy6ECJ+MnYLfnv24+HT17uA3AiotvC0EK3LZyt6GlbR0I1wBmv2BvDTpL/Yuj96RmGNa/aNAQ==
+X-Received: by 2002:a05:620a:749:: with SMTP id i9mr3627155qki.40.1616062029596;
+        Thu, 18 Mar 2021 03:07:09 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.246])
+        by smtp.gmail.com with ESMTPSA id z7sm1332793qkf.136.2021.03.18.03.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 03:07:09 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] RDMA/include: Mundane typo fixes throughout the file
+Date:   Thu, 18 Mar 2021 15:34:53 +0530
+Message-Id: <20210318100453.9759-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
 
-Hi,
+s/proviee/provide/
+s/undelying/underlying/
+s/quesiton/question/
+s/drivr/driver/
 
-This series from Mark fixes long standing bug in CM migration logic,
-reported by Ryan [1].
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/rdma/rdma_vt.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks
+diff --git a/include/rdma/rdma_vt.h b/include/rdma/rdma_vt.h
+index 9fd217b24916..0af89cedfbf5 100644
+--- a/include/rdma/rdma_vt.h
++++ b/include/rdma/rdma_vt.h
+@@ -92,7 +92,7 @@ struct rvt_ibport {
+ 	/*
+ 	 * The pkey table is allocated and maintained by the driver. Drivers
+ 	 * need to have access to this before registering with rdmav. However
+-	 * rdmavt will need access to it so drivers need to proviee this during
++	 * rdmavt will need access to it so drivers need to provide this during
+ 	 * the attach port API call.
+ 	 */
+ 	u16 *pkey_table;
+@@ -230,7 +230,7 @@ struct rvt_driver_provided {
+ 	void (*do_send)(struct rvt_qp *qp);
 
-[1] https://lore.kernel.org/linux-rdma/CAFMmRNx9cg--NUnZjFM8yWqFaEtsmAWV4EogKb3a0+hnjdtJFA@mail.gmail.com/
+ 	/*
+-	 * Returns a pointer to the undelying hardware's PCI device. This is
++	 * Returns a pointer to the underlying hardware's PCI device. This is
+ 	 * used to display information as to what hardware is being referenced
+ 	 * in an output message
+ 	 */
+@@ -257,7 +257,7 @@ struct rvt_driver_provided {
+ 	void (*qp_priv_free)(struct rvt_dev_info *rdi, struct rvt_qp *qp);
 
-Mark Zhang (6):
-  Revert "IB/cm: Mark stale CM id's whenever the mad agent was
-    unregistered"
-  IB/cm: Remove "mad_agent" parameter of ib_cancel_mad
-  IB/cm: Remove "mad_agent" parameter of ib_modify_mad
-  IB/cm: Clear all associated AV's ports when remove a cm device
-  IB/cm: Add lock protection when access av/alt_av's port of a cm_id
-  IB/cm: Initialize av before acquire the spin lock in cm_lap_handler
+ 	/*
+-	 * Inform the driver the particular qp in quesiton has been reset so
++	 * Inform the driver the particular qp in question has been reset so
+ 	 * that it can clean up anything it needs to.
+ 	 */
+ 	void (*notify_qp_reset)(struct rvt_qp *qp);
+@@ -281,7 +281,7 @@ struct rvt_driver_provided {
+ 	void (*stop_send_queue)(struct rvt_qp *qp);
 
- drivers/infiniband/core/cm.c       | 359 ++++++++++++++++-------------
- drivers/infiniband/core/mad.c      |  17 +-
- drivers/infiniband/core/sa_query.c |   4 +-
- include/rdma/ib_mad.h              |  27 ++-
- 4 files changed, 222 insertions(+), 185 deletions(-)
+ 	/*
+-	 * Have the drivr drain any in progress operations
++	 * Have the driver drain any in progress operations
+ 	 */
+ 	void (*quiesce_qp)(struct rvt_qp *qp);
 
 --
-2.30.2
+2.26.2
 
