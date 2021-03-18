@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB34340392
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7A734039D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCRKkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:40:01 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:51640 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCRKjt (ORCPT
+        id S230167AbhCRKlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230206AbhCRKkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:39:49 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IAYPZY034662;
-        Thu, 18 Mar 2021 10:39:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=GD8WYS+iipNBOR8UEjBiCP0s/hMSdX/AjNN8eYeXovs=;
- b=NxtqH075myWPN900Z475TgFevSXeGtboWFXpON74LxUnlljtkQzj2VBeJC7XmO1aUxVO
- jjNWS317YoPc73bcB5QyULew+opWHbC9lHhcKiNWx1YJBiOMKNH6d45+/hoRO1ABbYbn
- mS5/hbbKkLxOvshONM4FcF8KGt/MBLwXjmm8fB6vE6jB7TSW77Z6Gr+ynz4aSYOS0/N3
- yj9BOupBah7PTCOTLMAc20ixdnpFNN2olFMaqusFdAqJq4s2gQZkHamC5aSzsP2lHkRx
- h2Di7ybTo+vJUf00KcJlOOFg8tHNscWPtsbvLLm8VYFknc/W7eOeJhe4q3sfZdB2B2rK sA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 37a4ekuygc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 10:39:45 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IAYm9G093049;
-        Thu, 18 Mar 2021 10:39:43 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 3796yw1hw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 10:39:43 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12IAdfl9017260;
-        Thu, 18 Mar 2021 10:39:42 GMT
-Received: from mwanda (/10.175.214.245)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Mar 2021 10:39:41 +0000
-Date:   Thu, 18 Mar 2021 13:39:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Michael Zaidman <michael.zaidman@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] HID: ft260: fix an error message in ft260_i2c_write_read()
-Message-ID: <YFMt5pml1voGQkUy@mwanda>
+        Thu, 18 Mar 2021 06:40:46 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8ECC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:40:45 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id x16so4953973wrn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qCYiJkeZCY1l1SsCcTK0HNnk7v48LS6Za9V5wjwv5dY=;
+        b=r4VVygKbT2vZHjUCjcrGtSyTQZBbmgOWydhHOkizgxJOp+lVAY8nBIGrVgsIWwlJIl
+         ru+6ybaMvIeLcJfT0O5EGsOlKPK77oIlbl4QQYEUaS1KRO2A3HfQgt7XqISGewXlfreL
+         QR7Wj35qfPf/G04wEIrOo7xtJlvUlE1l1wJffflwLIw5cmcHGXC21jRTa6v2VK9kmp/j
+         uTh613RAdUT5hGGmlPGl2PNrsiJtkep8RuwdkZpfHPMciXqqFMBbuVHnLccYzZPH4TsE
+         z6fqb2vnfTchZz7K4oyFTHV8YlZelZS8rK28QpIkKUhCztoFpfvvNVpW/dRCIR5PNtUb
+         2TcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qCYiJkeZCY1l1SsCcTK0HNnk7v48LS6Za9V5wjwv5dY=;
+        b=qdU9AjybLth27MT4wmF6brSeZDEe33dxMjnt0MDiheIcuz/9smkjuPqd3dp5/WpN/3
+         bF1Uf/EqjGFGBTVYahIJLzp3T5yjDj2VDCYwYsyZ3BziE4H6+R8/+tb4c+caiHC6y50i
+         t5LHr6V4VcK2oBnk8JSWaayO4lL02hOdCp7b8QKF8CEv5/s2r1zv0pn3ricuvCDRayEw
+         upA+KCajpyZvJgFEevE8WDF9ZVma7mHi/PbgcV8dMsuhLxq8NJIf8vHeN2tiYztgajuX
+         1E/3zuzhzhQVeY1E0ksku/fWkqdX8H8FXCM02msBV5hKv89tyNn9Y6/PAYuvwljOG/9m
+         an2A==
+X-Gm-Message-State: AOAM533QnWuget8i+qxQTTO7UlaWjEy8YVEJKvXXJ4kHmU2BsyvTKnXO
+        OHTys9B5/hSCOQX3eM1qVjlzrpoBFJ5cvg==
+X-Google-Smtp-Source: ABdhPJwiyeOQSgB7d0Zh4PqZBrRW1L3J8yQ1rpmoDN74JORGtwBg1/+jZleEMAq/ZeX6kahGfjkjMw==
+X-Received: by 2002:adf:efc7:: with SMTP id i7mr8994793wrp.182.1616064044413;
+        Thu, 18 Mar 2021 03:40:44 -0700 (PDT)
+Received: from dell.default ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id z1sm2426033wru.95.2021.03.18.03.40.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 03:40:44 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Anton Vorontsov <anton@enomsg.org>, benh@kernel.crashing.org,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Josh Cartwright <joshc@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        netdev@vger.kernel.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v2 00/10] Rid W=1 warnings from OF
+Date:   Thu, 18 Mar 2021 10:40:26 +0000
+Message-Id: <20210318104036.3175910-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180078
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180078
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "len" variable is uninitialize.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/hid/hid-ft260.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v2:
+ - Provided some descriptions to exported functions
 
-diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-index 047aa85a7c83..a5751607ce24 100644
---- a/drivers/hid/hid-ft260.c
-+++ b/drivers/hid/hid-ft260.c
-@@ -512,7 +512,8 @@ static int ft260_i2c_write_read(struct ft260_device *dev, struct i2c_msg *msgs)
- 	struct hid_device *hdev = dev->hdev;
- 
- 	if (msgs[0].len > 2) {
--		hid_err(hdev, "%s: unsupported wr len: %d\n", __func__, len);
-+		hid_err(hdev, "%s: unsupported wr len: %d\n", __func__,
-+			msgs[0].len);
- 		return -EOPNOTSUPP;
- 	}
- 
+Lee Jones (10):
+  of: device: Fix function name in header and provide missing
+    descriptions
+  of: dynamic: Fix incorrect parameter name and provide missing
+    descriptions
+  of: platform: Demote kernel-doc abuse
+  of: base: Fix some formatting issues and provide missing descriptions
+  of: property: Provide missing member description and remove excess
+    param
+  of: address: Provide descriptions for 'of_address_to_resource's params
+  of: fdt: Demote kernel-doc abuses and fix function naming
+  of: of_net: Provide function name and param description
+  of: overlay: Fix function name disparity
+  of: of_reserved_mem: Demote kernel-doc abuses
+
+ drivers/of/address.c         |  3 +++
+ drivers/of/base.c            | 16 +++++++++++-----
+ drivers/of/device.c          |  7 ++++++-
+ drivers/of/dynamic.c         |  4 +++-
+ drivers/of/fdt.c             | 23 ++++++++++++-----------
+ drivers/of/of_net.c          |  3 +++
+ drivers/of/of_reserved_mem.c |  6 +++---
+ drivers/of/overlay.c         |  2 +-
+ drivers/of/platform.c        |  2 +-
+ drivers/of/property.c        |  2 +-
+ 10 files changed, 44 insertions(+), 24 deletions(-)
+
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Anton Vorontsov <anton@enomsg.org>
+Cc: benh@kernel.crashing.org
+Cc: Colin Cross <ccross@android.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: devicetree@vger.kernel.org
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Josh Cartwright <joshc@codeaurora.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: netdev@vger.kernel.org
+Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Tony Luck <tony.luck@intel.com>
 -- 
-2.30.2
+2.27.0
 
