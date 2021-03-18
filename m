@@ -2,62 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22005340927
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DAA340942
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhCRPr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S231830AbhCRPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhCRPrn (ORCPT
+        with ESMTP id S229508AbhCRPvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:47:43 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E3EC06174A;
-        Thu, 18 Mar 2021 08:47:43 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id EFD062DA; Thu, 18 Mar 2021 16:47:41 +0100 (CET)
-Date:   Thu, 18 Mar 2021 16:47:40 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
+        Thu, 18 Mar 2021 11:51:49 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0375C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:51:48 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id v3so1709909pgq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yb9yuGXl93jA+r4r8J4NpNyfEbIYopOSDI5mea++BXA=;
+        b=fylJFEz8bK0PHffKlC5yh2HwrtfoPT4Vs6IO+tpq7kux6YyjhOBdxm4PY8llDiYfbe
+         EzVWYJxO26pPIW0HpBw1jsGzMd6hTL9EBNVkRHv9Ngc8K5qNmlWqpHZdJGSD59tqxvzu
+         ljDNdouQ6SQo2Np8l38dZZewXqvc3WWat8wlY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yb9yuGXl93jA+r4r8J4NpNyfEbIYopOSDI5mea++BXA=;
+        b=AsmwWPgJ/LnRCZjyxphgBfYZ93oitbrNLdQnbOKOTu5JyAq8ll2jx4bsZZFrAgz066
+         AlrKhWre1KPMThKCfhB3wzTUOTF6+/xDsvehv9z0cH+5Q4HAV1A/Bux9zWr6k36NEtMO
+         1QH1w11w8YrYiot1je11k409fX1+s5s3i2Q05zOT+4CQqUbSSGv7tIoKWNUGz3BHgSDk
+         dcuKkb7GjFfZm1QWJZ62XzBfKS4yJMh2ZvPUM8w/qpYLUr/frehDhBN768HYZkxTWD7u
+         vFJl4gJqFHuiUxmH8GJCX5PfLeOMiKc7hvUPu3n3n/2PvjqAGFTtOIN/Gm80vB3R0Ygv
+         cSfA==
+X-Gm-Message-State: AOAM530RDCj5hK4pzeFINjEjvMVONYKi8US0w/Y8MJmq/xyFpV2QHE3l
+        M6uBX+lLOudnL+foHkbdsJr4qA==
+X-Google-Smtp-Source: ABdhPJxAU61y3bf4qItCJFeadYoy9Gw0mNjr5YdvJAnRRRSIiEcEU4Qb6jgdClz7yF0VMfDq7iG70A==
+X-Received: by 2002:a05:6a00:b86:b029:205:c773:5c69 with SMTP id g6-20020a056a000b86b0290205c7735c69mr4708373pfj.60.1616082708430;
+        Thu, 18 Mar 2021 08:51:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v7sm2860717pfv.93.2021.03.18.08.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 08:51:47 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 08:51:45 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH 3/3] KVM: SVM: allow to intercept all exceptions for debug
-Message-ID: <YFN2HGG7ZTdamM7k@8bytes.org>
-References: <20210315221020.661693-1-mlevitsk@redhat.com>
- <20210315221020.661693-4-mlevitsk@redhat.com>
- <YFBtI55sVzIJ15U+@8bytes.org>
- <4116d6ce75a85faccfe7a2b3967528f0561974ae.camel@redhat.com>
- <YFMbLWLlGgbOJuN/@8bytes.org>
- <8ba6676471dc8c8219e35d6a1695febaea20bb0b.camel@redhat.com>
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        Adam Nichols <adam@grimm-co.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH v2] seq_file: Unconditionally use vmalloc for buffer
+Message-ID: <202103180847.53EB96C@keescook>
+References: <YFBs202BqG9uqify@dhcp22.suse.cz>
+ <202103161205.B2181BDE38@keescook>
+ <YFHxNT1Pwoslmhxq@dhcp22.suse.cz>
+ <YFIFY7mj65sStba1@kroah.com>
+ <YFIVwPWTo48ITkHs@dhcp22.suse.cz>
+ <YFIYrMVTC42boZ/Z@kroah.com>
+ <YFIeVLDsfBMa7fHW@dhcp22.suse.cz>
+ <YFIikaNixD57o3pk@kroah.com>
+ <202103171425.CB0F4619A8@keescook>
+ <YFMKUZ5p1QbqkabY@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8ba6676471dc8c8219e35d6a1695febaea20bb0b.camel@redhat.com>
+In-Reply-To: <YFMKUZ5p1QbqkabY@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:24:25AM +0200, Maxim Levitsky wrote:
-> But again this is a debug feature, and it is intended to allow the user
-> to shoot himself in the foot.
+On Thu, Mar 18, 2021 at 09:07:45AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Mar 17, 2021 at 02:30:47PM -0700, Kees Cook wrote:
+> > On Wed, Mar 17, 2021 at 04:38:57PM +0100, Greg Kroah-Hartman wrote:
+> > > On Wed, Mar 17, 2021 at 04:20:52PM +0100, Michal Hocko wrote:
+> > > > On Wed 17-03-21 15:56:44, Greg KH wrote:
+> > > > > On Wed, Mar 17, 2021 at 03:44:16PM +0100, Michal Hocko wrote:
+> > > > > > On Wed 17-03-21 14:34:27, Greg KH wrote:
+> > > > > > > On Wed, Mar 17, 2021 at 01:08:21PM +0100, Michal Hocko wrote:
+> > > > > > > > Btw. I still have problems with the approach. seq_file is intended to
+> > > > > > > > provide safe way to dump values to the userspace. Sacrificing
+> > > > > > > > performance just because of some abuser seems like a wrong way to go as
+> > > > > > > > Al pointed out earlier. Can we simply stop the abuse and disallow to
+> > > > > > > > manipulate the buffer directly? I do realize this might be more tricky
+> > > > > > > > for reasons mentioned in other emails but this is definitely worth
+> > > > > > > > doing.
+> > > > > > > 
+> > > > > > > We have to provide a buffer to "write into" somehow, so what is the best
+> > > > > > > way to stop "abuse" like this?
+> > > > > > 
+> > > > > > What is wrong about using seq_* interface directly?
+> > > > > 
+> > > > > Right now every show() callback of sysfs would have to be changed :(
+> > > > 
+> > > > Is this really the case? Would it be too ugly to have an intermediate
+> > > > buffer and then seq_puts it into the seq file inside sysfs_kf_seq_show.
+> > > 
+> > > Oh, good idea.
+> > > 
+> > > > Sure one copy more than necessary but it this shouldn't be a hot path or
+> > > > even visible on small strings. So that might be worth destroying an
+> > > > inherently dangerous seq API (seq_get_buf).
+> > > 
+> > > I'm all for that, let me see if I can carve out some time tomorrow to
+> > > try this out.
+> > 
+> > The trouble has been that C string APIs are just so impossibly fragile.
+> > We just get too many bugs with it, so we really do need to rewrite the
+> > callbacks to use seq_file, since it has a safe API.
+> > 
+> > I've been trying to write coccinelle scripts to do some of this
+> > refactoring, but I have not found a silver bullet. (This is why I've
+> > suggested adding the temporary "seq_show" and "seq_store" functions, so
+> > we can transition all the callbacks without a flag day.)
+> > 
+> > > But, you don't get rid of the "ability" to have a driver write more than
+> > > a PAGE_SIZE into the buffer passed to it.  I guess I could be paranoid
+> > > and do some internal checks (allocate a bunch of memory and check for
+> > > overflow by hand), if this is something to really be concerned about...
+> > 
+> > Besides the CFI prototype enforcement changes (which I can build into
+> > the new seq_show/seq_store callbacks), the buffer management is the
+> > primary issue: we just can't hand drivers a string (even with a length)
+> > because the C functions are terrible. e.g. just look at the snprintf vs
+> > scnprintf -- we constantly have to just build completely new API when
+> > what we need is a safe way (i.e. obfuscated away from the caller) to
+> > build a string. Luckily seq_file does this already, so leaning into that
+> > is good here.
+> 
+> But, is it really worth the churn here?
+> 
+> Yes, strings in C is "hard", but this _should_ be a simple thing for any
+> driver to handle:
+> 	return sysfs_emit(buffer, "%d\n", my_dev->value);
+> 
+> To change that to:
+> 	return seq_printf(seq, "%d\n", my_dev->value);
+> feels very much "don't we have other more valuable things we could be
+> doing?"
+> 
+> So far we have found 1 driver that messed up and overflowed the buffer
+> that I know of.  While reworking apis to make it "hard to get wrong" is
+> a great goal, the work involved here vs. any "protection" feels very
+> low.
 
-And one can't debug SEV-ES guests with it, so what is the point of
-enabling it for them too?
+I haven't been keeping a list, but it's not the only one. The _other_
+reason we need seq_file is so we can perform checks against f_cred for
+things like %p obfuscation (as was needed for modules that I hacked
+around) and is needed a proper bug fix for the kernel pointer exposure
+bug from the same batch. So now I'm up to 3 distinct reasons that the
+sysfs API is lacking -- I think it's worth the churn and time.
 
-Regards,
+> How about moving everyone to sysfs_emit() first?  That way it becomes
+> much more "obvious" when drivers are doing stupid things with their
+> sysfs buffer.  But even then, it would not have caught the iscsi issue
+> as that was printing a user-provided string so maybe I'm just feeling
+> grumpy about the potential churn here...
 
-	Joerg
+I need to fix the prototypes for CFI sanity too. Switching to seq_file
+solves 2 problems, and if we have to change the prototype once for that,
+we can include the prototype fixes for CFI at the same time to avoid
+double the churn.
+
+-- 
+Kees Cook
