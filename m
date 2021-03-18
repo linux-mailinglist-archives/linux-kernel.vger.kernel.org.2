@@ -2,158 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D31340D35
+	by mail.lfdr.de (Postfix) with ESMTP id 88013340D36
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbhCRShy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:37:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36884 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232645AbhCRShY (ORCPT
+        id S232665AbhCRShz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:37:55 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50997 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232666AbhCRShs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:37:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616092643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y/khS+sazdkYugBBDua/03KWhTNI7Fdu6w81m6ZyuKs=;
-        b=JldcGZM+RzWcN6ADkVHGwJXzvKzzVYmuqE8ccZPTWZ+jOm86eR2l2jx56vd9wEPLsapvqA
-        aavd4sTEP40323BlvRBQZwnO9iyrlAEsz31+uLZSynQ1+5IQ5+HUQA1ahvv6eJpEpSm3mP
-        5D9z5eV3ljw+mEPwi+DKxCzsmL0Fy8I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-iwcR_YGZNWq_3ryKGhEjUA-1; Thu, 18 Mar 2021 14:37:19 -0400
-X-MC-Unique: iwcR_YGZNWq_3ryKGhEjUA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 18 Mar 2021 14:37:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616092668; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=h/IajgnDHExOgsJmGShsRT30QzKP3s7Dn8aRHeUxonA=; b=iMMdaFzZoY8Cf8HT7vSUqSntaj8fFvicG+CKRmfNosNHLfTXoVToyux7OKgMEsbpDVSMe37z
+ UF8GpTDU0vVEYw8585C4zORlxQpFe20EkjqDuAJoUNka16lci/sL0nPVW24e8oxv11zr71Vm
+ 4VOJVyg0O3X+oymMhpCuO5gV1Dw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60539dfae3fca7d0a601a3f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 18:37:46
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E2461C43468; Thu, 18 Mar 2021 18:37:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB47C19251A0;
-        Thu, 18 Mar 2021 18:37:17 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E8ECA60C13;
-        Thu, 18 Mar 2021 18:37:05 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 14:37:03 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
-        tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH] audit: log nftables configuration change events once per
- table
-Message-ID: <20210318183703.GL3141668@madcap2.tricolour.ca>
-References: <7e73ce4aa84b2e46e650b5727ee7a8244ec4a0ac.1616078123.git.rgb@redhat.com>
- <20210318163032.GS5298@orbyte.nwl.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318163032.GS5298@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E174DC433ED;
+        Thu, 18 Mar 2021 18:37:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E174DC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        Andy Gross <agross@kernel.org>
+Subject: [PATCH V1 1/1] soc: qcom: smp2p: Add enable_irq_wake to SMP2P IRQ
+Date:   Fri, 19 Mar 2021 00:07:04 +0530
+Message-Id: <1616092624-31870-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-18 17:30, Phil Sutter wrote:
-> Hi,
-> 
-> On Thu, Mar 18, 2021 at 11:39:52AM -0400, Richard Guy Briggs wrote:
-> > Reduce logging of nftables events to a level similar to iptables.
-> > Restore the table field to list the table, adding the generation.
-> 
-> This looks much better, a few remarks below:
-> 
-> [...]
-> > +static const u8 nft2audit_op[] = { // enum nf_tables_msg_types
-> > +	/* NFT_MSG_NEWTABLE	*/	AUDIT_NFT_OP_TABLE_REGISTER,
-> > +	/* NFT_MSG_GETTABLE	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELTABLE	*/	AUDIT_NFT_OP_TABLE_UNREGISTER,
-> > +	/* NFT_MSG_NEWCHAIN	*/	AUDIT_NFT_OP_CHAIN_REGISTER,
-> > +	/* NFT_MSG_GETCHAIN	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELCHAIN	*/	AUDIT_NFT_OP_CHAIN_UNREGISTER,
-> > +	/* NFT_MSG_NEWRULE	*/	AUDIT_NFT_OP_RULE_REGISTER,
-> > +	/* NFT_MSG_GETRULE	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELRULE	*/	AUDIT_NFT_OP_RULE_UNREGISTER,
-> > +	/* NFT_MSG_NEWSET	*/	AUDIT_NFT_OP_SET_REGISTER,
-> > +	/* NFT_MSG_GETSET	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELSET	*/	AUDIT_NFT_OP_SET_UNREGISTER,
-> > +	/* NFT_MSG_NEWSETELEM	*/	AUDIT_NFT_OP_SETELEM_REGISTER,
-> > +	/* NFT_MSG_GETSETELEM	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELSETELEM	*/	AUDIT_NFT_OP_SETELEM_UNREGISTER,
-> > +	/* NFT_MSG_NEWGEN	*/	AUDIT_NFT_OP_GEN_REGISTER,
-> > +	/* NFT_MSG_GETGEN	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_TRACE	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_NEWOBJ	*/	AUDIT_NFT_OP_OBJ_REGISTER,
-> > +	/* NFT_MSG_GETOBJ	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELOBJ	*/	AUDIT_NFT_OP_OBJ_UNREGISTER,
-> > +	/* NFT_MSG_GETOBJ_RESET	*/	AUDIT_NFT_OP_OBJ_RESET,
-> > +	/* NFT_MSG_NEWFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_REGISTER,
-> > +	/* NFT_MSG_GETFLOWTABLE	*/	AUDIT_NFT_OP_INVALID,
-> > +	/* NFT_MSG_DELFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
-> > +	/* NFT_MSG_MAX		*/	AUDIT_NFT_OP_INVALID,
-> > +};
-> 
-> NFT_MSG_MAX is itself not a valid message, it serves merely as an upper
-> bound for arrays, loops or sanity checks. You will never see it in
-> trans->msg_type.
-> 
-> Since enum nf_tables_msg_types contains consecutive values from 0 to
-> NFT_MSG_MAX, you could write the above more explicitly:
-> 
-> | static const u8 nft2audit_op[NFT_MSG_MAX] = {
-> | 	[NFT_MSG_NEWTABLE]	= AUDIT_NFT_OP_TABLE_REGISTER,
-> | 	[NFT_MSG_GETTABLE]	= AUDIT_NFT_OP_INVALID,
-> | 	[NFT_MSG_DELTABLE]	= AUDIT_NFT_OP_TABLE_UNREGISTER,
-> (And so forth.)
-> 
-> Not a must, but it clarifies the 1:1 mapping between index and said
-> enum. Sadly, AUDIT_NFT_OP_INVALID is non-zero. Otherwise one could skip
-> all uninteresting ones.
+SMP2P interrupts are expected to wake the processor from suspend.
+Use enable_irq_wake to mark it wakeup capable from suspend.
 
-Yes, ok, I prefer your suggested way of listing them.
+Signed-off-by: Chris Lew <clew@codeaurora.org>
+Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+---
+ drivers/soc/qcom/smp2p.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yeah, the fact the values for op= already have a precedent in xtables
-limits us.
-
-> [...]
-> > @@ -6278,12 +6219,11 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
-> >  			    filter->type != NFT_OBJECT_UNSPEC &&
-> >  			    obj->ops->type->type != filter->type)
-> >  				goto cont;
-> > -
-> >  			if (reset) {
-> >  				char *buf = kasprintf(GFP_ATOMIC,
-> > -						      "%s:%llu;?:0",
-> > +						      "%s:%u",
-> >  						      table->name,
-> > -						      table->handle);
-> > +						      net->nft.base_seq);
-> >  
-> >  				audit_log_nfcfg(buf,
-> >  						family,
-> 
-> Why did you leave the object-related logs in place? They should reappear
-> at commit time just like chains and sets for instance, no?
-
-There are other paths that can trigger these messages that don't go
-through nf_tables_commit() that affect the configuration data.  The
-counters are considered config data for auditing purposes and the act of
-resetting them is audittable.  And the only time we want to emit a
-record is when they are being reset.
-
-> Thanks, Phil
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+index 2df4883..df47ee6 100644
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -538,6 +538,7 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
+ 		goto unwind_interfaces;
+ 	}
+ 
++	enable_irq_wake(irq);
+ 
+ 	return 0;
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
