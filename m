@@ -2,267 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0448B34017C
+	by mail.lfdr.de (Postfix) with ESMTP id B1D1434017E
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhCRJJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhCRJJV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:09:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF803C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 02:09:20 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lMoea-0001Kj-4f; Thu, 18 Mar 2021 10:09:16 +0100
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, olteanv@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <70d9f281-3b39-a760-1c2b-3598251f5770@pengutronix.de>
- <3b4d7722-782f-7856-fd79-758796afa200@huawei.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <10681125-645c-5002-bf19-70e5d06182c4@pengutronix.de>
-Date:   Thu, 18 Mar 2021 10:09:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229803AbhCRJJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:09:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhCRJJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:09:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7582364E81;
+        Thu, 18 Mar 2021 09:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616058578;
+        bh=ISretiPabpeLIGpp8sP1kDYLR78gWkoukYXmjEKTP0g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KO1BquUfYGcBRCOpvx77wpisie+kSzEhDvGAZTI1iXlZEHNDmPQAsux7yHJIeVCmz
+         AqIUsahMtqGxVi6Nx7mRTwfrGvpDC9LAIHq19SmeEwU1DP/VQpu4naCYDM3O4CsasD
+         KqwMGlkzfw9tk0Cqcgv1KWKZL8MuP5elU0g6If/MPv860MxCDD3QoTwHgHjzd1BsY0
+         VVpfrKaUjjTAi3QWvpymL6kHhAJTwB1SsHMrOm7NWWHUYu2L1kzDhhLpfpk701BM51
+         67RQiOKXiEe61lDmqxKZZnXEAtQiMUSYjD7AhMK5ba9q/iwifn4QqM5/FO4PgXSE6R
+         1okHjV9EwoaTQ==
+Date:   Thu, 18 Mar 2021 11:09:34 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFMYzkg101isRXIM@unreal>
+References: <20210315102950.230de1d6@x1.home.shazbot.org>
+ <20210315183226.GA14801@raphael-debian-dev>
+ <YFGDgqdTLBhQL8mN@unreal>
+ <20210317102447.73no7mhox75xetlf@archlinux>
+ <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
 MIME-Version: 1.0
-In-Reply-To: <3b4d7722-782f-7856-fd79-758796afa200@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317113140.3de56d6c@omen.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.21 08:46, Yunsheng Lin wrote:
-> On 2021/3/18 15:10, Ahmad Fatoum wrote:
->> On 15.03.21 04:10, Yunsheng Lin wrote:
->>> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
->>> flag set, but queue discipline by-pass does not work for lockless
->>> qdisc because skb is always enqueued to qdisc even when the qdisc
->>> is empty, see __dev_xmit_skb().
->>>
->>> This patch calls sch_direct_xmit() to transmit the skb directly
->>> to the driver for empty lockless qdisc too, which aviod enqueuing
->>> and dequeuing operation. qdisc->empty is set to false whenever a
->>> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
->>> skb dequeuing return NULL, see pfifo_fast_dequeue(), a spinlock is
->>> added to avoid the race between enqueue/dequeue and qdisc->empty
->>> setting.
->>>
->>> If there is requeued skb in q->gso_skb, and qdisc->empty is true,
->>> do not allow bypassing requeued skb. enqueuing and dequeuing in
->>> q->gso_skb is always protected by qdisc->seqlock, so is the access
->>> of q->gso_skb by skb_queue_empty();
->>>
->>> Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
->>> is false to avoid packet stuck problem.
->>>
->>> The performance for ip_forward test increases about 10% with this
->>> patch.
->>>
->>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>> ---
->>> RFC V2: fix requeued skb out of order and data race problem.
->>
->> cansequence didn't find any frame reordering with 2 FlexCAN's communicating
->> with each other on a dual core i.MX6. Feel free to add:
->>
->> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> 
-> Thanks for testing.
-> Actually I has a newer implemetion that canget rid of the priv->lock
-> added in this patch.
-> I am not sending it out yet:
-> 1. There is a packet stuck problem for lockless qdisc I try to fix,
->    see [1], and I prefer not to add more optimization to lockless
->    qdisc before we find out real cause, it will make backporting
->    packet stuck patch harder and optimization is useless if there
->    is still basic bug for lockless qdisc
-> 2. I am still not convinced that the lockless implemetion is clearer
->    than the priv->lock implemetion, I still need to do some thinking
->    and testing.
+On Wed, Mar 17, 2021 at 11:31:40AM -0600, Alex Williamson wrote:
+> On Wed, 17 Mar 2021 15:58:40 +0200
+> Leon Romanovsky <leon@kernel.org> wrote:
+>
+> > On Wed, Mar 17, 2021 at 06:47:18PM +0530, Amey Narkhede wrote:
+> > > On 21/03/17 01:47PM, Leon Romanovsky wrote:
+> > > > On Wed, Mar 17, 2021 at 04:53:09PM +0530, Amey Narkhede wrote:
+> > > > > On 21/03/17 01:02PM, Leon Romanovsky wrote:
+> > > > > > On Wed, Mar 17, 2021 at 03:54:47PM +0530, Amey Narkhede wrote:
+> > > > > > > On 21/03/17 06:20AM, Leon Romanovsky wrote:
+> > > > > > > > On Mon, Mar 15, 2021 at 06:32:32PM +0000, Raphael Norwitz wrote:
+> > > > > > > > > On Mon, Mar 15, 2021 at 10:29:50AM -0600, Alex Williamson wrote:
+> > > > > > > > > > On Mon, 15 Mar 2021 21:03:41 +0530
+> > > > > > > > > > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > > On 21/03/15 05:07PM, Leon Romanovsky wrote:
+> > > > > > > > > > > > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
+> > > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > > > > > > > > > > > warm reset respectively.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > > > > > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
+> > > > > > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > > > > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > > > > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
+> > > > > > > > > > > > > > kernel function (yet).
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
+> > > > > > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > > > > > > > > > > > > defined here.  Note that with this series the resets available through
+> > > > > > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
+> > > > > > > > > > > > > exactly the same as they are currently.  The bus and slot reset
+> > > > > > > > > > > > > methods used here are limited to devices where only a single function is
+> > > > > > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
+> > > > > > > > > > > > > which performed a reset irrespective of the downstream devices.  This
+> > > > > > > > > > > > > series only enables selection of the existing methods.  Thanks,
+> > > > > > > > > > > >
+> > > > > > > > > > > > Alex,
+> > > > > > > > > > > >
+> > > > > > > > > > > > I asked the patch author here [1], but didn't get any response, maybe
+> > > > > > > > > > > > you can answer me. What is the use case scenario for this functionality?
+> > > > > > > > > > > >
+> > > > > > > > > > > > Thanks
+> > > > > > > > > > > >
+> > > > > > > > > > > > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal/
+> > > > > > > > > > > >
+> > > > > > > > > > > Sorry for not responding immediately. There were some buggy wifi cards
+> > > > > > > > > > > which needed FLR explicitly not sure if that behavior is fixed in
+> > > > > > > > > > > drivers. Also there is use a case at Nutanix but the engineer who
+> > > > > > > > > > > is involved is on PTO that is why I did not respond immediately as
+> > > > > > > > > > > I don't know the details yet.
+> > > > > > > > > >
+> > > > > > > > > > And more generally, devices continue to have reset issues and we
+> > > > > > > > > > impose a fixed priority in our ordering.  We can and probably should
+> > > > > > > > > > continue to quirk devices when we find broken resets so that we have
+> > > > > > > > > > the best default behavior, but it's currently not easy for an end user
+> > > > > > > > > > to experiment, ie. this reset works, that one doesn't.  We might also
+> > > > > > > > > > have platform issues where a given reset works better on a certain
+> > > > > > > > > > platform.  Exposing a way to test these things might lead to better
+> > > > > > > > > > quirks.  In the case I think Pali was looking for, they wanted a
+> > > > > > > > > > mechanism to force a bus reset, if this was in reference to a single
+> > > > > > > > > > function device, this could be accomplished by setting a priority for
+> > > > > > > > > > that mechanism, which would translate to not only the sysfs reset
+> > > > > > > > > > attribute, but also the reset mechanism used by vfio-pci.  Thanks,
+> > > > > > > > > >
+> > > > > > > > > > Alex
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > To confirm from our end - we have seen many such instances where default
+> > > > > > > > > reset methods have not worked well on our platform. Debugging these
+> > > > > > > > > issues is painful in practice, and this interface would make it far
+> > > > > > > > > easier.
+> > > > > > > > >
+> > > > > > > > > Having an interface like this would also help us better communicate the
+> > > > > > > > > issues we find with upstream. Allowing others to more easily test our
+> > > > > > > > > (or other entities') findings should give better visibility into
+> > > > > > > > > which issues apply to the device in general and which are platform
+> > > > > > > > > specific. In disambiguating the former from the latter, we should be
+> > > > > > > > > able to better quirk devices for everyone, and in the latter cases, this
+> > > > > > > > > interface allows for a safer and more elegant solution than any of the
+> > > > > > > > > current alternatives.
+> > > > > > > >
+> > > > > > > > So to summarize, we are talking about test and debug interface to
+> > > > > > > > overcome HW bugs, am I right?
+> > > > > > > >
+> > > > > > > > My personal experience shows that once the easy workaround exists
+> > > > > > > > (and write to generally available sysfs is very simple), the vendors
+> > > > > > > > and users desire for proper fix decreases drastically. IMHO, we will
+> > > > > > > > see increase of copy/paste in SO and blog posts, but reduce in quirks.
+> > > > > > > >
+> > > > > > > > My 2-cents.
+> > > > > > > >
+> > > > > > > I agree with your point but at least it gives the userspace ability
+> > > > > > > to use broken device until bug is fixed in upstream.
+> > > > > >
+> > > > > > As I said, I don't expect many fixes once "userspace" will be able to
+> > > > > > use cheap workaround. There is no incentive to fix it.
+>
+> We can increase the annoyance factor of using a modified set of reset
+> methods, but ultimately we can only control what goes into our kernel,
+> other kernels might take v1 of this series and incorporate it
+> regardless of what happens here.
+>
+> > > > > > > This is also applicable for obscure devices without upstream
+> > > > > > > drivers for example custom FPGA based devices.
+> > > > > >
+> > > > > > This is not relevant to upstream kernel. Those vendors ship everything
+> > > > > > custom, they don't need upstream, we don't need them :)
+> > > > > >
+> > > > > By custom I meant hobbyists who could tinker with their custom FPGA.
+> > > >
+> > > > I invite such hobbyists to send patches and include their FPGA in
+> > > > upstream kernel.
+>
+> This is potentially another good use case, how receptive are we going
+> to be to an FPGA design that botches a reset.  Do they have a valid
+> device ID for us to base a quirk on, are they just squatting on one, or
+> using the default from a library.  Maybe the next bitstream will
+> resolve it, maybe without any external indication.  IOW, what would the
+> quality level be for that quirk versus using this as a workaround,
+> where the user probably wouldn't mind a kernel nag?
 
-I see. Keep me in the loop for future revisions and I'll give them a spin
-to see if regressions pop up.
+It is worth to solve it when the need arises.
 
-Cheers,
-Ahmad
+>
+> > > > > > > Another main application which I forgot to mention is virtualization
+> > > > > > > where vmm wants to reset the device when the guest is reset,
+> > > > > > > to emulate machine reboot as closely as possible.
+> > > > > >
+> > > > > > It can work in very narrow case, because reset will cause to device
+> > > > > > reprobe and most likely the driver will be different from the one that
+> > > > > > started reset. I can imagine that net devices will lose their state and
+> > > > > > config after such reset too.
+> > > > > >
+> > > > > Not sure if I got that 100% right. The pci_reset_function() function
+> > > > > saves and restores device state over the reset.
+> > > >
+> > > > I'm talking about netdev state, but whatever given the existence of
+> > > > sysfs reset knob.
+> > > >
+> > > > >
+> > > > > > IMHO, it will be saner for everyone if virtualization don't try such resets.
+>
+> That would cause a massive regression in device assignment support.  As
+> with other sysfs attributes, triggering them alongside a running driver
+> is probably not going to end well.  However, pci_reset_function() is
+> extremely useful for stopping devices and returning them to a default
+> state, when either rebooting a VM or returning the device to the host.
+> The device is not removed and re-probed when this occurs, vfio-pci is
+> able to hold onto the device across these actions.  Sure, don't reset a
+> netdev device when it's in use, that's not what these are used for.
+>
+> > > > > The exists reset sysfs attribute was added for exactly this case
+> > > > > though.
+> > > >
+> > > > I didn't know the rationale behind that file till you said and I
+> > > > googled libvirt discussion, so ok. Do you propose that libvirt
+> > > > will manage database of devices and their working reset types?
+> > > >
+> > > I don't have much idea about internals of libvirt but why would
+> > > it need to manage database of working reset types? It could just
+> > > read new reset_methods attribute to get the list of supported reset
+> > > methods.
+> >
+> > Because the idea of this patch is to read all supported reset types and
+> > allow to the user to chose the working one. The user will do it with
+> > help from StackOverflow, but libvirt will need to have some sort of
+> > database, otherwise it won't be different from simple "echo 1 > reset"
+> > which will iterate over all supported resets anyway.
+>
+> AFAIK, libvirt no longer attempts to do resets itself, or is at least
+> moving in that direction.  vfio-pci will reset as device when they're
+> opened by a user (when available) or triggered via the API.
 
-> 
-> 
->>
->>> ---
->>>  include/net/pkt_sched.h   |  2 ++
->>>  include/net/sch_generic.h |  7 +++++--
->>>  net/core/dev.c            | 14 ++++++++++++++
->>>  net/sched/sch_generic.c   | 31 ++++++++++++++++++++++++++++++-
->>>  4 files changed, 51 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
->>> index f5c1bee..c760f6a 100644
->>> --- a/include/net/pkt_sched.h
->>> +++ b/include/net/pkt_sched.h
->>> @@ -122,6 +122,8 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
->>>  bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
->>>  		     struct net_device *dev, struct netdev_queue *txq,
->>>  		     spinlock_t *root_lock, bool validate);
->>> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
->>> +			    struct net_device *dev);
->>>  
->>>  void __qdisc_run(struct Qdisc *q);
->>>  
->>> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
->>> index 2d6eb60..6591356 100644
->>> --- a/include/net/sch_generic.h
->>> +++ b/include/net/sch_generic.h
->>> @@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->>>  	if (qdisc->flags & TCQ_F_NOLOCK) {
->>>  		if (!spin_trylock(&qdisc->seqlock))
->>>  			return false;
->>> -		WRITE_ONCE(qdisc->empty, false);
->>>  	} else if (qdisc_is_running(qdisc)) {
->>>  		return false;
->>>  	}
->>> @@ -176,8 +175,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->>>  static inline void qdisc_run_end(struct Qdisc *qdisc)
->>>  {
->>>  	write_seqcount_end(&qdisc->running);
->>> -	if (qdisc->flags & TCQ_F_NOLOCK)
->>> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->>>  		spin_unlock(&qdisc->seqlock);
->>> +
->>> +		if (unlikely(!READ_ONCE(qdisc->empty)))
->>> +			__netif_schedule(qdisc);
->>> +	}
->>>  }
->>>  
->>>  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
->>> diff --git a/net/core/dev.c b/net/core/dev.c
->>> index 2bfdd52..8f4afb6 100644
->>> --- a/net/core/dev.c
->>> +++ b/net/core/dev.c
->>> @@ -3791,6 +3791,20 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->>>  	qdisc_calculate_pkt_len(skb, q);
->>>  
->>>  	if (q->flags & TCQ_F_NOLOCK) {
->>> +		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
->>> +		    qdisc_run_begin(q)) {
->>> +			qdisc_bstats_cpu_update(q, skb);
->>> +
->>> +			if (sch_may_need_requeuing(skb, q, dev))
->>> +				__qdisc_run(q);
->>> +			else if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
->>> +				 !READ_ONCE(q->empty))
->>> +				__qdisc_run(q);
->>> +
->>> +			qdisc_run_end(q);
->>> +			return NET_XMIT_SUCCESS;
->>> +		}
->>> +
->>>  		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->>>  		qdisc_run(q);
->>>  
->>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
->>> index 49eae93..0df1462 100644
->>> --- a/net/sched/sch_generic.c
->>> +++ b/net/sched/sch_generic.c
->>> @@ -273,6 +273,23 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->>>  	return skb;
->>>  }
->>>  
->>> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
->>> +			    struct net_device *dev)
->>> +{
->>> +	bool again = false;
->>> +
->>> +	if (likely(skb_queue_empty(&q->gso_skb)))
->>> +		return false;
->>> +
->>> +	/* need validating before requeuing */
->>> +	skb = validate_xmit_skb_list(skb, dev, &again);
->>> +	if (unlikely(!skb))
->>> +		return true;
->>> +
->>> +	dev_requeue_skb(skb, q);
->>> +	return true;
->>> +}
->>> +
->>>  /*
->>>   * Transmit possibly several skbs, and handle the return status as
->>>   * required. Owning running seqcount bit guarantees that
->>> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
->>>   */
->>>  struct pfifo_fast_priv {
->>>  	struct skb_array q[PFIFO_FAST_BANDS];
->>> +
->>> +	/* protect against data race between enqueue/dequeue and
->>> +	 * qdisc->empty setting
->>> +	 */
->>> +	spinlock_t lock;
->>>  };
->>>  
->>>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
->>> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
->>>  	unsigned int pkt_len = qdisc_pkt_len(skb);
->>>  	int err;
->>>  
->>> -	err = skb_array_produce(q, skb);
->>> +	spin_lock(&priv->lock);
->>> +	err = __ptr_ring_produce(&q->ring, skb);
->>> +	WRITE_ONCE(qdisc->empty, false);
->>> +	spin_unlock(&priv->lock);
->>>  
->>>  	if (unlikely(err)) {
->>>  		if (qdisc_is_percpu_stats(qdisc))
->>> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>>  	struct sk_buff *skb = NULL;
->>>  	int band;
->>>  
->>> +	spin_lock(&priv->lock);
->>>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->>>  		struct skb_array *q = band2list(priv, band);
->>>  
->>> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>>  	} else {
->>>  		WRITE_ONCE(qdisc->empty, true);
->>>  	}
->>> +	spin_unlock(&priv->lock);
->>>  
->>>  	return skb;
->>>  }
->>> @@ -739,6 +766,8 @@ static int pfifo_fast_init(struct Qdisc *qdisc, struct nlattr *opt,
->>>  
->>>  	/* Can by-pass the queue discipline */
->>>  	qdisc->flags |= TCQ_F_CAN_BYPASS;
->>> +
->>> +	spin_lock_init(&priv->lock);
->>>  	return 0;
->>>  }
->>>  
->>>
->>
-> 
-> 
+<...>
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> > The difference here is that this is a workaround to solve bugs that
+> > should be fixed in the kernel.
+>
+> If we want to discourage using this as a primary means to resolve reset
+> issues on a device then we can create log warnings any time it's used.
+> Downstreams that really want this functionality are going to take this
+> patch from the list whether we accept it or not.  As above, it seems
+> there are valid use cases.  Even with mainstream vfio in QEMU, I go
+> through some hoops trying to determine if I can do a secondary bus
+> reset rather than a PM reset because it's not specified anywhere what a
+> "soft reset" means for any given device.  This sort of interface could
+> make it easier to apply a system policy that a pci_reset_function()
+> should always perform a secondary bus reset if the only other option is
+> a PM reset.  Maybe that policy mostly makes sense for a VM use case, so
+> we'd want one policy by default and another when the device is used for
+> this functionality.  How could we accomplish that with a quirk?  Thanks,
+
+I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+
+If it is latter then we don't really need sysfs, if not, we still need
+some sort of DB to create second policy, because "supported != working".
+What am I missing?
+
+Thanks
+
+>
+> Alex
+>
