@@ -2,88 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBC9340E43
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBA1340E39
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhCRTaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S232816AbhCRT2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhCRT3p (ORCPT
+        with ESMTP id S229958AbhCRT15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:29:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C835C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:29:45 -0700 (PDT)
-Message-Id: <20210318192819.795280387@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616095781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=MyrChZScikc3Vj+iBqMdUcIc5sbYRawJcbm85JMUQqg=;
-        b=JeFfOOXrr4wTLSd56PyYMBAIzefcAU1o1J0WJA5oJQ04Q7xw4BpH7tYphZc4z8XeR6AbCM
-        Vp4A9XEHtBc+Ysg9+kEsZ4iMG3XVtR8CsagaDbx7/5spXzlK4YZLkheAfQ1pwzCF1q/ndO
-        i10SoVk/lpxaHTRssiqpFZlD9OeUPThQhn59ieNgvAwh1DoZxa86PBJScgDpdAyTG6COQw
-        lQX2sPJn6K4DvGUjsQZaFiXEv2Izr43b1o7YvjWfm59A2+UZMoyNPBrgiCr7z/p6fThKsq
-        VRahHpGJYB+RRMwTm1NFGJDbAbrYgPnFgDoG5pDMUDx+gwidyhaPuf3tXrTqcw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616095781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=MyrChZScikc3Vj+iBqMdUcIc5sbYRawJcbm85JMUQqg=;
-        b=3HgKywDsBFiXcQzJ+/uMoIGv/yuspY2egZ/06mJxfCMmok3LwDmykLHvyKfaAjubNUqeoX
-        ZVW8CHcjnXhnWjBQ==
-Date:   Thu, 18 Mar 2021 20:26:48 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: [patch 2/2] x86/vector: Add a sanity check to prevent IRQ2 allocations
-References: <20210318192646.868059483@linutronix.de>
+        Thu, 18 Mar 2021 15:27:57 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B280C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:27:56 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id w37so6356505lfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fspya4XBtFR7Kjia5AOXCu2vMjqacQ/eg21hgvTyIiA=;
+        b=V0zGJmtjfeUxAzYW2JbBAD59Y6NFskvJjGprJjF5sRu1F7yND0V/Ocx2wCviLvTJqS
+         2iwD++kbQJ8uatls/4I4kAMuA5pliKsV0PGcuKvjtjimeorSf7fD/SyrkWSG6LaU9kFp
+         uOqEA6rQcj02QEEz565bO3ofLdjyfKvBy6chVF2qpDpm9ctaVp5XaZJt2kCHru35NhPC
+         6t0Wk+Kp6RuXDHNUr/Xdfi4KhAr334sWMxO7Ci4gVb01vkBuSI20u0lzzrm8VOgYkNh3
+         bPG/VCgWtabQQ1lP/K4RMFSESYslBiEH2U243vQuv7EPAAG9aCWRBl8QnhlceiFUwWoK
+         MIag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fspya4XBtFR7Kjia5AOXCu2vMjqacQ/eg21hgvTyIiA=;
+        b=bVorFDKI+oaFrvXsNzVzP+kUE0dnrU2CiYzcF0A1czVEdcKuRppywYhhPOn5LMK8FN
+         0ZpRnlw1IL/Ig6ne2+edSYxqgR8DUVsuE67sN2Y4q3AScg2GMnMrO6e5F1gjoi7tjGsz
+         U8ssnxD0W5Js0iRGkzFHWmF38x1jSRE+hv4Jo9dGbJwQu2HZH50VA5RNmod+m5xupBku
+         G7dwyUbvXbDAxmSUZAfIkzc0uoe6KQTT6chQX5kzc1JVq2bxKKm4kd2UvxkPo0nan2f4
+         dyMiOrJ5yu1UooFxRkHB1+J6zod+wl9Tk4PgfRaSP3Bn/DOS0UjbLN21tPovIJWxZJQv
+         Jdtw==
+X-Gm-Message-State: AOAM530wHx5IEvr+iBE96NQPrJ3wU2zDs6NRTn9UKOoPeKF6eGlOsjdZ
+        HXj1FNCoUdsbyXvjI2RgdOhgNgZIv2ROWO5G5x1pdw==
+X-Google-Smtp-Source: ABdhPJweTgo1kbO051P2mdlKBZSgkmABnh4OQ7GaD+B5jCTTrQXCv4+NpbYAUz7Wi1fnX1PvZh2MNc08DzjnXvFdNNk=
+X-Received: by 2002:a05:6512:94d:: with SMTP id u13mr4465444lft.368.1616095674888;
+ Thu, 18 Mar 2021 12:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+References: <20210318171111.706303-1-samitolvanen@google.com> <20210318171111.706303-5-samitolvanen@google.com>
+In-Reply-To: <20210318171111.706303-5-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Mar 2021 12:27:43 -0700
+Message-ID: <CAKwvOdkbok-BoYGfvHH1HR=cMztaBYZKB-UHRDZ4g5YjSCuq2A@mail.gmail.com>
+Subject: Re: [PATCH v2 04/17] module: ensure __cfi_check alignment
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prevent another incidental removal of the IRQ2 ignore logic in the
-IO/APIC code going unnoticed add a sanity check. Add some commentry at the
-other place which ignores IRQ2 while at it.
+On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> CONFIG_CFI_CLANG_SHADOW assumes the __cfi_check() function is page
+> aligned and at the beginning of the .text section. While Clang would
+> normally align the function correctly, it fails to do so for modules
+> with no executable code.
+>
+> This change ensures the correct __cfi_check() location and
+> alignment. It also discards the .eh_frame section, which Clang can
+> generate with certain sanitizers, such as CFI.
+>
+> Link: https://bugs.llvm.org/show_bug.cgi?id=46293
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  scripts/module.lds.S | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/module.lds.S b/scripts/module.lds.S
+> index 168cd27e6122..93518579cf5d 100644
+> --- a/scripts/module.lds.S
+> +++ b/scripts/module.lds.S
+> @@ -3,10 +3,19 @@
+>   * Archs are free to supply their own linker scripts.  ld will
+>   * combine them automatically.
+>   */
+> +#include <asm/page.h>
+> +
+> +#ifdef CONFIG_CFI_CLANG
+> +# define ALIGN_CFI ALIGN(PAGE_SIZE)
+> +#else
+> +# define ALIGN_CFI
+> +#endif
+> +
+>  SECTIONS {
+>         /DISCARD/ : {
+>                 *(.discard)
+>                 *(.discard.*)
+> +               *(.eh_frame)
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/apic/vector.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Do we want to unconditionally discard this section from modules for
+all arches/configs?  I like how we conditionally do so on
+SANITIZER_DISCARDS in include/asm-generic/vmlinux.lds.h for example.
 
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -543,6 +543,14 @@ static int x86_vector_alloc_irqs(struct
- 	if ((info->flags & X86_IRQ_ALLOC_CONTIGUOUS_VECTORS) && nr_irqs > 1)
- 		return -ENOSYS;
- 
-+	/*
-+	 * Catch any attempt to touch the cascade interrupt on a PIC
-+	 * equipped system.
-+	 */
-+	if (WARN_ON_ONCE(info->flags & X86_IRQ_ALLOC_LEGACY &&
-+			 virq == PIC_CASCADE_IR))
-+		return -EINVAL;
-+
- 	for (i = 0; i < nr_irqs; i++) {
- 		irqd = irq_domain_get_irq_data(domain, virq + i);
- 		BUG_ON(!irqd);
-@@ -745,6 +753,11 @@ void __init lapic_assign_system_vectors(
- 
- 	/* Mark the preallocated legacy interrupts */
- 	for (i = 0; i < nr_legacy_irqs(); i++) {
-+		/*
-+		 * Don't touch the cascade interrupt. It's unusable
-+		 * on PIC equipped machines. See the large comment
-+		 * in the IO/APIC code.
-+		 */
- 		if (i != PIC_CASCADE_IR)
- 			irq_matrix_assign(vector_matrix, ISA_IRQ_VECTOR(i));
- 	}
+>         }
+>
+>         __ksymtab               0 : { *(SORT(___ksymtab+*)) }
+> @@ -40,7 +49,14 @@ SECTIONS {
+>                 *(.rodata..L*)
+>         }
+>
+> -       .text : { *(.text .text.[0-9a-zA-Z_]*) }
+> +       /*
+> +        * With CONFIG_CFI_CLANG, we assume __cfi_check is at the beginning
+> +        * of the .text section, and is aligned to PAGE_SIZE.
+> +        */
+> +       .text : ALIGN_CFI {
+> +               *(.text.__cfi_check)
+> +               *(.text .text.[0-9a-zA-Z_]* .text..L.cfi*)
+> +       }
+>  }
+>
+>  /* bring in arch-specific sections */
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
 
+
+-- 
+Thanks,
+~Nick Desaulniers
