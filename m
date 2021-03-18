@@ -2,167 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6BB340E17
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4510D340E20
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhCRTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S232681AbhCRTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbhCRTUn (ORCPT
+        with ESMTP id S232851AbhCRTWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:20:43 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E27C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:20:42 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u5so5723202ejn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:20:42 -0700 (PDT)
+        Thu, 18 Mar 2021 15:22:19 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBCFC06174A;
+        Thu, 18 Mar 2021 12:22:19 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id bt4so3432976pjb.5;
+        Thu, 18 Mar 2021 12:22:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DlSGkcpM7n93m2NXphTK+vfx2de8ofv8+tDkCjG9ugo=;
-        b=p/21plRAKA00kj+4T75adsXsHf7ZMRaTa6UQJA+aiTXKTKoJGKvFVVPd87riYeNbO2
-         VLV8soOgZV/G2xwT2z9cHO24i01oXFMff+s8U1CR/rvN9JouweHtAIU6uwQQsXvdckBZ
-         Y7cdycazCcBx6tiqhxz8Ah+aRpQt8okOu+vyORg93c53B9vtIedJpnoLY6q+bdGXOqFt
-         2WV6Lz2QiXpnDvRXuvWg7v2he7R12PxPNY+WPDH/3uPX1aHxHUMoxO/XcLS1IGjFDhkd
-         ioIkshiLQpkMwlllG15YsAY+YriO+Pr9psWo3IYgNga/aKHZM4oHxIr9jGz+GV7iXMaP
-         XGWg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TM+vEBqjvzmGZFh854VHWSVx/dlysQ2NuONxv+B86HU=;
+        b=LBxnTBlH06B0fQtsE0BvxU3j7rlfq3katQi7WoUGretXjpngZM5x897LI0NpbDoopk
+         hX9iBFP1dRVeJ5lS7Yl+9a5OIDATku9d98R1Rx/4FFArP6hpBi0J3iDd+Rsz0PQwTw5c
+         R7rsUuPuCQGPFsFO98LjnZNtEuIuaNEt1RD0TCsr7vxGZBm7MRs0f+S9DO/WW5b2H9f9
+         M/2bQqXtzMxL2aZnVTEeR0mnDwnH90eSyMZ2Z4GwX2+Hh3LbpAfBUZGEU5vhgSpsP3L5
+         eo9J50pKpEeagWcG3ytdINWi0vle6C8TvUyy2NJly5kyWfI6GqZVMYO9r7Ww35jE4yJA
+         f74g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DlSGkcpM7n93m2NXphTK+vfx2de8ofv8+tDkCjG9ugo=;
-        b=WjiyU/YySAa8W1QKlk0C8SyPXckszkXnXbJp1m8JZ5LKq8eRHI7W9lUmuz6GM6ZCqQ
-         rY9/yYgfG5KJACSxnkEb7q3uzhg/VHiy1KuI0euqoV8ZFuwJhQxmjU+3f1hF+kmv+WLX
-         xxnCHNDcbGXRXM3UEsUx9T/cnosZskrIqz8i8G66XQM3SpZJRonv8DM6amF0N21VPtW4
-         efIuGCBOsKlCKLVd2BNzq49L6slED7nzKO0h5LLL3i+biu8E5Ja+uDba0gYBYx67UAGh
-         5QqV9XRgFgWTah9A6aTtngJqGG8kWnEQM+kypY+NvZugi+MJlMRP9EcUq8IZXp+bwezb
-         NKpg==
-X-Gm-Message-State: AOAM531bDFM5v8LmDUxCGQj1dJEpZ5yNtVu9ax2f3saNUeDqfR8R9O1k
-        ILLU1jyS9ngUcyPY4itwQg+xMHIMwoZF0qc0nQqWwA==
-X-Google-Smtp-Source: ABdhPJxRNGn4R/MIQXf81dMHl00dEjUonY0A7VmKcQlICTbSL7uZYo2B373F7ZimvVTaIRpw34I5bjaerwpg4JQsQ/k=
-X-Received: by 2002:a17:906:c405:: with SMTP id u5mr116007ejz.341.1616095241325;
- Thu, 18 Mar 2021 12:20:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210318045745.GC349301@dread.disaster.area>
-In-Reply-To: <20210318045745.GC349301@dread.disaster.area>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 18 Mar 2021 12:20:35 -0700
-Message-ID: <CAPcyv4iPE_MB08PFM-DZig8g35YH_VTKydeFyffN+QovfXx7HA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm, dax, pmem: Introduce dev_pagemap_failure()
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TM+vEBqjvzmGZFh854VHWSVx/dlysQ2NuONxv+B86HU=;
+        b=TM4SdMPlnb0irTOEDTVdi2REHFJdr4DCgAs9Tpr4wWXCFgwaNfCRenhpT8ks458HaB
+         61hQCW8GdGSWWoP/kKW26lAJTDGpW64VT2qK6wAy/8qts23Sc9B5q2JdKLcHZ6JsEkOz
+         IIxFFZdTQsh3R8zQGgTscOoQHZnUwfDWwy/vz4hLTD+MfXkdqmpMdujxO0wgWOdFt4T1
+         ZWfE8KW/5HZMv9qEh9ySvRgTxonZCztCBeVBNT1u+X2bxQ2IvdgX9XiJWLTlEyRtaCka
+         eTcq+bT49qatsQMKJtb7SH6bme/9eoIGql6WbeTTYj81mnNVFIdoxJGqAgNFzMnIIIRl
+         b/tg==
+X-Gm-Message-State: AOAM533iJQPDPpT4n85GTKyKK24K6ut4awlsIeSUFmgnzZudFCH+aMzH
+        XPNLkOIZfG6aWHzPFl6WUfI=
+X-Google-Smtp-Source: ABdhPJw09QkiSEVKSoCdawiAp/3PCs1M1aROIkZX2/evRD9NZFUJ9/DhqAKS6v+Uak31oZ4vJmhfdw==
+X-Received: by 2002:a17:90a:e556:: with SMTP id ei22mr5793082pjb.214.1616095338892;
+        Thu, 18 Mar 2021 12:22:18 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h19sm3290393pfc.172.2021.03.18.12.22.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 12:22:18 -0700 (PDT)
+Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
+To:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc:     opendmb@gmail.com, Jonathan Corbet <corbet@lwn.net>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>
+References: <20210318191816.4185226-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
+Date:   Thu, 18 Mar 2021 12:22:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210318191816.4185226-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 9:58 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Wed, Mar 17, 2021 at 09:08:23PM -0700, Dan Williams wrote:
-> > Jason wondered why the get_user_pages_fast() path takes references on a
-> > @pgmap object. The rationale was to protect against accessing a 'struct
-> > page' that might be in the process of being removed by the driver, but
-> > he rightly points out that should be solved the same way all gup-fast
-> > synchronization is solved which is invalidate the mapping and let the
-> > gup slow path do @pgmap synchronization [1].
-> >
-> > To achieve that it means that new user mappings need to stop being
-> > created and all existing user mappings need to be invalidated.
-> >
-> > For device-dax this is already the case as kill_dax() prevents future
-> > faults from installing a pte, and the single device-dax inode
-> > address_space can be trivially unmapped.
-> >
-> > The situation is different for filesystem-dax where device pages could
-> > be mapped by any number of inode address_space instances. An initial
-> > thought was to treat the device removal event like a drop_pagecache_sb()
-> > event that walks superblocks and unmaps all inodes. However, Dave points
-> > out that it is not just the filesystem user-mappings that need to react
-> > to global DAX page-unmap events, it is also filesystem metadata
-> > (proposed DAX metadata access), and other drivers (upstream
-> > DM-writecache) that need to react to this event [2].
-> >
-> > The only kernel facility that is meant to globally broadcast the loss of
-> > a page (via corruption or surprise remove) is memory_failure(). The
-> > downside of memory_failure() is that it is a pfn-at-a-time interface.
-> > However, the events that would trigger the need to call memory_failure()
-> > over a full PMEM device should be rare.
->
-> This is a highly suboptimal design. Filesystems only need a single
-> callout to trigger a shutdown that unmaps every active mapping in
-> the filesystem - we do not need a page-by-page error notification
-> which results in 250 million hwposion callouts per TB of pmem to do
-> this.
->
-> Indeed, the moment we get the first hwpoison from this patch, we'll
-> map it to the primary XFS superblock and we'd almost certainly
-> consider losing the storage behind that block to be a shut down
-> trigger. During the shutdown, the filesystem should unmap all the
-> active mappings (we already need to add this to shutdown on DAX
-> regardless of this device remove issue) and so we really don't need
-> a page-by-page notification of badness.
 
-XFS doesn't, but what about device-mapper and other agents? Even if
-the driver had a callback up the stack memory_failure() still needs to
-be able to trigger failures down the stack for CPU consumed poison.
 
->
-> AFAICT, it's going to take minutes, maybe hours for do the page-by-page
-> iteration to hwposion every page. It's going to take a few seconds
-> for the filesystem shutdown to run a device wide invalidation.
->
-> SO, yeah, I think this should simply be a single ranged call to the
-> filesystem like:
->
->         ->memory_failure(dev, 0, -1ULL)
->
-> to tell the filesystem that the entire backing device has gone away,
-> and leave the filesystem to handle failure entirely at the
-> filesystem level.
+On 3/18/2021 12:18 PM, Florian Fainelli wrote:
+> It may be useful to disable the SWIOTLB completely for testing or when a
+> platform is known not to have any DRAM addressing limitations what so
+> ever.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-So I went with memory_failure() after our discussion of all the other
-agents in the system that might care about these pfns going offline
-and relying on memory_failure() to route down to each of those. I.e.
-the "reuse the drop_pagecache_sb() model" idea was indeed
-insufficient. Now I'm trying to reconcile the fact that platform
-poison handling will hit memory_failure() first and may not
-immediately reach the driver, if ever (see the perennially awkward
-firmware-first-mode error handling: ghes_handle_memory_failure()) . So
-even if the ->memory_failure(dev...) up call exists there is no
-guarantee it can get called for all poison before the memory_failure()
-down call happens. Which means regardless of whether
-->memory_failure(dev...) exists memory_failure() needs to be able to
-do the right thing.
+Christoph, in addition to this change, how would you feel if we
+qualified the swiotlb_init() in arch/arm/mm/init.c with a:
 
-Combine that with the fact that new buses like CXL might be configured
-in "poison on decode error" mode which means that a memory_failure()
-storm can happen regardless of whether the driver initiates it
-programatically.
 
-How about a mechanism to optionally let a filesystem take over memory
-failure handling for a range of pfns that the memory_failure() can
-consult to fail ranges at a time rather than one by one? So a new
-'struct dax_operations' op (void) (*memory_failure_register(struct
-dax_device *, void *data). Where any agent that claims a dax_dev can
-register to take over memory_failure() handling for any event that
-happens in that range. This would be routed through device-mapper like
-any other 'struct dax_operations' op. I think that meets your
-requirement to get notifications of all the events you want to handle,
-but still allows memory_failure() to be the last resort for everything
-that has not opted into this error handling.
+if (memblock_end_of_DRAM() >= SZ_4G)
+	swiotlb_init(1)
+
+right now this is made unconditional whenever ARM_LPAE is enabled which
+is the case for the platforms I maintain (ARCH_BRCMSTB) however we do
+not really need a SWIOTLB so long as the largest DRAM physical address
+does not exceed 4GB AFAICT.
+
+Thanks!
+
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 1 +
+>  include/linux/swiotlb.h                         | 1 +
+>  kernel/dma/swiotlb.c                            | 9 +++++++++
+>  3 files changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..b0223e48921e 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5278,6 +5278,7 @@
+>  			force -- force using of bounce buffers even if they
+>  			         wouldn't be automatically used by the kernel
+>  			noforce -- Never use bounce buffers (for debugging)
+> +			off -- Completely disable SWIOTLB
+>  
+>  	switches=	[HW,M68k]
+>  
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index 5857a937c637..23f86243defe 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -15,6 +15,7 @@ enum swiotlb_force {
+>  	SWIOTLB_NORMAL,		/* Default - depending on HW DMA mask etc. */
+>  	SWIOTLB_FORCE,		/* swiotlb=force */
+>  	SWIOTLB_NO_FORCE,	/* swiotlb=noforce */
+> +	SWIOTLB_OFF,		/* swiotlb=off */
+>  };
+>  
+>  /*
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index c10e855a03bc..d7a4a789c7d3 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -126,6 +126,8 @@ setup_io_tlb_npages(char *str)
+>  	} else if (!strcmp(str, "noforce")) {
+>  		swiotlb_force = SWIOTLB_NO_FORCE;
+>  		io_tlb_nslabs = 1;
+> +	} else if (!strcmp(str, "off")) {
+> +		swiotlb_force = SWIOTLB_OFF;
+>  	}
+>  
+>  	return 0;
+> @@ -229,6 +231,9 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+>  	unsigned long i, bytes;
+>  	size_t alloc_size;
+>  
+> +	if (swiotlb_force == SWIOTLB_OFF)
+> +		return 0;
+> +
+>  	bytes = nslabs << IO_TLB_SHIFT;
+>  
+>  	io_tlb_nslabs = nslabs;
+> @@ -284,6 +289,9 @@ swiotlb_init(int verbose)
+>  	unsigned char *vstart;
+>  	unsigned long bytes;
+>  
+> +	if (swiotlb_force == SWIOTLB_OFF)
+> +		goto out;
+> +
+>  	if (!io_tlb_nslabs) {
+>  		io_tlb_nslabs = (default_size >> IO_TLB_SHIFT);
+>  		io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
+> @@ -302,6 +310,7 @@ swiotlb_init(int verbose)
+>  		io_tlb_start = 0;
+>  	}
+>  	pr_warn("Cannot allocate buffer");
+> +out:
+>  	no_iotlb_memory = true;
+>  }
+>  
+> 
+
+-- 
+Florian
