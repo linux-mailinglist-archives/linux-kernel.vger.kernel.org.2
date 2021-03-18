@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9FB340605
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF32F34060B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhCRMsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:48:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14091 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhCRMri (ORCPT
+        id S231343AbhCRMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231262AbhCRMsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:47:38 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1RZq72Rsz19GKH;
-        Thu, 18 Mar 2021 20:45:39 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 20:47:27 +0800
-Subject: Re: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210129155730.3a1d49c5@omen.home.shazbot.org>
- <MWHPR11MB188684B42632FD0B9B5CA1C08CB69@MWHPR11MB1886.namprd11.prod.outlook.com>
- <47bf7612-4fb0-c0bb-fa19-24c4e3d01d3f@huawei.com>
- <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
- <4f904b23-e434-d42b-15a9-a410f3b4edb9@huawei.com>
- <MWHPR11MB188656845973A662A7E96BDA8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <c152f419-acc4-ee33-dab1-ff0f9baf2f24@huawei.com>
- <MWHPR11MB1886498515951BCE98F9336A8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <4e2c9f05-9a87-4aca-71d3-c329d7638aae@huawei.com>
-Date:   Thu, 18 Mar 2021 20:47:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 18 Mar 2021 08:48:14 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D51C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:48:14 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id m7so1353079pgj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BofJtNQBNJ4TAm9k9nJlHtcjZFAjqPhR3+0IjCViRGw=;
+        b=s8bOBbSrPBOMGD0lno8oDiDRlBcWxaTtvNB/ZuKophFtB2a9PbjOBOkWdlt7QTGXSG
+         sYzly2DL9vAaQk55tSfL5WL5t40ZFN+ufb/wmBrgkdW7++twPejbsjNFfw3AkULJRDZe
+         Rh4Y131oP24y4EK2LS1FOZED4vJ1kpUC/P6L6NIqK8xjdC2DYY6WGMsx6F3L+F8y0Wwq
+         xtChmxtAHoCQ8k/wnZHIGMN2jAKgA1yLmC8sP6WWlemrQmscHhYaXE6v1vCJrNtjTvvT
+         WlRbovQwsYt9P0v40+LL7stOp1qJgu74dvNYH7Md4yDsFDQ4TV8ujDK+pc2QPQvgRA70
+         aWbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BofJtNQBNJ4TAm9k9nJlHtcjZFAjqPhR3+0IjCViRGw=;
+        b=qCvthSCQulj43ClkHR4nyxBdQCljGhYmu5i6GV/rcon6IBpu6l5KY2OdZWXoZ+tJu8
+         zd25ooj9oqtM0Ydgxux5bQoCE1LIFEJhaIyYHhE0oPysOlF8x8Um8v6W/AjNqBvuQ3yp
+         iVKccIe8lUW7+GOZYWsENg7WzS5Vfu1C+cdH9CgljOkJRFaQrB5kBXSePEu5EVC1EaTY
+         Be16+dtZuAXhPaF4VZodVwrxzrUoxKl1oRy/Mcp7UtIDMSWdgUMdczJWMYbTcL1G5Y3Z
+         xvH+M4JPjZMUL7WMqohYbUzpayLYbJhO3FuaSLp41MO0ljZ3TrIvD0LHe3tdKKKs70uf
+         M+yg==
+X-Gm-Message-State: AOAM5334cP/Tl/UIhxtvTMjwqJc9s9a4yKhxnHJ5024kUTFfQ7lJq2uw
+        3JyTpOsVcA93gpWCnjtnD2M01mPb1bWTZRb1WFg=
+X-Google-Smtp-Source: ABdhPJwFt95ZxZN7+6Qgkq7BjOLV+PPnNMeS0VmcuNwfFis8sqmOBM4QMXhk9okMRvo7CneCMcDa8AUSsHgJ1cWQZ1E=
+X-Received: by 2002:a05:6a00:1596:b029:200:c2c9:95e7 with SMTP id
+ u22-20020a056a001596b0290200c2c995e7mr3969922pfk.73.1616071694084; Thu, 18
+ Mar 2021 05:48:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1886498515951BCE98F9336A8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+References: <20210318073921.13093-1-a.fatoum@pengutronix.de>
+In-Reply-To: <20210318073921.13093-1-a.fatoum@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 18 Mar 2021 14:47:58 +0200
+Message-ID: <CAHp75VcFy1=p6x0nj6wC-tK5ph6Puvx++8aVALLC0WTrkoN8AA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] driver core: clear deferred probe reason on probe retry
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sascha Hauer <kernel@pengutronix.de>, stable@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/18 20:32, Tian, Kevin wrote:
->> From: Shenming Lu <lushenming@huawei.com>
->> Sent: Thursday, March 18, 2021 7:54 PM
->>
->> On 2021/3/18 17:07, Tian, Kevin wrote:
->>>> From: Shenming Lu <lushenming@huawei.com>
->>>> Sent: Thursday, March 18, 2021 3:53 PM
->>>>
->>>> On 2021/2/4 14:52, Tian, Kevin wrote:>>> In reality, many
->>>>>>> devices allow I/O faulting only in selective contexts. However, there
->>>>>>> is no standard way (e.g. PCISIG) for the device to report whether
->>>>>>> arbitrary I/O fault is allowed. Then we may have to maintain device
->>>>>>> specific knowledge in software, e.g. in an opt-in table to list devices
->>>>>>> which allows arbitrary faults. For devices which only support selective
->>>>>>> faulting, a mediator (either through vendor extensions on vfio-pci-core
->>>>>>> or a mdev wrapper) might be necessary to help lock down non-
->> faultable
->>>>>>> mappings and then enable faulting on the rest mappings.
->>>>>>
->>>>>> For devices which only support selective faulting, they could tell it to the
->>>>>> IOMMU driver and let it filter out non-faultable faults? Do I get it wrong?
->>>>>
->>>>> Not exactly to IOMMU driver. There is already a vfio_pin_pages() for
->>>>> selectively page-pinning. The matter is that 'they' imply some device
->>>>> specific logic to decide which pages must be pinned and such knowledge
->>>>> is outside of VFIO.
->>>>>
->>>>> From enabling p.o.v we could possibly do it in phased approach. First
->>>>> handles devices which tolerate arbitrary DMA faults, and then extends
->>>>> to devices with selective-faulting. The former is simpler, but with one
->>>>> main open whether we want to maintain such device IDs in a static
->>>>> table in VFIO or rely on some hints from other components (e.g. PF
->>>>> driver in VF assignment case). Let's see how Alex thinks about it.
->>>>
->>>> Hi Kevin,
->>>>
->>>> You mentioned selective-faulting some time ago. I still have some doubt
->>>> about it:
->>>> There is already a vfio_pin_pages() which is used for limiting the IOMMU
->>>> group dirty scope to pinned pages, could it also be used for indicating
->>>> the faultable scope is limited to the pinned pages and the rest mappings
->>>> is non-faultable that should be pinned and mapped immediately? But it
->>>> seems to be a little weird and not exactly to what you meant... I will
->>>> be grateful if you can help to explain further. :-)
->>>>
->>>
->>> The opposite, i.e. the vendor driver uses vfio_pin_pages to lock down
->>> pages that are not faultable (based on its specific knowledge) and then
->>> the rest memory becomes faultable.
->>
->> Ahh...
->> Thus, from the perspective of VFIO IOMMU, if IOPF enabled for such device,
->> only the page faults within the pinned range are valid in the registered
->> iommu fault handler...
->> I have another question here, for the IOMMU backed devices, they are
->> already
->> all pinned and mapped when attaching, is there a need to call
->> vfio_pin_pages()
->> to lock down pages for them? Did I miss something?...
->>
-> 
-> If a device is marked as supporting I/O page fault (fully or selectively), 
-> there should be no pinning at attach or DMA_MAP time (suppose as 
-> this series does). Then for devices with selective-faulting its vendor 
-> driver will lock down the pages which are not faultable at run-time, 
-> e.g. when intercepting guest registration of a ring buffer...
+On Thu, Mar 18, 2021 at 9:39 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> When retrying a deferred probe, any old defer reason string should be
+> discarded. Otherwise, if probe is deferred again at a different spot,
 
-Get it. Thanks a lot for this! :-)
+probe -> the probe
 
-Shenming
+> but without setting a message, a now incorrect probe reason will remain.
 
-> 
-> Thanks
-> Kevin
-> 
+a now incorrect -> now the incorrect
+
+> This was observed with the i.MX I2C driver, which ultimately failed
+> to probe due to lack of the GPIO driver. The probe defer for GPIO
+> doesn't record a message, but a previous probe defer to clock_get did.
+> This had the effect that /sys/kernel/debug/devices_deferred listed
+> a misleading probe deferral reason.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Cc: stable@kernel.org
+> Fixes: d090b70ede02 ("driver core: add deferring probe reason to devices_deferred property")
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+>  drivers/base/dd.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 9179825ff646..e2cf3b29123e 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -97,6 +97,9 @@ static void deferred_probe_work_func(struct work_struct *work)
+>
+>                 get_device(dev);
+>
+> +               kfree(dev->p->deferred_probe_reason);
+> +               dev->p->deferred_probe_reason = NULL;
+> +
+>                 /*
+>                  * Drop the mutex while probing each device; the probe path may
+>                  * manipulate the deferred list
+> --
+> 2.29.2
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
