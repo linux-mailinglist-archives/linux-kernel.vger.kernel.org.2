@@ -2,314 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F4D34003E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7C4340040
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhCRH0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:26:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3370 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229643AbhCRH0F (ORCPT
+        id S229698AbhCRH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:27:58 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:36585 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229454AbhCRH1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:26:05 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12I74Grw127826;
-        Thu, 18 Mar 2021 03:25:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=39qE1+Q9YzejXDldNd7bWv8SQaFFWVJAWhnKLQRTtI8=;
- b=GX4LClXA0ladm+7Zp3/YQgVdxdogk5l8+nwharDDDrFZluObJ6KqVwOtS/S1+Fia8Y+U
- F2a79++zmvqJFKW3rLF7vC1cXQFrWirdV5yI6WWAAdg9a84ZtJFsF8GeC+SFk1QSG5gz
- ICktmgQo0k/x2f98I/jY5/snnEK+xUH0K80MIQ7ITFfdrBk5msiatxX0TqmEh3Cw/bRK
- GUw/3JjLST9YuBlzLIfTLbLeC+ipmp4OqoMTpa40zjVIpqKHCfAYYNFpnMe7zJwe2E7J
- AZFJEMkwrmXUsPAVWPm0XVFTPv/Mq4oDCHYzBPQwgDJPhgK08eHvWZMSJW1yRSFLRdZn BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37c10229g6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 03:25:51 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12I74h8U129969;
-        Thu, 18 Mar 2021 03:25:50 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37c10229fc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 03:25:50 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12I7M0tc009886;
-        Thu, 18 Mar 2021 07:25:47 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 378n18acpn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 07:25:47 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12I7PS9q28639632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 07:25:28 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 49DBC4C046;
-        Thu, 18 Mar 2021 07:25:45 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EB6B4C040;
-        Thu, 18 Mar 2021 07:25:43 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.165.64])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 18 Mar 2021 07:25:42 +0000 (GMT)
-Date:   Thu, 18 Mar 2021 09:25:40 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Message-ID: <YFMAdIVn2hpTHfBq@linux.ibm.com>
-References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <YE5dJ6U3nPWsXY4D@linux.ibm.com>
- <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
- <3236337.DtqTXxM43S@kreacher>
+        Thu, 18 Mar 2021 03:27:35 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Mn45lHgcWDUxpMn49lhyrD; Thu, 18 Mar 2021 08:27:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616052453; bh=B+V7aOuFTru4IgleLpXfnk9Zd0MWyFMNnsii0CcXtOE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=aHwkkk2kdSJO7TO/lnaYAMK0vDOBBU8tyzAbS/sNP1QOeaugc/vpXjFwzoYvMP+I2
+         xRCQ7RV77q0+C97jSQwMGkVrwJFIyn2vnNdrPsj0WItBVFHZBHKB8VCiI/fm2+FbR1
+         XAmFCBT4r/aMaVokjRRrIeIvJYI1b1dhHrkopfQyH7kRCnUinqj6od44Wq1QckMaH1
+         59m3Nn4jqEJyRhUf3vN+toFuT4FTlNKuiF+YafU42VXDtvZAxFfQjs158bO6KDZ1Tk
+         oMGD1uR1vef2q+/Mo6BLQdRkkmgf/CfN+W2qRbwo25aDpaAdPd+maToIdm6Qz49YtE
+         lBlUitteT1z3g==
+Subject: Re: [PATCH v6 15/17] media: uvcvideo: Check controls flags before
+ accessing them
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+References: <20210317164511.39967-1-ribalda@chromium.org>
+ <20210317164511.39967-16-ribalda@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <7e5bd33c-66a5-6a55-85b3-6fe3743a8e06@xs4all.nl>
+Date:   Thu, 18 Mar 2021 08:27:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3236337.DtqTXxM43S@kreacher>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-18_02:2021-03-17,2021-03-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103180052
+In-Reply-To: <20210317164511.39967-16-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCF0gcx4lNy0jcB+OE5yrQ0d78yBJtC9b82JgTQp/76TfiyB6Zue8ySOHrEFUQA6/Xc6I/0rdVdcDKxkg5txqElV5+okCBrYPGIbbARUM7RwjY+J0tcu
+ qTBGlgbkrxBOdi0AJ3WX18Izuhw4Io1HC1WQrW1EVrmK844vIwfuX5FsMH6RfS1aqHh2e65iRUIoW9+GnGrUWyE+taOhLRg/StKY3+3fkDPwtDbNsfbxRZ9h
+ s64wKcQBkDuhMQuwjBra0O4egUWXAjCwLe8SL0iTWqbKtEqVSGuuiPeOc8gtY6Dd2bcUsiNfzKFB35MuS6b7ugkDfFOicrGJwpQlyH/mdJlDy8aFHLpev5qz
+ n1zCMGB20ADd1xjo1/OtYCJXhK8vHxYBdRDY3No5NIzQvVDYVH5OGGsrY9RJ8EgFcJD2EJF/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:14:37PM +0100, Rafael J. Wysocki wrote:
-> On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
-> > On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> > >
-> > > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
-> > > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
-> > > > > >
-> > > > > > There is some care that should be taken to make sure we get the order
-> > > > > > right, but I don't see a fundamental issue here.
-> > > >
-> > > > Me neither.
-> > > >
-> > > > > > If I understand correctly, Rafael's concern is about changing the parts of
-> > > > > > ACPICA that should be OS agnostic, so I think we just need another place to
-> > > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
-> > > >
-> > > > Something like this.
-> > > >
-> > > > There is also the problem that memblock_reserve() needs to be called
-> > > > for all of the tables early enough, which will require some reordering
-> > > > of the early init code.
-> > > >
-> > > > > > Since the reservation should be done early in x86::setup_arch() (and
-> > > > > > probably in arm64::setup_arch()) we might just have a function that parses
-> > > > > > table headers and reserves them, similarly to how we parse the tables
-> > > > > > during KASLR setup.
-> > > >
-> > > > Right.
-> > >
-> > > I've looked at it a bit more and we do something like the patch below that
-> > > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
-> > 
-> > It looks to me that the code need not be duplicated (see below).
-> > 
-> > > Besides, reserving ACPI tables early and then calling acpi_table_init()
-> > > (and acpi_tb_parse_root_table() again would mean doing the dance with
-> > > early_memremap() twice for no good reason.
-> > 
-> > That'd be simply inefficient which is kind of acceptable to me to start with.
-> > 
-> > And I changing the ACPICA code can be avoided at least initially, it
-> > by itself would be a good enough reason.
-> > 
-> > > I believe the most effective way to deal with this would be to have a
-> > > function that does parsing, reservation and installs the tables supplied by
-> > > the firmware which can be called really early and then another function
-> > > that overrides tables if needed a some later point.
-> > 
-> > I agree that this should be the direction to go into.
+On 17/03/2021 17:45, Ricardo Ribalda wrote:
+> We can figure out if reading/writing a set of controls can fail without
+> accessing them by checking their flags.
 > 
-> So maybe something like the patch below?
+> This way we can honor the API closer:
 > 
-> I'm not sure if acpi_boot_table_prepare() gets called early enough, though.
-
-To be 100% safe it should be called before e820__memblock_setup(). It is
-possible to call memblock_reserve() at any time, even before the actual
-memory is detected as long as all reservations fit into the static array
-that currently has 128 entries on x86.
-
-As e820__memblock_setup() essentially enables memblock allocations,
-theoretically the memory occupied by ACPI tables can be allocated even in
-x86::setup_arch() unless it is reserved before e820__memblock_setup().
-
-> Also this still may not play well with initrd-based table overrides. Erik, do
-> you have any insights here?
+> If an error is found when validating the list of controls passed with
+> VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to
+> indicate to userspace that no actual hardware was touched.
 > 
-> And ia64 needs to be updated too.
-
-I think arm64 as well.
-
+> Fixes v4l2-compliance:
+> Control ioctls (Input 0):
+> 		warn: v4l2-test-controls.cpp(765): g_ext_ctrls(0) invalid error_idx 0
+>                 fail: v4l2-test-controls.cpp(645): invalid error index write only control
+>         test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->  arch/x86/kernel/acpi/boot.c |   12 +++++++++---
->  arch/x86/kernel/setup.c     |    3 +++
->  drivers/acpi/tables.c       |   24 +++++++++++++++++++++---
->  include/linux/acpi.h        |    9 +++++++--
->  4 files changed, 40 insertions(+), 8 deletions(-)
+>  drivers/media/usb/uvc/uvc_ctrl.c | 21 +++++++++++++++++
+>  drivers/media/usb/uvc/uvc_v4l2.c | 39 ++++++++++++++++++++++++++++----
+>  drivers/media/usb/uvc/uvcvideo.h |  1 +
+>  3 files changed, 56 insertions(+), 5 deletions(-)
 > 
-> Index: linux-pm/arch/x86/kernel/acpi/boot.c
-> ===================================================================
-> --- linux-pm.orig/arch/x86/kernel/acpi/boot.c
-> +++ linux-pm/arch/x86/kernel/acpi/boot.c
-> @@ -1541,7 +1541,7 @@ static const struct dmi_system_id acpi_d
->   *	...
->   */
->  
-> -void __init acpi_boot_table_init(void)
-> +void __init acpi_boot_table_prepare(void)
->  {
->  	dmi_check_system(acpi_dmi_table);
->  
-> @@ -1554,10 +1554,16 @@ void __init acpi_boot_table_init(void)
->  	/*
->  	 * Initialize the ACPI boot-time table parser.
->  	 */
-> -	if (acpi_table_init()) {
-> +	if (acpi_table_prepare())
->  		disable_acpi();
-> +}
-> +
-> +void __init acpi_boot_table_init(void)
-> +{
-> +	if (acpi_disabled)
->  		return;
-> -	}
-> +
-> +	acpi_table_init();
->  
->  	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
->  
-> Index: linux-pm/arch/x86/kernel/setup.c
-> ===================================================================
-> --- linux-pm.orig/arch/x86/kernel/setup.c
-> +++ linux-pm/arch/x86/kernel/setup.c
-> @@ -1070,6 +1070,9 @@ void __init setup_arch(char **cmdline_p)
->  	/* preallocate 4k for mptable mpc */
->  	e820__memblock_alloc_reserved_mpc_new();
->  
-> +	/* Look for ACPI tables and reserve memory occupied by them. */
-> +	acpi_boot_table_prepare();
-> +
->  #ifdef CONFIG_X86_CHECK_BIOS_CORRUPTION
->  	setup_bios_corruption_check();
->  #endif
-> Index: linux-pm/include/linux/acpi.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/acpi.h
-> +++ linux-pm/include/linux/acpi.h
-> @@ -222,11 +222,13 @@ void __iomem *__acpi_map_table(unsigned
->  void __acpi_unmap_table(void __iomem *map, unsigned long size);
->  int early_acpi_boot_init(void);
->  int acpi_boot_init (void);
-> +void acpi_boot_table_prepare (void);
->  void acpi_boot_table_init (void);
-
-Not related to this patch, but it feels to me like there are too many
-acpi_boot_something() :)
-
->  int acpi_mps_check (void);
->  int acpi_numa_init (void);
->  
-> -int acpi_table_init (void);
-> +int acpi_table_prepare (void);
-> +void acpi_table_init (void);
->  int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
->  int __init acpi_table_parse_entries(char *id, unsigned long table_size,
->  			      int entry_id,
-> @@ -814,9 +816,12 @@ static inline int acpi_boot_init(void)
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 929e70dff11a..af1d4d9b8afb 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1046,6 +1046,27 @@ static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
 >  	return 0;
 >  }
 >  
-> +static inline void acpi_boot_table_prepare(void)
+> +int uvc_ctrl_is_accesible(struct uvc_video_chain *chain, u32 v4l2_id, bool read)
+
+accesible -> accessible
+
+With that typo fixed you can add my:
+
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Thanks!
+
+	Hans
+
 > +{
+> +	struct uvc_control_mapping *mapping;
+> +	struct uvc_control *ctrl;
+> +
+> +	if (__uvc_query_v4l2_class(chain, v4l2_id, 0) >= 0)
+> +		return -EACCES;
+> +
+> +	ctrl = uvc_find_control(chain, v4l2_id, &mapping);
+> +	if (!ctrl)
+> +		return -EINVAL;
+> +
+> +	if (!(ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR) && read)
+> +		return -EACCES;
+> +
+> +	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR) && !read)
+> +		return -EACCES;
+> +
+> +	return 0;
 > +}
 > +
->  static inline void acpi_boot_table_init(void)
+>  static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
 >  {
-> -	return;
+>  	const char *name;
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index ed262f61e6a6..ce55b4bff687 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1045,6 +1045,26 @@ static int uvc_ioctl_s_ctrl(struct file *file, void *fh,
+>  	return 0;
 >  }
 >  
->  static inline int acpi_mps_check(void)
-> Index: linux-pm/drivers/acpi/tables.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/tables.c
-> +++ linux-pm/drivers/acpi/tables.c
-> @@ -788,9 +788,10 @@ acpi_status acpi_os_table_override(struc
->   * result: sdt_entry[] is initialized
->   */
->  
-> -int __init acpi_table_init(void)
-> +int __init acpi_table_prepare(void)
->  {
->  	acpi_status status;
-> +	int i;
->  
->  	if (acpi_verify_table_checksum) {
->  		pr_info("Early table checksum verification enabled\n");
-> @@ -803,12 +804,29 @@ int __init acpi_table_init(void)
->  	status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
->  	if (ACPI_FAILURE(status))
->  		return -EINVAL;
-> -	acpi_table_initrd_scan();
->  
-> -	check_multiple_madt();
-> +	for (i = 0; i < ACPI_MAX_TABLES; i++) {
-> +		struct acpi_table_desc *table_desc = &initial_tables[i];
+> +static int uvc_ctrl_check_access(struct uvc_video_chain *chain,
+> +				 struct v4l2_ext_controls *ctrls,
+> +				 unsigned long ioctl)
+> +{
+> +	struct v4l2_ext_control *ctrl = ctrls->controls;
+> +	unsigned int i;
+> +	int ret = 0;
 > +
-> +		if (!table_desc->address || !table_desc->length)
+> +	for (i = 0; i < ctrls->count; ++ctrl, ++i) {
+> +		ret = uvc_ctrl_is_accesible(chain, ctrl->id,
+> +					    ioctl == VIDIOC_G_EXT_CTRLS);
+> +		if (ret)
 > +			break;
-> +
-> +		pr_info("Reserving %4s table memory at [0x%llx - 0x%llx]\n",
-> +			table_desc->signature.ascii, table_desc->address,
-> +			table_desc->address + table_desc->length - 1);
-> +
-> +		memblock_reserve(table_desc->address, table_desc->length);
 > +	}
 > +
->  	return 0;
->  }
->  
-> +void __init acpi_table_init(void)
-> +{
-> +	acpi_table_initrd_scan();
-> +	check_multiple_madt();
+> +	ctrls->error_idx = ioctl == VIDIOC_TRY_EXT_CTRLS ? i : ctrls->count;
+> +
+> +	return ret;
 > +}
 > +
->  static int __init acpi_parse_apic_instance(char *str)
+>  static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+>  				 struct v4l2_ext_controls *ctrls)
 >  {
->  	if (!str)
-> 
-> 
+> @@ -1054,6 +1074,10 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+>  	unsigned int i;
+>  	int ret;
+>  
+> +	ret = uvc_ctrl_check_access(chain, ctrls, VIDIOC_G_EXT_CTRLS);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	if (ctrls->which == V4L2_CTRL_WHICH_DEF_VAL) {
+>  		for (i = 0; i < ctrls->count; ++ctrl, ++i) {
+>  			struct v4l2_queryctrl qc = { .id = ctrl->id };
+> @@ -1090,13 +1114,17 @@ static int uvc_ioctl_g_ext_ctrls(struct file *file, void *fh,
+>  
+>  static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
+>  				     struct v4l2_ext_controls *ctrls,
+> -				     bool commit)
+> +				     unsigned long ioctl)
+>  {
+>  	struct v4l2_ext_control *ctrl = ctrls->controls;
+>  	struct uvc_video_chain *chain = handle->chain;
+>  	unsigned int i;
+>  	int ret;
+>  
+> +	ret = uvc_ctrl_check_access(chain, ctrls, ioctl);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	ret = uvc_ctrl_begin(chain);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -1105,14 +1133,15 @@ static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
+>  		ret = uvc_ctrl_set(handle, ctrl);
+>  		if (ret < 0) {
+>  			uvc_ctrl_rollback(handle);
+> -			ctrls->error_idx = commit ? ctrls->count : i;
+> +			ctrls->error_idx = ioctl == VIDIOC_S_EXT_CTRLS ?
+> +						    ctrls->count : i;
+>  			return ret;
+>  		}
+>  	}
+>  
+>  	ctrls->error_idx = 0;
+>  
+> -	if (commit)
+> +	if (ioctl == VIDIOC_S_EXT_CTRLS)
+>  		return uvc_ctrl_commit(handle, ctrls->controls, ctrls->count);
+>  	else
+>  		return uvc_ctrl_rollback(handle);
+> @@ -1123,7 +1152,7 @@ static int uvc_ioctl_s_ext_ctrls(struct file *file, void *fh,
+>  {
+>  	struct uvc_fh *handle = fh;
+>  
+> -	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, true);
+> +	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, VIDIOC_S_EXT_CTRLS);
+>  }
+>  
+>  static int uvc_ioctl_try_ext_ctrls(struct file *file, void *fh,
+> @@ -1131,7 +1160,7 @@ static int uvc_ioctl_try_ext_ctrls(struct file *file, void *fh,
+>  {
+>  	struct uvc_fh *handle = fh;
+>  
+> -	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, false);
+> +	return uvc_ioctl_s_try_ext_ctrls(handle, ctrls, VIDIOC_TRY_EXT_CTRLS);
+>  }
+>  
+>  static int uvc_ioctl_querymenu(struct file *file, void *fh,
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index dc20021f7ee0..3288b118264e 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -902,6 +902,7 @@ static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
+>  
+>  int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
+>  int uvc_ctrl_set(struct uvc_fh *handle, struct v4l2_ext_control *xctrl);
+> +int uvc_ctrl_is_accesible(struct uvc_video_chain *chain, u32 v4l2_id, bool read);
+>  
+>  int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+>  		      struct uvc_xu_control_query *xqry);
 > 
 
--- 
-Sincerely yours,
-Mike.
