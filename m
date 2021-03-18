@@ -2,122 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A867340DB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AAB340DB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhCRTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        id S232716AbhCRTBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhCRS7h (ORCPT
+        with ESMTP id S232881AbhCRTAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:59:37 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D428CC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:59:37 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id v26so3433031iox.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:59:37 -0700 (PDT)
+        Thu, 18 Mar 2021 15:00:54 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B309C061762
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:00:53 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id z8so8817856ljm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N1vkQNGymFwLks9UB15v9pfiGh7bDRvcY3otglQibLg=;
-        b=pfH5ler1whahhR7+Rbq/Yg+pGdofKAwCexk6XT2t/2TWybTCB0lpcWaT3m1Mc4mpcA
-         TQXlJHkxjKuJjLxJ1byok/7EoaMoC34AZHIkev0kYH2lR/dTCN5/0USvcdT0jhUa6QEo
-         dfbEpM/L8+5ls/Dz+Y03cFa23R7Ry1p5gTgbqcJ9/d6CYrul3HjO+p+L+pnOVI+++Yqf
-         etF9fgoDw+HB8pbMI8mBmeKKXLVu9ij/KAcHOgeSGw8UcqWRYS1xUpVr9rZP0KgyTzi1
-         dINpVZOlSCzuWLVj8n4he154qSbM6dHIi0q6rECGjCDomPUJC2xSBYKwzaesvIyjuE0U
-         Pwrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HYca1ndZSGowpwQORXxcl09hudlmdW3oK/eLGvMXjGA=;
+        b=DtsCZAMqawT8GwoT4PVd5v24eAtD3md/tl3oDtZnEKVjuf8aIFuUFBVtTcRdMUj6Ih
+         vazygaVz3QAPRgp1KACpCc4mSY7ZQ4UgJLrM81ts8sPOGAXzrLp9kZE5HnvnYTtmGwhU
+         DVpcdbN7dcpEadnZFbyTsL0eKtM0OTz4FUD6lMtMi92bWtcFi5FYXfOdeX879sB7qSNd
+         MGRcHAxa7IQR9/I1QdEy6xgdnYOef1RbaCDGBREc/S1LWE1/lR3u87z8NjDX13dL1JD+
+         M3BPK/lGlD78JdYbuYFfZF72YaWZpDwZaj//y3Dh1KBdjjZZPYoM/IHKunTLL4eOhGbz
+         J/CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N1vkQNGymFwLks9UB15v9pfiGh7bDRvcY3otglQibLg=;
-        b=m2D1RqIav4genOl8MQipTkghi3US9leXythaLJi4+Fq6rRaifIKX3Z6co3WFTrkjIa
-         xrHWIVy7TAhp1MfE7U4M/0nfLCDPPEh5Sm/gk6ywNZqP/DJ6mRNNdRXhxUk/PAt+qbTA
-         5vncFXvy9qBhfLI7ftYY5uHdjaGuazKAG6dkwV9q5VYWdNtXeyzXBQ6ZiylaVPoYEcbo
-         Jn5Wevh2iMqomDEWa5yZGcKqg23zChx1EechZIvHYw17SXXZFAkLgiolAJ59aVPQtJul
-         CSJpasgz21Gp/afXcwfCCS/papRkZBKJf+YZhI+vy3ggZE+jEcpIkuZN2xmaxk71oPJD
-         sepA==
-X-Gm-Message-State: AOAM5319mKXF+Gd+rgsnnPgpBY+Z+TObjD093MSpPk5HMRmSyUK7dGpn
-        NJN+rrcdZ3obva8C84kGlF8BQQ==
-X-Google-Smtp-Source: ABdhPJyBJfnLmpJKvapKx8C9fJLQoE8XgYgXus7U9uis/zT26DgabEC/bTzfh+hmpv0ogwzs6A0Urw==
-X-Received: by 2002:a5e:d908:: with SMTP id n8mr6640iop.121.1616093977333;
-        Thu, 18 Mar 2021 11:59:37 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id k7sm770359ils.35.2021.03.18.11.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 11:59:37 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     f.fainelli@gmail.com, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 4/4] net: ipa: relax 64-bit build requirement
-Date:   Thu, 18 Mar 2021 13:59:30 -0500
-Message-Id: <20210318185930.891260-5-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210318185930.891260-1-elder@linaro.org>
-References: <20210318185930.891260-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HYca1ndZSGowpwQORXxcl09hudlmdW3oK/eLGvMXjGA=;
+        b=EPJ90tDUXyTaLWKuxDt8PDum8+3TOg0euCQMkim1bhzvjAcqy5Xd4OM1m4bZoKWahh
+         BTjs1fNKIlTy2+T36VzeU2REEFHiKdcQ4tHJa3/mb6qBfrf2jpP7PbNABE2KOMUshoXk
+         IQoPZ2TpLe3Wr3bE2h3mRyHcuBJRt/OilduzH+9IJJi87oc4YzLmCK8wg9lZRQRe97Yi
+         d+SjqWIaPGcuw7EQ6oGYkea25KjVGNaObePYj25DOfxl4ENAatsqQoE+rF/B9ZraDe8+
+         fvfhZiizM0qGkPjJl2lcgKEkcv8NmGGbPXYdk+CL4yvN47iOE5/auewFsa/gNmM3hQoS
+         c7mw==
+X-Gm-Message-State: AOAM533M/PzLLM7fafcBV3LYkoL/ZmvrunecMxAeH9BX1XswuvH9A661
+        /w1rsvNA79QSEGR9NnwXtuGCyphhoHE/529M/qQHbg==
+X-Google-Smtp-Source: ABdhPJzP/a52k5+dCj0sW8ZVd7EdWFyf0UEYVdSHJNFGWNp/U4i4CeFbe93RfhwQGYgCO4D0YFivDqiJb465mbw4K2E=
+X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr6272028ljj.116.1616094051624;
+ Thu, 18 Mar 2021 12:00:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210318171111.706303-1-samitolvanen@google.com> <20210318171111.706303-8-samitolvanen@google.com>
+In-Reply-To: <20210318171111.706303-8-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Mar 2021 12:00:39 -0700
+Message-ID: <CAKwvOdkETA4OU5d_f_8eCeXgo4juagHuPWo6Fd4jg7C1cWqoYA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] kallsyms: strip ThinLTO hashes from static functions
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently assume the IPA driver is built only for a 64 bit kernel.
+On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> With CONFIG_CFI_CLANG and ThinLTO, Clang appends a hash to the names
+> of all static functions not marked __used. This can break userspace
+> tools that don't expect the function name to change, so strip out the
+> hash from the output.
+>
+> Suggested-by: Jack Pham <jackp@codeaurora.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  kernel/kallsyms.c | 54 ++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 49 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 8043a90aa50e..17d3a704bafa 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -161,6 +161,26 @@ static unsigned long kallsyms_sym_address(int idx)
+>         return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
+>  }
+>
+> +#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
+> +/*
+> + * LLVM appends a hash to static function names when ThinLTO and CFI are
+> + * both enabled, which causes confusion and potentially breaks user space
 
-When this constraint was put in place it eliminated some do_div()
-calls, replacing them with the "/" and "%" operators.  We now only
-use these operations on u32 and size_t objects.  In a 32-bit kernel
-build, size_t will be 32 bits wide, so there remains no reason to
-use do_div() for divide and modulo.
+Might be nice to add an example, something along the lines of:
+ie. foo() becomes foo$asfdasdfasdfasdf()
 
-A few recent commits also fix some code that assumes that DMA
-addresses are 64 bits wide.
+> + * tools, so we will strip the postfix from expanded symbol names.
 
-With that, we can get rid of the 64-bit build requirement.
+s/postfix/suffix/ ?
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/Kconfig    |  2 +-
- drivers/net/ipa/ipa_main.c | 10 ++++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+> + */
+> +static inline char *cleanup_symbol_name(char *s)
+> +{
+> +       char *res = NULL;
+> +
+> +       res = strrchr(s, '$');
+> +       if (res)
+> +               *res = '\0';
+> +
+> +       return res;
+> +}
+> +#else
+> +static inline char *cleanup_symbol_name(char *s) { return NULL; }
+> +#endif
 
-diff --git a/drivers/net/ipa/Kconfig b/drivers/net/ipa/Kconfig
-index b68f1289b89ef..90a90262e0d07 100644
---- a/drivers/net/ipa/Kconfig
-+++ b/drivers/net/ipa/Kconfig
-@@ -1,6 +1,6 @@
- config QCOM_IPA
- 	tristate "Qualcomm IPA support"
--	depends on 64BIT && NET && QCOM_SMEM
-+	depends on NET && QCOM_SMEM
- 	depends on ARCH_QCOM || COMPILE_TEST
- 	depends on QCOM_RPROC_COMMON || (QCOM_RPROC_COMMON=n && COMPILE_TEST)
- 	select QCOM_MDT_LOADER if ARCH_QCOM
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 97c1b55405cbf..d354e3e65ec50 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -735,8 +735,14 @@ MODULE_DEVICE_TABLE(of, ipa_match);
- static void ipa_validate_build(void)
- {
- #ifdef IPA_VALIDATE
--	/* We assume we're working on 64-bit hardware */
--	BUILD_BUG_ON(!IS_ENABLED(CONFIG_64BIT));
-+	/* At one time we assumed a 64-bit build, allowing some do_div()
-+	 * calls to be replaced by simple division or modulo operations.
-+	 * We currently only perform divide and modulo operations on u32,
-+	 * u16, or size_t objects, and of those only size_t has any chance
-+	 * of being a 64-bit value.  (It should be guaranteed 32 bits wide
-+	 * on a 32-bit build, but there is no harm in verifying that.)
-+	 */
-+	BUILD_BUG_ON(!IS_ENABLED(CONFIG_64BIT) && sizeof(size_t) != 4);
- 
- 	/* Code assumes the EE ID for the AP is 0 (zeroed structure field) */
- 	BUILD_BUG_ON(GSI_EE_AP != 0);
+Might be nicer to return a `bool` and have the larger definition
+`return res != NULL`).  Not sure what a caller would do with `res` if
+it was not `NULL`?
+
+> +
+>  /* Lookup the address for this symbol. Returns 0 if not found. */
+>  unsigned long kallsyms_lookup_name(const char *name)
+>  {
+> @@ -173,6 +193,9 @@ unsigned long kallsyms_lookup_name(const char *name)
+>
+>                 if (strcmp(namebuf, name) == 0)
+>                         return kallsyms_sym_address(i);
+> +
+> +               if (cleanup_symbol_name(namebuf) && strcmp(namebuf, name) == 0)
+> +                       return kallsyms_sym_address(i);
+>         }
+>         return module_kallsyms_lookup_name(name);
+>  }
+> @@ -303,7 +326,9 @@ const char *kallsyms_lookup(unsigned long addr,
+>                                        namebuf, KSYM_NAME_LEN);
+>                 if (modname)
+>                         *modname = NULL;
+> -               return namebuf;
+> +
+> +               ret = namebuf;
+> +               goto found;
+>         }
+>
+>         /* See if it's in a module or a BPF JITed image. */
+> @@ -316,11 +341,16 @@ const char *kallsyms_lookup(unsigned long addr,
+>         if (!ret)
+>                 ret = ftrace_mod_address_lookup(addr, symbolsize,
+>                                                 offset, modname, namebuf);
+> +
+> +found:
+> +       cleanup_symbol_name(namebuf);
+>         return ret;
+>  }
+>
+>  int lookup_symbol_name(unsigned long addr, char *symname)
+>  {
+> +       int res;
+> +
+>         symname[0] = '\0';
+>         symname[KSYM_NAME_LEN - 1] = '\0';
+>
+> @@ -331,15 +361,23 @@ int lookup_symbol_name(unsigned long addr, char *symname)
+>                 /* Grab name */
+>                 kallsyms_expand_symbol(get_symbol_offset(pos),
+>                                        symname, KSYM_NAME_LEN);
+> -               return 0;
+> +               goto found;
+>         }
+>         /* See if it's in a module. */
+> -       return lookup_module_symbol_name(addr, symname);
+> +       res = lookup_module_symbol_name(addr, symname);
+> +       if (res)
+> +               return res;
+> +
+> +found:
+> +       cleanup_symbol_name(symname);
+> +       return 0;
+>  }
+>
+>  int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
+>                         unsigned long *offset, char *modname, char *name)
+>  {
+> +       int res;
+> +
+>         name[0] = '\0';
+>         name[KSYM_NAME_LEN - 1] = '\0';
+>
+> @@ -351,10 +389,16 @@ int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
+>                 kallsyms_expand_symbol(get_symbol_offset(pos),
+>                                        name, KSYM_NAME_LEN);
+>                 modname[0] = '\0';
+> -               return 0;
+> +               goto found;
+>         }
+>         /* See if it's in a module. */
+> -       return lookup_module_symbol_attrs(addr, size, offset, modname, name);
+> +       res = lookup_module_symbol_attrs(addr, size, offset, modname, name);
+> +       if (res)
+> +               return res;
+> +
+> +found:
+> +       cleanup_symbol_name(name);
+> +       return 0;
+>  }
+>
+>  /* Look up a kernel symbol and return it in a text buffer. */
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
+
+
 -- 
-2.27.0
-
+Thanks,
+~Nick Desaulniers
