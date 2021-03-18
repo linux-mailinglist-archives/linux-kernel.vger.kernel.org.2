@@ -2,161 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F81340DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A40340DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhCRTGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:06:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:40804 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231590AbhCRTGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:06:00 -0400
-IronPort-SDR: xKOc06sQKVp6/FUGF8fGeXIx5jd4M5nHvgocyvCnyt5yP/Hf/oIGqfRgh4M0Iy98GPknM62ctr
- dEJvILz/Iv2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189128303"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="189128303"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 12:06:00 -0700
-IronPort-SDR: hqYeyuc91+tiTRuC7ikztwLhEgKS2tALLRwJSbZ64YO5K2tylKZBX7tsRUFeWimmlOPHqcL6yO
- P5Jcq/OKHeVg==
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="389358155"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.36.121]) ([10.209.36.121])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 12:05:58 -0700
-Subject: Re: [PATCH v23 22/28] x86/cet/shstk: User-mode shadow stack support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-23-yu-cheng.yu@intel.com>
- <20210318123215.GE19570@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b05ee7eb-1b5d-f84f-c8f3-bfe9426e8a7d@intel.com>
-Date:   Thu, 18 Mar 2021 12:05:58 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230012AbhCRTGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhCRTG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:06:28 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB09C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:06:28 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id bf3so8038036edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U15tb4g3nXjGjLDNPkVSVXyuRsDcgd2AwJjskj7Z5Ec=;
+        b=n/RerCQHRWgQkiEovha3KzwKaNtZvM1td5YX8JoEDq+f+XQYWv//r9Xtpwv6AfRRTL
+         SHiaTpHO9fAo73UzhelG6kc+uXS7FIRpx51sz3FoFIPL/VtMztdbkHZY+Cb1Czce+hQh
+         sotI8cogdbYTKHBnvvhcap3QYkHyBjaSADWXz4Y/rvHJ9xN2dWdGRMxpDSYmlMeyrTxU
+         WOe/MmmTfV9UQs7LyzgFNMfkFwNkTp7Spv/oV7oTZjgLl3UDSSzy0OZzlSYDlJtTHmZZ
+         Od+CWI+meI8JXVQHhDxFI7Gxgw/ftEd0WITgPQReQvYRKpHWdVgr6+6MeoA+nJsnZd4r
+         lo2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U15tb4g3nXjGjLDNPkVSVXyuRsDcgd2AwJjskj7Z5Ec=;
+        b=ZCWToNZvJAROtBDhQ32KKm+xiZSb1c9iwHS7UL426dDFpWAozC9eM17NuS+Fe5qAWN
+         BEstLJ+KuG1QevgH4QCurB2q1Q85P0CRFicMjFRwuznShHf09RU3iIhUkzt8UEKhAmkS
+         zgnMJQCGuZSxRW19wp/feua07vgyDDiO/MNDzg+K7uiQ3UZF/glKdUyIPDCsoEdMGt11
+         3eiK9zjK9pIRlLJrh1gdPuEHIgpix0J6rDbnkpBlZpBOo/bdsdTZobAJUY2wqra/wk8O
+         u/U0u2gmAnksP5il9QmJY02gCS84aX6hilOqz00Vv7OKA+FQw1PuoHGxyRqBHXjx/ugn
+         cLjQ==
+X-Gm-Message-State: AOAM533S5V1dI/PTdvCSy/VzuC4HBMrafnxQt1VQk64S7Jq3/1KTy6p3
+        dkaceGsEDnNgviRMFA2P1nirUwGn46MXgU9bK4rT
+X-Google-Smtp-Source: ABdhPJzk6BrSrIOsFMVG4w2aM5J+DjbTTiGzJ+fGRB4nHTkATd+3xFXgV048yNudqUCP67Cbv7Ja8rjuMWFp3ddCjBU=
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr5475637edt.12.1616094386871;
+ Thu, 18 Mar 2021 12:06:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210318123215.GE19570@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1616008065.git.rgb@redhat.com> <0e77d290bb50232d9ec9317645106f1330bd2d54.1616008065.git.rgb@redhat.com>
+In-Reply-To: <0e77d290bb50232d9ec9317645106f1330bd2d54.1616008065.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 18 Mar 2021 15:06:16 -0400
+Message-ID: <CAHC9VhTawo7jrRPeCV6mcPe9r3CZ5D+O+ukWz5Ji_mZu=PFo4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] audit: document /proc/PID/sessionid
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/2021 5:32 AM, Borislav Petkov wrote:
->> Subject: Re: [PATCH v23 22/28] x86/cet/shstk:   User-mode shadow stack support
-> 						^
-> 						Add
-> 
-> On Tue, Mar 16, 2021 at 08:10:48AM -0700, Yu-cheng Yu wrote:
->> Introduce basic shadow stack enabling/disabling/allocation routines.
->> A task's shadow stack is allocated from memory with VM_SHSTK flag and has
->> a fixed size of min(RLIMIT_STACK, 4GB).
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->> ---
->>   arch/x86/include/asm/cet.h       |  28 ++++++
->>   arch/x86/include/asm/processor.h |   5 ++
->>   arch/x86/kernel/Makefile         |   2 +
->>   arch/x86/kernel/cet.c            | 147 +++++++++++++++++++++++++++++++
+On Wed, Mar 17, 2021 at 9:51 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> Describe the /proc/PID/loginuid interface in Documentation/ABI/stable that
+> was added 2008-03-13 in commit 1e0bd7550ea9 ("[PATCH] export sessionid
+> alongside the loginuid in procfs")
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+>  Documentation/ABI/stable/procfs-audit_loginuid | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 
-[...]
+The same comments from patch 1/2 apply here.
 
->> +void cet_free_shstk(struct task_struct *tsk)
->> +{
->> +	struct cet_status *cet = &tsk->thread.cet;
->> +
->> +	if (!static_cpu_has(X86_FEATURE_SHSTK) ||
-> 
-> cpu_feature_enabled and as above.
-> 
->> +	    !cet->shstk_size || !cet->shstk_base)
->> +		return;
->> +
->> +	if (!tsk->mm || tsk->mm != current->mm)
->> +		return;
-> 
-> You're operating on current here merrily but what's protecting all those
-> paths operating on current from getting current changed underneath them
-> due to scheduling? IOW, is preemption safely disabled in all those
-> paths ending up here?
+> diff --git a/Documentation/ABI/stable/procfs-audit_loginuid b/Documentation/ABI/stable/procfs-audit_loginuid
+> index 013bc1d74854..5d09637a4ae2 100644
+> --- a/Documentation/ABI/stable/procfs-audit_loginuid
+> +++ b/Documentation/ABI/stable/procfs-audit_loginuid
+> @@ -13,3 +13,15 @@ Description:
+>                 AUDIT_FEATURE_LOGINUID_IMMUTABLE is enabled.  It cannot be
+>                 unset if AUDIT_FEATURE_ONLY_UNSET_LOGINUID is enabled.
+>
+> +
+> +What:          Audit Login Session ID
+> +Date:          2008-03-13
+> +KernelVersion: 2.6.25-rc7 1e0bd7550ea9 ("[PATCH] export sessionid alongside the loginuid in procfs")
+> +Contact:       linux-audit@redhat.com
+> +Format:                %u (u32)
+> +Users:         auditd, libaudit, audit-testsuite, login
+> +Description:
+> +               The /proc/$pid/sessionid pseudofile is read to get the
+> +               audit login session ID of process $pid.  It is set
+> +               automatically, serially assigned with each new login.
+> +
 
-Good thought.  Indeed, this looks like scheduling would bring some 
-trouble.  However, when this instance is running, the current task must 
-be current, context switch or not.  The purpose of this check is 
-described below.
-
-When fork() fails, it calls exit_thread(), then cet_free_shstk(). 
-Normally the child tsk->mm != current->mm (parent).  There is no need to 
-free shadow stack.
-
-For CLONE_VM, however, the kernel has already allocated a shadow stack 
-for the child and needs to free it because fork() failed.
-
-Maybe I would add comments here.
-
-> 
->> +
->> +	while (1) {
-> 
-> Uuh, an endless loop. What guarantees we'll exit it relatively timely...
-> 
->> +		int r;
->> +
->> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
->> +
->> +		/*
->> +		 * Retry if mmap_lock is not available.
->> +		 */
->> +		if (r == -EINTR) {
->> +			cond_resched();
-> 
-> ... that thing?
-
-If vm_munmap() returns -EINTR, mmap_lock is held by something else. 
-That lock should not be held forever.  For other types of error, the 
-loop stops.
-
-> 
->> +			continue;
->> +		}
->> +
->> +		WARN_ON_ONCE(r);
->> +		break;
->> +	}
->> +
->> +	cet->shstk_base = 0;
->> +	cet->shstk_size = 0;
->> +}
->> -- 
->> 2.21.0
->>
-> 
-
+-- 
+paul moore
+www.paul-moore.com
