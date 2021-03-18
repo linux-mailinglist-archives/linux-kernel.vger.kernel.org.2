@@ -2,103 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051FC340E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3D7340E13
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhCRTTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhCRTSw (ORCPT
+        id S232735AbhCRTUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:20:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232799AbhCRTTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:18:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163AAC06174A;
-        Thu, 18 Mar 2021 12:18:52 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id 61so6703911wrm.12;
-        Thu, 18 Mar 2021 12:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=/j676tkAgUS/O5dhTPZRodCa+qnUzcgFpT3mbEwnEO8=;
-        b=OK38Ka2J2ptk8WcFkgt1LrbAif1N99+zipc9tGVIg30IwmbnDeYWlzUod0QedwoO9E
-         8uJgkzrJ6ay/82ilO4iQq7kL7RkVI1ULbD2sk5iTVYCSO0DyacQKk4RR2af6QXatwQQG
-         AoPxYNSu3xutbWtwXHC3BGbjeWtxjPI5tynzIQsUwzMOpTKb5PZVTD6IRR93TukyGKcE
-         yn8nopmVhiB5am74Gm9v6m2GH+sae4aDtAtaaIzaWJJI4f6Jg5rI1+oIlVD8/hK5k6oH
-         Gf02pR1dg/nPXiobhIgwD/+uAIAx2Jz8oB03vumeLnupRCK2bxnnjZ8x3hOQCq2jzDeR
-         5MAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=/j676tkAgUS/O5dhTPZRodCa+qnUzcgFpT3mbEwnEO8=;
-        b=DjecK14S0b5WfkqFWeN+6Pi36eNSEj06u6OA+R8uVLtT3txoXDhRA8Na1L+sfdH6sk
-         q44fQgqfW9sWOI1qC7uK+UO3jBSFBmfpOdtnub9xMrUiUXPj42+L880O4pU0QNSl5teE
-         nj6XCFhDNMJpBrEqLE00TEL0pRHHB5Ann0+pyP8OzEHIzpqo5tUMZA1UWK9+E6rpAzcJ
-         SmxH55WOsiYnJKVTWYgJjEeXtw+T+sJ1RAhJXV1r6zyPDXWchjjvkBlMga56Ln+WFXe3
-         P4zvpKrdVYS5Hte/Btq/i8eDig1G99u2GngpDVAx6JZm39FTpDvWrSLEYqutZAQstHXX
-         N/eg==
-X-Gm-Message-State: AOAM532Dgmx5zHkpz/JYmSk1WK2di7FQG8yf1OCAGtd4x7rjiYW9llMd
-        MO1DUwxWro6W7qtbu2VcpBw=
-X-Google-Smtp-Source: ABdhPJyjMqFvq1mhgVW6jYL8JDgcCGNjgp2h7ACbK2MoWMoDBFZSVlZTe92JwYay2y0GZuUhhUTHww==
-X-Received: by 2002:adf:eb8e:: with SMTP id t14mr831861wrn.20.1616095130864;
-        Thu, 18 Mar 2021 12:18:50 -0700 (PDT)
-Received: from LEGION ([111.119.187.17])
-        by smtp.gmail.com with ESMTPSA id c2sm3256411wme.15.2021.03.18.12.18.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 12:18:50 -0700 (PDT)
-Message-ID: <2f7b725b755350136b0ba8cedd3e342f8234834c.camel@gmail.com>
-Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
- alloc_workqueue call
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Colin King <colin.king@canonical.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        linux-block@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 19 Mar 2021 00:18:25 +0500
-In-Reply-To: <20210318151626.17442-1-colin.king@canonical.com>
-References: <20210318151626.17442-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 18 Mar 2021 15:19:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616095191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=h/AQCJes2OhjQj1vBXqxm+lLmXZx1n8jlvmzyQwRixg=;
+        b=Gp1KiFHoQvEAkyoqmCYt81C/6qQrtSjcf8DdTFgY6gTHZg2Xia+YCXv/MuknPJm6NNdQPX
+        5IRHWeK9flan14RvVnJT2PWOMi3HzsYgPpe0eyfT1D9HnICwIrcUtW0xrbjrXmywADpR4Q
+        fPgBeNo+zPp+5MbitkKOM29p+VI3njE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-m_J0dhtXM3i35UHSgeHI_g-1; Thu, 18 Mar 2021 15:19:49 -0400
+X-MC-Unique: m_J0dhtXM3i35UHSgeHI_g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0687B18C8C00;
+        Thu, 18 Mar 2021 19:19:48 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 923405C3E6;
+        Thu, 18 Mar 2021 19:19:37 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Eric Paris <eparis@parisplace.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH v3 0/2] audit: add documentation for /proc/PID/stable interfaces
+Date:   Thu, 18 Mar 2021 15:19:09 -0400
+Message-Id: <cover.1616095045.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-18 at 15:16 +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The 3rd argument to alloc_workqueue should be the max_active count,
-> however currently it is the lo->lo_number that is intended for the
-> loop%d number. Fix this by adding in the missing max_active count.
-> 
-> Addresses-Coverity: ("Missing argument to printf")
-> Fixes: 08ad7f822739 ("loop: Use worker per cgroup instead of kworker")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/block/loop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index f2f9e4127847..ee2a6c1bc093 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -1192,7 +1192,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->  	lo->workqueue = alloc_workqueue("loop%d",
->  					WQ_UNBOUND | WQ_FREEZABLE |
->  					WQ_MEM_RECLAIM,
-> -					lo->lo_number);
-> +					1, lo->lo_number);
->  	if (!lo->workqueue) {
->  		error = -ENOMEM;
->  		goto out_unlock;
+Add Documentation/ABI entries for audit interfaces in /proc/PID/ that have
+been stable for more than a decade.
 
-Nice catch.
+Richard Guy Briggs (2):
+  audit: document /proc/PID/loginuid
+  audit: document /proc/PID/sessionid
 
-Reviewed-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+ .../ABI/stable/procfs-audit_loginuid          | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 Documentation/ABI/stable/procfs-audit_loginuid
 
-
+-- 
+2.27.0
 
