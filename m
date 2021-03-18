@@ -2,82 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA333FD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F4B33FD76
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhCRCyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:54:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230507AbhCRCy0 (ORCPT
+        id S230217AbhCRC4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhCRCz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:54:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616036065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tjdti5kTNL3zD2uNkTDcpxYIrVKXWkg9ROqzL7KcVJ4=;
-        b=E4rWPYWiIioBEQVGBqac+3YQ5eWgheqOsoIAEmOnOTO6rbXdEmR3Fj+UBLRGN3L+6spGb0
-        PFSp3YPyXWYyZ6fZ9vvRil4Zq7e2co3OS01eabvhrYp28UmWe+/PMHQxZ5OAzuDoH745O3
-        8AJkoeGR6b/MQq7qs7JLRH/dUaZGv9A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-kT4dhYSkNUa-dXlfTbk42g-1; Wed, 17 Mar 2021 22:54:23 -0400
-X-MC-Unique: kT4dhYSkNUa-dXlfTbk42g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A1A7881280;
-        Thu, 18 Mar 2021 02:54:22 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-171.rdu2.redhat.com [10.10.117.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B5F45C1D0;
-        Thu, 18 Mar 2021 02:54:18 +0000 (UTC)
-Subject: Re: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a
- trylock
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-References: <20210316153119.13802-1-longman@redhat.com>
- <20210316153119.13802-4-longman@redhat.com>
- <YFK5yBIOTiCdFLNm@boqun-archlinux>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <64af1d7b-6720-0ac1-4a55-bb0acb642c6f@redhat.com>
-Date:   Wed, 17 Mar 2021 22:54:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 17 Mar 2021 22:55:59 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9629DC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:55:59 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so3864169ote.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=27W1NAaEDoiN1XjCrbRbIY3sRWmvahk+Y7TUd1HZpNk=;
+        b=NNT30YpUOjnTtIIgfpPaaNb1NMWqPi9HZGoaMjkSlCPov7l+5HMwI8MrMlLHCsm+Lk
+         vLbpD1HexvGx38mf30KvE8L+mYXcCXiN4RqIaytz9B2dqg0GjdofqlkCWrZnhaqWqzyV
+         GrHhWdJpO7P8QlolwKGMCziDVySsJrOBikmTs8tTzWL6/ibmap79OuxlVUp6pAb/IlUU
+         6CXY/JltgtoMigly3rllHeZVza0XWr/zyE0Vbnh9bdm6ah5TLYLMCupumLa92xCeKy6R
+         DPZ5f4SZqxPt4qiHYsisFA+mrYsYEIKXtW84qLgabMrqlDb46NASckOEFwfF24F8Enfp
+         hi+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=27W1NAaEDoiN1XjCrbRbIY3sRWmvahk+Y7TUd1HZpNk=;
+        b=TJqKsLZIM2IabUVl5K4ap/XJ47Yssw3bxOnEPqMwaQUelia00D5jM2s5aojThE0Kqb
+         xcmJT/Kz8ina+HWrCzGz95lSiN6Blv7yWahsoonU7IhZA95w3R/slmybo9oYwTyJo7Mw
+         /uz+TmcgwoY75IPubMe641JXx15v/WF+Gqge2/8G44DFDVtTsCsK5XBflnvmT3c52dLG
+         3Z0BuLPpA5+FS8f5d9v6SxK1Wsw3vd1hzoe0+ssAk/8AsTFPfviKYnmtlUHfxXPksowP
+         yhoO3pBgoNUl6mjPbpVTb7c1riaGvH2g16QYZQ8lznJOKmtZShUyi44cxugNwbmdSYul
+         VTJA==
+X-Gm-Message-State: AOAM532wu9wXcrute2GZiX/MZDI8hfHfU54v7oI6u+eZuvtgj5JT5mUb
+        hy9getN2Cmluew8pU0SGhB6B5A==
+X-Google-Smtp-Source: ABdhPJzvUIUNj7R3Lxmz3ePp9qfkHXEqAKknhmjyW0ajLAsXeDfcHGJ8d8H2YuhuKEQT9+SLORAolQ==
+X-Received: by 2002:a9d:2f24:: with SMTP id h33mr6029369otb.128.1616036158912;
+        Wed, 17 Mar 2021 19:55:58 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g13sm181622otq.3.2021.03.17.19.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 19:55:58 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 21:55:56 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, ohad@wizery.com, robh+dt@kernel.org
+Subject: Re: [PATCH 3/5] dt-bindings: remoteproc: Add the documentation for
+ Meson AO ARC rproc
+Message-ID: <YFLBPGNQpT9mM3AJ@builder.lan>
+References: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com>
+ <20201230012724.1326156-4-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-In-Reply-To: <YFK5yBIOTiCdFLNm@boqun-archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230012724.1326156-4-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 10:24 PM, Boqun Feng wrote:
-> Hi Waiman,
->
-> Just a question out of curiosity: how does this problem hide so long?
-> ;-) Because IIUC, both locktorture and ww_mutex_lock have been there for
-> a while, so why didn't we spot this earlier?
->
-> I ask just to make sure we don't introduce the problem because of some
-> subtle problems in lock(dep).
->
-You have to explicitly specify ww_mutex in the locktorture module 
-parameter to run the test. ww_mutex is usually not the intended target 
-of testing as there aren't that many places that use it. Even if someone 
-run it, it probably is not on a debug kernel.
+On Tue 29 Dec 19:27 CST 2020, Martin Blumenstingl wrote:
 
-Our QA people try to run locktorture on ww_mutex and discover that.
+> Amlogic Meson6, Meson8, Meson8b and Meson8m2 SoCs embed an ARC EM4
+> controller for always-on operations, typically used for managing system
+> suspend.
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  .../remoteproc/amlogic,meson-mx-ao-arc.yaml   | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml b/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> new file mode 100644
+> index 000000000000..ba5deebaf7dc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/remoteproc/amlogic,meson-mx-ao-arc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Amlogic Meson AO ARC Remote Processor bindings
+> +
+> +description:
+> +  Amlogic Meson6, Meson8, Meson8b and Meson8m2 SoCs embed an ARC core
+> +  controller for always-on operations, typically used for managing
+> +  system suspend. Meson6 and older use a ARC core based on the ARCv1
+> +  ISA, while Meson8, Meson8b and Meson8m2 use an ARC EM4 (ARCv2 ISA)
+> +  core.
+> +
+> +maintainers:
+> +  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +        - amlogic,meson8-ao-arc
+> +        - amlogic,meson8b-ao-arc
+> +      - const: amlogic,meson-mx-ao-arc
+> +
+> +  firmware-name:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description:
+> +      The name of the firmware which should be loaded for this remote
+> +      processor.
+> +
+> +  reg:
+> +    description:
+> +      Address ranges of the remap and CPU control addresses for the
+> +      remote processor.
+> +    minItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: remap
+> +      - const: cpu
+> +
+> +  resets:
+> +     minItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +
+> +  sram:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      phandles to a reserved SRAM region which is used as the memory of
+> +      the ARC core. The region should be defined as child nodes of the
+> +      AHB SRAM node as per the generic bindings in
+> +      Documentation/devicetree/bindings/sram/sram.yaml
+> +
+> +  amlogic,secbus2:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      A phandle to the SECBUS2 region which contains some configuration
+> +      bits of this remote processor
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - resets
+> +  - clocks
+> +  - sram
+> +  - amlogic,secbus2
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    remoteproc@1c {
+> +      compatible= "amlogic,meson8-ao-arc", "amlogic,meson-mx-ao-arc";
+> +      reg = <0x1c 0x8>, <0x38 0x8>;
 
-Cheers,
-Longman
+I'm generally not in favor of mapping "individual" registers, do you
+know what hardware block this is part of? Can you express the whole
+block as an single entity in your DT?
 
+Regards,
+Bjorn
+
+> +      reg-names = "remap", "cpu";
+> +      resets = <&media_cpu_reset>;
+> +      clocks = <&media_cpu_clock>;
+> +      sram = <&ahb_sram_ao_arc>;
+> +      amlogic,secbus2 = <&secbus2>;
+> +    };
+> +
+> +...
+> -- 
+> 2.30.0
+> 
