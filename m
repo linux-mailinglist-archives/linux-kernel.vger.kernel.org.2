@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2365933FD51
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B363B33FD4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhCRCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:39:16 -0400
-Received: from mga18.intel.com ([134.134.136.126]:42913 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230341AbhCRCiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:38:52 -0400
-IronPort-SDR: M+/tCsqj12SFvB0pGqrmDLuIyztMbiwz0rGwT8VelPRbkxTX50sdfpx6P7KBqMcf3RQ+pe1KF4
- mB7tg2HaE+TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="177180910"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="177180910"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:52 -0700
-IronPort-SDR: sekA4qS1NWWjh9+u9VP2O4uKHjKSpobxFH/1mS4Lnfzy9ayOm2R/OK7nCZfsTJ9cOaX8PpEw8V
- utKjXGD/rLOw==
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="450315247"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:50 -0700
-Date:   Thu, 18 Mar 2021 10:37:03 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, linux-btrfs@vger.kernel.org
-Subject: Re: [btrfs] 5297199a8b: xfstests.btrfs.220.fail
-Message-ID: <20210318023703.GB10304@xsang-OptiPlex-9020>
-References: <20210309084953.GD12057@xsang-OptiPlex-9020>
- <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
+        id S230245AbhCRCiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:38:10 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14368 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCRChg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:37:36 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F1B312bPkz90G6;
+        Thu, 18 Mar 2021 10:35:41 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Mar 2021 10:37:26 +0800
+Subject: Re: [PATCH] powerpc: arch/powerpc/kernel/setup_64.c - cleanup
+ warnings
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Axtens <dja@axtens.net>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <npiggin@gmail.com>,
+        <akpm@linux-foundation.org>, <aneesh.kumar@linux.ibm.com>,
+        <rppt@kernel.org>, <ardb@kernel.org>, <clg@kaod.org>,
+        <christophe.leroy@csgroup.eu>
+CC:     <johnny.chenyi@huawei.com>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210316041148.29694-1-heying24@huawei.com>
+ <87wnu6bhvi.fsf@dja-thinkpad.axtens.net>
+ <f0130916-a8f3-75ba-b5da-7d37d9139ff3@huawei.com>
+ <87tupab4a1.fsf@dja-thinkpad.axtens.net> <877dm6ouw5.fsf@mpe.ellerman.id.au>
+From:   "heying (H)" <heying24@huawei.com>
+Message-ID: <aa312971-cedd-38bf-ac5c-6f3d4ff2c208@huawei.com>
+Date:   Thu, 18 Mar 2021 10:37:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <877dm6ouw5.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.67.110.136]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolay,
 
-On Tue, Mar 09, 2021 at 10:36:52AM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 9.03.21 г. 10:49 ч., kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: 5297199a8bca12b8b96afcbf2341605efb6005de ("btrfs: remove inode number cache feature")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
-> > 
-> > in testcase: xfstests
-> > version: xfstests-x86_64-d41dcbd-1_20201218
-> > with following parameters:
-> > 
-> > 	disk: 6HDD
-> > 	fs: btrfs
-> > 	test: btrfs-group-22
-> > 	ucode: 0x28
-> > 
-> > test-description: xfstests is a regression test suite for xfs and other files ystems.
-> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> > 
-> > 
-> > on test machine: 8 threads Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz with 8G memory
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > 
-> > 2021-03-09 04:13:26 export TEST_DIR=/fs/sdb1
-> > 2021-03-09 04:13:26 export TEST_DEV=/dev/sdb1
-> > 2021-03-09 04:13:26 export FSTYP=btrfs
-> > 2021-03-09 04:13:26 export SCRATCH_MNT=/fs/scratch
-> > 2021-03-09 04:13:26 mkdir /fs/scratch -p
-> > 2021-03-09 04:13:26 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
-> > 2021-03-09 04:13:26 sed "s:^:btrfs/:" //lkp/benchmarks/xfstests/tests/btrfs-group-22
-> > 2021-03-09 04:13:26 ./check btrfs/220 btrfs/221 btrfs/222 btrfs/223 btrfs/224 btrfs/225 btrfs/226 btrfs/227
-> > FSTYP         -- btrfs
-> > PLATFORM      -- Linux/x86_64 lkp-hsw-d01 5.10.0-rc7-00162-g5297199a8bca #1 SMP Sat Feb 27 21:06:26 CST 2021
-> > MKFS_OPTIONS  -- /dev/sdb2
-> > MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
-> > 
-> > btrfs/220	- output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/220.out.bad)
-> >     --- tests/btrfs/220.out	2021-01-14 07:40:58.000000000 +0000
-> >     +++ /lkp/benchmarks/xfstests/results//btrfs/220.out.bad	2021-03-09 04:13:32.880794446 +0000
-> >     @@ -1,2 +1,3 @@
-> >      QA output created by 220
-> >     +Unexepcted mount options, checking for 'inode_cache,relatime,space_cache,subvol=/,subvolid=5' in 'rw,relatime,space_cache,subvolid=5,subvol=/' using 'inode_cache'
-> 
-> 
-> Given that the commit removes the inode_cache feature that's expected, I
-> assume you need to adjust your fstests configuration to not use
-> inode_cache.
+在 2021/3/17 19:57, Michael Ellerman 写道:
+> Daniel Axtens <dja@axtens.net> writes:
+>> "heying (H)" <heying24@huawei.com> writes:
+>>
+>>> Thank you for your reply.
+>>>
+>>> 在 2021/3/17 11:04, Daniel Axtens 写道:
+>>>> Hi He Ying,
+>>>>
+>>>> Thank you for this patch.
+>>>>
+>>>> I'm not sure what the precise rules for Fixes are, but I wonder if this
+>>>> should have:
+>>>>
+>>>> Fixes: 9a32a7e78bd0 ("powerpc/64s: flush L1D after user accesses")
+>>>> Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
+>>> Is that necessary for warning cleanups? I thought 'Fixes' tags are
+>>> needed only for
+>>>
+>>> bugfix patches. Can someone tell me whether I am right?
+>> Yeah, I'm not sure either. Hopefully mpe will let us know.
+> It's not necessary to add a Fixes tag for a patch like this, but you can
+> add one if you think it's important that the fix gets backported.
+>
+> I don't think the cleanups in this case are that important, so I
+> wouldn't bother with a Fixes tag.
+Okay. That's a good explanation to me. Thanks.
 
-Thanks for information, we will change test options accordingly.
 
