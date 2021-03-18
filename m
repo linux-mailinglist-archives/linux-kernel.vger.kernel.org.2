@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFE5340BB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2365340B70
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhCRRYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
+        id S232616AbhCRRMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhCRRYI (ORCPT
+        with ESMTP id S232440AbhCRRLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:24:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF91C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=8U5x3H9OrZvMc1q6Av7M3v6tdokpGrM9MWQOD2WaRMk=; b=l3y4DCQ4iMB08UXLPuNtWUvXbb
-        Mq56lhNqoi8lJOtHsitKHfnxtaeoTGI9YEl5wgMWlYrEkY5nX8QhRVueSNmmqm5rkJejpjFxXcXYM
-        YMRLafcEsW7PtQlE12zpoxBSbtmxsgpEJXLlZVIHSE1ZAnx8PP8MqUuFXGDXoi/P5SSrIOBjlhYmj
-        NR6GYW6VOBJgAH0YpdbE+t8qzcQeCnxVtYQOc2QcI2XkooOzfqklAyQU86Bp6bNpViymXraQs4EH0
-        ZVA+TJ9MF3xpaifsPyZ3D/VmmSiTOYBFchlurbrBbcSDP5EqDaoR8oJVOx5iZFHONE0UpzpR8YIRh
-        1fuL0sZg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMq-003HIV-GH; Thu, 18 Mar 2021 17:23:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AF083077B1;
-        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2999729DE0B4D; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171919.764599543@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        mbenes@suse.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 06/14] objtool: Fix static_call list generation
-References: <20210318171103.577093939@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 18 Mar 2021 13:11:50 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95405C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:50 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b127so49142083ybc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=tNWRsiiEAfetheYG6qtDYdd6Zu2YM8DJGmENfE26Aac=;
+        b=aYBLAtpCowI5H1JqYq772XaFTeVfjouHZwMxvtWqKz0ax7u9Y/au2Ku0NI+kpVVVEV
+         vQvsGUIsOpTjJ36aQQvTpE7x/CJBZJZEcPADNXX/fkSxN0CBAmLJAvN0vHtrdDQ+pGST
+         DGAp4GusUbTpGw0XxzY3odtrE7wXqUlF8FFGWiTSCWvBA9b+vewRP4m6fxCfQnqGs2rH
+         +ChJC0BJMzLJFo/OnePz7idXJHoBy6HFxdbiSEFE5yvW/1FKKTuI51km2tsCCcg+aQhx
+         eEgwxCDN6i5AxYDNJTQw/kInx3EDjxdme+bIZSCakewjcYT0MJcPllrH4CaKisimsKEO
+         xjRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=tNWRsiiEAfetheYG6qtDYdd6Zu2YM8DJGmENfE26Aac=;
+        b=NrxVZdOYWTaH+Hrk3Cr/X0EsC0A6SN0k+0/t9LrfjqIyEKnSXauljd+2hJDt8fhbPe
+         302yO71HTAaf3axxP471JeQr29fpuEp9wykjsaBdeQaaG5WLI8tzHo5aP5xKKR/rFAro
+         HLeF7OYNRvOzvD4pEDeigyeP5Bt41eAOgTvcTFls1paaHgj6+ZhE4bAh52vqV/dVnwGP
+         nvZpcQOzkm2NX3xyy3Ss1aMTBOZW2iMyya2Fd74TKiYQsVwJsN5EyqH15KEadCI7Figd
+         Rits4ZPCW0nq7ZGLBCL7dA8/HVdRnw3BTDdgMoPtRoNSfh60/3Th2ejfLhiLaecW6i67
+         UNAw==
+X-Gm-Message-State: AOAM5313OYrdPy+UZeAz0NvKJndAXnMSTPnKoSEN5k0T2CRHUmYludJ+
+        +jDDP08iwVN18I4E+VQ2avR9TFHPRMZh2vZOmaM=
+X-Google-Smtp-Source: ABdhPJxfDxQbMdPagHU96q0vd0r/A3PUk45QUl9DhnRRAk72oe17WrwgV5kycp+B2M30G42p2T6WH1P2jysN6RAin/w=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:a25:b443:: with SMTP id
+ c3mr548188ybg.32.1616087509883; Thu, 18 Mar 2021 10:11:49 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:11:10 -0700
+In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
+Message-Id: <20210318171111.706303-17-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20210318171111.706303-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 16/17] KVM: arm64: Disable CFI for nVHE
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently objtool generates tail call entries in
-add_jump_destination() but waits until validate_branch() to generate
-the regular call entries, move these to add_call_destination() for
-consistency.
+Disable CFI for the nVHE code to avoid address space confusion.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- tools/objtool/check.c |   18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1045,6 +1045,12 @@ static int add_call_destinations(struct
- 		} else
- 			insn->call_dest = reloc->sym;
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index a6707df4f6c0..fb24a0f022ad 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -75,9 +75,9 @@ quiet_cmd_hyprel = HYPREL  $@
+ quiet_cmd_hypcopy = HYPCOPY $@
+       cmd_hypcopy = $(OBJCOPY) --prefix-symbols=__kvm_nvhe_ $< $@
  
-+		if (insn->call_dest && insn->call_dest->static_call_tramp) {
-+			list_add_tail(&insn->static_call_node,
-+				      &file->static_call_list);
-+		}
-+
-+
- 		/*
- 		 * Many compilers cannot disable KCOV with a function attribute
- 		 * so they need a little help, NOP out any KCOV calls from noinstr
-@@ -1788,6 +1794,9 @@ static int decode_sections(struct objtoo
- 	if (ret)
- 		return ret;
+-# Remove ftrace and Shadow Call Stack CFLAGS.
+-# This is equivalent to the 'notrace' and '__noscs' annotations.
+-KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
++# Remove ftrace, Shadow Call Stack, and CFI CFLAGS.
++# This is equivalent to the 'notrace', '__noscs', and '__nocfi' annotations.
++KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI), $(KBUILD_CFLAGS))
  
-+	/*
-+	 * Must be before add_{jump_call}_destination.
-+	 */
- 	ret = read_static_call_tramps(file);
- 	if (ret)
- 		return ret;
-@@ -1800,6 +1809,10 @@ static int decode_sections(struct objtoo
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Must be before add_call_destination(); it changes INSN_CALL to
-+	 * INSN_JUMP.
-+	 */
- 	ret = read_intra_function_calls(file);
- 	if (ret)
- 		return ret;
-@@ -2745,11 +2758,6 @@ static int validate_branch(struct objtoo
- 			if (dead_end_function(file, insn->call_dest))
- 				return 0;
- 
--			if (insn->type == INSN_CALL && insn->call_dest->static_call_tramp) {
--				list_add_tail(&insn->static_call_node,
--					      &file->static_call_list);
--			}
--
- 			break;
- 
- 		case INSN_JUMP_CONDITIONAL:
-
+ # KVM nVHE code is run at a different exception code with a different map, so
+ # compiler instrumentation that inserts callbacks or checks into the code may
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
