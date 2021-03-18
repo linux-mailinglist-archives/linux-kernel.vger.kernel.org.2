@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB0234062F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3C6340631
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhCRM4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:56:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49692 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhCRM4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:56:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8637AAC1E;
-        Thu, 18 Mar 2021 12:56:06 +0000 (UTC)
-Subject: Re: [PATCH] mm/slub: Add slub_debug option to panic on memory
- corruption
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210309134720.29052-1-georgi.djakov@linaro.org>
- <390d8a2f-ead9-48a9-99eb-65c73bd18422@suse.cz>
- <6bfebf01-5f52-49bd-380b-04785c474c81@linaro.org>
- <8fd43de6-71e4-cfe7-8208-32753cf1c363@suse.cz>
- <202103172244.D5ADB06A96@keescook>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ea740a0a-6225-3d6c-095d-1c456e497e3a@suse.cz>
-Date:   Thu, 18 Mar 2021 13:56:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231377AbhCRM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:56:49 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:40094 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231269AbhCRM4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:56:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0USS3ezc_1616072180;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0USS3ezc_1616072180)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Mar 2021 20:56:21 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial
+ objects
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Christoph Lameter <cl@linux.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shu Ming <sming56@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>
+References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
+ <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
+ <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz>
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+Message-ID: <34a07677-3afe-465c-933e-dc9503e9634d@linux.alibaba.com>
+Date:   Thu, 18 Mar 2021 20:56:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <202103172244.D5ADB06A96@keescook>
+In-Reply-To: <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 6:48 AM, Kees Cook wrote:
-> On Tue, Mar 09, 2021 at 07:18:32PM +0100, Vlastimil Babka wrote:
->> On 3/9/21 7:14 PM, Georgi Djakov wrote:
->> > Hi Vlastimil,
->> > 
->> > Thanks for the comment!
->> > 
->> > On 3/9/21 17:09, Vlastimil Babka wrote:
->> >> On 3/9/21 2:47 PM, Georgi Djakov wrote:
->> >>> Being able to stop the system immediately when a memory corruption
->> >>> is detected is crucial to finding the source of it. This is very
->> >>> useful when the memory can be inspected with kdump or other tools.
->> >>
->> >> Is this in some testing scenarios where you would also use e.g. panic_on_warn?
->> >> We could hook to that. If not, we could introduce a new
->> >> panic_on_memory_corruption that would apply also for debug_pagealloc and whatnot?
->> > 
->> > I would prefer that we not tie it with panic_on_warn - there might be lots of
->> > new code in multiple subsystems, so hitting some WARNing while testing is not
->> > something unexpected.
->> > 
->> > Introducing an additional panic_on_memory_corruption would work, but i noticed
->> > that we already have slub_debug and thought to re-use that. But indeed, аdding
->> > an option to panic in for example bad_page() sounds also useful, if that's what
->> > you suggest.
->> 
->> Yes, that would be another example.
->> Also CCing Kees for input, as besides the "kdump ASAP for debugging" case, I can
->> imagine security hardening folks could be interested in the "somebody might have
->> just failed to pwn the kernel, better panic than let them continue" angle. But
->> I'm naive wrt security, so it might be a stupid idea :)
-> 
-> I've really wanted such things, but Linus has been pretty adamant about
-> not wanting to provide new "panic" paths (or even BUG usage[1]). It
-> seems that panic_on_warn remains the way to get this behavior,
-> with the understanding that WARN should only be produced on
-> expected-to-be-impossible situations[1].
-> 
-> Hitting a WARN while testing should result in either finding and fixing
-> a real bug, or removing the WARN in favor of pr_warn(). :)
 
-I was going to suggest adding a panic_on_taint parameter... but turns out it was
-already added last year! And various memory corruption detections already use
-TAINT_BAD_PAGE, including SLUB.
-If anything's missing an add_taint() it can be added, and with the parameter you
-should get what you want.
 
-> -Kees
+On 3/18/21 8:18 PM, Vlastimil Babka wrote:
+> On 3/17/21 8:54 AM, Xunlei Pang wrote:
+>> The node list_lock in count_partial() spends long time iterating
+>> in case of large amount of partial page lists, which can cause
+>> thunder herd effect to the list_lock contention.
+>>
+>> We have HSF RT(High-speed Service Framework Response-Time) monitors,
+>> the RT figures fluctuated randomly, then we deployed a tool detecting
+>> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
+>> the list_lock cost nearly 100ms with irq off issued by "ss", this also
+>> caused network timeouts.
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
+> I forgot to ask, how does "ss" come into this? It displays network connections
+> AFAIK. Does it read any SLUB counters or slabinfo?
 > 
 
+ss may access /proc/slabinfo to acquire network related slab statistics.
