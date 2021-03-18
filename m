@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AB933FCD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C5733FCD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhCRBtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhCRBs2 (ORCPT
+        id S230486AbhCRBuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 21:50:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230484AbhCRBto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:48:28 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141C0C06174A;
-        Wed, 17 Mar 2021 18:48:28 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id ce10so1390378ejb.6;
-        Wed, 17 Mar 2021 18:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t3RAT6WWF12iLuNKN5O9izN5JXYqyFOKmhP4w/1gIvs=;
-        b=KAf5vCHxZ+LGWnvAF0wNSlJSJS8M05UAhK2M4K7gbWquHsJ8Q5m/RoBDKwYeTjuOgw
-         zYZFAUYM7OLhlMNlLKR4LPUoH13QTLqwU8qaLRQxyw5xN+Hk9vOr/u6Pxbcg/3FWy13J
-         m6/WimxWPc4CuLF8QCUAH4qgsJ8glzAuj9UkSaalqmqzCzSL1IFK91vI8XpjUUn9QOQl
-         4ceTlXja6TCpdpPT6bfeU18Ks4LiYlhf4KOkfQdGJHmzJVCz2UXVs6hGm+bLKri8rmxn
-         2z7GegXcIVwc+sdil+49ge+6mo62ai+42Wx/sUVkM0P+IEf2zYZ0a7cvhvP+zeONYJV/
-         CUYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t3RAT6WWF12iLuNKN5O9izN5JXYqyFOKmhP4w/1gIvs=;
-        b=L3HVTc+SWpGd4fW1DpboKiBO68uziySI7m8r6dBrLm7Im2YMBbDF4cJakBXCfz2vxq
-         387N+rYOaJqsaCwVXnMmP0i2kkGigAKO/ZqCdH5RaZujkKVfz6JZhc35FAFe+5qtzyrr
-         qNxgYP12xN4xigIJxdqk8SpUq8eMLwZnl6MwbnHAVQ2PR/h64ulxoRDJC7CIB99QilSf
-         83zANsgztl7O+GEhhbVjqkn+pHqfWnV4+KwzVs7Fqrg4RHQxu2ATHx7ixntwbfxH3+M0
-         t5uyz3o82H+0FShLD6z9lxh3Tp2HgT+kt3U2ovkWUCJ+esWAPuqhmhbb4xu6/Rp+TGvD
-         5Aqg==
-X-Gm-Message-State: AOAM530Z/sPMue4V959vTTcIIQiujAfDjVhWkM32U2q4q31r45P9op9Q
-        gNcpzzyOPYZ38thOV+1NBoeTFnGRY2oU3FLxaQ0=
-X-Google-Smtp-Source: ABdhPJzVg6tWqJuhA3G7pRj27RasPQpe0z/NFJ9MvcD9uD4dzpp/dEka8azvqQLCdMOV8IFvzuyEZDKWqL5sEydAVUI=
-X-Received: by 2002:a17:907:162b:: with SMTP id hb43mr39426369ejc.41.1616032106913;
- Wed, 17 Mar 2021 18:48:26 -0700 (PDT)
+        Wed, 17 Mar 2021 21:49:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616032184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ONLmJAW9Rh0WKtlY0Inezc9QcGi9/m/+UrMbYHkTOv0=;
+        b=PqBGYxQpGy7OOmqVd6iKIeD0rfwcXJnlN723y62XFfgthc9zoWugdSlJk9koQx2Vge8UnJ
+        quJFq4R0WpELyQ81+zRUEL9yzUMNgmvxEf/LQF8Z3ZQVkDkvbl7ndhIZ9DlLopqTVRq1n9
+        Wqu4BU8F6uk+L3fac5Q4sXIt6jCd6/Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-Pxcjs03SPu2GfyWTatAX0A-1; Wed, 17 Mar 2021 21:49:38 -0400
+X-MC-Unique: Pxcjs03SPu2GfyWTatAX0A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFCCB1084D68;
+        Thu, 18 Mar 2021 01:49:36 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 289386F991;
+        Thu, 18 Mar 2021 01:49:26 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Eric Paris <eparis@parisplace.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH v2] MAINTAINERS: update audit files
+Date:   Wed, 17 Mar 2021 21:48:59 -0400
+Message-Id: <0a26adc249e782ad9de04e047af7c2f65c2bc7c7.1615946851.git.rgb@redhat.com>
 MIME-Version: 1.0
-References: <20210310015135.293794-1-dong.menglong@zte.com.cn>
- <20210316224820.GA225411@roeck-us.net> <CAHp75VdE3fkCjb53vBso5uJX9aEFtAOAdh5NVOSbK0YR64+jOg@mail.gmail.com>
- <20210317013758.GA134033@roeck-us.net> <a4dbb6f5b86649e2a46878eb00853f44@AcuMS.aculab.com>
-In-Reply-To: <a4dbb6f5b86649e2a46878eb00853f44@AcuMS.aculab.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 18 Mar 2021 09:48:14 +0800
-Message-ID: <CADxym3bwqs9e2WKX8uOTzyYKnyTgmW4FT+N2m5hydfBJV3fqXQ@mail.gmail.com>
-Subject: Re: [PATCH v4 RESEND net-next] net: socket: use BIT() for MSG_*
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:12 PM David Laight <David.Laight@aculab.com> wrote:
->
-...
->
-> Isn't MSG_CMSG_COMPAT an internal value?
-> Could it be changed to 1u << 30 instead of 1u << 31 ?
-> Then it wouldn't matter if the high bit of flags got replicated.
->
+Add files maintaned by the audit subsystem.
 
-Yeah, MSG_CMSG_COMPAT is an internal value, and maybe
-it's why it is defined as 1<< 31, to make it look different.
+Files from arch/*/*/*audit*.[ch] and arch/x86/include/asm/audit.h were not
+added due to concern of the list not holding up over time.  There exist
+already exceptions that caused the need for this specificity.
 
-I think it's a good idea to change it to other value which is
-not used, such as 1u<<21.
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I will test it and resend this patch later, thanks~
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d92f85ca831d..1249655459d3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2979,9 +2979,11 @@ L:	linux-audit@redhat.com (moderated for non-subscribers)
+ S:	Supported
+ W:	https://github.com/linux-audit
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
++F:	include/asm-generic/audit_*.h
+ F:	include/linux/audit.h
+ F:	include/uapi/linux/audit.h
+ F:	kernel/audit*
++F:	lib/*audit.c
+ 
+ AUXILIARY DISPLAY DRIVERS
+ M:	Miguel Ojeda <ojeda@kernel.org>
+-- 
+2.27.0
 
-With Regards,
-Menglong Dong
