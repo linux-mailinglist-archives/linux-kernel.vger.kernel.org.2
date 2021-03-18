@@ -2,171 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C8C33FD8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02A433FD90
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhCRDHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 23:07:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14081 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhCRDHQ (ORCPT
+        id S230513AbhCRDKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 23:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhCRDKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:07:16 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1Bj82D5jz17MWh;
-        Thu, 18 Mar 2021 11:05:16 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 11:06:59 +0800
-From:   Zhe Li <lizhe67@huawei.com>
-To:     <richard@nod.at>, <dwmw2@infradead.org>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <lizhe67@huawei.com>, <wangfangpeng1@huawei.com>,
-        <xukunkun1@huawei.com>, <zhongjubin@huawei.com>,
-        <chenjie6@huawei.com>
-Subject: [PATCH] jffs2: fix kasan slab-out-of-bounds problem
-Date:   Thu, 18 Mar 2021 11:06:57 +0800
-Message-ID: <20210318030657.22840-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Wed, 17 Mar 2021 23:10:09 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BBEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 20:10:08 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w195so853393oif.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 20:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hQttFW1C06IjLp+yLCYHr9yAyp/8boQfWdvRpg9aqas=;
+        b=j+V6eiKGG2VjOHFs8wnpC7+raQP+TbyQPcX/6o2YbdbGSLuXoq9j8nK5IOJ4GR7YLR
+         4ZFjt0pkrCHiOqgnq4XsWKZDsUYRRiV6NrcrBDMGWkZZALNumhET7LpOI4/X84/Kvkqy
+         0rSSY2rgqIVKepPCYfvyYsV7IUAjHLbHfn9vaLVUqPqMMCX8gNF6hFgkPKWtiUxRiw3M
+         AIvow+LbItQccZ5GF1Z00xWted2Bkj0M93XVqYsSn/RxYhABMqAwYgyykuDAHt6/r3XH
+         tiKXMrpMlmZzB3/+HHc8LgjksHM5mPMz7E5EnqjMezp3zN7mia2rufpeUH9MOsXs201w
+         l7nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hQttFW1C06IjLp+yLCYHr9yAyp/8boQfWdvRpg9aqas=;
+        b=iVy8xL0X8W/sdFELzWTeVnUL9M3AGbUwBChKSTzuucZ7xCPVmR+5J8vITp0UmjGn92
+         dpDtqld1mFFEBjjuBJOAWtwtrUv7fyYK08Q6+WJWz4Bc8t4icy580GqH0wFObBKOiiGv
+         NFRGPglbgqH12DUH6uqA/XMMYO3lPiF9X6dHkuVQ1DAJWDQtWycCsdq4WHdkMQg1Xv0Y
+         abDoayMRF2he/xMmBT2WXk0+3Ml6+GKr/5sGS9Sb+C3HtcgQfovtUHpa4oxlmiehrBjy
+         Re04J9TUgIRC51SKILRgGP0XtjcsQ5B8NCGHomJ3sKQGym/HDtb49Gm8e/XPJscrI4or
+         wTLA==
+X-Gm-Message-State: AOAM530Z+tusAuRhn3vI4FMF2VJs6lmRFZDFEDumms+VYkE91FpFMGnF
+        SLgi0Md5i+mbxvvqM/E/WkjcBYBVjnf1k3VbAV/bLYHL
+X-Google-Smtp-Source: ABdhPJyLqFby/dx5Ecblmd8XvGAAgX2S0LkgPnrJooV+IuiaHmQehvbBSIpfwwzzzu+cwk+n3BPZr0cFZvPIAnOwLjU=
+X-Received: by 2002:aca:af10:: with SMTP id y16mr1501636oie.120.1616037008216;
+ Wed, 17 Mar 2021 20:10:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+References: <1615882129-14822-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615882129-14822-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 17 Mar 2021 23:09:57 -0400
+Message-ID: <CADnq5_Or=P-cfjRo2vMURnoay20SAhD_SKY8pvtCiK1J3b5+eg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lizhe <lizhe67@huawei.com>
+On Tue, Mar 16, 2021 at 4:09 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c:721:65-70: WARNING:
+> conversion to bool not needed here.
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c:1139:67-72: WARNING:
+> conversion to bool not needed here.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-KASAN report a slab-out-of-bounds problem. The logs are listed below.
-It is because in function jffs2_scan_dirent_node, we alloc "checkedlen+1"
-bytes for fd->name and we check crc with length rd->nsize. If checkedlen
-is less than rd->nsize, it will cause the slab-out-of-bounds problem.
+Applied.  Thanks!
 
-jffs2: Dirent at *** has zeroes in name. Truncating to %d char
-==================================================================
-BUG: KASAN: slab-out-of-bounds in crc32_le+0x1ce/0x260 at addr ffff8800842cf2d1
-Read of size 1 by task test_JFFS2/915
-=============================================================================
-BUG kmalloc-64 (Tainted: G    B      O   ): kasan: bad access detected
------------------------------------------------------------------------------
-INFO: Allocated in jffs2_alloc_full_dirent+0x2a/0x40 age=0 cpu=1 pid=915
-	___slab_alloc+0x580/0x5f0
-	__slab_alloc.isra.24+0x4e/0x64
-	__kmalloc+0x170/0x300
-	jffs2_alloc_full_dirent+0x2a/0x40
-	jffs2_scan_eraseblock+0x1ca4/0x3b64
-	jffs2_scan_medium+0x285/0xfe0
-	jffs2_do_mount_fs+0x5fb/0x1bbc
-	jffs2_do_fill_super+0x245/0x6f0
-	jffs2_fill_super+0x287/0x2e0
-	mount_mtd_aux.isra.0+0x9a/0x144
-	mount_mtd+0x222/0x2f0
-	jffs2_mount+0x41/0x60
-	mount_fs+0x63/0x230
-	vfs_kern_mount.part.6+0x6c/0x1f4
-	do_mount+0xae8/0x1940
-	SyS_mount+0x105/0x1d0
-INFO: Freed in jffs2_free_full_dirent+0x22/0x40 age=27 cpu=1 pid=915
-	__slab_free+0x372/0x4e4
-	kfree+0x1d4/0x20c
-	jffs2_free_full_dirent+0x22/0x40
-	jffs2_build_remove_unlinked_inode+0x17a/0x1e4
-	jffs2_do_mount_fs+0x1646/0x1bbc
-	jffs2_do_fill_super+0x245/0x6f0
-	jffs2_fill_super+0x287/0x2e0
-	mount_mtd_aux.isra.0+0x9a/0x144
-	mount_mtd+0x222/0x2f0
-	jffs2_mount+0x41/0x60
-	mount_fs+0x63/0x230
-	vfs_kern_mount.part.6+0x6c/0x1f4
-	do_mount+0xae8/0x1940
-	SyS_mount+0x105/0x1d0
-	entry_SYSCALL_64_fastpath+0x1e/0x97
-Call Trace:
- [<ffffffff815befef>] dump_stack+0x59/0x7e
- [<ffffffff812d1d65>] print_trailer+0x125/0x1b0
- [<ffffffff812d82c8>] object_err+0x34/0x40
- [<ffffffff812dadef>] kasan_report.part.1+0x21f/0x534
- [<ffffffff81132401>] ? vprintk+0x2d/0x40
- [<ffffffff815f1ee2>] ? crc32_le+0x1ce/0x260
- [<ffffffff812db41a>] kasan_report+0x26/0x30
- [<ffffffff812d9fc1>] __asan_load1+0x3d/0x50
- [<ffffffff815f1ee2>] crc32_le+0x1ce/0x260
- [<ffffffff814764ae>] ? jffs2_alloc_full_dirent+0x2a/0x40
- [<ffffffff81485cec>] jffs2_scan_eraseblock+0x1d0c/0x3b64
- [<ffffffff81488813>] ? jffs2_scan_medium+0xccf/0xfe0
- [<ffffffff81483fe0>] ? jffs2_scan_make_ino_cache+0x14c/0x14c
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff812d5d90>] ? kmem_cache_alloc_trace+0x10c/0x2cc
- [<ffffffff818169fb>] ? mtd_point+0xf7/0x130
- [<ffffffff81487dc9>] jffs2_scan_medium+0x285/0xfe0
- [<ffffffff81487b44>] ? jffs2_scan_eraseblock+0x3b64/0x3b64
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff812d57df>] ? __kmalloc+0x12b/0x300
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff814a2753>] ? jffs2_sum_init+0x9f/0x240
- [<ffffffff8148b2ff>] jffs2_do_mount_fs+0x5fb/0x1bbc
- [<ffffffff8148ad04>] ? jffs2_del_noinode_dirent+0x640/0x640
- [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
- [<ffffffff81127c5b>] ? __init_rwsem+0x97/0xac
- [<ffffffff81492349>] jffs2_do_fill_super+0x245/0x6f0
- [<ffffffff81493c5b>] jffs2_fill_super+0x287/0x2e0
- [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
- [<ffffffff81819bea>] mount_mtd_aux.isra.0+0x9a/0x144
- [<ffffffff81819eb6>] mount_mtd+0x222/0x2f0
- [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
- [<ffffffff81819c94>] ? mount_mtd_aux.isra.0+0x144/0x144
- [<ffffffff81258757>] ? free_pages+0x13/0x1c
- [<ffffffff814fa0ac>] ? selinux_sb_copy_data+0x278/0x2e0
- [<ffffffff81492b35>] jffs2_mount+0x41/0x60
- [<ffffffff81302fb7>] mount_fs+0x63/0x230
- [<ffffffff8133755f>] ? alloc_vfsmnt+0x32f/0x3b0
- [<ffffffff81337f2c>] vfs_kern_mount.part.6+0x6c/0x1f4
- [<ffffffff8133ceec>] do_mount+0xae8/0x1940
- [<ffffffff811b94e0>] ? audit_filter_rules.constprop.6+0x1d10/0x1d10
- [<ffffffff8133c404>] ? copy_mount_string+0x40/0x40
- [<ffffffff812cbf78>] ? alloc_pages_current+0xa4/0x1bc
- [<ffffffff81253a89>] ? __get_free_pages+0x25/0x50
- [<ffffffff81338993>] ? copy_mount_options.part.17+0x183/0x264
- [<ffffffff8133e3a9>] SyS_mount+0x105/0x1d0
- [<ffffffff8133e2a4>] ? copy_mnt_ns+0x560/0x560
- [<ffffffff810e8391>] ? msa_space_switch_handler+0x13d/0x190
- [<ffffffff81be184a>] entry_SYSCALL_64_fastpath+0x1e/0x97
- [<ffffffff810e9274>] ? msa_space_switch+0xb0/0xe0
-Memory state around the buggy address:
- ffff8800842cf180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8800842cf200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8800842cf280: fc fc fc fc fc fc 00 00 00 00 01 fc fc fc fc fc
-                                                 ^
- ffff8800842cf300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8800842cf380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Alex
 
-Reported-by: Kunkun Xu <xukunkun1@huawei.com>
-Signed-off-by: lizhe <lizhe67@huawei.com>
----
- fs/jffs2/scan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index db72a9d..b676056 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -1079,7 +1079,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	memcpy(&fd->name, rd->name, checkedlen);
- 	fd->name[checkedlen] = 0;
- 
--	crc = crc32(0, fd->name, rd->nsize);
-+	crc = crc32(0, fd->name, checkedlen);
- 	if (crc != je32_to_cpu(rd->name_crc)) {
- 		pr_notice("%s(): Name CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
- 			  __func__, ofs, je32_to_cpu(rd->name_crc), crc);
--- 
-2.7.4
-
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
+> index 6e864b1..434d3c4 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c
+> @@ -718,7 +718,7 @@ bool dpp3_program_blnd_lut(
+>                 next_mode = LUT_RAM_B;
+>
+>         dpp3_power_on_blnd_lut(dpp_base, true);
+> -       dpp3_configure_blnd_lut(dpp_base, next_mode == LUT_RAM_A ? true:false);
+> +       dpp3_configure_blnd_lut(dpp_base, next_mode == LUT_RAM_A);
+>
+>         if (next_mode == LUT_RAM_A)
+>                 dpp3_program_blnd_luta_settings(dpp_base, params);
+> @@ -1136,7 +1136,7 @@ bool dpp3_program_shaper(
+>         else
+>                 next_mode = LUT_RAM_A;
+>
+> -       dpp3_configure_shaper_lut(dpp_base, next_mode == LUT_RAM_A ? true:false);
+> +       dpp3_configure_shaper_lut(dpp_base, next_mode == LUT_RAM_A);
+>
+>         if (next_mode == LUT_RAM_A)
+>                 dpp3_program_shaper_luta_settings(dpp_base, params);
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
