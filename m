@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3863340BF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A106340BF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhCRRfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:35:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232088AbhCRRfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:35:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F04364E99;
-        Thu, 18 Mar 2021 17:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616088934;
-        bh=o5SA5DM7AwK8vuNSIQa7aOT1dmrHX7pjGtzFCywRg6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mGXZdxG94oTGHotSnrkhwCuJ2lzAbPitW4XwCyAk9I9K6YIB63bFxBNCd2UCoRZ7F
-         MwvCr7bwMnYNM+jJ42/+LHDSRX849dpCH8/YVLdS/IRiPT4ui90wh8UdFL+SJNlisw
-         J1s60z8i1SQT641UsuZX80vxy1s7rJ77tkqeieIpmZlZeO+/WEgTFA67w5glvqMhs+
-         SOiTa3JEvWcV4NKByF8jWQP/Uu1e8/WXONTeJzuorg6K2lCv/JUfSX+e8zEz9aACi2
-         5bmHnQA/Oz5F61fWPDOZDaSpCrC4U0fltqmqHaU8SKPvSJoyr4b1ppWxNKrQj9O6kU
-         7KQL0xQcUgtiA==
-Date:   Thu, 18 Mar 2021 19:35:30 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        linux-pci@vger.kernel.org, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
-        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
-        felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFOPYs3IGaemTLMj@unreal>
-References: <YFHh3bopQo/CRepV@unreal>
- <20210317112309.nborigwfd26px2mj@archlinux>
- <YFHsW/1MF6ZSm8I2@unreal>
- <20210317131718.3uz7zxnvoofpunng@archlinux>
- <YFILEOQBOLgOy3cy@unreal>
- <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318142252.fqi3das3mtct4yje@archlinux>
- <YFNqbJZo3wqhMc1S@unreal>
- <20210318170143.ustrbjaqdl644ozj@archlinux>
+        id S230171AbhCRRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhCRRg4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:36:56 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21A4C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:56 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id f19so3155017ion.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tu9gSWOmC9qi1oLsBayI43v5i3/1uM9fITXIC/EDoi4=;
+        b=hM64YBflqL3+APM2OIUOZPpD5Qq243ADFkfIPoCxxWX1LjuBjbMDBD8hIA+uYNQpA8
+         PNiRJ/ji+AsmzzpwwkuZT+Eg+/dZ/WobZkLn/9iatpsoIX+dfqJRslKb5VPZLuhUxw0F
+         gmHzhJhXYB5cIjIdMrCo4GRJXAaFx6vwc4/oo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tu9gSWOmC9qi1oLsBayI43v5i3/1uM9fITXIC/EDoi4=;
+        b=hlNwrEhDXUBR7Wby+rGwsfYL/4uYPHoVDVncoXtbN9yQo1dCX+tW3+f1s0exdrrQT0
+         1Ee59Wr/HL/Wxq900zt3B6sesLTCYZKnVM2p27J84/EoFvJAjAG9DSnEM5nIyKBclLbe
+         BSAnW6jRX20ToW8VKFTt/4M8YuJneEdEu2FAu0skypkQZBo1cxvJwAJDze6UbD65q5Oy
+         /+SvgBa8halbAA411ktgdkC9QOjcyffhRhH6JfZalyLlACr7fNpRBDG78tkiTd5jYhjR
+         a/sPnoIZ/XglWMX6iAQfaXW6oRBHfO64sjcYxSf8EFY3a22aC2PNGog6k31akOmGO3CC
+         6kTw==
+X-Gm-Message-State: AOAM53110eMEKCHUL6JGu8Xy9N+w2wzzge8+MOOIjtCCAEulWCZD1lMY
+        G00WUp/7Kw8v3c8z4BT5yMAtSVh3HZkq7A==
+X-Google-Smtp-Source: ABdhPJy19Oq/v0ndr+jVXd03U6pM3ZKT/GtEIP7dYeSoY9O2CqAexWMRWyN7+zUecQ19A0eHvyXTsw==
+X-Received: by 2002:a6b:c881:: with SMTP id y123mr10798552iof.152.1616089015488;
+        Thu, 18 Mar 2021 10:36:55 -0700 (PDT)
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
+        by smtp.gmail.com with ESMTPSA id d2sm1400485ilm.7.2021.03.18.10.36.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
+Received: by mail-il1-f172.google.com with SMTP id c17so5636339ilj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
+X-Received: by 2002:a92:c266:: with SMTP id h6mr12784297ild.234.1616089014546;
+ Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318170143.ustrbjaqdl644ozj@archlinux>
+References: <20210317104547.442203-1-leon@kernel.org> <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+ <YFMHYUbPmpS+Kzcj@unreal>
+In-Reply-To: <YFMHYUbPmpS+Kzcj@unreal>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 18 Mar 2021 10:36:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
+Message-ID: <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
+Subject: Re: [PATCH master] module: remove never implemented MODULE_SUPPORTED_DEVICE
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:31:43PM +0530, Amey Narkhede wrote:
-> On 21/03/18 04:57PM, Leon Romanovsky wrote:
-> > On Thu, Mar 18, 2021 at 07:52:52PM +0530, Amey Narkhede wrote:
-> > > On 21/03/18 11:09AM, Leon Romanovsky wrote:
-> > > > On Wed, Mar 17, 2021 at 11:31:40AM -0600, Alex Williamson wrote:
-> > > > > On Wed, 17 Mar 2021 15:58:40 +0200
-> > > > > Leon Romanovsky <leon@kernel.org> wrote:
-
-<...>
-
-> > > > I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
-> > > >
-> > > > If it is latter then we don't really need sysfs, if not, we still need
-> > > > some sort of DB to create second policy, because "supported != working".
-> > > > What am I missing?
-> > > >
-> > > > Thanks
-> > > >
-> > > Can you explain bit more about why supported != working?
+On Thu, Mar 18, 2021 at 12:55 AM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > It is written in the commit message of this patch.
-> > https://lore.kernel.org/lkml/20210312173452.3855-1-ameynarkhede03@gmail.com/
-> > "This feature aims to allow greater control of a device for use cases
-> > as device assignment, where specific device or platform issues may
-> > interact poorly with a given reset method, and for which device specific
-> > quirks have not been developed."
+> > Also, your email seems to have swallowed spaces at the ends of lines.
 > >
-> > You wrote it and also repeated it a couple of times during the discussion.
+> > I can (and did) apply the patch with "--whitespace=fix", but that then
+> > causes git to fix some _other_ whitespace too, so the end result isn't
+> > quite the same. Oh well.
 > >
-> > If device can understand that specific reset doesn't work, it won't
-> > perform it in first place.
-> >
-> > Thanks
-> Is it possible for device to understand whether or not specific reset
-> will work or not prior to performing reset and after it indicates
-> support for that reset method? Maybe theres problem with that particular
-> piece of hardware in that machine.
-> How can database be maintained if a particular machines have
-> particular piece of faulty HW?
-
-It was exactly the reason why I think that VM usecase presented by
-you is not viable.
-
-> If for some reason reset doesn't work it will just give -ENOTTY.
-> This isn't any different from existing behavior.Actually it informs user
-> that the reset method didn't reset the device and user can use different
-> reset method instead of implicitly using different reset method.
-> If user doesn't explicitly set preferred reset method then
-> we go ahead with existing implicit fall through behavior which will try all
-> available reset methods until any one of them works.
-> If you have device that doesn't support reset at all then you have
-> option to completely disable it unlike existing reset attribute where
-> you cannot disable reset. So it gives greater control where you can
-> disable the reset altogether when quirk isn't developed yet.
-
-I explicitly asked to hear usecase, right now, I got an explanation from
-Alex for policy decision (which doesn't need sysfs) and from you about
-overcoming HW bugs with expectation that user will be guru of PCI reset
-methods.
-
+> > Please check what's up with your email sending client that it seems to
+> > remove space at end of lines in patches.
 >
-> We can't expect to develop quirk for every device in existence.
+> This is strange, I'm sending patches with "git send-email" with pretty
+> standard settings:
 
-It doesn't give us an excuse do not try.
+Hmm. I can't tell whats' wrong, but both my own mailbox and the
+lore.kernel.org clearly has missing whitespace at end of lines.
 
-> For example on my laptop elantech touchpad still doesn't work in 2021
-> with vanilla kernel, arch linux applies the patch which was reverted in
-> mainline kernel for some reason.
+You can see it yourself with a simple
 
-I see it as a good example of cheap solution. Vendor won't fix your
-touchpad because distros provide workaround. The same will be with reset.
+   b4 am 20210317104547.442203-1-leon@kernel.org
 
-Thanks
+(assuming you have b4 installed, of course:
 
->
-> Thanks,
-> Amey
+  https://pypi.org/project/b4/
+
+but with a kernel.org address I'm sure you've seen the emails about it
+even if you may not be a user).
+
+> Also, I'm using mail.kernel.org as a SMTP especially to make sure that
+> my mails are not mangled by our exchange server.
+
+Yeah, the email looks fine in any other way technically, it passes SPF
+and DKIM, and I don't see anything else strange going on either.
+
+I think the same VIM issue that caused some whitespace line changes
+for you in the patch might have then bitten you when you sent it out -
+I know you must have edited the message, becasuse you have that
+
+   "I'm sending this patch to you directly because it is much saner to
+    apply it in one place instead of multiple patches saga that will [...]"
+
+below the commit message, that you presumable added with "--annotate".
+
+> Are you sure that such change came from me and not from "--whitespace=fix"?
+
+Yup. See above on how you can just use b4 to download a copy yourself..
+
+         Linus
