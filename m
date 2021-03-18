@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A8F340F94
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471BB340F98
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhCRVOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230457AbhCRVOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:14:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89FC664E81;
-        Thu, 18 Mar 2021 21:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616102040;
-        bh=ymzR/BVB05taPUJyOe+kMw5p3EuhtWE1/rYWcC3GASU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IOSIjoJm92vHIaVL45kyGqc7KqR434aQ3KU0DGSL4gkHl3x1M5zRtanzOUda1Fx3Q
-         V838lJGMjGv2AC9sWXUibBub0Cc2CPtih1mYRCaJwEbtf8nR369fyppYpgG+63dCFt
-         AtcFj413WXhgO7hLMR5qj3LVjGUNbsuA/OZe4w8x253fHrLRFQz4y6dulh5AxXTlwD
-         ftzqRWWmUpdwLAr7EI5U8nvrY/rncEg3VH2pPwHWUGysmBbut/R7ng5c8kv7gQez2t
-         KEuVq33NFY6LQHLfp3Th2gxn+tOcl3rmxKOqOlo1OEaAB3UR8HisIqjnoUGKaekD4G
-         5TWqIRKQ4MOiw==
-Date:   Thu, 18 Mar 2021 14:13:56 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH 4/4] kbuild: include Makefile.compiler only when compiler
- is required
-Message-ID: <20210318211356.nxr4wx24srjtjdqm@archlinux-ax161>
-References: <20210228061028.239459-1-masahiroy@kernel.org>
- <20210228061028.239459-4-masahiroy@kernel.org>
+        id S233084AbhCRVOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232361AbhCRVOP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:14:15 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59166C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:14:15 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id o19so4029713qvu.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BX8CBZ461iND9QW3eoJhUfB9M6t5jeVjqffnHy3FhlM=;
+        b=o+iDomXChTJt7Aw6MBrDzvgC8rR32aTByhx54ATPHm+WQ3POmB561o6aWleUoK/0/k
+         h6GO2+QjM+5YP/1VuYkwuGb4AKwFo3y/4hyiSdUgTgnXkFsnXYxbKjjGMnRxoVfBlysX
+         2YXzG2S2a+6gpJ0bPgZEPqEiUM9EYvO6w47gnD/Pt8rncyYhdSmq1j3Z4v/7ZhucsM3C
+         Aq35A3JpCbAbtYe+umJGvwB+HdY03IF5Vgb/5A0FyXCbGkWGq6A9AokAYkLa1AxoTf8z
+         siR5wjO3jitiI6D7HDn42icZMY/XyZOf7QuN2W4vZypdWZngBKfao1D/i8s+jS3fw67x
+         fYVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BX8CBZ461iND9QW3eoJhUfB9M6t5jeVjqffnHy3FhlM=;
+        b=Awv/EcSV0Odd3ClP94rj15aX9P2W4udTtHaQgt9EGaNDkT7dpRtRTIOUQd6VnqJRi9
+         2lXIG0fkiXeNwFvw4aJuHb/TDp2vLbqHMaVbAgkQ70S8NwA2XvNDBiJUBwX6e3D9an0/
+         V4HTylsTyABa9Br008ybS5y/ACh6PJHymnkm6VZZXSmj9u34m3QiyUsSbCzGMa8oBVHn
+         EMRqi6jZs3rjL8OVbOgGZuVRkqFjyy5qwiJrhKQ/ghLav4oIZyJcGZZyC/9C55kg+kgS
+         w+rW4kD1yCUtB0Rk6hIA4I8bfRlUcjw8CCNmSTaPpTd/HuCuosPDqDDA2KlDrzyWCJvm
+         ybgQ==
+X-Gm-Message-State: AOAM533Kr/9SxrXoQuMEzI/bFsxMHQyWLdNDsRCzZlbATvvL80eqkIbF
+        S5IFZ0/9rf8HdE8YGwMGaKqZEOF9639Bbg==
+X-Google-Smtp-Source: ABdhPJxx3+9wAh/2DSXjtcyWZ9JdQyxJ+mhuIcf8J12QrilvmYh6hIKds28pjiD3RVrOoosjV3yZBA==
+X-Received: by 2002:a0c:9e15:: with SMTP id p21mr6208781qve.53.1616102054046;
+        Thu, 18 Mar 2021 14:14:14 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id r7sm2252887qtm.88.2021.03.18.14.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 14:14:13 -0700 (PDT)
+Subject: Re: [PATCH v10 7/8] drivers: thermal: tsens: Add support for
+ ipq8064-tsens
+To:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210217194011.22649-1-ansuelsmth@gmail.com>
+ <20210217194011.22649-8-ansuelsmth@gmail.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <bd8d6536-cc6c-c69a-367a-69389d66fdaf@linaro.org>
+Date:   Thu, 18 Mar 2021 17:14:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210228061028.239459-4-masahiroy@kernel.org>
+In-Reply-To: <20210217194011.22649-8-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 03:10:28PM +0900, Masahiro Yamada wrote:
-> Since commit f2f02ebd8f38 ("kbuild: improve cc-option to clean up all
-> temporary files"), running 'make kernelversion' in a read-only source
-> tree emits a bunch of warnings:
+
+
+On 2/17/21 2:40 PM, Ansuel Smith wrote:
+> Add support for tsens present in ipq806x SoCs based on generic msm8960
+> tsens driver.
 > 
->   mkdir: cannot create directory '.tmp_12345': Permission denied
-> 
-> Non-build targets such as kernelversion, clean, help, etc. do not
-> need to evaluate $(call cc-option,) and friends. Do not include
-> Makefile.compiler so $(call cc-option,) becomes no-op.
-> 
-> This not only fix the warnings, but also runs non-build targets much
-> faster.
-> 
-> Basically, all installation targets should also be non-build targets.
-> Unfortunately, vdso_install requires the compiler because it builds
-> vdso before installtion. This is a problem that must be fixed by a
-> separate patch.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+
+Warm Regards
+Thara
+
 > ---
+>   drivers/thermal/qcom/tsens.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> I am not adding Reported-by for now because a reporter sent me
-> an email privately.
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index 842f518fdf84..e14b90ddd0f9 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -1001,6 +1001,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
+>   
+>   static const struct of_device_id tsens_table[] = {
+>   	{
+> +		.compatible = "qcom,ipq8064-tsens",
+> +		.data = &data_8960,
+> +	}, {
+>   		.compatible = "qcom,msm8916-tsens",
+>   		.data = &data_8916,
+>   	}, {
 > 
-> If he allows me to add Reported-by, I will add it to record
-> the credit.
-> 
-> (Perhaps, another person might have reported a similar issue
-> somewhere, but my memory is obsure. I cannot recall it.)
-> 
-> 
->  Makefile | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/Makefile b/Makefile
-> index eec7a94f5c33..20724711dc71 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -263,6 +263,10 @@ no-dot-config-targets := $(clean-targets) \
->  			 $(version_h) headers headers_% archheaders archscripts \
->  			 %asm-generic kernelversion %src-pkg dt_binding_check \
->  			 outputmakefile
-> +# Installation targets should not require compiler. Unfortunately, vdso_install
-> +# is an exception where build artifacts may be updated. This must be fixed.
-> +no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
-> +			headers_install modules_install kernelrelease image_name
->  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
->  			  image_name
->  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
-> @@ -270,6 +274,7 @@ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
->  config-build	:=
->  mixed-build	:=
->  need-config	:= 1
-> +need-compiler	:= 1
->  may-sync-config	:= 1
->  single-build	:=
->  
-> @@ -279,6 +284,12 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
->  	endif
->  endif
->  
-> +ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
-> +	ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
-> +		need-compiler :=
-> +	endif
-> +endif
-> +
->  ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
->  	ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
->  		may-sync-config :=
-> @@ -584,7 +595,9 @@ endif
->  
->  # Include this also for config targets because some architectures need
->  # cc-cross-prefix to determine CROSS_COMPILE.
-> +ifdef need-compiler
->  include $(srctree)/scripts/Makefile.compiler
-> +endif
->  
->  ifdef config-build
->  # ===========================================================================
-> -- 
-> 2.27.0
-> 
-
-Hi Masahiro,
-
-I see a new warning in my builds on arm64 now when running
-'modules_install' or 'dtbs_install' because ld-option evaluates to
-nothing, which triggers the warning in arch/arm64/Makefile:
-
-$ make -skj"$(nproc)" \
-ARCH=arm64 \
-CROSS_COMPILE=aarch64-linux- \
-INSTALL_DTBS_PATH=rootfs \
-INSTALL_MOD_PATH=rootfs \
-O=build/arm64 \
-distclean defconfig all modules_install dtbs_install
-...
-/home/nathan/cbl/src/linux-next/arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
-/home/nathan/cbl/src/linux-next/arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
-
-$ sed -n '23,29p' arch/arm64/Makefile
-ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
-  ifeq ($(call ld-option, --fix-cortex-a53-843419),)
-$(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)
-  else
-LDFLAGS_vmlinux += --fix-cortex-a53-843419
-  endif
-endif
-
-I am not sure how this should be resolved, hence just the report.
-
-Cheers,
-Nathan
