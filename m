@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C574033FD18
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BC933FD1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhCRCLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhCRCKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:10:51 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2ECC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:10:51 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so3501562otb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:10:51 -0700 (PDT)
+        id S229994AbhCRCLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:11:54 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:39726 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230486AbhCRCLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:11:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/eUcg0X5VUIePvtm+rdhKH75GAS9jZwtwPgS7YKHJh4=;
-        b=b3nH3tDdN6X9tWCkrPUmCz++vd43nsDG1G3j5JbHwl6XFrsbO7gGrrL1/PKQh0030A
-         wQVARi9iJnT1vjyfQSrdODBjvhBqq9z+PfPSH8utKDKg3TYjc3OOiQXT161GLJSbsnac
-         3s/1Du4xl65YzutMvV3RVExp89e8n3tqOL7zPBUXHlJ/SvXVGWXCZE8AhbbxQsjDd9Uj
-         +zc7fakqZffWVDmMkRyDp4Q4bnOOmn3Q6yZv4jQsoiGsIt0dxh3HiB/6BhE/00zGwH09
-         wCMxIh8/sCnuIRVPzmj1H4MNJxoQ7QSZpRzqUfbcdUDPJNgC5Hq5xr+DHMNsO4vkZ5+N
-         E7CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/eUcg0X5VUIePvtm+rdhKH75GAS9jZwtwPgS7YKHJh4=;
-        b=GIK2N6A5OOUs8+Hyqo1CtmyAksto62i6inEfDff5MNCFgQkhLEChXfV831MrJo5iuL
-         j1hxpXE0lCSgYWEHkk6OWxG2Sgk9lW7qzUY+OLL2OZbggGyoCWyhJy90eT5gITKYSCzg
-         jCwNLYY1OG95WLExwMbvl+tMjG96ZIU0zapMMh0p/ztdGJMtCRA18WjUAYFyOQLYYVOy
-         7tj91ylUSAU7+XDI2IXybamyour2pLrEMOE8fdqzj67ZG43Pd4RZY916DNd2VrH6/FPS
-         OoONHVQIEnUzxQtCCKQy3TC9a0kKZoN9zFvtB+Xqqc3s5P9Z5JG8AZiN6SQJHugrGZVO
-         kU0A==
-X-Gm-Message-State: AOAM530YvR3j4GUXJW1D+cUtagW+uyVd937V6F0RGKq0CQc8+fVVyaS0
-        XkDpuVhNgnG+2PgdRjoWf/NuJQ==
-X-Google-Smtp-Source: ABdhPJxvDz6D8BIG2BMVUDnZ2a0wHB9Fmt2Gr4GiNu5pqGK8tryq0WsnLEcjBGUNoptBjTCzf/kcCQ==
-X-Received: by 2002:a05:6830:24a1:: with SMTP id v1mr5361822ots.119.1616033451092;
-        Wed, 17 Mar 2021 19:10:51 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w16sm162442otq.15.2021.03.17.19.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 19:10:50 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 21:10:48 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-Cc:     sboyd@kernel.org, agross@kernel.org, david.brown@linaro.org,
-        devicetree@vger.kernel.org, jassisinghbrar@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        mark.rutland@arm.com, mturquette@baylibre.com, ohad@wizery.com,
-        robh+dt@kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 2/3] remoteproc: qcom: wcss: populate driver data for
- IPQ6018
-Message-ID: <YFK2qL+/50L7+LKV@builder.lan>
-References: <1611940320-24830-1-git-send-email-gokulsri@codeaurora.org>
- <1611940320-24830-3-git-send-email-gokulsri@codeaurora.org>
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616033503;
+  x=1647569503;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=79JSNtFL9rJhQrhCSR7TSC+YDAGv+A8hVh/ky4qOLNI=;
+  b=fbXRvepNIABmiTus012nyXOPpYIP7EH48DTcKk1Tj2p6qO1VSGUts7K7
+   po0vFXBMeONjpNTmzkMvYEwXnnU78HfTeb/f7/5/pbXD835fbEgTOOPxM
+   6aJVbVmhil4/xAImSiaU0Bg1gvrcF7vEwWmBQx77/nlaRbMws5j4DT70+
+   fo+XcE4q0wN27DgMnU6oFs0sGCd57j67qO9gwjyViYBWtgJifEhm/7J7Q
+   9lLSTVcPRDPmKvSmux+B1Daywf3LvdQFuQH61VC9ESF2Zg4N7OxmtHtNz
+   v6ZQ5PVeXqonI2DXR1EDL0AvlDmaLayM7i5OkW8U6Qt/qtd6zO7zHpIye
+   A==;
+From:   Hermes Zhang <Hermes.Zhang@axis.com>
+To:     Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
+CC:     Dan Murphy <dmurphy@ti.com>, kernel <kernel@axis.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
+Subject: RE: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
+Thread-Topic: [PATCH] leds: leds-dual-gpio: Add dual GPIO LEDs driver
+Thread-Index: AQHXFnc53ECqmB4gek68ETSLZV586Kp/A6+AgAoFnGA=
+Date:   Thu, 18 Mar 2021 02:11:42 +0000
+Message-ID: <fbeb1c97406c4ea8b6527ccbb25d5fe9@XBOX01.axis.com>
+References: <20210311130408.10820-1-chenhui.zhang@axis.com>
+ <20210311180225.GA11650@duo.ucw.cz>
+In-Reply-To: <20210311180225.GA11650@duo.ucw.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.0.5.60]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611940320-24830-3-git-send-email-gokulsri@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29 Jan 11:11 CST 2021, Gokul Sriram Palanisamy wrote:
+> > +	priv =3D devm_kzalloc(dev, sizeof(struct gpio_dual_leds_priv),
+> GFP_KERNEL);
+> > +	if (!priv)
+> > +		return -ENOMEM;
+> > +
+> > +	priv->low_gpio =3D devm_gpiod_get(dev, "low", GPIOD_OUT_LOW);
+> > +	ret =3D PTR_ERR_OR_ZERO(priv->low_gpio);
+> > +	if (ret) {
+> > +		dev_err(dev, "cannot get low-gpios %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	priv->high_gpio =3D devm_gpiod_get(dev, "high", GPIOD_OUT_LOW);
+> > +	ret =3D PTR_ERR_OR_ZERO(priv->high_gpio);
+> > +	if (ret) {
+> > +		dev_err(dev, "cannot get high-gpios %d\n", ret);
+> > +		return ret;
+> > +	}
+>=20
+> Actually... I'd call it led-0 and led-1 or something. Someone may/will co=
+me
+> with 4-bit GPIO LED one day, and it would be cool if this could be used w=
+ith
+> minimal effort.
+>=20
+> Calling it multi_led in the driver/bindings would bnot be bad, either.
+>=20
 
-> Populate hardcoded param using driver data for IPQ6018 SoCs.
-> 
-> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_wcss.c | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c b/drivers/remoteproc/qcom_q6v5_wcss.c
-> index 7c64bfc..bc9531c 100644
-> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
-> @@ -965,7 +965,7 @@ static int q6v5_alloc_memory_region(struct q6v5_wcss *wcss)
->  	return 0;
->  }
->  
-> -static int ipq8074_init_clock(struct q6v5_wcss *wcss)
-> +static int ipq_init_clock(struct q6v5_wcss *wcss)
->  {
->  	int ret;
->  
-> @@ -1172,7 +1172,7 @@ static int q6v5_wcss_remove(struct platform_device *pdev)
->  }
->  
->  static const struct wcss_data wcss_ipq8074_res_init = {
-> -	.init_clock = ipq8074_init_clock,
-> +	.init_clock = ipq_init_clock,
->  	.q6_firmware_name = "IPQ8074/q6_fw.mdt",
->  	.m3_firmware_name = "IPQ8074/m3_fw.mdt",
->  	.crash_reason_smem = WCSS_CRASH_REASON,
-> @@ -1185,6 +1185,20 @@ static const struct wcss_data wcss_ipq8074_res_init = {
->  	.need_mem_protection = true,
->  };
->  
-> +static const struct wcss_data wcss_ipq6018_res_init = {
-> +	.init_clock = ipq_init_clock,
-> +	.q6_firmware_name = "IPQ6018/q6_fw.mdt",
-> +	.m3_firmware_name = "IPQ6018/m3_fw.mdt",
-> +	.crash_reason_smem = WCSS_CRASH_REASON,
-> +	.aon_reset_required = true,
-> +	.wcss_q6_reset_required = true,
-> +	.bcr_reset_required = false,
-> +	.ssr_name = "q6wcss",
-> +	.ops = &q6v5_wcss_ipq8074_ops,
-> +	.requires_force_stop = true,
-> +	.need_mem_protection = true,
-> +};
-> +
->  static const struct wcss_data wcss_qcs404_res_init = {
->  	.init_clock = qcs404_init_clock,
->  	.init_regulator = qcs404_init_regulator,
-> @@ -1203,6 +1217,7 @@ static const struct wcss_data wcss_qcs404_res_init = {
->  
->  static const struct of_device_id q6v5_wcss_of_match[] = {
->  	{ .compatible = "qcom,ipq8074-wcss-pil", .data = &wcss_ipq8074_res_init },
-> +	{ .compatible = "qcom,ipq6018-wcss-pil", .data = &wcss_ipq6018_res_init },
+Hi all,
 
-As you rebase on the reworked dependency, please sorted alphabetically
-(i.e 6 < 8)
+I have try to use leds-regulator to implement my case, most works. But the =
+only thing doesn't work is the enable-gpio. In my case, we don't have a rea=
+l enable gpio, so when we set LED_OFF, it could not off the LED as we expec=
+ted.=20
 
-Regards,
-Bjorn
+So I think I will back to the new multi LED driver, but make it more generi=
+c.=20
 
->  	{ .compatible = "qcom,qcs404-wcss-pil", .data = &wcss_qcs404_res_init },
->  	{ },
->  };
-> -- 
-> 2.7.4
-> 
+Best Regards,
+Hermes
