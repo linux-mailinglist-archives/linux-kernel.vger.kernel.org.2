@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B6333FE5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EE833FE96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhCRE6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 00:58:07 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:59586 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229454AbhCRE5z (ORCPT
+        id S229640AbhCRFCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCRFC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 00:57:55 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8F98878B349;
-        Thu, 18 Mar 2021 15:57:46 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lMkjB-003oZC-HC; Thu, 18 Mar 2021 15:57:45 +1100
-Date:   Thu, 18 Mar 2021 15:57:45 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mm, dax, pmem: Introduce dev_pagemap_failure()
-Message-ID: <20210318045745.GC349301@dread.disaster.area>
-References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
+        Thu, 18 Mar 2021 01:02:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90A9C06174A;
+        Wed, 17 Mar 2021 22:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=ZwLwotB3kh/Ng3fVpJhH1YpMv+tnI82qlLtcss1Rdic=; b=Gz4KcM7fijZ9HnYE/1O9zLpm23
+        FLRIlhRapQ3L6mImDyYDqogBRO1xih/55s5q8yrkAkUTIeCmS86c+NxO4lhmDFvK9KjHnXtkO68Ig
+        xqNhSHQSIzlI/oCcjiizOUaosVV6iMLxCr9guT4ETAKBEFz/vuNYcJ1iNtADBtlzZ8WV0CAYsN+lI
+        eWplMrkTksgJ4TabNxfYRosgEmWvMPDRVrT3lZTlZqDvLz416mPMUaz4FipJMmnokO0TuR+wPC5Jb
+        MU6MLo1F0xIN2GGlunb1lcUcQVIxF6a2e/1SB1KjOa3c6kc2dd/FKiQhKpUPj2VA79iQ7B2xAyXef
+        1ldvEoGg==;
+Received: from 089144199244.atnat0008.highway.a1.net ([89.144.199.244] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMkn8-002ZYN-0v; Thu, 18 Mar 2021 05:01:53 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 09/10] m68k: use libata instead of the legacy ide driver
+Date:   Thu, 18 Mar 2021 05:57:05 +0100
+Message-Id: <20210318045706.200458-10-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210318045706.200458-1-hch@lst.de>
+References: <20210318045706.200458-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=7-415B0cAAAA:8
-        a=WmxcBHIv_b8-_gLMp1kA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:08:23PM -0700, Dan Williams wrote:
-> Jason wondered why the get_user_pages_fast() path takes references on a
-> @pgmap object. The rationale was to protect against accessing a 'struct
-> page' that might be in the process of being removed by the driver, but
-> he rightly points out that should be solved the same way all gup-fast
-> synchronization is solved which is invalidate the mapping and let the
-> gup slow path do @pgmap synchronization [1].
-> 
-> To achieve that it means that new user mappings need to stop being
-> created and all existing user mappings need to be invalidated.
-> 
-> For device-dax this is already the case as kill_dax() prevents future
-> faults from installing a pte, and the single device-dax inode
-> address_space can be trivially unmapped.
-> 
-> The situation is different for filesystem-dax where device pages could
-> be mapped by any number of inode address_space instances. An initial
-> thought was to treat the device removal event like a drop_pagecache_sb()
-> event that walks superblocks and unmaps all inodes. However, Dave points
-> out that it is not just the filesystem user-mappings that need to react
-> to global DAX page-unmap events, it is also filesystem metadata
-> (proposed DAX metadata access), and other drivers (upstream
-> DM-writecache) that need to react to this event [2].
-> 
-> The only kernel facility that is meant to globally broadcast the loss of
-> a page (via corruption or surprise remove) is memory_failure(). The
-> downside of memory_failure() is that it is a pfn-at-a-time interface.
-> However, the events that would trigger the need to call memory_failure()
-> over a full PMEM device should be rare.
+Switch the m68 defconfigs from the deprecated ide subsystem to use libata
+instead.  The gayle and buddha and falcon drivers are enabled for libata,
+while support for the q40 and macide drivers is lost.
 
-This is a highly suboptimal design. Filesystems only need a single
-callout to trigger a shutdown that unmaps every active mapping in
-the filesystem - we do not need a page-by-page error notification
-which results in 250 million hwposion callouts per TB of pmem to do
-this.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/m68k/configs/amiga_defconfig | 10 +++++-----
+ arch/m68k/configs/atari_defconfig |  8 ++++----
+ arch/m68k/configs/mac_defconfig   |  5 -----
+ arch/m68k/configs/multi_defconfig | 15 ++++++---------
+ arch/m68k/configs/q40_defconfig   |  4 ----
+ 5 files changed, 15 insertions(+), 27 deletions(-)
 
-Indeed, the moment we get the first hwpoison from this patch, we'll
-map it to the primary XFS superblock and we'd almost certainly
-consider losing the storage behind that block to be a shut down
-trigger. During the shutdown, the filesystem should unmap all the
-active mappings (we already need to add this to shutdown on DAX
-regardless of this device remove issue) and so we really don't need
-a page-by-page notification of badness.
-
-AFAICT, it's going to take minutes, maybe hours for do the page-by-page
-iteration to hwposion every page. It's going to take a few seconds
-for the filesystem shutdown to run a device wide invalidation.
-
-SO, yeah, I think this should simply be a single ranged call to the
-filesystem like:
-
-	->memory_failure(dev, 0, -1ULL)
-
-to tell the filesystem that the entire backing device has gone away,
-and leave the filesystem to handle failure entirely at the
-filesystem level.
-
--Dave.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 786656090c5029..fba7275de0fb5f 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -323,11 +323,6 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+-CONFIG_IDE=y
+-CONFIG_IDE_GD_ATAPI=y
+-CONFIG_BLK_DEV_IDECD=y
+-CONFIG_BLK_DEV_GAYLE=y
+-CONFIG_BLK_DEV_BUDDHA=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+@@ -344,6 +339,11 @@ CONFIG_GVP11_SCSI=y
+ CONFIG_SCSI_A4000T=y
+ CONFIG_SCSI_ZORRO7XX=y
+ CONFIG_SCSI_ZORRO_ESP=y
++CONFIG_ATA=y
++# CONFIG_ATA_VERBOSE_ERROR is not set
++# CONFIG_ATA_BMDMA is not set
++CONFIG_PATA_GAYLE=y
++CONFIG_PATA_BUDDHA=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 413232626d9d57..235d038be94444 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -324,10 +324,6 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+-CONFIG_IDE=y
+-CONFIG_IDE_GD_ATAPI=y
+-CONFIG_BLK_DEV_IDECD=y
+-CONFIG_BLK_DEV_FALCON_IDE=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+@@ -339,6 +335,10 @@ CONFIG_SCSI_SAS_ATTRS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_ATARI_SCSI=y
++CONFIG_ATA=y
++# CONFIG_ATA_VERBOSE_ERROR is not set
++# CONFIG_ATA_BMDMA is not set
++CONFIG_PATA_FALCON=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index bf15e6c1c939bb..cc92cc4601cb1f 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -315,11 +315,6 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+-CONFIG_IDE=y
+-CONFIG_IDE_GD_ATAPI=y
+-CONFIG_BLK_DEV_IDECD=y
+-CONFIG_BLK_DEV_PLATFORM=y
+-CONFIG_BLK_DEV_MAC_IDE=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 5466d48fcd9d51..9be9f2ad4ddb84 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -344,15 +344,6 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+-CONFIG_IDE=y
+-CONFIG_IDE_GD_ATAPI=y
+-CONFIG_BLK_DEV_IDECD=y
+-CONFIG_BLK_DEV_PLATFORM=y
+-CONFIG_BLK_DEV_GAYLE=y
+-CONFIG_BLK_DEV_BUDDHA=y
+-CONFIG_BLK_DEV_FALCON_IDE=y
+-CONFIG_BLK_DEV_MAC_IDE=y
+-CONFIG_BLK_DEV_Q40IDE=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+@@ -376,6 +367,12 @@ CONFIG_MVME147_SCSI=y
+ CONFIG_MVME16x_SCSI=y
+ CONFIG_BVME6000_SCSI=y
+ CONFIG_SUN3X_ESP=y
++CONFIG_ATA=y
++# CONFIG_ATA_VERBOSE_ERROR is not set
++# CONFIG_ATA_BMDMA is not set
++CONFIG_PATA_FALCON=y
++CONFIG_PATA_GAYLE=y
++CONFIG_PATA_BUDDHA=y
+ CONFIG_MD=y
+ CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 3ae421cb24a439..ac35e448b1c58f 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -314,10 +314,6 @@ CONFIG_BLK_DEV_RAM=y
+ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+-CONFIG_IDE=y
+-CONFIG_IDE_GD_ATAPI=y
+-CONFIG_BLK_DEV_IDECD=y
+-CONFIG_BLK_DEV_Q40IDE=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
 -- 
-Dave Chinner
-david@fromorbit.com
+2.30.1
+
