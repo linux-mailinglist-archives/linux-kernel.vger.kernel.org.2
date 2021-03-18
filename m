@@ -2,143 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A4A34028C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6FF34028F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhCRJ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:56:48 -0400
-Received: from ozlabs.org ([203.11.71.1]:42041 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229834AbhCRJ4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:56:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229956AbhCRJ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:56:50 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:40724 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCRJ4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:56:32 -0400
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F1MqH31w8z9sR4;
-        Thu, 18 Mar 2021 20:56:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616061371;
-        bh=NNXXZY2072IJh5OxbTX/I/GytUNXlOBdyDfwRlzxgCw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=igZt6P1XJgPbKhHrAgC2wyXS+PnSsMc3xMMqUbV/VSkx/hYfWkvQF7qo5AyDsJ9CK
-         ESlb/qmVhuwe5wBvY4DOnGyHZ/tG8XFBN2vnICQN0izBGn0awYMpZAWyu747VR2Aoo
-         DOTbYVZPOMdk3LrmbfB2c0Tvi/o+iCj2ibwm6qwLf8+pw62hRAKnrriEx0W4UERh4Y
-         03MEWTKrE770st/Nnh/zx1m0uslhEM/YFj4670xKvUXCSOstjvQkDI0NfmdqfcHSZa
-         0UffGicjLbWukAONsQO5Irt5+HMZyFY9U6LpPAhiq0Dp/2QOyNN9+RkCY2UEu1c6E7
-         3EgMQNIDutlMw==
-Date:   Thu, 18 Mar 2021 20:56:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210318205607.63aebcc6@canb.auug.org.au>
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 36A4940006E;
+        Thu, 18 Mar 2021 10:56:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1616061390;
+        bh=118lnbTxA8eKbWvGsXeQrykbruOxfABZX590YoptLLg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=gQKF43tSlevn3W8JD9J5pbbIGBg9ddzI3OYQH+KuKI/iVDmkjqlFBkAtXXTRNylhQ
+         kVIWanyAfcPy+oCqgaHPpGOH44U1GNTx4++31FSJy9rocSQjM7LAwj7UkiQacr7Qqt
+         vfJOeLDzZBuIrS/EOpQf6NnDMT23cTN8A9i6Fvmix/vcN/tHqJ6BsYqO/oKoGY+pDI
+         DnVXnneL6gnmnYLZpwa+Qvq1TI5hqaaxzjYQ7ArczcB2l2mu3FUmGoYODN6IsNRJgD
+         l5CHTLphlli/oxWZNfDkOgtHX2tgu25D9Xi7oy38686yphMDX3JSqtyrhFTuYltLcd
+         6vPsonIizT/sg==
+Received: by mail-lf1-f42.google.com with SMTP id o10so3569206lfb.9;
+        Thu, 18 Mar 2021 02:56:30 -0700 (PDT)
+X-Gm-Message-State: AOAM530k5EntyruOdkUNyeRfugRWlrMZ5dPqDUzmrJ0sGM1G36yuzp2F
+        ABfwD0UdUl/eLMO9b0qVpTIvqztLY7L0SPIEAcY=
+X-Google-Smtp-Source: ABdhPJxARCmqbXdbDRzRNRWFk/MAi6vv9pFlHZeCLprLSzhHa4xpKbn0OjBvZy/32kAsx/jEYZrjOhvJAYoF425/Tlo=
+X-Received: by 2002:a19:f608:: with SMTP id x8mr4943236lfe.380.1616061389690;
+ Thu, 18 Mar 2021 02:56:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0ShCK.lqvGhewYNZ.P0iyjn";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210316175503.1003051-1-kubernat@cesnet.cz> <20210317051239.GW2087@kadam>
+In-Reply-To: <20210317051239.GW2087@kadam>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Thu, 18 Mar 2021 10:56:18 +0100
+X-Gmail-Original-Message-ID: <CABKa3nooU84H=K0XqR63j7uR2MqHx-NLJ0ReaYtNx73hsd4Jow@mail.gmail.com>
+Message-ID: <CABKa3nooU84H=K0XqR63j7uR2MqHx-NLJ0ReaYtNx73hsd4Jow@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0ShCK.lqvGhewYNZ.P0iyjn
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Dan,
 
-Hi all,
+thanks, I will fix this in v3 of this patch series.
 
-After merging the akpm-current tree, today's linux-next build (sparc
-defconfig) failed like this:
+Vaclav
 
-In file included from arch/sparc/include/asm/pgtable_32.h:25:0,
-                 from arch/sparc/include/asm/pgtable.h:7,
-                 from include/linux/pgtable.h:6,
-                 from include/linux/mm.h:33,
-                 from mm/vmalloc.c:12:
-mm/vmalloc.c: In function 'vmalloc_to_page':
-include/asm-generic/pgtable-nopud.h:51:27: error: implicit declaration of f=
-unction 'pud_page'; did you mean 'put_page'? [-Werror=3Dimplicit-function-d=
-eclaration]
- #define p4d_page(p4d)    (pud_page((pud_t){ p4d }))
-                           ^
-mm/vmalloc.c:643:10: note: in expansion of macro 'p4d_page'
-   return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-          ^~~~~~~~
-mm/vmalloc.c:643:25: warning: return makes pointer from integer without a c=
-ast [-Wint-conversion]
-   return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-mm/vmalloc.c:651:25: warning: return makes pointer from integer without a c=
-ast [-Wint-conversion]
-   return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-          ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  70d18d470920 ("mm/vmalloc: fix HUGE_VMAP regression by enabling huge page=
-s in vmalloc_to_page")
-
-I have applied the following hack path for today (hopefully someone can
-come up with something better):
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 18 Mar 2021 18:32:58 +1100
-Subject: [PATCH] hack to make SPARC32 build
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/vmalloc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 57b7f62d25a7..96444d64129a 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -640,7 +640,11 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
- 	if (p4d_none(*p4d))
- 		return NULL;
- 	if (p4d_leaf(*p4d))
-+#ifdef CONFIG_SPARC32
-+		return NULL;
-+#else
- 		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-+#endif
- 	if (WARN_ON_ONCE(p4d_bad(*p4d)))
- 		return NULL;
-=20
-@@ -648,7 +652,11 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
- 	if (pud_none(*pud))
- 		return NULL;
- 	if (pud_leaf(*pud))
-+#ifdef CONFIG_SPARC32
-+		return NULL;
-+#else
- 		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-+#endif
- 	if (WARN_ON_ONCE(pud_bad(*pud)))
- 		return NULL;
-=20
---=20
-2.30.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0ShCK.lqvGhewYNZ.P0iyjn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBTI7cACgkQAVBC80lX
-0GzMfwf7B30Md+vulx+3oV7lMisikH4dc3DmGKKxov3AKkDMFdHkpderYxGyNZxH
-Txb0A++gu4tgWL2YmOcsUbq/ftVyPphV3cRyPPPJW39q5VuCeBU9uZ9t/20tk1V5
-EPyMISsM/zCMKrxgREp+6bJVBCwVeBlWXF5PHxtE2LyjrmEX5qcRD1EUcx5KImjs
-cxOhKXHkO0DBhuJduRZm5eZ7vSTltD/5WZ7CH4HMphk/qz4xR3+g/6CvqteSTIkw
-fy+hAv1D+R7i8/P4SP6p8FD24n7bAUufPG4T1g2BYOSkeclFuzCHJMZ22Y11vtf4
-QnH/UalYKpqBleKCFW0arknElCbxUw==
-=dPCL
------END PGP SIGNATURE-----
-
---Sig_/0ShCK.lqvGhewYNZ.P0iyjn--
+st 17. 3. 2021 v 6:14 odes=C3=ADlatel Dan Carpenter
+<dan.carpenter@oracle.com> napsal:
+>
+> Hi "V=C3=A1clav,
+>
+> url:    https://github.com/0day-ci/linux/commits/V-clav-Kubern-t/hwmon-ma=
+x31790-Rework-to-use-regmap/20210317-015931
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-stag=
+ing.git hwmon-next
+> config: x86_64-randconfig-m001-20210316 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> smatch warnings:
+> drivers/hwmon/max31790.c:263 max31790_fan_is_visible() warn: impossible c=
+ondition '(fan_config < 0) =3D> (0-255 < 0)'
+> drivers/hwmon/max31790.c:337 max31790_write_pwm() warn: impossible condit=
+ion '(fan_config < 0) =3D> (0-255 < 0)'
+> drivers/hwmon/max31790.c:372 max31790_pwm_is_visible() warn: impossible c=
+ondition '(fan_config < 0) =3D> (0-255 < 0)'
+>
+> vim +263 drivers/hwmon/max31790.c
+>
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  257  static umode_t max31790_f=
+an_is_visible(const void *_data, u32 attr, int channel)
+> 195a4b4298a795 Il Han          2015-08-30  258  {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  259          const struct max3=
+1790_data *data =3D _data;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  260          struct =
+regmap *regmap =3D data->regmap;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  261          u8 fan_=
+config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_CHANN=
+EL));
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  262
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @263          if (fan=
+_config < 0)
+>                                                             ^^^^^^^^^^^^^=
+^
+> A u8 can't be negative.
+>
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  264                 =
+ return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  265
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  266          switch (attr) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  267          case hwmon_fan_in=
+put:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  268          case hwmon_fan_fa=
+ult:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  269                  if (chann=
+el < NR_CHANNEL ||
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  270                      (fan_=
+config & MAX31790_FAN_CFG_TACH_INPUT))
+> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  271                          r=
+eturn 0444;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  272                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  273          case hwmon_fan_ta=
+rget:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  274                  if (chann=
+el < NR_CHANNEL &&
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  275                      !(fan=
+_config & MAX31790_FAN_CFG_TACH_INPUT))
+> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  276                          r=
+eturn 0644;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  277                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  278          default:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  279                  return 0;
+> 195a4b4298a795 Il Han          2015-08-30  280          }
+> 195a4b4298a795 Il Han          2015-08-30  281  }
+> 195a4b4298a795 Il Han          2015-08-30  282
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  283  static int max31790_read_=
+pwm(struct device *dev, u32 attr, int channel,
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  284                           =
+    long *val)
+> 195a4b4298a795 Il Han          2015-08-30  285  {
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  286          struct =
+max31790_data *data =3D dev_get_drvdata(dev);
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  287          struct =
+regmap *regmap =3D data->regmap;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  288          int rea=
+d;
+> 195a4b4298a795 Il Han          2015-08-30  289
+> 195a4b4298a795 Il Han          2015-08-30  290          if (IS_ERR(data))
+> 195a4b4298a795 Il Han          2015-08-30  291                  return PT=
+R_ERR(data);
+> 195a4b4298a795 Il Han          2015-08-30  292
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  293          switch (attr) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  294          case hwmon_pwm_in=
+put:
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  295                 =
+ read =3D read_reg_word(regmap, MAX31790_REG_PWMOUT(channel));
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  296                 =
+ if (read < 0)
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  297                 =
+         return read;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  298
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  299                 =
+ *val =3D read >> 8;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  300                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  301          case hwmon_pwm_en=
+able:
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  302                 =
+ read =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel));
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  303                 =
+ if (read < 0)
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  304                 =
+         return read;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  305
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  306                 =
+ if (read & MAX31790_FAN_CFG_RPM_MODE)
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  307                          *=
+val =3D 2;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  308                 =
+ else if (read & MAX31790_FAN_CFG_TACH_INPUT_EN)
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  309                          *=
+val =3D 1;
+> 195a4b4298a795 Il Han          2015-08-30  310                  else
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  311                          *=
+val =3D 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  312                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  313          default:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  314                  return -E=
+OPNOTSUPP;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  315          }
+> 195a4b4298a795 Il Han          2015-08-30  316  }
+> 195a4b4298a795 Il Han          2015-08-30  317
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  318  static int max31790_write=
+_pwm(struct device *dev, u32 attr, int channel,
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  319                           =
+     long val)
+> 195a4b4298a795 Il Han          2015-08-30  320  {
+> 195a4b4298a795 Il Han          2015-08-30  321          struct max31790_d=
+ata *data =3D dev_get_drvdata(dev);
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  322          struct =
+regmap *regmap =3D data->regmap;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  323          u8 fan_config;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  324          int err =3D 0;
+> 195a4b4298a795 Il Han          2015-08-30  325
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  326          switch (attr) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  327          case hwmon_pwm_in=
+put:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  328                  if (val <=
+ 0 || val > 255) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  329                          e=
+rr =3D -EINVAL;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  330                          b=
+reak;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  331                  }
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  332                 =
+ err =3D write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), val << 8);
+> 195a4b4298a795 Il Han          2015-08-30  333                  break;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  334          case hwmon_pwm_en=
+able:
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  335                 =
+ fan_config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_=
+CHANNEL));
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  336
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @337                 =
+ if (fan_config < 0)
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  338                 =
+         return fan_config;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  339
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  340                  if (val =
+=3D=3D 0) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  341                          f=
+an_config &=3D ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  342                           =
+               MAX31790_FAN_CFG_RPM_MODE);
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  343                  } else if=
+ (val =3D=3D 1) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  344                          f=
+an_config =3D (fan_config |
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  345                           =
+             MAX31790_FAN_CFG_TACH_INPUT_EN) &
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  346                           =
+            ~MAX31790_FAN_CFG_RPM_MODE;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  347                  } else if=
+ (val =3D=3D 2) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  348                          f=
+an_config |=3D MAX31790_FAN_CFG_TACH_INPUT_EN |
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  349                           =
+             MAX31790_FAN_CFG_RPM_MODE;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  350                  } else {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  351                          e=
+rr =3D -EINVAL;
+> 195a4b4298a795 Il Han          2015-08-30  352                          b=
+reak;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  353                  }
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  354                 =
+ err =3D regmap_write(regmap,
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  355                           =
+          MAX31790_REG_FAN_CONFIG(channel),
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  356                           =
+          fan_config);
+> 195a4b4298a795 Il Han          2015-08-30  357                  break;
+> 195a4b4298a795 Il Han          2015-08-30  358          default:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  359                  err =3D -=
+EOPNOTSUPP;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  360                  break;
+> 195a4b4298a795 Il Han          2015-08-30  361          }
+> 195a4b4298a795 Il Han          2015-08-30  362
+> 195a4b4298a795 Il Han          2015-08-30  363          return err;
+> 195a4b4298a795 Il Han          2015-08-30  364  }
+> 195a4b4298a795 Il Han          2015-08-30  365
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  366  static umode_t max31790_p=
+wm_is_visible(const void *_data, u32 attr, int channel)
+> 195a4b4298a795 Il Han          2015-08-30  367  {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  368          const struct max3=
+1790_data *data =3D _data;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  369          struct =
+regmap *regmap =3D data->regmap;
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  370          u8 fan_=
+config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_CHANN=
+EL));
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  371
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @372          if (fan=
+_config < 0)
+> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  373                 =
+ return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  374
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  375          switch (attr) {
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  376          case hwmon_pwm_in=
+put:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  377          case hwmon_pwm_en=
+able:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  378                  if (!(fan=
+_config & MAX31790_FAN_CFG_TACH_INPUT))
+> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  379                          r=
+eturn 0644;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  380                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  381          default:
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  382                  return 0;
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  383          }
+> 54187ff9d766b2 Guenter Roeck   2016-07-01  384  }
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
