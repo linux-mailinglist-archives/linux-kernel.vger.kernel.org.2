@@ -2,169 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7922D341149
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6EC34114B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhCRXzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S233340AbhCRX4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhCRXys (ORCPT
+        with ESMTP id S232971AbhCRX4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:54:48 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8513BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:54:48 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so3968800pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:54:48 -0700 (PDT)
+        Thu, 18 Mar 2021 19:56:51 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9041AC06174A;
+        Thu, 18 Mar 2021 16:56:51 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id g1so2094254plg.7;
+        Thu, 18 Mar 2021 16:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7hUuphUSwp1IoZeGVtvLATDDtgHRmQpDvtY9aJO+C/Q=;
-        b=KUrUcrQrNMyP4vVIk00GJ9UR/kv5wCQ6sYLjVFcZumfp056yrovv+rmcbLMFD7r4WJ
-         2IuE3rahTrsrxcMK0MmGPrL/noOhZAP5ZRKdw6TPSjkSOK97u5bIqusIhVhgNBMEfXZr
-         Z5OpVdRVkB8Li4Jqi+I6lFqZD325YA6BxTvBU=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T8YZFchahOt8+lJkHV/2xE+bNUKy8Aar3tpIvxe8Zmw=;
+        b=MZyWIfRoYimVsnLxjnaG0IczdCG4R6V0S3hEk7xv8SPfeA4SZzJUVVRTpzyKWoSqaX
+         eOg4KdljTpSgotTfEKB/4XwoXDI1oTZsmHEzCGVV1k3QEQFed0z24iuMM7TgCVnykONU
+         E5scjxblZxPCbbo4l3aqZRivEuiwGQ3MWovJwO5U4tXBMFZj890qJ85xuxrmKeQqKaMX
+         oJ63M+qdpa9N1rbm//YGatO6f11sa6717sJOJ9aZh6x84McdrPHJWmWTL0IXe3Git5/1
+         Yz3ZHg565Y5s198rBwnDh4mMgYbPFq7e6cfgB7R7hGS2+n4p8Auwxm8Q2fSPOJL14VHB
+         Gd7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7hUuphUSwp1IoZeGVtvLATDDtgHRmQpDvtY9aJO+C/Q=;
-        b=DxdywO/YfbVySiLEu3Nrw/AUE+5WsX/z9LHsl5xEteulegzmNI8ahA6z6NCIMDVKJ3
-         lSbjGJNmbldTFseIU+m5HUFHP2R9U9at7WfL8oTTyevzaL4klKwlEjhgQrc3FsfsEjBh
-         oHoBQaS7tmxwc7Xv0fwmAJrkq26+WKSe1xyXjzCVm33i5qX6NWTocfp8Y0YyUGqfy+vd
-         mb+c4YAhrX7KU4Yzktoc5OzmUp7vcrZVLhf/tFAGUR0XM0ZG5gBTaMU4brxaPbvji451
-         eTkL3J6yJKlmYJ4Vp7m/tK6fcYl/Xl78y6BhXnq1ZupgvBOVWGBFJ9n/VIDfQrupzpgZ
-         XTqA==
-X-Gm-Message-State: AOAM533czrFx5ftK+hsOm5B2aj6QTQBBskl1yJEmknAc41AaxqjFIfTo
-        dnvFcsVaMKXrTDGFqPeFidhxbQ==
-X-Google-Smtp-Source: ABdhPJxEFbPoNbqBo5FUAFc2XNJkbxgPUgEohAG8JnSDGCHwb0wDbvjCKEWKhxcq947wl/fJ1wmKzA==
-X-Received: by 2002:a17:90a:f2d2:: with SMTP id gt18mr6833009pjb.210.1616111688131;
-        Thu, 18 Mar 2021 16:54:48 -0700 (PDT)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:dc70:2def:a801:e21b])
-        by smtp.gmail.com with ESMTPSA id t7sm3295816pfg.69.2021.03.18.16.54.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T8YZFchahOt8+lJkHV/2xE+bNUKy8Aar3tpIvxe8Zmw=;
+        b=jz2f0N/o5QvuwZBAUFhpOAJGCTp7XFPKYq7b9aS/M4gJyKEV5ocgnHGMDDPy4rhopz
+         zYr4927zYF7LrmY+80F/6naZoMv7Fdsmwd5rjlfI8OTJj/0SqkmS5vdOiXsdM55ZGQjS
+         5fYGppDAM1x+HNKlR7ulIDb6MANSBUfWapeq0aUMPtikZSQ0GNo2SOtLrPXCeHHmBV2O
+         FanSJdXrM6XAVj6uGkH/W16vh8tumqWn6j5w7VcQPur13Bl4dCXY9lwvTLv1nxk1sL+S
+         Hto/DE/6V84Uby8Bn/smbbmkrW9vidjfqFxcOxjjF1/14svydbtK6oW9okkGb6VUGv0v
+         5asA==
+X-Gm-Message-State: AOAM531PygJ9gTMpngqwSTBBJg0ozBTFH3LARIhxRKw2w4AaGFRMEZEw
+        zklR0HIefyIzpxE9XwF0K2Dm4ScQNFIN2Q==
+X-Google-Smtp-Source: ABdhPJwKV/OCljF4pyv5z34SR5T42nAW11FJZei/P3z0qiI7W0gc8dBaLEgmt4fbLC9Zsk1LwGjA+A==
+X-Received: by 2002:a17:903:2286:b029:e6:6499:8c2d with SMTP id b6-20020a1709032286b02900e664998c2dmr11726647plh.17.1616111810951;
+        Thu, 18 Mar 2021 16:56:50 -0700 (PDT)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id g2sm3338277pfi.28.2021.03.18.16.56.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 16:54:47 -0700 (PDT)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     stable@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [for-stable-4.19 PATCH 2/2] lkdtm: don't move ctors to .rodata
-Date:   Fri, 19 Mar 2021 07:54:16 +0800
-Message-Id: <20210319075410.for-stable-4.19.2.I0387622b15d84eed675e48a0ba3be9c03b9f9e97@changeid>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-In-Reply-To: <20210318235416.794798-1-drinkcat@chromium.org>
-References: <20210318235416.794798-1-drinkcat@chromium.org>
+        Thu, 18 Mar 2021 16:56:48 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 10:56:45 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 01/25] mm: Introduce struct folio
+Message-ID: <20210318235645.GB3346@balbir-desktop>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210305041901.2396498-2-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305041901.2396498-2-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+On Fri, Mar 05, 2021 at 04:18:37AM +0000, Matthew Wilcox (Oracle) wrote:
+> A struct folio refers to an entire (possibly compound) page.  A function
+> which takes a struct folio argument declares that it will operate on the
+> entire compound page, not just PAGE_SIZE bytes.  In return, the caller
+> guarantees that the pointer it is passing does not point to a tail page.
+>
 
-commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 upstream.
+Is this a part of a larger use case or general cleanup/refactor where
+the split between page and folio simplify programming?
 
-When building with KASAN and LKDTM, clang may implictly generate an
-asan.module_ctor function in the LKDTM rodata object. The Makefile moves
-the lkdtm_rodata_do_nothing() function into .rodata by renaming the
-file's .text section to .rodata, and consequently also moves the ctor
-function into .rodata, leading to a boot time crash (splat below) when
-the ctor is invoked by do_ctors().
+Balbir Singh.
 
-Let's prevent this by marking the function as noinstr rather than
-notrace, and renaming the file's .noinstr.text to .rodata. Marking the
-function as noinstr will prevent tracing and kprobes, and will inhibit
-any undesireable compiler instrumentation.
-
-The ctor function (if any) will be placed in .text and will work
-correctly.
-
-Example splat before this patch is applied:
-
-[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
-[    0.922088] Mem abort info:
-[    0.922828]   ESR = 0x8600000e
-[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    0.925036]   SET = 0, FnV = 0
-[    0.925838]   EA = 0, S1PTW = 0
-[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
-[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
-[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
-[    0.932806] Modules linked in:
-[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
-[    0.935620] Hardware name: linux,dummy-virt (DT)
-[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[    0.938609] pc : asan.module_ctor+0x0/0x14
-[    0.939759] lr : do_basic_setup+0x4c/0x70
-[    0.940889] sp : ffff27b600177e30
-[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
-[    0.943306] x27: 0000000000000000 x26: 0000000000000000
-[    0.944803] x25: 0000000000000000 x24: 0000000000000000
-[    0.946289] x23: 0000000000000001 x22: 0000000000000000
-[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
-[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
-[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
-[    0.952246] x15: 0000000000000000 x14: 0000000000000000
-[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
-[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
-[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
-[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
-[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
-[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
-[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
-[    0.964155] Call trace:
-[    0.964844]  asan.module_ctor+0x0/0x14
-[    0.965895]  kernel_init_freeable+0x158/0x198
-[    0.967115]  kernel_init+0x14/0x19c
-[    0.968104]  ret_from_fork+0x10/0x30
-[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
-[    0.970815] ---[ end trace b5339784e20d015c ]---
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
-
- drivers/misc/lkdtm/Makefile | 2 +-
- drivers/misc/lkdtm/rodata.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
-index cce47a15a79f..aeb960cb096d 100644
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@ -13,7 +13,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
  
- OBJCOPYFLAGS :=
- OBJCOPYFLAGS_rodata_objcopy.o	:= \
--			--rename-section .text=.rodata,alloc,readonly,load
-+			--rename-section .noinstr.text=.rodata,alloc,readonly,load
- targets += rodata.o rodata_objcopy.o
- $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
- 	$(call if_changed,objcopy)
-diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
-index 58d180af72cf..baacb876d1d9 100644
---- a/drivers/misc/lkdtm/rodata.c
-+++ b/drivers/misc/lkdtm/rodata.c
-@@ -5,7 +5,7 @@
-  */
- #include "lkdtm.h"
- 
--void notrace lkdtm_rodata_do_nothing(void)
-+void noinstr lkdtm_rodata_do_nothing(void)
- {
- 	/* Does nothing. We just want an architecture agnostic "return". */
- }
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
