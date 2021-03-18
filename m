@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB35340707
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B880F340709
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhCRNjG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 09:39:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:21136 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhCRNir (ORCPT
+        id S230499AbhCRNjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:39:39 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58742 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhCRNjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:38:47 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-273-x16uHSOPMHCv6f1vzDCVPQ-1; Thu, 18 Mar 2021 13:38:42 +0000
-X-MC-Unique: x16uHSOPMHCv6f1vzDCVPQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 13:38:41 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Thu, 18 Mar 2021 13:38:41 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     =?windows-1257?Q?=27Valdis_Kl=E7tnieks=27?= 
-        <valdis.kletnieks@vt.edu>
-CC:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old
- gcc
-Thread-Topic: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on
- old gcc
-Thread-Index: AQHXG7xcElVT0YEvr0m/P+UnKynj6KqJn0dQgAAEdYCAABwbwA==
-Date:   Thu, 18 Mar 2021 13:38:41 +0000
-Message-ID: <602d6d53962c4567bc1363e58b49c757@AcuMS.aculab.com>
-References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook>
- <282490.1616047333@turing-police>
- <279b22592f1e43a48beeecd34e50b385@AcuMS.aculab.com>
- <300176.1616068535@turing-police>
-In-Reply-To: <300176.1616068535@turing-police>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 18 Mar 2021 09:39:36 -0400
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12IDdQIU019105;
+        Thu, 18 Mar 2021 22:39:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Thu, 18 Mar 2021 22:39:26 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12IDdPwu019085
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 18 Mar 2021 22:39:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org
+Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+ <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+ <YEoTw7CoK7Ob0YR+@kroah.com>
+ <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
+ <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
+ <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
+ <9e089560-388a-a82d-4841-8092578b9d5d@i-love.sakura.ne.jp>
+ <465479ca-544e-3703-cf4e-30f5be04fa11@i-love.sakura.ne.jp>
+ <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
+ <41d21338-19f4-ac4f-2aef-e26180f4c573@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <8bd0f03a-2b9e-dd59-ecce-ac3ee019d8bc@i-love.sakura.ne.jp>
+Date:   Thu, 18 Mar 2021 22:39:25 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <41d21338-19f4-ac4f-2aef-e26180f4c573@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valdis Kletnieks
-> Sent: 18 March 2021 11:56
-> 
-> On Thu, 18 Mar 2021 11:41:29 -0000, David Laight said:
-> 
-> > That gcc bug just implies you need a space after "xxx".
-> > That is easily fixable in the sources.
-> 
-> It's not quite that simple.
-> 
->    In file included from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/tm.h:27,
->                     from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/gcc-plugin.h:31,
->                     from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/plugin.h:23,
->                     from scripts/gcc-plugins/gcc-common.h:9,
->                     from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> >> /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/config/elfos.h:102:21: warning: invalid suffix on
-> literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]
->        fprintf ((FILE), "%s"HOST_WIDE_INT_PRINT_UNSIGNED"\n",\
-> 
-> The problem isn't in a kernel source file...  
-...
+On 2021/03/18 22:13, Shuah Khan wrote:
+> Please don't review code that isn't sent upstream. This repo you are
+> looking at is a private branch created just to verify fixes on syzbot.
 
-Could you pass -Wno-literal-suffix on plugin builds?
+But nobody was able to review this series when sent to ML (except you simply
+ignored my questions), and this series was merged to upstream and stable kernels
+despite there was an obvious assignment error which results in NULL pointer
+dereference.
 
-Might be less faff than changing the -std=xxx' parameter.
+> 
+> I understand the race window you are talking about. I have my way of
+> working to resolve it.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Without an effort to share your understanding/idea and my understanding/idea,
+nobody can test/review what you call a solution.
 
