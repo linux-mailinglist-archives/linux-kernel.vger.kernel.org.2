@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D369340A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB0E340A24
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbhCRQYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:24:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52000 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232152AbhCRQXf (ORCPT
+        id S232042AbhCRQYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232191AbhCRQYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:23:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616084613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=awmgNb4ctYwk2SZspMKBw0ygCL7HIEz0Fh/V8VpI2uA=;
-        b=F7LMFEmMsZEEQimYIjJuN0dnTSJaStRwzUV0uBZDyDe/WZxv9QNjGWV/EagXqyLkd/p+Gd
-        QWc6RmSi+ado2WtqLpJjsLMwL41GBb6GZ6cnesU1yx8FDHsumJG2ZgQVkT5AXFlHm+F6eZ
-        51gCBHKwYbn8b1XbLQqVr5v1n/8To4k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-P46Om9DfPzWgrk6j4evsrg-1; Thu, 18 Mar 2021 12:23:31 -0400
-X-MC-Unique: P46Om9DfPzWgrk6j4evsrg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57927102CB88;
-        Thu, 18 Mar 2021 16:23:30 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.196.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C4D56064B;
-        Thu, 18 Mar 2021 16:23:27 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 17:23:24 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] kvm/kvm_util: add _vm_ioctl
-Message-ID: <20210318162324.wrhb2hg6n4s2th6e@kamzik.brq.redhat.com>
-References: <20210318151624.490861-1-eesposit@redhat.com>
+        Thu, 18 Mar 2021 12:24:17 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D187C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:24:17 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id m6so5397262ilh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cBqnVloDz2yrNkaUjh2OjFQf8EURQRF5ZQWle8mgsU0=;
+        b=fHzeKFdIZRJWiHa6viv+Vqn8txrERtx4ITD0meU0v09Yl4mbZZ7VvetQHK8l5dvFQT
+         rKekhctx7q8DsqvtCi3FfCwB4TjZNogqJiRvX0EExEoLWmuOyNoWGsoMtTCV7ESloOtm
+         0cZVFpA+7Ns6oxBKoWcpx/WnJydPjOKtA2n30=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cBqnVloDz2yrNkaUjh2OjFQf8EURQRF5ZQWle8mgsU0=;
+        b=Wns4a8gThbTF0ZIpFzANxrj2Ghx2DDtDSkjF8PSsmn4oP6ricKA82pkLck96EiInO5
+         z/PzX1otToAE/qQ4BkXrqlaeYpu7Vg/YRAaZ5DCsARdybjrVqWFU4Av4Zpztl4m2IYqc
+         Jd5/amMLxtfB3L44xvuFTq/XMxpA2ygqVDPgEDI56heyRUbXmuwdjABPwchMCLZjXOos
+         ATmc0cKARHbSZaG5oZKdWFcc+0s9/n207568koBAo3nzymiUzQrPFstFb0a40SGT8tA6
+         OMGmvGol+eNg9yxJ/XK4XnZ4m8paMMqATCG5GLka6xvQ4kWsXG/Qq3jvVch8NuMXl1Nm
+         YeVw==
+X-Gm-Message-State: AOAM530OS2jGWUtlkl+1JuLq6ERajh6ifA8lpGjfScsH7II9eXlIT0bZ
+        EIBS0nNFAGWTzf2CHjwCLotNajxbn8Clxg==
+X-Google-Smtp-Source: ABdhPJwhGXva4CyBNkSbxMJ4AjQNkCsO4qgkHt7FBzYEYpoYqpp+G1ePnqP/1gr38+qSt0WvJfpkgg==
+X-Received: by 2002:a05:6e02:13d4:: with SMTP id v20mr11766979ilj.1.1616084656432;
+        Thu, 18 Mar 2021 09:24:16 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id e195sm1173171iof.51.2021.03.18.09.24.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 09:24:15 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 2/4] net: ipa: use upper_32_bits()
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Alex Elder <elder@linaro.org>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210318135141.583977-1-elder@linaro.org>
+ <20210318135141.583977-3-elder@linaro.org>
+ <75a8c09b-783a-6d05-2e56-02bd02ff3ff0@gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <982ded1e-b8da-d017-16bf-1a0d4bb46246@ieee.org>
+Date:   Thu, 18 Mar 2021 11:24:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318151624.490861-1-eesposit@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <75a8c09b-783a-6d05-2e56-02bd02ff3ff0@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 04:16:23PM +0100, Emanuele Giuseppe Esposito wrote:
-> As in kvm_ioctl and _kvm_ioctl, add
-> the respective _vm_ioctl for vm_ioctl.
+On 3/18/21 11:03 AM, Florian Fainelli wrote:
 > 
-> _vm_ioctl invokes an ioctl using the vm fd,
-> leaving the caller to test the result.
 > 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  tools/testing/selftests/kvm/include/kvm_util.h | 1 +
->  tools/testing/selftests/kvm/lib/kvm_util.c     | 7 ++++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+> On 3/18/2021 6:51 AM, Alex Elder wrote:
+>> Use upper_32_bits() to extract the high-order 32 bits of a DMA
+>> address.  This avoids doing a 32-position shift on a DMA address
+>> if it happens not to be 64 bits wide.
+>>
+>> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>> v2: - Switched to use the existing function, as suggested by Florian.
+>>
+>>   drivers/net/ipa/gsi.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+>> index 2119367b93ea9..82c5a0d431ee5 100644
+>> --- a/drivers/net/ipa/gsi.c
+>> +++ b/drivers/net/ipa/gsi.c
+>> @@ -711,7 +711,7 @@ static void gsi_evt_ring_program(struct gsi *gsi, u32 evt_ring_id)
+>>   	val = evt_ring->ring.addr & GENMASK(31, 0);
 > 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 2d7eb6989e83..d53a5f7cad61 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -133,6 +133,7 @@ void vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
->  int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
->  		void *arg);
->  void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-> +int _vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg);
->  void kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
->  int _kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
->  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index e5fbf16f725b..b8849a1aca79 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1697,11 +1697,16 @@ void vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
->  {
->  	int ret;
->  
-> -	ret = ioctl(vm->fd, cmd, arg);
-> +	ret = _vm_ioctl(vm, cmd, arg);
->  	TEST_ASSERT(ret == 0, "vm ioctl %lu failed, rc: %i errno: %i (%s)",
->  		cmd, ret, errno, strerror(errno));
->  }
->  
-> +int _vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-> +{
-> +	return ioctl(vm->fd, cmd, arg);
-> +}
-> +
->  /*
->   * KVM system ioctl
->   *
-> -- 
-> 2.29.2
->
+> Did you want to introduce another patch to use lower_32_bits() for the
+> assignment above?
 
-With the summary prefix change suggested by Paolo, or even better
-'KVM: selftests:' since that's what the majority of patches in KVM
-selftests have
+Bah... Yes, I should have done that.  I was really just
+focused on the new function I created and didn't need
+to.   I'll do as you suggest.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+I'll also see if I do that anywhere else in the driver
+and will use these functions as well if appropriate.
+
+I'll do so in the same patch 2 of version 3.
+
+Thanks Florian.
+
+					-Alex
+
+> 
+>>   	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_2_OFFSET(evt_ring_id));
+>>   
+>> -	val = evt_ring->ring.addr >> 32;
+>> +	val = upper_32_bits(evt_ring->ring.addr);
+>>   	iowrite32(val, gsi->virt + GSI_EV_CH_E_CNTXT_3_OFFSET(evt_ring_id));
+>>   
+>>   	/* Enable interrupt moderation by setting the moderation delay */
+>> @@ -819,7 +819,7 @@ static void gsi_channel_program(struct gsi_channel *channel, bool doorbell)
+>>   	val = channel->tre_ring.addr & GENMASK(31, 0);
+> 
+> And likewise?
+> 
+>>   	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_2_OFFSET(channel_id));
+>>   
+>> -	val = channel->tre_ring.addr >> 32;
+>> +	val = upper_32_bits(channel->tre_ring.addr);
+>>   	iowrite32(val, gsi->virt + GSI_CH_C_CNTXT_3_OFFSET(channel_id));
+>>   
+>>   	/* Command channel gets low weighted round-robin priority */
+>>
+> 
 
