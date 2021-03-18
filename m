@@ -2,91 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AD43400B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C149F3400B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhCRIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:14:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229512AbhCRIOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:14:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616055276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=15NAKS9Isxz1mUr9bz1U2OlYkIPx+9vW+iRsoYJamYs=;
-        b=V9GxgI7nFMhvI7JAADXLRYryZpTbeBEAVZMl/URLcCH78mlLm1CVRk4MIRnvz3d8J1/jU8
-        3KldLIHCPmLBkQFAFuPppfATpQNPbjQ6QzcjTtL1LqTzAVvqJURHL4+GnMDJ3Y+qLJWExm
-        5oeiNZBChnWKQMtla0bmWEjdWuUuP28=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-gDW63DTcOSiKUSClNJiSTA-1; Thu, 18 Mar 2021 04:14:32 -0400
-X-MC-Unique: gDW63DTcOSiKUSClNJiSTA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1974D8189CD;
-        Thu, 18 Mar 2021 08:14:30 +0000 (UTC)
-Received: from [10.36.113.61] (ovpn-113-61.ams2.redhat.com [10.36.113.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 456C21F41B;
-        Thu, 18 Mar 2021 08:14:27 +0000 (UTC)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Aili Yao <yaoaili@kingsoft.com>, akpm@linux-foundation.org,
-        naoya.horiguchi@nec.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com,
-        sunhao2@kingsoft.com, Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20210317163714.328a038d@alex-virtual-machine>
- <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
- <20210318044600.GJ3420@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH] mm/gup: check page posion status for coredump.
-Message-ID: <5cc2ccb8-16bc-bbbf-6c94-124be1d95458@redhat.com>
-Date:   Thu, 18 Mar 2021 09:14:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229770AbhCRIPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:15:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14770 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhCRIO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:14:59 -0400
+IronPort-SDR: czoQbdzClovz2Jd8vSiFbwi78hWBm3mXTtZfERvTIw5gLIxpkYtPpkeB5ZDguwbF5ti0Mw2BK+
+ ZEnT0G8W6PUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="169549276"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="169549276"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 01:14:58 -0700
+IronPort-SDR: UToShn/wNZSOcz7BGEusmrmPuJUjDbZfsY/zNHUutkvbg1of/qEqitTTVbdvCHkthD0mxClMPz
+ SdtX8yLVIZJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="372629915"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 18 Mar 2021 01:14:57 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMno0-000186-Nu; Thu, 18 Mar 2021 08:14:56 +0000
+Date:   Thu, 18 Mar 2021 16:14:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ 0705ef64d1ff52b817e278ca6e28095585ff31e1
+Message-ID: <60530bea./GC84APkCeVcVyCO%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210318044600.GJ3420@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.21 05:46, Matthew Wilcox wrote:
-> On Wed, Mar 17, 2021 at 10:12:02AM +0100, David Hildenbrand wrote:
->>> +	if (IS_ENABLED(CONFIG_MEMORY_FAILURE) && ret == 1) {
->>> +		if (unlikely(PageHuge(page) && PageHWPoison(compound_head(page))))
->>> +			ret = 0;
->>> +		else if (unlikely(PageHWPoison(page)))
->>> +			ret = 0;
->>> +	}
->>
->> I wonder if a simple
->>
->> if (PageHWPoison(compound_head(page)))
->> 	ret = 0;
->>
->> won't suffice. But I guess the "issue" is compound pages that are not huge
->> pages or transparent huge pages.
-> 
-> THPs don't set the HWPoison bit on the head page.
-> 
-> https://lore.kernel.org/linux-mm/20210316140947.GA3420@casper.infradead.org/
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: 0705ef64d1ff52b817e278ca6e28095585ff31e1  tools/insn: Restore the relative include paths for cross building
 
-Oh, okay -- I was missing that we actually already set the HWPoison bit 
-before trying to split via TestSetPageHWPoison(). I thought for a second 
-that if splitting fails, we don't set any HWPoison bit.
+elapsed time: 725m
 
--- 
-Thanks,
+configs tested: 106
+configs skipped: 2
 
-David / dhildenb
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+h8300                     edosk2674_defconfig
+powerpc                     redwood_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     taishan_defconfig
+powerpc                          allmodconfig
+mips                            gpr_defconfig
+sh                          landisk_defconfig
+powerpc                    mvme5100_defconfig
+m68k                       m5249evb_defconfig
+sh                            titan_defconfig
+mips                           gcw0_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                         wii_defconfig
+powerpc                       eiger_defconfig
+mips                       bmips_be_defconfig
+m68k                        stmark2_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      chrp32_defconfig
+mips                     loongson1b_defconfig
+h8300                    h8300h-sim_defconfig
+sh                           se7619_defconfig
+sh                        sh7757lcr_defconfig
+sh                             espt_defconfig
+sh                   secureedge5410_defconfig
+riscv                             allnoconfig
+xtensa                              defconfig
+arc                        nsimosci_defconfig
+arm                            mmp2_defconfig
+xtensa                       common_defconfig
+m68k                                defconfig
+mips                      malta_kvm_defconfig
+arm                            lart_defconfig
+arm                           spitz_defconfig
+sh                  sh7785lcr_32bit_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210317
+i386                 randconfig-a005-20210317
+i386                 randconfig-a002-20210317
+i386                 randconfig-a003-20210317
+i386                 randconfig-a004-20210317
+i386                 randconfig-a006-20210317
+x86_64               randconfig-a006-20210317
+x86_64               randconfig-a001-20210317
+x86_64               randconfig-a005-20210317
+x86_64               randconfig-a004-20210317
+x86_64               randconfig-a003-20210317
+x86_64               randconfig-a002-20210317
+i386                 randconfig-a013-20210317
+i386                 randconfig-a016-20210317
+i386                 randconfig-a011-20210317
+i386                 randconfig-a012-20210317
+i386                 randconfig-a015-20210317
+i386                 randconfig-a014-20210317
+riscv                               defconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210317
+x86_64               randconfig-a016-20210317
+x86_64               randconfig-a013-20210317
+x86_64               randconfig-a014-20210317
+x86_64               randconfig-a015-20210317
+x86_64               randconfig-a012-20210317
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
