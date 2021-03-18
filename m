@@ -2,119 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA1C33FE56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9537E33FE65
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhCREw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 00:52:27 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55190 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229540AbhCREwW (ORCPT
+        id S229690AbhCRE6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 00:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCRE6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 00:52:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0USNEbJb_1616043135;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0USNEbJb_1616043135)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Mar 2021 12:52:16 +0800
-Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial
- objects
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        Christoph Lameter <cl@linux.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Pekka Enberg <penberg@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shu Ming <sming56@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        James Wang <jnwang@linux.alibaba.com>
-References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
- <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
- <322e2b18-e529-3004-c19a-8c4a3b97c532@suse.cz>
-From:   Xunlei Pang <xlpang@linux.alibaba.com>
-Message-ID: <9594c2c0-b6ef-2064-b8c0-72f67032cde8@linux.alibaba.com>
-Date:   Thu, 18 Mar 2021 12:52:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Thu, 18 Mar 2021 00:58:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D826C06174A;
+        Wed, 17 Mar 2021 21:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=wEy5NunwrZKXnkhywjB0DIEFLxRmlhSa94tBcP+tKjE=; b=bv913LM0lvcD8Id3k3odeou8wR
+        1UvHd2GaSV+awelY4zndccdEi1o98SvR0osHU7YT2lzvxPSgn9S+llRvYFYZl0NqxKr6JPY5h6ZqC
+        /VHtYLrSrsc3G0fU/qqnWT2IZ/W4XWIdxAZ8719My3Pmb4XVeFuT7ZtRtwHvPpDffcuPFktVt74Ci
+        iKFsp0yleZWPZWxf14Mw2w5Vhlql3ikursfJEfoBHUEAclgryE05eVjtWYzyYdxxKWdARDOzxutBe
+        fAU3lk4ETNL1tXb+E/S9a3A6KawIpnvinkS/iDrdzoMGs3YMF+h+OAjuVTBRk+TeCrfcJQuHQYqF9
+        rlZkW62w==;
+Received: from [2001:4bb8:18c:bb3:e1cf:ad2f:7ff7:7a0b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMkiZ-002ZB3-Ks; Thu, 18 Mar 2021 04:57:10 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: remove the legacy ide driver
+Date:   Thu, 18 Mar 2021 05:56:56 +0100
+Message-Id: <20210318045706.200458-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <322e2b18-e529-3004-c19a-8c4a3b97c532@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 2:45 AM, Vlastimil Babka wrote:
-> On 3/17/21 8:54 AM, Xunlei Pang wrote:
->> The node list_lock in count_partial() spends long time iterating
->> in case of large amount of partial page lists, which can cause
->> thunder herd effect to the list_lock contention.
->>
->> We have HSF RT(High-speed Service Framework Response-Time) monitors,
->> the RT figures fluctuated randomly, then we deployed a tool detecting
->> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
->> the list_lock cost nearly 100ms with irq off issued by "ss", this also
->> caused network timeouts.
->>
->> This patch introduces two counters to maintain the actual number
->> of partial objects dynamically instead of iterating the partial
->> page lists with list_lock held.
->>
->> New counters of kmem_cache_node: partial_free_objs, partial_total_objs.
->> The main operations are under list_lock in slow path, its performance
->> impact is expected to be minimal except the __slab_free() path.
->>
->> The only concern of introducing partial counter is that partial_free_objs
->> may cause cacheline contention and false sharing issues in case of same
->> SLUB concurrent __slab_free(), so define it to be a percpu counter and
->> places it carefully.
-> 
-> Hm I wonder, is it possible that this will eventually overflow/underflow the
-> counter on some CPU? (I guess practially only on 32bit). Maybe the operations
-> that are already done under n->list_lock should flush the percpu counter to a
-> shared counter?
+Hi all,
 
-You are right, thanks a lot for noticing this.
+we've been trying to get rid of the legacy ide driver for a while now,
+and finally scheduled a removal for 2021, which is three month old now.
 
-> 
-> ...
-> 
->> @@ -3039,6 +3066,13 @@ static void __slab_free(struct kmem_cache *s, struct page *page,
->>  		head, new.counters,
->>  		"__slab_free"));
->>  
->> +	if (!was_frozen && prior) {
->> +		if (n)
->> +			__update_partial_free(n, cnt);
->> +		else
->> +			__update_partial_free(get_node(s, page_to_nid(page)), cnt);
->> +	}
-> 
-> I would guess this is the part that makes your measurements notice that
-> (although tiny) difference. We didn't need to obtain the node pointer before and
-> now we do. And that is really done just for the per-node breakdown in "objects"
-> and "objects_partial" files under /sys/kernel/slab - distinguishing nodes is not
-> needed for /proc/slabinfo. So that kinda justifies putting this under a new
-> CONFIG as you did. Although perhaps somebody interested in these kind of stats
-> would enable CONFIG_SLUB_STATS anyway, so that's still an option to use instead
-> of introducing a new oddly specific CONFIG? At least until somebody comes up and
-> presents an use case where they want the per-node breakdowns in /sys but cannot
-> afford CONFIG_SLUB_STATS.
-> 
-> But I'm also still thinking about simply counting all free objects (for the
-> purposes of accurate <active_objs> in /proc/slabinfo) as a percpu variable in
-> struct kmem_cache itself. That would basically put this_cpu_add() in all the
-> fast paths, but AFAICS thanks to the segment register it doesn't mean disabling
-> interrupts nor a LOCK operation, so maybe it wouldn't be that bad? And it
-> shouldn't need to deal with these node pointers. So maybe that would be
-> acceptable for CONFIG_SLUB_DEBUG? Guess I'll have to try...
-> 
+In general distros and most defconfigs have switched to libata long ago,
+but there are a few exceptions.  This series first switches over all
+remaining defconfigs to use libata and then removes the legacy ide
+driver.
 
-The percpu operation itself should be fine, it looks to be cacheline
-pingpong issue due to extra percpu counter access, so making it
-cacheline aligned improves a little according to my tests.
+libata mostly covers all hardware supported by the legacy ide driver.
+There are three mips drivers that are not supported, but the linux-mips
+list could not identify any users of those.  There also are two m68k
+drivers that do not have libata equivalents, which might or might not
+have users, so we'll need some input and possibly help from the m68k
+community here.
