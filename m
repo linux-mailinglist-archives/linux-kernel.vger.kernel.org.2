@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E38233FC82
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A84233FC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhCRBCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:02:36 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13185 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCRBCF (ORCPT
+        id S230378AbhCRBCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 21:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhCRBCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:02:05 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F17w73LVNzmZ6G;
-        Thu, 18 Mar 2021 08:59:35 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 09:01:56 +0800
-Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, <linux-alpha@vger.kernel.org>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-ia64@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
-        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-        <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        <linux-um@lists.infradead.org>, <linux-xtensa@linux-xtensa.org>,
-        <linux-mm@kvack.org>
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
- <20210317015210.33641-1-wangkefeng.wang@huawei.com>
- <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <190f5356-f947-d474-a9fe-bc8e622a426e@huawei.com>
-Date:   Thu, 18 Mar 2021 09:01:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 17 Mar 2021 21:02:32 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429CDC06174A;
+        Wed, 17 Mar 2021 18:02:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F17zL5VWJz9sW5;
+        Thu, 18 Mar 2021 12:02:22 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616029348;
+        bh=eHnajfXpFjdDfsAqUJl4e1LeqfH+swSe/7cEiSQT42s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=l2DpR/zl20WaZNiWbMGAUulClkYx2Cu9g8c5cdwIO9ZGomxPJ/KCJIvbH+9fPN6Im
+         CKCZDyixJW12f59UWcuS8uBnZfIWsCQDkvjs7B2Nal0uv5LX0ecbfaTlGEqI2OGfAM
+         VpJIjxhw+deICaRTovpON3xVoMBj5pfm5EHxTn/5E4nLALi3yh//m3jKRXjlLukk39
+         Mmiged9tUKObYy+8FFfq3CQrMIuSZEmlzZSo8R8ulPwSlbP6qGG6k7qKqsC93CRH4r
+         F0X8v5sgXBmEvReMuScs4l2OnAlLgZOSqInZxbI8JRcmeCSLvW2vaU8YyiiVMzdqjo
+         VsqmWeYv+0nAA==
+Date:   Thu, 18 Mar 2021 12:02:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Junlin Yang <yangjunlin@yulong.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: linux-next: manual merge of the drm tree with the drm-misc-fixes
+ tree
+Message-ID: <20210318120221.6dc8f33b@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/oZ.TksL4dDhKBuenfDKgVzi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/oZ.TksL4dDhKBuenfDKgVzi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/3/18 2:48, Dave Hansen wrote:
-> On 3/16/21 6:52 PM, Kefeng Wang wrote:
->> mem_init_print_info() is called in mem_init() on each architecture,
->> and pass NULL argument, so using void argument and move it into mm_init().
->>
->> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> It's not a big deal but you might want to say something like:
->
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # x86 bits
->
-> Just to make it clear that I didn't look at the alpha bits at all. :)
-Get it, will be careful, thanks.
-> .
->
+Hi all,
+
+Today's linux-next merge of the drm tree got a conflict in:
+
+  drivers/gpu/drm/omapdrm/dss/dsi.c
+
+between commit:
+
+  690911544275 ("drm/omap: dsi: fix unsigned expression compared with zero")
+
+from the drm-misc-fixes tree and commit:
+
+  bbd13d6a7b2e ("drm/omap: dsi: fix unreachable code in dsi_vc_send_short()=
+")
+
+from the drm tree.
+
+I fixed it up (these do basically the same thing, so I used the former
+version) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oZ.TksL4dDhKBuenfDKgVzi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBSpp0ACgkQAVBC80lX
+0GzsEAgAmAl5/2tglQc8Eo/ncN6jarRCoL3sucB5Zy9s3kE8SORVB8B3cqWKum0U
+n7R735XgojEs8nJLgIbXIy7gUOF8yIoSAHGWHKI0JLLUlP7gtpwEg3uTmO+zjIPD
+Z60oA0t0sAtYAGyLIJHGGnt56aGJ5KWEzhEnj0xBG1A8qtAB/Fr2Yg/UvZRNmLXn
+SW07t6LeBR5V+NJ6zX8EiveEiVsVI0j+DsP3y8t79UD01pRr7AJ+OiYf2xrTTgWo
+KXFKeFST+fq5n0CBCOtwj7pcihNFj4r9+2hv3VoMqPQQMJ3ZYqyAUOvVEJv9xYLl
+cnPb28mXq1CGz+pnH4CFGOcjFCu3ZA==
+=ry2h
+-----END PGP SIGNATURE-----
+
+--Sig_/oZ.TksL4dDhKBuenfDKgVzi--
