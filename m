@@ -2,156 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AAC340D30
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D31340D35
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhCRSgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:36:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232523AbhCRSg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:36:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEFF964F30;
-        Thu, 18 Mar 2021 18:36:26 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 18:36:24 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        will@kernel.org, rui.xiang@huawei.com,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
-Message-ID: <20210318183623.GB10758@arm.com>
-References: <20210317142050.57712-1-chenjun102@huawei.com>
- <20210317142050.57712-3-chenjun102@huawei.com>
- <20210317183636.GG12269@arm.com>
- <20210317193416.GB9786@C02TD0UTHF1T.local>
- <20210318161723.GA10758@arm.com>
- <20210318171207.GB29466@C02TD0UTHF1T.local>
+        id S232646AbhCRShy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:37:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36884 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232645AbhCRShY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:37:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616092643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y/khS+sazdkYugBBDua/03KWhTNI7Fdu6w81m6ZyuKs=;
+        b=JldcGZM+RzWcN6ADkVHGwJXzvKzzVYmuqE8ccZPTWZ+jOm86eR2l2jx56vd9wEPLsapvqA
+        aavd4sTEP40323BlvRBQZwnO9iyrlAEsz31+uLZSynQ1+5IQ5+HUQA1ahvv6eJpEpSm3mP
+        5D9z5eV3ljw+mEPwi+DKxCzsmL0Fy8I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-iwcR_YGZNWq_3ryKGhEjUA-1; Thu, 18 Mar 2021 14:37:19 -0400
+X-MC-Unique: iwcR_YGZNWq_3ryKGhEjUA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB47C19251A0;
+        Thu, 18 Mar 2021 18:37:17 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E8ECA60C13;
+        Thu, 18 Mar 2021 18:37:05 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 14:37:03 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Phil Sutter <phil@nwl.cc>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH] audit: log nftables configuration change events once per
+ table
+Message-ID: <20210318183703.GL3141668@madcap2.tricolour.ca>
+References: <7e73ce4aa84b2e46e650b5727ee7a8244ec4a0ac.1616078123.git.rgb@redhat.com>
+ <20210318163032.GS5298@orbyte.nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318171207.GB29466@C02TD0UTHF1T.local>
+In-Reply-To: <20210318163032.GS5298@orbyte.nwl.cc>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 05:12:07PM +0000, Mark Rutland wrote:
-> On Thu, Mar 18, 2021 at 04:17:24PM +0000, Catalin Marinas wrote:
-> > On Wed, Mar 17, 2021 at 07:34:16PM +0000, Mark Rutland wrote:
-> > > On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
-> > > > On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
-> > > > > On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
-> > > > > stack:
-> > > > >  stack_trace_save+0x4c/0x78
-> > > > >  register_early_stack+0x34/0x70
-> > > > >  init_page_owner+0x34/0x230
-> > > > >  page_ext_init+0x1bc/0x1dc
-> > > > > 
-> > > > > The reason is that:
-> > > > > check_recursive_alloc always return 1 because that
-> > > > > entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
-> > > > > 
-> > > > > The root cause is that:
-> > > > > commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > > > > make the save_trace save 2 more entries.
-> > > > > 
-> > > > > Add skip in arch_stack_walk when task == current.
-> > > > > 
-> > > > > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > > > > Signed-off-by: Chen Jun <chenjun102@huawei.com>
-> > > > > ---
-> > > > >  arch/arm64/kernel/stacktrace.c | 5 +++--
-> > > > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> > > > > index ad20981..c26b0ac 100644
-> > > > > --- a/arch/arm64/kernel/stacktrace.c
-> > > > > +++ b/arch/arm64/kernel/stacktrace.c
-> > > > > @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> > > > >  
-> > > > >  	if (regs)
-> > > > >  		start_backtrace(&frame, regs->regs[29], regs->pc);
-> > > > > -	else if (task == current)
-> > > > > +	else if (task == current) {
-> > > > > +		((struct stacktrace_cookie *)cookie)->skip += 2;
-> > > > >  		start_backtrace(&frame,
-> > > > >  				(unsigned long)__builtin_frame_address(0),
-> > > > >  				(unsigned long)arch_stack_walk);
-> > > > > -	else
-> > > > > +	} else
-> > > > >  		start_backtrace(&frame, thread_saved_fp(task),
-> > > > >  				thread_saved_pc(task));
-> > > > 
-> > > > I don't like abusing the cookie here. It's void * as it's meant to be an
-> > > > opaque type. I'd rather skip the first two frames in walk_stackframe()
-> > > > instead before invoking fn().
-> > > 
-> > > I agree that we shouldn't touch cookie here.
-> > > 
-> > > I don't think that it's right to bodge this inside walk_stackframe(),
-> > > since that'll add bogus skipping for the case starting with regs in the
-> > > current task. If we need a bodge, it has to live in arch_stack_walk()
-> > > where we set up the initial unwinding state.
-> > 
-> > Good point. However, instead of relying on __builtin_frame_address(1),
-> > can we add a 'skip' value to struct stackframe via arch_stack_walk() ->
-> > start_backtrace() that is consumed by walk_stackframe()?
+On 2021-03-18 17:30, Phil Sutter wrote:
+> Hi,
 > 
-> We could, but I'd strongly prefer to use __builtin_frame_address(1) if
-> we can, as it's much simpler to read and keeps the logic constrained to
-> the starting function. I'd already hacked that up at:
+> On Thu, Mar 18, 2021 at 11:39:52AM -0400, Richard Guy Briggs wrote:
+> > Reduce logging of nftables events to a level similar to iptables.
+> > Restore the table field to list the table, adding the generation.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=arm64/unwind&id=5811a76c1be1dcea7104a9a771fc2604bc2a90ef
+> This looks much better, a few remarks below:
 > 
-> ... and I'm fairly confident that this works on arm64.
-
-If it works with both clang and gcc (and various versions), it's cleaner
-this way.
-
-> If __builtin_frame_address(1) is truly unreliable, then we could just
-> manually unwind one step within arch_stack_walk() when unwinding
-> current, which I think is cleaner than spreading this within
-> walk_stackframe().
+> [...]
+> > +static const u8 nft2audit_op[] = { // enum nf_tables_msg_types
+> > +	/* NFT_MSG_NEWTABLE	*/	AUDIT_NFT_OP_TABLE_REGISTER,
+> > +	/* NFT_MSG_GETTABLE	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELTABLE	*/	AUDIT_NFT_OP_TABLE_UNREGISTER,
+> > +	/* NFT_MSG_NEWCHAIN	*/	AUDIT_NFT_OP_CHAIN_REGISTER,
+> > +	/* NFT_MSG_GETCHAIN	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELCHAIN	*/	AUDIT_NFT_OP_CHAIN_UNREGISTER,
+> > +	/* NFT_MSG_NEWRULE	*/	AUDIT_NFT_OP_RULE_REGISTER,
+> > +	/* NFT_MSG_GETRULE	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELRULE	*/	AUDIT_NFT_OP_RULE_UNREGISTER,
+> > +	/* NFT_MSG_NEWSET	*/	AUDIT_NFT_OP_SET_REGISTER,
+> > +	/* NFT_MSG_GETSET	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELSET	*/	AUDIT_NFT_OP_SET_UNREGISTER,
+> > +	/* NFT_MSG_NEWSETELEM	*/	AUDIT_NFT_OP_SETELEM_REGISTER,
+> > +	/* NFT_MSG_GETSETELEM	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELSETELEM	*/	AUDIT_NFT_OP_SETELEM_UNREGISTER,
+> > +	/* NFT_MSG_NEWGEN	*/	AUDIT_NFT_OP_GEN_REGISTER,
+> > +	/* NFT_MSG_GETGEN	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_TRACE	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_NEWOBJ	*/	AUDIT_NFT_OP_OBJ_REGISTER,
+> > +	/* NFT_MSG_GETOBJ	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELOBJ	*/	AUDIT_NFT_OP_OBJ_UNREGISTER,
+> > +	/* NFT_MSG_GETOBJ_RESET	*/	AUDIT_NFT_OP_OBJ_RESET,
+> > +	/* NFT_MSG_NEWFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_REGISTER,
+> > +	/* NFT_MSG_GETFLOWTABLE	*/	AUDIT_NFT_OP_INVALID,
+> > +	/* NFT_MSG_DELFLOWTABLE	*/	AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
+> > +	/* NFT_MSG_MAX		*/	AUDIT_NFT_OP_INVALID,
+> > +};
 > 
-> I can clean up the commit message and post that as a real patch, if you
-> like?
-
-Yes, please. Either variant is fine by me, with a preference for
-__builtin_frame_address(1) (if we know it works).
-
-> > > In another thread, we came to the conclusion that arch_stack_walk()
-> > > should start at its parent, and its parent should add any skipping it
-> > > requires.
-> > 
-> > This makes sense.
-> > 
-> > > Currently, arch_stack_walk() is off-by-one, and we can bodge that by
-> > > using __builtin_frame_address(1), though I'm waiting for some compiler
-> > > folk to confirm that's sound. Otherwise we need to add an assembly
-> > > trampoline to snapshot the FP, which is unfortunastely convoluted.
-> > > 
-> > > This report suggests that a caller of arch_stack_walk() is off-by-one
-> > > too, which suggests a larger cross-architecture semantic issue. I'll try
-> > > to take a look tomorrow.
-> > 
-> > I don't think the caller is off by one, at least not by the final skip
-> > value. __set_page_owner() wants the trace to start at its caller. The
-> > callee save_stack() in the same file adds a skip of 2.
-> > save_stack_trace() increments the skip before invoking
-> > arch_stack_walk(). So far, this assumes that arch_stack_walk() starts at
-> > its parent, i.e. save_stack_trace().
+> NFT_MSG_MAX is itself not a valid message, it serves merely as an upper
+> bound for arrays, loops or sanity checks. You will never see it in
+> trans->msg_type.
 > 
-> FWIW, I had only assumed the caller was also off-by-one because the
-> commit message for this patch said the conversion to ARCH_STACKWALK
-> added two entries. Have I misunderstood, or is that incorrect?
+> Since enum nf_tables_msg_types contains consecutive values from 0 to
+> NFT_MSG_MAX, you could write the above more explicitly:
+> 
+> | static const u8 nft2audit_op[NFT_MSG_MAX] = {
+> | 	[NFT_MSG_NEWTABLE]	= AUDIT_NFT_OP_TABLE_REGISTER,
+> | 	[NFT_MSG_GETTABLE]	= AUDIT_NFT_OP_INVALID,
+> | 	[NFT_MSG_DELTABLE]	= AUDIT_NFT_OP_TABLE_UNREGISTER,
+> (And so forth.)
+> 
+> Not a must, but it clarifies the 1:1 mapping between index and said
+> enum. Sadly, AUDIT_NFT_OP_INVALID is non-zero. Otherwise one could skip
+> all uninteresting ones.
 
-I think the commit log is incorrect. Prior to the ARCH_STACKWALK
-conversion, __save_stack_trace() was skipping 2 since it was creating
-the initial stack_trace_data and called from save_stack_trace(). After
-the conversion, the start frame is initialised by arch_stack_walk()
-which doesn't have any other arch-specific caller it needs to skip.
+Yes, ok, I prefer your suggested way of listing them.
 
--- 
-Catalin
+Yeah, the fact the values for op= already have a precedent in xtables
+limits us.
+
+> [...]
+> > @@ -6278,12 +6219,11 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+> >  			    filter->type != NFT_OBJECT_UNSPEC &&
+> >  			    obj->ops->type->type != filter->type)
+> >  				goto cont;
+> > -
+> >  			if (reset) {
+> >  				char *buf = kasprintf(GFP_ATOMIC,
+> > -						      "%s:%llu;?:0",
+> > +						      "%s:%u",
+> >  						      table->name,
+> > -						      table->handle);
+> > +						      net->nft.base_seq);
+> >  
+> >  				audit_log_nfcfg(buf,
+> >  						family,
+> 
+> Why did you leave the object-related logs in place? They should reappear
+> at commit time just like chains and sets for instance, no?
+
+There are other paths that can trigger these messages that don't go
+through nf_tables_commit() that affect the configuration data.  The
+counters are considered config data for auditing purposes and the act of
+resetting them is audittable.  And the only time we want to emit a
+record is when they are being reset.
+
+> Thanks, Phil
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
