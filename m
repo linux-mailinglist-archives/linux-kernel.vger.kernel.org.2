@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7993404CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779B03404D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhCRLj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhCRLjs (ORCPT
+        id S230406AbhCRLmE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 07:42:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:52374 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230049AbhCRLld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:39:48 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC2C06174A;
-        Thu, 18 Mar 2021 04:39:48 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id v3so1245210pgq.2;
-        Thu, 18 Mar 2021 04:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S0Ej3lKCPVzBM8qM04CRJBvn+9chI3S3W7mTusbdHCA=;
-        b=kqfQ+6DNf3bayt+ixltd4Y8KDyeu6CVHcWpj7bpL0ZbEjzLMSNup0l7v7j9n6x5iu5
-         7IoDS5Xcg9VFds5QjDlV5yK7yeVovM3d8ki+1OIbHf/ej/GKxxBT8yLG/Chki9v60zw2
-         ahkwa5GOTqxvzPKmi8rkR4TCfolCZuKrMeTDatSgZqbzZjE1vZsoy0po6MtVmq4vc1FR
-         H+5/VIQ7zRxAF7UGQ+63W4rNpfaEZ8+Z4m/vHDwHugVlEbHJhR38fZur2kJnjSxxQTo4
-         yzGnPPChTWMGIzIizcm6WV9Tkfg41CUTbM0f1B8QbRYg+MEZPcm59ggN9aQyg4pOxYLN
-         /dIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S0Ej3lKCPVzBM8qM04CRJBvn+9chI3S3W7mTusbdHCA=;
-        b=T8ol+Whc07NKx2PyD+oqe9KWHkVfLyQzkBmoEreYxju3RxpJNs5GPOlX8sHcgGkm5Q
-         DWvxq+OaJbVsgXyjgD6TxYKDhyBUBUW9KCa0zTbb/ggpTykjfEz3P36JngXZVbf0O49K
-         YkntpmnSFYyyR5kiXeXvqKT0qYJqrrK1sH0WfxPw6Aaa36Dc7hEkn8J07jmQsd8M5LG/
-         W4bG4d5pYL8/SBW7axbMUnWpCVEe5ZRuMdMkgsg0Aga3kpxI8ZGIbcWeWByc2wjDcqyd
-         5cOCzn5AKXKkKyUIbqN0xRbhwU2CJZrrPwWA+q4qdixizo7IO+IKMc9Jyd5pAbewHuMm
-         UlzQ==
-X-Gm-Message-State: AOAM531XQgvh2LG+ZhZC2U9M2/KA09ExBlQDWQ8DJ9JGrGd/wsOjGeLg
-        q5tPG+No2UC5r5RGhFofdA5kVDhHWTU=
-X-Google-Smtp-Source: ABdhPJxp6OKR+TNoFQTfxvVLQ0KzBZpdpPz042/J3USeyYYzDqiVoM6TNWBFrHgz8dSrxS9DB3tnyg==
-X-Received: by 2002:a63:2213:: with SMTP id i19mr6584102pgi.242.1616067587983;
-        Thu, 18 Mar 2021 04:39:47 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id kk6sm2194996pjb.51.2021.03.18.04.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:39:47 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: xiong.zhenwu@zte.com.cn
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, m-karicheri2@ti.com,
-        andriy.shevchenko@linux.intel.com, xiong.zhenwu@zte.com.cn,
-        miaoqinglang@huawei.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] /net/hsr: fix misspellings using codespell tool
-Date:   Thu, 18 Mar 2021 04:39:41 -0700
-Message-Id: <20210318113941.473650-1-xiong.zhenwu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Mar 2021 07:41:33 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-3-7h7ICMGPN3-qVP8vMIq3hg-1; Thu, 18 Mar 2021 11:41:30 +0000
+X-MC-Unique: 7h7ICMGPN3-qVP8vMIq3hg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 11:41:29 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Thu, 18 Mar 2021 11:41:29 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?windows-1257?Q?=27Valdis_Kl=E7tnieks=27?= 
+        <valdis.kletnieks@vt.edu>, Kees Cook <keescook@chromium.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old
+ gcc
+Thread-Topic: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on
+ old gcc
+Thread-Index: AQHXG7xcElVT0YEvr0m/P+UnKynj6KqJn0dQ
+Date:   Thu, 18 Mar 2021 11:41:29 +0000
+Message-ID: <279b22592f1e43a48beeecd34e50b385@AcuMS.aculab.com>
+References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook>
+ <282490.1616047333@turing-police>
+In-Reply-To: <282490.1616047333@turing-police>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+From: Valdis Kletnieks
+> Sent: 18 March 2021 06:02
+> 
+> On Wed, 17 Mar 2021 22:52:56 -0700, Kees Cook said:
+> > On Mon, Mar 08, 2021 at 03:40:21AM -0500, Valdis KlDtnieks wrote:
+> > > It turns out that older gcc (4.9 and 5.4) have gnu++11 support, but
+> > > due to a gcc bug fixed in gcc6, throw errors during the build.
+> > > The relevant gcc bug is https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69959
+> > >
+> > > Version the option based on what gcc we're using.
+> >
+> > Is there a better way to detect this than with version checking?
+> 
+> Not really.  gcc 11 needs --std=gnu++11 to build it.  And although
+> gcc4 and gcc5 *claim* to support it, there's a known bug, so we *can't*
+> feed gnu++11 to them.  We can check versions..
 
-A typo is found out by codespell tool in 111th line of hsr_debugfs.c:
+That gcc bug just implies you need a space after "xxx".
+That is easily fixable in the sources.
+Is there another problem?
 
-$ codespell ./net/hsr/
+(Apart from the standards committee breaking everything again.)
 
-net/hsr/hsr_debugfs.c:111: Debufs  ==> Debugfs
+	David
 
-Fix typos found by codespell.
-
-Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
----
- net/hsr/hsr_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
-index 4cfd9e829c7b..99f3af1a9d4d 100644
---- a/net/hsr/hsr_debugfs.c
-+++ b/net/hsr/hsr_debugfs.c
-@@ -108,7 +108,7 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
- /* hsr_debugfs_term - Tear down debugfs intrastructure
-  *
-  * Description:
-- * When Debufs is configured this routine removes debugfs file system
-+ * When Debugfs is configured this routine removes debugfs file system
-  * elements that are specific to hsr
-  */
- void
--- 
-2.25.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
