@@ -2,226 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF4D340555
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13006340556
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhCRMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S231228AbhCRMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhCRMQH (ORCPT
+        with ESMTP id S230338AbhCRMQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:16:07 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70864C06174A;
-        Thu, 18 Mar 2021 05:16:07 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gb6so2842259pjb.0;
-        Thu, 18 Mar 2021 05:16:07 -0700 (PDT)
+        Thu, 18 Mar 2021 08:16:09 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B946CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so3052408pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q4sV6DKYtTchSAlvek9WgOLwv2yXCQyX4WUNYJQUt6U=;
-        b=q6K0Ehmnucne2FlF77MU7fLBc/Qp2dly7iOe/u96Fred+R8fok8UMsvdiZl5GL7yg4
-         qrRu3rkGLXfMlQORs8eSFqrqBSO6JmhgbpNFQNkoWeNFSx5ioE7SOuaS2ZP5yNBAdidl
-         lMdMn8ndxPp20Ss9Xw3/txZzumU3tr/Q3YKjypyPyDAjtQU+QnRxON7iqNDMMAbMImeW
-         VhI3vkMVkvO8xDd7FblS0VMdib0BjMc5YDG6rFRCRoIy1Hp5As4e2YS78HquzdGivcNZ
-         mIGF3W5TO8MYuc6824GiuAagJ3J35GKDM5F/SxzA26cFRV85fXZxn47TPHDNxIp3ohol
-         x81g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
+        b=J0SCTpSl66AXYFrVZinWF1tdEH2O6BGxsFyMoRYdtxMpYlP0iLTy+DjI2rPZTfQIcU
+         p5xmOgENJh77+3sPhSiRMqCzHkPZAS8peVP/IbpKySbcykwSepPjABdApEOXSX02Z4S3
+         l4Ixeuc52rWSYU0kUkexKhpyhSRQ+xTSIqM6Gz5ptTsyQno+l9w7qgvgvWQdHQjCk6aD
+         Ao+jEHr44f7LoaOWDh4EfambbLt6ePERFM49V9dWx86fx+DE5ekAjey5sa9rXyMRSDBd
+         N47WBciaLHNJV1jdQ7ybbgXzHMux3nvRGU4MEy4G2kjjMANbg4zN6qVB7y4h5eZhXs1i
+         WUiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q4sV6DKYtTchSAlvek9WgOLwv2yXCQyX4WUNYJQUt6U=;
-        b=k9sgM40HbzwxEEg+W7tkq4O+Xm0K0cwpmJ3gA5UglQT6sIrfjrcw5c5SX+4fQ195Kg
-         LdGGgOU6a0Tp3phU5EMSDjZ4fSgF584qQuYYygWADsKUMt2duRirW//V168CDz54RlT/
-         Hn2dJx94rERqFfHSvCqJf7699NoEzWt0eMT4rJ3LFN2wVkhhxzOadplkXbULOggm90mX
-         1XnHTQfWFwBy6HHPiEL+jfHNFS+fg+UFZsxAraZRPUxqgH1MwZKit6+2anPeKzOoCun0
-         CIquNfgyjsNQDRWPA21OAX1toj3k8eLe3PuZEiCqNFSXyl+enS2isUHu2gVlCGAIRZQ0
-         WzZQ==
-X-Gm-Message-State: AOAM533tLaX8IyKSflyGziS5d5HxsPu71wduqh4F4VM3lcFnsD7HZdzk
-        5+7jah67Ya5bzckTUucdu8yRMu9zBImy7ZSff/0=
-X-Google-Smtp-Source: ABdhPJx9CynEv9MyWrBPlTnnvHMW/9FuiSkz+dtjqaQE7YaaLdDEg2W+F3kf5WbbNCHQsX6lLMLuXgn4KHN6t8saUNQ=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr4194138pjr.228.1616069766877;
- Thu, 18 Mar 2021 05:16:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mDvN0SgAfdUxvP15FGjlUIyfQkEQU0VmBT3cvhyl4P8=;
+        b=qB99RvLzak96B8ds+3reUBzx4VR+AwVJYcZDdBgEgqVOE7097RKgK/0lPT6MLlIQte
+         IApzqbw9Bzi/DHVNXfseBe7mVLoEsIsGAe1CufvpVwWT//8qywSivOYRKK8bbAEHwIfB
+         nvqMUiWTLgyhNs4y7vu4kyZmIveysyqEmvG3+hXhIFJmQNULzIX3+7IUHexMymsdkz0z
+         q4GNHN1M5l2mN0MP41vVnQf4Wz5uA5Rl6RMQyxEgNeEZalyBRCucJ2RtGWYK6hjzBFjM
+         kyu8SUqRMwSMuAeL4D2riTmQh9Z3ieXx3ho43xWmBVSj6zg46hoj04vWriaQpSCkObJI
+         LDlQ==
+X-Gm-Message-State: AOAM5319jIHjolvB5mKizDEBv9DALOKDiPrH2sTpbZnZ547fOmsmWRZC
+        LIXgeL1c2nit0bhpJQM0Bc1g
+X-Google-Smtp-Source: ABdhPJw8gFyVpDkplM9fABTLOzM0jYdB18ReJ2voNFd21l1TQUS6DAIi9n2ngbIujTbCX2OD6xslVQ==
+X-Received: by 2002:a17:90a:5211:: with SMTP id v17mr4141106pjh.53.1616069769155;
+        Thu, 18 Mar 2021 05:16:09 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6d00:4737:af26:182c:a57e:1d9e])
+        by smtp.gmail.com with ESMTPSA id i7sm2473080pfq.184.2021.03.18.05.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 05:16:08 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 17:46:01 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v5 0/3] Add support for secure regions in NAND
+Message-ID: <20210318121601.GA21610@thinkpad>
+References: <20210317122513.42369-1-manivannan.sadhasivam@linaro.org>
+ <20210317155121.19cbb50c@xps13>
 MIME-Version: 1.0
-References: <20210317214149.20833-1-hhhawa@amazon.com> <20210317214149.20833-4-hhhawa@amazon.com>
-In-Reply-To: <20210317214149.20833-4-hhhawa@amazon.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Mar 2021 14:15:50 +0200
-Message-ID: <CAHp75VdYeVOHu5T37EBEjL5xfgjevzb-ErZb2QMy7defXDS5fg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] pinctrl: pinctrl-single: fix pcs_pin_dbg_show()
- when bits_per_mux is not zero
-To:     Hanna Hawa <hhhawa@amazon.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>, benh@amazon.com,
-        ronenk@amazon.com, talel@amazon.com, jonnyc@amazon.com,
-        hanochu@amazon.com, tgershi@amazon.com,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317155121.19cbb50c@xps13>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:42 PM Hanna Hawa <hhhawa@amazon.com> wrote:
->
+Hi Miquel,
 
-> An SError was detected when trying to print the supported pins in a
+On Wed, Mar 17, 2021 at 03:51:21PM +0100, Miquel Raynal wrote:
+> Hi Manivannan,
+> 
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
+> 17 Mar 2021 17:55:10 +0530:
+> 
+> > On a typical end product, a vendor may choose to secure some regions in
+> > the NAND memory which are supposed to stay intact between FW upgrades.
+> > The access to those regions will be blocked by a secure element like
+> > Trustzone. So the normal world software like Linux kernel should not
+> > touch these regions (including reading).
+> > 
+> > So this series adds a property for declaring such secure regions in DT
+> > so that the driver can skip touching them. While at it, the Qcom NANDc
+> > DT binding is also converted to YAML format.
+> > 
+> > Thanks,
+> > Mani
+> > 
+> > Changes in v5:
+> > 
+> > * Switched to "uint64-matrix" as suggested by Rob
+> > * Moved the whole logic from qcom driver to nand core as suggested by Boris
+> 
+> I'm really thinking about a nand-wide property now. Do you think it
+> makes sense to move the helper to the NAND core (instead of the raw
+> NAND core)? I'm fine only using it in the raw NAND core though.
+> 
 
-What is SError? Yes, I have read a discussion, but here is the hint:
-if a person sees this as a first text due to, for example, bisecting
-an issue, what she/he can get from this cryptic name?
+The reason why I didn't move the helper and checks to NAND core is I haven't
+seen any secure implementations in other NAND interfaces except rawnand. This
+change can be done in future if we start seeing implementations.
 
-> pinctrl device which supports multiple pins per register. This change
-> fixes the pcs_pin_dbg_show() in pinctrl-single driver when bits_per_mux
-> is not zero. In addition move offset calculation and pin offset in
-> register to common function.
+> Also, can I request a global s/sec/secure/ update? I find the "sec"
+> abbreviation unclear and I think we have more than enough cryptic
+> names :-)
+> 
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Sure.
 
-> Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
-> Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
-> ---
->  drivers/pinctrl/pinctrl-single.c | 57 +++++++++++++++++++++-----------
->  1 file changed, 37 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-> index f3394517cb2e..4595acf6545e 100644
-> --- a/drivers/pinctrl/pinctrl-single.c
-> +++ b/drivers/pinctrl/pinctrl-single.c
-> @@ -270,20 +270,46 @@ static void __maybe_unused pcs_writel(unsigned val, void __iomem *reg)
->         writel(val, reg);
->  }
->
-> +static unsigned int pcs_pin_reg_offset_get(struct pcs_device *pcs,
-> +                                          unsigned int pin)
-> +{
+Thanks,
+Mani
 
-> +       unsigned int mux_bytes;
-> +
-> +       mux_bytes = pcs->width / BITS_PER_BYTE;
-
-Can be folded to one line.
-
-> +       if (pcs->bits_per_mux) {
-> +               unsigned int pin_offset_bytes;
-> +
-> +               pin_offset_bytes = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
-> +               return (pin_offset_bytes / mux_bytes) * mux_bytes;
-
-Side note for the further improvements (in a separate change, because
-I see that you just copied an original code, and after all this is
-just a fix patch): this can be replaced by round down APIs (one which
-works for arbitrary divisors).
-
-> +       }
-> +
-> +       return pin * mux_bytes;
-> +}
-> +
-> +static unsigned int pcs_pin_shift_reg_get(struct pcs_device *pcs,
-> +                                         unsigned int pin)
-> +{
-> +       return (pin % (pcs->width / pcs->bits_per_pin)) * pcs->bits_per_pin;
-
-Also a side note: I'm wondering if this can be optimized to have less divisions.
-
-> +}
-> +
->  static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
->                                         struct seq_file *s,
->                                         unsigned pin)
->  {
->         struct pcs_device *pcs;
-> -       unsigned val, mux_bytes;
-> +       unsigned int val;
->         unsigned long offset;
->         size_t pa;
->
->         pcs = pinctrl_dev_get_drvdata(pctldev);
->
-> -       mux_bytes = pcs->width / BITS_PER_BYTE;
-> -       offset = pin * mux_bytes;
-> +       offset = pcs_pin_reg_offset_get(pcs, pin);
->         val = pcs->read(pcs->base + offset);
-> +
-> +       if (pcs->bits_per_mux)
-> +               val &= pcs->fmask << pcs_pin_shift_reg_get(pcs, pin);
-> +
->         pa = pcs->res->start + offset;
->
->         seq_printf(s, "%zx %08x %s ", pa, val, DRIVER_NAME);
-> @@ -384,7 +410,6 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
->         struct pcs_device *pcs = pinctrl_dev_get_drvdata(pctldev);
->         struct pcs_gpiofunc_range *frange = NULL;
->         struct list_head *pos, *tmp;
-> -       int mux_bytes = 0;
->         unsigned data;
->
->         /* If function mask is null, return directly. */
-> @@ -392,29 +417,27 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
->                 return -ENOTSUPP;
->
->         list_for_each_safe(pos, tmp, &pcs->gpiofuncs) {
-> +               u32 offset;
-> +
->                 frange = list_entry(pos, struct pcs_gpiofunc_range, node);
->                 if (pin >= frange->offset + frange->npins
->                         || pin < frange->offset)
->                         continue;
-> -               mux_bytes = pcs->width / BITS_PER_BYTE;
->
-> -               if (pcs->bits_per_mux) {
-> -                       int byte_num, offset, pin_shift;
-> +               offset = pcs_pin_reg_offset_get(pcs, pin);
->
-> -                       byte_num = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
-> -                       offset = (byte_num / mux_bytes) * mux_bytes;
-> -                       pin_shift = pin % (pcs->width / pcs->bits_per_pin) *
-> -                                   pcs->bits_per_pin;
-> +               if (pcs->bits_per_mux) {
-> +                       int pin_shift = pcs_pin_shift_reg_get(pcs, pin);
->
->                         data = pcs->read(pcs->base + offset);
->                         data &= ~(pcs->fmask << pin_shift);
->                         data |= frange->gpiofunc << pin_shift;
->                         pcs->write(data, pcs->base + offset);
->                 } else {
-> -                       data = pcs->read(pcs->base + pin * mux_bytes);
-> +                       data = pcs->read(pcs->base + offset);
->                         data &= ~pcs->fmask;
->                         data |= frange->gpiofunc;
-> -                       pcs->write(data, pcs->base + pin * mux_bytes);
-> +                       pcs->write(data, pcs->base + offset);
->                 }
->                 break;
->         }
-> @@ -724,14 +747,8 @@ static int pcs_allocate_pin_table(struct pcs_device *pcs)
->         for (i = 0; i < pcs->desc.npins; i++) {
->                 unsigned offset;
->                 int res;
-> -               int byte_num;
->
-> -               if (pcs->bits_per_mux) {
-> -                       byte_num = (pcs->bits_per_pin * i) / BITS_PER_BYTE;
-> -                       offset = (byte_num / mux_bytes) * mux_bytes;
-> -               } else {
-> -                       offset = i * mux_bytes;
-> -               }
-> +               offset = pcs_pin_reg_offset_get(pcs, i);
->                 res = pcs_add_pin(pcs, offset);
->                 if (res < 0) {
->                         dev_err(pcs->dev, "error adding pins: %i\n", res);
-> --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+> Thanks,
+> Miquèl
