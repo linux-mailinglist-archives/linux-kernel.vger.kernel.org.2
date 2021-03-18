@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31679340EF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EDB340EF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhCRUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:16:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39606 "EHLO mx2.suse.de"
+        id S233052AbhCRUQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:16:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60195 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhCRUQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:16:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616098575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=kMdeVu/yfgCb3jtV2y/tNtXsw895N8mesfITRLjpQKU=;
-        b=WGkX1on4xJ9APyNeMdofABZlo98oXof8GnuxN64WplsZkH8x0Y4Hwz5D2L9LplTOHvtvQM
-        zOJy+IvI5BMHxHSLrq3Z8pnWIgUTpDJ1o/qMPtUB4aPj8yJH/E1CJpSnq+23mKZMA5OiK1
-        W8LVzt9sDgiSUBT0cTw803wL+7xutts=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E1956AC24;
-        Thu, 18 Mar 2021 20:16:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 38FE2DA6E2; Thu, 18 Mar 2021 21:14:12 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.12-rc4
-Date:   Thu, 18 Mar 2021 21:14:11 +0100
-Message-Id: <cover.1616083082.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S230495AbhCRUQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 16:16:27 -0400
+IronPort-SDR: 4e1ffBRuk6G9Am0B8IQYtnIHyYvMDAnSaqkm1LemG5n924L20Q+O4HPSpWvvb0KSZC4BjKYUcE
+ HOv8/e3T2H9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="251117470"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="251117470"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 13:16:27 -0700
+IronPort-SDR: EwEraWEJEIpTTfJVg0kkwuvooGlh9zJEacRNNQcHC81j7mQFGD1L1BhySvhEw0rZHHaQyxSsk8
+ UAwhsFjWaThw==
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="413229688"
+Received: from mrasekh-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.191.94])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 13:16:26 -0700
+Subject: Re: [PATCH v13 0/5] Simplify PCIe native ownership
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com
+References: <cover.1611364024.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <e2438472-5367-f6fb-d8e0-f6a6273cbf82@linux.intel.com>
+Date:   Thu, 18 Mar 2021 13:16:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1611364024.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.cz>
+Hi Bjorn,
 
-Hi,
+On 1/22/21 5:11 PM, Kuppuswamy Sathyanarayanan wrote:
+> Currently, PCIe capabilities ownership status is detected by
+> verifying the status of pcie_ports_native, and _OSC negotiated
+> results (cached in  struct pci_host_bridge->native_* members).
+> But this logic can be simplified, and we can use only struct
+> pci_host_bridge ->native_* members to detect it.
+> 
+> This patchset removes the distributed checks for pcie_ports_native,
+> parameter.
+Any comments on this patch set?
+> 
+> Changes since v12:
+>   * Rebased on top of v5.11-rc1
+> 
+> Changes since v11 (Bjorns update):
+>   * Add bugfix for DPC with no AER Capability
+>   * Split OSC_OWNER trivial changes from pcie_ports_native changes
+>   * Temporarily drop pcie_ports_dpc_native changes (revisit it later).
+> 
+> Changes since v10:
+>   * Addressed format issue reported by lkp test.
+> 
+> Changes since v9:
+>   * Rebased on top of v5.10-rc1
+> 
+> Changes since v8:
+>   * Simplified setting _OSC ownwership logic
+>   * Moved bridge->native_ltr out of #ifdef CONFIG_PCIEPORTBUS.
+> 
+> Changes since v7:
+>   * Fixed "fix array_size.cocci warnings".
+> 
+> Changes since v6:
+>   * Created new patch for CONFIG_PCIEPORTBUS check in
+>     pci_init_host_bridge().
+>   * Added warning message for a case when pcie_ports_native
+>     overrides _OSC negotiation result.
+> 
+> Changes since v5:
+>   * Rebased on top of v5.8-rc1
+> 
+> Changes since v4:
+>   * Changed the patch set title (Original link: https://lkml.org/lkml/2020/5/26/1710)
+>   * Added AER/DPC dependency logic cleanup fixes.
+> 
+> Bjorn Helgaas (2):
+>    PCI/DPC: Ignore devices with no AER Capability
+>    PCI/ACPI: Centralize pci_aer_available() checking
+> 
+> Kuppuswamy Sathyanarayanan (3):
+>    PCI: Assume control of portdrv-related features only when portdrv
+>      enabled
+>    PCI/ACPI: Tidy _OSC control bit checking
+>    PCI/ACPI: Centralize pcie_ports_native checking
+> 
+>   drivers/acpi/pci_root.c           | 49 ++++++++++++++++++++++++-------
+>   drivers/pci/hotplug/pciehp_core.c |  2 +-
+>   drivers/pci/pci-acpi.c            |  3 --
+>   drivers/pci/pcie/aer.c            |  2 +-
+>   drivers/pci/pcie/dpc.c            |  3 ++
+>   drivers/pci/pcie/portdrv_core.c   | 11 +++----
+>   drivers/pci/probe.c               |  6 ++--
+>   7 files changed, 51 insertions(+), 25 deletions(-)
+> 
 
-there are still regressions being found and fixed in the zoned mode and
-subpage code, the rest are fixes for bugs reported by users. Please
-pull, thanks.
-
-Regressions:
-
-- subpage block support:
-  - readahead works on the proper block size
-  - fix last page zeroing
-
-- zoned mode:
-  - linked list corruption for tree log
-
-Fixes:
-
-- qgroup leak after falloc faiulre
-
-- tree mod log and backref resolving
-  - extent buffer cloning race when resolving backrefs
-  - pin deleted leaves with active tree mod log users
-
-- drop debugging flag from slab cache
-
-----------------------------------------------------------------
-The following changes since commit badae9c86979c459bd7d895d6d7ddc7a01131ff7:
-
-  btrfs: zoned: do not account freed region of read-only block group as zone_unusable (2021-03-04 16:16:58 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc3-tag
-
-for you to fetch changes up to 485df75554257e883d0ce39bb886e8212349748e:
-
-  btrfs: always pin deleted leaves when there are active tree mod log users (2021-03-16 20:32:22 +0100)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: fix slab cache flags for free space tree bitmap
-
-Filipe Manana (3):
-      btrfs: zoned: fix linked list corruption after log root tree allocation failure
-      btrfs: fix race when cloning extent buffer during rewind of an old root
-      btrfs: always pin deleted leaves when there are active tree mod log users
-
-Qu Wenruo (5):
-      btrfs: fix wrong offset to zero out range beyond i_size
-      btrfs: track qgroup released data in own variable in insert_prealloc_file_extent
-      btrfs: fix qgroup data rsv leak caused by falloc failure
-      btrfs: subpage: fix wild pointer access during metadata read failure
-      btrfs: subpage: make readahead work properly
-
- fs/btrfs/ctree.c       |  2 ++
- fs/btrfs/extent-tree.c | 23 ++++++++++++++++++++++-
- fs/btrfs/extent_io.c   | 33 +++++++++++++++++++++++++++++++--
- fs/btrfs/inode.c       | 37 ++++++++++++++++++++++++++-----------
- fs/btrfs/reada.c       | 35 ++++++++++++++++++-----------------
- fs/btrfs/tree-log.c    |  8 ++++----
- 6 files changed, 103 insertions(+), 35 deletions(-)
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
