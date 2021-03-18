@@ -2,125 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650DF340F6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9B3340F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhCRUyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:54:02 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49620 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhCRUxg (ORCPT
+        id S232924AbhCRUx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230220AbhCRUxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:53:36 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5258F209C385;
-        Thu, 18 Mar 2021 13:53:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5258F209C385
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616100815;
-        bh=P8Q00MkxdNHTzV0x6ph/OeeOS76Ja/xwdh4nzwlgQZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eu5D4JPPdLkKA6GAlxVfLHNybD0L+96o3qtvz6V980xCQSUFyPQQaTKtdCeojjCKL
-         naIy0NAIu0B827IpWnZ31KCnve2K0A4agCTbNiSK0TJhYvHEBnYzjIkkKxLlCnVdav
-         mBpeMdd7AElD0bE4TAn4sKmS/If3AswXn6Ly6v5E=
-Date:   Thu, 18 Mar 2021 15:51:43 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Allen Pais <allen.lkml@gmail.com>
-Cc:     jens.wiklander@linaro.org, zajec5@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        Allen Pais <apais@linux.microsoft.com>
-Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
- kexec reboot
-Message-ID: <20210318205143.GA6446@sequoia>
-References: <20210225090610.242623-1-allen.lkml@gmail.com>
- <20210225090610.242623-2-allen.lkml@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225090610.242623-2-allen.lkml@gmail.com>
+        Thu, 18 Mar 2021 16:53:03 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A6C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:53:02 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x13so6956481wrs.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ERPynUyb8bk2OjO46Oc7F9PinwfeSmgz5LXVTrsHbvA=;
+        b=oZtJyDPfmi7BoXXV4OHaJ/MSEXLIcZirEgjjJhyLvM88sr3ir/mj90pCi3gzJNFPqQ
+         xwQAvnHrWlA08k83rQTXc4uAZxoTIhntqFEQnemaiT4qNZ3fVrhQ870gRnwVYulAc69b
+         xzaZdptyDcgqEjHOHv8brAdKysNyfNq5ypGKyI0Rc34Tg8rbTebmzJwds8EW40Xj/7un
+         5loOzlqt9OA/vc97WVK5qfkhPMTnFzl3NK8btlEeIWrgnNHGYP5aNA1ZoB5I0fFERcXr
+         ya+A4N/QJrq2/dRVaadBfdLQWIYGQSXfhbUK7f08ypVHodI+dQykAO58h0WgGSt8sbwP
+         vFFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ERPynUyb8bk2OjO46Oc7F9PinwfeSmgz5LXVTrsHbvA=;
+        b=elWMNZzzco4bALXP9pv/QFTW2MhxKOMI0XKcj9kmNEeteT2/BXYS+5vRx7r3G3n0I7
+         pjB4i+7zN0NYQTSjDh7dtBFcVj+NzrasOfUN/G+Pi441LYb1hRczYqFGPgJaY5pGBY/C
+         Oh9eNcc+PhnI5IxYferCDX/jNqXXzuueFuz7pbBGV8NMHu4T9A1pLj6iAFjsLkLyMfDJ
+         wiijSVdgfxg01sp5TI9lDr4pehGA0hASo1sS0O50+knj6bf/Tbp4xVBngAsRoHT7VBzQ
+         SfdedgpnRyXV+Arh0DwFBXFlxaCFSxJKIrxlwbCN3v/lyQxyPu1s2/gLVkoPlmKr6ucc
+         ezmw==
+X-Gm-Message-State: AOAM533a5Zz1GqBMHo9HnHdBi6vKTLM0YMy/93NtHI1ekGFyit5YcDak
+        auWP/GSh3VbRr/ad46CEky2NFg==
+X-Google-Smtp-Source: ABdhPJw1MCTDEy6VfarjFMKHUY5IR7/UVZGcxGGcu8smC1c6vfd+qf03L19g49bkHT7UWLnC8CI1Kg==
+X-Received: by 2002:adf:f3cf:: with SMTP id g15mr1099981wrp.57.1616100781147;
+        Thu, 18 Mar 2021 13:53:01 -0700 (PDT)
+Received: from localhost.localdomain ([82.142.18.100])
+        by smtp.gmail.com with ESMTPSA id n6sm5293696wrw.63.2021.03.18.13.53.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 13:53:00 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] powercap/drivers/dtpm : Fix power limit initialization
+Date:   Thu, 18 Mar 2021 21:52:38 +0100
+Message-Id: <20210318205238.21937-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-25 14:36:09, Allen Pais wrote:
-> From: Allen Pais <apais@linux.microsoft.com>
-> 
-> The following out of memory errors are seen on kexec reboot
-> from the optee core.
-> 
-> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
-> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
-> 
-> tee_shm_release() is not invoked on dma shm buffer.
-> 
-> Implement .shutdown() method to handle the release of the buffers
-> correctly.
-> 
-> More info:
-> https://github.com/OP-TEE/optee_os/issues/3637
-> 
-> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-> ---
->  drivers/tee/optee/core.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index cf4718c6d35d..80e2774b5e2a 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -582,6 +582,13 @@ static optee_invoke_fn *get_invoke_func(struct device *dev)
->  	return ERR_PTR(-EINVAL);
->  }
->  
-> +/* optee_remove - Device Removal Routine
-> + * @pdev: platform device information struct
-> + *
-> + * optee_remove is called by platform subsystem to alter the driver
-                                                      ^ alert?
+When a DTPM node is registered its power limit must be initialized to
+the power max.
 
-> + * that it should release the device
-> + */
-> +
->  static int optee_remove(struct platform_device *pdev)
->  {
->  	struct optee *optee = platform_get_drvdata(pdev);
-> @@ -612,6 +619,18 @@ static int optee_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +/* optee_shutdown - Device Removal Routine
-> + * @pdev: platform device information struct
-> + *
-> + * platform_shutdown is called by the platform subsystem to alter
-                                                               ^ alert
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/powercap/dtpm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-With those two changes,
+diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
+index a4784ac2f79b..2f028776cfa8 100644
+--- a/drivers/powercap/dtpm.c
++++ b/drivers/powercap/dtpm.c
+@@ -594,8 +594,10 @@ int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+ 		root = dtpm;
+ 	}
+ 
+-	if (dtpm->ops && !dtpm->ops->update_power_uw(dtpm))
++	if (dtpm->ops && !dtpm->ops->update_power_uw(dtpm)) {
+ 		__dtpm_add_power(dtpm);
++		dtpm->power_limit = dtpm->power_max;
++	}
+ 
+ 	pr_info("Created dtpm node '%s' / %llu-%llu uW, \n",
+ 		dtpm->zone.name, dtpm->power_min, dtpm->power_max);
+-- 
+2.17.1
 
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-
-Tyler
-
-> + * the driver that a shutdown/reboot(or kexec) is happening and
-> + * device must be disabled.
-> + */
-> +static void optee_shutdown(struct platform_device *pdev)
-> +{
-> +	optee_disable_shm_cache(platform_get_drvdata(pdev));
-> +}
-> +
->  static int optee_probe(struct platform_device *pdev)
->  {
->  	optee_invoke_fn *invoke_fn;
-> @@ -738,6 +757,7 @@ MODULE_DEVICE_TABLE(of, optee_dt_match);
->  static struct platform_driver optee_driver = {
->  	.probe  = optee_probe,
->  	.remove = optee_remove,
-> +	.shutdown = optee_shutdown,
->  	.driver = {
->  		.name = "optee",
->  		.of_match_table = optee_dt_match,
-> -- 
-> 2.25.1
-> 
