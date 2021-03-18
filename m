@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FE5340743
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698F1340745
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhCRNwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:52:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231376AbhCRNwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:52:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616075550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K3FmGDDjg4x6Qh11aJHy8AEuyBdl8B9I2jc7mXW+DQQ=;
-        b=gHi7jrEYyhRr17PmZMvRpxm4iye0ed0lt5R8haMFrpoolDRLIiDiDCO1/SiX/rJnOsG2Kd
-        MBKhHetEfXGfxsXOTks8hSix0YrWEDw8+uADrOO6FfH9dfunZuzWDjg04QXHMouXYIgTDW
-        XtHb90qkjXp6+xw5Qukcq/YvehNZmng=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-12JKo4fIONmEvJ3s7M5ZVQ-1; Thu, 18 Mar 2021 09:52:28 -0400
-X-MC-Unique: 12JKo4fIONmEvJ3s7M5ZVQ-1
-Received: by mail-oi1-f198.google.com with SMTP id k15so3386478oig.19
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:52:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K3FmGDDjg4x6Qh11aJHy8AEuyBdl8B9I2jc7mXW+DQQ=;
-        b=SR1vvAOmCeE69TAAkzAKQ0P+dn4ZX0rTthswotDKVpL+uvk4qkOWsa7kqxHlIJaqX2
-         2/LSp+bf3sfq340Ii5B26TEfng8gi5DZYsd/MjAOBa+M2pZhedz05InnqEHKqXAAE1qT
-         enITfnWiW3OZMwxjEYbiefX97zShzlafzn4ksQSVRekm2qTGT6lV0/MAyR24/TndMuWW
-         03cTLSn8UTEzgi9TcINdRlcSDHpYkueW8F1kGFrFIU9jt+CH8ugLuAgjs0OqpCyV5n1/
-         kBG0JLyFo5oySKDeJn9XrTcdNSzkEKOxi3RYC8fzWPGGMIZJwBNm7QwQIyFnOsFyUoMR
-         N0Aw==
-X-Gm-Message-State: AOAM533wS5Z0d5RQfP9aQHjaPGb/Se2vqMWZxdNGgzO2hhToQbFmqQHj
-        KrifFTwpn89rIKAT4nbwIUV2ZNRCkpFenBvVVEjJH5EuBgC445gzsvd/+VoemFhn9pWuwCeFJKz
-        w6QXnb8q68+bTjGMH3RXyUsve
-X-Received: by 2002:a9d:62d1:: with SMTP id z17mr7347733otk.118.1616075547683;
-        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUVm8g2gqvSzP7zKMkWvD+pr2sw5M/w6HMmQg74ODAc1kSZtztAuf92THPXJ0Aw5kJfl5jAw==
-X-Received: by 2002:a9d:62d1:: with SMTP id z17mr7347719otk.118.1616075547545;
-        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
-Received: from redhat.redhat.com (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id i11sm465342otp.76.2021.03.18.06.52.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
-From:   Connor Kuehl <ckuehl@redhat.com>
-To:     virtio-fs@redhat.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        vgoyal@redhat.com, miklos@szeredi.hu, jasowang@redhat.com,
-        mst@redhat.com
-Subject: [PATCH 3/3] fuse: fix typo for fuse_conn.max_pages comment
-Date:   Thu, 18 Mar 2021 08:52:23 -0500
-Message-Id: <20210318135223.1342795-4-ckuehl@redhat.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210318135223.1342795-1-ckuehl@redhat.com>
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
+        id S230230AbhCRNxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:53:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231558AbhCRNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FE564F1C;
+        Thu, 18 Mar 2021 13:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616075576;
+        bh=Ve2/nk1F/T+GCGAKVkxI6siAwFKoql1OZeOANplilpk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LbGrPpjFvFY5bgXjGUkYQIlDF+JgGSMwDGGHs05lcoP6in3NJG8CApMpKgA1/PUxx
+         fk+Icf+AQYzstcVrJyr1uuOvGgcY4ZGfddBSc8fkCBsiPGHClKrF3AnhLP6ZeMek54
+         QROl2zHAGh2ZCZOomoCaQ10+sC6/oiE9g/Iwy2rv5I03ofndoHgwtDjKdtXRGlCb9v
+         ureFi8aJUXKFqrely86AaiR90u/XdtZUlQPP8w+Dd4AjF7SPbV6Xhu4zJ208VBmIDg
+         QLNMqw9C5MWnuFrexJ1U1Fow5YQJp662M69fD6qfAkZo8LgG3v64cQ54iQtNej1nFR
+         Bv7vo5RuU8lnQ==
+Date:   Thu, 18 Mar 2021 13:52:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Nick Desaulniers <nick.desaulniers@gmail.com>
+Cc:     guennadi.liakhovetski@linux.intel.com, cezary.rojewski@intel.com,
+        liam.r.girdwood@linux.intel.com, mateusz.gorski@linux.intel.com,
+        yang.jie@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        amadeuszx.slawinski@linux.intel.com, tiwai@suse.com,
+        andriy.shevchenko@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com
+Subject: Re: [PATCH v3] ASoC: Intel: Skylake: skl-topology: fix
+ -frame-larger-than
+Message-ID: <20210318135252.GA15895@sirena.org.uk>
+References: <CAHp75Vdy083+5K=4sViwg8uNJ1_6agECYbjMSFEGXX9VTO85WQ@mail.gmail.com>
+ <20210315013908.217219-1-nick.desaulniers@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+In-Reply-To: <20210315013908.217219-1-nick.desaulniers@gmail.com>
+X-Cookie: do {
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'Maxmum' -> 'Maximum'
 
-Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
----
- fs/fuse/fuse_i.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index f0e4ee906464..8bdee79ba593 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -552,7 +552,7 @@ struct fuse_conn {
- 	/** Maximum write size */
- 	unsigned max_write;
- 
--	/** Maxmum number of pages that can be used in a single request */
-+	/** Maximum number of pages that can be used in a single request */
- 	unsigned int max_pages;
- 
- #if IS_ENABLED(CONFIG_VIRTIO_FS)
--- 
-2.30.2
+On Sun, Mar 14, 2021 at 06:39:08PM -0700, Nick Desaulniers wrote:
+> Fixes:
+> sound/soc/intel/skylake/skl-topology.c:3613:13: warning: stack frame
+> size of 1304 bytes in function 'skl_tplg_complete'
+> [-Wframe-larger-than=]
 
+Changelogs like this look like Fixes: tags and confuse tools which
+attempt to parse them, please don't just put a Fixes: at the start of
+the line.
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTWzMACgkQJNaLcl1U
+h9DNPQf/Ub0XFEPo2B9Zb6vwJ2ekYiSV9f5fi6blCU8XvdPmKPbarXfrB9bmnotr
+QOIiIeGxmzDtZ9oBncTT7isXsVeXsZE84KvUK+KNR9NZCsUIreZNz0zC6wFHwJAQ
+uwRp4XlbZaTySmrf0dwLtv6N0KMNXBk1i5t0P9Ra1tAb5m4MDAJ/sH45AIq6oryz
+bv1JEL2HrzmMUvxVX5z0PHl15b6tGH0l/XTIzoBATjvHvQzvuZLL80qA7u3ZTPRH
+Ed/gMjwCl2v7TGcWCeAtCqV+/ainIE49hg3JFti4MYMi46Yymr27w/IkQ4MU1Rkx
+jwJrd6gzeSoZp7WYDaYS+GVnkTJgHA==
+=8dZ2
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
