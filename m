@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC6D340827
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A5F34082D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhCROvg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 10:51:36 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3369 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhCROvK (ORCPT
+        id S231578AbhCROxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:53:11 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:45855 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhCROxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:51:10 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F1VJp4ggpz5Hdt;
-        Thu, 18 Mar 2021 22:48:42 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Mar 2021 22:51:06 +0800
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 22:51:07 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
- Thu, 18 Mar 2021 22:51:07 +0800
-From:   "chenjun (AM)" <chenjun102@huawei.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        "weiyongjun (A)" <weiyongjun1@huawei.com>,
-        "Guohanjun (Hanjun Guo)" <guohanjun@huawei.com>
-Subject: [RESEND PATCH] Kconfig: Move CONFIG_DEBUG_KMEMLEAK_TEST to
- samples/Kconfig
-Thread-Topic: [RESEND PATCH] Kconfig: Move CONFIG_DEBUG_KMEMLEAK_TEST to
- samples/Kconfig
-Thread-Index: AQHXHAYg8d9cii4PGkmLX5bvg0mNFw==
-Date:   Thu, 18 Mar 2021 14:51:07 +0000
-Message-ID: <e3e03188672c48dfb187e6683ea63308@huawei.com>
-References: <20201022021234.6638-1-chenjun102@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.53]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 18 Mar 2021 10:53:01 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mq2rM-1m04bJ1vSE-00nBDX; Thu, 18 Mar 2021 15:52:59 +0100
+Received: by mail-ot1-f48.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso5433828otq.3;
+        Thu, 18 Mar 2021 07:52:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531HbNfmnq5vAvA7q78ifwUFH/gJA+BFQuxSvclZwSEntC340J6K
+        qOGijfYkxNBdwNU6UcqOfzAe9p2ydjEdsJhFqjg=
+X-Google-Smtp-Source: ABdhPJw7Eug2yd9ucu2dKZlBIqyoyljV2ZH8YZeMrPCW0lZjBwbRWIkmu8XcOw0kOzzkDzHjb1kP6HgcXNEyY4KVhCY=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr7894612otq.305.1616079178056;
+ Thu, 18 Mar 2021 07:52:58 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
+ <20210316074409.2afwsaeqxuwvj7bd@vireshk-i7> <0dfff1ac-50bb-b5bc-72ea-880fd52ed60d@metux.net>
+In-Reply-To: <0dfff1ac-50bb-b5bc-72ea-880fd52ed60d@metux.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 18 Mar 2021 15:52:41 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3f9bKdOOMgrA9TfeObyEd+eeg8JcTVT8AyS1+s=X2AjQ@mail.gmail.com>
+Message-ID: <CAK8P3a3f9bKdOOMgrA9TfeObyEd+eeg8JcTVT8AyS1+s=X2AjQ@mail.gmail.com>
+Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:TM47QfXkzV/u9lf8AsYQUq4wdOsnNc7RRaPHIqMtC515cOaRb9i
+ XMO9RebAJooP4D3kava4yxzf9rSprx1EHvk2xUM6XQxhPqpZO3QjJO5QjD53c6EXPK0W+2J
+ vGe9gyy66HBbfx0vLHsque9Y/WnXB2V3GXZmyPqjsuGhiHrJvV81z/9RYRyWyBATuisssOJ
+ Ft6ruV+GVmcuVVu7OeDRA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:b5kOYfQE5AU=:XkLS+KRh7WuI5Iu7S+55bs
+ +l/MXVyDZElm0C4Hlp2mzHbvGWJ11tGF7XANrv6YLxQmidi1Y/9kSYCuLZlKeflX7Ryo/vhmn
+ stw+5NdrKQgw/YNGRGh+279MXKPl04mPybOA15oIPPzI0JkzJ7wImUlreYpXnotzIMu7vM0qT
+ 1/Ja8LLEJB+KMPWt3Tea3MmJ7BQoa3BhJJvEbAGh+698KHqh8kCSBTluOIkwpCLTRr/b4PnOB
+ qdX4XDzH1klANFcZLxT5FwVoic8Dld6VBNiHnmdW6BbJyfI/P0ebRa+sBar8GBNHgB3xbwMs5
+ y27T4cgCScfSKbv/jzlBQcVIu/bKea2s9zEurZiPCy0kme875XtOgkIvaVITxj2JMXBuV+D0X
+ zX6F7Z9iZGj3V9n/UOm52lkwZFF2RB18sGcPBamwy9FtdXphgR3c1iMHnCcl5lZNDg4RDdvWc
+ jGsN2F/HM+dM+HPb0gLa6mUFJnWTxxqeTGs0hw6ZsCfdVPOM2gzVmMgyAb3Zaknxme4aGeDkR
+ xNuQ730BKYLT8a6cKoM12BvqItldefp4tR6oMKw09whnLNYDUywNgYSMNizVknRsQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Jun <chenjun102@huawei.com>
+On Thu, Mar 18, 2021 at 3:42 PM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+>
+> On 16.03.21 08:44, Viresh Kumar wrote:
+>
+> > FWIW, this limits this driver to support a single device ever. We
+> > can't bind multiple devices to this driver now. Yeah, perhaps we will
+> > never be required to do so, but who knows.
+>
+> Actually, I believe multiple devices really should be possible.
+>
+> The major benefit of virtio-i2c is either bridging certan real bus'es
+> into a confined workload, or creating virtual hw testbeds w/o having to
+> write a complete emulation (in this case, for dozens of different i2c
+> controllers) - and having multiple i2c interfaces in one machine isn't
+> exactly rare.
 
-commit 1abbef4f51724fb11f09adf0e75275f7cb422a8a
-("mm,kmemleak-test.c: move kmemleak-test.c to samples dir")
-make CONFIG_DEBUG_KMEMLEAK_TEST depend on CONFIG_SAMPLES implicitly.
-And the dependency cannot be guaranteed by Kconfig.
+Allowing multiple virtio-i2c controllers in one system, and multiple i2c
+devices attached to each controller is clearly something that has to work.
 
-move the definition of CONFIG_DEBUG_KMEMLEAK_TEST from lib/Kconfig.debug
-to samples/Kconfig.
+I don't actually see a limitation though. Viresh, what is the problem
+you see for having multiple controllers?
 
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
----
-
-  lib/Kconfig.debug | 8 --------
-  samples/Kconfig   | 8 ++++++++
-  2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 66d44d3..debacdc 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -678,14 +678,6 @@ config DEBUG_KMEMLEAK_MEM_POOL_SIZE
-  	  fully initialised, this memory pool acts as an emergency one
-  	  if slab allocations fail.
-
--config DEBUG_KMEMLEAK_TEST
--	tristate "Simple test for the kernel memory leak detector"
--	depends on DEBUG_KMEMLEAK && m
--	help
--	  This option enables a module that explicitly leaks memory.
--
--	  If unsure, say N.
--
-  config DEBUG_KMEMLEAK_DEFAULT_OFF
-  	bool "Default kmemleak to off"
-  	depends on DEBUG_KMEMLEAK
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 0ed6e4d..15978dd 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -216,4 +216,12 @@ config SAMPLE_WATCH_QUEUE
-  	  Build example userspace program to use the new mount_notify(),
-  	  sb_notify() syscalls and the KEYCTL_WATCH_KEY keyctl() function.
-
-+config DEBUG_KMEMLEAK_TEST
-+	tristate "Simple test for the kernel memory leak detector"
-+	depends on DEBUG_KMEMLEAK && m
-+	help
-+	  This option enables a module that explicitly leaks memory.
-+
-+	  If unsure, say N.
-+
-  endif # SAMPLES
--- 
-2.7.4
-
+         Arnd
