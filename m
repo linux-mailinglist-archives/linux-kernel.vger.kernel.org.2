@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68454340F70
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10DB340F7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhCRU4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:56:11 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:49890 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhCRUzj (ORCPT
+        id S230391AbhCRVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230457AbhCRVAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:55:39 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 55B36209C384;
-        Thu, 18 Mar 2021 13:55:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 55B36209C384
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616100938;
-        bh=vyX3MN32roIAb9I2amriuS+k9RGUN7SP2o/4is7afTA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jlgiy7UkXKsEcCphJLcZ8pmcv/1I6OASqWSOtkMDAvpJM5nn9q6B90uFX4iffLg3j
-         sFzNUwG6F1XKYKUiB3RVk7vAIB5SB4SL6PUDVv5xHtr2wZhT8IaYIN+PGm46kadyE4
-         RU5mGYnTubFB8ESNyqX89XZ37AQafsu1n1i2aE6g=
-Date:   Thu, 18 Mar 2021 15:55:36 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Allen Pais <allen.lkml@gmail.com>
-Cc:     jens.wiklander@linaro.org, zajec5@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        Allen Pais <apais@linux.microsoft.com>
-Subject: Re: [PATCH v2 2/2] firmware: tee_bnxt: implement shutdown method to
- handle kexec reboots
-Message-ID: <20210318205536.GB6446@sequoia>
-References: <20210225090610.242623-1-allen.lkml@gmail.com>
- <20210225090610.242623-3-allen.lkml@gmail.com>
+        Thu, 18 Mar 2021 17:00:13 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B99EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:00:11 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x21so8385497eds.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pk3cp+v6YlZyN4xKQXvj66VAclgfjtmhX2dsPQTgLT4=;
+        b=1CDIjzpb7IiRTxYtGRBfOFZnkaeQZcU6tCtsM0u1Hv7Iqky2si+YZIv1GpvZTmGHx9
+         l73Hzjl3jQPHml4eynJk8V8cX2tTJAAU9tWt3yBpcgb4MK0TDelTPOXllAC1cruY/eVn
+         YA3MfNLd044Dl05/gq82aPk8Cnea81twqoeztdg+VLtUgkN4eQO/Nn1XzeuAtws314p+
+         CfEf7szarB+Nip4zvz8MSBXTOTwOh9r6wurzw+c/4OCCagrar71fe2/q5PrJAbeQEanU
+         TFHuEQjzb2lseghVOngZxoVDQLEZ6kK9MeosTqYa5TBv9apbbh5EOljOlMFO8tmIneJO
+         2iXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pk3cp+v6YlZyN4xKQXvj66VAclgfjtmhX2dsPQTgLT4=;
+        b=Iv8mdVjB6hhXiYkg7T7FWfpe9osbd8zRZVnHUG48QjxtOBY5devBCRhJAHP+na2gSU
+         mXysHJzLRIetY1/CnfXt0iubiPfkfqxymZKQ3lo++G36jBCKRvHfmVvcQjIWuRhVTTFU
+         dL/0LNA3Jop597p9lO6KYEd/L4lWSywkxHOFYOOCB0oFYX8cavsVs4zDt/wD2IEEC1/D
+         CUen8jYuTA5RVc7yemKevvilnlPmkt2Yf4CatGNlzH9iPtC6ESN1aW3FRRYZ2IKKDs5B
+         f/5dvEJXNAGoC/myHUPj9GzLVRNtV2M0/Pm0Y1EuYdBlf/qJ1xLIz+Y2gCsmdoH1Zg+t
+         Fjzw==
+X-Gm-Message-State: AOAM532cmI8ykTadPO5riSyFduVgJ6uHMMo2OOhhEWAtl8aS6IVs6J+W
+        t5ZdD5cloUpYMTOH7NTpyeYFzi8LDcGrtQI91cMUf3g5aV14
+X-Google-Smtp-Source: ABdhPJwySEHZUeFxtawcJmXkTYob/X3K5dX1GBxU3hU6zDycCQ1qsniXdD22+aakc14cKlR59nUoFOkSukFSCYqPD88=
+X-Received: by 2002:a05:6402:3c7:: with SMTP id t7mr5998738edw.196.1616101209999;
+ Thu, 18 Mar 2021 14:00:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225090610.242623-3-allen.lkml@gmail.com>
+References: <cover.1616095045.git.rgb@redhat.com> <14139c54992a4b50448fbbf07ebbfed743e09f3a.1616095045.git.rgb@redhat.com>
+In-Reply-To: <14139c54992a4b50448fbbf07ebbfed743e09f3a.1616095045.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 18 Mar 2021 16:59:59 -0400
+Message-ID: <CAHC9VhSMKWZGchdKgLfiw_JCyFsKpWmN1y3vcHTiH2+bm3905A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] audit: document /proc/PID/loginuid
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-25 14:36:10, Allen Pais wrote:
-> From: Allen Pais <apais@linux.microsoft.com>
-> 
->  On kexec reboot the firmware driver fails to deallocate
-> shm memory leading to a memory leak. Implement .shutdown()
-> method to handle kexec reboots and to release shm buffers
-> correctly.
-> 
-> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-
-Tyler
-
+On Thu, Mar 18, 2021 at 3:19 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> Describe the /proc/PID/loginuid interface in Documentation/ABI/stable that
+> was added 2005-02-01 by commit 1e2d1492e178 ("[PATCH] audit: handle
+> loginuid through proc")
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 > ---
->  drivers/firmware/broadcom/tee_bnxt_fw.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> index ed10da5313e8..4c62e044a99f 100644
-> --- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-> +++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> @@ -242,6 +242,14 @@ static int tee_bnxt_fw_remove(struct device *dev)
->  	return 0;
->  }
->  
-> +static void tee_bnxt_fw_shutdown(struct device *dev)
-> +{
-> +	tee_shm_free(pvt_data.fw_shm_pool);
-> +	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
-> +	tee_client_close_context(pvt_data.ctx);
-> +	pvt_data.ctx = NULL;
-> +}
-> +
->  static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
->  	{UUID_INIT(0x6272636D, 0x2019, 0x0716,
->  		    0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
-> @@ -257,6 +265,7 @@ static struct tee_client_driver tee_bnxt_fw_driver = {
->  		.bus		= &tee_bus_type,
->  		.probe		= tee_bnxt_fw_probe,
->  		.remove		= tee_bnxt_fw_remove,
-> +		.shutdown	= tee_bnxt_fw_shutdown,
->  	},
->  };
->  
-> -- 
-> 2.25.1
-> 
+>  Documentation/ABI/stable/procfs-audit_loginuid | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 Documentation/ABI/stable/procfs-audit_loginuid
+
+Merged into audit/next, thanks.
+
+-- 
+paul moore
+www.paul-moore.com
