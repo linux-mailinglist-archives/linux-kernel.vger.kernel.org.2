@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2346340C2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8659A340C32
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhCRRwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhCRRwQ (ORCPT
+        id S232316AbhCRRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:54:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20560 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231701AbhCRRyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:52:16 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12DDC06174A;
-        Thu, 18 Mar 2021 10:52:16 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id v3so3201762ioq.2;
-        Thu, 18 Mar 2021 10:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzB7p1mrH7Ut3wO2SVOFyueQFUpspybATe+7N0GIt5E=;
-        b=nlPMmM1nr7ne9QnqA2MOiSNWZJAp0UGD6TTtjFevPK2dYkM4NZPqpoGrOf8VuzU8A1
-         cOGMALs1RmCKHTTn1dCIJFc9rmoc9wE5GlMk5ROz0NJlKbE7hM6FxCOGjWSFfGDyaP7x
-         4Y0OtmnWlT0/C5uiOo4Oeo5qFJBITt2foM1il26KjttwX/rc+KyPlPDEmMZ53lUi4D9n
-         fbghgbFC0ZEnFK2vTHwdMm5cfMODBLMPpGKzDR3CiZs/ZMElLJkpJfN4eF9s8Jo6lLEi
-         jYEuXDgsgRWSWPxk65e5YtouL4WNZMBwPqaSdm8yg9u6bQS6k6n+nGUgQJud2Lz930LL
-         QDBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzB7p1mrH7Ut3wO2SVOFyueQFUpspybATe+7N0GIt5E=;
-        b=I7P5Jsm7peGHkNH9XwKsU3b9kMfzen3ZcvyJo+7dQNdSC1xnt8hPW3qlLwx8TKamAz
-         gM8WiYqKEKbvnN8mPoEQ1cJkHYMg+/cAxc/p4EDtUVs2WxWkkgK7tzcYmR14L+qhHH5w
-         dNtsM8haoFjT5dQkdFoWh37QlA9f7PLyein1NMf7qrN+I/X025DrlsQmhv1I4DWvjz8N
-         +3L3+CK7679qhXhVrR2EnCfoP6gzxpz8rTDU7yPqcuZdknLLJYkrTlkG6xox/c+X/ub6
-         AQ8zLpmR9LkZNweDEoUQZgKld89uNKSGGPqqWwz4yt2ELkJ+lmSKlX78rdEFvn/4LLAW
-         AMkQ==
-X-Gm-Message-State: AOAM530mQaajrZsOjr9Jwk9gtlhgrNkZAiJ5gPkczv5pbwvZLR6DKxWK
-        IR7mlHK1DRL397vLSTQmNfCxfHSH1O3OuCdQ/usrThxS
-X-Google-Smtp-Source: ABdhPJz0q7mAqubSJL6bw761i7nrOQaEBtfa+ohfLNR3XIF8GLlyxWZakMPiS/4d1zpr0iXS278aTJHm9JVkUjtNWx4=
-X-Received: by 2002:a5e:cb4c:: with SMTP id h12mr10762093iok.183.1616089935999;
- Thu, 18 Mar 2021 10:52:15 -0700 (PDT)
+        Thu, 18 Mar 2021 13:54:12 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IHYGmd110707;
+        Thu, 18 Mar 2021 13:54:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qLCwOqi9nd43vs0sC/0uaogdbKlQGtsnrdpGyMt5BJs=;
+ b=isZDdiLBECrzDrBfVyYWnCyjmp7QYlffD7yjzpfqfI75oPT3bfQKDV3pUwIWqzSQAjeL
+ xF2H5wUrhb9TCx+bLH1FFXq+5bQEuL6iUHr4IrCU6vGiscHx6WdwHDJkZeICaqsyQKf8
+ IvmhU/r9xPdPT9Z7QhOMWDKSDswBqELWT99REn1BNy4k3UuaW80lok3cguXpmscYqCMN
+ 0/Xtg18FkFBVZV9uj8y7hCqGzu93bIzI58n62/m+FUS+j3mjBbAPt38p42KDV7uImWjx
+ omds7FNgzJqZIcSdQRhQfrU9OGa2pJL3oo/GlYhewWchBIPGUobWZ7TayC5qvKdtGjJy ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37by16g5us-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 13:54:10 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12IHYjXl112318;
+        Thu, 18 Mar 2021 13:54:10 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37by16g5uj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 13:54:10 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12IHq5xV006661;
+        Thu, 18 Mar 2021 17:54:09 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 378n19gekv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 17:54:09 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12IHs8tN32637184
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 17:54:09 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E298FAE05F;
+        Thu, 18 Mar 2021 17:54:08 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E19CAE05C;
+        Thu, 18 Mar 2021 17:54:07 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Mar 2021 17:54:07 +0000 (GMT)
+Subject: Re: [PATCH v4 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20210310150559.8956-1-akrowiak@linux.ibm.com>
+ <20210310150559.8956-2-akrowiak@linux.ibm.com>
+ <20210318001729.06cdb8d6.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <d98ab0e1-dca3-0ea7-2478-387e3698900e@linux.ibm.com>
+Date:   Thu, 18 Mar 2021 13:54:06 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20210309125324.4456-1-yashsri421@gmail.com> <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com> <871rcg2p8g.fsf@meer.lwn.net>
- <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com> <878s6kto3g.fsf@meer.lwn.net>
-In-Reply-To: <878s6kto3g.fsf@meer.lwn.net>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 18 Mar 2021 18:52:05 +0100
-Message-ID: <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Aditya <yashsri421@gmail.com>,
-        Markus Heiser <markus.heiser@darmarit.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210318001729.06cdb8d6.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_09:2021-03-17,2021-03-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103180124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 5:37 PM Jonathan Corbet <corbet@lwn.net> wrote:
->
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
->
-> > I wonder if we could extend kernel-doc (not your preferred option as
-> > it seems) for a new dedicated warning message or maintain a separate
-> > kernel-doc sanity checking script to emit a dedicated warning based on
-> > some heuristics that suggests when a "header comment" is probably
-> > unintentionally declared as a "kernel-doc comment" when it really
-> > should not be.
-> >
-> > Jonathan, would you then prefer to have a separate kernel-doc sanity
-> > checking script that then allows us to maintain checking for patterns
-> > we already cleaned up?
->
-> Having a warning in kernel-doc for "This comment starts with /** but
-> isn't a kerneldoc comment" could be useful, I guess.  That is the real
-> problem, not the fact that it appears at the top of the file.  I'm all
-> for tools that help us to clean things up, but let's not add
-> line-counting hacks to try to paper it over.
->
 
-Yeah, and as this line-counting is really just a poor man's
-heuristics, we might just be better to really turn this heuristics
-into a dedicated cleanup warning script, then we can check for more
-indicators, such as "does it contain the word Copyright" somewhere in
-the kernel-doc comment, which tells us even more that this is not a
-kernel-doc as we would expect it.
 
-Aditya, would you like to try to turn this check into a separate script instead?
+On 3/17/21 7:17 PM, Halil Pasic wrote:
+> On Wed, 10 Mar 2021 10:05:59 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> -		ret = vfio_ap_mdev_reset_queues(mdev);
+>> +		matrix_mdev = mdev_get_drvdata(mdev);
+> Is it guaranteed that matrix_mdev can't be NULL here? If yes, please
+> remind me of the mechanism that ensures this.
 
-Lukas
+The matrix_mdev is set as drvdata when the mdev is created and
+is only cleared when the mdev is removed. Likewise, this function
+is a callback defined by by vfio in the vfio_ap_matrix_ops structure
+when the matrix_dev is registered and is intended to handle ioctl
+calls from userspace during the lifetime of the mdev. While I can't
+speak definitively to the guarantee, I think it is extremely unlikely
+that matrix_mdev would be NULL at this point. On the other hand,
+it wouldn't hurt to check for NULL and log an error or warning
+message (I prefer an error here) if NULL.
+
+>
+>> +
+>> +		/*
+>> +		 * If the KVM pointer is in the process of being set, wait until
+>> +		 * the process has completed.
+>> +		 */
+>> +		wait_event_cmd(matrix_mdev->wait_for_kvm,
+>> +			       matrix_mdev->kvm_busy == false,
+>> +			       mutex_unlock(&matrix_dev->lock),
+>> +			       mutex_lock(&matrix_dev->lock));
+>> +
+>> +		if (matrix_mdev->kvm)
+>> +			ret = vfio_ap_mdev_reset_queues(mdev);
+>> +		else
+>> +			ret = -ENODEV;
+> Didn't we agree to make the call to vfio_ap_mdev_reset_queues()
+> unconditional again (for reference please take look at
+> Message-ID: <64afa72c-2d6a-2ca1-e576-34e15fa579ed@linux.ibm.com>)?
+
+Yes, we did agree to that and I changed it at the time. That change
+got lost somehow; I'll reinstate it.
+
+>
+> Regards,
+> Halil
+
