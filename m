@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B5A340B0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F80C340B11
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhCRRJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhCRRJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:09:18 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0715C06174A;
-        Thu, 18 Mar 2021 10:09:17 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v11so6331530wro.7;
-        Thu, 18 Mar 2021 10:09:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jfBPppmZKEaOwYPVKPxjdq20YbX7kVFBgfv46nqcYC8=;
-        b=jKwjDl7rn62K1CATEQcf3tS+h0alfurpVYcrO5uOTC87CEqZGUs0p44yUni5uPXov4
-         xHJKEhkSXohoSHNuaTb0/kv8YtuQ7IyyQtsZcZlqaqozexcUC8YfKTuSWnMkrAwoaCAR
-         0fm7pWr5pVFw67qSPNFulbinoVw5RWMvlSdmHFjgWvuMXaR4454TSSR1yZSikJrMBhMr
-         I/GRM2vZTJM5aPQd+RGe5KV+TiX6bRol58YZoSHGa8LetUQIJDZuy5iSyu2pSZhl/Weo
-         fAWiuXo/Y9RC4vSYCRELBvsGxNUDaAbDVYn0O0nIMZRPPfQbkkGBfj01JHeg7KUYGhYs
-         4FMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jfBPppmZKEaOwYPVKPxjdq20YbX7kVFBgfv46nqcYC8=;
-        b=H+ORlC7qbrjaLbgo0rloP7eB4iB5da4II+H6pFuuYe6kEBZobfIEGOCODzCd5RZqof
-         nMsOOMUYfWHFrgSrkWSfToPrGyBoRc3bTIYCzqyfzilMCAHyQFNDjl0kLq5kGvKSDJL5
-         UUueY8aZfHI5UV3jr14xQfGFVG+GJ29RkB40D5aCb/9n6n4n1kCrrB8cLR2ezLozDf0p
-         RcdiEgafOCXNP4pnIns+z1ZpZsM9Vix9Amo/lAAE7QUH5/U7mnWyG89RhhBTiavJcaoR
-         Vljm7tT7GWPa4T3/ofbfCpYG0uNU2co1kNdN3Wo6rfspn9SVGlGxJWFpNz9DbXOqFMil
-         MkuA==
-X-Gm-Message-State: AOAM5318KJN69VhzveamZF6pcUdTAwBCy2cTfICp/XBxinPs9u+Ccvme
-        Rd2vGNPDpTAd75Z1qJRmubaRQYSM2YKoUA==
-X-Google-Smtp-Source: ABdhPJyKmnnDaEvkqcDrTI2oWu4vTGEqX3hQENPkxnDXgvvZeREOqn6rb61ZRT9sPeg365ofyZwlyg==
-X-Received: by 2002:a5d:640b:: with SMTP id z11mr235508wru.327.1616087356559;
-        Thu, 18 Mar 2021 10:09:16 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84? (p200300ea8f1fbb008d2c08cc6c7f1a84.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84])
-        by smtp.googlemail.com with ESMTPSA id d8sm3789661wrr.35.2021.03.18.10.09.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 10:09:16 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210318142356.30702-1-michael@walle.cc>
- <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
- <20210318151712.7hmdaufxylyl33em@skbuf>
- <ee24b531-df8b-fa3d-c7fd-8c529ecba4c8@gmail.com>
- <ae201dadd6842f533aaa2e1440209784@walle.cc>
- <20210318170401.mvvwryi7exouyrzy@skbuf>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <c7285d14-134c-1f9b-9bd6-3343248598d5@gmail.com>
-Date:   Thu, 18 Mar 2021 18:09:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232245AbhCRRKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232250AbhCRRJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:09:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED01464F1C;
+        Thu, 18 Mar 2021 17:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616087378;
+        bh=QMq8RJPZzlZps/hFwVNizcpJfBRIfzbtxWv5jpqvOEc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OjnOVmdzRHVCt63wEPujITPWx89i1hO2P/zquCxCAfKzEkOy1OWl+oiLLzpmTJIec
+         GCgQAjTL0GyJwM2EoqqFHdDoDMzrQIag1ap1HAcwpP/JAJwguCLU7DgWmcQkXz9sYV
+         0Ldm5+OuoPVX7TCALxtYKadYVO/X0JFy/WJa30QoMeskXLiA9CMeCjcr6mfZsFtx8h
+         8Unc1RnYj1BbFvydAMPF95NP6kJSS5kCmm4U99UJEjafUzRSOKZTJ+c29vSurn8JOt
+         6RxWMaB79XN4lWADNTZVwnPhY5rRqFz6W9AgjbTC24GW98OrhUj9ZNMavbWJIHPzO8
+         3QIUD/mr9airA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B16AD3523944; Thu, 18 Mar 2021 10:09:37 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:09:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210318170937.GF2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
+ <20210316151750.GF639918@lothringen>
+ <20210316165101.GW2696@paulmck-ThinkPad-P72>
+ <20210318145952.GC805381@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20210318170401.mvvwryi7exouyrzy@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318145952.GC805381@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.2021 18:04, Vladimir Oltean wrote:
-> On Thu, Mar 18, 2021 at 05:38:13PM +0100, Michael Walle wrote:
->> Am 2021-03-18 17:21, schrieb Heiner Kallweit:
->>> On 18.03.2021 16:17, Vladimir Oltean wrote:
->>>> On Thu, Mar 18, 2021 at 03:54:00PM +0100, Heiner Kallweit wrote:
->>>>> On 18.03.2021 15:23, Michael Walle wrote:
->>>>>> at803x_aneg_done() is pretty much dead code since the patch series
->>>>>> "net: phy: improve and simplify phylib state machine" [1].
->>>>>> Remove it.
->>>>>>
->>>>>
->>>>> Well, it's not dead, it's resting .. There are few places where
->>>>> phy_aneg_done() is used. So you would need to explain:
->>>>> - why these users can't be used with this PHY driver
->>>>> - or why the aneg_done callback isn't needed here and the
->>>>>   genphy_aneg_done() fallback is sufficient
->>>>
->>>> The piece of code that Michael is removing keeps the aneg reporting as
->>>> "not done" even when the copper-side link was reported as up, but the
->>>> in-band autoneg has not finished.
->>>>
->>>> That was the _intended_ behavior when that code was introduced, and
->>>> you
->>>> have said about it:
->>>> https://www.spinics.net/lists/stable/msg389193.html
->>>>
->>>> | That's not nice from the PHY:
->>>> | It signals "link up", and if the system asks the PHY for link details,
->>>> | then it sheepishly says "well, link is *almost* up".
->>>>
->>>> If the specification of phy_aneg_done behavior does not include
->>>> in-band
->>>> autoneg (and it doesn't), then this piece of code does not belong
->>>> here.
->>>>
->>>> The fact that we can no longer trigger this code from phylib is yet
->>>> another reason why it fails at its intended (and wrong) purpose and
->>>> should be removed.
->>>>
->>> I don't argue against the change, I just think that the current commit
->>> description isn't sufficient. What you just said I would have expected
->>> in the commit description.
->>
->> I'll come up with a better one, Vladimir, may I use parts of the text
->> above?
+On Thu, Mar 18, 2021 at 03:59:52PM +0100, Frederic Weisbecker wrote:
+> On Tue, Mar 16, 2021 at 09:51:01AM -0700, Paul E. McKenney wrote:
+> > On Tue, Mar 16, 2021 at 04:17:50PM +0100, Frederic Weisbecker wrote:
+> > > On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> > > > +/**
+> > > > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+> > > > + *
+> > > > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+> > > > + *
+> > > > + * If a full RCU grace period has elapsed since the earlier call from
+> > > > + * which oldstate was obtained, return @true, otherwise return @false.
+> > > > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+> > > > + *
+> > > > + * Yes, this function does not take counter wrap into account.
+> > > > + * But counter wrap is harmless.  If the counter wraps, we have waited for
+> > > > + * more than 2 billion grace periods (and way more on a 64-bit system!).
+> > > > + * Those needing to keep oldstate values for very long time periods
+> > > > + * (many hours even on 32-bit systems) should check them occasionally
+> > > > + * and either refresh them or set a flag indicating that the grace period
+> > > > + * has completed.
+> > > > + */
+> > > > +bool poll_state_synchronize_rcu(unsigned long oldstate)
+> > > > +{
+> > > > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
+> > > > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+> > > 
+> > > Also as usual I'm a bit lost with the reason behind those memory barriers.
+> > > So this is ordering the read on rcu_state.gp_seq against something (why not an
+> > > smp_rmb() btw?). And what does it pair with?
+> > 
+> > Because it needs to order subsequent writes as well as reads.
+> > 
+> > It is ordering whatever the RCU user wishes to put after the call to
+> > poll_state_synchronize_rcu() with whatever the RCU user put before
+> > whatever started the grace period that just now completed.  Please
+> > see the synchronize_rcu() comment header for the statement of the
+> > guarantee.  Or that of call_rcu().
 > 
-> My words aren't copyrighted, so feel free, however you might want to
-> check with Heiner too for his part, you never know.
+> I see. OTOH the update side's CPU had to report a quiescent state for the
+> requested grace period to complete. As the quiescent state propagated along
+> with full ordering up to the root rnp, everything that happened before
+> rcu_seq_done() should appear before and everything that happened after
+> rcu_seq_done() should appear after.
 > 
-I'm not paid for the content of my mails, so feel free to quote.
+> Now in the case the update side's CPU is not the last CPU that reported
+> a quiescent state (and thus not the one that propagated every subsequent
+> CPUs QS to the final "rcu_state.gp_seq"), the full barrier after rcu_seq_done()
+> is necessary to order against all the CPUs that reported a QS after the
+> update side's CPU.
+> 
+> Is that right?
+
+That is the way I see it.  ;-)
+
+> > For more detail on how these guarantees are implemented, please see
+> > Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> > and its many diagrams.
+> 
+> Indeed, very useful documentation!
+
+Glad you like it!
+
+> > There are a lot of memory barriers that pair and form larger cycles to
+> > implement this guarantee.  Pretty much all of the calls to the infamous
+> > smp_mb__after_unlock_lock() macro form cycles involving this barrier,
+> > for example.
+> > 
+> > Please do not hesitate to ask more questions.  This underpins RCU.
+> 
+> Careful what you wish! ;-)
+
+;-) ;-) ;-)
+
+							Thanx, Paul
