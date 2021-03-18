@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE96D34012A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948D8340131
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhCRIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhCRIro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:47:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9135DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0HLE3E6fVh9BNhE3TbOCTew4ksGOWaGBmHt6RDduki0=; b=UaTiObV0x/rC3E451IvY+l2oR6
-        LHyBNZ858myi4pLTt92ueiI4DozoxHyGzpn6yTsQJDaHmoQ+UhVCOWq3CRL6dKIynib4XfhVr2clR
-        zwDVaZCgzD4PxyTadZMopls78L5BcM8FsUZcDYMAHHKpfgtjHLN4zuXpN4vi/k9UUNFM8Vy+Bss28
-        ZP7uO6naVbYd5+eAIuiYfDboXHB4Ds/iY/qWOnngsAbkxNTqU0hRX2xhwrW/Z758LDgVMyEQAmbGs
-        lFdhYqeShycTSijp8xuC0sbhWJujnb/vk9XSD8WpF4aks25FHJCcPivpwvX88zFpFjgReQIChLCoa
-        CRzMlPYw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMoJW-004pzn-Hn; Thu, 18 Mar 2021 08:47:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D8127305C10;
-        Thu, 18 Mar 2021 09:47:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BD54B29A61CC6; Thu, 18 Mar 2021 09:47:29 +0100 (CET)
-Date:   Thu, 18 Mar 2021 09:47:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Oliver Sang <oliver.sang@intel.com>, jbaron@akamai.com,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
- .exit.text
-Message-ID: <YFMToXI/3qjlMur4@hirez.programming.kicks-ass.net>
-References: <20210317030101.GB22345@xsang-OptiPlex-9020>
- <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
- <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
- <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
- <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
- <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
- <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
- <20210318000212.l2fdz5vjhuq64yh6@treble>
- <YFMIcWIbk0aN30NY@hirez.programming.kicks-ass.net>
- <YFMPmkMoae5cRzh+@hirez.programming.kicks-ass.net>
+        id S229831AbhCRItb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:49:31 -0400
+Received: from mga18.intel.com ([134.134.136.126]:16266 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhCRItB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:49:01 -0400
+IronPort-SDR: +FbKf2QBZiXYS5guCqZxkLedhKHUeHC0ie9GDo5tElNXF2IJpcOCoBynd8GMVQS67ZsWJ3GH8h
+ aIhgEYfoJTTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="177227566"
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="177227566"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 01:49:00 -0700
+IronPort-SDR: K+G+zo6d87YxsIC49VDqqz1IhQLHAzoTUaSAZ4riu8iepsHm9s6yGsA5/FDYYCZ2Q3NhbUljqH
+ FGJEPdri2MzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="389161113"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 18 Mar 2021 01:48:59 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMoKw-00018m-NL; Thu, 18 Mar 2021 08:48:58 +0000
+Date:   Thu, 18 Mar 2021 16:48:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 2c6b02185cc608c19a22691fadc6ca2cd114c286
+Message-ID: <605313e4.Fz65q86UThlmcGI8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFMPmkMoae5cRzh+@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:30:18AM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 18, 2021 at 08:59:45AM +0100, Peter Zijlstra wrote:
-> > On Wed, Mar 17, 2021 at 07:02:12PM -0500, Josh Poimboeuf wrote:
-> > > On Wed, Mar 17, 2021 at 01:45:57PM +0100, Peter Zijlstra wrote:
-> > > > arguably it simply isn't a good idea to use static_call() in __exit
-> > > > code anyway, since module unload is never a performance critical path.
-> > > 
-> > > Couldn't you make the same argument about __init functions, which are
-> > > allowed to do static calls?
-> > 
-> > I suppose we could indeed make that argument. Much of that code was
-> > copied from jump_label without much consideration. And I now I suppose
-> > I'll have to consider jump_label in __exit too :/
-> > 
-> > > We might consider a STATIC_CALL_SITE_EXIT flag, but I suppose we've run
-> > > out of flag space.
-> > 
-> > Yeah, we're definitely short on flags. Let me try and figure out when
-> > exactly it's all discarded.
-> 
-> Ha!, x86 stuffs .exit.text in [__init_begin, __init_end) and it is
-> discarded right along with initmem.
-> 
-> But that means it should match init and be tagged init and all *should*
-> work, but somehow it doesn't... clearly I'm missing something again
-> ARGH!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 2c6b02185cc608c19a22691fadc6ca2cd114c286  irq: Simplify condition in irq_matrix_reserve()
 
-I found a race, look at this:
+elapsed time: 723m
 
-kernel_init()
-	...
-	free_initmem();
-	...
-	system_state = SYSTEM_RUNNING;
+configs tested: 111
+configs skipped: 2
 
-vs
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-__static_call_update()
-	...
-	if (static_call_is_init()) {
-		if (system_state >= SYSTEM_RUNNING)
-			continue;
-	}
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                       omap2plus_defconfig
+arm                        clps711x_defconfig
+m68k                       m5475evb_defconfig
+sparc                            alldefconfig
+powerpc                        icon_defconfig
+xtensa                  nommu_kc705_defconfig
+h8300                     edosk2674_defconfig
+powerpc                     redwood_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     taishan_defconfig
+mips                            gpr_defconfig
+powerpc                          allmodconfig
+powerpc                  mpc885_ads_defconfig
+microblaze                          defconfig
+m68k                        stmark2_defconfig
+mips                           gcw0_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                         wii_defconfig
+powerpc                       eiger_defconfig
+mips                       bmips_be_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      chrp32_defconfig
+mips                     loongson1b_defconfig
+h8300                    h8300h-sim_defconfig
+sh                           se7619_defconfig
+sh                        sh7757lcr_defconfig
+sh                          rsk7269_defconfig
+mips                          rm200_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                     tqm8560_defconfig
+arm                          pxa910_defconfig
+arm                          simpad_defconfig
+arm                            mmp2_defconfig
+xtensa                       common_defconfig
+m68k                                defconfig
+powerpc                     tqm8541_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                           ip22_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210317
+i386                 randconfig-a005-20210317
+i386                 randconfig-a002-20210317
+i386                 randconfig-a003-20210317
+i386                 randconfig-a004-20210317
+i386                 randconfig-a006-20210317
+x86_64               randconfig-a006-20210317
+x86_64               randconfig-a001-20210317
+x86_64               randconfig-a005-20210317
+x86_64               randconfig-a004-20210317
+x86_64               randconfig-a003-20210317
+x86_64               randconfig-a002-20210317
+i386                 randconfig-a013-20210317
+i386                 randconfig-a016-20210317
+i386                 randconfig-a011-20210317
+i386                 randconfig-a012-20210317
+i386                 randconfig-a015-20210317
+i386                 randconfig-a014-20210317
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a011-20210317
+x86_64               randconfig-a016-20210317
+x86_64               randconfig-a013-20210317
+x86_64               randconfig-a014-20210317
+x86_64               randconfig-a015-20210317
+x86_64               randconfig-a012-20210317
 
-And this is *after* SMP bringup. Somehow I don't think you hit this
-race, it is extremely unlikely
-
-(jump_label has the exact same issue fwiw)
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
