@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB873340742
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FE5340743
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhCRNws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:52:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28999 "EHLO
+        id S231510AbhCRNwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:52:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22512 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231357AbhCRNw3 (ORCPT
+        by vger.kernel.org with ESMTP id S231376AbhCRNwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:52:29 -0400
+        Thu, 18 Mar 2021 09:52:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616075548;
+        s=mimecast20190719; t=1616075550;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qopB9y1x5EWojgQ3TD0iEI7yb51KrfAHtn13P+oXggA=;
-        b=J+X3DdZfssF7tuw1aMKhRndld676/QibpKSahNrDJnKz4rzrnxZlQaDPrOnWhTrTmMhXyZ
-        rRXdw7rkeTtNk48ya9f8OB4wVjV5qs0vNFWbwuB2veof2ioVJgrkTHR86vwsV2n/SQ4ot3
-        xbk1RchPSEr0fp/tB8ZWmLRKgxP/L7k=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-ajhgTWmJMjOo9xqQFCf3LA-1; Thu, 18 Mar 2021 09:52:27 -0400
-X-MC-Unique: ajhgTWmJMjOo9xqQFCf3LA-1
-Received: by mail-ot1-f71.google.com with SMTP id v24so3812111ota.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
+        bh=K3FmGDDjg4x6Qh11aJHy8AEuyBdl8B9I2jc7mXW+DQQ=;
+        b=gHi7jrEYyhRr17PmZMvRpxm4iye0ed0lt5R8haMFrpoolDRLIiDiDCO1/SiX/rJnOsG2Kd
+        MBKhHetEfXGfxsXOTks8hSix0YrWEDw8+uADrOO6FfH9dfunZuzWDjg04QXHMouXYIgTDW
+        XtHb90qkjXp6+xw5Qukcq/YvehNZmng=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-12JKo4fIONmEvJ3s7M5ZVQ-1; Thu, 18 Mar 2021 09:52:28 -0400
+X-MC-Unique: 12JKo4fIONmEvJ3s7M5ZVQ-1
+Received: by mail-oi1-f198.google.com with SMTP id k15so3386478oig.19
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:52:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qopB9y1x5EWojgQ3TD0iEI7yb51KrfAHtn13P+oXggA=;
-        b=GTjxOPCN8Ws79sglTbU0yHp+KWjfqov10rJx+cjE+3zsMoyO17MI6P14gRuq/qUB89
-         37b5UNWJhkwo/9r7mDbt0zqvTnp+ey79T9DdD/bNWf1nZmQLb9+ubT7Xmpn486dOB+fg
-         9ht9TFjk2bG1GbIFseXfIJj8duHCTrAl0moen/0PzeftgAUAv/0V6mGIrzaFH2hZc28J
-         FxHQOmRTm0ZDgYOzX7tmA3ssdEuTglGncq3X0lSAsJIPbyeXChlG3s5ugnbQJMkaaoN6
-         S8KzzYkRacuv18GaUYLbO2HnfHSZmCwOVwWjJZMCftlcKVe+IyvIQRbkrRGZ+cMpofyZ
-         8jDQ==
-X-Gm-Message-State: AOAM5303Qye4goZXBJ8ThxkT4tKGqRui66mKNebLGutnYbcr0q0HOl53
-        tBuYBfgNUYMdCaHbNCt6jAZYPsnP2Mk/HG6TOjTWhQdUISy+Rak/ZUwLAMIhoxOl+3dkwnKY2lo
-        vPexvb5KeZi9uhBSnGin0rugo
-X-Received: by 2002:aca:f13:: with SMTP id 19mr3149428oip.56.1616075546702;
-        Thu, 18 Mar 2021 06:52:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0rO00UdTXyPF5zXNwwHCPpWqYU3MgdrqOZTr0U3aiYCj6dg9lwTJ4zuH0WjLin9eIDwm4JQ==
-X-Received: by 2002:aca:f13:: with SMTP id 19mr3149414oip.56.1616075546551;
-        Thu, 18 Mar 2021 06:52:26 -0700 (PDT)
+        bh=K3FmGDDjg4x6Qh11aJHy8AEuyBdl8B9I2jc7mXW+DQQ=;
+        b=SR1vvAOmCeE69TAAkzAKQ0P+dn4ZX0rTthswotDKVpL+uvk4qkOWsa7kqxHlIJaqX2
+         2/LSp+bf3sfq340Ii5B26TEfng8gi5DZYsd/MjAOBa+M2pZhedz05InnqEHKqXAAE1qT
+         enITfnWiW3OZMwxjEYbiefX97zShzlafzn4ksQSVRekm2qTGT6lV0/MAyR24/TndMuWW
+         03cTLSn8UTEzgi9TcINdRlcSDHpYkueW8F1kGFrFIU9jt+CH8ugLuAgjs0OqpCyV5n1/
+         kBG0JLyFo5oySKDeJn9XrTcdNSzkEKOxi3RYC8fzWPGGMIZJwBNm7QwQIyFnOsFyUoMR
+         N0Aw==
+X-Gm-Message-State: AOAM533wS5Z0d5RQfP9aQHjaPGb/Se2vqMWZxdNGgzO2hhToQbFmqQHj
+        KrifFTwpn89rIKAT4nbwIUV2ZNRCkpFenBvVVEjJH5EuBgC445gzsvd/+VoemFhn9pWuwCeFJKz
+        w6QXnb8q68+bTjGMH3RXyUsve
+X-Received: by 2002:a9d:62d1:: with SMTP id z17mr7347733otk.118.1616075547683;
+        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUVm8g2gqvSzP7zKMkWvD+pr2sw5M/w6HMmQg74ODAc1kSZtztAuf92THPXJ0Aw5kJfl5jAw==
+X-Received: by 2002:a9d:62d1:: with SMTP id z17mr7347719otk.118.1616075547545;
+        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
 Received: from redhat.redhat.com (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id i11sm465342otp.76.2021.03.18.06.52.25
+        by smtp.gmail.com with ESMTPSA id i11sm465342otp.76.2021.03.18.06.52.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 06:52:26 -0700 (PDT)
+        Thu, 18 Mar 2021 06:52:27 -0700 (PDT)
 From:   Connor Kuehl <ckuehl@redhat.com>
 To:     virtio-fs@redhat.com
 Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, stefanha@redhat.com,
         vgoyal@redhat.com, miklos@szeredi.hu, jasowang@redhat.com,
         mst@redhat.com
-Subject: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
-Date:   Thu, 18 Mar 2021 08:52:22 -0500
-Message-Id: <20210318135223.1342795-3-ckuehl@redhat.com>
+Subject: [PATCH 3/3] fuse: fix typo for fuse_conn.max_pages comment
+Date:   Thu, 18 Mar 2021 08:52:23 -0500
+Message-Id: <20210318135223.1342795-4-ckuehl@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210318135223.1342795-1-ckuehl@redhat.com>
 References: <20210318135223.1342795-1-ckuehl@redhat.com>
@@ -69,107 +69,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an incoming FUSE request can't fit on the virtqueue, the request is
-placed onto a workqueue so a worker can try to resubmit it later where
-there will (hopefully) be space for it next time.
-
-This is fine for requests that aren't larger than a virtqueue's maximum
-capacity. However, if a request's size exceeds the maximum capacity of
-the virtqueue (even if the virtqueue is empty), it will be doomed to a
-life of being placed on the workqueue, removed, discovered it won't fit,
-and placed on the workqueue yet again.
-
-Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
-Descriptors) of the virtio spec:
-
-  "A driver MUST NOT create a descriptor chain longer than the Queue
-  Size of the device."
-
-To fix this, limit the number of pages FUSE will use for an overall
-request. This way, each request can realistically fit on the virtqueue
-when it is decomposed into a scattergather list and avoid violating
-section 2.6.5.3.1 of the virtio spec.
+'Maxmum' -> 'Maximum'
 
 Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
 ---
- fs/fuse/fuse_i.h    |  5 +++++
- fs/fuse/inode.c     |  7 +++++++
- fs/fuse/virtio_fs.c | 14 ++++++++++++++
- 3 files changed, 26 insertions(+)
+ fs/fuse/fuse_i.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 68cca8d4db6e..f0e4ee906464 100644
+index f0e4ee906464..8bdee79ba593 100644
 --- a/fs/fuse/fuse_i.h
 +++ b/fs/fuse/fuse_i.h
-@@ -555,6 +555,11 @@ struct fuse_conn {
- 	/** Maxmum number of pages that can be used in a single request */
+@@ -552,7 +552,7 @@ struct fuse_conn {
+ 	/** Maximum write size */
+ 	unsigned max_write;
+ 
+-	/** Maxmum number of pages that can be used in a single request */
++	/** Maximum number of pages that can be used in a single request */
  	unsigned int max_pages;
  
-+#if IS_ENABLED(CONFIG_VIRTIO_FS)
-+	/** Constrain ->max_pages to this value during feature negotiation */
-+	unsigned int transport_capacity;
-+#endif
-+
- 	/** Input queue */
- 	struct fuse_iqueue iq;
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index b0e18b470e91..42cc72ba13d9 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1058,6 +1058,13 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 			fc->no_flock = 1;
- 		}
- 
-+#if IS_ENABLED(CONFIG_VIRTIO_FS)
-+		/* fuse_conn_init() sets this to zero for all others, this is
-+		 * explicitly set by virtio_fs.
-+		 */
-+		if (fc->transport_capacity)
-+			fc->max_pages = min_t(unsigned int, fc->max_pages, fc->transport_capacity);
-+#endif
- 		fm->sb->s_bdi->ra_pages =
- 				min(fm->sb->s_bdi->ra_pages, ra_pages);
- 		fc->minor = arg->minor;
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 8868ac31a3c0..a6ffba85d59a 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -18,6 +18,12 @@
- #include <linux/uio.h>
- #include "fuse_i.h"
- 
-+/* Used to help calculate the FUSE connection's max_pages limit for a request's
-+ * size. Parts of the struct fuse_req are sliced into scattergather lists in
-+ * addition to the pages used, so this can help account for that overhead.
-+ */
-+#define FUSE_HEADER_OVERHEAD    4
-+
- /* List of virtio-fs device instances and a lock for the list. Also provides
-  * mutual exclusion in device removal and mounting path
-  */
-@@ -1408,6 +1414,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 	struct super_block *sb;
- 	struct fuse_conn *fc;
- 	struct fuse_mount *fm;
-+	unsigned int virtqueue_size;
- 	int err;
- 
- 	/* This gets a reference on virtio_fs object. This ptr gets installed
-@@ -1435,6 +1442,13 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 	fc->delete_stale = true;
- 	fc->auto_submounts = true;
- 
-+	/* Tell FUSE to split requests that exceed the virtqueue's size */
-+	virtqueue_size = virtqueue_get_vring_size(fs->vqs[VQ_REQUEST].vq);
-+	WARN_ON(virtqueue_size <= FUSE_HEADER_OVERHEAD);
-+	fc->transport_capacity = min_t(unsigned int,
-+			virtqueue_size - FUSE_HEADER_OVERHEAD,
-+			FUSE_MAX_MAX_PAGES);
-+
- 	fsc->s_fs_info = fm;
- 	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
- 	if (fsc->s_fs_info) {
+ #if IS_ENABLED(CONFIG_VIRTIO_FS)
 -- 
 2.30.2
 
