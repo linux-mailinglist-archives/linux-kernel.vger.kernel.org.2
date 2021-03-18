@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBB0340BBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1F0340BC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhCRRZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:25:36 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:48636 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232402AbhCRRZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:25:11 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F1YnH3Wdhz9txP4;
-        Thu, 18 Mar 2021 18:25:07 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 8KxVRWHLgSdK; Thu, 18 Mar 2021 18:25:07 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F1YnH2bvfz9txP1;
-        Thu, 18 Mar 2021 18:25:07 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 20CD48B937;
-        Thu, 18 Mar 2021 18:25:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Vk0w0nC_7YuQ; Thu, 18 Mar 2021 18:25:09 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DFE4F8B92D;
-        Thu, 18 Mar 2021 18:25:08 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id C011B675F0; Thu, 18 Mar 2021 17:25:08 +0000 (UTC)
-Message-Id: <7fc233cfbda60b87894c3f4a3b0d1e63fdb24b37.1616085654.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu>
-References: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] net: marvell: Remove reference to CONFIG_MV64X60
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org
-Date:   Thu, 18 Mar 2021 17:25:08 +0000 (UTC)
+        id S232450AbhCRR0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232307AbhCRRZb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:25:31 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981A3C06174A;
+        Thu, 18 Mar 2021 10:25:30 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso5894729wmi.3;
+        Thu, 18 Mar 2021 10:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yePH7Dz7vnTvSGJ2LwIoy0u/VCi64JSI/odbm0wR6PU=;
+        b=CjzOw2RfqeH91rOohFhuSwVaGsb86pe+DcX0oIp5tQUzHqbS/iIi50SpbvahNTfC2E
+         wmtxsqWMoVi7Z1S1YXDDqz2Ss/Icx4r2lKgD63KMjEZdDCFph0u1LYo0bLJJ/KwIuDVI
+         2zt+tGwtGaVuC1qR48RlR/PtfsaAsDw9I4W+qXOT8NsjspGcdUPeFxv8tgS9zVMnPFMC
+         8dIMzOcIHamvAmFN4xwCJO0ZEaZ1y5c2AR+OScIZeQpOMb/xA8g/g5N4i6Au9JWQ0bTu
+         c6VypFB6f6PejSg5BXvB/wZiCJCORl0B/002BsfHDNV+1sp9nb29LsWqqQpqi8ffFaNU
+         8ZnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yePH7Dz7vnTvSGJ2LwIoy0u/VCi64JSI/odbm0wR6PU=;
+        b=YbwHCNV0vuXofBWR+x4apCtkFI7vlC2URSM7ljxre30JgIahOvXQV4PbL8K5gON9bA
+         lMGgkPeN0hSvCSY9a9vB6WRIuBAR6BufRQrW6CRfyWRBUfvICLAZm/N9/q+89hsA3vNB
+         ezPCCFgDo1w7UYi7QdZJmMTWeJyhWI6WQqrjqTdDaqIWX63dqFNlp7ZsjZlYGfF+6BVC
+         Bk9zzOn8TOqoyLcBzYxVQuAs39hSihJC0ZeH90iwvwu1UGGUYp0TAFBx3AYgEz7ySUzU
+         hxcARE72jYxIhns3dY2oJ4rm3pup/NutLXtH4yux5akhZUNNX/8m6+xCbwLAlEMzwTPd
+         KZZA==
+X-Gm-Message-State: AOAM530Rws6CQ9QW2X/LVEwDhEcCZa6KxrBWPYIEOmO8LnKMZLrJbF7S
+        /4J6XvnlwkldgEZPw8GvJM4=
+X-Google-Smtp-Source: ABdhPJx8ug+g6DJxm8IQG6h5q/JFKwekL8hYuY/6r1MUNg5gy6XbF5ze/U53e9or1E/Lmx7ugrI1cQ==
+X-Received: by 2002:a05:600c:4ba2:: with SMTP id e34mr203945wmp.121.1616088329314;
+        Thu, 18 Mar 2021 10:25:29 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d02:9b00:d45f:dc09:8cff:b64d])
+        by smtp.gmail.com with ESMTPSA id n1sm4511240wro.36.2021.03.18.10.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:25:28 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        linux-omap@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: remove obsolete OMAP HWMOD DATA FOR OMAP4-BASED DEVICES
+Date:   Thu, 18 Mar 2021 18:25:20 +0100
+Message-Id: <20210318172520.6634-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
-removed last selector of CONFIG_MV64X60.
+Commit 2584d7e7f87a ("ARM: OMAP2+: Drop legacy platform data for omap4
+hwmod") drops the file ./arch/arm/mach-omap2/omap_hwmod_44xx_data.c, but
+misses to drop the now obsolete OMAP HWMOD DATA FOR OMAP4-BASED DEVICES
+section in MAINTAINERS, which refers to only that file.
 
-As it is not a user selectable config item, all references to it
-are stale. Remove them.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+  warning: no file matches  F:  arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+
+Remove the obsolete OMAP HWMOD DATA FOR OMAP4-BASED DEVICES section.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/net/ethernet/marvell/Kconfig       | 4 ++--
- drivers/net/ethernet/marvell/mv643xx_eth.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ MAINTAINERS | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/Kconfig b/drivers/net/ethernet/marvell/Kconfig
-index 7fe15a3286f4..fe0989c0fc25 100644
---- a/drivers/net/ethernet/marvell/Kconfig
-+++ b/drivers/net/ethernet/marvell/Kconfig
-@@ -6,7 +6,7 @@
- config NET_VENDOR_MARVELL
- 	bool "Marvell devices"
- 	default y
--	depends on PCI || CPU_PXA168 || MV64X60 || PPC32 || PLAT_ORION || INET || COMPILE_TEST
-+	depends on PCI || CPU_PXA168 || PPC32 || PLAT_ORION || INET || COMPILE_TEST
- 	help
- 	  If you have a network (Ethernet) card belonging to this class, say Y.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 19707dc45e0a..bf219411d4eb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13080,12 +13080,6 @@ L:	linux-omap@vger.kernel.org
+ S:	Maintained
+ F:	arch/arm/mach-omap2/omap_hwmod*data*
  
-@@ -19,7 +19,7 @@ if NET_VENDOR_MARVELL
- 
- config MV643XX_ETH
- 	tristate "Marvell Discovery (643XX) and Orion ethernet support"
--	depends on MV64X60 || PPC32 || PLAT_ORION || COMPILE_TEST
-+	depends on PPC32 || PLAT_ORION || COMPILE_TEST
- 	depends on INET
- 	select PHYLIB
- 	select MVMDIO
-diff --git a/drivers/net/ethernet/marvell/mv643xx_eth.c b/drivers/net/ethernet/marvell/mv643xx_eth.c
-index 90e6111ce534..3bfb659b5c99 100644
---- a/drivers/net/ethernet/marvell/mv643xx_eth.c
-+++ b/drivers/net/ethernet/marvell/mv643xx_eth.c
-@@ -2684,7 +2684,7 @@ static const struct of_device_id mv643xx_eth_shared_ids[] = {
- MODULE_DEVICE_TABLE(of, mv643xx_eth_shared_ids);
- #endif
- 
--#if defined(CONFIG_OF_IRQ) && !defined(CONFIG_MV64X60)
-+#ifdef CONFIG_OF_IRQ
- #define mv643xx_eth_property(_np, _name, _v)				\
- 	do {								\
- 		u32 tmp;						\
+-OMAP HWMOD DATA FOR OMAP4-BASED DEVICES
+-M:	Benoît Cousson <bcousson@baylibre.com>
+-L:	linux-omap@vger.kernel.org
+-S:	Maintained
+-F:	arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+-
+ OMAP HWMOD SUPPORT
+ M:	Benoît Cousson <bcousson@baylibre.com>
+ M:	Paul Walmsley <paul@pwsan.com>
 -- 
-2.25.0
+2.17.1
 
