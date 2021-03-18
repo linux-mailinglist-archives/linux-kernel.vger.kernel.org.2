@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5BC340750
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9E0340754
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhCRN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:59:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhCRN6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:58:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E96DD64E64;
-        Thu, 18 Mar 2021 13:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616075930;
-        bh=+PHjaGcitdsritbuBb/Tp/4x45eBgYWL/1+sCUmmtxM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jmUrLz0KFTPudMBPJAaiTUVoZ1bz7AmpldaYeEtNzq7vtPiQdCj2Jn0ZonkQR63/L
-         QOtiC+ZXuvq0xXrnSGMy2K8GT2BUgN9BKp6pgv2ygsFO4v89TFaK91mDiszHtDN77y
-         MBLghQTmaB+rMIDwbB0QUryzBMCUDyWJmHtAYi5PLzXzAaBkyz2Q4589Ydp4WtjlwU
-         2WGlaMxX4h7EYPgsEPbdLI+ZXifbdjoTJbCtjFX9alypaZSQGhbIuTSbZuk46lBpnL
-         NfQhgxMupFWNEEnmGxaNhqisDtUDj/r8dS7OZsMymDhDiZ0N1+qMyJbtlOR3DxhcZ7
-         aPXUivknX5hug==
-Date:   Thu, 18 Mar 2021 13:58:46 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com
-Subject: Re: [PATCH 1/2] spi: spi-zynq-qspi: Fix kernel-doc warning
-Message-ID: <20210318135846.GA25741@sirena.org.uk>
-References: <20210318102446.25142-1-amit.kumar-mahapatra@xilinx.com>
- <20210318102446.25142-2-amit.kumar-mahapatra@xilinx.com>
+        id S230294AbhCRN7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:59:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41280 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230010AbhCRN67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:58:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616075939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z4To2i+xwe+1qmiy7fiF6l/qncD34bYmhb08BdcZeNM=;
+        b=EHzQQz8wL/KXZtUaXOd+ahIKUKQDRIu+XDHnmqpQ6AeWQ8LXbQfNw1elckJiIRGDBwdQsy
+        iAFiB/f1iW+t25hiZnFYwL19N3VB+OMtpCFE099ftzat+YQLs1d7RGBZaMDMBHcp/CYq+x
+        EqpUJp3Oy48CWJdYqCZnXAeSyTDusd0=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-GveKi81uNK-UICjNFDxbMQ-1; Thu, 18 Mar 2021 09:58:57 -0400
+X-MC-Unique: GveKi81uNK-UICjNFDxbMQ-1
+Received: by mail-oi1-f197.google.com with SMTP id v19so17304128oic.16
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:58:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z4To2i+xwe+1qmiy7fiF6l/qncD34bYmhb08BdcZeNM=;
+        b=OBKHfeTOgu+RXD2yIj0uouMkq7u8twr1CNvN2630UimfioFeFjWAfnIQV2X8djTTVG
+         7nyICVJxEufCbkOsryIEMG9OLH3K9mzQOPkivniUvSlAKyjAxjb5fqNS3OIbqCY2EQ4z
+         jXnARFbIWW4R5uYRW96FywNURByBFK/W0PoeGpgCoH0pEzKDwwKHxp1K7/v2nDhrne9F
+         XVRSQNaJpPeNbxwDagwpScPy0Pks2f64W58eBhxvzdWlkWKaicCcASn7LWO3Q4haf0E+
+         8QeOWMvoASUc1Zu03Nx1Epbxrls70viLlWPCo9tjPOKH/nkB/ABd+9BL/AAX34f5uIy6
+         lKpw==
+X-Gm-Message-State: AOAM5335mRPN/nxgZwjCnQ04Tgl79W0A/0KQJ30RbqmSOSItINm2kvEh
+        3UfOpi85tTsSBuAlNu+6aGyw1PI6nZOOV/pvXnE60vmoAKn8MSv07aT4UiVu4/ftg7qnaBCrIAu
+        /1eD3OuJH0zt4v2cCkEqIqCl/QE0yzVMQs4k10s57XOhi9mVpl4vILHNuVFHcf8KFy4VFNCGDIA
+        ==
+X-Received: by 2002:a05:6830:120b:: with SMTP id r11mr7191637otp.82.1616075936566;
+        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxW+4FG/lY4llWoReFXiv9GdGgubr4KeyLh41T4icSVsCGPTS5mcZltuT4ra5NPolTUeQT3ZA==
+X-Received: by 2002:a05:6830:120b:: with SMTP id r11mr7191618otp.82.1616075936337;
+        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id 24sm516927oiq.11.2021.03.18.06.58.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 06:58:56 -0700 (PDT)
+Subject: Re: Question about sg_count_fuse_req() in linux/fs/fuse/virtio_fs.c
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     virtio-fs@redhat.com, stefanha@redhat.com, miklos@szeredi.hu,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <810089e0-3a09-0d8f-9f8e-be5b3ac70587@redhat.com>
+ <20210318135600.GA368102@redhat.com>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <19c488d0-2006-4a96-610d-f4825aa43cb3@redhat.com>
+Date:   Thu, 18 Mar 2021 08:58:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
-Content-Disposition: inline
-In-Reply-To: <20210318102446.25142-2-amit.kumar-mahapatra@xilinx.com>
-X-Cookie: He who laughs last didn't get the joke.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210318135600.GA368102@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/18/21 8:56 AM, Vivek Goyal wrote:
+> I think all the in args are being mapped into a single scatter gather
+> element and that's why it does not matter whether in_numargs is 3, 2 or 1.
+> They will be mapped in a single element.
+> 
+> sg_init_fuse_args()
+> {
+>          len = fuse_len_args(numargs - argpages, args);
+>          if (len)
+>                  sg_init_one(&sg[total_sgs++], argbuf, len);
+> }
+> 
+>          out_sgs += sg_init_fuse_args(&sg[out_sgs], req,
+>                                       (struct fuse_arg *)args->in_args,
+>                                       args->in_numargs, args->in_pages,
+>                                       req->argbuf, &argbuf_used);
+> 
+> When we are sending some data in some pages, then we set args->in_pages
+> to true. And in that case, last element of args->in_args[] contains the
+> total size of bytes in additional pages we are sending and is not part
+> of in_args being mapped to scatter gather element. That's why this
+> check.
+> 
+> 	if (args->in_numargs - args->in_pages)
+> 		total_sgs += 1;
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Aha! Thank you, Vivek. That makes sense.
 
-On Thu, Mar 18, 2021 at 04:24:45AM -0600, Amit Kumar Mahapatra wrote:
-> Fix kernel-doc warning.
->=20
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-> ---
+> Not sure when we will have a case where args->in_numargs = 1 and
+> args->in_pages=true. Do we ever hit that.
 
-Applying: spi: spi-zynq-qspi: Fix kernel-doc warning
-Using index info to reconstruct a base tree...
-error: patch failed: drivers/spi/spi-zynq-qspi.c:367
-error: drivers/spi/spi-zynq-qspi.c: patch does not apply
-error: Did you hand edit your patch?
-It does not apply to blobs recorded in its index.
+Not in my experience. My previous mail was examining this routine mainly 
+in a vacuum.
 
---6c2NcOVqGQ03X4Wi
-Content-Type: application/pgp-signature; name="signature.asc"
+Connor
 
------BEGIN PGP SIGNATURE-----
+> Thanks
+> Vivek
+> 
+>>
+>> Especially since the block right below it counts pages if args->in_pages is
+>> true:
+>>
+>>          if (args->in_pages) {
+>>                  size = args->in_args[args->in_numargs - 1].size;
+>>                  total_sgs += sg_count_fuse_pages(ap->descs, ap->num_pages,
+>>                                                   size);
+>>          }
+>>
+>> The rest of the routine goes on similarly but for the 'out' components.
+>>
+>> I doubt incrementing 'total_sgs' in the first if-statement I showed above is
+>> vestigial, I just think my mental model of what is happening here is
+>> incomplete.
+>>
+>> Any clarification is much appreciated!
+> 
+>>
+>> Connor
+>>
+> 
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTXJUACgkQJNaLcl1U
-h9B+NQf/XTN5H3yzrkQ/bNrZhh0eGjMegkf7G42olyL0MnjwxBuUNFxgsoEOU24v
-SYEHHaQUSfLHOwDQ6Y2QzgeIQDgrckTxtOJmgWztlO73uo026Rw2olvwLRXGo963
-yR6pRRANus99U1FlFq3dWXxQNkDOPSm/4+9lZeSHpS4IFnkWK15Fa75V70f0rVKo
-6gXLnE2oEcUsXwrP8v9lGrUdCW+9sUwc4Ff7XDejD7C2g9XZvkHQlTVMBNvGrE6x
-qobAqEtGPX+/l4bbyj0nFJcSpA/0+5e0c1jiMPq5QhuOn+s1MgxMaHQrfooZYfmy
-Sf8mgl+vGDGHc5UuQVYjzMiLOnACpw==
-=g0sG
------END PGP SIGNATURE-----
-
---6c2NcOVqGQ03X4Wi--
