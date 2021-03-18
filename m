@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2F033FC2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A902833FC2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhCRAVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:21:51 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:60410 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhCRAVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:21:21 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C97658E6;
-        Thu, 18 Mar 2021 01:21:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616026879;
-        bh=dPQCVgzd2lJUq3jAWBjnHWNQs/oOCycuPf1cKDuvFNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kXDP5Vr4spLR26JNCW6vFJT2VC7Hi008uWYh5P3Yksx+ILEzfvHMztFPSPEzLQXvC
-         UKcwWkb8k6lYpZoYEmIPcK5U5XFa2QuK8Z7hNOWNSAqxAUn0U2RIA/l5gMKqiasfyL
-         ITEU8yUmZn+OAdyYCrNeyQKwt7SpFY1vGog3qa5I=
-Date:   Thu, 18 Mar 2021 02:20:43 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: Re: [PATCH v3 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-Message-ID: <YFKc23MwUQAosCs8@pendragon.ideasonboard.com>
-References: <20201102181144.3469197-1-swboyd@chromium.org>
- <20201102181144.3469197-4-swboyd@chromium.org>
+        id S230099AbhCRAXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:23:00 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50197 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230104AbhCRAWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:22:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F175L1t6Dz9sW5;
+        Thu, 18 Mar 2021 11:22:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616026950;
+        bh=fUNm5nsTmJbb/LA9qfxZfL2ehsv3SnIPO3IcMpOAQeU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h3MTzyx5Z6OKNK+j/VGeAhL20bhlpOubHaHhdkzcIjFKQZeFYbmreYDcio2+LVfWp
+         z0P2TgTT9sGss8qwkoUYbBix4Q/H6yvbA0tOvkBZo+6Nw+Q4mPwiMbtS4r6a1jSx0v
+         F9sBVJHy122nvO+ZCLXc1OtNo3t4n27CWk3yoQhzoYt4CqUtlh9UhDCEYAsEcBSfgt
+         LL6JJR97PmMxo9iSxt8NcPFSD8nbLXmmL0Zdulndj0LHR5lMLfQw13KbZHre+7z51g
+         rh3q+xt/P6NoGICqQpxpmhdbEWr5YzHoDs2ha0tTYdRQ9S60n4NljD5TVgHf9vfSjF
+         4qtOD/QV7snYg==
+Date:   Thu, 18 Mar 2021 11:22:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Shannon Nelson <snelson@pensando.io>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210318112226.331beab9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102181144.3469197-4-swboyd@chromium.org>
+Content-Type: multipart/signed; boundary="Sig_/XJm9SaulWTFxoLmTZi2g.lB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+--Sig_/XJm9SaulWTFxoLmTZi2g.lB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviving a bit of an old thread, for a question.
+Hi all,
 
-On Mon, Nov 02, 2020 at 10:11:43AM -0800, Stephen Boyd wrote:
-> Use the DDC connection to read the EDID from the eDP panel instead of
-> relying on the panel to tell us the modes.
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Cc: Sean Paul <seanpaul@chromium.org>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 8276fa50138f..6b6e98ca2881 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -119,6 +119,7 @@
->   * @debugfs:      Used for managing our debugfs.
->   * @host_node:    Remote DSI node.
->   * @dsi:          Our MIPI DSI source.
-> + * @edid:         Detected EDID of eDP panel.
->   * @refclk:       Our reference clock.
->   * @panel:        Our panel.
->   * @enable_gpio:  The GPIO we toggle to enable the bridge.
-> @@ -144,6 +145,7 @@ struct ti_sn_bridge {
->  	struct drm_bridge		bridge;
->  	struct drm_connector		connector;
->  	struct dentry			*debugfs;
-> +	struct edid			*edid;
->  	struct device_node		*host_node;
->  	struct mipi_dsi_device		*dsi;
->  	struct clk			*refclk;
-> @@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
->  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->  {
->  	struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
-> +	struct edid *edid = pdata->edid;
-> +	int num, ret;
-> +
-> +	if (!edid) {
-> +		pm_runtime_get_sync(pdata->dev);
-> +		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-> +		pm_runtime_put(pdata->dev);
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Is there any specific reason to use the indirect access method, compared
-to the direct method that translates access to an I2C ancillary address
-to an I2C-over-AUX transaction (see page 20 of SLLSEH2B) ? The direct
-method seems it would be more efficient.
+  drivers/net/ethernet/pensando/ionic/ionic_txrx.c
 
-> +	}
-> +
-> +	if (edid && drm_edid_is_valid(edid)) {
-> +		ret = drm_connector_update_edid_property(connector, edid);
-> +		if (!ret) {
-> +			num = drm_add_edid_modes(connector, edid);
-> +			if (num)
-> +				return num;
-> +		}
-> +	}
->  
->  	return drm_panel_get_modes(pdata->panel, connector);
->  }
-> @@ -1245,6 +1264,7 @@ static int ti_sn_bridge_remove(struct i2c_client *client)
->  	if (!pdata)
->  		return -EINVAL;
->  
-> +	kfree(pdata->edid);
->  	ti_sn_debugfs_remove(pdata);
->  
->  	of_node_put(pdata->host_node);
+between commit:
 
--- 
-Regards,
+  d2c21422323b ("ionic: linearize tso skb with too many frags")
 
-Laurent Pinchart
+from the net tree and commit:
+
+  f37bc3462e80 ("ionic: optimize fastpath struct usage")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+index 4087311f7082,03e00a6c413a..000000000000
+--- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+@@@ -1077,19 -1082,16 +1082,18 @@@ static int ionic_tx(struct ionic_queue=20
+ =20
+  static int ionic_tx_descs_needed(struct ionic_queue *q, struct sk_buff *s=
+kb)
+  {
+- 	int sg_elems =3D q->lif->qtype_info[IONIC_QTYPE_TXQ].max_sg_elems;
+  	struct ionic_tx_stats *stats =3D q_to_tx_stats(q);
+ +	int ndescs;
+  	int err;
+ =20
+ -	/* If TSO, need roundup(skb->len/mss) descs */
+ +	/* Each desc is mss long max, so a descriptor for each gso_seg */
+  	if (skb_is_gso(skb))
+ -		return (skb->len / skb_shinfo(skb)->gso_size) + 1;
+ +		ndescs =3D skb_shinfo(skb)->gso_segs;
+ +	else
+ +		ndescs =3D 1;
+ =20
+- 	if (skb_shinfo(skb)->nr_frags <=3D sg_elems)
+ -	/* If non-TSO, just need 1 desc and nr_frags sg elems */
++ 	if (skb_shinfo(skb)->nr_frags <=3D q->max_sg_elems)
+ -		return 1;
+ +		return ndescs;
+ =20
+  	/* Too many frags, so linearize */
+  	err =3D skb_linearize(skb);
+
+--Sig_/XJm9SaulWTFxoLmTZi2g.lB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBSnUIACgkQAVBC80lX
+0GzusQf/cp8auZp9Tm5VS6+lEbYfLLX2UR4s+rvgCTni1HZ3oSTkbdLe9BS5ASGh
+7wWkSveIKkt5OLm7vVA1w8EcROaAXgf2nI+RUhOag1X7FWAhwSuDiMyx9eB6eaEh
+DzpH/uB+0Affx7gNhbj8q0zDI1vL3UhItCwStOdJETfEQT/iHX1iNLDKVOSlqpnu
+0RajT2Hed+o9ZLprxhq41FLXyN/lXICNkTs9FK1UnPrKt6u683J4sTiYTYM4+9Ty
+eGi2EAIFNECx8bTA+ieEiMwF1oyqmhbTv1tbmzE/9GisUysiFA926EugiF1jRZaH
+NOxVq3o728pYJ1SVDB8fl9kYyIbuCQ==
+=SfxJ
+-----END PGP SIGNATURE-----
+
+--Sig_/XJm9SaulWTFxoLmTZi2g.lB--
