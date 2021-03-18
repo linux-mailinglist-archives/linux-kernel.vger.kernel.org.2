@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302CF340E23
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E0E340E28
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbhCRTXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232680AbhCRTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:22:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F53064F30;
-        Thu, 18 Mar 2021 19:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616095351;
-        bh=BHUAanqwOsbASIOKCYywfRr2tc5rTzcdgHq4z9RDxy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GIj9uyZBoYnvbeLn3l5xKmC5HSYSHwu6gYDdWGz7GxhOfai1tYiEsApnvm9Bz3tLL
-         XoiDVH3GIAoJu/xKSBX9+Ij/j+9AtzCA4b/v2HQrZG7TFX8wy8pi0L7h4alixEyuk4
-         jO2gyc7qeEbJ6XLDSGDsvhL0rMzWI80ee+GyeLI1C7Yr8O62ZbuBD4FgrdFriAOgAM
-         KS2/icrNgr/8k6YfaOLH4qJrKenGiPW/NEmPAG9eLUhIJppr4W1oW0kkfiCzo3SQi9
-         sRoa6Xukc2AsmmR8HKcpypf9ATGLjhDz2EZcE5m/taih17azlhntzrB4zQV0ps8Rob
-         qMoS/P/t5wNug==
-Date:   Thu, 18 Mar 2021 20:22:27 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] powerpc/embedded6xx: Remove CONFIG_MV64X60
-Message-ID: <20210318192227.GA2317@ninjato>
-References: <9c2952bcfaec3b1789909eaa36bbce2afbfab7ab.1616085654.git.christophe.leroy@csgroup.eu>
- <19e57d16692dcd1ca67ba880d7273a57fab416aa.1616085654.git.christophe.leroy@csgroup.eu>
+        id S232836AbhCRTYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:24:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8986 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232479AbhCRTY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:24:26 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IJ4QQu010615;
+        Thu, 18 Mar 2021 15:24:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Zuf1kKKkAwwOU6IO1L4Z2Ge+i5zj86VHl5I8TZpPZlw=;
+ b=A+YL7cxMQ07QD44OFEWsELEBW72UmN/ouupKsZebTbzWW58iTsPm0ZLUdSHzox54/Mqm
+ iSsRCvfmPWzxgKy7NdzLLkelnfNJa2DYvMJQHmo1IVSQKILWkn/9HbHJ45YD4uj7PwZM
+ egiEdRF+md3vxlCcF4vZlGUPxLWmCDsBpRbVXJwfrnKqP5wYyv/8jhC3mawWGXbJn63v
+ nQ8C6NB64hlwlD9AQm2oQHzSA1xMDdbusAzL49+TXZTqZpGFAgLD0glcRkTIG3UxCHtl
+ zf8nh/vaxhnl01hwPgoG5WTKnbsMjlaN144UAjJCfBifPforvCthGwveMEGnlm8UZWS+ gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37c6tfd4fm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 15:24:22 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12IJ4fFi011213;
+        Thu, 18 Mar 2021 15:24:22 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37c6tfd4ew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 15:24:21 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12IJMMkq027092;
+        Thu, 18 Mar 2021 19:24:20 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 378n18anwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 19:24:20 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12IJOH1a36962566
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 19:24:17 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52C30A4040;
+        Thu, 18 Mar 2021 19:24:17 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D3B8A404D;
+        Thu, 18 Mar 2021 19:24:16 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.84.212])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 18 Mar 2021 19:24:16 +0000 (GMT)
+Date:   Thu, 18 Mar 2021 20:24:14 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v4 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210318202414.16f3350d.pasic@linux.ibm.com>
+In-Reply-To: <d98ab0e1-dca3-0ea7-2478-387e3698900e@linux.ibm.com>
+References: <20210310150559.8956-1-akrowiak@linux.ibm.com>
+        <20210310150559.8956-2-akrowiak@linux.ibm.com>
+        <20210318001729.06cdb8d6.pasic@linux.ibm.com>
+        <d98ab0e1-dca3-0ea7-2478-387e3698900e@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fdj2RfSjLxBAspz7"
-Content-Disposition: inline
-In-Reply-To: <19e57d16692dcd1ca67ba880d7273a57fab416aa.1616085654.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_12:2021-03-17,2021-03-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 bulkscore=0 clxscore=1015 adultscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=758 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103180135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 18 Mar 2021 13:54:06 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
---fdj2RfSjLxBAspz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > Is it guaranteed that matrix_mdev can't be NULL here? If yes, please
+> > remind me of the mechanism that ensures this.  
+> 
+> The matrix_mdev is set as drvdata when the mdev is created and
+> is only cleared when the mdev is removed. Likewise, this function
+> is a callback defined by by vfio in the vfio_ap_matrix_ops structure
+> when the matrix_dev is registered and is intended to handle ioctl
+> calls from userspace during the lifetime of the mdev. 
 
-On Thu, Mar 18, 2021 at 05:25:07PM +0000, Christophe Leroy wrote:
-> Commit 92c8c16f3457 ("powerpc/embedded6xx: Remove C2K board support")
-> moved the last selector of CONFIG_MV64X60.
->=20
-> As it is not a user selectable config, it can be removed.
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Yes, I've checked that these are all callbacks in the same struct, so
+the callbacks are all registered simultaneously, i.e. the ioctl callback
+gettin gregistered only when drv_data is already set is not the case.
+If there isn't a mechanism in core mdev, then I think we better be
+careful.  I don't see what would guarantee the pointer is always in the
+vfio_ap code. 
 
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
+> While I can't
+> speak definitively to the guarantee, I think it is extremely unlikely
+> that matrix_mdev would be NULL at this point. On the other hand,
+> it wouldn't hurt to check for NULL and log an error or warning
+> message (I prefer an error here) if NULL.
 
+If we aren't absolutely sure this pointer is going to be always a valid
+one, let's check it!
 
---fdj2RfSjLxBAspz7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBTqG8ACgkQFA3kzBSg
-KbbmohAArNDcM8jsah4nKuj2dEoibVzEc+TeWQIgUpiB4KO9oGcBdkjORA/Su7//
-GfQEAxIJAGVfqLRWHEMdZx7B91GNzIfAPm6uMajK8kNShfY5W19gzDVD1tKBRyuY
-Q5xjwI5Ln2RJAVdYYXc3uYAG5ViJeQXug5JBIAlIj0ekVIWaNk3146cuT1p2d9S+
-Awvu7AnrE2+5LwIUzuJURfbNYNmF7OqJIpDU0Wo7CV/7pcy96WCEVTYQYbt8jlyY
-/pS6RddvhTmI3fcLZbXM1u+57ySH4xhLtq5lkqXa5l8xw+8Z7IYaOCVV+upxG6Tc
-J8kf9DAIo1jyOgmfhsLusXiMPrXAlP/GeNRxG3m0Kx9eg31CLn0jCA7u5LddXlSy
-aQ4vWQc/PJ/XGASymVFwONX4cAN/lJiX6SrU/7c59IookElOI9vYKnZw2dfu+xHZ
-PnajCmQPIbugZNnf6JadbSJTyu/AsFOHtCX8ezNPm8rx+Dis3o04Y3SMBiSDto9x
-be+WUqupXtQJAw+zVcgJzqeO/NvzdwUu7Z7vV5GWQPCFnKoD9F8LUQ6Xjmha41uQ
-aOjYlWHsSH8uqXIVD3tjc6n+Ln5g4VyOcj2yqwINd3rFZtPCis0SlCqx0GeDajl/
-IKZ9olgyGT/Zx58AubDDV4K1iQUg77xoo+PP4uk1m6C0EP1ItiE=
-=fzcK
------END PGP SIGNATURE-----
-
---fdj2RfSjLxBAspz7--
+Regards,
+Halil
