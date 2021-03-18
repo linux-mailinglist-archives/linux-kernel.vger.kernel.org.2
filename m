@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A0933FCEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F1A33FCEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhCRB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhCRBz3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:55:29 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF26DC06174A;
-        Wed, 17 Mar 2021 18:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=oMzWJkVczBjzFzxKEp2q/6qdsYB3/dcAkAMFScMmPws=; b=T4uHDSxbTJwEngklC0rXr16s7D
-        mcgrxFUr7QdYI5sOiBjMlgy+CCw1qjKF8ziworeae7TXPHnukO6YRdia6tA93S9jLnxYCoQf/PFx9
-        sJFe2HGfCaM8XaHtaeZP1FSWGi/5TigixQiyeMdz4KelmcXnHyswalaDfCdicpneshJbIUwAnB02+
-        mtBIb8+sEdlvFvTZMapz7Joqd8AzYHmqsxeQBh3c48M1Yw80MqFSG0YDpuQVBbJVptFnuL8dFpAfo
-        wSUx6/3ISGHAj9dVHUzLSurZSBP0p3f7csXNw4XuPowSXRNtNTu1Pt+CMMADQBLFQDGjCJnKuODWd
-        ZwwvlaEA==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMhrp-001hqj-4a; Thu, 18 Mar 2021 01:54:35 +0000
-Subject: Re: [PATCH 1/1] leds: lgm: Improve Kconfig help
-To:     Rahul Tanwar <rtanwar@maxlinear.com>, Pavel Machek <pavel@ucw.cz>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        John Crispin <john@phrozen.org>,
-        Hauke Mehrtens <hmehrtens@maxlinear.com>,
-        Cheol Yong Kim <ckim@maxlinear.com>,
-        Qiming Wu <qwu@maxlinear.com>
-References: <8ae0456a08ef1a2491fd382b273ff7259e6fcbd0.1615969806.git.rtanwar@maxlinear.com>
- <MN2PR19MB3693EEA37EA1FC18238FE45EB16A9@MN2PR19MB3693.namprd19.prod.outlook.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <42a0c810-4b6f-1853-60c9-e36a9dc6100a@infradead.org>
-Date:   Wed, 17 Mar 2021 18:54:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231236AbhCRB4D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Mar 2021 21:56:03 -0400
+Received: from mail.sch.bme.hu ([152.66.249.140]:15306 "EHLO mail.sch.bme.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230221AbhCRBzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 21:55:50 -0400
+Received: from mail-lj1-f171.google.com (209.85.208.171) by
+ Exchange2016-1.sch.bme.hu (152.66.249.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2176.2; Thu, 18 Mar 2021 02:55:46 +0100
+Received: by mail-lj1-f171.google.com with SMTP id u10so5580020lju.7;
+        Wed, 17 Mar 2021 18:55:46 -0700 (PDT)
+X-Gm-Message-State: AOAM531VgKmyz5PSYZzXj251U4ETr58Bf3c1h0Ne2wiXpnqYYNoaRzAX
+        eFO1T5wBOhpcD6yB+ehyLimw01gFA6FM/ZL8RKM=
+X-Google-Smtp-Source: ABdhPJxyWpPm/YE281RzskNKgSprKmNuI+vhD4p4xnqa6+dHn2CSCqHgLoTk+oOTqcmdFwUj6bwCbdc5msIw/MWLLSw=
+X-Received: by 2002:a2e:6f11:: with SMTP id k17mr3927293ljc.231.1616032545955;
+ Wed, 17 Mar 2021 18:55:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MN2PR19MB3693EEA37EA1FC18238FE45EB16A9@MN2PR19MB3693.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210317103021.1913858-1-bence98@sch.bme.hu> <20210317123344.GD1315@ninjato>
+In-Reply-To: <20210317123344.GD1315@ninjato>
+From:   =?UTF-8?B?QmVuY2UgQ3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Date:   Thu, 18 Mar 2021 02:55:34 +0100
+X-Gmail-Original-Message-ID: <CACCVKEF-R1zvr2=AKf_a0vxQodbT0_CFnu0pWMrBZ3EjxteL5g@mail.gmail.com>
+Message-ID: <CACCVKEF-R1zvr2=AKf_a0vxQodbT0_CFnu0pWMrBZ3EjxteL5g@mail.gmail.com>
+Subject: Re: [PATCH v2] Adding i2c-cp2615: i2c support for Silicon Labs'
+ CP2615 Digital Audio Bridge
+To:     Wolfram Sang <wsa@kernel.org>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [209.85.208.171]
+X-ClientProxiedBy: Exchange2016-1.sch.bme.hu (152.66.249.140) To
+ Exchange2016-1.sch.bme.hu (152.66.249.140)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks for the lightning quick response!
 
-For the leds/blink/Kconfig file at least, something has
-changed all of the tabs to spaces.
+Wolfram Sang <wsa@kernel.org> ezt írta (időpont: 2021. márc. 17., Sze, 13:34):
+>
+> On Wed, Mar 17, 2021 at 10:30:21AM +0000, Bence Csókás wrote:
+> > Signed-off-by: Bence Csókás <bence98@sch.bme.hu>
+>
+> Thanks, this looks good now and I think we are very close.
+>
+> > ---
+>
+> Next, time please provide a small summary of changes since last version.
+> I get enough patches that it becomes confusing otherwise.
+>
 
-Keywords in Kconfig files should be indented with one tab,
-while help text should be indented with one tab + 2 spaces.
+You are right, sorry, I am still familiarizing myself with `git send-email`
+
+> > --- /dev/null
+> > +++ b/drivers/i2c/busses/i2c-cp2615.c
+> > @@ -0,0 +1,282 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+>
+> If you want GPL v2 only, then you need to say in MODULE_LICENSE also
+> "GPL v2".
+>
+
+GPLv2 or later is fine by me. If I change this to "//
+SPDX-License-Identifier: GPL-2.0-or-later", is that OK?
+
+> > +enum cp2615_iop_msg_type {
+> > +     iop_GetAccessoryInfo = 0xD100,
+> > +     iop_AccessoryInfo = 0xA100,
+> > +     iop_GetPortConfiguration = 0xD203,
+> > +     iop_PortConfiguration = 0xA203,
+> > +     // ...
+>
+> This comment can go?
+
+Sorry, this slipped in from before... I shall remove it.
 
 
-On 3/17/21 3:04 AM, Rahul Tanwar wrote:
-> Remove unnecessary Kconfig symbol LEDS_BLINK
-> Improve Kconfig help text to make it more useful.
-> 
-> Signed-off-by: Rahul Tanwar <rtanwar@maxlinear.com>
-> ---
-> 
-> diff --git a/drivers/leds/blink/Kconfig b/drivers/leds/blink/Kconfig
-> index 6dedc58c47b3..2de2973fbc6b 100644
-> --- a/drivers/leds/blink/Kconfig
-> +++ b/drivers/leds/blink/Kconfig
-> @@ -1,21 +1,19 @@
-> -menuconfig LEDS_BLINK
-> -       bool "LED Blink support"
-> -       depends on LEDS_CLASS
-> -       help
-> -         This option enables blink support for the leds class.
-> -         If unsure, say Y.
-> -
-> -if LEDS_BLINK
-> -
-> -config LEDS_BLINK_LGM
-> -       tristate "LED support for Intel LGM SoC series"
-> +config LEDS_LGM
-> +       tristate "LED support for LGM SoC series"
->          depends on GPIOLIB
->          depends on LEDS_CLASS
->          depends on MFD_SYSCON
->          depends on OF
->          help
-> -         Parallel to serial conversion, which is also called SSO 
-> controller,
-> -         can drive external shift register for LED outputs.
-> -         This enables LED support for Serial Shift Output controller(SSO).
-> +         This option enables support for LEDs connected to GPIO lines on
-> +         Lightning Mountain(LGM) SoC. These LEDs are driven by a Serial
+> > +/*
+> > + * This chip has some limitations: one is that the USB endpoint
+> > + * can only receive 64 bytes/transfer, that leaves 54 bytes for
+> > + * the I2C transfer. On top of that, EITHER read_len OR write_len
+> > + * may be zero, but not both. If both are non-zero, the adapter
+> > + * issues a write followed by a read. And the chip does not
+> > + * support repeated START between the write and read phases.
+>
+> Good and useful paragraph!
 
-                      Mountain (LGM)
+Thank you!
 
-> +         Shift Output(SSO) controller. The driver supports hardware
+>
+> > + * FIXME: There in no quirk flag for specifying that the adapter
+> > + * does not support empty transfers, or that it cannot emit a
+>
+> Can't we use I2C_AQ_NO_ZERO_LEN here?
 
-                  Output (SSO)
+I thought that meant the adapter cannot handle NEITHER zero-length
+reads NOR writes, but the CP2615 can do a zero read combined with a
+non-zero write or the other way around, just both cannot be zero. If
+both are zero, the chip just ignores the request, as I've learned from
+a very confusing situation with `i2cdetect`.
 
-> +         blinking with a configurable LED update/blink frequency in two
-> +         modes, 2/4/8/10 Hz in low speed mode and 50/100/200/250 KHz in
-> +         high speed mode. The LEDs can be configured to be triggered by
-> +         SW/CPU or by hardware. Say 'Y' here if you are working on LGM
+>
+> > + * START condition between the combined phases.
+>
+> True! But it makes sense, so we can fix that. We just need to add
+> I2C_AQ_NO_REP_START and a short explanation to i2c.h. If you want, you
+> can do it in a seperate patch. I can do it, too, if you prefer.
 
-Please spell out "software".
+Sure! I should just define it as BIT(7) or something, right? Should I
+do it in a completely different patchset, or is it OK if I submit it
+as the 2/2 of PATCH v3? Are there maybe other adapters that would be
+affected?
 
-> +         SoC based platform.
-> +
-> +         To compile this driver as a module, choose M here: the
-> +         module will be called leds-lgm-sso.
-> 
-> -endif # LEDS_BLINK
+> Maybe skip the defines for VID and PID and use the values directly?
+> I am not a USB expert, not really sure what the consistent way is.
 
-thanks.
--- 
-~Randy
+I think this is how they usually do it, or at least from what I've seen.
 
+>
+> So, this and the checkpatch issues and I think we are done.
+>
+> Thanks,
+>
+>    Wolfram
+>
+
+Thanks,
+Bence
