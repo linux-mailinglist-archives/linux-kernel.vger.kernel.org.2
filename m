@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819F4340B6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFE5340BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhCRRMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S232367AbhCRRYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232418AbhCRRLs (ORCPT
+        with ESMTP id S232346AbhCRRYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:11:48 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DDDC061762
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:48 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id a8so16819653plp.21
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=qAbADIQAzXUoq/ElYpa9rjjQHxphEP8wPywcql//gEU=;
-        b=jf1TyFgM0qbBrh8PG+9UgOrM2tO3xTLSkbdFlAjoOHwSeKc0SfFX4Q0fQJiehD98Nx
-         V8eHEHeFH6F/2w32lpdS3m06xBAZ3vNDNaCX7x8qpFxSBm6uQOUYcLoYxxuENofMBupO
-         B6duso7Pzno7l5uVBkFz0xUe8AtQKuhaTmELX5H6eGSYwEqGS1XqRT74+g1vLez+eXeQ
-         7z+ITybX9ylbz6ZkOa1dh63eUDWtdli7pIImj6+FfB23BTBDzIAs1fv35o+sxuUwBS44
-         oltowRxFMks3nSe/2PYy3IOmtCU5Xy90zkjD6XlVuVonF/+UFPw1quOUALWqQTVSZsf8
-         4bfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=qAbADIQAzXUoq/ElYpa9rjjQHxphEP8wPywcql//gEU=;
-        b=TlMucnqv7f5cDSdCLjv6vcu7CdUQBD+uMRYmX5VszUfeGvLY2IE5LEA2yFmoIWAZ+q
-         QFUv942X9N7zqD4OYvIfmanQd16eC5OFqdGbRn/0sU21ZO1L29hYDMIfEdtNxrpHj93T
-         G8ex6EEd7CX8cJQR6Rva5Bbm1vyTWO5i9r5ZspeJFG4GYu6mkuaw6EdTh+cSOM5weNRs
-         dmvSVcId2g3uiQj/re++WjEy4sXPFhr799DK/ShYfa3g7FJBPB3jQwDSWtzI22Do1xxo
-         t2gsisjHBD/mys/VaZ5CsXu7hXB3+8yG/J8gslecpQILBAim1TsvDDzu6pWWfKHV7BWF
-         IYVg==
-X-Gm-Message-State: AOAM533sbl2EQXaHq54IMt9uuyxEr+kEGktsbB0AhsyzFpYG3rjqb6V1
-        BCy2200zMoVG3xF+KVyVdcrNOkI/zWi8JpRhCN8=
-X-Google-Smtp-Source: ABdhPJwHw3Ga/ReLCOxUOvdN7Ru83Wr8fqQUCOT6GinoqE3bL2zrZGNpaekhia574g649F2KSLcKcxlK/YtI6PlZyyY=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
- (user=samitolvanen job=sendgmr) by 2002:aa7:9ae7:0:b029:20a:d94d:dd61 with
- SMTP id y7-20020aa79ae70000b029020ad94ddd61mr5297194pfp.0.1616087507868; Thu,
- 18 Mar 2021 10:11:47 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:11:09 -0700
-In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
-Message-Id: <20210318171111.706303-16-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v2 15/17] arm64: add __nocfi to __apply_alternatives
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Mar 2021 13:24:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF91C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=8U5x3H9OrZvMc1q6Av7M3v6tdokpGrM9MWQOD2WaRMk=; b=l3y4DCQ4iMB08UXLPuNtWUvXbb
+        Mq56lhNqoi8lJOtHsitKHfnxtaeoTGI9YEl5wgMWlYrEkY5nX8QhRVueSNmmqm5rkJejpjFxXcXYM
+        YMRLafcEsW7PtQlE12zpoxBSbtmxsgpEJXLlZVIHSE1ZAnx8PP8MqUuFXGDXoi/P5SSrIOBjlhYmj
+        NR6GYW6VOBJgAH0YpdbE+t8qzcQeCnxVtYQOc2QcI2XkooOzfqklAyQU86Bp6bNpViymXraQs4EH0
+        ZVA+TJ9MF3xpaifsPyZ3D/VmmSiTOYBFchlurbrBbcSDP5EqDaoR8oJVOx5iZFHONE0UpzpR8YIRh
+        1fuL0sZg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMwMq-003HIV-GH; Thu, 18 Mar 2021 17:23:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AF083077B1;
+        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 2999729DE0B4D; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
+Message-ID: <20210318171919.764599543@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 18 Mar 2021 18:11:09 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        mbenes@suse.com
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
+Subject: [PATCH v2 06/14] objtool: Fix static_call list generation
+References: <20210318171103.577093939@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__apply_alternatives makes indirect calls to functions whose address
-is taken in assembly code using the alternative_cb macro. With
-non-canonical CFI, the compiler won't replace these function
-references with the jump table addresses, which trips CFI. Disable CFI
-checking in the function to work around the issue.
+Currently objtool generates tail call entries in
+add_jump_destination() but waits until validate_branch() to generate
+the regular call entries, move these to add_call_destination() for
+consistency.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/arm64/kernel/alternative.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/objtool/check.c |   18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index 1184c44ea2c7..abc84636af07 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -133,8 +133,8 @@ static void clean_dcache_range_nopatch(u64 start, u64 end)
- 	} while (cur += d_size, cur < end);
- }
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1045,6 +1045,12 @@ static int add_call_destinations(struct
+ 		} else
+ 			insn->call_dest = reloc->sym;
  
--static void __apply_alternatives(void *alt_region,  bool is_module,
--				 unsigned long *feature_mask)
-+static void __nocfi __apply_alternatives(void *alt_region,  bool is_module,
-+					 unsigned long *feature_mask)
- {
- 	struct alt_instr *alt;
- 	struct alt_region *region = alt_region;
--- 
-2.31.0.291.g576ba9dcdaf-goog
++		if (insn->call_dest && insn->call_dest->static_call_tramp) {
++			list_add_tail(&insn->static_call_node,
++				      &file->static_call_list);
++		}
++
++
+ 		/*
+ 		 * Many compilers cannot disable KCOV with a function attribute
+ 		 * so they need a little help, NOP out any KCOV calls from noinstr
+@@ -1788,6 +1794,9 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Must be before add_{jump_call}_destination.
++	 */
+ 	ret = read_static_call_tramps(file);
+ 	if (ret)
+ 		return ret;
+@@ -1800,6 +1809,10 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Must be before add_call_destination(); it changes INSN_CALL to
++	 * INSN_JUMP.
++	 */
+ 	ret = read_intra_function_calls(file);
+ 	if (ret)
+ 		return ret;
+@@ -2745,11 +2758,6 @@ static int validate_branch(struct objtoo
+ 			if (dead_end_function(file, insn->call_dest))
+ 				return 0;
+ 
+-			if (insn->type == INSN_CALL && insn->call_dest->static_call_tramp) {
+-				list_add_tail(&insn->static_call_node,
+-					      &file->static_call_list);
+-			}
+-
+ 			break;
+ 
+ 		case INSN_JUMP_CONDITIONAL:
+
 
