@@ -2,147 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEA13410FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D33E3410FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhCRXYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:24:46 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47858 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbhCRXYo (ORCPT
+        id S232397AbhCRXZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhCRXZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:24:44 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 427494FD;
-        Fri, 19 Mar 2021 00:24:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616109878;
-        bh=dAnfYr7tXXzuRPZNp1s80gcvNi2mEDtK9FDU/VnCAbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i/SOGoo8Sja2C+GOBFy6C3JGF5vgD4c8LaFErZI+HSQL/XsKeO4eTg6bP7ZhOjyYo
-         qS044cGLNVKrhm0nm3ZnkrRcORgexRU5YRQZ3gb2fuBVGIn+03VKvKhRSGB2IkBgYm
-         bV/hHj3pk8uXtfWF7+l0rslnAWd7IgiJcQ7nAKS4=
-Date:   Fri, 19 Mar 2021 01:24:00 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-Cc:     robert.foss@linaro.org, robh+dt@kernel.org, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com, nikhil.nd@ti.com,
-        kishon@ti.com, sjakhade@cadence.com, mparab@cadence.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding
- changes for HDCP
-Message-ID: <YFPhEKQkFpiXKcSb@pendragon.ideasonboard.com>
-References: <1616049882-29712-1-git-send-email-pthombar@cadence.com>
- <1616049930-31457-1-git-send-email-pthombar@cadence.com>
+        Thu, 18 Mar 2021 19:25:11 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C186C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:25:11 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id k4so2065222plk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QtnQZOyIZCvE0Y7ux5E6kcTfdD4EQX6LF9CRIGEtYY0=;
+        b=ZMC5AgP4oHsqRaEbVGHnCJWJacbxUjRNsEyZ/+kmIY2vImJs4BmijM188BLvO5Axuw
+         7wNiA3BEjcD1j780tIL2d74cmCW21tsCz0nvw8fkfZzXMJDFX751e13eApI/OQ1v7+UZ
+         e68dqGhEyKDXHGTs0jegfNcQrFXFzSgdNLL4ftWJ74Jw0hWZH1hG0tKj6ycJx3012fxA
+         KwNiqU6EjPKzJaVFmLtNGTiRQlOfdmlazflDVWNGMTYOvon/RC4DwI43BSMhmzgLsWtE
+         z/0E1OjI/0ycvfOWsvCG4+dwluIFB18ClWClEgUzD7FyjWmd846vmkhhNv8CCXX1Zi95
+         HHtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QtnQZOyIZCvE0Y7ux5E6kcTfdD4EQX6LF9CRIGEtYY0=;
+        b=CtFWk8yBz5xEqmzjkTOExOb8WrJbkySLwfFhOSqof5wQ7lXdoGA0O7zZUT9W4P7dhL
+         WKzCc91Y6xiuyeOvUmpG50SWDxRO7FJdsu+qSSE1N1GBJRFJw1Ei6Fn4hq9UsvxXJsPX
+         k1hFwd6jFNX9CH02qqK6IzOTOkRApI8OLGUFIItoGMqUFSMu4LduI6NXBPyY8BAMwvPu
+         guY49OKQ/tWtoJFaBXlObTkDZp7U4OIkOlKLYLSwcNseILK6AJkas8fm0eAZIVExlMex
+         Fo2F3pjx6UzrU74XxHNcMXbkfXQpCQC2owES4c9q5adLsh42upkNQNHmQvYsXNZfaWvV
+         ji+Q==
+X-Gm-Message-State: AOAM531EnfgM5pEouRBebgHwrIBljmXxXcXq13HeiqILzIe9cA8tnfLi
+        Nn0tXDjcPnjN9VG/YQicUnIv9RMImHSNAA==
+X-Google-Smtp-Source: ABdhPJySOgsCTP/8v6KiQ6v1oJdZVbjCLdieOlDyUHPL3izKDHBTcmSe1T5RlDC4BFvESgicTA8fkQ==
+X-Received: by 2002:a17:902:a617:b029:e5:b41e:4d7b with SMTP id u23-20020a170902a617b02900e5b41e4d7bmr12105973plq.33.1616109910646;
+        Thu, 18 Mar 2021 16:25:10 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id f2sm3540207pfq.129.2021.03.18.16.25.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 16:25:10 -0700 (PDT)
+Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Stefan Metzmacher <metze@samba.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210319101654.638e8e95@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7ced6739-4458-2b5b-af5a-d3aa9d37656d@kernel.dk>
+Date:   Thu, 18 Mar 2021 17:25:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1616049930-31457-1-git-send-email-pthombar@cadence.com>
+In-Reply-To: <20210319101654.638e8e95@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Parshuram,
-
-Thank you for the patch.
-
-On Thu, Mar 18, 2021 at 07:45:30AM +0100, Parshuram Thombare wrote:
-> Add binding changes for HDCP in the MHDP8546 DPI/DP bridge binding.
+On 3/18/21 5:16 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
->  .../display/bridge/cdns,mhdp8546.yaml         | 24 +++++++++++--------
->  1 file changed, 14 insertions(+), 10 deletions(-)
+> Commit
 > 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-> index 63427878715e..8a85768f6202 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-> @@ -17,8 +17,8 @@ properties:
->        - ti,j721e-mhdp8546
->  
->    reg:
-> -    minItems: 1
-> -    maxItems: 2
-> +    minItems: 2
-> +    maxItems: 3
->      items:
->        - description:
->            Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
-> @@ -26,13 +26,16 @@ properties:
->            included in the associated PHY.
->        - description:
->            Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
-> +      - description:
-> +          Register block of mhdptx sapb registers.
->  
->    reg-names:
-> -    minItems: 1
-> -    maxItems: 2
-> +    minItems: 2
-> +    maxItems: 3
->      items:
->        - const: mhdptx
->        - const: j721e-intg
-> +      - const: mhdptx-sapb
->  
->    clocks:
->      maxItems: 1
-> @@ -98,15 +101,15 @@ allOf:
->      then:
->        properties:
->          reg:
-> -          minItems: 2
-> +          minItems: 3
->          reg-names:
-> -          minItems: 2
-> +          minItems: 3
->      else:
->        properties:
->          reg:
-> -          maxItems: 1
-> +          maxItems: 2
->          reg-names:
-> -          maxItems: 1
-> +          maxItems: 2
->  
->  required:
->    - compatible
-> @@ -129,8 +132,9 @@ examples:
->  
->          mhdp: dp-bridge@f0fb000000 {
->              compatible = "cdns,mhdp8546";
-> -            reg = <0xf0 0xfb000000 0x0 0x1000000>;
-> -            reg-names = "mhdptx";
-> +            reg = <0xf0 0xfb000000 0x0 0x1000000>,
-> +                  <0x0 0x4f48000 0x0 0x74>;
-> +            reg-names = "mhdptx", "mhdptx-sapb";
+>   c2c6c067c050 ("io_uring: remove structures from include/linux/io_uring.h")
+> 
+> is missing a Signed-off-by from its author.
 
-Running
-
-make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-
-produces
-
-  LINT    Documentation/devicetree/bindings
-  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
-  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
-  DTEX    Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dts
-  DTC     Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml
-  CHECK   Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml
-Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.example.dt.yaml: dp-bridge@f0fb000000: reg-names:1: 'j721e-intg' was expected
-        From schema: Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
-
-This is caused by the fact that reg-names is correctly limited to two
-elements, but then expects the second element to be "j721e-intg". The
-example is good, so it's the bindings that need to be fixed.
-
->              clocks = <&mhdp_clock>;
->              phys = <&dp_phy>;
->              phy-names = "dpphy";
+Stefan, let me know if you're OK with me adding that, not sure how I missed
+that.
 
 -- 
-Regards,
+Jens Axboe
 
-Laurent Pinchart
