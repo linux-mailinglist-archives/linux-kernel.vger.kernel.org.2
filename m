@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7243405AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A76CD3405B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhCRMjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:39:33 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:45134 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhCRMjS (ORCPT
+        id S231265AbhCRMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:40:37 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:46657 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhCRMkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:39:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1616071158; x=1647607158;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=UaO4DrW2FryTq+JeBvRegRfUsbSOYDlJb8uSOeoNGf0=;
-  b=axBm4QaTbC04c+lbPTgQzHElKdWkL/fPR08hSuDBK+FTzhJtjr9w4cHS
-   qrl5hojpgEYK1FHw/j9J7VItYXytmHTw/10PGZmxZnU0T9S7g91weO67T
-   KoXhMDEgzIYveaJakJ3b5QfWtXeV2PvDJ3qBuAMGJrVes8wkz5QSotAUr
-   wmVETqyQRVueXq2yOVJv9/IYU42sg7hvR6qAN/9GZxThY7XmwG2cMq7Bb
-   CR38mCP1qOP2k9L1QczwIfuwJ7fTeREBpUFzXDKPG3rtGpqutknAT/jsA
-   eCKHZoBor5m1QDrn8FHmGZvpHEgcyayZ2GNSbwnzAkfoxsg8xrn53P7+S
-   g==;
-IronPort-SDR: EMrxOwvwPve9wMjg53tGk78BqJV9d6doMVFZCNGaQFDnepXIWTBFOpe0Q06dql8EmoJFmSG1Qi
- oVB7qUZMgtrEApQk//axgBHRwswSXzB/fjd5kFO7wmNq75OodcF+y5/F9mbUn9Uo2LPMpTC+xG
- 3qA9EhMNtXJyh4sskGcZdTydgn1cm6Mds/02YYOhoM7cGW1OkltN3ss6XNL9K9qHmVhafM9Q1X
- qSSGXetAud0EQn6Z7fyaAAV+/PQr1Q2HcQgZlFuE1VPSElDH38XEQoD5ax9xYbkT2dYgsVxsFi
- 2SA=
-X-IronPort-AV: E=Sophos;i="5.81,258,1610434800"; 
-   d="scan'208";a="48023962"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Mar 2021 05:39:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 18 Mar 2021 05:39:15 -0700
-Received: from soft-dev2.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 18 Mar 2021 05:39:12 -0700
-From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Quentin Schulz <quentin.schulz@bootlin.com>,
-        Michael Walle <michael@walle.cc>
-CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: [PATCH net-next v1 3/3] net: phy: mscc: coma mode disabled for VSC8584
-Date:   Thu, 18 Mar 2021 13:38:51 +0100
-Message-ID: <20210318123851.10324-4-bjarni.jonasson@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210318123851.10324-1-bjarni.jonasson@microchip.com>
-References: <20210318123851.10324-1-bjarni.jonasson@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 18 Mar 2021 08:40:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616071224; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=s6VV7GTQncp21xvrXYojy8gPu45408PlPCy0aMnUmSc=; b=kYoE3XcxdN6UO4SKexKc7npnqykFB1crTNChe04OvrtM4cKPegM6vwogFEjRq8ZSqd004nrm
+ TqmCoaOCYPNcAouprZr4a514kI14GkuFZLBKg2mpbjCrP9QfdsPHtWxSFxjQcJ6V1Nkd9NEw
+ /VsC4tvKf9gWZ1eM8L9dpBR/VJw=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60534a2a3f267701a4e26bd2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 12:40:10
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1A5ADC4346E; Thu, 18 Mar 2021 12:40:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 508BCC433C6;
+        Thu, 18 Mar 2021 12:40:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 508BCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
+From:   Kiran Gunda <kgunda@codeaurora.org>
+To:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
+        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        mark.rutland@arm.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
+Subject: [PATCH V5 0/2] Fix WLED FSC Sync and brightness Sync settings
+Date:   Thu, 18 Mar 2021 18:09:38 +0530
+Message-Id: <1616071180-24493-1-git-send-email-kgunda@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch releases coma mode for VSC8584 as done for VSC8514 in
-commit ca0d7fd0a58d ("net: phy: mscc: coma mode disabled for VSC8514")
+This patch series has the following two WLED fixes
+ 1. As per the current implementation, for WLED5, after
+    the FSC (Full Scale Current) update the driver is incorrectly
+    toggling the MOD_SYNC register instead of toggling the SYNC register.
+    The patch 1/2 fixes this by toggling the SYNC register after
+    FSC update.
 
-Fixes: a5afc1678044a ("net: phy: mscc: add support for VSC8584 PHYY.")
-Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
----
- drivers/net/phy/mscc/mscc_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ 2. Currently, the sync bits are set-then-cleared after FSC and brightness
+    update. As per hardware team recommendation the FSC and brightness sync
+    takes place from clear-then-set transition of the sync bits.
+    The patch 2/2 fies this issue.
 
-diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
-index 254d882490f7..6badb594b4e2 100644
---- a/drivers/net/phy/mscc/mscc_main.c
-+++ b/drivers/net/phy/mscc/mscc_main.c
-@@ -1737,6 +1737,7 @@ static int vsc8584_config_init(struct phy_device *phydev)
- 			ret = vsc8584_config_host_serdes(phydev);
- 			if (ret)
- 				goto err;
-+			vsc85xx_coma_mode_release(phydev);
- 			break;
- 		default:
- 			ret = -EINVAL;
+changes from V4:
+  1. Rebased this patch series on the below patch.
+     "backlight-qcom-wled-Use-sink_addr-for-sync-toggle.patch".
+
+Changes from V3:
+  1. Updated the patch description as per Daneil's suggestion.
+  2. Added Daniel's "Reviewed-by" tag for patch 2/2.
+  3. Updated the cover letter to use "set" and "clear" properly.
+ 
+Changes from V2:
+  1. Added Daniel's "Reviewed-by" tag for patch 1/2.
+  2. Updated the patch 2/2 description with "set" and "clear"
+     terminology instead of "1" and "0".
+  3. Updated the cover letter with "set" and "clear" terminology
+     instead of "1" and "0".
+
+Changes from V1:
+  1. Updated the cover letter.
+  2. Updated the description of the patches as per Daniel's suggestion.
+
+Kiran Gunda (2):
+  backlight: qcom-wled: Fix FSC update issue for WLED5
+  backlight: qcom-wled: Correct the sync_toggle sequence
+
+ drivers/video/backlight/qcom-wled.c | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
+
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+ a Linux Foundation Collaborative Project
 
