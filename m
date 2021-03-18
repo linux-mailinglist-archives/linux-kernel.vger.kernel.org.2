@@ -2,302 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6FF34028F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B180340291
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCRJ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:56:50 -0400
-Received: from office2.cesnet.cz ([195.113.144.244]:40724 "EHLO
-        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCRJ4c (ORCPT
+        id S229967AbhCRJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:57:20 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:5272 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229785AbhCRJ5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:56:32 -0400
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by office2.cesnet.cz (Postfix) with ESMTPSA id 36A4940006E;
-        Thu, 18 Mar 2021 10:56:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
-        s=office2-2020; t=1616061390;
-        bh=118lnbTxA8eKbWvGsXeQrykbruOxfABZX590YoptLLg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc;
-        b=gQKF43tSlevn3W8JD9J5pbbIGBg9ddzI3OYQH+KuKI/iVDmkjqlFBkAtXXTRNylhQ
-         kVIWanyAfcPy+oCqgaHPpGOH44U1GNTx4++31FSJy9rocSQjM7LAwj7UkiQacr7Qqt
-         vfJOeLDzZBuIrS/EOpQf6NnDMT23cTN8A9i6Fvmix/vcN/tHqJ6BsYqO/oKoGY+pDI
-         DnVXnneL6gnmnYLZpwa+Qvq1TI5hqaaxzjYQ7ArczcB2l2mu3FUmGoYODN6IsNRJgD
-         l5CHTLphlli/oxWZNfDkOgtHX2tgu25D9Xi7oy38686yphMDX3JSqtyrhFTuYltLcd
-         6vPsonIizT/sg==
-Received: by mail-lf1-f42.google.com with SMTP id o10so3569206lfb.9;
-        Thu, 18 Mar 2021 02:56:30 -0700 (PDT)
-X-Gm-Message-State: AOAM530k5EntyruOdkUNyeRfugRWlrMZ5dPqDUzmrJ0sGM1G36yuzp2F
-        ABfwD0UdUl/eLMO9b0qVpTIvqztLY7L0SPIEAcY=
-X-Google-Smtp-Source: ABdhPJxARCmqbXdbDRzRNRWFk/MAi6vv9pFlHZeCLprLSzhHa4xpKbn0OjBvZy/32kAsx/jEYZrjOhvJAYoF425/Tlo=
-X-Received: by 2002:a19:f608:: with SMTP id x8mr4943236lfe.380.1616061389690;
- Thu, 18 Mar 2021 02:56:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316175503.1003051-1-kubernat@cesnet.cz> <20210317051239.GW2087@kadam>
-In-Reply-To: <20210317051239.GW2087@kadam>
-From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
-Date:   Thu, 18 Mar 2021 10:56:18 +0100
-X-Gmail-Original-Message-ID: <CABKa3nooU84H=K0XqR63j7uR2MqHx-NLJ0ReaYtNx73hsd4Jow@mail.gmail.com>
-Message-ID: <CABKa3nooU84H=K0XqR63j7uR2MqHx-NLJ0ReaYtNx73hsd4Jow@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Mar 2021 05:57:11 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12I9v0AQ016428;
+        Thu, 18 Mar 2021 02:57:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=Xxi/sRvY17cjo0YNVXBGdrZpUztQx4OeCxq/re2Gfz8=;
+ b=CbcaIGN5T6DpJYgXYM40ddblV+UnWwGCSoaPrg5uF1q4A5CUVJDHZuEUJbg6M/GCzZvu
+ 24m3X8MkgELKR826szqE5y5foLmdtDtKOxq8WUUCJJntl1bg7CxK5HBj6xBdokjsN5ZU
+ +ad6LBX2+4OeKGShsV6oJcNK5pW3JK/5+dfHS+Vrm2Nj0I6yg9Hr2ELL1EVMmxlI5Bu4
+ kmYZhDQw0L19ghZ1KqTlwWOhEWoN0JH/+G+nyEHGVHjjBQkfwq2EHZ958WbOMzxW2vas
+ LQoNgh0TuXBvOs7cBct9v0hBhQDtJNG4nkEvE66c5uGhFPdSJEhfJ9G/Emyb4KH6oEZb +w== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 378tu28jwv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 02:57:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QQxlU9In5RU4DaLcYHj5bUnOXyFR6R4oqU0OS0g5dV1oCfenwdCYdBrvUOKaDmlhzu/ZNSyRo3hhRjHW8STjRleL8TqfFeg06MUbCKax0ymYAE6O6Qc1e1ANYvfl8WXaoRM4s/Ai0QnNIbcqXoTYCNYhTjZ8ijDB1GUyImH0od5WFty8WnkQpD8vurN6udFHmb6p5jaQ8m5fhKivWTPq+DvzYuvdUht2jTHn/THBaIYOptyMPK1l7B+GqUx1del4pf1k6XkkEvWzA7gW66nK/SiXBuEq5DMxeXvdmvXC4TBRbO1DQH847nrlu1eCbyDaTnW+KJe9cFbqQkuBlKiL9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xxi/sRvY17cjo0YNVXBGdrZpUztQx4OeCxq/re2Gfz8=;
+ b=knPzAblgr6f5ZpEBFx2IgdWBPv+e9QKFWovWUTZGaDn4z6/Zl5shT6ViKrG9m6FnZOUVhsobLJuHvRjniwIJ6khpGNLbE1pW03pz1AWjkxqdT00Y33wJkLu8XRTCXWOi9WBb8I04oGTj0u+oMu6ue7y48UgucCzR8BgRonej5YNzDbL8h9ytOUgsv8sI0vdnsN19mt+7bfz5382zWxkn/PS45pIffoTAz+QdLSRDPjHFkC+feNq3bPVOSYuQJuj/HvDVKRKulyjFu8bvl3TiotAP5PK+2fdOSE+oVqLk80vilV+gbdBVLwS2iQQMNSLwY1f9Y/MeZuUtmcCAoK09HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xxi/sRvY17cjo0YNVXBGdrZpUztQx4OeCxq/re2Gfz8=;
+ b=oKcnzmS83GjSn0XT7VbF/4HSfaJwiBsfkESfvGR88Bfj8H84bB/tq58xYg5scxHcVquWVhIaq5EwygDk6qfJq4R/SOV1L6WloSrB9dLIdC0bhdqm6URSgUn6o0BpZgdIuduL+jCqdxGDUP3XUTk9DexBoBC9NPZTul1JeupoUHM=
+Received: from MN2PR07MB6160.namprd07.prod.outlook.com (2603:10b6:208:11d::30)
+ by BLAPR07MB8308.namprd07.prod.outlook.com (2603:10b6:208:330::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Thu, 18 Mar
+ 2021 09:56:53 +0000
+Received: from MN2PR07MB6160.namprd07.prod.outlook.com
+ ([fe80::31af:9129:7ae4:1fb7]) by MN2PR07MB6160.namprd07.prod.outlook.com
+ ([fe80::31af:9129:7ae4:1fb7%5]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 09:56:53 +0000
+From:   Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>
+Subject: RE: [PATCH 2/4] phy: cadence-torrent: Group reset APIs and clock APIs
+Thread-Topic: [PATCH 2/4] phy: cadence-torrent: Group reset APIs and clock
+ APIs
+Thread-Index: AQHXFcW+kQ1FWcsZHky5xoxJKAGDvqqJig0Q
+Date:   Thu, 18 Mar 2021 09:56:53 +0000
+Message-ID: <MN2PR07MB6160E3807488E50BFBECB3A0C5699@MN2PR07MB6160.namprd07.prod.outlook.com>
+References: <20210310155445.534-1-kishon@ti.com>
+ <20210310155445.534-3-kishon@ti.com>
+In-Reply-To: <20210310155445.534-3-kishon@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc2pha2hhZGVcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy00MjI5MTMwNC04N2QwLTExZWItODU0Ny1jOGY3NTA0NDIyZDhcYW1lLXRlc3RcNDIyOTEzMDUtODdkMC0xMWViLTg1NDctYzhmNzUwNDQyMmQ4Ym9keS50eHQiIHN6PSI1MDcwIiB0PSIxMzI2MDUzNTAxMDgyNjkzNTciIGg9Ik90RlB4RmZFRGQrWUZaeUwzYUlPdlZaMWZhRT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [59.145.174.78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d0ff40e6-f65a-4a2e-6291-08d8e9f4287e
+x-ms-traffictypediagnostic: BLAPR07MB8308:
+x-microsoft-antispam-prvs: <BLAPR07MB83083F453FB97FBC09CA3CFFC5699@BLAPR07MB8308.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7NgETEb3gBfqf4vaELuC/vtJaJO2RcZzRwbfp+JVU3FPwXg8bZhLbuN770QG9mQSuzI6bCUJU+W5MJYVvbXHZWpdi86VZ+aLLdWHc9yK1Qn1Vktez7Ell1K+9LWhsl1s2DImEMnfF1LIHK6xGPTVh/GKYLATJQDpecPdVPOOrJmFcNmT9hOjizZaBCoBu1PbIqEMrksdUA4SRpPznl+nEsn71gIDraMg4d0xh0Cmlge87+dHV66rwsZ6TP9LpxUEnAbjtRlBx+oAlDVsXnKo7Reng1l5Kd6IvizB/XB5XRrDdlmhoDzWhvNpVxBvSiJQtw06G/8EiD3Fl3GK1FiX01IcgWynKtBIKUPFoX6Dt/3FIrr71phJ4trZ04ZXCurs2zGhrRhNFJ5abe47TDe9XhoZzzTZxUKeyRHGsipCW/o5dVsHoe6HrkzprKSlcNNNxv3+/+8ry1tOoUm9zUkE/kRqQIOWvt9kYt85Gzqo3YlynQp/zYPAC/v8/Oulg/s2g6cHjzF5Hlrlvmsd95VPkfAKIu/Z224SU/McPuhM8NPJO73OFT+GbX2aK1m2cR4fouCz3YDWJadHJGL3crwq42Ua8+F5jgvagmRWPJEHSETuU/F/QB3yCicTnVd6QKKy66Fxm26DdAKneZ3BSsXkBw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR07MB6160.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(36092001)(5660300002)(316002)(6506007)(54906003)(4326008)(66446008)(2906002)(66556008)(33656002)(38100700001)(110136005)(71200400001)(186003)(86362001)(55016002)(83380400001)(64756008)(52536014)(8676002)(66476007)(7696005)(66946007)(26005)(9686003)(478600001)(8936002)(53546011)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Z3DQnKSfWHeo/LboLGGNv3VRKH/Sstkg+8Jq9Wd64EsBwtIZV1X93dYjEgjr?=
+ =?us-ascii?Q?vLImuhGcTzUSgyQF8j2FP7+0mSRlTMbOXbkuBa/wwNFU7TDDfzyRXlqT3RRE?=
+ =?us-ascii?Q?V36ue8AZgH4gvJXC8f4fHH7KPti+uMZSrdVio4dwlo9BXCH126sLV0v9W0SG?=
+ =?us-ascii?Q?kC50T3TCe96hnQgFh10DUMGm+nPxlQD+BzG+nfEP3LgMfN1myEI8RnHU7noT?=
+ =?us-ascii?Q?Y8erswrHpi/ol+RHMfh5MDvY5uCuDz89jcmyu4leQH0WbdLWxISqpzFhLGXz?=
+ =?us-ascii?Q?z/3wXuPz4nrXHOUfrENRBgsXjcUtHDkcSTNtcDw3dOBtfEtGYBDQKZznCSp4?=
+ =?us-ascii?Q?cDERimZHspI42LWZXiA6QG2mm0nMcUCB6Ieqq5+UzjJXbs+oE+3EKJggxFZ7?=
+ =?us-ascii?Q?DFVSLfNe4pHcDelEhDQiyZ26ycevzMpsNF8FxZrP+9n+4DL6xu0krrh4qYrK?=
+ =?us-ascii?Q?vVEOY/GFAjO6nM7OETj/NgM8WRhR19/AYSUc0chDmlrJXzz6pCj098KWqpTU?=
+ =?us-ascii?Q?Csr4f+4u8d9plCdrMVcMAoXN4HmPcuWuXOit3CtAjIKlBTs5ePqIdU5JtggY?=
+ =?us-ascii?Q?RY9IxbgcMl1nwt6JvQQC32LRli06kUolty+88xr2Aivod2NKs4sM28UbVl6u?=
+ =?us-ascii?Q?m9yIVLlgDFzk25XU9Lr9YfVbxF4NBAzdueVRMV+Y/Th8Zne3QtFvHbIAwuzn?=
+ =?us-ascii?Q?JMI26RwgZJqg1xRgSLhD6jEy8UJHwDVLSCDM91yqPiGrozCEyQeBsYuWDf9l?=
+ =?us-ascii?Q?b2MdYuFUJiMWyRc/ZtTT3SoMlhjL4WGJ2ixjqB05Gtsfp6akeQJDxTi7xy/r?=
+ =?us-ascii?Q?QC8YEKThfwbPg1FMEx8B6sQc+vskNmVs+mE15uAdrjeJFDS22aoyr9P5pfwi?=
+ =?us-ascii?Q?PyoXEoZVDAMu2/SNd8iVso9M7EZdHsYrEXtX1afrr4NWvowJUzMz9nvXZh77?=
+ =?us-ascii?Q?VfqhDG0ADjmhCgFAMAawAi7X0qlGVq5dtiVglXDs1REmzNVVhEeoVE84N/JC?=
+ =?us-ascii?Q?AzcJ18afFXu20Qg7LCn0ym+ZoaCfINBw3sqYwEUmpmOQrDJPTp5/En95+b8U?=
+ =?us-ascii?Q?/B494caxdFx+K3snNUE7S6p+GVzwCiyR19yLhE8Szx3bTs1LuedLvqd94HYI?=
+ =?us-ascii?Q?R4IHZA2zpCE2gz6uQepmaHkge0JS5/VKEhsNyo/MPaa9HW+2Kxi4Hc9fvUBF?=
+ =?us-ascii?Q?0YbyDpTwOEF+B6uwg/Rd0xZlr1I5MmXFiOQZUyGdDPrey5fKVvmqbGE5omq0?=
+ =?us-ascii?Q?nefxA9cseT8JYAmJ9rc/pWul6ePJF4cs7jtsrcUlR8Le1EB0tK7LVKEIuH4Z?=
+ =?us-ascii?Q?6ptNflz2u0Fj6HIuSlQ0QCw9?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR07MB6160.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0ff40e6-f65a-4a2e-6291-08d8e9f4287e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2021 09:56:53.2559
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nHQGfs0VW+xbCXw9Q1TV2b74nNmKGj2jEUNpUnxUxc6xE1Jy357Dn5R9Gm8NmY9H7FHPayOEXY2KWKBtzyi7gkTCx0j77wnt8N4aH0Vbzik=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR07MB8308
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_04:2021-03-17,2021-03-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
 
-thanks, I will fix this in v3 of this patch series.
 
-Vaclav
-
-st 17. 3. 2021 v 6:14 odes=C3=ADlatel Dan Carpenter
-<dan.carpenter@oracle.com> napsal:
->
-> Hi "V=C3=A1clav,
->
-> url:    https://github.com/0day-ci/linux/commits/V-clav-Kubern-t/hwmon-ma=
-x31790-Rework-to-use-regmap/20210317-015931
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-stag=
-ing.git hwmon-next
-> config: x86_64-randconfig-m001-20210316 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->
-> smatch warnings:
-> drivers/hwmon/max31790.c:263 max31790_fan_is_visible() warn: impossible c=
-ondition '(fan_config < 0) =3D> (0-255 < 0)'
-> drivers/hwmon/max31790.c:337 max31790_write_pwm() warn: impossible condit=
-ion '(fan_config < 0) =3D> (0-255 < 0)'
-> drivers/hwmon/max31790.c:372 max31790_pwm_is_visible() warn: impossible c=
-ondition '(fan_config < 0) =3D> (0-255 < 0)'
->
-> vim +263 drivers/hwmon/max31790.c
->
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  257  static umode_t max31790_f=
-an_is_visible(const void *_data, u32 attr, int channel)
-> 195a4b4298a795 Il Han          2015-08-30  258  {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  259          const struct max3=
-1790_data *data =3D _data;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  260          struct =
-regmap *regmap =3D data->regmap;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  261          u8 fan_=
-config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_CHANN=
-EL));
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  262
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @263          if (fan=
-_config < 0)
->                                                             ^^^^^^^^^^^^^=
-^
-> A u8 can't be negative.
->
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  264                 =
- return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  265
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  266          switch (attr) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  267          case hwmon_fan_in=
-put:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  268          case hwmon_fan_fa=
-ult:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  269                  if (chann=
-el < NR_CHANNEL ||
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  270                      (fan_=
-config & MAX31790_FAN_CFG_TACH_INPUT))
-> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  271                          r=
-eturn 0444;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  272                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  273          case hwmon_fan_ta=
-rget:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  274                  if (chann=
-el < NR_CHANNEL &&
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  275                      !(fan=
-_config & MAX31790_FAN_CFG_TACH_INPUT))
-> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  276                          r=
-eturn 0644;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  277                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  278          default:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  279                  return 0;
-> 195a4b4298a795 Il Han          2015-08-30  280          }
-> 195a4b4298a795 Il Han          2015-08-30  281  }
-> 195a4b4298a795 Il Han          2015-08-30  282
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  283  static int max31790_read_=
-pwm(struct device *dev, u32 attr, int channel,
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  284                           =
-    long *val)
-> 195a4b4298a795 Il Han          2015-08-30  285  {
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  286          struct =
-max31790_data *data =3D dev_get_drvdata(dev);
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  287          struct =
-regmap *regmap =3D data->regmap;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  288          int rea=
-d;
-> 195a4b4298a795 Il Han          2015-08-30  289
-> 195a4b4298a795 Il Han          2015-08-30  290          if (IS_ERR(data))
-> 195a4b4298a795 Il Han          2015-08-30  291                  return PT=
-R_ERR(data);
-> 195a4b4298a795 Il Han          2015-08-30  292
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  293          switch (attr) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  294          case hwmon_pwm_in=
-put:
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  295                 =
- read =3D read_reg_word(regmap, MAX31790_REG_PWMOUT(channel));
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  296                 =
- if (read < 0)
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  297                 =
-         return read;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  298
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  299                 =
- *val =3D read >> 8;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  300                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  301          case hwmon_pwm_en=
-able:
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  302                 =
- read =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel));
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  303                 =
- if (read < 0)
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  304                 =
-         return read;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  305
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  306                 =
- if (read & MAX31790_FAN_CFG_RPM_MODE)
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  307                          *=
-val =3D 2;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  308                 =
- else if (read & MAX31790_FAN_CFG_TACH_INPUT_EN)
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  309                          *=
-val =3D 1;
-> 195a4b4298a795 Il Han          2015-08-30  310                  else
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  311                          *=
-val =3D 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  312                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  313          default:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  314                  return -E=
-OPNOTSUPP;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  315          }
-> 195a4b4298a795 Il Han          2015-08-30  316  }
-> 195a4b4298a795 Il Han          2015-08-30  317
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  318  static int max31790_write=
-_pwm(struct device *dev, u32 attr, int channel,
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  319                           =
-     long val)
-> 195a4b4298a795 Il Han          2015-08-30  320  {
-> 195a4b4298a795 Il Han          2015-08-30  321          struct max31790_d=
-ata *data =3D dev_get_drvdata(dev);
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  322          struct =
-regmap *regmap =3D data->regmap;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  323          u8 fan_config;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  324          int err =3D 0;
-> 195a4b4298a795 Il Han          2015-08-30  325
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  326          switch (attr) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  327          case hwmon_pwm_in=
-put:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  328                  if (val <=
- 0 || val > 255) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  329                          e=
-rr =3D -EINVAL;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  330                          b=
-reak;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  331                  }
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  332                 =
- err =3D write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), val << 8);
-> 195a4b4298a795 Il Han          2015-08-30  333                  break;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  334          case hwmon_pwm_en=
-able:
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  335                 =
- fan_config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_=
-CHANNEL));
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  336
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @337                 =
- if (fan_config < 0)
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  338                 =
-         return fan_config;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  339
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  340                  if (val =
-=3D=3D 0) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  341                          f=
-an_config &=3D ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  342                           =
-               MAX31790_FAN_CFG_RPM_MODE);
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  343                  } else if=
- (val =3D=3D 1) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  344                          f=
-an_config =3D (fan_config |
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  345                           =
-             MAX31790_FAN_CFG_TACH_INPUT_EN) &
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  346                           =
-            ~MAX31790_FAN_CFG_RPM_MODE;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  347                  } else if=
- (val =3D=3D 2) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  348                          f=
-an_config |=3D MAX31790_FAN_CFG_TACH_INPUT_EN |
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  349                           =
-             MAX31790_FAN_CFG_RPM_MODE;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  350                  } else {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  351                          e=
-rr =3D -EINVAL;
-> 195a4b4298a795 Il Han          2015-08-30  352                          b=
-reak;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  353                  }
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  354                 =
- err =3D regmap_write(regmap,
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  355                           =
-          MAX31790_REG_FAN_CONFIG(channel),
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  356                           =
-          fan_config);
-> 195a4b4298a795 Il Han          2015-08-30  357                  break;
-> 195a4b4298a795 Il Han          2015-08-30  358          default:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  359                  err =3D -=
-EOPNOTSUPP;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  360                  break;
-> 195a4b4298a795 Il Han          2015-08-30  361          }
-> 195a4b4298a795 Il Han          2015-08-30  362
-> 195a4b4298a795 Il Han          2015-08-30  363          return err;
-> 195a4b4298a795 Il Han          2015-08-30  364  }
-> 195a4b4298a795 Il Han          2015-08-30  365
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  366  static umode_t max31790_p=
-wm_is_visible(const void *_data, u32 attr, int channel)
-> 195a4b4298a795 Il Han          2015-08-30  367  {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  368          const struct max3=
-1790_data *data =3D _data;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  369          struct =
-regmap *regmap =3D data->regmap;
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  370          u8 fan_=
-config =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(channel % NR_CHANN=
-EL));
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  371
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16 @372          if (fan=
-_config < 0)
-> 2c8602cfaeab63 V=C3=A1clav Kubern=C3=A1t 2021-03-16  373                 =
- return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  374
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  375          switch (attr) {
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  376          case hwmon_pwm_in=
-put:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  377          case hwmon_pwm_en=
-able:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  378                  if (!(fan=
-_config & MAX31790_FAN_CFG_TACH_INPUT))
-> dc8dbb4d7672b7 Guenter Roeck   2018-12-10  379                          r=
-eturn 0644;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  380                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  381          default:
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  382                  return 0;
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  383          }
-> 54187ff9d766b2 Guenter Roeck   2016-07-01  384  }
->
+> -----Original Message-----
+> From: Kishon Vijay Abraham I <kishon@ti.com>
+> Sent: Wednesday, March 10, 2021 9:25 PM
+> To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul
+> <vkoul@kernel.org>; Rob Herring <robh+dt@kernel.org>; Philipp Zabel
+> <p.zabel@pengutronix.de>; Swapnil Kashinath Jakhade
+> <sjakhade@cadence.com>
+> Cc: linux-kernel@vger.kernel.org; devicetree@vger.kernel.org; Lokesh Vutl=
+a
+> <lokeshvutla@ti.com>; linux-phy@lists.infradead.org
+> Subject: [PATCH 2/4] phy: cadence-torrent: Group reset APIs and clock API=
+s
+>=20
+> EXTERNAL MAIL
+>=20
+>=20
+> No functional change intended. Group reset APIs and clock APIs in
+> preparation for adding support to skip configuration if the SERDES
+> is already configured by bootloader.
+>=20
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  drivers/phy/cadence/phy-cadence-torrent.c | 84 ++++++++++++++---------
+>  1 file changed, 53 insertions(+), 31 deletions(-)
+>=20
+
+Reviewed-by: Swapnil Jakhade <sjakhade@cadence.com>
+
+Thanks & regards,
+Swapnil
+
+> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c
+> b/drivers/phy/cadence/phy-cadence-torrent.c
+> index 3fdab0d288c4..ab51c4bf7b30 100644
+> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> @@ -2249,6 +2249,54 @@ static int cdns_torrent_clk_register(struct
+> cdns_torrent_phy *cdns_phy)
+>  	return 0;
+>  }
+>=20
+> +static int cdns_torrent_reset(struct cdns_torrent_phy *cdns_phy)
+> +{
+> +	struct device *dev =3D cdns_phy->dev;
+> +
+> +	cdns_phy->phy_rst =3D
+> devm_reset_control_get_exclusive_by_index(dev, 0);
+> +	if (IS_ERR(cdns_phy->phy_rst)) {
+> +		dev_err(dev, "%s: failed to get reset\n",
+> +			dev->of_node->full_name);
+> +		return PTR_ERR(cdns_phy->phy_rst);
+> +	}
+> +
+> +	cdns_phy->apb_rst =3D devm_reset_control_get_optional(dev,
+> "torrent_apb");
+> +	if (IS_ERR(cdns_phy->apb_rst)) {
+> +		dev_err(dev, "%s: failed to get apb reset\n",
+> +			dev->of_node->full_name);
+> +		return PTR_ERR(cdns_phy->apb_rst);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_torrent_clk(struct cdns_torrent_phy *cdns_phy)
+> +{
+> +	struct device *dev =3D cdns_phy->dev;
+> +	int ret;
+> +
+> +	cdns_phy->clk =3D devm_clk_get(dev, "refclk");
+> +	if (IS_ERR(cdns_phy->clk)) {
+> +		dev_err(dev, "phy ref clock not found\n");
+> +		return PTR_ERR(cdns_phy->clk);
+> +	}
+> +
+> +	ret =3D clk_prepare_enable(cdns_phy->clk);
+> +	if (ret) {
+> +		dev_err(cdns_phy->dev, "Failed to prepare ref clock\n");
+> +		return ret;
+> +	}
+> +
+> +	cdns_phy->ref_clk_rate =3D clk_get_rate(cdns_phy->clk);
+> +	if (!(cdns_phy->ref_clk_rate)) {
+> +		dev_err(cdns_phy->dev, "Failed to get ref clock rate\n");
+> +		clk_disable_unprepare(cdns_phy->clk);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int cdns_torrent_phy_probe(struct platform_device *pdev)
+>  {
+>  	struct cdns_torrent_phy *cdns_phy;
+> @@ -2274,26 +2322,6 @@ static int cdns_torrent_phy_probe(struct
+> platform_device *pdev)
+>  	cdns_phy->dev =3D dev;
+>  	cdns_phy->init_data =3D data;
+>=20
+> -	cdns_phy->phy_rst =3D
+> devm_reset_control_get_exclusive_by_index(dev, 0);
+> -	if (IS_ERR(cdns_phy->phy_rst)) {
+> -		dev_err(dev, "%s: failed to get reset\n",
+> -			dev->of_node->full_name);
+> -		return PTR_ERR(cdns_phy->phy_rst);
+> -	}
+> -
+> -	cdns_phy->apb_rst =3D devm_reset_control_get_optional(dev,
+> "torrent_apb");
+> -	if (IS_ERR(cdns_phy->apb_rst)) {
+> -		dev_err(dev, "%s: failed to get apb reset\n",
+> -			dev->of_node->full_name);
+> -		return PTR_ERR(cdns_phy->apb_rst);
+> -	}
+> -
+> -	cdns_phy->clk =3D devm_clk_get(dev, "refclk");
+> -	if (IS_ERR(cdns_phy->clk)) {
+> -		dev_err(dev, "phy ref clock not found\n");
+> -		return PTR_ERR(cdns_phy->clk);
+> -	}
+> -
+>  	cdns_phy->sd_base =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(cdns_phy->sd_base))
+>  		return PTR_ERR(cdns_phy->sd_base);
+> @@ -2316,18 +2344,13 @@ static int cdns_torrent_phy_probe(struct
+> platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>=20
+> -	ret =3D clk_prepare_enable(cdns_phy->clk);
+> -	if (ret) {
+> -		dev_err(cdns_phy->dev, "Failed to prepare ref clock\n");
+> +	ret =3D cdns_torrent_reset(cdns_phy);
+> +	if (ret)
+>  		goto clk_cleanup;
+> -	}
+>=20
+> -	cdns_phy->ref_clk_rate =3D clk_get_rate(cdns_phy->clk);
+> -	if (!(cdns_phy->ref_clk_rate)) {
+> -		dev_err(cdns_phy->dev, "Failed to get ref clock rate\n");
+> -		ret =3D -EINVAL;
+> -		goto clk_disable;
+> -	}
+> +	ret =3D cdns_torrent_clk(cdns_phy);
+> +	if (ret)
+> +		goto clk_cleanup;
+>=20
+>  	/* Enable APB */
+>  	reset_control_deassert(cdns_phy->apb_rst);
+> @@ -2505,7 +2528,6 @@ static int cdns_torrent_phy_probe(struct
+> platform_device *pdev)
+>  		reset_control_put(cdns_phy->phys[i].lnk_rst);
+>  	of_node_put(child);
+>  	reset_control_assert(cdns_phy->apb_rst);
+> -clk_disable:
+>  	clk_disable_unprepare(cdns_phy->clk);
+>  clk_cleanup:
+>  	cdns_torrent_clk_cleanup(cdns_phy);
+> --
+> 2.17.1
+
