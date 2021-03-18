@@ -2,99 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACC434089B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59FB3408A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhCRPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        id S231772AbhCRPSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhCRPRQ (ORCPT
+        with ESMTP id S231765AbhCRPSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:17:16 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A009CC06174A;
-        Thu, 18 Mar 2021 08:17:15 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id b7so4555506ejv.1;
-        Thu, 18 Mar 2021 08:17:15 -0700 (PDT)
+        Thu, 18 Mar 2021 11:18:00 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3149C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:17:59 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id b16so7128995eds.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=szeredi.hu; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6I4fK3KIh7nvVeDlxIvnlzTbH7aTWaFZ8rA7KEHulZM=;
-        b=Hm/hDDK3WOdEnJMWhOW9dFY7wxB13DGJ31r5esJ259MdDXGuOZt793vesPgJj4JYkl
-         YaOuXj7qes7nYKz6miLhz9xEEJ0US4y7gYiPSKp9Nv2lm3qRzmee3XpZFhOAndl7A5fF
-         EtOMyIZaA/K+hC1K8QRPfcazt2qrkNNw64uJD2QAg8sz04J7tyHuxWqyjfFXAp728iay
-         egMQig/Hy1iq8vR9zJ7qNuYCMjrfGFHcbhitCjswfw6d5IKX3nc8eqc+y7Xd4ESMljiK
-         6idzOxUxirdUB6DyFeNxE/EvQQwuYFFAwqio4pO95dbCotGG1yHF+yHZI44IC6UNsW/m
-         1hzw==
+        bh=mDhtpthkra5FR1QobgMI7rXBQ3u37AScVadxTXIiiws=;
+        b=rfi6ZFrFzWHRwJNIj9d3b2TY9HCj2RsBMVq0iA0Ht1giyZMnvTXWk4CMUScdkfEUke
+         uOVuuATQfXXLxvXpqW7IudzlolIvUpcYDmMJFmoQOKCVtaH+kTxNVBS7t5uiHz0uXI66
+         fMqEwdB0Q92SRiYcwTLMq49s8ayFSEwmIF/hQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6I4fK3KIh7nvVeDlxIvnlzTbH7aTWaFZ8rA7KEHulZM=;
-        b=Wy2cC2oQoyvSx798SqQiACgpcfVSBZM/2z0o4rvO7BUrccirtc12JbGQzJe0JTW+W0
-         XZ/BISyAzC35BiP0dEQ3zS7mg13kgCDAmIeNy0PKTN/mKeyiEbHtVObm8F6hKWPp3xAn
-         xYqFKgDRnUsmNq6z5L8+MZWSoVHBy2ZdrQUbEBtRnCdjUIsthZJWMbZdqx0S9QSfqe6u
-         yg9XMTgV87UmWrR2+t62Cau4lkhxyLTA6JSWvs4JS4+ILFwUkIEDawR9RzXvA2maEnpg
-         Ytpgey0cVIi+YY5ozPJbMdDP6ivkG1sC84Zs6oM5NJCfml3Cu8bRQyT9Fbsg6A6Vd7o6
-         8PJg==
-X-Gm-Message-State: AOAM530/LS0j2uwx9TiggsP1aHZ8OfM3/7JzXwFu4ZLhn6h2o1EP20uv
-        b7tZ9wYx68yc9mhvhyjUR3I=
-X-Google-Smtp-Source: ABdhPJwgYWfjUVbf8fYnHv4Mh5jl1s7+5Gv4cxu44SiZ73UwrDTFNCj76OSuMY/6xE9A/j/xL272qA==
-X-Received: by 2002:a17:906:c051:: with SMTP id bm17mr40738915ejb.21.1616080634298;
-        Thu, 18 Mar 2021 08:17:14 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id l18sm2095560ejk.86.2021.03.18.08.17.13
+        bh=mDhtpthkra5FR1QobgMI7rXBQ3u37AScVadxTXIiiws=;
+        b=Q2VOuCzt1c1qmyU9AQTZOsfWWLf3MG5vXUNllQlqy4D1Fv2djtGauXSv3uOa5z7hBG
+         v726m+8mbpII2BXzdOPzviO/frCSn4AuywqXMYJ0l7iHkzp8KsVIYrVFV962xZrQ6ysx
+         4Ls6uxZ7EzWhuhV0JfGkpOjbavdAKWhfAPDZFU9IlSqu7aRLMxr+LeuJ63/0UjM3wMGC
+         FUm700jUSgenDKc+mI45+kK7HE0F9+oSJyhuxRU8K0mI7BvM83MhtTGfcFzFbiSsExYe
+         J5ziNBmSF24G7oCgDnTqT3F4xD+iKnzm0/htiL1ZvgipKKxUSL0d1Ni6ZUuuLSmlhjPE
+         xAeg==
+X-Gm-Message-State: AOAM530/b8A2fQzFkRAvM1wHczcZuUiN6/jnk25nccA72DRyXo+PqOxV
+        NmTItzEsi86EjomeLFWu5ZpDoA==
+X-Google-Smtp-Source: ABdhPJzewXSYi5Px+OEXUMHBXkvYYUInFfzJGS4KRUsXTsFjGv691EuGz7X5Eq3Y/ufhjYWj0Y5bmg==
+X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr4284769edd.313.1616080678409;
+        Thu, 18 Mar 2021 08:17:58 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id e26sm2652728edj.29.2021.03.18.08.17.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 08:17:13 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 17:17:12 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
-Message-ID: <20210318151712.7hmdaufxylyl33em@skbuf>
-References: <20210318142356.30702-1-michael@walle.cc>
- <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
+        Thu, 18 Mar 2021 08:17:57 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 16:17:51 +0100
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        vgoyal@redhat.com, jasowang@redhat.com, mst@redhat.com
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+Message-ID: <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com>
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-3-ckuehl@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
+In-Reply-To: <20210318135223.1342795-3-ckuehl@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:54:00PM +0100, Heiner Kallweit wrote:
-> On 18.03.2021 15:23, Michael Walle wrote:
-> > at803x_aneg_done() is pretty much dead code since the patch series
-> > "net: phy: improve and simplify phylib state machine" [1]. Remove it.
-> > 
+On Thu, Mar 18, 2021 at 08:52:22AM -0500, Connor Kuehl wrote:
+> If an incoming FUSE request can't fit on the virtqueue, the request is
+> placed onto a workqueue so a worker can try to resubmit it later where
+> there will (hopefully) be space for it next time.
 > 
-> Well, it's not dead, it's resting .. There are few places where
-> phy_aneg_done() is used. So you would need to explain:
-> - why these users can't be used with this PHY driver
-> - or why the aneg_done callback isn't needed here and the
->   genphy_aneg_done() fallback is sufficient
+> This is fine for requests that aren't larger than a virtqueue's maximum
+> capacity. However, if a request's size exceeds the maximum capacity of
+> the virtqueue (even if the virtqueue is empty), it will be doomed to a
+> life of being placed on the workqueue, removed, discovered it won't fit,
+> and placed on the workqueue yet again.
+> 
+> Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
+> Descriptors) of the virtio spec:
+> 
+>   "A driver MUST NOT create a descriptor chain longer than the Queue
+>   Size of the device."
+> 
+> To fix this, limit the number of pages FUSE will use for an overall
+> request. This way, each request can realistically fit on the virtqueue
+> when it is decomposed into a scattergather list and avoid violating
+> section 2.6.5.3.1 of the virtio spec.
 
-The piece of code that Michael is removing keeps the aneg reporting as
-"not done" even when the copper-side link was reported as up, but the
-in-band autoneg has not finished.
+I removed the conditional compilation and renamed the limit.  Also made
+virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
 
-That was the _intended_ behavior when that code was introduced, and you
-have said about it:
-https://www.spinics.net/lists/stable/msg389193.html
+The virtio_ring patch in this series should probably go through the respective
+subsystem tree.
 
-| That's not nice from the PHY:
-| It signals "link up", and if the system asks the PHY for link details,
-| then it sheepishly says "well, link is *almost* up".
 
-If the specification of phy_aneg_done behavior does not include in-band
-autoneg (and it doesn't), then this piece of code does not belong here.
+Thanks,
+Miklos
 
-The fact that we can no longer trigger this code from phylib is yet
-another reason why it fails at its intended (and wrong) purpose and
-should be removed.
+---
+From: Connor Kuehl <ckuehl@redhat.com>
+Subject: virtiofs: split requests that exceed virtqueue size
+Date: Thu, 18 Mar 2021 08:52:22 -0500
+
+If an incoming FUSE request can't fit on the virtqueue, the request is
+placed onto a workqueue so a worker can try to resubmit it later where
+there will (hopefully) be space for it next time.
+
+This is fine for requests that aren't larger than a virtqueue's maximum
+capacity.  However, if a request's size exceeds the maximum capacity of the
+virtqueue (even if the virtqueue is empty), it will be doomed to a life of
+being placed on the workqueue, removed, discovered it won't fit, and placed
+on the workqueue yet again.
+
+Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
+Descriptors) of the virtio spec:
+
+  "A driver MUST NOT create a descriptor chain longer than the Queue
+  Size of the device."
+
+To fix this, limit the number of pages FUSE will use for an overall
+request.  This way, each request can realistically fit on the virtqueue
+when it is decomposed into a scattergather list and avoid violating section
+2.6.5.3.1 of the virtio spec.
+
+Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+---
+ fs/fuse/fuse_i.h    |    3 +++
+ fs/fuse/inode.c     |    3 ++-
+ fs/fuse/virtio_fs.c |   19 +++++++++++++++++--
+ 3 files changed, 22 insertions(+), 3 deletions(-)
+
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -555,6 +555,9 @@ struct fuse_conn {
+ 	/** Maxmum number of pages that can be used in a single request */
+ 	unsigned int max_pages;
+ 
++	/** Constrain ->max_pages to this value during feature negotiation */
++	unsigned int max_pages_limit;
++
+ 	/** Input queue */
+ 	struct fuse_iqueue iq;
+ 
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -712,6 +712,7 @@ void fuse_conn_init(struct fuse_conn *fc
+ 	fc->pid_ns = get_pid_ns(task_active_pid_ns(current));
+ 	fc->user_ns = get_user_ns(user_ns);
+ 	fc->max_pages = FUSE_DEFAULT_MAX_PAGES_PER_REQ;
++	fc->max_pages_limit = FUSE_MAX_MAX_PAGES;
+ 
+ 	INIT_LIST_HEAD(&fc->mounts);
+ 	list_add(&fm->fc_entry, &fc->mounts);
+@@ -1040,7 +1041,7 @@ static void process_init_reply(struct fu
+ 				fc->abort_err = 1;
+ 			if (arg->flags & FUSE_MAX_PAGES) {
+ 				fc->max_pages =
+-					min_t(unsigned int, FUSE_MAX_MAX_PAGES,
++					min_t(unsigned int, fc->max_pages_limit,
+ 					max_t(unsigned int, arg->max_pages, 1));
+ 			}
+ 			if (IS_ENABLED(CONFIG_FUSE_DAX) &&
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -18,6 +18,12 @@
+ #include <linux/uio.h>
+ #include "fuse_i.h"
+ 
++/* Used to help calculate the FUSE connection's max_pages limit for a request's
++ * size. Parts of the struct fuse_req are sliced into scattergather lists in
++ * addition to the pages used, so this can help account for that overhead.
++ */
++#define FUSE_HEADER_OVERHEAD    4
++
+ /* List of virtio-fs device instances and a lock for the list. Also provides
+  * mutual exclusion in device removal and mounting path
+  */
+@@ -1413,9 +1419,10 @@ static int virtio_fs_get_tree(struct fs_
+ {
+ 	struct virtio_fs *fs;
+ 	struct super_block *sb;
+-	struct fuse_conn *fc;
++	struct fuse_conn *fc = NULL;
+ 	struct fuse_mount *fm;
+-	int err;
++	unsigned int virtqueue_size;
++	int err = -EIO;
+ 
+ 	/* This gets a reference on virtio_fs object. This ptr gets installed
+ 	 * in fc->iq->priv. Once fuse_conn is going away, it calls ->put()
+@@ -1427,6 +1434,10 @@ static int virtio_fs_get_tree(struct fs_
+ 		return -EINVAL;
+ 	}
+ 
++	virtqueue_size = virtqueue_get_vring_size(fs->vqs[VQ_REQUEST].vq);
++	if (WARN_ON(virtqueue_size <= FUSE_HEADER_OVERHEAD))
++		goto out_err;
++
+ 	err = -ENOMEM;
+ 	fc = kzalloc(sizeof(struct fuse_conn), GFP_KERNEL);
+ 	if (!fc)
+@@ -1442,6 +1453,10 @@ static int virtio_fs_get_tree(struct fs_
+ 	fc->delete_stale = true;
+ 	fc->auto_submounts = true;
+ 
++	/* Tell FUSE to split requests that exceed the virtqueue's size */
++	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
++				    virtqueue_size - FUSE_HEADER_OVERHEAD);
++
+ 	fsc->s_fs_info = fm;
+ 	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
+ 	if (fsc->s_fs_info) {
