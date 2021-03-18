@@ -2,98 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A369334086F
+	by mail.lfdr.de (Postfix) with ESMTP id 55C7434086E
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhCRPHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:07:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55530 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230269AbhCRPH0 (ORCPT
+        id S231616AbhCRPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229960AbhCRPH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Mar 2021 11:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616080046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1/LrD+I/pla5Li7HJQKY+fP7jpet1+5dxXs7b6R+8aw=;
-        b=eB9E/IQV4WeRVa9kwga5kMezUPh7OxpN9i4c7leinV18hAGgVh0w8XFrV1FGcxEF+IoTgO
-        Grz1+ecev7Xfap3C0X10qLCgLpy7gT54RLr9vflhsa78yCcTApH0p9glW8llGsDG9yPch+
-        4vKzYcJWROjBztfdd+VkWqMRdHlmdpg=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-lTxqlnoUN1upQr09LJTsDw-1; Thu, 18 Mar 2021 11:07:24 -0400
-X-MC-Unique: lTxqlnoUN1upQr09LJTsDw-1
-Received: by mail-qv1-f71.google.com with SMTP id s16so30089374qvw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:07:23 -0700 (PDT)
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DFBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:07:26 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id l4so2317427qkl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fbzGRMSg35Yk7urbJWTBF/LFrWpG+uSfyGbnx+dj3t0=;
+        b=YnGk2Gkg4F4VvEzaISXtVkjvk97Qrijt2BYdZXCmtZvDgopwnUvrdbiEgmzSjdca8i
+         LOGqc2jFPYkk7w8JqSaQu/0tXg3/dujRJQ8C7/rvrC/ExOY5oGEpviDlgvcV9a+6Eh/1
+         rG/y/UdySEHq6xwg/3Jmbd5cD2nhGiX+uOXSXIs8pznMBuUis3eK74kW3rEj4ZPpHRlK
+         zz2zgQabP+miGKRY9FUEwlGuaE2jZ4An87vNYT3gU+AL2b3TAa3IYzp+GuvTPAm/Fg+n
+         +jcaLh+MuyUVsEKF3OzcAk7WAaxHTD4XwhVDxS212TySZhAUBVZIpXEz5b9FDTPinCiO
+         dnBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1/LrD+I/pla5Li7HJQKY+fP7jpet1+5dxXs7b6R+8aw=;
-        b=bsZ6yaCJMUun3aEURSCj9v6qm1oBc6cE+4MVCrD21BZ3gPonNuTgbEmFTT2hXUy+mi
-         NOptYsmBhaCJR/SEXv12OAYlN68qJUWt29jnrps94LCDjEJdUb92/inDXY6qwpfbrRYO
-         yuPyv2P2Nrq+zIq9NrH6HYf5W0Os/n6F4LKXqdhX3fAxUJGW/kkaXyvpyLyP56TyhhAG
-         UfaoH+MKx8lazF6XAQSBnk0gSL7EmAH2vGbikxxrSPgOnXeJIzgOo70F9fPqQfI4i3+8
-         K4hvmxM4xdIfuZ4ZlAhhLRdz/IWA8sX6B11Wai/pMi8JV0hl5X5/jw5kHwjk4biFIYom
-         Tn+A==
-X-Gm-Message-State: AOAM530kYYx7x7K8wq7+Rv4G/mBEWCcxvc40WsjaKYu1nC2i3mZiTTYw
-        /VURsSi29oO86PD1RCJJNjnnu09uM4SqkGiSTLnfmxhbo2qRbtQg3sa3+bxz0qARxWw/w7eqipK
-        /CfTzbHjIQ4ZdifCgvUYn9nIZ
-X-Received: by 2002:a05:620a:110a:: with SMTP id o10mr4887485qkk.281.1616080043399;
-        Thu, 18 Mar 2021 08:07:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxc2pygDzR+H4VqimhmOKQC0aDZ5rEfXPBH4NGN/DAGFsv6CKyGqkvVzT7bYv+X91M4O50KVQ==
-X-Received: by 2002:a05:620a:110a:: with SMTP id o10mr4887446qkk.281.1616080043110;
-        Thu, 18 Mar 2021 08:07:23 -0700 (PDT)
-Received: from xz-x1 ([142.126.89.138])
-        by smtp.gmail.com with ESMTPSA id j3sm1946715qki.84.2021.03.18.08.07.21
+        bh=fbzGRMSg35Yk7urbJWTBF/LFrWpG+uSfyGbnx+dj3t0=;
+        b=VVu5Mp5NkgX77iXvF+gCzMQ2aObF8jBXZBcdMyLS0hwKOjkq54c0VDfHclFWXTWgZ/
+         FpcMphB6fMEgPis4jcroeXgDx7w8zyIWnr/Z9KcbW2vHGHiJ51RcVSuoVfON9gJxiaBR
+         p4dGeu2G8EY9COduz4sr6zQYFTB99yjKWjgg5796TchjUnxOJjqtbJLE/6qtDpSloHe9
+         QFg541QijD6Gk5RjMbwVKc/vEI1/uRRDyBCEeI1E7XDFELjTcKIVc+WQpS8jlez8cZ+S
+         b3SVr6Y+uYD7ckeZHPTDadcdquvpw+vztkWyNMvIwAWcn/F7B42uqlwqWfuKVHOl965q
+         Afeg==
+X-Gm-Message-State: AOAM530hO/X6luXPm8txlr3todLiFh1JjBrdSpl7EC1FKwYyJp9T3Mc5
+        j1A+5FmclHhwAr4kqmQiF5zQgQ==
+X-Google-Smtp-Source: ABdhPJyIQeHdZA/rfnRB/C17jU6bZVTKobbbpa/iz+WUIeYllggLUQMyN9HqrYM3KdWSrlzD4zDhFA==
+X-Received: by 2002:a05:620a:981:: with SMTP id x1mr4514571qkx.501.1616080045272;
+        Thu, 18 Mar 2021 08:07:25 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:e46c])
+        by smtp.gmail.com with ESMTPSA id t2sm1612214qtd.13.2021.03.18.08.07.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 08:07:22 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 11:07:20 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, ziy@nvidia.com, willy@infradead.org,
-        william.kucharski@oracle.com, vbabka@suse.cz,
-        yulei.kernel@gmail.com, walken@google.com,
-        aneesh.kumar@linux.ibm.com, rcampbell@nvidia.com,
-        thomas_os@shipmail.org, yang.shi@linux.alibaba.com,
-        richard.weiyang@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/6] Some cleanups for huge_memory
-Message-ID: <20210318150720.GP395976@xz-x1>
-References: <20210318122722.13135-1-linmiaohe@huawei.com>
+        Thu, 18 Mar 2021 08:07:24 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 11:07:23 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        npiggin@gmail.com, ziy@nvidia.com, wangkefeng.wang@huawei.com,
+        guohanjun@huawei.com, dingtianhong@huawei.com,
+        chenweilong@huawei.com, rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-ID: <YFNsq2OcWKJV7Cnv@cmpxchg.org>
+References: <20210304074053.65527-3-zhouguanghui1@huawei.com>
+ <20210308210225.GF3479805@casper.infradead.org>
+ <YEc5iI+ZP7dWr2fC@dhcp22.suse.cz>
+ <20210309123255.GI3479805@casper.infradead.org>
+ <YEdyJ+ZK2l7tu0rw@dhcp22.suse.cz>
+ <YEnWrg2XFwZ2PR0N@dhcp22.suse.cz>
+ <YEo1gz6wuYl1Fuqt@cmpxchg.org>
+ <YEpEzZ1CdXvc5JMt@dhcp22.suse.cz>
+ <alpine.LSU.2.11.2103111229380.7859@eggly.anvils>
+ <YFNeDDkTOtls9/XU@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318122722.13135-1-linmiaohe@huawei.com>
+In-Reply-To: <YFNeDDkTOtls9/XU@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 08:27:16AM -0400, Miaohe Lin wrote:
-> Hi all,
-> This series contains cleanups to rework some function logics to make it
-> more readable, use helper function and so on. More details can be found
-> in the respective changelogs. Thanks!
+On Thu, Mar 18, 2021 at 03:05:00PM +0100, Michal Hocko wrote:
+> On Thu 11-03-21 12:37:20, Hugh Dickins wrote:
+> > On Thu, 11 Mar 2021, Michal Hocko wrote:
+> > > On Thu 11-03-21 10:21:39, Johannes Weiner wrote:
+> > > > On Thu, Mar 11, 2021 at 09:37:02AM +0100, Michal Hocko wrote:
+> > > > > Johannes, Hugh,
+> > > > > 
+> > > > > what do you think about this approach? If we want to stick with
+> > > > > split_page approach then we need to update the missing place Matthew has
+> > > > > pointed out.
+> > > > 
+> > > > I find the __free_pages() code quite tricky as well. But for that
+> > > > reason I would actually prefer to initiate the splitting in there,
+> > > > since that's the place where we actually split the page, rather than
+> > > > spread the handling of this situation further out.
+> > > > 
+> > > > The race condition shouldn't be hot, so I don't think we need to be as
+> > > > efficient about setting page->memcg_data only on the higher-order
+> > > > buddies as in Willy's scratch patch. We can call split_page_memcg(),
+> > > > which IMO should actually help document what's happening to the page.
+> > > > 
+> > > > I think that function could also benefit a bit more from step-by-step
+> > > > documentation about what's going on. The kerneldoc is helpful, but I
+> > > > don't think it does justice to how tricky this race condition is.
+> > > > 
+> > > > Something like this?
+> > > > 
+> > > > void __free_pages(struct page *page, unsigned int order)
+> > > > {
+> > > > 	/*
+> > > > 	 * Drop the base reference from __alloc_pages and free. In
+> > > > 	 * case there is an outstanding speculative reference, from
+> > > > 	 * e.g. the page cache, it will put and free the page later.
+> > > > 	 */
+> > > > 	if (likely(put_page_testzero(page))) {
+> > > > 		free_the_page(page, order);
+> > > > 		return;
+> > > > 	}
+> > > > 
+> > > > 	/*
+> > > > 	 * The speculative reference will put and free the page.
+> > > > 	 *
+> > > > 	 * However, if the speculation was into a higher-order page
+> > > > 	 * that isn't marked compound, the other side will know
+> > > > 	 * nothing about our buddy pages and only free the order-0
+> > > > 	 * page at the start of our chunk! We must split off and free
+> > > > 	 * the buddy pages here.
+> > > > 	 *
+> > > > 	 * The buddy pages aren't individually refcounted, so they
+> > > > 	 * can't have any pending speculative references themselves.
+> > > > 	 */
+> > > > 	if (!PageHead(page) && order > 0) {
+> > > > 		split_page_memcg(page, 1 << order);
+> > > > 		while (order-- > 0)
+> > > > 			free_the_page(page + (1 << order), order);
+> > > > 	}
+> > > > }
+> > > 
+> > > Fine with me. Mathew was concerned about more places that do something
+> > > similar but I would say that if we find out more places we might
+> > > reconsider and currently stay with a reasonably clear model that it is
+> > > only head patch that carries the memcg information and split_page_memcg
+> > > is necessary to break such page into smaller pieces.
+> > 
+> > I agree: I do like Johannes' suggestion best, now that we already
+> > have split_page_memcg().  Not too worried about contrived use of
+> > free_unref_page() here; and whether non-compound high-order pages
+> > should be perpetuated is a different discussion.
 > 
-> v2->v3:
-> use ALIGN/ALIGN_DOWN too against HPAGE_PMD_SIZE per Peter.
-> 
-> v1->v2:
-> rename try_to_split_huge_pmd_address and move up comments.
-> 
-> Miaohe Lin (6):
->   mm/huge_memory.c: rework the function vma_adjust_trans_huge()
->   mm/huge_memory.c: make get_huge_zero_page() return bool
->   mm/huge_memory.c: rework the function do_huge_pmd_numa_page() slightly
->   mm/huge_memory.c: remove redundant PageCompound() check
->   mm/huge_memory.c: remove unused macro
->     TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG
->   mm/huge_memory.c: use helper function migration_entry_to_page()
+> Matthew, are you planning to post a patch with suggested changes or
+> should I do it?
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
-
--- 
-Peter Xu
-
+I'll post a proper patch.
