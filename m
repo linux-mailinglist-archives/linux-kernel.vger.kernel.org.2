@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B5D340A1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB116340A19
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhCRQXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbhCRQXH (ORCPT
+        id S232174AbhCRQXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:23:35 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49652 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232172AbhCRQXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:23:07 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6E3C06174A;
-        Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id z9so5396093ilb.4;
-        Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0x7tcZe8hlmMUN/W+gzK7BvYODRvOL+XfP6k+eIgadg=;
-        b=sZoQtg066poITjhwH0q/brYwoeDq3JAhLt3YJCsTssP/4jZPa894NUtFt/DRGW2U9/
-         5VqwiO68mztTapLm6J0ejfIU10q+Xoqk2UhMRFEi3FT+LbOwqE7eh4ByZpeLQixyTXow
-         BDoOg3zm8WQmMIyfbyoPhK0US5bNvx+URqegX3Ddl426ZhTNG2tOzGZNqciQINAUjuOS
-         hldDluoqzLzNVznk4UVV/9jJgrnTqA7UJFrtZ/m88000r1zF1kjT8G3zYz+MX/nmry5f
-         mI7UROzLqiiWY1RRazegy6DWv4a+JczIpdaOD3i8OPjvXOAgOhxaYAjGRWB0+p0yGG0z
-         UJSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0x7tcZe8hlmMUN/W+gzK7BvYODRvOL+XfP6k+eIgadg=;
-        b=HtKQBI1cEeRZ2PHtRBE+y0BxSAd95o+XpEgZFmMO4qFNNagASB0dcstLaBnGhXVwvg
-         1YPlGoU8Mj05NeZIEU1JOb9OJQo8H5aEqJb/RJ2kGMaQnvM1UQUmna5GyX/v3YA1kVfE
-         fioEuaSLwKOz5xFzmR5gs4oTW03MYxxubDJt6uBtrMgJnHrQTgyxbzXlbC5ytTSpZ3cP
-         rcVLfYuvZxWZtDrFfH8wrR/6MfWwuizZxTaLmuasLEWZ64hmGnecrOOK27degKHGAQFy
-         72ukx+IncGPbJsddKuWZYWEa/eb+vV4pXqS01JIM/1ZjuskPE4VSK3+8ZGKcypyLABlz
-         WTJA==
-X-Gm-Message-State: AOAM5303Nekq9CpmcGxD/jgkt/3gIPNPMv37qdaD6VsMVvijDpn0HUrp
-        BgDyfJN2U8GWng7A1Z7ygZDYN0SddqQj0k9YVQmLhANeS4Y=
-X-Google-Smtp-Source: ABdhPJxIUB9184z1Vgcgji2Zb9OKkFoVio/Y58VTn4cto0Zw+VFLWVoJ4A88jc+htFYweqErWX83xDctC8N1FsQZxq8=
-X-Received: by 2002:a92:5214:: with SMTP id g20mr2904374ilb.260.1616084586217;
- Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
+        Thu, 18 Mar 2021 12:23:18 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lMvQT-000Cni-EI; Thu, 18 Mar 2021 17:23:09 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lMvQT-0006Yq-4f; Thu, 18 Mar 2021 17:23:09 +0100
+Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, shuah@kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4983305a-3119-bb4b-bb51-520ed5bd28ac@iogearbox.net>
+Date:   Thu, 18 Mar 2021 17:23:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210312162203.2416149-1-ztong0001@gmail.com> <20210312162203.2416149-2-ztong0001@gmail.com>
- <YFN3X6q8dzEaUp27@silpixa00400314> <YFN6hlz/L7erLO0H@silpixa00400314>
-In-Reply-To: <YFN6hlz/L7erLO0H@silpixa00400314>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Thu, 18 Mar 2021 12:22:55 -0400
-Message-ID: <CAA5qM4DJ7N=fR5T-VtuF0qr8jUPtRWbQMNiWQbQ2ysaDrAefQg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] crypto: qat - dont release uninitialized resources
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>, qat-linux@intel.com,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26112/Thu Mar 18 12:08:11 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
-I have fixed typos and resent them as v4.
-- Tong
+On 3/18/21 2:55 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warning:
+> 
+> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
+> comparing pointer to 0.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   tools/testing/selftests/bpf/progs/fentry_test.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
+> index 5f645fd..d4247d6 100644
+> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
+> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+> @@ -64,7 +64,7 @@ struct bpf_fentry_test_t {
+>   SEC("fentry/bpf_fentry_test7")
+>   int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>   {
+> -	if (arg == 0)
+> +	if (!arg)
+>   		test7_result = 1;
+>   	return 0;
+>   }
+> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>   SEC("fentry/bpf_fentry_test8")
+>   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+>   {
+> -	if (arg->a == 0)
+> +	if (!arg->a)
+>   		test8_result = 1;
+>   	return 0;
+>   }
+> 
+
+This doesn't apply. Please rebase against bpf-next tree, and also make sure to
+squash any other such patches into a single one.
