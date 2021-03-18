@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D58C3404C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71793404A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhCRLiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45792 "EHLO
+        id S229914AbhCRLc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhCRLih (ORCPT
+        with ESMTP id S229734AbhCRLcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:38:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A3CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=g4chIGlgUtTg3LwaMqGw4sKrFd89cdNqKSgI9ZESlNQ=; b=dwACxiSpUOQe6kOejX0ilN9f59
-        cZdNDpt/FBgNyyIvdkZodMl/kUUa9roYWbJLb6jywsLb2ZTyF1XVWy3fgBh3htVvlbmvjLDC2xSfT
-        EFsA53aNjR94+9BhgPo1g4IL2CHvJPj7cOyV/NTVoXTiTH0ksEhCDhx5euzLE7nPpvoqGpYRvFcBg
-        t4StrVODBJawUPNs+vz3TF7ATaOn/e4vgxsWwsgQSeMvemGP6PoLMJwwAJU0XTrHa57iHbRk5gzaT
-        lWzfqbdJhtr947DY/pqdzoN7lx9VMm41huhPCkzeAInKfql27LWWazLdYJnkLkAfzEiPZAg7C+fGi
-        LJSii03g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMqyp-005776-Ck; Thu, 18 Mar 2021 11:38:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE987305C22;
-        Thu, 18 Mar 2021 12:38:17 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id CF96420191901; Thu, 18 Mar 2021 12:38:17 +0100 (CET)
-Message-ID: <20210318113610.739542434@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 12:31:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-Subject: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-References: <20210318113156.407406787@infradead.org>
+        Thu, 18 Mar 2021 07:32:42 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4194C06174A;
+        Thu, 18 Mar 2021 04:32:42 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id w8so2756536pjf.4;
+        Thu, 18 Mar 2021 04:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nsoRVO5MAUfTeyru0kxzkoVrIbOCET+lsu0GRILy5lg=;
+        b=m7DerXCdhW/2I8tupKIDo2uQIIsKDtD0mG3nWTUkXMBud8jdCUK8beEuJXm2kiqbxj
+         AvHnL850rd1uYgE323mKLb52topo/ygpccFFEypUhoQO0Ezd9pd0JunVRqj4uka9p9Fq
+         DEuIUpfUc7GlIeiVtiGYMpuiTrh8BR8NzaDOCgIuQZdXRnx9LyKF0YFZ1R1A5rbFsKAz
+         y1iFUwyscgvPb9oDN5u/xMiNIDEe9HlkaXxprF0abOjhwckvIrunrLvTxOxFfXtwOaBt
+         yunRI1VF6PZwdYdfAB4EGLIhM8lyuJWYGiosIeClBoaCkdZoojO+ls2sihXamXIYQBwu
+         L8/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nsoRVO5MAUfTeyru0kxzkoVrIbOCET+lsu0GRILy5lg=;
+        b=FykQlXxvihLw0uQw1exKx136gEFW7mrhmh/qWnC+sCjIhVFS4ovq8ZK7LgPU7khy30
+         iNndLl6QFYJq3juORp7fuBsz2h6jLoWRHJzb3oeKC92JAPZ8E7hFH2JWVwur3IizydWQ
+         Ikf9lNEdKL0Ux8ZcFnTilT14RJ/Mb+MkjQKTSR7Ed0EOgXEszR0A+yrukgs0T3yvCLeL
+         M8BqJ/ffNhtTp2Q9KPtGj//NKD+HhPOe32iwTkYMFySEO8mB34F/+S5ryTLFRGmyfvtz
+         HzIiYoEiC7eHigf4JKIS4LaR1gOLyZ+O3nyN55WO8ZkXDaWXsrS33zN25Zkz7T/xNxIR
+         ZGfg==
+X-Gm-Message-State: AOAM530Y3AeVrezhaGrC/aE8zdzmTpjMmQgH/Qx+5zYzpCCoa6lknqNk
+        xVqce6LxiqDumNtncOS8odA=
+X-Google-Smtp-Source: ABdhPJztklu8wT+yW6DpqEJILdKxVMosBCmSVXXBox+Mh2itoswCr7xqC7LOe55ksJsNmqkyFIDEdw==
+X-Received: by 2002:a17:902:8217:b029:e6:2875:b1d9 with SMTP id x23-20020a1709028217b02900e62875b1d9mr9018908pln.70.1616067162278;
+        Thu, 18 Mar 2021 04:32:42 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id j10sm2169918pjs.11.2021.03.18.04.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 04:32:41 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: liu.xuzhi@zte.com.cn
+To:     konishi.ryusuke@gmail.com
+Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liu xuzhi <liu.xuzhi@zte.com.cn>
+Subject: [PATCH] fs/nilfs2: fix misspellings using codespell tool
+Date:   Thu, 18 Mar 2021 04:32:32 -0700
+Message-Id: <20210318113233.473329-1-liu.xuzhi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sites that match init_section_contains() get marked as INIT. For
-built-in code init_sections contains both __init and __exit text. OTOH
-kernel_text_address() only explicitly includes __init text (and there
-are no __exit text markers).
+From: Liu xuzhi <liu.xuzhi@zte.com.cn>
 
-Match what jump_label already does and ignore the warning for INIT
-sites. Also see the excellent changelog for commit: 8f35eaa5f2de
-("jump_label: Don't warn on __exit jump entries")
+Two typos are found out by codespell tool \
+in 2217th and 2254th lines of segment.c:
 
-Fixes: 9183c3f9ed710 ("static_call: Add inline static call infrastructure")
-Reported-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+$ codespell ./fs/nilfs2/
+./segment.c:2217 :retured  ==> returned
+./segment.c:2254: retured  ==> returned
+
+Fix two typos found by codespell.
+
+Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
 ---
- kernel/jump_label.c  |    8 ++++++++
- kernel/static_call.c |   11 ++++++++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ fs/nilfs2/segment.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -407,6 +407,14 @@ static bool jump_label_can_update(struct
- 		return false;
- 
- 	if (!kernel_text_address(jump_entry_code(entry))) {
-+		/*
-+		 * This skips patching __exit, which is part of
-+		 * init_section_contains() but is not part of
-+		 * kernel_text_address().
-+		 *
-+		 * Skipping __exit is fine since it will never
-+		 * be executed.
-+		 */
- 		WARN_ONCE(!jump_entry_is_init(entry),
- 			  "can't patch jump_label at %pS",
- 			  (void *)jump_entry_code(entry));
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -181,7 +181,16 @@ void __static_call_update(struct static_
- 				continue;
- 
- 			if (!kernel_text_address((unsigned long)site_addr)) {
--				WARN_ONCE(1, "can't patch static call site at %pS",
-+				/*
-+				 * This skips patching __exit, which is part of
-+				 * init_section_contains() but is not part of
-+				 * kernel_text_address().
-+				 *
-+				 * Skipping __exit is fine since it will never
-+				 * be executed.
-+				 */
-+				WARN_ONCE(!static_call_is_init(site),
-+					  "can't patch static call site at %pS",
- 					  site_addr);
- 				continue;
- 			}
-
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index cd4da9535aed..686c8ee7b29c 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2214,7 +2214,7 @@ static void nilfs_segctor_wakeup(struct nilfs_sc_info *sci, int err)
+  * nilfs_construct_segment - construct a logical segment
+  * @sb: super block
+  *
+- * Return Value: On success, 0 is retured. On errors, one of the following
++ * Return Value: On success, 0 is returned. On errors, one of the following
+  * negative error code is returned.
+  *
+  * %-EROFS - Read only filesystem.
+@@ -2251,7 +2251,7 @@ int nilfs_construct_segment(struct super_block *sb)
+  * @start: start byte offset
+  * @end: end byte offset (inclusive)
+  *
+- * Return Value: On success, 0 is retured. On errors, one of the following
++ * Return Value: On success, 0 is returned. On errors, one of the following
+  * negative error code is returned.
+  *
+  * %-EROFS - Read only filesystem.
+-- 
+2.25.1
 
