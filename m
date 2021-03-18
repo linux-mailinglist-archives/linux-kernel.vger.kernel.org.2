@@ -2,66 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1A3340706
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB35340707
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhCRNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:38:04 -0400
-Received: from m12-18.163.com ([220.181.12.18]:42784 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229951AbhCRNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:37:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=3Qe0L
-        Vz4zCcGuUrxPrkUKDKeLuAg+MUbaKUkg2ec1CI=; b=nfD+JUr6ePI40NdGH2HWf
-        8fjxPePojS55PgGakYaVwWNsbD+iFxJ4zCM+v+dbYdl/ww14hagHiNkUURYaQr4I
-        Wg5QEycbuH0pdDsBTUkH5MzxxcKr4PQaP5eOm9RzKiQRHIo3TavYVwQPBJOf78sD
-        wDswST7p+aFijtRf/+8XS4=
-Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAAnI_GDV1NgHojUZQ--.56749S2;
-        Thu, 18 Mar 2021 21:37:19 +0800 (CST)
-From:   ChunyouTang <tangchunyou@163.com>
-To:     dongchun.zhu@mediatek.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tangchunyou@yulong.com
-Subject: [PATCH] driver/media/i2c:fix unneeded semicolon
-Date:   Thu, 18 Mar 2021 21:37:04 +0800
-Message-Id: <20210318133704.678-1-tangchunyou@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S230305AbhCRNjG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 09:39:06 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:21136 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230398AbhCRNir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:38:47 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-273-x16uHSOPMHCv6f1vzDCVPQ-1; Thu, 18 Mar 2021 13:38:42 +0000
+X-MC-Unique: x16uHSOPMHCv6f1vzDCVPQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 13:38:41 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Thu, 18 Mar 2021 13:38:41 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?windows-1257?Q?=27Valdis_Kl=E7tnieks=27?= 
+        <valdis.kletnieks@vt.edu>
+CC:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old
+ gcc
+Thread-Topic: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on
+ old gcc
+Thread-Index: AQHXG7xcElVT0YEvr0m/P+UnKynj6KqJn0dQgAAEdYCAABwbwA==
+Date:   Thu, 18 Mar 2021 13:38:41 +0000
+Message-ID: <602d6d53962c4567bc1363e58b49c757@AcuMS.aculab.com>
+References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook>
+ <282490.1616047333@turing-police>
+ <279b22592f1e43a48beeecd34e50b385@AcuMS.aculab.com>
+ <300176.1616068535@turing-police>
+In-Reply-To: <300176.1616068535@turing-police>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAAnI_GDV1NgHojUZQ--.56749S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU4BTYUUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHhBZUVSItU27ngAAsH
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tangchunyou <tangchunyou@yulong.com>
+From: Valdis Kletnieks
+> Sent: 18 March 2021 11:56
+> 
+> On Thu, 18 Mar 2021 11:41:29 -0000, David Laight said:
+> 
+> > That gcc bug just implies you need a space after "xxx".
+> > That is easily fixable in the sources.
+> 
+> It's not quite that simple.
+> 
+>    In file included from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/tm.h:27,
+>                     from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/gcc-plugin.h:31,
+>                     from /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/plugin.h:23,
+>                     from scripts/gcc-plugins/gcc-common.h:9,
+>                     from scripts/gcc-plugins/latent_entropy_plugin.c:78:
+> >> /usr/lib/gcc/x86_64-linux-gnu/5/plugin/include/config/elfos.h:102:21: warning: invalid suffix on
+> literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]
+>        fprintf ((FILE), "%s"HOST_WIDE_INT_PRINT_UNSIGNED"\n",\
+> 
+> The problem isn't in a kernel source file...  
+...
 
-delete unneeded semicolon
+Could you pass -Wno-literal-suffix on plugin builds?
 
-Signed-off-by: tangchunyou <tangchunyou@yulong.com>
----
- drivers/media/i2c/ov02a10.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Might be less faff than changing the -std=xxx' parameter.
 
-diff --git a/drivers/media/i2c/ov02a10.c b/drivers/media/i2c/ov02a10.c
-index 60b4bc6..c47b1d4 100644
---- a/drivers/media/i2c/ov02a10.c
-+++ b/drivers/media/i2c/ov02a10.c
-@@ -700,7 +700,7 @@ static int ov02a10_set_ctrl(struct v4l2_ctrl *ctrl)
- 	default:
- 		ret = -EINVAL;
- 		break;
--	};
-+	}
- 
- 	pm_runtime_put(&client->dev);
- 
--- 
-1.9.1
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
