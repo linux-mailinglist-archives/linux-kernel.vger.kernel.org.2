@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD5133FC32
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2478533FC34
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCRAYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhCRAYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC5364E42
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616027051;
-        bh=p6PEaph2u8ios6gltNUavvYhOGS187eCou4MgdO3Fbw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lo3/9xI377wnkqkFHWz4/aGIG0YwtWvM9RVVl1u8oi86jJjYcy6MnQy7Z5QIo8EGW
-         2byJtLdwK9affsW4A+KPNJjQTc7gwfeAwJ5UJ/tRN/Pp4oXjM6ZPFRzDpmG1eIoLyV
-         qxlooaxDB6pGXpnb+iCUJd3P76QJqlMWJ7Bea5RqaMYPHun7MDLH3D8oPQ54bd2Qzz
-         FLHV03rKqdjg1rGTey1O8SoiTZKodPmd1pOYM7PlX6pWMg5trats2QuFIQkxEpzPBn
-         V8c5pefw8BUi+KyJKQvE++yeRgqMaOljr1oUo88A/ARQ5i24MaQcrVF1QD8sneA9+7
-         VPPWDkEzp48vg==
-Received: by mail-ej1-f47.google.com with SMTP id l4so1168978ejc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:24:10 -0700 (PDT)
-X-Gm-Message-State: AOAM5307uK6tikASSmn75bLPmT9WyeCus6CJWICKmYxZxtwhLDPOUlsi
-        qNk4ArHB/RgBRn4ZqYQ0TxyCYRUT6ZC2PKxUCA==
-X-Google-Smtp-Source: ABdhPJwl0sxRTizbicTK0xRvRINhzU0QimeYmr7XbstUaY16PHVXUP4gL+Bk4D2R+s0MFSs2qYLvjNQoeYEac9DwLXg=
-X-Received: by 2002:a17:906:3750:: with SMTP id e16mr37952648ejc.75.1616027049177;
- Wed, 17 Mar 2021 17:24:09 -0700 (PDT)
+        id S230194AbhCRAZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhCRAY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:24:56 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB40AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:24:55 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id w11so389043ply.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=62xgyuajU6tPw+M6TsZi2hiokYvIOr5Uaenxy/zAlGg=;
+        b=WI0VP6TtBL+cnRViHv7of0jXPRhATu5KFZ/BcWIMdApFfQJkhUP7LkF0M+RYMD4sVA
+         11AWfppCK9H3XEcYaoiaFjrkqx6eoT/NGqHBnyyRysqGOAxIJFe8O15Fy5CA03VmfwSI
+         l28WWneVh2/QnaY+NCOK2wLlK7sfucZHd9q2lsxrWDLBvWw6KJLv7NX+RDZynH8D8fM9
+         QbIiNPwfP0XS4Buanio/I+GBH6d+SWNSVCwqnhu4DPqwV3ok04fYQ+H3mr8McZ9bsVwj
+         bvTyPr/F7kCtMDRu5l/RGB5MAmlQfiXYzmu4aaOauC4es79EWQzmTRdqBPmmrfiRTueZ
+         nbHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=62xgyuajU6tPw+M6TsZi2hiokYvIOr5Uaenxy/zAlGg=;
+        b=H2j0tQHqKqzyeg1iyMmy/l8L/hG/yJ2fucbQjeq+VV5bXfUZOCWztcBgFY2/z0zLNh
+         /oOrqW0+x0Wp83FpG4EGdm9pK0S425uf3XNRLuy0BxUFo/Q2brMXYpGJsq6haZXN1u0b
+         362KF8D7qFEm090CTzmQ9MqZmZTvcKM9wMdKwTHilks7QKn80U93Ge0A9Sbw5VAtkrMV
+         Sy+TFjFKfranvjga3dnJOA2VRTxi+MFdtzppMap/pPMJZmzrelW94FNarWLRRMcXZcz0
+         TXa60xEWnyYkBKLtuSkb73tzFWNcps3XUfcc6MqzgmgxWq23T4MppxG8aTFXVakBxSTz
+         4mQw==
+X-Gm-Message-State: AOAM532Jg2BVuHsx54s+rYIAra/ae6NbpC8Vv3yRHicx7Mderav92VQY
+        F1qCM27/CDqfHC4A/PCERYSKndl0df36HShbwXdvEg==
+X-Google-Smtp-Source: ABdhPJzWI3PAehWugN6WUCwZTKYZmT4l1xfy3zClMuUAJQGMw+FDmDgjxsz23qtHVd1KWB5WITvmwfo7Jbp5U6EJf4g=
+X-Received: by 2002:a17:902:bf01:b029:e6:6b59:a48b with SMTP id
+ bi1-20020a170902bf01b02900e66b59a48bmr6959147plb.55.1616027094933; Wed, 17
+ Mar 2021 17:24:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210210075656.1096251-1-weiyongjun1@huawei.com>
-In-Reply-To: <20210210075656.1096251-1-weiyongjun1@huawei.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 18 Mar 2021 08:23:58 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__hAcEHoeebdVCNaaay7OmbgrfBx5r7EfhuU9mNEy0ELw@mail.gmail.com>
-Message-ID: <CAAOTY__hAcEHoeebdVCNaaay7OmbgrfBx5r7EfhuU9mNEy0ELw@mail.gmail.com>
-Subject: Re: [PATCH -next] soc: mediatek: Make symbol 'mtk_mutex_driver' static
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210316193905.1673600-1-jollys@google.com> <5e2c35b6-a9c4-0637-738b-ff6920635425@huawei.com>
+In-Reply-To: <5e2c35b6-a9c4-0637-738b-ff6920635425@huawei.com>
+From:   Jolly Shah <jollys@google.com>
+Date:   Wed, 17 Mar 2021 17:24:44 -0700
+Message-ID: <CABGCNpDdK2+DNTJpzjig3hX3W_7JB8nEcRcuRnv8Z4oRSq2-dA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        a.darwish@linutronix.de, Jason Yan <yanaijie@huawei.com>,
+        luojiaxing@huawei.com, dan.carpenter@oracle.com,
+        b.zolnierkie@samsung.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongjun:
+Hi John,
 
-Wei Yongjun <weiyongjun1@huawei.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=8810=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:49=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> The sparse tool complains as follows:
->
-> drivers/soc/mediatek/mtk-mutex.c:464:24: warning:
->  symbol 'mtk_mutex_driver' was not declared. Should it be static?
->
-> This symbol is not used outside of mtk-mutex.c, so this
-> commit marks it static.
+Thanks for the review.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+On Wed, Mar 17, 2021 at 4:44 AM John Garry <john.garry@huawei.com> wrote:
 >
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/soc/mediatek/mtk-mutex.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 16/03/2021 19:39, Jolly Shah wrote:
+> > When the cache_type for the scsi device is changed, the scsi layer
+> > issues a MODE_SELECT command. The caching mode details are communicated
+> > via a request buffer associated with the scsi command with data
+> > direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+> > reaches the libata layer, as a part of generic initial setup, libata
+> > layer sets up the scatterlist for the command using the scsi command
+> > (ata_scsi_qc_new). This command is then translated by the libata layer
+> > into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+> > treats this as a non data command (ata_mselect_caching), since it only
+> > needs an ata taskfile to pass the caching on/off information to the
+> > device. It does not need the scatterlist that has been setup, so it does
+> > not perform dma_map_sg on the scatterlist (ata_qc_issue).
 >
-> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-=
-mutex.c
-> index f531b119da7a..3a315a62e783 100644
-> --- a/drivers/soc/mediatek/mtk-mutex.c
-> +++ b/drivers/soc/mediatek/mtk-mutex.c
-> @@ -461,7 +461,7 @@ static const struct of_device_id mutex_driver_dt_matc=
-h[] =3D {
->  };
->  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
+> So if we don't perform the dma_map_sg() on the sgl at this point, then
+> it seems to me that we should not perform for_each_sg() on it either,
+> right? That is still what happens in sas_ata_qc_issue() in this case.
 >
-> -struct platform_driver mtk_mutex_driver =3D {
-> +static struct platform_driver mtk_mutex_driver =3D {
->         .probe          =3D mtk_mutex_probe,
->         .remove         =3D mtk_mutex_remove,
->         .driver         =3D {
+
+Yes that's right. To avoid that, I can add elseif block for
+ATA_PROT_NODATA before for_each_sg() is performed. Currently there's
+existing code block for ATA_PROT_NODATA after for_each_sg()  is
+performed,
+reused that to reset num_scatter. Please suggest.
+
+> > Unfortunately,
+> > when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+> > layer sees it as a non data command with a scatterlist. It cannot
+> > extract the correct dma length, since the scatterlist has not been
+> > mapped with dma_map_sg for a DMA operation. When this partially
+> > constructed SAS task reaches pm80xx LLDD, it results in below warning.
+> >
+> > "pm80xx_chip_sata_req 6058: The sg list address
+> > start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+> > end_addr_low=0xffffffff has crossed 4G boundary"
+> >
+> > This patch assigns appropriate value to  num_sectors for ata non data
+> > commands.
+> >
+> > Signed-off-by: Jolly Shah <jollys@google.com>
+> > ---
+> >   drivers/scsi/libsas/sas_ata.c | 6 ++++--
+> >   1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+> > index 024e5a550759..94ec08cebbaa 100644
+> > --- a/drivers/scsi/libsas/sas_ata.c
+> > +++ b/drivers/scsi/libsas/sas_ata.c
+> > @@ -209,10 +209,12 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+> >               task->num_scatter = si;
+> >       }
+> >
+> > -     if (qc->tf.protocol == ATA_PROT_NODATA)
+> > +     if (qc->tf.protocol == ATA_PROT_NODATA) {
+> >               task->data_dir = DMA_NONE;
+> > -     else
+> > +             task->num_scatter = 0;
 >
+> task->num_scatter has already been set in this function. Best not set it
+> twice.
 >
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+Sure. Please suggest if I should update patch to above suggested
+approach. That will avoid setting num_scatter twice.
+
+Thanks,
+Jolly Shah
+
+> Thanks,
+> John
+>
+> > +     } else {
+> >               task->data_dir = qc->dma_dir;
+> > +     }
+> >       task->scatter = qc->sg;
+> >       task->ata_task.retry_count = 1;
+> >       task->task_state_flags = SAS_TASK_STATE_PENDING;
+> >
+>
