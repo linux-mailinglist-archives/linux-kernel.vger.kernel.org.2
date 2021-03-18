@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3A4340080
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A58340082
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhCRHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhCRHzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:55:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E61EC64E77;
-        Thu, 18 Mar 2021 07:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616054117;
-        bh=HZGet467p/PlbISyuo70G+BBC8oVsBYVDU0nP87ZhW4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WDVhkm9xVEs6rrMDOIl7ll8Bo2EHZRtGzwV09UcMBr5c9TToC16kkfDDzrmGRSaqo
-         9SNu5qxYhLE6TJcE/B0vWT7NaclJ9Svwm0i0upnKg0BXqtWURpd2rEmUXBIz4A+bf8
-         /Lef2nYApemLwIeMjpXdZjoaG9Z/0AHn/qGdWivKYJn1q9KJfZxstiftpfBGGgl9Nw
-         JGHsa6hhLvrSK2JnR8/6Hvk0kPA7Q19w9zrepFUCfO4e6pmhPX5ppCHKnz2R3GyD0K
-         3+3vdYtypqnUahAdNp1vNK67VU7SABG9nPDF6uATnPg4rJv4S5DbByu51zXAyXuBOu
-         SsfVaR5dy3orw==
-Date:   Thu, 18 Mar 2021 09:55:13 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH master] module: remove never implemented
- MODULE_SUPPORTED_DEVICE
-Message-ID: <YFMHYUbPmpS+Kzcj@unreal>
-References: <20210317104547.442203-1-leon@kernel.org>
- <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+        id S229643AbhCRH4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:56:05 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44970 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhCRHz4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 03:55:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F1E2C1C0B7C; Thu, 18 Mar 2021 08:55:52 +0100 (CET)
+Date:   Thu, 18 Mar 2021 08:55:52 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Rahul Tanwar <rtanwar@maxlinear.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        John Crispin <john@phrozen.org>,
+        Hauke Mehrtens <hmehrtens@maxlinear.com>,
+        Cheol Yong Kim <ckim@maxlinear.com>,
+        Qiming Wu <qwu@maxlinear.com>
+Subject: Re: [PATCH 1/1] leds: lgm: Improve Kconfig help
+Message-ID: <20210318075552.GA2331@amd>
+References: <8ae0456a08ef1a2491fd382b273ff7259e6fcbd0.1615969806.git.rtanwar@maxlinear.com>
+ <MN2PR19MB3693EEA37EA1FC18238FE45EB16A9@MN2PR19MB3693.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+In-Reply-To: <MN2PR19MB3693EEA37EA1FC18238FE45EB16A9@MN2PR19MB3693.namprd19.prod.outlook.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 01:17:32PM -0700, Linus Torvalds wrote:
-> On Wed, Mar 17, 2021 at 3:46 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > I'm sending this patch to you directly because it is much saner to
-> > apply it in one place instead of multiple patches saga that will
-> > span for at least two cycles if per-maintainer path will be taken.
-> >
-> > It applies cleanly on v5.12-rc2 and completely unharmful.
->
-> You have an odd whitespace-only part in the patch inside the comment
-> underneath the "remove RME,Hammerfall" case.
 
-This is something that I missed, my VIM changed whitespaces in many old
-files and I didn't pay attention when added that chunk.
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Also, your email seems to have swallowed spaces at the ends of lines.
->
-> I can (and did) apply the patch with "--whitespace=fix", but that then
-> causes git to fix some _other_ whitespace too, so the end result isn't
-> quite the same. Oh well.
->
-> Please check what's up with your email sending client that it seems to
-> remove space at end of lines in patches.
+Hi!
 
-This is strange, I'm sending patches with "git send-email" with pretty
-standard settings:
+> Remove unnecessary Kconfig symbol LEDS_BLINK
+> Improve Kconfig help text to make it more useful.
+>=20
+> Signed-off-by: Rahul Tanwar <rtanwar@maxlinear.com>
 
-   28 [sendemail]
-   29         smtpserver = /usr/local/bin/msmtp-enqueue.sh
-   30         suppresscc = self
-   31         chainReplyTo = false
-   32         confirm = always
-   33         from = Leon Romanovsky <leon@kernel.org>
-   34         envelopeSender = Leon Romanovsky <leon@kernel.org>
-   35         signingkey = leon@kernel.org
-   36         composeencoding = utf-8
+> +++ b/drivers/leds/blink/Kconfig
+> @@ -1,21 +1,19 @@
+> -menuconfig LEDS_BLINK
+> -       bool "LED Blink support"
+> -       depends on LEDS_CLASS
+> -       help
+> -         This option enables blink support for the leds class.
+> -         If unsure, say Y.
+> -
+> -if LEDS_BLINK
+> -
+> -config LEDS_BLINK_LGM
+> -       tristate "LED support for Intel LGM SoC series"
+> +config LEDS_LGM
+> +       tristate "LED support for LGM SoC series"
+>          depends on GPIOLIB
+>          depends on LEDS_CLASS
+>          depends on MFD_SYSCON
+>          depends on OF
+>          help
+> -         Parallel to serial conversion, which is also called SSO=20
+> controller,
+> -         can drive external shift register for LED outputs.
+> -         This enables LED support for Serial Shift Output controller(SSO=
+).
+> +         This option enables support for LEDs connected to GPIO lines on
+> +         Lightning Mountain(LGM) SoC. These LEDs are driven by a Serial
+> +         Shift Output(SSO) controller. The driver supports hardware
 
-Also, I'm using mail.kernel.org as a SMTP especially to make sure that
-my mails are not mangled by our exchange server.
+What is Lightning Mountain? The codename is not widely known. Where
+can we find that hardware? Notebooks? Phones? Only some development
+boards?
 
-Are you sure that such change came from me and not from "--whitespace=fix"?
+If user is not likely to need the driver, say so.
 
-Thanks
+> +         blinking with a configurable LED update/blink frequency in two
+> +         modes, 2/4/8/10 Hz in low speed mode and 50/100/200/250
+> KHz in
 
->
->             Linus
+kHz? But I guess we don't need that here.
+
+>    *
+> - * Copyright (c) 2020 Intel Corporation.
+> + * Copyright (c) 2021 MaxLinear, Inc.
+>    */
+>=20
+
+I don't think you can do that, and I don't think you should be doing
+it in the same patch.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBTB4cACgkQMOfwapXb+vIVGACgth9ev/h83Tnn3C4aAvexU2tY
+z9cAni/D6znXSqZUsVl9tMG980xesjPS
+=nECn
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
