@@ -2,73 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DDB340CC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2D1340CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhCRSSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
+        id S232412AbhCRSUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhCRSST (ORCPT
+        with ESMTP id S231590AbhCRSTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:18:19 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A78BC06174A;
-        Thu, 18 Mar 2021 11:18:19 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 181CD2C4;
-        Thu, 18 Mar 2021 18:18:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 181CD2C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616091499; bh=D6+NW32QhsSkiW9Ttc6kcoqu/iMNIPHgo6s+YdkpRNA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HgPD5ZwmH755X2ZgoYdrsMiW0iDui3F4GJMFBClm4A+IY2kD3oPGUeIPvG0jOfHQE
-         QibBHM5GyOnNEqJvriRmgZIHnyfoMOzExLX2TOafaTqM6hyU18PfjDDMbYjS5SI805
-         85dOU+FPnSwlG7GpdMJIXmv8rucBUNRBQzG3l9A1kzatbXVWi3hiGWCb/2YgpGlLS2
-         PoH4M85XJGbvxO+b6saMsGX1yP5ZwxwPctsQstBzm2TdljkRy5OycOJo/kYmq/xKZs
-         3u+9r4bx7S83rYOWu+kHYcipjcTE76kD941rGVbG7sD9OHG2J15o4SxMryEa8lZXmB
-         EwLrq7rL0tKYQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Aditya <yashsri421@gmail.com>,
-        Markus Heiser <markus.heiser@darmarit.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Thu, 18 Mar 2021 14:19:36 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21126C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:19:36 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id k8so3295245iop.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oF3ZUW+4J4CFMM7Juvx/eFO+KnFrLTNl0x25bnTL6cQ=;
+        b=EjKtEX+xFlBYcUVGMVT8rDwEhj+phbsFS6yb9jT0W1rNTmGl7m4hzLIFB+ujjzOuep
+         QMNrs5fzUu9QW4WbkVeBfQNn96h6bp9MG9KaCtxQp4mbcsmkaAGy/Xpd4VejZ7PBddnB
+         52lif8yrBnZuR9b/AjAr4iH7DW6+ClccQhcI+2ZbH6dqg4drBT7tRkdRYTmVAtdosdPe
+         0UK7zQqsOrSxq3bXNYWVbogZWDCSDFo4S3fPgvkkDfgwqff+iEor6CA8DAjG2RMfV99n
+         0rkkr7E/loriLElLmTLdpLy4T+9emJ3EGWvu/ZwjgQ8yudsi+eNASx2Xd8t82bzmC1Mj
+         r2Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oF3ZUW+4J4CFMM7Juvx/eFO+KnFrLTNl0x25bnTL6cQ=;
+        b=oEMNqJVZXTUeYeFQGmJA/TVXpzCUsiFf3YsZ9b1wJqWGrN3+xZo/FUeaurt3AsSYUl
+         LaIsw4a5to6ZSR0X/lQgfFUqDMq+t2PAyUoKvAAYXjXxCqBj76eZqHZHBInGwjs9RE+K
+         qsIg2tnrBY9e3sRxQ5/3POCDsAoiiJpTfdd9TtN1MTRViJ/bvZ3nXxxjcmqNjuK9wbGu
+         R00p+KUyU7gpQnPUqQ5CeRGkI0tC/Lp/8ZScmLpMbvKYqJAnP0nGHQr7by0kLHbDYyX9
+         zR9tguqXodMpOkJQwzt9S177SsTbHSg+rzq0aH84gXGLnibKnY/xuKqVnTawCIplU0uK
+         D1Sg==
+X-Gm-Message-State: AOAM533UANS5ZoCNPxwbBIV8cBZbrlHK0rpyXX7geGKbzXx7naDN7kN7
+        53G1bbOQOJMPjBQ9nMnj5UBLWQ==
+X-Google-Smtp-Source: ABdhPJz+KCRumbxLMPvmy0nP13iuFKiNw7uhLGiA2Css6rHPzUMn9LXLwG8nVd8PUVJAPFxFd841Qw==
+X-Received: by 2002:a02:9985:: with SMTP id a5mr7980431jal.122.1616091575551;
+        Thu, 18 Mar 2021 11:19:35 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id q12sm668404ilm.63.2021.03.18.11.19.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 11:19:35 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the akpm-current tree with the block
+ tree
+To:     Shakeel Butt <shakeelb@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-In-Reply-To: <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
-References: <20210309125324.4456-1-yashsri421@gmail.com>
- <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
- <871rcg2p8g.fsf@meer.lwn.net>
- <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
- <878s6kto3g.fsf@meer.lwn.net>
- <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
-Date:   Thu, 18 Mar 2021 12:18:18 -0600
-Message-ID: <87o8fgpbpx.fsf@meer.lwn.net>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210318171720.61a3f59c@canb.auug.org.au>
+ <CALvZod7iPJ1h0MVpBwNkqJBfNNWPb+x93q59okdK5oxevzbP_g@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4fea89a5-0e18-0791-18a8-4c5907b0d2c4@kernel.dk>
+Date:   Thu, 18 Mar 2021 12:19:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CALvZod7iPJ1h0MVpBwNkqJBfNNWPb+x93q59okdK5oxevzbP_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+On 3/18/21 11:54 AM, Shakeel Butt wrote:
+> On Wed, Mar 17, 2021 at 11:17 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> Today's linux-next merge of the akpm-current tree got a conflict in:
+>>
+>>   mm/memcontrol.c
+>>
+>> between commit:
+>>
+>>   06d69d4c8669 ("mm: Charge active memcg when no mm is set")
+>>
+>> from the block tree and commit:
+>>
+>>   674788258a66 ("memcg: charge before adding to swapcache on swapin")
+>>
+>> from the akpm-current tree.
+>>
+>> I fixed it up (I think - see below) and can carry the fix as necessary.
+>> This is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+>>
+>> --
+>> Cheers,
+>> Stephen Rothwell
+>>
+>> diff --cc mm/memcontrol.c
+>> index f05501669e29,668d1d7c2645..000000000000
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@@ -6691,65 -6549,73 +6550,80 @@@ out
+>>    * @gfp_mask: reclaim mode
+>>    *
+>>    * Try to charge @page to the memcg that @mm belongs to, reclaiming
+>>  - * pages according to @gfp_mask if necessary.
+>>  + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
+>>  + * charge to the active memcg.
+>>    *
+>> +  * Do not use this for pages allocated for swapin.
+>> +  *
+>>    * Returns 0 on success. Otherwise, an error code is returned.
+>>    */
+>>   int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>>   {
+>> -       unsigned int nr_pages = thp_nr_pages(page);
+>> -       struct mem_cgroup *memcg = NULL;
+>> -       int ret = 0;
+>> +       struct mem_cgroup *memcg;
+>> +       int ret;
+>>
+>>         if (mem_cgroup_disabled())
+>> -               goto out;
+>> +               return 0;
+>>
+>> -       if (PageSwapCache(page)) {
+>> -               swp_entry_t ent = { .val = page_private(page), };
+>> -               unsigned short id;
+>>  -      memcg = get_mem_cgroup_from_mm(mm);
+>> ++      if (!mm) {
+>> ++              memcg = get_mem_cgroup_from_current();
+>> ++              if (!memcg)
+>> ++                      memcg = get_mem_cgroup_from_mm(current->mm);
+>> ++      } else {
+>> ++              memcg = get_mem_cgroup_from_mm(mm);
+>> ++      }
+>> +       ret = __mem_cgroup_charge(page, memcg, gfp_mask);
+>> +       css_put(&memcg->css);
+> 
+> Things are more complicated than this. First we need a similar change
+> in mem_cgroup_swapin_charge_page() but I am thinking of making
+> get_mem_cgroup_from_mm() more general and not make any changes in
+> these two functions.
+> 
+> Is it possible to get Dan's patch series in mm tree? More specifically
+> the above two patches in the same tree then one of us can make their
+> patch rebase over the other (I am fine with doing this myself).
 
-> Yeah, and as this line-counting is really just a poor man's
-> heuristics, we might just be better to really turn this heuristics
-> into a dedicated cleanup warning script, then we can check for more
-> indicators, such as "does it contain the word Copyright" somewhere in
-> the kernel-doc comment, which tells us even more that this is not a
-> kernel-doc as we would expect it.
+Yes, I think we should do that, and since he's going to be respinning
+the series anyway, I'll drop it right now and then let's take it through
+Andrew to avoid unnecessary complications that way.
 
-I really don't think we need that kind of heuristic.  The format of
-kerneldoc comments is fairly rigid; it shouldn't be too hard to pick out
-the /** comments that don't fit that format, right?  Am I missing
-something there?
+-- 
+Jens Axboe
 
-Thanks,
-
-jon
