@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AFA34043C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865DF340431
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhCRLJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhCRLIs (ORCPT
+        id S230354AbhCRLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:07:32 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:33319 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhCRLH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:08:48 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5BDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:08:48 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n11so1200170pgm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2a1Q2yqghil2SSuBrZCKn/WKXtEY0qZpSKwUUGtGYmY=;
-        b=hX6/GKnUT+Ilw/SDCCSBWdFzs4WAT6mGp/EfDQfq8LGKDxZ+SKKA7NxoIHTfJ+a/nX
-         VhS0xLPj5LjDtRdfrNYbeEO+LRjq69d8n50zryDPlHp2Ojva4nqea0rDXjk+UlaCJIab
-         WyDJBosKmTyQw3uRCCHZjq25G8//ycGePxYRHo+ydN8I/qVMx1Vnts6J6F8Bu11BtY/9
-         IUflt7mGSnn+997hIM8VMWgmrhrO8wt94uFlH2jpVIuJR/H3UXMpvdxP0y8dpio8WM1z
-         GL0ejD58nG7HecS6pj5zUo1KZKmgu/RjQ91OkKYJ7yeAjwBLYThZp+GYxSrcnRPjUVem
-         jetg==
+        Thu, 18 Mar 2021 07:07:28 -0400
+Received: by mail-ot1-f43.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so4814439ota.0;
+        Thu, 18 Mar 2021 04:07:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2a1Q2yqghil2SSuBrZCKn/WKXtEY0qZpSKwUUGtGYmY=;
-        b=BrFOEv8kJNYKm4Jd3KxglZGkpD6VAfyWOlCUeFP8rnMz9jPOdFgyG5wHLQuzX1ffZI
-         rqN0uGoezAzQlP3n1kRLF0GmMhAF6v37pnsfyItfNoAD98AP7NQWLOKllbRM3mRCTEoC
-         FrpejAwF8fdFEm5DjfW3HCHptPhmHA2R9/o/dQf5i7BLBIVYdcqAxH4rRN8jmOjlx4Rx
-         7sNt7uxAd4VuyHXDpp++kwyJV+j4uk+cxZ6gWM2r4YkUsM+QbPhScGpmDGyg/6eNHvsR
-         FGQltBoWLqTyBRghm4mgQXZRqwnM5o2oRCDYG5Nz7Lrzeu2DQuqB4LRDyzEXjwpGVbTh
-         lJHw==
-X-Gm-Message-State: AOAM533NSlYs/CR3dEBUdOuOoopnQsErPfXRfCvNQKwm4UpK50gSFSnE
-        YJtUrqV4A/lnUdR2U0PzWHtenQ==
-X-Google-Smtp-Source: ABdhPJxFBl9WuSrFTiRWvdlXHku6toNPWED+IUaMV77zPDYMhGWwbqGQh69e6odC2uF5ITmlXNk3BQ==
-X-Received: by 2002:aa7:8e51:0:b029:1ed:2928:18ff with SMTP id d17-20020aa78e510000b02901ed292818ffmr3514424pfr.76.1616065728142;
-        Thu, 18 Mar 2021 04:08:48 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.231])
-        by smtp.gmail.com with ESMTPSA id e21sm1779509pgv.74.2021.03.18.04.08.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Mar 2021 04:08:47 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, shakeelb@google.com,
-        vdavydov.dev@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 5/5] mm: memcontrol: move PageMemcgKmem to the scope of CONFIG_MEMCG_KMEM
-Date:   Thu, 18 Mar 2021 19:06:58 +0800
-Message-Id: <20210318110658.60892-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210318110658.60892-1-songmuchun@bytedance.com>
-References: <20210318110658.60892-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TinDs4EVQQqlZ2LTjeSZTwhvPWfcUIiPPlSq9X257dw=;
+        b=tfmFrxXJy4TLmrn7HhjWFIFDumXictJZiezr7nyZRSvknfo3R+85nG7fk2sU+nucLt
+         JDtUcqnbhxUPtjGseQKBzAShWHau9kTvJtn/vwpB66gL11G+x8512ngz0cb35ztC8i1S
+         NpB9qCOrCBf9K/DfD3NpbgOYIp/rNZFOnnBg7phvdS4eIbux4dplEPgHar9rC6dz9e3d
+         ujlYk6hPk2O+ZQVUYSKBwW+D0Mseggi5HNjRPYcnvLRgY1tbJaF+YBem1iacyUdRPSpC
+         wWh48XrhT1dxr1qGawFQDEwx7d6G3cIAlpGQMluKiEkrwOGPN0IHTQgG2hfbwWgVBJrw
+         WB1g==
+X-Gm-Message-State: AOAM530NDVTE4JLPQQ9HloskI4UAuNdi5x0jP52PcYaKlz7Mar6h+6S+
+        OoAuiCm8IsnBffRyvlw/mwBNtBggfXKHqJ4XQ6o=
+X-Google-Smtp-Source: ABdhPJyRFfzU8LNxXDIE+4/TGFcKz89L9zU3zWmRmqa1qdIli/E9TD8Hr3RUJtRnXAYxbyFfxA8BrVt7LeHkuy/F/U8=
+X-Received: by 2002:a9d:4811:: with SMTP id c17mr4799994otf.206.1616065648247;
+ Thu, 18 Mar 2021 04:07:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2527835.vZkJICojNU@kreacher> <8b35de7b-072f-128c-6a3f-c7da5a1b91b8@molgen.mpg.de>
+In-Reply-To: <8b35de7b-072f-128c-6a3f-c7da5a1b91b8@molgen.mpg.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Mar 2021 12:07:16 +0100
+Message-ID: <CAJZ5v0iDofnMTO8-GkBMGeQJkr1hSKU_uihKR87xTT1zJ2J_MQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: scan: Turn off unused power resources during initialization
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        David Box <david.e.box@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page only can be marked as kmem when CONFIG_MEMCG_KMEM is enabled.
-So move PageMemcgKmem() to the scope of the CONFIG_MEMCG_KMEM.
+On Wed, Mar 17, 2021 at 10:27 PM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Rafael,
+>
+>
+> Am 17.03.21 um 17:49 schrieb Rafael J. Wysocki:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > It is reported that on certain platforms unused ACPI power resources
+> > that have not been explicitly turned off prevent the platform from
+> > reaching the lowest power state in suspend-to-idle which leads to
+> > excessive power draw.
+> >
+> > For this reason, turn all of the unused ACPI power resources off
+> > at the end of the initial namespace scan for devices in analogy with
+> > resume from suspend-to-RAM.
+> >
+> > Reported-by: David Box <david.e.box@linux.intel.com>
+>
+> Thank you for the patch. Could you please add more details to the commit
+> message, saying what device this was on, and if there were some
+> error/warning messages pointing to the problem?
 
-As a bonus, on !CONFIG_MEMCG_KMEM build some code can be compiled out.
+The actual report is not public, so I cannot quote it.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
- include/linux/memcontrol.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+In essence, there is a power resource in the affected system that
+would be dedicated to a specific device, but that device is not
+present in that variant of the platform.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 395a113e4a3b..7fdc92e1983e 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -510,6 +510,7 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
- 	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
- }
- 
-+#ifdef CONFIG_MEMCG_KMEM
- /*
-  * PageMemcgKmem - check if the page has MemcgKmem flag set
-  * @page: a pointer to the page struct
-@@ -524,7 +525,6 @@ static inline bool PageMemcgKmem(struct page *page)
- 	return page->memcg_data & MEMCG_DATA_KMEM;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
- /*
-  * page_objcgs - get the object cgroups vector associated with a page
-  * @page: a pointer to the page struct
-@@ -566,6 +566,11 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
- }
- 
- #else
-+static inline bool PageMemcgKmem(struct page *page)
-+{
-+	return false;
-+}
-+
- static inline struct obj_cgroup **page_objcgs(struct page *page)
- {
- 	return NULL;
--- 
-2.11.0
-
+However, the behavior introduced by this patch is generally mandated
+by the spec and evidently depended on by firmware developers (see the
+second paragraph in
+https://uefi.org/specs/ACPI/6.4/07_Power_and_Performance_Mgmt/device-power-management-objects.html).
