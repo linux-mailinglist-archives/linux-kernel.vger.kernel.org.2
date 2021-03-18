@@ -2,265 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A4433FD2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0953733FD2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCRCYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:24:03 -0400
-Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:37799
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229880AbhCRCXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:23:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hFMSMLWUNqwwp25+TFDHanHeWKCt8OwTVhmPayrgn2HnHKUS/KYOQnmvhaUhIiCg7T7xedFs3LFvHCfdSbBk/2wyUm1s1IjjKCe4mooKyuKdXYzmSfwponfMEii0REgPvrDNo5KMwbK4LTOadufGKxB0heywEP9SyY1aeSAWp9wN66TrbSr5LfMd1nMmrDaOV4faz+wUr3KEu3brrCLl8ayepib2QOARYeZ0MeWaou89wY1geHGRdT8Z3GUUdTgoWBjXxlktjWz2Q11iGGiZLfzyExuIStBBI0zVuoinMRDWXKShAhFlfSrHScciTOWG/Xilt066wwP0qjb9MSUZ8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9QJ9nFwxo7WOPj1goLWTz/CxKFpWjyAOoFS2h7CZ1UQ=;
- b=HaUgel3hNNuJPFiuWLw0ofHZ9OylSZV2EB6wEDScn7uuNN6WjWW5R2QWSPGL+SgALHpeU2WiM8PbKdKwOKMxbZRaTLAvdnIXhNHd1F4AjPhjIWPIjkdXOxkOCNaSbGODX0/5Cf4JN9Hyj9stD+db40quTIaipFCsTZs9umdHhJWPuJf4BTl0a8EwLCjxpFxjv+MnBM65x8ty8T0rlTN90A3w3RdJt3NhpN9swHJPpBz2CeEY3GEU7+3QbIOdm/Hoys5QpH4OFbWSD4aWYkgrwafdut3BFXEtvRHk7Kq8MptxwtU7Yf9/U5pi8QrefI91H/NyM1V1WRWLxI2NH5LpbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9QJ9nFwxo7WOPj1goLWTz/CxKFpWjyAOoFS2h7CZ1UQ=;
- b=YgRGqntGaox9L1tMDHEV9x3tIFUCzibVOW4w1SzoDoK1lGw0eFRjogRpTT7AzrBGLlgvcTJp/doMw8Yc5cDfxtyVYkGlJrQbca3uZr71IhEwyWBwI93bxYMVn+rJmqKRRZn+uJSRi7jLnikvHeqMaevmFTjqWRr0eflNhSf39BQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB7183.eurprd04.prod.outlook.com (2603:10a6:800:128::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Thu, 18 Mar
- 2021 02:23:42 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
- 02:23:42 +0000
-Message-ID: <6c52ebc6a027cbe309ed2c8848f2ae8cfa6e15f4.camel@nxp.com>
-Subject: Re: [PATCH v4 2/5] phy: Add LVDS configuration options
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
-        robert.chiras@nxp.com, martin.kepplinger@puri.sm,
-        robert.foss@linaro.org
-Date:   Thu, 18 Mar 2021 10:22:04 +0800
-In-Reply-To: <YFHYeZ/ZVqNiG/yo@vkoul-mobl.Dlink>
-References: <1615175541-29009-1-git-send-email-victor.liu@nxp.com>
-         <1615175541-29009-3-git-send-email-victor.liu@nxp.com>
-         <YFHYeZ/ZVqNiG/yo@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HKAPR04CA0003.apcprd04.prod.outlook.com
- (2603:1096:203:d0::13) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S230260AbhCRCYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhCRCY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:24:29 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6BAC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:24:29 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id h7so3014364qtx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KtRoYljdLC9wtNNIQKgFt5kI0MSMpD7ofw+TcTRYVTo=;
+        b=JfToSI4kaBWN0qUCBE3Q9DPIPE+BeYzj516ZRCD8oSKbGgEMflIpd0jqn35vszBpcd
+         yjLvJ6rOzzl7lbCJNBeS+dVViSca835sOdLEqwobmUNnPRU/e9eB8ySyuLcQdYD/1cZR
+         rcR+f9zoMB6RrIC7oI9D41mj2eOo3invqQWGOFjJEC+KJDEobUPN+1rf1hN5IBr9HV7G
+         2HpHXcLujlcEnnLl6UQltvehTTmen5x0F20lWJ6zwYZJoZuqyEw2h3u5NY2+43IvhwSE
+         uQImVhSaRSxIUdtNz1tQttGY7vMzKJYvADyMf5yTWL/hvqNnAHjef+eEXh6PbuVkXtiF
+         +27g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KtRoYljdLC9wtNNIQKgFt5kI0MSMpD7ofw+TcTRYVTo=;
+        b=LgzthnBskBsYS05gUIUJWTK3byr0k8EGbRMeXa7mYmpQ5K/tNRKv28zQxwtbkcUU7D
+         b1I8hphfd+evOffulC1M+BDJg5EiCzTfxfy/69s487C14QVQq9pzg7qcQtywfMS5fqLI
+         DKCdluwlcMfVXc86/WM4Y+AWev2xleDsD3ALm1ZB8rotHd1FaasDHubd/gRnzsfURlyX
+         w+M+y9npJGMBb12eEmXncuEKgWCJDp2vk5EQAAGkwGqg6T4rIDeWVSGYdkt1GSnlp8k0
+         9vmBqVK5mD62MHot3kQ8ymjR5rkInYwd4VJ3+VeXk5n37cF+XHqeHDtqOTgc/Ra1SEzq
+         lt6A==
+X-Gm-Message-State: AOAM531K9H1YQa68VNcH5TUcrQNeTGgyqy+agf/3gSZ7Uo+rfRZPFKt/
+        8Oh2XRt7ZNzCWKATb+dYpunl6WAtI2E=
+X-Google-Smtp-Source: ABdhPJyNnvqcFY+48bD8tIZhHR/XsONgsjw+gmjBccW4w0CYZ+ElnkHjDTxNhP8nn4kJO+souNTKrQ==
+X-Received: by 2002:ac8:e81:: with SMTP id v1mr1821498qti.23.1616034268524;
+        Wed, 17 Mar 2021 19:24:28 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id c73sm780161qkg.6.2021.03.17.19.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 19:24:27 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 207D127C0054;
+        Wed, 17 Mar 2021 22:24:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 17 Mar 2021 22:24:27 -0400
+X-ME-Sender: <xms:2rlSYFuSYUqzExcTnMqNQ2mslkZ1cwQvEcE27CtRfjjdkaiz6eAjJw>
+    <xme:2rlSYOcu43JQGwSmBhQAfCkItKhx8YaHd8jwGXg590-5E7eGKJdZukjZfIgwnt1xJ
+    7fikgXO0Wn930KMNA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefhedggeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:2rlSYIzaMo1CTfAIEb37Xj08UOFK1ZOPg6E8TDLsUakccelWG17S2A>
+    <xmx:2rlSYMNB9PSYoNmH87-_HxbMfMLrXa80pEelsbZsMt9aHks1EStpBQ>
+    <xmx:2rlSYF_2HLVQTCBlC4iSR8IuYxu5oU71aS39k45tMx014FZL6bVO-w>
+    <xmx:2rlSYFxElMIH4fxCYUGLfYYsyRK5KYg1dr5kMeM5KzBkS7S3HEi76gdf_ZY>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C8CA11080057;
+        Wed, 17 Mar 2021 22:24:25 -0400 (EDT)
+Date:   Thu, 18 Mar 2021 10:24:08 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a
+ trylock
+Message-ID: <YFK5yBIOTiCdFLNm@boqun-archlinux>
+References: <20210316153119.13802-1-longman@redhat.com>
+ <20210316153119.13802-4-longman@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry (119.31.174.66) by HKAPR04CA0003.apcprd04.prod.outlook.com (2603:1096:203:d0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 02:23:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 63091aa8-0b49-4f45-5002-08d8e9b4d95d
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7183:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB7183119E79E41969E44DC11E98699@VI1PR04MB7183.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ocg2NwFu+OAwJtxT1i4/SGQEScuE5MkcrZxv/LPuSkkn2iroQ1WPlgJUIEE041bZ1aj3Ys/KN4wM+L745ScfG6Y9k47r3FHkQyY35u3rg/MGNlHX94uIzSd5MAxGtYq1w70qgZxPWyAGN2Po4YrDlWty4I+EUCOSd2XVsCtjhgZfpgGlDXIwr+2e+49HwTVpY/rBJ6SZPp/oVoGxXFeyfcFFdemviNnKoKTddwPdm65gE5nMUjZ964I+qusgpFaydZ0T9sAgG0pcR/jDWr5r5OysqEK7WSnXpdXskc9dZxHn6rJEsdaSZPl4JuDCeKlQctQWN3L8O4+qVvs5cROvQndfAI9QbtrZNa7hlF5jJ/HwAOMOBXLg3VqNgOt7oAh+W+tCQKJ5NYYXATUK5fafRkcYHfUiEICM8goyw4yVOGUCviiMg0A4X5CG+mpPXbOVq+pWBRqxt/WZH54b9TOd/kvd67xZ7jgadCXbbcuBe1UII7l8gvvKy7aPh0CnZdOJwyRUEwWhjql7hAUxTtrG1AZJmVPMOnAt4EI+bWOnY//xBRlYryXr+PwUTXW39ANFnjV84xMkIZQeP1D4xiQh5YV6gMGeCBS+YrHq178J6yeb17jLgJvxhKJMP2VOvCvIw/uzbda824N2Oi6yV821ClDo2AJy5dPdqhJw76tottErr04aaDg557er7m5iDWAN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(956004)(86362001)(66556008)(66476007)(6496006)(16526019)(52116002)(478600001)(110136005)(7416002)(8676002)(6666004)(36756003)(53546011)(83380400001)(66946007)(966005)(6486002)(26005)(2616005)(2906002)(4326008)(186003)(8936002)(5660300002)(316002)(38100700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y0YvSWpDVzdtTlZ6Q1AweEtKNEVuUklVR1RUYko4UEN3dlF1WDROekZWRzk0?=
- =?utf-8?B?ejhLZXc4bm80cTdYaER6eHlURi9LNWducnFKQm5RSlI1VWVIN1VLZkRGV2tP?=
- =?utf-8?B?U2ZWQ0ZzNmlMZHFzVTk4eFE2M3o3L3IrbmNkQWJhZHpEV0FjYmVOekR2ZkFN?=
- =?utf-8?B?dFJuL0RoaEh6MzRvc25qRnpWSHRvaHVleDVJQTEyN0djUVZaZEJQS1dzc045?=
- =?utf-8?B?NmFmcXRMZVpZMmNETnhlZnMzbzFGVXVTQVdLNGFlTDNzWExiN3paaVNDKzhO?=
- =?utf-8?B?SVpZQlloa3NiNjZqaVlqOCs5TzZteWZyK0tFSWs1NDZ2THlFNmpJUHJnUEE2?=
- =?utf-8?B?d1hNd2c4K0VlNUpEQTVKK1dEcFBCRFliWTZSUnplQ0tZQjdsRlU2R2xmSnlZ?=
- =?utf-8?B?cTFqK3pmVkF5Ulo3S0NqbVFUR0puUklETnFmMGU0M2RKQ1NnbjBzdDl0dFN5?=
- =?utf-8?B?cUpYOXRtSndDdmg3Uk9tdDhnK1E5VExIRU9na2tRdTdWMjZab3VneVdtaTY2?=
- =?utf-8?B?SUtZMnA5RVZsOXc3cVo5blUrZ2piWGdrNVZUclhZOGNxWmlxV2JpTElTZEta?=
- =?utf-8?B?L1ZIVU1JU0FkblZkVmhTdk15NWVZVFU2cThiR0VTZ0ZlSHM1eXFmUm1uWWtH?=
- =?utf-8?B?Um1mODNYdlByNWZ3WVJSRStraHNpV3VGNWdBNGRwcTdackQwV3pvL2RIUWZn?=
- =?utf-8?B?V1lJcS9Cc3FCSjgwWlBRWWgwT3pxTFRBNmUxUjk4SkFJWVpiMk1zNjUzZzk1?=
- =?utf-8?B?c1hLT0VrL3c5SlFIM25PS0RMdHgycHBVL1A1RjFZWEUvSjd5ejE1WFlObUM3?=
- =?utf-8?B?NlN4Q2prVElYVHloZ0xiWW03dld5d0k4dXBwcnVEcWJQcVk2c1cxTWorOU10?=
- =?utf-8?B?K2VTSjhrR1pFNXBIRFlGK0p6bHRIeGFBeVowazFpenl4OVowbDM4cjVCaWFI?=
- =?utf-8?B?VFJXTW1hdVo3aS80VjQ1eFNta3RxUTNOMTFJNFBaK1J4V2d0amFXUFFFTGcv?=
- =?utf-8?B?QTlxbWpscTVxbkd4bldjay83cC9uOW4rRHB6UXhid0hadGUvREpaVzFIaGRu?=
- =?utf-8?B?SkF0eWtQK1V3OWJ4dEpxMGtTNDE4WWdoVTVnaHVZL1FRLzU2V2RDYTNPSTFM?=
- =?utf-8?B?WG1vd0tQUFRwWnRmOEpNUmhuSldZVWZWc1lyazdueWJ2aVpsdXVnMmUxL2lF?=
- =?utf-8?B?WWdNWWlzTDdqSHovQnk2WU1QM0ZVMlJlakNnVXBiZ0dPa29INTlnVVhyN3ow?=
- =?utf-8?B?MUFEQ2o0QUQ4OW5ENDJEYXZZTWpYcmNaRzFBVTJpbkNIZHdtVGdXNC9LT0t4?=
- =?utf-8?B?S2MyU2VPQ01weHl1SmE0V0hldWxwMmpSZDlQT1ZvT0IxdWJGQ2p1aFE3eWlw?=
- =?utf-8?B?UVhNRHkrYWdNSnNqaVQwV1FNNmtuWjlabm1VNGJCNkVucHo0Ukx0ejJmNTRo?=
- =?utf-8?B?UHBrSVdwc0JhN2U4dm91cm5ETTlQQUh2S2hIYzc1Q1JkUEhvWnZyaDhram9K?=
- =?utf-8?B?aktrb2RiVkpubFFEaENwTGlxTlpocWlkSDZkeEpXR3VlT1lmQUNFMTRwWXlu?=
- =?utf-8?B?TXhjRTdVVUMxbW5Cd3F5clBrVjhjOFU0K0laV25GSDVCSmt2YWU5T1lobUVB?=
- =?utf-8?B?YWpaeGNGV2YyeHUwWTRKUjUyUjV2aTVJNU12aXVUbXBLbWZxWDhqanorNU5h?=
- =?utf-8?B?TGR4MlZFdUNCL1VmZFBHcS9JUDZmZDJwUlN4Uit0ancyTXB2cVk3WWhHVG1G?=
- =?utf-8?Q?1DuTTwVWb1IIyD7AtvODwbhRXIPx3VAruPbU00g?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63091aa8-0b49-4f45-5002-08d8e9b4d95d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 02:23:42.8558
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B5gl4YwpTFQE+tasdtem3wHmZTmoUmnytvYqHf5kT/bGLRXGo6JHRWpI04RYesU+wmtCP+5AEDT0RFEVrkbjaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7183
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316153119.13802-4-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hi Waiman,
 
-On Wed, 2021-03-17 at 15:52 +0530, Vinod Koul wrote:
-> On 08-03-21, 11:52, Liu Ying wrote:
-> > This patch allows LVDS PHYs to be configured through
-> > the generic functions and through a custom structure
-> > added to the generic union.
-> > 
-> > The parameters added here are based on common LVDS PHY
-> > implementation practices.  The set of parameters
-> > should cover all potential users.
-> > 
-> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Cc: NXP Linux Team <linux-imx@nxp.com>
-> > Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > ---
-> > v3->v4:
-> > * Add Robert's R-b tag.
-> > 
-> > v2->v3:
-> > * No change.
-> > 
-> > v1->v2:
-> > * No change.
-> > 
-> >  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/phy/phy.h      |  4 ++++
-> >  2 files changed, 52 insertions(+)
-> >  create mode 100644 include/linux/phy/phy-lvds.h
-> > 
-> > diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
-> > new file mode 100644
-> > index 00000000..1b5b9d6
-> > --- /dev/null
-> > +++ b/include/linux/phy/phy-lvds.h
-> > @@ -0,0 +1,48 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright 2020 NXP
-> > + */
-> > +
-> > +#ifndef __PHY_LVDS_H_
-> > +#define __PHY_LVDS_H_
-> > +
-> > +/**
-> > + * struct phy_configure_opts_lvds - LVDS configuration set
-> > + *
-> > + * This structure is used to represent the configuration state of a
-> > + * LVDS phy.
-> > + */
-> > +struct phy_configure_opts_lvds {
-> > +	/**
-> > +	 * @bits_per_lane_and_dclk_cycle:
-> > +	 *
-> > +	 * Number of bits per data lane and differential clock cycle.
-> > +	 */
-> 
-> Can we have these in kernel-doc style please, similar to style in linux/phy/phy.h
+Just a question out of curiosity: how does this problem hide so long?
+;-) Because IIUC, both locktorture and ww_mutex_lock have been there for
+a while, so why didn't we spot this earlier?
 
-I take this way of in-line member documentation comment for the below 3
-reasons:
-
-1) Members of struct phy_configure_opts_mipi_dphy and
-struct phy_configure_opts_dp use the same way of comment.
-The structures are defined in linux/phy/phy-mipi-dphy.h and
-linux/phy/phy-dp.h respectively.
-Aligning to them makes a bit sense, IMHO.
-
-2) In-line member documentation comments[1] are mentioned in kernel-doc 
-guide. It says 'The structure members may also be documented in-line
-within the definition.'.
-
-3) Even the 'configure' and 'validate' members of struct phy_ops use
-the same way of comment.  struct phy_ops is defined in linux/phy/phy.h.
-
-[1] 
-https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#in-line-member-documentation-comments
+I ask just to make sure we don't introduce the problem because of some
+subtle problems in lock(dep).
 
 Regards,
-Liu Ying
+Boqun
 
+On Tue, Mar 16, 2021 at 11:31:18AM -0400, Waiman Long wrote:
+> It was found that running the ww_mutex_lock-torture test produced the
+> following lockdep splat almost immediately:
 > 
-> > +	unsigned int bits_per_lane_and_dclk_cycle;
-> > +
-> > +	/**
-> > +	 * @differential_clk_rate:
-> > +	 *
-> > +	 * Clock rate, in Hertz, of the LVDS differential clock.
-> > +	 */
-> > +	unsigned long differential_clk_rate;
-> > +
-> > +	/**
-> > +	 * @lanes:
-> > +	 *
-> > +	 * Number of active, consecutive, data lanes, starting from
-> > +	 * lane 0, used for the transmissions.
-> > +	 */
-> > +	unsigned int lanes;
-> > +
-> > +	/**
-> > +	 * @is_slave:
-> > +	 *
-> > +	 * Boolean, true if the phy is a slave which works together
-> > +	 * with a master phy to support dual link transmission,
-> > +	 * otherwise a regular phy or a master phy.
-> > +	 */
-> > +	bool is_slave;
-> > +};
-> > +
-> > +#endif /* __PHY_LVDS_H_ */
-> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> > index e435bdb..d450b44 100644
-> > --- a/include/linux/phy/phy.h
-> > +++ b/include/linux/phy/phy.h
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/regulator/consumer.h>
-> >  
-> >  #include <linux/phy/phy-dp.h>
-> > +#include <linux/phy/phy-lvds.h>
-> >  #include <linux/phy/phy-mipi-dphy.h>
-> >  
-> >  struct phy;
-> > @@ -51,10 +52,13 @@ enum phy_mode {
-> >   *		the MIPI_DPHY phy mode.
-> >   * @dp:		Configuration set applicable for phys supporting
-> >   *		the DisplayPort protocol.
-> > + * @lvds:	Configuration set applicable for phys supporting
-> > + *		the LVDS phy mode.
-> >   */
-> >  union phy_configure_opts {
-> >  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
-> >  	struct phy_configure_opts_dp		dp;
-> > +	struct phy_configure_opts_lvds		lvds;
-> >  };
-> >  
-> >  /**
-> > -- 
-> > 2.7.4
-
+> [  103.892638] ======================================================
+> [  103.892639] WARNING: possible circular locking dependency detected
+> [  103.892641] 5.12.0-rc3-debug+ #2 Tainted: G S      W
+> [  103.892643] ------------------------------------------------------
+> [  103.892643] lock_torture_wr/3234 is trying to acquire lock:
+> [  103.892646] ffffffffc0b35b10 (torture_ww_mutex_2.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x316/0x720 [locktorture]
+> [  103.892660]
+> [  103.892660] but task is already holding lock:
+> [  103.892661] ffffffffc0b35cd0 (torture_ww_mutex_0.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x3e2/0x720 [locktorture]
+> [  103.892669]
+> [  103.892669] which lock already depends on the new lock.
+> [  103.892669]
+> [  103.892670]
+> [  103.892670] the existing dependency chain (in reverse order) is:
+> [  103.892671]
+> [  103.892671] -> #2 (torture_ww_mutex_0.base){+.+.}-{3:3}:
+> [  103.892675]        lock_acquire+0x1c5/0x830
+> [  103.892682]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
+> [  103.892687]        ww_mutex_lock+0x4b/0x180
+> [  103.892690]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
+> [  103.892694]        lock_torture_writer+0x142/0x3a0 [locktorture]
+> [  103.892698]        kthread+0x35f/0x430
+> [  103.892701]        ret_from_fork+0x1f/0x30
+> [  103.892706]
+> [  103.892706] -> #1 (torture_ww_mutex_1.base){+.+.}-{3:3}:
+> [  103.892709]        lock_acquire+0x1c5/0x830
+> [  103.892712]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
+> [  103.892715]        ww_mutex_lock+0x4b/0x180
+> [  103.892717]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
+> [  103.892721]        lock_torture_writer+0x142/0x3a0 [locktorture]
+> [  103.892725]        kthread+0x35f/0x430
+> [  103.892727]        ret_from_fork+0x1f/0x30
+> [  103.892730]
+> [  103.892730] -> #0 (torture_ww_mutex_2.base){+.+.}-{3:3}:
+> [  103.892733]        check_prevs_add+0x3fd/0x2470
+> [  103.892736]        __lock_acquire+0x2602/0x3100
+> [  103.892738]        lock_acquire+0x1c5/0x830
+> [  103.892740]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
+> [  103.892743]        ww_mutex_lock+0x4b/0x180
+> [  103.892746]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
+> [  103.892749]        lock_torture_writer+0x142/0x3a0 [locktorture]
+> [  103.892753]        kthread+0x35f/0x430
+> [  103.892755]        ret_from_fork+0x1f/0x30
+> [  103.892757]
+> [  103.892757] other info that might help us debug this:
+> [  103.892757]
+> [  103.892758] Chain exists of:
+> [  103.892758]   torture_ww_mutex_2.base --> torture_ww_mutex_1.base --> torture_ww_mutex_0.base
+> [  103.892758]
+> [  103.892763]  Possible unsafe locking scenario:
+> [  103.892763]
+> [  103.892764]        CPU0                    CPU1
+> [  103.892765]        ----                    ----
+> [  103.892765]   lock(torture_ww_mutex_0.base);
+> [  103.892767] 				      lock(torture_ww_mutex_1.base);
+> [  103.892770] 				      lock(torture_ww_mutex_0.base);
+> [  103.892772]   lock(torture_ww_mutex_2.base);
+> [  103.892774]
+> [  103.892774]  *** DEADLOCK ***
+> 
+> Since ww_mutex is supposed to be deadlock-proof if used properly, such
+> deadlock scenario should not happen. To avoid this false positive splat,
+> treat ww_mutex_lock() like a trylock().
+> 
+> After applying this patch, the locktorture test can run for a long time
+> without triggering the circular locking dependency splat.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/locking/mutex.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+> index 622ebdfcd083..bb89393cd3a2 100644
+> --- a/kernel/locking/mutex.c
+> +++ b/kernel/locking/mutex.c
+> @@ -946,7 +946,10 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
+>  	}
+>  
+>  	preempt_disable();
+> -	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
+> +	/*
+> +	 * Treat as trylock for ww_mutex.
+> +	 */
+> +	mutex_acquire_nest(&lock->dep_map, subclass, !!ww_ctx, nest_lock, ip);
+>  
+>  	if (__mutex_trylock(lock) ||
+>  	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
+> -- 
+> 2.18.1
+> 
