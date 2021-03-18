@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86711340B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4380E340BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhCRRTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S232312AbhCRRWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhCRRTO (ORCPT
+        with ESMTP id S232280AbhCRRWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:19:14 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474C0C06175F;
-        Thu, 18 Mar 2021 10:19:14 -0700 (PDT)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 8C14D22239;
-        Thu, 18 Mar 2021 18:19:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616087952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JBlcjfZUbD5yHqYYKcO3IKUFgPQENmUM+k3k8YFGv6Y=;
-        b=VDDG17lQaMaTCAxI/LwelU+ko+3knXkNZoyYGUx+tKSliF6Uh7TDKkOebA5U/2V3AbxgRo
-        /6OolT9iw7I+nT/LRJsSHlfSbyuUzOnjDuNzx2nw+aR0uJ24t9LX/bwtVMJrTD0Sdj3f7F
-        x+Q76J+qivItudJigEJZb8kVjl3m3SI=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] arm64: dts: fsl-ls1028a-kontron-sl28: combine unused partitions
-Date:   Thu, 18 Mar 2021 18:18:56 +0100
-Message-Id: <20210318171856.3487-2-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210318171856.3487-1-michael@walle.cc>
-References: <20210318171856.3487-1-michael@walle.cc>
+        Thu, 18 Mar 2021 13:22:06 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19065C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:22:06 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id q5so3957993pfh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+zrC/2pN/qc0ZP+joKAbaps/MruXf28Rv4f5cOXi7Dc=;
+        b=Lr4w7CS01/YiT8pPA94i4qxdH8NUb6mRWSa4tgsgw/pQLsKrWkot9A236IjKLqRztU
+         tBLCqbeY1r6/MfWsMYTKmClPPqPyduDADnujqPm033KQlvthHF06knyLlG1ru9jXz1t0
+         ZChrV8zTKJCppm+dKwJeTA5LpaSMBMxlSw2CODlKGZieWpu47bw6/3qrYRh6QBr2VwEx
+         GT0xUCR57aCN97aA6LtkNpXOjJ4E78DgJqcPiIvcg4oEc5iy+egr87JYLvGjTInd4fpg
+         gaUZATkxr8TRlstns+fcJhcX/mXFEbqBRyWGvRLUX8WuSZTo7usP0tGXNXYAYYTal4Lz
+         TA1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+zrC/2pN/qc0ZP+joKAbaps/MruXf28Rv4f5cOXi7Dc=;
+        b=sFvDib+Tfm8Mf786fFrqm49z7jmwMaghA8fq8BzwcRZP8wORGANIa4CR5tgFNPLQat
+         WnVdqy5CyV/yu3JjUCyFOQw98J2V/SuVnC3L8bPtJEOSUtyvYJLC1zLhMQ8MfSQoj9sl
+         C7Np3PRl5aXdhFXf5nOBylaspufLWcQ6tbtYEanrXAbsUCWfxCfHsPFbABXtrxjcd0hs
+         qc4aVE1Q0rFzVJ5qkymhzIp8Qkp5KEeiN7PsrlFZgmZnj/9lPFCAZtczpHziP9BMl128
+         y4dHmhF2DYH8IvLMzCfbAmomzDvWZkjpgqWzOYJ18sQF0LY/JT6B0K0m0lijh1MOGalE
+         k6nw==
+X-Gm-Message-State: AOAM533Es3iV5bZdqIil3/artFoh50gLGYmF/Kb9/tVgiXnx7nstOAEW
+        IIrO5YXgnhvyxaTDgfErVr9gFA==
+X-Google-Smtp-Source: ABdhPJxn+Splpv0+LjpjvGFtyxXBgvHGN8pdP+SLW1lNh8ZUGZnyJwrs6nJzn62U6fuuKsf4fQdnFA==
+X-Received: by 2002:a63:2582:: with SMTP id l124mr7893687pgl.338.1616088125511;
+        Thu, 18 Mar 2021 10:22:05 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id z4sm2713747pgv.73.2021.03.18.10.22.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:22:04 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 17:22:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH 3/3] KVM: SVM: allow to intercept all exceptions for debug
+Message-ID: <YFOMOV/u69LEpnh8@google.com>
+References: <20210315221020.661693-1-mlevitsk@redhat.com>
+ <20210315221020.661693-4-mlevitsk@redhat.com>
+ <YFBtI55sVzIJ15U+@8bytes.org>
+ <4116d6ce75a85faccfe7a2b3967528f0561974ae.camel@redhat.com>
+ <YFMbLWLlGgbOJuN/@8bytes.org>
+ <8ba6676471dc8c8219e35d6a1695febaea20bb0b.camel@redhat.com>
+ <YFN2HGG7ZTdamM7k@8bytes.org>
+ <YFOBTITk7EkGdzR2@google.com>
+ <7169229dde171c8e10fb276ff8e1a869af99b39d.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7169229dde171c8e10fb276ff8e1a869af99b39d.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The failsafe partitions for the DP firmware and for AT-F are unused. If
-AT-F will ever be supported in the failsafe mode, then it will be a FIT
-image. Thus fold the unused partitions into the failsafe bootloader one
-to have enough storage if the bootloader image will grow.
+On Thu, Mar 18, 2021, Maxim Levitsky wrote:
+> On Thu, 2021-03-18 at 16:35 +0000, Sean Christopherson wrote:
+> > Skipping SEV-ES guests should not be difficult; KVM could probably even
+> > print a message stating that the debug hook is being ignored.  One thought would
+> > be to snapshot debug_intercept_exceptions at VM creation, and simply zero it out
+> > for incompatible guests.  That would also allow changing debug_intercept_exceptions
+> > without reloading KVM, which IMO would be very convenient.
+> > 
+> So all right I'll disable this for SEV-ES. 
 
-While at it, remove the reserved partition. It served no purpose other
-than having no hole in the map.
+Belated thought.  KVM doesn't know a guest will be an SEV-ES guest until
+sev_es_guest_init(), and KVM currently doesn't prevent creating vCPUs before
+KVM_SEV_ES_INIT.  But, I'm 99% confident that's a KVM bug.  For your purposes,
+I think you can assume kvm->arch.debug_intercept_exceptions will _not_ change
+after vCPU creation.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- .../freescale/fsl-ls1028a-kontron-sl28.dts    | 20 +------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+> The idea to change the debug_intercept_exceptions on the fly is also a good idea,
+> I will implement it in next version of the patches.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-index 7e3a33eb2045..311e3aae0a3c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-@@ -135,29 +135,11 @@
- 			};
- 
- 			partition@10000 {
--				reg = <0x010000 0x0f0000>;
-+				reg = <0x010000 0x1d0000>;
- 				label = "failsafe bootloader";
- 				read-only;
- 			};
- 
--			partition@100000 {
--				reg = <0x100000 0x040000>;
--				label = "failsafe DP firmware";
--				read-only;
--			};
--
--			partition@140000 {
--				reg = <0x140000 0x0a0000>;
--				label = "failsafe trusted firmware";
--				read-only;
--			};
--
--			partition@1e0000 {
--				reg = <0x1e0000 0x020000>;
--				label = "reserved";
--				read-only;
--			};
--
- 			partition@200000 {
- 				reg = <0x200000 0x010000>;
- 				label = "configuration store";
--- 
-2.20.1
-
+Can you also move the module param to x86?  It doesn't need to be wired up for
+VMX right away, but it makes sense to do it at some point, and ideally folks
+won't have to update their scripts when that happens.
