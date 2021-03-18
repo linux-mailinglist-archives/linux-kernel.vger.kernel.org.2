@@ -2,166 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15813404E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B4F3404EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhCRLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:45:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59615 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229954AbhCRLpH (ORCPT
+        id S229805AbhCRLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhCRLrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:45:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616067906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rj+MpIByvkcAPNgiHQIZYz7YACaH5mhuQYo9q5r2KR0=;
-        b=hy8A3Hd62mjlIYXgnIAj9nbr1M2Vs/Jhr8PUPSlquPf+K0rdnRq6+2D0K1tqfAmBUKNrP9
-        A7qi3wat9lva0Y+6kU8nOM8NKECUOVpgPQFo9VtxvAY8IzJvMGzL0PoyqWuZacbpvdwZNu
-        6uLm4Ke+O5NzIDoSVushzPmp6GPTfM0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-1PZpkhbBMNCeBIU3s6694g-1; Thu, 18 Mar 2021 07:45:04 -0400
-X-MC-Unique: 1PZpkhbBMNCeBIU3s6694g-1
-Received: by mail-ej1-f72.google.com with SMTP id v27so11751439ejq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:45:03 -0700 (PDT)
+        Thu, 18 Mar 2021 07:47:09 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13092C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:47:09 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id n79so1613945qke.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=Xd/+a2wJECnWGpm73LH+F3DCjZXOTUzAsNn6jljBOVo=;
+        b=YswBmbZdVUxNJ1nAUXjhf3j4INsf/RmYoYDujnohUbSUgoSygaKKo/EC1SmcMQKB/0
+         h0xC/s9oNjQEgFbIbgf1tn4PfF9TnO6weoaDjDrFv+fx1YTk4SaIhE1kubU6mzcLmdzF
+         awM1N8VS4PHwli+oy6jujof72sZJ9GC4dtuUbyKB2dI8cYT7dweKuOD+U1isU3b1aT3g
+         VMOdM6d2t9VhKbuWN2C6dWw5az96ziHNYPTCijX9ttft2qSJpQjiBX994F2iWkNFVEy3
+         cQUxYtvZTIjY5ZH2ihcolY7ujm8v6bnPthudWbFFouU7iOyHXa/HbWUdCnjO3aVq0Xiw
+         gdzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rj+MpIByvkcAPNgiHQIZYz7YACaH5mhuQYo9q5r2KR0=;
-        b=TolHDGmxak2BWnzEM6vWG9iXNwwBH5Svac0vvVCAbm/dsJZyxu7oUziB4Lu/GIrBeP
-         eoEvP3h6xDlSHoHdT3ukUTTPVo5jH5t1OB+3wakZR2ToqINbmbVh3DIg4fQl1QmxROZn
-         NPbuUhBjeKXdtDkeaR0Gl/e42OIAPbfwUeMhrDR+H47MPjIDFRn3ROEo9bL3jkY9qLo4
-         S+SmhrwvkkmM8f91iM+8yuQFLII7nCfoYETiaulpaanYxWOcr+5WKEQIE2X4ajAjjIs+
-         5Cb3UbwoFgtZnaYuCVUtnZLOHmxdSdnHljLLvev2QJIXW1W+qyj28xeiHFVT8sr4MPuG
-         zj0g==
-X-Gm-Message-State: AOAM5319Bq/sFVxhsMGqY8SDsRZ4Nx5P/e+lnQuIay7aVmHInRPeQIfx
-        zG6fViZdQfyCVCl59XjZLpKfNIRid4D+m21rxo2ugGiEKaL3qitTIRXWe58XR7S6fXHF8gGptZA
-        ESdIR/XsM7YesV5Ydls9Cp88g
-X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr40817609ejo.140.1616067903025;
-        Thu, 18 Mar 2021 04:45:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlfX++OyTquXtlP0GTkMhXPpXiwr/Qlrg8hU/5WIl+yQy4mn6b3yGnHV3Yqj/B2qETXfxHog==
-X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr40817596ejo.140.1616067902848;
-        Thu, 18 Mar 2021 04:45:02 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id a12sm1830424edx.91.2021.03.18.04.45.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 04:45:02 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Henning Schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-2-henning.schild@siemens.com>
- <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
- <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
- <92080a68-9029-3103-9240-65c92d17bf16@redhat.com>
- <6c7d165d-1332-2039-0af3-9875b482894b@metux.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <420f0e08-bec8-f85a-d9af-b9900072df66@redhat.com>
-Date:   Thu, 18 Mar 2021 12:45:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <6c7d165d-1332-2039-0af3-9875b482894b@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=Xd/+a2wJECnWGpm73LH+F3DCjZXOTUzAsNn6jljBOVo=;
+        b=lqTWUBdrCyhB1uldKkpvl64t38RUhlb9NdM0loamCVj6wzn9w80QYHO+vQfYpXHXnF
+         B++OqCMFsJ/y6ccCVvCnDLxZG1ypLXb6Wth4++cmdpbgnbJR8sNZT4q3V2jTZeFPGxUd
+         BYtnpL/WeE2nLGHsB4K803MCyn5yVz1r8TNX4DJkKJrv/RgLYo4h+on8suqxkHKyRZD9
+         3JjCm8QxMj4wqC8To8osXXWOuc0JXzY7YEmMMT/OyLumUlNHKO1E4Yiy67soXj+j+rUF
+         unsUQPfArvkUFAwTnfzPMpgR52/t0mS9fF1JOi4xogSPCxzICyJcnwFCzfii+cTPO/kX
+         szeQ==
+X-Gm-Message-State: AOAM532G5EScm4yIH2kNo2Fhwbo5KW5W1XxaI4fOLL3faDHUYKKjTya3
+        blCyn2XcsNuVouWc4glVDlLUfw==
+X-Google-Smtp-Source: ABdhPJy2cYcPwTcgduhapJYhM1AEXyAUTeig+OlggUs5JR2SA6Z6PUa51PLJp6xPkr2jicckzs2Fgg==
+X-Received: by 2002:a37:a085:: with SMTP id j127mr3688500qke.206.1616068028177;
+        Thu, 18 Mar 2021 04:47:08 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id o197sm1543765qka.26.2021.03.18.04.47.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 04:47:07 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old gcc
+In-Reply-To: <CAK7LNAT_hp0PmhWpb2=fScw6Q9DQsBztykis=xN0QCH==AVY6g@mail.gmail.com>
+References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook> <282490.1616047333@turing-police> <CANiq72nyNSgrM6bhmM7ymdtYYKoDLfUXfwgTwLOmhLFc=c0U-w@mail.gmail.com>
+ <CAK7LNAT_hp0PmhWpb2=fScw6Q9DQsBztykis=xN0QCH==AVY6g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1616068026_248661P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Mar 2021 07:47:06 -0400
+Message-ID: <299822.1616068026@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--==_Exmh_1616068026_248661P
+Content-Type: text/plain; charset=us-ascii
 
-On 3/18/21 12:30 PM, Enrico Weigelt, metux IT consult wrote:
-> On 17.03.21 21:03, Hans de Goede wrote:
-> 
-> Hi,
-> 
->>> It just identifies the box and tells subsequent drivers which one it
->>> is, which watchdog and LED path to take. Moving the knowledge of which
->>> box has which LED/watchdog into the respective drivers seems to be the
->>> better way to go.
->>>
->>> So we would end up with a LED and a watchdog driver both
->>> MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
-> 
-> Uh, isn't that a bit too broad ? This basically implies that Siemens
-> will never produce boards with different configurations.
+On Thu, 18 Mar 2021 18:07:28 +0900, Masahiro Yamada said:
 
-There is a further check done in probe() based on some Siemens specific
-DMI table entries.
+> We can require GCC 6+ for building GCC plugins.
 
->>> and doing the identification with the inline dmi from that header,
->>> doing p2sb with the support to come ... possibly a "//TODO\ninline" in
->>> the meantime.
->>>
->>> So no "main platform" driver anymore, but still central platform
->>> headers.
->>>
->>> Not sure how this sounds, but i think making that change should be
->>> possible. And that is what i will try and go for in v3.
->>
->> Dropping the main drivers/platform/x86 driver sounds good to me,
->> I was already wondering a bit about its function since it just
->> instantiates devs to which the other ones bind to then instantiate
->> more devs (in the LED case).
-> 
-> hmm, IMHO that depends on whether the individual sub-devices can be
-> more generic than just that specific machine. (@Hanning: could you
-> tell us more about that ?).
-> 
-> Another question is how they're actually probed .. only dmi or maybe
-> also pci dev ? (i've seen some refs to pci stuff in the led driver, but
-> missed the other code thats called here).
-> 
-> IMHO, if the whole thing lives on some PCI device (which can be probed
-> via pci ID), and that device has the knowledge, where the LED registers
-> actually are (eg. based on device ID, pci mmio mapping, ...) then there
-> should be some parent driver that instantiates the led devices (and
-> possibly other board specific stuff). That would be a clear separation,
-> modularization. In that case, maybe this LED driver could even be
-> replaced by some really generic "register-based-LED" driver, which just
-> needs to be fed with some parameters like register ranges, bitmasks, etc.
-> 
-> OTOH, if everything can be derived entirely from DMI match, w/o things
-> like pci mappings involved (IOW: behaves like directly wired to the
-> cpu's mem/io bus, no other "intelligent" bus involved), and it's all
-> really board specific logic (no generic led or gpio controllers
-> involved), then it might be better to have entirely separate drivers.
+> +       depends on CC_IS_GCC && GCC_VERSION >= 60000
 
-FWIW I'm fine with either solution, and if we go the "parent driver"
-route I'm happy to have that driver sit in drivers/platform/x86
-(once all the discussions surrounding this are resolved).
+I'd be OK with that personally, but the question is whether
+any gcc 4.9 or 5.x users are using plugins.  That's a bit above
+my pay grade.  Kees?  Do we have any data on that? (All I know
+is that there is at least one, because they tripped over the GCC bug
+that prompted the second patch)
 
-My reply was because I noticed that the Led driver seemed to sort of
-also act as a parent driver (last time I looked) and instantiated a
-bunch of stuff, so then we have 2 parent(ish) drivers. If things stay
-that way then having 2 levels of parent drivers seems a bit too much
-to me, esp. if it can all be done cleanly in e.g. the LED driver.
+> BTW, the commit message mentions that
+> the issues only happen on GCC 4 and 5,
+> but the added code was:
+>
+> GCC_FLAVOR = $(call cc-ifversion, -ge, 1100, 11, 98)
+>
+>   instead of
+>
+> GCC_FLAVOR = $(call cc-ifversion, -ge, 600, 11, 98)
+>
+> So, this patch is also requiring to cover two standards:
+>
+> GCC_VERSION >= 11  :  -std=gnu++11
+> GCC_VERSION <  11  : -std=gnu++98
 
-But as said I'm fine either way as long as the code is reasonably
-clean and dealing with this sort of platform specific warts happens
-a lot in drivers/platform/x86 .
+I chose 1100 so that everything from 4.9 to 10 would keep getting
+handed gnu++98 the way they had been, and only change it for
+gcc11.
 
-Regards,
+--==_Exmh_1616068026_248661P
+Content-Type: application/pgp-signature
 
-Hans
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
 
+iQIVAwUBYFM9ugdmEQWDXROgAQJ0BhAAhLOSziVfqbVLcMdTzxE83OAGHH4JDetz
+oUS6F3q25fp7VR0wesEoFWpFOdKrMObHM6Lw20lZmNFltV9BBTK/54FoNivyUAJ9
+DXAkm6cPgUIg6w/rxOVYFh0vHs1WUYMfFfa527IhClr3ZyDbky4Xhx6s7z4zZq4I
+nU0k3WHupSl8auF5v7/ooOm8JWNM90nI6HLv2L1aLY2mIWVSXWFuUX6dPG5dbEKd
+iZ4iUYotm1LoLX3KA82SlhGe8j/JryVicQP/3t3mr8dERoFHPgYky+7vVY6Tdzou
+giWTTQOeAxPr16Dq5Ct6aYqeST63QufKSpvVeHVqZpR0GoQxOEf2mhUJLBRmRqr0
+AS6yfEybFzqn2fg8LrvKyn/2taMilKKHjdXjvK7/16fq23osmrgvQ0QzrSPzhU9Q
+peDaJnivzQKg2MdgTFXMGwBaNPFAA6NDmW5ykOAtkC/rkLBfPwjB2a0g/QwZ/HT3
+8Fu6DRTxbFdjZjNHJGnAgdxhOjmaLYL4G2JtEfYDgpzFQvDsWVaWqMtHoKQ/OvRu
+S6nyJqalE5I1cKmUx44/Gjg62PX1qCdLLd6SsnmVeVziDy85Q4U4u+mYonZfmD7e
+fth3FpjYSHjwVRXyCNp4/Qvnie+xKA2hbUXPTiUibh+x+40XRYjgseejgk8fg3XI
+w9zUfcNsqDE=
+=kv1K
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1616068026_248661P--
