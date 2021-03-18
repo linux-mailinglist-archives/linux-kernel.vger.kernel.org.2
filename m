@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53103340A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B5D340A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhCRQWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        id S232148AbhCRQXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbhCRQVm (ORCPT
+        with ESMTP id S231925AbhCRQXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:21:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CADBC06174A;
-        Thu, 18 Mar 2021 09:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LyWJyF9AcLRccJGAGBJ5odsKCObIjdkDuXB2zFkgClI=; b=aQ2VYcqIz0z6Ld0Iyl9983DBw
-        2C52uB0onu8TV5PPxwSqWA4JpLR422RS0wRTjhHVUMLQYGESB1902Q29jjQL9g97OC+wrkl/sxD7T
-        uDZhx5T9d/rUzlp8DmnBoURAVPSgsRpkFMIeldm9XZSbOvSUx2Erum549IWFT0ia2hk4lWn2gtSzQ
-        1ncG2YJyD8wfKdRjcYm9MnRJMg2FfL2loIEQ+zW2R22k7JMIplJAb8z2suxjA+jGB1ed0d5+3XMg5
-        GmzZsCsQmr0xZ/sMouwGjp8emXb/6DYPWmBJtorOpa/+vuKcTSzpBZi3IX6TgrzknwdwTLkvmcouS
-        tzffBdZIA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51442)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lMvOl-0003Xa-1E; Thu, 18 Mar 2021 16:21:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lMvOi-0008BC-KT; Thu, 18 Mar 2021 16:21:20 +0000
-Date:   Thu, 18 Mar 2021 16:21:20 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: Re: [PATCH net V2 1/1] net: phy: fix invalid phy id when probe using
- C22
-Message-ID: <20210318162120.GR1463@shell.armlinux.org.uk>
-References: <20210318090937.26465-1-vee.khee.wong@intel.com>
- <b63c5068-1203-fcb6-560d-1d2419bb39b0@gmail.com>
- <c921bf7f-e4d1-eefa-c5ae-024d5e8a4845@gmail.com>
+        Thu, 18 Mar 2021 12:23:07 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6E3C06174A;
+        Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id z9so5396093ilb.4;
+        Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0x7tcZe8hlmMUN/W+gzK7BvYODRvOL+XfP6k+eIgadg=;
+        b=sZoQtg066poITjhwH0q/brYwoeDq3JAhLt3YJCsTssP/4jZPa894NUtFt/DRGW2U9/
+         5VqwiO68mztTapLm6J0ejfIU10q+Xoqk2UhMRFEi3FT+LbOwqE7eh4ByZpeLQixyTXow
+         BDoOg3zm8WQmMIyfbyoPhK0US5bNvx+URqegX3Ddl426ZhTNG2tOzGZNqciQINAUjuOS
+         hldDluoqzLzNVznk4UVV/9jJgrnTqA7UJFrtZ/m88000r1zF1kjT8G3zYz+MX/nmry5f
+         mI7UROzLqiiWY1RRazegy6DWv4a+JczIpdaOD3i8OPjvXOAgOhxaYAjGRWB0+p0yGG0z
+         UJSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0x7tcZe8hlmMUN/W+gzK7BvYODRvOL+XfP6k+eIgadg=;
+        b=HtKQBI1cEeRZ2PHtRBE+y0BxSAd95o+XpEgZFmMO4qFNNagASB0dcstLaBnGhXVwvg
+         1YPlGoU8Mj05NeZIEU1JOb9OJQo8H5aEqJb/RJ2kGMaQnvM1UQUmna5GyX/v3YA1kVfE
+         fioEuaSLwKOz5xFzmR5gs4oTW03MYxxubDJt6uBtrMgJnHrQTgyxbzXlbC5ytTSpZ3cP
+         rcVLfYuvZxWZtDrFfH8wrR/6MfWwuizZxTaLmuasLEWZ64hmGnecrOOK27degKHGAQFy
+         72ukx+IncGPbJsddKuWZYWEa/eb+vV4pXqS01JIM/1ZjuskPE4VSK3+8ZGKcypyLABlz
+         WTJA==
+X-Gm-Message-State: AOAM5303Nekq9CpmcGxD/jgkt/3gIPNPMv37qdaD6VsMVvijDpn0HUrp
+        BgDyfJN2U8GWng7A1Z7ygZDYN0SddqQj0k9YVQmLhANeS4Y=
+X-Google-Smtp-Source: ABdhPJxIUB9184z1Vgcgji2Zb9OKkFoVio/Y58VTn4cto0Zw+VFLWVoJ4A88jc+htFYweqErWX83xDctC8N1FsQZxq8=
+X-Received: by 2002:a92:5214:: with SMTP id g20mr2904374ilb.260.1616084586217;
+ Thu, 18 Mar 2021 09:23:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c921bf7f-e4d1-eefa-c5ae-024d5e8a4845@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210312162203.2416149-1-ztong0001@gmail.com> <20210312162203.2416149-2-ztong0001@gmail.com>
+ <YFN3X6q8dzEaUp27@silpixa00400314> <YFN6hlz/L7erLO0H@silpixa00400314>
+In-Reply-To: <YFN6hlz/L7erLO0H@silpixa00400314>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Thu, 18 Mar 2021 12:22:55 -0400
+Message-ID: <CAA5qM4DJ7N=fR5T-VtuF0qr8jUPtRWbQMNiWQbQ2ysaDrAefQg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] crypto: qat - dont release uninitialized resources
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>, qat-linux@intel.com,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:02:22AM -0700, Florian Fainelli wrote:
-> On 3/18/2021 6:25 AM, Heiner Kallweit wrote:
-> > On 18.03.2021 10:09, Wong Vee Khee wrote:
-> >> When using Clause-22 to probe for PHY devices such as the Marvell
-> >> 88E2110, PHY ID with value 0 is read from the MII PHYID registers
-> >> which caused the PHY framework failed to attach the Marvell PHY
-> >> driver.
-> >>
-> >> Fixed this by adding a check of PHY ID equals to all zeroes.
-> >>
-> > 
-> > I was wondering whether we have, and may break, use cases where a PHY,
-> > for whatever reason, reports PHY ID 0, but works with the genphy
-> > driver. And indeed in swphy_read_reg() we return PHY ID 0, therefore
-> > the patch may break the fixed phy.
-> > Having said that I think your patch is ok, but we need a change of
-> > the PHY ID reported by swphy_read_reg() first.
-> > At a first glance changing the PHY ID to 0x00000001 in swphy_read_reg()
-> > should be sufficient. This value shouldn't collide with any real world
-> > PHY ID.
-> 
-> It most likely would not, but it could be considered an ABI breakage,
-> unless we filter out what we report to user-space via SIOGCMIIREG and
-> /sys/class/mdio_bus/*/*/phy_id
-> 
-> Ideally we would have assigned an unique PHY OUI to the fixed PHY but
-> that would have required registering Linux as a vendor, and the process
-> is not entirely clear to me about how to go about doing that.
-
-Doesn't that also involve yearly fees?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks!
+I have fixed typos and resent them as v4.
+- Tong
