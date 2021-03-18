@@ -2,87 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9B3340F67
+	by mail.lfdr.de (Postfix) with ESMTP id D183E340F68
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhCRUx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhCRUxD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:53:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A6C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:53:02 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x13so6956481wrs.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ERPynUyb8bk2OjO46Oc7F9PinwfeSmgz5LXVTrsHbvA=;
-        b=oZtJyDPfmi7BoXXV4OHaJ/MSEXLIcZirEgjjJhyLvM88sr3ir/mj90pCi3gzJNFPqQ
-         xwQAvnHrWlA08k83rQTXc4uAZxoTIhntqFEQnemaiT4qNZ3fVrhQ870gRnwVYulAc69b
-         xzaZdptyDcgqEjHOHv8brAdKysNyfNq5ypGKyI0Rc34Tg8rbTebmzJwds8EW40Xj/7un
-         5loOzlqt9OA/vc97WVK5qfkhPMTnFzl3NK8btlEeIWrgnNHGYP5aNA1ZoB5I0fFERcXr
-         ya+A4N/QJrq2/dRVaadBfdLQWIYGQSXfhbUK7f08ypVHodI+dQykAO58h0WgGSt8sbwP
-         vFFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ERPynUyb8bk2OjO46Oc7F9PinwfeSmgz5LXVTrsHbvA=;
-        b=elWMNZzzco4bALXP9pv/QFTW2MhxKOMI0XKcj9kmNEeteT2/BXYS+5vRx7r3G3n0I7
-         pjB4i+7zN0NYQTSjDh7dtBFcVj+NzrasOfUN/G+Pi441LYb1hRczYqFGPgJaY5pGBY/C
-         Oh9eNcc+PhnI5IxYferCDX/jNqXXzuueFuz7pbBGV8NMHu4T9A1pLj6iAFjsLkLyMfDJ
-         wiijSVdgfxg01sp5TI9lDr4pehGA0hASo1sS0O50+knj6bf/Tbp4xVBngAsRoHT7VBzQ
-         SfdedgpnRyXV+Arh0DwFBXFlxaCFSxJKIrxlwbCN3v/lyQxyPu1s2/gLVkoPlmKr6ucc
-         ezmw==
-X-Gm-Message-State: AOAM533a5Zz1GqBMHo9HnHdBi6vKTLM0YMy/93NtHI1ekGFyit5YcDak
-        auWP/GSh3VbRr/ad46CEky2NFg==
-X-Google-Smtp-Source: ABdhPJw1MCTDEy6VfarjFMKHUY5IR7/UVZGcxGGcu8smC1c6vfd+qf03L19g49bkHT7UWLnC8CI1Kg==
-X-Received: by 2002:adf:f3cf:: with SMTP id g15mr1099981wrp.57.1616100781147;
-        Thu, 18 Mar 2021 13:53:01 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.18.100])
-        by smtp.gmail.com with ESMTPSA id n6sm5293696wrw.63.2021.03.18.13.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 13:53:00 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] powercap/drivers/dtpm : Fix power limit initialization
-Date:   Thu, 18 Mar 2021 21:52:38 +0100
-Message-Id: <20210318205238.21937-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S233087AbhCRUx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:53:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35486 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230368AbhCRUxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 16:53:19 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lMzdq-00BkAw-SU; Thu, 18 Mar 2021 21:53:14 +0100
+Date:   Thu, 18 Mar 2021 21:53:14 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "rabeeh@solid-run.com" <rabeeh@solid-run.com>
+Subject: Re: [EXT] Re: [V2 net-next] net: mvpp2: Add reserved port private
+ flag configuration
+Message-ID: <YFO9ug0gZp8viEHn@lunn.ch>
+References: <1615481007-16735-1-git-send-email-stefanc@marvell.com>
+ <YEpMgK1MF6jFn2ZW@lunn.ch>
+ <CO6PR18MB38733E25F6B3194D4858147BB06B9@CO6PR18MB3873.namprd18.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB38733E25F6B3194D4858147BB06B9@CO6PR18MB3873.namprd18.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a DTPM node is registered its power limit must be initialized to
-the power max.
+> 2. CM3 code has very small footprint requirement, we cannot
+> implement the complete Serdes and PHY infrastructure that kernel
+> provides as part of CM3 application. Therefore I would like to
+> continue relying on kernel configuration for that.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/powercap/dtpm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+How can that work? How does Linux know when CM3 has up'ed the
+interface? How does CM3 know the status of the link? How does CM3 set
+its flow control depending on what auto-neg determines, etc?
 
-diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
-index a4784ac2f79b..2f028776cfa8 100644
---- a/drivers/powercap/dtpm.c
-+++ b/drivers/powercap/dtpm.c
-@@ -594,8 +594,10 @@ int dtpm_create(const char *name, struct dtpm *dtpm, struct dtpm *parent)
- 		root = dtpm;
- 	}
- 
--	if (dtpm->ops && !dtpm->ops->update_power_uw(dtpm))
-+	if (dtpm->ops && !dtpm->ops->update_power_uw(dtpm)) {
- 		__dtpm_add_power(dtpm);
-+		dtpm->power_limit = dtpm->power_max;
-+	}
- 
- 	pr_info("Created dtpm node '%s' / %llu-%llu uW, \n",
- 		dtpm->zone.name, dtpm->power_min, dtpm->power_max);
--- 
-2.17.1
+> 3. In some cases we need to dynamically switch the port "user"
+> between CM3 and kernel. So I would like to preserve this
+> functionality.
 
+And how do you synchronize between Linux and CM3 so you know how is
+using it and who cannot use it?
+
+      Andrew
