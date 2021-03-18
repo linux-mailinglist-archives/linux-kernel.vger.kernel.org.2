@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5333C3400BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F553400BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCRISZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:18:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhCRISR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:18:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6C264EF6;
-        Thu, 18 Mar 2021 08:18:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616055497;
-        bh=3E9H2zpeiDX6zhLzzRcdnJAvRLq5r0LmDVSbVqSH5PY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=toPoZYi70tiuUwSJYqo92mplFfSeGWj2ik1yhufFzen5C/HeF0MbGYzDQYB46llDj
-         4LCHbAPmBGvIeD6di0GoC+M5803q0r4t7a7AE4k06k3wJYsPf12qD0V3/NrP0ohEZm
-         eJB7ZjL4cshxkdRAVtC3mAxMcouDKNP+n9nw1TSU3iTHu6Jx0ODcDbE74ihKmGvwyU
-         ahbCDNPeQopboh+9SPM75PGBUTCqAPHat9pW3Q1ZooeY/I/nPHkOs4v5EPkWdOIm8V
-         H9L4QuAASoDvtS7+nghvIORXU5tfBT0k/6VE5/7x3T0i/n8IsFmbQkAh/kkDeqLgxU
-         qzRWQ90DG0mKA==
-Date:   Thu, 18 Mar 2021 10:18:13 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] virtio_net: replace if (cond) BUG() with BUG_ON()
-Message-ID: <YFMMxSHGNxjw29iA@unreal>
-References: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S229784AbhCRITB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhCRISb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:18:31 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D1FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:18:30 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id z7so3167323lfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:18:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=O/WY2Bl4bEwXZZzzpuZUOllqUEJ+Z8Y/vfnp2iRL83U=;
+        b=fDR0gy+9vrvudTQpd8ALd/Pi3bgro8qTAxQigVBuyYE5fefSUqrOPfNC94xzZedzqr
+         hnq76OVGUfFwS258l8rVenrcSCgFjRhCa9YaAX7TnzAedyGfbM4+1uA/hycOT4YqveQS
+         w0KJxg7X+yNYRMnow3I6GRXKOe3FCCuVG7vrk0qhV2jbEdiihLNndkQwV+e12UDRKlUO
+         8HjL65l0MSrkY6pxpacWr5oD9JEIMF+jlWPlG7m53Y7Cm3EzOAGg52AHLRFVgQtPzWaY
+         xHLP67ZuQ/DwGsmOM5ClC8/ngx/FaQSBvqSgeZhrmZ2se0TDayHUrvL8apgqXECSMHFJ
+         nLuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O/WY2Bl4bEwXZZzzpuZUOllqUEJ+Z8Y/vfnp2iRL83U=;
+        b=jOS6f83lbPI4lHYBLibxE0YmLZ1WIOfEdLsUiGdRDVpZ3CM7MtDERTzNZP23QjkXv2
+         Si1DMLbrOyKu4gerMDEp/MBs8vY6Dw9MNm5hCzDnw68cR5YCq8mNkwSIUSxdz1IfOkLE
+         +xo1DKE93ewwp7pEhyEnsAl7HxsMLsqY/ukQBzRwZ7QmVi0w0DCV/sEdt/ZMgm7Wl4n1
+         peknsuxlPoQjt8LdDbJWmojIKOcAgccbytJcefrVAXjv9hd75ySs243iMEIz+g8nMJUW
+         shUrWKm4bkNaHBLuIRZIGyOxvkl3Cjm6cLzNr3VJpXLWyqAt7VwxU8vwEjr4McNtl94S
+         wAng==
+X-Gm-Message-State: AOAM530HPN6bzmhMZsPn8VsbFcg3HQIjfykaKJeNdTLrVyT1Jn0GeCUg
+        fVPuZ06wutrTT9CAh+ky+f5xkb/Z+3aLDI859Fu+xA==
+X-Google-Smtp-Source: ABdhPJxeSEGQ5VxzxzzuKMz+JRZK3Y8C7XkLNiducFb7gkrMCDzzC+lAffXBLb1HjWZ0YQ0AsfAJEhTXxhi/sUbQYT4=
+X-Received: by 2002:a19:791e:: with SMTP id u30mr4703038lfc.621.1616055509025;
+ Thu, 18 Mar 2021 01:18:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <20210317160840.36019-1-daniel@qtec.com> <bb94b582-a720-9c4f-3d37-d1f7fd29da44@amd.com>
+In-Reply-To: <bb94b582-a720-9c4f-3d37-d1f7fd29da44@amd.com>
+From:   Daniel Gomez <daniel@qtec.com>
+Date:   Thu, 18 Mar 2021 09:18:17 +0100
+Message-ID: <CAH1Ww+SBgw6-HikPBpE1_yLG-X75LfSBbNerzzqBzyCArgm1-Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/ttm: Fix memory leak userptr pages
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Daniel Gomez <dagmcr@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 01:57:15PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
+On Thu, 18 Mar 2021 at 08:49, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
 >
-> ./drivers/net/virtio_net.c:1551:2-5: WARNING: Use BUG_ON instead of if
-> condition followed by BUG.
+> Am 17.03.21 um 17:08 schrieb Daniel Gomez:
+> > If userptr pages have been pinned but not bounded,
+> > they remain uncleared.
+> >
+> > Signed-off-by: Daniel Gomez <daniel@qtec.com>
 >
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> Good catch, not sure if that can ever happen in practice but better save
+> than sorry.
+Thanks! We actually had a case with clEnqueueWriteBuffer where the
+driver was leaking.
+I can see the problem also affects to the radeon driver so, I'll send
+a patch for that one as
+well.
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 82e520d..093530b 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1545,10 +1545,8 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
->  	else
->  		hdr = skb_vnet_hdr(skb);
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
-> -	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> -				    virtio_is_little_endian(vi->vdev), false,
-> -				    0))
-> -		BUG();
-> +	BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,  virtio_is_little_endian(vi->vdev),
-> +				       false, 0));
-
-This BUG() in virtio isn't supposed to be in the first place.
-You should return -EINVAL instead of crashing system.
-
-Thanks
-
->
->  	if (vi->mergeable_rx_bufs)
->  		hdr->num_buffers = 0;
-> --
-> 1.8.3.1
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_ttm.c
+> > index 9fd2157b133a..50c2b4827c13 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> > @@ -1162,13 +1162,13 @@ static void amdgpu_ttm_backend_unbind(struct tt=
+m_bo_device *bdev,
+> >       struct amdgpu_ttm_tt *gtt =3D (void *)ttm;
+> >       int r;
+> >
+> > -     if (!gtt->bound)
+> > -             return;
+> > -
+> >       /* if the pages have userptr pinning then clear that first */
+> >       if (gtt->userptr)
+> >               amdgpu_ttm_tt_unpin_userptr(bdev, ttm);
+> >
+> > +     if (!gtt->bound)
+> > +             return;
+> > +
+> >       if (gtt->offset =3D=3D AMDGPU_BO_INVALID_OFFSET)
+> >               return;
+> >
 >
