@@ -2,114 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA54340DC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF74F340DC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhCRTDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S232767AbhCRTDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhCRTDO (ORCPT
+        with ESMTP id S232772AbhCRTDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:03:14 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2986AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:03:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id dm8so8037251edb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:03:14 -0700 (PDT)
+        Thu, 18 Mar 2021 15:03:13 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1CCC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:03:13 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id s21so3423705pjq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wTZLK6beX9SkhbU18uwJiCTDV/7tO8mXN2d8l/pVAAY=;
-        b=Bh4S37QfVMWXvsThtCgSnmi3OBmkiY5UopBSkTHwy00KuhvcHxAdIIW8KfKheWcghv
-         RjbNGuhHHq0p+U/tdENs2L9NIs2LAXGFi6pmW36MOOCkgEqIsKOtSsgAAsavuM9ahEfo
-         RCmZNjOWbkQKI0oTOgL8FJeSBU95TUclRgNNGjntexISmzyFT2Vd1rwpPdeFqgHjsSkJ
-         QPdKlyvX4ZZa0rpdUERwgJifYRW/ECgDVgu6qzrweYcyRJ3e4V0lwxH0dLxVj/Od6Ntw
-         UvMkHYXhexdzQlr24DDE/M5f1TMF5CCwIJQSS+IB1YpJl9fKJY9z8WIP0k3/vyopxc98
-         Na4Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jzYmbJsYNi3i0nscDA/NehsT3XC8mxj376UPdeaOPtY=;
+        b=aEvhOtbfQ0P5O2qrvvhEcfrziJnhRlhVHVYHfVno1nnbxalGv4HrF3IHqtTXJWWF0m
+         RpDhKRf3W7h5RK70iH8wcJ//ecXPcaSMD63PcyJPoMdR8o5Qnfgm+7Kr3EM82gTV2vTV
+         /O81pZGTCZV+KqWxgT3qu+UVz5TR6Hdt6BnJ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wTZLK6beX9SkhbU18uwJiCTDV/7tO8mXN2d8l/pVAAY=;
-        b=CW5ENOFx3ufrLnK4HIHOZmkUT849Fx8By0Q1jnvq1K4a8CYfrSfg6x2s42cNfXCidK
-         hZL6jHc5YWN/fBWPEmGwOOHwPEAllfAYiRW6enNjAAvGINt0ob1p0iwuMuovyDO6sOSP
-         8sU1qGb4uvzZiN5mBBxi2dm3JqwEI/DRNEb0fLer+DRW34u/ChESn3GyVLKGSj0xOga6
-         kyU8XwEIe1sO5YB0IC6P6h5YxTue4hkh4o40U9XhjDJTB0c656fxxiPJS4KlNbjFAFFl
-         z9LCRb01Vy96uSzUmEg7eO66z4BnjJo5RGeVfN/EsgHfIiymwNH8uSXHx7i443AbfxC1
-         UmUw==
-X-Gm-Message-State: AOAM532sS/8RsYaQDBUcistPxpvtPc/YR9Nh3FUB641no0UedBI/jO1b
-        yjr0foWjpEeOho2DYEuYHi4qsxdecdYo6LWyJw8=
-X-Google-Smtp-Source: ABdhPJxVHl8myJsBAFFoqcM2phIkEhbQjE7wdoAvxyXsIMhpSdSWRQBAG/N/HRokDzbYYikNMWgSYzlYYv5zjou2nD0=
-X-Received: by 2002:aa7:dbd3:: with SMTP id v19mr5437548edt.314.1616094192925;
- Thu, 18 Mar 2021 12:03:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jzYmbJsYNi3i0nscDA/NehsT3XC8mxj376UPdeaOPtY=;
+        b=M49m/ReLsl4jAtFN7PLDj6qcFsG/la7gq+UfAmhWzqH+p+opaDn0dGOarASXI8ZsOa
+         qUv/NoiVb9ndoIFnrPUcBbFJXn+9lXT7KZ0Y9AMEItGzU5U4As38IK/9DEXqCIFYIS9J
+         H73i1kfD/cYTgwbCuS/ZH5dqVZ5VHTf1re6z0JsXAuynVQAGZmUKe7SOb05mvX9SxKv0
+         UDsQCPwcHwkk3ClrMwDiJFSj1GwzbneG3zdvnv7ONltJXGruyonqbNICkicavocBMePs
+         zlpGLWOSmCLumtBSUq3YEh11uJlbYrJV/WRGzYRlK2xDEtclr5sjFcfITG7zSl6NzAKa
+         /SKw==
+X-Gm-Message-State: AOAM532csqjX1juVTt5u6pTQJ+RrqRT0tJ9fo8ctMJgqPsAh9XI2jpEI
+        NvVSpeeEquPOlMeh56F2G4/MNw==
+X-Google-Smtp-Source: ABdhPJzvffbBNV9M06ao/xW4aOFm4nl9wv78KaCFqIhLgX17ravrDF6LjwDxIjhI+NmSSV01ZxEskw==
+X-Received: by 2002:a17:902:f28b:b029:e4:5039:9f03 with SMTP id k11-20020a170902f28bb02900e450399f03mr11355163plc.62.1616094192773;
+        Thu, 18 Mar 2021 12:03:12 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
+        by smtp.gmail.com with UTF8SMTPSA id gm9sm2985867pjb.13.2021.03.18.12.03.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 12:03:12 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 12:03:10 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc7280: Add USB related nodes
+Message-ID: <YFOj7lrOHZE1q2If@google.com>
+References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org>
+ <1615978901-4202-4-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-References: <20210315132019.33202-1-vincenzo.frascino@arm.com> <20210318185607.GD10758@arm.com>
-In-Reply-To: <20210318185607.GD10758@arm.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 18 Mar 2021 20:03:02 +0100
-Message-ID: <CA+fCnZc9ayxT_u3qJmB1MV0Wi93=8tNYxWFbZK52vK4S21U2qA@mail.gmail.com>
-Subject: Re: [PATCH v16 0/9] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1615978901-4202-4-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 7:56 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Mar 15, 2021 at 01:20:10PM +0000, Vincenzo Frascino wrote:
-> > This patchset implements the asynchronous mode support for ARMv8.5-A
-> > Memory Tagging Extension (MTE), which is a debugging feature that allows
-> > to detect with the help of the architecture the C and C++ programmatic
-> > memory errors like buffer overflow, use-after-free, use-after-return, etc.
-> >
-> > MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> > (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> > subset of its address space that is multiple of a 16 bytes granule. MTE
-> > is based on a lock-key mechanism where the lock is the tag associated to
-> > the physical memory and the key is the tag associated to the virtual
-> > address.
-> > When MTE is enabled and tags are set for ranges of address space of a task,
-> > the PE will compare the tag related to the physical memory with the tag
-> > related to the virtual address (tag check operation). Access to the memory
-> > is granted only if the two tags match. In case of mismatch the PE will raise
-> > an exception.
-> >
-> > The exception can be handled synchronously or asynchronously. When the
-> > asynchronous mode is enabled:
-> >   - Upon fault the PE updates the TFSR_EL1 register.
-> >   - The kernel detects the change during one of the following:
-> >     - Context switching
-> >     - Return to user/EL0
-> >     - Kernel entry from EL1
-> >     - Kernel exit to EL1
-> >   - If the register has been updated by the PE the kernel clears it and
-> >     reports the error.
-> >
-> > The series is based on linux-next/akpm.
->
-> Andrew, could you please pick these patches up via the mm tree? They
-> depend on kasan patches already queued.
->
-> Andrey, all the kasan patches have your acked-by with the google.com
-> address and you've been cc'ed on that. You may want to update the
-> .mailmap file in the kernel.
+On Wed, Mar 17, 2021 at 04:31:41PM +0530, Sandeep Maheswaram wrote:
+> Add nodes for DWC3 USB controller, QMP and HS USB PHYs.
+> 
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  39 +++++++++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 149 ++++++++++++++++++++++++++++++++
+>  2 files changed, 188 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index 54d2cb3..251a5b5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -257,3 +257,42 @@
+>  		bias-pull-up;
+>  	};
+>  };
+> +
+> +&usb_1 {
+> +	status = "okay";
+> +};
+> +
+> +&usb_1_dwc3 {
+> +	dr_mode = "host";
+> +};
+> +
+> +&usb_1_hsphy {
+> +	status = "okay";
+> +
+> +	vdda-pll-supply = <&vreg_l10c_0p8>;
+> +	vdda33-supply = <&vreg_l2b_3p0>;
+> +	vdda18-supply = <&vreg_l1c_1p8>;
+> +};
+> +
+> +&usb_1_qmpphy {
+> +	status = "okay";
+> +
+> +	vdda-phy-supply = <&vreg_l6b_1p2>;
+> +	vdda-pll-supply = <&vreg_l1b_0p8>;
+> +};
+> +
+> +&usb_2 {
+> +	status = "okay";
+> +};
+> +
+> +&usb_2_dwc3 {
+> +	dr_mode = "peripheral";
+> +};
+> +
+> +&usb_2_hsphy {
+> +	status = "okay";
+> +
+> +	vdda-pll-supply = <&vreg_l10c_0p8>;
+> +	vdda33-supply = <&vreg_l2b_3p0>;
+> +	vdda18-supply = <&vreg_l1c_1p8>;
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 39cf0be..a785f65 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -305,6 +305,155 @@
+>  			};
+>  		};
+>  
+> +		usb_1_hsphy: phy@88e3000 {
+> +			compatible = "qcom,sc7280-usb-hs-phy",
+> +				     "qcom,usb-snps-hs-7nm-phy";
+> +			reg = <0 0x088e3000 0 0x400>;
+> +			status = "disabled";
+> +			#phy-cells = <0>;
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "ref";
+> +
+> +			resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
+> +		};
+> +
+> +		usb_2_hsphy: phy@88e4000 {
+> +			compatible = "qcom,sc7280-usb-hs-phy",
+> +				     "qcom,usb-snps-hs-7nm-phy";
+> +			reg = <0 0x088e4000 0 0x400>;
+> +			status = "disabled";
+> +			#phy-cells = <0>;
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "ref";
+> +
+> +			resets = <&gcc GCC_QUSB2PHY_SEC_BCR>;
+> +		};
+> +
+> +		usb_1_qmpphy: phy@88e9000 {
+> +			compatible = "qcom,sm8250-qmp-usb3-phy";
+> +			reg = <0 0x088e9000 0 0x200>,
+> +			      <0 0x088e8000 0 0x20>;
+> +			reg-names = "reg-base", "dp_com";
+> +			status = "disabled";
+> +			#clock-cells = <1>;
 
-Good point. I was wondering if there's something like that for email
-changes. Will send a patch.
+IIUC this means that the PHY is a clock provider. Which clocks does it
+provide? How would a possible consumer specify the clock it wants to
+use? I couldn't find the corresponding definitions in the header of the
+binding
 
-Thank you, Catalin.
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +
+> +			clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
+> +				 <&rpmhcc RPMH_CXO_CLK>,
+> +				 <&gcc GCC_USB3_PRIM_PHY_COM_AUX_CLK>;
+> +			clock-names = "aux", "ref_clk_src", "com_aux";
+> +
+> +			resets = <&gcc GCC_USB3_DP_PHY_PRIM_BCR>,
+> +				 <&gcc GCC_USB3_PHY_PRIM_BCR>;
+> +			reset-names = "phy", "common";
+> +
+> +			usb_1_ssphy: lanes@88e9200 {
+> +				reg = <0 0x088e9200 0 0x200>,
+> +				      <0 0x088e9400 0 0x200>,
+> +				      <0 0x088e9c00 0 0x400>,
+> +				      <0 0x088e9600 0 0x200>,
+> +				      <0 0x088e9800 0 0x200>,
+> +				      <0 0x088e9a00 0 0x100>;
+> +				#phy-cells = <0>;
+> +				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+> +				clock-names = "pipe0";
+> +				clock-output-names = "usb3_phy_pipe_clk_src";
+> +			};
+> +		};
+> +
+> +		usb_2: usb@8cf8800 {
+> +			compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+> +			reg = <0 0x08cf8800 0 0x400>;
+> +			status = "disabled";
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +			dma-ranges;
+> +
+> +			clocks = <&gcc GCC_CFG_NOC_USB3_SEC_AXI_CLK>,
+> +				 <&gcc GCC_USB30_SEC_MASTER_CLK>,
+> +				 <&gcc GCC_AGGRE_USB3_SEC_AXI_CLK>,
+> +				 <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+> +				 <&gcc GCC_USB30_SEC_SLEEP_CLK>;
+> +			clock-names = "cfg_noc", "core", "iface","mock_utmi",
+> +				      "sleep";
+> +
+> +			assigned-clocks = <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+> +					  <&gcc GCC_USB30_SEC_MASTER_CLK>;
+> +			assigned-clock-rates = <19200000>, <200000000>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <&pdc 13 IRQ_TYPE_EDGE_RISING>,
+> +				     <&pdc 12 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "hs_phy_irq",
+> +					  "dm_hs_phy_irq", "dp_hs_phy_irq";
+> +
+> +			power-domains = <&gcc GCC_USB30_SEC_GDSC>;
+> +
+> +			resets = <&gcc GCC_USB30_SEC_BCR>;
+> +
+> +			usb_2_dwc3: dwc3@8c00000 {
+> +				compatible = "snps,dwc3";
+> +				reg = <0 0x08c00000 0 0xe000>;
+> +				interrupts = <GIC_SPI 242 IRQ_TYPE_LEVEL_HIGH>;
+> +				iommus = <&apps_smmu 0xa0 0x0>;
+> +				snps,dis_u2_susphy_quirk;
+> +				snps,dis_enblslpm_quirk;
+> +				phys = <&usb_2_hsphy>;
+> +				phy-names = "usb2-phy";
+> +				maximum-speed = "high-speed";
+> +			};
+> +		};
+> +
+> +		usb_1: usb@a6f8800 {
+> +			compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+> +			reg = <0 0x0a6f8800 0 0x400>;
+> +			status = "disabled";
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +			dma-ranges;
+> +
+> +			clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+> +				 <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+> +				 <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
+> +				 <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +				 <&gcc GCC_USB30_PRIM_SLEEP_CLK>;
+> +
+> +			clock-names = "cfg_noc", "core", "iface", "mock_utmi",
+> +				      "sleep";
+> +
+> +			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+> +			assigned-clock-rates = <19200000>, <200000000>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
+> +					  "dm_hs_phy_irq", "ss_phy_irq";
+> +
+> +			power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
+> +
+> +			resets = <&gcc GCC_USB30_PRIM_BCR>;
+> +
+> +			usb_1_dwc3: dwc3@a600000 {
+> +				compatible = "snps,dwc3";
+> +				reg = <0 0x0a600000 0 0xe000>;
+> +				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> +				iommus = <&apps_smmu 0xe0 0x0>;
+> +				snps,dis_u2_susphy_quirk;
+> +				snps,dis_enblslpm_quirk;
+> +				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
+> +				phy-names = "usb2-phy", "usb3-phy";
+
+The 'maximum-speed' isn't specified in difference to the other controller.
+According to commit d3d245aee0b1 ("arm64: dts: qcom: sc7180: Add
+maximum speed property for DWC3 USB node") the max speed is used to
+configure the interconnect bandwidth. dwc3_qcom_interconnect_init() falls
+back to super speed if the max speed is unknown, so it should be fine to
+omit it, unless it is needed for something else.
+
