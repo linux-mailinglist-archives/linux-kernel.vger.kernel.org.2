@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A159B33FCA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1F133FCA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhCRBX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:23:26 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:55743 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhCRBXE (ORCPT
+        id S230119AbhCRBWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 21:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCRBWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:23:04 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12I1LkGY2017919, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12I1LkGY2017919
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 18 Mar 2021 09:21:46 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 09:21:46 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 09:21:45 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef]) by
- RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef%7]) with mapi id
- 15.01.2106.013; Thu, 18 Mar 2021 09:21:45 +0800
-From:   Jack Yu <jack.yu@realtek.com>
-To:     "Lu, Brent" <brent.lu@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        =?utf-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?= 
-        <kent_chen@realtek.com>
-CC:     Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        "Jie Yang" <yang.jie@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        "Zhi, Yong" <yong.zhi@intel.com>,
-        Libin Yang <libin.yang@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>,
-        "R, Dharageswari" <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp support
-Thread-Topic: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
- support
-Thread-Index: AQHXGzY5g4Pry5OlPUKQGENVoO6uRKqHynaAgAEpDaA=
-Date:   Thu, 18 Mar 2021 01:21:45 +0000
-Message-ID: <5c750391ceb349d2aaf403f038fc7394@realtek.com>
-References: <20210317110824.20814-1-brent.lu@intel.com>
- <af990f6f-3a8b-3a1e-a02a-3bfe96e4d80a@linux.intel.com>
- <DM6PR11MB364290806B23636B6D0618DF976A9@DM6PR11MB3642.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB364290806B23636B6D0618DF976A9@DM6PR11MB3642.namprd11.prod.outlook.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.102.167]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 17 Mar 2021 21:22:34 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8B9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 18:22:34 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y200so2343521pfb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 18:22:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EalAswFOAcFp0mMFCKv9AaiQ3ouyPCG+tDog26PGvcI=;
+        b=TSffuJwrnV2vab8/yGoahUmuVCMDXKwUtsys3/bDoxiRWc2F+tAbiwWP2aKGYHhGV8
+         gzbjPnRuubA6uxOalwf/Z67un8+OC/fwBeJ8Upsa2Pv1pu1E+PVITOIEVPFFO+PQW43A
+         yV0DB8OU4s1DHxtjiTSy0K6Yf3Xh0c37cc+7Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EalAswFOAcFp0mMFCKv9AaiQ3ouyPCG+tDog26PGvcI=;
+        b=dkf7FauFhB345hmO4wxJig2pXNi/arLDF/zYFjrssi4QG6ULUf37FgJiOpaTg1KsXC
+         nKs85LeXXg3YVSZD1qIonifcLHso9db6jUaCgR3GY2aj6lSpDsU8i4kKgrX9jLPUdYt3
+         s1SMImZzEa/vOd9ZXO83WwhdFl2N9S7mHKdI5BQID6ltyfKBzhVOfLNyfhrDOKAqJ/nO
+         uxclxs80L7n7ATA/mJjvZ11SOWAnUJp0zBSHoDtEe8C+VBT/doJrm3sttM7743SMW80h
+         HeL48IiSjyD76eNAtm6x78sns0ENwjUnzOP2u0hFxAjonf/YUDYwVt7s/yhqykgsY1f2
+         X7yQ==
+X-Gm-Message-State: AOAM530Vj238T9QaG9fTGAi+inNER/b6+CsvXUXtj/stJzIWy+fl/mVU
+        D/UsdMFDu/xW+PDeGvYxyDpifg==
+X-Google-Smtp-Source: ABdhPJyrmCLmGW63fx9n1OC+yYNO5rjvfb0Ce9xQhK2RMb98xMDnfa90K4TsbnB5zAo7scdsUzAUcw==
+X-Received: by 2002:aa7:81cb:0:b029:1ee:5346:8f1d with SMTP id c11-20020aa781cb0000b02901ee53468f1dmr1683154pfn.4.1616030553695;
+        Wed, 17 Mar 2021 18:22:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c1sm272445pfn.131.2021.03.17.18.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 18:22:33 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 18:22:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     John Wood <john.wood@gmx.com>
+Cc:     Jann Horn <jannh@google.com>, Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v6 1/8] security: Add LSM hook at the point where a task
+ gets a fatal signal
+Message-ID: <202103171821.C851A2D189@keescook>
+References: <20210307113031.11671-1-john.wood@gmx.com>
+ <20210307113031.11671-2-john.wood@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307113031.11671-2-john.wood@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IFRoZSBjb2RlIGlzIGxvb2tzIGZpbmUsIGJ1dCBKYWNrIFl1IGFkZGVkIGEgc2VwYXJhdGUg
-cGF0Y2ggdGhhdCBtYWtlcw0KPiA+IFJUTDEwMTkgZXF1aXZhbGVudCB0byBSVEwxMDE1LCBzbyBz
-aG91bGQgdGhpcyBwYXRjaCBhbHNvIGhhbmRsZSB0aGUNCj4gPiBSVEwxMDE5IGNhc2U/DQo+IA0K
-PiBUaGUgdG9wb2xvZ3kgdXNlZCBieSB0aGlzIG1hY2hpbmUgZHJpdmVyIGlzIHVzaW5nIDQ4aywg
-NjRmcyBJMlMgZm9ybWF0Lg0KPiBSVDEwMTkgbmVlZHMgdG8gc3VwcG9ydCB0aGlzIGNvbmZpZ3Vy
-YXRpb24uIE5vdCBzdXJlIGlmIFJUMTAxOSBjb3VsZCBzdXBwb3J0DQo+IHRoYXQuDQo+IA0KDQpZ
-ZXMsIFJUMTAxOSBzdXBwb3J0cyA0OGssIDY0ZnMgSTJTIGZvcm1hdC4NCg==
+On Sun, Mar 07, 2021 at 12:30:24PM +0100, John Wood wrote:
+> Add a security hook that allows a LSM to be notified when a task gets a
+> fatal signal. This patch is a previous step on the way to compute the
+> task crash period by the "brute" LSM (linux security module to detect
+> and mitigate fork brute force attack against vulnerable userspace
+> processes).
+> 
+> Signed-off-by: John Wood <john.wood@gmx.com>
+
+I continue to really like that this entire thing can be done from an LSM
+with just this one extra hook. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
