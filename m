@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B11A33FF1F
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6F333FF1E
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhCRFzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:55:09 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13188 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhCRFym (ORCPT
+        id S229702AbhCRFzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhCRFyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:54:42 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1GPp4K3CzmZH9;
-        Thu, 18 Mar 2021 13:52:14 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 13:54:34 +0800
-Subject: Re: [PATCH 4.14 00/95] 4.14.226-rc1 review
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "patches@kernelci.org" <patches@kernelci.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        "pavel@denx.de" <pavel@denx.de>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20210315135740.245494252@linuxfoundation.org>
- <c0902934-ea11-ba1e-fa2d-b05897aab4b3@huawei.com>
- <YFIh6ZyWb2JtCu6H@kroah.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <f2328179-00d9-41e0-6bd8-7bd39b025563@huawei.com>
-Date:   Thu, 18 Mar 2021 13:54:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 18 Mar 2021 01:54:36 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AB5C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:54:36 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id t18so2336498pjs.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rJROOKajOtciafbi5yKM+xYoRKUUdF2HFDVh5pjYjDc=;
+        b=V3a61EFeK8DCdYgpexeyYbDeJ6iJDfdbxjAeD7lChv/gRGorl33DJ3BMUviRPySs58
+         DqijCIGczHsOaQVQTiwCTUbFxa8OJ6lH/P01tnCJpz/Gr5aQL2Nif/8XBHB5io4qZOGI
+         LQyqTdOAUqrjefaJTahNsu8cRz7TQMUn4rLa0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rJROOKajOtciafbi5yKM+xYoRKUUdF2HFDVh5pjYjDc=;
+        b=V1KF5a0BQVvx9TSiS1BbVMmq2mBtqXNYZ+7vReiIb0yi7Z649r88l8olFLlIjS//7K
+         znOjYzZv8cq//htyW2MBSiUQTeKpoGP7LHzy7637um8YA+NAR/S5GIBZ/NvsR87b/jvU
+         /9NKPu4WCOJ6DYtp280PWV6k37eq4svAOLjZ8pJuuZOmoT0hP05Ly0qvlEMFvLqdDDpF
+         IHZ9gSVJx8auQ8KwWhTX0oYuLg9hFPtRTiSAYeAsuD6FEoVRlQhGMSMoZ+Jrh+AzbqJe
+         eukWRi0mDe2RJvd6H6zqdjury930HzWi+jTIAWtQatkAgC+ervopGNqP2/I87Gwjjn3a
+         98WA==
+X-Gm-Message-State: AOAM530bBzzLKurVJX4rBF6ivnqNbo0UM2ANGHmJ3jx7gTHErsn6QGEm
+        zvuO2B2BrEEiB7JNs2PJUmi4Uw==
+X-Google-Smtp-Source: ABdhPJyfFKA4Cehmeh/BMzSXGkh4TwwBYXL3HOfY3RvVilv2kLybdPLaFSKBIWTPt29ZHHbUQvDtrA==
+X-Received: by 2002:a17:90a:5284:: with SMTP id w4mr2464303pjh.29.1616046875626;
+        Wed, 17 Mar 2021 22:54:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y24sm884896pfn.213.2021.03.17.22.54.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 22:54:35 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 22:54:34 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     jannh@google.com, jeffv@google.com, surenb@google.com,
+        minchan@kernel.org, hridya@google.com, rdunlap@infradead.org,
+        christian.koenig@amd.com, willy@infradead.org,
+        viro@zeniv.linux.org.uk, kernel-team@android.com,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>, Helge Deller <deller@gmx.de>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Serge Hallyn <serge@hallyn.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [RESEND PATCH v6 2/2] procfs/dmabuf: Add inode number to
+ /proc/*/fdinfo
+Message-ID: <202103172254.478DE154@keescook>
+References: <20210308170651.919148-1-kaleshsingh@google.com>
+ <20210308170651.919148-2-kaleshsingh@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YFIh6ZyWb2JtCu6H@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308170651.919148-2-kaleshsingh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/3/17 23:36, Greg KH wrote:
-> On Tue, Mar 16, 2021 at 02:35:36PM +0800, Samuel Zou wrote:
->>
->>
->> On 2021/3/15 21:56, gregkh@linuxfoundation.org wrote:
->>> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>
->>> This is the start of the stable review cycle for the 4.14.226 release.
->>> There are 95 patches in this series, all will be posted as a response
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Wed, 17 Mar 2021 13:57:24 +0000.
->>> Anything received after that time might be too late.
->>>
->>> The whole patch series can be found in one patch at:
->>> https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.226-rc1.gz
->>> or in the git tree and branch at:
->>> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
->>> and the diffstat can be found below.
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->>
->> Tested on x86 for 4.14.226-rc1,
->>
->> Kernel repo:
->> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->> Branch: linux-4.14.y
->> Version: 4.14.226-rc1
->> Commit: 57cc62fb2d2b8e81c02cb9197e303c7782dee4cd
->> Compiler: gcc version 7.3.0 (GCC)
->>
->> x86 (No kernel failures)
->> --------------------------------------------------------------------
->> Testcase Result Summary:
->> total_num: 4728
->> succeed_num: 4727
->> failed_num: 1
+On Mon, Mar 08, 2021 at 05:06:41PM +0000, Kalesh Singh wrote:
+> And 'ino' field to /proc/<pid>/fdinfo/<FD> and
+> /proc/<pid>/task/<tid>/fdinfo/<FD>.
 > 
-> What does this "failed_num" mean?
+> The inode numbers can be used to uniquely identify DMA buffers
+> in user space and avoids a dependency on /proc/<pid>/fd/* when
+> accounting per-process DMA buffer sizes.
 > 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
-total_num: The number of total testcases
-succeed_num: The number of succeed testcases
-failed_num: The number of failed testcases
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Maybe I can revise the description in the next email.
+-- 
+Kees Cook
