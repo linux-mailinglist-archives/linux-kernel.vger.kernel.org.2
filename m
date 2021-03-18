@@ -2,355 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67323407BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A1F3407C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhCROXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        id S231319AbhCROYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbhCROWY (ORCPT
+        with ESMTP id S230248AbhCROXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:22:24 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0168C06174A;
-        Thu, 18 Mar 2021 07:22:23 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id h3so3588007pfr.12;
-        Thu, 18 Mar 2021 07:22:23 -0700 (PDT)
+        Thu, 18 Mar 2021 10:23:37 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D890C06175F;
+        Thu, 18 Mar 2021 07:23:37 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id q5so3602754pfh.10;
+        Thu, 18 Mar 2021 07:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SpPndL4fuwSGYT0wdMqweTD3cW2njoeZuj3wFEa3beA=;
-        b=beITg+JN/HZTJSz2pfuVXd3uGNd17i+BzLkWn6aYeO6mSFpfBhsI5CnoZwwvdYEmPF
-         nkU1USDs0a25FjFGFy8SWZ3wRxNJtUc5tPjsqexAR84vjAE4mmI3Aaehj7N+c/B3j/+i
-         THUer6324f/CGccAqKkOpHbvJscmagVqqppabQcXZtFh4qjoNapM8VDdRh/DQETpg1nr
-         rfIUMHpah7dHm2HKw7lUrqT/vvxUduinWt3EKdBqSO1EBAWl+YVwY9E3nWktCqOV559Y
-         2juQtilA7puyRm0O/VBCwz1Wwb0ZaWNue6OFvCA+YI1RqfH3t4CunaVqrgNW33HAsh3i
-         Y7SA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=i4OoD5oVv3vyCIfLjVD86PLwweLZj2W4qyc3rfITy6k=;
+        b=TditEaOQ1ySN7lEkZrOL6dxur5eZdHqL2NdFqbf00JEW4zWDmZU8QzaDnE9Li7gcTu
+         Kuon8/ZGnqHbC88IfKeMiFUZ7nwKgHihimAvUdNzI6sGpFChZh+hoOswq3x9FboXMvat
+         mWE5iGOEbJdtcj0PsHYidy8VjoOPzOerEZ8uqR2aStYcZZrdxaFp/HvTBveOx/W3lKIZ
+         8ZBgr+XnqUAkm6sSJ8kd2PAmu0DK8TgWAH+MK98iiSshh6aV1XgBaFVq9pfoBtDyfGDQ
+         9pYmmflCjAw7772kr19/mhTXig42qyNaz6fqHemWlhrsA+7QwLlJmoLjn2QaqKM9LJQ0
+         Zd+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SpPndL4fuwSGYT0wdMqweTD3cW2njoeZuj3wFEa3beA=;
-        b=Ssj8yGjImITD+ec2TzRK60YAnxd1VQsZ/eHUwQEf62y+G0+LfVt3ncsvF087DRa9Bg
-         5Zs8y12hus2dMtUc6Ucp4ktUUaq818ScErJfV9hZCJBGdbHBDFA2v703NayXZuFe/tr2
-         JXW3AiFJHpWvDd52dCvFlbHWAs6sIpWOSNKBWFaXkns0aTkhvAQZNAsastZaWcGwgKgp
-         Mpo0H5zGXrg9EjgRYATeCYdFMBTWSVif0HnpS8TyEpwwsFi5gB2zW3hlwlXYaa1GNO1v
-         POYhf4/ZKhTcN/ydkHDya/kZgOUqMt+DxShW8GdMmh/+vuL5fU+RcjLH09KJvzr17AWG
-         58Mw==
-X-Gm-Message-State: AOAM533F5RmD3M0rEO9agRtDZ3RtUMa6iCsu5cAJKw0dRZlXtuHZ5Owc
-        Ps59bOEGR6NYjLFWYzrWs1M=
-X-Google-Smtp-Source: ABdhPJyR24ru6fcIXgtjRI2ZQDrCD6tN+QXRQ36xEMy2k7jb42e2y6TNv7qZF7TMMHWMvOaMwVhVjw==
-X-Received: by 2002:a62:2b85:0:b029:1ee:e2a2:cbee with SMTP id r127-20020a622b850000b02901eee2a2cbeemr4280269pfr.78.1616077343058;
-        Thu, 18 Mar 2021 07:22:23 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id i17sm2850601pfq.135.2021.03.18.07.22.18
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=i4OoD5oVv3vyCIfLjVD86PLwweLZj2W4qyc3rfITy6k=;
+        b=DpR5X3/L9EFtoVlhbkaQ5edqBB+EXcS7LUXDMf3RSKGiZIFMJVhDhobIK5ZoJAUsXJ
+         OZSsZ8ttO7rHQVdEITWwMXof+7t8C7lbEGfPNqaOnpw60X+etxbezK3P9zmQgnOCPrRA
+         Bsulx5Yy1pthbD+/U+oqaF0Hhj4XC31s/J87XIn3333927k3daJy+2mPdavbsQzv5VEX
+         Ee2cChnr0pRqPlfpFuIW5Qoj3cXrfmSQI5xIbe+f+QU+5RNbmAn4Y7/ynAbuN2jdb1CJ
+         G7ctth5t+oDpor/q7dVc6yI36fCqAKI1KzTFz94M6J44JAEKWrQLw187zLbg/8/pYzsT
+         LmcQ==
+X-Gm-Message-State: AOAM5328YfmRTlF7KtqToSBFUVqEBKUSk7SFaWihyx2zlJ+2SNIXMxja
+        BHcq1kOBF2/vlHDQimBodD0=
+X-Google-Smtp-Source: ABdhPJwdKyY6HcAvNehBo+CZh1eiHh02pLpW/FO/wS4hgEPEEbNJc5y0dw06RsWziE9RWu6tqTZ1qw==
+X-Received: by 2002:a63:f350:: with SMTP id t16mr7394615pgj.441.1616077416925;
+        Thu, 18 Mar 2021 07:23:36 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id i4sm2814162pfo.14.2021.03.18.07.23.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 07:22:22 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 23:22:15 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        patrick.havelange@essensium.com, alexandre.belloni@bootlin.com,
-        mcoquelin.stm32@gmail.com, linux-kernel@vger.kernel.org,
-        o.rempel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel@pengutronix.de, syednwaris@gmail.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, alexandre.torgue@foss.st.com
-Subject: Re: [Linux-stm32] [PATCH v9 22/33] counter: Internalize sysfs
- interface code
-Message-ID: <YFNiF1JlgiRxEKDB@shinobu>
-References: <cover.1615293276.git.vilhelm.gray@gmail.com>
- <377a1552e7794ca4d998d840c06ba4a109214863.1615293276.git.vilhelm.gray@gmail.com>
- <b195e59c-470b-8a06-7308-42bd628274bd@foss.st.com>
- <YE3BvAsx4exhWG+C@shinobu>
- <YE3SqJypA1UE86Sr@shinobu>
- <fa974bd9-96bc-3647-a5b7-5d268e459753@foss.st.com>
- <3c3183c4-c9da-709b-dff3-ab5e407e042b@foss.st.com>
+        Thu, 18 Mar 2021 07:23:36 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 19:52:52 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
+        linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
+        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
+        felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210318142252.fqi3das3mtct4yje@archlinux>
+References: <20210315183226.GA14801@raphael-debian-dev>
+ <YFGDgqdTLBhQL8mN@unreal>
+ <20210317102447.73no7mhox75xetlf@archlinux>
+ <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YAD6cNnDImkM3riC"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <3c3183c4-c9da-709b-dff3-ab5e407e042b@foss.st.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFMYzkg101isRXIM@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---YAD6cNnDImkM3riC
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 18, 2021 at 11:10:29AM +0100, Fabrice Gasnier wrote:
-> On 3/18/21 10:21 AM, Fabrice Gasnier wrote:
-> > On 3/14/21 10:08 AM, William Breathitt Gray wrote:
-> >> On Sun, Mar 14, 2021 at 04:56:44PM +0900, William Breathitt Gray wrote:
-> >>> On Fri, Mar 12, 2021 at 04:02:42PM +0100, Fabrice Gasnier wrote:
-> >>>> On 3/9/21 2:19 PM, William Breathitt Gray wrote:
-> >>>>> +static ssize_t enums_available_show(const u32 *const enums,
-> >>>>> +				    const size_t num_enums,
-> >>>>> +				    const char *const strs[], char *buf)
-> >>>>> +{
-> >>>>> +	size_t len =3D 0;
-> >>>>> +	size_t index;
-> >>>>> +
-> >>>>> +	for (index =3D 0; index < num_enums; index++)
-> >>>>> +		len +=3D sysfs_emit(buf + len, "%s\n", strs[enums[index]]);
-> >>>>> +
-> >>>>> +	return len;
-> >>>>> +}
-> >>>>> +
-> >>>>> +static ssize_t strs_available_show(const struct counter_available =
-*const avail,
-> >>>>> +				   char *buf)
-> >>>>> +{
-> >>>>> +	size_t len =3D 0;
-> >>>>> +	size_t index;
-> >>>>> +
-> >>>>> +	for (index =3D 0; index < avail->num_items; index++)
-> >>>>> +		len +=3D sysfs_emit(buf + len, "%s\n", avail->strs[index]);
-> >>>>> +
-> >>>>> +	return len;
-> >>>>> +}
-> >>>>
-> >>>> Hi William,
-> >>>>
-> >>>> I was willing to do some testing on this series, on the stm32 counter
-> >>>> drivers, since we released few fixes around them.
-> >>>>
-> >>>> I tried to apply this series against current testing branch, with few
-> >>>> patches applied (so it applies cleanly):
-> >>>> - dt-bindings: counter: add interrupt-counter binding
-> >>>> - counter: add IRQ or GPIO based counter
-> >>>> - counter: stm32-timer-cnt: fix ceiling miss-alignment with reload r=
-egister
-> >>>> - counter: stm32-timer-cnt: fix ceiling write max value
-> >>>>  counter: stm32-timer-cnt: Report count function when SLAVE_MODE_DIS=
-ABLED
-> >>>>
-> >>>>
-> >>>> For both the "stm32-lptimer-cnt" and "stm32-timer-cnt" drivers, I ge=
-t a
-> >>>> warning message and stack dump in "sysfs_emit" when reading the
-> >>>> available functions from sysfs.
-> >>>> I started to do some testing on v8 of this series last week. I didn't
-> >>>> noticed that.
-> >>>>
-> >>>> For both the "stm32-lptimer-cnt", there are 2 functions currently I =
-get
-> >>>> 1 stack dump. Only the "increase" function is printed correctly.
-> >>>>
-> >>>> For the "stm32-timer-cnt", there are 4 functions currently, I get 3
-> >>>> stack dumps. Only the "increase" function is printed correctly
-> >>>>
-> >>>> Sample log for "stm32-timer-cnt:
-> >>>>
-> >>>> root@stm32mp1:/sys/devices/platform/soc/44000000.timer/44000000.time=
-r:counter/counter0#
-> >>>> cat count0/function_available
-> >>>> [ 4689.195506] ------------[ cut here ]------------
-> >>>> [ 4689.198747] WARNING: CPU: 1 PID: 5841 at fs/sysfs/file.c:737
-> >>>> sysfs_emit+0x88/0x94
-> >>>> [ 4689.206233] invalid sysfs_emit: buf:f4a66208
-> >>>> [ 4689.210553] Modules linked in: sha256_generic libsha256 sha256_arm
-> >>>> cfg80211 panel_orisetech_otm8009a snd_soc_hdmi_codec
-> >>>> snd_soc_stm32_sai_sub stm32_lptimers
-> >>>> [ 4689.261444] CPU: 1 PID: 5841 Comm: cat Tainted: G        W
-> >>>> 5.12.0-rc1 #534
-> >>>> [ 4689.268999] Hardware name: STM32 (Device Tree Support)
-> >>>> [ 4689.274166] [<c0310b38>] (unwind_backtrace) from [<c030b4ec>]
-> >>>> (show_stack+0x10/0x14)
-> >>>> [ 4689.281942] [<c030b4ec>] (show_stack) from [<c0fede70>]
-> >>>> (dump_stack+0xc0/0xd4)
-> >>>> [ 4689.289199] [<c0fede70>] (dump_stack) from [<c0345624>]
-> >>>> (__warn+0xec/0x148)
-> >>>> [ 4689.296194] [<c0345624>] (__warn) from [<c0fe9e90>]
-> >>>> (warn_slowpath_fmt+0x98/0xbc)
-> >>>> [ 4689.303714] [<c0fe9e90>] (warn_slowpath_fmt) from [<c0548ee0>]
-> >>>> (sysfs_emit+0x88/0x94)
-> >>>> [ 4689.311586] [<c0548ee0>] (sysfs_emit) from [<bf115de8>]
-> >>>> (counter_comp_available_show+0x11c/0x1a4 [counter])
-> >>>> [ 4689.321382] [<bf115de8>] (counter_comp_available_show [counter]) =
-=66rom
-> >>>> [<c0a21b70>] (dev_attr_show+0x18/0x48)
-> >>>> [ 4689.331263] [<c0a21b70>] (dev_attr_show) from [<c0549014>]
-> >>>> (sysfs_kf_seq_show+0x88/0xf0)
-> >>>> [ 4689.339394] [<c0549014>] (sysfs_kf_seq_show) from [<c04da6e8>]
-> >>>> (seq_read_iter+0x1a4/0x554)
-> >>>> [ 4689.347703] [<c04da6e8>] (seq_read_iter) from [<c04af6f0>]
-> >>>> (vfs_read+0x1ac/0x2c4)
-> >>>> [ 4689.355224] [<c04af6f0>] (vfs_read) from [<c04afc20>]
-> >>>> (ksys_read+0x64/0xdc)
-> >>>> [ 4689.362219] [<c04afc20>] (ksys_read) from [<c03000c0>]
-> >>>> (ret_fast_syscall+0x0/0x58)
-> >>>> [ 4689.369827] Exception stack(0xc7261fa8 to 0xc7261ff0)
-> >>>> [ 4689.374906] 1fa0:                   00000000 00020000 00000003
-> >>>> b6f35000 00020000 00000000
-> >>>> [ 4689.383126] 1fc0: 00000000 00020000 b6f56ce0 00000003 00000003
-> >>>> 00000000 00020000 00000000
-> >>>> [ 4689.391344] 1fe0: 00000003 be8239a8 410bff27 4104c066
-> >>>> ...
-> >>>> 2 more stack dumps follow
-> >>>> ...
-> >>>> [ 4689.810479] ---[ end trace 59ed79949efe984c ]---
-> >>>> increase
-> >>>>
-> >>>> I get similar backtrace with other _available attributes:
-> >>>> $ cat signal0_action_available
-> >>>> $ cat signal1_action_available
-> >>>>
-> >>>> Do you think I'm doing something wrong ?
-> >>>>
-> >>>> I tested then "quadrature x4" on the timer driver... It seems all fi=
-ne.
-> >>>>
-> >>>> Best regards
-> >>>> Fabrice
-> >>>>
-> >>>>> +
-> >>>>> +static ssize_t counter_comp_available_show(struct device *dev,
-> >>>>> +					   struct device_attribute *attr,
-> >>>>> +					   char *buf)
-> >>>>> +{
-> >>>>> +	const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> >>>>> +	const struct counter_count *const count =3D a->parent;
-> >>>>> +	const struct counter_synapse *const synapse =3D a->comp.priv;
-> >>>>> +	const struct counter_available *const avail =3D a->comp.priv;
-> >>>>> +
-> >>>>> +	switch (a->comp.type) {
-> >>>>> +	case COUNTER_COMP_FUNCTION:
-> >>>>> +		return enums_available_show(count->functions_list,
-> >>>>> +					    count->num_functions,
-> >>>>> +					    counter_function_str, buf);
-> >>>>> +	case COUNTER_COMP_SYNAPSE_ACTION:
-> >>>>> +		return enums_available_show(synapse->actions_list,
-> >>>>> +					    synapse->num_actions,
-> >>>>> +					    counter_synapse_action_str, buf);
-> >>>>> +	case COUNTER_COMP_ENUM:
-> >>>>> +		return strs_available_show(avail, buf);
-> >>>>> +	case COUNTER_COMP_COUNT_MODE:
-> >>>>> +		return enums_available_show(avail->enums, avail->num_items,
-> >>>>> +					    counter_count_mode_str, buf);
-> >>>>> +	default:
-> >>>>> +		return -EINVAL;
-> >>>>> +	}
-> >>>>> +}
-> >>>
-> >>> Hi Fabrice,
-> >>>
-> >>> I can confirm that I'm hitting this regression as well with the
-> >>> 104-quad-8 driver. The warning seems to be caused by the
-> >>> offset_in_page(buf) check in sysfs_emit(). It looks like the first lo=
-op
-> >>> in enums_available_show() calls sysfs_emit() correctly, but subsequent
-> >>> loops have an invalid buf offset.
-> >>>
-> >>> The enums_available_show() callback is rather simple: call sysfs_emit=
-()
-> >>> for each enum string and increment buf by the length written each tim=
-e.
-> >>> I haven't modified this function since v8, so I am somewhat confused
-> >>> about why the buf offset would be invalid here now. I wonder if there
-> >>> has been a change somewhere else in the kernel that is causing
-> >>> sysfs_emit() to now return an incorrect length.
-> >>>
-> >>> William Breathitt Gray
-> >>
-> >> Fabrice,
-> >>
-> >> Would you be able to check the values of buf and len before they enter
-> >> sysfs_emit()? I think redefining the enums_available_show() function
-> >> like this should suffice:
-> >>
-> >> static ssize_t enums_available_show(const u32 *const enums,
-> >>                                     const size_t num_enums,
-> >>                                     const char *const strs[], char *bu=
-f)
-> >> {
-> >>         size_t len =3D 0;
-> >>         size_t index;
-> >>
-> >>         for (index =3D 0; index < num_enums; index++){
-> >>                 pr_info("buf: %p\tbuf+len: %p\tlen: %zu\n", buf, buf +=
- len, len);
-> >>                 len +=3D sysfs_emit(buf + len, "%s\n", strs[enums[inde=
-x]]);
-> >>         }
-> >>
-> >>         return len;
-> >> }
-> >>
-> >> I want to see whether the issue is due to the sysfs_emit() return value
-> >> or the value of buf.
-> >=20
-> > Hi William,
-> >=20
-> > Sorry for the delay,
-> >=20
-> > I'm getting strange results on buf+len. Here's the result I'm getting
-> > with same test as above:
-> >=20
-> > [  170.190995] buf: 5daf3333    buf+len: 5daf3333       len: 0
-> > [  170.194383] buf: 5daf3333    buf+len: 22c37039       len: 9
-> > [  170.199268] ------------[ cut here ]------------
-> > ...
-> > [  170.404810] buf: 5daf3333    buf+len: 22c37039       len: 9
-> > [  170.409663] ------------[ cut here ]------------
-> > ...
-> > [  170.615265] buf: 5daf3333    buf+len: 22c37039       len: 9
-> > [  170.620117] ------------[ cut here ]------------
-> > ...
-> > increase
->=20
-> William,
->=20
-> I did the same, with %px instead of %p, and i'm getting:
->=20
-> [  124.001041] buf: c60fb000    buf+len: c60fb000       len: 0
-> [  124.009442] buf: c60fb000    buf+len: c60fb009       len: 9
-> [  124.019118] ------------[ cut here ]------------
-> ...
-> So, I believe this is caused by the offset_in_page(buf) check, in
-> sysfs_emit().
->=20
-> I also double checked it on the v8 patchset, and I already had the same
-> behavior. So I likely didn't checked the available attrs earlier. Sorry
-> for this confusion.
->=20
-> Best Regards,
-> Fabrice
-
-Ah, I forgot %p doesn't show the true address. Okay so it looks like we
-can't use sysfs_emit() with an offset. I'll change these sysfs_emit()
-lines to use scnprintf() instead and that should prevent the warnings
-=66rom triggering.
+On 21/03/18 11:09AM, Leon Romanovsky wrote:
+> On Wed, Mar 17, 2021 at 11:31:40AM -0600, Alex Williamson wrote:
+> > On Wed, 17 Mar 2021 15:58:40 +0200
+> > Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > > On Wed, Mar 17, 2021 at 06:47:18PM +0530, Amey Narkhede wrote:
+> > > > On 21/03/17 01:47PM, Leon Romanovsky wrote:
+> > > > > On Wed, Mar 17, 2021 at 04:53:09PM +0530, Amey Narkhede wrote:
+> > > > > > On 21/03/17 01:02PM, Leon Romanovsky wrote:
+> > > > > > > On Wed, Mar 17, 2021 at 03:54:47PM +0530, Amey Narkhede wrote:
+> > > > > > > > On 21/03/17 06:20AM, Leon Romanovsky wrote:
+> > > > > > > > > On Mon, Mar 15, 2021 at 06:32:32PM +0000, Raphael Norwitz wrote:
+> > > > > > > > > > On Mon, Mar 15, 2021 at 10:29:50AM -0600, Alex Williamson wrote:
+> > > > > > > > > > > On Mon, 15 Mar 2021 21:03:41 +0530
+> > > > > > > > > > > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > > On 21/03/15 05:07PM, Leon Romanovsky wrote:
+> > > > > > > > > > > > > On Mon, Mar 15, 2021 at 08:34:09AM -0600, Alex Williamson wrote:
+> > > > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > > > > > > > > > > > > warm reset respectively.
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > > > > > > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
+> > > > > > > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > > > > > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > > > > > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
+> > > > > > > > > > > > > > > kernel function (yet).
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
+> > > > > > > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > > > > > > > > > > > > > defined here.  Note that with this series the resets available through
+> > > > > > > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
+> > > > > > > > > > > > > > exactly the same as they are currently.  The bus and slot reset
+> > > > > > > > > > > > > > methods used here are limited to devices where only a single function is
+> > > > > > > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
+> > > > > > > > > > > > > > which performed a reset irrespective of the downstream devices.  This
+> > > > > > > > > > > > > > series only enables selection of the existing methods.  Thanks,
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Alex,
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > I asked the patch author here [1], but didn't get any response, maybe
+> > > > > > > > > > > > > you can answer me. What is the use case scenario for this functionality?
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Thanks
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > [1] https://lore.kernel.org/lkml/YE389lAqjJSeTolM@unreal/
+> > > > > > > > > > > > >
+> > > > > > > > > > > > Sorry for not responding immediately. There were some buggy wifi cards
+> > > > > > > > > > > > which needed FLR explicitly not sure if that behavior is fixed in
+> > > > > > > > > > > > drivers. Also there is use a case at Nutanix but the engineer who
+> > > > > > > > > > > > is involved is on PTO that is why I did not respond immediately as
+> > > > > > > > > > > > I don't know the details yet.
+> > > > > > > > > > >
+> > > > > > > > > > > And more generally, devices continue to have reset issues and we
+> > > > > > > > > > > impose a fixed priority in our ordering.  We can and probably should
+> > > > > > > > > > > continue to quirk devices when we find broken resets so that we have
+> > > > > > > > > > > the best default behavior, but it's currently not easy for an end user
+> > > > > > > > > > > to experiment, ie. this reset works, that one doesn't.  We might also
+> > > > > > > > > > > have platform issues where a given reset works better on a certain
+> > > > > > > > > > > platform.  Exposing a way to test these things might lead to better
+> > > > > > > > > > > quirks.  In the case I think Pali was looking for, they wanted a
+> > > > > > > > > > > mechanism to force a bus reset, if this was in reference to a single
+> > > > > > > > > > > function device, this could be accomplished by setting a priority for
+> > > > > > > > > > > that mechanism, which would translate to not only the sysfs reset
+> > > > > > > > > > > attribute, but also the reset mechanism used by vfio-pci.  Thanks,
+> > > > > > > > > > >
+> > > > > > > > > > > Alex
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > To confirm from our end - we have seen many such instances where default
+> > > > > > > > > > reset methods have not worked well on our platform. Debugging these
+> > > > > > > > > > issues is painful in practice, and this interface would make it far
+> > > > > > > > > > easier.
+> > > > > > > > > >
+> > > > > > > > > > Having an interface like this would also help us better communicate the
+> > > > > > > > > > issues we find with upstream. Allowing others to more easily test our
+> > > > > > > > > > (or other entities') findings should give better visibility into
+> > > > > > > > > > which issues apply to the device in general and which are platform
+> > > > > > > > > > specific. In disambiguating the former from the latter, we should be
+> > > > > > > > > > able to better quirk devices for everyone, and in the latter cases, this
+> > > > > > > > > > interface allows for a safer and more elegant solution than any of the
+> > > > > > > > > > current alternatives.
+> > > > > > > > >
+> > > > > > > > > So to summarize, we are talking about test and debug interface to
+> > > > > > > > > overcome HW bugs, am I right?
+> > > > > > > > >
+> > > > > > > > > My personal experience shows that once the easy workaround exists
+> > > > > > > > > (and write to generally available sysfs is very simple), the vendors
+> > > > > > > > > and users desire for proper fix decreases drastically. IMHO, we will
+> > > > > > > > > see increase of copy/paste in SO and blog posts, but reduce in quirks.
+> > > > > > > > >
+> > > > > > > > > My 2-cents.
+> > > > > > > > >
+> > > > > > > > I agree with your point but at least it gives the userspace ability
+> > > > > > > > to use broken device until bug is fixed in upstream.
+> > > > > > >
+> > > > > > > As I said, I don't expect many fixes once "userspace" will be able to
+> > > > > > > use cheap workaround. There is no incentive to fix it.
+> >
+> > We can increase the annoyance factor of using a modified set of reset
+> > methods, but ultimately we can only control what goes into our kernel,
+> > other kernels might take v1 of this series and incorporate it
+> > regardless of what happens here.
+> >
+> > > > > > > > This is also applicable for obscure devices without upstream
+> > > > > > > > drivers for example custom FPGA based devices.
+> > > > > > >
+> > > > > > > This is not relevant to upstream kernel. Those vendors ship everything
+> > > > > > > custom, they don't need upstream, we don't need them :)
+> > > > > > >
+> > > > > > By custom I meant hobbyists who could tinker with their custom FPGA.
+> > > > >
+> > > > > I invite such hobbyists to send patches and include their FPGA in
+> > > > > upstream kernel.
+> >
+> > This is potentially another good use case, how receptive are we going
+> > to be to an FPGA design that botches a reset.  Do they have a valid
+> > device ID for us to base a quirk on, are they just squatting on one, or
+> > using the default from a library.  Maybe the next bitstream will
+> > resolve it, maybe without any external indication.  IOW, what would the
+> > quality level be for that quirk versus using this as a workaround,
+> > where the user probably wouldn't mind a kernel nag?
+>
+> It is worth to solve it when the need arises.
+>
+> >
+> > > > > > > > Another main application which I forgot to mention is virtualization
+> > > > > > > > where vmm wants to reset the device when the guest is reset,
+> > > > > > > > to emulate machine reboot as closely as possible.
+> > > > > > >
+> > > > > > > It can work in very narrow case, because reset will cause to device
+> > > > > > > reprobe and most likely the driver will be different from the one that
+> > > > > > > started reset. I can imagine that net devices will lose their state and
+> > > > > > > config after such reset too.
+> > > > > > >
+> > > > > > Not sure if I got that 100% right. The pci_reset_function() function
+> > > > > > saves and restores device state over the reset.
+> > > > >
+> > > > > I'm talking about netdev state, but whatever given the existence of
+> > > > > sysfs reset knob.
+> > > > >
+> > > > > >
+> > > > > > > IMHO, it will be saner for everyone if virtualization don't try such resets.
+> >
+> > That would cause a massive regression in device assignment support.  As
+> > with other sysfs attributes, triggering them alongside a running driver
+> > is probably not going to end well.  However, pci_reset_function() is
+> > extremely useful for stopping devices and returning them to a default
+> > state, when either rebooting a VM or returning the device to the host.
+> > The device is not removed and re-probed when this occurs, vfio-pci is
+> > able to hold onto the device across these actions.  Sure, don't reset a
+> > netdev device when it's in use, that's not what these are used for.
+> >
+> > > > > > The exists reset sysfs attribute was added for exactly this case
+> > > > > > though.
+> > > > >
+> > > > > I didn't know the rationale behind that file till you said and I
+> > > > > googled libvirt discussion, so ok. Do you propose that libvirt
+> > > > > will manage database of devices and their working reset types?
+> > > > >
+> > > > I don't have much idea about internals of libvirt but why would
+> > > > it need to manage database of working reset types? It could just
+> > > > read new reset_methods attribute to get the list of supported reset
+> > > > methods.
+> > >
+> > > Because the idea of this patch is to read all supported reset types and
+> > > allow to the user to chose the working one. The user will do it with
+> > > help from StackOverflow, but libvirt will need to have some sort of
+> > > database, otherwise it won't be different from simple "echo 1 > reset"
+> > > which will iterate over all supported resets anyway.
+> >
+> > AFAIK, libvirt no longer attempts to do resets itself, or is at least
+> > moving in that direction.  vfio-pci will reset as device when they're
+> > opened by a user (when available) or triggered via the API.
+>
+> <...>
+>
+> > > The difference here is that this is a workaround to solve bugs that
+> > > should be fixed in the kernel.
+> >
+> > If we want to discourage using this as a primary means to resolve reset
+> > issues on a device then we can create log warnings any time it's used.
+> > Downstreams that really want this functionality are going to take this
+> > patch from the list whether we accept it or not.  As above, it seems
+> > there are valid use cases.  Even with mainstream vfio in QEMU, I go
+> > through some hoops trying to determine if I can do a secondary bus
+> > reset rather than a PM reset because it's not specified anywhere what a
+> > "soft reset" means for any given device.  This sort of interface could
+> > make it easier to apply a system policy that a pci_reset_function()
+> > should always perform a secondary bus reset if the only other option is
+> > a PM reset.  Maybe that policy mostly makes sense for a VM use case, so
+> > we'd want one policy by default and another when the device is used for
+> > this functionality.  How could we accomplish that with a quirk?  Thanks,
+>
+> I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+>
+> If it is latter then we don't really need sysfs, if not, we still need
+> some sort of DB to create second policy, because "supported != working".
+> What am I missing?
+>
+> Thanks
+>
+Can you explain bit more about why supported != working?
+Why would hardware indicate that it supports specific reset
+method if it doesn't work? There is only an unsual quirk for intel
+82599 which supports FLR but only reports in PF DEVCAP not in
+VF DEVCAP so we need to directly call FLR without checking if it
+is supported.
 
 Thanks,
-
-William Breathitt Gray
-
---YAD6cNnDImkM3riC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmBTYg0ACgkQhvpINdm7
-VJJM8xAAuz6XycB6mew7tFuX9DMfASh0sZZ8fZX+aYamxAfEz+x8T7uOCdSbeHZ8
-z1rRMLCRWzmRa5yiqWpmjJXvzMTDKUzEF/vBlGfHEZfMpGD9EKvZFfDBw+WJFoSl
-yBROKzyc1dAvbKnDnWrzblHTxfxN2GiFhtN6qfs7poIznjLjUVzmP5EUKXCgVAW9
-WLuyc49zwTgBHppTvtJfghnJhy6X5Vvi1zUz2dHwrF1gochaiYSP9fVUQXiotC5i
-T0uyD6Sdrs2fYxQ5KEF0YGUHRg5Fm14hknf5tQS9nlcDMuXnAWsan9tn64lRgjZh
-0zPHSv03CI8cJ2jedIXr/GM0Erm1zF8i9aZf4r0YB8yzXP2b1hjCKdt3vvMA6hww
-eNNHYr5UkBnGCQxfD5VUml/xcTFHVaMFWaq9V20kWCXqiqnXVHALtahU7ZFLuc6w
-ClKGmhIgdWns2wUVw81AjT0b+hv1Qoel2+3waTjzHWyAYJ7jHjUCthCbzZoNWuNL
-ba3lPAV2MT1qDclm2RNsVvrG9RADFvoJbG+i7HsnDJcSR7jKEPCv/KMfozamrlj/
-9529IfCF+Svsxb5yy72GBFciBVv7nZhjRVcDZdIk3Aor5R3BITnjUC2rQODL5Wx6
-k8VUQF/B+/BzbNYbJxr1gxUj4yGwR2J50H4dRKeZPrAIrfLAIjY=
-=5l0o
------END PGP SIGNATURE-----
-
---YAD6cNnDImkM3riC--
+Amey
