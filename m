@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4404F3407A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30BC3407A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhCROQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:16:41 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:42844 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231557AbhCROQS (ORCPT
+        id S231675AbhCROQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:16:42 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:39043 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229508AbhCROQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:16:18 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IEF2mE027217;
-        Thu, 18 Mar 2021 07:16:14 -0700
+        Thu, 18 Mar 2021 10:16:23 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IEG97F002190;
+        Thu, 18 Mar 2021 07:16:18 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=sTJ3IMOmXARTvoeOGPslic0XzPbePSuKWqgHl1327WQ=;
- b=VbxURsykYiqA5lBqeeqm8aBwXEFQoCmq5XND3E5p8BfjjhYjtVjbc0iWco+kWXosPuWL
- GswYsFvPv1/9hDS2wFSYTIRfNiNwv7o9L7wsFIWyLSLxl3O2I95C7BXXNKNPK8kndIut
- a1k2uZ5NG9WYxvwy6k0Ye9rBiZycBpE7fLFH6TSA0XzWMyGbGeiilPAYhubBAVfwqjKg
- 6BQjG9Xm0nBkV8UN9AZ+GbUlz4NWHemG3PMmkaj2TWuRRgM9GZT6luV80NTyLjKejR7L
- 8g/KYCgGd5tvYvDB+duUI8ui9tFFwil5xEQOs4BfMwBnOidYVlgYo9N2+D3yGxim6LfW 3Q== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 37b5vdpkdh-1
+ content-type; s=pfpt0220; bh=CheJY+h4JecTl+0IltVb6MPtmSec/TUAxxjUvJUdEd8=;
+ b=RSS577oB6vwuoBipR7COXVlQBZLg5LAE/keGuWuhd/3/pyGxkefYpAoZ2CYjgt6RRtzv
+ fPwDn7QJrkXyVbpRivpO8KW8lvOnVe5rXUS8RhnHYfYPV95HWY6Unce7CZ/GTr0fEDOI
+ FAU1Wazurpin0JszXRhC6zIbq5rQk5iogpUf7r6Y0si0LoEiNcBDiZ8OcKEDIZ8t9n+y
+ Y/P7XmRTKG+828qNpjp0KXHmdYM6YQ9v4f5LgVVdRo9Z5dHEIC4WSHT1/h0hOlixVVP0
+ PsCOITRDViXiff6ie3KmbAGeoUYeXZjrCLuG+ClqDuONBC4YvHUKZ3i5hGJFno9ADiVn /A== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 37c5bf0q7v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 07:16:14 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 07:16:13 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Mar 2021 07:16:13 -0700
+        Thu, 18 Mar 2021 07:16:18 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
+ 2021 07:16:16 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 18 Mar 2021 07:16:16 -0700
 Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 80DE23F703F;
-        Thu, 18 Mar 2021 07:16:09 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 5F4B93F7048;
+        Thu, 18 Mar 2021 07:16:13 -0700 (PDT)
 From:   Hariprasad Kelam <hkelam@marvell.com>
 To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     <kuba@kernel.org>, <davem@davemloft.net>,
@@ -43,9 +43,9 @@ CC:     <kuba@kernel.org>, <davem@davemloft.net>,
         <sgoutham@marvell.com>, <lcherian@marvell.com>,
         <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
         <hkelam@marvell.com>
-Subject: [net PATCH v2 5/8] octeontx2-af: Fix irq free in rvu teardown
-Date:   Thu, 18 Mar 2021 19:45:46 +0530
-Message-ID: <20210318141549.2622-6-hkelam@marvell.com>
+Subject: [net PATCH v2 6/8] octeontx2-pf: Clear RSS enable flag on interace down
+Date:   Thu, 18 Mar 2021 19:45:47 +0530
+Message-ID: <20210318141549.2622-7-hkelam@marvell.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210318141549.2622-1-hkelam@marvell.com>
 References: <20210318141549.2622-1-hkelam@marvell.com>
@@ -59,45 +59,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Geetha sowjanya <gakula@marvell.com>
 
-Current devlink code try to free already freed irqs as the
-irq_allocate flag is not cleared after free leading to kernel
-crash while removing rvu driver. The patch fixes the irq free
-sequence and clears the irq_allocate flag on free.
+RSS configuration can not be get/set when interface is in down state
+as they required mbox communication. RSS enable flag status
+is used for set/get configuration. Current code do not clear the
+RSS enable flag on interface down which lead to mbox error while
+trying to set/get RSS configuration.
 
-Fixes: 7304ac4567bc ("octeontx2-af: Add mailbox IRQ and msg handlers")
+Fixes: 85069e95e531 ("octeontx2-pf: Receive side scaling support")
 Signed-off-by: Geetha sowjanya <gakula@marvell.com>
 Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
 Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index d9a1a71c7cc..ab24a5e8ee8 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -2462,8 +2462,10 @@ static void rvu_unregister_interrupts(struct rvu *rvu)
- 		    INTR_MASK(rvu->hw->total_pfs) & ~1ULL);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 53ab1814d74..2fd3d235d29 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1672,6 +1672,7 @@ int otx2_stop(struct net_device *netdev)
+ 	struct otx2_nic *pf = netdev_priv(netdev);
+ 	struct otx2_cq_poll *cq_poll = NULL;
+ 	struct otx2_qset *qset = &pf->qset;
++	struct otx2_rss_info *rss;
+ 	int qidx, vec, wrk;
  
- 	for (irq = 0; irq < rvu->num_vec; irq++) {
--		if (rvu->irq_allocated[irq])
-+		if (rvu->irq_allocated[irq]) {
- 			free_irq(pci_irq_vector(rvu->pdev, irq), rvu);
-+			rvu->irq_allocated[irq] = false;
-+		}
- 	}
+ 	netif_carrier_off(netdev);
+@@ -1684,6 +1685,10 @@ int otx2_stop(struct net_device *netdev)
+ 	/* First stop packet Rx/Tx */
+ 	otx2_rxtx_enable(pf, false);
  
- 	pci_free_irq_vectors(rvu->pdev);
-@@ -2975,8 +2977,8 @@ static void rvu_remove(struct pci_dev *pdev)
- 	struct rvu *rvu = pci_get_drvdata(pdev);
- 
- 	rvu_dbg_exit(rvu);
--	rvu_unregister_interrupts(rvu);
- 	rvu_unregister_dl(rvu);
-+	rvu_unregister_interrupts(rvu);
- 	rvu_flr_wq_destroy(rvu);
- 	rvu_cgx_exit(rvu);
- 	rvu_fwdata_exit(rvu);
++	/* Clear RSS enable flag */
++	rss = &pf->hw.rss_info;
++	rss->enable = false;
++
+ 	/* Cleanup Queue IRQ */
+ 	vec = pci_irq_vector(pf->pdev,
+ 			     pf->hw.nix_msixoff + NIX_LF_QINT_VEC_START);
 -- 
 2.17.1
 
