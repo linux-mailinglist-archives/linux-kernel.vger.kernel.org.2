@@ -2,245 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CFE340DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0083340DEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbhCRTLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:11:13 -0400
-Received: from mail-db8eur05on2125.outbound.protection.outlook.com ([40.107.20.125]:61697
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232719AbhCRTKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:10:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CZdg/T1bkM3HtlRUbpk4TMHpfxivypI7lFoueNFIsg6nz1ejZuOLyFDJozCuEOu0UbzXSdr4RpgeJrTJAYLP58t1YfJexU2NKbGDthXgPXnk9TLrbFtANqMkGVtFb2cqJ6mLxt0Ac+DH6ooUerYD6NOWTRzc+UyDOLGgwZgasPZdbRszkU7bcTsdIXOAsEucniiWxk9JFEc2rOTqvXgyZ8t9OrFxOGQKlCopZ7qGhv7mKY557/H24LWv7tu9lv5QbwG2JZLNaq+0wcQWngppkYIYulaPq9/Ff02rfdmjScR10CKOoD6aE+iL3mYa4gZABPl21xKFxMRzeLWuDePXAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lPQNA9LKxzOcI9j4jxaL+0JpZGs5iUwJANWh3DMongc=;
- b=ELOek8cu5UZYHBk7xMFnFyk7Q/TvooF+ZzroFg69WLyC9wK8uu7QOokq+jqdKr+R+/GO2n4cI9EiVsFK3oMbpvj06bKW+b3hLsmFZvSRC+UH6I50ayUq1ST9wFAckOeGGULerfzbDj0/9FYPO4WxdWA34s0jR6+W3DFv6fqkQMHSL26EvUdy8lI8qIXIHTuBtxUQuRaDtkXpOJzz10d4Cuzo5/4DYS6yLsrY6s6a7uCVn5WZVSd7myDU7DkA2rxLcxyiwJ4KinXt11amdKL8qFDdTIONzh1jUTnHvGKSRn3Uzcg/FeNAWBDEVno0ymANdVtNGbRjuMU/5nfylDjueg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 131.228.2.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=nokia.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=nokia.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lPQNA9LKxzOcI9j4jxaL+0JpZGs5iUwJANWh3DMongc=;
- b=c2vn/5FaZai9NPDLlfBy/EWnLC94oc1aWzOZL5uz2giBAAUJweyruHnC7z9JEfxLUpUo2ZlUYaIf/cb4wmyA9TFjXatcpia4LaFasRQAMRYUzNv/Kla0J60BCwOwJwCGv54vR/mIHm6S/ohPwH/zvCeqPQc8fJMFWiWFkOlRIFk=
-Received: from DB6PR0201CA0028.eurprd02.prod.outlook.com (2603:10a6:4:3f::38)
- by AM0PR07MB4739.eurprd07.prod.outlook.com (2603:10a6:208:72::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.10; Thu, 18 Mar
- 2021 19:10:50 +0000
-Received: from DB5EUR03FT007.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:4:3f:cafe::5a) by DB6PR0201CA0028.outlook.office365.com
- (2603:10a6:4:3f::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Thu, 18 Mar 2021 19:10:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.17)
- smtp.mailfrom=nokia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nokia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
- 131.228.2.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=131.228.2.17; helo=fihe3nok0735.emea.nsn-net.net;
-Received: from fihe3nok0735.emea.nsn-net.net (131.228.2.17) by
- DB5EUR03FT007.mail.protection.outlook.com (10.152.20.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 19:10:50 +0000
-Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
-        by fihe3nok0735.emea.nsn-net.net (GMO) with ESMTP id 12IJAhbX002267;
-        Thu, 18 Mar 2021 19:10:44 GMT
-From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-To:     linux-gpio@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] gpio: pl061: Support implementations without GPIOINTR line
-Date:   Thu, 18 Mar 2021 20:10:40 +0100
-Message-Id: <20210318191040.48575-1-alexander.sverdlin@nokia.com>
-X-Mailer: git-send-email 2.10.2
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 701218ce-eb49-478a-0c43-08d8ea418b32
-X-MS-TrafficTypeDiagnostic: AM0PR07MB4739:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB4739A43F2D431B1CD6C860D288699@AM0PR07MB4739.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FmsCP3srjuRoqXg2Fq4MRVYlDtN3Ur/dLI+EmDFgis9engBZ33GucZZFzmNOLVwjBlVPjXu45TSD/b5ouiISisBRfTOKBqZ90EOLQlJ9kTJUbB/o1OERwEcdiiQz3ll3XxTvoT5KO7m/3+/+yrjwaHPJczyhARigTehxd/O/yLDWTzWpzov7C687epXnaZvFq8JP2+VDYD7AU8/T5wD6Iqx2sh8qkaAhoGvCCf+Vxal6HVMwBhz9YeZo67bIS3qsRI0FZo2G9vQ3Q5C7/WPDW+Ia6f4jiHfSAlM2oEcbYQlSC3n6ZdVBbTRRvIBhNbh3tn0BultoJqgW75ZDCrIB93CbmzZ4O0ZSf/zcG4V3PpPylgSbHNTYbMzKBEtcxV/CTmsdtyaUthL/0933RfCr/odClWELBelITU1WY45m0zC+ha8kOZKh/M5wToim+d+IMo1S4Wwd43wLL4AFIesXE8rBWdpdoIST87RAdL9VYnawUqT5jC2uk8ehhCtTuLUxHNscoIVdtPmbfT7lsk+XQlQx7MZEeXU7g87Ge8p+qdXm9abkWB57UmexywlQjKXK7nHM0WXkuVAAwnTGqVS/b/CLSuxCjo5LMllvtMkcPxpI7+UDoDXUj6OJUybUHN+H7FuNOm4q+G50Cm4/PHcais5Mk7mGhLGYS3nmsXZj8K+RjP6x+vUgZI6zY8VqsJGSCahV3Y1OydvN34TCH0BYxTaBbrhITSdbxviBRrtTbUEr8QYRhfFsQcs1t0lac47l5D+gQle5SjzNLlpTgydQBw==
-X-Forefront-Antispam-Report: CIP:131.228.2.17;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0735.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(36840700001)(46966006)(8936002)(47076005)(6666004)(4326008)(356005)(336012)(2616005)(36756003)(966005)(70206006)(6916009)(86362001)(5660300002)(36860700001)(1076003)(8676002)(186003)(82740400003)(316002)(81166007)(83380400001)(2906002)(70586007)(478600001)(54906003)(26005)(82310400003)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 19:10:50.1049
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 701218ce-eb49-478a-0c43-08d8ea418b32
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.17];Helo=[fihe3nok0735.emea.nsn-net.net]
-X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT007.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4739
+        id S232651AbhCRTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232729AbhCRTLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:11:47 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF6CC06174A;
+        Thu, 18 Mar 2021 12:11:47 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so3637421pjb.2;
+        Thu, 18 Mar 2021 12:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dofdd3BCyTPrVyna7j0j7/lNL4uZ7+QSQmrpNUXo3UQ=;
+        b=SAsdPjiT2tmJ2iazM/jeLpVMitANuHcKyjL/fzaRVw2QF+KJw4lyjZo18cfXIOjcGI
+         mR6kTq/ROtazh3KefG+ChFwCOCXw92vuWS/uF3C1rsXwWgO97bUha9nYCgO0HSS10kz3
+         j5pUImRoZIkJfAkbDszPdHyTJY9+Jx8dYKIM4oaQau4UuK6gFfWXH+xFm9DIoLx6tsFP
+         2hn12D/1S+MoETuJrbHuBI+XEo6tnSorpMyf+WZSNvzkVQUOir+/yRhYqmAUWzyzpRjv
+         fXe+vAyHsrHSN5WimuhdbWnw+INYeQP2mziL6ZD3FFQa3N49j1cRaGAElWij92Zo9TXL
+         0POQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dofdd3BCyTPrVyna7j0j7/lNL4uZ7+QSQmrpNUXo3UQ=;
+        b=EVaAX+hDACWYfJsZMyq8jIhZd3PJLjA+NZKLooq0YtVcHg3ISNHGiYkzuipNIa9WlD
+         Dzpu3qOQ1GPIUeePTBqfYvq1iZtvNEB+uMYvaovzDSgz6+GksAQ10lybajeAi5jEKOHb
+         DLVjE1dKOK3JrUZ6HwsPtQiJ36emNyEZzhwOypVap71qWa9JDZoue2oYmB96YunOd9yU
+         v8BHt4aWAMy9bEAsNdXvb3Zf6Lz+wHIpOnkES7lSFeODmAdVHNQgcTUeerKQ19PASXk6
+         NdlduSwIeCv7xadg0/tA+VKd0HXPQuAuupn8qYjMOGDLNHFLOwb9eo6ZVNnI18nLNGre
+         dQUA==
+X-Gm-Message-State: AOAM530dJh4brMS0gpAPY+02lobCDsZ0Gx5PJX2UPbkcJQE0TdgqFcHW
+        9jEibTZ1DnlwdfLNNYKU1++4OP/bvYM=
+X-Google-Smtp-Source: ABdhPJxsu5Tc5aMjRYKgn+kQk0AcXuLxXgk3mx/W347/sslyzjIr+6/ejG8h4aGUl9jOfM4RsTVLdw==
+X-Received: by 2002:a17:90a:bb95:: with SMTP id v21mr5673976pjr.30.1616094706481;
+        Thu, 18 Mar 2021 12:11:46 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id na8sm3020711pjb.2.2021.03.18.12.11.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 12:11:46 -0700 (PDT)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v6 0/2] 8250: Add driver for Broadcom UART
+Date:   Thu, 18 Mar 2021 15:11:29 -0400
+Message-Id: <20210318191131.35992-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+v6 - A few more changes based on requests from Greg Kroah-Hartman
+     - Don't save the debugfs file handle in priv because it was
+       never used.
+     - Change all dev_info() messages to dev_dbg() messages.
+   - Fix warnings from the kernel test robot
+   - Use --base with "git format-patch"
+   - Fixes in the .yaml file based on requests from Rob Herring
+     - Change "oneOf" to "minItems: 1".
+     - Reference serial.yaml instead of using "$nodname".
+     - Add missing newline.
 
-There are several implementations of PL061 which lack GPIOINTR signal in
-hardware and only have individual GPIOMIS[7:0] interrupts. Use the
-hierarchical interrupt support of the gpiolib in these cases (if at least 8
-IRQs are configured for the PL061).
+v5 - Changes based on requests from Greg Kroah-Hartman
+     - Move sysfs stats to debugfs.
+     - Merge the .h file into the .c file.
+     - Convert "flags" with only one flag to bool
+     - Remove most dev_dbg() messages. Some can be replaced by using
+       ftrace and some would cause a crash if the driver was used
+       for the console.
 
-One in-tree example is arch/arm/boot/dts/axm55xx.dtsi, PL061 instances have
-8 IRQs defined, but current driver supports only the first one, so only one
-pin would work as IRQ trigger.
+v4 - Fix MAINTAINERS
+   - Make all changes requested by Jira Slaby. The only functional
+     change was to handle errors returned by brcmuart_arbitration()
+     in brcmuart_resume().
 
-Link: https://lore.kernel.org/linux-gpio/CACRpkdZpYzpMDWqJobSYH=JHgB74HbCQihOtexs+sVyo6SRJdA@mail.gmail.com/
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
-Changelog:
-v2: Add pl061_populate_parent_fwspec()
+v3 - remove "disable_dma" module param because it can be done
+     by modifying the device tree node instead. Reduce size by
+     removing some debug fuctionality that was no longer used.
+   - Fix error from yaml compiler in bindings
 
- drivers/gpio/Kconfig      |  1 +
- drivers/gpio/gpio-pl061.c | 91 +++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 85 insertions(+), 7 deletions(-)
+v2 - remove the patch that modified 8250_of.c to keep it from
+     registering before this driver when this driver was deferred
+     as it was getting it's "clocks". This was fixed by changing
+     the Device Tree entry to remove "clock-frequency". This results
+     in both drivers getting "clocks" and getting same the deferral.
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index e3607ec..456c0a5 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -469,6 +469,7 @@ config GPIO_PL061
- 	depends on ARM_AMBA
- 	select IRQ_DOMAIN
- 	select GPIOLIB_IRQCHIP
-+	select IRQ_DOMAIN_HIERARCHY
- 	help
- 	  Say yes here to support the PrimeCell PL061 GPIO device
- 
-diff --git a/drivers/gpio/gpio-pl061.c b/drivers/gpio/gpio-pl061.c
-index f1b53dd..e95714a 100644
---- a/drivers/gpio/gpio-pl061.c
-+++ b/drivers/gpio/gpio-pl061.c
-@@ -24,6 +24,7 @@
- #include <linux/slab.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/pm.h>
-+#include <linux/of_irq.h>
- 
- #define GPIODIR 0x400
- #define GPIOIS  0x404
-@@ -283,6 +284,64 @@ static int pl061_irq_set_wake(struct irq_data *d, unsigned int state)
- 	return irq_set_irq_wake(pl061->parent_irq, state);
- }
- 
-+static int pl061_child_to_parent_hwirq(struct gpio_chip *gc, unsigned int child,
-+				       unsigned int child_type,
-+				       unsigned int *parent,
-+				       unsigned int *parent_type)
-+{
-+	struct amba_device *adev = to_amba_device(gc->parent);
-+	unsigned int irq = adev->irq[child];
-+	struct irq_data *d = irq_get_irq_data(irq);
-+
-+	if (!d)
-+		return -EINVAL;
-+
-+	*parent_type = irqd_get_trigger_type(d);
-+	*parent = irqd_to_hwirq(d);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_OF
-+void pl061_populate_parent_fwspec(struct gpio_chip *gc,
-+				  struct irq_fwspec *fwspec,
-+				  unsigned int parent_hwirq,
-+				  unsigned int parent_type)
-+{
-+	struct device_node *dn = to_of_node(gc->irq.fwnode);
-+	struct of_phandle_args pha;
-+	int i;
-+
-+	fwspec->param_count = 0;
-+
-+	if (WARN_ON(!dn))
-+		return;
-+
-+	/*
-+	 * This brute-force here is because of the fact PL061 is often paired
-+	 * with GIC-v3, which has 3-cell IRQ specifier (SPI/PPI selection), and
-+	 * unexpected range shifts in hwirq mapping (SPI IRQs are shifted by
-+	 * 32). So this is about reversing of gic_irq_domain_translate().
-+	 */
-+	for (i = 0; i < PL061_GPIO_NR; i++) {
-+		unsigned int p, pt;
-+
-+		if (pl061_child_to_parent_hwirq(gc, i, parent_type, &p, &pt))
-+			continue;
-+		if (p == parent_hwirq)
-+			break;
-+	}
-+	if (WARN_ON(i == PL061_GPIO_NR))
-+		return;
-+
-+	if (WARN_ON(of_irq_parse_one(dn, i, &pha)))
-+		return;
-+
-+	fwspec->param_count = pha.args_count;
-+	for (i = 0; i < pha.args_count; i++)
-+		fwspec->param[i] = pha.args[i];
-+}
-+#endif
-+
- static int pl061_probe(struct amba_device *adev, const struct amba_id *id)
- {
- 	struct device *dev = &adev->dev;
-@@ -330,16 +389,34 @@ static int pl061_probe(struct amba_device *adev, const struct amba_id *id)
- 
- 	girq = &pl061->gc.irq;
- 	girq->chip = &pl061->irq_chip;
--	girq->parent_handler = pl061_irq_handler;
--	girq->num_parents = 1;
--	girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
--				     GFP_KERNEL);
--	if (!girq->parents)
--		return -ENOMEM;
--	girq->parents[0] = irq;
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_bad_irq;
- 
-+	/*
-+	 * There are some PL061 implementations which lack GPIOINTR in hardware
-+	 * and only have individual GPIOMIS[7:0] signals. We distinguish them by
-+	 * the number of IRQs assigned to the AMBA device.
-+	 */
-+	if (!adev->irq[PL061_GPIO_NR - 1]) {
-+		WARN_ON(adev->irq[1]);
-+
-+		girq->parent_handler = pl061_irq_handler;
-+		girq->num_parents = 1;
-+		girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
-+					     GFP_KERNEL);
-+		if (!girq->parents)
-+			return -ENOMEM;
-+		girq->parents[0] = irq;
-+	} else {
-+		girq->fwnode = dev->fwnode;
-+		girq->parent_domain =
-+			irq_get_irq_data(adev->irq[PL061_GPIO_NR - 1])->domain;
-+		girq->child_to_parent_hwirq = pl061_child_to_parent_hwirq;
-+#ifdef CONFIG_OF
-+		girq->populate_parent_fwspec = pl061_populate_parent_fwspec;
-+#endif
-+	}
-+
- 	ret = devm_gpiochip_add_data(dev, &pl061->gc, pl061);
- 	if (ret)
- 		return ret;
+
+Al Cooper (2):
+  dt-bindings: Add support for the Broadcom UART driver
+  serial: 8250: Add new 8250-core based Broadcom STB driver
+
+ .../bindings/serial/brcm,bcm7271-uart.yaml    |   95 ++
+ MAINTAINERS                                   |    8 +
+ drivers/tty/serial/8250/8250_bcm7271.c        | 1202 +++++++++++++++++
+ drivers/tty/serial/8250/Kconfig               |   10 +
+ drivers/tty/serial/8250/Makefile              |    1 +
+ 5 files changed, 1316 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+ create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
+
+
+base-commit: bf152b0b41dc141c8d32eb6e974408f5804f4d00
 -- 
-2.10.2
+2.17.1
 
