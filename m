@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F323400B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AD43400B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhCRIOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:14:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhCRIOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B151664F04;
-        Thu, 18 Mar 2021 08:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616055264;
-        bh=lIluJSl7BAktteo3lXWTWv4jITCh1L+JcnjAe33GBvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VXVJYN7XGEb23i1vob61kUo8podqJ+4SGupEUnRJB6eZhyMjEb/JtTaR3LNlbZftJ
-         CHU0v0wMYugkmM5ikIO2B9GvGPSd3mLiS+bA5BxQY8CWPhelil1wwZw0hBhtwgGxAF
-         2ST6IJVZknpSiApaG62QZIWghoJ9ySg3R95h4xx816YT2AMluzzsU33KT/b8LuGdCC
-         P85zdILFeRJJfNCgyIh18lVZhGcUJL/k6G/Lm4RI48VrnC4wW7wTbwOpgRBHkKqM/f
-         7HLtzIwfndtkjYlz6Q+EDGvpymgQh9HJ3g+X8axx5usQh6gBraHYPuiS2Lw6grICwn
-         dsAjw7J8lMrLg==
-Date:   Thu, 18 Mar 2021 10:14:20 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rxrpc: rxkad: replace if (cond) BUG() with BUG_ON()
-Message-ID: <YFML3Dqpyc4Gcg2U@unreal>
-References: <1615952318-4861-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S229710AbhCRIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:14:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhCRIOg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:14:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616055276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=15NAKS9Isxz1mUr9bz1U2OlYkIPx+9vW+iRsoYJamYs=;
+        b=V9GxgI7nFMhvI7JAADXLRYryZpTbeBEAVZMl/URLcCH78mlLm1CVRk4MIRnvz3d8J1/jU8
+        3KldLIHCPmLBkQFAFuPppfATpQNPbjQ6QzcjTtL1LqTzAVvqJURHL4+GnMDJ3Y+qLJWExm
+        5oeiNZBChnWKQMtla0bmWEjdWuUuP28=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-gDW63DTcOSiKUSClNJiSTA-1; Thu, 18 Mar 2021 04:14:32 -0400
+X-MC-Unique: gDW63DTcOSiKUSClNJiSTA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1974D8189CD;
+        Thu, 18 Mar 2021 08:14:30 +0000 (UTC)
+Received: from [10.36.113.61] (ovpn-113-61.ams2.redhat.com [10.36.113.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 456C21F41B;
+        Thu, 18 Mar 2021 08:14:27 +0000 (UTC)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Aili Yao <yaoaili@kingsoft.com>, akpm@linux-foundation.org,
+        naoya.horiguchi@nec.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com,
+        sunhao2@kingsoft.com, Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <20210317163714.328a038d@alex-virtual-machine>
+ <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
+ <20210318044600.GJ3420@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm/gup: check page posion status for coredump.
+Message-ID: <5cc2ccb8-16bc-bbbf-6c94-124be1d95458@redhat.com>
+Date:   Thu, 18 Mar 2021 09:14:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615952318-4861-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210318044600.GJ3420@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:38:38AM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
->
-> ./net/rxrpc/rxkad.c:1140:2-5: WARNING: Use BUG_ON instead of if
-> condition followed by BUG.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  net/rxrpc/rxkad.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
-> index e2e9e9b..bfa3d9a 100644
-> --- a/net/rxrpc/rxkad.c
-> +++ b/net/rxrpc/rxkad.c
-> @@ -1135,9 +1135,8 @@ static void rxkad_decrypt_response(struct rxrpc_connection *conn,
->  	       ntohl(session_key->n[0]), ntohl(session_key->n[1]));
->
->  	mutex_lock(&rxkad_ci_mutex);
-> -	if (crypto_sync_skcipher_setkey(rxkad_ci, session_key->x,
-> -					sizeof(*session_key)) < 0)
-> -		BUG();
-> +	BUG_ON(crypto_sync_skcipher_setkey(rxkad_ci, session_key->x,
-> +					sizeof(*session_key)) < 0);
+On 18.03.21 05:46, Matthew Wilcox wrote:
+> On Wed, Mar 17, 2021 at 10:12:02AM +0100, David Hildenbrand wrote:
+>>> +	if (IS_ENABLED(CONFIG_MEMORY_FAILURE) && ret == 1) {
+>>> +		if (unlikely(PageHuge(page) && PageHWPoison(compound_head(page))))
+>>> +			ret = 0;
+>>> +		else if (unlikely(PageHWPoison(page)))
+>>> +			ret = 0;
+>>> +	}
+>>
+>> I wonder if a simple
+>>
+>> if (PageHWPoison(compound_head(page)))
+>> 	ret = 0;
+>>
+>> won't suffice. But I guess the "issue" is compound pages that are not huge
+>> pages or transparent huge pages.
+> 
+> THPs don't set the HWPoison bit on the head page.
+> 
+> https://lore.kernel.org/linux-mm/20210316140947.GA3420@casper.infradead.org/
 
-It will be better to delete this BUG_ON() or find a way to ensure
-that it doesn't happen and delete after that.
+Oh, okay -- I was missing that we actually already set the HWPoison bit 
+before trying to split via TestSetPageHWPoison(). I thought for a second 
+that if splitting fails, we don't set any HWPoison bit.
 
-Thanks
+-- 
+Thanks,
 
->
->  	memcpy(&iv, session_key, sizeof(iv));
->
-> --
-> 1.8.3.1
->
+David / dhildenb
+
