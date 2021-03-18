@@ -2,152 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47ED33FEA8
+	by mail.lfdr.de (Postfix) with ESMTP id F009A33FEA9
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhCRFSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCRFRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:17:49 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF9BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:17:49 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id t16so2607080qvr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Dsml87g6Pp88SlV7XsY7Ib54S5fj8LPXDlFvLHiKovM=;
-        b=W/IMIlp9TCG5NrfqrYzA2PSxv8J4MDKxQqq+AEcn7wsfP0z4p2mh+Q+PxN3nrL9Yr0
-         f2QdLDv/8aeFzvfrJ9RiX/T0Nz8w0aMc6mVJvALeTe+HprSSkg0Wl09IlnWC8WzQebEB
-         wYH0Vkzl/izcyr2IOqD379T1Qx0fUjFQRPvcE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Dsml87g6Pp88SlV7XsY7Ib54S5fj8LPXDlFvLHiKovM=;
-        b=ud96FLr43LpnW4sIlAKXx8Nv7EzUk/loo1ix9fk0zLCyq2F59i9qSJzJD2itYKLr7M
-         rDzMsIlu829TuZ05n0tzVNqinSaA/5wL22CzOoa7hDKmGR2LygL6j4yMIevYuDXy7k3V
-         N3L8Ou7SfgEPVcFB3ydJlDeKLI8SiH6nigwWtcwCrKGj3odx5z7j93xXDgqBnKBIiwf/
-         xPjeO5jiI1hOgCsfDpTir1oweRKs8yf3xY7uDjHUl4ynkZy8qHmktCp5rIGEWBOt23xz
-         duaWUowadmQuQuVAtWtLCcjnqn/8SOWcWJCFNIHj66yKChOcUJeIIh4Y8vdOyFApWn+q
-         82MA==
-X-Gm-Message-State: AOAM533Ip9sEvXXlvzivl/NmwZoASXXsoLSpEzsGE+FE4g3eZ/b2yiZp
-        G2Iht+Fq+t95V2iaabgKiHPCIQ+fXoY8yfYh
-X-Google-Smtp-Source: ABdhPJxx7CH3Rql4qCdW2ilOtkhczhBECGES9VcuROQ3CNe73ehaia76pZYLc7vmeBhEa66jThu0hA==
-X-Received: by 2002:a05:6214:248a:: with SMTP id gi10mr2524836qvb.35.1616044668403;
-        Wed, 17 Mar 2021 22:17:48 -0700 (PDT)
-Received: from ubuntu.netflix.com (136-25-20-203.cab.webpass.net. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id m16sm937852qkm.100.2021.03.17.22.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 22:17:47 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 5/5] selftests/seccomp: Add test for atomic addfd+send
-Date:   Wed, 17 Mar 2021 22:17:33 -0700
-Message-Id: <20210318051733.2544-6-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210318051733.2544-1-sargun@sargun.me>
-References: <20210318051733.2544-1-sargun@sargun.me>
+        id S229805AbhCRFTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:19:23 -0400
+Received: from mga03.intel.com ([134.134.136.65]:20445 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229780AbhCRFSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 01:18:45 -0400
+IronPort-SDR: s7kyncFxt9Y2qrXJC7EFzzd5kOYZ7uEeLDiFvrHnOJFNmlMFRIEUjs9s6X459kBuqs5JVDXLdr
+ YV1Mwmmp5PXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="189648736"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="189648736"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 22:18:45 -0700
+IronPort-SDR: 1EcvLX+puQ92SaGZ1qa7s5YHroXIBiqmtEEZqLYHMtojf3K+WmJ1NIkDKv67aYwfJXLab4k9DX
+ TiD7MlamL3qw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="379600409"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Mar 2021 22:18:43 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMl3T-00012F-5o; Thu, 18 Mar 2021 05:18:43 +0000
+Date:   Thu, 18 Mar 2021 13:18:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ bee645788e07eea63055d261d2884ea45c2ba857
+Message-ID: <6052e2a8.AgRRycYAegn3qHXZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This just adds a test to verify that when using the new introduced flag
-to ADDFD, a valid fd is added and returned as the syscall result.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: bee645788e07eea63055d261d2884ea45c2ba857  locking/ww_mutex: Fix acquire/release imbalance in ww_acquire_init()/ww_acquire_fini()
 
-Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+elapsed time: 723m
+
+configs tested: 161
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                 mpc8540_ads_defconfig
+arm                         at91_dt_defconfig
+arc                            hsdk_defconfig
+mips                        nlm_xlr_defconfig
+sh                              ul2_defconfig
+mips                        workpad_defconfig
+arm                         hackkit_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      pcm030_defconfig
+m68k                             allmodconfig
+powerpc                     taishan_defconfig
+h8300                     edosk2674_defconfig
+powerpc                     redwood_defconfig
+mips                        qi_lb60_defconfig
+mips                            gpr_defconfig
+m68k                       bvme6000_defconfig
+powerpc                      acadia_defconfig
+arm                          pxa910_defconfig
+sh                         ecovec24_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                            mmp2_defconfig
+arm                         palmz72_defconfig
+arm                          iop32x_defconfig
+arm                        neponset_defconfig
+powerpc                     kilauea_defconfig
+sh                          landisk_defconfig
+powerpc                    mvme5100_defconfig
+m68k                       m5249evb_defconfig
+sh                            titan_defconfig
+powerpc                      walnut_defconfig
+powerpc                     rainier_defconfig
+powerpc                    gamecube_defconfig
+sh                            shmin_defconfig
+openrisc                 simple_smp_defconfig
+mips                           gcw0_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                         wii_defconfig
+powerpc                       eiger_defconfig
+mips                       bmips_be_defconfig
+m68k                        stmark2_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+arm                         assabet_defconfig
+arc                              alldefconfig
+arm                       multi_v4t_defconfig
+sh                           se7619_defconfig
+arm                          moxart_defconfig
+powerpc                          allyesconfig
+mips                           ip32_defconfig
+ia64                         bigsur_defconfig
+arm                        multi_v7_defconfig
+powerpc                      chrp32_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                   lite5200b_defconfig
+csky                             alldefconfig
+arm                       imx_v4_v5_defconfig
+mips                     loongson1b_defconfig
+h8300                    h8300h-sim_defconfig
+sh                        sh7757lcr_defconfig
+arm                     eseries_pxa_defconfig
+arm                            lart_defconfig
+mips                      bmips_stb_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                     skiroot_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                       ebony_defconfig
+arm                      footbridge_defconfig
+mips                        bcm47xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                              defconfig
+arm                         lpc32xx_defconfig
+sh                          lboxre2_defconfig
+arm                           sama5_defconfig
+mips                        nlm_xlp_defconfig
+sh                             espt_defconfig
+sh                   secureedge5410_defconfig
+riscv                             allnoconfig
+arc                        nsimosci_defconfig
+powerpc                    sam440ep_defconfig
+arm                         bcm2835_defconfig
+arm                          ixp4xx_defconfig
+mips                        vocore2_defconfig
+xtensa                       common_defconfig
+m68k                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210317
+x86_64               randconfig-a001-20210317
+x86_64               randconfig-a005-20210317
+x86_64               randconfig-a004-20210317
+x86_64               randconfig-a003-20210317
+x86_64               randconfig-a002-20210317
+i386                 randconfig-a001-20210317
+i386                 randconfig-a005-20210317
+i386                 randconfig-a002-20210317
+i386                 randconfig-a003-20210317
+i386                 randconfig-a004-20210317
+i386                 randconfig-a006-20210317
+i386                 randconfig-a001-20210318
+i386                 randconfig-a005-20210318
+i386                 randconfig-a003-20210318
+i386                 randconfig-a002-20210318
+i386                 randconfig-a006-20210318
+i386                 randconfig-a004-20210318
+i386                 randconfig-a013-20210317
+i386                 randconfig-a016-20210317
+i386                 randconfig-a011-20210317
+i386                 randconfig-a012-20210317
+i386                 randconfig-a015-20210317
+i386                 randconfig-a014-20210317
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210317
+x86_64               randconfig-a016-20210317
+x86_64               randconfig-a013-20210317
+x86_64               randconfig-a014-20210317
+x86_64               randconfig-a015-20210317
+x86_64               randconfig-a012-20210317
+
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 48ad53030d5a..f7242294a2d5 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -239,6 +239,10 @@ struct seccomp_notif_addfd {
- #define SECCOMP_USER_NOTIF_FLAG_WAIT_KILLABLE	(1UL << 0) /* Prevent task from being interrupted */
- #endif
- 
-+#ifndef SECCOMP_ADDFD_FLAG_SEND
-+#define SECCOMP_ADDFD_FLAG_SEND	(1UL << 1) /* Addfd and return it, atomically */
-+#endif
-+
- struct seccomp_notif_addfd_small {
- 	__u64 id;
- 	char weird[4];
-@@ -3980,8 +3984,14 @@ TEST(user_notification_addfd)
- 	ASSERT_GE(pid, 0);
- 
- 	if (pid == 0) {
-+		/* fds will be added and this value is expected */
- 		if (syscall(__NR_getppid) != USER_NOTIF_MAGIC)
- 			exit(1);
-+
-+		/* Atomic addfd+send is received here. Check it is a valid fd */
-+		if (fcntl(syscall(__NR_getppid), F_GETFD) == -1)
-+			exit(1);
-+
- 		exit(syscall(__NR_getppid) != USER_NOTIF_MAGIC);
- 	}
- 
-@@ -4064,6 +4074,30 @@ TEST(user_notification_addfd)
- 	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
- 	ASSERT_EQ(addfd.id, req.id);
- 
-+	/* Verify we can do an atomic addfd and send */
-+	addfd.newfd = 0;
-+	addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
-+	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-+
-+	/* Child has fds 0-6 and 42 used, we expect the lower fd available: 7 */
-+	EXPECT_EQ(fd, 7);
-+	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
-+
-+	/*
-+	 * This sets the ID of the ADD FD to the last request plus 1. The
-+	 * notification ID increments 1 per notification.
-+	 */
-+	addfd.id = req.id + 1;
-+
-+	/* This spins until the underlying notification is generated */
-+	while (ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd) != -1 &&
-+	       errno != -EINPROGRESS)
-+		nanosleep(&delay, NULL);
-+
-+	memset(&req, 0, sizeof(req));
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
-+	ASSERT_EQ(addfd.id, req.id);
-+
- 	resp.id = req.id;
- 	resp.error = 0;
- 	resp.val = USER_NOTIF_MAGIC;
-@@ -4124,6 +4158,10 @@ TEST(user_notification_addfd_rlimit)
- 	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
- 	EXPECT_EQ(errno, EMFILE);
- 
-+	addfd.flags = SECCOMP_ADDFD_FLAG_SEND;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EMFILE);
-+
- 	addfd.newfd = 100;
- 	addfd.flags = SECCOMP_ADDFD_FLAG_SETFD;
- 	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
