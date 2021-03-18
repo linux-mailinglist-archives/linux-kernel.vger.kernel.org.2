@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB2033FF87
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E5E33FF8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbhCRG0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        id S229739AbhCRG10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCRG0e (ORCPT
+        with ESMTP id S229610AbhCRG1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:26:34 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F88C06174A;
-        Wed, 17 Mar 2021 23:26:33 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id h82so1367507ybc.13;
-        Wed, 17 Mar 2021 23:26:33 -0700 (PDT)
+        Thu, 18 Mar 2021 02:27:14 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9951DC06174A;
+        Wed, 17 Mar 2021 23:27:14 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id x27so2687087qvd.2;
+        Wed, 17 Mar 2021 23:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g4jcVy0dq4D6dkbuTYCxEhsvgRcoFBgu9ucC7LjDGtY=;
-        b=anfgqyjmTFQehzgUa8eJsjaCE3q5mOrfE4piuRxkviFKdxQpUYasboBZZSiiCnqE1U
-         qPj3m/2/W3krZElD36V6c8MPA8N68yUEhn/fbYgrVRjqM/6NGa/r8HcryVKnX+29K3dX
-         VM4rah52VPyj2QpfDvSI8Q3YORCi3siDnyrEkphPKXM47DA85aBkm6uZlkJQCJZNy/JG
-         g+5QZDQct9Mv9hligBYeVct2roPpGDKDavw/oeuMr8k2B8Vk+r4rZgW1lT2ljH6BN/lf
-         0QmXbiLa/46Enprh3PJBHFecNxLQtBjDwCK5MbkeDLh/N57Ry78RWMunFZKksAHRwAaf
-         ffsg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNT32jP7JgS237wrtS8YnRoKTooTz5SRowW1DWksDxM=;
+        b=OvJV+tg9cEFf0tEjIixqrWyXv9B3ROsCHelq8dmjgbAQDe4cF0R/AWxEcQx9GbnzfU
+         +WBzPtzfNN08nteo4nR9Qb8IgAB/Vbp42NCB/auQt3XGIquVkWimOcf7fdEFswB+Qk5L
+         TSODw3mSqf33LC8kvG1XibPB/lhRSvFbmmdbecB7ddl+A90kf6nA8vYvVOPMylL6D+0d
+         auQ+XydzUUPDl6qlz4KSyRppzDPHFDmm1Zga6462akRlIogecqu69oAJC5FBzySSxt8g
+         LC8UXfjdcMuNofVvxN/9yXHFRBvMxSzOBkaPQlR9f60l3S8MoBMGHccFgDPfSAkS+GJH
+         I24g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g4jcVy0dq4D6dkbuTYCxEhsvgRcoFBgu9ucC7LjDGtY=;
-        b=asaXcTytY/yUO/J8LGZ1qSz34uc+c+ead+brimBIbbSkHVtdu4wU/gIdGdQ57HKo35
-         kevTcBOVAMRP46yoEygMwLkGabn8NqyP5JOUx/R96L+Q12oVyBBmCqVwchp9v3DWd0UY
-         UxDr0iYN+zX+L4VGuYezsU9Wzf6jYMMiy9MYMIDYAP1xlykwszF2C1u2Qp177RMNvEk0
-         yl2pZvOF9P+JLdDfe4efr0pbKaYxYbKiAbYbxy1WnAwdMZX3NQ/dzlm+m1lc6LLPzdIn
-         wwjVfsys0TFHmqBUAbwzgPTlDfUuGDQaLpzkIAaVNQCRiAu45Tt0egLRcE13+vLG1s7k
-         cuOQ==
-X-Gm-Message-State: AOAM531DVWg1Ay6QOjutcKYFA1p74QWZrrSviJrsBqos7X885j9uHR+H
-        IugbHTVkuM0NNQY/E1e2RNzMHz0EK1HlQhj+IKOaSxRx+H4S8Q==
-X-Google-Smtp-Source: ABdhPJw2UgQtZm/ksPlg9wSMLE9HrhTK2V0Gci5LHv9rMUYVF8eW3LpHhOL+zKV4V1RqPB6cCwLEhRSfbaBfmH+ktac=
-X-Received: by 2002:a25:844a:: with SMTP id r10mr3632810ybm.26.1616048793316;
- Wed, 17 Mar 2021 23:26:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNT32jP7JgS237wrtS8YnRoKTooTz5SRowW1DWksDxM=;
+        b=FnZQAW5nlyfqMSaN+4B8BhnYjviRFr1FEeVwYoeIYeOoR3PyIDILF1jf8YnnZWq/aV
+         bG4t6oJB+WUICRtd73kWp9HYjozcj8ONKH7wmjFBDDQ2rN/xYClbP0usBGinMTLf+ogB
+         l4np/qQmbwvfZ5vBKRJ8ZnkHwpP2kLfq7XP9GovzVdPvGQ6Ashgv3RSwdS2nY4bajnsx
+         RycYK7ibXIgULLJBC0qKKo0KSf5Qd8fWfXIS4QHSiD1kAE2ksTRYRWNB1Cc1g64vjuCD
+         E71NF5AMG7aBfQJnjD4HENjp3nLJKh5IEAnb0pq1mFh2yfBDqDFcaXVIU0/8F1NZgQ9h
+         Sjiw==
+X-Gm-Message-State: AOAM5327uVcajoh5LUAAGjknCX20E2fkzcpLQ/4Myb1Km7zdw3ycCCSz
+        WTyaIESEHK5dmVI9ZLu9HJ4=
+X-Google-Smtp-Source: ABdhPJxXtydecwAhlh8IEYYSOjOAHHi0Mx6IE05vvj2WBXSc8tIQDKtpj8c4E8Ww4Ldziy9qf/+iyA==
+X-Received: by 2002:a05:6214:18e5:: with SMTP id ep5mr2959617qvb.32.1616048833952;
+        Wed, 17 Mar 2021 23:27:13 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.26])
+        by smtp.gmail.com with ESMTPSA id 124sm1050782qke.107.2021.03.17.23.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 23:27:13 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, khsieh@codeaurora.org, tanmay@codeaurora.org,
+        chandanu@codeaurora.org, swboyd@chromium.org,
+        unixbhaskar@gmail.com, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] drm/msm/dp: Fixed couple of typos
+Date:   Thu, 18 Mar 2021 11:56:50 +0530
+Message-Id: <20210318062650.19886-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <279558.1615192821@turing-police> <202103172251.F9D770D@keescook> <282490.1616047333@turing-police>
-In-Reply-To: <282490.1616047333@turing-police>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 18 Mar 2021 07:26:22 +0100
-Message-ID: <CANiq72nyNSgrM6bhmM7ymdtYYKoDLfUXfwgTwLOmhLFc=c0U-w@mail.gmail.com>
-Subject: Re: [PATCH RESEND] gcc-plugins: avoid errors with -std=gnu++11 on old gcc
-To:     =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 7:03 AM Valdis Kl=C4=93tnieks
-<valdis.kletnieks@vt.edu> wrote:
->
-> Or declare that gcc6 is the minimum for building the kernel.
+s/modueles/modules/ ....two different places
 
-Cc'ing some interested people in raising GCC's version for one reason
-or another, so that we put this as another one in the pile of reasons
-:-)
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/msm/dp/dp_power.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-https://lore.kernel.org/lkml/CAHk-=3Dwjgvt1Ei72BTrEH5fgfqykVH-AYt56-7yBT8Lc=
-prj7bEg@mail.gmail.com/
+diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
+index 7d0327bbc0d5..e3f959ffae12 100644
+--- a/drivers/gpu/drm/msm/dp/dp_power.h
++++ b/drivers/gpu/drm/msm/dp/dp_power.h
+@@ -88,7 +88,7 @@ int dp_power_client_init(struct dp_power *power);
+  * return: 0 for success, error for failure.
+  *
+  * This API will de-initialize the DisplayPort's clocks and regulator
+- * modueles.
++ * modules.
+  */
+ void dp_power_client_deinit(struct dp_power *power);
 
-Cheers,
-Miguel
+@@ -100,7 +100,7 @@ void dp_power_client_deinit(struct dp_power *power);
+  *
+  * This API will configure the DisplayPort's power module and provides
+  * methods to be called by the client to configure the power related
+- * modueles.
++ * modules.
+  */
+ struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser);
+
+--
+2.20.1
+
