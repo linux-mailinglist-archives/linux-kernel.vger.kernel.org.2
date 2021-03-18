@@ -2,248 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF702340AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51187340AE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhCRREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:04:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47586 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231918AbhCRRDf (ORCPT
+        id S232252AbhCRREJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhCRREE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616087014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=paH0yzmRddoOH+5DM0vbW4Q6jvr8BxZI9BZHxCi1cWs=;
-        b=ZJjlJHIGZPKl1tCisUx6D33sA2J3mbhhJsfehwRHpYQWeCjZmD5cBpD1VfPG6ZHBzbLPUe
-        UV0+1vrubS27t6mGInx/HpVbQt8GkBhvjGo0SSQSmAYOGqw4GNkYeDDPLDE2zW+w9oBbKA
-        pqMXWh96HyzmAnjQDzidk8MDObUxGEY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-AO3aVEPRMcCDaeQvgmn55g-1; Thu, 18 Mar 2021 13:03:31 -0400
-X-MC-Unique: AO3aVEPRMcCDaeQvgmn55g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A208107B01A;
-        Thu, 18 Mar 2021 17:03:30 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.196.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6001F1042B4C;
-        Thu, 18 Mar 2021 17:03:25 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 18:03:16 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     linux-kselftest@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/kvm: add get_msr_index_features
-Message-ID: <20210318170316.6vah7x2ws4bimmdf@kamzik.brq.redhat.com>
-References: <20210318145629.486450-1-eesposit@redhat.com>
+        Thu, 18 Mar 2021 13:04:04 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E9FC06174A;
+        Thu, 18 Mar 2021 10:04:04 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id b9so5089483ejc.11;
+        Thu, 18 Mar 2021 10:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kGBtG1asT+naathIVeBKnaUsxi5B/fID3cTEy5mBPQc=;
+        b=c55hPvdd9epsvt7PhGitWFoldT52U22Ug5HNzDN/T7es7oYY/lCHk1pFBDWOFODTYm
+         REywWd9SShikMMSVPlNYVqYx/A92vbr0ojKSNoxL0pAQ/OEjgFjtLuXnPRDEh11fQBhR
+         NMcpOJlRB88B+Ln2gXSNe9zec64PmLQImVVTDn1Ou+dsI1HO4hoUrQ/i/tDX52eTk4GV
+         OFQoikJ6Z61V4wqOl36HiExDQVBZSQf1JVCjrM9Qwb+YuN1vT6sij1Z7GmLe96VXdoIE
+         I+KKHQqpz7yKffNssmUnkhwVSPaAe3lszzLxchYV0nrpz1XMgQP7s9aVEpuskjqlOeGg
+         8cIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kGBtG1asT+naathIVeBKnaUsxi5B/fID3cTEy5mBPQc=;
+        b=bT0DjZ1wr5/N7vMxX4oq2AAbos3/rahpiP0OFh1woZ8M7Iy7EpfnRAmdrk5OxZmHjv
+         meGVdsTLhDjHiZGoaJiqk84bTDp/LwXvOOP94vDAQTsDiPLjOO2+n1wF1uxu+9XgU/qk
+         8j7kyGGuzUZtJWtXDIp735ApnHtkoagDInd4CyH5ts9bG2MFDimW7wS6kp/zz6I6/5dP
+         0nDT0h3e9g4YBkkZEXbxJvmkdoBxqah3Cbw4SaVC11nvFtLtsxbM2xSAzL+E5dkOJdAx
+         aRPk61UGNfAnosm/tjkM9U77HtAM8nxAsxtwo8uXVB1h10ifKvgfI+ph57trGe2pMhCW
+         tfCQ==
+X-Gm-Message-State: AOAM530FH2aksY0RBQ2GU9MT9zbUs61AWJR0o4tLwduc3hPV6RoCNTqF
+        SoXKXqWPD2nkQYqOZBIGtcc=
+X-Google-Smtp-Source: ABdhPJxSLLaNIMAQ4v8UXlcygmjrzAvNeQO8iiZ+xrX3sa3p58SRwiKRsYlJBx/bTC/Mi9+08DREZg==
+X-Received: by 2002:a17:906:d9c9:: with SMTP id qk9mr41349939ejb.504.1616087042982;
+        Thu, 18 Mar 2021 10:04:02 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id v1sm2191787ejd.3.2021.03.18.10.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:04:02 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 19:04:01 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next] net: phy: at803x: remove at803x_aneg_done()
+Message-ID: <20210318170401.mvvwryi7exouyrzy@skbuf>
+References: <20210318142356.30702-1-michael@walle.cc>
+ <411c3508-978e-4562-f1e9-33ca7e98a752@gmail.com>
+ <20210318151712.7hmdaufxylyl33em@skbuf>
+ <ee24b531-df8b-fa3d-c7fd-8c529ecba4c8@gmail.com>
+ <ae201dadd6842f533aaa2e1440209784@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318145629.486450-1-eesposit@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <ae201dadd6842f533aaa2e1440209784@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:56:29PM +0100, Emanuele Giuseppe Esposito wrote:
-> Test the KVM_GET_MSR_FEATURE_INDEX_LIST
-> and KVM_GET_MSR_INDEX_LIST ioctls.
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  tools/testing/selftests/kvm/.gitignore        |   1 +
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../kvm/x86_64/get_msr_index_features.c       | 124 ++++++++++++++++++
->  3 files changed, 126 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/x86_64/get_msr_index_features.c
-> 
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index 32b87cc77c8e..d99f3969d371 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -5,6 +5,7 @@
->  /s390x/resets
->  /s390x/sync_regs_test
->  /x86_64/cr4_cpuid_sync_test
-> +/x86_64/get_msr_index_features
->  /x86_64/debug_regs
->  /x86_64/evmcs_test
->  /x86_64/get_cpuid_test
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index a6d61f451f88..c748b9650e28 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -39,6 +39,7 @@ LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->  
->  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> +TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
-
-Maybe we should give up trying to keep an alphabetic order.
-
->  TEST_GEN_PROGS_x86_64 += x86_64/evmcs_test
->  TEST_GEN_PROGS_x86_64 += x86_64/get_cpuid_test
->  TEST_GEN_PROGS_x86_64 += x86_64/hyperv_cpuid
-> diff --git a/tools/testing/selftests/kvm/x86_64/get_msr_index_features.c b/tools/testing/selftests/kvm/x86_64/get_msr_index_features.c
-> new file mode 100644
-> index 000000000000..ad9972d99dfa
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/x86_64/get_msr_index_features.c
-> @@ -0,0 +1,124 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Test that KVM_GET_MSR_INDEX_LIST and
-> + * KVM_GET_MSR_FEATURE_INDEX_LIST work as intended
-> + *
-> + * Copyright (C) 2020, Red Hat, Inc.
-> + */
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/ioctl.h>
-> +
-> +#include "test_util.h"
-> +#include "kvm_util.h"
-> +#include "processor.h"
-> +#include "../lib/kvm_util_internal.h"
-
-I'm not sure why the original kvm selftests authors decided to do this
-internal stuff, but we should either kill that or avoid doing stuff like
-this.
-
-> +
-> +static int kvm_num_index_msrs(int kvm_fd, int nmsrs)
-> +{
-> +	struct kvm_msr_list *list;
-> +	int r;
-> +
-> +	list = malloc(sizeof(*list) + nmsrs * sizeof(list->indices[0]));
-> +	list->nmsrs = nmsrs;
-> +	r = ioctl(kvm_fd, KVM_GET_MSR_INDEX_LIST, list);
-> +	TEST_ASSERT(r == -1 && errno == E2BIG,
-> +				"Unexpected result from KVM_GET_MSR_INDEX_LIST probe, r: %i",
-> +				r);
-
-Weird indentation
-
-> +
-> +	r = list->nmsrs;
-> +	free(list);
-> +	return r;
-> +}
-> +
-> +static void test_get_msr_index(void)
-> +{
-> +	int old_res, res, kvm_fd;
-> +
-> +	kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
-> +	if (kvm_fd < 0)
-> +		exit(KSFT_SKIP);
-> +
-> +	old_res = kvm_num_index_msrs(kvm_fd, 0);
-> +	TEST_ASSERT(old_res != 0, "Expecting nmsrs to be > 0");
-> +
-> +	if (old_res != 1) {
-> +		res = kvm_num_index_msrs(kvm_fd, 1);
-> +		TEST_ASSERT(res > 1, "Expecting nmsrs to be > 1");
-> +		TEST_ASSERT(res == old_res, "Expecting nmsrs to be identical");
-> +	}
-> +
-> +	close(kvm_fd);
-> +}
-> +
-> +static int kvm_num_feature_msrs(int kvm_fd, int nmsrs)
-> +{
-> +	struct kvm_msr_list *list;
-> +	int r;
-> +
-> +	list = malloc(sizeof(*list) + nmsrs * sizeof(list->indices[0]));
-> +	list->nmsrs = nmsrs;
-> +	r = ioctl(kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, list);
-> +	TEST_ASSERT(r == -1 && errno == E2BIG,
-> +		"Unexpected result from KVM_GET_MSR_FEATURE_INDEX_LIST probe, r: %i",
-> +				r);
-
-Weird indentation. I'd just leave it up on the last line. We don't care
-about long lines.
-
-> +
-> +	r = list->nmsrs;
-> +	free(list);
-> +	return r;
-> +}
-> +
-> +struct kvm_msr_list *kvm_get_msr_feature_list(int kvm_fd, int nmsrs)
-> +{
-> +	struct kvm_msr_list *list;
-> +	int r;
-> +
-> +	list = malloc(sizeof(*list) + nmsrs * sizeof(list->indices[0]));
-> +	list->nmsrs = nmsrs;
-> +	r = ioctl(kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, list);
-> +
-> +	TEST_ASSERT(r == 0,
-> +		"Unexpected result from KVM_GET_MSR_FEATURE_INDEX_LIST, r: %i",
-> +		r);
-> +
-> +	return list;
-> +}
-> +
-> +static void test_get_msr_feature(void)
-> +{
-> +	int res, old_res, i, kvm_fd;
-> +	struct kvm_msr_list *feature_list;
-> +
-> +	kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
-> +	if (kvm_fd < 0)
-> +		exit(KSFT_SKIP);
-> +
-> +	old_res = kvm_num_feature_msrs(kvm_fd, 0);
-> +	TEST_ASSERT(old_res != 0, "Expecting nmsrs to be > 0");
-> +
-> +	if (old_res != 1) {
-> +		res = kvm_num_feature_msrs(kvm_fd, 1);
-> +		TEST_ASSERT(res > 1, "Expecting nmsrs to be > 1");
-> +		TEST_ASSERT(res == old_res, "Expecting nmsrs to be identical");
-> +	}
-> +
-> +	feature_list = kvm_get_msr_feature_list(kvm_fd, old_res);
-> +	TEST_ASSERT(old_res == feature_list->nmsrs,
-> +				"Unmatching number of msr indexes");
-
-Weird indentation
-
-> +
-> +	for (i = 0; i < feature_list->nmsrs; i++)
-> +		kvm_get_feature_msr(feature_list->indices[i]);
-> +
-> +	free(feature_list);
-> +	close(kvm_fd);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	if (kvm_check_cap(KVM_CAP_GET_MSR_FEATURES))
-> +		test_get_msr_feature();
-> +
-> +	test_get_msr_index();
-
-Missing return
-
-> +}
-> -- 
-> 2.29.2
+On Thu, Mar 18, 2021 at 05:38:13PM +0100, Michael Walle wrote:
+> Am 2021-03-18 17:21, schrieb Heiner Kallweit:
+> > On 18.03.2021 16:17, Vladimir Oltean wrote:
+> > > On Thu, Mar 18, 2021 at 03:54:00PM +0100, Heiner Kallweit wrote:
+> > > > On 18.03.2021 15:23, Michael Walle wrote:
+> > > > > at803x_aneg_done() is pretty much dead code since the patch series
+> > > > > "net: phy: improve and simplify phylib state machine" [1].
+> > > > > Remove it.
+> > > > >
+> > > >
+> > > > Well, it's not dead, it's resting .. There are few places where
+> > > > phy_aneg_done() is used. So you would need to explain:
+> > > > - why these users can't be used with this PHY driver
+> > > > - or why the aneg_done callback isn't needed here and the
+> > > >   genphy_aneg_done() fallback is sufficient
+> > >
+> > > The piece of code that Michael is removing keeps the aneg reporting as
+> > > "not done" even when the copper-side link was reported as up, but the
+> > > in-band autoneg has not finished.
+> > >
+> > > That was the _intended_ behavior when that code was introduced, and
+> > > you
+> > > have said about it:
+> > > https://www.spinics.net/lists/stable/msg389193.html
+> > >
+> > > | That's not nice from the PHY:
+> > > | It signals "link up", and if the system asks the PHY for link details,
+> > > | then it sheepishly says "well, link is *almost* up".
+> > >
+> > > If the specification of phy_aneg_done behavior does not include
+> > > in-band
+> > > autoneg (and it doesn't), then this piece of code does not belong
+> > > here.
+> > >
+> > > The fact that we can no longer trigger this code from phylib is yet
+> > > another reason why it fails at its intended (and wrong) purpose and
+> > > should be removed.
+> > >
+> > I don't argue against the change, I just think that the current commit
+> > description isn't sufficient. What you just said I would have expected
+> > in the commit description.
 >
+> I'll come up with a better one, Vladimir, may I use parts of the text
+> above?
 
-Thanks,
-drew 
-
+My words aren't copyrighted, so feel free, however you might want to
+check with Heiner too for his part, you never know.
