@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B6E3406C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07C93406C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhCRNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCRNXL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:23:11 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4365C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:23:10 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x16so5525835wrn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CNLbEsygYvTbZT9PzULJxl1QB3RZcsVceKH9loCrMSo=;
-        b=KdYIyjKFSDMwf37jeGQYAFBRtDsdKmXi0mEnmAWl95OFaVIQoCzk0gRXIgTrXcVcpA
-         pYMRE3JhuiOIrKJogl/SDmvJxFqPa5pCQfbDE9tKYR8+D+a5enhIpk4tyRHpsipnB2wA
-         j/4u8iG7y2qFi5tZ8c7IHhlwHKf0L3GXPA1o0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=CNLbEsygYvTbZT9PzULJxl1QB3RZcsVceKH9loCrMSo=;
-        b=lQNN4U22TgxG7bTk64oAPrOfWy3avrG0UPgFqH7t2C9E2ZIXU1x521kySILVzwHwae
-         4XEu36Rwh1DjHRiUCfZvVCnPjlqJtp4JQA7tPtx3yKgVb2wurCTdX3LFa9VZmaDJouDK
-         oupI1ps+7Y1fyQUr6Z7FnfjXX4ZTX96/Kwm9IqaVBclDwMeUQtjbRA2mLQTlWZ84/FTy
-         U5G03wmPk9ZuMNfn0v5o/yqD02VJSoR/wAuhBTrtuxwv0JCQ4m0KOAGLhxvBDluzkkmQ
-         XM3Tx24oElRc0Ah9NKEzV1FeEUZxQqpbPUZhmg/S0zJjCYM8iHnoDnziwE5MkracFUCk
-         L7XA==
-X-Gm-Message-State: AOAM532bKpi293mmK5r/K+M7N/+3i+1CWrxa8cYA9fKYgZqA8qjWOX6g
-        xBb8Z8hHJytb38a1iRcvdJiBLA==
-X-Google-Smtp-Source: ABdhPJxSKL0C3sE7XtJXFumxv/pxpLWfuUI0p4iswqLbyoLJFVV5FzrdyfhmGdnPQvEPv5SkdtR4+A==
-X-Received: by 2002:a5d:4203:: with SMTP id n3mr9606351wrq.116.1616073789483;
-        Thu, 18 Mar 2021 06:23:09 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c9sm2340158wml.42.2021.03.18.06.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 06:23:08 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 14:23:06 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] drm: Few typo fixes
-Message-ID: <YFNUOhpMaS6d0af5@phenom.ffwll.local>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-References: <20210318103739.27849-1-unixbhaskar@gmail.com>
+        id S231406AbhCRNYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:24:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231380AbhCRNX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08EEB64F01;
+        Thu, 18 Mar 2021 13:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616073807;
+        bh=azu47gE8dnLQPum0mcL1O3W7dBz1Y3txbYwdvva8Cws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Is+8Ae7xagv3lP1HQAZHmvPszDS8ClHjJFVBtKew3rEJ4Y3g32dx3zifqvtL9jBQz
+         lUUfP2WxjLqwzPeBFdIVpAZ2T9vr8zchOkfOOJPkhkOb6IbCqeVABrpR6r32vZr9mk
+         b8ZZaUZLIwYiaA0VfZofTELMrcFKj6ZixsKLTC3zZIV/1CN4GtmgCe0Tfol5a4sQto
+         06afu/sl25D5l7J8R6h0nRPtZzlfzTeJgnAWk5nFoUIhopfplc19klm+/47nBg4HFa
+         KnPQaGalUGYtk3HLkXvZVJDdQNKGOK9J4oIjLiNdE+FhMqUId5iAZ9DetMoIRCXgel
+         sHG6baj9KmXSA==
+Date:   Thu, 18 Mar 2021 13:23:23 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, git@xilinx.com,
+        Karen Dombroski <karen.dombroski@marsbioimaging.com>
+Subject: Re: [PATCH 2/2] spi: spi-zynq-qspi: Fix stack violation bug
+Message-ID: <20210318132323.GG5469@sirena.org.uk>
+References: <20210318102446.25142-1-amit.kumar-mahapatra@xilinx.com>
+ <20210318102446.25142-3-amit.kumar-mahapatra@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nhYGnrYv1PEJ5gA2"
 Content-Disposition: inline
-In-Reply-To: <20210318103739.27849-1-unixbhaskar@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210318102446.25142-3-amit.kumar-mahapatra@xilinx.com>
+X-Cookie: You are false data.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 04:07:39PM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/instatiated/instantiated/
-> s/unreference/unreferenced/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Queued for 5.13 in drm-misc-next, thanks for your patch.
--Daniel
+--nhYGnrYv1PEJ5gA2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  drivers/gpu/drm/drm_property.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_property.c b/drivers/gpu/drm/drm_property.c
-> index 6ee04803c362..27c824a6eb60 100644
-> --- a/drivers/gpu/drm/drm_property.c
-> +++ b/drivers/gpu/drm/drm_property.c
-> @@ -43,7 +43,7 @@
->   * property types and ranges.
->   *
->   * Properties don't store the current value directly, but need to be
-> - * instatiated by attaching them to a &drm_mode_object with
-> + * instantiated by attaching them to a &drm_mode_object with
->   * drm_object_attach_property().
->   *
->   * Property values are only 64bit. To support bigger piles of data (like gamma
-> @@ -644,7 +644,7 @@ EXPORT_SYMBOL(drm_property_blob_get);
->   * @id: id of the blob property
->   *
->   * If successful, this takes an additional reference to the blob property.
-> - * callers need to make sure to eventually unreference the returned property
-> + * callers need to make sure to eventually unreferenced the returned property
->   * again, using drm_property_blob_put().
->   *
->   * Return:
-> --
-> 2.26.2
-> 
+On Thu, Mar 18, 2021 at 04:24:46AM -0600, Amit Kumar Mahapatra wrote:
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> When the number of bytes for the op is greater than one, the read could
+> run off the end of the function stack and cause a crash.
+
+> This patch restores the behaviour of safely reading out of the original
+> opcode location.
+
+> Kernel panic - not syncing: stack-protector: Kernel stack is corrupted
+>  in: zynq_qspi_exec_mem_op+0x1c0/0x2e0
+> CPU1: stopping
+
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
+
+--nhYGnrYv1PEJ5gA2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTVEsACgkQJNaLcl1U
+h9DsCQf+KMrGalD617RM69Vb+1jNxBl1jynG6zS3+cO+oFdQaB1t5rxVY8V/7ayp
++7n+laRNMY2C/OJke3NY0P85le77SKQaai1Tjksl6tg0JH+VKdyoRE89gKmbYT93
+DT2m88UXzYNVt28ZcnkKIbrHdKvNYkHBLP9P5hyk5LtTkipv1a1+OqYStbYfKzAk
+BDn+lvv31mcQh2QySqwFqyhixTPNmQSfj1RR5D1v7KNExk3wTZ3oj0Shj4Biw+UO
+XELRrtm+rmcz2i7L1BS6mQCTPtIsJJQk6gpJ+BJ7+ZFI7D6b6+oFr9luQf+fp2ts
+yClnG6i75D3p5NPnyV6bcKFN+mLUVw==
+=XPjD
+-----END PGP SIGNATURE-----
+
+--nhYGnrYv1PEJ5gA2--
