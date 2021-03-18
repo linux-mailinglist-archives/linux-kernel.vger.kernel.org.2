@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E570E33FEFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C687833FEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhCRFmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:42:11 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41043 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229559AbhCRFly (ORCPT
+        id S229735AbhCRFml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:42:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55364 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhCRFmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:41:54 -0400
-X-UUID: d1a0ebb0985c430d883ae05cce2b6da5-20210318
-X-UUID: d1a0ebb0985c430d883ae05cce2b6da5-20210318
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1556378434; Thu, 18 Mar 2021 13:41:50 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 18 Mar 2021 13:41:41 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Mar 2021 13:41:41 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v5,2/2] drm/mediatek: mtk_dpi: Add dpi config for mt8192
-Date:   Thu, 18 Mar 2021 13:40:56 +0800
-Message-ID: <1616046056-29068-3-git-send-email-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com>
-References: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com>
+        Thu, 18 Mar 2021 01:42:18 -0400
+Received: from mail-lf1-f69.google.com ([209.85.167.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lMlQH-0004v9-CE
+        for linux-kernel@vger.kernel.org; Thu, 18 Mar 2021 05:42:17 +0000
+Received: by mail-lf1-f69.google.com with SMTP id z12so821329lfs.15
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 22:42:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VxkRvo8Av52OSk++GohaaBtIAYaVN6TGBHHeWI4XHuU=;
+        b=JOcvUqA/aN+nJbQ/Njw/g4zOY4buioS4TS7ZomJ8YnOytILljV4W5urHys44JakAa7
+         YpjFiymHcjcJcMT3Y5hPE1+41oc+RdQqJjcmWHd5un31eHnR+mmUJLvRcX9175tyRHcM
+         MiVIug4DWjNSKta/e+T+gNG1GIYrcRXfAF4thz6ymci3xwfrN/9A1uMMCVBBt8xDexcz
+         209DM9Rc9hcv4DdWwOmkJR1XlsFuomDZoKLSHah8/3dbZDGBhYmvf9ydARt24sxUMzLq
+         t2SKdO2sk66OzDPFO8poS82Oh0MPTMrTtG3vCCQMWynzPb6QNr9mIA9vF5bcwgB8xkbU
+         D52w==
+X-Gm-Message-State: AOAM533Pj3CKCh7tAQd+S/R97tN1JbX0ztMfJqXWy2g6Ecqv6lIvR8WX
+        RDJRFEYcG7eJWr0yd4bBbjElWIrRAzQF8kBhmr3E6VRhOwxz4Z4Vy26ktgOWBQWTY1tjjTdi8Vh
+        ppbMy6gcQKZ6vfXb1IK7YWPaSNs9WAmQG0LHAz+J0sq3CFQSV5R0FWwUF6w==
+X-Received: by 2002:ac2:4acf:: with SMTP id m15mr4532072lfp.290.1616046136857;
+        Wed, 17 Mar 2021 22:42:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgQo9UEdE+NM66rLQK/xasWGY3OP+m4oeg0m1l4VIeYKmu5ZW68DX09IM7OpKcH9HfWAmMzBxEBvCEYTIrMV4=
+X-Received: by 2002:ac2:4acf:: with SMTP id m15mr4532064lfp.290.1616046136611;
+ Wed, 17 Mar 2021 22:42:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
+ <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
+ <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com> <CAAd53p7eJk9EtMTLjB5i7RdoKA3WS1W4TRjQs08adi7iAux_jQ@mail.gmail.com>
+ <78dfcd55-442d-dcc0-c37f-5576f65f91b5@toxicpanda.com>
+In-Reply-To: <78dfcd55-442d-dcc0-c37f-5576f65f91b5@toxicpanda.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 18 Mar 2021 13:42:04 +0800
+Message-ID: <CAAd53p6Lp8+S0yjWi=MikQJ_zywiWamUS5p19oKoqB6uYW8jzg@mail.gmail.com>
+Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add dpi config setting and compatible for MT8192
+On Thu, Mar 18, 2021 at 1:25 AM Josef Bacik <josef@toxicpanda.com> wrote:
+[snipped]
+> "shutdown now" works fine with and without your patch.  Thanks,
 
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Rafael,
+Please revert the patch while we are working on it.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 0b427ad0cd9b..88ad58ca4115 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -699,6 +699,12 @@ static const struct mtk_dpi_conf mt8183_conf = {
- 	.max_clock_khz = 100000,
- };
- 
-+static const struct mtk_dpi_conf mt8192_conf = {
-+	.cal_factor = mt8183_calculate_factor,
-+	.reg_h_fre_con = 0xe0,
-+	.max_clock_khz = 150000,
-+};
+Josef,
+Can you please test the following patch:
+
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index eb1b15850761..263444a3fb38 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -233,6 +233,15 @@ void migrate_to_reboot_cpu(void)
+        set_cpus_allowed_ptr(current, cpumask_of(cpu));
+ }
+
++static void kernel_shutdown_prepare(enum system_states state)
++{
++       blocking_notifier_call_chain(&reboot_notifier_list,
++               (state == SYSTEM_HALT) ? SYS_HALT : SYS_POWER_OFF, NULL);
++       system_state = state;
++       usermodehelper_disable();
++       device_shutdown();
++}
 +
- static int mtk_dpi_probe(struct platform_device *pdev)
+ /**
+  *     kernel_restart - reboot the system
+  *     @cmd: pointer to buffer containing command to execute for restart
+@@ -243,7 +252,7 @@ void migrate_to_reboot_cpu(void)
+  */
+ void kernel_restart(char *cmd)
  {
- 	struct device *dev = &pdev->dev;
-@@ -819,6 +825,9 @@ static const struct of_device_id mtk_dpi_of_ids[] = {
- 	{ .compatible = "mediatek,mt8183-dpi",
- 	  .data = &mt8183_conf,
- 	},
-+	{ .compatible = "mediatek,mt8192-dpi",
-+	  .data = &mt8192_conf,
-+	},
- 	{ },
- };
- 
--- 
-2.18.0
+-       kernel_restart_prepare(cmd);
++       kernel_shutdown_prepare(SYSTEM_POWER_OFF);
+        if (pm_power_off_prepare)
+                pm_power_off_prepare();
+        migrate_to_reboot_cpu();
+@@ -257,14 +266,6 @@ void kernel_restart(char *cmd)
+ }
+ EXPORT_SYMBOL_GPL(kernel_restart);
 
+-static void kernel_shutdown_prepare(enum system_states state)
+-{
+-       blocking_notifier_call_chain(&reboot_notifier_list,
+-               (state == SYSTEM_HALT) ? SYS_HALT : SYS_POWER_OFF, NULL);
+-       system_state = state;
+-       usermodehelper_disable();
+-       device_shutdown();
+-}
+ /**
+  *     kernel_halt - halt the system
+  *
+
+>
+> Josef
