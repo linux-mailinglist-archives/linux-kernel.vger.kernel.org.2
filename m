@@ -2,128 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E662534111E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D9F341122
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhCRXgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhCRXgL (ORCPT
+        id S233258AbhCRXhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:37:42 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:31198 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233257AbhCRXhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:36:11 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01CC06174A;
-        Thu, 18 Mar 2021 16:36:11 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id i3so2831967oik.7;
-        Thu, 18 Mar 2021 16:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YNjpfJk0448TLWFUwKknNdPtfhbYapoGME7vRJxOjdU=;
-        b=O4UdLDFJ9qhRn6HtKnAXZDBGZZr1P5O6P/HW+eQhrxTFHtLdVOA4+t+kWbfbGM9fe9
-         UEu4P51WVI9ijHm1d8K4UltvOMBUP/JICUfkY3vAWLzRa99u5sGtVY6N9DX5TG91rfsX
-         vFQfD8O6vQbe9LcnD97KnqBU5Lsp7oz/JXz8ePZTymoFTAGPKSr4Vj3dFqBOtvNneO9H
-         r4JNbHGYyGbT8g777UFBKDhfQE0a54BtRU+iQaYpLjNU4MCG5ZzXYOUekHpUVbHfWBCy
-         u4wQDTHydV8TWmf0s/844JzmXswkU8wGjwKa6qjm8l1qJosFrh2wvXjk+UfB0GpI4Mhk
-         Ptqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YNjpfJk0448TLWFUwKknNdPtfhbYapoGME7vRJxOjdU=;
-        b=kdBKxlWp14WgFssORb/frkCyxmjI7u99iu88iQywqndM8t8EVZZBQqdraWOf7gtLuM
-         vN+MZuCyidGdPhHRb+th2etylmJsWPl199HQYxM5156HZ09+DKlR9i7lao5JQtmLUR2D
-         d8lreJHSQsk9QQUsvPC7Aq2pQuTN0EVhkef+S2WVVg8OCERsPochLtc0PV/CPJ40r6mc
-         4SZ64idrGpArgluR7q8zw8v157/CKrT00udhUuS4q7LUZvM2lwS13mIfWhOIDhaqLZA1
-         aUAqBhJZEY6OeNMnjWZ3ul+YuxECZHUoHJatsd95zAjqDL5nxV2/J+UrRDa23uVfL5sd
-         di7w==
-X-Gm-Message-State: AOAM531KaBbzctaOtFmUAYDEyCUkk6KwuTuMPAHDuTNGtKwkRrc1zqBQ
-        WAKMrFx7Ay+nBsP8CMeFaJIV2iGEkcU=
-X-Google-Smtp-Source: ABdhPJz6Vcsfo36hQOglcEG6v7PQjxjcOHHaevstv2qYZUHvk6thwo6kN1+yonDpmBpDlzKQIsjS6g==
-X-Received: by 2002:aca:eb8c:: with SMTP id j134mr4840611oih.3.1616110570613;
-        Thu, 18 Mar 2021 16:36:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t14sm595043otj.50.2021.03.18.16.36.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Mar 2021 16:36:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 18 Mar 2021 16:36:08 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jonas Malaco <jonas@protocubo.io>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: add driver for NZXT Kraken X42/X52/X62/X72
-Message-ID: <20210318233608.GA140894@roeck-us.net>
-References: <20210318164824.21374-1-jonas@protocubo.io>
- <8d59a1fe-e38d-3f1b-601d-26a9bcf7272f@roeck-us.net>
- <20210318231506.v4dvz4jtvqazdoo2@calvin.localdomain>
+        Thu, 18 Mar 2021 19:37:31 -0400
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 12INbEOw032265;
+        Fri, 19 Mar 2021 08:37:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 12INbEOw032265
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1616110635;
+        bh=BorSmzfSs4sk7r1fb9KF3rTwV8KPs5mBIwG9r5NUREA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=v9gZpgpbfrBgA61EfXVBbMGeWdVbgz+I03U4NBLwMkPah56NgR2Hs1Zv96zRfD6/R
+         MAGzB4sX0HaFhIukPoxIO+2eGln1REr6Mcme2+zivHAJPnnoDl9otle7xsz9SKQlNB
+         Z2eHFOrgr9WvAdTEkrL6dgNyc5tP2aq02dK+H8060OXFn6cDu4vaVKzBLdAFXTQoAc
+         yLhPvMeCcy74JXIr6CrLHnDksE1fB7GrwF0f77l9obClYfUfv8Dby1yYqEGc0rrFsH
+         y9P1O7QMzDm2vKAQyuHRNbOQUhSzuctIV/U05sXH96ECbwfRvHI0gSyZ7XjMVDO+ly
+         ITOlw6qUgHRcQ==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id c204so4580801pfc.4;
+        Thu, 18 Mar 2021 16:37:14 -0700 (PDT)
+X-Gm-Message-State: AOAM530pU5eh/pxtolJqo6P1b3m5XRlzfmJXhg0XiRiH3RR/R3ouY6Gf
+        qOPhLLZ4rFxSMK9DNUt5REua0M5/ijX/QFsq7PE=
+X-Google-Smtp-Source: ABdhPJzqBAc/3jnDYfrVF4MlvtNVGoSEnMlF1RCVXd83TcSfhCHlCK98PyErViR7nNIr+t1Gkzyoqk5Vq5VhizQE5m4=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr8817344pgq.7.1616110633882;
+ Thu, 18 Mar 2021 16:37:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318231506.v4dvz4jtvqazdoo2@calvin.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210228061028.239459-1-masahiroy@kernel.org> <20210228061028.239459-4-masahiroy@kernel.org>
+ <20210318211356.nxr4wx24srjtjdqm@archlinux-ax161>
+In-Reply-To: <20210318211356.nxr4wx24srjtjdqm@archlinux-ax161>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 19 Mar 2021 08:36:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATsoT0u2u90o8a_o6nOiUtnWzgJdwbam6vW9FMbifdJ4w@mail.gmail.com>
+Message-ID: <CAK7LNATsoT0u2u90o8a_o6nOiUtnWzgJdwbam6vW9FMbifdJ4w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] kbuild: include Makefile.compiler only when compiler
+ is required
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 08:15:06PM -0300, Jonas Malaco wrote:
+(CC: Will and ARM ML)
 
-[ ... ]
 
-> > Either case, the spinlocks are overkill. It would be much easier to
-> > convert raw readings here into temperature and fan speed and store
-> > the resulting values in struct kraken2_priv_data, and then to
-> > just report it in the read functions. That would be much less costly
-> > because the spinlock would not be needed at all, and calculations
-> > would be done only once per event.
-> 
-> Oddly enough, this is very close to how the code read last week.
-> 
-> But I was storing the values in kraken2_priv_data as longs, and I'm not
-> sure that storing and loading longs is atomic on all architectures.
-> 
-> Was that safe, or should I use something else instead of longs?
-> 
+On Fri, Mar 19, 2021 at 6:14 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Sun, Feb 28, 2021 at 03:10:28PM +0900, Masahiro Yamada wrote:
+> > Since commit f2f02ebd8f38 ("kbuild: improve cc-option to clean up all
+> > temporary files"), running 'make kernelversion' in a read-only source
+> > tree emits a bunch of warnings:
+> >
+> >   mkdir: cannot create directory '.tmp_12345': Permission denied
+> >
+> > Non-build targets such as kernelversion, clean, help, etc. do not
+> > need to evaluate $(call cc-option,) and friends. Do not include
+> > Makefile.compiler so $(call cc-option,) becomes no-op.
+> >
+> > This not only fix the warnings, but also runs non-build targets much
+> > faster.
+> >
+> > Basically, all installation targets should also be non-build targets.
+> > Unfortunately, vdso_install requires the compiler because it builds
+> > vdso before installtion. This is a problem that must be fixed by a
+> > separate patch.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> > I am not adding Reported-by for now because a reporter sent me
+> > an email privately.
+> >
+> > If he allows me to add Reported-by, I will add it to record
+> > the credit.
+> >
+> > (Perhaps, another person might have reported a similar issue
+> > somewhere, but my memory is obsure. I cannot recall it.)
+> >
+> >
+> >  Makefile | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index eec7a94f5c33..20724711dc71 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -263,6 +263,10 @@ no-dot-config-targets := $(clean-targets) \
+> >                        $(version_h) headers headers_% archheaders archscripts \
+> >                        %asm-generic kernelversion %src-pkg dt_binding_check \
+> >                        outputmakefile
+> > +# Installation targets should not require compiler. Unfortunately, vdso_install
+> > +# is an exception where build artifacts may be updated. This must be fixed.
+> > +no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+> > +                     headers_install modules_install kernelrelease image_name
+> >  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
+> >                         image_name
+> >  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+> > @@ -270,6 +274,7 @@ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+> >  config-build :=
+> >  mixed-build  :=
+> >  need-config  := 1
+> > +need-compiler        := 1
+> >  may-sync-config      := 1
+> >  single-build :=
+> >
+> > @@ -279,6 +284,12 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
+> >       endif
+> >  endif
+> >
+> > +ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
+> > +     ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
+> > +             need-compiler :=
+> > +     endif
+> > +endif
+> > +
+> >  ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
+> >       ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
+> >               may-sync-config :=
+> > @@ -584,7 +595,9 @@ endif
+> >
+> >  # Include this also for config targets because some architectures need
+> >  # cc-cross-prefix to determine CROSS_COMPILE.
+> > +ifdef need-compiler
+> >  include $(srctree)/scripts/Makefile.compiler
+> > +endif
+> >
+> >  ifdef config-build
+> >  # ===========================================================================
+> > --
+> > 2.27.0
+> >
+>
+> Hi Masahiro,
+>
+> I see a new warning in my builds on arm64 now when running
+> 'modules_install' or 'dtbs_install' because ld-option evaluates to
+> nothing, which triggers the warning in arch/arm64/Makefile:
+>
+> $ make -skj"$(nproc)" \
+> ARCH=arm64 \
+> CROSS_COMPILE=aarch64-linux- \
+> INSTALL_DTBS_PATH=rootfs \
+> INSTALL_MOD_PATH=rootfs \
+> O=build/arm64 \
+> distclean defconfig all modules_install dtbs_install
+> ...
+> /home/nathan/cbl/src/linux-next/arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
+> /home/nathan/cbl/src/linux-next/arch/arm64/Makefile:25: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
+>
+> $ sed -n '23,29p' arch/arm64/Makefile
+> ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
+>   ifeq ($(call ld-option, --fix-cortex-a53-843419),)
+> $(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)
+>   else
+> LDFLAGS_vmlinux += --fix-cortex-a53-843419
+>   endif
+> endif
+>
+> I am not sure how this should be resolved, hence just the report.
+>
+> Cheers,
+> Nathan
 
-Hard to say, but do you see any code in the kernel that assumes
-that loading or storing a long is not atomic, for any architecture ?
 
-Also, I don't see how u16 * 1000 could ever require a long
-for storage. int would be good enough.
+I see this a few lines below:
 
-> > 
-> > > +	memcpy(priv->status, data, STATUS_USEFUL_SIZE);
-> > > +	spin_unlock_irqrestore(&priv->lock, flags);
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > For my education: What triggers those events ? Are they reported
-> > by the hardware autonomously whenever something changes ?
-> > A comment at the top of the driver explaining how this works
-> > might be useful.
-> 
-> The device autonomously sends these status reports twice a second.
-> 
-> I'll add the comment for v2.
-> 
-That would be great, thanks.
+ifeq ($(CONFIG_ARM64_USE_LSE_ATOMICS), y)
+  ifneq ($(CONFIG_ARM64_LSE_ATOMICS), y)
+$(warning LSE atomics not supported by binutils)
+  endif
+endif
 
-> > 
-> > Also, is there a way to initialize values during probe ? Otherwise
-> > the driver would report values of 0 until the hardware reports
-> > something.
-> 
-> The device doesn't respond to HID Get_Report, so we can't get valid
-> initial values.
-> 
-> The best we can do is identify the situation and report it to
-> user-space.  Am I right that ENODATA should be used for this?
-> 
-Yes, I think that would be a good idea, and ENODATA sounds good.
 
-Thanks,
-Guenter
+We can move ld-option evaluation to Kconfig.
+
+ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
+  ifneq ($(CONFIG_ARM64_LD_HAS_FIX_ERRATUM_843419,y))
+$(warning ld does not support --fix-cortex-a53-843419; kernel may be
+susceptible to erratum)
+  else
+LDFLAGS_vmlinux += --fix-cortex-a53-843419
+  endif
+endif
+
+
+I do not know what CONFIG name is preferred.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
