@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C77F3406FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD29340705
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhCRNeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbhCRNeU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:34:20 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27271C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:34:20 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id x16so2272844iob.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=lCesJamBNqroHsQblgO5UWKPy+JUA8j7IhgXX+n6vnU=;
-        b=HCa0FdikN715kE4ottcPEAjnrP4mUZgh+gTbYTbZmJ7f2ySXG+BXcZkRyB8weVg11d
-         6tCrVUXZPDPYNUBkDp/zga0sb0eGovD2K5+GY0k0GT96A74fVpGJRfWKaIuk19J13HG+
-         5O4WzngvFwHRdKrXWfM4pOMLvF7CSelhvRWiO1Uy7BEKGEfTwexH8n4HCQWDN4nDFv4o
-         FdhdW9yrVQ4F600F0wMhONNAvLs68b+gYB3Y6NRT6wtEWAJCwR4g4fQd8NAeD5jBksRr
-         hCxiosIypnsd5PIjq7d7tMT4coWJaFz5wX8XImg8sqrK2fs+L7y4wcIyrZIVNX1ULqbg
-         ST2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=lCesJamBNqroHsQblgO5UWKPy+JUA8j7IhgXX+n6vnU=;
-        b=kIibZXduZaUXNXDoqNsAARgecPVbcqJb6U8F085Z+mOAm63rZY1cyaypR6Z1UPAGFP
-         Y2iigVxpCUeq6zx6XxQPPMxPJnWlomNinL8nbyEIT8+wbAvsIg8vFLnX9Ur0I6M7bqm4
-         J+oNSJ+MVOWtBZ3etiI9gu0KlfKyQrms/20J5uxcZxRnHEl996uzj3hVrc124ewip37u
-         ARPj32WTLU6eXcqfpxYzmns4Tak0Fg5qJdBhtc+N6sO9l273lj5St56BkXfHhpJe+L4w
-         4jVc0reVDtjfQIpldVGhfM6G6Jyf0eKcDeP89k73nf5/9R62cdNzkqFwgOVocq91N7sD
-         OLKg==
-X-Gm-Message-State: AOAM533FGly6hprL6w+wkGWI1yvgGcP7CHriAIv1ZZN6MAMh/WqCCg6f
-        b0eEVangGLDxHPmysqItp4JMMGv5HsNoD/1DHzk=
-X-Google-Smtp-Source: ABdhPJwq1o7IePBfvgmV30LJFNAaJGxlem5ITjL5tdcHJRAuynC7zdIvJe/QR1BW8bUnDaJhuaDgj9v1ublx3aq8rMI=
-X-Received: by 2002:a02:c6ae:: with SMTP id o14mr7004334jan.33.1616074459699;
- Thu, 18 Mar 2021 06:34:19 -0700 (PDT)
+        id S230045AbhCRNiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:38:03 -0400
+Received: from m12-11.163.com ([220.181.12.11]:32998 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229944AbhCRNhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:37:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=z0C4g
+        MZ+dKD2XjbwS4ucAAKLRBZSRIcbk8zV8GM1uBI=; b=EckjOLQqxkzwOLzCP6K7s
+        5e6UzkpPYjJeOJmgXG1cMAIpGqGxY+IY8jd5/xoZD+eErcogQUQ8ve2piaU9Zfbd
+        grqZy3jnznA62rMqrZeMHKNEx1X25H8wU7xdL3qTIjNIkreMdJdhkV/vKaM7EhZu
+        C4+FSAc59oi+0njdG/4oEA=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp7 (Coremail) with SMTP id C8CowADHv5ddV1NgetOZSw--.19292S2;
+        Thu, 18 Mar 2021 21:36:32 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     davem@davemloft.net, dan.carpenter@oracle.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] nfc/fdp: Simplify the return expression of fdp_nci_open()
+Date:   Thu, 18 Mar 2021 21:36:40 +0800
+Message-Id: <20210318133640.1377-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Received: by 2002:a05:6622:b37:0:0:0:0 with HTTP; Thu, 18 Mar 2021 06:34:19
- -0700 (PDT)
-Reply-To: sgtmanthey1@gmail.com
-From:   kayla manthey <essira17@gmail.com>
-Date:   Thu, 18 Mar 2021 13:34:19 +0000
-Message-ID: <CAP3UenMN4gUjjx7H-DZJmY5eUOBpuHTxaL6eYVpig4k7wd10Fw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowADHv5ddV1NgetOZSw--.19292S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xWryxAw1kGF1UXFWxXrb_yoW3KrX_Cr
+        Z0vr48GF4UXF1Fy3srGwsxZryDKF1aqFWFgF4vgayayr98ZFs5Gw4Dury3XrWUW348AFy7
+        Wws8Ar1rAr1DKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnYg43UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQBZiV8ZNR6q6gAAsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ik wil alsjeblieft weten of je mijn vorige berichten hebt ontvangen.
+From: zuoqilin <zuoqilin@yulong.com>
+
+Simplify the return expression.
+
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+---
+ drivers/nfc/fdp/fdp.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
+index 4dc7bd7..824f2da 100644
+--- a/drivers/nfc/fdp/fdp.c
++++ b/drivers/nfc/fdp/fdp.c
+@@ -236,15 +236,12 @@ static int fdp_nci_send_patch(struct nci_dev *ndev, u8 conn_id, u8 type)
+ 
+ static int fdp_nci_open(struct nci_dev *ndev)
+ {
+-	int r;
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+ 	struct device *dev = &info->phy->i2c_dev->dev;
+ 
+ 	dev_dbg(dev, "%s\n", __func__);
+ 
+-	r = info->phy_ops->enable(info->phy);
+-
+-	return r;
++	return info->phy_ops->enable(info->phy);
+ }
+ 
+ static int fdp_nci_close(struct nci_dev *ndev)
+-- 
+1.9.1
+
