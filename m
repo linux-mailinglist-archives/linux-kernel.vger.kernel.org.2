@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AF93406A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FB73406A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhCRNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:13:37 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49180 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhCRNNM (ORCPT
+        id S231301AbhCRNOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231229AbhCRNNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:13:12 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IDC9v3153476;
-        Thu, 18 Mar 2021 13:13:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=+tUwRkRkP6+qKsssbeUlFdzu5XVDSTuMZvkAUVRnHI0=;
- b=Sra8zmzealkZeIUYDv8UCSXaCiMxSDv1fAcuBczmkXOiH2OTitMOgwTehdo0Ahk+II9K
- /WTX3HEfmame0j64Dswni9rzh3rniYSPs09L5zY3VYNf1xLNnCp0ODDu1A89j8a3Sp7O
- 5N3pH0g2oQeHOYW84DIkVULGlFkCxR/MkoIsNctVU3OMK9ozbIiFFidRhr9n6PRPZdKD
- DBfQWAWKeNv6ANUbI7ssfAqgUmcIUFqL1+i7vQJIEl/NyCnMMdSBBh9v2anaUxYvxlkc
- z61vHo/VVfPlStQTPTRyiWj+ezeUIuKvzcIMkWaIUHAClgZGxGsL74UfCdDH+4rb2/G1 Qg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 378p1nyd91-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:13:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID5xbI103145;
-        Thu, 18 Mar 2021 13:13:03 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3797a3xjwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:13:03 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12IDD2td022650;
-        Thu, 18 Mar 2021 13:13:02 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Mar 2021 06:13:02 -0700
-Date:   Thu, 18 Mar 2021 16:12:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     Hyunchul Lee <hyc.lee@gmail.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] cifsd: Fix a use after free on error path
-Message-ID: <YFNR1sVU2mIgxNma@mwanda>
+        Thu, 18 Mar 2021 09:13:40 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85A6C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:13:39 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id v192so1579127oia.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MtD/AZ417xFFop8hkkvXlRJROHMLDlF2TOAnyqCLxvE=;
+        b=cpzCnRXL42Tg64mHIpcJS+X4yUwzP2ynkuFgfGaTvUUatmPkaf006LSIrsX9yid4Ii
+         DJf1a55kH3KtfOqmImY71kEVo6Hy926yOgaIFPB+xedoQv+WClzobPBi6PXG+fkJ5zws
+         DrkZAJ3DSHuCDDei0q0touTTv8+B1BePrIZCQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MtD/AZ417xFFop8hkkvXlRJROHMLDlF2TOAnyqCLxvE=;
+        b=OoI/G9TWVhiGRpjNNYW9JvhBU+INTfgdlckrmSf6CkHMaGLlXr3Gv2n+qDMXpGGCtp
+         fCDmXwwEjnDapV/2VVqWnjttwob8cnKbQFbIFWcEe0lfIxWVf5UbXtUYUTqPEf6/Ab3r
+         8coftHlKWVVcUDVIcUvFys7ikHU5hZKkodVYK58VIs2pJP4dfEgyUqgMbj3QZ5Cg5bF6
+         sCvkr/TUhac6kEEpaGZRsbbMsdNGv2XckCSS8YmZfSodkqCJxo8mlhsAMClWnlJKlpAS
+         21maoEr7P90neZu/GgN6I7NJCVs49RmPeRFYkTp+3g+SpFKgK7RwUuma7ocr+Lvrkn3d
+         yrSw==
+X-Gm-Message-State: AOAM530Vwl9wJ1vysZQNCrnsad7qFDGOCbX+8hhv77wMtjt7ak6ejoTs
+        WhbjSRRwxIf0TMCeGoo/iONBlQ==
+X-Google-Smtp-Source: ABdhPJyaPLVkPsxRtFLYcX+SV53XEIl9x2nEQVW4K1MdZBGw54zYhyjJXRyo3iJHlKw70yVWx2ZVjQ==
+X-Received: by 2002:aca:3456:: with SMTP id b83mr3069837oia.51.1616073219303;
+        Thu, 18 Mar 2021 06:13:39 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j10sm553822oos.27.2021.03.18.06.13.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 06:13:38 -0700 (PDT)
+Subject: Re: [PATCH 0/6] usbip fixes to crashes found by syzbot
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, shuah@kernel.org
+Cc:     valentina.manea.m@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <YEkQ4qS7tkwmjzDn@kroah.com>
+ <5baf6b94-72c4-6e69-65a5-35c5cfb8ca0e@i-love.sakura.ne.jp>
+ <YEoTw7CoK7Ob0YR+@kroah.com>
+ <8dc1e893-4338-90ff-ea61-de727cad1d11@i-love.sakura.ne.jp>
+ <afd1341b-2ed1-f781-d6c8-6064fea3aeb8@i-love.sakura.ne.jp>
+ <192bdb07-da84-ce96-2e25-7c0df749940a@i-love.sakura.ne.jp>
+ <9e089560-388a-a82d-4841-8092578b9d5d@i-love.sakura.ne.jp>
+ <465479ca-544e-3703-cf4e-30f5be04fa11@i-love.sakura.ne.jp>
+ <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <41d21338-19f4-ac4f-2aef-e26180f4c573@linuxfoundation.org>
+Date:   Thu, 18 Mar 2021 07:13:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180097
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=976 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180097
+In-Reply-To: <fbf64c33-87c3-137c-4faf-66de651243fc@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ksmbd_free_work_struct() frees "work" so we need to swap the order
-of these two function calls to avoid a use after free.
+On 3/17/21 9:06 AM, Shuah Khan wrote:
+> On 3/17/21 12:21 AM, Tetsuo Handa wrote:
+>> Shuah, this driver is getting more and more cryptic and buggy.
+>> Please explain the strategy for serialization before you write patches.
+>>
+>>> - Fix attach_store() to check usbip_event_happened() before
+>>>    waking up threads.
+>>
+>> No, this helps nothing.
+>>
+>>> diff --git a/drivers/usb/usbip/vhci_sysfs.c 
+>>> b/drivers/usb/usbip/vhci_sysfs.c
+>>> index c4b4256e5dad3..f0a770adebd97 100644
+>>> --- a/drivers/usb/usbip/vhci_sysfs.c
+>>> +++ b/drivers/usb/usbip/vhci_sysfs.c
+>>> @@ -418,6 +418,15 @@ static ssize_t attach_store(struct device *dev, 
+>>> struct device_attribute *attr,
+>>>       spin_unlock_irqrestore(&vhci->lock, flags);
+>>>       /* end the lock */
+>>> +    if (usbip_event_happened(&vdev->ud)) {
+>>> +        /*
+>>> +         * something went wrong - event handler shutting
+>>> +         * the connection and doing reset - bail out
+>>> +         */
+>>> +        dev_err(dev, "Event happended - handler is active\n");
+>>> +        return -EAGAIN;
+>>> +    }
+>>> +
+>>
+>> detach_store() can queue shutdown event as soon as reaching "/* end 
+>> the lock */" line
+>> but attach_store() might be preempted immediately after verifying that
+>> usbip_event_happened() was false (i.e. at this location) in order to 
+>> wait for
+>> shutdown event posted by detach_store() to be processed.
+>>
+> 
 
-Fixes: cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/cifsd/oplock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please don't review code that isn't sent upstream. This repo you are
+looking at is a private branch created just to verify fixes on syzbot.
 
-diff --git a/fs/cifsd/oplock.c b/fs/cifsd/oplock.c
-index 6c3dbc71134e..f694c14be0df 100644
---- a/fs/cifsd/oplock.c
-+++ b/fs/cifsd/oplock.c
-@@ -638,8 +638,8 @@ static void __smb2_oplock_break_noti(struct work_struct *wk)
- 	if (allocate_oplock_break_buf(work)) {
- 		ksmbd_err("smb2_allocate_rsp_buf failed! ");
- 		atomic_dec(&conn->r_count);
--		ksmbd_free_work_struct(work);
- 		ksmbd_fd_put(work, fp);
-+		ksmbd_free_work_struct(work);
- 		return;
- 	}
- 
--- 
-2.30.2
+I understand the race window you are talking about. I have my way of
+working to resolve it.
+
+thanks,
+-- Shuah
+
+
+
 
