@@ -2,255 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47541340063
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1131A340065
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhCRHqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:46:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5096 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhCRHqS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:46:18 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F1JvF5mtlzYLDW;
-        Thu, 18 Mar 2021 15:44:25 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Mar 2021 15:46:10 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 18 Mar
- 2021 15:46:10 +0800
-Subject: Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <olteanv@gmail.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
-        <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <70d9f281-3b39-a760-1c2b-3598251f5770@pengutronix.de>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <3b4d7722-782f-7856-fd79-758796afa200@huawei.com>
-Date:   Thu, 18 Mar 2021 15:46:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S229736AbhCRHqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:46:50 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56852 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhCRHqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 03:46:46 -0400
+IronPort-SDR: hZSCAXDf4+xCl2M1dURLAuNY9zQ9fmTKxj3QX4oywcgvqOYZmkuppBMZ8RiL/xj70Boo4pVBPf
+ OpToGRsMw+fA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="176754624"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="176754624"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 00:46:45 -0700
+IronPort-SDR: bJY+i5jTopDL5s+varut7NkUmH/LGg42WFaFyk/Osa8R/Au8lCvllNkyG3XAcjl6OAjxf/rsAF
+ Dtawzqnkt9tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="512018798"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 18 Mar 2021 00:46:42 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 18 Mar 2021 09:46:42 +0200
+Date:   Thu, 18 Mar 2021 09:46:42 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Skip sink_cap query only when VDM
+ sm is busy
+Message-ID: <YFMFYoWBpBSrr5xg@kuha.fi.intel.com>
+References: <20210318064805.3747831-1-badhri@google.com>
 MIME-Version: 1.0
-In-Reply-To: <70d9f281-3b39-a760-1c2b-3598251f5770@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318064805.3747831-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/18 15:10, Ahmad Fatoum wrote:
-> On 15.03.21 04:10, Yunsheng Lin wrote:
->> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
->> flag set, but queue discipline by-pass does not work for lockless
->> qdisc because skb is always enqueued to qdisc even when the qdisc
->> is empty, see __dev_xmit_skb().
->>
->> This patch calls sch_direct_xmit() to transmit the skb directly
->> to the driver for empty lockless qdisc too, which aviod enqueuing
->> and dequeuing operation. qdisc->empty is set to false whenever a
->> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
->> skb dequeuing return NULL, see pfifo_fast_dequeue(), a spinlock is
->> added to avoid the race between enqueue/dequeue and qdisc->empty
->> setting.
->>
->> If there is requeued skb in q->gso_skb, and qdisc->empty is true,
->> do not allow bypassing requeued skb. enqueuing and dequeuing in
->> q->gso_skb is always protected by qdisc->seqlock, so is the access
->> of q->gso_skb by skb_queue_empty();
->>
->> Also, qdisc is scheduled at the end of qdisc_run_end() when q->empty
->> is false to avoid packet stuck problem.
->>
->> The performance for ip_forward test increases about 10% with this
->> patch.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->> RFC V2: fix requeued skb out of order and data race problem.
+On Wed, Mar 17, 2021 at 11:48:05PM -0700, Badhri Jagan Sridharan wrote:
+> When port partner responds "Not supported" to the DiscIdentity command,
+> VDM state machine can remain in NVDM_STATE_ERR_TMOUT and this causes
+> querying sink cap to be skipped indefinitely. Hence check for
+> vdm_sm_running instead of checking for VDM_STATE_DONE.
 > 
-> cansequence didn't find any frame reordering with 2 FlexCAN's communicating
-> with each other on a dual core i.MX6. Feel free to add:
+> Fixes: 8dc4bd073663f ("usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 11d0c40bc47d..39e068d60755 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5219,7 +5219,7 @@ static void tcpm_enable_frs_work(struct kthread_work *work)
+>  		goto unlock;
+>  
+>  	/* Send when the state machine is idle */
+> -	if (port->state != SNK_READY || port->vdm_state != VDM_STATE_DONE || port->send_discover)
+> +	if (port->state != SNK_READY || port->vdm_sm_running || port->send_discover)
+>  		goto resched;
+>  
+>  	port->upcoming_state = GET_SINK_CAP;
+> -- 
+> 2.31.0.rc2.261.g7f71774620-goog
 
-Thanks for testing.
-Actually I has a newer implemetion that canget rid of the priv->lock
-added in this patch.
-I am not sending it out yet:
-1. There is a packet stuck problem for lockless qdisc I try to fix,
-   see [1], and I prefer not to add more optimization to lockless
-   qdisc before we find out real cause, it will make backporting
-   packet stuck patch harder and optimization is useless if there
-   is still basic bug for lockless qdisc
-2. I am still not convinced that the lockless implemetion is clearer
-   than the priv->lock implemetion, I still need to do some thinking
-   and testing.
+thanks,
 
-
-> 
->> ---
->>  include/net/pkt_sched.h   |  2 ++
->>  include/net/sch_generic.h |  7 +++++--
->>  net/core/dev.c            | 14 ++++++++++++++
->>  net/sched/sch_generic.c   | 31 ++++++++++++++++++++++++++++++-
->>  4 files changed, 51 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
->> index f5c1bee..c760f6a 100644
->> --- a/include/net/pkt_sched.h
->> +++ b/include/net/pkt_sched.h
->> @@ -122,6 +122,8 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
->>  bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
->>  		     struct net_device *dev, struct netdev_queue *txq,
->>  		     spinlock_t *root_lock, bool validate);
->> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
->> +			    struct net_device *dev);
->>  
->>  void __qdisc_run(struct Qdisc *q);
->>  
->> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
->> index 2d6eb60..6591356 100644
->> --- a/include/net/sch_generic.h
->> +++ b/include/net/sch_generic.h
->> @@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->>  	if (qdisc->flags & TCQ_F_NOLOCK) {
->>  		if (!spin_trylock(&qdisc->seqlock))
->>  			return false;
->> -		WRITE_ONCE(qdisc->empty, false);
->>  	} else if (qdisc_is_running(qdisc)) {
->>  		return false;
->>  	}
->> @@ -176,8 +175,12 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->>  static inline void qdisc_run_end(struct Qdisc *qdisc)
->>  {
->>  	write_seqcount_end(&qdisc->running);
->> -	if (qdisc->flags & TCQ_F_NOLOCK)
->> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->>  		spin_unlock(&qdisc->seqlock);
->> +
->> +		if (unlikely(!READ_ONCE(qdisc->empty)))
->> +			__netif_schedule(qdisc);
->> +	}
->>  }
->>  
->>  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
->> diff --git a/net/core/dev.c b/net/core/dev.c
->> index 2bfdd52..8f4afb6 100644
->> --- a/net/core/dev.c
->> +++ b/net/core/dev.c
->> @@ -3791,6 +3791,20 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->>  	qdisc_calculate_pkt_len(skb, q);
->>  
->>  	if (q->flags & TCQ_F_NOLOCK) {
->> +		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
->> +		    qdisc_run_begin(q)) {
->> +			qdisc_bstats_cpu_update(q, skb);
->> +
->> +			if (sch_may_need_requeuing(skb, q, dev))
->> +				__qdisc_run(q);
->> +			else if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
->> +				 !READ_ONCE(q->empty))
->> +				__qdisc_run(q);
->> +
->> +			qdisc_run_end(q);
->> +			return NET_XMIT_SUCCESS;
->> +		}
->> +
->>  		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->>  		qdisc_run(q);
->>  
->> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
->> index 49eae93..0df1462 100644
->> --- a/net/sched/sch_generic.c
->> +++ b/net/sched/sch_generic.c
->> @@ -273,6 +273,23 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->>  	return skb;
->>  }
->>  
->> +bool sch_may_need_requeuing(struct sk_buff *skb, struct Qdisc *q,
->> +			    struct net_device *dev)
->> +{
->> +	bool again = false;
->> +
->> +	if (likely(skb_queue_empty(&q->gso_skb)))
->> +		return false;
->> +
->> +	/* need validating before requeuing */
->> +	skb = validate_xmit_skb_list(skb, dev, &again);
->> +	if (unlikely(!skb))
->> +		return true;
->> +
->> +	dev_requeue_skb(skb, q);
->> +	return true;
->> +}
->> +
->>  /*
->>   * Transmit possibly several skbs, and handle the return status as
->>   * required. Owning running seqcount bit guarantees that
->> @@ -606,6 +623,11 @@ static const u8 prio2band[TC_PRIO_MAX + 1] = {
->>   */
->>  struct pfifo_fast_priv {
->>  	struct skb_array q[PFIFO_FAST_BANDS];
->> +
->> +	/* protect against data race between enqueue/dequeue and
->> +	 * qdisc->empty setting
->> +	 */
->> +	spinlock_t lock;
->>  };
->>  
->>  static inline struct skb_array *band2list(struct pfifo_fast_priv *priv,
->> @@ -623,7 +645,10 @@ static int pfifo_fast_enqueue(struct sk_buff *skb, struct Qdisc *qdisc,
->>  	unsigned int pkt_len = qdisc_pkt_len(skb);
->>  	int err;
->>  
->> -	err = skb_array_produce(q, skb);
->> +	spin_lock(&priv->lock);
->> +	err = __ptr_ring_produce(&q->ring, skb);
->> +	WRITE_ONCE(qdisc->empty, false);
->> +	spin_unlock(&priv->lock);
->>  
->>  	if (unlikely(err)) {
->>  		if (qdisc_is_percpu_stats(qdisc))
->> @@ -642,6 +667,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>  	struct sk_buff *skb = NULL;
->>  	int band;
->>  
->> +	spin_lock(&priv->lock);
->>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->>  		struct skb_array *q = band2list(priv, band);
->>  
->> @@ -655,6 +681,7 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->>  	} else {
->>  		WRITE_ONCE(qdisc->empty, true);
->>  	}
->> +	spin_unlock(&priv->lock);
->>  
->>  	return skb;
->>  }
->> @@ -739,6 +766,8 @@ static int pfifo_fast_init(struct Qdisc *qdisc, struct nlattr *opt,
->>  
->>  	/* Can by-pass the queue discipline */
->>  	qdisc->flags |= TCQ_F_CAN_BYPASS;
->> +
->> +	spin_lock_init(&priv->lock);
->>  	return 0;
->>  }
->>  
->>
-> 
-
+-- 
+heikki
