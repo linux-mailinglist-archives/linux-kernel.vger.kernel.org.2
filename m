@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6554433FD26
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF4033FD29
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhCRCTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:19:41 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:19283 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229472AbhCRCTP (ORCPT
+        id S230406AbhCRCUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:20:13 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:37880 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhCRCUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:19:15 -0400
-X-UUID: c905431e1f3f4a5299a5323149f077f1-20210318
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fvS14rbiT2d22DFwCGoxXDf2m5IbaDkfUXz9j0R/ZyY=;
-        b=utMmE0P5iSOuXkT/WqV2aM+LMzPjydIn9h3v2TxGWOcXfp6a+8cg0p55E3nikWxXHIh4GG9/EKQFk4K1u5T708S/NDTgK3MsS9GZgCBim/ynCedHTq8vEfZ+c082f4Km2ckWlPu4PPRrageCcASeB0Tde4/5fcMGI/H0vH0nOAg=;
-X-UUID: c905431e1f3f4a5299a5323149f077f1-20210318
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1353121258; Thu, 18 Mar 2021 10:19:10 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 10:19:07 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Mar 2021 10:19:05 +0800
-Message-ID: <1616033945.25733.7.camel@mhfsdcap03>
-Subject: Re: [PATCH 08/10] dt-bindings: phy: Add compatible for Mediatek
- MT8195
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wed, 17 Mar 2021 22:20:06 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12I2JJ460004207, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12I2JJ460004207
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Mar 2021 10:19:19 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Mar 2021 10:19:19 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 18 Mar 2021 10:19:19 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef]) by
+ RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef%7]) with mapi id
+ 15.01.2106.013; Thu, 18 Mar 2021 10:19:19 +0800
+From:   =?utf-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?= 
+        <kent_chen@realtek.com>
+To:     Jack Yu <jack.yu@realtek.com>, "Lu, Brent" <brent.lu@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Fabien Parent" <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "Zhiyong Tao" <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bayi Cheng <bayi.cheng@mediatek.com>,
-        "Chuanhong Guo" <gch981213@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Date:   Thu, 18 Mar 2021 10:19:05 +0800
-In-Reply-To: <20210316111443.3332-9-seiya.wang@mediatek.com>
-References: <20210316111443.3332-1-seiya.wang@mediatek.com>
-         <20210316111443.3332-9-seiya.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: B58A0C7D8BC9BE44BF3BB2CCC0B6C0A769AC13E5E1AA726D14F7FBB3F75F4B022000:8
-X-MTK:  N
+        Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        "Jie Yang" <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        "Zhi, Yong" <yong.zhi@intel.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        "Nujella, Sathyanarayana" <sathyanarayana.nujella@intel.com>,
+        "R, Dharageswari" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp support
+Thread-Topic: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
+ support
+Thread-Index: AQHXGzY5g4Pry5OlPUKQGENVoO6uRKqHynaAgAEpDaCAAA4VgA==
+Date:   Thu, 18 Mar 2021 02:19:19 +0000
+Message-ID: <d306b9a317f644b8becd1185093696ba@realtek.com>
+References: <20210317110824.20814-1-brent.lu@intel.com>
+ <af990f6f-3a8b-3a1e-a02a-3bfe96e4d80a@linux.intel.com>
+ <DM6PR11MB364290806B23636B6D0618DF976A9@DM6PR11MB3642.namprd11.prod.outlook.com>
+ <5c750391ceb349d2aaf403f038fc7394@realtek.com>
+In-Reply-To: <5c750391ceb349d2aaf403f038fc7394@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.237.21]
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAzLTE2IGF0IDE5OjE0ICswODAwLCBTZWl5YSBXYW5nIHdyb3RlOg0KPiBU
-aGlzIGNvbW1pdCBhZGRzIGR0LWJpbmRpbmcgZG9jdW1lbnRhdGlvbiBvZiBVRlMgTS1QaHkgZm9y
-IE1lZGlhdGVrIE1UODE5NSBTb0MNCj4gUGxhdGZvcm0uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBT
-ZWl5YSBXYW5nIDxzZWl5YS53YW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBEb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHVmcy1waHkueWFtbCB8IDEgKw0K
-PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx1ZnMtcGh5LnlhbWwg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHVmcy1waHku
-eWFtbA0KPiBpbmRleCAzYTliZTgyZTdmMTMuLjUyMzViMWEwZDE4OCAxMDA2NDQNCj4gLS0tIGEv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx1ZnMtcGh5Lnlh
-bWwNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRl
-ayx1ZnMtcGh5LnlhbWwNCj4gQEAgLTIyLDYgKzIyLDcgQEAgcHJvcGVydGllczoNCj4gICAgICBw
-YXR0ZXJuOiAiXnVmcy1waHlAWzAtOWEtZl0rJCINCj4gIA0KPiAgICBjb21wYXRpYmxlOg0KPiAr
-ICAgIGVudW06IG1lZGlhdGVrLG10ODE5NS11ZnNwaHkNCj4gICAgICBjb25zdDogbWVkaWF0ZWss
-bXQ4MTgzLXVmc3BoeQ0KPiAgDQpUaGVyZSBpcyB3YXJuaW5nIHdoZW4gSSBtYWtlIGR0X2JpbmRp
-bmdfY2hlY2ssIGlmIG10ODE5NSBpcyBjb21wYXRpYmxlDQp3aXRoIG10ODE4Mywgd2lsbCBhZGQg
-aXQgYXMgZm9sbG93aW5nOg0KDQogICAgb25lT2Y6DQogICAgICAtIGl0ZW1zOg0KICAgICAgICAg
-IC0gZW51bToNCiAgICAgICAgICAgICAgLSBtZWRpYXRlayxtdDgxOTUtdWZzcGh5DQogICAgICAg
-ICAgLSBjb25zdDogbWVkaWF0ZWssbXQ4MTgzLXVmc3BoeQ0KICAgICAgLSBjb25zdDogbWVkaWF0
-ZWssbXQ4MTgzLXVmc3BoeQ0KDQpEdWUgdG8gVmlub2QgYWxyZWFkeSBhcHBseSB0aGlzIHBhdGNo
-LCBJJ2xsIHNlbmQgb3V0IGEgZml4IHBhdGNoIGxhdGVyDQoNClRoYW5rcw0KDQo+ICAgIHJlZzoN
-Cg0K
-
+VXBkYXRlIG1vcmUgQUxDMTAxOSBzYW1wbGUgcmF0ZQ0KMTZLLzQ0LjFLLzQ4Sy85NksNCjMyZnMv
+NjRmcw0KSTJTIGZvcm1hdA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogSmFj
+ayBZdSA8amFjay55dUByZWFsdGVrLmNvbT4gDQpTZW50OiBUaHVyc2RheSwgTWFyY2ggMTgsIDIw
+MjEgOToyMiBBTQ0KVG86IEx1LCBCcmVudCA8YnJlbnQubHVAaW50ZWwuY29tPjsgUGllcnJlLUxv
+dWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT47IGFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsga2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d
+IDxrZW50X2NoZW5AcmVhbHRlay5jb20+DQpDYzogT2RlciBDaGlvdSA8b2Rlcl9jaGlvdUByZWFs
+dGVrLmNvbT47IExpYW0gR2lyZHdvb2QgPGxnaXJkd29vZEBnbWFpbC5jb20+OyBNYXJrIEJyb3du
+IDxicm9vbmllQGtlcm5lbC5vcmc+OyBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pjsg
+VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmNvbT47IFJvamV3c2tpLCBDZXphcnkgPGNlemFyeS5y
+b2pld3NraUBpbnRlbC5jb20+OyBKaWUgWWFuZyA8eWFuZy5qaWVAbGludXguaW50ZWwuY29tPjsg
+S2FpIFZlaG1hbmVuIDxrYWkudmVobWFuZW5AbGludXguaW50ZWwuY29tPjsgR3Vlbm5hZGkgTGlh
+a2hvdmV0c2tpIDxndWVubmFkaS5saWFraG92ZXRza2lAbGludXguaW50ZWwuY29tPjsgUmFuZGVy
+IFdhbmcgPHJhbmRlci53YW5nQGxpbnV4LmludGVsLmNvbT47IFpoaSwgWW9uZyA8eW9uZy56aGlA
+aW50ZWwuY29tPjsgTGliaW4gWWFuZyA8bGliaW4ueWFuZ0BsaW51eC5pbnRlbC5jb20+OyBSYW5q
+YW5pIFNyaWRoYXJhbiA8cmFuamFuaS5zcmlkaGFyYW5AbGludXguaW50ZWwuY29tPjsgTnVqZWxs
+YSwgU2F0aHlhbmFyYXlhbmEgPHNhdGh5YW5hcmF5YW5hLm51amVsbGFAaW50ZWwuY29tPjsgUiwg
+RGhhcmFnZXN3YXJpIDxkaGFyYWdlc3dhcmkuckBpbnRlbC5jb20+OyBLdW5pbm9yaSBNb3JpbW90
+byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+OyBGcmVkIE9oIDxmcmVkLm9oQGxp
+bnV4LmludGVsLmNvbT47IFR6dW5nLUJpIFNoaWggPHR6dW5nYmlAZ29vZ2xlLmNvbT47IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJFOiBbUEFUQ0ggdjNdIEFTb0M6IElu
+dGVsOiBzb2ZfcnQ1NjgyOiBBZGQgQUxDMTAxNVEtVkIgc3BlYWtlciBhbXAgc3VwcG9ydA0KDQo+
+ID4gVGhlIGNvZGUgaXMgbG9va3MgZmluZSwgYnV0IEphY2sgWXUgYWRkZWQgYSBzZXBhcmF0ZSBw
+YXRjaCB0aGF0IA0KPiA+IG1ha2VzDQo+ID4gUlRMMTAxOSBlcXVpdmFsZW50IHRvIFJUTDEwMTUs
+IHNvIHNob3VsZCB0aGlzIHBhdGNoIGFsc28gaGFuZGxlIHRoZQ0KPiA+IFJUTDEwMTkgY2FzZT8N
+Cj4gDQo+IFRoZSB0b3BvbG9neSB1c2VkIGJ5IHRoaXMgbWFjaGluZSBkcml2ZXIgaXMgdXNpbmcg
+NDhrLCA2NGZzIEkyUyBmb3JtYXQuDQo+IFJUMTAxOSBuZWVkcyB0byBzdXBwb3J0IHRoaXMgY29u
+ZmlndXJhdGlvbi4gTm90IHN1cmUgaWYgUlQxMDE5IGNvdWxkIA0KPiBzdXBwb3J0IHRoYXQuDQo+
+IA0KDQpZZXMsIFJUMTAxOSBzdXBwb3J0cyA0OGssIDY0ZnMgSTJTIGZvcm1hdC4NCg==
