@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E37C340B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45F0340BA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhCRRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
+        id S232166AbhCRRX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbhCRRLe (ORCPT
+        with ESMTP id S231920AbhCRRXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:11:34 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEEBC061762
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:34 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id v18so6333008qtx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=hHyY7qre9OXEm5PJ4BWXLYwsH5KdHQkHk/skTedwvAs=;
-        b=Lde7CebUF+4MxFHwi/QJePFqufNlE/xCS5gC7b6UYbWiT83z2QpxmEMFBH6B9+0bKu
-         RhxhEy/0hJzTcT6jiCO9gz0BR3b9RfC3YFtEhlWvSsaiN8+yZEftdB2vRtJbab9pJGnz
-         hhwyh3gK1jRpm2AHlwxPUp8zEWKcK6N0fKUecc4oGnZfI3XAfmpaFwlV/7CfzGpeoEIu
-         goWoD51rPTb8RPqdYHUhm0haB65coJQBNiJsljlUPOYKHXrHl36/fcEE89f3gqz2makA
-         D8Y9Fop2eU0OGiHWOJqP9vl/G1TmJkyHQj6G615Ry5DyKmRyqFjqOyQp9kAArmMMqUR1
-         awKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=hHyY7qre9OXEm5PJ4BWXLYwsH5KdHQkHk/skTedwvAs=;
-        b=JscHjQc6FMKlTxvE3Tpc/mA9x3PQrZTr3ui2Bb6UXNEKArWoFEadza8ngq5qYHu23j
-         eFlQosOj8rDVVCsxCsZs02jt3vdhX0ky/YUSUhjMk+tItZsdY9f+Zrcoi9vEnKzAZ47X
-         +0Sln9VITC3F0AvisKDaMYmQZfmWqUZbK2UGPCvKGUjRxUzXSwBuxcjJDmbKdHaQ4VGs
-         hWMcZuIOlsMZUsVbCcuaO6eWdvZQMkLdcQsjCQM//JbpXzRMF6GjM0gRIKSsQkhXrBxj
-         SAe8M2QuJlOMfOYjvu1jZZl77IChcYEc71o24hZBLqkOnt7SO7ltZOo7pHVQphBTgZiM
-         VzDQ==
-X-Gm-Message-State: AOAM532oIyECKL3IyloEphlWW8eKHnQ9aWt8mPdsfBsX5n1Jq+XOrjT3
-        MajzKLgSJ4RsuR8wGp+SEv0HtFBPQWE6bB5JjMA=
-X-Google-Smtp-Source: ABdhPJxE/giZ7AfYJ0TH9vEAyheMLl0QRNdj9iBaMv7F1HWLJlNkEqoVklDlggjrilm1xsf++JBcogV4/Smdr50eqyk=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
- (user=samitolvanen job=sendgmr) by 2002:a05:6214:1484:: with SMTP id
- bn4mr5338692qvb.8.1616087493471; Thu, 18 Mar 2021 10:11:33 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:11:02 -0700
-In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
-Message-Id: <20210318171111.706303-9-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v2 08/17] bpf: disable CFI in dispatcher functions
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 18 Mar 2021 13:23:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D13AC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VpI2pWm+iaVmNktCA4RVhj4ljrVU+LH0ADIL0UfacLg=; b=LAyBs7p/nbiUywe+wygeLGhSjs
+        n7ZCq/yqUPxUDXj93H7psnWKaeNNrRUtmRCZOlCbaLtjtG56pgiNF9KokdZCxXuIpieBpiZFghqxM
+        ILvUCCsqZd5Y16YCYkBPH+gGWn1GK2LNzAEuNWe3r3/uoUPOmws8d8nde4RvZw1edj7jt+r6ePiWu
+        gdf3zfuXgMCK9wzH4gIVsBaq8w3S4k9eYgLwuHwUMDKdQO8/86pA8p1APqQgN6kUMStG9HBlMbW4Q
+        Z4mFinvdyKomELwX2af0eNaMEREwx2bd31fA1aQ5EVo8b73EGTv52X63SW/VdrZqEUIqubofGOO3y
+        vSJyit6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMwMp-005kEY-HX; Thu, 18 Mar 2021 17:23:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CDAC3050F0;
+        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 0D4C5213C0F58; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
+Message-ID: <20210318171103.577093939@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 18 Mar 2021 18:11:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        mbenes@suse.com
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
+Subject: [PATCH v2 00/14] x86,objtool: Optimize !RETPOLINE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPF dispatcher functions are patched at runtime to perform direct
-instead of indirect calls. Disable CFI for the dispatcher functions to
-avoid conflicts.
+Hi,
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- include/linux/bpf.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Respin of the !RETPOLINE optimization patches.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cccaef1088ea..9acdca574527 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -635,7 +635,7 @@ struct bpf_dispatcher {
- 	struct bpf_ksym ksym;
- };
- 
--static __always_inline unsigned int bpf_dispatcher_nop_func(
-+static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
- 	const void *ctx,
- 	const struct bpf_insn *insnsi,
- 	unsigned int (*bpf_func)(const void *,
-@@ -663,7 +663,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr);
- }
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
--	noinline unsigned int bpf_dispatcher_##name##_func(		\
-+	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		unsigned int (*bpf_func)(const void *,			\
--- 
-2.31.0.291.g576ba9dcdaf-goog
+Boris, the first 3 should probably go into tip/x86/core, it's an ungodly tangle
+since it relies on the insn decoder patches in tip/x86/core, the NOP patches in
+tip/x86/cpu and the alternative patches in tip/x86/alternatives.
+
+Just to make life easy I'd suggest merging everything in x86/core and
+forgetting about the other topic branches (that's what I ended up doing locally).
+
+The remaining 11 patches depend on the first 3 as well as on the work in
+tip/objtool/core, just to make life more interesting still ;-)
+
+All except the last 4 patches should be fairly uncontroversial (I hope...)
+
 
