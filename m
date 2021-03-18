@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E229340851
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36348340856
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCRPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhCRO7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C37E64E83;
-        Thu, 18 Mar 2021 14:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616079594;
-        bh=OjZdXLGrD9xWitLFCrq2iohtd875ImN9DUOE7bMPEMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SqNs82uGHcl1nqI2eOec2nHjE56H16bOlpY4ifWIL8/8qYd+RIg1dT4FoTICEzm5o
-         NGbjcvNb/gmGIgjEEQwsybF+mh61UXpD6NMLHmOL6KOpbxprtfsHDFs/LCdN7ntRr8
-         zpr4G1R2ExMJ1URGAbP+M4iUqT2E0BxZOFk4vl0OjJZC5EdWqzoR94mi5OmbCJztcq
-         SCufAvVfxcPFguEQAR0eixg6XBOXA6fmJfh5mOov2wXvJnhShqlkNZeD3Om0tbL82h
-         rqF12vyRjtHQparOiqS3bZWYpYUpfLJrFMXZ5HNkCkIFMmjyvxdjzIErGQGluRu527
-         VmeJZh+yzXp9Q==
-Date:   Thu, 18 Mar 2021 15:59:52 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
- Tree RCU grace periods
-Message-ID: <20210318145952.GC805381@lothringen>
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-1-paulmck@kernel.org>
- <20210316151750.GF639918@lothringen>
- <20210316165101.GW2696@paulmck-ThinkPad-P72>
+        id S231661AbhCRPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhCRPAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 11:00:17 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760ABC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:00:17 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id n79so2264442qke.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bxU4B+nPTRvM9ZSZ6AoL1FQH5EKqbaO4AUDdmZHY4sI=;
+        b=FMYfnfClh0ZpsMe4rUISHYHqBUlQwe6DJICKpxwL7H0T1o3CzbN5M/Jgvd0k+NOBpm
+         w8+4HqRhiluSxzDLaBfeliemodCDBEwlJrQ/RISc4M2h4NsBcPGj01Aukw1ib5pj2rSl
+         hmrAvXtu1mO4gOdmUq7eiiuiZQwpYfwVheRXV0ten5GJXKNXzAc6cHPaf9Tqrf6EHrtn
+         XKTq4eIpgZ0jxm1zoGvckPQARMbgGzod7NBp3I/4Huzt1gMVqt0n29GcNV5XtiwtRb0g
+         R0rHhye3RrVwOqWjk/dNCUkgJXLEmTL+c2faNd7ADnPcBhs798dTqDuPmZLcLTHVjtGg
+         J61w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bxU4B+nPTRvM9ZSZ6AoL1FQH5EKqbaO4AUDdmZHY4sI=;
+        b=E5zzQzP/9BGc8y0UE7EVrWSXGpau/xlTNBxNSdvwYZeK221wsiomlLwlSx+KQgY+wx
+         mI3zlArerbFyDS0VQcT5N10GbDF3QXJZ6m+r3+oOBn2A40zUZRFi6jfk/gGlHJeLtjdV
+         H1bNibMxKMCLtioqhVntRGrS8pFWpuxdebTMKMe+xHObkTpLM3EbliNXLR7jXiuoppy4
+         GgSn9uteG3bE1fFmtnTx1Iy8/g0g+ucXz5fWhqi+F+XkaoIG5PzYuI/Qb6EoWz+Xlb5J
+         WVfVSlKB+VuJpv7waO7u9p8z+JRczgzIunIxtE7gUJUYzbSKvDkiFzxHvPfUz4aqm0wU
+         NY5A==
+X-Gm-Message-State: AOAM530bgGy8dUuxdzI1+qizx8WQWZLdAsbbmxz/N+bO3ZPjxbHqSj9w
+        ksX3rFhQRJSBwo8dfWzd6hcWulmLLEoaWRs2dzbaBQdGmAM=
+X-Google-Smtp-Source: ABdhPJxg+3qTjY8O8SPZ8KLwB8cFot7os7lZv/k4zkQYpQppPM/BeTeLp/gSMbo4mtKoDI69/7hzy3AethVE9rBuD5s=
+X-Received: by 2002:a37:a7cb:: with SMTP id q194mr4759869qke.350.1616079616393;
+ Thu, 18 Mar 2021 08:00:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316165101.GW2696@paulmck-ThinkPad-P72>
+References: <00000000000056b18b05bd7c6511@google.com> <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
+ <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com> <CACT4Y+ZpfAiQKagp5xr0HY85SRr2h6pe10emm4_B5RLfVraN9A@mail.gmail.com>
+ <093ff4d1-3977-1085-404f-ec46a3b1d8f0@huawei.com>
+In-Reply-To: <093ff4d1-3977-1085-404f-ec46a3b1d8f0@huawei.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 18 Mar 2021 16:00:05 +0100
+Message-ID: <CACT4Y+ai3qVzcBcTBoD4KkVTQzKm5nhEskhTjhNDmwuyBWSy-A@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:51:01AM -0700, Paul E. McKenney wrote:
-> On Tue, Mar 16, 2021 at 04:17:50PM +0100, Frederic Weisbecker wrote:
-> > On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
-> > > +/**
-> > > + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
-> > > + *
-> > > + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
-> > > + *
-> > > + * If a full RCU grace period has elapsed since the earlier call from
-> > > + * which oldstate was obtained, return @true, otherwise return @false.
-> > > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
-> > > + *
-> > > + * Yes, this function does not take counter wrap into account.
-> > > + * But counter wrap is harmless.  If the counter wraps, we have waited for
-> > > + * more than 2 billion grace periods (and way more on a 64-bit system!).
-> > > + * Those needing to keep oldstate values for very long time periods
-> > > + * (many hours even on 32-bit systems) should check them occasionally
-> > > + * and either refresh them or set a flag indicating that the grace period
-> > > + * has completed.
-> > > + */
-> > > +bool poll_state_synchronize_rcu(unsigned long oldstate)
-> > > +{
-> > > +	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
-> > > +		smp_mb(); /* Ensure GP ends before subsequent accesses. */
-> > 
-> > Also as usual I'm a bit lost with the reason behind those memory barriers.
-> > So this is ordering the read on rcu_state.gp_seq against something (why not an
-> > smp_rmb() btw?). And what does it pair with?
-> 
-> Because it needs to order subsequent writes as well as reads.
-> 
-> It is ordering whatever the RCU user wishes to put after the call to
-> poll_state_synchronize_rcu() with whatever the RCU user put before
-> whatever started the grace period that just now completed.  Please
-> see the synchronize_rcu() comment header for the statement of the
-> guarantee.  Or that of call_rcu().
+On Thu, Mar 18, 2021 at 3:50 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> >> On 2021/3/14 18:47, Dmitry Vyukov wrote:
+> >>> On Sun, Mar 14, 2021 at 11:14 AM syzbot
+> >>> <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com> wrote:
+> >>>> Hello,
+> >>>>
+> >>>> syzbot found the following issue on:
+> >>>>
+> >>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+> >>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
+> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
+> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
+> >>>> userspace arch: riscv64
+> >>>>
+> >>>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>>
+> >>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>> Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
+> >>>>
+> >>>> ==================================================================
+> >>>> BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
+> >>>> Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
+> >>>>
+> >>>> CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+> >>>> Hardware name: riscv-virtio,qemu (DT)
+> >>>> Workqueue: events nsim_dev_trap_report_work
+> >>>> Call Trace:
+> >>>> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
+> >>>>
+> >>>> Allocated by task 76347056:
+> >>>> (stack is not available)
+> >>>>
+> >>>> Last potentially related work creation:
+> >>> There seems to be some issue with riscv stack unwinder.
+> >>> This does not have stacks.
+> >> Hi, could you test with the following  patch about the no stack
+> >> issue(from v5.11-rc4), I made a mistake when do some cleanup...
+> >>
+> >> https://lore.kernel.org/linux-riscv/ce5b3533-b75d-c31c-4319-9d29769bbbd5@huawei.com/T/#t
+> > Hi Kefeng,
+> >
+> > Please see:
+> > http://bit.do/syzbot#no-custom-patches
+> >
+> > Is a unit-test for this possible? Fuzzing is not a replacement for unit testing.
+>
+> ok, I mean that the issue about stack unwinder which may cause by my
+> previous patch,
+>
+> if some one want the stack back, it could try the bugfix.
 
-I see. OTOH the update side's CPU had to report a quiescent state for the
-requested grace period to complete. As the quiescent state propagated along
-with full ordering up to the root rnp, everything that happened before
-rcu_seq_done() should appear before and everything that happened after
-rcu_seq_done() should appear after.
-
-Now in the case the update side's CPU is not the last CPU that reported
-a quiescent state (and thus not the one that propagated every subsequent
-CPUs QS to the final "rcu_state.gp_seq"), the full barrier after rcu_seq_done()
-is necessary to order against all the CPUs that reported a QS after the
-update side's CPU.
-
-Is that right?
+Everybody wants the stack back!
+Good, let's wait when it's merged and we will see stacks in all kernel
+testing systems.
 
 
-> 
-> For more detail on how these guarantees are implemented, please see
-> Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> and its many diagrams.
 
-Indeed, very useful documentation!
 
-> 
-> There are a lot of memory barriers that pair and form larger cycles to
-> implement this guarantee.  Pretty much all of the calls to the infamous
-> smp_mb__after_unlock_lock() macro form cycles involving this barrier,
-> for example.
-> 
-> Please do not hesitate to ask more questions.  This underpins RCU.
 
-Careful what you wish! ;-)
-
-Thanks.
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/093ff4d1-3977-1085-404f-ec46a3b1d8f0%40huawei.com.
