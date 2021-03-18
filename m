@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1393404AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B153404B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhCRLeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhCRLdx (ORCPT
+        id S229926AbhCRLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:35:06 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41602 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhCRLez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:33:53 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00239C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:33:52 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id z15so979200oic.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tln9Cf6YXovRzvCEbIdoWQXhqU5IKqiApXmsrwWqBsk=;
-        b=sQV1jB+vhMLeG5+w+HYHCbe9z+OiguEFLOKUP+BjDYzxcAccRoR/17rK9b7QeVYBFt
-         DgloB226V/aKxbBsAzvTOtfrUVcNoIVbjX+BNoUb/+8Cf7SHOf5PpXUC4ecbNabYbdpK
-         RnCiK5U1aGZS4rGkqkcjUl8T5ZzhmrbwY8gyuO3nWRnudVH+9KGiNVo5t+mg0PXLRKJK
-         soee1/P1qYz++FJ9a9cEXpbwogwmHj/Updb0qAVLg85kZuP84Mr4GZjuL511gLWjFivK
-         q8jRnZ/Zhd5sF/lnOT1bo9g+5vYrdYOmMU0gEA7Y3nmA7fVrSyt8a5G8ssn4SmR1ZTtO
-         WK2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tln9Cf6YXovRzvCEbIdoWQXhqU5IKqiApXmsrwWqBsk=;
-        b=Po52m5MYiKyrzeJZ8UdX7UOJLUb6GPP9M9iZ8QaxoON8akspqMzwcSCrPugg8ydFO+
-         J+A/W16rim+v9y6gDBMYOYsGjateTbianVdbrUq2AxC2soI10TUlT9UrLFDuWiVVRJ6P
-         clwMUnCYXHKyt8bbQxoLSEnM2AurISwMb7fRs8zX9zrqrnBK4+OBVarpyzV6+14HsvCU
-         c8ojKMY8/Bl7197aiGNRhsrs4Tn0KH4i8k8xacZGTqE+jZ+uZJQ172uJfAYGT1Cwyc+T
-         ZMr2+ZtRZvp4i3LyINl6DsQlnh8NB4DZOnyWfLSpHuXPWJTYs/RCm/wPrS9xYjavaFZa
-         00tw==
-X-Gm-Message-State: AOAM530xBhmoFPMNhm9w6ezOYhFoX5CI7+9FlmGKdeDtuPKuEy31X+xn
-        r/8357yxGIL6TepJFXqZLEPP6sSJOcraVM12vEgLQQ==
-X-Google-Smtp-Source: ABdhPJyRo49L5T5a+4RF9SokcV0JVBawUdpm97h2L2bcHQvzyzDSdRZ0+x6+EbOW375MLiNJgOYAbREb1x2x0uwJ3Os=
-X-Received: by 2002:aca:bb06:: with SMTP id l6mr2644622oif.121.1616067232234;
- Thu, 18 Mar 2021 04:33:52 -0700 (PDT)
+        Thu, 18 Mar 2021 07:34:55 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12IBYm2J052924;
+        Thu, 18 Mar 2021 06:34:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616067288;
+        bh=pQp9TdiWFXFmbvvfkvhvwWm/3WqsaJmINLKWXONFnxE=;
+        h=From:To:CC:Subject:Date;
+        b=PIYPgAP0X3td1IeDQEBS9vJVP+XqEHoROr6zrwxIXxdWJE21rqVX7+ljRAzWeo8F/
+         amdUl42ekD9IMrVyf1ggyJolIOYOxuTmqldAPmlDDcQMgsWVvfZTjYlPMXQiaaoS4A
+         9R+JEsBT0SxoQG/RYU+XBGFNkhYZoAVpfku8BASQ=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12IBYmW4092348
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 18 Mar 2021 06:34:48 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 18
+ Mar 2021 06:34:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 18 Mar 2021 06:34:48 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12IBYjtV077067;
+        Thu, 18 Mar 2021 06:34:46 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [RESEND PATCH] arm64: dts: ti: k3-am64-main: Add ADC nodes
+Date:   Thu, 18 Mar 2021 17:04:43 +0530
+Message-ID: <20210318113443.20036-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <CA+G9fYtZWp4MPs4QmM2gKTZGxX8PNzYRFHDy+zkhVTgOmitr7Q@mail.gmail.com>
-In-Reply-To: <CA+G9fYtZWp4MPs4QmM2gKTZGxX8PNzYRFHDy+zkhVTgOmitr7Q@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 18 Mar 2021 12:33:40 +0100
-Message-ID: <CANpmjNNYW+xoTbfLfJ_+JtCspb804=R9LJ=z4tSrqTa1NVoY5w@mail.gmail.com>
-Subject: Re: next: arm64: compiler_types.h:320:38: error: call to
- '__compiletime_assert_417' declared with attribute error: BUILD_BUG_ON
- failed: KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>, glittao@gmail.com
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a new test.
-+Oliver Glitta, who authored test_slub.c.
+AM64 SoC has a single ADC IP with 8 channels. Add DT node for the same.
 
-On Thu, 18 Mar 2021 at 12:26, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> While building arm64 kernel modules the following kernel warnings /
-> errors noticed on
-> linux next 20210318 tag the gcc version is 7.3.0. I will check latest
-> gcc version builds
-> and keep you updated.
->
->  In file included from <command-line>:0:0:
->  In function 'resiliency_test',
->      inlined from 'test_slub_init' at   lib/test_slub.c:120:2:
->    include/linux/compiler_types.h:320:38: error: call to
-> '__compiletime_assert_417' declared with attribute error: BUILD_BUG_ON
-> failed: KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10
->    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->                                        ^
->    include/linux/compiler_types.h:301:4: note: in definition of macro
-> '__compiletime_assert'
->      prefix ## suffix();    \
->      ^~~~~~
->    include/linux/compiler_types.h:320:2: note: in expansion of macro
-> '_compiletime_assert'
->    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->    ^~~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:39:37: note: in expansion of macro
-> 'compiletime_assert'
->   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                       ^~~~~~~~~~~~~~~~~~
->    include/linux/build_bug.h:50:2: note: in expansion of macro
-> 'BUILD_BUG_ON_MSG'
->    BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->    ^~~~~~~~~~~~~~~~
->    lib/test_slub.c:101:2: note: in expansion of macro 'BUILD_BUG_ON'
->    BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10);
->    ^~~~~~~~~~~~
->  make[2]: *** [  scripts/Makefile.build:273: lib/test_slub.o] Error 1
->  make[1]: *** [  Makefile:1980: lib] Error 2
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/984/consoleFull
->
-> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/984/consoleFull
->
->
-> - Naresh
+Default usecase is to control ADC from non Linux core on the system on
+AM642 GP EVM, therefore mark the node as reserved in k3-am642-evm.dts
+file. ADC lines are not pinned out on AM642 SK board, therefore disable
+the node in k3-am642-sk.dts file.
+
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+---
+
+Rebase onto latest k3-dts-next:
+v1: lore.kernel.org/r/20210309130708.12391-1-vigneshr@ti.com
+
+Do note that dtbs_check warns about having the bindings converted to
+YAML which is in my future TODO list.
+
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 17 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  5 +++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  4 ++++
+ 3 files changed, 26 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index 7e7997e3adff..dc852f63d1a2 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -521,4 +521,21 @@ usb0: usb@f400000{
+ 			dr_mode = "otg";
+ 		};
+ 	};
++
++	tscadc0: tscadc@28001000 {
++		compatible = "ti,am654-tscadc", "ti,am3359-tscadc";
++		reg = <0x00 0x28001000 0x00 0x1000>;
++		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
++		power-domains = <&k3_pds 0 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 0 0>;
++		assigned-clocks = <&k3_clks 0 0>;
++		assigned-clock-parents = <&k3_clks 0 3>;
++		assigned-clock-rates = <60000000>;
++		clock-names = "adc_tsc_fck";
++
++		adc {
++			#io-channel-cells = <1>;
++			compatible = "ti,am654-adc", "ti,am3359-adc";
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index 1365e3164294..6331fd426157 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -377,3 +377,8 @@ cpsw3g_phy0: ethernet-phy@0 {
+ 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+ 	};
+ };
++
++&tscadc0 {
++	/* ADC is reserved for R5 usage */
++	status = "reserved";
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+index 397ed3b2e121..8f9b1078b7b5 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+@@ -244,3 +244,7 @@ cpsw3g_phy1: ethernet-phy@1 {
+ 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+ 	};
+ };
++
++&tscadc0 {
++	status = "disabled";
++};
+-- 
+2.31.0
+
