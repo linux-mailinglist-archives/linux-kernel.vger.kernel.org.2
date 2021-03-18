@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3A5340AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97595340AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhCRQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:54:20 -0400
-Received: from 2.mo52.mail-out.ovh.net ([178.33.105.233]:47108 "EHLO
-        2.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhCRQyP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:54:15 -0400
-X-Greylist: delayed 8397 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Mar 2021 12:54:14 EDT
-Received: from mxplan4.mail.ovh.net (unknown [10.108.16.68])
-        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id 6A28E25449A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:26:57 +0100 (CET)
-Received: from c-toi-le-blog.net (37.59.142.102) by DAG7EX2.mxp4.local
- (172.16.2.14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 18 Mar
- 2021 15:26:54 +0100
-Authentication-Results: garm.ovh; auth=pass (GARM-102R0040b025057-296e-42b5-b88f-2777ce63e1bc,
-                    5F52986C5FA66BA0A6BC54FE55A5C843009C2548) smtp.auth=thepeter@c-toi-le-blog.net
-X-OVh-ClientIp: 185.220.101.216
-Reply-To: <J.obssAp.p.le.s@googlemail.com>
-X-Mailer: iPhone Mail (0U054)
-X-Priority: 1 (Highest)
+        id S231901AbhCRQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:02:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231648AbhCRQBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:01:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6047364E37;
+        Thu, 18 Mar 2021 16:01:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616083292;
+        bh=8ZlNeGVIC5iDIYpch4tok8Iud0RoY50Apo5qJ3GO4FA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EWoXqqN2y8LjEXl/uKzGgC5baeknNblv0OkEGxd/iWoEXKwSxQaxZYvA+NjGCo8B5
+         az/COz72aWunC3ek8oGCbCI6pmhHdFC19WpLMKb4N13F28VT922Z5pWqn7IsJeLCXe
+         ZrhpoPIslpIcahgnpWn4BSq4+vT7t52jysS+79a05Ee8E+yAnYCgNgpbbcVN/xf66A
+         rQuA+vR494BDWTYuRQRHxo97hmFj+t0CLGYJ87gF7hpvqSazUS2IUOlJjN1hOr9C+d
+         angl5UOYZ6mZP2sSmQ+OrmgXkQFhC/+KIwrRevdyA8FS7QQY5NImmJjVM7N8iQT1gr
+         VgOO58Mw6qnlQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lMv5q-0008Hf-Hj; Thu, 18 Mar 2021 17:01:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH net-next] net: cdc_ncm: drop redundant driver-data assignment
+Date:   Thu, 18 Mar 2021 17:01:42 +0100
+Message-Id: <20210318160142.31801-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Subject: (Riy-ID#3545) - Newsletter to linux-kernel@vger.kernel.org
-From:   Hallman <thepeter@c-toi-le-blog.net>
-To:     <linux-kernel@vger.kernel.org>
-Content-Type: multipart/related; boundary="mpuirjjbxeezjgzi"
-Message-ID: <4f93e12b-711f-4c32-8b16-fefcbd908cb0@DAG7EX2.mxp4.local>
-Date:   Thu, 18 Mar 2021 15:26:54 +0100
-X-Originating-IP: [37.59.142.102]
-X-ClientProxiedBy: DAG6EX1.mxp4.local (172.16.2.11) To DAG7EX2.mxp4.local
- (172.16.2.14)
-X-Ovh-Tracer-GUID: a114c96c-577e-47f0-8c46-c6b766fa8f37
-X-Ovh-Tracer-Id: 7147494085556166935
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgieeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpehroffrggfuhffvtgfksehrtddtrehhtdejnecuhfhrohhmpefjrghllhhmrghnuceothhhvghpvghtvghrsegtqdhtohhiqdhlvgdqsghlohhgrdhnvghtqeenucggtffrrghtthgvrhhnpeeulefhffeuuedtfefgtdegieffheelkeeugfefleeivdehjeejkeelvedugeevteenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhegrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhhvghpvghtvghrsegtqdhtohhiqdhlvgdqsghlohhgrdhnvghtpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---mpuirjjbxeezjgzi
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+The driver data for the data interface has already been set by
+usb_driver_claim_interface() so drop the subsequent redundant
+assignment.
 
-Good day there,
+Note that this also avoids setting the driver data three times in case
+of a combined interface.
 
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/net/usb/cdc_ncm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index 8acf30115428..8ae565a801b5 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -920,7 +920,6 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
+ 		goto error2;
+ 	}
+ 
+-	usb_set_intfdata(ctx->data, dev);
+ 	usb_set_intfdata(ctx->control, dev);
+ 
+ 	if (ctx->ether_desc) {
+-- 
+2.26.2
 
-We are presently searching for proficient & knowledgeable people to become =
-part of our friendly business. We feel that your experience and skills will=
- be an excellent fit for our team.
-
-Specifications:=20
-
-- Capability to interact, read, and simply write in English
-- Dependable access to the internet and typical personal computer understan=
-ding
-- Outstanding multitask abilities + focus on small-scale details
-- No criminal history records and problems with the law
-- Only the people that are legally licensed to function in the USA are appr=
-oved.
-
-
-This can be a very good opportunity to be a part of our business while work=
-ing remotely.
-If you require more info, kindly respond to this e-mail, and we'll send you=
- additional facts promptly.
-
-
-
-
-..........
-Sincerely,
-Mr. Hallman Matusiak.
-
-
---mpuirjjbxeezjgzi--
