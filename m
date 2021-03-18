@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D518334078E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE5234079A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhCROPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhCROO5 (ORCPT
+        id S231605AbhCROQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:16:36 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:40338 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231429AbhCROQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:14:57 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E341C06174A;
-        Thu, 18 Mar 2021 07:14:57 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so5298089ota.9;
-        Thu, 18 Mar 2021 07:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=whMoHbtKnfcby2pmtzf2mISpuDe1wTbNYLjDL6S2nWU=;
-        b=qnl2CydrzMzC1UDRQdu6kUSjpCCCERB4VXU1TsW3mEZaC8xka3ipUQL6J1VTG4Pwqc
-         RRujaoAFQU03tQFMkmvqldCSHZXv/qbKdUIr2OIVBAwK5GXkvNAX56DXdXaG4qWxbCZx
-         etQd4aIdrdgBXruRaS6HSONWle+4MMBa5nTxYAOLgvAB8JyS6BIkT8agoFkL+EnV8nJA
-         TyIWpFJZEfFqSDEj0q1KXWfQtBF/F1YebpfrYzjBovVWr2eMRu+EF8WoGBI1S41XL+up
-         +6QhY62tVov/4oYqTf8g6b6C6WB8rRmXpi8NJ+mdJHINT0lGPpHfD5Po6xI82jzCDdY0
-         t0TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=whMoHbtKnfcby2pmtzf2mISpuDe1wTbNYLjDL6S2nWU=;
-        b=idQiiJBRnjmCNzuoDegk14zuvuqtHqDCfbfO2s6QNbby/Qkfni7v1+cagq/cbNZ6Rf
-         hIavbqGrJnF92D4f+kUtASAjlUAYEEK9waprDdbTttHU7w7JtH5/GyDm1UcPdVz2T2mX
-         WVMpJ1l2oJAc2fY2sb3QZamXTl2m3v4g46ELLoXwhJUCNLna0mhK5cnlbavFLuaAKRFL
-         nOsP1iI4VIvU9Bb5zfCV3u6eTmKomXAnzs5mPEt1YL3fZFNFgmHiXPIgugPPMgkOHJb2
-         1TVAHjYV8jMMx/z9by5XAheOoIKAjiVTlrtP1vfX3JI5wUIuY6cpwlapUw9wVNOe+6p5
-         hoQg==
-X-Gm-Message-State: AOAM533ewxTBiJ+Mq4FjbmrfJh7EIhSLo/7QIczeC8xGHeE/fRdg3soy
-        DOhp4fRMJGCJ3pc2PsI5HKsoMq3WFjAldkhSrF4=
-X-Google-Smtp-Source: ABdhPJxTMcnggbeYkpD5TX+BjZlctL0gnQTf4UVoA3HsEiYZzWmnyeHJbxL7vl20IqOugt08qXLgSl5C2fQYL7yUt/E=
-X-Received: by 2002:a9d:226a:: with SMTP id o97mr7736917ota.362.1616076896631;
- Thu, 18 Mar 2021 07:14:56 -0700 (PDT)
+        Thu, 18 Mar 2021 10:16:09 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IEEopY027789;
+        Thu, 18 Mar 2021 07:15:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=wPUNDCLGskU7nQIK/sddSZ6z442UETQh33ZYC0h8KJA=;
+ b=jEhVrO5WeAMHLobe+DAUuQjjcItrxPEd6nJSY8cnsjdTdG+3flE9AW4xJfCvYYTMGjgs
+ IIRCU+4QEuKqz8u0LCt8fBwyX5cw4ihH1kLjIL9ofA+ifs5Zq4RSCHwXx2GgmvFAiIXR
+ m2bA3eFk1m2rjzElPtH0ugw7Zt2V95gOPs8Qt7UgSrBsrSQVnQ+bM79mw5eQV3/kh2/S
+ 544tQ9cfBOoM+7F9XsQq7sWZoXtxmSlXasUP7R29614l4KmPjak9unABzPSpHOLsTxlk
+ /sQ4pl/N6KEBlnxqWv7kce8yvUygfTcQSLysl94cARWisrpdQcKPngudOMZAfTfe2D55 PA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 37c5bf0q3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 07:15:55 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
+ 2021 07:15:53 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 18 Mar 2021 07:15:53 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 2DB323F703F;
+        Thu, 18 Mar 2021 07:15:49 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [net PATCH v2 0/8] octeontx2: miscellaneous fixes
+Date:   Thu, 18 Mar 2021 19:45:41 +0530
+Message-ID: <20210318141549.2622-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210312145545.26050-1-matthias.bgg@kernel.org> <20210312145545.26050-7-matthias.bgg@kernel.org>
-In-Reply-To: <20210312145545.26050-7-matthias.bgg@kernel.org>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Thu, 18 Mar 2021 15:14:44 +0100
-Message-ID: <CAFqH_52aDxqdK8=1iiUcGM-+CcyMmQoAKCUmozD7otoBHOvCcA@mail.gmail.com>
-Subject: Re: [PATCH 7/7] arm64: dts: mt8173: Drop compatible for mt6397
-To:     matthias.bgg@kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <mbrugger@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_07:2021-03-17,2021-03-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+This series of patches fixes various issues related to NPC MCAM entry
+management, debugfs, devlink, CGX LMAC mapping, RSS config etc
 
-Thank you for your patch.
+Change-log:
+v2:
+Fixed below review comments
+	- corrected Fixed tag syntax with 12 digits SHA1
+          and providing space between SHA1 and subject line
+	- remove code improvement patch
+	- make commit description more clear
 
-Missatge de l'adre=C3=A7a <matthias.bgg@kernel.org> del dia dv., 12 de mar=
-=C3=A7
-2021 a les 15:57:
->
-> From: Matthias Brugger <mbrugger@suse.com>
->
-> The regulator framework does not need compatible, it's actually
-> superfluous. Drop it from the DT.
->
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->
-> Series-to: lee.jones@linaro.org
-> Series-to: robh+dt@kernel.org
-> Series-to: matthias.bgg@gmail.com
-> Series-to: lgirdwood@gmail.com
-> Series-to: broonie@kernel.org
-> Series-cc: devicetree@vger.kernel.org
-> Series-cc: linux-arm-kernel@lists.infradead.org
-> Series-cc: linux-mediatek@lists.infradead.org
-> Series-cc: linux-kernel@vger.kernel.org
-> ---
->  arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 +---
->  arch/arm64/boot/dts/mediatek/mt8173-evb.dts  | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/bo=
-ot/dts/mediatek/mt8173-elm.dtsi
-> index 21452c51a20a8..db06a986f763e 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> @@ -916,9 +916,7 @@ pio6397: pinctrl {
->                         #gpio-cells =3D <2>;
->                 };
->
-> -               regulator: mt6397regulator {
-> -                       compatible =3D "mediatek,mt6397-regulator";
-> -
-> +               mt6397regulator {
+Geetha sowjanya (2):
+  octeontx2-af: Fix irq free in rvu teardown
+  octeontx2-pf: Clear RSS enable flag on interace down
 
-The same happens here, it is not checked because the mt6397 is not in
-YAML format yet, but once we do this it'll trigger an error as the
-node name should be 'regulators'
+Hariprasad Kelam (1):
+  octeontx2-af: fix infinite loop in unmapping NPC counter
 
+Rakesh Babu (1):
+  octeontx2-af: Formatting debugfs entry rsrc_alloc.
 
->                         mt6397_vpca15_reg: buck_vpca15 {
->                                 regulator-compatible =3D "buck_vpca15";
->                                 regulator-name =3D "vpca15";
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts b/arch/arm64/boo=
-t/dts/mediatek/mt8173-evb.dts
-> index 6dffada2e66b4..c3f2a85d55fe7 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
-> @@ -303,9 +303,7 @@ pmic: mt6397 {
->                 interrupt-controller;
->                 #interrupt-cells =3D <2>;
->
-> -               mt6397regulator: mt6397regulator {
-> -                       compatible =3D "mediatek,mt6397-regulator";
-> -
-> +               mt6397regulator {
->                         mt6397_vpca15_reg: buck_vpca15 {
->                                 regulator-compatible =3D "buck_vpca15";
->                                 regulator-name =3D "vpca15";
-> --
-> 2.30.1
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Subbaraya Sundeep (4):
+  octeontx2-pf: Do not modify number of rules
+  octeontx2-af: Remove TOS field from MKEX TX
+  octeontx2-af: Return correct CGX RX fifo size
+  octeontx2-af: Fix uninitialized variable warning
+
+ .../marvell/octeontx2/af/npc_profile.h        |  2 -
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |  6 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |  1 +
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 18 +++++-
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 55 ++++++++++++-------
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  2 +-
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  2 +-
+ .../marvell/octeontx2/nic/otx2_flows.c        |  4 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  5 ++
+ 9 files changed, 65 insertions(+), 30 deletions(-)
+
+--
+2.17.1
