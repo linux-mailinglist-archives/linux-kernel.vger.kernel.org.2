@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E59B340563
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4BD34057D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCRMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:21:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14397 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhCRMVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:21:24 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F1R0z5n77zkYmq;
-        Thu, 18 Mar 2021 20:19:47 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 20:21:15 +0800
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>
-CC:     Albert Ou <aou@eecs.berkeley.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <00000000000056b18b05bd7c6511@google.com>
- <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com>
-Date:   Thu, 18 Mar 2021 20:21:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S230414AbhCRM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:27:00 -0400
+Received: from mga07.intel.com ([134.134.136.100]:61366 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230335AbhCRM0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:26:32 -0400
+IronPort-SDR: 1byFGz/+qa/08Wlu4FMYtqMkd0utZDTZd1UtYElZ/bXqNeZtVdCmB7ZMS/1eAMVsjP0KnVil+0
+ P5Q0MLfvYqOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="253675488"
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="253675488"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 05:26:31 -0700
+IronPort-SDR: q6+TVo21t8aK9xYdbt/+bHI1bK7pr/OfVL5p5E1l2HBv7zbHzWheDlvsaGrmw2FXsk2HEQkFnn
+ rXTNQbXkK5rA==
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="372691124"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 05:26:30 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lMrjP-00DZ69-Ht; Thu, 18 Mar 2021 14:26:27 +0200
+Date:   Thu, 18 Mar 2021 14:26:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v5 0/2] gpio: sch: Interrupt support
+Message-ID: <YFNG8+sdIj6Orbjq@smile.fi.intel.com>
+References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 17, 2021 at 05:19:26PM +0200, Andy Shevchenko wrote:
+> The series adds event support to the Intel GPIO SCH driver. The hardware
+> routes all events through GPE0 GPIO event.
+> 
+> I validated this on Intel Minnowboard (v1).
+> 
+> If somebody has different hardware with the same GPIO controller, I would
+> appreciate additional testing.
 
-On 2021/3/14 18:47, Dmitry Vyukov wrote:
-> On Sun, Mar 14, 2021 at 11:14 AM syzbot
-> <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com> wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->> console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
->> dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
->> userspace arch: riscv64
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
->>
->> ==================================================================
->> BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
->> Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
->>
->> CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
->> Hardware name: riscv-virtio,qemu (DT)
->> Workqueue: events nsim_dev_trap_report_work
->> Call Trace:
->> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
->>
->> Allocated by task 76347056:
->> (stack is not available)
->>
->> Last potentially related work creation:
-> There seems to be some issue with riscv stack unwinder.
-> This does not have stacks.
+I've applied this to my review and testing queue, thanks!
 
-Hi, could you test with the following  patch about the no stack 
-issue(from v5.11-rc4), I made a mistake when do some cleanup...
+> Changes in v5:
+> - added missed IRQ acknowledge callback (hence kernel Oops)
+> - rewrite patch 2 completely from SCI to GPE hook
+> 
+> Changes in v4 (https://lore.kernel.org/linux-gpio/20210316162613.87710-1-andriy.shevchenko@linux.intel.com/T/#u):
+> - turned to GPIO core infrastructure of IRQ chip instantiation (Linus)
+> - converted IRQ callbacks to use better APIs
+> - use handle_bad_irq() as default handler and now I know why, see
+>   eb441337c714 ("gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2")
+>     for the real example what happens if it's preset to something meaningful
+> - fixed remove stage (we have to remove SCI handler, which wasn't done in v3)
+> 
+> Changes in v3 (https://lore.kernel.org/linux-gpio/cover.1574277614.git.jan.kiszka@siemens.com/T/#u):
+> - split-up of the irq enabling patch as requested by Andy
+> 
+> Andy Shevchenko (1):
+>   gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
+> 
+> Jan Kiszka (1):
+>   gpio: sch: Add edge event support
+> 
+>  drivers/gpio/gpio-sch.c | 196 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 188 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
 
-https://lore.kernel.org/linux-riscv/ce5b3533-b75d-c31c-4319-9d29769bbbd5@huawei.com/T/#t
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> "BUG: unable to handle kernel access to user memory in schedule_tail"
-> does not have proper stacks:
-> https://syzkaller.appspot.com/bug?id=9de8c24d24004fd5e482555f5ad8314da2fb1cee
->
-> I also found 2 riscv reports in "KASAN: use-after-free Read in
-> idr_for_each (2)":
-> https://syzkaller.appspot.com/bug?id=7f84dfc3902878befc22e52eb5c7298d0ad70cf3
->
-> both don't have any stacks:
->
-> ==================================================================
-> BUG: KASAN: use-after-free in radix_tree_next_slot
-> include/linux/radix-tree.h:422 [inline]
-> BUG: KASAN: use-after-free in idr_for_each+0xf4/0x160 lib/idr.c:202
-> Read of size 8 at addr ffffffe010c00878 by task syz-executor.1/4828
->
-> CPU: 0 PID: 4828 Comm: syz-executor.1 Not tainted
-> 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> Hardware name: riscv-virtio,qemu (DT)
-> Call Trace:
-> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
->
-> Allocated by task 4828:
-> (stack is not available)
->
-> Freed by task 4473:
-> (stack is not available)
->
->
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> .
->
+
