@@ -2,125 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF9D34023E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B025340240
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhCRJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:39:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:46025 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhCRJiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:38:50 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F1MRB6KJyz9twcf;
-        Thu, 18 Mar 2021 10:38:46 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Y-YcfSLncL4O; Thu, 18 Mar 2021 10:38:46 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F1MRB4pdHz9twcd;
-        Thu, 18 Mar 2021 10:38:46 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BEB3E8B8C9;
-        Thu, 18 Mar 2021 10:38:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id feJZioXZgfgZ; Thu, 18 Mar 2021 10:38:47 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1693B8B881;
-        Thu, 18 Mar 2021 10:38:47 +0100 (CET)
-Subject: Re: [PATCH mm] kfence: fix printk format for ptrdiff_t
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
+        id S229725AbhCRJl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:41:27 -0400
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:51472 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCRJlY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:41:24 -0400
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lMp9M-000418-0k; Thu, 18 Mar 2021 09:41:04 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        Juri Lelli <juri.lelli@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <20210303121157.3430807-1-elver@google.com>
- <CAG_fn=W-jmnMWO24ZKdkR13K0h_0vfR=ceCVSrYOCCmDsHUxkQ@mail.gmail.com>
- <c1fea2e6-4acf-1fff-07ff-1b430169f22f@csgroup.eu>
- <20210316153320.GF16691@gate.crashing.org>
- <3f624e5b-567d-70f9-322f-e721b2df508b@csgroup.eu>
- <6d4b370dc76543f2ba8ad7c6dcdfc7af@AcuMS.aculab.com>
- <001a139e-d4fa-2fd7-348f-173392210dfd@csgroup.eu>
- <4f7becfe2b6e4263be83b5ee461b5732@AcuMS.aculab.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e4577151-bc73-5033-a9ed-114dd0c1aaaf@csgroup.eu>
-Date:   Thu, 18 Mar 2021 10:38:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Terry Hu <kejia.hu@codethink.co.uk>,
+        =?UTF-8?Q?Javier_Jard=c3=b3n?= <javier.jardon@codethink.co.uk>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+ <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+ <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
+ <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
+ <4ce57c7e-6e5d-d136-0a81-395a4207ba44@codethink.co.uk>
+ <CACT4Y+ZJwJ9vcgCyabDUny0CnYmbHLRqU6m_KccdObS+7bBoGw@mail.gmail.com>
+ <CACT4Y+ay21Cw8TtUdyDAzXAJaqpDPyCKNW6XF1GKsHoNeL=qKw@mail.gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <38efd34b-1ac5-f2a5-d090-83f909b3b87f@codethink.co.uk>
+Date:   Thu, 18 Mar 2021 09:41:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <4f7becfe2b6e4263be83b5ee461b5732@AcuMS.aculab.com>
+In-Reply-To: <CACT4Y+ay21Cw8TtUdyDAzXAJaqpDPyCKNW6XF1GKsHoNeL=qKw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 18/03/2021 à 10:14, David Laight a écrit :
-> From: Christophe Leroy
->> Sent: 17 March 2021 17:35
+On 12/03/2021 17:38, Dmitry Vyukov wrote:
+> On Fri, Mar 12, 2021 at 6:34 PM Dmitry Vyukov <dvyukov@google.com> wrote:
 >>
->> Le 17/03/2021 à 13:51, David Laight a écrit :
->>> From: Christophe Leroy
->>>> Sent: 16 March 2021 15:41
->>> ...
->>>>>> include/linux/types.h:typedef __kernel_ptrdiff_t	ptrdiff_t;
+>> On Fri, Mar 12, 2021 at 5:36 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>>>
+>>> On 12/03/2021 16:34, Ben Dooks wrote:
+>>>> On 12/03/2021 16:30, Ben Dooks wrote:
+>>>>> On 12/03/2021 15:12, Dmitry Vyukov wrote:
+>>>>>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk>
+>>>>>> wrote:
+>>>>>>>
+>>>>>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>>>>>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>>>>>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Hello,
+>>>>>>>>>
+>>>>>>>>> syzbot found the following issue on:
+>>>>>>>>>
+>>>>>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
+>>>>>>>>> arch_dup_tas..
+>>>>>>>>> git tree:
+>>>>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>>>>>>> console output:
+>>>>>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>>>>>>>> kernel config:
+>>>>>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>>>>>>>> dashboard link:
+>>>>>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>>>>>>>> userspace arch: riscv64
+>>>>>>>>>
+>>>>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>>>>
+>>>>>>>>> IMPORTANT: if you fix the issue, please add the following tag to
+>>>>>>>>> the commit:
+>>>>>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>>>>>>>
+>>>>>>>> +riscv maintainers
+>>>>>>>>
+>>>>>>>> This is riscv64-specific.
+>>>>>>>> I've seen similar crashes in put_user in other places. It looks like
+>>>>>>>> put_user crashes in the user address is not mapped/protected (?).
+>>>>>>>
+>>>>>>> I've been having a look, and this seems to be down to access of the
+>>>>>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+>>>>>>> bad address to clone?
+>>>>>>>
+>>>>>>>    From looking at the code, the put_user() code should have set the
+>>>>>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+>>>>>>> s2 register in the crash report) and from looking at the compiler
+>>>>>>> output from my gcc-10, the code looks to be dong the relevant csrs
+>>>>>>> and then csrc around the put_user
+>>>>>>>
+>>>>>>> So currently I do not understand how the above could have happened
+>>>>>>> over than something re-tried the code seqeunce and ended up retrying
+>>>>>>> the faulting instruction without the SR_SUM bit set.
 >>>>>>
->>>>>> And get:
+>>>>>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
+>>>>>> strange that 99% of these crashes are in schedule_tail. If it would be
+>>>>>> qemu, then they would be more evenly distributed...
 >>>>>>
->>>>>>      CC      mm/kfence/report.o
->>>>>> In file included from ./include/linux/printk.h:7,
->>>>>>                     from ./include/linux/kernel.h:16,
->>>>>>                     from mm/kfence/report.c:10:
->>>>>> mm/kfence/report.c: In function 'kfence_report_error':
->>>>>> ./include/linux/kern_levels.h:5:18: warning: format '%td' expects argument
->>>>>> of type 'ptrdiff_t', but argument 6 has type 'long int' [-Wformat=]
+>>>>>> Another observation: looking at a dozen of crash logs, in none of
+>>>>>> these cases fuzzer was actually trying to fuzz clone with some insane
+>>>>>> arguments. So it looks like completely normal clone's (e..g coming
+>>>>>> from pthread_create) result in this crash.
+>>>>>>
+>>>>>> I also wonder why there is ret_from_exception, is it normal? I see
+>>>>>> handle_exception disables SR_SUM:
+>>>>>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73
+>>>>>>
 >>>>>
->>>>> This is declared as
->>>>>            const ptrdiff_t object_index = meta ? meta - kfence_metadata : -1;
->>>>> so maybe something with that goes wrong?  What happens if you delete the
->>>>> (useless) "const" here?
->>>
->>> The obvious thing to try is changing it to 'int'.
->>> That will break 64bit builds, but if it fixes the 32bit one
->>> it will tell you what type gcc is expecting.
->>>
+>>>>> So I think if SR_SUM is set, then it faults the access to user memory
+>>>>> which the _user() routines clear to allow them access.
+>>>>>
+>>>>> I'm thinking there is at least one issue here:
+>>>>>
+>>>>> - the test in fault is the wrong way around for die kernel
+>>>>> - the handler only catches this if the page has yet to be mapped.
+>>>>>
+>>>>> So I think the test should be:
+>>>>>
+>>>>>           if (!user_mode(regs) && addr < TASK_SIZE &&
+>>>>>                           unlikely(regs->status & SR_SUM)
+>>>>>
+>>>>> This then should continue on and allow the rest of the handler to
+>>>>> complete mapping the page if it is not there.
+>>>>>
+>>>>> I have been trying to create a very simple clone test, but so far it
+>>>>> has yet to actually trigger anything.
+>>>>
+>>>> I should have added there doesn't seem to be a good way to use mmap()
+>>>> to allocate memory but not insert a vm-mapping post the mmap().
+>>>>
+>>> How difficult is it to try building a branch with the above test
+>>> modified?
 >>
->> Yes, if defining 'object_index' as int, gcc is happy.
->> If removing the powerpc re-definition of ptrdiff_t typedef in
->> https://elixir.bootlin.com/linux/v5.12-rc3/source/arch/powerpc/include/uapi/asm/posix_types.h , it
->> works great as well.
+>> I don't have access to hardware, I don't have other qemu versions ready to use.
+>> But I can teach you how to run syzkaller locally :)
+>> I am not sure anybody run it on real riscv hardware at all. When
+>> Tobias ported syzkaller, Tobias also used qemu I think.
 >>
->> So seems like gcc doesn't take into account the typedef behind ptrdiff_t, it just expects it to be
->> int on 32 bits ?
+>> I am now building with an inverted check to test locally.
+>>
+>> I don't fully understand but this code, but does handle_exception
+>> reset SR_SUM around do_page_fault? If so, then looking at SR_SUM in
+>> do_page_fault won't work with positive nor negative check.
 > 
-> gcc never cares how ptrdiff_t (or any of the related types) is defined
-> it requires int or long for the format depending on the architecture.
-> The error message will say ptrdiff_t or size_t (etc) - but that is just
-> in the error message.
 > 
-> So the ppc32 uapi definition of __kernel_ptrdiff_t is wrong.
-> However it is probably set in stone.
+> The inverted check crashes during boot:
 > 
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -249,7 +249,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>                  flags |= FAULT_FLAG_USER;
+> 
+>          if (!user_mode(regs) && addr < TASK_SIZE &&
+> -                       unlikely(!(regs->status & SR_SUM)))
+> +                       unlikely(regs->status & SR_SUM))
+>                  die_kernel_fault("access to user memory without
+> uaccess routines",
+>                                  addr, regs);
+> 
+> 
+> [   77.349329][    T1] Run /sbin/init as init process
+> [   77.868371][    T1] Unable to handle kernel access to user memory
+> without uaccess routines at virtual address 00000000000e8e39
+> [   77.870355][    T1] Oops [#1]
+> [   77.870766][    T1] Modules linked in:
+> [   77.871326][    T1] CPU: 0 PID: 1 Comm: init Not tainted
+> 5.12.0-rc2-00010-g0d7588ab9ef9-dirty #42
+> [   77.872057][    T1] Hardware name: riscv-virtio,qemu (DT)
+> [   77.872620][    T1] epc : __clear_user+0x36/0x4e
+> [   77.873285][    T1]  ra : padzero+0x9c/0xb0
+> [   77.873849][    T1] epc : ffffffe000bb7136 ra : ffffffe0004f42a0 sp
+> : ffffffe006f8fbc0
+> [   77.874438][    T1]  gp : ffffffe005d25718 tp : ffffffe006f98000 t0
+> : 00000000000e8e40
+> [   77.875031][    T1]  t1 : 00000000000e9000 t2 : 000000000001c49c s0
+> : ffffffe006f8fbf0
+> [   77.875618][    T1]  s1 : 00000000000001c7 a0 : 00000000000e8e39 a1
+> : 00000000000001c7
+> [   77.876204][    T1]  a2 : 0000000000000002 a3 : 00000000000e9000 a4
+> : ffffffe006f99000
+> [   77.876787][    T1]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
+> : ffffffe00031c088
+> [   77.877367][    T1]  s2 : 00000000000e8e39 s3 : 0000000000001000 s4
+> : 0000003ffffffe39
+> [   77.877952][    T1]  s5 : 00000000000e8e39 s6 : 00000000000e9570 s7
+> : 00000000000e8e39
+> [   77.878535][    T1]  s8 : 0000000000000001 s9 : 00000000000e8e39
+> s10: ffffffe00c65f608
+> [   77.879126][    T1]  s11: ffffffe00816e8d8 t3 : ea3af0fa372b8300 t4
+> : 0000000000000003
+> [   77.879711][    T1]  t5 : ffffffc401dc45d8 t6 : 0000000000040000
+> [   77.880209][    T1] status: 0000000000040120 badaddr:
+> 00000000000e8e39 cause: 000000000000000f
+> [   77.880846][    T1] Call Trace:
+> [   77.881213][    T1] [<ffffffe000bb7136>] __clear_user+0x36/0x4e
+> [   77.881912][    T1] [<ffffffe0004f523e>] load_elf_binary+0xf8a/0x2400
+> [   77.882562][    T1] [<ffffffe0003e1802>] bprm_execve+0x5b0/0x1080
+> [   77.883145][    T1] [<ffffffe0003e38bc>] kernel_execve+0x204/0x288
+> [   77.883727][    T1] [<ffffffe003b70e94>] run_init_process+0x1fe/0x212
+> [   77.884337][    T1] [<ffffffe003b70ec6>] try_to_run_init_process+0x1e/0x66
+> [   77.884956][    T1] [<ffffffe003bc0864>] kernel_init+0x14a/0x200
+> [   77.885541][    T1] [<ffffffe000005570>] ret_from_exception+0x0/0x14
+> [   77.886955][    T1] ---[ end trace 1e934d07b8a4bed8 ]---
+> [   77.887705][    T1] Kernel panic - not syncing: Fatal exception
+> [   77.888333][    T1] SMP: stopping secondary CPUs
+> [   77.889357][    T1] Rebooting in 86400 seconds..
 
-Yes it seems to be wrong. It was changed by commit d27dfd3887 ("Import pre2.0.8"), so that's long 
-time ago. Before that it was an 'int' for ppc32.
+I have reproduced this on qemu, not managed to get the real hardwre
+working with this branch yet.
 
-gcc provides ptrdiff_t in stddef.h via __PTRDIFF_TYPE__
-gcc defined __PTRDIFF_TYPE__ as 'int' at build time.
+I have a working hypothesis now, having added debug to check the
+sstatus.SR_SUM flag and reviewed the assembly, I think this is
+what is happening:
 
-Should we fix it in arch/powerpc/include/uapi/asm/posix_types.h ? Anyway 'long' and 'int' makes no 
-functionnal difference on 32 bits so there should be no impact for users if any.
+C code of "put_user(func(), address)" is generating code to do:
 
-Christophe
+1:	__enable_user_access();
+2:	cpu_reg = func();
+3:	assembly for *address = cpu_reg;
+4:	__disable_user_access();
+
+I think the call to func() with all the sanitisers enabled allow
+the func() to possibly schedule out. The __swtich_to() code does
+not restore the original status registers which means that if
+there is IO during the sleep SR_SUM may end up being cleared and
+never re-set. We get back to 3 and fault as 2 cleared the result of 1.
+
+It is very possible no-one has seen this before as generally the
+functions involved in feeding put_user() are fairly small and thus
+this system is both under load and has some reason to schedule then
+this bug has probably been rare to unseen.
+
+I think the correct solution is to store the SR_SUM bit status in
+the thread_struct and make __switch_to() save/restore this when
+changing between tasks/threads. Trying to re-order the code to
+force swapping of 1 and 2 may reduce the bug's window.
+
+Further thinking of the order of 1 and 2 is that we should probably
+fix that order so that func() is not run with the user-space access
+protection disabled.
+
+I'll try and make some sort of of small test case to avoid having
+to run syz-stress to provoke this.
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
