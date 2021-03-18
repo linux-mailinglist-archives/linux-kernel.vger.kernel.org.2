@@ -2,212 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59FB3408A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2A13408A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhCRPSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
+        id S231781AbhCRPSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhCRPSA (ORCPT
+        with ESMTP id S231776AbhCRPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:18:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3149C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:17:59 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id b16so7128995eds.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:17:59 -0700 (PDT)
+        Thu, 18 Mar 2021 11:18:15 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4350C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:18:15 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id t5so3348112qvs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:18:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mDhtpthkra5FR1QobgMI7rXBQ3u37AScVadxTXIiiws=;
-        b=rfi6ZFrFzWHRwJNIj9d3b2TY9HCj2RsBMVq0iA0Ht1giyZMnvTXWk4CMUScdkfEUke
-         uOVuuATQfXXLxvXpqW7IudzlolIvUpcYDmMJFmoQOKCVtaH+kTxNVBS7t5uiHz0uXI66
-         fMqEwdB0Q92SRiYcwTLMq49s8ayFSEwmIF/hQ=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wOFBEPOr1SLeNR/Um5yDZSZIjOy82REcErjZY7pyKDQ=;
+        b=CGGA9HuO0wmX6avzNQTVJ1nxLiQT7aoA7o7FrVE3h5ceaWoUInIhyTeqemyADCS6SS
+         J1aSW/VAUL1LnUkoNWIaeeSEzosnmOzekeP/Cd/AKRy6XHe9D7fDF40I0pEkVfgkcW04
+         Wueno/T53xBADAnWoqeonhzXD9XNteEmC/vWz3nlkLOJoxqPjJij8jrdxkVtid3qxIiG
+         I0rOFVlJAHwmbMjA/2dQi7Yn2BAdLee9UC8U/FG16CmNV2srxQv8jKGwqOFHX+vGZrEo
+         6/yLe1Nt7gWUUdg+KAGLwVM8/EjMxf07fwbwGl6wHOYdCUuiAcVwJliH313dDR58H1k5
+         zZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mDhtpthkra5FR1QobgMI7rXBQ3u37AScVadxTXIiiws=;
-        b=Q2VOuCzt1c1qmyU9AQTZOsfWWLf3MG5vXUNllQlqy4D1Fv2djtGauXSv3uOa5z7hBG
-         v726m+8mbpII2BXzdOPzviO/frCSn4AuywqXMYJ0l7iHkzp8KsVIYrVFV962xZrQ6ysx
-         4Ls6uxZ7EzWhuhV0JfGkpOjbavdAKWhfAPDZFU9IlSqu7aRLMxr+LeuJ63/0UjM3wMGC
-         FUm700jUSgenDKc+mI45+kK7HE0F9+oSJyhuxRU8K0mI7BvM83MhtTGfcFzFbiSsExYe
-         J5ziNBmSF24G7oCgDnTqT3F4xD+iKnzm0/htiL1ZvgipKKxUSL0d1Ni6ZUuuLSmlhjPE
-         xAeg==
-X-Gm-Message-State: AOAM530/b8A2fQzFkRAvM1wHczcZuUiN6/jnk25nccA72DRyXo+PqOxV
-        NmTItzEsi86EjomeLFWu5ZpDoA==
-X-Google-Smtp-Source: ABdhPJzewXSYi5Px+OEXUMHBXkvYYUInFfzJGS4KRUsXTsFjGv691EuGz7X5Eq3Y/ufhjYWj0Y5bmg==
-X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr4284769edd.313.1616080678409;
-        Thu, 18 Mar 2021 08:17:58 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id e26sm2652728edj.29.2021.03.18.08.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 08:17:57 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 16:17:51 +0100
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     virtio-fs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        vgoyal@redhat.com, jasowang@redhat.com, mst@redhat.com
-Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
-Message-ID: <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com>
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
- <20210318135223.1342795-3-ckuehl@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wOFBEPOr1SLeNR/Um5yDZSZIjOy82REcErjZY7pyKDQ=;
+        b=PZyJ+lM0fUtxCTa/EBXHgWynoJw68WD/fPy5FqPwsWsLPoIpVgfhRwwkDLFiASeHsD
+         CqHuUh1pUftewxvJoMNTB7VfihFoFZ6AudS17rDk7V8gT8UEc+Wbr82wkwzLTuNDz/Jc
+         ce3j7U/Y/qszYGYf00ZEzzn956dIotZyBp5b8oxInbyndSM/cxcCUANCMBwkFjPdk2vf
+         0+zJSm4ibkra7h7eBkugJ+L5xJIg2cwLrPCtd9Q/65drOlHMFn+oVKBaUa7DnIk/ZJfL
+         WdhyAOL/v9hXvfPdBMXfR8cpMkn4N+pmLZSsrdqhnaq1kxVmf4yS0wrloLk87lMMwizd
+         OLlg==
+X-Gm-Message-State: AOAM532BTnCkxnrNEaK36+UwS2c9zi5xJYbyBaYN+w6M3KUYqMkLIXk7
+        iF8y9TlMokuheaXfSf4S5fMNhhZeOmzqllt2lzx3/Q==
+X-Google-Smtp-Source: ABdhPJy+OexF6sUgIP9Tj4vBricdu5cz15i4H10NQtNRkmkVuuYT5vaIDniBeQ+tCfWs2JPm3+l6eTr6bCrP19dyYj8=
+X-Received: by 2002:ad4:410d:: with SMTP id i13mr4704593qvp.44.1616080694677;
+ Thu, 18 Mar 2021 08:18:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318135223.1342795-3-ckuehl@redhat.com>
+References: <00000000000096cdaa05bd32d46f@google.com> <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
+ <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
+ <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
+ <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk> <CACT4Y+a1pQ96UWEB3pAnbxPZ+6jW2tqSzkTMqJ+XSbZsKLHgAw@mail.gmail.com>
+ <bf2e19a3-3e3a-0eb1-ae37-4cc3b1a7af42@codethink.co.uk>
+In-Reply-To: <bf2e19a3-3e3a-0eb1-ae37-4cc3b1a7af42@codethink.co.uk>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 18 Mar 2021 16:18:03 +0100
+Message-ID: <CACT4Y+ZVaxQAnpy_bMGwviZMskD-fy1KgY7pbrjcCRXr24eu2Q@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>, andrii@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 08:52:22AM -0500, Connor Kuehl wrote:
-> If an incoming FUSE request can't fit on the virtqueue, the request is
-> placed onto a workqueue so a worker can try to resubmit it later where
-> there will (hopefully) be space for it next time.
-> 
-> This is fine for requests that aren't larger than a virtqueue's maximum
-> capacity. However, if a request's size exceeds the maximum capacity of
-> the virtqueue (even if the virtqueue is empty), it will be doomed to a
-> life of being placed on the workqueue, removed, discovered it won't fit,
-> and placed on the workqueue yet again.
-> 
-> Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
-> Descriptors) of the virtio spec:
-> 
->   "A driver MUST NOT create a descriptor chain longer than the Queue
->   Size of the device."
-> 
-> To fix this, limit the number of pages FUSE will use for an overall
-> request. This way, each request can realistically fit on the virtqueue
-> when it is decomposed into a scattergather list and avoid violating
-> section 2.6.5.3.1 of the virtio spec.
+On Mon, Mar 15, 2021 at 3:41 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> On 15/03/2021 11:52, Dmitry Vyukov wrote:
+> > On Mon, Mar 15, 2021 at 12:30 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+> >>
+> >> On 14/03/2021 11:03, Dmitry Vyukov wrote:
+> >>> On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >>>>> On Wed, Mar 10, 2021 at 7:28 PM syzbot
+> >>>>> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
+> >>>>>>
+> >>>>>> Hello,
+> >>>>>>
+> >>>>>> syzbot found the following issue on:
+> >>>>>>
+> >>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+> >>>>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> >>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
+> >>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+> >>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
+> >>>>>> userspace arch: riscv64
+> >>>>>>
+> >>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>>>>
+> >>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>>>> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
+> >>>>>
+> >>>>> +riscv maintainers
+> >>>>>
+> >>>>> Another case of put_user crashing.
+> >>>>
+> >>>> There are 58 crashes in sock_ioctl already. Somehow there is a very
+> >>>> significant skew towards crashing with this "user memory without
+> >>>> uaccess routines" in schedule_tail and sock_ioctl of all places in the
+> >>>> kernel that use put_user... This looks very strange... Any ideas
+> >>>> what's special about these 2 locations?
+> >>>
+> >>> I could imagine if such a crash happens after a previous stack
+> >>> overflow and now task data structures are corrupted. But f_getown does
+> >>> not look like a function that consumes way more than other kernel
+> >>> syscalls...
+> >>
+> >> The last crash I looked at suggested somehow put_user got re-entered
+> >> with the user protection turned back on. Either there is a path through
+> >> one of the kernel handlers where this happens or there's something
+> >> weird going on with qemu.
+> >
+> > Is there any kind of tracking/reporting that would help to localize
+> > it? I could re-reproduce with that code.
+>
+> I'm not sure. I will have a go at debugging on qemu today just to make
+> sure I can reproduce here before I have to go into the office and fix
+> my Icicle board for real hardware tests.
+>
+> I think my first plan post reproduction is to stuff some trace points
+> into the fault handlers to see if we can get a idea of faults being
+> processed, etc.
+>
+> Maybe also add a check in the fault handler to see if the fault was
+> in a fixable region and post an error if that happens / maybe retry
+> the instruction with the relevant SR_SUM flag set.
+>
+> Hopefully tomorrow I can get a run on real hardware to confirm.
+> Would have been better if the Unmatched board I ordered last year
+> would turn up.
 
-I removed the conditional compilation and renamed the limit.  Also made
-virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
+In retrospect it's obvious what's common between these 2 locations:
+they both call a function inside of put_user.
 
-The virtio_ring patch in this series should probably go through the respective
-subsystem tree.
-
-
-Thanks,
-Miklos
-
----
-From: Connor Kuehl <ckuehl@redhat.com>
-Subject: virtiofs: split requests that exceed virtqueue size
-Date: Thu, 18 Mar 2021 08:52:22 -0500
-
-If an incoming FUSE request can't fit on the virtqueue, the request is
-placed onto a workqueue so a worker can try to resubmit it later where
-there will (hopefully) be space for it next time.
-
-This is fine for requests that aren't larger than a virtqueue's maximum
-capacity.  However, if a request's size exceeds the maximum capacity of the
-virtqueue (even if the virtqueue is empty), it will be doomed to a life of
-being placed on the workqueue, removed, discovered it won't fit, and placed
-on the workqueue yet again.
-
-Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
-Descriptors) of the virtio spec:
-
-  "A driver MUST NOT create a descriptor chain longer than the Queue
-  Size of the device."
-
-To fix this, limit the number of pages FUSE will use for an overall
-request.  This way, each request can realistically fit on the virtqueue
-when it is decomposed into a scattergather list and avoid violating section
-2.6.5.3.1 of the virtio spec.
-
-Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/fuse/fuse_i.h    |    3 +++
- fs/fuse/inode.c     |    3 ++-
- fs/fuse/virtio_fs.c |   19 +++++++++++++++++--
- 3 files changed, 22 insertions(+), 3 deletions(-)
-
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -555,6 +555,9 @@ struct fuse_conn {
- 	/** Maxmum number of pages that can be used in a single request */
- 	unsigned int max_pages;
- 
-+	/** Constrain ->max_pages to this value during feature negotiation */
-+	unsigned int max_pages_limit;
-+
- 	/** Input queue */
- 	struct fuse_iqueue iq;
- 
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -712,6 +712,7 @@ void fuse_conn_init(struct fuse_conn *fc
- 	fc->pid_ns = get_pid_ns(task_active_pid_ns(current));
- 	fc->user_ns = get_user_ns(user_ns);
- 	fc->max_pages = FUSE_DEFAULT_MAX_PAGES_PER_REQ;
-+	fc->max_pages_limit = FUSE_MAX_MAX_PAGES;
- 
- 	INIT_LIST_HEAD(&fc->mounts);
- 	list_add(&fm->fc_entry, &fc->mounts);
-@@ -1040,7 +1041,7 @@ static void process_init_reply(struct fu
- 				fc->abort_err = 1;
- 			if (arg->flags & FUSE_MAX_PAGES) {
- 				fc->max_pages =
--					min_t(unsigned int, FUSE_MAX_MAX_PAGES,
-+					min_t(unsigned int, fc->max_pages_limit,
- 					max_t(unsigned int, arg->max_pages, 1));
- 			}
- 			if (IS_ENABLED(CONFIG_FUSE_DAX) &&
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -18,6 +18,12 @@
- #include <linux/uio.h>
- #include "fuse_i.h"
- 
-+/* Used to help calculate the FUSE connection's max_pages limit for a request's
-+ * size. Parts of the struct fuse_req are sliced into scattergather lists in
-+ * addition to the pages used, so this can help account for that overhead.
-+ */
-+#define FUSE_HEADER_OVERHEAD    4
-+
- /* List of virtio-fs device instances and a lock for the list. Also provides
-  * mutual exclusion in device removal and mounting path
-  */
-@@ -1413,9 +1419,10 @@ static int virtio_fs_get_tree(struct fs_
- {
- 	struct virtio_fs *fs;
- 	struct super_block *sb;
--	struct fuse_conn *fc;
-+	struct fuse_conn *fc = NULL;
- 	struct fuse_mount *fm;
--	int err;
-+	unsigned int virtqueue_size;
-+	int err = -EIO;
- 
- 	/* This gets a reference on virtio_fs object. This ptr gets installed
- 	 * in fc->iq->priv. Once fuse_conn is going away, it calls ->put()
-@@ -1427,6 +1434,10 @@ static int virtio_fs_get_tree(struct fs_
- 		return -EINVAL;
- 	}
- 
-+	virtqueue_size = virtqueue_get_vring_size(fs->vqs[VQ_REQUEST].vq);
-+	if (WARN_ON(virtqueue_size <= FUSE_HEADER_OVERHEAD))
-+		goto out_err;
-+
- 	err = -ENOMEM;
- 	fc = kzalloc(sizeof(struct fuse_conn), GFP_KERNEL);
- 	if (!fc)
-@@ -1442,6 +1453,10 @@ static int virtio_fs_get_tree(struct fs_
- 	fc->delete_stale = true;
- 	fc->auto_submounts = true;
- 
-+	/* Tell FUSE to split requests that exceed the virtqueue's size */
-+	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
-+				    virtqueue_size - FUSE_HEADER_OVERHEAD);
-+
- 	fsc->s_fs_info = fm;
- 	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
- 	if (fsc->s_fs_info) {
+#syz dup:
+BUG: unable to handle kernel access to user memory in schedule_tail
