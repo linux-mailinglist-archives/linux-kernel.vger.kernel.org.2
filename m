@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366153403BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62B3403C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCRKor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229999AbhCRKoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:44:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0169C64F3B;
-        Thu, 18 Mar 2021 10:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616064279;
-        bh=1wFwF4VmWJoYRcMM00vbE2GRjaZ3NZEyo2k1k1yxUKc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QLLKnym4TvfswwMVZqQ434uKjDQyFQMbCIaXVaEPpPnziV0DpriH0B0oOJQakv4l2
-         UQDwx3sx2FfAYvEZu7evlvWJDQdt2qLuA7oFeLXEqQUz4OKo3eVq+dSvcblE4Ms+R1
-         9NptfnK5hSp9FBgB/j1v+NuhYbOA6ZhuW9tgA6CkSjKkER3j+1LadOmgNOVXuXyqbA
-         v3vWKdIgKyDS8nCf3C48rO7Sj4DYdNlItNztyI0q5egDE3jW8lUgq4gDmVbcoQwLS1
-         YK2loDs/EX2m3YLp61kNXVivXLh4pUzZdcNhhoXzOZ7dHTx/wW/0UwxGeVwixNMI5G
-         3GxFnWoNucoAg==
-Date:   Thu, 18 Mar 2021 10:44:33 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Tom Saeger <tom.saeger@oracle.com>, lorenzo.pieralisi@arm.com
-Cc:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Thomas Tai <thomas.tai@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Al Stone <al.stone@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: arm64/acpi : clarify arm64 support of IBFT
-Message-ID: <20210318104433.GA6959@willie-the-truck>
-References: <9efc652df2b8d6b53d9acb170eb7c9ca3938dfef.1615920441.git.tom.saeger@oracle.com>
+        id S230193AbhCRKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhCRKqs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:46:48 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169B0C06174A;
+        Thu, 18 Mar 2021 03:46:48 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id j7so3663789qtx.5;
+        Thu, 18 Mar 2021 03:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jhUQnpQN5W/tA9Wcg9rEDDeKuG8HI0NowlOsbYyX73M=;
+        b=gw/bd6B/y+5rYoX8wrkX7aPu1rvous/7chlMKJlUVROit+etGoawRuOVK6WsGPbnlu
+         7WMoQqUGkfsVTfUskGWqTo4Ysb5MknXJXfB70C5ZowQkWG+kyCrklQU7PiEthDYs0mew
+         vBtKg68fgiJwPxOeBy0UiG8N/3YQ4fmCvpkKHJVb0xm8hrmNFJO03xk+e7mu6f8uLgvv
+         lv64p2vQieGtmDdFSqJ2VS4p5oW2stc2SqyM8hgXDo1+Eadu0YeDkMT1ALFT7A4GauEB
+         GWpzGrSfgzZX9c1vpxTJJcZ1jzfRhAjoF73w7QENWMIy14XnvAkA7vJrzE8+njER//Me
+         WE6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jhUQnpQN5W/tA9Wcg9rEDDeKuG8HI0NowlOsbYyX73M=;
+        b=oDI447dU7W9a/YKEgyHoiuL0c7kXby0QFf+AKi6KJLYD52j/waJhWPVahy9uVEkZJY
+         ROuYH8TsC1JGtGkCpKZKTiIzDUeylJ++je7MWvjcedsUmPq7gwsYS+Ug+/K2B0s6hp9q
+         G1RNJj07BNxZ8KQK2lI+I5RKDLN7Ip37SQ1zXcdlXgSAnFjwWhLRtpEWtwh1U6j5WOdw
+         WEp5aLxkSb9DZhE7YOP/FeZECxkqM5p/7e+acx4z9chYn3yLxAUG9nHTetYXG+F9oBnf
+         Gvag0eqcXXV6rhMHXLDTTz7l35IwGxRiGz/CZzT7vS/N6yXRnDJ7NgCj0A55zP69O5A+
+         1sog==
+X-Gm-Message-State: AOAM532jLakg+o+c0gErnw6IfKFunGWmLFOmWO8vsqh+uwSJjIOS2zEC
+        rH3uPJA4t4DtcROD7R4IN8A=
+X-Google-Smtp-Source: ABdhPJxNYDSuqVaPiGOjr4bLR3exGbz9HyB9Acn8xML+XqvG0/J5wqbtCrnBcna0aK1ot7AuitArVw==
+X-Received: by 2002:aed:3023:: with SMTP id 32mr3041059qte.173.1616064407217;
+        Thu, 18 Mar 2021 03:46:47 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.246])
+        by smtp.gmail.com with ESMTPSA id z89sm1129783qtd.5.2021.03.18.03.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 03:46:46 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     ysato@users.sourceforge.jp, dalias@libc.org, unixbhaskar@gmail.com,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] sh: kernel: Fix a typo
+Date:   Thu, 18 Mar 2021 16:14:37 +0530
+Message-Id: <20210318104437.21793-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9efc652df2b8d6b53d9acb170eb7c9ca3938dfef.1615920441.git.tom.saeger@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Lorenzo]
 
-On Tue, Mar 16, 2021 at 12:50:41PM -0600, Tom Saeger wrote:
-> In commit 94bccc340710 ("iscsi_ibft: make ISCSI_IBFT dependson ACPI instead
-> of ISCSI_IBFT_FIND") Kconfig was disentangled to make ISCSI_IBFT selection
-> not depend on x86.
-> 
-> Update arm64 acpi documentation, changing IBFT support status from
-> "Not Supported" to "Optional".
-> Opportunistically re-flow paragraph for changed lines.
-> 
-> Link: https://lore.kernel.org/lkml/1563475054-10680-1-git-send-email-thomas.tai@oracle.com/
-> 
-> Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
-> ---
->  Documentation/arm64/acpi_object_usage.rst | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+s/archtecture/architecture/
 
-Lorenzo, please could you ack the change below if you're happy with it?
-If so, I can take it as a fix.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/sh/kernel/relocate_kernel.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/arch/sh/kernel/relocate_kernel.S b/arch/sh/kernel/relocate_kernel.S
+index d9bf2b727b42..deda2f60a8f2 100644
+--- a/arch/sh/kernel/relocate_kernel.S
++++ b/arch/sh/kernel/relocate_kernel.S
+@@ -3,7 +3,7 @@
+  * relocate_kernel.S - put the kernel image in place to boot
+  * 2005.9.17 kogiidena@eggplant.ddo.jp
+  *
+- * LANDISK/sh4 is supported. Maybe, SH archtecture works well.
++ * LANDISK/sh4 is supported. Maybe, SH architecture works well.
+  *
+  * 2009-03-18 Magnus Damm - Added Kexec Jump support
+  */
+--
+2.26.2
 
-Will
-
-> diff --git a/Documentation/arm64/acpi_object_usage.rst b/Documentation/arm64/acpi_object_usage.rst
-> index 377e9d224db0..0609da73970b 100644
-> --- a/Documentation/arm64/acpi_object_usage.rst
-> +++ b/Documentation/arm64/acpi_object_usage.rst
-> @@ -17,12 +17,12 @@ For ACPI on arm64, tables also fall into the following categories:
->  
->         -  Recommended: BERT, EINJ, ERST, HEST, PCCT, SSDT
->  
-> -       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IORT,
-> -          MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT, STAO,
-> -	  TCPA, TPM2, UEFI, XENV
-> +       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IBFT,
-> +          IORT, MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT,
-> +          STAO, TCPA, TPM2, UEFI, XENV
->  
-> -       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IBFT, IVRS, LPIT,
-> -          MSDM, OEMx, PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
-> +       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IVRS, LPIT, MSDM, OEMx,
-> +          PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
->  
->  ====== ========================================================================
->  Table  Usage for ARMv8 Linux
-> -- 
-> 2.31.0
-> 
