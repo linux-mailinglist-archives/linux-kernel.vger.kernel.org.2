@@ -2,89 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA0433FF70
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC81133FF6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhCRGPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhCRGPS (ORCPT
+        id S229637AbhCRGOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:14:00 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:33520 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhCRGNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:15:18 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD959C06174A;
-        Wed, 17 Mar 2021 23:15:17 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id a9so927248qkn.13;
-        Wed, 17 Mar 2021 23:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oGm7NDIPJjCsLFZ6tnghxBXyR6MEo70lHWJC6J/P594=;
-        b=a51vWDnzAGqhmGyVNrv+QHxOUVsCl7VhzWdgzJSgZi0JVESwW2RNjvCh3aMjBrvGTf
-         wzclHBzF9to7l86hHqhPGEbZeLC7OpObViVB/7q8AzgA9mkQLPywqj/Qt6u0jo3H2jpp
-         nAlNxmNmbDaGBtwbUIUSDdq7BNTbl6fat7vzWnoni8pyNdb+btcq34xkKa2U0ajFWjZI
-         KqNSrscJZ3aVunohQ2nD+szINEDbQxgrWzOLKEoOwz1il39xuhd63XeFAcEbsEpDq9ZF
-         Q7Zj0X5NSV9Xj7AAcnqfhvjQl4zdSUJ1RVSLzntGrCI7oEck59b1EOrTeH12Um4t95H8
-         O9nA==
+        Thu, 18 Mar 2021 02:13:50 -0400
+Received: by mail-lf1-f42.google.com with SMTP id m17so2710061lfg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 23:13:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oGm7NDIPJjCsLFZ6tnghxBXyR6MEo70lHWJC6J/P594=;
-        b=eM2UPUOOOelnZV6pCGXEzts8FatHomtVjzQoe1Z1Qr7LJJucvGHPwh6cKPphtLZKYx
-         zD78V4euaQ6HokYLS3C5RkUyrK8a7YpyOUf7g1XX4O1d3w4B/ZzNLG96KRw4LX7zRfEj
-         /DaiKNNprkR08qbyBCsEtOLgz66f3o2Ldqiu9yKIxCOYx/5a6T3uzXC6XuHmaioeDJUr
-         CoBOBw8p5Z4oBFnipy9XJrNfHHPCXphx+rLwGYmpzmuXNm/4+8WyrfCG2uXTHRp2eVGF
-         ZBcJYoTk4LCWFwsZ6qwW4WjBYhSdwWsLMpu223uPvnL3NlK4gPFmxnWsuK2Dk1bSz/YY
-         oS6Q==
-X-Gm-Message-State: AOAM5328bIBrV+LTI84LllkrevsqfoGASphd0izUUBy6a4wjdJ8s/bCJ
-        Tn/GiBvxO4Zls9UN3CipmZQ=
-X-Google-Smtp-Source: ABdhPJy56e0YJoP2SqJM/xh3/4dgFjsOBO48iD0obwi33OUyX1n5fvWyxSn0Ji7UGAJWu63MiUFXfA==
-X-Received: by 2002:a05:620a:641:: with SMTP id a1mr2788150qka.257.1616048117151;
-        Wed, 17 Mar 2021 23:15:17 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.26])
-        by smtp.gmail.com with ESMTPSA id 77sm1095932qko.48.2021.03.17.23.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 23:15:16 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     dvhart@infradead.org, andy@infradead.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        unixbhaskar@gmail.com, gregkh@linuxfoundation.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] x86/platform/intel-quark: Fix a typo
-Date:   Thu, 18 Mar 2021 11:42:51 +0530
-Message-Id: <20210318061250.8593-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eRpkqVfWMOikxM6ZwfLrrgVLEZOXSDhaDwqwMwZfRaI=;
+        b=bjzAYG0MtGPAjDOkV633E+Wo1a7S3YNWKHcycui1rqDDQH1blq8lQcOXFbYYWH5QUs
+         0I/d+uWSEZrW4izcjnS3qDI/bBKsWttdpfywQEQLwB2bzMbKfn9segiL9CL/d0vcGDf7
+         2UA0xLkz1wyCA1+V2EPC80aEv7BQqnMjqC52LSXbGxzCEG8xS2kHu5YD1ccomHkHiSMx
+         vE/+TOEKYlK0tWJUlQBzIETay1jIx6v+gXn0CdKtdtxDM/JkcMk0KSlGMpWSD7T6bLAM
+         uP7s13GczWjZCb3lUG0l9m0yfrGPprk8lDthWVPsr4J9YhqIkI8LWLFa1dT5Jm3YnxTN
+         LE8g==
+X-Gm-Message-State: AOAM530gUxq0YZ3omP+ZxAzvcYSqk6QNCUFVAHzBXxNBWS+pzyxiE0up
+        gOADh6uHjkBCS95UbZ3es0210AHNQ1VgPQ4xkGs=
+X-Google-Smtp-Source: ABdhPJylTJXZTj28IjLv96vmBT+dRYSmTgG+SZpd+VQZt8zyi3SSeainiino8vFtIyFkNLmfTzhafTUx1i14Q1AQiQQ=
+X-Received: by 2002:ac2:51b4:: with SMTP id f20mr1145697lfk.509.1616048028865;
+ Wed, 17 Mar 2021 23:13:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210317094409.94293-1-yangjihong1@huawei.com>
+In-Reply-To: <20210317094409.94293-1-yangjihong1@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 18 Mar 2021 15:13:37 +0900
+Message-ID: <CAM9d7cjg059U8rn+BDfFrPAQ8xBUaMRJWsdbpm8f2bMcvx7OiQ@mail.gmail.com>
+Subject: Re: [PATCH v6] perf annotate: Fix sample events lost in stdio mode
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, gustavoars@kernel.org,
+        mliska@suse.cz, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-s/secton/section/
+On Wed, Mar 17, 2021 at 6:44 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>
+> In hist__find_annotations function, since different hist_entry may point to same
+> symbol, we free notes->src to signal already processed this symbol in stdio mode;
+> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+>
+> However, there is a problem, for example, run the following command:
+>
+>  # perf record -e branch-misses -e branch-instructions -a sleep 1
+>
+> perf.data file contains different types of sample event.
+>
+> If the same IP sample event exists in branch-misses and branch-instructions,
+> this event uses the same symbol. When annotate branch-misses events, notes->src
+> corresponding to this event is set to null, as a result, when annotate
+> branch-instructions events, this event is skipped and no annotate is output.
+>
+> Solution of this patch is to remove zfree in hists__find_annotations and
+> change sort order to "dso,symbol" to avoid duplicate output when different
+> processes correspond to the same symbol.
+>
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>
+> Changes since v5:
+>   - Add Signed-off-by tag.
+>
+> Changes since v4:
+>   - Use the same sort key "dso,symbol" in branch stack mode.
+>
+> Changes since v3:
+>   - Modify the first line of comments.
+>
+> Changes since v2:
+>   - Remove zfree in hists__find_annotations.
+>   - Change sort order to avoid duplicate output.
+>
+> Changes since v1:
+>   - Change processed flag variable from u8 to bool.
+>
+>  tools/perf/builtin-annotate.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+> index a23ba6bb99b6..92c55f292c11 100644
+> --- a/tools/perf/builtin-annotate.c
+> +++ b/tools/perf/builtin-annotate.c
+> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
+>                 } else {
+>                         hist_entry__tty_annotate(he, evsel, ann);
+>                         nd = rb_next(nd);
+> -                       /*
+> -                        * Since we have a hist_entry per IP for the same
+> -                        * symbol, free he->ms.sym->src to signal we already
+> -                        * processed this symbol.
+> -                        */
+> -                       zfree(&notes->src->cycles_hist);
+> -                       zfree(&notes->src);
+>                 }
+>         }
+>  }
+> @@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
+>
+>         setup_browser(true);
+>
+> +       /*
+> +        * Events of different processes may correspond to the same
+> +        * symbol, we do not care about the processes in annotate,
+> +        * set sort order to avoid repeated output.
+> +        */
+> +       sort_order = "dso,symbol";
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/x86/platform/intel-quark/imr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+At this point, I think there's not much value having separate
+setup_sorting() for branch mode.
 
-diff --git a/arch/x86/platform/intel-quark/imr.c b/arch/x86/platform/intel-quark/imr.c
-index 0286fe1b14b5..122e0f37b1f5 100644
---- a/arch/x86/platform/intel-quark/imr.c
-+++ b/arch/x86/platform/intel-quark/imr.c
-@@ -551,7 +551,7 @@ static void __init imr_fixup_memmap(struct imr_device *idev)
+Thanks,
+Namhyung
 
- 	/*
- 	 * Setup an unlocked IMR around the physical extent of the kernel
--	 * from the beginning of the .text secton to the end of the
-+	 * from the beginning of the .text section to the end of the
- 	 * .rodata section as one physically contiguous block.
- 	 *
- 	 * We don't round up @size since it is already PAGE_SIZE aligned.
---
-2.20.1
 
+>         if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
+>                 sort__mode = SORT_MODE__BRANCH;
+>                 if (setup_sorting(annotate.session->evlist) < 0)
+> --
+> 2.30.GIT
+>
