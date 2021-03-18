@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21A6340FED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7756E340FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhCRVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
+        id S233070AbhCRVir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhCRVfJ (ORCPT
+        with ESMTP id S230368AbhCRVi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:35:09 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6F4C06174A;
-        Thu, 18 Mar 2021 14:35:09 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id y5so4405649pfn.1;
-        Thu, 18 Mar 2021 14:35:09 -0700 (PDT)
+        Thu, 18 Mar 2021 17:38:26 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7E4C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:38:24 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id z68so2365112vsb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:38:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dIPVYhV3hVZA8D2XxTSEoEFzInt6YKUX+tNCFq71mKQ=;
-        b=igUjxlwbspMZEAnTSWHxw7ibDL33VTt9WyW+mGBKVWFQb8QUwAiu5xk8oi940WT/XU
-         ZShpDvftOxi58Ii44TTxZ8F+rtHizXMasolvn+Gn57ypfXBn8LGZ2bekDgXVjDoTHJ/g
-         KwdYB7iM/HT0VqH25gLTQFNHoNpSeG/zpEtpUBq41Km1Q+P1qvxcgEr8wYZtwLpT6Zmz
-         WxIO0ij+a8pFoPQ8JguR38J4L16RH0R7U1gnA6OyMPf47z80L/2Sqn5bsFCweXCPh2kq
-         nzc5aaIqtpKpcbS+YaGkuEkgcr2VqVrPU0PrO3VDyNfWo3zhSOOD4pOpJtqKIk7E4buw
-         b1Kg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vLPqaFCjOxJqP96ilPAU1cPfZQuKxpOHXRuDS0s7Vr4=;
+        b=qKVpWtCjskEKfxSobzVob96NxKhzoHpA0zkVpey6v9nz5hqX4fwpWRs2r3Xv0LtQVY
+         G16K6pLlLiiOgiA9WlvBYuNv+dkBxVQoBMTZmRC3drafHcUHKnQM/tG/M+cxNlkBKFlD
+         6s0+yKEf1+/y0f7FoLfouj1leYGLXXX0BHvTCWQ+suw1xpi/HPjaWWJGI7rE5Zq4hjN+
+         KeG6ltSdPXps4+kFCWvGrU0ia0VmTHM2GBqcg/2BbR/sCeCZJbCtvjlsmF4re7pImMHk
+         IhFvMOnUBJEqxCQDOIJTiaQI5tXqy8l13Wdqav4qDmK3cuJjAHbGFKOiSQWrw4vDipzM
+         ux1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dIPVYhV3hVZA8D2XxTSEoEFzInt6YKUX+tNCFq71mKQ=;
-        b=B/e+LkLl7iMUDStMzPoE6kRQcFBH7zIVFmvXt5WNQ5r2d9c1oqB78zvoLreQst9eeF
-         bYoi8y9G8fqfK5Qr5pWnrJP9DyH3SGAS3LfSvsA0N1RmL++zJvGG7z8orcuybJ6k7W9E
-         dXGc05pzPsG3a16xKy8+MPaBDSrHfEsl2CQO1fq6GjEknlZAGogk+uB3g0OjAWyJo5Ko
-         pGszRmFy4fvn4SMmOsjo14+NZQiia3N1YaGJfObk5Jqc/FnQwCe38zHx7rYNly4HbnOd
-         Dqdy5WMTYzD7zPWIMgogK8tfgxqI0Xav2jqzJmtOyTr1umim4vs3wmdzmQqybohv3EkG
-         AZZw==
-X-Gm-Message-State: AOAM5316YqREkDKvTVIo+JQqWUUzow/oBBFcpMzy+G1kbxIJCvAQ4GRo
-        aITWqVN7knNhsE9qzdMi8NZ7zlfMvAg=
-X-Google-Smtp-Source: ABdhPJy+cB6zINbigEOzcQm4LIPY/iS34AUuj3HcnNiIV2hblg9/Bv33mmG37DzoZM85MlZzOUz8EQ==
-X-Received: by 2002:a63:1d4d:: with SMTP id d13mr8397879pgm.103.1616103308728;
-        Thu, 18 Mar 2021 14:35:08 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id gz12sm3262071pjb.33.2021.03.18.14.35.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 14:35:08 -0700 (PDT)
-Subject: Re: [PATCH net-next v3 2/4] net: ipa: use upper_32_bits()
-To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210318185930.891260-1-elder@linaro.org>
- <20210318185930.891260-3-elder@linaro.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e211d822-ff08-7a83-a0b2-d0be36c30222@gmail.com>
-Date:   Thu, 18 Mar 2021 14:35:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vLPqaFCjOxJqP96ilPAU1cPfZQuKxpOHXRuDS0s7Vr4=;
+        b=SdCf57nR1P0rBKPXXWKpOKJjZ5/p0NzLFH/jGxmUOGlzmkxnW739BSZsBi0ITGHmC+
+         nZ4Os3E31xNaM8nwzxJowQH1/pzTsvIusb7QhB5n2X8KnC7dfav6B6ixIyPdF9epm6x8
+         inZk6EctzWfSiM3AHoJbfvhj6AJxfEqVRaTkHCpOhxK0ZZihaFjZd4dqMadtzjMlMyFk
+         GFEc0LaFPlvRTnd8aFDA5xFgw+2lRjz7wq7KRXTmykjoAnRX6jj6iCcauYJTurBo25J1
+         hgE/+1WQTwdwyOg7MfLNeut09GZjtN0DZMUPx2axoC29R7MGM4TClyVL+UGefkuCeo5f
+         J07g==
+X-Gm-Message-State: AOAM532/JGpqWdPphUBiKmz+57qvKeC9Ep5nmHYnfejjk1gS0TMjCNva
+        7RGEAlbHOHoWB3yhB3UGTwDjjYg+silsdTRRgYyBpw==
+X-Google-Smtp-Source: ABdhPJyaMaWSU8mQS4gTjUoMCHt/hL7J7EWOKPoWt/RxfzbbDBNbfggOD5G6oZscrzSei7ViS8Oslpe0+7Gv7JZE5Pk=
+X-Received: by 2002:a67:2803:: with SMTP id o3mr1141643vso.36.1616103503542;
+ Thu, 18 Mar 2021 14:38:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210318185930.891260-3-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210318171111.706303-1-samitolvanen@google.com>
+ <20210318171111.706303-6-samitolvanen@google.com> <CAKwvOd=fWs6g2Bf2a_bA58_-uoWtVmNQnvrPxNhio4R5qGjcMQ@mail.gmail.com>
+In-Reply-To: <CAKwvOd=fWs6g2Bf2a_bA58_-uoWtVmNQnvrPxNhio4R5qGjcMQ@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 18 Mar 2021 14:38:12 -0700
+Message-ID: <CABCJKufa_-WSSYzHBSjZ+3i0DfvoGBox7Xa0PcE_Kuhf2rd07g@mail.gmail.com>
+Subject: Re: [PATCH v2 05/17] workqueue: use WARN_ON_FUNCTION_MISMATCH
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 11:50 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > With CONFIG_CFI_CLANG, a callback function passed to
+> > __queue_delayed_work from a module points to a jump table entry
+> > defined in the module instead of the one used in the core kernel,
+> > which breaks function address equality in this check:
+> >
+> >   WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
+> >
+> > Use WARN_ON_FUNCTION_MISMATCH() instead to disable the warning
+> > when CFI and modules are both enabled.
+>
+> Does __cficanonical help with such comparisons? Or would that be a
+> very invasive change, if the concern was to try to keep these checks
+> in place for CONFIG_CFI_CLANG?
 
+The last time I checked, Clang ignored the __cficanonical attribute in
+header files, which means it would still generate a local jump table
+entry in each module for such functions, and the comparison here would
+fail. We could avoid the issue by using __cficanonical for the
+callback function *and* using __va_function() when we take the
+function address in modules, but that feels way too invasive for this
+particular use case.
 
-On 3/18/2021 11:59 AM, Alex Elder wrote:
-> Use upper_32_bits() to extract the high-order 32 bits of a DMA
-> address.  This avoids doing a 32-position shift on a DMA address
-> if it happens not to be 64 bits wide.  Use lower_32_bits() to
-> extract the low-order 32 bits (because that's what it's for).
-> 
-> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Alex Elder <elder@linaro.org>
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Sami
