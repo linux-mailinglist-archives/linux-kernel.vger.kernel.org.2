@@ -2,205 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370AE340FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D80340FE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbhCRVcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:32:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:4113 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233071AbhCRVbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:31:47 -0400
-IronPort-SDR: zEHuzIgF6oUT6h630MbERdM7iX6GzeweGiGzSfW8HdzPy0sW6SNjqAUWI74lXtwF3uWMiYk0g7
- aZVD8yeKQl2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="169070337"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="169070337"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 14:31:41 -0700
-IronPort-SDR: irHgnJv6SaRqQqkHEZ/wWzbY0Me28eiJh7BjQ4/PcrEVhzsuknNyksIYxNnA0NfSOx7hDSLbGt
- YAhbpTbPubCA==
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="374715425"
-Received: from mrasekh-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.191.94])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 14:31:39 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [PATCH v1 1/1] x86/tdx: Add tdcall() and tdvmcall() helper functions
-Date:   Thu, 18 Mar 2021 14:30:53 -0700
-Message-Id: <20210318213053.203403-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
-References: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
+        id S233266AbhCRVbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233257AbhCRVbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:31:25 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B637C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:31:25 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id v2so2363080vsq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tdIaU5y5aj4CvY8gHTbhPiKBxK+0c5ivS4PVgMAZKZ8=;
+        b=VQHQ/IJvAGsBh7hccszXuTdFbZijYzXgXzXCIzA2a7dJpcH6fMreeEP4JQX8vzYKQw
+         17gzUL7p9HLsJm+wzC+7kwxysSLLUOFU16pfSruy8k6oojzW6uUwDEqIIQ26n833XpIJ
+         nRIT5osS4S0zWgKG08L3MvJDPQXbeiXJD6WWF5WIFCRxvrdTy84dUo63hUjFPxVpT7Qy
+         r5rNK69CITHSj/xGsPVpV9x9ROfn6UB5BwpBhGwl6SCSaK4S3ZvoQ6/MX7DPhBlfODxu
+         KDDy3/ne6shrgGrU4yEniwtyCra85G6v6KXM3roh3xjBdCjKrCkGBpOWV+Hs3zFkXA+U
+         WlEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tdIaU5y5aj4CvY8gHTbhPiKBxK+0c5ivS4PVgMAZKZ8=;
+        b=VKmRd8L60l0yWb4VZQvCtJBefukiRGTwPCJ8A2n9Lh0fkApjc89dErOGfEc7G/w5RI
+         rERLYMCaawiCng4+AWiGxrc0cyR76NET6ng2b5X++5f7ew+68jMb3ckCWk2bf77gl/o+
+         Ia10srUiT69rcszfBeRs/AFvzf9NKKl7Z1QrPSU+FRMvdPMO7GGnYuLZ3QXLtD7mfk6B
+         i7LeOF4oMukDz1qi7/3AEfDeboTiMV9S2d7BZsrTfS4K6zFDifc/D9yK+IwlgvvcJ3hK
+         RpFESHs/4vZ9BipzIebYTLMYI1nOnEx/kXmpeFsOHCSs6kteM8uLeEYmnYsRfhsTt6ox
+         WRhw==
+X-Gm-Message-State: AOAM530+tXhwxJUk4Y0cF2juLkWr+kpBZlAzAzZ91DnD2zagT4ELiktM
+        SAIQZdrWWXqBsFGCZeCRBVA4knSuMTJOPdT8uqANWg==
+X-Google-Smtp-Source: ABdhPJxlimnSXWyxeVH26Hx7MVzsZM1C2wpNoVlO6BH9QnMVU1txUFQEowbO9H2O2Syt3coKLcU+m/27jcEX/CvNAbI=
+X-Received: by 2002:a67:2803:: with SMTP id o3mr1129222vso.36.1616103083753;
+ Thu, 18 Mar 2021 14:31:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210318171111.706303-1-samitolvanen@google.com>
+ <20210318171111.706303-10-samitolvanen@google.com> <CAKwvOdn1mkq1GL0nobyvpiAHMzA6rmvmdd_UfauO9YLs5rUAVw@mail.gmail.com>
+In-Reply-To: <CAKwvOdn1mkq1GL0nobyvpiAHMzA6rmvmdd_UfauO9YLs5rUAVw@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 18 Mar 2021 14:31:11 -0700
+Message-ID: <CABCJKucamBXi4LLLatcjHUOfPX7Pb8NO9Q19mGMX-PLhzCjF3A@mail.gmail.com>
+Subject: Re: [PATCH v2 09/17] lib/list_sort: fix function type mismatches
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement common helper functions to communicate with
-the TDX Module and VMM (using TDCALL instruction).
+On Thu, Mar 18, 2021 at 11:31 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > Casting the comparison function to a different type trips indirect
+> > call Control-Flow Integrity (CFI) checking. Remove the additional
+> > consts from cmp_func, and the now unneeded casts.
+> >
+> > Fixes: 043b3f7b6388 ("lib/list_sort: simplify and remove MAX_LIST_LENGTH_BITS")
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  lib/list_sort.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/lib/list_sort.c b/lib/list_sort.c
+> > index 52f0c258c895..b14accf4ef83 100644
+> > --- a/lib/list_sort.c
+> > +++ b/lib/list_sort.c
+> > @@ -8,7 +8,7 @@
+> >  #include <linux/list.h>
+> >
+> >  typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+> > -               struct list_head const *, struct list_head const *);
+> > +               struct list_head *, struct list_head *);
+> >
+> >  /*
+> >   * Returns a list organized in an intermediate format suited
+> > @@ -227,7 +227,7 @@ void list_sort(void *priv, struct list_head *head,
+>
+> There's definitely some const confusion going on around here.
+> Comparison functions that modify their in/out parameters are a code
+> smell, and I wonder if any exist in tree?
+>
+> I think it would be better to enforce one signature for cmp_func
+> throughout lib/list_sort.c and the tree, either const or not, but not
+> a mix of both.  I know `const` is messy because it tends to propagate
+> everywhere, so I don't care which is preferred (making cmp_func have
+> const qualified params or not, though if we're already being pedantic
+> about which params are non-null...), but something like this might be
+> nicer:
 
-tdvmcall() function can be used to request services
-from VMM.
+Sure, an alternative to removing the internal casts is to actually
+change all the callers to use a comparison function with const
+parameters. That's quite a bit more invasive, but I'm fine with that
+approach too.
 
-tdcall() function can be used to communicate with the
-TDX Module.
+>
+> ```
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index 5132f64a5cee..d475b3cfd06f 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -75,7 +75,8 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+>         blk_mq_run_hw_queue(hctx, true);
+>  }
+>
+> -static int sched_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
+> +static int sched_rq_cmp(void *priv, const struct list_head *a,
+> +               const struct list_head *b)
+>  {
+>         struct request *rqa = container_of(a, struct request, queuelist);
+>         struct request *rqb = container_of(b, struct request, queuelist);
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 2e825a7a3606..9ed063ffdb27 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -1905,7 +1905,8 @@ void blk_mq_insert_requests(struct blk_mq_hw_ctx
+> *hctx, struct blk_mq_ctx *ctx,
+>         spin_unlock(&ctx->lock);
+>  }
+>
+> -static int plug_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
+> +static int plug_rq_cmp(void *priv, const struct list_head *a,
+> +               const struct list_head *b)
+>  {
+>         struct request *rqa = container_of(a, struct request, queuelist);
+>         struct request *rqb = container_of(b, struct request, queuelist);
+> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+> index 1ac67d4505e0..5a3a343499f6 100644
+> --- a/drivers/gpu/drm/drm_modes.c
+> +++ b/drivers/gpu/drm/drm_modes.c
+> @@ -1290,7 +1290,8 @@ EXPORT_SYMBOL(drm_mode_prune_invalid);
+>   * Negative if @lh_a is better than @lh_b, zero if they're equivalent, or
+>   * positive if @lh_b is better than @lh_a.
+>   */
+> -static int drm_mode_compare(void *priv, struct list_head *lh_a,
+> struct list_head *lh_b)
+> +static int drm_mode_compare(void *priv, const struct list_head *lh_a,
+> +               const struct list_head *lh_b)
+>  {
+>         struct drm_display_mode *a = list_entry(lh_a, struct
+> drm_display_mode, head);
+>         struct drm_display_mode *b = list_entry(lh_b, struct
+> drm_display_mode, head);
+> diff --git a/drivers/gpu/drm/i915/gt/intel_engine_user.c
+> b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+> index 34e6096f196e..7586dffd27d3 100644
+> --- a/drivers/gpu/drm/i915/gt/intel_engine_user.c
+> +++ b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+> @@ -49,7 +49,8 @@ static const u8 uabi_classes[] = {
+>         [VIDEO_ENHANCEMENT_CLASS] = I915_ENGINE_CLASS_VIDEO_ENHANCE,
+>  };
+>
+> -static int engine_cmp(void *priv, struct list_head *A, struct list_head *B)
+> +static int engine_cmp(void *priv, const struct list_head *A,
+> +               const struct list_head *B)
+>  {
+>         const struct intel_engine_cs *a =
+>                 container_of((struct rb_node *)A, typeof(*a), uabi_node);
+> diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+> index 4c2a9fe30067..4493ef0c715e 100644
+> --- a/fs/ext4/fsmap.c
+> +++ b/fs/ext4/fsmap.c
+> @@ -354,8 +354,8 @@ static unsigned int ext4_getfsmap_find_sb(struct
+> super_block *sb,
+>
+>  /* Compare two fsmap items. */
+>  static int ext4_getfsmap_compare(void *priv,
+> -                                struct list_head *a,
+> -                                struct list_head *b)
+> +                                const struct list_head *a,
+> +                                const struct list_head *b)
+>  {
+>         struct ext4_fsmap *fa;
+>         struct ext4_fsmap *fb;
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 414769a6ad11..0129e6bab985 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -1155,7 +1155,8 @@ iomap_ioend_try_merge(struct iomap_ioend *ioend,
+> struct list_head *more_ioends,
+>  EXPORT_SYMBOL_GPL(iomap_ioend_try_merge);
+>
+>  static int
+> -iomap_ioend_compare(void *priv, struct list_head *a, struct list_head *b)
+> +iomap_ioend_compare(void *priv, const struct list_head *a,
+> +               const struct list_head *b)
+>  {
+>         struct iomap_ioend *ia = container_of(a, struct iomap_ioend, io_list);
+>         struct iomap_ioend *ib = container_of(b, struct iomap_ioend, io_list);
+> diff --git a/include/linux/list_sort.h b/include/linux/list_sort.h
+> index 20f178c24e9d..4fe9cb94d0d1 100644
+> --- a/include/linux/list_sort.h
+> +++ b/include/linux/list_sort.h
+> @@ -6,8 +6,9 @@
+>
+>  struct list_head;
+>
+> +typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+> +               struct list_head const *, struct list_head const *);
+> +
 
-Using common helper functions makes the code more readable
-and less error prone compared to distributed and use case
-specific inline assembly code. Only downside in using this
-approach is, it adds a few extra instructions for every
-TDCALL use case when compared to distributed checks. Although
-it's a bit less efficient, it's worth it to make the code more
-readable.
+Note that we already have cmp_func_t in linux/types.h, so something
+like list_cmp_func_t would probably be more appropriate here.
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
+>  __attribute__((nonnull(2,3)))
+> -void list_sort(void *priv, struct list_head *head,
+> -              int (*cmp)(void *priv, struct list_head *a,
+> -                         struct list_head *b));
+> +void list_sort(void *priv, struct list_head *head, cmp_func cmp);
+>  #endif
+> diff --git a/lib/list_sort.c b/lib/list_sort.c
+> index 52f0c258c895..6cfac649c4a6 100644
+> --- a/lib/list_sort.c
+> +++ b/lib/list_sort.c
+> @@ -7,9 +7,6 @@
+>  #include <linux/list_sort.h>
+>  #include <linux/list.h>
+>
+> -typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+> -               struct list_head const *, struct list_head const *);
+> -
+>  /*
+>   * Returns a list organized in an intermediate format suited
+>   * to chaining of merge() calls: null-terminated, no reserved or
+> @@ -185,9 +182,7 @@ static void merge_final(void *priv, cmp_func cmp,
+> struct list_head *head,
+>   * 2^(k+1) - 1 (second merge of case 5 when x == 2^(k-1) - 1).
+>   */
+>  __attribute__((nonnull(2,3)))
+> -void list_sort(void *priv, struct list_head *head,
+> -               int (*cmp)(void *priv, struct list_head *a,
+> -                       struct list_head *b))
+> +void list_sort(void *priv, struct list_head *head, cmp_func cmp)
+>  {
+>         struct list_head *list = head->next, *pending = NULL;
+>         size_t count = 0;       /* Count of pending */
+> ```
+> There are probably more instances in the tree to clean up, but that
+> compiles with x86_64 defconfig, and I'm sure it doesn't suffer the CFI
+> issue from the cast.
 
-Hi All,
+You indeed missed some callers, but after fixing all the remaining
+ones too, arm64 and x86_64 allyesconfigs still seem to build just fine
+for me:
 
-As you have suggested, I have created common helper functions
-for all tdcall() and tdvmcall() use cases. It uses inline
-assembly and passes GPRs R8-15 and r[a-c]x registers to TDX
-Module/VMM. Please take a look at it and let me know your
-comments. If you agree with the design, I can re-submit the
-patchset with changes related to using these new APIs. Please
-let me know.
+ arch/arm64/kvm/vgic/vgic-its.c                         |    8 ++++----
+ arch/arm64/kvm/vgic/vgic.c                             |    2 +-
+ block/blk-mq-sched.c                                   |    2 +-
+ block/blk-mq.c                                         |    2 +-
+ drivers/acpi/nfit/core.c                               |    2 +-
+ drivers/acpi/numa/hmat.c                               |    2 +-
+ drivers/clk/keystone/sci-clk.c                         |    4 ++--
+ drivers/gpu/drm/drm_modes.c                            |    2 +-
+ drivers/gpu/drm/i915/gt/intel_engine_user.c            |    2 +-
+ drivers/gpu/drm/i915/gvt/debugfs.c                     |    2 +-
+ drivers/gpu/drm/i915/selftests/i915_gem_gtt.c          |    2 +-
+ drivers/gpu/drm/radeon/radeon_cs.c                     |    4 ++--
+ drivers/infiniband/hw/usnic/usnic_uiom_interval_tree.c |    2 +-
+ drivers/interconnect/qcom/bcm-voter.c                  |    2 +-
+ drivers/md/raid5.c                                     |    2 +-
+ drivers/misc/sram.c                                    |    4 ++--
+ drivers/nvme/host/core.c                               |    2 +-
+ drivers/pci/controller/cadence/pcie-cadence-host.c     |    3 ++-
+ drivers/spi/spi-loopback-test.c                        |    2 +-
+ fs/btrfs/raid56.c                                      |    2 +-
+ fs/btrfs/tree-log.c                                    |    2 +-
+ fs/btrfs/volumes.c                                     |    2 +-
+ fs/ext4/fsmap.c                                        |    4 ++--
+ fs/gfs2/glock.c                                        |    2 +-
+ fs/gfs2/log.c                                          |    2 +-
+ fs/gfs2/lops.c                                         |    2 +-
+ fs/iomap/buffered-io.c                                 |    2 +-
+ fs/ubifs/gc.c                                          |    6 +++---
+ fs/ubifs/replay.c                                      |    4 ++--
+ fs/xfs/scrub/bitmap.c                                  |    4 ++--
+ fs/xfs/xfs_bmap_item.c                                 |    4 ++--
+ fs/xfs/xfs_buf.c                                       |    4 ++--
+ fs/xfs/xfs_extent_busy.c                               |    4 ++--
+ fs/xfs/xfs_extent_busy.h                               |    2 +-
+ fs/xfs/xfs_extfree_item.c                              |    4 ++--
+ fs/xfs/xfs_refcount_item.c                             |    4 ++--
+ fs/xfs/xfs_rmap_item.c                                 |    4 ++--
+ include/linux/list_sort.h                              |    7 ++++---
+ lib/list_sort.c                                        |   17 ++++++-----------
+ lib/test_list_sort.c                                   |    2 +-
+ net/tipc/name_table.c                                  |    4 ++--
+ 41 files changed, 68 insertions(+), 71 deletions(-)
 
- arch/x86/include/asm/tdx.h | 27 ++++++++++++++++++++
- arch/x86/kernel/tdx.c      | 52 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+I'll have to double check that all the affected code is actually
+included in these builds, but if nobody objects and I don't run into
+any issues, I'll include the patch in v3.
 
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 0b9d571b1f95..311252a90cfb 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -3,8 +3,27 @@
- #ifndef _ASM_X86_TDX_H
- #define _ASM_X86_TDX_H
- 
-+#include <linux/types.h>
-+
- #define TDX_CPUID_LEAF_ID	0x21
- 
-+#define TDVMCALL		0
-+
-+/* TDVMCALL R10 Input */
-+#define TDVMCALL_STANDARD	0
-+
-+/*
-+ * TDCALL instruction is newly added in TDX architecture,
-+ * used by TD for requesting the host VMM to provide
-+ * (untrusted) services. Supported in Binutils >= 2.36
-+ */
-+#define TDCALL	".byte 0x66,0x0f,0x01,0xcc"
-+
-+struct tdcall_regs {
-+	u64 rax, rcx, rdx;
-+	u64 r8, r9, r10, r11, r12, r13, r14, r15;
-+};
-+
- #ifdef CONFIG_INTEL_TDX_GUEST
- 
- /* Common API to check TDX support in decompression and common kernel code. */
-@@ -12,6 +31,10 @@ bool is_tdx_guest(void);
- 
- void __init tdx_early_init(void);
- 
-+void tdcall(u64 leafid, struct tdcall_regs *regs);
-+
-+void tdvmcall(u64 subid, struct tdcall_regs *regs);
-+
- #else // !CONFIG_INTEL_TDX_GUEST
- 
- static inline bool is_tdx_guest(void)
-@@ -21,6 +44,10 @@ static inline bool is_tdx_guest(void)
- 
- static inline void tdx_early_init(void) { };
- 
-+static inline void tdcall(u64 leafid, struct tdcall_regs *regs) { };
-+
-+static inline void tdvmcall(u64 subid, struct tdcall_regs *regs) { };
-+
- #endif /* CONFIG_INTEL_TDX_GUEST */
- 
- #endif /* _ASM_X86_TDX_H */
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index e44e55d1e519..7ae1d25e272b 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -4,6 +4,58 @@
- #include <asm/tdx.h>
- #include <asm/cpufeature.h>
- 
-+void tdcall(u64 leafid, struct tdcall_regs *regs)
-+{
-+	asm volatile(
-+			/* RAX = leafid (TDCALL LEAF ID) */
-+			"  movq %0, %%rax;"
-+			/* Move regs->r[*] data to regs r[a-c]x,  r8-r5 */
-+			"  movq 8(%1), %%rcx;"
-+			"  movq 16(%1), %%rdx;"
-+			"  movq 24(%1), %%r8;"
-+			"  movq 32(%1), %%r9;"
-+			"  movq 40(%1), %%r10;"
-+			"  movq 48(%1), %%r11;"
-+			"  movq 56(%1), %%r12;"
-+			"  movq 64(%1), %%r13;"
-+			"  movq 72(%1), %%r14;"
-+			"  movq 80(%1), %%r15;"
-+			TDCALL ";"
-+			/* Save TDCALL success/failure to regs->rax */
-+			"  movq %%rax, (%1);"
-+			/* Save rcx and rdx contents to regs->r[c-d]x */
-+			"  movq %%rcx, 8(%1);"
-+			"  movq %%rdx, 16(%1);"
-+			/* Move content of registers R8-R15 regs->r[8-15] */
-+			"  movq %%r8, 24(%1);"
-+			"  movq %%r9, 32(%1);"
-+			"  movq %%r10, 40(%1);"
-+			"  movq %%r11, 48(%1);"
-+			"  movq %%r12, 56(%1);"
-+			"  movq %%r13, 64(%1);"
-+			"  movq %%r14, 72(%1);"
-+			"  movq %%r15, 80(%1);"
-+
-+		:
-+		: "r" (leafid), "r" (regs)
-+		: "memory", "rax", "rbx", "rcx", "rdx", "r8",
-+		  "r9", "r10", "r11", "r12", "r13", "r14", "r15"
-+		);
-+
-+}
-+
-+void tdvmcall(u64 subid, struct tdcall_regs *regs)
-+{
-+	/* Expose GPRs R8-R15 to VMM */
-+	regs->rcx = 0xff00;
-+	/* R10 = 0 (standard TDVMCALL) */
-+	regs->r10 = TDVMCALL_STANDARD;
-+	/* Save subid to r11 register */
-+	regs->r11 = subid;
-+
-+	tdcall(TDVMCALL, regs);
-+}
-+
- static inline bool cpuid_has_tdx_guest(void)
- {
- 	u32 eax, signature[3];
--- 
-2.25.1
-
+Sami
