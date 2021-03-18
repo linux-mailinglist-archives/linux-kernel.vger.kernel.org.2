@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586A934008D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0B6340093
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhCRIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:00:24 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:59005 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhCRIAS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:00:18 -0400
-Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MnJZ4-1m64Ua403A-00jJeq; Thu, 18 Mar 2021 09:00:13 +0100
-Subject: Re: [RFC PATCH 07/12] gpio: amd-fch: add oftree probing support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-8-info@metux.net>
- <CACRpkdb5R+VQrv0QuKa+EYmAMkodRpyv4fV1QCWQ+vcEyd0sZQ@mail.gmail.com>
- <acae5f9a-1cc8-46e1-2b3b-c806679ef062@metux.net>
- <CAHp75VeWW__18hwK+-uEibpzLpehD4h=QCnTbKOc-2GbkMB0TA@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <7b515409-1315-acd4-688a-c0eb4958d505@metux.net>
-Date:   Thu, 18 Mar 2021 09:00:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229745AbhCRICb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:02:31 -0400
+Received: from m12-13.163.com ([220.181.12.13]:35548 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhCRICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:02:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=V02Pq
+        ZVID06iZ/hC95FGGMwLgBVeFFRBupktkBJQcf8=; b=HsQsyituT4UvTm794JE1F
+        zoQPsg9SAlLbIWWPOkpbBsq3Q12XvVd+YuJS4n1l4oJvh/Q7OplpY/DqlVA9Z08j
+        nJqJmTtCi+TQM5mLBk3eDLjPpVkKkc/4sK5Yyiq1ZxvnlsVZBbgE5bo26WbWjZm6
+        HqQkft7l+iJMc0NKcfkZ10=
+Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
+        by smtp9 (Coremail) with SMTP id DcCowAD3fY6zzFJgkcUlBw--.22258S2;
+        Thu, 18 Mar 2021 11:44:59 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     dmitry.torokhov@gmail.com, wangxiongfeng2@huawei.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tangchunyou@yulong.com
+Subject: [PATCH] drivers/input/mouse:modify mutex_lock before mutex_unlock
+Date:   Thu, 18 Mar 2021 11:44:48 +0800
+Message-Id: <20210318034448.616-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeWW__18hwK+-uEibpzLpehD4h=QCnTbKOc-2GbkMB0TA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:k1ORnNLGmMzbZFeU6W++jyO+qaqeSbOoCX5rjB33Zgmcri/MTh1
- fQNlBQ2KvlOs8Lq4J5O6ObQC/OYEOSBbHJD/UjkDOgwpwcJKS2+0K2+q6MSPsKx9IraPl/f
- X99dcUHyKuEn2vosRJj7MkNQgc6E+nzGT/Al+H+NCpqrZRfCRdbCc7eb756eBD2wD0l40Ex
- uoYmG1Ubo4VQckV34peAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FWxON7wiLFg=:4r66Jz+W2b6AOUHr6laiHa
- ROfNcQe/h6SseyoCc713QWOKgFO6SeM5rTTlpQG0ob/UFkozV6NKMSfWhFnXwlw1lyNNpPFsE
- afhh/r0vdto+XWqMaBquW66rcc6/9jzKuu5bIQM1WzoBb16zmx3Z9Ws6Uuc22RVWhZPjjT1xG
- 9s58mVDLtYj+tOAEldlMlnyPxv7uYkPlc1BAQKeMFBwTy4OSeVJQqyLm9igra76NOSY9QCUvk
- +ttDb8DIVgOc+OFMuAuhQ8bo75ChN6EMG7J/BF8bJOCeDDJtuDteenpWpuzlPFgM/ejgaZnzS
- Bpk/GOFfvaaAR5ENW9cMogY1tKaUCirHiZal3Ykx0v2DjrbYZmHWW2qDrtcddZSCzEIyMIB7E
- siTsHOXTWPdty+jSmq54JBy4CNTIZqp3FHKqjY4mfrDWtViFiz2d+gSE67GWn
+X-CM-TRANSID: DcCowAD3fY6zzFJgkcUlBw--.22258S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur4DKw4rAF4xWryxGry5CFg_yoWfGwb_ur
+        yfWFn7Xw4F9wn0vwnrCrnxZrZYy3Za9ry8ua1Fvr45Jw1UAFnxXw1DZFn7Ar48Wr1xuwn8
+        Kr9xCryfAF1jgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8pVbDUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiThtZUVUDIQT9AAAAsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.03.21 11:42, Andy Shevchenko wrote:
+From: tangchunyou <tangchunyou@yulong.com>
 
-Hi,
+mutex_lock should before mutex_unlock
 
-> You are a bit late. We have built-in device properties (and
-> corresponding API, which recently becomes swnode) which aims exactly
-> this.
+Signed-off-by: tangchunyou <tangchunyou@yulong.com>
+---
+ drivers/input/mouse/psmouse-base.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Is there some compact notation for swnode's that's as small and simple
-as some piece of DTS ?
-
-My reasons for choosing built-in dtb have been:
-
-* it's a very small and compact notation for describing devices
-* no more open-coded registrations, etc
-* no more need for board drivers (except for the little piece of DT)
-
-
---mtx
-
+diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
+index 0b4a303..d01798c 100644
+--- a/drivers/input/mouse/psmouse-base.c
++++ b/drivers/input/mouse/psmouse-base.c
+@@ -1923,9 +1923,9 @@ static ssize_t psmouse_attr_set_protocol(struct psmouse *psmouse, void *data, co
+ 			return -EIO;
+ 		}
+ 
+-		mutex_unlock(&psmouse_mutex);
+-		serio_unregister_child_port(serio);
+ 		mutex_lock(&psmouse_mutex);
++		serio_unregister_child_port(serio);
++		mutex_unlock(&psmouse_mutex);
+ 
+ 		if (serio->drv != &psmouse_drv) {
+ 			input_free_device(new_dev);
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+1.9.1
+
+
