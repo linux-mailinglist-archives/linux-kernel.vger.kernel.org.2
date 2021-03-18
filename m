@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853BD340C89
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96E8340C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhCRSKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRSKp (ORCPT
+        id S230365AbhCRSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:11:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27967 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232426AbhCRSLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:10:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57F4C06174A;
-        Thu, 18 Mar 2021 11:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=VpBVHEHjT9Gn8HLTeG3OWujXi0ViVeHzxP9bjFBnQQo=; b=Mbevz6wwP8YcVaAWZYp9yt4OYl
-        +0eC0M9P7IddC9+MkZCAJIoQTfbeb2eQYebx5ht2ZmXdliNKEUl/eOl/mQYjzh1uQCR8ciuyg+6Pu
-        e2UBRCnHfwmW0teD5Q6Nch43yUylbtZ82Fa0bT8bEKH8aa/CAOepq5fLUvvO8ckkcSn6oDhBp7kiG
-        qR/sbQBLj3rrbyFSg7u+ns5oq3Wq8J6Mwy0AdgeJMIT4lsqFryyy0aKKUUzX1buibJUYLlXk5Qc6l
-        QRT05zRHo2gkyq5Ubp0Ci7p15ChIn54y1LDDDBX+KfOkQLc0Hrg7zTN6bJ2qO4oip+NfaeIc0W6Kc
-        s528fZUg==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMx6I-003Kat-UF; Thu, 18 Mar 2021 18:10:34 +0000
-Subject: Re: [PATCH] PM: devfreq: Couple of typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, cw00.choi@samsung.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210318112025.22755-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <46a5ce65-c5c9-8d1e-9bc1-12ff56c28186@infradead.org>
-Date:   Thu, 18 Mar 2021 11:10:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 14:11:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616091104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=WP7PnNSr4BR9a1LVBwXMPx5QETfjMgS7zmkwK2xedWo=;
+        b=I8OYBoZwrmUp9CTho80ScBkAyz37tj1zcvOzLTDldquIZev9LYH0IJnS04jg58SK5wHBXR
+        +wDbfiRKoUTCqRpRDb1NOFjYw1NBf3VbRrHVlxEtrkNcOSA1pwvPHdCwyUaAFmt88udbyi
+        MWhGIqhVIjlieS3b42PBKFnye6pm1/M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-f_KcFLJSOiCY3Bj4wEVcYg-1; Thu, 18 Mar 2021 14:11:42 -0400
+X-MC-Unique: f_KcFLJSOiCY3Bj4wEVcYg-1
+Received: by mail-wr1-f71.google.com with SMTP id 9so4911701wrb.16
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:11:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WP7PnNSr4BR9a1LVBwXMPx5QETfjMgS7zmkwK2xedWo=;
+        b=AjL4FrAMX2kG82ZWyttEpws9LcvmY++duGh1mQ1r8x4PW1NUb2Zy2Csq9GTouCfiuH
+         4HX9Vpcf2gAd0Mo/CERRnHL+RNg+7UhH+tX30WbHlPlrYRMDUYP5obEibahKUrt8g/qL
+         Gn2UVTvXDeRwR7QszxhrOWibw3AY1Pa3Uqcl6RY3JiW7FfCz0AaXuqVMpAd8MQCOuq8S
+         oWBTwYtxNHqb7459Zc/Gmq5mHaa+OEU9BX5rb5rE9y6FmlCnDYxUwVEsTJxz+IUwnOke
+         /SXnZfTQdLexFZyai6+V3K0PS7kDZ5wxrtrcJv24sVCZBdXN2sedF/FSrZBbsbv0/ORe
+         UovA==
+X-Gm-Message-State: AOAM533kNWhwCY2OxIl3Uuh//lvCRoTsLUDOWIELeECsYGKGKI0PAIoO
+        3q9Qgm5XtV0PmboskQAVVFLYKiYfWj4QDvlYVmh3Zj/iTfOyw+RSJ/1lUFK7y9XCo2nSnqPBltN
+        b8eWvTVxiwcL01sICn+Dn2q5U
+X-Received: by 2002:a5d:6810:: with SMTP id w16mr510497wru.333.1616091099218;
+        Thu, 18 Mar 2021 11:11:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFTfjChgFyUXnBDg4awB1ZFX0fIcyN9S9XgyGks/aa0h+c9tuWlTuolWTJOqxYehca3p6+ug==
+X-Received: by 2002:a5d:6810:: with SMTP id w16mr510479wru.333.1616091099081;
+        Thu, 18 Mar 2021 11:11:39 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id s8sm3686155wrn.97.2021.03.18.11.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 11:11:38 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 14:11:35 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gdawar.xilinx@gmail.com, jasowang@redhat.com,
+        lingshan.zhu@intel.com, lvivier@redhat.com, mst@redhat.com,
+        parav@nvidia.com, sgarzare@redhat.com, stable@vger.kernel.org,
+        tangbin@cmss.chinamobile.com, xianting_tian@126.com
+Subject: [GIT PULL] vhost: cleanups and fixes
+Message-ID: <20210318141135-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210318112025.22755-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 4:20 AM, Bhaskar Chowdhury wrote:
-> 
-> s/stoping/stopping/
-> s/opeations/operations/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+The following changes since commit 16c10bede8b3d8594279752bf53153491f3f944f:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+  virtio-input: add multi-touch support (2021-02-23 07:52:59 -0500)
 
-> ---
->  drivers/devfreq/devfreq-event.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/devfreq/devfreq-event.c b/drivers/devfreq/devfreq-event.c
-> index 6765c03334bc..2f841d7d9d8d 100644
-> --- a/drivers/devfreq/devfreq-event.c
-> +++ b/drivers/devfreq/devfreq-event.c
-> @@ -155,7 +155,7 @@ EXPORT_SYMBOL_GPL(devfreq_event_set_event);
->   * @edata	: the calculated data of devfreq-event device
->   *
->   * Note that this function get the calculated event data from devfreq-event dev
-> - * after stoping the progress of whole sequence of devfreq-event dev.
-> + * after stopping the progress of whole sequence of devfreq-event dev.
->   */
->  int devfreq_event_get_event(struct devfreq_event_dev *edev,
->  			    struct devfreq_event_data *edata)
-> @@ -184,7 +184,7 @@ int devfreq_event_get_event(struct devfreq_event_dev *edev,
->  EXPORT_SYMBOL_GPL(devfreq_event_get_event);
-> 
->  /**
-> - * devfreq_event_reset_event() - Reset all opeations of devfreq-event dev.
-> + * devfreq_event_reset_event() - Reset all operations of devfreq-event dev.
->   * @edev	: the devfreq-event device
->   *
->   * Note that this function stop all operations of devfreq-event dev and reset
-> --
-> 2.26.2
-> 
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
--- 
-~Randy
+for you to fetch changes up to 0bde59c1723a29e294765c96dbe5c7fb639c2f96:
+
+  vhost-vdpa: set v->config_ctx to NULL if eventfd_ctx_fdget() fails (2021-03-14 18:10:07 -0400)
+
+----------------------------------------------------------------
+virtio: fixes, cleanups
+
+Some fixes and cleanups all over the place.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Gautam Dawar (1):
+      vhost_vdpa: fix the missing irq_bypass_unregister_producer() invocation
+
+Jason Wang (1):
+      vdpa: set the virtqueue num during register
+
+Laurent Vivier (1):
+      vhost: Fix vhost_vq_reset()
+
+Parav Pandit (1):
+      vdpa_sim: Skip typecasting from void*
+
+Stefano Garzarella (2):
+      vhost-vdpa: fix use-after-free of v->config_ctx
+      vhost-vdpa: set v->config_ctx to NULL if eventfd_ctx_fdget() fails
+
+Tang Bin (1):
+      virtio-mmio: Use to_virtio_mmio_device() to simply code
+
+Xianting Tian (1):
+      virtio: remove export for virtio_config_{enable, disable}
+
+ drivers/vdpa/ifcvf/ifcvf_main.c      |  5 ++---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c    |  4 ++--
+ drivers/vdpa/vdpa.c                  | 18 ++++++++++--------
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     |  2 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  5 ++---
+ drivers/vhost/vdpa.c                 | 20 +++++++++++---------
+ drivers/vhost/vhost.c                |  2 +-
+ drivers/virtio/virtio.c              |  6 ++----
+ drivers/virtio/virtio_mmio.c         |  3 +--
+ include/linux/vdpa.h                 | 10 +++++-----
+ include/linux/virtio.h               |  2 --
+ 11 files changed, 37 insertions(+), 40 deletions(-)
 
