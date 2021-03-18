@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E401C33FD45
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF9333FD4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhCRCeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:34:13 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:47059 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229702AbhCRCdt (ORCPT
+        id S230478AbhCRChD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:37:03 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55009 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229880AbhCRChC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:33:49 -0400
-X-UUID: 0e89e7ee279b4ca1b108ed7c4659f836-20210318
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ncyiACvRA/jFcclY/OBN/Yo/pl71fDIdCQA7DujzOC8=;
-        b=c86IdfXdnSCP0m4LZwDXJ7zWdT0QROGKq1gaybf0iiGEVyyN+y1SJF1w64qMi25YxohPM6NAQUO5by4TgDJrjg+NwKlkBHPWdjOTleQ29UljMd1xHhgyouEi1XbhNjRRnJOAjz45bWWq1Q190co8MJCdZg6SOrkjUGGFd60CbO0=;
-X-UUID: 0e89e7ee279b4ca1b108ed7c4659f836-20210318
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 8153724; Thu, 18 Mar 2021 10:33:45 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 10:33:42 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Mar 2021 10:33:40 +0800
-Message-ID: <1616034820.25733.15.camel@mhfsdcap03>
-Subject: Re: [PATCH 08/10] dt-bindings: phy: Add compatible for Mediatek
- MT8195
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "Fabien Parent" <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "Zhiyong Tao" <zhiyong.tao@mediatek.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bayi Cheng <bayi.cheng@mediatek.com>,
-        "Chuanhong Guo" <gch981213@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Date:   Thu, 18 Mar 2021 10:33:40 +0800
-In-Reply-To: <YFGkQq1J0g4AKTNZ@vkoul-mobl.Dlink>
-References: <20210316111443.3332-1-seiya.wang@mediatek.com>
-         <20210316111443.3332-9-seiya.wang@mediatek.com>
-         <YFGkQq1J0g4AKTNZ@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2A914A0A68FE97BF815737A03C347727B59FF0E01BB1CD724B858EB4526684EB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 17 Mar 2021 22:37:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0USMCysI_1616035014;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USMCysI_1616035014)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Mar 2021 10:37:00 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     harry.wentland@amd.com
+Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
+Date:   Thu, 18 Mar 2021 10:36:52 +0800
+Message-Id: <1616035012-88614-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVmlub2QsDQoNCk9uIFdlZCwgMjAyMS0wMy0xNyBhdCAxMjoxMCArMDUzMCwgVmlub2QgS291
-bCB3cm90ZToNCj4gT24gMTYtMDMtMjEsIDE5OjE0LCBTZWl5YSBXYW5nIHdyb3RlOg0KPiA+IFRo
-aXMgY29tbWl0IGFkZHMgZHQtYmluZGluZyBkb2N1bWVudGF0aW9uIG9mIFVGUyBNLVBoeSBmb3Ig
-TWVkaWF0ZWsgTVQ4MTk1IFNvQw0KPiA+IFBsYXRmb3JtLg0KPiANCj4gQXBwbGllZCwgdGhhbmtz
-DQoNClVzdWFsbHksIHdlIGV4cGVjdCB0aGUgZHQtYmluZGluZyBwYXRjaCBpcyBhY2tlZCBvciBy
-ZXZpZXdlZCBieSBSb2INCmJlZm9yZSBpdCdzIGFwcGxpZWQ/DQoNClRoYW5rcyBhIGxvdA0KDQo+
-IA0KDQo=
+Fix the following coccicheck warnings:
+
+./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c:220:65-70:
+WARNING: conversion to bool not needed here.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
+index 8593145..3fe9e41 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dwb_cm.c
+@@ -217,7 +217,7 @@ static bool dwb3_program_ogam_lut(
+ 	else
+ 		next_mode = LUT_RAM_A;
+ 
+-	dwb3_configure_ogam_lut(dwbc30, next_mode == LUT_RAM_A ? true : false);
++	dwb3_configure_ogam_lut(dwbc30, next_mode == LUT_RAM_A);
+ 
+ 	if (next_mode == LUT_RAM_A)
+ 		dwb3_program_ogam_luta_settings(dwbc30, params);
+-- 
+1.8.3.1
 
