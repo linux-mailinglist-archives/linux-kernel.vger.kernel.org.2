@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD79340582
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D97D34059F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhCRM2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:28:39 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13988 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhCRM2N (ORCPT
+        id S231183AbhCRM1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:27:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36378 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhCRM0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:28:13 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F1R8S433CzrYRp;
-        Thu, 18 Mar 2021 20:26:16 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Mar 2021
- 20:28:00 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <ziy@nvidia.com>, <willy@infradead.org>,
-        <william.kucharski@oracle.com>, <vbabka@suse.cz>,
-        <peterx@redhat.com>, <yulei.kernel@gmail.com>, <walken@google.com>,
-        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
-        <thomas_os@shipmail.org>, <yang.shi@linux.alibaba.com>,
-        <richard.weiyang@linux.alibaba.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v3 6/6] mm/huge_memory.c: use helper function migration_entry_to_page()
-Date:   Thu, 18 Mar 2021 08:27:22 -0400
-Message-ID: <20210318122722.13135-7-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20210318122722.13135-1-linmiaohe@huawei.com>
-References: <20210318122722.13135-1-linmiaohe@huawei.com>
+        Thu, 18 Mar 2021 08:26:35 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lMrjV-0006Dy-BT; Thu, 18 Mar 2021 12:26:33 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] proc: fix incorrect pde_is_permanent check
+Date:   Thu, 18 Mar 2021 12:26:33 +0000
+Message-Id: <20210318122633.14222-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's more recommended to use helper function migration_entry_to_page() to
-get the page via migration entry. We can also enjoy the PageLocked()
-check there.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Currently the pde_is_permanent check is being run on root multiple times
+rather than on the next proc directory entry. This looks like a copy-paste
+error.  Fix this by replacing root with next.
+
+Addresses-Coverity: ("Copy-paste error")
+Fixes: d919b33dafb3 ("proc: faster open/read/close with "permanent" files")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- mm/huge_memory.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/proc/generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 52acc3954afd..9b31ef84bf7e 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1693,7 +1693,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 
- 			VM_BUG_ON(!is_pmd_migration_entry(orig_pmd));
- 			entry = pmd_to_swp_entry(orig_pmd);
--			page = pfn_to_page(swp_offset(entry));
-+			page = migration_entry_to_page(entry);
- 			flush_needed = 0;
- 		} else
- 			WARN_ONCE(1, "Non present huge pmd without pmd migration enabled!");
-@@ -2101,7 +2101,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 		swp_entry_t entry;
- 
- 		entry = pmd_to_swp_entry(old_pmd);
--		page = pfn_to_page(swp_offset(entry));
-+		page = migration_entry_to_page(entry);
- 		write = is_write_migration_entry(entry);
- 		young = false;
- 		soft_dirty = pmd_swp_soft_dirty(old_pmd);
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index bc86aa87cc41..5600da30e289 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -756,7 +756,7 @@ int remove_proc_subtree(const char *name, struct proc_dir_entry *parent)
+ 	while (1) {
+ 		next = pde_subdir_first(de);
+ 		if (next) {
+-			if (unlikely(pde_is_permanent(root))) {
++			if (unlikely(pde_is_permanent(next))) {
+ 				write_unlock(&proc_subdir_lock);
+ 				WARN(1, "removing permanent /proc entry '%s/%s'",
+ 					next->parent->name, next->name);
 -- 
-2.19.1
+2.30.2
 
