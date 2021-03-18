@@ -2,136 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B328433FC40
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F51A33FC41
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 01:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCRAb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 20:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCRAa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:30:59 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A577C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:30:59 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id w8so1994976pjf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 17:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GkuRWpW9bExkYFxOTvvebzKRarhbJmzTDiFRajMJb68=;
-        b=Tw1JOhx9WMaxj2zgL2+u0rROy7M24TONLFY0jAeGeUZ8wvui68EopwXxn0qUW0MLd0
-         7wDivc0uuetGtGIEBWlrqWFTBrilHFV2627ljgT263GE3RoDzgfyK5e5EBpYudqtz3dd
-         /GlEBbuxEmry+CKUqSgiqaef06Dd3YyED+Uy8aI1BWqYM3LFXERUI3TDN2+wCbHzSCrC
-         kocqgtsBmdIspMmdXpz5DCNo6LQRcOt+khcnBdBCVCCRtYuHidggrt5eRg0wTtuaDlgX
-         W3kktFufFg0ZZSamAU5eWzJAmxbxOAlnl292ZmodwTRQBmd9GRSUIOVk5WemXVV5R2pn
-         lMmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GkuRWpW9bExkYFxOTvvebzKRarhbJmzTDiFRajMJb68=;
-        b=KGgIqHzNkgyywXX+7H+mf3tM6JGwS0p3TDNNBmAW8sFxI1Bn+i5idJWbVLjuoyyD/m
-         UmAjmiiKA4XLoSnK7gW0P+D23iBuMwHVWSBvUL4QuCAXpKHYVQFXF0Rq2qrlDW2SDnDB
-         70C2I8Lr2n3SqBs91CfKzo4WlZiQ6b0wegtbnD/X0lTf1vAUcRFgubbXbMz0QlEph8BD
-         gfuRKdFmjCfMj4yU61nwNHDCNejWmKzNhCZodADRNzjHbHjXrEUTlf4HSUL0TJYY0vuP
-         E6c9RS0eD8oWQYUrKKmtofig4PFzOlxLDKtJNKmo7sP+NDDHU/N61ZS4ZjqvQea0en7E
-         kCcg==
-X-Gm-Message-State: AOAM530pQF2oTEOzFEG0HJzG5yhAj4xIK06zID/fScHzSHO37zGXPZ9y
-        d0GS2xmHaMaWlCqthh11fOul+vbUKdoYTyItV9UcAg==
-X-Google-Smtp-Source: ABdhPJzesTshIrJdKNHCDmlj2OR3e0xSraSKUZZ3Bj14Xck17fx++XRNX8MVNVTQU2DyspV0entCrOLh4c3wfRmf7Lw=
-X-Received: by 2002:a17:90a:a10c:: with SMTP id s12mr1413387pjp.166.1616027458725;
- Wed, 17 Mar 2021 17:30:58 -0700 (PDT)
+        id S229934AbhCRAba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 20:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229644AbhCRAbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:31:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A420764F2B;
+        Thu, 18 Mar 2021 00:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616027476;
+        bh=kE5pzJREcMtcsKe3XXovC6KJw1unQTOB5zOB90M91cY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mgEdWsITi62mNieWrt3tt4Ns/P9SkqyfMc4vReldRwLoUMBhwCeLpKFrGitrVwO59
+         i8j6PIp2pGqzOw5zBDDYh3FCyiHGnYDTzzv7DimOmXrbnxyjT58J57rttyeT+gXRsP
+         hhSHuapQuAoYMuAcVFjcxOre4h3RyYrNXlp7nyqvWEmrJg+JzhxnEjufjYuF+IrqwD
+         KV3tZDwKhJQqOrVs4NIvcq74tTGCKgKBWMklbZUvKI1x9hTDejZ6eeWdeN7HAW4ZYj
+         ZCLrQaO51S3FceqzACjNEjRZ0JxLaAh4HaExjt9IK1Jj+R/12M0fAGa4t+Ok2UMDs3
+         /gMmCT9ZWHEpQ==
+Received: by mail-ej1-f52.google.com with SMTP id t18so1187225ejc.13;
+        Wed, 17 Mar 2021 17:31:15 -0700 (PDT)
+X-Gm-Message-State: AOAM532LU8OEgzaEMdgKvkxT3oFvJ56AwjTl+uQUfXBCtStjssuSiJyX
+        t75g1pv+8oU/MsRF3pGAZMIu1wnh5LtJeVnhTg==
+X-Google-Smtp-Source: ABdhPJyRt0/BHVBbK/+kJchk+xOcRQnGlNm6MFZSoVqqh6s/25AE46ySni1iQzV9dfexmdF4fKF39m+xGj/DSl/FVys=
+X-Received: by 2002:a17:907:3e8a:: with SMTP id hs10mr38674530ejc.267.1616027473977;
+ Wed, 17 Mar 2021 17:31:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210316024410.19967-1-walter-zh.wu@mediatek.com>
-In-Reply-To: <20210316024410.19967-1-walter-zh.wu@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 18 Mar 2021 01:30:47 +0100
-Message-ID: <CAAeHK+xiNywqQOzB=FUYOBJdSSNXbO4p2SdOvk4WKfhp_jiKGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] task_work: kasan: record task_work_add() call stack
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
+References: <20210201034755.15793-1-jitao.shi@mediatek.com>
+In-Reply-To: <20210201034755.15793-1-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 18 Mar 2021 08:31:02 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_--LQxwvnmWws23OkShBiQdxumoULoLTuHeXXMqZ6aW7g@mail.gmail.com>
+Message-ID: <CAAOTY_--LQxwvnmWws23OkShBiQdxumoULoLTuHeXXMqZ6aW7g@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: fine tune the data lane trail by project dts
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        huijuan.xie@mediatek.com, stonea168@163.com,
+        Cawa Cheng <cawa.cheng@mediatek.com>, shuijing.li@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, yingjoe.chen@mediatek.com,
+        eddie.huang@mediatek.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 3:44 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> Why record task_work_add() call stack?
-> Syzbot reports many use-after-free issues for task_work, see [1].
-> After see the free stack and the current auxiliary stack, we think
-> they are useless, we don't know where register the work, this work
-> may be the free call stack, so that we miss the root cause and
-> don't solve the use-after-free.
->
-> Add task_work_add() call stack into KASAN auxiliary stack in
-> order to improve KASAN report. It is useful for programmers
-> to solve use-after-free issues.
->
-> [1]: https://groups.google.com/g/syzkaller-bugs/search?q=kasan%20use-after-free%20task_work_run
->
-> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> ---
->
-> v2: Fix kasan_record_aux_stack() calling sequence issue.
->     Thanks for Dmitry's suggestion
->
-> ---
->  kernel/task_work.c | 3 +++
->  mm/kasan/kasan.h   | 2 +-
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/task_work.c b/kernel/task_work.c
-> index 9cde961875c0..3d4852891fa8 100644
-> --- a/kernel/task_work.c
-> +++ b/kernel/task_work.c
-> @@ -34,6 +34,9 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
->  {
->         struct callback_head *head;
->
-> +       /* record the work call stack in order to print it in KASAN reports */
-> +       kasan_record_aux_stack(work);
-> +
->         do {
->                 head = READ_ONCE(task->task_works);
->                 if (unlikely(head == &work_exited))
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 3436c6bf7c0c..e4629a971a3c 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -146,7 +146,7 @@ struct kasan_alloc_meta {
->         struct kasan_track alloc_track;
->  #ifdef CONFIG_KASAN_GENERIC
->         /*
-> -        * call_rcu() call stack is stored into struct kasan_alloc_meta.
-> +        * The auxiliary stack is stored into struct kasan_alloc_meta.
->          * The free stack is stored into struct kasan_free_meta.
->          */
->         depot_stack_handle_t aux_stack[2];
-> --
+Hi, Jitao:
 
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=881=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=8811:48=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Some panels or bridges require customized hs_da_trail time.
+> So add a property in devicetree for this panels and bridges.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index 8c70ec39bfe1..6e7092fa2fee 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -194,6 +194,7 @@ struct mtk_dsi {
+>         struct clk *hs_clk;
+>
+>         u32 data_rate;
+> +       u32 da_trail_delta;
+>
+>         unsigned long mode_flags;
+>         enum mipi_dsi_pixel_format format;
+> @@ -234,7 +235,7 @@ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi=
+)
+>         timing->da_hs_prepare =3D (80 * data_rate_mhz + 4 * 1000) / 8000;
+>         timing->da_hs_zero =3D (170 * data_rate_mhz + 10 * 1000) / 8000 +=
+ 1 -
+>                              timing->da_hs_prepare;
+> -       timing->da_hs_trail =3D timing->da_hs_prepare + 1;
+> +       timing->da_hs_trail =3D timing->da_hs_prepare + 1 + dsi->da_trail=
+_delta;
+>
+>         timing->ta_go =3D 4 * timing->lpx - 2;
+>         timing->ta_sure =3D timing->lpx + 2;
+> @@ -1094,6 +1095,13 @@ static int mtk_dsi_probe(struct platform_device *p=
+dev)
+>                 goto err_unregister_host;
+>         }
+>
+> +       ret =3D of_property_read_u32_index(dev->of_node, "da_trail_delta"=
+, 0,
+> +                                        &dsi->da_trail_delta);
+
+This value depends on panel, so I think we should get some value from
+panel's device node to calculate this value.
+
+Regards,
+Chun-Kuang.
+
+> +       if (ret) {
+> +               dev_info(dev, "Can't get da_trail_delta, keep it as 0: %d=
+\n", ret);
+> +               dsi->da_trail_delta =3D 0;
+> +       }
+> +
+>         comp_id =3D mtk_ddp_comp_get_id(dev->of_node, MTK_DSI);
+>         if (comp_id < 0) {
+>                 dev_err(dev, "Failed to identify by alias: %d\n", comp_id=
+);
+> --
+> 2.12.5
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
