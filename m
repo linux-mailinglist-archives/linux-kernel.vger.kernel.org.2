@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F8D34008C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586A934008D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhCRIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229741AbhCRIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 18 Mar 2021 04:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhCRH74 (ORCPT
+Received: from mout.kundenserver.de ([217.72.192.74]:59005 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhCRIAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:59:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D356C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:59:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uqzMzdvTx+DuxUMHyhI1UTiOm9unFzAEnAtm4QPn3Gg=; b=PPHsTOkJH7GvPPt1KDLckd4xkp
-        TtleZv+UNWYYnf4Mttg6/Xh/qzdfmljgFDBP3blqO0+mTr7yWMFiLRq0zh6v+VfAbWUYNJY4Kr2Pn
-        xtZcYeKbBa7zSdpVFfd7ouEn+Ln4T997Du/aA4+hXxu4Hf4GabApWaSP2rHbtq7ngJt2SiarZINVB
-        PPq2cUT6kTcIpJndn4vQIpmkDq2gjMLzCJXRoZwg0Xe4HekTeWaAzToQD1gmGx4bUuSntF2LRwZ6y
-        ojrbS1N7yNbp0lXbBOhXXzR4OlA7fvniYSa9/fXqxCHUXstvv2j2sKmPDQf7ntBqsDq7h4OC6m4+F
-        6XNm/ZOA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMnZK-004iBM-NA; Thu, 18 Mar 2021 07:59:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AFFBA3006E0;
-        Thu, 18 Mar 2021 08:59:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9356429A61CC4; Thu, 18 Mar 2021 08:59:45 +0100 (CET)
-Date:   Thu, 18 Mar 2021 08:59:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Oliver Sang <oliver.sang@intel.com>, jbaron@akamai.com,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
- .exit.text
-Message-ID: <YFMIcWIbk0aN30NY@hirez.programming.kicks-ass.net>
-References: <20210315142345.GB4401@xsang-OptiPlex-9020>
- <CAFA6WYNMHAqqmNfncmJm3+BUYCktXouRtV_udSxQb7eifPmX+Q@mail.gmail.com>
- <20210317030101.GB22345@xsang-OptiPlex-9020>
- <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
- <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
- <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
- <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
- <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
- <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
- <20210318000212.l2fdz5vjhuq64yh6@treble>
+        Thu, 18 Mar 2021 04:00:18 -0400
+Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MnJZ4-1m64Ua403A-00jJeq; Thu, 18 Mar 2021 09:00:13 +0100
+Subject: Re: [RFC PATCH 07/12] gpio: amd-fch: add oftree probing support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <20210208222203.22335-1-info@metux.net>
+ <20210208222203.22335-8-info@metux.net>
+ <CACRpkdb5R+VQrv0QuKa+EYmAMkodRpyv4fV1QCWQ+vcEyd0sZQ@mail.gmail.com>
+ <acae5f9a-1cc8-46e1-2b3b-c806679ef062@metux.net>
+ <CAHp75VeWW__18hwK+-uEibpzLpehD4h=QCnTbKOc-2GbkMB0TA@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <7b515409-1315-acd4-688a-c0eb4958d505@metux.net>
+Date:   Thu, 18 Mar 2021 09:00:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318000212.l2fdz5vjhuq64yh6@treble>
+In-Reply-To: <CAHp75VeWW__18hwK+-uEibpzLpehD4h=QCnTbKOc-2GbkMB0TA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:k1ORnNLGmMzbZFeU6W++jyO+qaqeSbOoCX5rjB33Zgmcri/MTh1
+ fQNlBQ2KvlOs8Lq4J5O6ObQC/OYEOSBbHJD/UjkDOgwpwcJKS2+0K2+q6MSPsKx9IraPl/f
+ X99dcUHyKuEn2vosRJj7MkNQgc6E+nzGT/Al+H+NCpqrZRfCRdbCc7eb756eBD2wD0l40Ex
+ uoYmG1Ubo4VQckV34peAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FWxON7wiLFg=:4r66Jz+W2b6AOUHr6laiHa
+ ROfNcQe/h6SseyoCc713QWOKgFO6SeM5rTTlpQG0ob/UFkozV6NKMSfWhFnXwlw1lyNNpPFsE
+ afhh/r0vdto+XWqMaBquW66rcc6/9jzKuu5bIQM1WzoBb16zmx3Z9Ws6Uuc22RVWhZPjjT1xG
+ 9s58mVDLtYj+tOAEldlMlnyPxv7uYkPlc1BAQKeMFBwTy4OSeVJQqyLm9igra76NOSY9QCUvk
+ +ttDb8DIVgOc+OFMuAuhQ8bo75ChN6EMG7J/BF8bJOCeDDJtuDteenpWpuzlPFgM/ejgaZnzS
+ Bpk/GOFfvaaAR5ENW9cMogY1tKaUCirHiZal3Ykx0v2DjrbYZmHWW2qDrtcddZSCzEIyMIB7E
+ siTsHOXTWPdty+jSmq54JBy4CNTIZqp3FHKqjY4mfrDWtViFiz2d+gSE67GWn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:02:12PM -0500, Josh Poimboeuf wrote:
-> On Wed, Mar 17, 2021 at 01:45:57PM +0100, Peter Zijlstra wrote:
-> > arguably it simply isn't a good idea to use static_call() in __exit
-> > code anyway, since module unload is never a performance critical path.
-> 
-> Couldn't you make the same argument about __init functions, which are
-> allowed to do static calls?
+On 11.03.21 11:42, Andy Shevchenko wrote:
 
-I suppose we could indeed make that argument. Much of that code was
-copied from jump_label without much consideration. And I now I suppose
-I'll have to consider jump_label in __exit too :/
+Hi,
 
-> We might consider a STATIC_CALL_SITE_EXIT flag, but I suppose we've run
-> out of flag space.
+> You are a bit late. We have built-in device properties (and
+> corresponding API, which recently becomes swnode) which aims exactly
+> this.
 
-Yeah, we're definitely short on flags. Let me try and figure out when
-exactly it's all discarded.
+Is there some compact notation for swnode's that's as small and simple
+as some piece of DTS ?
+
+My reasons for choosing built-in dtb have been:
+
+* it's a very small and compact notation for describing devices
+* no more open-coded registrations, etc
+* no more need for board drivers (except for the little piece of DT)
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
