@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E5E33FF8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243E733FF90
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 07:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhCRG10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 02:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        id S229554AbhCRG3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 02:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhCRG1O (ORCPT
+        with ESMTP id S229584AbhCRG3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:27:14 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9951DC06174A;
-        Wed, 17 Mar 2021 23:27:14 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id x27so2687087qvd.2;
-        Wed, 17 Mar 2021 23:27:14 -0700 (PDT)
+        Thu, 18 Mar 2021 02:29:33 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0862C06174A;
+        Wed, 17 Mar 2021 23:29:32 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id u3so1413521ybk.6;
+        Wed, 17 Mar 2021 23:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LNT32jP7JgS237wrtS8YnRoKTooTz5SRowW1DWksDxM=;
-        b=OvJV+tg9cEFf0tEjIixqrWyXv9B3ROsCHelq8dmjgbAQDe4cF0R/AWxEcQx9GbnzfU
-         +WBzPtzfNN08nteo4nR9Qb8IgAB/Vbp42NCB/auQt3XGIquVkWimOcf7fdEFswB+Qk5L
-         TSODw3mSqf33LC8kvG1XibPB/lhRSvFbmmdbecB7ddl+A90kf6nA8vYvVOPMylL6D+0d
-         auQ+XydzUUPDl6qlz4KSyRppzDPHFDmm1Zga6462akRlIogecqu69oAJC5FBzySSxt8g
-         LC8UXfjdcMuNofVvxN/9yXHFRBvMxSzOBkaPQlR9f60l3S8MoBMGHccFgDPfSAkS+GJH
-         I24g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2uwP2LpXczqkI3G36Q9JPtO9f28JmioS6FvHs/xd+hQ=;
+        b=PCCxQaarwcKL5z7NX62Dlyl1z+yNwfnTyFV8lrFS4Jb2rcJITVRMzCtoDSQfbKF2lF
+         euboIokJF7MvqMJcpY3/oCX3d+4WBttgOkSDEDKezaCThmyWGeJVbDs+7Bt2+Sp1wV0e
+         yX/gujM0TDUyGsXy8zIcfoyW0O6Q+RXenck7lE2RuJAY/JzsfRJbmEM1nW9GVLADPMaF
+         dVd6gDb0Ss3IDJnuqhZwF7/GR4rKhoGJW2d0cCjAr9+bJp6PneaiuTZ6HJYZId37Jbqh
+         dGavLLyOzPFbhdQ6UUteeFnudNESyUWmMFjN0cmRdGdF1lwQFBLQ0a5ZvAnL3AYG4z6u
+         L5LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LNT32jP7JgS237wrtS8YnRoKTooTz5SRowW1DWksDxM=;
-        b=FnZQAW5nlyfqMSaN+4B8BhnYjviRFr1FEeVwYoeIYeOoR3PyIDILF1jf8YnnZWq/aV
-         bG4t6oJB+WUICRtd73kWp9HYjozcj8ONKH7wmjFBDDQ2rN/xYClbP0usBGinMTLf+ogB
-         l4np/qQmbwvfZ5vBKRJ8ZnkHwpP2kLfq7XP9GovzVdPvGQ6Ashgv3RSwdS2nY4bajnsx
-         RycYK7ibXIgULLJBC0qKKo0KSf5Qd8fWfXIS4QHSiD1kAE2ksTRYRWNB1Cc1g64vjuCD
-         E71NF5AMG7aBfQJnjD4HENjp3nLJKh5IEAnb0pq1mFh2yfBDqDFcaXVIU0/8F1NZgQ9h
-         Sjiw==
-X-Gm-Message-State: AOAM5327uVcajoh5LUAAGjknCX20E2fkzcpLQ/4Myb1Km7zdw3ycCCSz
-        WTyaIESEHK5dmVI9ZLu9HJ4=
-X-Google-Smtp-Source: ABdhPJxXtydecwAhlh8IEYYSOjOAHHi0Mx6IE05vvj2WBXSc8tIQDKtpj8c4E8Ww4Ldziy9qf/+iyA==
-X-Received: by 2002:a05:6214:18e5:: with SMTP id ep5mr2959617qvb.32.1616048833952;
-        Wed, 17 Mar 2021 23:27:13 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.26])
-        by smtp.gmail.com with ESMTPSA id 124sm1050782qke.107.2021.03.17.23.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 23:27:13 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, khsieh@codeaurora.org, tanmay@codeaurora.org,
-        chandanu@codeaurora.org, swboyd@chromium.org,
-        unixbhaskar@gmail.com, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] drm/msm/dp: Fixed couple of typos
-Date:   Thu, 18 Mar 2021 11:56:50 +0530
-Message-Id: <20210318062650.19886-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2uwP2LpXczqkI3G36Q9JPtO9f28JmioS6FvHs/xd+hQ=;
+        b=RTH565JrNiZMH/fZ1b1RzWa7S1I4jeEFn6+ULjJyHmOp0C/ifsI/oVC6ZuOZxpKhM7
+         wDANH0g0/PszUgzPh0evVez2ZG7UPUL/AP/aFWt587U4LvbBsN2U9x+FggUxBHYY5DJd
+         +8KyHWhBQx/t6UPkMZGp0RLlHMiDG7SAaiMoAMc7DLw9PH8z1ydp7vGkXjBYIRfD5KWI
+         4gSCEKprYKyKSPzjZRClrkFduRj1PoAzEbW1UG+yAb+jfLi8yPyCId+AYGNtEL4ZWj+b
+         HJwoprH0eKcLQ6i/Qhuo0angsefTBK7VgfDtIItvmlXzsLeNItM1a1WJms+xEMtbo/k0
+         Uw3A==
+X-Gm-Message-State: AOAM533CZIOZUreyW/1LTFnu8v+1bpgmdWQ04rm6fqlh3nuwvL3CpHwQ
+        nviGqxVyx8ggLFyRvOfwdl/HiYeRHBKIKCS7p+s=
+X-Google-Smtp-Source: ABdhPJyVALbfldPOnYz0KVq7NrLvdOxiDY+AcOXlcUv3dyUw4H0om1RRJWly2lawkaZxH1t3x9U2urRRXixF5NY77Gw=
+X-Received: by 2002:a5b:449:: with SMTP id s9mr9468080ybp.115.1616048972014;
+ Wed, 17 Mar 2021 23:29:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210318172418.1438800c@canb.auug.org.au>
+In-Reply-To: <20210318172418.1438800c@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 18 Mar 2021 07:29:21 +0100
+Message-ID: <CANiq72mbFhRLA8+azMoGLetFqXCAajhN6mrH4Nea8oxEDSm80w@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the rust tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Finn Behrens <me@kloenk.de>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/modueles/modules/ ....two different places
+On Thu, Mar 18, 2021 at 7:24 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the rust tree, today's linux-next build (htmldocs) produced
+> this warning:
+>
+> Documentation/rust/coding.rst:24: WARNING: Unexpected indentation.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/msm/dp/dp_power.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ah, so docs are built in -next too? That is very nice. I'll fix it, thanks!
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
-index 7d0327bbc0d5..e3f959ffae12 100644
---- a/drivers/gpu/drm/msm/dp/dp_power.h
-+++ b/drivers/gpu/drm/msm/dp/dp_power.h
-@@ -88,7 +88,7 @@ int dp_power_client_init(struct dp_power *power);
-  * return: 0 for success, error for failure.
-  *
-  * This API will de-initialize the DisplayPort's clocks and regulator
-- * modueles.
-+ * modules.
-  */
- void dp_power_client_deinit(struct dp_power *power);
-
-@@ -100,7 +100,7 @@ void dp_power_client_deinit(struct dp_power *power);
-  *
-  * This API will configure the DisplayPort's power module and provides
-  * methods to be called by the client to configure the power related
-- * modueles.
-+ * modules.
-  */
- struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser);
-
---
-2.20.1
-
+Cheers,
+Miguel
