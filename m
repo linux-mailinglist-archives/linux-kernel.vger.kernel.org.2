@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0AD340B8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA5C340B95
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhCRRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
+        id S232306AbhCRRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRRSD (ORCPT
+        with ESMTP id S232291AbhCRRSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:18:03 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19676C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:02 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3487068pjv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:02 -0700 (PDT)
+        Thu, 18 Mar 2021 13:18:52 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA27C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:51 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id z7so5785683lfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:18:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q/dGxKGWMn9sfMz1b8CCSg+fiC/dJhHGZJq+3SdzjOQ=;
-        b=WVWbyAI5kfosqOyzscCScjiH7ZCnvPLgynzAoQ7C8JvvuMRmVO+nfLQVdRcBcbhBl3
-         3CAeupwS4atfV2Uk80gYt5uTO+qtyNw+uAc7j/oep/H3uv4GOvIOY24izAyzE2DQ8VW7
-         kUqFutxVa5UtqjSHyhZiVeHY4i4xf4tXelALM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xTnWj/7c7qy2ihci4+Y8gZArZFtgvGoRKaFa4tN0PI=;
+        b=gx8T9ew1kWacLuISFevAmlg/0TSWj6LGrBs57CPyJX4luB44zWUeTWhXt8tyDUuIE9
+         YsvKZ/LldkMM/f0NQILbCGYZ655Cd9/LK0JieXnt/lpFZh1O3uRg0/fE1LyNyzCO50Oc
+         bDr9cRxLuDzb0+PtOm1z8wW4Tz4ic8UQ+yW/xVEuNGXog1mLHFlol7P/+SOoFMeQAJWK
+         wlDeSomtYDWWvfjqandt7a67OJexGFRRxX4+6QdfcyK7ZrhJeSDoO3xE/MF3TnkIPeBn
+         RdJi3pHBBK5WxhEI9JV1mNl4jmidXPXSfvLPfZbGBy7w8RbkVTF5osRBRCYZXBfGjN2z
+         eyrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q/dGxKGWMn9sfMz1b8CCSg+fiC/dJhHGZJq+3SdzjOQ=;
-        b=HbBaGhtb14ZOXwABj2L5ZD2aqWhd6zJLH8/UO6fPjtrFW+3NMho80L2h5JLdT9y1vI
-         eiuDagQBgVfmqS3CRfb+THfRswCQ66jnXGRhBkEABOZE/00AiaunTwxxy6df/FAEPZlM
-         C9mfb0ajlNrx9qJ29b/bzyptpoIj619F19GmiZNA74WmzPQvQzBDPxUM3VNkCYHqBGGg
-         2z2d1kjPpXIjKtmDPDbhTy9WL5rjgwnnx39BriEY8ew1IrG0Cl49EuaiBpWfUJYZs0nG
-         XtuMZkGYMmARWT7/EqGIqaUZ9VNQqH4Fs+AIdwuJrfMuHxP1baTYcyECWsuV55qs0BOt
-         GR1w==
-X-Gm-Message-State: AOAM530qWZCe9kMCRzZVBBHCPPAnp1qqxmO5raYsXdCgBVqo///8GBk+
-        ImRGL+kfAQ/KPDWV9IetMqU7lA==
-X-Google-Smtp-Source: ABdhPJwjpWZE1h3EfmpA8uaekrYi2l/kcDS5O6e6heHIWgnAfkX7fPzdsgqyeP70KZ8aaKjMwXs8Rg==
-X-Received: by 2002:a17:90b:f15:: with SMTP id br21mr5479022pjb.234.1616087881552;
-        Thu, 18 Mar 2021 10:18:01 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:3cf8:6a09:780b:f65d])
-        by smtp.gmail.com with UTF8SMTPSA id r23sm3063398pje.38.2021.03.18.10.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 10:18:01 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:17:59 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: sc7180: Remove QUP-CORE ICC path
-Message-ID: <YFOLR4pem0mRFkoQ@google.com>
-References: <20210318111009.30365-1-rojay@codeaurora.org>
- <20210318111009.30365-3-rojay@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xTnWj/7c7qy2ihci4+Y8gZArZFtgvGoRKaFa4tN0PI=;
+        b=AX+cQfRH2PdxRnN5RBLL1uPyeGiqxY2jOZcxellxtEzwjYz4gNk8eUpvhO22U4nwJA
+         wyvhcnGQz/kYSxNLFAgzlonI6VJrmDUSex+EmBsdFa5z66vQVsB3vG3jQhLZr2MSjzA1
+         iHVVJ7RfMVf3YZ/SP4BOUCEjEbXQkf6EZYQY3yykV5f6VZKLmaOPB1xWkS4c2VC4N3uw
+         /yIwRtByVWyGdLYL3T+gG+ncwhsdJo4bxbHiFrMuo2MzFqYeLwcbwf6RKI4n74RjPZAB
+         Q4yDvnIM7qnXoJR0qQyJsksAKnkSDZ6zAa2AdqSvZvd1c7Rm6c17FL4ngOoQHlxwwcrp
+         JYCg==
+X-Gm-Message-State: AOAM530Itl7VMhtMdBBvO77ahBAEdAenb9N4ge1yfouujkef/+k6gNcG
+        34IR/MI7Du780mF38JJVYvXc1rnoAF/fY5Vn5PI=
+X-Google-Smtp-Source: ABdhPJxUwy+7SX3CVT2cYmJN2D0xs09DxE0Stt/8JLbLrbG02AYYzZD5t24i0lk+qPVW9FO74Uj2D2NpkZ+Z8an1LrY=
+X-Received: by 2002:a19:b49:: with SMTP id 70mr6302090lfl.342.1616087927722;
+ Thu, 18 Mar 2021 10:18:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210318111009.30365-3-rojay@codeaurora.org>
+References: <CABJPP5AjUJ+OWqUy7cR1Ar2zcs6QuLizciGf64WVQ-027rS=bA@mail.gmail.com>
+ <CAKXUXMx-4p361gFewN61NEbrwTjVY9wZFg2i13VMZTUxiDJB=Q@mail.gmail.com>
+In-Reply-To: <CAKXUXMx-4p361gFewN61NEbrwTjVY9wZFg2i13VMZTUxiDJB=Q@mail.gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 18 Mar 2021 22:48:36 +0530
+Message-ID: <CABJPP5DbeBmVT5CTZxtwS2fpJtnasueaPkzUMrwzZZ51cdDRHQ@mail.gmail.com>
+Subject: Re: Checkpatch still worries about include/asm/ ?
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 04:40:09PM +0530, Roja Rani Yarubandi wrote:
-> We had introduced the QUP-CORE ICC path to put proxy votes from
-> QUP wrapper on behalf of earlycon, if other users of QUP-CORE turn
-> off this clock before the real console is probed, unclocked access
-> to HW was seen from earlycon.
-> 
-> With ICC sync state support proxy votes are no longer need as ICC
-> will ensure that the default bootloader votes are not removed until
-> all it's consumer are probed.
-> 
-> We can safely remove ICC path for QUP-CORE clock from QUP wrapper
-> device.
-> 
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
+On Thu, Mar 18, 2021 at 10:33 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> On Thu, Mar 18, 2021 at 5:47 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+> >
+> > Hello,
+> > include/asm/ got removed a long time back (probably v1.1.45).
+> > Checkpatch still worries about that:
+> >
+> > if ($realfile =~ m@^include/asm/@) {
+> > ERROR("MODIFIED_INCLUDE_ASM",
+> > "do not modify files in include/asm, change architecture specific
+> > files in include/asm-<architecture>\n" . "$here$rawline\n");
+> > }
+> >
+> > Can we remove this check?
+> >
+>
+> Wow, v1.1.45... that must have been taking quite some digging in the
+> ancient dirt to find that out.
+>
+I was actually helped by an user who send a patch in 2016 to remove it:
+https://lore.kernel.org/lkml/1482260987-21457-1-git-send-email-pebolle@tiscali.nl/raw
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Don't know why it wasnt removed back then.
+But it's safe to say this check hasn't been used for decades :)
+
+> I agree, let us remove that rule.
+
+Sure will send the patch.
+
+> Thanks for the documentation effort on checkpatch.pl and cleaning up
+> obsolete rules while documenting.
+>
+It's my pleasure!
+
+Thanks & Regards,
+Dwaipayan.
