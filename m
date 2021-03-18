@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCBF3404CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7993404CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhCRLjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:39:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:48339 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhCRLjT (ORCPT
+        id S230377AbhCRLj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhCRLjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:39:19 -0400
-Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Ma1kC-1lAmAF0KXc-00VxwD; Thu, 18 Mar 2021 12:38:55 +0100
-Subject: Re: [PATCH v2 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-3-henning.schild@siemens.com>
- <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
- <20210315111915.GA14857@duo.ucw.cz>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <50836593-d5c9-421f-9140-2c65ac6fabe4@metux.net>
-Date:   Thu, 18 Mar 2021 12:38:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 07:39:48 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC2C06174A;
+        Thu, 18 Mar 2021 04:39:48 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id v3so1245210pgq.2;
+        Thu, 18 Mar 2021 04:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0Ej3lKCPVzBM8qM04CRJBvn+9chI3S3W7mTusbdHCA=;
+        b=kqfQ+6DNf3bayt+ixltd4Y8KDyeu6CVHcWpj7bpL0ZbEjzLMSNup0l7v7j9n6x5iu5
+         7IoDS5Xcg9VFds5QjDlV5yK7yeVovM3d8ki+1OIbHf/ej/GKxxBT8yLG/Chki9v60zw2
+         ahkwa5GOTqxvzPKmi8rkR4TCfolCZuKrMeTDatSgZqbzZjE1vZsoy0po6MtVmq4vc1FR
+         H+5/VIQ7zRxAF7UGQ+63W4rNpfaEZ8+Z4m/vHDwHugVlEbHJhR38fZur2kJnjSxxQTo4
+         yzGnPPChTWMGIzIizcm6WV9Tkfg41CUTbM0f1B8QbRYg+MEZPcm59ggN9aQyg4pOxYLN
+         /dIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0Ej3lKCPVzBM8qM04CRJBvn+9chI3S3W7mTusbdHCA=;
+        b=T8ol+Whc07NKx2PyD+oqe9KWHkVfLyQzkBmoEreYxju3RxpJNs5GPOlX8sHcgGkm5Q
+         DWvxq+OaJbVsgXyjgD6TxYKDhyBUBUW9KCa0zTbb/ggpTykjfEz3P36JngXZVbf0O49K
+         YkntpmnSFYyyR5kiXeXvqKT0qYJqrrK1sH0WfxPw6Aaa36Dc7hEkn8J07jmQsd8M5LG/
+         W4bG4d5pYL8/SBW7axbMUnWpCVEe5ZRuMdMkgsg0Aga3kpxI8ZGIbcWeWByc2wjDcqyd
+         5cOCzn5AKXKkKyUIbqN0xRbhwU2CJZrrPwWA+q4qdixizo7IO+IKMc9Jyd5pAbewHuMm
+         UlzQ==
+X-Gm-Message-State: AOAM531XQgvh2LG+ZhZC2U9M2/KA09ExBlQDWQ8DJ9JGrGd/wsOjGeLg
+        q5tPG+No2UC5r5RGhFofdA5kVDhHWTU=
+X-Google-Smtp-Source: ABdhPJxp6OKR+TNoFQTfxvVLQ0KzBZpdpPz042/J3USeyYYzDqiVoM6TNWBFrHgz8dSrxS9DB3tnyg==
+X-Received: by 2002:a63:2213:: with SMTP id i19mr6584102pgi.242.1616067587983;
+        Thu, 18 Mar 2021 04:39:47 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id kk6sm2194996pjb.51.2021.03.18.04.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 04:39:47 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: xiong.zhenwu@zte.com.cn
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, m-karicheri2@ti.com,
+        andriy.shevchenko@linux.intel.com, xiong.zhenwu@zte.com.cn,
+        miaoqinglang@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] /net/hsr: fix misspellings using codespell tool
+Date:   Thu, 18 Mar 2021 04:39:41 -0700
+Message-Id: <20210318113941.473650-1-xiong.zhenwu@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210315111915.GA14857@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:UQj/uyIdWrV4x4eIh2O10VHQkDz7wEIAijJK6BBUft1z3Ru8/Bm
- OWSLcWcGTE9xURl1iPZy1zqy0w8LFNk2ZdErhzyFAtkqC+T4Evoz8GcpvEjB7VzmkN2iR3L
- f7HgO+4QSACGZ7aYgNYhgDIiULiPLsC4dBoSVWsIBFMXstlhIFCBB/jMIJgm1+V56JY2INn
- ASV1RAsS/iiOEylLW61dA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8DlyhrnsG34=:7dMV13GswgzlA4tuO6+4fd
- sd5jzEwhFH4ng6i5PHCOZhsQwmo3xJpHGMIcEFle4nH9Jo+x80ZKlmUsfg+Lb3VghhYcUhrps
- pFZfVRcW829ZNHP1kS9cGeNu3y29LFUX0DCO4zXfT2ZFO95l9CGMnOHO63j5QV9DaktydYjNz
- eOdZLQHEvUk9tw/6xbq9LKB5RAaYq4Dq7qOJ3FzfkX7Aj+UIbz/KO5gro7/qzLkMRuKicune/
- arTsir1yBAUZr9gMYJ6Tk0sfB28RKCdrIm4hn6J/YYiOFF+kAasuXJQNbFleoeYPs7tlfX5Wf
- ZMZ5r12NAh4sYIb/Mpdz8C9Kl47LRk7bUz1iAoqtkw2+zs92vfdi+tZC78I4zpTzH78BAhFZX
- aXKNvHIHZR3IQ/8VHsF6tJUYmTIBvNFrUMcAUDHSAttLPtxgEOBxkrCLV5r3L
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 12:19, Pavel Machek wrote:
+From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 
-> But I still don't like the naming. simantic-ipc: prefix is
-> useless. Having 6 status leds is not good, either.
+A typo is found out by codespell tool in 111th line of hsr_debugfs.c:
 
-Do we have some standard naming policy those kinds of LEDs ?
+$ codespell ./net/hsr/
 
-In this case, they seem to be assigned to certain specific functions (by 
-physical labels on the box), so IMHO the LED names should reflect that
-in some ways.
+net/hsr/hsr_debugfs.c:111: Debufs  ==> Debugfs
 
-There're other cases (eg. apu board familiy) that just have several
-front panel leds w/o any dedication, so we can just count them up.
+Fix typos found by codespell.
 
+Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+---
+ net/hsr/hsr_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---mtx
-
+diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
+index 4cfd9e829c7b..99f3af1a9d4d 100644
+--- a/net/hsr/hsr_debugfs.c
++++ b/net/hsr/hsr_debugfs.c
+@@ -108,7 +108,7 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
+ /* hsr_debugfs_term - Tear down debugfs intrastructure
+  *
+  * Description:
+- * When Debufs is configured this routine removes debugfs file system
++ * When Debugfs is configured this routine removes debugfs file system
+  * elements that are specific to hsr
+  */
+ void
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+2.25.1
+
