@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BDB3409CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A223409D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCRQN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:13:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230425AbhCRQNU (ORCPT
+        id S231962AbhCRQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhCRQN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:13:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616084000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMSvyN97t/FS7XtBv6QH+5q8tp+bklDt3LCkE++41RA=;
-        b=MnXePYUvn+iP0DlwPYzkiZdARlKEZXYdP+1IjXELltrCXD76y5Q0MLLIM6h+/hw0RT/gOH
-        DJzPObmV9/oGURQrRxd9DsP2WSTYqOon1mU+KcCBpb+WLEdB2CWHZN1oN0d+svQzCEVqmb
-        O8G0VXwP0iggljHwbxyRSCurYdhgvV0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-cskwBhpdM0CF8lw15OFqhA-1; Thu, 18 Mar 2021 12:13:16 -0400
-X-MC-Unique: cskwBhpdM0CF8lw15OFqhA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E5CD81620;
-        Thu, 18 Mar 2021 16:13:13 +0000 (UTC)
-Received: from treble (ovpn-120-92.rdu2.redhat.com [10.10.120.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E0CF5D9CA;
-        Thu, 18 Mar 2021 16:13:10 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 11:13:08 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jbaron@akamai.com, rostedt@goodmis.org,
-        ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-Message-ID: <20210318161308.vu3dhezp2lczch6f@treble>
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.739542434@infradead.org>
+        Thu, 18 Mar 2021 12:13:26 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FA3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:13:26 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so3711767wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BINIGwJxwGmOwEiPbRzuCVVu9BcgGBArfEIZAsM96Eo=;
+        b=PJyzt0TQAZ6q+XU89v8X2lZwTXRSjsGBr+roWlDXFOCw/q7BkcPc9KKR9l3+EBKput
+         BOBLc/wttyIbmktCUuPGof6wydF/xyMXMFU1emN7DYvAdztIqufIGIwExca8SlLseDtq
+         uTEc0LZEE68/QpDM0rEjPP+1WuZxmzceuYPX6tEyVf/2o5Ol1lF3BDb2aRaFFS9rSo0a
+         HsC9n9pOeJtnWPS2t50tj1R8uLt4Rn1dDcEb7PubZ4XhvWufHicBFN9eGsAGliQbVPKE
+         FNLXqByAUPPT91tPyTpNOzClHDMZJDcn3Th3cyLF/vNEXQ3y2mwtpOCN7uasBirnelYi
+         WYOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BINIGwJxwGmOwEiPbRzuCVVu9BcgGBArfEIZAsM96Eo=;
+        b=HJn2biYqXI8rn/B6X61yRwYjr34xV0L2Kr64XOL55F7ok9dgRT3dACG9r0qy3SId0d
+         hTBebMPgXvaKTlrXtId+9d5qszIw++GMPgEBaJrt2EVW2F4wggku0VR2yla7RFRn0x9q
+         fro9xVi9YldSGdaCkwWuyJm6uwuRtYmE3a0dSFWptVZ7j9yI6dbYsU/oqeCiuyQ/bdM0
+         CaVzymU+NhNuSUGwnjmFuf8hSR+CHM7k+P1/B6+VSFHNHvH/jFPCZK0EngLsc54w0VOW
+         DsOuTnhahH+Ui7MY/zGTpE6uqdrWI5LXIAvaga+enqa4cuuwXlGWONZeLX2sz+BOromi
+         RSiQ==
+X-Gm-Message-State: AOAM532xYRtzFgv8ntiX8XcvL4UUvbLN8wbTdSjaBPUyiUxpkT50ejj7
+        9wZuneIYml7o/grSefEX+OX3zQ==
+X-Google-Smtp-Source: ABdhPJzOvlozfcDMp/H97oOOn9jII/km2GNy6th7b2R4rgD2EHECWXAk7TZKijGyZkpLQ7XhVdp//A==
+X-Received: by 2002:a7b:ca44:: with SMTP id m4mr11269wml.103.1616084005261;
+        Thu, 18 Mar 2021 09:13:25 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:d49c:45f3:9d86:b2e9])
+        by smtp.gmail.com with ESMTPSA id t188sm3042384wma.25.2021.03.18.09.13.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 09:13:24 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 16:13:23 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+Message-ID: <YFN8IyFTdqhlS9Lf@google.com>
+References: <20210125153057.3623715-1-balsini@android.com>
+ <20210125153057.3623715-3-balsini@android.com>
+ <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318113610.739542434@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 12:31:59PM +0100, Peter Zijlstra wrote:
->  			if (!kernel_text_address((unsigned long)site_addr)) {
-> -				WARN_ONCE(1, "can't patch static call site at %pS",
-> +				/*
-> +				 * This skips patching __exit, which is part of
-> +				 * init_section_contains() but is not part of
-> +				 * kernel_text_address().
-> +				 *
-> +				 * Skipping __exit is fine since it will never
-> +				 * be executed.
-> +				 */
-> +				WARN_ONCE(!static_call_is_init(site),
-> +					  "can't patch static call site at %pS",
->  					  site_addr);
->  				continue;
->  			}
+On Tue, Mar 16, 2021 at 07:53:06PM +0100, Arnd Bergmann wrote:
+> On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
+> >
+> > With a 64-bit kernel build the FUSE device cannot handle ioctl requests
+> > coming from 32-bit user space.
+> > This is due to the ioctl command translation that generates different
+> > command identifiers that thus cannot be used for direct comparisons
+> > without proper manipulation.
+> >
+> > Explicitly extract type and number from the ioctl command to enable
+> > 32-bit user space compatibility on 64-bit kernel builds.
+> >
+> > Signed-off-by: Alessio Balsini <balsini@android.com>
+> 
+> I saw this commit go into the mainline kernel, and I'm worried that this
+> doesn't do what the description says. Since the argument is a 'uint32_t',
+> it is the same on both 32-bit and 64-bit user space, and the patch won't
+> make any difference for compat mode, as long as that is using the normal
+> uapi headers.
+> 
+> If there is any user space that has a different definition of
+> FUSE_DEV_IOC_CLONE, that may now successfully call
+> this ioctl command, but the kernel will now also accept any other
+> command code that has the same type and number, but an
+> arbitrary direction or size argument.
+> 
+> I think this should be changed back to specifically allow the
+> command code(s) that are actually used and nothing else.
+> 
+>        Arnd
 
-It might be good to clarify the situation for __exit in modules in the
-comment and/or changelog, as they both seem to be implicitly talking
-only about __exit in vmlinux.
+Hi Arnd,
 
-For CONFIG_MODULE_UNLOAD, the code ends up in the normal text area, so
-static_call_is_init() is false and kernel_text_address() is true.
+Thanks for spotting this possible criticality.
 
-For !CONFIG_MODULE_UNLOAD, the code gets discarded during module load,
-so static_call_is_init() and kernel_text_address() are both false.  I
-guess that will trigger a warning?
+I noticed that 32-bit users pace was unable to use the
+FUSE_DEV_IOC_CLONE ioctl on 64-bit kernels, so this change avoid this
+issue by forcing the kernel to interpret 32 and 64 bit
+FUSE_DEV_IOC_CLONE command as if they were the same.
+This is the simplest solution I could find as the UAPI is not changed
+as, as you mentioned, the argument doesn't require any conversion.
 
--- 
-Josh
+I understand that this might limit possible future extensions of the
+FUSE_DEV_IOC_XXX ioctls if their in/out argument changed depending on
+the architecture, but only at that point we can switch to using the
+compat layer, right?
 
+What I'm worried about is the direction, do you think this would be an
+issue?
+
+I can start working on a compat layer fix meanwhile.
+
+Thanks,
+Alessio
