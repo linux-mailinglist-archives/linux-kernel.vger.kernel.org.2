@@ -2,94 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C6E33FD89
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C8C33FD8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhCRDEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 23:04:52 -0400
-Received: from mout.gmx.net ([212.227.15.15]:37505 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhCRDEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616036629;
-        bh=U0o6I/U/pQO1DKY2aDlMprkhG5rI+7yXePtsme76G+U=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=cbzTg7msIi+i1kmAccRhjOZfIiJ+jXaBXWz7aEmbBlcb9yIammQqHRC3UsJ/+/qo7
-         mymLF/jFqgUv9uyFyiomr97v5/vzD0n0P9jiuBBLAaLrJD++oAYZrh7+YqjtC2k4Ch
-         mW0g9fHtk6ueSnL+fEFvkmMWEtOWGNvHHkYx3twE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.159]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0XCw-1laq5B2BJU-00wYdw; Thu, 18
- Mar 2021 04:03:49 +0100
-Message-ID: <b044dac2f59bf351fa213096c430a197ec5d4bd4.camel@gmx.de>
-Subject: Re: Re: [PATCH] sched: swait: use wake_up_process() instead of
- wake_up_state()
-From:   Mike Galbraith <efault@gmx.de>
-To:     =?UTF-8?Q?=E7=8E=8B=E6=93=8E?= <wangqing@vivo.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 18 Mar 2021 04:03:46 +0100
-In-Reply-To: <AD2AAwDtDgN4Fh3ZMJ2Tcap5.3.1616033658963.Hmail.wangqing@vivo.com>
-References: <AD2AAwDtDgN4Fh3ZMJ2Tcap5.3.1616033658963.Hmail.wangqing@vivo.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S230433AbhCRDHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 23:07:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14081 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhCRDHQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 23:07:16 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1Bj82D5jz17MWh;
+        Thu, 18 Mar 2021 11:05:16 +0800 (CST)
+Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Mar 2021 11:06:59 +0800
+From:   Zhe Li <lizhe67@huawei.com>
+To:     <richard@nod.at>, <dwmw2@infradead.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <lizhe67@huawei.com>, <wangfangpeng1@huawei.com>,
+        <xukunkun1@huawei.com>, <zhongjubin@huawei.com>,
+        <chenjie6@huawei.com>
+Subject: [PATCH] jffs2: fix kasan slab-out-of-bounds problem
+Date:   Thu, 18 Mar 2021 11:06:57 +0800
+Message-ID: <20210318030657.22840-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cVi/B0K3ozpYXeLkcE0TSnxmtJiyFIBdhiueQwE8xGK4eLRMkLb
- e+EToD44chvh2X0Ux4C9om8Ab+E0ShVURnJb9c5XkkR7Q9XQ030ohw5P0W1riFLKvwMLUrn
- xxukEEKxwfo2C80t7SdLqXyJESRhxxQAGEV/DLfgktTx8VCHUFm0fsCvWrgLqXywCo/JCK1
- xRtrlSbQgPpXCdY5NMbmw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3e2u+x9SY+E=:uv7vd9kym9XJxXBKKXtLdR
- RQD0OPkdSzyseARpX58aVLDyCJf4HwQQ0p8suVB0ZQvAQPc7Vd9bh5oDUe/yhjWo3F9FqHGXa
- likyO66DmqYZtxiP2Uan+P88A4PHZqdjgX3f6aznEhskiC2o3bLBWtsoIfBgGG9DkYZ+8HAVL
- vKFPzWPdUCczDy0JoDmfc7aUvObh3VyPHDgRR8M5g1Ijnwb6/x2yTPmt5XtK8p69XRYCq7FA1
- /wto81kfbyf8JI3bg0HRZ+w4NTbgvC8tpqggNha8YJs5KyrUW5v9aqg4SnWL4oJ4OOEmo0oEH
- 63nZTRv/vhMjuMlddkh3WI6VoXsNOReNbTCibejNx/MXIxz6gGd88mhG4uB1LWW596XLy5v2x
- qPHa62EzLuypkk0JkTywbJEYGw4l+kL7RhkSzP5Owii1Tp+MWVEnHE4OVyUMPR5Ju3XS88b6z
- 3Aibi3l/efaX4qllYE9DEbPv34Zicj9wcPdQnGG8npFTghL/Yd/8KgBXTWPRGPLLn/pVKtBOe
- /svydjvjAUu/Yx++27Hpvu5dNJs9BaAtbczM5PmUmSczEVxTGA+AxL1Oit82KUjYkbKnTuLIY
- RHXUXS7+p/kQrugbwTKlZw0nhy+3oL0I9Pm6TyzkFl/JtY8Agp1SDWmLdnz+m9cp0TFrOlS2V
- P7qA8sVdSyysLHbPdH4b03AumMFDmlzIiCaqptKfzbcXPzRwaOQ4nrGfxu2XU1zK4vY5G4//M
- vNys97ywO7CjsescyZPDdoGJwDqfoIEQ/+6ir18lZkHe7zBWJ1oR2joNYiLRtCwmwNm1VTehf
- Pj0lqLT5mU14/Sd7gZyyddn0xrhvvllSTCBUVCVWlyzg5K2PE08j2NS0mQ767fcsC0M9gpldu
- iosjTrFtvGvewJZNAl9A==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.101.50]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-18 at 10:14 +0800, =E7=8E=8B=E6=93=8E wrote:
-> >>
-> >> * Mike Galbraith <efault@gmx.de> wrote:
-> >>
-> >> > On Tue, 2021-03-16 at 19:20 +0800, Wang Qing wrote:
-> >> > > Why not just use wake_up_process().
-> >> >
-> >> > IMO this is not an improvement.  There are other places where expli=
-cit
-> >> > TASK_NORMAL is used as well, and they're all perfectly clear as is.
-> >>
-> >> Arguably those could all be converted to wake_up_process() as well.
-> >> It's a very small kernel code size optimization. There's about 3 such
-> >> places, could be converted in a single patch.
-> >
-> >It's still pointless churn IMO.
->
-> Using wake_up_process() is more simpler and friendly for beginners,
-> and it is more convenient for analysis and statistics.
+From: lizhe <lizhe67@huawei.com>
 
-If that's your argument, that should have been in the change log. That
-said, it's IMO still pretty darn weak. When presenting a patch, do what
-Ingo did, show the technical merit, that's what will determine whether
-it flies or dies.
+KASAN report a slab-out-of-bounds problem. The logs are listed below.
+It is because in function jffs2_scan_dirent_node, we alloc "checkedlen+1"
+bytes for fd->name and we check crc with length rd->nsize. If checkedlen
+is less than rd->nsize, it will cause the slab-out-of-bounds problem.
 
-	-Mike
+jffs2: Dirent at *** has zeroes in name. Truncating to %d char
+==================================================================
+BUG: KASAN: slab-out-of-bounds in crc32_le+0x1ce/0x260 at addr ffff8800842cf2d1
+Read of size 1 by task test_JFFS2/915
+=============================================================================
+BUG kmalloc-64 (Tainted: G    B      O   ): kasan: bad access detected
+-----------------------------------------------------------------------------
+INFO: Allocated in jffs2_alloc_full_dirent+0x2a/0x40 age=0 cpu=1 pid=915
+	___slab_alloc+0x580/0x5f0
+	__slab_alloc.isra.24+0x4e/0x64
+	__kmalloc+0x170/0x300
+	jffs2_alloc_full_dirent+0x2a/0x40
+	jffs2_scan_eraseblock+0x1ca4/0x3b64
+	jffs2_scan_medium+0x285/0xfe0
+	jffs2_do_mount_fs+0x5fb/0x1bbc
+	jffs2_do_fill_super+0x245/0x6f0
+	jffs2_fill_super+0x287/0x2e0
+	mount_mtd_aux.isra.0+0x9a/0x144
+	mount_mtd+0x222/0x2f0
+	jffs2_mount+0x41/0x60
+	mount_fs+0x63/0x230
+	vfs_kern_mount.part.6+0x6c/0x1f4
+	do_mount+0xae8/0x1940
+	SyS_mount+0x105/0x1d0
+INFO: Freed in jffs2_free_full_dirent+0x22/0x40 age=27 cpu=1 pid=915
+	__slab_free+0x372/0x4e4
+	kfree+0x1d4/0x20c
+	jffs2_free_full_dirent+0x22/0x40
+	jffs2_build_remove_unlinked_inode+0x17a/0x1e4
+	jffs2_do_mount_fs+0x1646/0x1bbc
+	jffs2_do_fill_super+0x245/0x6f0
+	jffs2_fill_super+0x287/0x2e0
+	mount_mtd_aux.isra.0+0x9a/0x144
+	mount_mtd+0x222/0x2f0
+	jffs2_mount+0x41/0x60
+	mount_fs+0x63/0x230
+	vfs_kern_mount.part.6+0x6c/0x1f4
+	do_mount+0xae8/0x1940
+	SyS_mount+0x105/0x1d0
+	entry_SYSCALL_64_fastpath+0x1e/0x97
+Call Trace:
+ [<ffffffff815befef>] dump_stack+0x59/0x7e
+ [<ffffffff812d1d65>] print_trailer+0x125/0x1b0
+ [<ffffffff812d82c8>] object_err+0x34/0x40
+ [<ffffffff812dadef>] kasan_report.part.1+0x21f/0x534
+ [<ffffffff81132401>] ? vprintk+0x2d/0x40
+ [<ffffffff815f1ee2>] ? crc32_le+0x1ce/0x260
+ [<ffffffff812db41a>] kasan_report+0x26/0x30
+ [<ffffffff812d9fc1>] __asan_load1+0x3d/0x50
+ [<ffffffff815f1ee2>] crc32_le+0x1ce/0x260
+ [<ffffffff814764ae>] ? jffs2_alloc_full_dirent+0x2a/0x40
+ [<ffffffff81485cec>] jffs2_scan_eraseblock+0x1d0c/0x3b64
+ [<ffffffff81488813>] ? jffs2_scan_medium+0xccf/0xfe0
+ [<ffffffff81483fe0>] ? jffs2_scan_make_ino_cache+0x14c/0x14c
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
+ [<ffffffff812d5d90>] ? kmem_cache_alloc_trace+0x10c/0x2cc
+ [<ffffffff818169fb>] ? mtd_point+0xf7/0x130
+ [<ffffffff81487dc9>] jffs2_scan_medium+0x285/0xfe0
+ [<ffffffff81487b44>] ? jffs2_scan_eraseblock+0x3b64/0x3b64
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
+ [<ffffffff812d57df>] ? __kmalloc+0x12b/0x300
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
+ [<ffffffff814a2753>] ? jffs2_sum_init+0x9f/0x240
+ [<ffffffff8148b2ff>] jffs2_do_mount_fs+0x5fb/0x1bbc
+ [<ffffffff8148ad04>] ? jffs2_del_noinode_dirent+0x640/0x640
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70
+ [<ffffffff81127c5b>] ? __init_rwsem+0x97/0xac
+ [<ffffffff81492349>] jffs2_do_fill_super+0x245/0x6f0
+ [<ffffffff81493c5b>] jffs2_fill_super+0x287/0x2e0
+ [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
+ [<ffffffff81819bea>] mount_mtd_aux.isra.0+0x9a/0x144
+ [<ffffffff81819eb6>] mount_mtd+0x222/0x2f0
+ [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594
+ [<ffffffff81819c94>] ? mount_mtd_aux.isra.0+0x144/0x144
+ [<ffffffff81258757>] ? free_pages+0x13/0x1c
+ [<ffffffff814fa0ac>] ? selinux_sb_copy_data+0x278/0x2e0
+ [<ffffffff81492b35>] jffs2_mount+0x41/0x60
+ [<ffffffff81302fb7>] mount_fs+0x63/0x230
+ [<ffffffff8133755f>] ? alloc_vfsmnt+0x32f/0x3b0
+ [<ffffffff81337f2c>] vfs_kern_mount.part.6+0x6c/0x1f4
+ [<ffffffff8133ceec>] do_mount+0xae8/0x1940
+ [<ffffffff811b94e0>] ? audit_filter_rules.constprop.6+0x1d10/0x1d10
+ [<ffffffff8133c404>] ? copy_mount_string+0x40/0x40
+ [<ffffffff812cbf78>] ? alloc_pages_current+0xa4/0x1bc
+ [<ffffffff81253a89>] ? __get_free_pages+0x25/0x50
+ [<ffffffff81338993>] ? copy_mount_options.part.17+0x183/0x264
+ [<ffffffff8133e3a9>] SyS_mount+0x105/0x1d0
+ [<ffffffff8133e2a4>] ? copy_mnt_ns+0x560/0x560
+ [<ffffffff810e8391>] ? msa_space_switch_handler+0x13d/0x190
+ [<ffffffff81be184a>] entry_SYSCALL_64_fastpath+0x1e/0x97
+ [<ffffffff810e9274>] ? msa_space_switch+0xb0/0xe0
+Memory state around the buggy address:
+ ffff8800842cf180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8800842cf200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8800842cf280: fc fc fc fc fc fc 00 00 00 00 01 fc fc fc fc fc
+                                                 ^
+ ffff8800842cf300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8800842cf380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+Reported-by: Kunkun Xu <xukunkun1@huawei.com>
+Signed-off-by: lizhe <lizhe67@huawei.com>
+---
+ fs/jffs2/scan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index db72a9d..b676056 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -1079,7 +1079,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 	memcpy(&fd->name, rd->name, checkedlen);
+ 	fd->name[checkedlen] = 0;
+ 
+-	crc = crc32(0, fd->name, rd->nsize);
++	crc = crc32(0, fd->name, checkedlen);
+ 	if (crc != je32_to_cpu(rd->name_crc)) {
+ 		pr_notice("%s(): Name CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
+ 			  __func__, ofs, je32_to_cpu(rd->name_crc), crc);
+-- 
+2.7.4
 
