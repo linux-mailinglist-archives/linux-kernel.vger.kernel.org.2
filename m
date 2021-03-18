@@ -2,288 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999A6340BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA302340B72
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhCRRY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhCRRYI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:24:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E4FC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=f7hIBsmhdy0H/2LZi4SxSNv5p+56IjTIArhfdyDRpik=; b=nZm7WaDfl9lXaPPLkBQQvrt0Oq
-        Vt4C5gKK4UteLsdkeSW1vRYd5TihQq6J+f0hA2dUCbABV9zik+PJKghIZCOiddD5mf4yjx/g4/NHF
-        xZwGoG4GoqOcQt9uecbrrEMYyxr0I69HxmlArRHNkDvortMnCtZjMvLkzu/1ep+bF43nPKdE8wDeh
-        WXiOmVoiegiMg4iGvKQ5TuhAJYKs53leUNHZlM+b7+OL3vXokf4bkAXvx1FQDeulyZD5ohlyldcbz
-        2Lz0fjn6a2U33HsJRdsZIZIHKGPyIys7gifdsdgiKT+9sLPZtgwowYXJHttrK+GaB6CXsGy7mgzVg
-        psgyp7qA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMq-003HIZ-Jl; Thu, 18 Mar 2021 17:23:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6715C30797C;
-        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 58A68238A4644; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171920.253147364@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        mbenes@suse.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 14/14] objtool,x86: Rewrite retpoline thunk calls
-References: <20210318171103.577093939@infradead.org>
+        id S232075AbhCRRMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:12:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:44704 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232268AbhCRRMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:12:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7298131B;
+        Thu, 18 Mar 2021 10:12:11 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB9BA3F718;
+        Thu, 18 Mar 2021 10:12:09 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 17:12:07 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
+        will@kernel.org, rui.xiang@huawei.com,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
+Message-ID: <20210318171207.GB29466@C02TD0UTHF1T.local>
+References: <20210317142050.57712-1-chenjun102@huawei.com>
+ <20210317142050.57712-3-chenjun102@huawei.com>
+ <20210317183636.GG12269@arm.com>
+ <20210317193416.GB9786@C02TD0UTHF1T.local>
+ <20210318161723.GA10758@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318161723.GA10758@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the compiler emits: "CALL __x86_indirect_thunk_\reg" for an
-indirect call, have objtool rewrite it to:
+On Thu, Mar 18, 2021 at 04:17:24PM +0000, Catalin Marinas wrote:
+> On Wed, Mar 17, 2021 at 07:34:16PM +0000, Mark Rutland wrote:
+> > On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
+> > > On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
+> > > > On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
+> > > > stack:
+> > > >  stack_trace_save+0x4c/0x78
+> > > >  register_early_stack+0x34/0x70
+> > > >  init_page_owner+0x34/0x230
+> > > >  page_ext_init+0x1bc/0x1dc
+> > > > 
+> > > > The reason is that:
+> > > > check_recursive_alloc always return 1 because that
+> > > > entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
+> > > > 
+> > > > The root cause is that:
+> > > > commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+> > > > make the save_trace save 2 more entries.
+> > > > 
+> > > > Add skip in arch_stack_walk when task == current.
+> > > > 
+> > > > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+> > > > Signed-off-by: Chen Jun <chenjun102@huawei.com>
+> > > > ---
+> > > >  arch/arm64/kernel/stacktrace.c | 5 +++--
+> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> > > > index ad20981..c26b0ac 100644
+> > > > --- a/arch/arm64/kernel/stacktrace.c
+> > > > +++ b/arch/arm64/kernel/stacktrace.c
+> > > > @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+> > > >  
+> > > >  	if (regs)
+> > > >  		start_backtrace(&frame, regs->regs[29], regs->pc);
+> > > > -	else if (task == current)
+> > > > +	else if (task == current) {
+> > > > +		((struct stacktrace_cookie *)cookie)->skip += 2;
+> > > >  		start_backtrace(&frame,
+> > > >  				(unsigned long)__builtin_frame_address(0),
+> > > >  				(unsigned long)arch_stack_walk);
+> > > > -	else
+> > > > +	} else
+> > > >  		start_backtrace(&frame, thread_saved_fp(task),
+> > > >  				thread_saved_pc(task));
+> > > 
+> > > I don't like abusing the cookie here. It's void * as it's meant to be an
+> > > opaque type. I'd rather skip the first two frames in walk_stackframe()
+> > > instead before invoking fn().
+> > 
+> > I agree that we shouldn't touch cookie here.
+> > 
+> > I don't think that it's right to bodge this inside walk_stackframe(),
+> > since that'll add bogus skipping for the case starting with regs in the
+> > current task. If we need a bodge, it has to live in arch_stack_walk()
+> > where we set up the initial unwinding state.
+> 
+> Good point. However, instead of relying on __builtin_frame_address(1),
+> can we add a 'skip' value to struct stackframe via arch_stack_walk() ->
+> start_backtrace() that is consumed by walk_stackframe()?
 
-	ALTERNATIVE "call __x86_indirect_thunk_\reg",
-		    "call *%reg", ALT_NOT(X86_FEATURE_RETPOLINE)
+We could, but I'd strongly prefer to use __builtin_frame_address(1) if
+we can, as it's much simpler to read and keeps the logic constrained to
+the starting function. I'd already hacked that up at:
 
-Additionally, in order to not emit endless identical
-.altinst_replacement chunks, use a global symbol for them, see
-__x86_indirect_alt_*.
+https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=arm64/unwind&id=5811a76c1be1dcea7104a9a771fc2604bc2a90ef
 
-This also avoids objtool from having to do code generation.
+... and I'm fairly confident that this works on arm64.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/asm-prototypes.h |   12 ++-
- arch/x86/lib/retpoline.S              |   33 +++++++++
- tools/objtool/arch/x86/decode.c       |  116 ++++++++++++++++++++++++++++++++++
- 3 files changed, 158 insertions(+), 3 deletions(-)
+If __builtin_frame_address(1) is truly unreliable, then we could just
+manually unwind one step within arch_stack_walk() when unwinding
+current, which I think is cleaner than spreading this within
+walk_stackframe().
 
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -19,11 +19,19 @@ extern void cmpxchg8b_emu(void);
- 
- #ifdef CONFIG_RETPOLINE
- 
--#define DECL_INDIRECT_THUNK(reg) \
-+#undef GEN
-+#define GEN(reg) \
- 	extern asmlinkage void __x86_indirect_thunk_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_call_ ## reg (void);
-+#include <asm/GEN-for-each-reg.h>
- 
- #undef GEN
--#define GEN(reg) DECL_INDIRECT_THUNK(reg)
-+#define GEN(reg) \
-+	extern asmlinkage void __x86_indirect_alt_jmp_ ## reg (void);
- #include <asm/GEN-for-each-reg.h>
- 
- #endif /* CONFIG_RETPOLINE */
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -10,6 +10,8 @@
- #include <asm/unwind_hints.h>
- #include <asm/frame.h>
- 
-+	.section .text.__x86.indirect_thunk
-+
- .macro RETPOLINE reg
- 	ANNOTATE_INTRA_FUNCTION_CALL
- 	call    .Ldo_rop_\@
-@@ -25,7 +27,6 @@
- .endm
- 
- .macro THUNK reg
--	.section .text.__x86.indirect_thunk
- 
- 	.align 32
- SYM_FUNC_START(__x86_indirect_thunk_\reg)
-@@ -38,6 +39,24 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- 
- .endm
- 
-+.macro ALT_THUNK reg
-+
-+	.align 1
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	call	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_call_\reg)
-+
-+SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
-+	ANNOTATE_RETPOLINE_SAFE
-+1:	jmp	*%\reg
-+2:	.skip	5-(2b-1b), 0x90
-+SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
-+
-+.endm
-+
- /*
-  * Despite being an assembler file we can't just use .irp here
-  * because __KSYM_DEPS__ only uses the C preprocessor and would
-@@ -61,3 +80,15 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
- #define GEN(reg) EXPORT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
- 
-+#undef GEN
-+#define GEN(reg) ALT_THUNK reg
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_call_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) __EXPORT_THUNK(__x86_indirect_alt_jmp_ ## reg)
-+#include <asm/GEN-for-each-reg.h>
-+
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -19,6 +19,7 @@
- #include <objtool/elf.h>
- #include <objtool/arch.h>
- #include <objtool/warn.h>
-+#include <arch/elf.h>
- 
- static int is_x86_64(const struct elf *elf)
- {
-@@ -657,6 +658,121 @@ const char *arch_nop_insn(int len)
- 	return nops[len-1];
- }
- 
-+/* asm/alternative.h ? */
-+
-+#define ALTINSTR_FLAG_INV	(1 << 15)
-+#define ALT_NOT(feat)		((feat) | ALTINSTR_FLAG_INV)
-+
-+struct alt_instr {
-+	s32 instr_offset;	/* original instruction */
-+	s32 repl_offset;	/* offset to replacement instruction */
-+	u16 cpuid;		/* cpuid bit set for replacement */
-+	u8  instrlen;		/* length of original instruction */
-+	u8  replacementlen;	/* length of new instruction */
-+} __packed;
-+
-+static int elf_add_alternative(struct elf *elf,
-+			       struct instruction *orig, struct symbol *sym,
-+			       int cpuid, u8 orig_len, u8 repl_len)
-+{
-+	const int size = sizeof(struct alt_instr);
-+	struct alt_instr *alt;
-+	struct section *sec;
-+	Elf_Scn *s;
-+
-+	sec = find_section_by_name(elf, ".altinstructions");
-+	if (!sec) {
-+		sec = elf_create_section(elf, ".altinstructions",
-+					 SHF_WRITE, size, 0);
-+
-+		if (!sec) {
-+			WARN_ELF("elf_create_section");
-+			return -1;
-+		}
-+
-+		if (!elf_create_reloc_section(elf, sec, SHT_RELA)) {
-+			WARN_ELF("elf_create_reloc_section");
-+			return -1;
-+		}
-+	}
-+
-+	s = elf_getscn(elf->elf, sec->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return -1;
-+	}
-+
-+	sec->data = elf_newdata(s);
-+	if (!sec->data) {
-+		WARN_ELF("elf_newdata");
-+		return -1;
-+	}
-+
-+	sec->data->d_size = size;
-+	sec->data->d_align = 1;
-+
-+	alt = sec->data->d_buf = malloc(size);
-+	if (!sec->data->d_buf) {
-+		perror("malloc");
-+		return -1;
-+	}
-+	memset(sec->data->d_buf, 0, size);
-+
-+	if (!elf_create_reloc(elf, sec, sec->sh.sh_size,
-+			      R_X86_64_PC32,
-+			      reloc_to_insn, orig, 0)) {
-+		WARN_ELF("elf_create_reloc: alt_instr::instr_offset");
-+		return -1;
-+	}
-+
-+	if (!elf_create_reloc(elf, sec, sec->sh.sh_size + 4,
-+			      R_X86_64_PC32,
-+			      reloc_to_sym, sym, 0)) {
-+		WARN_ELF("elf_create_reloc: alt_instr::repl_offset");
-+		return -1;
-+	}
-+
-+	alt->cpuid = cpuid;
-+	alt->instrlen = orig_len;
-+	alt->replacementlen = repl_len;
-+
-+	sec->sh.sh_size += size;
-+	sec->changed = true;
-+
-+	return 0;
-+}
-+
-+#define X86_FEATURE_RETPOLINE                ( 7*32+12)
-+
-+int arch_rewrite_retpoline(struct objtool_file *file,
-+			   struct instruction *insn,
-+			   struct reloc *reloc)
-+{
-+	struct symbol *sym;
-+	char name[32] = "";
-+
-+	if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
-+		return 0;
-+
-+	sprintf(name, "__x86_indirect_alt_%s_%s",
-+		insn->type == INSN_JUMP_DYNAMIC ? "jmp" : "call",
-+		reloc->sym->name + 21);
-+
-+	sym = find_symbol_by_name(file->elf, name);
-+	if (!sym) {
-+		sym = elf_create_undef_symbol(file->elf, name);
-+		if (!sym) {
-+			WARN("elf_create_undef_symbol");
-+			return -1;
-+		}
-+	}
-+
-+	elf_add_alternative(file->elf, insn, sym,
-+			    ALT_NOT(X86_FEATURE_RETPOLINE), 5, 5);
-+
-+	return 0;
-+}
-+
- int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
- {
- 	struct cfi_reg *cfa = &insn->cfi.cfa;
+I can clean up the commit message and post that as a real patch, if you
+like?
 
+> > In another thread, we came to the conclusion that arch_stack_walk()
+> > should start at its parent, and its parent should add any skipping it
+> > requires.
+> 
+> This makes sense.
+> 
+> > Currently, arch_stack_walk() is off-by-one, and we can bodge that by
+> > using __builtin_frame_address(1), though I'm waiting for some compiler
+> > folk to confirm that's sound. Otherwise we need to add an assembly
+> > trampoline to snapshot the FP, which is unfortunastely convoluted.
+> > 
+> > This report suggests that a caller of arch_stack_walk() is off-by-one
+> > too, which suggests a larger cross-architecture semantic issue. I'll try
+> > to take a look tomorrow.
+> 
+> I don't think the caller is off by one, at least not by the final skip
+> value. __set_page_owner() wants the trace to start at its caller. The
+> callee save_stack() in the same file adds a skip of 2.
+> save_stack_trace() increments the skip before invoking
+> arch_stack_walk(). So far, this assumes that arch_stack_walk() starts at
+> its parent, i.e. save_stack_trace().
 
+FWIW, I had only assumed the caller was also off-by-one because the
+commit message for this patch said the conversion to ARCH_STACKWALK
+added two entries. Have I misunderstood, or is that incorrect?
+
+So if this is only off-by-one, I agree it's the same problem.
+
+Thanks,
+Mark.
+
+> So save_stack_trace() only need to skip 1 and I think that's in line
+> with the original report where the entries[0] is __set_page_owner(). We
+> only need to skip one. Another untested quick hack (we should probably
+> add the skip argument to start_backtrace()):
+> 
+> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+> index eb29b1fe8255..0d32d932ac89 100644
+> --- a/arch/arm64/include/asm/stacktrace.h
+> +++ b/arch/arm64/include/asm/stacktrace.h
+> @@ -56,6 +56,7 @@ struct stackframe {
+>  	DECLARE_BITMAP(stacks_done, __NR_STACK_TYPES);
+>  	unsigned long prev_fp;
+>  	enum stack_type prev_type;
+> +	int skip;
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>  	int graph;
+>  #endif
+> @@ -153,6 +154,7 @@ static inline void start_backtrace(struct stackframe *frame,
+>  {
+>  	frame->fp = fp;
+>  	frame->pc = pc;
+> +	frame->skip = 0;
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>  	frame->graph = 0;
+>  #endif
+> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> index ad20981dfda4..a89b2ecbf3de 100644
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -118,7 +118,9 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>  	while (1) {
+>  		int ret;
+>  
+> -		if (!fn(data, frame->pc))
+> +		if (frame->skip > 0)
+> +			frame->skip--;
+> +		else if (!fn(data, frame->pc))
+>  			break;
+>  		ret = unwind_frame(tsk, frame);
+>  		if (ret < 0)
+> @@ -201,11 +203,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  
+>  	if (regs)
+>  		start_backtrace(&frame, regs->regs[29], regs->pc);
+> -	else if (task == current)
+> +	else if (task == current) {
+>  		start_backtrace(&frame,
+>  				(unsigned long)__builtin_frame_address(0),
+>  				(unsigned long)arch_stack_walk);
+> -	else
+> +		frame.skip = 1;
+> +	} else
+>  		start_backtrace(&frame, thread_saved_fp(task),
+>  				thread_saved_pc(task));
+>  
+> 
+> -- 
+> Catalin
