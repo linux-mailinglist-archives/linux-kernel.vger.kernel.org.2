@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82219340D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34547340D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhCRSoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:44:17 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:38833 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhCRSno (ORCPT
+        id S232465AbhCRSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232546AbhCRSpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:43:44 -0400
-Received: by mail-ot1-f44.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6144162otk.5;
-        Thu, 18 Mar 2021 11:43:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RqEcB6ngMG+rhQNdezmhzbR2taShoU63AwDd2h6CSxk=;
-        b=olo4xVDr1u8EYLeWdykfPIKt1WehFXf1Q6dw5uxxWVOzPe87le6pdneq4EQjl2+Jax
-         /P8Y0g3WR1Zu7adAdZgfu88l0/YQSMIA4PIkWcutVfJGRTJvq/oQA11VQXPofgZGeDiO
-         +dXdGNh3pKMO5rEoKRzGqxt2+ZleIHFbkddCn5pbR2hpu0kEC+8M4otVJ6h7HclPwsbX
-         R+TVSw5OZWRhVFSZrONU8CzTAFGnY9VlHigqjMn47WYDNRoT8rFTDK7BNEAjgboy77ac
-         gS7mVMndzxHZ/ffXgEb7L4ii++yAPswRa6hpxhkNY52Fcq+u9syyEcbG/1aQAmOH7KjN
-         ys7Q==
-X-Gm-Message-State: AOAM531C4yN8rddf/d7nS5MdIVOBVBLS5xIrD18FzjnrkdsSHA1Ek9Xl
-        EeON+RzCPwOEAGWtkQuk3Wvx/hRaUnvpVyKAvP8=
-X-Google-Smtp-Source: ABdhPJwISNTVggsrc7Wy84g+bHARcjq+UJvVTTMk9hiKhOyFlkckConrQiPmeBp8IiKeziaud/UEovXnmxT/WaCp6s0=
-X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr5969126otq.260.1616093023349;
- Thu, 18 Mar 2021 11:43:43 -0700 (PDT)
+        Thu, 18 Mar 2021 14:45:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9F3C06174A;
+        Thu, 18 Mar 2021 11:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wDTHAbgDLyZrn6d64TVhU+dRn+k3q2aStgvSBcHqsWY=; b=H+2S0MDVY0wpSrcPygVZR+ZydC
+        MCqu0904GYOzNDQWWKIwE+qCzEjR6wFCqnhk9yfkabAsvH/uQVQ5d7I4DnPBtqvlE1OSKfw18+r3S
+        mg2hsuBo7fiPLlbwI0AsjBiFZ3UdnWw1Kd222BbC6bRyPBGT31hzWLYAvn7QuqKQ/YfhKBUwbwtTK
+        MFf027MEtJR8Ci0Eb8fcl3xFWi7FcKdHJ1gI/l1hamfBOpuZfuppAOex8h+EqAyGr9kUUIKpJOdju
+        5PuOIJTy+lR5yLxUthPjTheb9zN+ig5Z9Hzk+LOPxMzTNHYCjQJqw5nm9AsR3uWfPi3xhxzWhmnH5
+        fBHkeV/w==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMxdS-003Mt3-MO; Thu, 18 Mar 2021 18:44:49 +0000
+Subject: Re: linux-next: Tree for Mar 16 (AD9467 & ADI_AXI_ADC)
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20210316155001.699efbb4@canb.auug.org.au>
+ <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
+ <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <136e564b-bc81-19b6-ca3d-6fe5bac4d429@infradead.org>
+Date:   Thu, 18 Mar 2021 11:44:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210302020108.1777-1-puwen@hygon.cn>
-In-Reply-To: <20210302020108.1777-1-puwen@hygon.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Mar 2021 19:43:32 +0100
-Message-ID: <CAJZ5v0gxbKNvm7K7d4bbFnrH8nwcCA1c8+m4OBTKu39D11epqA@mail.gmail.com>
-Subject: Re: [PATCH] powercap: Add Hygon Fam18h RAPL support
-To:     Pu Wen <puwen@hygon.cn>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Victor Ding <victording@google.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 3:05 AM Pu Wen <puwen@hygon.cn> wrote:
->
-> Enable Hygon Fam18h RAPL support for the power capping framework.
->
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> ---
->  drivers/powercap/intel_rapl_common.c | 1 +
->  drivers/powercap/intel_rapl_msr.c    | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
-> index fdda2a737186..73cf68af9770 100644
-> --- a/drivers/powercap/intel_rapl_common.c
-> +++ b/drivers/powercap/intel_rapl_common.c
-> @@ -1069,6 +1069,7 @@ static const struct x86_cpu_id rapl_ids[] __initconst = {
->
->         X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_amd),
->         X86_MATCH_VENDOR_FAM(AMD, 0x19, &rapl_defaults_amd),
-> +       X86_MATCH_VENDOR_FAM(HYGON, 0x18, &rapl_defaults_amd),
->         {}
->  };
->  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
-> diff --git a/drivers/powercap/intel_rapl_msr.c b/drivers/powercap/intel_rapl_msr.c
-> index 78213d4b5b16..cc3b22881bfe 100644
-> --- a/drivers/powercap/intel_rapl_msr.c
-> +++ b/drivers/powercap/intel_rapl_msr.c
-> @@ -150,6 +150,7 @@ static int rapl_msr_probe(struct platform_device *pdev)
->         case X86_VENDOR_INTEL:
->                 rapl_msr_priv = &rapl_msr_priv_intel;
->                 break;
-> +       case X86_VENDOR_HYGON:
->         case X86_VENDOR_AMD:
->                 rapl_msr_priv = &rapl_msr_priv_amd;
->                 break;
-> --
+On 3/17/21 1:16 AM, Alexandru Ardelean wrote:
+> On Tue, Mar 16, 2021 at 11:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 3/15/21 9:50 PM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> News: there will be no linux-next release on Friday this week.
+>>>
+>>> Warning: Some of the branches in linux-next are still based on v5.12-rc1,
+>>> so please be careful if you are trying to bisect a bug.
+>>>
+>>> News: if your -next included tree is based on Linus' tree tag
+>>> v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
+>>> consider rebasing it onto v5.12-rc2. Also, please check any branches
+>>> merged into your branch.
+>>>
+>>> Changes since 20210315:
+>>
+>>
+>> on i386 or x86_64:
+>>
+>> WARNING: unmet direct dependencies detected for ADI_AXI_ADC
+>>   Depends on [n]: IIO [=y] && HAS_IOMEM [=y] && OF [=n]
+>>   Selected by [y]:
+>>   - AD9467 [=y] && IIO [=y] && SPI [=y]
+>>
+>>
+>> AD9467 should not select ADI_AXI_ADC when OF is not enabled,
+>> so possibly AD9467 should depend on OF.
+> 
+> Hmm, this becomes a bit complicated.
+> We got here because we needed to add a depends on HAS_IOMEM for the
+> ADI_AXI_ADC (due to the s390 arch).
+> Maybe a better fix would be for AD9467 to depend on ADI_AXI_ADC.
+> The AD9467 driver can't function without the ADI_AXI_ADC driver.
 
-Applied as 5.13 material, thanks!
+Yes, "depends on" works here. Please go ahead with that change.
+Thanks.
+
+> It is a little early to move this to a "high-speed ADC" subgroup.
+> 
+>>
+>>
+>> Full randconfig file is attached.
+>>
+>>
+>> --
+>> ~Randy
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+-- 
+~Randy
+
