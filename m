@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF79340CA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A778340CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhCRSOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230442AbhCRSON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:14:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCD364F1D;
-        Thu, 18 Mar 2021 18:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616091253;
-        bh=WJXaBc1cx6NHSgO4bTyGgYj1KQJ1lQp91QwR6cje2b8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0CdMRYcTVzwIzuvqKX7REkGrA7lLw6QB9kaqCtYe8SQmyisxQLhEGAAI6jtNPhS6x
-         k5u7m0E2kXjDtPzgV3rFCfo0gTglUgfKrjbqolTtAOyBsKnVSdxQ2Dnlt64BkOJdI7
-         qvpKf+QjCpQRo/er2C7inkYOG8LK+tF1KIbEEW6w=
-Date:   Thu, 18 Mar 2021 19:14:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: Re: [PATCH net V2 1/1] net: phy: fix invalid phy id when probe using
- C22
-Message-ID: <YFOYclhA75hjmQHY@kroah.com>
-References: <20210318090937.26465-1-vee.khee.wong@intel.com>
- <b63c5068-1203-fcb6-560d-1d2419bb39b0@gmail.com>
- <c921bf7f-e4d1-eefa-c5ae-024d5e8a4845@gmail.com>
+        id S232538AbhCRSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:15:11 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:48037 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232544AbhCRSOr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:14:47 -0400
+Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MvaSG-1lf2Vu0QxK-00sgMS; Thu, 18 Mar 2021 19:14:36 +0100
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com,
+        alex.williamson@redhat.com
+References: <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal> <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal> <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal> <20210318142252.fqi3das3mtct4yje@archlinux>
+ <YFNqbJZo3wqhMc1S@unreal> <20210318170143.ustrbjaqdl644ozj@archlinux>
+ <YFOPYs3IGaemTLMj@unreal> <20210318174344.yslqpfyct6ziwypd@archlinux>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <23c58c25-1c53-3777-4b45-415f0c6ec238@metux.net>
+Date:   Thu, 18 Mar 2021 19:14:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c921bf7f-e4d1-eefa-c5ae-024d5e8a4845@gmail.com>
+In-Reply-To: <20210318174344.yslqpfyct6ziwypd@archlinux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:+EmNwhUa0ZpjK1PKFSyf4sQ9gV6depDkA4DS3HJpRwCCDZGW6NG
+ yPKHizTZzMkG5ZW0mp7LpBd1J8FGbWDQSweytXU2YW6h5SLVz93IFpol2+oeJfb8LzD5yg0
+ E9N7tq+IxOr7HCR4nLvsAodTYMiWNL8qwb+EJhInyAp/iSpgTu3x1P/WACXU5Pe1fAcC72B
+ w+QCIYOJZAIZi1kFNudEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qzUEXzew1OU=:7om/sHv6mluQyk6xjv13xL
+ EE5+8969u0D0besq41aQoG02vtnue1Py3xitOC+Y4toPl4DE/pxPY1ywp9KHww4DrC9VgM+Pm
+ sNJSCfiezbspoTIKdSk28AAipdyO4xrg/O6Fibx7fShahNRv2fMs9FQ6G9+O4eo2CV3Ix7MNg
+ e5eLHYSs3S30WC63YbTx0XYNgcy4PH/tySQAzjx58HUAQAuiIfYp40r1z2b+/9c/6IyEAXUbU
+ VDrxjoi7/LYDjTvX4cCBJXzKu/tbVAnUmusgGqjdYS7FL2ADBnZJCm4n6bK9z83ETyUT1f7iv
+ BvYceArBkUowTiDNo9D1fw6Y+BZhQ6yKgS7aduPmpEkoPMtrswEjMuKUgiZBusHMNEYHPHE7e
+ SK9Pw0zMobpVYfK6TJTr4h4F2F38DHsXUfCPVrzFlNgDMEdhIHFqNkSPINurQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:02:22AM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 3/18/2021 6:25 AM, Heiner Kallweit wrote:
-> > On 18.03.2021 10:09, Wong Vee Khee wrote:
-> >> When using Clause-22 to probe for PHY devices such as the Marvell
-> >> 88E2110, PHY ID with value 0 is read from the MII PHYID registers
-> >> which caused the PHY framework failed to attach the Marvell PHY
-> >> driver.
-> >>
-> >> Fixed this by adding a check of PHY ID equals to all zeroes.
-> >>
-> > 
-> > I was wondering whether we have, and may break, use cases where a PHY,
-> > for whatever reason, reports PHY ID 0, but works with the genphy
-> > driver. And indeed in swphy_read_reg() we return PHY ID 0, therefore
-> > the patch may break the fixed phy.
-> > Having said that I think your patch is ok, but we need a change of
-> > the PHY ID reported by swphy_read_reg() first.
-> > At a first glance changing the PHY ID to 0x00000001 in swphy_read_reg()
-> > should be sufficient. This value shouldn't collide with any real world
-> > PHY ID.
-> 
-> It most likely would not, but it could be considered an ABI breakage,
-> unless we filter out what we report to user-space via SIOGCMIIREG and
-> /sys/class/mdio_bus/*/*/phy_id
-> 
-> Ideally we would have assigned an unique PHY OUI to the fixed PHY but
-> that would have required registering Linux as a vendor, and the process
-> is not entirely clear to me about how to go about doing that.
+On 18.03.21 18:43, Amey Narkhede wrote:
 
-If you need me to do that under the umbrella of the Linux Foundation,
-I'll be glad to do so if you point me at the proper group to do that
-with.
+> Well I didn't present it as new use case. I just gave existing
+> usecase based on existing reset attribute. Nothing new here.
+> Nothing really changes wrt that use case.
 
-We did this for a few years with the USB-IF and have a vendor id
-assigned to us for Linux through them, until they kicked us out because.
-But as the number is in a global namespace, it can't be reused so we
-keep it :)
+As a board driver maintainer, I fully support your case. At least as a
+development/debugging. And even if people out there play around and find
+their own workarounds, these can give us maintainers valuable insights
+and save us a lot of time.
 
-thanks,
+> As mentioned earlier not all vendors care about Linux and not
+> all of the population can afford to buy new HW just to run Linux.
 
-greg k-h
+At least in the x86 world (arm is *much* better here), even the
+(supposedly) Linux-friendly ones often don't really care, especially if
+the board isn't the newerst model anymore.
+
+Unfortunately, what we do or don't do in the kernel has practically no
+influence on board vendor decisions. The best we can practically achieve
+at their side is slowing them down on smearing bullshit into FW and acpi
+tables. Even getting some useful documentation from vendors is a really
+rare thing.
+
+ARM world with device tree, of course, is much better (except for closed
+consumer devices like "smartphones" or acpi-poisoned arm64 boxes). At
+least for profession embedded boards.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
