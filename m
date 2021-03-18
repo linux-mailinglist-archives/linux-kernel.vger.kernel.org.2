@@ -2,100 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B577B341057
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBADB34106A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhCRWab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 18:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        id S232745AbhCRWit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 18:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231886AbhCRW36 (ORCPT
+        with ESMTP id S230368AbhCRWib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 18:29:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1A1C06174A;
-        Thu, 18 Mar 2021 15:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cn4bXM9HxhAlrOZ3Mbplt0GOUw7Lo+j1yUk2kct+Irs=; b=tNw6kldUBrU7pqrjsLTuiJ45wH
-        J5nqlqtTWC4KIeNEZkXHhn7telPcGKx2sM6vLzM9FRRkkUjUnUh7ci/PfRjLF2U5J7BdGzfEagJ3i
-        re9fr2El7gw5HNl6tyYb7sz+jXmRJBfRlNTC6ruofJxKCVB91r/5bx3e/1voUzC8pyuUOdDvigLyA
-        1SfSXKG5C4RyzVgUyV+QTy+3a4aTLA/8LFQ1+bpSQlPbIYwiAcHsl/wyBGaqmz7EFiYPA3a/Oot43
-        XhLv2bRb9esgYJZp1Yp2glHHmY/vLgmxgE2id4a3WqU/Aqeyd6bOcjDD2JjmIBiZLdMGLnY7M7Uml
-        09ZyGx3Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lN18i-003Z72-Lm; Thu, 18 Mar 2021 22:29:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A1EF3006E0;
-        Thu, 18 Mar 2021 23:29:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 353FC23D18406; Thu, 18 Mar 2021 23:29:11 +0100 (CET)
-Date:   Thu, 18 Mar 2021 23:29:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/17] add support for Clang CFI
-Message-ID: <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-2-samitolvanen@google.com>
+        Thu, 18 Mar 2021 18:38:31 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF99C06174A;
+        Thu, 18 Mar 2021 15:38:31 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id q5so4506337pfh.10;
+        Thu, 18 Mar 2021 15:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hPV6PFlpjtaaQAGr+gXeOd26mXT5CK+0etiUFA1UmqY=;
+        b=OqRfeKnan531gNoR4Nd5w07qAxyWwLt4N1mVSIGgcrjc0OUl/C+1Ot9r8Rz6AAurhL
+         8yKR4OQp1/YgQCqMa9oXsNccxmz7A31fWb4dyR2/8NeJoOYpKYbNXRXtW5+/ESDng0GL
+         3DB9zlWP5/JOFf2FAvMxzaGAHEyWtqz4vxR6k0qXFQVA51OwkFa6b67ATPZ4wWt1rlia
+         AojEZR7Em6bSbXuCSfvOL2wnZHF4MzRjdqj/CODxCIu/0dHpFEA48tIPbH8QJq1NAVdR
+         CGnFotTADS8fpQMYNYv9b5ONo64lRcNFTbt3ZC2jonERPYisi7RALzmmwVpiPdguQD1s
+         Q5FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hPV6PFlpjtaaQAGr+gXeOd26mXT5CK+0etiUFA1UmqY=;
+        b=lMbTWwuAti8nh5vu1m+L2o3q0faGN8DYRBuplDOXMY2zmrpUgsVhKmRNJOYdYNKC14
+         p9FNEJ/HUcaYowpg/jlzwR7pJ5gjyMJRVw2c3nosP5/QmBFYBFa6XXNB04VQV/PZ4lX/
+         32aQueeLbLUfSoB4kdMb/4Yveg1zaQQVI33Wi6waa+Cshmn4F7T7dd6vrORSpRZfjYo+
+         /OejGDWgzeH6KEdxWBfadrjbGxW3v5tBi5XD3Y7nnUxYIBsd8Z8q2DpXDzA/w0eUGK9Y
+         EOsfhkkx6r/AyNoDM/q8jjICNUbps90mj9SIu47RgssiAFKysISAh3onYPH2wsruHL9W
+         iYbA==
+X-Gm-Message-State: AOAM531l3NwjxegN6Q6xfJWX4FsNYpoMNIP7b6i1KzXk2jtQmSkwYKxN
+        4rJEgHS/MzPP8zmywJmZX2i/7YRv5TI=
+X-Google-Smtp-Source: ABdhPJwmZiMlog75NmzcgOTt8rBz68L8AA9VFQ3YUiU/r50zikM5233QpapMYME/h3cjmwNVdDaZOA==
+X-Received: by 2002:a62:800c:0:b029:203:6990:78e2 with SMTP id j12-20020a62800c0000b0290203699078e2mr6178087pfd.3.1616107109985;
+        Thu, 18 Mar 2021 15:38:29 -0700 (PDT)
+Received: from f8ffc2228008.ant.amazon.com ([54.240.193.1])
+        by smtp.gmail.com with ESMTPSA id 10sm3300782pfp.4.2021.03.18.15.38.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 15:38:27 -0700 (PDT)
+Subject: Re: Live patching on ARM64
+To:     Mark Rutland <mark.rutland@arm.com>,
+        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>, jpoimboe@redhat.com,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <f3fe6a60-9ac2-591d-1b83-9113c50dc492@linux.microsoft.com>
+ <20210115123347.GB39776@C02TD0UTHF1T.local>
+From:   "Singh, Balbir" <bsingharora@gmail.com>
+Message-ID: <176e6c60-18dd-167b-41aa-dfd11e5810d3@gmail.com>
+Date:   Fri, 19 Mar 2021 09:38:20 +1100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318171111.706303-2-samitolvanen@google.com>
+In-Reply-To: <20210115123347.GB39776@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
-> +static void update_shadow(struct module *mod, unsigned long base_addr,
-> +		update_shadow_fn fn)
-> +{
-> +	struct cfi_shadow *prev;
-> +	struct cfi_shadow *next;
-> +	unsigned long min_addr, max_addr;
-> +
-> +	next = vmalloc(SHADOW_SIZE);
-> +
-> +	mutex_lock(&shadow_update_lock);
-> +	prev = rcu_dereference_protected(cfi_shadow,
-> +					 mutex_is_locked(&shadow_update_lock));
-> +
-> +	if (next) {
-> +		next->base = base_addr >> PAGE_SHIFT;
-> +		prepare_next_shadow(prev, next);
-> +
-> +		min_addr = (unsigned long)mod->core_layout.base;
-> +		max_addr = min_addr + mod->core_layout.text_size;
-> +		fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
-> +
-> +		set_memory_ro((unsigned long)next, SHADOW_PAGES);
-> +	}
-> +
-> +	rcu_assign_pointer(cfi_shadow, next);
-> +	mutex_unlock(&shadow_update_lock);
-> +	synchronize_rcu_expedited();
+On 15/1/21 11:33 pm, Mark Rutland wrote:
+> On Thu, Jan 14, 2021 at 04:07:55PM -0600, Madhavan T. Venkataraman wrote:
+>> Hi all,
+>>
+>> My name is Madhavan Venkataraman.
+> 
+> Hi Madhavan,
+> 
+>> Microsoft is very interested in Live Patching support for ARM64.
+>> On behalf of Microsoft, I would like to contribute.
+>>
+>> I would like to get in touch with the people who are currently working
+>> in this area, find out what exactly they are working on and see if they
+>> could use an extra pair of eyes/hands with what they are working on.
+>>
+>> It looks like the most recent work in this area has been from the
+>> following folks:
+>>
+>> Mark Brown and Mark Rutland:
+>> 	Kernel changes to providing reliable stack traces.
+>>
+>> Julien Thierry:
+>> 	Providing ARM64 support in objtool.
+>>
+>> Torsten Duwe:
+>> 	Ftrace with regs.
+> 
+> IIRC that's about right. I'm also trying to make arm64 patch-safe (more
+> on that below), and there's a long tail of work there for anyone
+> interested.
+> 
+>> I apologize if I have missed anyone else who is working on Live Patching
+>> for ARM64. Do let me know.
 
-expedited is BAD(tm), why is it required and why doesn't it have a
-comment?
+I am quite interested as well, I did some of the work for ppc64le
 
-> +
-> +	if (prev) {
-> +		set_memory_rw((unsigned long)prev, SHADOW_PAGES);
-> +		vfree(prev);
-> +	}
-> +}
+>>
+>> Is there any work I can help with? Any areas that need investigation, any code
+>> that needs to be written, any work that needs to be reviewed, any testing that
+>> needs to done? You folks are probably super busy and would not mind an extra
+>> hand.
+> 
+> One general thing that I believe we'll need to do is to rework code to
+> be patch-safe (which implies being noinstr-safe too). For example, we'll
+> need to rework the instruction patching code such that this cannot end
+> up patching itself (or anything that has instrumented it) in an unsafe
+> way.
+
+Do we know how this differs across architectures? Usually kprobe and ftrace
+unsafe functions are annotated as such, is there more to it?
+
+> 
+> Once we have objtool it should be possible to identify those cases
+> automatically. Currently I'm aware that we'll need to do something in at
+> least the following places:
+> 
+> * The entry code -- I'm currently chipping away at this.
+
+Could you please explain, whats bits of the entry code? I suspect we never
+patch anything in assembly
+
+> 
+> * The insn framework (which is used by some patching code), since the
+>   bulk of it lives in arch/arm64/kernel/insn.c and isn't marked noinstr.
+>   
+
+noinstr is largely kcsan and kasan related, right?
+
+>   We can probably shift the bulk of the aarch64_insn_gen_*() and
+>   aarch64_get_*() helpers into a header as __always_inline functions,
+>   which would allow them to be used in noinstr code. As those are
+>   typically invoked with a number of constant arguments that the
+>   compiler can fold, this /might/ work out as an optimization if the
+>   compiler can elide the error paths.
+> 
+> * The alternatives code, since we call instrumentable and patchable
+>   functions between updating instructions and performing all the
+>   necessary maintenance. There are a number of cases within
+>   __apply_alternatives(), e.g.
+> 
+>   - test_bit()
+>   - cpus_have_cap()
+>   - pr_info_once()
+>   - lm_alias()
+>   - alt_cb, if the callback is not marked as noinstr, or if it calls
+>     instrumentable code (e.g. from the insn framework).
+>   - clean_dcache_range_nopatch(), as read_sanitised_ftr_reg() and
+>     related code can be instrumented.
+> 
+>   This might need some underlying rework elsewhere (e.g. in the
+>   cpufeature code, or atomics framework).
+> 
+> So on the kernel side, maybe a first step would be to try to headerize
+> the insn generation code as __always_inline, and see whether that looks
+> ok? With that out of the way it'd be a bit easier to rework patching
+> code depending on the insn framework.
+> 
+> I'm not sure about the objtool side, so I'll leave that to Julien and co
+> to answer.
+
+Thanks, it would be good to see what the expectations from objtool are,
+I thought only x86 needed it due to variable size instructions and -fomit-
+frame-pointers
+
+Balbir Singh.
