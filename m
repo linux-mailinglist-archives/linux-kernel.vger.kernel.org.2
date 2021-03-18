@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ECB340E3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75904340E44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhCRT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232884AbhCRT2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:28:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B72D64DBA;
-        Thu, 18 Mar 2021 19:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616095724;
-        bh=n1alF7UDpJZCRbcWoL3f8LioB2LNSnev57xiFM+Db4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B+6amfpjqeECJGjY6sIRMgsL4Yw8bQe5EECAe+3iskbQaa4k+qQhAwtduzsl0M/Vf
-         Is0Mj+50uiaynofFjHMmg3qWt/ExWuIwF5k6iqOkb9W1GxFSqkn2K+VCfGv3SW7SeM
-         HsCkcWMLsfI5qvQ2tn9gu3cKYKDXr9XvKS2kUSou/bT9iRK+Z4b8j03j9p7/YUly3O
-         0RuypCpYnE3g+RMAEHzesKsCQMrPZIt64ev+COxQjTbwvJXNZyJOoK9GvNsDOkQVFL
-         dZDPweiViPXVZUvlXU2sxMaNOIV7YjsBjme2KKQ8Mt2wZD6jRXtaNsmMxOca2CI0wT
-         qIGj8sY81INuA==
-Date:   Thu, 18 Mar 2021 21:28:17 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@intel.com>,
-        linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        id S232929AbhCRTaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232898AbhCRT3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 15:29:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB570C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:29:45 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616095784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVJ9Dld13f6FI3wh1jGulwrBS6xukpnCOUr/a/7iTaQ=;
+        b=Vmc3MjjkQiQW0mpNSYQbVLSkz8WTmuGzfDzqOc8DSG53llRzaI5LC+qlnwXD6HTvApWuM2
+        Au9GAjSUDeAAbLgAaulM9vS/tPSmXqrjDQe3mL6NfIQnsfoQHxBDsjg2wBLcMt/Z1Vk3zA
+        bxo7ZvyQ2bxJyjmreEfvBeRKwFy7fcknj03wvnqEDJkRbE3KlTlwLMBlR3Qzj/LYv9yMZF
+        8KPRJljmW7cdRvGrvnWhHcbGu5AMasFu0yvNHlgnL4SP/P0UwC0MsIdRmFB8QFREV/GlKl
+        l9p7qEKmsFsKqHIQWOgqA1lHluP5CZ71w72/9LYw79J8+qPKg6fSunXlP7qM1A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616095784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVJ9Dld13f6FI3wh1jGulwrBS6xukpnCOUr/a/7iTaQ=;
+        b=H8202jXGDVmu4j4eeE12duQ55LMPynCRgGcI3ur259XLqr8n/WnSgWZFRB33W6mPF3NaeF
+        c4gn/Cv7LxHrFUCA==
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] x86/sgx: Replace section->init_laundry_list with
- sgx_dirty_page_list
-Message-ID: <YFOp0dl0ybo6vODz@kernel.org>
-References: <20210317235332.362001-1-jarkko.sakkinen@intel.com>
- <20210318174032.GI19570@zn.tnic>
- <1269283f-ddad-9049-dcf5-818a6ecbbc53@intel.com>
- <20210318190138.GJ19570@zn.tnic>
+Subject: Re: [PATCH RFC 2/2] genirq/matrix: WARN_ON_ONCE() when cm->allocated/m->total_allocated go negative
+In-Reply-To: <87eegc7v0g.fsf@vitty.brq.redhat.com>
+References: <20210219113101.967508-1-vkuznets@redhat.com> <20210219113101.967508-3-vkuznets@redhat.com> <87eegdy0qh.fsf@nanos.tec.linutronix.de> <87eegc7v0g.fsf@vitty.brq.redhat.com>
+Date:   Thu, 18 Mar 2021 20:29:44 +0100
+Message-ID: <87mtv06z13.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318190138.GJ19570@zn.tnic>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 08:01:38PM +0100, Borislav Petkov wrote:
-> On Thu, Mar 18, 2021 at 11:34:10AM -0700, Dave Hansen wrote:
-> > I usually get that after I reboot.  I have to do this:
-> > 
-> > 	chmod 755 /dev/sgx_enclave
-> > 	mount -o remount,exec /dev
-> 
-> Yap, that did it:
-> 
-> 0x0000000000000000 0x0000000000002000 0x03
-> 0x0000000000002000 0x0000000000001000 0x05
-> 0x0000000000003000 0x0000000000003000 0x03
-> SUCCESS
-> 
-> > BTW, that *IS* going to get tripped over all the time.
-> 
-> Yap, and I saw it last time and we talked about it and I forgot again.
-> Conveniently.
-> 
-> > The selftest needs a better error message.  I'll send a patch.
-> 
-> Please do.
+On Thu, Mar 18 2021 at 08:58, Vitaly Kuznetsov wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>> There is a way more useful way to handle this. In such a case the bit is
+>> NOT set in the alloc map. So:
+>>
+>>     if (!WARN_ON_ONCE(test_and_clear_bit(bit, cm->alloc_map)))
+>>     	   return;
+>>
+>> would have caught the problem at hand nicely and let the machine survive
+>> while just throwing warns and continuing is broken to begin with.
+>
+> Thanks, I like the idea. I didn't do that probably because the problem
+> which triggered me to write these patches wasn't fatal, it was just
+> causing CPU0 offlining to fail.
 
-Yeah, would make sense. Not longer than two or three weeks ago
-I wondered what is wrong with my system, up until I realized that
-I forgot to remount :-)
+Can you whip up a patch for that?
 
-Thanks for taking the patches.
+Thanks,
 
-> Thx.
-
- /Jarkko
+        tglx
