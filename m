@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3646B340AC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8828340ACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhCRQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:58:10 -0400
-Received: from mail-pj1-f51.google.com ([209.85.216.51]:53000 "EHLO
-        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhCRQ5p (ORCPT
+        id S232058AbhCRQ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231853AbhCRQ7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:57:45 -0400
-Received: by mail-pj1-f51.google.com with SMTP id ha17so3250113pjb.2;
-        Thu, 18 Mar 2021 09:57:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0q+2CTjMEu7J7YrQZi1WDnvtnvNsrIPA5dPfOFobHqo=;
-        b=f5vzqtj6+tfnmeJHzRm1iEycYW29mgr5S9pIF0bNxDPzaf2+C6R8lnT87ffasKAr8f
-         knZJ8IHm6v5PvCMe+M17MfGtFwLbqcvcwiOaOrmvUBUoCPiS2jbWCS0zBxt+9l9NyRKq
-         yYmfSFHAyrF+d3u4y2lkaNUbMjCJbXUDgA4aMidCc72Wc5pLx9Dyk/cFG4gMXoK+CjSw
-         1OWs0RA6BVmVvND/gHHiKNrpq+Gw0QI+pt+sbdnjr7NwbhEdN1XZ5mb6aLnC/8nGvH25
-         URd22izEltk8Ami2IrvPpovSsXSb3jtTts8+8GgBgJQ/6V6YFZ7yFDjT1JNX3NWEh2p0
-         zrfQ==
-X-Gm-Message-State: AOAM5306C30hk77uSMkpr8CUwl+QckX+g4nHDdpTbc7cOr3PbEzvkH99
-        9qrNC96ZWu8xIPHxpuSl4cm5o8tJtXA=
-X-Google-Smtp-Source: ABdhPJwM0IeGiLmhyJtodbh+8GNJSk3qZ5khKEAsUSEwziL/ATYnkdIE8lKKLKx3CV/tESYnG96CLA==
-X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr5337697pju.43.1616086665004;
-        Thu, 18 Mar 2021 09:57:45 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id fv9sm3533407pjb.23.2021.03.18.09.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 09:57:44 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 09:57:43 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Richard Gong <richard.gong@linux.intel.com>, mdf@kernel.org,
-        gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv5 1/7] firmware: stratix10-svc: reset
- COMMAND_RECONFIG_FLAG_PARTIAL to 0
-Message-ID: <YFOGh+KKYcp17aeB@epycbox.lan>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <1612909233-13867-2-git-send-email-richard.gong@linux.intel.com>
- <bc43e8ab-b8df-fd2f-31e4-02cdc48cadff@redhat.com>
- <3ff3e9ca-cdca-796e-0b57-5010963e7ee1@linux.intel.com>
- <12eb2031-db0a-4c00-117e-f3ee8dd15978@redhat.com>
+        Thu, 18 Mar 2021 12:59:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27206C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pBMCG5FN4Ujt4bhtCchnpc3UVNfel7XA97T/t//xc88=; b=CkaN3OxB7tlQh5rjB6XsiU9y00
+        9wtcSuBCtpVqrCfjXaQVx8wEJ2/rO3rUS14xLdWa8DGseOxmEHsouD4s9Ll+4Zfri+yPH3lNl/sva
+        CswI/ObrGCZQ7Mojh8A7VJ5cap1HmraveY8i6RJbxozjhZaK8mX8Iha8CR9i0GI7fkJo5M7LeYPsP
+        ur5ngVNb7tx7URNccnwqmWvTncnFs/D43R/XYK9Vb7kQ3XfVFhjeWxUevniWfsAn/mjvqYB0Lkljb
+        Fh+OHaZZmzJzdHOu0KiFhpD3SkpjmCsJXOt+YHsCm/DRT/FXjAtPmx9ux7bb1NvXVgJqDNnITu2js
+        sp0zPVZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMvyp-003Ffx-Pi; Thu, 18 Mar 2021 16:58:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C670E3003E1;
+        Thu, 18 Mar 2021 17:58:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A98FB21244792; Thu, 18 Mar 2021 17:58:38 +0100 (CET)
+Date:   Thu, 18 Mar 2021 17:58:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jbaron@akamai.com, rostedt@goodmis.org,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
+Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
+Message-ID: <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
+References: <20210318113156.407406787@infradead.org>
+ <20210318113610.739542434@infradead.org>
+ <20210318161308.vu3dhezp2lczch6f@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12eb2031-db0a-4c00-117e-f3ee8dd15978@redhat.com>
+In-Reply-To: <20210318161308.vu3dhezp2lczch6f@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 06:32:16AM -0800, Tom Rix wrote:
-> 
-> On 2/15/21 6:41 AM, Richard Gong wrote:
-> > Hi Tom,
-> >
-> > On 2/13/21 9:44 AM, Tom Rix wrote:
-> >>
-> >> On 2/9/21 2:20 PM, richard.gong@linux.intel.com wrote:
-> >>> From: Richard Gong <richard.gong@intel.com>
-> >>>
-> >>> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
-> >>> aligns with the firmware settings.
-> >>>
-> >>> Fixes: 36847f9e3e56 ("firmware: stratix10-svc: correct reconfig flag and timeout values")
-> >>> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> >>> ---
-> >>> v5: new add, add the missing standalone patch
-> >>> ---
-> >>>   include/linux/firmware/intel/stratix10-svc-client.h | 2 +-
-> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-> >>> index a93d859..f843c6a 100644
-> >>> --- a/include/linux/firmware/intel/stratix10-svc-client.h
-> >>> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
-> >>> @@ -56,7 +56,7 @@
-> >>>    * COMMAND_RECONFIG_FLAG_PARTIAL:
-> >>>    * Set to FPGA configuration type (full or partial).
-> >>>    */
-> >>> -#define COMMAND_RECONFIG_FLAG_PARTIAL    1
-> >>> +#define COMMAND_RECONFIG_FLAG_PARTIAL    0
-> >>
-> >> Is this the stand alone fix split from v3's patch 1 ?
-> >>
-> >> https://lore.kernel.org/linux-fpga/YBFW50LPP%2FyEbvEW@kroah.com/
-> >> Yes, it is a stand-alone patch.
-> 
-> Thanks.
-> 
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> 
-> >
-> >> Tom
-> >>
-> >>>     /**
-> >>>    * Timeout settings for service clients:
-> >>
-> > Regards,
-> > Richard
-> >
-> 
+On Thu, Mar 18, 2021 at 11:13:08AM -0500, Josh Poimboeuf wrote:
+> On Thu, Mar 18, 2021 at 12:31:59PM +0100, Peter Zijlstra wrote:
+> >  			if (!kernel_text_address((unsigned long)site_addr)) {
+> > -				WARN_ONCE(1, "can't patch static call site at %pS",
+> > +				/*
+> > +				 * This skips patching __exit, which is part of
 
-Applied to fixes.
+				  This skips patching built-in __exit, ...
+?
 
-Thanks,
-Moritz
+> > +				 * init_section_contains() but is not part of
+> > +				 * kernel_text_address().
+> > +				 *
+> > +				 * Skipping __exit is fine since it will never
+
+		+ built-in, again
+
+> > +				 * be executed.
+> > +				 */
+> > +				WARN_ONCE(!static_call_is_init(site),
+> > +					  "can't patch static call site at %pS",
+> >  					  site_addr);
+> >  				continue;
+> >  			}
+> 
+> It might be good to clarify the situation for __exit in modules in the
+> comment and/or changelog, as they both seem to be implicitly talking
+> only about __exit in vmlinux.
+
+Correct.
+
+> For CONFIG_MODULE_UNLOAD, the code ends up in the normal text area, so
+> static_call_is_init() is false and kernel_text_address() is true.
+> 
+> For !CONFIG_MODULE_UNLOAD, the code gets discarded during module load,
+> so static_call_is_init() and kernel_text_address() are both false.  I
+> guess that will trigger a warning?
+
+Oh gawd, more variants.
+
+Afaict MODULE_UNLOAD, by virtue of that #ifdef in
+rewrite_section_headers() won't even load the .exit sections. Afaict
+that will break: alterative, jump_label and static_call patching all in
+one go.
+
+
