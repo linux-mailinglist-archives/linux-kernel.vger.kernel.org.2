@@ -2,87 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3D333FDAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91ADE33FD8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 04:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhCRDSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 23:18:12 -0400
-Received: from gateway23.websitewelcome.com ([192.185.48.84]:18553 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230226AbhCRDRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 23:17:48 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 3C5499658
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:54:51 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id MioFlM2smb8LyMioFlqQ27; Wed, 17 Mar 2021 21:54:51 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kyaSur+AVF/eZzNQuGBhQHivPm6TStIKn+Qw+aned7E=; b=zGMj/6k3W3aDYn8aL7/lXpG97v
-        MC7eBhhc2fBXe2lT/moJp6YmozGaXzd/RV2gqGJw37Eq5pZ7NE/g9T1qA8CSoGCCPl67l9EXsc6rw
-        YysFu8SwpD3tqkJG+W5Auj2gXhk9ZqTqBFKZkdkafDSGLRjhMJPzTBhsEOr69oM0O50+AmN/uVmRP
-        qOQa9WE0h/RZ/jrayy//uNqRNqZpvuM+TTtjC64O3dC9/KjaaO4cyjNl0AjRTCkdTIyqlQUv50sWf
-        /JIp0ruRkXS8B0Jbhic3QbvOBVYuOsbgWc5Sa8wOSkmjHPmMXDVuOmNMT4yuE6vSwxBec6jm3klA8
-        XFZ83OPQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:40896 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lMioE-004GQg-Tf; Wed, 17 Mar 2021 21:54:50 -0500
-Subject: Re: [PATCH] drivers/video/fbdev:modify 0 to NULL
-To:     Chunyou Tang <tangchunyou@163.com>
-Cc:     gustavoars@kernel.org, sam@ravnborg.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tangchunyou@yulong.com
-References: <20210318023329.488-1-tangchunyou@163.com>
- <20f1664e-df4c-d085-cb25-1d05e8a793a3@embeddedor.com>
- <20210318104718.00005767@163.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5202c72d-4246-1a4e-37fa-7caf2d9c1ce3@embeddedor.com>
-Date:   Wed, 17 Mar 2021 20:54:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230495AbhCRDHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 23:07:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:37684 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229934AbhCRDHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 23:07:45 -0400
+IronPort-SDR: yKaHnaUzQnywe95yNEuQkdb/x5Chl9qpJUdr+k7I/SBFtDGmMl0bIBydA5v3kZvJHv+LrCxaet
+ +mQF0f3SNEoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="169509492"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="169509492"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 20:07:45 -0700
+IronPort-SDR: To81mTiyNzacaGr5ZeEbxfATpWia2tmPKB2sFuzkB9r9yHyKe+V7SxCkeKvoOXKX4lQ4qQgQOP
+ JadvHCF0TF7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="433651877"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Mar 2021 20:07:43 -0700
+Cc:     baolu.lu@linux.intel.com,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, dwmw2@infradead.org, joro@8bytes.org,
+        will@kernel.org, iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>, chenjiashang@huawei.com
+Subject: =?UTF-8?Q?Re=3a_A_problem_of_Intel_IOMMU_hardware_=ef=bc=9f?=
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
+ <692186fd-42b8-4054-ead2-f6c6b1bf5b2d@linux.intel.com>
+ <20210317091820.5f4ab69e@omen.home.shazbot.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <87a5f90a-d1ea-fe7a-2577-fdfdf25f8fd7@linux.intel.com>
+Date:   Thu, 18 Mar 2021 10:58:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210318104718.00005767@163.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210317091820.5f4ab69e@omen.home.shazbot.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lMioE-004GQg-Tf
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:40896
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 13
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alex,
 
+On 3/17/21 11:18 PM, Alex Williamson wrote:
+>>>           {MAP,   0x0, 0xc0000000}, --------------------------------- (b)
+>>>                   use GDB to pause at here, and then DMA read IOVA=0,
+>> IOVA 0 seems to be a special one. Have you verified with other addresses
+>> than IOVA 0?
+> It is???  That would be a problem.
+> 
 
-On 3/17/21 21:47, Chunyou Tang wrote:
+No problem from hardware point of view as far as I can see. Just
+thought about software might handle it specially.
 
-> I think "if (info == NULL)" is more intuitive,and there have many
-> compare likes "if (info == NULL)" in this file.
-
-In that case, all those instances should be changed to if (!foo), instead.
-
---
-Gustavo
+Best regards,
+baolu
