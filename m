@@ -2,92 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F72F340CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E08340CFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhCRSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:23:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232361AbhCRSXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:23:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F5664DFF;
-        Thu, 18 Mar 2021 18:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616091783;
-        bh=sXISo4PQDYozWK3fHjEB01FxcE4xjmd31yUdATknSHQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=c1Hg6KJdZUPFO+8amgDpFBICHBW3D7yXRO8aGyH5Zvw3xIvjZxbKpuwFBaebaciPw
-         MPKYFTX5ZtWpAhYEL/L5gFdIkmhOvMfZn75/4dU9sNAdFUviiE+DHZwhxiFk4jp4RJ
-         /w2SXiN6p5B5W3gK79sXWfvgQB7GHxBNnDakr7B7A9sMVcrjLImePQnGftNH4TuSby
-         TQAiEr0nfpWma47VZYN/vi5rqSvIiX7mtfRkPi3Kl0eKrcoE1aDiUDDC0lpBL+zug6
-         O/ZFD5RbT0HungY4MRNPFNXWUON4OIxtfWT4k+9Y5MJO6eqGyFRjDhPyIVyYaKv/tk
-         T7mwchViYpAMQ==
-Date:   Thu, 18 Mar 2021 13:23:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
-Message-ID: <20210318182301.GA158400@bjorn-Precision-5520>
+        id S232528AbhCRS3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:29:19 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:51570 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhCRS3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:29:13 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id 90fddb0d8e680081; Thu, 18 Mar 2021 19:29:11 +0100
+Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 2A6C9668FA9;
+        Thu, 18 Mar 2021 19:29:10 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        David Box <david.e.box@linux.intel.com>
+Subject: [PATCH v2 0/2] ACPI: scan: Turn off unused power resources during initialization
+Date:   Thu, 18 Mar 2021 19:23:38 +0100
+Message-ID: <3108574.44csPzL39Z@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301111031.220a38b8@xhacker.debian>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudduiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvedufefggeeutdejvdfhteevgeeludevueevvdejkeelfefhudfhfeehkefffeevnecukfhppeekledrieegrdektddrvdehtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrvdehtddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghvihgurdgvrdgsohigsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
-> After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
-> MSI stops working after resume. Because dw_pcie_host_init() is only
-> called once during probe. To fix this issue, we move dw_pcie_msi_init()
-> to dw_pcie_setup_rc().
-> 
-> Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Hi,
 
-Oops, sorry, looks like this fell through the cracks.  Since
-59fbab1ae40e appeared in v5.11, I think we should add:
+Power resources that aren't associated with any devices are expected to be
+turned off by the OS, but Linux only does that during resume from
+suspend-to-RAM.  That turns out to be problematic, so turn them off during
+system initialization too (patch [1/2]).
 
-  Cc: stable@vger.kernel.org	# v5.11+
+In addition to that, turn them off unconditionally, without checking the
+current status, which should be safe and may help to work around firmware
+issues (patch [2/2]).
 
-I'm sure Lorenzo will add it when applying, so no need to repost just
-for that.
+Please refer to the patch changelogs for details.
 
-> ---
-> Since v1:
->  - collect Reviewed-by tag
-> 
->  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 7e55b2b66182..e6c274f4485c 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
->  	}
->  
->  	dw_pcie_setup_rc(pp);
-> -	dw_pcie_msi_init(pp);
->  
->  	if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
->  		ret = pci->ops->start_link(pci);
-> @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
->  		}
->  	}
->  
-> +	dw_pcie_msi_init(pp);
-> +
->  	/* Setup RC BARs */
->  	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
->  	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
-> -- 
-> 2.30.1
-> 
+Thanks!
+
+
+
