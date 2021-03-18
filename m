@@ -2,45 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765613402A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B643402AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhCRKBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCRKBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:01:32 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391CBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 03:01:32 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id AFDC62D8; Thu, 18 Mar 2021 11:01:30 +0100 (CET)
-Date:   Thu, 18 Mar 2021 11:01:29 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org, john.garry@huawei.com,
-        thunder.leizhen@huawei.com, vjitta@codeaurora.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iommu/iova: Add rbtree entry helper
-Message-ID: <YFMk+fLh7KGp4ZdR@8bytes.org>
-References: <03931d86c0ad71f44b29394e3a8d38bfc32349cd.1614962123.git.robin.murphy@arm.com>
+        id S229993AbhCRKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229989AbhCRKDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:03:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9943E64F38;
+        Thu, 18 Mar 2021 10:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616061795;
+        bh=Y/zho4pO/HrvXMC2z788pqM+I0PtlEGD9khRdFhixBA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cjb+OD0qlseE3PZxPmt6qVaS8TEdR170Kx0d6qs43JoMzhbtyRYFf+YwcyKa6OEsu
+         lz+Hh5KxxbJeY5/L27qm5m+7IcHitBspRVufjmO/BOWrx128IaiS0gCEWyd1HrK8d7
+         Zuuztdhv5eC4a/1WICq637mYyZYw2GbUpXe2/6ZzVoVDRlgAIkaJ3AnvHzQVexL+7M
+         R7dPVu4oMDSs3Kzkv7BG+x57PO2NRF4wMdL+DYRZ5gDqREQRIQXsCiUvlm7V/9qZoA
+         zz3JvKyUmAeO9k8IZd8akIxdZgadEbRA4JWMdtaiLfsy5CeMHdN5+eD6P5zrCYrmmu
+         z9qo8n7lWM9mg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
+Subject: [PATCH rdma-next 0/6] Fix memory corruption in CM
+Date:   Thu, 18 Mar 2021 12:03:03 +0200
+Message-Id: <20210318100309.670344-1-leon@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03931d86c0ad71f44b29394e3a8d38bfc32349cd.1614962123.git.robin.murphy@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 04:35:22PM +0000, Robin Murphy wrote:
-> Repeating the rb_entry() boilerplate all over the place gets old fast.
-> Before adding yet more instances, add a little hepler to tidy it up.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
->  drivers/iommu/iova.c | 23 ++++++++++++++---------
->  1 file changed, 14 insertions(+), 9 deletions(-)
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Applied both, thanks Robin.
+Hi,
+
+This series from Mark fixes long standing bug in CM migration logic,
+reported by Ryan [1].
+
+Thanks
+
+[1] https://lore.kernel.org/linux-rdma/CAFMmRNx9cg--NUnZjFM8yWqFaEtsmAWV4EogKb3a0+hnjdtJFA@mail.gmail.com/
+
+Mark Zhang (6):
+  Revert "IB/cm: Mark stale CM id's whenever the mad agent was
+    unregistered"
+  IB/cm: Remove "mad_agent" parameter of ib_cancel_mad
+  IB/cm: Remove "mad_agent" parameter of ib_modify_mad
+  IB/cm: Clear all associated AV's ports when remove a cm device
+  IB/cm: Add lock protection when access av/alt_av's port of a cm_id
+  IB/cm: Initialize av before acquire the spin lock in cm_lap_handler
+
+ drivers/infiniband/core/cm.c       | 359 ++++++++++++++++-------------
+ drivers/infiniband/core/mad.c      |  17 +-
+ drivers/infiniband/core/sa_query.c |   4 +-
+ include/rdma/ib_mad.h              |  27 ++-
+ 4 files changed, 222 insertions(+), 185 deletions(-)
+
+--
+2.30.2
+
