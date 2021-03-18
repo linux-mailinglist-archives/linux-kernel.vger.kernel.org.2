@@ -2,214 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D003403DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0013403E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhCRKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:50:41 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:37397 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCRKud (ORCPT
+        id S230296AbhCRKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhCRKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:50:33 -0400
-Received: by mail-oo1-f43.google.com with SMTP id c12-20020a4ae24c0000b02901bad05f40e4so1320733oot.4;
-        Thu, 18 Mar 2021 03:50:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QIDk99AN54P9dz8S58q171UK8pRxtVWI+OQDCq00Bf8=;
-        b=D2UD+xNNb0LAg7gankf8iPM1Y3ZH2hBmsav8KLUTrCx2lNHSum9MkG4dTXdGgagEj3
-         qP3rg1wrZHWYkB0x/8fj0vBu9CEYXo6v5ZztEDCIzNrEByyxs0fhKcprJDxCaWLk6dv5
-         786OiH0dyQiW61z5VfM4w486AHVlnKzNRhyadrELNxszivDIkmzW7+D+Rm9y3GEix8i8
-         OjXRw3dQrMVyLZ0MI5F6R5A+3TG54CXyF/3jvVuhadvOeQXVIP0RtBqp3sncZBXnoB+d
-         ccphNpSK/aXJ7KAfGgv6Pyf+DU7Ovit50rbh30V8AKYImiFMsqDNAFvo9P+F2rolRRMp
-         fNaw==
-X-Gm-Message-State: AOAM533P0WBWG32fGH5XGvmyWlXMKjy3qaZE7ogrF6PA+WqzLaei7AOu
-        LuKe/T1S9Wd0svhIM9EMpBbxEDKHxUFgis7s5cintrHR
-X-Google-Smtp-Source: ABdhPJwTd6HeBU2ayrPYmrRVxGXT3jB5gQBw5j7Vg9VHvG2IiLm117/01+DfUs79JlXfTQ4vduHKspvEmfqhRtXooaE=
-X-Received: by 2002:a4a:bb14:: with SMTP id f20mr7100616oop.1.1616064633285;
- Thu, 18 Mar 2021 03:50:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
- <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com>
-In-Reply-To: <YFMAdIVn2hpTHfBq@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Mar 2021 11:50:21 +0100
-Message-ID: <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
+        Thu, 18 Mar 2021 06:50:43 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7967C06174A;
+        Thu, 18 Mar 2021 03:50:42 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lMqEg-0007xe-EQ; Thu, 18 Mar 2021 11:50:38 +0100
+Message-ID: <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
+Subject: Re: systemd-rfkill regression on 5.11 and later kernels
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 18 Mar 2021 11:50:37 +0100
+In-Reply-To: <s5ho8fgixl9.wl-tiwai@suse.de>
+References: <s5ha6r0kgt5.wl-tiwai@suse.de>
+         <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
+         <s5ho8fgixl9.wl-tiwai@suse.de>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 8:25 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Wed, Mar 17, 2021 at 09:14:37PM +0100, Rafael J. Wysocki wrote:
-> > On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
-> > > On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> > > >
-> > > > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
-> > > > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
-> > > > > > >
-> > > > > > > There is some care that should be taken to make sure we get the order
-> > > > > > > right, but I don't see a fundamental issue here.
-> > > > >
-> > > > > Me neither.
-> > > > >
-> > > > > > > If I understand correctly, Rafael's concern is about changing the parts of
-> > > > > > > ACPICA that should be OS agnostic, so I think we just need another place to
-> > > > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
-> > > > >
-> > > > > Something like this.
-> > > > >
-> > > > > There is also the problem that memblock_reserve() needs to be called
-> > > > > for all of the tables early enough, which will require some reordering
-> > > > > of the early init code.
-> > > > >
-> > > > > > > Since the reservation should be done early in x86::setup_arch() (and
-> > > > > > > probably in arm64::setup_arch()) we might just have a function that parses
-> > > > > > > table headers and reserves them, similarly to how we parse the tables
-> > > > > > > during KASLR setup.
-> > > > >
-> > > > > Right.
-> > > >
-> > > > I've looked at it a bit more and we do something like the patch below that
-> > > > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
-> > >
-> > > It looks to me that the code need not be duplicated (see below).
-> > >
-> > > > Besides, reserving ACPI tables early and then calling acpi_table_init()
-> > > > (and acpi_tb_parse_root_table() again would mean doing the dance with
-> > > > early_memremap() twice for no good reason.
-> > >
-> > > That'd be simply inefficient which is kind of acceptable to me to start with.
-> > >
-> > > And I changing the ACPICA code can be avoided at least initially, it
-> > > by itself would be a good enough reason.
-> > >
-> > > > I believe the most effective way to deal with this would be to have a
-> > > > function that does parsing, reservation and installs the tables supplied by
-> > > > the firmware which can be called really early and then another function
-> > > > that overrides tables if needed a some later point.
-> > >
-> > > I agree that this should be the direction to go into.
-> >
-> > So maybe something like the patch below?
-> >
-> > I'm not sure if acpi_boot_table_prepare() gets called early enough, though.
->
-> To be 100% safe it should be called before e820__memblock_setup().
+Hi,
 
-OK
+> OK, I took a deeper look again, and actually there are two issues in
+> systemd-rfkill code:
+> 
+> * It expects 8 bytes returned from read while it reads a struct
+>   rfkill_event record.  If the code is rebuilt with the latest kernel
+>   headers, it breaks due to the change of rfkill_event.  That's the
+>   error openSUSE bug report points to.
 
-> It is possible to call memblock_reserve() at any time, even before the actual
-> memory is detected as long as all reservations fit into the static array
-> that currently has 128 entries on x86.
->
-> As e820__memblock_setup() essentially enables memblock allocations,
-> theoretically the memory occupied by ACPI tables can be allocated even in
-> x86::setup_arch() unless it is reserved before e820__memblock_setup().
->
-> > Also this still may not play well with initrd-based table overrides. Erik, do
-> > you have any insights here?
-> >
-> > And ia64 needs to be updated too.
->
-> I think arm64 as well.
+Right. It hardcoded the size check but not the size it reads.
 
-Right.
+> * When systemd-rfkill is built with the latest kernel headers but runs
+>   on the old kernel code, the write size check fails as you mentioned
+>   in the above.  That's another part of the github issue.
 
-> > ---
-> >  arch/x86/kernel/acpi/boot.c |   12 +++++++++---
-> >  arch/x86/kernel/setup.c     |    3 +++
-> >  drivers/acpi/tables.c       |   24 +++++++++++++++++++++---
-> >  include/linux/acpi.h        |    9 +++++++--
-> >  4 files changed, 40 insertions(+), 8 deletions(-)
-> >
-> > Index: linux-pm/arch/x86/kernel/acpi/boot.c
-> > ===================================================================
-> > --- linux-pm.orig/arch/x86/kernel/acpi/boot.c
-> > +++ linux-pm/arch/x86/kernel/acpi/boot.c
-> > @@ -1541,7 +1541,7 @@ static const struct dmi_system_id acpi_d
-> >   *   ...
-> >   */
-> >
-> > -void __init acpi_boot_table_init(void)
-> > +void __init acpi_boot_table_prepare(void)
-> >  {
-> >       dmi_check_system(acpi_dmi_table);
-> >
-> > @@ -1554,10 +1554,16 @@ void __init acpi_boot_table_init(void)
-> >       /*
-> >        * Initialize the ACPI boot-time table parser.
-> >        */
-> > -     if (acpi_table_init()) {
-> > +     if (acpi_table_prepare())
-> >               disable_acpi();
-> > +}
-> > +
-> > +void __init acpi_boot_table_init(void)
-> > +{
-> > +     if (acpi_disabled)
-> >               return;
-> > -     }
-> > +
-> > +     acpi_table_init();
-> >
-> >       acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
-> >
-> > Index: linux-pm/arch/x86/kernel/setup.c
-> > ===================================================================
-> > --- linux-pm.orig/arch/x86/kernel/setup.c
-> > +++ linux-pm/arch/x86/kernel/setup.c
-> > @@ -1070,6 +1070,9 @@ void __init setup_arch(char **cmdline_p)
-> >       /* preallocate 4k for mptable mpc */
-> >       e820__memblock_alloc_reserved_mpc_new();
-> >
-> > +     /* Look for ACPI tables and reserve memory occupied by them. */
-> > +     acpi_boot_table_prepare();
-> > +
-> >  #ifdef CONFIG_X86_CHECK_BIOS_CORRUPTION
-> >       setup_bios_corruption_check();
-> >  #endif
-> > Index: linux-pm/include/linux/acpi.h
-> > ===================================================================
-> > --- linux-pm.orig/include/linux/acpi.h
-> > +++ linux-pm/include/linux/acpi.h
-> > @@ -222,11 +222,13 @@ void __iomem *__acpi_map_table(unsigned
-> >  void __acpi_unmap_table(void __iomem *map, unsigned long size);
-> >  int early_acpi_boot_init(void);
-> >  int acpi_boot_init (void);
-> > +void acpi_boot_table_prepare (void);
-> >  void acpi_boot_table_init (void);
->
-> Not related to this patch, but it feels to me like there are too many
-> acpi_boot_something() :)
+Yes. And it's all confusing, because they only later added the "this is
+on 5.10" bits, and on pure 5.11 the second thing made no sense.
 
-Well, there was one initially, but it has been split for a few times
-due to ordering issues similar to the one at hand.
+Same confusion bit the developer of the systemd fix, but nonetheless the
+fix seems OK.
 
-It could be cleaned up I suppose, though.
+> So, with a kernel devs hat on, I share your feeling, that's an
+> application bug.  OTOH, the extension of the rfkill_event is, well,
+> not really safe as expected.
+
+Evidently.
+
+> IMO, if systemd-rfkill is the only one that hits such a problem, we
+> may let the systemd code fixed, as it's obviously buggy.  But who
+> knows...
+
+We hit it in at least one other places, but that was just dev/test code,
+I think.
+
+> Is the extension of rfkill_event mandatory?  Can the new entry
+> provided in a different way such as another sysfs record?
+
+Yes, it is mandatory - it needs to be provided as an event. Well, I
+guess in theory it's all software, but ... getting an event and then
+having to poke a sysfs file is also a nightmare.
+
+> IOW, if we revert the change, would it break anything else new?
+
+It would break the necessary notification for the feature :)
+
+
+That said, we can "fix" this like this, and hope we'll not get this
+again? And if we do get it again ... well, we keep renaming the structs
+and add "struct rfkill_event_v3" next time?
+
+
+
+diff --git a/include/uapi/linux/rfkill.h b/include/uapi/linux/rfkill.h
+index 03e8af87b364..9b77cfc42efa 100644
+--- a/include/uapi/linux/rfkill.h
++++ b/include/uapi/linux/rfkill.h
+@@ -86,34 +86,90 @@ enum rfkill_hard_block_reasons {
+  * @op: operation code
+  * @hard: hard state (0/1)
+  * @soft: soft state (0/1)
++ *
++ * Structure used for userspace communication on /dev/rfkill,
++ * used for events from the kernel and control to the kernel.
++ */
++struct rfkill_event {
++	__u32 idx;
++	__u8  type;
++	__u8  op;
++	__u8  soft;
++	__u8  hard;
++} __attribute__((packed));
++
++/**
++ * struct rfkill_event_ext - events for userspace on /dev/rfkill
++ * @idx: index of dev rfkill
++ * @type: type of the rfkill struct
++ * @op: operation code
++ * @hard: hard state (0/1)
++ * @soft: soft state (0/1)
+  * @hard_block_reasons: valid if hard is set. One or several reasons from
+  *	&enum rfkill_hard_block_reasons.
+  *
+  * Structure used for userspace communication on /dev/rfkill,
+  * used for events from the kernel and control to the kernel.
++ *
++ * See the extensibility docs below.
+  */
+-struct rfkill_event {
++struct rfkill_event_ext {
+ 	__u32 idx;
+ 	__u8  type;
+ 	__u8  op;
+ 	__u8  soft;
+ 	__u8  hard;
++
++	/*
++	 * older kernels will accept/send only up to this point,
++	 * and if extended further up to any chunk marked below
++	 */
++
+ 	__u8  hard_block_reasons;
+ } __attribute__((packed));
+ 
+-/*
+- * We are planning to be backward and forward compatible with changes
+- * to the event struct, by adding new, optional, members at the end.
+- * When reading an event (whether the kernel from userspace or vice
+- * versa) we need to accept anything that's at least as large as the
+- * version 1 event size, but might be able to accept other sizes in
+- * the future.
++/**
++ * DOC: Extensibility
++ *
++ * Originally, we had planned to allow backward and forward compatible
++ * changes by just adding fields at the end of the structure that are
++ * then not reported on older kernels on read(), and not written to by
++ * older kernels on write(), with the kernel reporting the size it did
++ * accept as the result.
++ *
++ * This would have allowed userspace to detect on read() and write()
++ * which kernel structure version it was dealing with, and if was just
++ * recompiled it would have gotten the new fields, but obviously not
++ * accessed them, but things should've continued to work.
++ *
++ * Unfortunately, while actually exercising this mechanism to add the
++ * hard block reasons field, we found that userspace (notably systemd)
++ * did all kinds of fun things not in line with this scheme:
++ *
++ * 1. treat the (expected) short writes as an error;
++ * 2. ask to read sizeof(struct rfkill_event) but then compare the
++ *    actual return value to RFKILL_EVENT_SIZE_V1 and treat any
++ *    mismatch as an error.
++ *
++ * As a consequence, just recompiling with a new struct version caused
++ * things to no longer work correctly on old and new kernels.
++ *
++ * Hence, we've rolled back &struct rfkill_event to the original version
++ * and added &struct rfkill_event_ext. This effectively reverts to the
++ * old behaviour for all userspace, unless it explicitly opts in to the
++ * rules outlined here by using the new &struct rfkill_event_ext.
++ *
++ * Userspace using &struct rfkill_event_ext must adhere to the following
++ * rules
+  *
+- * One exception is the kernel -- we already have two event sizes in
+- * that we've made the 'hard' member optional since our only option
+- * is to ignore it anyway.
++ * 1. accept short writes, optionally using them to detect that it's
++ *    running on an older kernel;
++ * 2. accept short reads, knowing that this means it's running on an
++ *    older kernel;
++ * 3. treat reads that are as long as requested as acceptable, not
++ *    checking against RFKILL_EVENT_SIZE_V1 or such.
+  */
+-#define RFKILL_EVENT_SIZE_V1	8
++#define RFKILL_EVENT_SIZE_V1	sizeof(struct rfkill_event)
+ 
+ /* ioctl for turning off rfkill-input (if present) */
+ #define RFKILL_IOC_MAGIC	'R'
+diff --git a/net/rfkill/core.c b/net/rfkill/core.c
+index 68d6ef9e59fc..ac15a944573f 100644
+--- a/net/rfkill/core.c
++++ b/net/rfkill/core.c
+@@ -69,7 +69,7 @@ struct rfkill {
+ 
+ struct rfkill_int_event {
+ 	struct list_head	list;
+-	struct rfkill_event	ev;
++	struct rfkill_event_ext	ev;
+ };
+ 
+ struct rfkill_data {
+@@ -253,7 +253,8 @@ static void rfkill_global_led_trigger_unregister(void)
+ }
+ #endif /* CONFIG_RFKILL_LEDS */
+ 
+-static void rfkill_fill_event(struct rfkill_event *ev, struct rfkill *rfkill,
++static void rfkill_fill_event(struct rfkill_event_ext *ev,
++			      struct rfkill *rfkill,
+ 			      enum rfkill_operation op)
+ {
+ 	unsigned long flags;
+@@ -1237,7 +1238,7 @@ static ssize_t rfkill_fop_write(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *pos)
+ {
+ 	struct rfkill *rfkill;
+-	struct rfkill_event ev;
++	struct rfkill_event_ext ev;
+ 	int ret;
+ 
+ 	/* we don't need the 'hard' variable but accept it */
+
+
+
+johannes
+
