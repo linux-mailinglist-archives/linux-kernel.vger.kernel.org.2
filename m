@@ -2,96 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA6534043F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E044340452
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhCRLKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhCRLKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:10:32 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD656C06174A;
-        Thu, 18 Mar 2021 04:10:31 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso2927272pjb.3;
-        Thu, 18 Mar 2021 04:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/3GlBYsBWOhEfNPMOeTbEC02ssqJu4/v6tbUqIoSloE=;
-        b=Y9XyPVonavaqGn3DG9TZ6/5z6hluRApj9hDpub0BdswGVts3ZzqjaLX4WbnRSiJbyj
-         4pgeG5IDNQK47DnEy6Bgkn55WhppmFd1XnzTRwwXM64hBpAIA6UwsWcHTMiBI+u8Ygcz
-         ow/xVf/I4XGs/hZlFCEHgIvwbizpPAHPGDPOSYKmtPp4rYQBvdkKGikGJ+OCE/NSplXi
-         KCpJ0r6hCY75WfVVL6KGnNnPYlv8ukSidfyBAMQpgxVVRXVWxM0Xq4BF/Qbco8M8ADTh
-         egSw96cRW0jiqCw2fihPBtBjMVz7Qtno6fhIAuIBEVs/314Pw73XoyItH/fdacIehDOi
-         RSpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/3GlBYsBWOhEfNPMOeTbEC02ssqJu4/v6tbUqIoSloE=;
-        b=SXApmKoT0ZpuAFq5KcEshEybfkKhFCf9d7aRyY+JgOSkwAhzZh9r01SVLCHih7D+Ur
-         kBXEDVUeqFwtCLowY8+IHhxVUWzHMGz+WrDtldpKpSuoOZprU55HR9JEENOw2ux7vDJa
-         m317Yi+uWZZkogP0Jup9g2msPHbHXqaMbay0Msdk90dEnXGO9v2St74QpKQUELDKqg/Z
-         WYO796plH6ZzFX4uE+myeED1TzKib5IHcUnuD7LQpWTi1sf0f6UWMl/B7vrbfYrL1Way
-         NaQZU9Ih7K9DJcCG99DUERZdD3B6B7snvphd4tNH2ESHs/9eCwKmsuxlJ9D/YrOBeG1J
-         Gagw==
-X-Gm-Message-State: AOAM530tHTAktkBRLk5LEKipY0HoBk3XwKz7e4JGhfCXAgCw2GJZogZH
-        gjHjsjnX/rqhWTyHzBYUMnWGIOY9gWA=
-X-Google-Smtp-Source: ABdhPJyGAfoYt6G5NxRT8JMFrZjtBOzEX8gJC3mkiNyp0nf6kO6CX+gul00HdvNfPy7A4bZKiHcUGA==
-X-Received: by 2002:a17:902:b908:b029:e6:3e0a:b3cc with SMTP id bf8-20020a170902b908b02900e63e0ab3ccmr9295452plb.68.1616065831326;
-        Thu, 18 Mar 2021 04:10:31 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id t22sm2128707pjo.45.2021.03.18.04.10.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:10:30 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: xiong.zhenwu@zte.com.cn
-To:     casey@schaufler-ca.com
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
-Subject: [PATCH] security/smack: fix misspellings using codespell tool
-Date:   Thu, 18 Mar 2021 04:10:24 -0700
-Message-Id: <20210318111024.472126-1-xiong.zhenwu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        id S230363AbhCRLMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:12:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230378AbhCRLLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 07:11:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6577ACBF;
+        Thu, 18 Mar 2021 11:11:52 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 12:11:52 +0100
+Message-ID: <s5hczvwiumf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: systemd-rfkill regression on 5.11 and later kernels
+In-Reply-To: <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
+References: <s5ha6r0kgt5.wl-tiwai@suse.de>
+        <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
+        <s5ho8fgixl9.wl-tiwai@suse.de>
+        <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+On Thu, 18 Mar 2021 11:50:37 +0100,
+Johannes Berg wrote:
+> 
+> Hi,
+> 
+> > OK, I took a deeper look again, and actually there are two issues in
+> > systemd-rfkill code:
+> > 
+> > * It expects 8 bytes returned from read while it reads a struct
+> >   rfkill_event record.  If the code is rebuilt with the latest kernel
+> >   headers, it breaks due to the change of rfkill_event.  That's the
+> >   error openSUSE bug report points to.
+> 
+> Right. It hardcoded the size check but not the size it reads.
+> 
+> > * When systemd-rfkill is built with the latest kernel headers but runs
+> >   on the old kernel code, the write size check fails as you mentioned
+> >   in the above.  That's another part of the github issue.
+> 
+> Yes. And it's all confusing, because they only later added the "this is
+> on 5.10" bits, and on pure 5.11 the second thing made no sense.
+> 
+> Same confusion bit the developer of the systemd fix, but nonetheless the
+> fix seems OK.
+> 
+> > So, with a kernel devs hat on, I share your feeling, that's an
+> > application bug.  OTOH, the extension of the rfkill_event is, well,
+> > not really safe as expected.
+> 
+> Evidently.
+> 
+> > IMO, if systemd-rfkill is the only one that hits such a problem, we
+> > may let the systemd code fixed, as it's obviously buggy.  But who
+> > knows...
+> 
+> We hit it in at least one other places, but that was just dev/test code,
+> I think.
 
-A typo is found out by codespell tool in 116th line of smackfs.c:
+OK.
 
-$ codespell ./security/smack
-./smackfs.c:116: lables  ==> labels
+I guess that most of code has worked so far unless it's rebuilt with
+the new kernel headers.  That said, the kernel driver works fine as
+long as an old app binary runs.  But the question is how many apps are
+written correctly with the sight of the future extension like this.
 
-Fix a typo found by codespell.
+> > Is the extension of rfkill_event mandatory?  Can the new entry
+> > provided in a different way such as another sysfs record?
+> 
+> Yes, it is mandatory - it needs to be provided as an event. Well, I
+> guess in theory it's all software, but ... getting an event and then
+> having to poke a sysfs file is also a nightmare.
 
-Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
----
- security/smack/smackfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+True, that's also not guaranteed to be tied with the timing.
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 22ded2c26089..ef8625cb3f2a 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -113,7 +113,7 @@ struct smack_known *smack_syslog_label;
-  * SMACK_PTRACE_DEFAULT    regular smack ptrace rules (/proc based)
-  * SMACK_PTRACE_EXACT      labels must match, but can be overriden with
-  *			   CAP_SYS_PTRACE
-- * SMACK_PTRACE_DRACONIAN  lables must match, CAP_SYS_PTRACE has no effect
-+ * SMACK_PTRACE_DRACONIAN  labels must match, CAP_SYS_PTRACE has no effect
-  */
- int smack_ptrace_rule = SMACK_PTRACE_DEFAULT;
- 
--- 
-2.25.1
+> > IOW, if we revert the change, would it break anything else new?
+> 
+> It would break the necessary notification for the feature :)
+> 
+> 
+> That said, we can "fix" this like this, and hope we'll not get this
+> again? And if we do get it again ... well, we keep renaming the structs
+> and add "struct rfkill_event_v3" next time?
 
+Yeah, that's a dilemma.  An oft-seen trick is to add more bytes for
+the future use, e.g. extend to 16 bytes and fill 0 for the remaining.
+
+In the sound driver, we introduced an ioctl to inform from user-space
+which API protocol it can speak, and the kernel falls back to the old
+API/ABI if it's a lower version or it's not told at all.  But I'm not
+sure whether such an implementation is optimal for rfkill.
+
+
+thanks,
+
+Takashi
+
+> 
+> 
+> 
+> diff --git a/include/uapi/linux/rfkill.h b/include/uapi/linux/rfkill.h
+> index 03e8af87b364..9b77cfc42efa 100644
+> --- a/include/uapi/linux/rfkill.h
+> +++ b/include/uapi/linux/rfkill.h
+> @@ -86,34 +86,90 @@ enum rfkill_hard_block_reasons {
+>   * @op: operation code
+>   * @hard: hard state (0/1)
+>   * @soft: soft state (0/1)
+> + *
+> + * Structure used for userspace communication on /dev/rfkill,
+> + * used for events from the kernel and control to the kernel.
+> + */
+> +struct rfkill_event {
+> +	__u32 idx;
+> +	__u8  type;
+> +	__u8  op;
+> +	__u8  soft;
+> +	__u8  hard;
+> +} __attribute__((packed));
+> +
+> +/**
+> + * struct rfkill_event_ext - events for userspace on /dev/rfkill
+> + * @idx: index of dev rfkill
+> + * @type: type of the rfkill struct
+> + * @op: operation code
+> + * @hard: hard state (0/1)
+> + * @soft: soft state (0/1)
+>   * @hard_block_reasons: valid if hard is set. One or several reasons from
+>   *	&enum rfkill_hard_block_reasons.
+>   *
+>   * Structure used for userspace communication on /dev/rfkill,
+>   * used for events from the kernel and control to the kernel.
+> + *
+> + * See the extensibility docs below.
+>   */
+> -struct rfkill_event {
+> +struct rfkill_event_ext {
+>  	__u32 idx;
+>  	__u8  type;
+>  	__u8  op;
+>  	__u8  soft;
+>  	__u8  hard;
+> +
+> +	/*
+> +	 * older kernels will accept/send only up to this point,
+> +	 * and if extended further up to any chunk marked below
+> +	 */
+> +
+>  	__u8  hard_block_reasons;
+>  } __attribute__((packed));
+>  
+> -/*
+> - * We are planning to be backward and forward compatible with changes
+> - * to the event struct, by adding new, optional, members at the end.
+> - * When reading an event (whether the kernel from userspace or vice
+> - * versa) we need to accept anything that's at least as large as the
+> - * version 1 event size, but might be able to accept other sizes in
+> - * the future.
+> +/**
+> + * DOC: Extensibility
+> + *
+> + * Originally, we had planned to allow backward and forward compatible
+> + * changes by just adding fields at the end of the structure that are
+> + * then not reported on older kernels on read(), and not written to by
+> + * older kernels on write(), with the kernel reporting the size it did
+> + * accept as the result.
+> + *
+> + * This would have allowed userspace to detect on read() and write()
+> + * which kernel structure version it was dealing with, and if was just
+> + * recompiled it would have gotten the new fields, but obviously not
+> + * accessed them, but things should've continued to work.
+> + *
+> + * Unfortunately, while actually exercising this mechanism to add the
+> + * hard block reasons field, we found that userspace (notably systemd)
+> + * did all kinds of fun things not in line with this scheme:
+> + *
+> + * 1. treat the (expected) short writes as an error;
+> + * 2. ask to read sizeof(struct rfkill_event) but then compare the
+> + *    actual return value to RFKILL_EVENT_SIZE_V1 and treat any
+> + *    mismatch as an error.
+> + *
+> + * As a consequence, just recompiling with a new struct version caused
+> + * things to no longer work correctly on old and new kernels.
+> + *
+> + * Hence, we've rolled back &struct rfkill_event to the original version
+> + * and added &struct rfkill_event_ext. This effectively reverts to the
+> + * old behaviour for all userspace, unless it explicitly opts in to the
+> + * rules outlined here by using the new &struct rfkill_event_ext.
+> + *
+> + * Userspace using &struct rfkill_event_ext must adhere to the following
+> + * rules
+>   *
+> - * One exception is the kernel -- we already have two event sizes in
+> - * that we've made the 'hard' member optional since our only option
+> - * is to ignore it anyway.
+> + * 1. accept short writes, optionally using them to detect that it's
+> + *    running on an older kernel;
+> + * 2. accept short reads, knowing that this means it's running on an
+> + *    older kernel;
+> + * 3. treat reads that are as long as requested as acceptable, not
+> + *    checking against RFKILL_EVENT_SIZE_V1 or such.
+>   */
+> -#define RFKILL_EVENT_SIZE_V1	8
+> +#define RFKILL_EVENT_SIZE_V1	sizeof(struct rfkill_event)
+>  
+>  /* ioctl for turning off rfkill-input (if present) */
+>  #define RFKILL_IOC_MAGIC	'R'
+> diff --git a/net/rfkill/core.c b/net/rfkill/core.c
+> index 68d6ef9e59fc..ac15a944573f 100644
+> --- a/net/rfkill/core.c
+> +++ b/net/rfkill/core.c
+> @@ -69,7 +69,7 @@ struct rfkill {
+>  
+>  struct rfkill_int_event {
+>  	struct list_head	list;
+> -	struct rfkill_event	ev;
+> +	struct rfkill_event_ext	ev;
+>  };
+>  
+>  struct rfkill_data {
+> @@ -253,7 +253,8 @@ static void rfkill_global_led_trigger_unregister(void)
+>  }
+>  #endif /* CONFIG_RFKILL_LEDS */
+>  
+> -static void rfkill_fill_event(struct rfkill_event *ev, struct rfkill *rfkill,
+> +static void rfkill_fill_event(struct rfkill_event_ext *ev,
+> +			      struct rfkill *rfkill,
+>  			      enum rfkill_operation op)
+>  {
+>  	unsigned long flags;
+> @@ -1237,7 +1238,7 @@ static ssize_t rfkill_fop_write(struct file *file, const char __user *buf,
+>  				size_t count, loff_t *pos)
+>  {
+>  	struct rfkill *rfkill;
+> -	struct rfkill_event ev;
+> +	struct rfkill_event_ext ev;
+>  	int ret;
+>  
+>  	/* we don't need the 'hard' variable but accept it */
+> 
+> 
+> 
+> johannes
+> 
