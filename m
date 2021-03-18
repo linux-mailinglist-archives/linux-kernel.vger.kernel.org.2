@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A6A340676
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93ADC340681
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhCRNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:09:21 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:47084 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbhCRNIx (ORCPT
+        id S231390AbhCRNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:10:25 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37604 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhCRNJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:08:53 -0400
-Received: by mail-vs1-f41.google.com with SMTP id l22so1502354vsr.13;
-        Thu, 18 Mar 2021 06:08:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3W+gRU3tHOQftjVIDBjSp6oKqWWk/fcbiFHz3gji3RA=;
-        b=CKLH0megC93YIgSK38RvzBgRSunx8AfYLFKJEXOkUwzC+6uykuBEJQcrvkIrrPiRym
-         UBK9CtgPSuySJQZfk0262NzsI/l8ytFJg6V0I5+NR6BjEIGSOg9R7y3fNg9LCo10md1r
-         D5IV6uAca2FX+CEuKGLuwfp7zmkHdDiakw3WD0AFFvEl/mP2AKKm86QKssqATIpP4ONN
-         9sKccpUzMpj5eqo7fAhvzwGaI1Y1jYHE0BxEBmZFrWjMw6DzrC19xXvjfOLETMVhrAOB
-         gxguLwVnNFZatVUPU0T0YFxK5EYEEVgwzKvPWxquyZRNon3vxeGnqTfUhGPPIurAxD8L
-         JnJg==
-X-Gm-Message-State: AOAM531xD/d6M6HngzRvmAy4DFKzNi3MicdnCj35Y/5y7VW0U92rYx+1
-        ui9bQmLXvokyOTacitIQtipwFqI4tT90XcAg6XminUhR
-X-Google-Smtp-Source: ABdhPJwSYclVqk3CG+KwOsQJDNF/gnlOqbyQv3/6dPaqrdvn9b/kEKBWwIe28FgiQQb6nLHFTrMEdwstEC2d9ss4Ju8=
-X-Received: by 2002:a67:fe90:: with SMTP id b16mr6581294vsr.40.1616072932463;
- Thu, 18 Mar 2021 06:08:52 -0700 (PDT)
+        Thu, 18 Mar 2021 09:09:55 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID4QcE065919;
+        Thu, 18 Mar 2021 13:09:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=qhivaSffjcPONjbtNTtUJv8Md5/DStyaFkCE2sLu96s=;
+ b=wISeVLclV+h9kAkrAuA4YbGccKorpd1oMg3pfgwkoaz6rjR6rlZeJNCYD0rV0niFz8pK
+ peREuocj0aOiJNlSnG/kRzxelbAfyxcp2iPEfOgu27qW8msLhNov1wVNUkxj4ropBjOG
+ KpOAQJOeu3s2oHVsMxRIh8gukSIoKnMoOopwBwlXa7bazMOwwCZgdMNLontey2gX0Uma
+ OY4O9FsEVfHTJkB7LK90iJNReCL5H8HeCtC21ztUAd8vmEsRjsIxs6Mzt8mxGyYg6iyQ
+ aizU2YKhPkCPyqnuEa5Lm41FiVwMG/lKntU7dG6qD7RcmvNetKe12LGWakjAtyUVlM1T aw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37a4ekvbu5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 13:09:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID67hj027727;
+        Thu, 18 Mar 2021 13:09:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3797b2wju1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 13:09:46 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12ID9jKJ031311;
+        Thu, 18 Mar 2021 13:09:45 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Mar 2021 06:09:44 -0700
+Date:   Thu, 18 Mar 2021 16:09:37 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     Hyunchul Lee <hyc.lee@gmail.com>,
+        Steve French <stfrench@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] cifsd: fix a IS_ERR() vs NULL bug
+Message-ID: <YFNREQvcyecq3NMp@mwanda>
 MIME-Version: 1.0
-References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-5-aford173@gmail.com>
- <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com> <CAHCN7xLtDyfB5h5rWTLpiUgWY==2KmxYCOQkVSeU8DV8KB-NKg@mail.gmail.com>
-In-Reply-To: <CAHCN7xLtDyfB5h5rWTLpiUgWY==2KmxYCOQkVSeU8DV8KB-NKg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Mar 2021 14:08:40 +0100
-Message-ID: <CAMuHMdV1e+bBapynOQwhuBpdBcpn-03hpOu4KAaK4GHhcdROEg@mail.gmail.com>
-Subject: Re: [PATCH V3 5/5] arm64: dts: renesas: beacon kits: Setup AVB refclk
-To:     Adam Ford <aford173@gmail.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180097
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+The smb_direct_alloc_sendmsg() function never returns NULL, it only
+returns error pointers so the check needs to be updated.
 
-On Thu, Mar 18, 2021 at 1:44 PM Adam Ford <aford173@gmail.com> wrote:
-> On Thu, Mar 4, 2021 at 2:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
-> > > The AVB refererence clock assumes an external clock that runs
-> >
-> > reference
-> >
-> > > automatically.  Because the Versaclock is wired to provide the
-> > > AVB refclock, the device tree needs to reference it in order for the
-> > > driver to start the clock.
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > i.e. will queue in renesas-devel (with the typo fixed) once the DT
-> > bindings have been accepted.
-> >
->
-> Who do I need to ping to get the DT bindings accepted?  They have an
-> acked-by from Rob.
+Fixes: cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ fs/cifsd/transport_rdma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Sergei, can you please have a look at the DT binding change?
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/cifsd/transport_rdma.c b/fs/cifsd/transport_rdma.c
+index 1698f7ed9c2f..638b551019a1 100644
+--- a/fs/cifsd/transport_rdma.c
++++ b/fs/cifsd/transport_rdma.c
+@@ -997,8 +997,8 @@ static int smb_direct_create_header(struct smb_direct_transport *t,
+ 	int ret;
+ 
+ 	sendmsg = smb_direct_alloc_sendmsg(t);
+-	if (!sendmsg)
+-		return -ENOMEM;
++	if (IS_ERR(sendmsg))
++		return PTR_ERR(sendmsg);
+ 
+ 	/* Fill in the packet header */
+ 	packet = (struct smb_direct_data_transfer *)sendmsg->packet;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
