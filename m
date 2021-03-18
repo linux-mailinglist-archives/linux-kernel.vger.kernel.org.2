@@ -2,159 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A68A340B92
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501D7340BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhCRRSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:18:41 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22332 "EHLO mga07.intel.com"
+        id S229813AbhCRRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:22:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230353AbhCRRSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:18:10 -0400
-IronPort-SDR: jX8YIgpg4/CMMwNMAiHFP65eFPwHj+sCt8OJfogCWvza2qVTbddFqARgk7h6k6Wwiijo8fF16p
- VC9xMPuRHT+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="253740889"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="253740889"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 10:18:09 -0700
-IronPort-SDR: CJre4EnGzJ8VFqHnYRuGkXzZH0qKYDFIwr/japVA0/UFaptXhsAttTOKHEwZR9q4Qyor9/7kTZ
- 6hOWLUoC4R6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="374641163"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by orsmga006.jf.intel.com with ESMTP; 18 Mar 2021 10:18:07 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next 2/2] net: stmmac: add RX frame steering based on VLAN priority in tc flower
-Date:   Fri, 19 Mar 2021 01:22:04 +0800
-Message-Id: <20210318172204.23766-3-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210318172204.23766-1-boon.leong.ong@intel.com>
-References: <20210318172204.23766-1-boon.leong.ong@intel.com>
+        id S229840AbhCRRWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A821D64E37;
+        Thu, 18 Mar 2021 17:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616088142;
+        bh=dc75pwbsctWQPsOF4qhXgHwdNZ7A2PS9JI4jzCZQtD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JZquC8xKhoSzFRHEFApwcMDGqaxFIaw1hdX8EMc6uJcHjXZz7Bvai5zy5e/xpSEV+
+         9x+OWs1JUskfQZ+s0rAit/FFHL3zuzREq4oKeFq4qIUaTBfzGJRtzZ4md5oCjA+nxe
+         t3lV5Kz9peMkKTeQZeXyxeXls3WFApHPH3T7nqFmfpkfx0YQHXYM1cBMCn/GaLK0V2
+         0b9fNDz0Ck/GrLwPBIjrWPr7RDW+2Cw1XFOOitESs0PRhNfgz62wxwdpF1pix/5PkC
+         PSJ6PIDL6J2V9jYUVHDcGqQQXObkEXSe3mKFURT0a9iHgCwoJ36co6UuYqscCeG8nA
+         1QfpjO0Z06xkw==
+Date:   Thu, 18 Mar 2021 19:22:18 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFOMShJAm4j/3vRl@unreal>
+References: <YFGDgqdTLBhQL8mN@unreal>
+ <20210317102447.73no7mhox75xetlf@archlinux>
+ <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318103935.2ec32302@omen.home.shazbot.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318103935.2ec32302@omen.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We extend tc flower to support configuration of VLAN priority-based RX
-frame steering hardware offloading.
+On Thu, Mar 18, 2021 at 10:39:35AM -0600, Alex Williamson wrote:
+> On Thu, 18 Mar 2021 11:09:34 +0200
+> Leon Romanovsky <leon@kernel.org> wrote:
 
-To map VLAN <PCP> to Traffic Class <TC>:
-  $ tc filter add dev <IFNAME> parent ffff: protocol 802.1Q flower \
-       vlan_prio <PCP> hw_tc <TC>
+<...>
 
-  Note: <TC> < N whereby "tc qdisc ... num_tc N ..."
+> > I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+> >
+> > If it is latter then we don't really need sysfs, if not, we still need
+> > some sort of DB to create second policy, because "supported != working".
+> > What am I missing?
+>
+> vfio-pci uses the internal kernel API, ie. the variants of
+> pci_reset_function(), which is the same interface used by the existing
+> sysfs reset mechanism.  This proposed configuration of the reset method
+> would affect any driver using that same core infrastructure and from my
+> perspective that's really the goal.  In the case where a supported
+> reset mechanism fails for a device, continuing to quirk those out for
+> the best default behavior makes sense, I'd be disappointed for a vendor
+> to not pursue improving the default behavior where it clearly makes
+> sense.  However, there's also a policy decision, the kernel imposes a
+> preferential ordering of reset mechanism.  Is that ordering the best
+> case for all users?  I've presented above a case where a userspace may
+> prefer a policy of preferring a bus reset to a PM reset.  So I think
+> the question is not only are there supported mechanisms that don't
+> work, where this interface allows userspace to more readily identify
+> and work around those sorts of issues, but it also enables user
+> preference and easier evaluation whether all of the supported reset
+> mechanisms work rather than just the first one we encounter in the
+> ordering we've decided to impose today.  Thanks,
 
-To delete all tc flower configurations:
-  $ tc qdisc delete dev <IFNAME> ingress
+Alex,
 
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 65 ++++++++++++++++++-
- 1 file changed, 63 insertions(+), 2 deletions(-)
+Which email client do you use?
+Your responses are grouped as one huge block without any chance to respond
+to you on specific point or answer to your question.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index f4d8d7980ec5..b80cb2985b39 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -598,14 +598,73 @@ static int tc_del_flow(struct stmmac_priv *priv,
- 	return ret;
- }
- 
-+#define VLAN_PRIO_FULL_MASK (0x07)
-+
-+static int tc_add_vlan_flow(struct stmmac_priv *priv,
-+			    struct flow_cls_offload *cls)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
-+	struct flow_dissector *dissector = rule->match.dissector;
-+	int tc = tc_classid_to_hwtc(priv->dev, cls->classid);
-+	struct flow_match_vlan match;
-+
-+	/* Nothing to do here */
-+	if (!dissector_uses_key(dissector, FLOW_DISSECTOR_KEY_VLAN))
-+		return -EINVAL;
-+
-+	if (tc < 0) {
-+		netdev_err(priv->dev, "Invalid traffic class\n");
-+		return -EINVAL;
-+	}
-+
-+	flow_rule_match_vlan(rule, &match);
-+
-+	if (match.mask->vlan_priority) {
-+		u32 prio;
-+
-+		if (match.mask->vlan_priority != VLAN_PRIO_FULL_MASK) {
-+			netdev_err(priv->dev, "Only full mask is supported for VLAN priority");
-+			return -EINVAL;
-+		}
-+
-+		prio = BIT(match.key->vlan_priority);
-+		stmmac_rx_queue_prio(priv, priv->hw, prio, tc);
-+	}
-+
-+	return 0;
-+}
-+
-+static int tc_del_vlan_flow(struct stmmac_priv *priv,
-+			    struct flow_cls_offload *cls)
-+{
-+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
-+	struct flow_dissector *dissector = rule->match.dissector;
-+	int tc = tc_classid_to_hwtc(priv->dev, cls->classid);
-+
-+	/* Nothing to do here */
-+	if (!dissector_uses_key(dissector, FLOW_DISSECTOR_KEY_VLAN))
-+		return -EINVAL;
-+
-+	if (tc < 0) {
-+		netdev_err(priv->dev, "Invalid traffic class\n");
-+		return -EINVAL;
-+	}
-+
-+	stmmac_rx_queue_prio(priv, priv->hw, 0, tc);
-+
-+	return 0;
-+}
-+
- static int tc_add_flow_cls(struct stmmac_priv *priv,
- 			   struct flow_cls_offload *cls)
- {
- 	int ret;
- 
- 	ret = tc_add_flow(priv, cls);
-+	if (!ret)
-+		return ret;
- 
--	return ret;
-+	return tc_add_vlan_flow(priv, cls);
- }
- 
- static int tc_del_flow_cls(struct stmmac_priv *priv,
-@@ -614,8 +673,10 @@ static int tc_del_flow_cls(struct stmmac_priv *priv,
- 	int ret;
- 
- 	ret = tc_del_flow(priv, cls);
-+	if (!ret)
-+		return ret;
- 
--	return ret;
-+	return tc_del_vlan_flow(priv, cls);
- }
- 
- static int tc_setup_cls(struct stmmac_priv *priv,
--- 
-2.25.1
+I see your flow and understand your position, but will repeat my
+position. We need to make sure that vendors will have incentive to
+supply quirks.
 
+And regarding vendors, see Amey response below about his touchpad troubles.
+The cheap electronics vendors don't care about their users.
+
+Thanks
+
+>
+> Alex
+>
