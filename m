@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A106340BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312D8340BFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhCRRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S231925AbhCRRji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhCRRg4 (ORCPT
+        with ESMTP id S230353AbhCRRj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:36:56 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21A4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:56 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id f19so3155017ion.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:56 -0700 (PDT)
+        Thu, 18 Mar 2021 13:39:26 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A85C06174A;
+        Thu, 18 Mar 2021 10:39:26 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so5392485pjc.2;
+        Thu, 18 Mar 2021 10:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tu9gSWOmC9qi1oLsBayI43v5i3/1uM9fITXIC/EDoi4=;
-        b=hM64YBflqL3+APM2OIUOZPpD5Qq243ADFkfIPoCxxWX1LjuBjbMDBD8hIA+uYNQpA8
-         PNiRJ/ji+AsmzzpwwkuZT+Eg+/dZ/WobZkLn/9iatpsoIX+dfqJRslKb5VPZLuhUxw0F
-         gmHzhJhXYB5cIjIdMrCo4GRJXAaFx6vwc4/oo=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IhkVeMNa3z3bkyHG/n5Yqbdya8Y6YodntxafL1/t7os=;
+        b=TUFkNuBaFMnmhcxPTzC3mXhgrGfceRtzFYxcJTaxVYT752Oyoo53IQ8Ng3/IwDgApB
+         HPOn2KcroJmLA4uG0h7bOw7ivjvQ8RHrQVoG9VyZelQQFo37hCwr+EXtjqJWrOD3mTk/
+         cjS+qoW2oKLsCJ6aGNHl74LZpZFJiyDMY9Gv5tnWcJBh9Guz6mSkNz49RFU+Al6iaqQ6
+         x3AY3VWXOzO6ngjf6t8MkT43QJ0fbyEwFBYbNzxmwhd3B/6xVJLKrY+DnYV4mXLasm4e
+         EGKTgcohDeFq5aTcRHWts4P5dB6GUT/dPRTgR483RTU8AtSjd8Qe+25L+36avyQm4CqL
+         xzPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tu9gSWOmC9qi1oLsBayI43v5i3/1uM9fITXIC/EDoi4=;
-        b=hlNwrEhDXUBR7Wby+rGwsfYL/4uYPHoVDVncoXtbN9yQo1dCX+tW3+f1s0exdrrQT0
-         1Ee59Wr/HL/Wxq900zt3B6sesLTCYZKnVM2p27J84/EoFvJAjAG9DSnEM5nIyKBclLbe
-         BSAnW6jRX20ToW8VKFTt/4M8YuJneEdEu2FAu0skypkQZBo1cxvJwAJDze6UbD65q5Oy
-         /+SvgBa8halbAA411ktgdkC9QOjcyffhRhH6JfZalyLlACr7fNpRBDG78tkiTd5jYhjR
-         a/sPnoIZ/XglWMX6iAQfaXW6oRBHfO64sjcYxSf8EFY3a22aC2PNGog6k31akOmGO3CC
-         6kTw==
-X-Gm-Message-State: AOAM53110eMEKCHUL6JGu8Xy9N+w2wzzge8+MOOIjtCCAEulWCZD1lMY
-        G00WUp/7Kw8v3c8z4BT5yMAtSVh3HZkq7A==
-X-Google-Smtp-Source: ABdhPJy19Oq/v0ndr+jVXd03U6pM3ZKT/GtEIP7dYeSoY9O2CqAexWMRWyN7+zUecQ19A0eHvyXTsw==
-X-Received: by 2002:a6b:c881:: with SMTP id y123mr10798552iof.152.1616089015488;
-        Thu, 18 Mar 2021 10:36:55 -0700 (PDT)
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
-        by smtp.gmail.com with ESMTPSA id d2sm1400485ilm.7.2021.03.18.10.36.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
-Received: by mail-il1-f172.google.com with SMTP id c17so5636339ilj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
-X-Received: by 2002:a92:c266:: with SMTP id h6mr12784297ild.234.1616089014546;
- Thu, 18 Mar 2021 10:36:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210317104547.442203-1-leon@kernel.org> <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
- <YFMHYUbPmpS+Kzcj@unreal>
-In-Reply-To: <YFMHYUbPmpS+Kzcj@unreal>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 18 Mar 2021 10:36:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
-Message-ID: <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
-Subject: Re: [PATCH master] module: remove never implemented MODULE_SUPPORTED_DEVICE
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IhkVeMNa3z3bkyHG/n5Yqbdya8Y6YodntxafL1/t7os=;
+        b=R48uxOeSiJkrc+PeMNkxFDnA+iMkVl46ei11xGrRkpmOKp+PdiSdl8zCl3A0jKqAiq
+         U+WY172VauI26Eu0lLDJj/heGw//Jw8GMBTyPRhvqx2aI0rp3ytwawsZKeSBREdQ0+PG
+         +YgQwtqE0RfiGk+2QDAn23GalJMTTxvXthrL6V3cz1a7htzci0/H1sIRY6Py7UWD90Sq
+         PWDFJVCDbxk+KdBrAX/mtJtXVHOxixkPkbK59k/js4PeM0m8B2gnmFp6Xf0xM3hm52dW
+         2075ggn/axWM9zNw4tzqR7xIX1CNxv2wcuSU3UTfNDkOYGM4ClKRalSvfgLdQDGg6tcz
+         N70Q==
+X-Gm-Message-State: AOAM530A+NDeSYr6JflMRfn2NYaRQyTAyIp2UMuFwFhPZCJqWfaEOfWY
+        ashmahlxeYb2ofrptjhK9C0=
+X-Google-Smtp-Source: ABdhPJxVwHQRKzU04F2U0YURnHC92aRGsGlcRpzFJaOTeySHUSos3U8YOpMuJLdJmhUg/IWslXztpg==
+X-Received: by 2002:a17:90a:2c4b:: with SMTP id p11mr5758297pjm.75.1616089166011;
+        Thu, 18 Mar 2021 10:39:26 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id s3sm3133362pfs.185.2021.03.18.10.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:39:25 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 23:08:42 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
+        linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
+        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
+        felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210318173842.scxuvm2p7ub35wvk@archlinux>
+References: <20210317102447.73no7mhox75xetlf@archlinux>
+ <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318103935.2ec32302@omen.home.shazbot.org>
+ <YFOMShJAm4j/3vRl@unreal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFOMShJAm4j/3vRl@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 12:55 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > Also, your email seems to have swallowed spaces at the ends of lines.
-> >
-> > I can (and did) apply the patch with "--whitespace=fix", but that then
-> > causes git to fix some _other_ whitespace too, so the end result isn't
-> > quite the same. Oh well.
-> >
-> > Please check what's up with your email sending client that it seems to
-> > remove space at end of lines in patches.
+On 21/03/18 07:22PM, Leon Romanovsky wrote:
+> On Thu, Mar 18, 2021 at 10:39:35AM -0600, Alex Williamson wrote:
+> > On Thu, 18 Mar 2021 11:09:34 +0200
+> > Leon Romanovsky <leon@kernel.org> wrote:
 >
-> This is strange, I'm sending patches with "git send-email" with pretty
-> standard settings:
+> <...>
+>
+> > > I'm lost here, does vfio-pci use sysfs interface or internal to the kernel API?
+> > >
+> > > If it is latter then we don't really need sysfs, if not, we still need
+> > > some sort of DB to create second policy, because "supported != working".
+> > > What am I missing?
+> >
+> > vfio-pci uses the internal kernel API, ie. the variants of
+> > pci_reset_function(), which is the same interface used by the existing
+> > sysfs reset mechanism.  This proposed configuration of the reset method
+> > would affect any driver using that same core infrastructure and from my
+> > perspective that's really the goal.  In the case where a supported
+> > reset mechanism fails for a device, continuing to quirk those out for
+> > the best default behavior makes sense, I'd be disappointed for a vendor
+> > to not pursue improving the default behavior where it clearly makes
+> > sense.  However, there's also a policy decision, the kernel imposes a
+> > preferential ordering of reset mechanism.  Is that ordering the best
+> > case for all users?  I've presented above a case where a userspace may
+> > prefer a policy of preferring a bus reset to a PM reset.  So I think
+> > the question is not only are there supported mechanisms that don't
+> > work, where this interface allows userspace to more readily identify
+> > and work around those sorts of issues, but it also enables user
+> > preference and easier evaluation whether all of the supported reset
+> > mechanisms work rather than just the first one we encounter in the
+> > ordering we've decided to impose today.  Thanks,
+>
+>
+[...]
+> And regarding vendors, see Amey response below about his touchpad troubles.
+> The cheap electronics vendors don't care about their users.
+>
+> Thanks
+>
+On the side note that vendor probably doesn't care about
+Linux users because even that reverted patch was submitted
+by community member.
+Many vendors are satisfied with windows only drivers.
+They don't have any reason to support Linux. That doesn't
+mean we should also abandon those users.
 
-Hmm. I can't tell whats' wrong, but both my own mailbox and the
-lore.kernel.org clearly has missing whitespace at end of lines.
-
-You can see it yourself with a simple
-
-   b4 am 20210317104547.442203-1-leon@kernel.org
-
-(assuming you have b4 installed, of course:
-
-  https://pypi.org/project/b4/
-
-but with a kernel.org address I'm sure you've seen the emails about it
-even if you may not be a user).
-
-> Also, I'm using mail.kernel.org as a SMTP especially to make sure that
-> my mails are not mangled by our exchange server.
-
-Yeah, the email looks fine in any other way technically, it passes SPF
-and DKIM, and I don't see anything else strange going on either.
-
-I think the same VIM issue that caused some whitespace line changes
-for you in the patch might have then bitten you when you sent it out -
-I know you must have edited the message, becasuse you have that
-
-   "I'm sending this patch to you directly because it is much saner to
-    apply it in one place instead of multiple patches saga that will [...]"
-
-below the commit message, that you presumable added with "--annotate".
-
-> Are you sure that such change came from me and not from "--whitespace=fix"?
-
-Yup. See above on how you can just use b4 to download a copy yourself..
-
-         Linus
+Thanks,
+Amey
