@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DE9340496
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D4340499
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhCRL3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:29:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13191 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhCRL2u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:28:50 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1PqN00jHzmZSt;
-        Thu, 18 Mar 2021 19:26:23 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Mar 2021
- 19:28:38 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v3 5/5] mm/hugetlb: avoid calculating fault_mutex_hash in truncate_op case
-Date:   Thu, 18 Mar 2021 07:28:06 -0400
-Message-ID: <20210318112806.55774-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S229990AbhCRL3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:29:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:38682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229834AbhCRL3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 07:29:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73110ED1;
+        Thu, 18 Mar 2021 04:29:22 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5BAB3F792;
+        Thu, 18 Mar 2021 04:29:20 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 11:29:10 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Tom Saeger <tom.saeger@oracle.com>, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Tai <thomas.tai@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Al Stone <al.stone@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ahs3@redhat.com, ardb@kernel.org
+Subject: Re: [PATCH] Documentation: arm64/acpi : clarify arm64 support of IBFT
+Message-ID: <20210318112859.GA25002@e121166-lin.cambridge.arm.com>
+References: <9efc652df2b8d6b53d9acb170eb7c9ca3938dfef.1615920441.git.tom.saeger@oracle.com>
+ <20210318104433.GA6959@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318104433.GA6959@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fault_mutex hashing overhead can be avoided in truncate_op case
-because page faults can not race with truncation in this routine.  So
-calculate hash for fault_mutex only in !truncate_op case to save some cpu
-cycles.
+[+ Al, Ard]
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
----
-v2->v3:
-keep the initialization in case compilers produce a warning.
-Sorry for make noise. :(
+On Thu, Mar 18, 2021 at 10:44:33AM +0000, Will Deacon wrote:
+> [+Lorenzo]
+> 
+> On Tue, Mar 16, 2021 at 12:50:41PM -0600, Tom Saeger wrote:
+> > In commit 94bccc340710 ("iscsi_ibft: make ISCSI_IBFT dependson ACPI instead
+> > of ISCSI_IBFT_FIND") Kconfig was disentangled to make ISCSI_IBFT selection
+> > not depend on x86.
+> > 
+> > Update arm64 acpi documentation, changing IBFT support status from
+> > "Not Supported" to "Optional".
+> > Opportunistically re-flow paragraph for changed lines.
+> > 
+> > Link: https://lore.kernel.org/lkml/1563475054-10680-1-git-send-email-thomas.tai@oracle.com/
+> > 
+> > Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
+> > ---
+> >  Documentation/arm64/acpi_object_usage.rst | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> Lorenzo, please could you ack the change below if you're happy with it?
+> If so, I can take it as a fix.
 
-v1->v2:
-remove unnecessary initialization for variable hash
-collect Reviewed-by tag from Mike Kravetz
----
- fs/hugetlbfs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I don't see any issue with this patch, more so given that the IBFT
+legacy discovery method was decoupled from the ACPI table method,
+so it looks sound on ARM64.
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index c262566f7c5d..d81f52b87bd7 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -482,10 +482,9 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
- 
- 		for (i = 0; i < pagevec_count(&pvec); ++i) {
- 			struct page *page = pvec.pages[i];
--			u32 hash;
-+			u32 hash = 0;
- 
- 			index = page->index;
--			hash = hugetlb_fault_mutex_hash(mapping, index);
- 			if (!truncate_op) {
- 				/*
- 				 * Only need to hold the fault mutex in the
-@@ -493,6 +492,7 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
- 				 * page faults.  Races are not possible in the
- 				 * case of truncation.
- 				 */
-+				hash = hugetlb_fault_mutex_hash(mapping, index);
- 				mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 			}
- 
--- 
-2.19.1
+However, I would like to get Al and Ard opinions on this to make sure
+there is not something I am missing (in particular wrt the rationale
+behind the "Not Supported" in the docs).
 
+Lorenzo
+
+> Thanks,
+> 
+> Will
+> 
+> > diff --git a/Documentation/arm64/acpi_object_usage.rst b/Documentation/arm64/acpi_object_usage.rst
+> > index 377e9d224db0..0609da73970b 100644
+> > --- a/Documentation/arm64/acpi_object_usage.rst
+> > +++ b/Documentation/arm64/acpi_object_usage.rst
+> > @@ -17,12 +17,12 @@ For ACPI on arm64, tables also fall into the following categories:
+> >  
+> >         -  Recommended: BERT, EINJ, ERST, HEST, PCCT, SSDT
+> >  
+> > -       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IORT,
+> > -          MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT, STAO,
+> > -	  TCPA, TPM2, UEFI, XENV
+> > +       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IBFT,
+> > +          IORT, MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT,
+> > +          STAO, TCPA, TPM2, UEFI, XENV
+> >  
+> > -       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IBFT, IVRS, LPIT,
+> > -          MSDM, OEMx, PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
+> > +       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IVRS, LPIT, MSDM, OEMx,
+> > +          PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
+> >  
+> >  ====== ========================================================================
+> >  Table  Usage for ARMv8 Linux
+> > -- 
+> > 2.31.0
+> > 
