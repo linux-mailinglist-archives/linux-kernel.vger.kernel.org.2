@@ -2,85 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A034340E15
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6BB340E17
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 20:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhCRTUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 15:20:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232842AbhCRTTz (ORCPT
+        id S232883AbhCRTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 15:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232674AbhCRTUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:19:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616095194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f1YVGiXImUxO6HQP3BlOowu2qlSAjy9DBhcHqSg1igE=;
-        b=T+VbLc6ilg0aKzy8YOJruRhpq4CMNmqGipT199UsdJOcUeptvtt/1sBYxnXnZOh3PZROP0
-        Josacribz5v6Flmywu3CwqeH0fkuLw7Ochoee1Cxn5yDD75Uthwbzp8ifXjo/A8Tal+iP+
-        6P6hoEOt6hkncjwxtW7x3tC7J61XtLk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-P7ImUVHJMdKtqb0AJBSADg-1; Thu, 18 Mar 2021 15:19:53 -0400
-X-MC-Unique: P7ImUVHJMdKtqb0AJBSADg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1086101371C;
-        Thu, 18 Mar 2021 19:19:51 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 40E1B5C1D1;
-        Thu, 18 Mar 2021 19:19:50 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Eric Paris <eparis@parisplace.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH v3 2/2] audit: document /proc/PID/sessionid
-Date:   Thu, 18 Mar 2021 15:19:11 -0400
-Message-Id: <9543e42a75dd86bc0bed1f6cf735edc2169dc0b9.1616095045.git.rgb@redhat.com>
-In-Reply-To: <cover.1616095045.git.rgb@redhat.com>
-References: <cover.1616095045.git.rgb@redhat.com>
+        Thu, 18 Mar 2021 15:20:43 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E27C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:20:42 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id u5so5723202ejn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 12:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DlSGkcpM7n93m2NXphTK+vfx2de8ofv8+tDkCjG9ugo=;
+        b=p/21plRAKA00kj+4T75adsXsHf7ZMRaTa6UQJA+aiTXKTKoJGKvFVVPd87riYeNbO2
+         VLV8soOgZV/G2xwT2z9cHO24i01oXFMff+s8U1CR/rvN9JouweHtAIU6uwQQsXvdckBZ
+         Y7cdycazCcBx6tiqhxz8Ah+aRpQt8okOu+vyORg93c53B9vtIedJpnoLY6q+bdGXOqFt
+         2WV6Lz2QiXpnDvRXuvWg7v2he7R12PxPNY+WPDH/3uPX1aHxHUMoxO/XcLS1IGjFDhkd
+         ioIkshiLQpkMwlllG15YsAY+YriO+Pr9psWo3IYgNga/aKHZM4oHxIr9jGz+GV7iXMaP
+         XGWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DlSGkcpM7n93m2NXphTK+vfx2de8ofv8+tDkCjG9ugo=;
+        b=WjiyU/YySAa8W1QKlk0C8SyPXckszkXnXbJp1m8JZ5LKq8eRHI7W9lUmuz6GM6ZCqQ
+         rY9/yYgfG5KJACSxnkEb7q3uzhg/VHiy1KuI0euqoV8ZFuwJhQxmjU+3f1hF+kmv+WLX
+         xxnCHNDcbGXRXM3UEsUx9T/cnosZskrIqz8i8G66XQM3SpZJRonv8DM6amF0N21VPtW4
+         efIuGCBOsKlCKLVd2BNzq49L6slED7nzKO0h5LLL3i+biu8E5Ja+uDba0gYBYx67UAGh
+         5QqV9XRgFgWTah9A6aTtngJqGG8kWnEQM+kypY+NvZugi+MJlMRP9EcUq8IZXp+bwezb
+         NKpg==
+X-Gm-Message-State: AOAM531bDFM5v8LmDUxCGQj1dJEpZ5yNtVu9ax2f3saNUeDqfR8R9O1k
+        ILLU1jyS9ngUcyPY4itwQg+xMHIMwoZF0qc0nQqWwA==
+X-Google-Smtp-Source: ABdhPJxRNGn4R/MIQXf81dMHl00dEjUonY0A7VmKcQlICTbSL7uZYo2B373F7ZimvVTaIRpw34I5bjaerwpg4JQsQ/k=
+X-Received: by 2002:a17:906:c405:: with SMTP id u5mr116007ejz.341.1616095241325;
+ Thu, 18 Mar 2021 12:20:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161604050314.1463742.14151665140035795571.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210318045745.GC349301@dread.disaster.area>
+In-Reply-To: <20210318045745.GC349301@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 18 Mar 2021 12:20:35 -0700
+Message-ID: <CAPcyv4iPE_MB08PFM-DZig8g35YH_VTKydeFyffN+QovfXx7HA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm, dax, pmem: Introduce dev_pagemap_failure()
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the /proc/PID/loginuid interface in Documentation/ABI/stable that
-was added 2008-03-13 in commit 1e0bd7550ea9 ("[PATCH] export sessionid
-alongside the loginuid in procfs")
+On Wed, Mar 17, 2021 at 9:58 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Wed, Mar 17, 2021 at 09:08:23PM -0700, Dan Williams wrote:
+> > Jason wondered why the get_user_pages_fast() path takes references on a
+> > @pgmap object. The rationale was to protect against accessing a 'struct
+> > page' that might be in the process of being removed by the driver, but
+> > he rightly points out that should be solved the same way all gup-fast
+> > synchronization is solved which is invalidate the mapping and let the
+> > gup slow path do @pgmap synchronization [1].
+> >
+> > To achieve that it means that new user mappings need to stop being
+> > created and all existing user mappings need to be invalidated.
+> >
+> > For device-dax this is already the case as kill_dax() prevents future
+> > faults from installing a pte, and the single device-dax inode
+> > address_space can be trivially unmapped.
+> >
+> > The situation is different for filesystem-dax where device pages could
+> > be mapped by any number of inode address_space instances. An initial
+> > thought was to treat the device removal event like a drop_pagecache_sb()
+> > event that walks superblocks and unmaps all inodes. However, Dave points
+> > out that it is not just the filesystem user-mappings that need to react
+> > to global DAX page-unmap events, it is also filesystem metadata
+> > (proposed DAX metadata access), and other drivers (upstream
+> > DM-writecache) that need to react to this event [2].
+> >
+> > The only kernel facility that is meant to globally broadcast the loss of
+> > a page (via corruption or surprise remove) is memory_failure(). The
+> > downside of memory_failure() is that it is a pfn-at-a-time interface.
+> > However, the events that would trigger the need to call memory_failure()
+> > over a full PMEM device should be rare.
+>
+> This is a highly suboptimal design. Filesystems only need a single
+> callout to trigger a shutdown that unmaps every active mapping in
+> the filesystem - we do not need a page-by-page error notification
+> which results in 250 million hwposion callouts per TB of pmem to do
+> this.
+>
+> Indeed, the moment we get the first hwpoison from this patch, we'll
+> map it to the primary XFS superblock and we'd almost certainly
+> consider losing the storage behind that block to be a shut down
+> trigger. During the shutdown, the filesystem should unmap all the
+> active mappings (we already need to add this to shutdown on DAX
+> regardless of this device remove issue) and so we really don't need
+> a page-by-page notification of badness.
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
- Documentation/ABI/stable/procfs-audit_loginuid | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+XFS doesn't, but what about device-mapper and other agents? Even if
+the driver had a callback up the stack memory_failure() still needs to
+be able to trigger failures down the stack for CPU consumed poison.
 
-diff --git a/Documentation/ABI/stable/procfs-audit_loginuid b/Documentation/ABI/stable/procfs-audit_loginuid
-index e7c100b9ab18..9d55a3ff4b34 100644
---- a/Documentation/ABI/stable/procfs-audit_loginuid
-+++ b/Documentation/ABI/stable/procfs-audit_loginuid
-@@ -13,3 +13,15 @@ Description:
- 		AUDIT_FEATURE_LOGINUID_IMMUTABLE is enabled.  It cannot be
- 		unset if AUDIT_FEATURE_ONLY_UNSET_LOGINUID is enabled.
- 
-+
-+What:		Audit Login Session ID
-+Date:		2008-03-13
-+KernelVersion:	2.6.25-rc7 1e0bd7550ea9 ("[PATCH] export sessionid alongside the loginuid in procfs")
-+Contact:	linux-audit@redhat.com
-+Format:		%u
-+Users:		audit and login applications
-+Description:
-+		The /proc/$pid/sessionid pseudofile is read to get the
-+		audit login session ID of process $pid.  It is set
-+		automatically, serially assigned with each new login.
-+
--- 
-2.27.0
+>
+> AFAICT, it's going to take minutes, maybe hours for do the page-by-page
+> iteration to hwposion every page. It's going to take a few seconds
+> for the filesystem shutdown to run a device wide invalidation.
+>
+> SO, yeah, I think this should simply be a single ranged call to the
+> filesystem like:
+>
+>         ->memory_failure(dev, 0, -1ULL)
+>
+> to tell the filesystem that the entire backing device has gone away,
+> and leave the filesystem to handle failure entirely at the
+> filesystem level.
 
+So I went with memory_failure() after our discussion of all the other
+agents in the system that might care about these pfns going offline
+and relying on memory_failure() to route down to each of those. I.e.
+the "reuse the drop_pagecache_sb() model" idea was indeed
+insufficient. Now I'm trying to reconcile the fact that platform
+poison handling will hit memory_failure() first and may not
+immediately reach the driver, if ever (see the perennially awkward
+firmware-first-mode error handling: ghes_handle_memory_failure()) . So
+even if the ->memory_failure(dev...) up call exists there is no
+guarantee it can get called for all poison before the memory_failure()
+down call happens. Which means regardless of whether
+->memory_failure(dev...) exists memory_failure() needs to be able to
+do the right thing.
+
+Combine that with the fact that new buses like CXL might be configured
+in "poison on decode error" mode which means that a memory_failure()
+storm can happen regardless of whether the driver initiates it
+programatically.
+
+How about a mechanism to optionally let a filesystem take over memory
+failure handling for a range of pfns that the memory_failure() can
+consult to fail ranges at a time rather than one by one? So a new
+'struct dax_operations' op (void) (*memory_failure_register(struct
+dax_device *, void *data). Where any agent that claims a dax_dev can
+register to take over memory_failure() handling for any event that
+happens in that range. This would be routed through device-mapper like
+any other 'struct dax_operations' op. I think that meets your
+requirement to get notifications of all the events you want to handle,
+but still allows memory_failure() to be the last resort for everything
+that has not opted into this error handling.
