@@ -2,148 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2A13408A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EED53408B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhCRPSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhCRPSP (ORCPT
+        id S231663AbhCRPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:23:22 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:43870 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCRPWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:18:15 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4350C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:18:15 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id t5so3348112qvs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wOFBEPOr1SLeNR/Um5yDZSZIjOy82REcErjZY7pyKDQ=;
-        b=CGGA9HuO0wmX6avzNQTVJ1nxLiQT7aoA7o7FrVE3h5ceaWoUInIhyTeqemyADCS6SS
-         J1aSW/VAUL1LnUkoNWIaeeSEzosnmOzekeP/Cd/AKRy6XHe9D7fDF40I0pEkVfgkcW04
-         Wueno/T53xBADAnWoqeonhzXD9XNteEmC/vWz3nlkLOJoxqPjJij8jrdxkVtid3qxIiG
-         I0rOFVlJAHwmbMjA/2dQi7Yn2BAdLee9UC8U/FG16CmNV2srxQv8jKGwqOFHX+vGZrEo
-         6/yLe1Nt7gWUUdg+KAGLwVM8/EjMxf07fwbwGl6wHOYdCUuiAcVwJliH313dDR58H1k5
-         zZzQ==
+        Thu, 18 Mar 2021 11:22:49 -0400
+Received: by mail-ot1-f48.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so5524093otn.10;
+        Thu, 18 Mar 2021 08:22:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wOFBEPOr1SLeNR/Um5yDZSZIjOy82REcErjZY7pyKDQ=;
-        b=PZyJ+lM0fUtxCTa/EBXHgWynoJw68WD/fPy5FqPwsWsLPoIpVgfhRwwkDLFiASeHsD
-         CqHuUh1pUftewxvJoMNTB7VfihFoFZ6AudS17rDk7V8gT8UEc+Wbr82wkwzLTuNDz/Jc
-         ce3j7U/Y/qszYGYf00ZEzzn956dIotZyBp5b8oxInbyndSM/cxcCUANCMBwkFjPdk2vf
-         0+zJSm4ibkra7h7eBkugJ+L5xJIg2cwLrPCtd9Q/65drOlHMFn+oVKBaUa7DnIk/ZJfL
-         WdhyAOL/v9hXvfPdBMXfR8cpMkn4N+pmLZSsrdqhnaq1kxVmf4yS0wrloLk87lMMwizd
-         OLlg==
-X-Gm-Message-State: AOAM532BTnCkxnrNEaK36+UwS2c9zi5xJYbyBaYN+w6M3KUYqMkLIXk7
-        iF8y9TlMokuheaXfSf4S5fMNhhZeOmzqllt2lzx3/Q==
-X-Google-Smtp-Source: ABdhPJy+OexF6sUgIP9Tj4vBricdu5cz15i4H10NQtNRkmkVuuYT5vaIDniBeQ+tCfWs2JPm3+l6eTr6bCrP19dyYj8=
-X-Received: by 2002:ad4:410d:: with SMTP id i13mr4704593qvp.44.1616080694677;
- Thu, 18 Mar 2021 08:18:14 -0700 (PDT)
+        bh=XY5+C+cwj/cp1ZOC1jOkEqcVS7X+FmIf75h5mCYb2HE=;
+        b=Gi80fnLAHlU5O3XupvvxvRF97528Wzv8QE4J/yq0+PQTwIQ5CqE9/zZYUm8KnPE9Q6
+         3NkXpXQossWBHC0OAqDCM6iP7hmwrdEnza0Mt04316qIqXDpyVyWf5/8A/deN1PNLtYq
+         fCbkUCkz+dm7ghV8eyZww7Q55b8tGD3MhjghmI0j3n9TjAmkqawQasrYbThexvoTKmrx
+         4JlilwfeTWjAJxC1voHoh/rFvAKbYgpZI3KRpysj+OVRlxgo4X7RYscyf+4e6HxKPDLk
+         KcmtpNI8+S5IMnifhSIDVGj5qmP7pg/0MBHTkKCjD2VoyavJ6qZDwoVaNZtZGN/NsiAu
+         CvyA==
+X-Gm-Message-State: AOAM530vpbiopHIKUG5p2zaSZxHrPIoUxAtDiCvmpEsEMSYzvjZUQnJQ
+        zLRBGamC7TYbNfzYnRqmeBySVMVlVWYX4UYP4Ek=
+X-Google-Smtp-Source: ABdhPJx4Q32BHs/tMtlhyT+bXpmfN1I4SbzZsX3lnWmG6VWKbKxuXudNGvoEyuTQj8wMQ78FzsklmzfAqcCCRkXqelk=
+X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr8107660otr.321.1616080968401;
+ Thu, 18 Mar 2021 08:22:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000096cdaa05bd32d46f@google.com> <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
- <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
- <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
- <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk> <CACT4Y+a1pQ96UWEB3pAnbxPZ+6jW2tqSzkTMqJ+XSbZsKLHgAw@mail.gmail.com>
- <bf2e19a3-3e3a-0eb1-ae37-4cc3b1a7af42@codethink.co.uk>
-In-Reply-To: <bf2e19a3-3e3a-0eb1-ae37-4cc3b1a7af42@codethink.co.uk>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 18 Mar 2021 16:18:03 +0100
-Message-ID: <CACT4Y+ZVaxQAnpy_bMGwviZMskD-fy1KgY7pbrjcCRXr24eu2Q@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+ <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com> <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Mar 2021 16:22:37 +0100
+Message-ID: <CAJZ5v0iump7nVKfyu7S23-n=gQFx5d2MKejrnT6yFak7L9V11g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 3:41 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+On Thu, Mar 18, 2021 at 11:50 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> On 15/03/2021 11:52, Dmitry Vyukov wrote:
-> > On Mon, Mar 15, 2021 at 12:30 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
-> >>
-> >> On 14/03/2021 11:03, Dmitry Vyukov wrote:
-> >>> On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >>>>> On Wed, Mar 10, 2021 at 7:28 PM syzbot
-> >>>>> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
-> >>>>>>
-> >>>>>> Hello,
-> >>>>>>
-> >>>>>> syzbot found the following issue on:
-> >>>>>>
-> >>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> >>>>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
-> >>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
-> >>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
-> >>>>>> userspace arch: riscv64
-> >>>>>>
-> >>>>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>>>>
-> >>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>>>>> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
-> >>>>>
-> >>>>> +riscv maintainers
-> >>>>>
-> >>>>> Another case of put_user crashing.
-> >>>>
-> >>>> There are 58 crashes in sock_ioctl already. Somehow there is a very
-> >>>> significant skew towards crashing with this "user memory without
-> >>>> uaccess routines" in schedule_tail and sock_ioctl of all places in the
-> >>>> kernel that use put_user... This looks very strange... Any ideas
-> >>>> what's special about these 2 locations?
-> >>>
-> >>> I could imagine if such a crash happens after a previous stack
-> >>> overflow and now task data structures are corrupted. But f_getown does
-> >>> not look like a function that consumes way more than other kernel
-> >>> syscalls...
-> >>
-> >> The last crash I looked at suggested somehow put_user got re-entered
-> >> with the user protection turned back on. Either there is a path through
-> >> one of the kernel handlers where this happens or there's something
-> >> weird going on with qemu.
+> On Thu, Mar 18, 2021 at 8:25 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
 > >
-> > Is there any kind of tracking/reporting that would help to localize
-> > it? I could re-reproduce with that code.
+> > On Wed, Mar 17, 2021 at 09:14:37PM +0100, Rafael J. Wysocki wrote:
+> > > On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
+> > > > On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > > > >
+> > > > > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
+> > > > > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+> > > > > > > >
+> > > > > > > > There is some care that should be taken to make sure we get the order
+> > > > > > > > right, but I don't see a fundamental issue here.
+> > > > > >
+> > > > > > Me neither.
+> > > > > >
+> > > > > > > > If I understand correctly, Rafael's concern is about changing the parts of
+> > > > > > > > ACPICA that should be OS agnostic, so I think we just need another place to
+> > > > > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
+> > > > > >
+> > > > > > Something like this.
+> > > > > >
+> > > > > > There is also the problem that memblock_reserve() needs to be called
+> > > > > > for all of the tables early enough, which will require some reordering
+> > > > > > of the early init code.
+> > > > > >
+> > > > > > > > Since the reservation should be done early in x86::setup_arch() (and
+> > > > > > > > probably in arm64::setup_arch()) we might just have a function that parses
+> > > > > > > > table headers and reserves them, similarly to how we parse the tables
+> > > > > > > > during KASLR setup.
+> > > > > >
+> > > > > > Right.
+> > > > >
+> > > > > I've looked at it a bit more and we do something like the patch below that
+> > > > > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
+> > > >
+> > > > It looks to me that the code need not be duplicated (see below).
+> > > >
+> > > > > Besides, reserving ACPI tables early and then calling acpi_table_init()
+> > > > > (and acpi_tb_parse_root_table() again would mean doing the dance with
+> > > > > early_memremap() twice for no good reason.
+> > > >
+> > > > That'd be simply inefficient which is kind of acceptable to me to start with.
+> > > >
+> > > > And I changing the ACPICA code can be avoided at least initially, it
+> > > > by itself would be a good enough reason.
+> > > >
+> > > > > I believe the most effective way to deal with this would be to have a
+> > > > > function that does parsing, reservation and installs the tables supplied by
+> > > > > the firmware which can be called really early and then another function
+> > > > > that overrides tables if needed a some later point.
+> > > >
+> > > > I agree that this should be the direction to go into.
+> > >
+> > > So maybe something like the patch below?
+> > >
+> > > I'm not sure if acpi_boot_table_prepare() gets called early enough, though.
+> >
+> > To be 100% safe it should be called before e820__memblock_setup().
 >
-> I'm not sure. I will have a go at debugging on qemu today just to make
-> sure I can reproduce here before I have to go into the office and fix
-> my Icicle board for real hardware tests.
->
-> I think my first plan post reproduction is to stuff some trace points
-> into the fault handlers to see if we can get a idea of faults being
-> processed, etc.
->
-> Maybe also add a check in the fault handler to see if the fault was
-> in a fixable region and post an error if that happens / maybe retry
-> the instruction with the relevant SR_SUM flag set.
->
-> Hopefully tomorrow I can get a run on real hardware to confirm.
-> Would have been better if the Unmatched board I ordered last year
-> would turn up.
+> OK
 
-In retrospect it's obvious what's common between these 2 locations:
-they both call a function inside of put_user.
+Well, that said, reserve_bios_regions() doesn't seem to have concerns
+like this and I'm not sure why ACPI tables should be reserved before
+this runs.  That applies to efi_reserve_boot_services() too.
 
-#syz dup:
-BUG: unable to handle kernel access to user memory in schedule_tail
+I can put the new call before e820__memblock_alloc_reserved_mpc_new(),
+but I'm not sure why to put it before efi_reserve_boot_services(),
+say?
