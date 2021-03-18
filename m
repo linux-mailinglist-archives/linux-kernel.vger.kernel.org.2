@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B38340AF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3FC340AFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhCRREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S231129AbhCRRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhCRREb (ORCPT
+        with ESMTP id S232253AbhCRRFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:04:31 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67535C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4Xe7zwmlgGzSOHd/wCg1g8Gl8QpxPFqOs1EqrRyWaFg=; b=OL/6ipAcXHtNK8oK9oZ0RUCAoA
-        ZaIOKrX0j6vihHNCkDAbR/e48uADSFKmxmWJ0crz1HrL+yPoO0kDpOIFL0GcA0QagRzyKVCtPbYMe
-        dIwL+6ZPy8YQiHWXuxJw/0y1zyzD6UIMTm0XNUB3s169xSXpeZ4tUm8QKOs+wt7Fi7JiyRZ71EYWp
-        k+CIz+PvtqyVIMHAPZxGeqOz0rPuOQPZTE4dUeYCQR5lvcRivFDKGw98PUIyXH4oaWWT6JLxymh5o
-        uG5JhmMYJ7XnK0j085IKJgBBGVPiEtSaVNIg0FftjQBVCfRYTDO18qEGb22BD+Vx58VUjt8xJnh85
-        3Xbp0KVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMw4Q-005eRl-57; Thu, 18 Mar 2021 17:04:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6827E305C10;
-        Thu, 18 Mar 2021 18:04:25 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DBA720D38741; Thu, 18 Mar 2021 18:04:25 +0100 (CET)
-Date:   Thu, 18 Mar 2021 18:04:25 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
-Message-ID: <YFOIGYblhHTqp/fa@hirez.programming.kicks-ass.net>
-References: <20210312171613.533405394@infradead.org>
- <20210312171653.649709484@infradead.org>
- <20210317033417.lbwemc2j2cpsdlzd@treble>
- <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
- <20210318004917.sytcivxy5h2ujttc@treble>
- <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
- <20210318163640.5u6rucdk66aodun7@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318163640.5u6rucdk66aodun7@treble>
+        Thu, 18 Mar 2021 13:05:04 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68756C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:05:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v92so6492339ybi.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:05:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=M96sX2ER8OUfU5ItsM/N27fVEe7WhfbzfJq6noJZvuE=;
+        b=ZptMR85CjXw01KHfTRcq2EVDLfQJLyIzsFLW4Xv6HgfrGrlFg12+R+C8zOG6HlhEB/
+         7fc8qRm5U8erwNc6doqipkpQ91OYFve38QvCDgYjVr9GPyul9GsTAhq87hnxO5UTYZ9F
+         ICob4RMgHSkZztNvxbg60nbijiHcBh/Zp+y55JtoX4Le6WXBPonFLh0m5dGw6JYZjexN
+         iP1QA1ALZx5DfK46KRR8BVflkt9Jhit7aqCtowtNkcSA+im9YzrWe5+XohD50T+vHHD5
+         5K+LkcS2Px48VpAuxfTSNGf7l9MNjthVirchi0NerDRWepN9A6M+voEF4VZ+tl215KBX
+         NOfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=M96sX2ER8OUfU5ItsM/N27fVEe7WhfbzfJq6noJZvuE=;
+        b=GXmskL7l37P+TPjSSzkzJlPZQz7p+YmgxAIhtI7S+s/na+tcpP4OpGBDzU0j+FRJGK
+         NorKzj3J1ntKgYeocZJgcnHfmK1Pxj1X3hsqekVyCJTLANU+Be2UrNAIagyp6k8aazEp
+         sx9N3O93err5fLjXWzCDNBreHVXK/B3BkJaxhdEmcfzTMYU3Zb7hBEr2TtMdzJLtmsbR
+         ImNKiffFGG2JE+jqzsQ3p5FhFKRdceH0LivvKB75ppaPT+zEwNmIV1slsuUpAjtcLg5d
+         3COKdO1ycFSy8B4QUTMZYLewllfXJ6B5zt6Z3K0X/iVlmzyHj4enQtA+Y1/hZt5KFVVA
+         2f/w==
+X-Gm-Message-State: AOAM532vYFi18nWIpWLnAELHv57PJFdvsEVKFXdxWdmqbQZdhl5i0jxC
+        ssVofjO+7OUW5yfQCtCxM4nAHu9QXlxokMAnINo=
+X-Google-Smtp-Source: ABdhPJxKgbPt3d9Ql9cYMZo4/Cdz/7X6qGcU8im11P5aoKSknsF2Cq+lDthgDh5Z+ThZ5mNrX8tZu/cYF0CWfwXyNPs=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:840a:6dbd:4c5:5c01])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:25d7:: with SMTP id
+ l206mr367807ybl.43.1616087103611; Thu, 18 Mar 2021 10:05:03 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:05:01 -0700
+In-Reply-To: <CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com>
+Message-Id: <20210318170501.2183418-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: Re: s390: kernel/entry.o: in function `sys_call_table_emu':
+ (.rodata+0x1bc0): undefined reference to `__s390_'
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     naresh.kamboju@linaro.org
+Cc:     acme@kernel.org, agordeev@linux.ibm.com, borntraeger@de.ibm.com,
+        gor@linux.ibm.com, hca@linux.ibm.com, heiko.carstens@de.ibm.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        lkft-triage@lists.linaro.org, nixiaoming@huawei.com,
+        svens@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:36:40AM -0500, Josh Poimboeuf wrote:
-> > I was thinking you could get a section changed without touching
-> > relocations, but while that is theoretically possible, it is exceedingly
-> > unlikely (and objtool doesn't do that).
-> 
-> Hm?  This is a *relocation* section, not a normal one.  So by
-> definition, it only changes when its relocations change.
+(Replying to https://lore.kernel.org/linux-s390/CA+G9fYtBw0HAv5OOAycK2rZ_m2Sj73krXPJ0iDzT+O8qtc19SQ@mail.gmail.com/)
 
-The way I read this code:
-
- 	list_for_each_entry(sec, &elf->sections, list) {
- 		if (sec->changed) {
-+			if (sec->reloc &&
-+			    elf_rebuild_reloc_section(elf, sec->reloc)) {
-+				WARN_ELF("elf_rebuild_reloc_section");
-+				return -1;
-+			}
-
-is that we iterate the regular sections (which could be dirtied because
-we changed some data), and if that section has a relocation section, we
-rebuild that for good measure (even though it might not have altered
-relocations).
-
-Or am I just totally confused ?
+Yeah, our CI is failing today, too with the same error on linux-next:
+https://github.com/ClangBuiltLinux/continuous-integration2/runs/2138006304?check_suite_focus=true
