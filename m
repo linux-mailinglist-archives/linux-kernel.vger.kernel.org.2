@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7756E340FF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A0340FFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhCRVir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhCRVi0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:38:26 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7E4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:38:24 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id z68so2365112vsb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vLPqaFCjOxJqP96ilPAU1cPfZQuKxpOHXRuDS0s7Vr4=;
-        b=qKVpWtCjskEKfxSobzVob96NxKhzoHpA0zkVpey6v9nz5hqX4fwpWRs2r3Xv0LtQVY
-         G16K6pLlLiiOgiA9WlvBYuNv+dkBxVQoBMTZmRC3drafHcUHKnQM/tG/M+cxNlkBKFlD
-         6s0+yKEf1+/y0f7FoLfouj1leYGLXXX0BHvTCWQ+suw1xpi/HPjaWWJGI7rE5Zq4hjN+
-         KeG6ltSdPXps4+kFCWvGrU0ia0VmTHM2GBqcg/2BbR/sCeCZJbCtvjlsmF4re7pImMHk
-         IhFvMOnUBJEqxCQDOIJTiaQI5tXqy8l13Wdqav4qDmK3cuJjAHbGFKOiSQWrw4vDipzM
-         ux1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vLPqaFCjOxJqP96ilPAU1cPfZQuKxpOHXRuDS0s7Vr4=;
-        b=SdCf57nR1P0rBKPXXWKpOKJjZ5/p0NzLFH/jGxmUOGlzmkxnW739BSZsBi0ITGHmC+
-         nZ4Os3E31xNaM8nwzxJowQH1/pzTsvIusb7QhB5n2X8KnC7dfav6B6ixIyPdF9epm6x8
-         inZk6EctzWfSiM3AHoJbfvhj6AJxfEqVRaTkHCpOhxK0ZZihaFjZd4dqMadtzjMlMyFk
-         GFEc0LaFPlvRTnd8aFDA5xFgw+2lRjz7wq7KRXTmykjoAnRX6jj6iCcauYJTurBo25J1
-         hgE/+1WQTwdwyOg7MfLNeut09GZjtN0DZMUPx2axoC29R7MGM4TClyVL+UGefkuCeo5f
-         J07g==
-X-Gm-Message-State: AOAM532/JGpqWdPphUBiKmz+57qvKeC9Ep5nmHYnfejjk1gS0TMjCNva
-        7RGEAlbHOHoWB3yhB3UGTwDjjYg+silsdTRRgYyBpw==
-X-Google-Smtp-Source: ABdhPJyaMaWSU8mQS4gTjUoMCHt/hL7J7EWOKPoWt/RxfzbbDBNbfggOD5G6oZscrzSei7ViS8Oslpe0+7Gv7JZE5Pk=
-X-Received: by 2002:a67:2803:: with SMTP id o3mr1141643vso.36.1616103503542;
- Thu, 18 Mar 2021 14:38:23 -0700 (PDT)
+        id S233210AbhCRVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231137AbhCRVkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:40:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E291064F30;
+        Thu, 18 Mar 2021 21:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616103607;
+        bh=uLLbTUg6nb9xUvK3A7lED3ce04bTq7tFYnoahf2uRpo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=czZoXUzhaezL1xZhOsYOdIUbG5sr+YHU/TcTTNNJeuyRgIbC70eddI+6+bRSWs5wP
+         Q7eW6tjDCujcpp36WKZJSJS7+AnfvbpTKPUQvEzfAfrrnFcAv0EaOaxue7SGR3Snws
+         8DlnL6pdpALyvbVaM6eAkeJi74a7YBqtzG6jXVpKwrMqAWi6FPY2/8Yt8SU1DCuVRP
+         rpRin2OeZzlSxP9Jps15UOoa7U+CkYgpLGPUaQ3Rsm1Jhhy7S0BHozI/aOf0kiheU9
+         dj2KFHkDPD5AHwARPWji1AvlDIkAh31/NwXbS1/cfNCFdoichhlvbVO/rPo4Wey5BL
+         0Ij201Ni1wSCA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D134E600E8;
+        Thu, 18 Mar 2021 21:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-6-samitolvanen@google.com> <CAKwvOd=fWs6g2Bf2a_bA58_-uoWtVmNQnvrPxNhio4R5qGjcMQ@mail.gmail.com>
-In-Reply-To: <CAKwvOd=fWs6g2Bf2a_bA58_-uoWtVmNQnvrPxNhio4R5qGjcMQ@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 18 Mar 2021 14:38:12 -0700
-Message-ID: <CABCJKufa_-WSSYzHBSjZ+3i0DfvoGBox7Xa0PcE_Kuhf2rd07g@mail.gmail.com>
-Subject: Re: [PATCH v2 05/17] workqueue: use WARN_ON_FUNCTION_MISMATCH
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/2] net: stmmac: EST interrupts and ethtool
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161610360785.19574.3330766596706160519.git-patchwork-notify@kernel.org>
+Date:   Thu, 18 Mar 2021 21:40:07 +0000
+References: <20210318005053.31400-1-mohammad.athari.ismail@intel.com>
+In-Reply-To: <20210318005053.31400-1-mohammad.athari.ismail@intel.com>
+To:     Ismail@ci.codeaurora.org,
+        Mohammad Athari <mohammad.athari.ismail@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, boon.leong.ong@intel.com,
+        weifeng.voon@intel.com, vee.khee.wong@intel.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:50 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > With CONFIG_CFI_CLANG, a callback function passed to
-> > __queue_delayed_work from a module points to a jump table entry
-> > defined in the module instead of the one used in the core kernel,
-> > which breaks function address equality in this check:
-> >
-> >   WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
-> >
-> > Use WARN_ON_FUNCTION_MISMATCH() instead to disable the warning
-> > when CFI and modules are both enabled.
->
-> Does __cficanonical help with such comparisons? Or would that be a
-> very invasive change, if the concern was to try to keep these checks
-> in place for CONFIG_CFI_CLANG?
+Hello:
 
-The last time I checked, Clang ignored the __cficanonical attribute in
-header files, which means it would still generate a local jump table
-entry in each module for such functions, and the comparison here would
-fail. We could avoid the issue by using __cficanonical for the
-callback function *and* using __va_function() when we take the
-function address in modules, but that feels way too invasive for this
-particular use case.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Sami
+On Thu, 18 Mar 2021 08:50:51 +0800 you wrote:
+> From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+> 
+> This patchset adds support for handling EST interrupts and reporting EST
+> errors. Additionally, the errors are added into ethtool statistic.
+> 
+> Ong Boon Leong (1):
+>   net: stmmac: Add EST errors into ethtool statistic
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2,1/2] net: stmmac: EST interrupts handling and error reporting
+    https://git.kernel.org/netdev/net-next/c/e49aa315cb01
+  - [net-next,2/2] net: stmmac: Add EST errors into ethtool statistic
+    https://git.kernel.org/netdev/net-next/c/9f298959191b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
