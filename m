@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EDB340EF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48811340EF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhCRUQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:16:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:60195 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhCRUQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:16:27 -0400
-IronPort-SDR: 4e1ffBRuk6G9Am0B8IQYtnIHyYvMDAnSaqkm1LemG5n924L20Q+O4HPSpWvvb0KSZC4BjKYUcE
- HOv8/e3T2H9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="251117470"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="251117470"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 13:16:27 -0700
-IronPort-SDR: EwEraWEJEIpTTfJVg0kkwuvooGlh9zJEacRNNQcHC81j7mQFGD1L1BhySvhEw0rZHHaQyxSsk8
- UAwhsFjWaThw==
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="413229688"
-Received: from mrasekh-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.191.94])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 13:16:26 -0700
-Subject: Re: [PATCH v13 0/5] Simplify PCIe native ownership
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@intel.com
-References: <cover.1611364024.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <e2438472-5367-f6fb-d8e0-f6a6273cbf82@linux.intel.com>
-Date:   Thu, 18 Mar 2021 13:16:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233057AbhCRUSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhCRUSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 16:18:17 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCA0C06174A;
+        Thu, 18 Mar 2021 13:18:16 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id q13so6569384lfu.8;
+        Thu, 18 Mar 2021 13:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ltuUYSrQ22360MaVIawtGhACBKIcjgougcQE1G7wGAA=;
+        b=F4QeAGKDIThJPMctZAII2rO4TuJboOCM5+gHx2h5ZZLGvWTR2m3cYkw8GiPFbzWorw
+         eBEiACVn/CHdg8KNrzyrZhXRj1Xs4NCtig1WDImwfG8U4kEfw0GqoPAKX/DH0aEmsgWn
+         d2z/ItdvH/Kjjtv11TQX6JTa5sTbrwxh3yxG5/15WlyliExP2QXfOojF86epOAke1SMo
+         pWWJ95BHSEgUA2SJ1cCzXbAOJvvfLXBUSZOJ8X0O80CAF/LKsJQ+Lb/ixxQbPh0ur7gz
+         uY+MoEdGdu6Q/VI7ng+b0iHuugzUjIMsytAFVTyRryluWvYeow4XIQk16IGZ2GIqo9bY
+         COpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ltuUYSrQ22360MaVIawtGhACBKIcjgougcQE1G7wGAA=;
+        b=Hk1UauNiQMriLnT4YEX6vThlKWBBInuOiVX6MqKXi93n0dhyrQW4UgeWrd707SfpiJ
+         BB8xEsbgAwqPfLv6CrZxSrttiSobxZzltELTYE45fPLH3cUiChgHOJGBHIhgIqOpHk1V
+         ef2Igqhhiz5wAWhIW4BVlb6Bvyd9H7D6aZB+UHaZpKgLj37FaIbUeRwLnZ1vCiVTHGxk
+         VbJ7EpdEAELHK+e9XaFm9BrELD2mC0zK2paeasK5gdZIjsycq0KaVrJdA4lQnS1v2Ypp
+         F1KZUg9rMI1SrCt7xNxh3MB+DCP0SfwI3nkPjCx2xRqzKbw1hfHJveKfgBlNBQVTJIEt
+         zr9A==
+X-Gm-Message-State: AOAM533j8wW4k932oAkLWpo6owJc7nuVF/P94wsmW6uQ2fUe3kd69AA4
+        Di0e16E5T/VrkpgjSH/6E3q1R/FHzvqbTA==
+X-Google-Smtp-Source: ABdhPJzYIMdkZTpuvxt9Flxzr5EurI1lzhhqeqrHUG6u0VPIbHFRPye5xR0H0zY6gseiO120h+WN3Q==
+X-Received: by 2002:a19:ec13:: with SMTP id b19mr6528756lfa.238.1616098694652;
+        Thu, 18 Mar 2021 13:18:14 -0700 (PDT)
+Received: from [192.168.1.101] ([178.176.79.185])
+        by smtp.gmail.com with ESMTPSA id q3sm353393lfr.33.2021.03.18.13.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 13:18:14 -0700 (PDT)
+Subject: Re: [PATCH V3 1/5] dt-bindings: net: renesas,etheravb: Add additional
+ clocks
+To:     Adam Ford <aford173@gmail.com>, netdev@vger.kernel.org
+Cc:     aford@beaconembedded.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210224115146.9131-1-aford173@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <d2618a49-5314-af7a-0367-2519de78f957@gmail.com>
+Date:   Thu, 18 Mar 2021 23:18:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1611364024.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210224115146.9131-1-aford173@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Hi!
 
-On 1/22/21 5:11 PM, Kuppuswamy Sathyanarayanan wrote:
-> Currently, PCIe capabilities ownership status is detected by
-> verifying the status of pcie_ports_native, and _OSC negotiated
-> results (cached in  struct pci_host_bridge->native_* members).
-> But this logic can be simplified, and we can use only struct
-> pci_host_bridge ->native_* members to detect it.
-> 
-> This patchset removes the distributed checks for pcie_ports_native,
-> parameter.
-Any comments on this patch set?
-> 
-> Changes since v12:
->   * Rebased on top of v5.11-rc1
-> 
-> Changes since v11 (Bjorns update):
->   * Add bugfix for DPC with no AER Capability
->   * Split OSC_OWNER trivial changes from pcie_ports_native changes
->   * Temporarily drop pcie_ports_dpc_native changes (revisit it later).
-> 
-> Changes since v10:
->   * Addressed format issue reported by lkp test.
-> 
-> Changes since v9:
->   * Rebased on top of v5.10-rc1
-> 
-> Changes since v8:
->   * Simplified setting _OSC ownwership logic
->   * Moved bridge->native_ltr out of #ifdef CONFIG_PCIEPORTBUS.
-> 
-> Changes since v7:
->   * Fixed "fix array_size.cocci warnings".
-> 
-> Changes since v6:
->   * Created new patch for CONFIG_PCIEPORTBUS check in
->     pci_init_host_bridge().
->   * Added warning message for a case when pcie_ports_native
->     overrides _OSC negotiation result.
-> 
-> Changes since v5:
->   * Rebased on top of v5.8-rc1
-> 
-> Changes since v4:
->   * Changed the patch set title (Original link: https://lkml.org/lkml/2020/5/26/1710)
->   * Added AER/DPC dependency logic cleanup fixes.
-> 
-> Bjorn Helgaas (2):
->    PCI/DPC: Ignore devices with no AER Capability
->    PCI/ACPI: Centralize pci_aer_available() checking
-> 
-> Kuppuswamy Sathyanarayanan (3):
->    PCI: Assume control of portdrv-related features only when portdrv
->      enabled
->    PCI/ACPI: Tidy _OSC control bit checking
->    PCI/ACPI: Centralize pcie_ports_native checking
-> 
->   drivers/acpi/pci_root.c           | 49 ++++++++++++++++++++++++-------
->   drivers/pci/hotplug/pciehp_core.c |  2 +-
->   drivers/pci/pci-acpi.c            |  3 --
->   drivers/pci/pcie/aer.c            |  2 +-
->   drivers/pci/pcie/dpc.c            |  3 ++
->   drivers/pci/pcie/portdrv_core.c   | 11 +++----
->   drivers/pci/probe.c               |  6 ++--
->   7 files changed, 51 insertions(+), 25 deletions(-)
-> 
+On 2/24/21 2:51 PM, Adam Ford wrote:
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> The AVB driver assumes there is an external crystal, but it could
+> be clocked by other means.  In order to enable a programmable
+> clock, it needs to be added to the clocks list and enabled in the
+> driver.  Since there currently only one clock, there is no
+> clock-names list either.
+> 
+> Update bindings to add the additional optional clock, and explicitly
+> name both of them.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+
+[...]
+
+PS: Sorry for the dalay reviewing...
+
+MBR, Sergei
