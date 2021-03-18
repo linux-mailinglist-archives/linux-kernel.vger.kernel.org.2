@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667EA340BD1
+	by mail.lfdr.de (Postfix) with ESMTP id B1BB6340BD2
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhCRR1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:27:41 -0400
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:47190 "EHLO libero.it"
+        id S232416AbhCRR1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:27:43 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:60290 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230365AbhCRR1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:27:12 -0400
+        id S232125AbhCRR1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:27:14 -0400
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id MwPulsZ9jtpGHMwQHlfgfG; Thu, 18 Mar 2021 18:27:11 +0100
+        id MwPulsZ9jtpGHMwQRlfgiu; Thu, 18 Mar 2021 18:27:13 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1616088431; bh=urzH31Z57u5IKC1xQOvu0WiSuxDteA7bOWqFQMrqKOk=;
+        t=1616088433; bh=wOVMM8fe4k6pPP97MUyM+VmdNWuzQWM6uK83ju/ajGI=;
         h=From;
-        b=LgwRXNWvyIdo2uELJyQbmDyD+bkmXhjUcXirhrnjX8BRtZBzlxZMPhzug7PLrt3dr
-         qfhzePJVr6F3g9c8dzHpFmG5t+gkVySuvjnf9ZYAhyohDDvpw/tlBxzkm48abpOadK
-         RbP7zqd1oI/6uRK4SGzYR/wGB3Ccq4ZdLf6ln1z9HvO4XF1hGzR5+kLJP/KrHLyQA/
-         FuAkURHTvLeQ9XdE5gA44FI3z+W4iIxTP44tHJ7P2RARe8IIMtxzelxRyT91KVL0W7
-         P8Zlpi/iaCGuXsdj5sLL4d5gMcA1ZNqH6r8eYhpR/03qasr1dJybIpAmckWK6vhS85
-         uVBTSqvmZPB5w==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60538d6f cx=a_exe
+        b=rdg4N/0cyb33V1brFRYb6CGlqrfTpU5A2q4PqN/R6z5AufJQ2f4xSyp83ZcDIFxko
+         KO4i61gSf4+J3YcduFoS3uHdeO0rPq9F996ZXVX9M3Z7BPWA4mK+0qZYQzDsbmOvyf
+         PiNpu4QSH5MFEd+ZFv6/JFkkJEsPDAH8KrdWt6LPmFDnNyPTUo7SVwRofwOCivTIys
+         2BUJrRwNgpR2S7zQZhpzQmN5sZvklC3LrTB7mlqBX1iHn/Avs5x1m6ZF42JkdpptO4
+         mptgRBJocGvxjNyObrysmHiosRt7l8Ea90XZoTwMQT/3M2xPljpyrZTBJ2ket08aq4
+         cbIQRNLiX4Y/A==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60538d71 cx=a_exe
  a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=Bl6OLPU8nqzXNm5YYFQA:9
+ a=gUdohDFUAsczsVxzKVAA:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dario Binacchi <dariobin@libero.it>,
         Grygorii Strashko <grygorii.strashko@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v2 1/4] clk: ti: fix typo in routine description
-Date:   Thu, 18 Mar 2021 18:26:23 +0100
-Message-Id: <20210318172627.12173-2-dariobin@libero.it>
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v2 2/4] dt-bindings: ti: dpll: add spread spectrum support
+Date:   Thu, 18 Mar 2021 18:26:24 +0100
+Message-Id: <20210318172627.12173-3-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210318172627.12173-1-dariobin@libero.it>
 References: <20210318172627.12173-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfDxn+9InnTOZBfihnOKd4UM+NXSHwEsgEiEM+jBwUiSl8Bix6nk0TJ0iJ8EjrS8Qa5VwK56xii6M5M4JNiChjKdr//uVemhFkJxnn1cUQn6fwrsE7zFY
- DKeC4YpSu+CX83wDJQAlZj+4L7/Q8ZQDaxKI0ffdpDTcPzTCoLyZV6FcQVR2nZvW9XpjEdc/IRpFxi3Twmh28+QMLmh/7W5jvJ/8/f+zf+C61sdhnU8lpK+C
- cg1J+s/diQhNjk0hrNsAtjqE0I4bgNYKf+YWSg4MBTaLX+b/qKqBDaGvOFtgUFhV8R6PJy3Zw5+GtxlZXKaxhxEhBhjdWE1Tx3egBPff6DPz/AAN2IF27pdZ
- 1Xjn9AxiSTsHLwuQ6a7XlUj6+46p/LNrYtHiIMN/fVx1+cHsSmOefudW4+0RoiRXYvLkfgbrKPQSkMhrMDahgFEE/8pjQXRL1U+67d6QEPyrA2AEZuNEGuIX
- 8chqhSP1jV57V5hhGY0U7CMmEFQrZPRrbx5lSA==
+X-CMAE-Envelope: MS4xfE7cZ8YkxtFmG0Psp4XifQ7ICm7GXAILORL5K/V9b+vqby/yBwGvOwdJ2yTis2NoFLyR8f+C1aGCRI486vKmcBIzDiju/ZZx1OLv1nde0UGfxLwzSA5x
+ aws3zPJREAb/jZ/sGiEjiP6GSCBNRTVmtxisBTRj268qNRSN41m99V0YvaensOKcvyRAyQ23SptkpJ/gf1Yv5vOt0rOG07kXmqh/dy531o+usygl/lpLyzg9
+ eligt6yxB+3v5kEpBTjSmOXHL3bYBciVFm7SmoaT1HDc3DdPPHaVg93b8+P/oLVwWkKFaeov3+WSbsMVCu9m5uvMPEhSNpesPlLXESyt/L4ss+t6tHDhnf28
+ J+xuYdB0z2mKqe2WXwupiqWe2DSbv8Q+JGu6HZyyCWuCa1j3RmhcEhPGHlg8VWk4HJH2LsoX1akKfDKsHoyPItjph0CqM0vTKzUrGFcAFgrJb04AfOk9URY8
+ MwRyZJ0AGFawXAig
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace _omap3_noncore_dpll_program with omap3_noncore_dpll_program.
+DT bindings for enabling and adjusting spread spectrum clocking have
+been added.
 
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
 ---
 
 (no changes since v1)
 
- drivers/clk/ti/dpll3xxx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/clk/ti/dpll3xxx.c b/drivers/clk/ti/dpll3xxx.c
-index 6097b099a5df..94d5b5fe9a2b 100644
---- a/drivers/clk/ti/dpll3xxx.c
-+++ b/drivers/clk/ti/dpll3xxx.c
-@@ -292,7 +292,7 @@ static void _lookup_sddiv(struct clk_hw_omap *clk, u8 *sd_div, u16 m, u8 n)
- }
+diff --git a/Documentation/devicetree/bindings/clock/ti/dpll.txt b/Documentation/devicetree/bindings/clock/ti/dpll.txt
+index df57009ff8e7..0810ae073294 100644
+--- a/Documentation/devicetree/bindings/clock/ti/dpll.txt
++++ b/Documentation/devicetree/bindings/clock/ti/dpll.txt
+@@ -42,6 +42,11 @@ Required properties:
+ 	"idlest" - contains the idle status register base address
+ 	"mult-div1" - contains the multiplier / divider register base address
+ 	"autoidle" - contains the autoidle register base address (optional)
++	"ssc-deltam" - DPLL supports spread spectrum clocking (SSC), contains
++		       the frequency spreading register base address (optional)
++	"ssc-modfreq" - DPLL supports spread spectrum clocking (SSC), contains
++		        the modulation frequency register base address
++			(optional)
+   ti,am3-* dpll types do not have autoidle register
+   ti,omap2-* dpll type does not support idlest / autoidle registers
  
- /**
-- * _omap3_noncore_dpll_program - set non-core DPLL M,N values directly
-+ * omap3_noncore_dpll_program - set non-core DPLL M,N values directly
-  * @clk:	struct clk * of DPLL to set
-  * @freqsel:	FREQSEL value to set
-  *
+@@ -51,6 +56,14 @@ Optional properties:
+ 	- ti,low-power-stop : DPLL supports low power stop mode, gating output
+ 	- ti,low-power-bypass : DPLL output matches rate of parent bypass clock
+ 	- ti,lock : DPLL locks in programmed rate
++	- ti,min-div : the minimum divisor to start from to round the DPLL
++		       target rate
++	- ti,ssc-deltam : DPLL supports spread spectrum clocking, frequency
++			  spreading in permille (10th of a percent)
++	- ti,ssc-modfreq : DPLL supports spread spectrum clocking, spread
++			   spectrum modulation frequency in kHz
++	- ti,ssc-downspread : DPLL supports spread spectrum clocking, boolean
++			      to enable the downspread feature
+ 
+ Examples:
+ 	dpll_core_ck: dpll_core_ck@44e00490 {
+@@ -83,3 +96,10 @@ Examples:
+ 		clocks = <&sys_ck>, <&sys_ck>;
+ 		reg = <0x0500>, <0x0540>;
+ 	};
++
++	dpll_disp_ck: dpll_disp_ck {
++		#clock-cells = <0>;
++		compatible = "ti,am3-dpll-no-gate-clock";
++		clocks = <&sys_clkin_ck>, <&sys_clkin_ck>;
++		reg = <0x0498>, <0x0448>, <0x0454>, <0x044c>, <0x0450>;
++	};
 -- 
 2.17.1
 
