@@ -2,153 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED883410CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D1F3410F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhCRXSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S233397AbhCRXVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhCRXSq (ORCPT
+        with ESMTP id S233411AbhCRXUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:18:46 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5BCC06174A;
-        Thu, 18 Mar 2021 16:18:46 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id bx7so8664781edb.12;
-        Thu, 18 Mar 2021 16:18:46 -0700 (PDT)
+        Thu, 18 Mar 2021 19:20:31 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7773C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:20:30 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id m7so5431783qtq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 16:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2nEuQXQSZPa2O9BuHPTkTA1vCCa7u77GxjLezyKfjVs=;
-        b=Dsxq2VSAhK0cW1zCQjsTP9vk/z4kkq81BonBR9SXXv4KOPyWkZaAM/BzAKg8rqCorD
-         dchL3i0oVNbAjqD9F1BIW/re2AVr0lRbyFZDgsLNPBD2VQjpGu0bea/GejUdSzRwofBK
-         A98gZfKj7tZRZeb+eaYX0g8OeSbSwWpMglGiR81k4sM2wiMyWrzAnh6sW170fQTBNe0m
-         5ckqRljt4bl0sLJlFXx+X+sNa6aOfuFEEFIAP0x+APv304q4qN/2MW2PwklMYV/X+/eS
-         aDCEEeYuUhFnSSUYfkEVOpbiuzRKCE48sDwd2ieV6dnClysq+UyKv1yUUFPd5Iw3Mkpe
-         4gFQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OQr5EWF14LJSJDPiUoRbhnzYOObAaD7LteF3BV720o=;
+        b=BH2GYsC7xrZSawjjvrKi7E1Kc0MBUY8y3HbDcq5CoOVdgvAqd/ZFIB91Cgc4k24rxm
+         Jzwfs4OmkG9SSzow3D9RFnInet04tcVAHbS/kvSsZo/n3wxPB0ZblXDe3S2OibEmd00+
+         2wsux6NTtdhAS8FBJSVsSQ3LhL8Gz6KcRjYaQRvxrpQ/CdLD9OilEIqqorp2N5IIlFgQ
+         vSfj3p9QLGIcCjJ3T6/sZS8Wc6WdrI2KjRy68H3dlh3MLK8Tuu55nd7bh4U3mJAvrkV8
+         mietxE68ggbzTJUQQQoU3iZg2WPP9J/kj8U1ZCpLkuFHBhwTnOAJ+EVDGJfNYbTOR4C3
+         OztQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2nEuQXQSZPa2O9BuHPTkTA1vCCa7u77GxjLezyKfjVs=;
-        b=H+8xgI99FNPSSK27XOTliS6ySbafdP0QSIP7+MuCgQZ/AcuBaO9obdl0+YK6B5m57S
-         OAnJmrTAbPKvPushRzT4h6u4/1DSDRwLQca1Q8BmXvbwnjnK+F497475TfpUE0UaPacu
-         kcr5PDHY4OyRgLvtn/oUUtex4G1E0RRiitVRUMOjhhpbDfhKcN/KYhJ/VFZxS93ef4Jt
-         711hqfZVcGk/DoNSXEOJYbHm8sdchrW71jZRtmWWCIvm+TWt+7vYH5KeEyc1jBS31w6z
-         +TqjaRvAevvsVjd8v1TQLncdfPJA3hkef4EhzUaFbUVs5q90J8ClnPSOA4xSgKBZ1usV
-         Dhfw==
-X-Gm-Message-State: AOAM533AN5ss+3tH8H2wD1I21gqkBJ7ht7m5gxRpalR/+Fpe1J62WvId
-        CAq0ruHMBrHwn+Yt53jrC4kJvvvzVqM=
-X-Google-Smtp-Source: ABdhPJzEKtHww9E0Izfo3KlI6p9voYYGv5V4MSmGsJ/URgsInX2SKDO58BsHQmggv6IpKvzw+TxLdA==
-X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr6591957edb.105.1616109524890;
-        Thu, 18 Mar 2021 16:18:44 -0700 (PDT)
-Received: from localhost.localdomain (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id bx24sm2801131ejc.88.2021.03.18.16.18.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OQr5EWF14LJSJDPiUoRbhnzYOObAaD7LteF3BV720o=;
+        b=g0dyJZ4HV40/5lNfl2Mzd96x5qjprCEJ9jHrjCJmk9OwcNKaqMvbjTvZL6iIDMaW2c
+         hd3jSKSXqzjLnczElwXo15r0HbwtL8hjueZ59Urrpo0FtbWI5M/xgZBxVZqPlJe8j7xa
+         vP//9QxKu/i0KuygqWdN6c7IYONmHIM3CNsEMGzlU7MYq6aFD3/jbaLyVMW9H7X+BBek
+         M9vWa08eqd7TTXE7GgF01U03cw9rI0heRXzz83DmJeCJvYutwf5g05MSNRtl4+2lzICp
+         qqqGX6m9l1DxBDf0Cx07TcPhU0kTCz2OHrz3T4PIJrPGvGqoqUX6hV59jHSrtqnBkX5G
+         m+7A==
+X-Gm-Message-State: AOAM5308nPh2VrKDlp11gEYhD5dzUmWXdGM4i2fukdh0ncR9NqqNuC6O
+        xIEEJiauNREsQsV15DSApZg=
+X-Google-Smtp-Source: ABdhPJxfhehGR5xA4asaV7R/Ng3L0bjA7nfBuq/tPpOKrgowt4gEhjUFzXDP4Br4uw7hPIybSiRzxg==
+X-Received: by 2002:aed:38a2:: with SMTP id k31mr6157793qte.187.1616109630065;
+        Thu, 18 Mar 2021 16:20:30 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.63])
+        by smtp.gmail.com with ESMTPSA id b17sm2438571qtp.73.2021.03.18.16.20.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 16:18:44 -0700 (PDT)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [RFC PATCH v2 net-next 01/16] net: dsa: call dsa_port_bridge_join when joining a LAG that is already in a bridge
-Date:   Fri, 19 Mar 2021 01:18:14 +0200
-Message-Id: <20210318231829.3892920-2-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210318231829.3892920-1-olteanv@gmail.com>
-References: <20210318231829.3892920-1-olteanv@gmail.com>
+        Thu, 18 Mar 2021 16:20:29 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, Hawking.Zhang@amd.com,
+        John.Clements@amd.com, guchun.chen@amd.com, tao.zhou1@amd.com,
+        Likun.Gao@amd.com, unixbhaskar@gmail.com,
+        Bhawanpreet.Lakha@amd.com, ray.huang@amd.com,
+        Jiansong.Chen@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] drm/amdgpu: Fix a typo
+Date:   Fri, 19 Mar 2021 04:48:15 +0530
+Message-Id: <20210318231815.19546-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-DSA can properly detect and offload this sequence of operations:
+s/proces/process/
 
-ip link add br0 type bridge
-ip link add bond0 type bond
-ip link set swp0 master bond0
-ip link set bond0 master br0
-
-But not this one:
-
-ip link add br0 type bridge
-ip link add bond0 type bond
-ip link set bond0 master br0
-ip link set swp0 master bond0
-
-Actually the second one is more complicated, due to the elapsed time
-between the enslavement of bond0 and the offloading of it via swp0, a
-lot of things could have happened to the bond0 bridge port in terms of
-switchdev objects (host MDBs, VLANs, altered STP state etc). So this is
-a bit of a can of worms, and making sure that the DSA port's state is in
-sync with this already existing bridge port is handled in the next
-patches.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- net/dsa/port.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index c9c6d7ab3f47..d39262a9fe0e 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -249,17 +249,31 @@ int dsa_port_lag_join(struct dsa_port *dp, struct net_device *lag,
- 		.lag = lag,
- 		.info = uinfo,
- 	};
-+	struct net_device *bridge_dev;
- 	int err;
- 
- 	dsa_lag_map(dp->ds->dst, lag);
- 	dp->lag_dev = lag;
- 
- 	err = dsa_port_notify(dp, DSA_NOTIFIER_LAG_JOIN, &info);
--	if (err) {
--		dp->lag_dev = NULL;
--		dsa_lag_unmap(dp->ds->dst, lag);
--	}
-+	if (err)
-+		goto err_lag_join;
- 
-+	bridge_dev = netdev_master_upper_dev_get(lag);
-+	if (!bridge_dev || !netif_is_bridge_master(bridge_dev))
-+		return 0;
-+
-+	err = dsa_port_bridge_join(dp, bridge_dev);
-+	if (err)
-+		goto err_bridge_join;
-+
-+	return 0;
-+
-+err_bridge_join:
-+	dsa_port_notify(dp, DSA_NOTIFIER_LAG_LEAVE, &info);
-+err_lag_join:
-+	dp->lag_dev = NULL;
-+	dsa_lag_unmap(dp->ds->dst, lag);
- 	return err;
+diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
+index bf3857867f51..c1d5a3085bae 100644
+--- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
+@@ -598,7 +598,7 @@ static int psp_v11_0_memory_training_send_msg(struct psp_context *psp, int msg)
  }
- 
--- 
-2.25.1
+
+ /*
+- * save and restore proces
++ * save and restore process
+  */
+ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
+ {
+--
+2.26.2
 
