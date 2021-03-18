@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CCA340CD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24E3340CD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhCRSVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S232373AbhCRSWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbhCRSV1 (ORCPT
+        with ESMTP id S232330AbhCRSWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:21:27 -0400
+        Thu, 18 Mar 2021 14:22:11 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F395C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:21:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08919C06174A;
+        Thu, 18 Mar 2021 11:22:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=1fIw1IgvOl24l4m8f/gEO0YRNbX9Gkq8Y62gf03c89g=; b=eL4oAaAXCABdvFm15nw0+eHRVn
-        kaEyQIX1+V81BfF5/upqEDsRFk5ePkyqD8ZMkHw9BSI7yTZ71d8xGiXMgH9qhVWJ8zehLpHX06jLP
-        E7a+FRX5+cWkRz30cVZ/Eh/vfSAx1kt6G8d5T6vd2mNrO2IXSKv1NwWGBrpwUXCZcH+rMUPgogzKJ
-        l/LaAfl7vmw06ilJZay2Cb6DP5rmEZLztubeVcYUD+V5e0r7248wWpFoJ3k3Y4meUVbh343mN8CJq
-        yCkRMv/4v1zX4rMMJK4TxsAJcElHDoyikA5B43wnneYPd2kSLSeF4sAKn9BPpxRi4tQ39wKx+OBKy
-        gvX3hODg==;
+        bh=S9hxfnnZSFMfcMrf6bjIrxOqUzvx5VJvhFrIa36oBsA=; b=fY16BKpFfFkJVHeFR1WsjzrKBO
+        jxaJiM6Gvteh+TcN7aH2Y8/LX766eVyxGW2L0D6VoHJdeCyCFNQ9+PMV1zqT15JCuC4BnkmxhD3l5
+        ZHGj9ngr34tEwDqlU8Mb875p1YK+yRRADP0xtG4404D2du/xqh0v+BYauKFvBp4Ptk7ruRI5xn00Z
+        PJMJMR3cR/7MQuyD8gfxayhnBXWYm2xTnWmd5oQz8pb1rLF7BSSk8PWEDmdL/GiQXLzHvSorptkDh
+        Sm1lNFrvinmuv9mNv9vcFlrtsSFrFX02Ay65Q+lNyjnffGnuaWjE7aAlXVpihXk56RZLUGaU5bXr6
+        KDGlPfNA==;
 Received: from [2601:1c0:6280:3f0::9757]
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMxGZ-003LLH-BB; Thu, 18 Mar 2021 18:21:07 +0000
-Subject: Re: [PATCH] x86/mm: Fixed couple of typos
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20210318064751.19226-1-unixbhaskar@gmail.com>
+        id 1lMxHT-003LNP-Ma; Thu, 18 Mar 2021 18:22:02 +0000
+Subject: Re: [PATCH] drm/msm/dp: Fixed couple of typos
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        khsieh@codeaurora.org, tanmay@codeaurora.org,
+        chandanu@codeaurora.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210318062650.19886-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <50c0a512-2af0-efdf-fa77-93e3695febaa@infradead.org>
-Date:   Thu, 18 Mar 2021 11:20:59 -0700
+Message-ID: <d3facf30-2a60-46f2-caa0-af63d3a52dd1@infradead.org>
+Date:   Thu, 18 Mar 2021 11:21:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210318064751.19226-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210318062650.19886-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,41 +50,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 11:47 PM, Bhaskar Chowdhury wrote:
-> 
-> s/compied/compiled/
-> s/preseve/preserve/
+On 3/17/21 11:26 PM, Bhaskar Chowdhury wrote:
+> s/modueles/modules/ ....two different places
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
 Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 > ---
->  arch/x86/mm/init.c | 4 ++--
+>  drivers/gpu/drm/msm/dp/dp_power.h | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> index dd694fb93916..0212e831d388 100644
-> --- a/arch/x86/mm/init.c
-> +++ b/arch/x86/mm/init.c
-> @@ -29,7 +29,7 @@
-> 
->  /*
->   * We need to define the tracepoints somewhere, and tlb.c
-> - * is only compied when SMP=y.
-> + * is only compiled when SMP=y.
+> diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
+> index 7d0327bbc0d5..e3f959ffae12 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_power.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_power.h
+> @@ -88,7 +88,7 @@ int dp_power_client_init(struct dp_power *power);
+>   * return: 0 for success, error for failure.
+>   *
+>   * This API will de-initialize the DisplayPort's clocks and regulator
+> - * modueles.
+> + * modules.
 >   */
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/tlb.h>
-> @@ -756,7 +756,7 @@ void __init init_mem_mapping(void)
+>  void dp_power_client_deinit(struct dp_power *power);
 > 
->  #ifdef CONFIG_X86_64
->  	if (max_pfn > max_low_pfn) {
-> -		/* can we preseve max_low_pfn ?*/
-> +		/* can we preserve max_low_pfn ?*/
->  		max_low_pfn = max_pfn;
->  	}
->  #else
+> @@ -100,7 +100,7 @@ void dp_power_client_deinit(struct dp_power *power);
+>   *
+>   * This API will configure the DisplayPort's power module and provides
+>   * methods to be called by the client to configure the power related
+> - * modueles.
+> + * modules.
+>   */
+>  struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser);
+> 
 > --
 
 
