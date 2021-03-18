@@ -2,138 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A223409D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CCC3409EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhCRQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhCRQN0 (ORCPT
+        id S231960AbhCRQSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:18:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22694 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232065AbhCRQSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:13:26 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FA3C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:13:26 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so3711767wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 09:13:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BINIGwJxwGmOwEiPbRzuCVVu9BcgGBArfEIZAsM96Eo=;
-        b=PJyzt0TQAZ6q+XU89v8X2lZwTXRSjsGBr+roWlDXFOCw/q7BkcPc9KKR9l3+EBKput
-         BOBLc/wttyIbmktCUuPGof6wydF/xyMXMFU1emN7DYvAdztIqufIGIwExca8SlLseDtq
-         uTEc0LZEE68/QpDM0rEjPP+1WuZxmzceuYPX6tEyVf/2o5Ol1lF3BDb2aRaFFS9rSo0a
-         HsC9n9pOeJtnWPS2t50tj1R8uLt4Rn1dDcEb7PubZ4XhvWufHicBFN9eGsAGliQbVPKE
-         FNLXqByAUPPT91tPyTpNOzClHDMZJDcn3Th3cyLF/vNEXQ3y2mwtpOCN7uasBirnelYi
-         WYOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BINIGwJxwGmOwEiPbRzuCVVu9BcgGBArfEIZAsM96Eo=;
-        b=HJn2biYqXI8rn/B6X61yRwYjr34xV0L2Kr64XOL55F7ok9dgRT3dACG9r0qy3SId0d
-         hTBebMPgXvaKTlrXtId+9d5qszIw++GMPgEBaJrt2EVW2F4wggku0VR2yla7RFRn0x9q
-         fro9xVi9YldSGdaCkwWuyJm6uwuRtYmE3a0dSFWptVZ7j9yI6dbYsU/oqeCiuyQ/bdM0
-         CaVzymU+NhNuSUGwnjmFuf8hSR+CHM7k+P1/B6+VSFHNHvH/jFPCZK0EngLsc54w0VOW
-         DsOuTnhahH+Ui7MY/zGTpE6uqdrWI5LXIAvaga+enqa4cuuwXlGWONZeLX2sz+BOromi
-         RSiQ==
-X-Gm-Message-State: AOAM532xYRtzFgv8ntiX8XcvL4UUvbLN8wbTdSjaBPUyiUxpkT50ejj7
-        9wZuneIYml7o/grSefEX+OX3zQ==
-X-Google-Smtp-Source: ABdhPJzOvlozfcDMp/H97oOOn9jII/km2GNy6th7b2R4rgD2EHECWXAk7TZKijGyZkpLQ7XhVdp//A==
-X-Received: by 2002:a7b:ca44:: with SMTP id m4mr11269wml.103.1616084005261;
-        Thu, 18 Mar 2021 09:13:25 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:d49c:45f3:9d86:b2e9])
-        by smtp.gmail.com with ESMTPSA id t188sm3042384wma.25.2021.03.18.09.13.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 09:13:24 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 16:13:23 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
- fuse device
-Message-ID: <YFN8IyFTdqhlS9Lf@google.com>
-References: <20210125153057.3623715-1-balsini@android.com>
- <20210125153057.3623715-3-balsini@android.com>
- <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
+        Thu, 18 Mar 2021 12:18:37 -0400
+X-Greylist: delayed 305 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Mar 2021 12:18:36 EDT
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616084317; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=DKr+tgYgAkXdPo7uYIhenDviFte57zt7ww4oKvub4jw=; b=Gs1SNqRmTKYazhZ7nHrVL5FoVHKNcQeE1HG0VYIyE3MeFdWJOQTKhQ5wdDk0ssSFzSHTihBq
+ EQmOLo81CQ2gBmRyFeCHmoCYCyQk6+oid7cD5yLgWmiejcIpgbBjziZP6pTeJ9kF6WDPrB8c
+ cNjJUNSwFJ5FrzyiR8sCqVi/fI8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60537c295d70193f885796ee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 16:13:29
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92AF0C43464; Thu, 18 Mar 2021 16:13:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44A26C433CA;
+        Thu, 18 Mar 2021 16:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44A26C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v4 1/3] bus: mhi: core: Introduce internal register poll
+ helper function
+To:     bbhatt@codeaurora.org
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
+        Naveen Kumar <naveen.kumar@quectel.com>,
+        jhugo=codeaurora.org@codeaurora.org
+References: <1615419080-26540-1-git-send-email-bbhatt@codeaurora.org>
+ <1615419080-26540-2-git-send-email-bbhatt@codeaurora.org>
+ <CAMZdPi8CHCVT8G60zOEn0n43vPJW0xx+fufnBFzb7aPXSoMQOw@mail.gmail.com>
+ <e04579bf-6641-0038-1aa8-b46f8ab4b984@codeaurora.org>
+ <43c83caf8a6b71207b107ac8457f22d6@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <8b458436-dad9-8a8b-f997-9810f1be5d91@codeaurora.org>
+Date:   Thu, 18 Mar 2021 10:13:25 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
+In-Reply-To: <43c83caf8a6b71207b107ac8457f22d6@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 07:53:06PM +0100, Arnd Bergmann wrote:
-> On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
-> >
-> > With a 64-bit kernel build the FUSE device cannot handle ioctl requests
-> > coming from 32-bit user space.
-> > This is due to the ioctl command translation that generates different
-> > command identifiers that thus cannot be used for direct comparisons
-> > without proper manipulation.
-> >
-> > Explicitly extract type and number from the ioctl command to enable
-> > 32-bit user space compatibility on 64-bit kernel builds.
-> >
-> > Signed-off-by: Alessio Balsini <balsini@android.com>
+On 3/17/2021 3:26 PM, Bhaumik Bhatt wrote:
+> On 2021-03-11 11:59 AM, Jeffrey Hugo wrote:
+>> On 3/11/2021 1:00 AM, Loic Poulain wrote:
+>>> Hi Bhaumik,
+>>>
+>>> On Thu, 11 Mar 2021 at 00:31, Bhaumik Bhatt <bbhatt@codeaurora.org> 
+>>> wrote:
+>>>>
+>>>> Introduce helper function to allow MHI core driver to poll for
+>>>> a value in a register field. This helps reach a common path to
+>>>> read and poll register values along with a retry time interval.
+>>>>
+>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>> ---
+>>>>   drivers/bus/mhi/core/internal.h |  3 +++
+>>>>   drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
+>>>>   2 files changed, 26 insertions(+)
+>>>>
+>>>> diff --git a/drivers/bus/mhi/core/internal.h 
+>>>> b/drivers/bus/mhi/core/internal.h
+>>>> index 6f80ec3..005286b 100644
+>>>> --- a/drivers/bus/mhi/core/internal.h
+>>>> +++ b/drivers/bus/mhi/core/internal.h
+>>>> @@ -643,6 +643,9 @@ int __must_check mhi_read_reg(struct 
+>>>> mhi_controller *mhi_cntrl,
+>>>>   int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
+>>>>                                      void __iomem *base, u32 offset, 
+>>>> u32 mask,
+>>>>                                      u32 shift, u32 *out);
+>>>> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+>>>> +                                   void __iomem *base, u32 offset, 
+>>>> u32 mask,
+>>>> +                                   u32 shift, u32 val, u32 delayus);
+>>>>   void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem 
+>>>> *base,
+>>>>                     u32 offset, u32 val);
+>>>>   void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void 
+>>>> __iomem *base,
+>>>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>>>> index 4e0131b..7c7f41a 100644
+>>>> --- a/drivers/bus/mhi/core/main.c
+>>>> +++ b/drivers/bus/mhi/core/main.c
+>>>> @@ -4,6 +4,7 @@
+>>>>    *
+>>>>    */
+>>>>
+>>>> +#include <linux/delay.h>
+>>>>   #include <linux/device.h>
+>>>>   #include <linux/dma-direction.h>
+>>>>   #include <linux/dma-mapping.h>
+>>>> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct 
+>>>> mhi_controller *mhi_cntrl,
+>>>>          return 0;
+>>>>   }
+>>>>
+>>>> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+>>>> +                                   void __iomem *base, u32 offset,
+>>>> +                                   u32 mask, u32 shift, u32 val, 
+>>>> u32 delayus)
+>>>> +{
+>>>> +       int ret;
+>>>> +       u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
+>>>> +
+>>>> +       while (retry--) {
+>>>> +               ret = mhi_read_reg_field(mhi_cntrl, base, offset, 
+>>>> mask, shift,
+>>>> +                                        &out);
+>>>> +               if (ret)
+>>>> +                       return ret;
+>>>> +
+>>>> +               if (out == val)
+>>>> +                       return 0;
+>>>> +
+>>>> +               udelay(delayus);
+>>>
+>>> Have you read my previous comment?
+>>> Do you really want to risk hogging the CPU for several seconds? we
+>>> know that some devices take several seconds to start/boot.
+>>> Why not using msleep variant here?
+>>
+>> usleep_range() if there is a desire to stay in us units?
+>>
+>> Given that the use of this function is for 25ms in one case, I wonder
+>> if this warning is applicable:
+>> https://elixir.bootlin.com/linux/latest/source/include/linux/delay.h#L28
+>>
+>> Counter point, 1ms latency over PCIe is not unusual.  I know we've
+>> removed the PCIe dependencies from MHI, but PCIe is the real usecase
+>> at this time.  Seems like this function could behave a bit weird if
+>> the parameter to udelay is something like "100", but the
+>> mhi_read_reg_field() call takes significantly longer than that.  Feels
+>> like in some scenarios, we could actually exceed the timeout by a
+>> non-trivial margin.
+>>
+>> I guess I'm going back and forth in determining if us scale timing is
+>> a benefit in any way.
+> Thanks for all the inputs. I think a good idea here would be to use 
+> fsleep()
+> API as we need to allow any timeout the caller specifies. Also, plan is to
+> drop the patch #3 in this series since that will require a busywait due to
+> the code being in panic path.
 > 
-> I saw this commit go into the mainline kernel, and I'm worried that this
-> doesn't do what the description says. Since the argument is a 'uint32_t',
-> it is the same on both 32-bit and 64-bit user space, and the patch won't
-> make any difference for compat mode, as long as that is using the normal
-> uapi headers.
+> I don't wish to accommodate another variable here for busywait but that
+> would be an option to pick sleep or delay depending on the caller's path.
 > 
-> If there is any user space that has a different definition of
-> FUSE_DEV_IOC_CLONE, that may now successfully call
-> this ioctl command, but the kernel will now also accept any other
-> command code that has the same type and number, but an
-> arbitrary direction or size argument.
-> 
-> I think this should be changed back to specifically allow the
-> command code(s) that are actually used and nothing else.
-> 
->        Arnd
+> Please respond if there are any concerns.
 
-Hi Arnd,
+fsleep() would be some improvement, but I think there is still the issue 
+Loic points out where if delayus is small, but timeout_ms is large (say 
+50us and 25s), this function will end up burning a lot of cpu cycles. 
+However that is likely an edge case, and if your poll cycle is that 
+small, I think it should be assumed that the event is expected to happen 
+quickly, so the full timeout should not be hit.
 
-Thanks for spotting this possible criticality.
+fsleep() does nothing to address this function possibly taking quite a 
+bit longer than the timeout in overall wall time.  Perhaps that is not a 
+significant concern though.
 
-I noticed that 32-bit users pace was unable to use the
-FUSE_DEV_IOC_CLONE ioctl on 64-bit kernels, so this change avoid this
-issue by forcing the kernel to interpret 32 and 64 bit
-FUSE_DEV_IOC_CLONE command as if they were the same.
-This is the simplest solution I could find as the UAPI is not changed
-as, as you mentioned, the argument doesn't require any conversion.
-
-I understand that this might limit possible future extensions of the
-FUSE_DEV_IOC_XXX ioctls if their in/out argument changed depending on
-the architecture, but only at that point we can switch to using the
-compat layer, right?
-
-What I'm worried about is the direction, do you think this would be an
-issue?
-
-I can start working on a compat layer fix meanwhile.
-
-Thanks,
-Alessio
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
