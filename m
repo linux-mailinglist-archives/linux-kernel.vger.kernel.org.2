@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A62B3403C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0CD3403C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhCRKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
+        id S230218AbhCRKp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhCRKqs (ORCPT
+        with ESMTP id S229999AbhCRKow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:46:48 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169B0C06174A;
-        Thu, 18 Mar 2021 03:46:48 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id j7so3663789qtx.5;
-        Thu, 18 Mar 2021 03:46:47 -0700 (PDT)
+        Thu, 18 Mar 2021 06:44:52 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A52C06174A;
+        Thu, 18 Mar 2021 03:44:52 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id f26so6866976ljp.8;
+        Thu, 18 Mar 2021 03:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jhUQnpQN5W/tA9Wcg9rEDDeKuG8HI0NowlOsbYyX73M=;
-        b=gw/bd6B/y+5rYoX8wrkX7aPu1rvous/7chlMKJlUVROit+etGoawRuOVK6WsGPbnlu
-         7WMoQqUGkfsVTfUskGWqTo4Ysb5MknXJXfB70C5ZowQkWG+kyCrklQU7PiEthDYs0mew
-         vBtKg68fgiJwPxOeBy0UiG8N/3YQ4fmCvpkKHJVb0xm8hrmNFJO03xk+e7mu6f8uLgvv
-         lv64p2vQieGtmDdFSqJ2VS4p5oW2stc2SqyM8hgXDo1+Eadu0YeDkMT1ALFT7A4GauEB
-         GWpzGrSfgzZX9c1vpxTJJcZ1jzfRhAjoF73w7QENWMIy14XnvAkA7vJrzE8+njER//Me
-         WE6g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UZZzq/9McYqHi4InJGaReUkavQ57VQ1UkA2ucnh78uI=;
+        b=gTbIM+eVxHGNlcaYXsqO6C0ktHAtRqi8q20fGcwHQ7semqVJMZXtpkH3pUFPSQzVYl
+         +WeAtppdRYVyjxzgwUh+BgHpEe4qAn3IgFJE50GSbAeZlhxYE1NhbzyWcz0qANY02xD9
+         WP/N8IHj1Xbipui8Hxo0TpkS0cIx3pOqI+fEMQahZIx3V9BTkJvMMa+O4GB3oqVFmtOe
+         PcYtWLGkWX1vePVvpC7ryqpXjGSLfeD9PLLYAl2nESHcF6eZHkofYB/GOLFT3CpPW+cG
+         454A9TWQJ4AC+2RGIkZZU0S6hK9JCBBXxB3v2kxS2/Soah9MHXBtHvehAqnp3ZeAXTMk
+         xD8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jhUQnpQN5W/tA9Wcg9rEDDeKuG8HI0NowlOsbYyX73M=;
-        b=oDI447dU7W9a/YKEgyHoiuL0c7kXby0QFf+AKi6KJLYD52j/waJhWPVahy9uVEkZJY
-         ROuYH8TsC1JGtGkCpKZKTiIzDUeylJ++je7MWvjcedsUmPq7gwsYS+Ug+/K2B0s6hp9q
-         G1RNJj07BNxZ8KQK2lI+I5RKDLN7Ip37SQ1zXcdlXgSAnFjwWhLRtpEWtwh1U6j5WOdw
-         WEp5aLxkSb9DZhE7YOP/FeZECxkqM5p/7e+acx4z9chYn3yLxAUG9nHTetYXG+F9oBnf
-         Gvag0eqcXXV6rhMHXLDTTz7l35IwGxRiGz/CZzT7vS/N6yXRnDJ7NgCj0A55zP69O5A+
-         1sog==
-X-Gm-Message-State: AOAM532jLakg+o+c0gErnw6IfKFunGWmLFOmWO8vsqh+uwSJjIOS2zEC
-        rH3uPJA4t4DtcROD7R4IN8A=
-X-Google-Smtp-Source: ABdhPJxNYDSuqVaPiGOjr4bLR3exGbz9HyB9Acn8xML+XqvG0/J5wqbtCrnBcna0aK1ot7AuitArVw==
-X-Received: by 2002:aed:3023:: with SMTP id 32mr3041059qte.173.1616064407217;
-        Thu, 18 Mar 2021 03:46:47 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.246])
-        by smtp.gmail.com with ESMTPSA id z89sm1129783qtd.5.2021.03.18.03.46.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 03:46:46 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     ysato@users.sourceforge.jp, dalias@libc.org, unixbhaskar@gmail.com,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] sh: kernel: Fix a typo
-Date:   Thu, 18 Mar 2021 16:14:37 +0530
-Message-Id: <20210318104437.21793-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        bh=UZZzq/9McYqHi4InJGaReUkavQ57VQ1UkA2ucnh78uI=;
+        b=cA6hRWkFE5QGmIZebR5CU8VvqaWt2pv2XfEKyM4ZFeYwdmu1GeuiFzOqU6qjvrH04o
+         casrI3RfpUYfnt+WWUcBR6Nqhgg5JEnlNNNK+YyZu7iNIQVmZKT85/J6e99ABgmZo94O
+         lY35j4hu5K3q62SDBeWSHc/k/dOSebN5XMmwP7+ytFwPA+LKElv8Nseb2xdDI+Qd0ebx
+         ZZRZvEndH0omQbJELpa6so46jf79GCpydZOuNfaPNIZl5qbfUtfwbeQxIYfOxB9hjrL4
+         RB4WoPhzKZf3stPutyY3+PNqJj8yrE05XVweWrwsn2Kw7qghWn9h9/MbaaZDU984ICRN
+         D7Eg==
+X-Gm-Message-State: AOAM5318WkY2JDhgDZ7IiIzag436r3VtktkZ+8varTmal4VVNCPPH8lg
+        eCQ8Kb7rPOxFBQ6t4T3DCr7xGZodIvM=
+X-Google-Smtp-Source: ABdhPJyZkPBz604XveIMMKnivIAAlI3Kq+ffrnq13fyiOfAK/uWCFgXw6pG59Ahla1dsNA6XD5eWHQ==
+X-Received: by 2002:a2e:974d:: with SMTP id f13mr4956977ljj.210.1616064290378;
+        Thu, 18 Mar 2021 03:44:50 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id a1sm191289ljb.76.2021.03.18.03.44.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 03:44:50 -0700 (PDT)
+Subject: Re: [PATCH v5 2/7] clk: tegra: Fix refcounting of gate clocks
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210317193006.29633-1-digetx@gmail.com>
+ <20210317193006.29633-3-digetx@gmail.com>
+ <20210318091219.GA18038@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <768dcbd3-a29b-33c1-2147-e59e3847e75c@gmail.com>
+Date:   Thu, 18 Mar 2021 13:44:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210318091219.GA18038@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+18.03.2021 12:12, Michał Mirosław пишет:
+> On Wed, Mar 17, 2021 at 10:30:01PM +0300, Dmitry Osipenko wrote:
+>> The refcounting of the gate clocks has a bug causing the enable_refcnt
+>> to underflow when unused clocks are disabled. This happens because clk
+>> provider erroneously bumps the refcount if clock is enabled at a boot
+>> time, which it shouldn't be doing, and it does this only for the gate
+>> clocks, while peripheral clocks are using the same gate ops and the
+>> peripheral clocks are missing the initial bump. Hence the refcount of
+>> the peripheral clocks is 0 when unused clocks are disabled and then the
+>> counter is decremented further by the gate ops, causing the integer
+>> underflow.
+> [...]
+>> diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
+>> index 4b31beefc9fc..3c4259fec82e 100644
+>> --- a/drivers/clk/tegra/clk-periph-gate.c
+>> +++ b/drivers/clk/tegra/clk-periph-gate.c
+> [...]
+>> @@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
+>>  
+>>  	spin_lock_irqsave(&periph_ref_lock, flags);
+>>  
+>> -	gate->enable_refcnt[gate->clk_num]--;
+>> -	if (gate->enable_refcnt[gate->clk_num] > 0) {
+>> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
+>> -		return;
+>> -	}
+>> +	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
+>> +
+>> +	if (gate->enable_refcnt[gate->clk_num]-- == 1)
+>> +		clk_periph_disable_locked(hw);
+> 
+> Nit: "if (--n == 0)" seems more natural, as you want to call
+> clk_periph_disable_locked() when the refcount goes down to 0.
+> 
+> [...]
+>>  	/*
+>> -	 * If peripheral is in the APB bus then read the APB bus to
+>> -	 * flush the write operation in apb bus. This will avoid the
+>> -	 * peripheral access after disabling clock
+>> +	 * Some clocks are duplicated and some of them are marked as critical,
+>> +	 * like fuse and fuse_burn for example, thus the enable_refcnt will
+>> +	 * be non-zero here id the "unused" duplicate is disabled by CCF.
+> 
+> s/id/if/ ?
 
-s/archtecture/architecture/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/sh/kernel/relocate_kernel.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/sh/kernel/relocate_kernel.S b/arch/sh/kernel/relocate_kernel.S
-index d9bf2b727b42..deda2f60a8f2 100644
---- a/arch/sh/kernel/relocate_kernel.S
-+++ b/arch/sh/kernel/relocate_kernel.S
-@@ -3,7 +3,7 @@
-  * relocate_kernel.S - put the kernel image in place to boot
-  * 2005.9.17 kogiidena@eggplant.ddo.jp
-  *
-- * LANDISK/sh4 is supported. Maybe, SH archtecture works well.
-+ * LANDISK/sh4 is supported. Maybe, SH architecture works well.
-  *
-  * 2009-03-18 Magnus Damm - Added Kexec Jump support
-  */
---
-2.26.2
-
+I'll update this patch over the weekend, thanks!
