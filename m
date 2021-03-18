@@ -2,257 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EB4340073
+	by mail.lfdr.de (Postfix) with ESMTP id E1511340074
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhCRHuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhCRHt3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:49:29 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A42C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:49:29 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id v3so4024544ilj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nCGPp7xDgIEFGVnmOfTAwVRTBXg0JrC/tTvPITi4f4U=;
-        b=Q828CewOTb5/edKwMjw+KtXXkAy1ua1h453tHFrXPdbm6rJgTVfTO8iTUhBnwcDGjV
-         koPxrFJ90TvVOlRCqBlR6bslYADcKfjUjMhkd4U2jnHY3XWvFBjieegce0LFjCHLuPvr
-         eBEeB8n82yX7wVmGMYnwyM3fx9GcIiwIoUjo8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nCGPp7xDgIEFGVnmOfTAwVRTBXg0JrC/tTvPITi4f4U=;
-        b=mDJL9ED/q9e8ZQpAHPo9ybtx8jzuoO9pWZHLrx+puma1ykV6XQC7FNcEMredEJJKHF
-         4ZLImlM7dKDZaNp7XKLjFMs/P4g7XnW5YFswiZcwWnJwkU6QdljSk9UHbqMV+hAnWD6e
-         bioicCHFZsV3zz/jC7p9+dD7aprBt26CLXpgkVpgnrqB7TsZOCSqxqwVD8DO3fl1cxvI
-         M++lNavyBTUS7Vj6Dmf639E4kIu0jRGVV31Sfecka6MRKgHZv+YKmFIUQP40LRqwGIFy
-         1ZdruYUwbbGA3q2iAkeZ1YR0b2eieWxhA18uNYQ/ZNCyG4WrzbHCwFJYFficsn2GFPt6
-         8kZA==
-X-Gm-Message-State: AOAM5301PRXISnKYWhrk0Wf9jRxp4WjRiDNGyKB4B7SUp4cvIvQjP+tr
-        Ahw7+lxb+KcNQIiYUW8tRE3caRNrZyQVIyHG
-X-Google-Smtp-Source: ABdhPJztPcnymK9ivI+m0efZ8k3ie4QDqHLNnCmY3T4RzV4KP8nwxUtR+KkKr+M9BJJUeofiMrU6dA==
-X-Received: by 2002:a05:6e02:1564:: with SMTP id k4mr9983316ilu.65.1616053768680;
-        Thu, 18 Mar 2021 00:49:28 -0700 (PDT)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
-        by smtp.gmail.com with ESMTPSA id i67sm685883ioa.3.2021.03.18.00.49.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 00:49:28 -0700 (PDT)
-Received: by mail-il1-f173.google.com with SMTP id h1so4026969ilr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 00:49:28 -0700 (PDT)
-X-Received: by 2002:a92:c545:: with SMTP id a5mr10880851ilj.89.1616053767662;
- Thu, 18 Mar 2021 00:49:27 -0700 (PDT)
+        id S229717AbhCRHuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:50:03 -0400
+Received: from mail-bn8nam11on2079.outbound.protection.outlook.com ([40.107.236.79]:58533
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229554AbhCRHte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 03:49:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NKnmZMINavqPzoAz+tNCkK16CBQbajMOJ3+WBONzjui3Qn0GtBMpXYqCTJ/KcgD0i0qWAbYBRshX7kIB630GMBPcNDx683W3wuhmyg9We1qaMCdGXxpE2Gfb/PP5PvuHhBEyqeJwz7/ilRKNIewOl+Kxqke47HH88I7aM3na5ybdSdM9xZ3ujKd+9tDyjc5Y/qQwf58mBVzJ2CGvYnMg+5rg9kcViYQ5mUzpLGnCq52J9k+LjVC0ipOPsVLXi+Jim1HWm94y6cjd59KBmUI+MhRymYikVODJWmu3/fFQ6avWgcGNFfLbck7MXUGZ5igLiLWEFjJBafO3pCmfvMeRsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSG35hspwYlyZM+ee6Tpkd8Ve7LaePnc5N6SpJD0ZK4=;
+ b=LZLLIAFZoZr0g1R8CcmMv58WpbnpSi3mNutrdv1xJajr+qonZIVma6pzDwUHgkSgUg/rULcX6ruyOs0GpMXx/K35FzX7Q1ABWtlqBn3MVTpRZHKpJUwWQ7XznqXkdXnBpez8r3yaBbXzQ7eixniL33DGOZHpFHPh/RQNCVlou44qukuoFpab9llRkyeMQR9iI6z8Cg8BHqKOC6mghMReg7CCb6P1/ltzGX0svj2QNjUHQYu2Nz8+c6OnFqgrauNIEeVdITmRkoomoRnWWWik6jjGIKfhyaMObTJkuyZYBXpDmFF+DMNC0NHGXpBgEtmG0Mu/QOnLGA+b6vgdqOvIyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSG35hspwYlyZM+ee6Tpkd8Ve7LaePnc5N6SpJD0ZK4=;
+ b=qN661akNs0p95qlIs57DWzwIjn0yKQr66PSi3XhJBf5vIYquiR7g6MZT0BqgX4abwIx8zS7BPIGlZghqkDi1zDY/eJ4XKbpaDQr4lmlQxjI9J+kyt8fhmWOGKka6YI6wszIjnlFYfoz3NFsRAFYQIake4Bth2I7TgNfGjJQQ9q8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4109.namprd12.prod.outlook.com (2603:10b6:208:1d9::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Thu, 18 Mar
+ 2021 07:49:33 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3933.033; Thu, 18 Mar 2021
+ 07:49:33 +0000
+Subject: Re: [PATCH] drm/amdgpu/ttm: Fix memory leak userptr pages
+To:     Daniel Gomez <daniel@qtec.com>
+Cc:     dagmcr@gmail.com, Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210317160840.36019-1-daniel@qtec.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <bb94b582-a720-9c4f-3d37-d1f7fd29da44@amd.com>
+Date:   Thu, 18 Mar 2021 08:49:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210317160840.36019-1-daniel@qtec.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:44e7:a99a:b86c:e453]
+X-ClientProxiedBy: FR2P281CA0011.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::21) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210317164511.39967-1-ribalda@chromium.org> <20210317164511.39967-2-ribalda@chromium.org>
- <f07a5767-fced-18af-8219-6e54b83a785d@xs4all.nl> <CANiDSCs+xc-nMksdZVZq4Z3mn=wd8rD14AhXOiup3D95sO50xg@mail.gmail.com>
- <e6273f17-cd0d-7fe5-bfc1-3827c2fbc82e@xs4all.nl>
-In-Reply-To: <e6273f17-cd0d-7fe5-bfc1-3827c2fbc82e@xs4all.nl>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 18 Mar 2021 08:49:16 +0100
-X-Gmail-Original-Message-ID: <CANiDSCvtOhr0Q-_SYZ1=1naP5WYM+j_c-ghE5qMQ0ERNGq9q8Q@mail.gmail.com>
-Message-ID: <CANiDSCvtOhr0Q-_SYZ1=1naP5WYM+j_c-ghE5qMQ0ERNGq9q8Q@mail.gmail.com>
-Subject: Re: [PATCH v6 01/17] media: v4l2-ioctl: check_ext_ctrls: Fix
- multiclass V4L2_CTRL_WHICH_DEF_VAL
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:44e7:a99a:b86c:e453] (2a02:908:1252:fb60:44e7:a99a:b86c:e453) by FR2P281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend Transport; Thu, 18 Mar 2021 07:49:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ac835032-6be9-4c91-1098-08d8e9e25e56
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4109:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4109FB49431AEC71F98EAF8283699@MN2PR12MB4109.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WN4+nQeDvkQs5mRo1Tle2lpdSdpw+xOLuxJnGOWFLWhv34xeEvRzbXva/Bc/z4WbcpGcXk3w0nPXKsCSolH4ZrFpYP1yi9D94Ua18z3a8RGwj5ZrHQHB0QuYfCCOzvdN2BZXy8pIx3k/7C6NAETpi2NcIg1d4PTRmkyv6IoIV7mQD3ls27TG2eS0xUTFu2eEFgY3yiifY5HVdQlBJr3mD1r6mkssLGFHjSAG1LWrsuoHXWbuv56nEShlUqJAezggRYwYJeGElWz/W1Azwn7N6w+3DiYmSCrJQYqjZ3doXSr+NHSg/MrGKBMPJL3/ZQOdtGdynXPEIgmcfOPEwilf4suF3eb24tV1eZ7by5FTd1SFAyQnMmAMCrWj8U77HzDvWKI65f3pFiprCY4PWmuOGFmrSkJGAGZWLqeuJ83L1GCMxilY4cB14XUP8isF2adx7GyEagEZeaOGW14HK/B0D/e+RYib7s6sCR8SgmZyl1Ma7LtjcZnv4fcDFDDwZiWkOnsTBNHwVvujN8tdMfhYNuy+MFtlc2Gm4taavM1CgmWLuaMtKFtnBL96KSct+dlFLHCv30WBZRl/vxO5uTj9eEiwzR8FSa6EceJNGntaM9ikTOJ0zsozr80HeF/Rtpm4oo2e6RUYHGrql7V+qc78KlvBYVsYZWY3JQ5yQKXn1ZB3zI4lShWvSTH+3JQ2h1hp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(31686004)(478600001)(16526019)(54906003)(8676002)(186003)(2616005)(52116002)(66556008)(2906002)(66476007)(36756003)(6916009)(6486002)(5660300002)(66946007)(83380400001)(4326008)(31696002)(38100700001)(8936002)(86362001)(6666004)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ajlKdC9IMUpUMlQxcm9wdkMyU0VuMTU4VEtLRkVrNVdweFBlVkVDQkdUMDFz?=
+ =?utf-8?B?MkRjc2tzL2QzT3p4L3U2ZVZaanVGQ2dtYUNMZ01VMEdIK1dDNVVySEtHY2tY?=
+ =?utf-8?B?VytMMngwVEFpTENKTXhFM2JDeTZCK2lYMW1Xd2JXZy8zRVdSY0h4bmhlOG13?=
+ =?utf-8?B?WTlXaXJBalE3VSs0eHFjc055bVF0aHRiVk1ya1VvUU5rdzBLVkVXcjlsK1JS?=
+ =?utf-8?B?eGFtNFh5eWE5bTcvVnBXZDlXNXh0ZmUrN29ndXZpRVQ3ZGRHM2pyTVlJSHo1?=
+ =?utf-8?B?RVdxTDR5aGRNcXgwTkVaR0huMHIzQWdQWnlGbit5VXpRUEFnNXAxYXorYVpY?=
+ =?utf-8?B?QXZxOGNXdG53NlEvZXdVRFNmZDhkcUF6RXdwS3hRSjlrVTF2RzJlRlJpVVEw?=
+ =?utf-8?B?dXNYODkxMXpHK0hJeXlheCtBMEF0KzlpcXZ4dmd4UzNoejJGdDd0WFp4VDU1?=
+ =?utf-8?B?VE1IR2V0Q2dmRzVlOHVFQW1WTzdrbWhRL3pra05SR3REeCs3S09jUG9EZ2NN?=
+ =?utf-8?B?Q2JiajJZWUp2SHVvVDN3c2tJTHNKaTFmclFuai9acEpIZ2VHSWhyN3JOY1k5?=
+ =?utf-8?B?SjhVZy9UZTBoaTBXZFBrekVGWjRTRW5tVGJoWjBhVWRVbHc2OU1OcHczYmNo?=
+ =?utf-8?B?RnhHaFlMQ0Y5S2t3R0xiOXRVcWJ2eXIzNHlXamwvcW9UT3ZKTGVZYmQwQ2Yy?=
+ =?utf-8?B?ZUpkSUtXRGUrS3hmbGlRVTNUclBSWEYvaVQydHJ6a0ZuWWJtcmljenRIajlE?=
+ =?utf-8?B?TzlKTWJCS2NHVUhEYmF6dm1FbFMrYUVuNldCZE44RVIvRkczU3pxazJadFBm?=
+ =?utf-8?B?ZHM2bHpVb294dXF1cVVrdFlZR1VybmV1TlFYY0RJVFNGc2ZGQzB2b084d0xU?=
+ =?utf-8?B?RUtiTkw1SWJEanUzMm1lYmZ4dmRpOHo5L2kzZzUxOWtBMG4zRHJ5Y3U3andH?=
+ =?utf-8?B?OWJ6TDJrTW80K3psUW1mK1VmSnFCbFA5Mkd1cXB3aUtGQnBwMnNEUkZiWUVN?=
+ =?utf-8?B?a3lhZys3bitlTVBDTmFqSm40ZHFvY282blFmVHp0Y09ZNXVRYjU2T1lLUlNl?=
+ =?utf-8?B?aFhoZE5SMUJkNGtKZERrZi85bVdlZDgzTHY1SHFLVlRKT2xJYnlXOHluWmw3?=
+ =?utf-8?B?YmtIeE51R3p6ck1NRDNhN0dWZW0rT1F4NjFOdzBhK0Q2VkRWZEw1MzRtc3Rk?=
+ =?utf-8?B?RTBhdnV2cWFIbWxBdkU1VlBxbmN3dHJOcnlrazMvRXJxV0RMOE11UjZPbVcv?=
+ =?utf-8?B?VDNUemNiVWJ5RExFY0t2TXpWK3cyelY3WFJIaVBwNnR3T3pGUU4vLzh0bjRT?=
+ =?utf-8?B?bDQvSEVPVnhzYnlETE9McFBvYWdqdDljVmxPeWZMMjJOY1JkMFFwQzJzc3FS?=
+ =?utf-8?B?UVhUVE9LRDF2VEcvRE1sRm1naGpnTExxWENBOFV1dCtVcEIrblVabk5KOHBK?=
+ =?utf-8?B?THEzUkJLbjZpbEdCZGNzNnRBUkRXVVNPaGlsWjkzTHBUeGo0NDh2TUZWNnVP?=
+ =?utf-8?B?eTM0ZCtvUDkxZWRQV1lWWk05UG5IM3Q2K0tKOVNIczYyQVp5UDY4Zk4reW42?=
+ =?utf-8?B?UVRhNnhFNjhLTlo1MXF4NVJETWxWRUk2MW9qUDZ5R2E5Z0JMTzMxb0hzWjBG?=
+ =?utf-8?B?UmFNN0JVc3F6VjBWNWd3NHRpS01FWkgyL21EclltMEZuTVp2RUpiNnlpU3B4?=
+ =?utf-8?B?WHlLT3ovYU9pN1VZUDBtWE5pc1ZnelI5eWl1Y1g2WFdYS1hpc2x4OUlHNkgv?=
+ =?utf-8?B?U2FveVZXa1VwTjgzaWROT21pQkx1Q05MZWdxVVYxeUNxRjAxVG9kbm9WdThU?=
+ =?utf-8?B?SFB4bDRmSVltZDlkbE9lQnFKY0JvQkU1bUZWdDNmVDB3dDRrTGRxaEFleXpR?=
+ =?utf-8?Q?jV4Q3u0Rz/SXk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac835032-6be9-4c91-1098-08d8e9e25e56
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 07:49:32.9343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MRzLk4yabELiRd3PYFgfPx/oECNLDXKj5Nrfcj35J2nl2AVEl+GttB5RWbYfgWKy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+Am 17.03.21 um 17:08 schrieb Daniel Gomez:
+> If userptr pages have been pinned but not bounded,
+> they remain uncleared.
+>
+> Signed-off-by: Daniel Gomez <daniel@qtec.com>
 
-On Thu, Mar 18, 2021 at 8:48 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 18/03/2021 08:17, Ricardo Ribalda wrote:
-> > Hi Hans
-> >
-> > Can I merge 1-3, but leave 4 as a separate one? It helps to tell a
-> > story for 5 and  6.
->
-> I really prefer it as a single patch. All four patches are basically a single big fix
-> for v4l2-ioctl.c where the code for drivers that do not use the control framework had
-> become very outdated. Fixing it in a single patch helps backporting to stable, and
-> it is easier to review and see everything that had to be done to fix this.
->
-> In this case I wondered when I was reviewing patch 1 why V4L2_CTRL_WHICH_DEF_VAL was
-> just accepted without checking for S/TRY_EXT_CTRLS. Basically patch 1 is a broken fix
-> w.r.t. DEF_VAL until patch 4, which really fixes it.
->
-> Just do it all in a single patch, splitting it up doesn't work in this particular case.
+Good catch, not sure if that can ever happen in practice but better save 
+than sorry.
 
-Ok, thanks for the clarification :)
->
-> Regards,
->
->         Hans
->
-> >
-> > Thanks
-> >
-> > On Thu, Mar 18, 2021 at 8:14 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >>
-> >> Hi Ricardo,
-> >>
-> >> On 17/03/2021 17:44, Ricardo Ribalda wrote:
-> >>> Drivers that do not use the ctrl-framework use this function instead.
-> >>>
-> >>> - Do not check for multiple classes when getting the DEF_VAL.
-> >>>
-> >>> Fixes v4l2-compliance:
-> >>> Control ioctls (Input 0):
-> >>>               fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-> >>>       test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-> >>
-> >> Can you merge patches 1-4 into a single patch? It's really one big fix since
-> >> this code was never updated when new 'which' values were added. So keeping it
-> >> together is, for once, actually preferred.
-> >>
-> >> You can add my:
-> >>
-> >> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >>
-> >> after these 4 patches are merged. It looks much nicer now.
-> >>
-> >> Regards,
-> >>
-> >>         Hans
-> >>
-> >>>
-> >>> Cc: stable@vger.kernel.org
-> >>> Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
-> >>> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> >>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >>> ---
-> >>>  drivers/media/v4l2-core/v4l2-ioctl.c | 47 ++++++++++++++++------------
-> >>>  1 file changed, 27 insertions(+), 20 deletions(-)
-> >>>
-> >>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> >>> index 31d1342e61e8..403f957a1012 100644
-> >>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> >>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> >>> @@ -908,7 +908,7 @@ static void v4l_print_default(const void *arg, bool write_only)
-> >>>       pr_cont("driver-specific ioctl\n");
-> >>>  }
-> >>>
-> >>> -static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
-> >>> +static bool check_ext_ctrls(struct v4l2_ext_controls *c, unsigned long ioctl)
-> >>>  {
-> >>>       __u32 i;
-> >>>
-> >>> @@ -917,23 +917,30 @@ static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
-> >>>       for (i = 0; i < c->count; i++)
-> >>>               c->controls[i].reserved2[0] = 0;
-> >>>
-> >>> -     /* V4L2_CID_PRIVATE_BASE cannot be used as control class
-> >>> -        when using extended controls.
-> >>> -        Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-> >>> -        is it allowed for backwards compatibility.
-> >>> -      */
-> >>> -     if (!allow_priv && c->which == V4L2_CID_PRIVATE_BASE)
-> >>> -             return 0;
-> >>> -     if (!c->which)
-> >>> -             return 1;
-> >>> +     switch (c->which) {
-> >>> +     case V4L2_CID_PRIVATE_BASE:
-> >>> +             /*
-> >>> +              * V4L2_CID_PRIVATE_BASE cannot be used as control class
-> >>> +              * when using extended controls.
-> >>> +              * Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-> >>> +              * is it allowed for backwards compatibility.
-> >>> +              */
-> >>> +             if (ioctl == VIDIOC_G_CTRL || ioctl == VIDIOC_S_CROP)
-> >>> +                     return false;
-> >>> +             break;
-> >>> +     case V4L2_CTRL_WHICH_DEF_VAL:
-> >>> +     case V4L2_CTRL_WHICH_CUR_VAL:
-> >>> +             return true;
-> >>> +     }
-> >>> +
-> >>>       /* Check that all controls are from the same control class. */
-> >>>       for (i = 0; i < c->count; i++) {
-> >>>               if (V4L2_CTRL_ID2WHICH(c->controls[i].id) != c->which) {
-> >>>                       c->error_idx = i;
-> >>> -                     return 0;
-> >>> +                     return false;
-> >>>               }
-> >>>       }
-> >>> -     return 1;
-> >>> +     return true;
-> >>>  }
-> >>>
-> >>>  static int check_fmt(struct file *file, enum v4l2_buf_type type)
-> >>> @@ -2229,7 +2236,7 @@ static int v4l_g_ctrl(const struct v4l2_ioctl_ops *ops,
-> >>>       ctrls.controls = &ctrl;
-> >>>       ctrl.id = p->id;
-> >>>       ctrl.value = p->value;
-> >>> -     if (check_ext_ctrls(&ctrls, 1)) {
-> >>> +     if (check_ext_ctrls(&ctrls, VIDIOC_G_CTRL)) {
-> >>>               int ret = ops->vidioc_g_ext_ctrls(file, fh, &ctrls);
-> >>>
-> >>>               if (ret == 0)
-> >>> @@ -2263,7 +2270,7 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
-> >>>       ctrls.controls = &ctrl;
-> >>>       ctrl.id = p->id;
-> >>>       ctrl.value = p->value;
-> >>> -     if (check_ext_ctrls(&ctrls, 1))
-> >>> +     if (check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
-> >>>               return ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
-> >>>       return -EINVAL;
-> >>>  }
-> >>> @@ -2285,8 +2292,8 @@ static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-> >>>                                       vfd, vfd->v4l2_dev->mdev, p);
-> >>>       if (ops->vidioc_g_ext_ctrls == NULL)
-> >>>               return -ENOTTY;
-> >>> -     return check_ext_ctrls(p, 0) ? ops->vidioc_g_ext_ctrls(file, fh, p) :
-> >>> -                                     -EINVAL;
-> >>> +     return check_ext_ctrls(p, VIDIOC_G_EXT_CTRLS) ?
-> >>> +                             ops->vidioc_g_ext_ctrls(file, fh, p) : -EINVAL;
-> >>>  }
-> >>>
-> >>>  static int v4l_s_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-> >>> @@ -2306,8 +2313,8 @@ static int v4l_s_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-> >>>                                       vfd, vfd->v4l2_dev->mdev, p);
-> >>>       if (ops->vidioc_s_ext_ctrls == NULL)
-> >>>               return -ENOTTY;
-> >>> -     return check_ext_ctrls(p, 0) ? ops->vidioc_s_ext_ctrls(file, fh, p) :
-> >>> -                                     -EINVAL;
-> >>> +     return check_ext_ctrls(p, VIDIOC_S_EXT_CTRLS) ?
-> >>> +                             ops->vidioc_s_ext_ctrls(file, fh, p) : -EINVAL;
-> >>>  }
-> >>>
-> >>>  static int v4l_try_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-> >>> @@ -2327,8 +2334,8 @@ static int v4l_try_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-> >>>                                         vfd, vfd->v4l2_dev->mdev, p);
-> >>>       if (ops->vidioc_try_ext_ctrls == NULL)
-> >>>               return -ENOTTY;
-> >>> -     return check_ext_ctrls(p, 0) ? ops->vidioc_try_ext_ctrls(file, fh, p) :
-> >>> -                                     -EINVAL;
-> >>> +     return check_ext_ctrls(p, VIDIOC_TRY_EXT_CTRLS) ?
-> >>> +                     ops->vidioc_try_ext_ctrls(file, fh, p) : -EINVAL;
-> >>>  }
-> >>>
-> >>>  /*
-> >>>
-> >>
-> >
-> >
->
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index 9fd2157b133a..50c2b4827c13 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -1162,13 +1162,13 @@ static void amdgpu_ttm_backend_unbind(struct ttm_bo_device *bdev,
+>   	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+>   	int r;
+>   
+> -	if (!gtt->bound)
+> -		return;
+> -
+>   	/* if the pages have userptr pinning then clear that first */
+>   	if (gtt->userptr)
+>   		amdgpu_ttm_tt_unpin_userptr(bdev, ttm);
+>   
+> +	if (!gtt->bound)
+> +		return;
+> +
+>   	if (gtt->offset == AMDGPU_BO_INVALID_OFFSET)
+>   		return;
+>   
 
--- 
-Ricardo Ribalda
