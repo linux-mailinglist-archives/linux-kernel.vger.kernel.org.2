@@ -2,277 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C253633FC73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E38233FC82
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 02:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhCRBBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 21:01:21 -0400
-Received: from a0.mail.mailgun.net ([198.61.254.59]:42334 "EHLO
-        a0.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCRBAz (ORCPT
+        id S230231AbhCRBCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 21:02:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13185 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhCRBCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 21:00:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616029255; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cdXXKx/6cmpJ3k5zTd24Wab1Zl+Vk9yFNKDeZVbO238=;
- b=vINr4YwVgzaE90t7B4wZKjnRvdL3L39wNBbfmrsqhEY72dMPRN6ccuB5erjhfMnLy7iPXsg2
- o0LK9bopvfkBoCgL1GrbNSjSDHK1RYC3KSChYzbL2PMBER858z3k0fuONZXnZcK83Rio79Od
- wFN1Cd4J4pZqSE+HSdlt//EitKQ=
-X-Mailgun-Sending-Ip: 198.61.254.59
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6052a63b3f267701a49f0d14 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 01:00:43
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1BADC43468; Thu, 18 Mar 2021 01:00:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46873C433C6;
-        Thu, 18 Mar 2021 01:00:41 +0000 (UTC)
+        Wed, 17 Mar 2021 21:02:05 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F17w73LVNzmZ6G;
+        Thu, 18 Mar 2021 08:59:35 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Mar 2021 09:01:56 +0800
+Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
+To:     Dave Hansen <dave.hansen@intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, <linux-alpha@vger.kernel.org>,
+        <linux-snps-arc@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
+        <linux-ia64@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
+        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
+        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
+        <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
+        <linux-um@lists.infradead.org>, <linux-xtensa@linux-xtensa.org>,
+        <linux-mm@kvack.org>
+References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
+ <20210317015210.33641-1-wangkefeng.wang@huawei.com>
+ <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <190f5356-f947-d474-a9fe-bc8e622a426e@huawei.com>
+Date:   Thu, 18 Mar 2021 09:01:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 18 Mar 2021 09:00:41 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v5 06/10] scsi: ufshpb: Add hpb dev reset response
-In-Reply-To: <DM6PR04MB65757E84F80B654689FBAE05FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210302132503.224670-1-avri.altman@wdc.com>
- <20210302132503.224670-7-avri.altman@wdc.com>
- <59a62fc17ec9229a8498e696eb0474be@codeaurora.org>
- <DM6PR04MB6575006E0682C3D11F54965DFC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <1d0e3c5441ecf14b6614ec0af0d30af6@codeaurora.org>
- <DM6PR04MB65750C0AE1F1EDB41EDEE491FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <37d0a4f115ad5d08ab12a76e6cbe17a5@codeaurora.org>
- <DM6PR04MB65755C69AD3D64BC5B1E93D8FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <4562e78aee9c5fbb7bbff65930fc81cd@codeaurora.org>
- <DM6PR04MB65757E84F80B654689FBAE05FC6A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <546d67b328afcd0d26dff41180288b63@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-17 23:46, Avri Altman wrote:
->> >> >> >>
->> >> >> >> Just curious, directly doing below things inside ufshpb_rsp_upiu()
->> >> >> >> does
->> >> >> >> not
->> >> >> >> seem a problem to me, does this really deserve a separate work?
->> >> >> > I don't know, I never even consider of doing this.
->> >> >> > The active region list may contain up to few thousands of regions -
->> >> >> > It is not rare to see configurations that covers the entire device.
->> >> >> >
->> >> >>
->> >> >> Yes, true, it can be a huge list. But what does the ops
->> >> >> "HPB_RSP_DEV_RESET"
->> >> >> really mean? The specs says "Device reset HPB Regions information",
->> >> >> but
->> >> >> I
->> >> >> don't know what is really happening. Could you please elaborate?
->> >> > It means that the device informs the host that the L2P cache is no
->> >> > longer valid.
->> >> > The spec doesn't say what to do in that case.
->> >>
->> >> Then it means that all the clean (without DIRTY flag set) HPB entries
->> >> (ppns)
->> >> in active rgns in host memory side may not be valid to the device
->> >> anymore.
->> >> Please correct me if I am wrong.
->> >>
->> >> > We thought that in host mode, it make sense to update all the active
->> >> > regions.
->> >>
->> >> But current logic does not set the state of the sub-regions (in active
->> >> regions) to
->> >> INVALID, it only marks all active regions as UPDATE.
->> >>
->> >> Although one of subsequent read cmds shall put the sub-region back to
->> >> activate_list,
->> >> ufshpb_test_ppn_dirty() can still return false, thus these read cmds
->> >> still think the
->> >> ppns are valid and they shall move forward to send HPB Write Buffer
->> >> (buffer id = 0x2,
->> >> in case of HPB2.0) and HPB Read cmds.
->> >>
->> >> HPB Read cmds with invalid ppns will be treated as normal Read cmds by
->> >> device as the
->> >> specs says, but what would happen to HPB Write Buffer cmds (buffer id
->> >> =
->> >> 0x2, in case
->> >> of HPB2.0) with invalid ppns? Can this be a real problem?
->> > No need to control the ppn dirty / invalid state for this case.
->> > The device send device reset so it is aware that all the L2P cache is
->> > invalid.
->> > Any HPB_READ is treated like normal READ10.
->> >
->> > Only once HPB-READ-BUFFER is completed,
->> > the device will relate back to the physical address.
->> 
->> What about HPB-WRITE-BUFFER (buffer id = 0x2) cmds?
-> Same.
-> Oper 0x2 is a relative simple case.
-> The device is expected to manage some versioning framework not to be
-> "fooled" by erroneous ppn.
-> There are some more challenging races that the device should meet.
-> 
 
-But I don't find the handling w.r.t this scenario on HPB2.0 specs -
-how would the device re-act/respond to HPB-WRITE-BUFFER cmds with
-invalid HPB entries? Could you please point me to relevant 
-section/paragraph?
-
-Thanks,
-Can Guo.
-
-> Thanks,
-> Avri
->> 
->> Thanks,
->> Can Guo.
->> 
->> >
->> >>
->> >> >
->> >> > I think I will go with your suggestion.
->> >> > Effectively, in host mode, since it is deactivating "cold" regions,
->> >> > the lru list is kept relatively small, and contains only "hot" regions.
->> >>
->> >> hmm... I don't really have a idea on this, please go with whatever you
->> >> and Daejun think is fine here.
->> > I will take your advice and remove the worker.
->> >
->> >
->> > Thanks,
->> > Avri
->> >
->> >>
->> >> Thanks,
->> >> Can Guo.
->> >>
->> >> >
->> >> > Thanks,
->> >> > Avri
->> >> >
->> >> >>
->> >> >> Thanks,
->> >> >> Can Guo.
->> >> >>
->> >> >> > But yes, I can do that.
->> >> >> > Better to get ack from Daejun first.
->> >> >> >
->> >> >> > Thanks,
->> >> >> > Avri
->> >> >> >
->> >> >> >>
->> >> >> >> Thanks,
->> >> >> >> Can Guo.
->> >> >> >>
->> >> >> >> > +{
->> >> >> >> > +     struct ufshpb_lu *hpb;
->> >> >> >> > +     struct victim_select_info *lru_info;
->> >> >> >> > +     struct ufshpb_region *rgn;
->> >> >> >> > +     unsigned long flags;
->> >> >> >> > +
->> >> >> >> > +     hpb = container_of(work, struct ufshpb_lu,
->> >> ufshpb_lun_reset_work);
->> >> >> >> > +
->> >> >> >> > +     lru_info = &hpb->lru_info;
->> >> >> >> > +
->> >> >> >> > +     spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->> >> >> >> > +
->> >> >> >> > +     list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
->> >> >> >> > +             set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
->> >> >> >> > +
->> >> >> >> > +     spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->> >> >> >> > +}
->> >> >> >> > +
->> >> >> >> >  static void ufshpb_normalization_work_handler(struct work_struct
->> >> >> >> > *work)
->> >> >> >> >  {
->> >> >> >> >       struct ufshpb_lu *hpb;
->> >> >> >> > @@ -1798,6 +1832,8 @@ static int ufshpb_alloc_region_tbl(struct
->> >> >> >> > ufs_hba *hba, struct ufshpb_lu *hpb)
->> >> >> >> >               } else {
->> >> >> >> >                       rgn->rgn_state = HPB_RGN_INACTIVE;
->> >> >> >> >               }
->> >> >> >> > +
->> >> >> >> > +             rgn->rgn_flags = 0;
->> >> >> >> >       }
->> >> >> >> >
->> >> >> >> >       return 0;
->> >> >> >> > @@ -2012,9 +2048,12 @@ static int ufshpb_lu_hpb_init(struct
->> >> ufs_hba
->> >> >> >> > *hba, struct ufshpb_lu *hpb)
->> >> >> >> >       INIT_LIST_HEAD(&hpb->list_hpb_lu);
->> >> >> >> >
->> >> >> >> >       INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
->> >> >> >> > -     if (hpb->is_hcm)
->> >> >> >> > +     if (hpb->is_hcm) {
->> >> >> >> >               INIT_WORK(&hpb->ufshpb_normalization_work,
->> >> >> >> >                         ufshpb_normalization_work_handler);
->> >> >> >> > +             INIT_WORK(&hpb->ufshpb_lun_reset_work,
->> >> >> >> > +                       ufshpb_reset_work_handler);
->> >> >> >> > +     }
->> >> >> >> >
->> >> >> >> >       hpb->map_req_cache =
->> kmem_cache_create("ufshpb_req_cache",
->> >> >> >> >                         sizeof(struct ufshpb_req), 0, 0, NULL);
->> >> >> >> > @@ -2114,8 +2153,10 @@ static void
->> ufshpb_discard_rsp_lists(struct
->> >> >> >> > ufshpb_lu *hpb)
->> >> >> >> >
->> >> >> >> >  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->> >> >> >> >  {
->> >> >> >> > -     if (hpb->is_hcm)
->> >> >> >> > +     if (hpb->is_hcm) {
->> >> >> >> > +             cancel_work_sync(&hpb->ufshpb_lun_reset_work);
->> >> >> >> >               cancel_work_sync(&hpb->ufshpb_normalization_work);
->> >> >> >> > +     }
->> >> >> >> >       cancel_work_sync(&hpb->map_work);
->> >> >> >> >  }
->> >> >> >> >
->> >> >> >> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
->> >> >> >> > index 84598a317897..37c1b0ea0c0a 100644
->> >> >> >> > --- a/drivers/scsi/ufs/ufshpb.h
->> >> >> >> > +++ b/drivers/scsi/ufs/ufshpb.h
->> >> >> >> > @@ -121,6 +121,7 @@ struct ufshpb_region {
->> >> >> >> >       struct list_head list_lru_rgn;
->> >> >> >> >       unsigned long rgn_flags;
->> >> >> >> >  #define RGN_FLAG_DIRTY 0
->> >> >> >> > +#define RGN_FLAG_UPDATE 1
->> >> >> >> >
->> >> >> >> >       /* region reads - for host mode */
->> >> >> >> >       spinlock_t rgn_lock;
->> >> >> >> > @@ -217,6 +218,7 @@ struct ufshpb_lu {
->> >> >> >> >       /* for selecting victim */
->> >> >> >> >       struct victim_select_info lru_info;
->> >> >> >> >       struct work_struct ufshpb_normalization_work;
->> >> >> >> > +     struct work_struct ufshpb_lun_reset_work;
->> >> >> >> >
->> >> >> >> >       /* pinned region information */
->> >> >> >> >       u32 lu_pinned_start;
+On 2021/3/18 2:48, Dave Hansen wrote:
+> On 3/16/21 6:52 PM, Kefeng Wang wrote:
+>> mem_init_print_info() is called in mem_init() on each architecture,
+>> and pass NULL argument, so using void argument and move it into mm_init().
+>>
+>> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> It's not a big deal but you might want to say something like:
+>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # x86 bits
+>
+> Just to make it clear that I didn't look at the alpha bits at all. :)
+Get it, will be careful, thanks.
+> .
+>
