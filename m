@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261FB340B02
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CDC340B07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhCRRGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232075AbhCRRGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:06:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 192BF64E05;
-        Thu, 18 Mar 2021 17:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616087189;
-        bh=OzZeeyt4+qWh1o9X9pVDpQhFygFpUpjHT7O44d2R7VI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j2k3mtD+SkCvCuLJKSvwIWCkwUXM71oF/UEPqqC9+BNlYIxOAhZOcVGzS5TedF+VK
-         Rign6nQIk1dE+B4+7k0Y8j+Zn0we0Ypgoc+9ZNhdQw6GNcWztRcEUAhS+gqHWGealW
-         7jll/tzCOvEF/7dRKTdFZTb1u/wSP7ue5Iap6IABrB0TvfGNnWNljWbgfHuVrCqjbm
-         8cscrweKkvFFa7ew80RWlgu+AbZWF9G27mAKGIaJaiCYtE+5L4YumE6p7ktsmcWUru
-         4/jgin9BJ/BYiw7OqZXOBIAP3MQfVRKQa9iDYIDjuVc2bT+FK4dDc/VDvl/d8YBB5y
-         UdQrd+fkSPQ0Q==
-Date:   Thu, 18 Mar 2021 18:06:23 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     paul@crapouillou.net, stable@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
-Subject: Re: [PATCH] I2C: JZ4780: Fix bug for Ingenic X1000.
-Message-ID: <20210318170623.GA1961@ninjato>
-References: <1616084743-112402-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
+        id S232272AbhCRRHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232253AbhCRRG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:06:59 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:06:59 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so5846621ota.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EDdfsUwbPl0ZGq8W3pDbYPnirHDxA/3J0stRMcNF0Dg=;
+        b=oRJZAS68b40yb38sZtyOpRDHIksYzLVy02oabfn866Hs3YyRLMQ9eN3F7H+eY0+1Si
+         xCNuv9BRJuSWAX8FMGVN2YO/5LzbL5M3F9mNn94CX3IsnpwkRC91dUMM4eU1lcpeQRzU
+         ryLxuwQAoXMty9V2zSAI9n+OhKSq4ivq17r+Xs1rJaRL03lmqDVpR2GrrTzv/MQbFa76
+         ButnbScHf0u3fC1ijw9uXSTkbw3sEM6mlkIXHbWfnZPif/ZStTwOuez4xbh2xq8bIoAC
+         6knnnPcg5PruVshvHdHl8sW5xcMtTFBYRI8a+LweNz/rgKlJd6FK7z1ueSqfo2VquKpr
+         jDYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EDdfsUwbPl0ZGq8W3pDbYPnirHDxA/3J0stRMcNF0Dg=;
+        b=CleZfceW2GcGzS9CbRuuCUQbJyjbH0eS7MyxtOhgMUhw2xA+7yUUX/zIMOMPv4yoeK
+         RCcNw+mCR27LV6M5cEfycmP0495ETqcUiNd3SBztzjPQWHsvAWx+CgrfA9t5yHL1Z+Md
+         OK0JnN3zah53X7CkOMzq7HAJyBiE9M8MQM4HWvi8KAPSuSy7GD0+5NUG1ih49Yc3w+5y
+         LS6lCfsmLoS0G3ZNY5V/UsXHTtaJ3oIE6MpwWGeA+JIlNqbsVAvBpsBVTCcXg1+NiMFn
+         XUWr9ajWDnPHnGeGjSkCLLrKLlSqMZNW3Fpvlt2gsaZfxwbH9W3QvuRr1V+8fYMhKioF
+         nEig==
+X-Gm-Message-State: AOAM533jkAPHcd9oagrvS+y4J87YmMJrTA/K23dNcgaYZ5/rHzcepDmV
+        6CCpK/vRdr/bAefOjlMH6+15kg==
+X-Google-Smtp-Source: ABdhPJzf/Rw1E3Gk1SXd4/sFwfQABV43qXhdPVCJWAOiKt5jrh4jvCA4u7gzetMyoiT+LKNKiE2KlA==
+X-Received: by 2002:a9d:5e89:: with SMTP id f9mr8268359otl.241.1616087218543;
+        Thu, 18 Mar 2021 10:06:58 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s3sm657086ool.36.2021.03.18.10.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:06:58 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 12:06:56 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, wcn36xx@lists.infradead.org,
+        "open list:NETWORKING DRIVERS (WIRELESS)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Subject: Re: [PATCH 0/5] qcom: wcnss: Allow overriding firmware form DT
+Message-ID: <YFOIsIxIC2mgzhZ1@builder.lan>
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <CAOCk7Nq5B=TKh40wseAdnjGufcXuMRkc-e1GMsKDvZ-T7NfPGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <CAOCk7Nq5B=TKh40wseAdnjGufcXuMRkc-e1GMsKDvZ-T7NfPGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 18 Mar 11:56 CDT 2021, Jeffrey Hugo wrote:
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> form -> from in the subject?
+> 
 
-On Fri, Mar 19, 2021 at 12:25:43AM +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou=
- Yanjie) wrote:
-> Only send "X1000_I2C_DC_STOP" when last byte, or it will cause
-> error when I2C write operation.
+Seems like I only failed in the cover letter, right?
 
-Any write operation? I wonder then why nobody noticed before?
+Regards,
+Bjorn
 
-> -			while ((i2c_sta & JZ4780_I2C_STA_TFNF) &&
-> -					(i2c->wt_len > 0)) {
-> +			while ((i2c_sta & JZ4780_I2C_STA_TFNF) && (i2c->wt_len > 0)) {
-
-This is a cosmetic change only IIUC. Shouldn't be in a bugfix.
-
-
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBTiIsACgkQFA3kzBSg
-KbY+aA/9E48TYsKg+GY+0vucmpH6GdNoif7CStt7jwLYr5O6SEdo04WRdKLf1NAK
-mpJUVbIPlUbnZGiKgMASumG8hLl8/qO6288k0PxdZ25c8QJM8/mVIklq26/jQiZq
-rtHnD6yAUq11IkbeUKY5ClbncPelktYbxyNV4D7Hc2060DK9HoUxu7E7mf8Onbla
-bOkkfAwHfXIwQGJvopU0uZsxdgQngp7yuYjTOj0y5XlWjOeDP3mZuwMffNO8DuDS
-2+rPPp5mUz6maVA1byioWyhuH4R8OpTAOFdsDiA4lnNunjPzkfCWETlzM38cdUTk
-1CrSCiOVg4GnaJ7u0ZcCrJqx0I0F4zkHZtCVBohRETi/dIvEHIxBteHkLXzZV1oB
-/ASSY0Gzn7/HZ61AwqVV22aWI3BNYMhqALvBkScvLiuTuW0c4K2fEGZZt12U4guh
-9Hzjje0cIU+msNJzvZstO6k3iC8PDU56bKcRKx34JrlQsEWZbkHlkp1iziJJBPn+
-NIqo+16JcA7SLBgITX4pW5RvWHYtlPBRyaWK3qwqZkA1jbPfvsz/+jInUWb56WSZ
-2ZkNTwi+v7rTropAg5NyH+u6rMACFGVmyDPoh6R90fghtD4TMhiAPDOyuiZaAlXt
-2J/Y9toxI8Q3Y+PtNKWWKm4JV+2ToEFVu4hdMD5ag7IKG1G4ZOw=
-=f8EZ
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
+> On Thu, Mar 11, 2021 at 5:34 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > The wireless subsystem found in Qualcomm MSM8974 and MSM8916 among others needs
+> > platform-, and perhaps even board-, specific firmware. Add support for
+> > providing this in devicetree.
