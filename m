@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFD1340182
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CA4340199
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhCRJKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:10:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57178 "EHLO mail.kernel.org"
+        id S229646AbhCRJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:14:07 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:9436 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229712AbhCRJKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3650464E77;
-        Thu, 18 Mar 2021 09:10:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616058637;
-        bh=2q10myDUvY1eCJGq9Sk8X1//samYf8apCjWPE+Bjc5A=;
+        id S229600AbhCRJNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:13:38 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4F1Lt74w3zzFV;
+        Thu, 18 Mar 2021 10:13:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1616058816; bh=B/w6FnU1M8k1x8n6SpOvWjJ7fnKVBOzRmgm3GyKX0h4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jQImKRej3wh+wRps3xcunfhrAs+saK5uuNqP/gl+9CCADodD3/m0EFAxNb9zgt9FM
-         zuYlJVVBJtIujNT9qUuqvxTp8+csY1UUw1drU4LOXTFzOKqNkrgUSm8RJ9CiDNc1VP
-         1kTl2uCFZdVc7k0goxuTxnH9w2y+o6xSiem16t4umlxThw1loF+ELQD67Q7DTGbSg0
-         Uac83VlPsfbTCDgFgmXaLzzPjffvRbF3XwpEsn/YjDTO9jMXQ1mnq6KDN1o+SRXK7K
-         m3JixLNGWeciLI0NCkqESPcCKFOodHIpkn8KeeMiCh5jGLwgH+h8fcM+tgeIbhuOIM
-         dI+48IQ6x2LzQ==
-Date:   Thu, 18 Mar 2021 14:40:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: interconnect: Add Qualcomm SM8350 DT
- bindings
-Message-ID: <YFMZCQFOWEtiuljK@vkoul-mobl.Dlink>
-References: <20210302134323.2822076-1-vkoul@kernel.org>
- <20210302134323.2822076-2-vkoul@kernel.org>
- <369beb35-e743-c653-0637-c895368362ef@linaro.org>
+        b=FxIh9eKfWmGwT5IZxR16FfA9VRI+Ub43iw+oRHsJeETqL9G8qt9bw8GhVsB3UCzBm
+         +WYmN+7N4HvMx/8QwCcGbJ2o6uKZYLM6CA0ZPeM7F3A2qUbvEu9AomWdfoNzvCJmC2
+         MqhjvUr4aDgurjwJbsnGBtzcq4EXfnxQW6y4sEtt+1sGb8mn4aF4BE0wmveQlMGGkM
+         GXvICbgnZ+Tz75q/eIVToRrgu8C004NyVwGAvtOhe/3OHrlFaklZ0rhUv2TNHFChm4
+         lOJBK64yFJUVaGTIzXow9F+t8u/fGEJLL9H6KAAogJDI1MkvEsyiv/+WffktvZW2gM
+         1eB/DSPMBom2Q==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Thu, 18 Mar 2021 10:12:19 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] clk: tegra: Fix refcounting of gate clocks
+Message-ID: <20210318091219.GA18038@qmqm.qmqm.pl>
+References: <20210317193006.29633-1-digetx@gmail.com>
+ <20210317193006.29633-3-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <369beb35-e743-c653-0637-c895368362ef@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317193006.29633-3-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Georgi,
+On Wed, Mar 17, 2021 at 10:30:01PM +0300, Dmitry Osipenko wrote:
+> The refcounting of the gate clocks has a bug causing the enable_refcnt
+> to underflow when unused clocks are disabled. This happens because clk
+> provider erroneously bumps the refcount if clock is enabled at a boot
+> time, which it shouldn't be doing, and it does this only for the gate
+> clocks, while peripheral clocks are using the same gate ops and the
+> peripheral clocks are missing the initial bump. Hence the refcount of
+> the peripheral clocks is 0 when unused clocks are disabled and then the
+> counter is decremented further by the gate ops, causing the integer
+> underflow.
+[...]
+> diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
+> index 4b31beefc9fc..3c4259fec82e 100644
+> --- a/drivers/clk/tegra/clk-periph-gate.c
+> +++ b/drivers/clk/tegra/clk-periph-gate.c
+[...]
+> @@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
+>  
+>  	spin_lock_irqsave(&periph_ref_lock, flags);
+>  
+> -	gate->enable_refcnt[gate->clk_num]--;
+> -	if (gate->enable_refcnt[gate->clk_num] > 0) {
+> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
+> -		return;
+> -	}
+> +	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
+> +
+> +	if (gate->enable_refcnt[gate->clk_num]-- == 1)
+> +		clk_periph_disable_locked(hw);
 
-On 18-03-21, 09:08, Georgi Djakov wrote:
-> Hi Vinod,
+Nit: "if (--n == 0)" seems more natural, as you want to call
+clk_periph_disable_locked() when the refcount goes down to 0.
 
-> > +#define MASTER_GEM_NOC_CNOC		1
-> 
-> Maybe start from zero?
+[...]
+>  	/*
+> -	 * If peripheral is in the APB bus then read the APB bus to
+> -	 * flush the write operation in apb bus. This will avoid the
+> -	 * peripheral access after disabling clock
+> +	 * Some clocks are duplicated and some of them are marked as critical,
+> +	 * like fuse and fuse_burn for example, thus the enable_refcnt will
+> +	 * be non-zero here id the "unused" duplicate is disabled by CCF.
 
-Yeah not sure how that got missed
+s/id/if/ ?
 
-> > +#define MASTER_CAMNOC_HF		0
-> > +#define MASTER_CAMNOC_ICP		2
-> 
-> Why jump from 0 to 2?
-
-Fixed now
--- 
-~Vinod
+Best Regards
+Micha³ Miros³aw
