@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BE8340077
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CA334007E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 08:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCRHxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 03:53:55 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13568 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhCRHxj (ORCPT
+        id S229708AbhCRHzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 03:55:00 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58887 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229634AbhCRHy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 03:53:39 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F1K3316dbzPk3B;
-        Thu, 18 Mar 2021 15:51:11 +0800 (CST)
-Received: from [10.174.184.135] (10.174.184.135) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 15:53:28 +0800
-Subject: Re: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210129155730.3a1d49c5@omen.home.shazbot.org>
- <MWHPR11MB188684B42632FD0B9B5CA1C08CB69@MWHPR11MB1886.namprd11.prod.outlook.com>
- <47bf7612-4fb0-c0bb-fa19-24c4e3d01d3f@huawei.com>
- <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <4f904b23-e434-d42b-15a9-a410f3b4edb9@huawei.com>
-Date:   Thu, 18 Mar 2021 15:53:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 18 Mar 2021 03:54:57 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lMnUZ-002BtB-BB; Thu, 18 Mar 2021 08:54:51 +0100
+Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lMnUZ-001WwY-3q; Thu, 18 Mar 2021 08:54:51 +0100
+Subject: Re: [PATCH 01/10] alpha: use libata instead of the legacy ide driver
+To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-2-hch@lst.de> <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <3a752e8c-b518-6d61-75e7-3549e9906f83@physik.fu-berlin.de>
+Date:   Thu, 18 Mar 2021 08:54:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.169.102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/4 14:52, Tian, Kevin wrote:>>> In reality, many
->>> devices allow I/O faulting only in selective contexts. However, there
->>> is no standard way (e.g. PCISIG) for the device to report whether
->>> arbitrary I/O fault is allowed. Then we may have to maintain device
->>> specific knowledge in software, e.g. in an opt-in table to list devices
->>> which allows arbitrary faults. For devices which only support selective
->>> faulting, a mediator (either through vendor extensions on vfio-pci-core
->>> or a mdev wrapper) might be necessary to help lock down non-faultable
->>> mappings and then enable faulting on the rest mappings.
->>
->> For devices which only support selective faulting, they could tell it to the
->> IOMMU driver and let it filter out non-faultable faults? Do I get it wrong?
+Hi Al!
+
+On 3/18/21 6:54 AM, Al Viro wrote:
+> On Thu, Mar 18, 2021 at 05:56:57AM +0100, Christoph Hellwig wrote:
+>> Switch the alpha defconfig from the legacy ide driver to libata.
 > 
-> Not exactly to IOMMU driver. There is already a vfio_pin_pages() for
-> selectively page-pinning. The matter is that 'they' imply some device
-> specific logic to decide which pages must be pinned and such knowledge
-> is outside of VFIO.
+> Umm...  I don't have an IDE alpha box in a usable shape (fans on
+> CPU module shat themselves), and it would take a while to resurrect
+> it, but I remember the joy it used to cause in some versions.
 > 
-> From enabling p.o.v we could possibly do it in phased approach. First 
-> handles devices which tolerate arbitrary DMA faults, and then extends
-> to devices with selective-faulting. The former is simpler, but with one
-> main open whether we want to maintain such device IDs in a static
-> table in VFIO or rely on some hints from other components (e.g. PF
-> driver in VF assignment case). Let's see how Alex thinks about it.
+> Do you have reports of libata variants of drivers actually tested on
+> those?
 
-Hi Kevin,
+At least pata_cypress works fine on my AlphaStation XP1000:
 
-You mentioned selective-faulting some time ago. I still have some doubt
-about it:
-There is already a vfio_pin_pages() which is used for limiting the IOMMU
-group dirty scope to pinned pages, could it also be used for indicating
-the faultable scope is limited to the pinned pages and the rest mappings
-is non-faultable that should be pinned and mapped immediately? But it
-seems to be a little weird and not exactly to what you meant... I will
-be grateful if you can help to explain further. :-)
+root@tsunami:~> lspci
+0000:00:07.0 ISA bridge: Contaq Microsystems 82c693
+0000:00:07.1 IDE interface: Contaq Microsystems 82c693
+0000:00:07.2 IDE interface: Contaq Microsystems 82c693
+0000:00:07.3 USB controller: Contaq Microsystems 82c693
+0000:00:0d.0 VGA compatible controller: Texas Instruments TVP4020 [Permedia 2] (rev 01)
+0001:01:03.0 Ethernet controller: Digital Equipment Corporation DECchip 21142/43 (rev 41)
+0001:01:06.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI (rev 06)
+0001:01:08.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 03)
+0001:02:09.0 Ethernet controller: Intel Corporation 82541PI Gigabit Ethernet Controller (rev 05)
+root@tsunami:~> lsmod|grep pata
+pata_cypress            3595  3
+libata                235071  2 ata_generic,pata_cypress
+root@tsunami:~>
 
-Thanks,
-Shenming
+I also have two AlphaStation 233 currently in storage which I assume use
+different IDE chipset which I could test as well.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
