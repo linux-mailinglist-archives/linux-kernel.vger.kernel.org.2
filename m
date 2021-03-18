@@ -2,181 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C5933FE29
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5499B33FE2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 05:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhCRE1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 00:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhCRE0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 00:26:53 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06E9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id v26so920548iox.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ql2dgaEyzlxz1rnlLy2Wg/nnnp7tmOxMWx8bJq2EFZU=;
-        b=W8cx8DyHSkSFRXpWsBNRnLfWNZxWBaqqHtgHrd/WpU0n2AEAEWHPGDzYqFXwZW576h
-         EcVKZzyxSb3zHtDCDhhYE4iNDuWSd50c4Pvl1YOJtIE6BKhTjwNRAddrDPPyJdHLDLVM
-         491KnMySN0siPXOHZisSPMAhdy2AKATWs/m0s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ql2dgaEyzlxz1rnlLy2Wg/nnnp7tmOxMWx8bJq2EFZU=;
-        b=L/1fvAhIxWWC/y2n1WZ/ES83IYTafOQD9veO1zTZaMr2SNZaol1S8/eYyZbz634Kf+
-         YvlSfYEY4AOWrtjbFwaeDj6TUebdRZPDn0aFwxLctMMjFWaozAA46DCP9/MtOUA8q8a5
-         wNCOO+6sBmJwI/dJVl0a24DjTFPbmKaFkbcynYbui5AjbSMzQc+ETJXHZnj8BtyZMWjh
-         ixDANh2ZbVzOritiDy78fWV6h6qYkz0ng/EOCL1YLBHmTkxorG0PAUsFQoXgpg1paClI
-         V0B50o1UQ1gOQnrBwtK7BPPw9na2FnqzZTlZgs4PcfxP+h/DU3MRxkhQWxDHNd579vuM
-         kCFw==
-X-Gm-Message-State: AOAM530veeBJKaPilpK9/bfuTu5aWJdTgWSe9lzFXpDLKF7VOSWPcKSl
-        WayCYFos5M+IL+Q1eUaReq3oMY6Fn3kTceCHWQ9p3w==
-X-Google-Smtp-Source: ABdhPJyiT+pK5YW1/xho4IDNMJd1L9KoZwDrKi/f2JRgrLZDLUc4ArB1kHW9DAPXHK1IuoyC3hGih7UIy39ozt/dTSQ=
-X-Received: by 2002:a05:6638:43:: with SMTP id a3mr5366562jap.102.1616041612173;
- Wed, 17 Mar 2021 21:26:52 -0700 (PDT)
+        id S229640AbhCREaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 00:30:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7022 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhCRE3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 00:29:43 -0400
+IronPort-SDR: 9bT6otCCt2LaMm7ZDvIJLxR2t7tnNi1Pdm6YZySVP62QdGpQcYKO5Uri6XtL1IN/BPTfoKsPYO
+ G4NFlklZcigw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="188970190"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="188970190"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 21:29:43 -0700
+IronPort-SDR: yPUJWyUc5CMJumdOXq18QNvBB6i+qDBtTzjA77DOAHY/0oKhlcDHiXbNQz/PrjVslIUhg4rD0N
+ DxAdA6fUv3YA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="450338184"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 17 Mar 2021 21:29:41 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lMkI1-00011Q-73; Thu, 18 Mar 2021 04:29:41 +0000
+Date:   Thu, 18 Mar 2021 12:29:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 90f093fa8ea48e5d991332cee160b761423d55c1
+Message-ID: <6052d712.qkhGSNVIyXcEpdsf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210224061409.3996755-1-hsinyi@chromium.org> <20210224061409.3996755-2-hsinyi@chromium.org>
-In-Reply-To: <20210224061409.3996755-2-hsinyi@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 18 Mar 2021 12:26:25 +0800
-Message-ID: <CAJMQK-ho9Ncqd=muCv-aMsHSRhgKtC3H6asxR=+3CODpeiWQWQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] drm/bridge: anx7625: disable regulators when power off
-To:     Xin Ji <xji@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 2:14 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->
-> When suspending the driver, anx7625_power_standby() will be called to
-> turn off reset-gpios and enable-gpios. However, power supplies are not
-> disabled. To save power, the driver can get the power supply regulators
-> and turn off them in anx7625_power_standby().
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 90f093fa8ea48e5d991332cee160b761423d55c1  rseq, ptrace: Add PTRACE_GET_RSEQ_CONFIGURATION request
 
-Ping on the thread, thanks.
+elapsed time: 723m
 
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 34 +++++++++++++++++++++++
->  drivers/gpu/drm/bridge/analogix/anx7625.h |  1 +
->  2 files changed, 35 insertions(+)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index 65cc05982f826..23283ba0c4f93 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
->  #include <linux/workqueue.h>
-> @@ -875,12 +876,25 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
->  static void anx7625_power_on(struct anx7625_data *ctx)
->  {
->         struct device *dev = &ctx->client->dev;
-> +       int ret, i;
->
->         if (!ctx->pdata.low_power_mode) {
->                 DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
->                 return;
->         }
->
-> +       for (i = 0; i < ARRAY_SIZE(ctx->pdata.supplies); i++) {
-> +               ret = regulator_enable(ctx->pdata.supplies[i].consumer);
-> +               if (ret < 0) {
-> +                       DRM_DEV_DEBUG_DRIVER(dev, "cannot enable supply %d: %d\n",
-> +                                            i, ret);
-> +                       goto reg_err;
-> +               }
-> +               usleep_range(2000, 2100);
-> +       }
-> +
-> +       usleep_range(4000, 4100);
-> +
->         /* Power on pin enable */
->         gpiod_set_value(ctx->pdata.gpio_p_on, 1);
->         usleep_range(10000, 11000);
-> @@ -889,11 +903,16 @@ static void anx7625_power_on(struct anx7625_data *ctx)
->         usleep_range(10000, 11000);
->
->         DRM_DEV_DEBUG_DRIVER(dev, "power on !\n");
-> +       return;
-> +reg_err:
-> +       for (--i; i >= 0; i--)
-> +               regulator_disable(ctx->pdata.supplies[i].consumer);
->  }
->
->  static void anx7625_power_standby(struct anx7625_data *ctx)
->  {
->         struct device *dev = &ctx->client->dev;
-> +       int ret;
->
->         if (!ctx->pdata.low_power_mode) {
->                 DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
-> @@ -904,6 +923,12 @@ static void anx7625_power_standby(struct anx7625_data *ctx)
->         usleep_range(1000, 1100);
->         gpiod_set_value(ctx->pdata.gpio_p_on, 0);
->         usleep_range(1000, 1100);
-> +
-> +       ret = regulator_bulk_disable(ARRAY_SIZE(ctx->pdata.supplies),
-> +                                    ctx->pdata.supplies);
-> +       if (ret < 0)
-> +               DRM_DEV_DEBUG_DRIVER(dev, "cannot disable supplies %d\n", ret);
-> +
->         DRM_DEV_DEBUG_DRIVER(dev, "power down\n");
->  }
->
-> @@ -1742,6 +1767,15 @@ static int anx7625_i2c_probe(struct i2c_client *client,
->         platform->client = client;
->         i2c_set_clientdata(client, platform);
->
-> +       pdata->supplies[0].supply = "vdd10";
-> +       pdata->supplies[1].supply = "vdd18";
-> +       pdata->supplies[2].supply = "vdd33";
-> +       ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(pdata->supplies),
-> +                                     pdata->supplies);
-> +       if (ret) {
-> +               DRM_DEV_ERROR(dev, "fail to get power supplies: %d\n", ret);
-> +               return ret;
-> +       }
->         anx7625_init_gpio(platform);
->
->         atomic_set(&platform->power_status, 0);
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> index 193ad86c54503..e4a086b3a3d7b 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> @@ -350,6 +350,7 @@ struct s_edid_data {
->  struct anx7625_platform_data {
->         struct gpio_desc *gpio_p_on;
->         struct gpio_desc *gpio_reset;
-> +       struct regulator_bulk_data supplies[3];
->         struct drm_bridge *panel_bridge;
->         int intp_irq;
->         u32 low_power_mode;
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
->
+configs tested: 145
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                 mpc8540_ads_defconfig
+arm                         at91_dt_defconfig
+arc                            hsdk_defconfig
+mips                        nlm_xlr_defconfig
+sh                              ul2_defconfig
+h8300                     edosk2674_defconfig
+powerpc                     redwood_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     taishan_defconfig
+mips                            gpr_defconfig
+m68k                       bvme6000_defconfig
+powerpc                      acadia_defconfig
+arm                          pxa910_defconfig
+sh                         ecovec24_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                            mmp2_defconfig
+arm                         palmz72_defconfig
+arm                          iop32x_defconfig
+arm                        neponset_defconfig
+powerpc                     kilauea_defconfig
+sh                          landisk_defconfig
+powerpc                    mvme5100_defconfig
+m68k                       m5249evb_defconfig
+sh                            titan_defconfig
+mips                           gcw0_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                         wii_defconfig
+powerpc                       eiger_defconfig
+mips                       bmips_be_defconfig
+m68k                        stmark2_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+arm                         assabet_defconfig
+arc                              alldefconfig
+arm                       multi_v4t_defconfig
+sh                           se7619_defconfig
+arm                          moxart_defconfig
+powerpc                          allyesconfig
+mips                           ip32_defconfig
+ia64                         bigsur_defconfig
+arm                        multi_v7_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      chrp32_defconfig
+mips                     loongson1b_defconfig
+h8300                    h8300h-sim_defconfig
+sh                        sh7757lcr_defconfig
+arm                     eseries_pxa_defconfig
+arm                            lart_defconfig
+mips                      bmips_stb_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                     skiroot_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                       ebony_defconfig
+arm                      footbridge_defconfig
+mips                        bcm47xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                              defconfig
+arm                         lpc18xx_defconfig
+arm                         lpc32xx_defconfig
+sh                          lboxre2_defconfig
+sh                             espt_defconfig
+sh                   secureedge5410_defconfig
+parisc                           allyesconfig
+arc                        nsimosci_defconfig
+riscv                             allnoconfig
+powerpc                    sam440ep_defconfig
+arm                         bcm2835_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                          ixp4xx_defconfig
+mips                        vocore2_defconfig
+s390                       zfcpdump_defconfig
+arm                     am200epdkit_defconfig
+microblaze                          defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210317
+x86_64               randconfig-a001-20210317
+x86_64               randconfig-a005-20210317
+x86_64               randconfig-a004-20210317
+x86_64               randconfig-a003-20210317
+x86_64               randconfig-a002-20210317
+i386                 randconfig-a001-20210317
+i386                 randconfig-a005-20210317
+i386                 randconfig-a002-20210317
+i386                 randconfig-a003-20210317
+i386                 randconfig-a004-20210317
+i386                 randconfig-a006-20210317
+i386                 randconfig-a013-20210317
+i386                 randconfig-a016-20210317
+i386                 randconfig-a011-20210317
+i386                 randconfig-a012-20210317
+i386                 randconfig-a015-20210317
+i386                 randconfig-a014-20210317
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20210317
+x86_64               randconfig-a016-20210317
+x86_64               randconfig-a013-20210317
+x86_64               randconfig-a014-20210317
+x86_64               randconfig-a015-20210317
+x86_64               randconfig-a012-20210317
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
