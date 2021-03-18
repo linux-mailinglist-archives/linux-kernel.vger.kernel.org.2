@@ -2,70 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2D1340CCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAB2340CCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhCRSUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S232329AbhCRSUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbhCRSTg (ORCPT
+        with ESMTP id S230173AbhCRSUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:19:36 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21126C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:19:36 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id k8so3295245iop.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oF3ZUW+4J4CFMM7Juvx/eFO+KnFrLTNl0x25bnTL6cQ=;
-        b=EjKtEX+xFlBYcUVGMVT8rDwEhj+phbsFS6yb9jT0W1rNTmGl7m4hzLIFB+ujjzOuep
-         QMNrs5fzUu9QW4WbkVeBfQNn96h6bp9MG9KaCtxQp4mbcsmkaAGy/Xpd4VejZ7PBddnB
-         52lif8yrBnZuR9b/AjAr4iH7DW6+ClccQhcI+2ZbH6dqg4drBT7tRkdRYTmVAtdosdPe
-         0UK7zQqsOrSxq3bXNYWVbogZWDCSDFo4S3fPgvkkDfgwqff+iEor6CA8DAjG2RMfV99n
-         0rkkr7E/loriLElLmTLdpLy4T+9emJ3EGWvu/ZwjgQ8yudsi+eNASx2Xd8t82bzmC1Mj
-         r2Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oF3ZUW+4J4CFMM7Juvx/eFO+KnFrLTNl0x25bnTL6cQ=;
-        b=oEMNqJVZXTUeYeFQGmJA/TVXpzCUsiFf3YsZ9b1wJqWGrN3+xZo/FUeaurt3AsSYUl
-         LaIsw4a5to6ZSR0X/lQgfFUqDMq+t2PAyUoKvAAYXjXxCqBj76eZqHZHBInGwjs9RE+K
-         qsIg2tnrBY9e3sRxQ5/3POCDsAoiiJpTfdd9TtN1MTRViJ/bvZ3nXxxjcmqNjuK9wbGu
-         R00p+KUyU7gpQnPUqQ5CeRGkI0tC/Lp/8ZScmLpMbvKYqJAnP0nGHQr7by0kLHbDYyX9
-         zR9tguqXodMpOkJQwzt9S177SsTbHSg+rzq0aH84gXGLnibKnY/xuKqVnTawCIplU0uK
-         D1Sg==
-X-Gm-Message-State: AOAM533UANS5ZoCNPxwbBIV8cBZbrlHK0rpyXX7geGKbzXx7naDN7kN7
-        53G1bbOQOJMPjBQ9nMnj5UBLWQ==
-X-Google-Smtp-Source: ABdhPJz+KCRumbxLMPvmy0nP13iuFKiNw7uhLGiA2Css6rHPzUMn9LXLwG8nVd8PUVJAPFxFd841Qw==
-X-Received: by 2002:a02:9985:: with SMTP id a5mr7980431jal.122.1616091575551;
-        Thu, 18 Mar 2021 11:19:35 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id q12sm668404ilm.63.2021.03.18.11.19.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 11:19:35 -0700 (PDT)
-Subject: Re: linux-next: manual merge of the akpm-current tree with the block
- tree
-To:     Shakeel Butt <shakeelb@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210318171720.61a3f59c@canb.auug.org.au>
- <CALvZod7iPJ1h0MVpBwNkqJBfNNWPb+x93q59okdK5oxevzbP_g@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4fea89a5-0e18-0791-18a8-4c5907b0d2c4@kernel.dk>
-Date:   Thu, 18 Mar 2021 12:19:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 18 Mar 2021 14:20:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E526FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=KP81uY4onDw0bh1XsdPSUFPtpyk5GLIlqnt4BBVu1mw=; b=GWiqVZhXXRY89S6Pg1EfAma2J8
+        63Kj+G2FZVAjCUU4gc9vnU+/6wlbEjcCOpNNa+fmWRmAYubYOXtaLGXfQ4zyRfQVkL0cO9WPXW70t
+        hagEgn6tJe5yzkja4rweuGjpHKrshpYDlvnn+hyKD1vBImW636zGHKSKFHl6ZDekhc6gbzaFcOFdF
+        bTibaTV5b4dmiZ/U35dK/tiggNXVSD0IK8l4zNJRNLQAMOa39JMdCxyFNBu5r2uwIQ4K1ncpexiHJ
+        yVyxzJy+UYKClHPxop1qybL119AJpvGQOtLpHK8Li6ySQRRSYotEwpoenzQGHBJy1LcBix5cXPI38
+        9PW+7sEQ==;
+Received: from [2601:1c0:6280:3f0::9757]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMxFX-003LDe-RF; Thu, 18 Mar 2021 18:20:07 +0000
+Subject: Re: [PATCH] mm: Few spelling fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        akpm@linux-foundation.org, rppt@kernel.org, peterz@infradead.org,
+        tsbogend@alpha.franken.de, will@kernel.org, maobibo@loongson.cn,
+        linux-kernel@vger.kernel.org
+References: <20210318065831.9601-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <302bb00b-df7b-970a-1c47-b48a56c7a526@infradead.org>
+Date:   Thu, 18 Mar 2021 11:19:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod7iPJ1h0MVpBwNkqJBfNNWPb+x93q59okdK5oxevzbP_g@mail.gmail.com>
+In-Reply-To: <20210318065831.9601-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,91 +48,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 11:54 AM, Shakeel Butt wrote:
-> On Wed, Mar 17, 2021 at 11:17 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->>
->> Today's linux-next merge of the akpm-current tree got a conflict in:
->>
->>   mm/memcontrol.c
->>
->> between commit:
->>
->>   06d69d4c8669 ("mm: Charge active memcg when no mm is set")
->>
->> from the block tree and commit:
->>
->>   674788258a66 ("memcg: charge before adding to swapcache on swapin")
->>
->> from the akpm-current tree.
->>
->> I fixed it up (I think - see below) and can carry the fix as necessary.
->> This is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
->>
->> --
->> Cheers,
->> Stephen Rothwell
->>
->> diff --cc mm/memcontrol.c
->> index f05501669e29,668d1d7c2645..000000000000
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@@ -6691,65 -6549,73 +6550,80 @@@ out
->>    * @gfp_mask: reclaim mode
->>    *
->>    * Try to charge @page to the memcg that @mm belongs to, reclaiming
->>  - * pages according to @gfp_mask if necessary.
->>  + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
->>  + * charge to the active memcg.
->>    *
->> +  * Do not use this for pages allocated for swapin.
->> +  *
->>    * Returns 0 on success. Otherwise, an error code is returned.
->>    */
->>   int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
->>   {
->> -       unsigned int nr_pages = thp_nr_pages(page);
->> -       struct mem_cgroup *memcg = NULL;
->> -       int ret = 0;
->> +       struct mem_cgroup *memcg;
->> +       int ret;
->>
->>         if (mem_cgroup_disabled())
->> -               goto out;
->> +               return 0;
->>
->> -       if (PageSwapCache(page)) {
->> -               swp_entry_t ent = { .val = page_private(page), };
->> -               unsigned short id;
->>  -      memcg = get_mem_cgroup_from_mm(mm);
->> ++      if (!mm) {
->> ++              memcg = get_mem_cgroup_from_current();
->> ++              if (!memcg)
->> ++                      memcg = get_mem_cgroup_from_mm(current->mm);
->> ++      } else {
->> ++              memcg = get_mem_cgroup_from_mm(mm);
->> ++      }
->> +       ret = __mem_cgroup_charge(page, memcg, gfp_mask);
->> +       css_put(&memcg->css);
+On 3/17/21 11:58 PM, Bhaskar Chowdhury wrote:
 > 
-> Things are more complicated than this. First we need a similar change
-> in mem_cgroup_swapin_charge_page() but I am thinking of making
-> get_mem_cgroup_from_mm() more general and not make any changes in
-> these two functions.
+> Few spelling fixes throughout the file.
 > 
-> Is it possible to get Dan's patch series in mm tree? More specifically
-> the above two patches in the same tree then one of us can make their
-> patch rebase over the other (I am fine with doing this myself).
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  include/linux/pgtable.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 5e772392a379..4fcefd553a5c 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -852,7 +852,7 @@ static inline void __ptep_modify_prot_commit(struct vm_area_struct *vma,
+>   * updates, but to prevent any updates it may make from being lost.
+>   *
+>   * This does not protect against other software modifications of the
+> - * pte; the appropriate pte lock must be held over the transation.
+> + * pte; the appropriate pte lock must be held over the transition.
 
-Yes, I think we should do that, and since he's going to be respinning
-the series anyway, I'll drop it right now and then let's take it through
-Andrew to avoid unnecessary complications that way.
+I think that should be                                    transaction.
+
+>   *
+>   * Note that this interface is intended to be batchable, meaning that
+>   * ptep_modify_prot_commit may not actually update the pte, but merely
+
+Other changes are OK.
+
 
 -- 
-Jens Axboe
+~Randy
 
