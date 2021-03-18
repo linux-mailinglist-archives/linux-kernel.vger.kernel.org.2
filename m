@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26866340C37
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C654F340C36
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhCRRyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhCRRyV (ORCPT
+        id S232438AbhCRRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:54:51 -0400
+Received: from mail-pf1-f176.google.com ([209.85.210.176]:45584 "EHLO
+        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232355AbhCRRy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:54:21 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12259C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:54:21 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id q29so5912764lfb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w1oPFphg57L7sKY8E1r5PCzrWzBNsxoEQAATZVD3hgA=;
-        b=l9E1bj0g3MduMzjWqj+A9CW3VpVKUNZFOoxRnPrmPthOW7VFLBGflmrOr5m0Xk0k3b
-         6/AS1LT9eiU56I6ayLhio6mlLoSQWJ0cCQ/6SGY7W2i6MTkVaATL39n+9BHzqgSYqv78
-         GUmzyva0m9ohnjC4GM64UWXVrw7kteaJdSLC0Svr+kRuJbiSf50HrtMwQcBr1PruNYJU
-         Z/jd1sMvKIEMTXLbjdY/ld691bUoouezgDObfUaxNuYWWuOFRz1/66obCR7Nj8yjlSic
-         NQIi8A0hFU/EMNnKfH5gU7df2F/a0DpTuxzE7B3BsIdL6GzNmoHri89WhQZFGORjnoly
-         TzZQ==
+        Thu, 18 Mar 2021 13:54:26 -0400
+Received: by mail-pf1-f176.google.com with SMTP id h3so4010489pfr.12;
+        Thu, 18 Mar 2021 10:54:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w1oPFphg57L7sKY8E1r5PCzrWzBNsxoEQAATZVD3hgA=;
-        b=KF4eKox8R0i4PIXYqycn6WaWS+5H8lbc52dzYO00veqaVy+qphqHfg893Y2uQIbWf3
-         J6bRadrbzrqDkQU7k9cPPhPA3Km4yR1ONrE2dUIkwojbe6VecpNU7asDFgY7D1WIEkbZ
-         aEhWfeMTLDsfOBwJnkjHnvrPnA+s9t79662sEJeWuATLqNt/Ecq38quujVpQx7oqQPho
-         Yr/vnWAIBjwfK0Dl95dan8iLn1nDAzOrKM55+qD2iVbntrGhFkOyDAnbAtdWLPZazhx5
-         1Ws7z5ryknPequiSKHCEwjxMO40DAJj9njm231/L6pbpjI55TrDJyCWMLrjsTuSS9xVY
-         p1aQ==
-X-Gm-Message-State: AOAM530mOKN0xxy7C3AtcmAzJNQvvD0kFNhOSbNLaPalp/HD1a3tKCHR
-        S8jkY+KfAYoNIaxVge57yhIZWmbZMUWg35oDxGZwcw==
-X-Google-Smtp-Source: ABdhPJx48LkaTKcfJuDXxDL4wH2SxQKU34E29bTgFkad1AodSgUxuvgjjShP6mRtZiSQISRaUK2vJpqUE56pEbbrE14=
-X-Received: by 2002:a19:e0d:: with SMTP id 13mr5976627lfo.549.1616090059182;
- Thu, 18 Mar 2021 10:54:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zw9NDxhZI9qzGWmlzDIZRAJNmsg1FVsGW1vH7/3lAzE=;
+        b=Uov5OHL0eXHyfEHVhZCeCACF4bIG4jlTj8VtVvfzrGu5btOKbi3O5piYbBxoUHcLqT
+         WJjkXihnma+c88xNRn3O+MYV4TgmEGvtjcVtwwTMseI6JjgtwP30QkYhv0Ct0S/huEje
+         zI7BIvKNBu7juvRljsnZmi6YXSlVT3dS62Pyf0VN+9+CLYnMSRDHEtbWlxQJEaHkQmLp
+         tIOYJe2i7/RgrsnorKzgvZ3iyOpphuUXkXhW0TTtdoklNxpYnntbgA4GVYpR4cttT4Su
+         k7ZP6Xrdb5cO/JECplAfo1CsJeaj0cCx/ptm9aq+ov4Z+hpIni44Xoc8vM/6ln/XV+8s
+         Cn/g==
+X-Gm-Message-State: AOAM533RxF1vnDaZPMvHVeqnIYwJ+W382P93wm3yavtckjJFHMDLzDC6
+        WDmzAzwBCt6bUdg6c+LkkZOCHy85uMZTPg==
+X-Google-Smtp-Source: ABdhPJxEZsgqX5znjy5cHX8VUcyqPfqRya34MwqfUBV/oA0KXRbq+gFLGOZDV+d4RYHUWWgu2TmJ/w==
+X-Received: by 2002:a62:fc10:0:b029:1ef:141f:609 with SMTP id e16-20020a62fc100000b02901ef141f0609mr5077001pfh.78.1616090066177;
+        Thu, 18 Mar 2021 10:54:26 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id u22sm2812190pgh.20.2021.03.18.10.54.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 10:54:25 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 3A27740244; Thu, 18 Mar 2021 17:54:24 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 17:54:24 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     linux-block@vger.kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: blktests: block/009 next-20210304 failure rate average of 1/448
+Message-ID: <20210318175424.GR13911@42.do-not-panic.com>
+References: <20210316174645.GI4332@42.do-not-panic.com>
 MIME-Version: 1.0
-References: <20210318171720.61a3f59c@canb.auug.org.au>
-In-Reply-To: <20210318171720.61a3f59c@canb.auug.org.au>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 18 Mar 2021 10:54:08 -0700
-Message-ID: <CALvZod7iPJ1h0MVpBwNkqJBfNNWPb+x93q59okdK5oxevzbP_g@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316174645.GI4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:17 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->
->   mm/memcontrol.c
->
-> between commit:
->
->   06d69d4c8669 ("mm: Charge active memcg when no mm is set")
->
-> from the block tree and commit:
->
->   674788258a66 ("memcg: charge before adding to swapcache on swapin")
->
-> from the akpm-current tree.
->
-> I fixed it up (I think - see below) and can carry the fix as necessary.
-> This is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc mm/memcontrol.c
-> index f05501669e29,668d1d7c2645..000000000000
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@@ -6691,65 -6549,73 +6550,80 @@@ out
->    * @gfp_mask: reclaim mode
->    *
->    * Try to charge @page to the memcg that @mm belongs to, reclaiming
->  - * pages according to @gfp_mask if necessary.
->  + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
->  + * charge to the active memcg.
->    *
-> +  * Do not use this for pages allocated for swapin.
-> +  *
->    * Returns 0 on success. Otherwise, an error code is returned.
->    */
->   int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
->   {
-> -       unsigned int nr_pages = thp_nr_pages(page);
-> -       struct mem_cgroup *memcg = NULL;
-> -       int ret = 0;
-> +       struct mem_cgroup *memcg;
-> +       int ret;
->
->         if (mem_cgroup_disabled())
-> -               goto out;
-> +               return 0;
->
-> -       if (PageSwapCache(page)) {
-> -               swp_entry_t ent = { .val = page_private(page), };
-> -               unsigned short id;
->  -      memcg = get_mem_cgroup_from_mm(mm);
-> ++      if (!mm) {
-> ++              memcg = get_mem_cgroup_from_current();
-> ++              if (!memcg)
-> ++                      memcg = get_mem_cgroup_from_mm(current->mm);
-> ++      } else {
-> ++              memcg = get_mem_cgroup_from_mm(mm);
-> ++      }
-> +       ret = __mem_cgroup_charge(page, memcg, gfp_mask);
-> +       css_put(&memcg->css);
+Adding linux-fsdevel as folks working on fstests might be
+interested.
 
-Things are more complicated than this. First we need a similar change
-in mem_cgroup_swapin_charge_page() but I am thinking of making
-get_mem_cgroup_from_mm() more general and not make any changes in
-these two functions.
+On Tue, Mar 16, 2021 at 05:46:45PM +0000, Luis Chamberlain wrote:
+> My personal suspicion is not on the block layer but on scsi_debug
+> because this can fail:
+> 
+> modprobe scsi_debug; rmmod scsi_debug
+> 
+> This second issue may be a secondary separate issue, but I figured 
+> I'd mention it. To fix this later issue I've looked at ways to
+> make scsi_debug_init() wait until its scsi devices are probed,
+> however its not clear how to do this correctly. If someone has
+> an idea let me know. If that fixes this issue then we know it was
+> that.
 
-Is it possible to get Dan's patch series in mm tree? More specifically
-the above two patches in the same tree then one of us can make their
-patch rebase over the other (I am fine with doing this myself).
+OK so this other issue with scsi_debug indeed deserves its own tracking
+so I filed a bug for it but also looked into it and tried to see how to
+resolve it.
+
+Someone who works on scsi should revise my work as I haven't touched
+scsi before except for the recent block layer work I had done for the
+blktrace races, however, my own analysis is that this should not be
+fixed in scsi_debug but instead in the users of scsi_debug.
+
+The rationale for that is here:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=212337
+
+The skinny of it is that we have no control over when userspace may muck
+with the newly exposed devices as they are being initialized, and
+shoe-horning a solution in scsi_debug_init() is prone to always be allow
+a race with userspace never letting scsi_debug_init() complete.
+
+So best we can do is just use something like lsof on the tools which
+use scsi_debug *prior* to mucking with the devices and / or removal of
+the module.
+
+I'll follow up with respective blktests / fstests patches, which I
+suspect may address a few false positives.
+
+  Luis
