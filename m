@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD76340458
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF53340453
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhCRLOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhCRLOS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:14:18 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3322EC06174A;
-        Thu, 18 Mar 2021 04:14:18 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id d10so2945622qve.7;
-        Thu, 18 Mar 2021 04:14:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6DaVzEITLMEzFxuhcyQKoZc4IE509gWxa28djz/r0s=;
-        b=OuWgqOabvJBMmoipUuAMrvUAtq0zBfKO1ZR/j3fxnpZC4ShFdTcY4hx/pwTUbTsllf
-         s8UDuj5VpPOKRCHjNXFXV6swaCN7ghtKMEyurvey6fLB+8P5lD6OpU+axVMHimpl+39+
-         mrQN7/GRU9pkSrYqNKZgtVVJFvzTqdHpXIBqW3y5kljy4I3AayWxP1TZu+qw2EewyNfH
-         2juWmvp6WDh956Ktxk0rsTJaE/cf5X6wNQFbJ9G044Gifl6Y5BtRmHsw4vDusWYwm8dZ
-         2skRDLHAccRyr5Hc5UyirWWB4CXbr8cNTVtZKvoF+5X046VXq6YKMolrrjeT4/lNspU9
-         zq3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6DaVzEITLMEzFxuhcyQKoZc4IE509gWxa28djz/r0s=;
-        b=pemASy4kSPTCEBXAhSAJWO0EBKp0SRDkqNM3mCw6aO03mq3pwF5BFKcurVhwfIhBtt
-         9IddvLYOfgle2txWPGyGEerP6zhcr1NfsXzVGSfdV69RKkEC7Rhp93OQkOzsdSN1AWx3
-         TqLAA8R0/OjKMv/g6smfOoUlzmrgTm2Ky2Gd9N3DTzLlJBXWNKeN3z1/5Qhbss/Dofpc
-         EnApPNFr2A+X9YPVfhYhXNMROLLD4Ltoo4cKQTL9inV932BZpNVw/mwEeaduPtFG704E
-         8QnSsoiOdNpoMWqq8tmnde4BFoQaIvqw13mqkXOVMkcNy6PQjIpsX1U+QLdXhOzn5sjX
-         Zm1g==
-X-Gm-Message-State: AOAM530C70BUIAZnUKCb69VVqiKzZUHtpOdrDd9JQz7wGC/DP6uOhe1g
-        2htLLnaKLkAIGf2WV1Zk4edtPSQ/Hm0Rt5ay
-X-Google-Smtp-Source: ABdhPJz8gZJ1VQEWGDtxwlOJoO1jtjPDHeAqnXuxjTqADBFZc2JMy56AF1hHd2p0qt4ym4ep2oKriQ==
-X-Received: by 2002:a05:6214:13b3:: with SMTP id h19mr3753851qvz.31.1616066057425;
-        Thu, 18 Mar 2021 04:14:17 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.246])
-        by smtp.gmail.com with ESMTPSA id x10sm1111327qtw.17.2021.03.18.04.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:14:16 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH]  block: Fix a typo
-Date:   Thu, 18 Mar 2021 16:42:04 +0530
-Message-Id: <20210318111204.20873-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S229999AbhCRLMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:12:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231156AbhCRLMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 07:12:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B664264F2A;
+        Thu, 18 Mar 2021 11:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616065929;
+        bh=UqSQW15bDrrL+cdZcRqJ6fR6MAT53nCPdnQjzPbCIjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qHvQ1bqSHZInMCqB+dRNptRlP2k4wTv5LTxHqHtO5Nrfa85f34YpF2aB9Mj1ceA4J
+         AlCWDTJISLlX7JyH1ZFDfbZd1CGJHIJ5+UBocpOFzT4twxs+gwU7YQjdIOcIZBqtKm
+         CRAH17Apiio4sMFQjbPE5QRCacja94a4VDERriFjxUIsrp3e0TbFzeDlSIShBNuxE+
+         Bj3RwLeoZyWE7MtbeoHKMuE3l4Fq6dmNjgFz5mZstxMxW1Ef+NAKdc2uR8VZFbR+0Q
+         kNOcCoC9X0Cv6iYeyjKH2PJJ86194DtD6IYDV4TRv1AaCkO2HHt+6tpqdsYVB9KA+4
+         Zkg1R17s9KlYQ==
+Date:   Thu, 18 Mar 2021 12:12:06 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-i2c@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: i2c-scmi: Drop unused ACPI_MODULE_NAME definition
+Message-ID: <20210318111206.GK974@ninjato>
+References: <6660750.UgobAMfxrE@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BOhpupldhMlYbdva"
+Content-Disposition: inline
+In-Reply-To: <6660750.UgobAMfxrE@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/trival/trivial/
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- block/blk-merge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--BOhpupldhMlYbdva
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index ffb4aa0ea68b..ba112cffd49f 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -283,7 +283,7 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
- 	/*
- 	 * Bio splitting may cause subtle trouble such as hang when doing sync
- 	 * iopoll in direct IO routine. Given performance gain of iopoll for
--	 * big IO can be trival, disable iopoll when split needed.
-+	 * big IO can be trivial, disable iopoll when split needed.
- 	 */
- 	bio->bi_opf &= ~REQ_HIPRI;
+On Fri, Mar 05, 2021 at 07:28:30PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>=20
+> The ACPI_MODULE_NAME() definition is only used by the message
+> printing macros from ACPICA that are not used by the code in
+> question, so it is redundant.  Drop it.
+>=20
+> No functional impact.
+>=20
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
---
-2.26.2
+Applied to for-next, thanks!
 
+
+--BOhpupldhMlYbdva
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBTNYUACgkQFA3kzBSg
+KbacUA/9F0ROxzF9VeSC9gvbm6/JYUiV2jHwkK0Y7luCqbYxl0o1YDl/OHuL4XBJ
+eIopPGFKcLMxD634C2fhEd+VaI168FG2XrNYavBZpSInTA5jjecWlDrNt08Ayurf
+wLlQFR2JM4/C7NLvEXhmUbpAtYM9YJ9UVPCqhmwcVgK8Z1sHLXa7RYK8Mh6SnUGR
+Kp9F9zP5orGYiAhnAIZLXJXnfhm2Gy2p8TloBpn0JP10/jqIKS/BKthVTus4VuNi
+KvMaUlUn7DTFFHtJjV2UcKK2wtH+o+Y0j/g1JLu0K5cOiCVjYbuJA07f1q0nNwMS
+JMTacp18RTQSkKXLH9Cfl09ABhE57jU4Hxfg+yO73Ab3HVhPd2uEdu+Zxhj5mn/i
+1wee+0qLOlmtnm/Mr6ZGVGLGnqVpnn38NcAwtUtzao5vmF1smT7o4ddNdhwMrTeM
+LQvolBy2iGmNwx0O2ljK9q+gSiy1T18PQr64y3lB4YnMBq+9CZ4/3IGBFGmLRZKw
+jvjzEUz56/F+YOZ1bGfVP9AcunMayGAjhCun53cs5eO0j/MdpqOnSIlSaZia3lum
+cBIS1VshATlToWSFjS/2fk7J1CTDNxLdOP2ufCXi3YD1Qep2VFS3YBVkw8heoqcF
+iLUrbbc+OxR+5aYmfc7PQaEzDe6b35hVnkqsrdJxdWwZ8bwDeg8=
+=VzbQ
+-----END PGP SIGNATURE-----
+
+--BOhpupldhMlYbdva--
