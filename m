@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5426D340D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2120F340D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhCRSuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbhCRSuO (ORCPT
+        id S232574AbhCRSvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:51:20 -0400
+Received: from mail-oo1-f45.google.com ([209.85.161.45]:36783 "EHLO
+        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232502AbhCRSuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:50:14 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36009C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:50:14 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id z25so8824175lja.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fbc9sU+W6vKEWiVuzKDAzNw80eLikWEk6fODgolKFf4=;
-        b=gV9qbJJbak0NwyikP8/6txEAmG7g7SLhIJX+Fba6IeRHX5IoxW3jDRmclVA8qlMsfU
-         kBomGiglv5B7gIvKdwq5SGwJtUllfBgQLIHwNh/WVAb97ZqgqeJTyXusK0PW1Wj+fYOv
-         rl0s1N7K+FNq2o56hIXTtivX0CxG7t7dEc5d97ivUIvX37ZqHrzNwlcrq9j4CB6QD5AZ
-         FeHFP2afJV+FdE2b5evL+4dEfkVW7uNreiqLUlcby8ZsFQAMpnQJcSvrJu2jiTgww+aJ
-         381Y3D1oh2tZ8y5qgSnmZEVEwtk5rESCQTRFKxxhKk5x/kGAlFPIcPsl06+uQd4ls14G
-         ZbQQ==
+        Thu, 18 Mar 2021 14:50:46 -0400
+Received: by mail-oo1-f45.google.com with SMTP id w1-20020a4adec10000b02901bc77feac3eso1686758oou.3;
+        Thu, 18 Mar 2021 11:50:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Fbc9sU+W6vKEWiVuzKDAzNw80eLikWEk6fODgolKFf4=;
-        b=TXTj1oqT9FCc6DnM/2nJzwPG0H7mLfvZ0qjBh6/GhdU3TfGc64WPqVXnz31kzkY/cF
-         CoY3MC+tcuSnU0hNCCBXC3dEX7DSbVhV8cZk2oVGOM2+x0ID2ea9Tw+Kf0sQDnm54Dpb
-         UqyUtJGnSwYtpY7DrH3fQ8+FesKufxAKXPDkQzt5JU8EslTOWIR3yOrxTO0+0GQPH+5K
-         w3OX3S1iqOyxSEAUEZ0wS2Z+xV6hZLtpBHXF5UUKgYxh/LaBRnRb7BSnf1Pipg/vZd5P
-         4z6vFlfJq8wrwdDTx19NBRvzb6iYNxJERSLL+hakp4PnQ8wCQIHGgiPcfLQ6Lz92lPO0
-         DjLw==
-X-Gm-Message-State: AOAM531StM9QeasknNPDWcL/oNVqfokEI+/lYeRIyMoH5MpbcYiwfHF4
-        ZtlKxgTjGgGaUNhCh3ZdEpa528C016gyiG3au45gDQ==
-X-Google-Smtp-Source: ABdhPJyac78CV6QxdSD/anwHq7ZKXrz96rfsGARqrb7ZO61dgR01Qx1cNIoMLgd8++IChAjKUBiov3LjVFDjuzYsR2s=
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr6028781ljp.495.1616093412369;
- Thu, 18 Mar 2021 11:50:12 -0700 (PDT)
+        bh=xE/+zwrG8Sz1bNHFmDwKKVFIzwhY9mhnwyiscge5jEE=;
+        b=Nr54tlfnRT2ceElKMccWjwzzh6bSpVCA0UZu34HV3DKG9KSKlZ7pAfhW0JDcLctgZE
+         v62hQ8OlSnGHqrD4JoCc6vZ7cNgVQYBHAT1Fd2FhKn+7zgNaBYpsw0ZujaQV3I6FJeYj
+         3LQKP4c1US+MGmhi8Z/X8jb+hGMwwtOcqSwBNdLpisnEKs7GiX5iWE11i4R8kaTnjM3t
+         rYgRz4VRSQSVCUZ0EH67cR30Lii6ltT7DzQnYeRMf6MIvdEQr3uL4AdTkGJB9j8/Hc0j
+         4HOZ/YBjlcAZqDBXN+IqLKpc+s245hkLJ53YdYT1mAjiOzg/XwN5OV398htezhYmYbqK
+         2Eqg==
+X-Gm-Message-State: AOAM531lutk3b7fwyGD6CTeHdrL8V21Om9Dgfcl8JoXByFIWofZSnQBX
+        ozj2LJS96NKtCdz8afjrx/wUcGs6SJLOIqD80Ek=
+X-Google-Smtp-Source: ABdhPJxD3ownm0QRPUTIdzTbdbXOwpMfBeLMBr6KR50rbU6Na1GBkHNrcPJdP8qfFu7ITjLBgminJZ9mgxeSBM0f3uI=
+X-Received: by 2002:a4a:bb14:: with SMTP id f20mr8743168oop.1.1616093445406;
+ Thu, 18 Mar 2021 11:50:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210318171111.706303-1-samitolvanen@google.com> <20210318171111.706303-6-samitolvanen@google.com>
-In-Reply-To: <20210318171111.706303-6-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 18 Mar 2021 11:50:00 -0700
-Message-ID: <CAKwvOd=fWs6g2Bf2a_bA58_-uoWtVmNQnvrPxNhio4R5qGjcMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 05/17] workqueue: use WARN_ON_FUNCTION_MISMATCH
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210224054232.1222-1-zbestahu@gmail.com>
+In-Reply-To: <20210224054232.1222-1-zbestahu@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Mar 2021 19:50:34 +0100
+Message-ID: <CAJZ5v0jtjrBuJNMVpZDABaEWeBzJ7sWW7Gb=RggDFm1SF7wUHA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: schedutil: Call sugov_update_next_freq() before
+ check to fast_switch_enabled
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yue Hu <huyue2@yulong.com>, Yue Hu <zbestahu@163.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+On Wed, Feb 24, 2021 at 6:44 AM Yue Hu <zbestahu@gmail.com> wrote:
 >
-> With CONFIG_CFI_CLANG, a callback function passed to
-> __queue_delayed_work from a module points to a jump table entry
-> defined in the module instead of the one used in the core kernel,
-> which breaks function address equality in this check:
+> From: Yue Hu <huyue2@yulong.com>
 >
->   WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
+> Note that sugov_update_next_freq() may return false, that means the
+> caller sugov_fast_switch() will do nothing except fast switch check.
 >
-> Use WARN_ON_FUNCTION_MISMATCH() instead to disable the warning
-> when CFI and modules are both enabled.
-
-Does __cficanonical help with such comparisons? Or would that be a
-very invasive change, if the concern was to try to keep these checks
-in place for CONFIG_CFI_CLANG?
-
+> Similarly, sugov_deferred_update() also has unnecessary operations
+> of raw_spin_{lock,unlock} in sugov_update_single_freq() for that case.
 >
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> So, let's call sugov_update_next_freq() before the fast switch check
+> to avoid unnecessary behaviors above. Update the related interface
+> definitions accordingly.
+>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
 > ---
->  kernel/workqueue.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/sched/cpufreq_schedutil.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
 >
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 0d150da252e8..03fe07d2f39f 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1630,7 +1630,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
->         struct work_struct *work = &dwork->work;
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 41e498b..d23e5be 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -114,19 +114,13 @@ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+>         return true;
+>  }
 >
->         WARN_ON_ONCE(!wq);
-> -       WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
-> +       WARN_ON_FUNCTION_MISMATCH(timer->function, delayed_work_timer_fn);
->         WARN_ON_ONCE(timer_pending(timer));
->         WARN_ON_ONCE(!list_empty(&work->entry));
+> -static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+> -                             unsigned int next_freq)
+> +static void sugov_fast_switch(struct sugov_policy *sg_policy, unsigned int next_freq)
+>  {
+> -       if (sugov_update_next_freq(sg_policy, time, next_freq))
+> -               cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+> +       cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+>  }
+>
+> -static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+> -                                 unsigned int next_freq)
+> +static void sugov_deferred_update(struct sugov_policy *sg_policy)
+>  {
+> -       if (!sugov_update_next_freq(sg_policy, time, next_freq))
+> -               return;
+> -
+>         if (!sg_policy->work_in_progress) {
+>                 sg_policy->work_in_progress = true;
+>                 irq_work_queue(&sg_policy->irq_work);
+> @@ -368,16 +362,19 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+>                 sg_policy->cached_raw_freq = cached_freq;
+>         }
+>
+> +       if (!sugov_update_next_freq(sg_policy, time, next_f))
+> +               return;
+> +
+>         /*
+>          * This code runs under rq->lock for the target CPU, so it won't run
+>          * concurrently on two different CPUs for the same target and it is not
+>          * necessary to acquire the lock in the fast switch case.
+>          */
+>         if (sg_policy->policy->fast_switch_enabled) {
+> -               sugov_fast_switch(sg_policy, time, next_f);
+> +               sugov_fast_switch(sg_policy, next_f);
+>         } else {
+>                 raw_spin_lock(&sg_policy->update_lock);
+> -               sugov_deferred_update(sg_policy, time, next_f);
+> +               sugov_deferred_update(sg_policy);
+>                 raw_spin_unlock(&sg_policy->update_lock);
+>         }
+>  }
+> @@ -456,12 +453,15 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
+>         if (sugov_should_update_freq(sg_policy, time)) {
+>                 next_f = sugov_next_freq_shared(sg_cpu, time);
+>
+> +               if (!sugov_update_next_freq(sg_policy, time, next_f))
+> +                       goto unlock;
+> +
+>                 if (sg_policy->policy->fast_switch_enabled)
+> -                       sugov_fast_switch(sg_policy, time, next_f);
+> +                       sugov_fast_switch(sg_policy, next_f);
+>                 else
+> -                       sugov_deferred_update(sg_policy, time, next_f);
+> +                       sugov_deferred_update(sg_policy);
+>         }
+> -
+> +unlock:
+>         raw_spin_unlock(&sg_policy->update_lock);
+>  }
 >
 > --
-> 2.31.0.291.g576ba9dcdaf-goog
->
 
-
---
-Thanks,
-~Nick Desaulniers
+Applied as 5.13 material, thanks!
