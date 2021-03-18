@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A6C340475
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9BB340482
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCRLRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
+        id S229885AbhCRLXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbhCRLQ7 (ORCPT
+        with ESMTP id S229734AbhCRLWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:16:59 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443A5C06174A;
-        Thu, 18 Mar 2021 04:16:59 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lMqe7-0008Rq-9w; Thu, 18 Mar 2021 12:16:55 +0100
-Message-ID: <9db9d9ae751a50c9fd1da1ee3bd4c564546ce1c5.camel@sipsolutions.net>
-Subject: Re: systemd-rfkill regression on 5.11 and later kernels
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 18 Mar 2021 12:16:54 +0100
-In-Reply-To: <s5hczvwiumf.wl-tiwai@suse.de>
-References: <s5ha6r0kgt5.wl-tiwai@suse.de>
-         <54859a03b8789a2800596067e06c8adb49a107f5.camel@sipsolutions.net>
-         <s5ho8fgixl9.wl-tiwai@suse.de>
-         <c196f9cb7ba2487fb5aceceedf860cc24c6843f2.camel@sipsolutions.net>
-         <s5hczvwiumf.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 18 Mar 2021 07:22:53 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965E1C06174A;
+        Thu, 18 Mar 2021 04:22:53 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id n79so1551786qke.3;
+        Thu, 18 Mar 2021 04:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=igLo7E1TqI8DXL9cfvgTwKgs58VUMuubou9K8KRZFhM=;
+        b=WaCh3WJ9y8EJTc/fLwEV1mV1H/LQAwoNPpLd+KhYtkRFY1r4uJFJGuZgQAlNUI5Uik
+         XA33guqUlOUUC5tgQdthAlPIUYtCgkAxSZZBzaB4y3HRKmmmjhFZjs9gk1heZYvhtxbh
+         wf2WLf1A47+8ZXgpZi/1BAhSfAy6vm39cssZ5dF0NZUCWVxtOK+D6XRy31ZMH46QZt7y
+         IElB103SYdrAmONSIEpqQzqlTtCP+CyPPDSVTO453ra32naZKnGeuX9FAe0igbr3HqDs
+         pjS0hafS59eAwEaqY+SZPRY9Eksppy9ZJGjY+663fxIXMGU8Qy9ZMUZL6VYWINETKe+5
+         GljQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=igLo7E1TqI8DXL9cfvgTwKgs58VUMuubou9K8KRZFhM=;
+        b=qpf2SYWdfEpBB+pbabgVbMYxAguEmy2w2y6QvKE2arFIgQCeI6BWFm348WR73Tw0Fh
+         Q7QXvb972w6njOoiNKnmi5Sva7XnzSEDo951pn0EA8qAUNCnoWI0NTtOx/9SdbCPGKQ+
+         KzTy/5x4ZE1wkc+QJMb9+fSDEe8FMUOTzR/uNrpRPAcWpFKWOnbBbYtZUBQ/sInMrWIn
+         fX3eJLHI9oLAefmpEOkdaB814iff8dkJp3LLuzjjKBMZnO63ZkaE/k4x4wDQuZ676w/f
+         lgBVr/gHi71YBpUz3Lobt361Tsu9uyswy+1MR0P8Q7/gEbD3418RsufHEwJtvCVQ8mCk
+         +mzg==
+X-Gm-Message-State: AOAM533Y5lP9QLmSjm6g0UsZnISKjHXHmoZjfL3+aPLjtyYIUh8BWZtw
+        TpPdWM3ycSVB0XK0yZ7PQpk=
+X-Google-Smtp-Source: ABdhPJytXZh2KZCwGHg2QIA+G/qW+BUqphxbM+XsrkQjzckb1wWvKO/s15VHDN/XeMY4HuLkqvLGkQ==
+X-Received: by 2002:a37:4553:: with SMTP id s80mr3731449qka.167.1616066572921;
+        Thu, 18 Mar 2021 04:22:52 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.246])
+        by smtp.gmail.com with ESMTPSA id w13sm1200967qtv.37.2021.03.18.04.22.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 04:22:52 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     cw00.choi@samsung.com, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] PM: devfreq:  Couple of typo fixes
+Date:   Thu, 18 Mar 2021 16:50:25 +0530
+Message-Id: <20210318112025.22755-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-18 at 12:11 +0100, Takashi Iwai wrote:
-> > That said, we can "fix" this like this, and hope we'll not get this
-> > again? And if we do get it again ... well, we keep renaming the structs
-> > and add "struct rfkill_event_v3" next time?
-> 
-> Yeah, that's a dilemma.  An oft-seen trick is to add more bytes for
-> the future use, e.g. extend to 16 bytes and fill 0 for the remaining.
 
-Yeah, I guess I could stick a reserved[15] there, it's small enough.
+s/stoping/stopping/
+s/opeations/operations/
 
-> In the sound driver, we introduced an ioctl to inform from user-space
-> which API protocol it can speak, and the kernel falls back to the old
-> API/ABI if it's a lower version or it's not told at all.  But I'm not
-> sure whether such an implementation is optimal for rfkill.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/devfreq/devfreq-event.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I thought about it, but it ... doesn't really help.
+diff --git a/drivers/devfreq/devfreq-event.c b/drivers/devfreq/devfreq-event.c
+index 6765c03334bc..2f841d7d9d8d 100644
+--- a/drivers/devfreq/devfreq-event.c
++++ b/drivers/devfreq/devfreq-event.c
+@@ -155,7 +155,7 @@ EXPORT_SYMBOL_GPL(devfreq_event_set_event);
+  * @edata	: the calculated data of devfreq-event device
+  *
+  * Note that this function get the calculated event data from devfreq-event dev
+- * after stoping the progress of whole sequence of devfreq-event dev.
++ * after stopping the progress of whole sequence of devfreq-event dev.
+  */
+ int devfreq_event_get_event(struct devfreq_event_dev *edev,
+ 			    struct devfreq_event_data *edata)
+@@ -184,7 +184,7 @@ int devfreq_event_get_event(struct devfreq_event_dev *edev,
+ EXPORT_SYMBOL_GPL(devfreq_event_get_event);
 
-Somebody's going to do
-
-	ioctl(..., sizeof(ev)) == sizeof(ev)
-
-and break on older kernels, or == my_fixed_size, or ... something. It's
-not really going to address the issue entirely.
-
-And it's more complexity.
-
-johannes
+ /**
+- * devfreq_event_reset_event() - Reset all opeations of devfreq-event dev.
++ * devfreq_event_reset_event() - Reset all operations of devfreq-event dev.
+  * @edev	: the devfreq-event device
+  *
+  * Note that this function stop all operations of devfreq-event dev and reset
+--
+2.26.2
 
