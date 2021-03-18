@@ -2,124 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0CD3403C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0963403C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhCRKp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhCRKow (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:44:52 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A52C06174A;
-        Thu, 18 Mar 2021 03:44:52 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f26so6866976ljp.8;
-        Thu, 18 Mar 2021 03:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UZZzq/9McYqHi4InJGaReUkavQ57VQ1UkA2ucnh78uI=;
-        b=gTbIM+eVxHGNlcaYXsqO6C0ktHAtRqi8q20fGcwHQ7semqVJMZXtpkH3pUFPSQzVYl
-         +WeAtppdRYVyjxzgwUh+BgHpEe4qAn3IgFJE50GSbAeZlhxYE1NhbzyWcz0qANY02xD9
-         WP/N8IHj1Xbipui8Hxo0TpkS0cIx3pOqI+fEMQahZIx3V9BTkJvMMa+O4GB3oqVFmtOe
-         PcYtWLGkWX1vePVvpC7ryqpXjGSLfeD9PLLYAl2nESHcF6eZHkofYB/GOLFT3CpPW+cG
-         454A9TWQJ4AC+2RGIkZZU0S6hK9JCBBXxB3v2kxS2/Soah9MHXBtHvehAqnp3ZeAXTMk
-         xD8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UZZzq/9McYqHi4InJGaReUkavQ57VQ1UkA2ucnh78uI=;
-        b=cA6hRWkFE5QGmIZebR5CU8VvqaWt2pv2XfEKyM4ZFeYwdmu1GeuiFzOqU6qjvrH04o
-         casrI3RfpUYfnt+WWUcBR6Nqhgg5JEnlNNNK+YyZu7iNIQVmZKT85/J6e99ABgmZo94O
-         lY35j4hu5K3q62SDBeWSHc/k/dOSebN5XMmwP7+ytFwPA+LKElv8Nseb2xdDI+Qd0ebx
-         ZZRZvEndH0omQbJELpa6so46jf79GCpydZOuNfaPNIZl5qbfUtfwbeQxIYfOxB9hjrL4
-         RB4WoPhzKZf3stPutyY3+PNqJj8yrE05XVweWrwsn2Kw7qghWn9h9/MbaaZDU984ICRN
-         D7Eg==
-X-Gm-Message-State: AOAM5318WkY2JDhgDZ7IiIzag436r3VtktkZ+8varTmal4VVNCPPH8lg
-        eCQ8Kb7rPOxFBQ6t4T3DCr7xGZodIvM=
-X-Google-Smtp-Source: ABdhPJyZkPBz604XveIMMKnivIAAlI3Kq+ffrnq13fyiOfAK/uWCFgXw6pG59Ahla1dsNA6XD5eWHQ==
-X-Received: by 2002:a2e:974d:: with SMTP id f13mr4956977ljj.210.1616064290378;
-        Thu, 18 Mar 2021 03:44:50 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id a1sm191289ljb.76.2021.03.18.03.44.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 03:44:50 -0700 (PDT)
-Subject: Re: [PATCH v5 2/7] clk: tegra: Fix refcounting of gate clocks
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210317193006.29633-1-digetx@gmail.com>
- <20210317193006.29633-3-digetx@gmail.com>
- <20210318091219.GA18038@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <768dcbd3-a29b-33c1-2147-e59e3847e75c@gmail.com>
-Date:   Thu, 18 Mar 2021 13:44:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230131AbhCRKq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:46:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46080 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229999AbhCRKqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:46:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616064382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tclB5QrQoHhEUb27d5IkFSRDjX313FKOkBJ+z2UTxSo=;
+        b=NbpQexOkLEqAdFbc7qpZtb93qCOBZcT02OfL+Pluwab7swBXIc0KRGicHiUP6lNoIET47S
+        Gqm/1a7n6uMttpfBdoOPfoxcu7/QRekFz51js8XOLtHKBzY4FUdetcUXOrU0+w3TPQ8Pa6
+        r72ILedSgpilLpvm/f/yaKD+GAjXBMA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 388FAACBF;
+        Thu, 18 Mar 2021 10:46:22 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 11:46:21 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YFMvfawY+0CncS8G@alley>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+ <YFDAfPCnS204jiD5@chrisdown.name>
+ <YFHAdUB4lu4mJ9Ar@alley>
+ <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210318091219.GA18038@qmqm.qmqm.pl>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.03.2021 12:12, Michał Mirosław пишет:
-> On Wed, Mar 17, 2021 at 10:30:01PM +0300, Dmitry Osipenko wrote:
->> The refcounting of the gate clocks has a bug causing the enable_refcnt
->> to underflow when unused clocks are disabled. This happens because clk
->> provider erroneously bumps the refcount if clock is enabled at a boot
->> time, which it shouldn't be doing, and it does this only for the gate
->> clocks, while peripheral clocks are using the same gate ops and the
->> peripheral clocks are missing the initial bump. Hence the refcount of
->> the peripheral clocks is 0 when unused clocks are disabled and then the
->> counter is decremented further by the gate ops, causing the integer
->> underflow.
-> [...]
->> diff --git a/drivers/clk/tegra/clk-periph-gate.c b/drivers/clk/tegra/clk-periph-gate.c
->> index 4b31beefc9fc..3c4259fec82e 100644
->> --- a/drivers/clk/tegra/clk-periph-gate.c
->> +++ b/drivers/clk/tegra/clk-periph-gate.c
-> [...]
->> @@ -91,21 +108,28 @@ static void clk_periph_disable(struct clk_hw *hw)
->>  
->>  	spin_lock_irqsave(&periph_ref_lock, flags);
->>  
->> -	gate->enable_refcnt[gate->clk_num]--;
->> -	if (gate->enable_refcnt[gate->clk_num] > 0) {
->> -		spin_unlock_irqrestore(&periph_ref_lock, flags);
->> -		return;
->> -	}
->> +	WARN_ON(!gate->enable_refcnt[gate->clk_num]);
->> +
->> +	if (gate->enable_refcnt[gate->clk_num]-- == 1)
->> +		clk_periph_disable_locked(hw);
+On Wed 2021-03-17 11:03:20, Rasmus Villemoes wrote:
+> On 17/03/2021 09.40, Petr Mladek wrote:
+> > On Tue 2021-03-16 14:28:12, Chris Down wrote:
+> >> Rasmus Villemoes writes:
+> >>> I think it's pointless renaming the symbol to _printk, with all the
+> >>> churn and reduced readability that involves (especially when reading
+> >>> assembly "why are we calling _printk and not printk here?"). There's
+> >>> nothing wrong with providing a macro wrapper by the same name
+> >>>
+> >>> #define printk(bla bla) ({ do_stuff; printk(bla bla); })
+> >>>
+> >>> Only two places would need to be updated to surround the word printk in
+> >>> parentheses to suppress macro expansion: The declaration and the
+> >>> definition of printk. I.e.
+> >>>
+> >>> int (printk)(const char *s, ...)
 > 
-> Nit: "if (--n == 0)" seems more natural, as you want to call
-> clk_periph_disable_locked() when the refcount goes down to 0.
+> [Of course, one could avoid that on the declaration by making sure the
+> macro wrapper is defined below.]
 > 
-> [...]
->>  	/*
->> -	 * If peripheral is in the APB bus then read the APB bus to
->> -	 * flush the write operation in apb bus. This will avoid the
->> -	 * peripheral access after disabling clock
->> +	 * Some clocks are duplicated and some of them are marked as critical,
->> +	 * like fuse and fuse_burn for example, thus the enable_refcnt will
->> +	 * be non-zero here id the "unused" duplicate is disabled by CCF.
+> >> Hmm, I'm indifferent to either. Personally I don't like the ambiguity of
+> >> having both a macro and function share the same name and having to think
+> >> "what's the preprocessor context here?".
+> > 
+> > I would prefer to keep _printk. I agree that it creates some churn but
+> > it is easier to see what is going on.
 > 
-> s/id/if/ ?
+> It is? Nobody except the few who happen to remember about the
+> printk_index thing are going to understand why, when looking at
+> disassembly, there's now calls of a _printk function. "Huh, my code just
+> does pr_err(), I'm not calling some internal printk function". But it's
+> not up to me, so I'll stop there.
 
-I'll update this patch over the weekend, thanks!
+Sure, it makes sense. But I still think that it won't be easy to
+follow where the macro is expanded and where it is not expanded.
+It might make things comlicated when people debug printk or try
+to understand it's code.
+
+BTW: Is the trick with int (printk)(const char *s, ...) documented
+somewhere? Is it portable?
+
+Honestly, I was not aware of this behavior. I did some googling.
+It looks like something specific for the gcc implementation,
+see the section "Looking for a function-like macro’s opening
+parenthesis" at
+https://gcc.gnu.org/onlinedocs/cppinternals/Macro-Expansion.html
+
+
+
+> Anyway, on to the other thing I mentioned on dev_err and friends: I
+> think it would improve readability and make it a lot easier to (probably
+> in a later patch) add support for all those dev_* and net_* and whatever
+> other subsystems have their own wrappers
+
+This is great point! There are many other subsystem specific wrappers,
+e,g, ata_dev_printk(), netdev_printk(), snd_printk(), dprintk().
+We should make it easy to index them as well.
+
+> if one created a new header,
+> linux/printk-index.h, doing something like
+> 
+> #ifdef CONFIG_PRINTK_INDEX
+> #define __printk_index_emit(fmt) do {the appropriate magic} while (0)
+> #else
+> #define __printk_index_emit(fmt) do {} while (0)
+> #endif
+> 
+> #define printk_index_wrap(fmt, real_func, ...) ({ \
+>   __printk_index_emit(fmt); \
+>   real_func(__VA_ARGS__); \
+> })
+> 
+> and then it's a matter of doing
+> 
+> #define printk(fmt, ...) printk_index_wrap(fmt, _printk, fmt, ##__VA_ARGS__)
+> 
+> or
+> 
+> #define _dev_err(dev, fmt, ...) printk_index_wrap(fmt, __dev_err, dev,
+> fmt, ##__VA_ARGS__)
+> 
+> (yeah, _dev_err is the real function, dev_err is already a macro, so
+> doing it for dev_* would involve renaming _dev_err to __dev_err. Or one
+> could fold the printk_index logic into the existing dev_err macro).
+> 
+> That is, avoid defining two different versions of each and every
+> required wrapper macro depending on CONFIG_PRINTK_INDEX.
+> 
+> One could also record the function a format is being used with - without
+> that, the display probably can't show a reasonable <level> for those
+> dev_* function.
+
+Makes sense. I would do this way.
+
+Best Regards,
+Petr
