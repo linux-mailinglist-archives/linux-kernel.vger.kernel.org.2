@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B4334010B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84875340115
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhCRIar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
+        id S229767AbhCRIfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhCRIag (ORCPT
+        with ESMTP id S229618AbhCRIew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:30:36 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84488C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b5394pXQ3AmJ7TK/eV6mn4r5s5hvBjpXA9Dq39eMKvw=; b=ZYrvUiAopSul/EQZ14BfoWzLxp
-        2Y/kQGegYgz/l51Pyn5CCqodVOJZlABcqS67BOE0B2tmmKUI0kXFWARjfLMVW5cXaU77wauxAhl28
-        2vaBNqtmOhwN1PGUCT+S1JI1A1eB7rHJVU6af234l7JR1cY9dvqAvKAPPn4EeZayThMDWQ87DodiP
-        q2SUpFsHYAub6K0Y85ZKfTU+21cHWPxrzotndk6k1wM7lokV5ObV0JQXPM1gBoD+UA/omWWY7BlL/
-        hgTpteRzi+5AdxE+wSakuJ6XLpINlJ6X24Dp+KHCrzZI5FrkkgDXZIPsAcNyrQpNU1eEnXMdDtwlv
-        cbLq8Vjg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMo2u-004npD-0F; Thu, 18 Mar 2021 08:30:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 133F3305C10;
-        Thu, 18 Mar 2021 09:30:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EE09F29A61CFA; Thu, 18 Mar 2021 09:30:18 +0100 (CET)
-Date:   Thu, 18 Mar 2021 09:30:18 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Oliver Sang <oliver.sang@intel.com>, jbaron@akamai.com,
-        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
- .exit.text
-Message-ID: <YFMPmkMoae5cRzh+@hirez.programming.kicks-ass.net>
-References: <CAFA6WYNMHAqqmNfncmJm3+BUYCktXouRtV_udSxQb7eifPmX+Q@mail.gmail.com>
- <20210317030101.GB22345@xsang-OptiPlex-9020>
- <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
- <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
- <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
- <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
- <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
- <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
- <20210318000212.l2fdz5vjhuq64yh6@treble>
- <YFMIcWIbk0aN30NY@hirez.programming.kicks-ass.net>
+        Thu, 18 Mar 2021 04:34:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C5AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:34:52 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id r12so2591918ejr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TGI8HIQlc4uaCPugxl2JDwGzxpy1JYs+5hYiFdwZIn4=;
+        b=JHznz+RlAzfthyHdm4DXDxFzqBAGb+To7jbFrFPGg1J8RBHYexcZoqiGSSofvrjX2t
+         nPHfdm613VsfXavQiZJYsxJkK9fzmAA2q9SwR/vJY9U3QGOXUiuFWtlsu5ySOonOrY9f
+         vYg8B32bjUhCxH9JpXr/IfmJUUzZWXTRjEzyhgkE10BmFMVRvgdeFwysSJEzyMcEzVsx
+         hiBzus8RSHx/T/7f+Mo/cY1cWKd+3MrMJzJaA1xJzc7ynrhLb50g1zE7NJkp+pF3EGQp
+         785qiDE5otl8YdCjWvspELG7FamIPz1KwFQOPz+ADm6w6yHFrjFV+jnn+wJXzuAbn+hl
+         f6pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TGI8HIQlc4uaCPugxl2JDwGzxpy1JYs+5hYiFdwZIn4=;
+        b=m5dzeDoeJbgRyIt6jaCZUK3q1BVgPqvI4Umau3NH7u1zBcj0Af97Qd8Gx0ejfKo+EX
+         hrT6J65x3fpJEl6olOEH2oZT+UL2DLlJvnz1DQpFPdAnTFaRpZi/vgGaFF0TSwgm4n2Z
+         X82tZkMVtE5MVhBRQjykofeOmHsVAJLU2pKRJp7qkK5jdmxJWoulA7PjijgjT+Mk2NrY
+         Di8aK5+uSgzJ2eKYz5a0Wk1RAbuG5RUsnByaqZ631kKbVU298PfQoCi8gtg9OmcglUZi
+         IZMedSTqJEywh56nOgyWNe6TpDMcHOGWRG4JEzZ5A1CfmUzaL6knW6KAXjFhEweiw9om
+         Ra6w==
+X-Gm-Message-State: AOAM5314zaANwY2E1pRtOsaOksyVQdUEjCdXXHAgsY2G+VDZlWt4TwAO
+        +kGe+Fd2jwNlvEO5amVfqBcueA==
+X-Google-Smtp-Source: ABdhPJybE5Kdxq92QLKVUG8Nhp0he0ishzyEmigHj7338liUP4XJbTsowAkqIM8U1qmXN+OPvVRe4Q==
+X-Received: by 2002:a17:906:d71:: with SMTP id s17mr40870466ejh.126.1616056490945;
+        Thu, 18 Mar 2021 01:34:50 -0700 (PDT)
+Received: from localhost (cpe.ge-3-0-8-100.ryvnqe10.dk.customer.tdc.net. [80.197.57.18])
+        by smtp.gmail.com with ESMTPSA id bt14sm1316462edb.92.2021.03.18.01.34.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 01:34:50 -0700 (PDT)
+From:   Daniel Gomez <daniel@qtec.com>
+Cc:     dagmcr@gmail.com, Daniel Gomez <daniel@qtec.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/radeon/ttm: Fix memory leak userptr pages
+Date:   Thu, 18 Mar 2021 09:32:36 +0100
+Message-Id: <20210318083236.43578-1-daniel@qtec.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFMIcWIbk0aN30NY@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 08:59:45AM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 07:02:12PM -0500, Josh Poimboeuf wrote:
-> > On Wed, Mar 17, 2021 at 01:45:57PM +0100, Peter Zijlstra wrote:
-> > > arguably it simply isn't a good idea to use static_call() in __exit
-> > > code anyway, since module unload is never a performance critical path.
-> > 
-> > Couldn't you make the same argument about __init functions, which are
-> > allowed to do static calls?
-> 
-> I suppose we could indeed make that argument. Much of that code was
-> copied from jump_label without much consideration. And I now I suppose
-> I'll have to consider jump_label in __exit too :/
-> 
-> > We might consider a STATIC_CALL_SITE_EXIT flag, but I suppose we've run
-> > out of flag space.
-> 
-> Yeah, we're definitely short on flags. Let me try and figure out when
-> exactly it's all discarded.
+If userptr pages have been pinned but not bounded,
+they remain uncleared.
 
-Ha!, x86 stuffs .exit.text in [__init_begin, __init_end) and it is
-discarded right along with initmem.
+Signed-off-by: Daniel Gomez <daniel@qtec.com>
+---
+ drivers/gpu/drm/radeon/radeon_ttm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-But that means it should match init and be tagged init and all *should*
-work, but somehow it doesn't... clearly I'm missing something again
-ARGH!
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index e8c66d10478f..bbcc6264d48f 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -485,13 +485,14 @@ static void radeon_ttm_backend_unbind(struct ttm_bo_device *bdev, struct ttm_tt
+ 	struct radeon_ttm_tt *gtt = (void *)ttm;
+ 	struct radeon_device *rdev = radeon_get_rdev(bdev);
+ 
++	if (gtt->userptr)
++		radeon_ttm_tt_unpin_userptr(bdev, ttm);
++
+ 	if (!gtt->bound)
+ 		return;
+ 
+ 	radeon_gart_unbind(rdev, gtt->offset, ttm->num_pages);
+ 
+-	if (gtt->userptr)
+-		radeon_ttm_tt_unpin_userptr(bdev, ttm);
+ 	gtt->bound = false;
+ }
+ 
+-- 
+2.30.2
+
