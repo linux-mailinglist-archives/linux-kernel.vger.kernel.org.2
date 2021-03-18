@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E1434066F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A6A340676
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhCRNIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:08:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:40610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231244AbhCRNH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:07:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1206ED1;
-        Thu, 18 Mar 2021 06:07:57 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5B9553F718;
-        Thu, 18 Mar 2021 06:07:56 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        debian-ia64 <debian-ia64@lists.debian.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        Anatoly Pugachev <matorola@gmail.com>
-Subject: [PATCH] ia64: Ensure proper NUMA distance and possible map initialization
-Date:   Thu, 18 Mar 2021 13:06:17 +0000
-Message-Id: <20210318130617.896309-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S231397AbhCRNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:09:21 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:47084 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231244AbhCRNIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:08:53 -0400
+Received: by mail-vs1-f41.google.com with SMTP id l22so1502354vsr.13;
+        Thu, 18 Mar 2021 06:08:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3W+gRU3tHOQftjVIDBjSp6oKqWWk/fcbiFHz3gji3RA=;
+        b=CKLH0megC93YIgSK38RvzBgRSunx8AfYLFKJEXOkUwzC+6uykuBEJQcrvkIrrPiRym
+         UBK9CtgPSuySJQZfk0262NzsI/l8ytFJg6V0I5+NR6BjEIGSOg9R7y3fNg9LCo10md1r
+         D5IV6uAca2FX+CEuKGLuwfp7zmkHdDiakw3WD0AFFvEl/mP2AKKm86QKssqATIpP4ONN
+         9sKccpUzMpj5eqo7fAhvzwGaI1Y1jYHE0BxEBmZFrWjMw6DzrC19xXvjfOLETMVhrAOB
+         gxguLwVnNFZatVUPU0T0YFxK5EYEEVgwzKvPWxquyZRNon3vxeGnqTfUhGPPIurAxD8L
+         JnJg==
+X-Gm-Message-State: AOAM531xD/d6M6HngzRvmAy4DFKzNi3MicdnCj35Y/5y7VW0U92rYx+1
+        ui9bQmLXvokyOTacitIQtipwFqI4tT90XcAg6XminUhR
+X-Google-Smtp-Source: ABdhPJwSYclVqk3CG+KwOsQJDNF/gnlOqbyQv3/6dPaqrdvn9b/kEKBWwIe28FgiQQb6nLHFTrMEdwstEC2d9ss4Ju8=
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr6581294vsr.40.1616072932463;
+ Thu, 18 Mar 2021 06:08:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-5-aford173@gmail.com>
+ <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com> <CAHCN7xLtDyfB5h5rWTLpiUgWY==2KmxYCOQkVSeU8DV8KB-NKg@mail.gmail.com>
+In-Reply-To: <CAHCN7xLtDyfB5h5rWTLpiUgWY==2KmxYCOQkVSeU8DV8KB-NKg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 18 Mar 2021 14:08:40 +0100
+Message-ID: <CAMuHMdV1e+bBapynOQwhuBpdBcpn-03hpOu4KAaK4GHhcdROEg@mail.gmail.com>
+Subject: Re: [PATCH V3 5/5] arm64: dts: renesas: beacon kits: Setup AVB refclk
+To:     Adam Ford <aford173@gmail.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Paul reported a warning about bogus NUMA distance values spurred by
-commit:
+Hi Adam,
 
-  620a6dc40754 ("sched/topology: Make sched_init_numa() use a set for the deduplicating sort")
+On Thu, Mar 18, 2021 at 1:44 PM Adam Ford <aford173@gmail.com> wrote:
+> On Thu, Mar 4, 2021 at 2:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> > > The AVB refererence clock assumes an external clock that runs
+> >
+> > reference
+> >
+> > > automatically.  Because the Versaclock is wired to provide the
+> > > AVB refclock, the device tree needs to reference it in order for the
+> > > driver to start the clock.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > i.e. will queue in renesas-devel (with the typo fixed) once the DT
+> > bindings have been accepted.
+> >
+>
+> Who do I need to ping to get the DT bindings accepted?  They have an
+> acked-by from Rob.
 
-In this case, the afflicted machine comes up with a reported 256 possible
-nodes, all of which are 0 distance away from one another. This was
-previously silently ignored, but is now caught by the aforementioned
-commit.
+Sergei, can you please have a look at the DT binding change?
 
-The culprit is ia64's node_possible_map which remains unchanged from its
-initialization value of NODE_MASK_ALL. In John's case, the machine doesn't
-have any SRAT nor SLIT table, but AIUI the possible map remains untouched
-regardless of what ACPI tables end up being parsed. Thus, !online &&
-possible nodes remain with a bogus distance of 0 (distances \in [0, 9] are
-"reserved and have no meaning" as per the ACPI spec).
+Thanks!
 
-Follow x86 / drivers/base/arch_numa's example and set the possible map to
-the parsed map, which in this case seems to be the online map.
+Gr{oetje,eeting}s,
 
-Link: http://lore.kernel.org/r/255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de
-Fixes: 620a6dc40754 ("sched/topology: Make sched_init_numa() use a set for the deduplicating sort")
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
-This might need an earlier Fixes: tag, but all of this is quite old and
-dusty (the git blame rabbit hole leads me to ~2008/2007)
+                        Geert
 
-Alternatively, can we deprecate ia64 already?
----
- arch/ia64/kernel/acpi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/ia64/kernel/acpi.c b/arch/ia64/kernel/acpi.c
-index a5636524af76..e2af6b172200 100644
---- a/arch/ia64/kernel/acpi.c
-+++ b/arch/ia64/kernel/acpi.c
-@@ -446,7 +446,8 @@ void __init acpi_numa_fixup(void)
- 	if (srat_num_cpus == 0) {
- 		node_set_online(0);
- 		node_cpuid[0].phys_id = hard_smp_processor_id();
--		return;
-+		slit_distance(0, 0) = LOCAL_DISTANCE;
-+		goto out;
- 	}
- 
- 	/*
-@@ -489,7 +490,7 @@ void __init acpi_numa_fixup(void)
- 			for (j = 0; j < MAX_NUMNODES; j++)
- 				slit_distance(i, j) = i == j ?
- 					LOCAL_DISTANCE : REMOTE_DISTANCE;
--		return;
-+		goto out;
- 	}
- 
- 	memset(numa_slit, -1, sizeof(numa_slit));
-@@ -514,6 +515,8 @@ void __init acpi_numa_fixup(void)
- 		printk("\n");
- 	}
- #endif
-+out:
-+	node_possible_map = node_online_map;
- }
- #endif				/* CONFIG_ACPI_NUMA */
- 
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
