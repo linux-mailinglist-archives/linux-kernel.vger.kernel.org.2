@@ -2,90 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEDF340F87
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60059340F88
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhCRVDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230457AbhCRVDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FE9261582;
-        Thu, 18 Mar 2021 21:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616101391;
-        bh=chcir1xO1kTSXJFgly4UY7zIqLtB9SGZzjqPKGeyPyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ufV2Xgp+HNERSH28TPNr2hUqMnGAALWbcaUgtUfnSwkeoq1Up/31KyHpBpuDZLG+q
-         FIGEscYy339CN9uO5roRQNC2S/mHcqnF/iFtGASmProQKYLpmpsgfBXVu4jxBf//oy
-         Odd7g99rUZmB80lGQAgj/uRCvhHXppzVJqm+SB5FFL9+5qqiRE//aUwUjxANMhSUGX
-         yK8CHlTOr+Hzxs6OVPinwXs1H2T0OPAJhCEOZcjVm/zl64RTrWYX4VNd/3lY6S5+dF
-         2RnuVAKFyKLoeGy9A3miOkYciLJ0UUWs+z9YUc3+brVneP+lZkuZHHnmZlgiQVAnqa
-         9JYMAc6N69U+A==
-Date:   Thu, 18 Mar 2021 14:03:09 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     krisman@collabora.com, jaegeuk@kernel.org, yuchao0@huawei.com,
-        tytso@mit.edu, adilger.kernel@dilger.ca, drosen@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel@collabora.com, andre.almeida@collabora.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 3/4] fs: unicode: Use strscpy() instead of strncpy()
-Message-ID: <YFPADdUVA51/PTGk@gmail.com>
-References: <20210318133305.316564-1-shreeya.patel@collabora.com>
- <20210318133305.316564-4-shreeya.patel@collabora.com>
+        id S233145AbhCRVDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhCRVDe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:03:34 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C47CC06174A;
+        Thu, 18 Mar 2021 14:03:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 780811F45711
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id EAB1F4800C3; Thu, 18 Mar 2021 22:03:27 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: [RFC] clk: add boot clock support
+Date:   Thu, 18 Mar 2021 22:03:18 +0100
+Message-Id: <20210318210318.144961-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210316215123.GA3712408@robh.at.kernel.org>
+References: <20210316215123.GA3712408@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318133305.316564-4-shreeya.patel@collabora.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 07:03:04PM +0530, Shreeya Patel wrote:
-> Following warning was reported by Kernel Test Robot.
-> 
-> In function 'utf8_parse_version',
-> inlined from 'utf8_load' at fs/unicode/utf8mod.c:195:7:
-> >> fs/unicode/utf8mod.c:175:2: warning: 'strncpy' specified bound 12 equals
-> destination size [-Wstringop-truncation]
-> 175 |  strncpy(version_string, version, sizeof(version_string));
->     |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> The -Wstringop-truncation warning highlights the unintended
-> uses of the strncpy function that truncate the terminating NULL
-> character from the source string.
-> Unlike strncpy(), strscpy() always null-terminates the destination string,
-> hence use strscpy() instead of strncpy().
-> 
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
-> Changes in v2
->   - Resolve warning of -Wstringop-truncation reported by
->     kernel test robot.
-> 
->  fs/unicode/unicode-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/unicode/unicode-core.c b/fs/unicode/unicode-core.c
-> index d5f09e022ac5..287a8a48836c 100644
-> --- a/fs/unicode/unicode-core.c
-> +++ b/fs/unicode/unicode-core.c
-> @@ -179,7 +179,7 @@ static int unicode_parse_version(const char *version, unsigned int *maj,
->  		{0, NULL}
->  	};
->  
-> -	strncpy(version_string, version, sizeof(version_string));
-> +	strscpy(version_string, version, sizeof(version_string));
->  
+On Congatec's QMX6 system on module one of the i.MX6 fixed clocks
+is provided by an I2C RTC. Specifying this properly results in a
+circular dependency, since the I2C RTC (and thus its clock) cannot
+be initialized without the i.MX6 clock controller being initialized.
 
-Shouldn't unicode_parse_version() return an error if the string gets truncated
-here?  I.e. check if strscpy() returns < 0.
+With current code the following path is executed when i.MX6 clock
+controller is probed (and ckil clock is specified to be the I2C RTC
+via DT):
 
-Also, this is a "fix" (though one that doesn't currently matter, since 'version'
-is currently always shorter than sizeof(version_string)), so it should go first
-in the series and have a Fixes tag.
+1. imx6q_obtain_fixed_clk_hw(ccm_node, "ckil", 0);
+2. of_clk_get_by_name(ccm_node, "ckil");
+3. __of_clk_get(ccm_node, 0, ccm_node->full_name, "ckil");
+4. of_clk_get_hw(ccm_node, 0, "ckil")
+5. spec = of_parse_clkspec(ccm_node, 0, "ckil"); // get phandle
+6. of_clk_get_hw_from_clkspec(&spec); // returns -EPROBE_DEFER
+7. error is propagated back, i.MX6q clock controller is probe deferred
+8. I2C controller is never initialized without clock controller
+   I2C RTC is never initialized without I2C controller
+   CKIL clock is never initialized without I2C RTC
+   clock controller is never initialized without CKIL
 
-- Eric
+To fix the circular dependency this registers a dummy clock when
+the RTC clock is tried to be acquired. The dummy clock will later
+be unregistered when the proper clock is registered for the RTC
+DT node. IIUIC clk_core_reparent_orphans() will take care of
+fixing up the clock tree.
+
+NOTE: For now the patch is compile tested only. If this approach
+is the correct one I will do some testing and properly submit this.
+You can find all the details about the hardware in the following
+patchset:
+
+https://lore.kernel.org/linux-devicetree/20210222171247.97609-1-sebastian.reichel@collabora.com/
+
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+ .../bindings/clock/clock-bindings.txt         |   7 +
+ drivers/clk/clk.c                             | 146 ++++++++++++++++++
+ 2 files changed, 153 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/clock/clock-bindings.txt b/Documentation/devicetree/bindings/clock/clock-bindings.txt
+index f2ea53832ac6..66d67ff4aa0f 100644
+--- a/Documentation/devicetree/bindings/clock/clock-bindings.txt
++++ b/Documentation/devicetree/bindings/clock/clock-bindings.txt
+@@ -32,6 +32,13 @@ clock-output-names: Recommended to be a list of strings of clock output signal
+ 		    Clock consumer nodes must never directly reference
+ 		    the provider's clock-output-names property.
+ 
++boot-clock-frequencies: This property is used to specify that a clock is enabled
++			by default with the provided frequency at boot time. This
++			is required to break circular clock dependencies. For clock
++			providers with #clock-cells = 0 this is a single u32
++			with the frequency in Hz. Otherwise it's a list of
++			clock cell specifier + frequency in Hz.
++
+ For example:
+ 
+     oscillator {
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 5052541a0986..029088ed5f1a 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -4499,6 +4499,146 @@ static const struct of_device_id __clk_of_table_sentinel
+ static LIST_HEAD(of_clk_providers);
+ static DEFINE_MUTEX(of_clk_mutex);
+ 
++struct of_boot_clk {
++	struct of_clk_provider cp;
++	struct clk_hw clk;
++	unsigned long rate;
++};
++
++/**
++ * of_clk_get_boot_rate() - Get DT configured boot rate for a DT clkspec
++ * @clkspec: pointer to a clock specifier data structure
++ *
++ * This function provides the boot clock rate configured in DT
++ * for a clkspec without requiring a device being registered in
++ * the kernel.
++ *
++ * This is required for clock setups with circular dependencies,
++ * which only work because of some clocks being enabled
++ * automatically.
++ *
++ * The return value is either the rate,
++ * -EINVAL for malformed DT,
++ * -ENODATA if no boot frequency is specified.
++ */
++static int of_clk_get_boot_rate(struct of_phandle_args *clkspec)
++{
++	const struct device_node *np;
++	u32 cells;
++	u32 val;
++
++	if (!clkspec || !clkspec->np)
++		return -EINVAL;
++	np = clkspec->np;
++
++	if (!of_property_read_u32(np, "#clock-cells", &cells))
++		return -EINVAL;
++
++	/* complex clock providers are currently not supported */
++	if (cells > 0)
++		return -EINVAL;
++
++	if (!of_property_read_u32(np, "boot-clock-frequencies", &val))
++		return -ENODATA;
++
++	return val;
++}
++
++static struct clk_hw *of_boot_clk_get(struct of_phandle_args *clkspec, void *data)
++{
++	return data;
++}
++
++static unsigned long
++of_boot_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
++{
++	struct of_boot_clk *bootclk = container_of(hw, struct of_boot_clk, clk);
++
++	return bootclk->rate;
++}
++
++static const struct clk_ops of_boot_clk_ops = {
++	.recalc_rate = of_boot_clk_recalc_rate,
++};
++
++/**
++ * of_clk_register_boot_clk() - Register a boot clock provider for a node
++ * @clkspec: pointer to a clock specifier data structure
++ *
++ * Register a fixed rate dummy clock for solving circular dependencies
++ * during boot. This is expected to be replaced by a real clock device
++ * once the correct driver is probed.
++ *
++ * The function expects of_clk_mutex to be locked.
++ *
++ * Returns:
++ *  -EPROBE_DEFER, if DT does not specify a boot clock
++ *  -ENOMEM, if there is not sufficient memory available
++ *  -EINVAL, if DT contains invalid data
++ *  dummy clk_hw device on success
++ */
++static struct clk_hw *
++of_clk_register_boot_clk(struct of_phandle_args *clkspec)
++{
++	struct of_boot_clk *bootclk;
++	struct clk_init_data init;
++	int rate = of_clk_get_boot_rate(clkspec);
++
++	WARN_ON(!mutex_is_locked(&of_clk_mutex));
++
++	if (rate < 0) {
++		if (rate == -ENODATA)
++			return ERR_PTR(-EPROBE_DEFER);
++		return ERR_PTR(rate);
++	}
++
++	bootclk = kzalloc(sizeof(*bootclk), GFP_KERNEL);
++	if (!bootclk)
++		return ERR_PTR(-ENOMEM);
++
++	bootclk->rate = rate;
++
++	/* TODO: name should be unique, use idr_alloc */
++	init.name = "dummy-boot-clk";
++	init.ops = &of_boot_clk_ops;
++	init.flags = 0;
++	init.parent_names = NULL;
++	init.num_parents = 0;
++	bootclk->clk.init = &init;
++
++	bootclk->cp.node = of_node_get(clkspec->np);
++	bootclk->cp.data = bootclk;
++	bootclk->cp.get_hw = of_boot_clk_get;
++
++	/* TODO: use same name as in clk.init.name */
++	clk_hw_register_clkdev(&bootclk->clk, NULL, "dummy-boot-clk");
++
++	list_add(&bootclk->cp.link, &of_clk_providers);
++
++	pr_debug("Added clk_hw boot provider from %pOF\n", clkspec->np);
++
++	return &bootclk->clk;
++}
++
++static void of_clk_unregister_boot_clk(struct device_node *np)
++{
++	struct of_boot_clk *bootclk;
++	struct of_clk_provider *cp;
++
++	WARN_ON(!mutex_is_locked(&of_clk_mutex));
++
++	list_for_each_entry(cp, &of_clk_providers, link) {
++		if (cp->node == np && cp->get_hw == of_boot_clk_get) {
++			bootclk = container_of(cp, struct of_boot_clk, cp);
++			list_del(&cp->link);
++			// TODO: undo clk_hw_register_clkdev
++			of_node_put(cp->node);
++			kfree(bootclk);
++			break;
++		}
++	}
++}
++
+ struct clk *of_clk_src_simple_get(struct of_phandle_args *clkspec,
+ 				     void *data)
+ {
+@@ -4566,6 +4706,7 @@ int of_clk_add_provider(struct device_node *np,
+ 	cp->get = clk_src_get;
+ 
+ 	mutex_lock(&of_clk_mutex);
++	of_clk_unregister_boot_clk(np);
+ 	list_add(&cp->link, &of_clk_providers);
+ 	mutex_unlock(&of_clk_mutex);
+ 	pr_debug("Added clock from %pOF\n", np);
+@@ -4605,6 +4746,7 @@ int of_clk_add_hw_provider(struct device_node *np,
+ 	cp->get_hw = get;
+ 
+ 	mutex_lock(&of_clk_mutex);
++	of_clk_unregister_boot_clk(np);
+ 	list_add(&cp->link, &of_clk_providers);
+ 	mutex_unlock(&of_clk_mutex);
+ 	pr_debug("Added clk_hw provider from %pOF\n", np);
+@@ -4837,6 +4979,10 @@ of_clk_get_hw_from_clkspec(struct of_phandle_args *clkspec)
+ 				break;
+ 		}
+ 	}
++
++	if (hw == ERR_PTR(-EPROBE_DEFER))
++		hw = of_clk_register_boot_clk(clkspec);
++
+ 	mutex_unlock(&of_clk_mutex);
+ 
+ 	return hw;
+-- 
+2.30.2
+
