@@ -2,175 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F0C340F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E52340F07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhCRUZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRUZf (ORCPT
+        id S233013AbhCRU0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:26:25 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:46208 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233020AbhCRU0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:25:35 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAFDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:25:35 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id a11so5130624qto.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4zDsIYOprog9B5y3rsUfED+L5wmiaQe7RHCQ6tBNZZ8=;
-        b=l1jZXZhJnbHk/Wwj5LUfWeHHf0DsSlc2S/WOkB+XLmMY6hdLdL+m8NaTtl9g+dHJfk
-         75seqGteupipnSIxVNSsg2h50hXYGJujoE51lkYPIntTapcp66qruTYST8JXpjUBb7gB
-         eh9c7CZ+QAWeFkJfvbofIxhOyhXOPXwIHtmcDOOaldFrvj/6nZcQ5l22keEMoLvtfWJn
-         E+ZUr2nLZB0grnAHkstVJjaiUF/LsCcwMAiSYZB2lwYeLVib60DnEh0hGSKGIkkp+f0A
-         mwxhZML61fx+/d+F1Rw8BeAcPXRE36sPfo1VoTVadvENNHVhZP2APiiAJmdMFZXz1fLD
-         wmKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=4zDsIYOprog9B5y3rsUfED+L5wmiaQe7RHCQ6tBNZZ8=;
-        b=RpegJkVCsh5bCJRUTbj3igLXYBPBP9nF5f+anfYlu/7YMQ+OwCFtb83MKBN9wdRYcv
-         8IzKM2gy+8dXyep8agZxpVn3aceknojThsdXZ5bMc46NGl6XcOVoRXx79fyddPrlPyHS
-         2gU/1O6ubw3a8KYiQvpIBNhlJ6VPonDfXYLd+x0QFkiFVMS/1m2uOaMCvUSgAYFuEO4i
-         YDlmEtaAirxNp/eeplm5Wd+VZQOmZ+w2lIHtfzDqAuaxMjDRkKsPwBz3dnMwBHBsaop7
-         2YdM1ECFjHOSwH7x5QJlaLUK3R00L7eI5MaERKYuHX25eMdjr4j4Lwb12HCVFbDQczPb
-         sGhw==
-X-Gm-Message-State: AOAM530o+32J2nJDs6ZzE5k5uCPrHXjwlXUImhgNkbapvglwB5KH2bMm
-        WYQQxcJbBi7mg2/viNJ4basER//5LBeomnnr
-X-Google-Smtp-Source: ABdhPJy60341IL5RWjf5A6iwP0gHji6vmLyFby3B/GlwxwH3tTQoRECSPYLm0elA8Vvxk0A8+4rxUg==
-X-Received: by 2002:ac8:4288:: with SMTP id o8mr5398682qtl.28.1616099134481;
-        Thu, 18 Mar 2021 13:25:34 -0700 (PDT)
-Received: from Gentoo ([37.19.198.63])
-        by smtp.gmail.com with ESMTPSA id o23sm2225968qtm.31.2021.03.18.13.25.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 13:25:33 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 01:55:21 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <John.Clements@amd.com>,
-        "Chen, Guchun" <guchun.chen@amd.com>, Tao Zhou <tao.zhou1@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Jiansong Chen <Jiansong.Chen@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/amdgpu: Fix a typo
-Message-ID: <YFO3MYXwWbXwTgUh@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        John Clements <John.Clements@amd.com>,
-        "Chen, Guchun" <guchun.chen@amd.com>, Tao Zhou <tao.zhou1@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Jiansong Chen <Jiansong.Chen@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210318113308.1345-1-unixbhaskar@gmail.com>
- <b09b524c-1f3d-6231-29b9-f0eac3e77293@infradead.org>
- <CADnq5_OsrHGxmXeuEiV06qas7jJ0pvExqdrw-PmqpKvWi=0jOg@mail.gmail.com>
+        Thu, 18 Mar 2021 16:26:15 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 07B2C209C385;
+        Thu, 18 Mar 2021 13:26:13 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 07B2C209C385
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616099174;
+        bh=SErigyigsB0CpeFt4XrJIuybAQdBkzUzy9hIoufBLVI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZrFg9y5qLvRUHYY1YNzQUvIM046vnG2grx/rbBeb1HEIh+Km+1V1A8PJjCyRTtwwm
+         +kcZcaQeEx4bR4vMvgv4uf4VePkcFT44JZvSs7O+HvmhY5aPe+HaKvw6BaNYC0j/oP
+         Dg3myggTvd9jAj8y4mi+wAdCj/vOjmb0qmH1QIIQ=
+Subject: Re: [RFC PATCH v2 1/8] arm64: Implement stack trace termination
+ record
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-2-madvenka@linux.microsoft.com>
+ <20210318150905.GL5469@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <8591e34a-c181-f3ff-e691-a6350225e5b4@linux.microsoft.com>
+Date:   Thu, 18 Mar 2021 15:26:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+2goaO1049LHQE3k"
-Content-Disposition: inline
-In-Reply-To: <CADnq5_OsrHGxmXeuEiV06qas7jJ0pvExqdrw-PmqpKvWi=0jOg@mail.gmail.com>
+In-Reply-To: <20210318150905.GL5469@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+2goaO1049LHQE3k
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
 
-On 14:12 Thu 18 Mar 2021, Alex Deucher wrote:
->On Thu, Mar 18, 2021 at 2:08 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 3/18/21 4:33 AM, Bhaskar Chowdhury wrote:
->> >
->> > s/traing/training/
->> >
->> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> > ---
->> >  drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
->> > index c325d6f53a71..db18e4f6cf5f 100644
->> > --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
->> > +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
->> > @@ -661,7 +661,7 @@ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
->> >
->> >       if (ops & PSP_MEM_TRAIN_SEND_LONG_MSG) {
->> >               /*
->> > -              * Long traing will encroach certain mount of bottom VRAM,
->> > +              * Long training will encroach certain mount of bottom VRAM,
->>
->>                                                        amount
->> I think.
->
->Yeah, I think it should read something like:
->
->Long training will encroach a certain amount on the bottom of VRAM;
->save the content from the bottom VRAM to system memory
->before training, and restore it after training to avoid
->VRAM corruption.
->
->Alex
->
->>
->> >                * saving the content of this bottom VRAM to system memory
->> >                * before training, and restoring it after training to avoid
->> >                * VRAM corruption.
+On 3/18/21 10:09 AM, Mark Brown wrote:
+> On Mon, Mar 15, 2021 at 11:57:53AM -0500, madvenka@linux.microsoft.com wrote:
+> 
+>> In summary, task pt_regs->stackframe is where a successful stack trace ends.
+> 
+>>         .if \el == 0
+>> -       mov     x29, xzr
+>> +       stp     xzr, xzr, [sp, #S_STACKFRAME]
+>>         .else
+>>         stp     x29, x22, [sp, #S_STACKFRAME]
+>> -       add     x29, sp, #S_STACKFRAME
+>>         .endif
+>> +       add     x29, sp, #S_STACKFRAME
+> 
+> For both user and kernel threads this patch (at least by itself) results
+> in an additional record being reported in stack traces with a NULL
+> function pointer since it keeps the existing record where it is and adds
+> this new fixed record below it.  This is addressed for the kernel later
+> in the series, by "arm64: Terminate the stack trace at TASK_FRAME and
+> EL0_FRAME", but will still be visible to other unwinders such as
+> debuggers.  I'm not sure that this *matters* but it might and should at
+> least be called out more explicitly.
+> 
+> If we are going to add the extra record there would probably be less
+> potential for confusion if we pointed it at some sensibly named dummy
+> function so anything or anyone that does see it on the stack doesn't get
+> confused by a NULL.
+> 
 
-Thanks.
+I agree. I will think about this some more. If no other solution presents
+itself, I will add the dummy function.
 
->> > --
->> > 2.26.2
->> >
->>
->>
->> --
->> ~Randy
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Madhavan
 
---+2goaO1049LHQE3k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBTtzEACgkQsjqdtxFL
-KRWHLwf/VSZrbhSYrWqEci3El3RuohOKQEWAKRxH+FBbFypej1MzZn8MFVI0gjwm
-Iw/qmk2zZcGiSrJR1BXSOFA4audev1Iy0x5I91rju+AZASDVWNk2CZHOZOIuR9GL
-VC3MbDxIGZK/pcVAOOpqjXvvUZoToKQQvwcr2DzSpFnZ7rE3ULbrpopfWBfpS5rv
-Giu5Arlad9IVrqZ/Kp0Hksiv8xRUL3y/+WbSDa9vsyj/hKMm2HrqJvISxFN7UDnX
-sPd/5X+41RtOD2Q9PWY03gBfQshTXEkTZnNk5/bxoRecydv1XA1OXGMMTNdkKDzx
-kwE39qzDORe0xeFLJv+gBIiQW73cvw==
-=xiDw
------END PGP SIGNATURE-----
-
---+2goaO1049LHQE3k--
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
