@@ -2,87 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517393406AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2263406B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhCRNR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:17:29 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26268 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230458AbhCRNRC (ORCPT
+        id S231271AbhCRNTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230458AbhCRNSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:17:02 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12ID1rwX030658;
-        Thu, 18 Mar 2021 14:16:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Q3fg+ZhC8rZuokIL+rmXhyDST60kwy28bssDlRJCJTs=;
- b=UI1PqTnpEkDEbAg4dEZJeMIWaZqEa+9pMo6F9AzVYrmqtw7DheWkSTRf2jSnjNDRQnJ1
- zJF7ADFpgt8BjmYD80UNPbt+CgoHNJjNr58JVxdBrER4m0Mmi/hRjmjih3m4HRawkg7A
- csqhnLwzNBoCVRJeNplZF3ZIy00hTZNQJZnxCK++djXmqP9Wg91pP3v5vje3USFr82bw
- gxRBW2mOYvMKJKbS28lIr9jK4zl+N90pg6Iur7viWaCc+T0mfRR5nFVW6QKkpwyikSOs
- FcwuFd04eU2WolVY+PsdFLaNIQhX541kbImpg6oo0p36b3rD26UdaIHs50FD/uW1pGHe 0Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37a8prbg9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Mar 2021 14:16:47 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 51B6210002A;
-        Thu, 18 Mar 2021 14:16:46 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1086824E75B;
-        Thu, 18 Mar 2021 14:16:46 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar
- 2021 14:16:45 +0100
-Subject: Re: [PATCH 4/5] ARM: dts: stm32: enable the analog filter for all I2C
- nodes in stm32mp151
-To:     Wolfram Sang <wsa@kernel.org>,
-        Alain Volmat <alain.volmat@foss.st.com>
-CC:     <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <pierre-yves.mordret@foss.st.com>, <mcoquelin.stm32@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
-References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
- <1612515104-838-5-git-send-email-alain.volmat@foss.st.com>
- <20210318105537.GF974@ninjato>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <52fc8d91-8799-65fd-a72a-1707ae3e3a10@foss.st.com>
-Date:   Thu, 18 Mar 2021 14:16:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 18 Mar 2021 09:18:37 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20234C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:18:37 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so4858735otb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:18:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v0u3U62VgqQ/5cx0dl1OlmbnmTob1+65hnEnMoAP8+g=;
+        b=Wq2xIKdqjdfzxw2Myb5taaYoDXG0Mt5eTvw70t+Qfukgix/l82cWO0JuAAM9pp9Lr8
+         iuztkE2RYqfAeHvp28wsWDJ+QoGaPWC+Rv09fwMM2iRu/K2UOyFvuXajEDVEVPCoATb4
+         oF5XWjbtWmNZTiF6bVmPZ4xhDEvuykvOW88w0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v0u3U62VgqQ/5cx0dl1OlmbnmTob1+65hnEnMoAP8+g=;
+        b=i+5FoDThMRsIFjOqS/QP3Gsvg+Duv98lSWQy8U6ePzBaJzXUREKrLPovWFTfNQDqpj
+         kuruaMD6mQXhTcE2x7T3rRGtzChjoUqCeB2wy0bEw3hsidMPbm7t6kp44ihHaWs5b9eW
+         ilKRgZs6f44ZgZuqmnXyDyAgmoMTVleNcL+2wQz8wJNCBcxRhHcL/qGFT2Yqfo6bCyny
+         cVFKWitlvcyEXuUCoQI0gQH1UjwGTdCGPNjZG1xs6mZVnx72ltBwjgSPsHsm/auhbv2O
+         Dq7pY3jbNqv0xTXjITNkT91fKXBXQL77Rrdx3yDKmtrZNuQaUkiYNuN1dsMSxUBt8MbP
+         VDbg==
+X-Gm-Message-State: AOAM530xGSvTsRgDPFpwdxy2L5fHX0GKxcHFI0rF9YCeMYZmIkQWAGqI
+        /eX/XVeNdjIqWrDaQxWD2gC9ekrxhN+ci6UVLJpnYw==
+X-Google-Smtp-Source: ABdhPJys7CWu1QW7sqaGp8DPpYtt4z4UFBXzAiTSc52E6cJ3FtAgdwRl3llcaxjGyQonUci42YLrVhEplIIDHitKc+k=
+X-Received: by 2002:a9d:63d6:: with SMTP id e22mr7303358otl.188.1616073516410;
+ Thu, 18 Mar 2021 06:18:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210318105537.GF974@ninjato>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-18_07:2021-03-17,2021-03-18 signatures=0
+References: <20210303134319.3160762-1-lee.jones@linaro.org>
+ <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com> <20210308091932.GB4931@dell>
+ <YEobySvG0zPs9xhc@phenom.ffwll.local> <20210311135152.GT701493@dell>
+ <20210317081729.GH701493@dell> <CAKMK7uEibsgXXTEM1d2CGSswp-koouPSouseP_rwLHTdpxfRpw@mail.gmail.com>
+In-Reply-To: <CAKMK7uEibsgXXTEM1d2CGSswp-koouPSouseP_rwLHTdpxfRpw@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 18 Mar 2021 14:18:25 +0100
+Message-ID: <CAKMK7uHkJGDL8k3FfAqAM78honZR0euMcacW8UpdPZfS1J-7cA@mail.gmail.com>
+Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Roland Scheidegger <sroland@vmware.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram
+On Wed, Mar 17, 2021 at 9:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Mar 17, 2021 at 9:17 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Thu, 11 Mar 2021, Lee Jones wrote:
+> >
+> > > On Thu, 11 Mar 2021, Daniel Vetter wrote:
+> > >
+> > > > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
+> > > > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
+> > > > >
+> > > > > > The vmwgfx ones look all good to me, so for
+> > > > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+> > > > > > That said, they were already signed off by Zack, so not sure what
+> > > > > > happened here.
+> > > > >
+> > > > > Yes, they were accepted at one point, then dropped without a reason.
+> > > > >
+> > > > > Since I rebased onto the latest -next, I had to pluck them back out of
+> > > > > a previous one.
+> > > >
+> > > > They should show up in linux-next again. We merge patches for next merge
+> > > > window even during the current merge window, but need to make sure they
+> > > > don't pollute linux-next. Occasionally the cut off is wrong so patches
+> > > > show up, and then get pulled again.
+> > > >
+> > > > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
+> > > > confusion here. But your patches should all be in linux-next again (they
+> > > > are queued up for 5.13 in drm-misc-next, I checked that).
+> > > >
+> > > > Sorry for the confusion here.
+> > >
+> > > Oh, I see.  Well so long as they don't get dropped, I'll be happy.
+> > >
+> > > Thanks for the explanation Daniel
+> >
+> > After rebasing today, all of my GPU patches have remained.  Would
+> > someone be kind enough to check that everything is still in order
+> > please?
+>
+> It's still broken somehow. I've kiced Maxime and Maarten again,
+> they're also on this thread.
 
-On 3/18/21 11:55 AM, Wolfram Sang wrote:
-> On Fri, Feb 05, 2021 at 09:51:43AM +0100, Alain Volmat wrote:
->> Enable the analog filter for all I2C nodes of the stm32mp151.
->>
->> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> 
-> I usually don't take DTS patches, but they can go in now via arm-soc as
-> I applied the patches to the driver.
-> 
-
-I'll take it in my stm32 tree.
-
-Thanks
-Alex
-
+You're patches have made it into drm-next meanwhile, so they should
+show up in linux-next through that tree at least. Except if that one
+also has some trouble.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
