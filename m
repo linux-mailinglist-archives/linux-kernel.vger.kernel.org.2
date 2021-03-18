@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C9E340129
+	by mail.lfdr.de (Postfix) with ESMTP id DE96D34012A
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhCRIrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:47:55 -0400
-Received: from www381.your-server.de ([78.46.137.84]:59572 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhCRIre (ORCPT
+        id S229824AbhCRIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhCRIro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:47:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=qORQ66g1TNaFFjxWTqtPZDf5NKUd5wXay5p44hTA1Xw=; b=hiR+9swp3HyUQHgyO8eMAmQ0bM
-        XO+nlpC6FSuhmxeI3EPQcf0up+MhpmLCCNVL+IvvywFXZm3dmsfhIVXfZDLdwT7q7aAlB1HL54+k3
-        uOXyiMeF/tcXD0GcLerZwcNGnaXC7dWLVxVP/QwhxyZJ1aDUQYv7VHejnVhMF9DK6Jrjmdy1heB38
-        CqbO9KkTYGk1IHowuOABl7udp8ry3vZtto/v/GqHDZFJmTlbHbE0VF0Ic9XKB7fuaUzUkF8M4C+OH
-        IqliUChsoFQfLQ7r0BrLSVYQqQu4t8PxrRGxkT57kA4M3LiK8g1CKmWCNyrNLoiZfNG1dbT1RErd/
-        BMYCsqtg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lMoJW-0007bz-B3; Thu, 18 Mar 2021 09:47:30 +0100
-Received: from [2001:a61:2aa9:e001:9e5c:8eff:fe01:8578]
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lMoJW-000RaQ-57; Thu, 18 Mar 2021 09:47:30 +0100
-Subject: Re: A potential data race in drivers/iio/adc/berlin2-adc.ko
-From:   Lars-Peter Clausen <lars@metafoo.de>
-To:     Pavel Andrianov <andrianov@ispras.ru>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     ldv-project@linuxtesting.org,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <e11a245e-95ed-eff0-05a8-264f7598672f@ispras.ru>
- <e0a0dddc-b5e4-f544-c448-84910861afc1@metafoo.de>
-Message-ID: <71686d00-1b1a-9fc2-e65d-dd9be140fd27@metafoo.de>
+        Thu, 18 Mar 2021 04:47:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9135DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 01:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0HLE3E6fVh9BNhE3TbOCTew4ksGOWaGBmHt6RDduki0=; b=UaTiObV0x/rC3E451IvY+l2oR6
+        LHyBNZ858myi4pLTt92ueiI4DozoxHyGzpn6yTsQJDaHmoQ+UhVCOWq3CRL6dKIynib4XfhVr2clR
+        zwDVaZCgzD4PxyTadZMopls78L5BcM8FsUZcDYMAHHKpfgtjHLN4zuXpN4vi/k9UUNFM8Vy+Bss28
+        ZP7uO6naVbYd5+eAIuiYfDboXHB4Ds/iY/qWOnngsAbkxNTqU0hRX2xhwrW/Z758LDgVMyEQAmbGs
+        lFdhYqeShycTSijp8xuC0sbhWJujnb/vk9XSD8WpF4aks25FHJCcPivpwvX88zFpFjgReQIChLCoa
+        CRzMlPYw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMoJW-004pzn-Hn; Thu, 18 Mar 2021 08:47:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D8127305C10;
+        Thu, 18 Mar 2021 09:47:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BD54B29A61CC6; Thu, 18 Mar 2021 09:47:29 +0100 (CET)
 Date:   Thu, 18 Mar 2021 09:47:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Oliver Sang <oliver.sang@intel.com>, jbaron@akamai.com,
+        lkp@lists.01.org, kbuild test robot <lkp@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] objtool,static_call: Don't emit static_call_site for
+ .exit.text
+Message-ID: <YFMToXI/3qjlMur4@hirez.programming.kicks-ass.net>
+References: <20210317030101.GB22345@xsang-OptiPlex-9020>
+ <CAFA6WYMb-C2L7DmGnhWgxjuuvP=qxPA4-s4q+knxH+iWXypHmw@mail.gmail.com>
+ <YFHAsgNhe8c3ZHQN@hirez.programming.kicks-ass.net>
+ <YFHE9CjanDAD4l5M@hirez.programming.kicks-ass.net>
+ <YFHFjarVo7HAP7pg@hirez.programming.kicks-ass.net>
+ <CAFA6WYNs-rQLUGPMwc-p0q_KRvR16rm-x55gDqw828c7-C1qeA@mail.gmail.com>
+ <YFH6BR61b5GK8ITo@hirez.programming.kicks-ass.net>
+ <20210318000212.l2fdz5vjhuq64yh6@treble>
+ <YFMIcWIbk0aN30NY@hirez.programming.kicks-ass.net>
+ <YFMPmkMoae5cRzh+@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <e0a0dddc-b5e4-f544-c448-84910861afc1@metafoo.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26111/Wed Mar 17 12:08:39 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFMPmkMoae5cRzh+@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 9:27 AM, Lars-Peter Clausen wrote:
-> On 3/18/21 9:07 AM, Pavel Andrianov wrote:
->> Hi,
->>
->> berlin2_adc_probe [1] registers two interrupt handlers: 
->> berlin2_adc_irq [2]
->> and berlin2_adc_tsen_irq [3]. The interrupt handlers operate with the 
->> same data, for example, modify
->> priv->data with different masks:
->>
->> priv->data &= BERLIN2_SM_ADC_MASK;
->> and
->> priv->data &= BERLIN2_SM_TSEN_MASK;
->>
->> If the two interrupt handlers are executed simultaneously, a 
->> potential data race takes place. So, the question is if the situation 
->> is possible. For example, in the case of the handlers are executed on 
->> different CPU cores.
->>
->> Best regards,
->> Pavel
->>
->> [1] 
->> https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/berlin2-adc.c#L283 
->>
->> [2] 
->> https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/berlin2-adc.c#L239 
->>
->> [3] 
->> https://elixir.bootlin.com/linux/latest/source/drivers/iio/adc/berlin2-adc.c#L259
->>
-> Looking at the code there are two functions. berlin2_adc_tsen_read() 
-> and berlin2_adc_read(). These two function are take the same mutex and 
-> can not run concurrently. At the beginning of the protected section 
-> the corresponding interrupt for that function is enabled and at the 
-> end disabled. So at least if the hardware works correctly those two 
-> interrupts will never fire at the same time.
->
-> Now, if the hardware misbehaves the two interrupts could still fire at 
-> the same time.
->
-> - Lars
->
-Actually thinking a bit more about this the interrupt could still fire 
-after it has been disabled since there is no synchronization between the 
-disable and the interrupt handler. And the handler might be queued on 
-one CPU, while the disable is running on another CPU.
+On Thu, Mar 18, 2021 at 09:30:18AM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 18, 2021 at 08:59:45AM +0100, Peter Zijlstra wrote:
+> > On Wed, Mar 17, 2021 at 07:02:12PM -0500, Josh Poimboeuf wrote:
+> > > On Wed, Mar 17, 2021 at 01:45:57PM +0100, Peter Zijlstra wrote:
+> > > > arguably it simply isn't a good idea to use static_call() in __exit
+> > > > code anyway, since module unload is never a performance critical path.
+> > > 
+> > > Couldn't you make the same argument about __init functions, which are
+> > > allowed to do static calls?
+> > 
+> > I suppose we could indeed make that argument. Much of that code was
+> > copied from jump_label without much consideration. And I now I suppose
+> > I'll have to consider jump_label in __exit too :/
+> > 
+> > > We might consider a STATIC_CALL_SITE_EXIT flag, but I suppose we've run
+> > > out of flag space.
+> > 
+> > Yeah, we're definitely short on flags. Let me try and figure out when
+> > exactly it's all discarded.
+> 
+> Ha!, x86 stuffs .exit.text in [__init_begin, __init_end) and it is
+> discarded right along with initmem.
+> 
+> But that means it should match init and be tagged init and all *should*
+> work, but somehow it doesn't... clearly I'm missing something again
+> ARGH!
 
+I found a race, look at this:
+
+kernel_init()
+	...
+	free_initmem();
+	...
+	system_state = SYSTEM_RUNNING;
+
+vs
+
+__static_call_update()
+	...
+	if (static_call_is_init()) {
+		if (system_state >= SYSTEM_RUNNING)
+			continue;
+	}
+
+
+And this is *after* SMP bringup. Somehow I don't think you hit this
+race, it is extremely unlikely
+
+(jump_label has the exact same issue fwiw)
