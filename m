@@ -2,157 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F361F34076B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6614434077E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhCROLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S231240AbhCROMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhCROLQ (ORCPT
+        with ESMTP id S230419AbhCROLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:11:16 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28626C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:16 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id dc12so2316854qvb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:16 -0700 (PDT)
+        Thu, 18 Mar 2021 10:11:48 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:48 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id q13so4817002lfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VEx9o4c2jWWVchbL2AkKVWv1VcFgkP2+bgAk/sGCWD4=;
-        b=JQ162sdoGuFTE+QF9UcdIDnpdC7nkNI1UetAhcbrkPL1a+Jhn5bEV8JcjV0AUxa5ux
-         gU+ZAtXOUI6pIxClTVNK7tXsr1uGVzfWGm646EUUIqDz2S9zmIyXCI5U8rK1Ak9Pl687
-         TiZ7R6m5oO93WPTa91FTv0qZVEjFHf1ZVPRPRWIfrDwCDbn+mHUQLl0d3l4IHCeJ9iaJ
-         loIEwx0/TDNuQIk3RDjP7UXFAFCjGJ3WuX411nxaFUWikDJNf2YScDR/C8uwu4W3HswT
-         Y7R6aQ0ZmKGRrKEXOWMbAvOaEjxwgtD+GXaFFjSAq0VY8F6Q1ppCCbmzNb34C5V/gvwR
-         CMYQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AM/Ll5KkOxkTBAonI2Fnw1gYvxAm1x1c9zXwysXQM1E=;
+        b=ZAUnyce8KxNEfygMuIyRvdQzBo8fsF0qHZb8SVyJpJTHdtgHmeFhAmRRAEI33dYv9d
+         tnWdczfpo75fKi3AsqAhl3PiX5t4cQbO39mdSAwsQrZKUM0uUUQDO+JOI5zBwbouaTVE
+         dzw6aJ/pf5rsWg4WgX29uhnRIqDJDPsEmNkLQQF8Nkbw+aYPYuNC1Zk8Ual7GzuFEsXt
+         pOHWttD/0N5hzeAt3GxZFDZgAjR8QDdXCz+k9ferwLCEfx0O0DCnBBBP0r0Y0PFpXEho
+         qhGNoSKLHbK9ovPATen1WSUSAZmj1cl1upK5poPv/nUOkl0bcph8kZ2lgiseikcGocf2
+         7fcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VEx9o4c2jWWVchbL2AkKVWv1VcFgkP2+bgAk/sGCWD4=;
-        b=cArTA4yOl7bEdxg1j0Q6pPbCoCmJ3Tc7spI6OLc7Yf2/lqOP18KOZDyacCPjuJ5hPT
-         pxc0+k44lJLzdUaQVSqeigWdZ0//K4l2zn867l1YvwPCmip3q7c9L3wjaVqXMakhOaSw
-         pVQSCsReuR6iKdaH277NMG/unEVaxhRy9tzXNqPTEM0OxI64U0mdNFfKAa6p6BSD9ZHT
-         wEesMnCFzshxTYG7kpeKokyWcbRnohDNpj6RgSDCuXB+W8KRFna19sX8e+8+IMuX9y5Q
-         Vg0+orP7DWXyY9CKPVFeL4M5eMaPYYTmBMYiOg5JHUjBFStf2P8LN2GD2keLw4RqnAPX
-         nVCQ==
-X-Gm-Message-State: AOAM5326H4pDpC5fyo+S3oiCC+5MxjSU7odaFZ/+sH07dUqmYJCHOA12
-        PFYGfCZnWgAgo5zPrrnCVa2HFfhW7HYTUZYxNKeo2g==
-X-Google-Smtp-Source: ABdhPJxj14kq/t5j4tmmrlTeySSXI1kh5zll/tbCuXiwWUDWY4WHq08TGj8USqzoT2acp4GD5/yCXcHErUVNKtQzYjU=
-X-Received: by 2002:a05:6214:326:: with SMTP id j6mr4498301qvu.13.1616076674645;
- Thu, 18 Mar 2021 07:11:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AM/Ll5KkOxkTBAonI2Fnw1gYvxAm1x1c9zXwysXQM1E=;
+        b=ImfVYOWiVDiEH5OJiA5d31d3Erq77J+DkP/u6UJoKnQFd+GqJwtVVwG+ZF9fMai2wS
+         PJIyF6i/essddCxMGP4JxB7mgY2wQZ6JNtMsv5NELqeNA+GX/q1npdgrqnXq376Yr5WZ
+         W5H6CNk/f4b+H5xR8CJqbonKGtL3ETm4qH/F8O6dQEoJD72CHgC2A4ShRK+nZblaXvtX
+         XhuxzydAAXcZd9C47OyF7Ow03RAOVMVk1FU0X1qzqU7FBlNRe+dTgRCMkq1Y3a/UGF36
+         dWErRZD4s73ovdjlOaM+x7YxhQEzRKbDYnalzOU26+Tmb2bNCPjw7XCEa0xp3CMXatrR
+         99tg==
+X-Gm-Message-State: AOAM5335W1J2ECw6dyN5zWgFyoBbZkybMevx38gDI3miwnWR08v8VrmL
+        MhdoUjMKyZyHOE+aZ5Qmm3Cwow==
+X-Google-Smtp-Source: ABdhPJyE7Kh18otNDCN8WkMSBEQsoBkKa5KYCSAvQfNGh2Mc/ZUNzyWZet6UmS7OEa97Yy647fNEmQ==
+X-Received: by 2002:ac2:4a75:: with SMTP id q21mr5396497lfp.457.1616076706428;
+        Thu, 18 Mar 2021 07:11:46 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id f20sm254713ljn.123.2021.03.18.07.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 07:11:45 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Manu Gautam <mgautam@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 0/6] phy: qcom-qmp: provide DP phy support for sm8250
+Date:   Thu, 18 Mar 2021 17:11:38 +0300
+Message-Id: <20210318141144.2147610-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <00000000000056b18b05bd7c6511@google.com> <CACT4Y+brvecfGUk7H7-mcJ82NxbEuETv+js0nRxpV7zc1AZH5w@mail.gmail.com>
- <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com>
-In-Reply-To: <c82390e5-33f6-75f6-6b93-c618537413e5@huawei.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 18 Mar 2021 15:11:03 +0100
-Message-ID: <CACT4Y+ZpfAiQKagp5xr0HY85SRr2h6pe10emm4_B5RLfVraN9A@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in riscv_intc_irq
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     syzbot <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 1:21 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> On 2021/3/14 18:47, Dmitry Vyukov wrote:
-> > On Sun, Mar 14, 2021 at 11:14 AM syzbot
-> > <syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com> wrote:
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=15a35756d00000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0b708b31626cc
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=005654dd9b8f26bd4c07
-> >> userspace arch: riscv64
-> >>
-> >> Unfortunately, I don't have any reproducer for this issue yet.
-> >>
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+005654dd9b8f26bd4c07@syzkaller.appspotmail.com
-> >>
-> >> ==================================================================
-> >> BUG: KASAN: slab-out-of-bounds in riscv_intc_irq+0x24/0xcc drivers/irqchip/irq-riscv-intc.c:24
-> >> Read of size 8 at addr ffffffe00c963bd0 by task kworker/1:1/4388
-> >>
-> >> CPU: 1 PID: 4388 Comm: kworker/1:1 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> >> Hardware name: riscv-virtio,qemu (DT)
-> >> Workqueue: events nsim_dev_trap_report_work
-> >> Call Trace:
-> >> [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
-> >>
-> >> Allocated by task 76347056:
-> >> (stack is not available)
-> >>
-> >> Last potentially related work creation:
-> > There seems to be some issue with riscv stack unwinder.
-> > This does not have stacks.
->
-> Hi, could you test with the following  patch about the no stack
-> issue(from v5.11-rc4), I made a mistake when do some cleanup...
->
-> https://lore.kernel.org/linux-riscv/ce5b3533-b75d-c31c-4319-9d29769bbbd5@huawei.com/T/#t
+Changes since v1:
+ - Provide dt bindings
+ - Split register renaming from sm8250-dp-phy patch
+ - Add respective changes to sm8250 device tree
 
-Hi Kefeng,
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Please see:
-http://bit.do/syzbot#no-custom-patches
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-Is a unit-test for this possible? Fuzzing is not a replacement for unit testing.
+are available in the Git repository at:
 
-> > "BUG: unable to handle kernel access to user memory in schedule_tail"
-> > does not have proper stacks:
-> > https://syzkaller.appspot.com/bug?id=9de8c24d24004fd5e482555f5ad8314da2fb1cee
-> >
-> > I also found 2 riscv reports in "KASAN: use-after-free Read in
-> > idr_for_each (2)":
-> > https://syzkaller.appspot.com/bug?id=7f84dfc3902878befc22e52eb5c7298d0ad70cf3
-> >
-> > both don't have any stacks:
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in radix_tree_next_slot
-> > include/linux/radix-tree.h:422 [inline]
-> > BUG: KASAN: use-after-free in idr_for_each+0xf4/0x160 lib/idr.c:202
-> > Read of size 8 at addr ffffffe010c00878 by task syz-executor.1/4828
-> >
-> > CPU: 0 PID: 4828 Comm: syz-executor.1 Not tainted
-> > 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> > Hardware name: riscv-virtio,qemu (DT)
-> > Call Trace:
-> > [<ffffffe0000096c0>] walk_stackframe+0x0/0x23c arch/riscv/kernel/traps.c:201
-> >
-> > Allocated by task 4828:
-> > (stack is not available)
-> >
-> > Freed by task 4473:
-> > (stack is not available)
-> >
-> >
-> >> ---
-> >> This report is generated by a bot. It may contain errors.
-> >> See https://goo.gl/tpsmEJ for more information about syzbot.
-> >> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >>
-> >> syzbot will keep track of this issue. See:
-> >> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+  https://git.linaro.org/people/dmitry.baryshkov/kernel.git sm8250-dp-phy
+
+for you to fetch changes up to 112496035090508ff6e901d6b373bb6ab1ccc9ad:
+
+  arm64: dts: qcom: use dp_phy to provide clocks to dispcc (2021-03-18 17:01:53 +0300)
+
+----------------------------------------------------------------
+Dmitry Baryshkov (6):
+      dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SM8250
+      phy: qcom-qmp: move DP functions to callbacks
+      phy: qcom-qmp: rename common registers
+      phy: qcom-qmp: add support for sm8250-usb3-dp phy
+      arm64: dts: qcom: sm8250: switch usb1 qmp phy to USB3+DP mode
+      arm64: dts: qcom: use dp_phy to provide clocks to dispcc
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml      |   1 -
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         |   2 +
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  31 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 862 +++++++++++++++------
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  77 +-
+ 5 files changed, 704 insertions(+), 269 deletions(-)
+
+
