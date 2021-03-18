@@ -2,125 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D5E34108F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 23:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E4334109C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhCRW47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 18:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhCRW4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 18:56:43 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517EAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:56:43 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id h126so32656382qkd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 15:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=9QoP9965eN6KfleHPxoTcP8X4PcKzAfBQoWsgVWtjyk=;
-        b=KdN9vnUgMhpYZGkGDJfe6+gOWXOb4Zp/3ue54E8kyK8AJz89TEGYEm/SSlKjv7WXNd
-         PXuceVBB+DnIS5CHWd01BmfyhjfAjiG9gvbujZGa+4s8Oow/Z4Ne0sAueUe0XaGU39FS
-         WqHzJOnytd6QR88SSJ48VewDwof1506Y/QBP8gOr/DFL88QmfCmHL7ovPzbqD3DEl5kK
-         rNKcEt4bOsCWI/MbeTvpzap3oi8LP8oiY0bm98b+pn32u7o1/KUxa8u3NNKqJTB2d+Tq
-         J6fCOVhG47pd8BnSefa2nAtGWE6Ls/wDGvjSG9Hz6zzRvjT1QJGKCeJEFUMRwondd+WU
-         gDGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=9QoP9965eN6KfleHPxoTcP8X4PcKzAfBQoWsgVWtjyk=;
-        b=UUvCvfAvnA0i7d/LTeAvZZFGrtrCXW3B1EgcC3smRJlrvdHCkkvJ5RV0/na/0wIK7A
-         6bsHRDwMWOll/pPu3x0aIkJXRseeQ89kdyhyGuTLa+MJlfk6yeCnXSb4//SDtdNWOgK/
-         rXu+XOvxkxAd1cAJYIdbsrFEzRKrDQ3tcAQ+kRd8/n7Xprxs+0S3EJNepBKFo6hzeMJU
-         PViVdoeypvt1WwEkqX0cgbk3KBPYe41KuPLtP1w7f3CYRU5rm/Ij2zmrcfavLGe7J4pN
-         iiqpQY6xsH1of8DfL910qnhb48ydZWi7i5B/ia23GQeaVBN6RpxvBlU09NLdiwLnW5kA
-         nvcw==
-X-Gm-Message-State: AOAM531uZGZt1g95e7riDeteq2tFo4OS8UFVyjdoEzQozLGJC4YjdNDc
-        uORAqVMh8bPlVSfri85UReoxDD3dArQ=
-X-Google-Smtp-Source: ABdhPJzomk8qAhSEpE6QXe3u36oZYsNOLbz+iAPniGwSM2nX6SdAByOD3zjAaIS3kVhG6uLdnTDidcPBpRw=
-X-Received: from jollys.svl.corp.google.com ([2620:15c:2c5:13:84f3:414f:d94c:e1e1])
- (user=jollys job=sendgmr) by 2002:a0c:8f09:: with SMTP id z9mr6481323qvd.25.1616108202527;
- Thu, 18 Mar 2021 15:56:42 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 15:56:32 -0700
-Message-Id: <20210318225632.2481291-1-jollys@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-From:   Jolly Shah <jollys@google.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        john.garry@huawei.com, a.darwish@linutronix.de,
-        yanaijie@huawei.com, luojiaxing@huawei.com,
-        dan.carpenter@oracle.com, b.zolnierkie@samsung.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jolly Shah <jollys@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232529AbhCRXDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:03:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:15399 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230306AbhCRXC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:02:59 -0400
+IronPort-SDR: NY7ADJQoKyFVKggxyLjSeOC8edi+4WNEP8PmfYPepr7x7tJ+RjVGdQu+CugwvbVca9OLtkzW06
+ DHp85TtFGoUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189879214"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="189879214"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 16:02:58 -0700
+IronPort-SDR: U73B/CCjMp0KX0ZrAPp5Mvl54JJSYAWQvmb3F5Vu6Gt9ka9/m7Pen+wQgcntbFbW0O19esBLF7
+ 21n8UmwV2mpA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="602915035"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Mar 2021 16:02:56 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lN1fM-0001T9-6q; Thu, 18 Mar 2021 23:02:56 +0000
+Date:   Fri, 19 Mar 2021 07:02:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/misc] BUILD SUCCESS
+ f281854fa743f3474b2d0d69533301f48cf0e184
+Message-ID: <6053dbff.u0Z22yBhTJ2HzNvz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the cache_type for the scsi device is changed, the scsi layer
-issues a MODE_SELECT command. The caching mode details are communicated
-via a request buffer associated with the scsi command with data
-direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
-reaches the libata layer, as a part of generic initial setup, libata
-layer sets up the scatterlist for the command using the scsi command
-(ata_scsi_qc_new). This command is then translated by the libata layer
-into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
-treats this as a non data command (ata_mselect_caching), since it only
-needs an ata taskfile to pass the caching on/off information to the
-device. It does not need the scatterlist that has been setup, so it does
-not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
-when this command reaches the libsas layer(sas_ata_qc_issue), libsas
-layer sees it as a non data command with a scatterlist. It cannot
-extract the correct dma length, since the scatterlist has not been
-mapped with dma_map_sg for a DMA operation. When this partially
-constructed SAS task reaches pm80xx LLDD, it results in below warning.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
+branch HEAD: f281854fa743f3474b2d0d69533301f48cf0e184  tools/x86/kcpuid: Add AMD leaf 0x8000001E
 
-"pm80xx_chip_sata_req 6058: The sg list address
-start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
-end_addr_low=0xffffffff has crossed 4G boundary"
+elapsed time: 723m
 
-This patch updates code to handle ata non data commands separately so
-num_scatter and total_xfer_len remain 0.
+configs tested: 136
+configs skipped: 3
 
-Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA")
-Signed-off-by: Jolly Shah <jollys@google.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                       omap2plus_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                        apsh4ad0a_defconfig
+s390                             alldefconfig
+riscv                             allnoconfig
+arm                        clps711x_defconfig
+sparc                            alldefconfig
+powerpc                        icon_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                        workpad_defconfig
+arm                         hackkit_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      pcm030_defconfig
+powerpc                     taishan_defconfig
+powerpc                    socrates_defconfig
+arm                         assabet_defconfig
+h8300                    h8300h-sim_defconfig
+mips                  decstation_64_defconfig
+arm                         nhk8815_defconfig
+arm                            qcom_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     pseries_defconfig
+powerpc                      ppc64e_defconfig
+arm                          badge4_defconfig
+arm                     davinci_all_defconfig
+sh                           se7750_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                        qi_lb60_defconfig
+xtensa                           alldefconfig
+mips                     decstation_defconfig
+arm                          exynos_defconfig
+mips                            gpr_defconfig
+arm                       multi_v4t_defconfig
+powerpc                    mvme5100_defconfig
+arm64                            alldefconfig
+ia64                          tiger_defconfig
+arm                           sunxi_defconfig
+arm                          moxart_defconfig
+powerpc                    klondike_defconfig
+sh                            migor_defconfig
+riscv                          rv32_defconfig
+sh                     magicpanelr2_defconfig
+sh                          rsk7269_defconfig
+mips                          rm200_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                     tqm8560_defconfig
+arm                          pxa910_defconfig
+arm                          simpad_defconfig
+m68k                       m5475evb_defconfig
+sh                             espt_defconfig
+powerpc                      ppc44x_defconfig
+arm                           sama5_defconfig
+arc                            hsdk_defconfig
+mips                        nlm_xlp_defconfig
+arm                          pxa3xx_defconfig
+m68k                       m5208evb_defconfig
+m68k                       bvme6000_defconfig
+powerpc                     kmeter1_defconfig
+mips                        vocore2_defconfig
+sh                             sh03_defconfig
+sh                               j2_defconfig
+mips                        jmr3927_defconfig
+powerpc                      makalu_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210318
+i386                 randconfig-a005-20210318
+i386                 randconfig-a003-20210318
+i386                 randconfig-a002-20210318
+i386                 randconfig-a006-20210318
+i386                 randconfig-a004-20210318
+x86_64               randconfig-a011-20210318
+x86_64               randconfig-a016-20210318
+x86_64               randconfig-a013-20210318
+x86_64               randconfig-a015-20210318
+x86_64               randconfig-a014-20210318
+x86_64               randconfig-a012-20210318
+i386                 randconfig-a013-20210318
+i386                 randconfig-a016-20210318
+i386                 randconfig-a011-20210318
+i386                 randconfig-a014-20210318
+i386                 randconfig-a015-20210318
+i386                 randconfig-a012-20210318
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210318
+x86_64               randconfig-a001-20210318
+x86_64               randconfig-a005-20210318
+x86_64               randconfig-a002-20210318
+x86_64               randconfig-a003-20210318
+x86_64               randconfig-a004-20210318
+
 ---
-v2:
-- reorganized code to avoid setting num_scatter twice
-
- drivers/scsi/libsas/sas_ata.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-index 024e5a550759..8b9a39077dba 100644
---- a/drivers/scsi/libsas/sas_ata.c
-+++ b/drivers/scsi/libsas/sas_ata.c
-@@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
- 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
- 		task->total_xfer_len = qc->nbytes;
- 		task->num_scatter = qc->n_elem;
-+		task->data_dir = qc->dma_dir;
-+	} else if (qc->tf.protocol == ATA_PROT_NODATA) {
-+		task->data_dir = DMA_NONE;
- 	} else {
- 		for_each_sg(qc->sg, sg, qc->n_elem, si)
- 			xfer += sg_dma_len(sg);
- 
- 		task->total_xfer_len = xfer;
- 		task->num_scatter = si;
--	}
--
--	if (qc->tf.protocol == ATA_PROT_NODATA)
--		task->data_dir = DMA_NONE;
--	else
- 		task->data_dir = qc->dma_dir;
-+	}
- 	task->scatter = qc->sg;
- 	task->ata_task.retry_count = 1;
- 	task->task_state_flags = SAS_TASK_STATE_PENDING;
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
