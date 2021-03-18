@@ -2,109 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34547340D7A
+	by mail.lfdr.de (Postfix) with ESMTP id D105D340D7C
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhCRSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
+        id S232661AbhCRSpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232546AbhCRSpZ (ORCPT
+        with ESMTP id S232642AbhCRSpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:45:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9F3C06174A;
-        Thu, 18 Mar 2021 11:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wDTHAbgDLyZrn6d64TVhU+dRn+k3q2aStgvSBcHqsWY=; b=H+2S0MDVY0wpSrcPygVZR+ZydC
-        MCqu0904GYOzNDQWWKIwE+qCzEjR6wFCqnhk9yfkabAsvH/uQVQ5d7I4DnPBtqvlE1OSKfw18+r3S
-        mg2hsuBo7fiPLlbwI0AsjBiFZ3UdnWw1Kd222BbC6bRyPBGT31hzWLYAvn7QuqKQ/YfhKBUwbwtTK
-        MFf027MEtJR8Ci0Eb8fcl3xFWi7FcKdHJ1gI/l1hamfBOpuZfuppAOex8h+EqAyGr9kUUIKpJOdju
-        5PuOIJTy+lR5yLxUthPjTheb9zN+ig5Z9Hzk+LOPxMzTNHYCjQJqw5nm9AsR3uWfPi3xhxzWhmnH5
-        fBHkeV/w==;
-Received: from [2601:1c0:6280:3f0::9757]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMxdS-003Mt3-MO; Thu, 18 Mar 2021 18:44:49 +0000
-Subject: Re: linux-next: Tree for Mar 16 (AD9467 & ADI_AXI_ADC)
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>
-References: <20210316155001.699efbb4@canb.auug.org.au>
- <d3c9bca8-3709-3613-c4cd-6da2aa96c2b9@infradead.org>
- <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <136e564b-bc81-19b6-ca3d-6fe5bac4d429@infradead.org>
-Date:   Thu, 18 Mar 2021 11:44:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 14:45:41 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A559C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:45:41 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j11so6173045lfg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 11:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXJ1Kpw2oRWiOPlZvmgzPqNpjS+OST6GpCVGaYkcfjU=;
+        b=KVhzG/Xt0d2tzVy7gn9DeiCmjSKqLb+wM+t8KT/0yYxikiuuU7zFmWYcGH7rBKFF2b
+         AtHQOK1YfGzGRBG0KZ4thwg0+JZusdpXujSogBcYD6D0hMB/V73nccM2C6cWPSHOEUQU
+         a1mayCuYUN57wUJaEJfG9UApRea4LPqYff1TlxP6DG3qTXu7cW9ElW4rVEx+PacKVcM4
+         1ObbqRp1qWL2rwPmFRQgVM7VmPubsIbfCjOIIgk5xp14ryEBC3GPnUcfaEyo/ZkGvVMu
+         jDzsbdtLYDpL+BtsNICkUJ0UHfPoPDJ1i7+u6wbVW+hhoK4xDwxigkc/8xNcpzwV8JYt
+         uF2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXJ1Kpw2oRWiOPlZvmgzPqNpjS+OST6GpCVGaYkcfjU=;
+        b=ElM9oL42BlxgV6wdTt2RjcWZ/SGB0wpcqJXXYferEYj2+9LD4klpU3eGg9l7ubK4Ra
+         T0v0xOYKvI4ZKXe7tYjoAoJtKD94F2IVm8eLwKD/yXCL/z4K0weg/R7Tcp8aWvTBJstY
+         TgVQL/Sq9Xn1GlRV9Gev425kBhS7USOem52GfcMZb9PNuUHZBaCUfD9kuE5qhD0h6Q3L
+         gQzSq1MaacrGheBTm8EqgC/XKfUN0QvBthYEZz+OdA4oyUaX/GZ0aynIYIGDdjVuvqin
+         wENQPUddGJoB6hro9DG4TCjBTOwIUsgQ26TaP75wI0hK/gePL8HbvDCkxzGzCIGtGMUT
+         V2tA==
+X-Gm-Message-State: AOAM533pUGAkR0D1+W3aNl+//y1JN0t4gYCwqHRHe3BXTMEMVxoFxsh9
+        +tvLDLBRg/GSpez3CXT87xVqY6F7HZKROuPvpC/9og==
+X-Google-Smtp-Source: ABdhPJzI/cXQgUy2RSLmNuSxvjB8uEjk+GLf2aUWomqyxgvUmHefmj8Y6oB/C1sojY9blIJSTxDq0p15b1fs89u6VoM=
+X-Received: by 2002:ac2:538e:: with SMTP id g14mr6055632lfh.543.1616093139630;
+ Thu, 18 Mar 2021 11:45:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+U=DspHhL=Of2axKW6FiF3oG8S7FEP4QBLEZHc5VQ4LzmvqNQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210318171111.706303-1-samitolvanen@google.com>
+ <20210318171111.706303-11-samitolvanen@google.com> <CAKwvOdkn7MY+-9D0DQ-18OR=s1XmgPaP7VchCm6VV5kYuKSAkA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkn7MY+-9D0DQ-18OR=s1XmgPaP7VchCm6VV5kYuKSAkA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Mar 2021 11:45:28 -0700
+Message-ID: <CAKwvOdk7wg-BoE=A0wN6Oz7ptK4y2_YHUBNTTc80CvWuY=nF3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 10/17] lkdtm: use __va_function
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/21 1:16 AM, Alexandru Ardelean wrote:
-> On Tue, Mar 16, 2021 at 11:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 3/15/21 9:50 PM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> News: there will be no linux-next release on Friday this week.
->>>
->>> Warning: Some of the branches in linux-next are still based on v5.12-rc1,
->>> so please be careful if you are trying to bisect a bug.
->>>
->>> News: if your -next included tree is based on Linus' tree tag
->>> v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
->>> consider rebasing it onto v5.12-rc2. Also, please check any branches
->>> merged into your branch.
->>>
->>> Changes since 20210315:
->>
->>
->> on i386 or x86_64:
->>
->> WARNING: unmet direct dependencies detected for ADI_AXI_ADC
->>   Depends on [n]: IIO [=y] && HAS_IOMEM [=y] && OF [=n]
->>   Selected by [y]:
->>   - AD9467 [=y] && IIO [=y] && SPI [=y]
->>
->>
->> AD9467 should not select ADI_AXI_ADC when OF is not enabled,
->> so possibly AD9467 should depend on OF.
-> 
-> Hmm, this becomes a bit complicated.
-> We got here because we needed to add a depends on HAS_IOMEM for the
-> ADI_AXI_ADC (due to the s390 arch).
-> Maybe a better fix would be for AD9467 to depend on ADI_AXI_ADC.
-> The AD9467 driver can't function without the ADI_AXI_ADC driver.
+On Thu, Mar 18, 2021 at 11:43 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > To ensure we take the actual address of a function in kernel text, use
+> > __va_function. Otherwise, with CONFIG_CFI_CLANG, the compiler replaces
+> > the address with a pointer to the CFI jump table, which is actually in
+> > the module when compiled with CONFIG_LKDTM=m.
+>
+> Should patch 10 and 12 be reordered against one another? Otherwise it
+> looks like 12 defines __va_function while 10 uses it?
 
-Yes, "depends on" works here. Please go ahead with that change.
-Thanks.
+Ah, nvm patch 3 defines a generic version, I see.
 
-> It is a little early to move this to a "high-speed ADC" subgroup.
-> 
->>
->>
->> Full randconfig file is attached.
->>
->>
->> --
->> ~Randy
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>
+>
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Acked-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  drivers/misc/lkdtm/usercopy.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/misc/lkdtm/usercopy.c b/drivers/misc/lkdtm/usercopy.c
+> > index 109e8d4302c1..d173d6175c87 100644
+> > --- a/drivers/misc/lkdtm/usercopy.c
+> > +++ b/drivers/misc/lkdtm/usercopy.c
+> > @@ -314,7 +314,7 @@ void lkdtm_USERCOPY_KERNEL(void)
+> >
+> >         pr_info("attempting bad copy_to_user from kernel text: %px\n",
+> >                 vm_mmap);
+> > -       if (copy_to_user((void __user *)user_addr, vm_mmap,
+> > +       if (copy_to_user((void __user *)user_addr, __va_function(vm_mmap),
+> >                          unconst + PAGE_SIZE)) {
+> >                 pr_warn("copy_to_user failed, but lacked Oops\n");
+> >                 goto free_user;
+> > --
+> > 2.31.0.291.g576ba9dcdaf-goog
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
 
 
 -- 
-~Randy
-
+Thanks,
+~Nick Desaulniers
