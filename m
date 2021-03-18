@@ -2,148 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A019434100A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0292734100D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhCRVrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:47:35 -0400
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:33466 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230297AbhCRVrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:47:13 -0400
-Received: from oxapps-33-150.iol.local ([10.101.8.196])
-        by smtp-17.iol.local with ESMTPA
-        id N0U1lu0o0tpGHN0U1lgazL; Thu, 18 Mar 2021 22:47:10 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1616104030; bh=zU1WLLpE0lA50jM3MsK5RrXJ+mqo3UY4TvgZN01Q8MQ=;
-        h=From;
-        b=OfGisVIgW3s9Cv541xGM3eph9PCdbmSzYs4cdtPtyWzWSQu2iXOS0/AjpzoFLVSBe
-         mgxDfETx2VO0IYW2dxPIklejH5TIIknc4PEAXwDJIw3wtLvSoLradMbUwAMqvgevOH
-         zhVCbkNOTUXSvQGM2YRWbIKzJgn8WkjYRTBpA4AkgxVw5KVfLkZOx3bChZqRASidk5
-         e9L6VoFVVRAGZES0bspb2a5wLi/MA88CEbtQtn2qBYsr1jNe9TQZsOKzHoRWyqL+To
-         Tsj3/TnExPjYlRpI0HsQWdbk/4QlzCPmRhhNqDB155pIL3f9yhRy4kG6M7xEq38BES
-         j5HIT85uqkNPQ==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6053ca5e cx=a_exe
- a=jCUSjkGoK4+H1w5URwD4kw==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
- a=_gZzKa99_6AA:10 a=VwQbUJbxAAAA:8 a=Cpx6WUeuaVtrzDQEF6EA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-Date:   Thu, 18 Mar 2021 22:47:09 +0100 (CET)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Tomi Valkeinen <tomba@kernel.org>, linux-kernel@vger.kernel.org,
-        Jyri Sarha <jyri.sarha@iki.fi>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org
-Message-ID: <1180006566.16525.1616104029554@mail1.libero.it>
-In-Reply-To: <7df3a270-1cc4-7a71-5e55-49a0dfb2c21f@kernel.org>
-References: <20210314151342.23404-1-dariobin@libero.it>
- <7df3a270-1cc4-7a71-5e55-49a0dfb2c21f@kernel.org>
-Subject: Re: [PATCH] drm/tilcdc: fix LCD pixel clock setting
+        id S231953AbhCRVvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:51:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63077 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhCRVvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:51:35 -0400
+IronPort-SDR: Xgh6PCtAW4FsT2qblHLTO1ELx3Qi9nKGpytzoL2epu2yh2DStRYTbY8OmlYVzHSkqaBaRXOzZ3
+ Xrd5CBz/V+Hw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186423628"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="186423628"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 14:51:35 -0700
+IronPort-SDR: HkWjNgs2L56YN6H5TehQTy8u8i1nWoURlU59FW4Vk37B71HGWd6Vr+auyCIDW3emB/SWpi3xIF
+ H9T77LU/rIcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="441070893"
+Received: from viggo.jf.intel.com ([10.54.77.144])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Mar 2021 14:51:35 -0700
+From:   Dave Hansen <dave.hansen@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Subject: [PATCH] x86/sgx: fix uninitialized 'nid' variable
+Date:   Thu, 18 Mar 2021 14:49:33 -0700
+Message-Id: <20210318214933.29341-1-dave.hansen@intel.com>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <202103190514.xH7IrKMe-lkp@intel.com>
+References: <202103190514.xH7IrKMe-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
-X-Originating-IP: 87.20.116.197
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: jcRFwHSewQzI0vrj1avgPo+KJzlCx/Nw
-x-libjamv: bgul+MiGx2U=
-X-CMAE-Envelope: MS4xfChI96gLjikM0Juy1Jf+WHh/deHymc/eQCyjleA4QKoTlWfrxIg5QYkfsG+xs/bi0NW4e0tEab4TXaUPeNCJe7TQTrsSUR1BE3x56DkGcd1KeUSSt19y
- d9OJ1Zd0x9Ygvp9JtVDs+wJHPVW+nZdsAQSfdHQFXReU53yh9FBXoT181m0lUcpiDR/C5yNcgPmiMrZdcUBohSNjNwmB9Cma2y1qOdQNHfcpXsVka4ym0Pm7
- JCd2CBw2yPvbLeAMA03ZZDaRis5ZPNQm1/Pf7SygPiJ6M4SOlBLVVUoas4RIEoeP2agFJG56r54RNAuzDrtHtyOITET4+TvHydkoZlxX4MYdrrZqEOFco8uR
- ekkIPbAw
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The NUMA fallback in __sgx_alloc_epc_page() recently grew an
+additional 'nid' variable to prevent extra trips through the
+fallback loop in case where the thread is migrated around.
 
-> Il 17/03/2021 09:19 Tomi Valkeinen <tomba@kernel.org> ha scritto:
-> 
->  
-> On 14/03/2021 17:13, Dario Binacchi wrote:
-> > As reported by TI spruh73x RM, the LCD pixel clock (LCD_PCLK) frequency
-> > is obtained by dividing LCD_CLK, the LCD controller reference clock,
-> > for CLKDIV:
-> > 
-> > LCD_PCLK = LCD_CLK / CLKDIV
-> > 
-> > where CLKDIV must be greater than 1.
-> > 
-> > Therefore LCD_CLK must be set to 'req_rate * CLKDIV' instead of req_rate
-> 
-> The above doesn't make sense, the code already sets LCD_CLK to 'req_rate 
-> * clkdiv', not req_rate.
-> 
-> > and the real LCD_CLK rate must be compared with 'req_rate * CLKDIV' and
-> > not with req_rate.
-> 
-> This is true, the code looks at the wrong value.
-> 
-> > Passing req_rate instead of 'req_rate * CLKDIV' to the tilcdc_pclk_diff
-> > routine caused it to fail even if LCD_CLK was properly set.
-> > 
-> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> > 
-> > ---
-> > 
-> >   drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++----
-> >   1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > index 30213708fc99..02f56c9a5da5 100644
-> > --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > @@ -203,7 +203,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
-> >   	struct drm_device *dev = crtc->dev;
-> >   	struct tilcdc_drm_private *priv = dev->dev_private;
-> >   	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
-> > -	unsigned long clk_rate, real_rate, req_rate;
-> > +	unsigned long clk_rate, real_rate, req_rate, clk_div_rate;
-> >   	unsigned int clkdiv;
-> >   	int ret;
-> >   
-> > @@ -211,10 +211,11 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
-> >   
-> >   	/* mode.clock is in KHz, set_rate wants parameter in Hz */
-> >   	req_rate = crtc->mode.clock * 1000;
-> > -
-> > -	ret = clk_set_rate(priv->clk, req_rate * clkdiv);
-> > +	/* LCD clock divisor input rate */
-> > +	clk_div_rate = req_rate * clkdiv;
-> 
-> "clk_div_rate" sounds a bit odd to me. Why not lcd_fck_rate, as that's 
-> the name used later? Or lcd_clk_rate. Or maybe lcd_clk_req_rate...
+But, the new copy is not properly initialized.  Fix it.
 
-I prefer lcd_clk_rate.
+This was found by some fancy clang that 0day runs.  My gcc
+does not detect it.
 
-How about adding an additional patch that changes the variable names to make 
-the code more readable?
+Fixes: 5b8719504e3a ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: linux-sgx@vger.kernel.org
+---
+ arch/x86/kernel/cpu/sgx/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-req_rate -> lcd_pclk_rate
-clk_rate -> real_lcd_clk_rate
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 2a0031e4a4dc..1b4d8a0e0915 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -489,7 +489,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+ {
+ 	struct sgx_epc_page *page;
+ 	int nid_of_current = numa_node_id();
+-	int nid;
++	int nid = nid_of_current;
+ 
+ 	if (node_isset(nid_of_current, sgx_numa_mask)) {
+ 		page = __sgx_alloc_epc_page_from_node(nid_of_current);
+-- 
+2.19.1
 
-And add a comment to the function which highlights the relationship 
-LCD_CLK = LCD_PCLK * CLDIV ?
-
-> 
-> > +	ret = clk_set_rate(priv->clk, clk_div_rate);
-> >   	clk_rate = clk_get_rate(priv->clk);
-> > -	if (ret < 0 || tilcdc_pclk_diff(req_rate, clk_rate) > 5) {
-> > +	if (ret < 0 || tilcdc_pclk_diff(clk_div_rate, clk_rate) > 5) {
-> >   		/*
-> >   		 * If we fail to set the clock rate (some architectures don't
-> >   		 * use the common clock framework yet and may not implement
-> > 
-> 
-> I think this fix is fine, but looking at the current code, it's calling 
-> tilcdc_pclk_diff(), but doesn't actually provide pixel clocks to the 
-> function, but fclk.
-
-Yes, I agree.
-
-Thanks and regards,
-Dario
-
-> 
->   Tomi
