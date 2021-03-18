@@ -2,134 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EED53408B9
+	by mail.lfdr.de (Postfix) with ESMTP id B028E3408BA
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 16:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbhCRPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 11:23:22 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:43870 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCRPWt (ORCPT
+        id S231732AbhCRPXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 11:23:24 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42165 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhCRPXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:22:49 -0400
-Received: by mail-ot1-f48.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so5524093otn.10;
-        Thu, 18 Mar 2021 08:22:48 -0700 (PDT)
+        Thu, 18 Mar 2021 11:23:07 -0400
+Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lMuUM-0002QY-S9
+        for linux-kernel@vger.kernel.org; Thu, 18 Mar 2021 15:23:06 +0000
+Received: by mail-wm1-f71.google.com with SMTP id c9so4209600wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 08:23:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XY5+C+cwj/cp1ZOC1jOkEqcVS7X+FmIf75h5mCYb2HE=;
-        b=Gi80fnLAHlU5O3XupvvxvRF97528Wzv8QE4J/yq0+PQTwIQ5CqE9/zZYUm8KnPE9Q6
-         3NkXpXQossWBHC0OAqDCM6iP7hmwrdEnza0Mt04316qIqXDpyVyWf5/8A/deN1PNLtYq
-         fCbkUCkz+dm7ghV8eyZww7Q55b8tGD3MhjghmI0j3n9TjAmkqawQasrYbThexvoTKmrx
-         4JlilwfeTWjAJxC1voHoh/rFvAKbYgpZI3KRpysj+OVRlxgo4X7RYscyf+4e6HxKPDLk
-         KcmtpNI8+S5IMnifhSIDVGj5qmP7pg/0MBHTkKCjD2VoyavJ6qZDwoVaNZtZGN/NsiAu
-         CvyA==
-X-Gm-Message-State: AOAM530vpbiopHIKUG5p2zaSZxHrPIoUxAtDiCvmpEsEMSYzvjZUQnJQ
-        zLRBGamC7TYbNfzYnRqmeBySVMVlVWYX4UYP4Ek=
-X-Google-Smtp-Source: ABdhPJx4Q32BHs/tMtlhyT+bXpmfN1I4SbzZsX3lnWmG6VWKbKxuXudNGvoEyuTQj8wMQ78FzsklmzfAqcCCRkXqelk=
-X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr8107660otr.321.1616080968401;
- Thu, 18 Mar 2021 08:22:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=D3eo3eUVaMZCtGRKiq/Bzn1jfXcb23nythq2B4B0dbY=;
+        b=TeZeQsk1GQGf1PoopoTG5hy359bj2LN1RbZzS8AzFDBBc2pf0QXp7IYODxnsCfULjD
+         t7jvl5/B28QS/hDkLoYdnctJT5Zvt+P/wo2HPPZR3tOOhLaTgR/XoPunUYptAr9D9+pL
+         3WHms2SOtFUGt0PIfVqt78QW8TrIJ2eCRl0y7bXIhu9dyY0cSK0w392WiYp0tAPdsbS+
+         VL0DwggZysdmwhG0DdAzfX5Ka38HNvYChtK25DMFjldtGgSK/xJFrQuh8QbVvY3iN98x
+         E96t1xXkSfPUB2UzFRkFN5GYnXA/7VPG39NX6Yqs9iIDyqwlpqwPx5ZVU2PTvXnwEVqZ
+         J+vA==
+X-Gm-Message-State: AOAM533yb2nNZyyQrTQo+FygS/yRK6FzdfNv1NcE6t8wwNQsYhUBK3Ey
+        uWLdEI5DewhVe0swDVfesrLjj00ss01hRFHi0MJ1jgkfl+yiPa7cbTZL5Q/fQAI3xXO8DpsIJkr
+        D5nOCSGKg8d0JuLcRlzGgQ8ii7IbF0/zK6lxIXJmisg==
+X-Received: by 2002:a1c:a791:: with SMTP id q139mr4124811wme.20.1616080986449;
+        Thu, 18 Mar 2021 08:23:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGSvqrbHv+6oXTYTYQwHiJAxhapYEWvi7Vd/1kpecQ4fQ62zEPFja/+C6mGLJ8981cw/CLhg==
+X-Received: by 2002:a1c:a791:: with SMTP id q139mr4124781wme.20.1616080986157;
+        Thu, 18 Mar 2021 08:23:06 -0700 (PDT)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id q19sm3427881wrg.80.2021.03.18.08.23.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 08:23:05 -0700 (PDT)
+Subject: Re: [PATCH v1] memory: tegra20: Add debug statistics
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210318115556.22792-1-digetx@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <acdbd1e3-8f38-1ee6-0980-3699df9e4375@canonical.com>
+Date:   Thu, 18 Mar 2021 16:23:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
- <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com> <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
-In-Reply-To: <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Mar 2021 16:22:37 +0100
-Message-ID: <CAJZ5v0iump7nVKfyu7S23-n=gQFx5d2MKejrnT6yFak7L9V11g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210318115556.22792-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:50 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Mar 18, 2021 at 8:25 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> >
-> > On Wed, Mar 17, 2021 at 09:14:37PM +0100, Rafael J. Wysocki wrote:
-> > > On Monday, March 15, 2021 5:19:29 PM CET Rafael J. Wysocki wrote:
-> > > > On Sun, Mar 14, 2021 at 8:00 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 11, 2021 at 04:36:31PM +0100, Rafael J. Wysocki wrote:
-> > > > > > On Wed, Mar 10, 2021 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
-> > > > > > > >
-> > > > > > > > There is some care that should be taken to make sure we get the order
-> > > > > > > > right, but I don't see a fundamental issue here.
-> > > > > >
-> > > > > > Me neither.
-> > > > > >
-> > > > > > > > If I understand correctly, Rafael's concern is about changing the parts of
-> > > > > > > > ACPICA that should be OS agnostic, so I think we just need another place to
-> > > > > > > > call memblock_reserve() rather than acpi_tb_install_table_with_override().
-> > > > > >
-> > > > > > Something like this.
-> > > > > >
-> > > > > > There is also the problem that memblock_reserve() needs to be called
-> > > > > > for all of the tables early enough, which will require some reordering
-> > > > > > of the early init code.
-> > > > > >
-> > > > > > > > Since the reservation should be done early in x86::setup_arch() (and
-> > > > > > > > probably in arm64::setup_arch()) we might just have a function that parses
-> > > > > > > > table headers and reserves them, similarly to how we parse the tables
-> > > > > > > > during KASLR setup.
-> > > > > >
-> > > > > > Right.
-> > > > >
-> > > > > I've looked at it a bit more and we do something like the patch below that
-> > > > > nearly duplicates acpi_tb_parse_root_table() which is not very nice.
-> > > >
-> > > > It looks to me that the code need not be duplicated (see below).
-> > > >
-> > > > > Besides, reserving ACPI tables early and then calling acpi_table_init()
-> > > > > (and acpi_tb_parse_root_table() again would mean doing the dance with
-> > > > > early_memremap() twice for no good reason.
-> > > >
-> > > > That'd be simply inefficient which is kind of acceptable to me to start with.
-> > > >
-> > > > And I changing the ACPICA code can be avoided at least initially, it
-> > > > by itself would be a good enough reason.
-> > > >
-> > > > > I believe the most effective way to deal with this would be to have a
-> > > > > function that does parsing, reservation and installs the tables supplied by
-> > > > > the firmware which can be called really early and then another function
-> > > > > that overrides tables if needed a some later point.
-> > > >
-> > > > I agree that this should be the direction to go into.
-> > >
-> > > So maybe something like the patch below?
-> > >
-> > > I'm not sure if acpi_boot_table_prepare() gets called early enough, though.
-> >
-> > To be 100% safe it should be called before e820__memblock_setup().
->
-> OK
+On 18/03/2021 12:55, Dmitry Osipenko wrote:
+> Add debug statistics collection support. The statistics is available
+> via debugfs in '/sys/kernel/debug/mc/stats', it shows percent of memory
+> controller utilization for each memory client. This information is
+> intended to help with debugging of memory performance issues, it already
+> was proven to be useful by helping to improve memory bandwidth management
+> of the display driver.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/memory/tegra/mc.c      |  12 ++
+>  drivers/memory/tegra/tegra20.c | 342 +++++++++++++++++++++++++++++++++
+>  include/soc/tegra/mc.h         |   7 +
+>  3 files changed, 361 insertions(+)
+> 
+> diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
+> index a21163ccadc4..85c3364ebf26 100644
+> --- a/drivers/memory/tegra/mc.c
+> +++ b/drivers/memory/tegra/mc.c
+> @@ -827,6 +827,18 @@ static int tegra_mc_probe(struct platform_device *pdev)
+>  		return err;
+>  	}
+>  
+> +	mc->debugfs.root = debugfs_create_dir("mc", NULL);
+> +	if (!mc->debugfs.root)
+> +		dev_err(&pdev->dev, "failed to create debugfs directory\n");
 
-Well, that said, reserve_bios_regions() doesn't seem to have concerns
-like this and I'm not sure why ACPI tables should be reserved before
-this runs.  That applies to efi_reserve_boot_services() too.
+It's error pointer, not null, but anyway there is no need for handling
+debugfs error. See Greg KH's commits like "remove pointless check for
+debugfs_create_dir()".
 
-I can put the new call before e820__memblock_alloc_reserved_mpc_new(),
-but I'm not sure why to put it before efi_reserve_boot_services(),
-say?
+> +
+> +	if (mc->soc->init) {
+> +		err = mc->soc->init(mc);
+> +		if (err < 0)
+> +			dev_err(&pdev->dev,
+> +				"failed to register initialize SoC driver: %d\n",
+
+"failed to initialize SoC driver:...."
+
+> +				err);
+> +	}
+> +
+>  	err = tegra_mc_reset_setup(mc);
+>  	if (err < 0)
+>  		dev_err(&pdev->dev, "failed to register reset controller: %d\n",
+> diff --git a/drivers/memory/tegra/tegra20.c b/drivers/memory/tegra/tegra20.c
+> index 29ecf02805a0..513c07104296 100644
+> --- a/drivers/memory/tegra/tegra20.c
+> +++ b/drivers/memory/tegra/tegra20.c
+> @@ -3,6 +3,8 @@
+>   * Copyright (C) 2012 NVIDIA CORPORATION.  All rights reserved.
+>   */
+>  
+> +#include <linux/bitfield.h>
+> +#include <linux/delay.h>
+>  #include <linux/of_device.h>
+>  #include <linux/slab.h>
+>  #include <linux/string.h>
+> @@ -11,6 +13,77 @@
+>  
+>  #include "mc.h"
+>  
+> +#define MC_STAT_CONTROL				0x90
+> +#define MC_STAT_EMC_CLOCK_LIMIT			0xa0
+> +#define MC_STAT_EMC_CLOCKS			0xa4
+> +#define MC_STAT_EMC_CONTROL_0			0xa8
+> +#define MC_STAT_EMC_CONTROL_1			0xac
+> +#define MC_STAT_EMC_COUNT_0			0xb8
+> +#define MC_STAT_EMC_COUNT_1			0xbc
+> +
+> +#define MC_STAT_CONTROL_CLIENT_ID		GENMASK(13,  8)
+> +#define MC_STAT_CONTROL_EVENT			GENMASK(23, 16)
+> +#define MC_STAT_CONTROL_PRI_EVENT		GENMASK(25, 24)
+> +#define MC_STAT_CONTROL_FILTER_CLIENT_ENABLE	GENMASK(26, 26)
+> +#define MC_STAT_CONTROL_FILTER_PRI		GENMASK(29, 28)
+> +
+> +#define MC_STAT_CONTROL_PRI_EVENT_HP		0
+> +#define MC_STAT_CONTROL_PRI_EVENT_TM		1
+> +#define MC_STAT_CONTROL_PRI_EVENT_BW		2
+> +
+> +#define MC_STAT_CONTROL_FILTER_PRI_DISABLE	0
+> +#define MC_STAT_CONTROL_FILTER_PRI_NO		1
+> +#define MC_STAT_CONTROL_FILTER_PRI_YES		2
+> +
+> +#define MC_STAT_CONTROL_EVENT_QUALIFIED		0
+> +#define MC_STAT_CONTROL_EVENT_ANY_READ		1
+> +#define MC_STAT_CONTROL_EVENT_ANY_WRITE		2
+> +#define MC_STAT_CONTROL_EVENT_RD_WR_CHANGE	3
+> +#define MC_STAT_CONTROL_EVENT_SUCCESSIVE	4
+> +#define MC_STAT_CONTROL_EVENT_ARB_BANK_AA	5
+> +#define MC_STAT_CONTROL_EVENT_ARB_BANK_BB	6
+> +#define MC_STAT_CONTROL_EVENT_PAGE_MISS		7
+> +#define MC_STAT_CONTROL_EVENT_AUTO_PRECHARGE	8
+> +
+> +#define EMC_GATHER_RST				(0 << 8)
+> +#define EMC_GATHER_CLEAR			(1 << 8)
+> +#define EMC_GATHER_DISABLE			(2 << 8)
+> +#define EMC_GATHER_ENABLE			(3 << 8)
+> +
+> +#define MC_STAT_SAMPLE_TIME_USEC		16000
+> +
+> +/* we store collected statistics as a fixed point values */
+> +#define MC_FX_FRAC_SCALE			100
+> +
+> +struct tegra20_mc_stat_gather {
+> +	unsigned int pri_filter;
+> +	unsigned int pri_event;
+> +	unsigned int result;
+> +	unsigned int client;
+> +	unsigned int event;
+> +	bool client_enb;
+> +};
+> +
+> +struct tegra20_mc_stat {
+> +	struct tegra20_mc_stat_gather gather0;
+> +	struct tegra20_mc_stat_gather gather1;
+> +	unsigned int sample_time_usec;
+> +	struct tegra_mc *mc;
+> +};
+> +
+> +struct tegra20_mc_client_stat {
+> +	unsigned int events;
+> +	unsigned int arb_high_prio;
+> +	unsigned int arb_timeout;
+> +	unsigned int arb_bandwidth;
+> +	unsigned int rd_wr_change;
+> +	unsigned int successive;
+> +	unsigned int page_miss;
+> +	unsigned int auto_precharge;
+> +	unsigned int arb_bank_aa;
+> +	unsigned int arb_bank_bb;
+> +};
+> +
+>  static const struct tegra_mc_client tegra20_mc_clients[] = {
+>  	{
+>  		.id = 0x00,
+> @@ -356,6 +429,274 @@ static const struct tegra_mc_icc_ops tegra20_mc_icc_ops = {
+>  	.set = tegra20_mc_icc_set,
+>  };
+>  
+> +static u32 tegra20_mc_stat_gather_control(struct tegra20_mc_stat_gather *g)
+
+"g" looks like pointer to const here
+
+> +{
+> +	u32 control;
+> +
+> +	control  = FIELD_PREP(MC_STAT_CONTROL_EVENT, g->event);
+> +	control |= FIELD_PREP(MC_STAT_CONTROL_CLIENT_ID, g->client);
+> +	control |= FIELD_PREP(MC_STAT_CONTROL_PRI_EVENT, g->pri_event);
+> +	control |= FIELD_PREP(MC_STAT_CONTROL_FILTER_PRI, g->pri_filter);
+> +	control |= FIELD_PREP(MC_STAT_CONTROL_FILTER_CLIENT_ENABLE, g->client_enb);
+> +
+> +	return control;
+> +}
+> +
+> +static void tegra20_mc_stat_gather(struct tegra20_mc_stat *stat)
+> +{
+> +	u32 clocks, count0, count1, control_0, control_1;
+> +	struct tegra_mc *mc = stat->mc;
+> +
+> +	control_0 = tegra20_mc_stat_gather_control(&stat->gather0);
+> +	control_1 = tegra20_mc_stat_gather_control(&stat->gather1);
+> +
+> +	/*
+> +	 * Reset statistic gathers state, select bandwidth mode for the
+> +	 * statistics collection mode and set clocks counter saturation
+> +	 * limit to maximum.
+> +	 */
+> +	mc_writel(mc, 0x00000000, MC_STAT_CONTROL);
+> +	mc_writel(mc,  control_0, MC_STAT_EMC_CONTROL_0);
+> +	mc_writel(mc,  control_1, MC_STAT_EMC_CONTROL_1);
+> +	mc_writel(mc, 0xffffffff, MC_STAT_EMC_CLOCK_LIMIT);
+> +
+> +	mc_writel(mc, EMC_GATHER_ENABLE, MC_STAT_CONTROL);
+> +	fsleep(stat->sample_time_usec);
+> +	mc_writel(mc, EMC_GATHER_DISABLE, MC_STAT_CONTROL);
+> +
+> +	count0 = mc_readl(mc, MC_STAT_EMC_COUNT_0);
+> +	count1 = mc_readl(mc, MC_STAT_EMC_COUNT_1);
+> +	clocks = mc_readl(mc, MC_STAT_EMC_CLOCKS);
+> +	clocks = max(clocks / 100 / MC_FX_FRAC_SCALE, 1u);
+> +
+> +	stat->gather0.result = DIV_ROUND_UP(count0, clocks);
+> +	stat->gather1.result = DIV_ROUND_UP(count1, clocks);
+> +}
+> +
+> +static void tegra20_mc_stat_events(struct tegra_mc *mc,
+> +				   const struct tegra_mc_client *client0,
+> +				   const struct tegra_mc_client *client1,
+> +				   unsigned int pri_filter,
+> +				   unsigned int pri_event,
+> +				   unsigned int event,
+> +				   unsigned int *result0,
+> +				   unsigned int *result1)
+> +{
+> +	struct tegra20_mc_stat stat = {};
+> +
+> +	stat.gather0.client = client0 ? client0->id : 0;
+> +	stat.gather0.pri_filter = pri_filter;
+> +	stat.gather0.client_enb = !!client0;
+> +	stat.gather0.pri_event = pri_event;
+> +	stat.gather0.event = event;
+> +
+> +	stat.gather1.client = client1 ? client1->id : 0;
+> +	stat.gather1.pri_filter = pri_filter;
+> +	stat.gather1.client_enb = !!client1;
+> +	stat.gather1.pri_event = pri_event;
+> +	stat.gather1.event = event;
+> +
+> +	stat.sample_time_usec = MC_STAT_SAMPLE_TIME_USEC;
+> +	stat.mc = mc;
+> +
+> +	tegra20_mc_stat_gather(&stat);
+> +
+> +	*result0 = stat.gather0.result;
+> +	*result1 = stat.gather1.result;
+> +}
+> +
+> +static void tegra20_mc_collect_stats(struct tegra_mc *mc,
+> +				     struct tegra20_mc_client_stat *stats)
+> +{
+> +	const struct tegra_mc_client *client0, *client1;
+> +	unsigned int i, clienta, clientb;
+
+Define the clienta and clientb inside the loop, to reduce the scope.
+Unless it is used between the loop iterations?
+
+> +
+> +	/* collect memory controller utilization percent for each client */
+> +	for (i = 0; i < mc->soc->num_clients; i += 2) {
+> +		client0 = &mc->soc->clients[i];
+> +		client1 = &mc->soc->clients[i + 1];
+> +
+> +		if (i + 1 == mc->soc->num_clients)
+> +			client1 = NULL;
+> +
+> +		tegra20_mc_stat_events(mc, client0, client1,
+> +				       MC_STAT_CONTROL_FILTER_PRI_DISABLE,
+> +				       MC_STAT_CONTROL_PRI_EVENT_HP,
+> +				       MC_STAT_CONTROL_EVENT_QUALIFIED,
+> +				       &stats[i + 0].events,
+> +				       &stats[i + 1].events);
+> +	}
+> +
+> +	/* collect more info from active clients */
+> +	for (i = 0; i < mc->soc->num_clients; i++) {
+> +		clientb = mc->soc->num_clients;
+> +
+> +		for (client0 = NULL; i < mc->soc->num_clients; i++) {
+> +			if (stats[i].events) {
+> +				client0 = &mc->soc->clients[i];
+> +				clienta = i++;
+> +				break;
+> +			}
+> +		}
+
+Could all clients have 0 events ending with "clienta" being undefined?
+"client0" would be non-NULL because of loop before.
+
+> +
+> +		for (client1 = NULL; i < mc->soc->num_clients; i++) {
+> +			if (stats[i].events) {
+> +				client1 = &mc->soc->clients[i];
+> +				clientb = i;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!client0 && !client1)
+> +			break;
+> +
+> +		tegra20_mc_stat_events(mc, client0, client1,
+> +				       MC_STAT_CONTROL_FILTER_PRI_YES,
+> +				       MC_STAT_CONTROL_PRI_EVENT_HP,
+> +				       MC_STAT_CONTROL_EVENT_QUALIFIED,
+> +				       &stats[clienta].arb_high_prio,
+> +				       &stats[clientb].arb_high_prio);
+> +
+
+
+
+Best regards,
+Krzysztof
