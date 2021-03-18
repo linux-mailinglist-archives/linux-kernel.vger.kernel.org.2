@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E0134051F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DE1340521
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhCRMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhCRMDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:03:24 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC1DC06174A;
-        Thu, 18 Mar 2021 05:03:23 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so2619761pjb.4;
-        Thu, 18 Mar 2021 05:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=O18RE2ihq2VzB80oeThlToJ8TPq6RnBWqHK+hxtzy2Q=;
-        b=ZiAKpXyKoBPo1oe3D6dZZ8NUACbmvvlCFdwLQ9lexMoaxaO8/4U1HLEPcJZl+2TAMH
-         nmtEuMVsxrvRbgC/7T8S0lDZOh1KMOwFLEYAHhsHVMtW2Jkt8MPrSmambVy6oMqwrPve
-         rAyBKm+fVs5ph1KuZr0k/1wpjfuat/c1IvUulaUPYNmRfPH+Gxbqu8PuyMLA6Jv1jW4R
-         iGp3lOeT2n9TS+UPmTJmFd9EuPOwV4d3LcphXxHud4SRFd7GrXVTGVKrVHORasJgv24u
-         TIR0vwxX+E/d911luWP38Uh4Q5NwAnMhV2Bo9sn1YILkXUlGBs3f5VEgqzRob1497Y94
-         oCwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O18RE2ihq2VzB80oeThlToJ8TPq6RnBWqHK+hxtzy2Q=;
-        b=gkmM7EQGuecw5/RGGgoi16RBcx8otPx0A9wJylghYajxFQmKDP8oPb4FgogSy9ElTS
-         BBAiN0V8UCE8eDo/I0IJJeONYEVpJTJL+tkdWslje707oe4NXtPv7jHPQ+hSgI02rB4B
-         pwYJKDzmS+bnHYVS4bwa2+iJZI6QLoQ13Bn6U/tx9Av2O/CdJF5KGsIsnOO0zRsDU+sv
-         ojsmH3SN3FlatUEeiicNwk0JTvPjRKtLsa6s3UUvk3BlW5VxcX/Y6qMRfeHnpdhm7tf8
-         NhDNgJXcZ2JERkzLyuKihrQDZSOAL78bwB6y+2hfAN3RmKrrU3XbyAwYCW7cMRs3aO3L
-         Tf+w==
-X-Gm-Message-State: AOAM531FZxwWnNEgQxGeWD+qe9x84jCTq+ZyDKyaZlZSZJAhXXdzPZnN
-        HcVgHUnls5aVg1Jq0h5WoKEZ0dGmsQiR4OR/V74Eimti58p4NA==
-X-Google-Smtp-Source: ABdhPJxeHE4GSY7N6rN3OrhmXTJlz+p+cMMDS45o+vmCpwO0Q49pyq6EEXYEdYI2asdmuM+cySoMNtIc9WRbFiPpLFI=
-X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr4190971pjb.129.1616069002455;
- Thu, 18 Mar 2021 05:03:22 -0700 (PDT)
+        id S230452AbhCRMEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:04:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhCRMEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 08:04:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA818AC75;
+        Thu, 18 Mar 2021 12:04:01 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 13:03:59 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFNBrzNFpyKLORfe@localhost.localdomain>
+References: <20210309175546.5877-2-osalvador@suse.de>
+ <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+ <20210315102224.GA24699@linux>
+ <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
+ <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
+ <20210317140847.GA20407@linux>
+ <f996f570-eed9-509f-553c-280a62dc6d20@redhat.com>
+ <YFMPBFSJPq2VEOk9@localhost.localdomain>
+ <YFMtuKZ8Ho66D8hN@localhost.localdomain>
+ <51c645b3-1220-80c4-e44c-4c0411222148@redhat.com>
 MIME-Version: 1.0
-References: <20210317143803.26127-1-noltari@gmail.com> <20210317143803.26127-3-noltari@gmail.com>
-In-Reply-To: <20210317143803.26127-3-noltari@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Mar 2021 14:03:06 +0200
-Message-ID: <CAHp75VeKwLn1VyG30LoPhLHDxiMZDfnBDwy6t1Ka_rVP224eyw@mail.gmail.com>
-Subject: Re: [PATCH v8 02/22] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51c645b3-1220-80c4-e44c-4c0411222148@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 4:38 PM =C3=81lvaro Fern=C3=A1ndez Rojas
-<noltari@gmail.com> wrote:
->
-> This is needed for properly registering GPIO regmap as a child of a regma=
-p
-> pin controller.
+On Thu, Mar 18, 2021 at 12:24:16PM +0100, David Hildenbrand wrote:
+> I don't follow. 2MB == 2MB. And if there would be difference then we would
+> be in the problem I brought up: vmemmap code allocating too much via the
+> altmap, which can be very bad because might be populating more vmemmap than
+> we actually need.
 
-...
+Yes, I meant to say nr_vmemmap_pages won't match, or IOW, won't have the
+same meaning.
+The end result is the same.
 
-> +       /* gpiolib will use of_node of the parent if chip->of_node is NUL=
-L */
-> +       chip->of_node =3D to_of_node(config->fwnode);
+> vmemmap_size = 512 * 4KiB = 2 MiB.
+> 
+> That calculation wasn't very useful (/ PAGE_SIZE * PAGE_SIZE)?
 
-As the kernel bot rightfully noticed this should be under ifdeffery (OF_GPI=
-O?).
+Yeah, somewhat redundant.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> 
+> >          unsigned long remaining_size = size - vmemmap_size;
+> 
+> And here we could get something like
+> 
+> remaining_size = 2 GiB - 2 MiB
+
+Yes, vmemmap_size would need to scale with nr_sections to be relative to
+size.
+
+Just wanted to bring it up, because somene might wonder
+"ok, why do we have altmap->nr_pfns = X, and here nr_vmemmap_pages
+ is Y"
+
+It was an effort to make it consistent, although I see it would bring
+more confusion other than anything, so disregard.
+
+-- 
+Oscar Salvador
+SUSE L3
