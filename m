@@ -2,65 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45F0340BA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0295340B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhCRRX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
+        id S232504AbhCRRMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhCRRXe (ORCPT
+        with ESMTP id S232331AbhCRRLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:23:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D13AC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=VpI2pWm+iaVmNktCA4RVhj4ljrVU+LH0ADIL0UfacLg=; b=LAyBs7p/nbiUywe+wygeLGhSjs
-        n7ZCq/yqUPxUDXj93H7psnWKaeNNrRUtmRCZOlCbaLtjtG56pgiNF9KokdZCxXuIpieBpiZFghqxM
-        ILvUCCsqZd5Y16YCYkBPH+gGWn1GK2LNzAEuNWe3r3/uoUPOmws8d8nde4RvZw1edj7jt+r6ePiWu
-        gdf3zfuXgMCK9wzH4gIVsBaq8w3S4k9eYgLwuHwUMDKdQO8/86pA8p1APqQgN6kUMStG9HBlMbW4Q
-        Z4mFinvdyKomELwX2af0eNaMEREwx2bd31fA1aQ5EVo8b73EGTv52X63SW/VdrZqEUIqubofGOO3y
-        vSJyit6A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMp-005kEY-HX; Thu, 18 Mar 2021 17:23:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CDAC3050F0;
-        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0D4C5213C0F58; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171103.577093939@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        mbenes@suse.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 00/14] x86,objtool: Optimize !RETPOLINE
+        Thu, 18 Mar 2021 13:11:36 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58323C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:36 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k189so10336573ybb.17
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=79m/4wCgeIzY0Vch1mQ9hDd2/YXny1QOhs6kFFYl+qs=;
+        b=Zik1d3CnZxputVsmGGlAexPLSHJF1N30aQsZC+A49EjAjI41rgMguWULbVHOZuBdPg
+         OQ23FZI5e5lc19k+4wnAGEPbO8ubc3ZLNnH9lf488/mljubW7d/4qBvIEQToXTW14lVr
+         j0ydpHrAO7UAeKBGZTfKjWqNRXa/+aUW3W/Q9xyReJ+HkSh4ZyfQQVf2jl2YoJPNmYgP
+         U8ED0ly++E/R2SKQ5gcXdYQm5bK3aQwaQuAnd0Qz5u7IAaAg9I7S+5U/IZnXR62c9V5n
+         WF5Km9LoVXhtHm9tlACHHs0O6slXVTwziecp89dN+AoViSwFfPOMP88Mo91j0UqUKlOJ
+         Dbbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=79m/4wCgeIzY0Vch1mQ9hDd2/YXny1QOhs6kFFYl+qs=;
+        b=aIXdt42ZpCp1UQHSCi80vZd50j/yqdEtS9qumCG/xZjnfzK1OlSCBpHWP/B+6NHZeX
+         Jxj6leLjVec7bjdVpPs7nGW3kxRGYp6Bv9KzK37SB/NB4Zc+T8a+rv5H/bQ5nwQOi+ja
+         hz8jLzXF9ipzlttZvUlqB+Um3cCD5cR3p18YiO5Absdi3K9FOks8mBu5IaE2lHOyHmgu
+         mjiHa2rWQUml616w77505Dhj0x3EgE+HmMwP263rV7FHOkttxhXS5dJwkK52OlT/bjyU
+         4RxuJ3kD3gfK+2ykGIG8v5bTtH2x82ptOQ38x7AZrrSJ2KDI9eelFjCX71Raw8sxOB7G
+         LdeA==
+X-Gm-Message-State: AOAM533p7pWxqVcZ9pByDlqSPqxl97k9kFeHkZhipGtJriU1OvQFbWa2
+        NS6tX0tcj7w0Kl1ddwsuKqmCatVKoZ1jibA9PZc=
+X-Google-Smtp-Source: ABdhPJyhrd+ijbcKHuUHxkloDz8fmR6k/s2L31mWKV23xRXPA0zTKRcjoj602FSIswWJW0IQy4bbshoZ/FsRp3uVBzQ=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:a25:ab11:: with SMTP id
+ u17mr494297ybi.192.1616087495554; Thu, 18 Mar 2021 10:11:35 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:11:03 -0700
+In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
+Message-Id: <20210318171111.706303-10-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20210318171111.706303-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 09/17] lib/list_sort: fix function type mismatches
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Casting the comparison function to a different type trips indirect
+call Control-Flow Integrity (CFI) checking. Remove the additional
+consts from cmp_func, and the now unneeded casts.
 
-Respin of the !RETPOLINE optimization patches.
+Fixes: 043b3f7b6388 ("lib/list_sort: simplify and remove MAX_LIST_LENGTH_BITS")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ lib/list_sort.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Boris, the first 3 should probably go into tip/x86/core, it's an ungodly tangle
-since it relies on the insn decoder patches in tip/x86/core, the NOP patches in
-tip/x86/cpu and the alternative patches in tip/x86/alternatives.
-
-Just to make life easy I'd suggest merging everything in x86/core and
-forgetting about the other topic branches (that's what I ended up doing locally).
-
-The remaining 11 patches depend on the first 3 as well as on the work in
-tip/objtool/core, just to make life more interesting still ;-)
-
-All except the last 4 patches should be fairly uncontroversial (I hope...)
-
+diff --git a/lib/list_sort.c b/lib/list_sort.c
+index 52f0c258c895..b14accf4ef83 100644
+--- a/lib/list_sort.c
++++ b/lib/list_sort.c
+@@ -8,7 +8,7 @@
+ #include <linux/list.h>
+ 
+ typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+-		struct list_head const *, struct list_head const *);
++		struct list_head *, struct list_head *);
+ 
+ /*
+  * Returns a list organized in an intermediate format suited
+@@ -227,7 +227,7 @@ void list_sort(void *priv, struct list_head *head,
+ 		if (likely(bits)) {
+ 			struct list_head *a = *tail, *b = a->prev;
+ 
+-			a = merge(priv, (cmp_func)cmp, b, a);
++			a = merge(priv, cmp, b, a);
+ 			/* Install the merged result in place of the inputs */
+ 			a->prev = b->prev;
+ 			*tail = a;
+@@ -249,10 +249,10 @@ void list_sort(void *priv, struct list_head *head,
+ 
+ 		if (!next)
+ 			break;
+-		list = merge(priv, (cmp_func)cmp, pending, list);
++		list = merge(priv, cmp, pending, list);
+ 		pending = next;
+ 	}
+ 	/* The final merge, rebuilding prev links */
+-	merge_final(priv, (cmp_func)cmp, head, pending, list);
++	merge_final(priv, cmp, head, pending, list);
+ }
+ EXPORT_SYMBOL(list_sort);
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
