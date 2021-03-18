@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300C6340FA9
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4A7340FAA
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 22:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhCRVPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 17:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S233228AbhCRVPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 17:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbhCRVP1 (ORCPT
+        with ESMTP id S233185AbhCRVPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 17:15:27 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D93C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:27 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id cx5so3964596qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:27 -0700 (PDT)
+        Thu, 18 Mar 2021 17:15:34 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405FDC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:34 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id j7so5239530qtx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 14:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:subject:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HYhA/Avxif7UVkJ1m3UFS73y0g6klPudmFWqm569zA8=;
-        b=OMbqwavsnVSV2vYPZiASlzWN8o//XQLD4CChuQ7tbMCjGkPkgaoNHV24sz6pGgjvg5
-         /UN/HSTFtmsns40G8EjstezXn/vss0THaraH9AOqJIIR95wlmhtcwSN4A6ivoJxFzapg
-         BDJ2Sl+0AOwJhKkum7qlCuGFdueTYBUqBTMlj1Pn0eTtlKiNQJy3b8wcz3QdAiN/5GZC
-         aOPxvQkqPPVBskbW7uKGZPjDS96ycI494HhG0mPcLAsg5+ZBP9g19CZ6E9QS0P4GkPJ6
-         OxPtM7Jlkrl1ML6Uol7xTPj9DMzyKq3cHaefZwW/MZx/HvvhskpECpLDq4TxJWK7qrZy
-         p/rA==
+        bh=2h/fJfUVZc3lt7GnwBXU8ijaCWEWcTsFoNt4wS6wz1k=;
+        b=rYLjhs1YdAhKTS6eb8HBmzfxZ4x/0tZbMjtiNYOtofICym5tn05oJbxhGMl6QdVpFL
+         +XLl0QmUv1G7Rxc6KA6nswMEtbxk+AqDzoJxB+8GfHNH4UA6ksowzKD72R5JX5ZmfYiV
+         xVtYKIR0toh2j1UceS23cg9M0hmseOGEHWZpC+kFxsDfUhDYpPvSHVV7RFpcXpoesVjf
+         v2i+qiDCHWgCgCuGLgg9L/Z7nzyAywWCpUAmKt1FakZsoeJkIHOS9ukRTUFDLscpZ/r6
+         KSypcnjxKrGaaQAfa5ziHBvS8u3wGY20k0n5WyzuCkEeojZ7DocNgkxaLPRVO7gGQshq
+         buZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=HYhA/Avxif7UVkJ1m3UFS73y0g6klPudmFWqm569zA8=;
-        b=suYWouo11kXNujIp6wQiK11gMX7311mxBx5tzI6yec/L7leJ2P+Xfa+S6KUnVKHvw2
-         IN5Ge4u8D31RZzxPUHoUrg38cVJxGW1hZZ+Vbop8es7n5v/+STztemvtzt1gGzFROpvS
-         yDq/orqOykYtKOcJvr2Yppq+SAGc3qmjE29ePuHDu0eFoO+A9vXXzoRNSafetdzn8kIo
-         CfVY9NLnPQOXIk/cw47//hWTEBAamwod7jzPpRsyffQH3dRM8lj+ZN8qKUbC1sCJwNAe
-         uB3eQzQEiQFsqWkDR4LrCi/KZHglsjuVxFY2IsoEYZAff8QaWo0wuWYUYtZDDSr5r7Jf
-         qwgA==
-X-Gm-Message-State: AOAM533ez0yHP1WBPwgorGqGHag6QGr5AuIOWWL8yM9d/KmAooWpWuvi
-        O0HC20USDZ9sjRJuCrKvKXNsHHu2J33S0A==
-X-Google-Smtp-Source: ABdhPJxdhfVQ0eUYGFxP2S41ybtIv0oD+KlcLqtXrFyk7IRg/qQ2DFYYVLyrNIbYIRCTKi9bHOYlog==
-X-Received: by 2002:ad4:470c:: with SMTP id k12mr6344143qvz.9.1616102126412;
-        Thu, 18 Mar 2021 14:15:26 -0700 (PDT)
+        bh=2h/fJfUVZc3lt7GnwBXU8ijaCWEWcTsFoNt4wS6wz1k=;
+        b=bH5+KSiNXHoxxWGtE/hyQZ+oKQNE3aFHoHtk230j9L+U2jOqOvLa4PYfoQdyoUjJGV
+         FzrRco5jqJu9zLWYvKyeghvmQ4ZnChVALNhEm3BaQsEwzbSfhQWhg46GWZYpyJjG/ANq
+         VGjei+ON9d136NRVMhavYXdQgBKgjSFkOBqfJue+KLWgRbr+OSfZw5F4Jl4Z9ae73M0g
+         LHns7ZTgQpWYo24nB/U3c5qRhGybNbQKz8A4NZsXO6HQ4RQ5pRuK/nkRPrUmR9nKhiZb
+         xINmfU5ypvSXe7x5eQ6XnPyBrQchUsSSLr0xxNIA8ojGhjHhKZfLmi/OBkbykq7jUoNC
+         tUTw==
+X-Gm-Message-State: AOAM530RonPNZigJUBZQFehgzXoILtGKp8vuugMVVsL6wnJ00W3xPAUB
+        vVCX4gk7qcqMx8mVlry8+PlErqHHdJxTyg==
+X-Google-Smtp-Source: ABdhPJzI1lPGhLk5ZiaM2WHWL90E3tj31UDGa5JlBt1mw/TmLvVFD48T3jrajRkre4pAVR+hgGYICA==
+X-Received: by 2002:a05:622a:8a:: with SMTP id o10mr5451875qtw.50.1616102133172;
+        Thu, 18 Mar 2021 14:15:33 -0700 (PDT)
 Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id v5sm2298048qtq.26.2021.03.18.14.15.25
+        by smtp.gmail.com with ESMTPSA id c73sm2857463qkg.6.2021.03.18.14.15.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 14:15:26 -0700 (PDT)
+        Thu, 18 Mar 2021 14:15:32 -0700 (PDT)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v10 3/8] drivers: thermal: tsens: Convert msm8960 to
- reg_field
+Subject: Re: [PATCH v10 4/8] drivers: thermal: tsens: Use init_common for
+ msm8960
 To:     Ansuel Smith <ansuelsmth@gmail.com>,
         Amit Kucheria <amitk@kernel.org>
 Cc:     Andy Gross <agross@kernel.org>,
@@ -62,13 +62,13 @@ Cc:     Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20210217194011.22649-1-ansuelsmth@gmail.com>
- <20210217194011.22649-4-ansuelsmth@gmail.com>
-Message-ID: <01aab17f-3e02-41ae-e420-ad752d15d61f@linaro.org>
-Date:   Thu, 18 Mar 2021 17:15:25 -0400
+ <20210217194011.22649-5-ansuelsmth@gmail.com>
+Message-ID: <d85c44e1-b436-4e7b-1bec-f33a36b4ec71@linaro.org>
+Date:   Thu, 18 Mar 2021 17:15:31 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210217194011.22649-4-ansuelsmth@gmail.com>
+In-Reply-To: <20210217194011.22649-5-ansuelsmth@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,134 +79,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 2/17/21 2:40 PM, Ansuel Smith wrote:
-> Convert msm9860 driver to reg_field to use the init_common
-> function.
+> Use init_common and drop custom init for msm8960.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-Hi!
-
-Now that you have done this, you should clean up the unused 
-bitmasks/offsets etc in
-tsens-8960.c file as well as a separate patch. I only see the
-need to maintain SLP_CLK_ENA_8660 and SLP_CLK_ENA. Everything else can 
-be removed and the s/w can use priv->rf[_field_] for access.
-Otherwise for this patch
-
-Acked-by: Thara Gopinath <thara.gopinath@linaro.org>
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
 
 Warm Regards
 Thara
->
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->   drivers/thermal/qcom/tsens-8960.c | 80 ++++++++++++++++++++++++++++++-
->   1 file changed, 79 insertions(+), 1 deletion(-)
+
+> --- >   drivers/thermal/qcom/tsens-8960.c | 52 +------------------------------
+>   1 file changed, 1 insertion(+), 51 deletions(-)
 > 
 > diff --git a/drivers/thermal/qcom/tsens-8960.c b/drivers/thermal/qcom/tsens-8960.c
-> index 2a28a5af209e..3f4fc1ffe679 100644
+> index 3f4fc1ffe679..86585f439985 100644
 > --- a/drivers/thermal/qcom/tsens-8960.c
 > +++ b/drivers/thermal/qcom/tsens-8960.c
-> @@ -51,11 +51,22 @@
->   #define MIN_LIMIT_TH		0x0
->   #define MAX_LIMIT_TH		0xff
->   
-> -#define S0_STATUS_ADDR		0x3628
->   #define INT_STATUS_ADDR		0x363c
->   #define TRDY_MASK		BIT(7)
->   #define TIMEOUT_US		100
->   
-> +#define S0_STATUS_OFF		0x3628
-> +#define S1_STATUS_OFF		0x362c
-> +#define S2_STATUS_OFF		0x3630
-> +#define S3_STATUS_OFF		0x3634
-> +#define S4_STATUS_OFF		0x3638
-> +#define S5_STATUS_OFF		0x3664  /* Sensors 5-10 found on apq8064/msm8960 */
-> +#define S6_STATUS_OFF		0x3668
-> +#define S7_STATUS_OFF		0x366c
-> +#define S8_STATUS_OFF		0x3670
-> +#define S9_STATUS_OFF		0x3674
-> +#define S10_STATUS_OFF		0x3678
-> +
->   static int suspend_8960(struct tsens_priv *priv)
->   {
->   	int ret;
-> @@ -269,6 +280,71 @@ static int get_temp_8960(const struct tsens_sensor *s, int *temp)
->   	return -ETIMEDOUT;
+> @@ -173,56 +173,6 @@ static void disable_8960(struct tsens_priv *priv)
+>   	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
 >   }
 >   
-> +static struct tsens_features tsens_8960_feat = {
-> +	.ver_major	= VER_0,
-> +	.crit_int	= 0,
-> +	.adc		= 1,
-> +	.srot_split	= 0,
-> +	.max_sensors	= 11,
-> +};
-> +
-> +static const struct reg_field tsens_8960_regfields[MAX_REGFIELDS] = {
-> +	/* ----- SROT ------ */
-> +	/* No VERSION information */
-> +
-> +	/* CNTL */
-> +	[TSENS_EN]     = REG_FIELD(CNTL_ADDR,  0, 0),
-> +	[TSENS_SW_RST] = REG_FIELD(CNTL_ADDR,  1, 1),
-> +	/* 8960 has 5 sensors, 8660 has 11, we only handle 5 */
-> +	[SENSOR_EN]    = REG_FIELD(CNTL_ADDR,  3, 7),
-> +
-> +	/* ----- TM ------ */
-> +	/* INTERRUPT ENABLE */
-> +	/* NO INTERRUPT ENABLE */
-> +
-> +	/* Single UPPER/LOWER TEMPERATURE THRESHOLD for all sensors */
-> +	[LOW_THRESH_0]   = REG_FIELD(THRESHOLD_ADDR,  0,  7),
-> +	[UP_THRESH_0]    = REG_FIELD(THRESHOLD_ADDR,  8, 15),
-> +	/* MIN_THRESH_0 and MAX_THRESH_0 are not present in the regfield
-> +	 * Recycle CRIT_THRESH_0 and 1 to set the required regs to hardcoded temp
-> +	 * MIN_THRESH_0 -> CRIT_THRESH_1
-> +	 * MAX_THRESH_0 -> CRIT_THRESH_0
-> +	 */
-> +	[CRIT_THRESH_1]   = REG_FIELD(THRESHOLD_ADDR, 16, 23),
-> +	[CRIT_THRESH_0]   = REG_FIELD(THRESHOLD_ADDR, 24, 31),
-> +
-> +	/* UPPER/LOWER INTERRUPT [CLEAR/STATUS] */
-> +	/* 1 == clear, 0 == normal operation */
-> +	[LOW_INT_CLEAR_0]   = REG_FIELD(CNTL_ADDR,  9,  9),
-> +	[UP_INT_CLEAR_0]    = REG_FIELD(CNTL_ADDR, 10, 10),
-> +
-> +	/* NO CRITICAL INTERRUPT SUPPORT on 8960 */
-> +
-> +	/* Sn_STATUS */
-> +	[LAST_TEMP_0]  = REG_FIELD(S0_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_1]  = REG_FIELD(S1_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_2]  = REG_FIELD(S2_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_3]  = REG_FIELD(S3_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_4]  = REG_FIELD(S4_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_5]  = REG_FIELD(S5_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_6]  = REG_FIELD(S6_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_7]  = REG_FIELD(S7_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_8]  = REG_FIELD(S8_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_9]  = REG_FIELD(S9_STATUS_OFF,  0,  7),
-> +	[LAST_TEMP_10] = REG_FIELD(S10_STATUS_OFF, 0,  7),
-> +
-> +	/* No VALID field on 8960 */
-> +	/* TSENS_INT_STATUS bits: 1 == threshold violated */
-> +	[MIN_STATUS_0] = REG_FIELD(INT_STATUS_ADDR, 0, 0),
-> +	[LOWER_STATUS_0] = REG_FIELD(INT_STATUS_ADDR, 1, 1),
-> +	[UPPER_STATUS_0] = REG_FIELD(INT_STATUS_ADDR, 2, 2),
-> +	/* No CRITICAL field on 8960 */
-> +	[MAX_STATUS_0] = REG_FIELD(INT_STATUS_ADDR, 3, 3),
-> +
-> +	/* TRDY: 1=ready, 0=in progress */
-> +	[TRDY] = REG_FIELD(INT_STATUS_ADDR, 7, 7),
-> +};
-> +
->   static const struct tsens_ops ops_8960 = {
->   	.init		= init_8960,
->   	.calibrate	= calibrate_8960,
-> @@ -282,4 +358,6 @@ static const struct tsens_ops ops_8960 = {
->   struct tsens_plat_data data_8960 = {
->   	.num_sensors	= 11,
->   	.ops		= &ops_8960,
-> +	.feat		= &tsens_8960_feat,
-> +	.fields		= tsens_8960_regfields,
+> -static int init_8960(struct tsens_priv *priv)
+> -{
+> -	int ret, i;
+> -	u32 reg_cntl;
+> -
+> -	priv->tm_map = dev_get_regmap(priv->dev, NULL);
+> -	if (!priv->tm_map)
+> -		return -ENODEV;
+> -
+> -	/*
+> -	 * The status registers for each sensor are discontiguous
+> -	 * because some SoCs have 5 sensors while others have more
+> -	 * but the control registers stay in the same place, i.e
+> -	 * directly after the first 5 status registers.
+> -	 */
+> -	for (i = 0; i < priv->num_sensors; i++) {
+> -		if (i >= 5)
+> -			priv->sensor[i].status = S0_STATUS_ADDR + 40;
+> -		priv->sensor[i].status += i * 4;
+> -	}
+> -
+> -	reg_cntl = SW_RST;
+> -	ret = regmap_update_bits(priv->tm_map, CNTL_ADDR, SW_RST, reg_cntl);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (priv->num_sensors > 1) {
+> -		reg_cntl |= SLP_CLK_ENA | (MEASURE_PERIOD << 18);
+> -		reg_cntl &= ~SW_RST;
+> -		ret = regmap_update_bits(priv->tm_map, CONFIG_ADDR,
+> -					 CONFIG_MASK, CONFIG);
+> -	} else {
+> -		reg_cntl |= SLP_CLK_ENA_8660 | (MEASURE_PERIOD << 16);
+> -		reg_cntl &= ~CONFIG_MASK_8660;
+> -		reg_cntl |= CONFIG_8660 << CONFIG_SHIFT_8660;
+> -	}
+> -
+> -	reg_cntl |= GENMASK(priv->num_sensors - 1, 0) << SENSOR0_SHIFT;
+> -	ret = regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
+> -	if (ret)
+> -		return ret;
+> -
+> -	reg_cntl |= EN;
+> -	ret = regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> -}
+> -
+>   static int calibrate_8960(struct tsens_priv *priv)
+>   {
+>   	int i;
+> @@ -346,7 +296,7 @@ static const struct reg_field tsens_8960_regfields[MAX_REGFIELDS] = {
 >   };
+>   
+>   static const struct tsens_ops ops_8960 = {
+> -	.init		= init_8960,
+> +	.init		= init_common,
+>   	.calibrate	= calibrate_8960,
+>   	.get_temp	= get_temp_8960,
+>   	.enable		= enable_8960,
 > 
 
