@@ -2,105 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CF4340EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA8340EE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhCRULO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        id S232981AbhCRULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhCRUK6 (ORCPT
+        with ESMTP id S230391AbhCRULf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:10:58 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C4AC06174A;
-        Thu, 18 Mar 2021 13:10:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x13so6851695wrs.9;
-        Thu, 18 Mar 2021 13:10:57 -0700 (PDT)
+        Thu, 18 Mar 2021 16:11:35 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEB5C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:11:35 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id b21so28011522qtr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ps9LfNNCNYk4EPJwOAX29BFfryqjopm8suHQ9BWWqbc=;
-        b=g8B+mRBmeY0Qo7Uqcp6rylyVws8d5WiipqfZ1jpiDKRqv8/nERUC5fi87sJvJao4BT
-         yvY1j3C6TqqKl933x2lqWqCTWUarFsmHuYB010CePPnm3WEYarLNF2wgIFJ0UqINGyty
-         9Y5Yi9RXHB05sZcYXIytpvMb8p5Glcq/3Ciq51Ch/MriyjNSGQVjmY7D5vdyX/y2Y456
-         oo1SOi+yju2hYBFAHDyWkiH5FZclirjAm2f8qgoOXiNdJt6w/kdehCe+xRsbUix3/C7P
-         juE/NKXKww2nVmATl4B/4xk9yQuQ9FnoNJDKHi4dWdlVw3/TNG0dLmc81iho072wcRs5
-         iZCQ==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=UrlGHrWQC65GrWtCnUbevQPCG8mhT0b6JNNJOYVBIxs=;
+        b=T8ylBXUHFqADelPsYQknCRt7iu1DV9VleqMiWHdlxNvv6zWntILaYo8dmGiPseOo31
+         /L1K2u8ZUe/M1+SP3vegO+tZb+PNXNuZ6PhfhtrpKkFF/TrRTVEyXifiyNCb6m4O/rNq
+         vzIoudaysQfuvF4jnqcYgCDHj8mlJmbX/pPK/e2AjMyLokwirdogC07oscMMwyGv3v9q
+         Nyzi1juCNzyARaLLl9Fn7Ogl2BwvQqGuIAT/vyqJBil9cQXRBtRgvP6ZPiWU4sntzAmI
+         YMiVelHw6sTcpYMKoL7vmumvF7YXriyZkctuKHFq8vHSb075Dz/U/9+k+MLhkq28SYHM
+         omxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ps9LfNNCNYk4EPJwOAX29BFfryqjopm8suHQ9BWWqbc=;
-        b=sGt4+GTZvKIiD5YXaW8TKvrgPgIxcqRpgRPW1SSftrRkZyF3EqFpzxyvy/7N8BLjPc
-         1HY6Betbt32PisEP9nn3NeX3EjUPfmxREFcRt2gtDSqejGY8K2KyQkggaWiEHgTJCCob
-         8CqYqkOjM04raQ6x9ZU8m/vpci5Xcxy/RvXmXirdXFAH6A+7PmQPqFO/d9w78MY2wGzt
-         J8YisIxxY2L/9sH6UUFZHB5yjd02bFFaSh/tvJHOyJkax5aiT2oj+Bolvi9KmZ/g8CYX
-         PMRThWLKX5/Gv3qxNRSiO9AwhCe94EL0bTZE5NxPUDs1opEe/4Fd2cjKl2tvr2FXvC7j
-         cQJQ==
-X-Gm-Message-State: AOAM531E9WN8RqPB1FPINQh/WVmsx6PFqAjraZZqAQJ6hbCQKgQ3BmVE
-        rt8h2o+6Np/a1GVjFi1kT+o=
-X-Google-Smtp-Source: ABdhPJytOYgRDnuAvvwEVLrt7yIsbidop3xJHop4swh7tXZl+QYLrUx2ALcgS/SXT6AVFL1QetZ7xg==
-X-Received: by 2002:adf:e5cf:: with SMTP id a15mr970769wrn.226.1616098256344;
-        Thu, 18 Mar 2021 13:10:56 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84? (p200300ea8f1fbb008d2c08cc6c7f1a84.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:8d2c:8cc:6c7f:1a84])
-        by smtp.googlemail.com with ESMTPSA id i26sm3670923wmb.18.2021.03.18.13.10.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 13:10:56 -0700 (PDT)
-Subject: Re: [PATCH v2 net-next] net: phy: at803x: remove at803x_aneg_done()
-To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=UrlGHrWQC65GrWtCnUbevQPCG8mhT0b6JNNJOYVBIxs=;
+        b=mIwSPtCHj41FB3PTCOM1vMA7dhKSqfD8FNa37Ik+HlAwhoesFLjcEWyDLndjQk6SGt
+         bLyhpdM/Bw8/t+NHxhJClMWlOCV84A3Xn8oabJxX+wKvtr1IkXgWtEI5ZVuzDQciDKR3
+         ozlmxTqBjyFirTe4y8IHS8GDJPXL+Tw4HdoBXGeXSNkQ0b+6UkgVOLA+koPngbegMeMy
+         lwFVNqLn5Oa8n8CdcJ+tu8rfArJGkRtcmwvyZHk979c7nCVHQJsyZ024zhvwlNXCSJbQ
+         USmNrDH9LGTDsnWVUYBYcX6fLgpy4WXlURrpvWXACUw+B7pmUh6+KJv4vBWzSKIXD4P2
+         cwTA==
+X-Gm-Message-State: AOAM531rbbbAr2tMZcjRFYhCwuNur/hKUJLTXeYqg+OzSiFP/CuLZzYb
+        4Zm/vhkz9LaJcE/8ASPD3p9UA/f/Gpw=
+X-Google-Smtp-Source: ABdhPJxnCPZBmyndEzpObEGYQRzkibgrsSxHoCxeFFY16c0rsTVGGvY5epzx5nJcp2tNEBPtv12BZ7kN7Ig=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:25e0:6b8b:f878:23d1])
+ (user=seanjc job=sendgmr) by 2002:ad4:44ef:: with SMTP id p15mr6169905qvt.25.1616098294483;
+ Thu, 18 Mar 2021 13:11:34 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 18 Mar 2021 13:11:31 -0700
+Message-Id: <20210318201131.3242619-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] KVM: x86/mmu: Rename the special lm_root to pml4_root
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>
-References: <20210318194431.14811-1-michael@walle.cc>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d4dd656a-fd30-51d2-f9bb-55ff4b4dce9b@gmail.com>
-Date:   Thu, 18 Mar 2021 21:10:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210318194431.14811-1-michael@walle.cc>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.2021 20:44, Michael Walle wrote:
-> Here is what Vladimir says about it:
-> 
->   at803x_aneg_done() keeps the aneg reporting as "not done" even when
->   the copper-side link was reported as up, but the in-band autoneg has
->   not finished.
-> 
->   That was the _intended_ behavior when that code was introduced, and
->   Heiner have said about it [1]:
-> 
->   | That's not nice from the PHY:
->   | It signals "link up", and if the system asks the PHY for link details,
->   | then it sheepishly says "well, link is *almost* up".
-> 
->   If the specification of phy_aneg_done behavior does not include
->   in-band autoneg (and it doesn't), then this piece of code does not
->   belong here.
-> 
->   The fact that we can no longer trigger this code from phylib is yet
->   another reason why it fails at its intended (and wrong) purpose and
->   should be removed.
-> 
-> Removing the SGMII link check, would just keep the call to
-> genphy_aneg_done(), which is also the fallback. Thus we can just remove
-> at803x_aneg_done() altogether.
-> 
-> [1] https://lore.kernel.org/netdev/fdf0074a-2572-5914-6f3e-77202cbf96de@gmail.com/
-> 
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+Rename the lm_root pointer, which is used when shadowing 32-bit L1 NPT
+with 64-bit L0 NPT, to pml4_root.  KVM uses dedicated logic to configure
+the levels that do not exist in L1's page tables, and to bypass them when
+walking the shadow page tables.  That dedicated logic assumes 4-level
+paging and will need to be updated if AMD ever gains 5-level paging.
 
-Reviewed-by: Heiner Kallweit <hkallweit1@gmail.com>
+No functional change intended.
+
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/include/asm/kvm_host.h |  2 +-
+ arch/x86/kvm/mmu/mmu.c          | 20 ++++++++++----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index a52f973bdff6..890ada926387 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -396,7 +396,7 @@ struct kvm_mmu {
+ 	u32 pkru_mask;
+ 
+ 	u64 *pae_root;
+-	u64 *lm_root;
++	u64 *pml4_root;
+ 
+ 	/*
+ 	 * check zero bits on shadow page table entries, these
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index c6ed633594a2..a535fe249cd1 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3324,10 +3324,10 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 	if (mmu->shadow_root_level == PT64_ROOT_4LEVEL) {
+ 		pm_mask |= PT_ACCESSED_MASK | PT_WRITABLE_MASK | PT_USER_MASK;
+ 
+-		if (WARN_ON_ONCE(!mmu->lm_root))
++		if (WARN_ON_ONCE(!mmu->pml4_root))
+ 			return -EIO;
+ 
+-		mmu->lm_root[0] = __pa(mmu->pae_root) | pm_mask;
++		mmu->pml4_root[0] = __pa(mmu->pae_root) | pm_mask;
+ 	}
+ 
+ 	for (i = 0; i < 4; ++i) {
+@@ -3347,7 +3347,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	if (mmu->shadow_root_level == PT64_ROOT_4LEVEL)
+-		mmu->root_hpa = __pa(mmu->lm_root);
++		mmu->root_hpa = __pa(mmu->pml4_root);
+ 	else
+ 		mmu->root_hpa = __pa(mmu->pae_root);
+ 
+@@ -3360,7 +3360,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+-	u64 *lm_root, *pae_root;
++	u64 *pml4_root, *pae_root;
+ 
+ 	/*
+ 	 * When shadowing 32-bit or PAE NPT with 64-bit NPT, the PML4 and PDP
+@@ -3379,14 +3379,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+ 	if (WARN_ON_ONCE(mmu->shadow_root_level != PT64_ROOT_4LEVEL))
+ 		return -EIO;
+ 
+-	if (mmu->pae_root && mmu->lm_root)
++	if (mmu->pae_root && mmu->pml4_root)
+ 		return 0;
+ 
+ 	/*
+ 	 * The special roots should always be allocated in concert.  Yell and
+ 	 * bail if KVM ends up in a state where only one of the roots is valid.
+ 	 */
+-	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->lm_root))
++	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->pml4_root))
+ 		return -EIO;
+ 
+ 	/*
+@@ -3397,14 +3397,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+ 	if (!pae_root)
+ 		return -ENOMEM;
+ 
+-	lm_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+-	if (!lm_root) {
++	pml4_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
++	if (!pml4_root) {
+ 		free_page((unsigned long)pae_root);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	mmu->pae_root = pae_root;
+-	mmu->lm_root = lm_root;
++	mmu->pml4_root = pml4_root;
+ 
+ 	return 0;
+ }
+@@ -5281,7 +5281,7 @@ static void free_mmu_pages(struct kvm_mmu *mmu)
+ 	if (!tdp_enabled && mmu->pae_root)
+ 		set_memory_encrypted((unsigned long)mmu->pae_root, 1);
+ 	free_page((unsigned long)mmu->pae_root);
+-	free_page((unsigned long)mmu->lm_root);
++	free_page((unsigned long)mmu->pml4_root);
+ }
+ 
+ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
