@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2190340730
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2404B340731
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhCRNwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        id S230525AbhCRNwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhCRNvp (ORCPT
+        with ESMTP id S229890AbhCRNvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:51:45 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C82C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:51:45 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id t7so4913471ilq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:51:45 -0700 (PDT)
+        Thu, 18 Mar 2021 09:51:47 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730C9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:51:46 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id b10so2329840iot.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 06:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2srrDw8cn09m+CV2vZOccq9oQbJCbgITCpC7n0jssaM=;
-        b=e2JHlDJgWx0zcrRy/z17I7FHWHA7KPi8UnKHAHCM2AVU05M7dsE11gRjLHWtG5S22q
-         3pQrzlsAbVANYt1FQ87RzcC3fD9SkISIMvFqHwHXXxPUWjyiCzTLBn4Fz8kC6Nq+VRSE
-         0Op/f22pGJ3hQfFIo1c+wrizoMhV7xV/W5RUto4qX1e0xk0pX6ACKh6SqowpXJsSrcqt
-         JOVH70LUaeemXOXNrEfwJh4qnP+rejK47GE8zYdCAkj8i/ohiB3IuYGDn6aG/J4QDoYP
-         jobb776Lq4lLL7UiD5geDPoRHM/H/hLSljFkBSYknMhbowHMWW3mBVSYn1XPlLB5PI3q
-         bOkQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NoHvO3wchc4QiGr0Z8Rd6w2XPY+8jpERYxAd8J28b3U=;
+        b=QqD/1ldW6WboVrXrH1BYwO9uG7UpO7bsH52+MU/5qNlPcr8WrE6f/D62nGtYCyIhTY
+         o8Y700oInS1PhdNwBsW2ZVATuA7+VEcY63//N9O33SBQNBU6oO7gjom63B4MhFWGF1fT
+         wKSVPRJIgBekQ3yQwaOrfBgpx/hFYvZxb+MgfOdaqzrxCIB9wMTdFSIBsANjOEcHDvPZ
+         QNwA5XT0vakADpAVyM1ZOxuRCXRvkx/SZrK5xe9m6BYt/oqGsTVSTpRKNxzWOoWQqRhO
+         GWNxIJJAVI77l7Yack/zJOkIVl95b08xMI5FNPL09cWEbBiSR/Am8VOK9y4lAkTgIC8Y
+         JC1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2srrDw8cn09m+CV2vZOccq9oQbJCbgITCpC7n0jssaM=;
-        b=udIk0y3djfQ/8FXLOQJqLKJt76m7Zcxj6pDWKyyy1+C1q/Q6pSeg6SAPBbLnUESgXY
-         E4bJk7MgTlgkqovrghKWrVorsCxx4n9WTPb4q5/L2m7aX+32nhsEAzEyPitWAEAPnTQL
-         F1U4c9qSapxywsWDM2LnMUDvGJQWEB0445eYlCOQ+e2GxrpuLtu2VZmaxUyK7yftY5fI
-         vpFaAuiFbt2HoPBIyqcdjyqk8F4FkV1/1ziZctEupLB2gxSWA45/77eHFP3ng7p1pPcf
-         lUXKhsCEzmc8YXQU6g+sHE/smYF1SdrlWqfA1tsufbY9dQu5yJngWSeCJ7IWtZ7S2zvH
-         9RYA==
-X-Gm-Message-State: AOAM530llQ0p89Cu2OIiR7WljFrLeiJ4+R/0K8GnSq2MnbDUUQ3fOUbo
-        4dgNdc9L9OBsIv/pTZy4IyAN5Q==
-X-Google-Smtp-Source: ABdhPJyIjlzT4FYUwNwJvj3076RJHYILTzos3p5d4DOLPIIAyMmLTEBx0VOjpoQRVQxw8O0jomRcmQ==
-X-Received: by 2002:a05:6e02:170c:: with SMTP id u12mr1712382ill.100.1616075504983;
-        Thu, 18 Mar 2021 06:51:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NoHvO3wchc4QiGr0Z8Rd6w2XPY+8jpERYxAd8J28b3U=;
+        b=RWu4o5jAspJtAYEpWOmlm80NeSv+xQOknkvuRf3gUWCg4gkaCjnmZsE3glkqjkRwd/
+         xmOU9rWPe4Y0na8PKNX+Tv1lZaJ5edWsi26VuYHib9S+hkorS1KhwztVvbA58XwpFCgM
+         0G687km72zzfhequ0SFh0AkFqYUhrNz+JKWM6FgpZ1zknhEoRAzNrROlX0sUEJz7+Dv9
+         21mDvux5xzMrXxPmzFhx6FG2DPMqGGdit0d426jlBVhKSQxMJJiFu/yrMPbYyDoscD4b
+         oZkzk8b9xjuL1Wu7FXuqKfpq3fLwFSeZXaSocXGrqxaEMVta2oCJ3tMRj20PHrZqPWVb
+         rSeA==
+X-Gm-Message-State: AOAM533gwEZ/nTe0aSr3N2ienU2t2XJ/eJNRDwsEY1FRJ7QDzALlyjoE
+        EmU1yRUxfGISCu5l+9DV7VgTvw==
+X-Google-Smtp-Source: ABdhPJwaJSgDWAzwJMx135PLH8TCcQJg8T06MYF5WTeluEOY4jOi0qNPL3T00kuqnnMl3MLwHWCEdA==
+X-Received: by 2002:a5d:9250:: with SMTP id e16mr10491974iol.27.1616075505890;
+        Thu, 18 Mar 2021 06:51:45 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id j20sm1139377ilo.78.2021.03.18.06.51.44
+        by smtp.gmail.com with ESMTPSA id j20sm1139377ilo.78.2021.03.18.06.51.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 06:51:44 -0700 (PDT)
+        Thu, 18 Mar 2021 06:51:45 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     f.fainelli@gmail.com, bjorn.andersson@linaro.org,
         evgreen@chromium.org, cpratapa@codeaurora.org,
         subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 0/4] net: ipa: support 32-bit targets
-Date:   Thu, 18 Mar 2021 08:51:37 -0500
-Message-Id: <20210318135141.583977-1-elder@linaro.org>
+Subject: [PATCH net-next v2 1/4] net: ipa: fix assumptions about DMA address size
+Date:   Thu, 18 Mar 2021 08:51:38 -0500
+Message-Id: <20210318135141.583977-2-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210318135141.583977-1-elder@linaro.org>
+References: <20210318135141.583977-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is currently a configuration dependency that restricts IPA to
-be supported only on 64-bit machines.  There are only a few things
-that really require that, and those are fixed in this series.  The
-last patch in the series removes the CONFIG_64BIT build dependency
-for IPA.
+Some build time checks in ipa_table_validate_build() assume that a
+DMA address is 64 bits wide.  That is more restrictive than it has
+to be.  A route or filter table is 64 bits wide no matter what the
+size of a DMA address is on the AP.  The code actually uses a
+pointer to __le64 to access table entries, and a fixed constant
+IPA_TABLE_ENTRY_SIZE to describe the size of those entries.
 
-Version 2 of this series uses upper_32_bits() rather than creating
-a new function to extract bits out of a DMA address.
+Loosen up two checks so they still verify some requirements, but
+such that they do not assume the size of a DMA address is 64 bits.
 
-					-Alex
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_table.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Alex Elder (4):
-  net: ipa: fix assumptions about DMA address size
-  net: ipa: use upper_32_bits()
-  net: ipa: fix table alignment requirement
-  net: ipa: relax 64-bit build requirement
-
- drivers/net/ipa/Kconfig     |  2 +-
- drivers/net/ipa/gsi.c       |  4 ++--
- drivers/net/ipa/ipa_main.c  | 10 ++++++++--
- drivers/net/ipa/ipa_table.c | 34 ++++++++++++++++++++--------------
- 4 files changed, 31 insertions(+), 19 deletions(-)
-
+diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
+index 7450e27068f19..dd07fe9dd87a3 100644
+--- a/drivers/net/ipa/ipa_table.c
++++ b/drivers/net/ipa/ipa_table.c
+@@ -126,13 +126,15 @@ static void ipa_table_validate_build(void)
+ 	 */
+ 	BUILD_BUG_ON(ARCH_DMA_MINALIGN % IPA_TABLE_ALIGN);
+ 
+-	/* Filter and route tables contain DMA addresses that refer to
+-	 * filter or route rules.  We use a fixed constant to represent
+-	 * the size of either type of table entry.  Code in ipa_table_init()
+-	 * uses a pointer to __le64 to initialize table entriews.
++	/* Filter and route tables contain DMA addresses that refer
++	 * to filter or route rules.  But the size of a table entry
++	 * is 64 bits regardless of what the size of an AP DMA address
++	 * is.  A fixed constant defines the size of an entry, and
++	 * code in ipa_table_init() uses a pointer to __le64 to
++	 * initialize tables.
+ 	 */
+-	BUILD_BUG_ON(IPA_TABLE_ENTRY_SIZE != sizeof(dma_addr_t));
+-	BUILD_BUG_ON(sizeof(dma_addr_t) != sizeof(__le64));
++	BUILD_BUG_ON(sizeof(dma_addr_t) > IPA_TABLE_ENTRY_SIZE);
++	BUILD_BUG_ON(sizeof(__le64) != IPA_TABLE_ENTRY_SIZE);
+ 
+ 	/* A "zero rule" is used to represent no filtering or no routing.
+ 	 * It is a 64-bit block of zeroed memory.  Code in ipa_table_init()
 -- 
 2.27.0
 
