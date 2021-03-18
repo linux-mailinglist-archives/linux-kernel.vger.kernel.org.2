@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E3A340CF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C91340CE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 19:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhCRS3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 14:29:16 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63892 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbhCRS3K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:29:10 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id 820c3476cb80a778; Thu, 18 Mar 2021 19:29:08 +0100
-Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 42D9D668FA9;
-        Thu, 18 Mar 2021 19:29:08 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        David Box <david.e.box@linux.intel.com>
-Subject: [PATCH v2 1/2] ACPI: scan: Turn off unused power resources during initialization
-Date:   Thu, 18 Mar 2021 19:25:12 +0100
-Message-ID: <9860889.nUPlyArG6x@kreacher>
-In-Reply-To: <3108574.44csPzL39Z@kreacher>
-References: <3108574.44csPzL39Z@kreacher>
+        id S231701AbhCRS03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 14:26:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232260AbhCRS0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:26:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01F364F1F;
+        Thu, 18 Mar 2021 18:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616091971;
+        bh=LA+r6D7m6AvZU8wuhj/IzzDyDVbkFpktbFnAV3fhL28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AzB/AcnyIbEKFHztNHVvwDayVAqwTDd2mSG/o6sbtKIyBZHKlff8PIf5SIWr2iKw5
+         mIhJ4+JMTZXoUTvBot/OXKopUL2AvoxNkdOjKM1iTs90ghNW+Vm2f5NdXZh3qv/w+L
+         xXR2hLGjovCMgLODZbytYaIdXUE4iqXfLsqM/HBfHs3+SIuadV1ZMsTnjdWUsz0Bzj
+         VoK73kMvzFF1dyK0VJnPxulq539B0aJoLOHIuauc/xYi2LDIrOJcdkf4cwCQE7wjfN
+         hLZBRmTqbXtQED9JX5m79Bs2reMnTIo9thxv9rtx8zWFAsvezlZD4QabM0wca4Oq5Z
+         uow2Ffn7qEeHQ==
+Date:   Thu, 18 Mar 2021 18:26:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/8] arm64: Terminate the stack trace at
+ TASK_FRAME and EL0_FRAME
+Message-ID: <20210318182607.GO5469@sirena.org.uk>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-4-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfekveffledtuefgueevudetgfeukeegudeufeeljeetgfetleefudevledvtdejnecuffhomhgrihhnpehuvghfihdrohhrghenucfkphepkeelrdeigedrkedtrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvhedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrvhhiugdrvgdrsghogieslhhinhhugidrihhnthgvlhdrtgho
- mh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z87VqPJ/HsYrR2WM"
+Content-Disposition: inline
+In-Reply-To: <20210315165800.5948-4-madvenka@linux.microsoft.com>
+X-Cookie: You are false data.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-It is reported that on certain platforms there are power resources
-that are not associated with any devices physically present in the
-platform.  Those power resources are expected to be turned off by
-the OS in accordance with the ACPI specification (section 7.3 of
-ACPI 6.4) which currently is not done by Linux and that may lead
-to obscure issues.
+--z87VqPJ/HsYrR2WM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For instance, leaving those power resources in the "on" state may
-prevent the platform from reaching the lowest power state in
-suspend-to-idle which leads to excessive power draw.
+On Mon, Mar 15, 2021 at 11:57:55AM -0500, madvenka@linux.microsoft.com wrot=
+e:
 
-For this reason, turn all of the unused ACPI power resources off
-at the end of the initial namespace scan for devices in analogy with
-resume from suspend-to-RAM.
+> +	/* Terminal record, nothing to unwind */
+> +	if (fp =3D=3D (unsigned long) regs->stackframe) {
+> +		if (regs->frame_type =3D=3D TASK_FRAME ||
+> +		    regs->frame_type =3D=3D EL0_FRAME)
+> +			return -ENOENT;
+>  		return -EINVAL;
+> +	}
 
-Link: https://uefi.org/specs/ACPI/6.4/07_Power_and_Performance_Mgmt/device-power-management-objects.html
-Reported-by: David Box <david.e.box@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+This is conflating the reliable stacktrace checks (which your series
+will later flag up with frame->reliable) with verifying that we found
+the bottom of the stack by looking for this terminal stack frame record.
+For the purposes of determining if the unwinder got to the bottom of the
+stack we don't care what stack type we're looking at, we just care if it
+managed to walk to this defined final record. =20
 
--> v2: Expand the changelog somewhat and make it build with CONFIG_PM_SLEEP
-       unset.
+At the minute nothing except reliable stack trace has any intention of
+checking the specific return code but it's clearer to be consistent.
 
----
- drivers/acpi/internal.h |    1 +
- drivers/acpi/power.c    |    2 +-
- drivers/acpi/scan.c     |    2 ++
- drivers/acpi/sleep.h    |    1 -
- 4 files changed, 4 insertions(+), 2 deletions(-)
+--z87VqPJ/HsYrR2WM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -139,6 +139,7 @@ int acpi_device_sleep_wake(struct acpi_d
- int acpi_power_get_inferred_state(struct acpi_device *device, int *state);
- int acpi_power_on_resources(struct acpi_device *device, int state);
- int acpi_power_transition(struct acpi_device *device, int state);
-+void acpi_turn_off_unused_power_resources(void);
- 
- /* --------------------------------------------------------------------------
-                               Device Power Management
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -2360,6 +2360,8 @@ int __init acpi_scan_init(void)
- 		}
- 	}
- 
-+	acpi_turn_off_unused_power_resources();
-+
- 	acpi_scan_initialized = true;
- 
-  out:
-Index: linux-pm/drivers/acpi/sleep.h
-===================================================================
---- linux-pm.orig/drivers/acpi/sleep.h
-+++ linux-pm/drivers/acpi/sleep.h
-@@ -8,7 +8,6 @@ extern struct list_head acpi_wakeup_devi
- extern struct mutex acpi_device_lock;
- 
- extern void acpi_resume_power_resources(void);
--extern void acpi_turn_off_unused_power_resources(void);
- 
- static inline acpi_status acpi_set_waking_vector(u32 wakeup_address)
- {
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -996,6 +996,7 @@ void acpi_resume_power_resources(void)
- 
- 	mutex_unlock(&power_resource_list_lock);
- }
-+#endif
- 
- void acpi_turn_off_unused_power_resources(void)
- {
-@@ -1025,4 +1026,3 @@ void acpi_turn_off_unused_power_resource
- 
- 	mutex_unlock(&power_resource_list_lock);
- }
--#endif
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTmz8ACgkQJNaLcl1U
+h9Cf4wf9GiUVSakCRf5uwTSCNkO20M1jY8gGOIf0HAWMgakyvTKAsskA/ejAOckA
+rAFeoOQAiW+U82Xxi3cvoM7Q9/nPp4D0nUEbSVN+LEoNM1BD3PXuYwrv8BLr2mh8
+Ow3HG0jZ87pBCvQa0tKD+l7sGJEDplfsx/GeM/diTBn8YTquajA5HQdDlJEJeWzz
+vhJiQlkNLmsJVAk3rJ+IuzteoOb6L7CfkdVT+aBtfa1TLqRK3XmLJU5GLe+nbHBP
+0/MdK5UMb7jvvZnfn3jDyFpYzhk8RgUu9VYrLYHeDAr1OdpYdY/KB/zrcSb58brt
+3jGrgdNQgiIMaAToV9BX4H/4nslg3A==
+=jp9g
+-----END PGP SIGNATURE-----
 
-
+--z87VqPJ/HsYrR2WM--
