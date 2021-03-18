@@ -2,202 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0953733FD2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D2833FD32
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCRCYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhCRCY3 (ORCPT
+        id S230391AbhCRCZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:25:38 -0400
+Received: from m42-10.mailgun.net ([69.72.42.10]:27070 "EHLO
+        m42-10.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhCRCZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:24:29 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6BAC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:24:29 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id h7so3014364qtx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 19:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KtRoYljdLC9wtNNIQKgFt5kI0MSMpD7ofw+TcTRYVTo=;
-        b=JfToSI4kaBWN0qUCBE3Q9DPIPE+BeYzj516ZRCD8oSKbGgEMflIpd0jqn35vszBpcd
-         yjLvJ6rOzzl7lbCJNBeS+dVViSca835sOdLEqwobmUNnPRU/e9eB8ySyuLcQdYD/1cZR
-         rcR+f9zoMB6RrIC7oI9D41mj2eOo3invqQWGOFjJEC+KJDEobUPN+1rf1hN5IBr9HV7G
-         2HpHXcLujlcEnnLl6UQltvehTTmen5x0F20lWJ6zwYZJoZuqyEw2h3u5NY2+43IvhwSE
-         uQImVhSaRSxIUdtNz1tQttGY7vMzKJYvADyMf5yTWL/hvqNnAHjef+eEXh6PbuVkXtiF
-         +27g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KtRoYljdLC9wtNNIQKgFt5kI0MSMpD7ofw+TcTRYVTo=;
-        b=LgzthnBskBsYS05gUIUJWTK3byr0k8EGbRMeXa7mYmpQ5K/tNRKv28zQxwtbkcUU7D
-         b1I8hphfd+evOffulC1M+BDJg5EiCzTfxfy/69s487C14QVQq9pzg7qcQtywfMS5fqLI
-         DKCdluwlcMfVXc86/WM4Y+AWev2xleDsD3ALm1ZB8rotHd1FaasDHubd/gRnzsfURlyX
-         w+M+y9npJGMBb12eEmXncuEKgWCJDp2vk5EQAAGkwGqg6T4rIDeWVSGYdkt1GSnlp8k0
-         9vmBqVK5mD62MHot3kQ8ymjR5rkInYwd4VJ3+VeXk5n37cF+XHqeHDtqOTgc/Ra1SEzq
-         lt6A==
-X-Gm-Message-State: AOAM531K9H1YQa68VNcH5TUcrQNeTGgyqy+agf/3gSZ7Uo+rfRZPFKt/
-        8Oh2XRt7ZNzCWKATb+dYpunl6WAtI2E=
-X-Google-Smtp-Source: ABdhPJyNnvqcFY+48bD8tIZhHR/XsONgsjw+gmjBccW4w0CYZ+ElnkHjDTxNhP8nn4kJO+souNTKrQ==
-X-Received: by 2002:ac8:e81:: with SMTP id v1mr1821498qti.23.1616034268524;
-        Wed, 17 Mar 2021 19:24:28 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id c73sm780161qkg.6.2021.03.17.19.24.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 19:24:27 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 207D127C0054;
-        Wed, 17 Mar 2021 22:24:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 17 Mar 2021 22:24:27 -0400
-X-ME-Sender: <xms:2rlSYFuSYUqzExcTnMqNQ2mslkZ1cwQvEcE27CtRfjjdkaiz6eAjJw>
-    <xme:2rlSYOcu43JQGwSmBhQAfCkItKhx8YaHd8jwGXg590-5E7eGKJdZukjZfIgwnt1xJ
-    7fikgXO0Wn930KMNA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefhedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:2rlSYIzaMo1CTfAIEb37Xj08UOFK1ZOPg6E8TDLsUakccelWG17S2A>
-    <xmx:2rlSYMNB9PSYoNmH87-_HxbMfMLrXa80pEelsbZsMt9aHks1EStpBQ>
-    <xmx:2rlSYF_2HLVQTCBlC4iSR8IuYxu5oU71aS39k45tMx014FZL6bVO-w>
-    <xmx:2rlSYFxElMIH4fxCYUGLfYYsyRK5KYg1dr5kMeM5KzBkS7S3HEi76gdf_ZY>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C8CA11080057;
-        Wed, 17 Mar 2021 22:24:25 -0400 (EDT)
-Date:   Thu, 18 Mar 2021 10:24:08 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 3/4] locking/ww_mutex: Treat ww_mutex_lock() like a
- trylock
-Message-ID: <YFK5yBIOTiCdFLNm@boqun-archlinux>
-References: <20210316153119.13802-1-longman@redhat.com>
- <20210316153119.13802-4-longman@redhat.com>
+        Wed, 17 Mar 2021 22:25:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616034324; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=9OVRYWeKxwlfoYuBt7ZYL9s11Cp8A5cQWTZtoEYsSxw=;
+ b=H3tgJ9qp/2rr+zLcKqFSXrWttDJJvPMmXc1bncAlrffGFJSVkbw1WpdON0ZH3pUUTWyRxLdi
+ qa1lEoq+HWuIVe5f7zQbnA9x/iJMEJwgNxR1rMntP0zlRTNlYvWaFTZAS31lsu3RMLRSvBGz
+ Us0l/2GEQp3vV+6iAxQCTW5KM0M=
+X-Mailgun-Sending-Ip: 69.72.42.10
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6052ba14e3fca7d0a67e05c4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Mar 2021 02:25:24
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C6EC6C433ED; Thu, 18 Mar 2021 02:25:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37738C433CA;
+        Thu, 18 Mar 2021 02:25:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316153119.13802-4-longman@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Mar 2021 10:25:21 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        bvanassche@acm.org, huobean@gmail.com,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+In-Reply-To: <20210318020243epcms2p8259fa1d5e99e3c463c6b9e9106693476@epcms2p8>
+References: <79aea8a80c1be2ff7f05683c2f4918ce@codeaurora.org>
+ <a18909e8f4db023455b7513bf6c60312@codeaurora.org>
+ <2da1c963bd3ff5f682d18a251ed08989@codeaurora.org>
+ <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+ <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+ <20210315070728epcms2p87136c86803afa85a441ead524130245c@epcms2p8>
+ <d6a4511fd85e6e47c5aef22e335bb253@codeaurora.org>
+ <20210317014253epcms2p1f45db6a281645282e1540e0070999d73@epcms2p1>
+ <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p8>
+ <20210318020243epcms2p8259fa1d5e99e3c463c6b9e9106693476@epcms2p8>
+Message-ID: <9c2be83e3fe9de29c503318053fd7fdd@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Waiman,
+On 2021-03-18 10:02, Daejun Park wrote:
+>> On 2021-03-17 09:42, Daejun Park wrote:
+>>>> On 2021-03-15 15:23, Can Guo wrote:
+>>>>> On 2021-03-15 15:07, Daejun Park wrote:
+>>>>>>>> This patch supports the HPB 2.0.
+>>>>>>>> 
+>>>>>>>> The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
+>>>>>>>> In the case of Read (<= 32KB) is supported as single HPB read.
+>>>>>>>> In the case of Read (36KB ~ 512KB) is supported by as a
+>>>>>>>> combination
+>>>>>>>> of
+>>>>>>>> write buffer command and HPB read command to deliver more PPN.
+>>>>>>>> The write buffer commands may not be issued immediately due to
+>>>>>>>> busy
+>>>>>>>> tags.
+>>>>>>>> To use HPB read more aggressively, the driver can requeue the
+>>>>>>>> write
+>>>>>>>> buffer
+>>>>>>>> command. The requeue threshold is implemented as timeout and can
+>>>>>>>> be
+>>>>>>>> modified with requeue_timeout_ms entry in sysfs.
+>>>>>>>> 
+>>>>>>>> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+>>>>>>>> ---
+>>>>>>>> +static struct attribute *hpb_dev_param_attrs[] = {
+>>>>>>>> +        &dev_attr_requeue_timeout_ms.attr,
+>>>>>>>> +        NULL,
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>> +struct attribute_group ufs_sysfs_hpb_param_group = {
+>>>>>>>> +        .name = "hpb_param_sysfs",
+>>>>>>>> +        .attrs = hpb_dev_param_attrs,
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>> +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
+>>>>>>>> +{
+>>>>>>>> +        struct ufshpb_req *pre_req = NULL;
+>>>>>>>> +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
+>>>>>>>> +        int i, j;
+>>>>>>>> +
+>>>>>>>> +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
+>>>>>>>> +
+>>>>>>>> +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req),
+>>>>>>>> GFP_KERNEL);
+>>>>>>>> +        hpb->throttle_pre_req = qd;
+>>>>>>>> +        hpb->num_inflight_pre_req = 0;
+>>>>>>>> +
+>>>>>>>> +        if (!hpb->pre_req)
+>>>>>>>> +                goto release_mem;
+>>>>>>>> +
+>>>>>>>> +        for (i = 0; i < qd; i++) {
+>>>>>>>> +                pre_req = hpb->pre_req + i;
+>>>>>>>> +                INIT_LIST_HEAD(&pre_req->list_req);
+>>>>>>>> +                pre_req->req = NULL;
+>>>>>>>> +                pre_req->bio = NULL;
+>>>>>>> 
+>>>>>>> Why don't prepare bio as same as wb.m_page? Won't that save more
+>>>>>>> time
+>>>>>>> for ufshpb_issue_pre_req()?
+>>>>>> 
+>>>>>> It is pre_req pool. So although we prepare bio at this time, it 
+>>>>>> just
+>>>>>> only for first pre_req.
+>>>>> 
+>>>>> I meant removing the bio_alloc() in ufshpb_issue_pre_req() and
+>>>>> bio_put()
+>>>>> in ufshpb_pre_req_compl_fn(). bios, in pre_req's case, just hold a
+>>>>> page.
+>>>>> So, prepare 16 (if queue depth is 32) bios here, just use them 
+>>>>> along
+>>>>> with
+>>>>> wb.m_page and call bio_reset() in ufshpb_pre_req_compl_fn(). Shall 
+>>>>> it
+>>>>> work?
+>>>>> 
+>>>> 
+>>>> If it works, you can even have the bio_add_pc_page() called here.
+>>>> Later
+>>>> in
+>>>> ufshpb_execute_pre_req(), you don't need to call
+>>>> ufshpb_pre_req_add_bio_page(),
+>>>> just call ufshpb_prep_entry() once instead - it save many repeated
+>>>> steps
+>>>> for a
+>>>> pre_req, and you don't even need to call bio_reset() in this case,
+>>>> since
+>>>> for a
+>>>> bio, nothing changes after it is binded with a specific page...
+>>> 
+>>> Hi, Can Guo
+>>> 
+>>> I tried the idea that you suggested, but it doesn't work properly.
+>>> This optimization should be done next time for enhancement.
+>> 
+>> Can you elaborate please? Any error seen?
+>> 
+>> Per my understanding, in the case for pre_reqs, a bio is no different
+>> from a page. Here it can reserve 16 pages for later use, which can be
+>> done the same for bios.
+> 
+> I found some problem with re-using pre allocated bio.
+> 
+> The following kernel message is related with problem.
+> [    2.750530] ------------[ cut here ]------------
+> [    2.751404] WARNING: CPU: 4 PID: 170 at
+> drivers/scsi/scsi_lib.c:1020 scsi_alloc_sgtables+0x253/0x2b0
+> [    2.753054] Modules linked in:
+> [    2.753651] CPU: 4 PID: 170 Comm: mount Not tainted 5.12.0-rc1+ #331
+> [    2.754752] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> [    2.756813] RIP: 0010:scsi_alloc_sgtables+0x253/0x2b0
+> [    2.757699] Code: 85 c0 74 19 41 0f b6 44 24 18 8d 50 e0 83 fa 03
+> 76 30 41 bd 01 00 00 00 e9 1f fe ff ff be 01 00 00 00 45 31 ed e9 19
+> fe ff ff <0f> 0b b8 0a f
+> [    2.761021] RSP: 0018:ffffb06e0027f538 EFLAGS: 00010246
+> [    2.761902] RAX: 0000000000000000 RBX: ffff9c3a42d424d0 RCX: 
+> ffffb06e0027f5e0
+> [    2.763184] RDX: ffff9c3a42d426a8 RSI: 0000000000000000 RDI: 
+> ffff9c3a42d424d0
+> [    2.764446] RBP: ffffb06e0027f570 R08: 0000000000000000 R09: 
+> 0000000000000000
+> [    2.765704] R10: ffffffff8eb0dda0 R11: 00000000fffb7675 R12: 
+> ffff9c3a42d423c0
+> [    2.766976] R13: 0000000000000000 R14: ffff9c3a41bed000 R15: 
+> ffff9c3a420f4000
+> [    2.768225] FS:  00007f42d1eab100(0000) GS:ffff9c3b77c00000(0000)
+> knlGS:0000000000000000
+> [    2.769666] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.770719] CR2: 00007f42d1ac1000 CR3: 0000000104bee006 CR4: 
+> 0000000000370ee0
+> [    2.771997] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+> 0000000000000000
+> [    2.773288] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+> 0000000000000400
+> [    2.774543] Call Trace:
+> [    2.775092]  scsi_queue_rq+0x9b6/0xb20
+> [    2.775754]  __blk_mq_try_issue_directly+0x150/0x1f0
+> [    2.776636]  blk_mq_request_issue_directly+0x49/0x80
+> [    2.777616]  blk_insert_cloned_request+0x85/0xd0
+> [    2.778470]  ufshpb_prep.cold+0x793/0x7be
+> [    2.779179]  ufshcd_queuecommand+0x114/0x690
+> [    2.779986]  scsi_queue_rq+0x38a/0xb20
+> [    2.780755]  blk_mq_dispatch_rq_list+0x13d/0x760
+> [    2.781605]  ? dd_dispatch_request+0x67/0x1c0
+> [    2.782337]  __blk_mq_do_dispatch_sched+0xb5/0x2c0
+> [    2.783291]  __blk_mq_sched_dispatch_requests+0x13c/0x180
+> [    2.784209]  blk_mq_sched_dispatch_requests+0x30/0x60
+> [    2.785195]  __blk_mq_run_hw_queue+0x49/0x90
+> [    2.786024]  __blk_mq_delay_run_hw_queue+0x162/0x180
+> [    2.786890]  blk_mq_run_hw_queue+0x85/0xe0
+> [    2.787590]  blk_mq_sched_insert_requests+0xdf/0x2b0
+> [    2.788558]  blk_mq_flush_plug_list+0x118/0x240
+> [    2.789405]  blk_flush_plug_list+0xde/0x110
+> [    2.790225]  blk_finish_plug+0x21/0x30
+> [    2.790878]  read_pages+0x16a/0x1d0
+> [    2.791534]  page_cache_ra_unbounded+0x123/0x1c0
+> [    2.792392]  do_page_cache_ra+0x38/0x40
+> [    2.793183]  force_page_cache_ra+0x97/0x110
+> [    2.793875]  page_cache_sync_ra+0x26/0x50
+> [    2.794671]  filemap_get_pages+0xc8/0x4b0
+> [    2.795482]  filemap_read+0xc9/0x340
+> [    2.796144]  ? find_held_lock+0x31/0x90
+> [    2.796809]  generic_file_read_iter+0xcc/0x130
+> [    2.797644]  blkdev_read_iter+0x30/0x40
+> [    2.798436]  new_sync_read+0x10e/0x190
+> [    2.799112]  vfs_read+0x178/0x1d0
+> [    2.799732]  ksys_read+0x6b/0xf0
+> [    2.800361]  __x64_sys_read+0x15/0x20
+> [    2.801027]  do_syscall_64+0x38/0x50
+> [    2.801770]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [    2.802655] RIP: 0033:0x7f42d209a461
+> [    2.803313] Code: fe ff ff 50 48 8d 3d fe d0 09 00 e8 e9 03 02 00
+> 66 0f 1f 84 00 00 00 00 00 48 8d 05 99 62 0d 00 8b 00 85 c0 75 13 31
+> c0 0f 05 <48> 3d 00 f0 8
+> [    2.806632] RSP: 002b:00007ffe7b88bc88 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000000
+> [    2.807942] RAX: ffffffffffffffda RBX: 000055ccb2e070d0 RCX: 
+> 00007f42d209a461
+> [    2.809218] RDX: 0000000000040000 RSI: 00007f42d1ac1038 RDI: 
+> 0000000000000004
+> [    2.810482] RBP: 000055ccb2e07120 R08: 00007f42d1ac1010 R09: 
+> 0000000000000000
+> [    2.811729] R10: 0000000000000022 R11: 0000000000000246 R12: 
+> 0000003b95fc0000
+> [    2.813005] R13: 0000000000040000 R14: 00007f42d1ac1028 R15: 
+> 00007f42d1ac1010
+> [    2.814276] irq event stamp: 9319
+> [    2.814868] hardirqs last  enabled at (9327): [<ffffffff8c4d2033>]
+> console_unlock+0x4d3/0x5e0
+> [    2.816349] hardirqs last disabled at (9336): [<ffffffff8c4d1fa6>]
+> console_unlock+0x446/0x5e0
+> [    2.817837] softirqs last  enabled at (8674): [<ffffffff8d4002ec>]
+> __do_softirq+0x2ec/0x40f
+> [    2.819298] softirqs last disabled at (8669): [<ffffffff8c46ad9e>]
+> irq_exit_rcu+0xae/0xb0
+> [    2.820744] ---[ end trace af3986a7787eeecf ]---
+> 
+> It is related to bi_iter value of bio is changed after use it.
+> 
 
-Just a question out of curiosity: how does this problem hide so long?
-;-) Because IIUC, both locktorture and ww_mutex_lock have been there for
-a while, so why didn't we spot this earlier?
+Can you share the change through attechment?
 
-I ask just to make sure we don't introduce the problem because of some
-subtle problems in lock(dep).
+Thanks,
+Can Guo.
 
-Regards,
-Boqun
-
-On Tue, Mar 16, 2021 at 11:31:18AM -0400, Waiman Long wrote:
-> It was found that running the ww_mutex_lock-torture test produced the
-> following lockdep splat almost immediately:
+> Thanks,
+> Daejun
 > 
-> [  103.892638] ======================================================
-> [  103.892639] WARNING: possible circular locking dependency detected
-> [  103.892641] 5.12.0-rc3-debug+ #2 Tainted: G S      W
-> [  103.892643] ------------------------------------------------------
-> [  103.892643] lock_torture_wr/3234 is trying to acquire lock:
-> [  103.892646] ffffffffc0b35b10 (torture_ww_mutex_2.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x316/0x720 [locktorture]
-> [  103.892660]
-> [  103.892660] but task is already holding lock:
-> [  103.892661] ffffffffc0b35cd0 (torture_ww_mutex_0.base){+.+.}-{3:3}, at: torture_ww_mutex_lock+0x3e2/0x720 [locktorture]
-> [  103.892669]
-> [  103.892669] which lock already depends on the new lock.
-> [  103.892669]
-> [  103.892670]
-> [  103.892670] the existing dependency chain (in reverse order) is:
-> [  103.892671]
-> [  103.892671] -> #2 (torture_ww_mutex_0.base){+.+.}-{3:3}:
-> [  103.892675]        lock_acquire+0x1c5/0x830
-> [  103.892682]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-> [  103.892687]        ww_mutex_lock+0x4b/0x180
-> [  103.892690]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-> [  103.892694]        lock_torture_writer+0x142/0x3a0 [locktorture]
-> [  103.892698]        kthread+0x35f/0x430
-> [  103.892701]        ret_from_fork+0x1f/0x30
-> [  103.892706]
-> [  103.892706] -> #1 (torture_ww_mutex_1.base){+.+.}-{3:3}:
-> [  103.892709]        lock_acquire+0x1c5/0x830
-> [  103.892712]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-> [  103.892715]        ww_mutex_lock+0x4b/0x180
-> [  103.892717]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-> [  103.892721]        lock_torture_writer+0x142/0x3a0 [locktorture]
-> [  103.892725]        kthread+0x35f/0x430
-> [  103.892727]        ret_from_fork+0x1f/0x30
-> [  103.892730]
-> [  103.892730] -> #0 (torture_ww_mutex_2.base){+.+.}-{3:3}:
-> [  103.892733]        check_prevs_add+0x3fd/0x2470
-> [  103.892736]        __lock_acquire+0x2602/0x3100
-> [  103.892738]        lock_acquire+0x1c5/0x830
-> [  103.892740]        __ww_mutex_lock.constprop.15+0x1d1/0x2e50
-> [  103.892743]        ww_mutex_lock+0x4b/0x180
-> [  103.892746]        torture_ww_mutex_lock+0x316/0x720 [locktorture]
-> [  103.892749]        lock_torture_writer+0x142/0x3a0 [locktorture]
-> [  103.892753]        kthread+0x35f/0x430
-> [  103.892755]        ret_from_fork+0x1f/0x30
-> [  103.892757]
-> [  103.892757] other info that might help us debug this:
-> [  103.892757]
-> [  103.892758] Chain exists of:
-> [  103.892758]   torture_ww_mutex_2.base --> torture_ww_mutex_1.base --> torture_ww_mutex_0.base
-> [  103.892758]
-> [  103.892763]  Possible unsafe locking scenario:
-> [  103.892763]
-> [  103.892764]        CPU0                    CPU1
-> [  103.892765]        ----                    ----
-> [  103.892765]   lock(torture_ww_mutex_0.base);
-> [  103.892767] 				      lock(torture_ww_mutex_1.base);
-> [  103.892770] 				      lock(torture_ww_mutex_0.base);
-> [  103.892772]   lock(torture_ww_mutex_2.base);
-> [  103.892774]
-> [  103.892774]  *** DEADLOCK ***
-> 
-> Since ww_mutex is supposed to be deadlock-proof if used properly, such
-> deadlock scenario should not happen. To avoid this false positive splat,
-> treat ww_mutex_lock() like a trylock().
-> 
-> After applying this patch, the locktorture test can run for a long time
-> without triggering the circular locking dependency splat.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/locking/mutex.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 622ebdfcd083..bb89393cd3a2 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -946,7 +946,10 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
->  	}
->  
->  	preempt_disable();
-> -	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
-> +	/*
-> +	 * Treat as trylock for ww_mutex.
-> +	 */
-> +	mutex_acquire_nest(&lock->dep_map, subclass, !!ww_ctx, nest_lock, ip);
->  
->  	if (__mutex_trylock(lock) ||
->  	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
-> -- 
-> 2.18.1
-> 
+>> This is not an enhancement, but a doubt - why not? Unless it is not
+>> doable.
+>> 
+>> Thanks,
+>> Can Guo.
+>> 
+>>> 
+>>> Thanks
+>>> Daejun
+>>> 
+>>>> Can Guo.
+>>>> 
+>>>>> Thanks,
+>>>>> Can Guo.
+>>>>> 
+>>>>>> After use it, it should be prepared bio at issue phase.
+>>>>>> 
+>>>>>> Thanks,
+>>>>>> Daejun
+>>>>>> 
+>>>>>>> 
+>>>>>>> Thanks,
+>>>>>>> Can Guo.
+>>>>>>> 
+>>>>>>>> +
+>>>>>>>> +                pre_req->wb.m_page = alloc_page(GFP_KERNEL |
+>>>>>>>> __GFP_ZERO);
+>>>>>>>> +                if (!pre_req->wb.m_page) {
+>>>>>>>> +                        for (j = 0; j < i; j++)
+>>>>>>>> +
+>>>>>>>> __free_page(hpb->pre_req[j].wb.m_page);
+>>>>>>>> +
+>>>>>>>> +                        goto release_mem;
+>>>>>>>> +                }
+>>>>>>>> +                list_add_tail(&pre_req->list_req,
+>>>>>>>> &hpb->lh_pre_req_free);
+>>>>>>>> +        }
+>>>>>>>> +
+>>>>>>>> +        return 0;
+>>>>>>>> +release_mem:
+>>>>>>>> +        kfree(hpb->pre_req);
+>>>>>>>> +        return -ENOMEM;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>> 
+>>>>>>> 
+>>>>>>> 
+>>>> 
+>>>> 
+>>>> 
+>> 
+>> 
+>> 
