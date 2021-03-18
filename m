@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF11C3401D4
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9D43401D2
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhCRJUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:20:09 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:41767 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229558AbhCRJTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:19:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0USPiPP1_1616059157;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USPiPP1_1616059157)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Mar 2021 17:19:28 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] scsi: aha1542: remove unneeded semicolon
-Date:   Thu, 18 Mar 2021 17:19:15 +0800
-Message-Id: <1616059155-52449-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229807AbhCRJUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:20:10 -0400
+Received: from 8bytes.org ([81.169.241.247]:59542 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhCRJTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:19:44 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id C40F32D8; Thu, 18 Mar 2021 10:19:42 +0100 (CET)
+Date:   Thu, 18 Mar 2021 10:19:41 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH 3/3] KVM: SVM: allow to intercept all exceptions for debug
+Message-ID: <YFMbLWLlGgbOJuN/@8bytes.org>
+References: <20210315221020.661693-1-mlevitsk@redhat.com>
+ <20210315221020.661693-4-mlevitsk@redhat.com>
+ <YFBtI55sVzIJ15U+@8bytes.org>
+ <4116d6ce75a85faccfe7a2b3967528f0561974ae.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4116d6ce75a85faccfe7a2b3967528f0561974ae.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Tue, Mar 16, 2021 at 12:51:20PM +0200, Maxim Levitsky wrote:
+> I agree but what is wrong with that? 
+> This is a debug feature, and it only can be enabled by the root,
+> and so someone might actually want this case to happen
+> (e.g to see if a SEV guest can cope with extra #VC exceptions).
 
-./drivers/scsi/aha1542.c:569:2-3: Unneeded semicolon.
-./drivers/scsi/aha1542.c:554:2-3: Unneeded semicolon.
-./drivers/scsi/aha1542.c:519:2-3: Unneeded semicolon.
-./drivers/scsi/aha1542.c:508:3-4: Unneeded semicolon.
-./drivers/scsi/aha1542.c:407:2-3: Unneeded semicolon.
+That doesn't make sense, we know that and SEV-ES guest can't cope with
+extra #VC exceptions, so there is no point in testing this. It is more a
+way to shot oneself into the foot for the user and a potential source of
+bug reports for SEV-ES guests.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/scsi/aha1542.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
-index 21aab9f5b117..6d4d7d60bfba 100644
---- a/drivers/scsi/aha1542.c
-+++ b/drivers/scsi/aha1542.c
-@@ -404,7 +404,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
- 						 */
- 		my_done(tmp_cmd);
- 		number_serviced++;
--	};
-+	}
- }
- 
- static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
-@@ -505,7 +505,7 @@ static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
- 		scsi_for_each_sg(cmd, sg, sg_count, i) {
- 			any2scsi(acmd->chain[i].dataptr, sg_dma_address(sg));
- 			any2scsi(acmd->chain[i].datalen, sg_dma_len(sg));
--		};
-+		}
- 		any2scsi(ccb[mbo].datalen, sg_count * sizeof(struct chain));
- 		any2scsi(ccb[mbo].dataptr, acmd->chain_handle);
- #ifdef DEBUG
-@@ -516,7 +516,7 @@ static int aha1542_queuecommand(struct Scsi_Host *sh, struct scsi_cmnd *cmd)
- 		ccb[mbo].op = 0;	/* SCSI Initiator Command */
- 		any2scsi(ccb[mbo].datalen, 0);
- 		any2scsi(ccb[mbo].dataptr, 0);
--	};
-+	}
- 	ccb[mbo].idlun = (target & 7) << 5 | direction | (lun & 7);	/*SCSI Target Id */
- 	ccb[mbo].rsalen = 16;
- 	ccb[mbo].linkptr[0] = ccb[mbo].linkptr[1] = ccb[mbo].linkptr[2] = 0;
-@@ -551,7 +551,7 @@ static void setup_mailboxes(struct Scsi_Host *sh)
- 		any2scsi(aha1542->mb[i].ccbptr,
- 			 aha1542->ccb_handle + i * sizeof(struct ccb));
- 		aha1542->mb[AHA1542_MAILBOXES + i].status = 0;
--	};
-+	}
- 	aha1542_intr_reset(sh->io_port);	/* reset interrupts, so they don't block */
- 	any2scsi(mb_cmd + 2, aha1542->mb_handle);
- 	if (aha1542_out(sh->io_port, mb_cmd, 5))
-@@ -564,9 +564,9 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
- 	u8 inquiry_result[3];
- 	int i;
- 	i = inb(STATUS(sh->io_port));
--	if (i & DF) {
-+	if (i & DF)
- 		i = inb(DATA(sh->io_port));
--	};
-+
- 	aha1542_outb(sh->io_port, CMD_RETCONF);
- 	aha1542_in(sh->io_port, inquiry_result, 3, 0);
- 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
--- 
-2.20.1.2432.ga663e714
+> I have nothing against not allowing this for SEV-ES guests though.
+> What do you think?
 
+I think SEV-ES guests should only have the intercept bits set which
+guests acutally support.
+
+Regards,
+
+	Joerg
