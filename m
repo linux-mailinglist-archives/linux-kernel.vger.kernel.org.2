@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732F2340C28
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2346340C2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhCRRvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:51:33 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:41253 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbhCRRvV (ORCPT
+        id S232394AbhCRRwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232310AbhCRRwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:51:21 -0400
-Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MvrRB-1lekpc3nCp-00sxN1; Thu, 18 Mar 2021 18:51:12 +0100
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        ameynarkhede03@gmail.com
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
-        raphael.norwitz@nutanix.com
-References: <20210312173452.3855-1-ameynarkhede03@gmail.com>
- <20210312173452.3855-5-ameynarkhede03@gmail.com>
- <20210314235545.girtrazsdxtrqo2q@pali>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <1da0fa2c-8056-9ae8-6ce4-ab645317772d@metux.net>
-Date:   Thu, 18 Mar 2021 18:51:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 13:52:16 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12DDC06174A;
+        Thu, 18 Mar 2021 10:52:16 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id v3so3201762ioq.2;
+        Thu, 18 Mar 2021 10:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZzB7p1mrH7Ut3wO2SVOFyueQFUpspybATe+7N0GIt5E=;
+        b=nlPMmM1nr7ne9QnqA2MOiSNWZJAp0UGD6TTtjFevPK2dYkM4NZPqpoGrOf8VuzU8A1
+         cOGMALs1RmCKHTTn1dCIJFc9rmoc9wE5GlMk5ROz0NJlKbE7hM6FxCOGjWSFfGDyaP7x
+         4Y0OtmnWlT0/C5uiOo4Oeo5qFJBITt2foM1il26KjttwX/rc+KyPlPDEmMZ53lUi4D9n
+         fbghgbFC0ZEnFK2vTHwdMm5cfMODBLMPpGKzDR3CiZs/ZMElLJkpJfN4eF9s8Jo6lLEi
+         jYEuXDgsgRWSWPxk65e5YtouL4WNZMBwPqaSdm8yg9u6bQS6k6n+nGUgQJud2Lz930LL
+         QDBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZzB7p1mrH7Ut3wO2SVOFyueQFUpspybATe+7N0GIt5E=;
+        b=I7P5Jsm7peGHkNH9XwKsU3b9kMfzen3ZcvyJo+7dQNdSC1xnt8hPW3qlLwx8TKamAz
+         gM8WiYqKEKbvnN8mPoEQ1cJkHYMg+/cAxc/p4EDtUVs2WxWkkgK7tzcYmR14L+qhHH5w
+         dNtsM8haoFjT5dQkdFoWh37QlA9f7PLyein1NMf7qrN+I/X025DrlsQmhv1I4DWvjz8N
+         +3L3+CK7679qhXhVrR2EnCfoP6gzxpz8rTDU7yPqcuZdknLLJYkrTlkG6xox/c+X/ub6
+         AQ8zLpmR9LkZNweDEoUQZgKld89uNKSGGPqqWwz4yt2ELkJ+lmSKlX78rdEFvn/4LLAW
+         AMkQ==
+X-Gm-Message-State: AOAM530mQaajrZsOjr9Jwk9gtlhgrNkZAiJ5gPkczv5pbwvZLR6DKxWK
+        IR7mlHK1DRL397vLSTQmNfCxfHSH1O3OuCdQ/usrThxS
+X-Google-Smtp-Source: ABdhPJz0q7mAqubSJL6bw761i7nrOQaEBtfa+ohfLNR3XIF8GLlyxWZakMPiS/4d1zpr0iXS278aTJHm9JVkUjtNWx4=
+X-Received: by 2002:a5e:cb4c:: with SMTP id h12mr10762093iok.183.1616089935999;
+ Thu, 18 Mar 2021 10:52:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210314235545.girtrazsdxtrqo2q@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:yfYWVq+ugqSFaWKTaRJne8X17DPLGCIdmLlkZ0p2Vqk4NFzJ4sk
- wyZU8aaOyehQbG7HE3yHMMZ4/Mu6oXUPWPPPjRjS1RaoWqCWkr3lGUIwgLl7xh8E+zHnGrU
- CIIiMJ+KM08ylEkcC53k7jEwNktiyrojKo9IT6bqJ8u5YpSeX1FYNGpBzOgADxyX6s7OnpJ
- tpWJplS/luDQ8yc9dp2zg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6sccM/UoIG4=:NMyKEYmRkvGFfWLGVyFx43
- aLjEXXSIVP9dGnA8pEasUcrztSNZy7KzMJipuKc1tZ+BPH5LdBwm0FzvFYMCQRIt7LyVqiFw9
- EJqZT3Q0wBTA5/m/DwRlIX0APE5l0GCde/qKELTzVK3A+ncegzxPfBBTc8D7zkKV7D+E2eLho
- 8mlq3LCcYUKX5gPQrNrfsYalZHZb1E+S16KyYpQE955fvznI6xTJCqpyYaZzLldBwpr5h4dlQ
- CgOEkQ6KYDwxQk4VgnVCfgRHbDOrQNE44CFIHmZXYgzw0OEzHefAgEzEv3rC2HHJgVJgg84p6
- 3Ewrqt0d/94OK3RV/s8HSOgkL9PeyMOa2l6XL2b2YETU4I7q5mzz+uYesN9gX++wma5AzVuvv
- Wb+4by2LYPYaRdd/mHpvPTnBtA7jFdXYVR7ZKRZX416+zEs6yxAfsC9YA9xIO
+References: <20210309125324.4456-1-yashsri421@gmail.com> <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com> <871rcg2p8g.fsf@meer.lwn.net>
+ <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com> <878s6kto3g.fsf@meer.lwn.net>
+In-Reply-To: <878s6kto3g.fsf@meer.lwn.net>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 18 Mar 2021 18:52:05 +0100
+Message-ID: <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Aditya <yashsri421@gmail.com>,
+        Markus Heiser <markus.heiser@darmarit.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.03.21 00:55, Pali Rohár wrote:
+On Thu, Mar 18, 2021 at 5:37 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+>
+> > I wonder if we could extend kernel-doc (not your preferred option as
+> > it seems) for a new dedicated warning message or maintain a separate
+> > kernel-doc sanity checking script to emit a dedicated warning based on
+> > some heuristics that suggests when a "header comment" is probably
+> > unintentionally declared as a "kernel-doc comment" when it really
+> > should not be.
+> >
+> > Jonathan, would you then prefer to have a separate kernel-doc sanity
+> > checking script that then allows us to maintain checking for patterns
+> > we already cleaned up?
+>
+> Having a warning in kernel-doc for "This comment starts with /** but
+> isn't a kerneldoc comment" could be useful, I guess.  That is the real
+> problem, not the fact that it appears at the top of the file.  I'm all
+> for tools that help us to clean things up, but let's not add
+> line-counting hacks to try to paper it over.
+>
 
-> Moreover for mPCIe form factor cards, boards can share one PERST# signal
-> with more PCIe cards and control this signal via GPIO. So asserting
-> PERST# GPIO can trigger Warm reset for more PCIe cards, not just one. It
-> depends on board or topology.
+Yeah, and as this line-counting is really just a poor man's
+heuristics, we might just be better to really turn this heuristics
+into a dedicated cleanup warning script, then we can check for more
+indicators, such as "does it contain the word Copyright" somewhere in
+the kernel-doc comment, which tells us even more that this is not a
+kernel-doc as we would expect it.
 
-The pcengines apu* boards happen to be such candidates: they've got
-three m.2 slots, but not all wired in the same way (depending on actual
-model, not all have pcie wired). Reset lines are driven via gpio, and
-some devices (I recall some lte basebands) sometimes need an explicit
-reset in order to come up properly.
+Aditya, would you like to try to turn this check into a separate script instead?
 
-I have to check the schematics for the diffrent models, how exactly
-these gpios are wired. (i've got reports that some production lines
-don't have them wired at all - but couldn't confirm this on my own).
-
-BTW: any idea how to inject board specific reset methods, after the
-host brigde driver is already active ? In my case, apu boards, the
-pci host bridge is probed via acpi and the apu board driver (which sets
-up gpios, leds, keys, ...) comes much later.
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Lukas
