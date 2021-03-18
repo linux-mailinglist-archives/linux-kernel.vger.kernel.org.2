@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5718A340A4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742DA340A4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhCRQhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:37:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232081AbhCRQgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:36:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616085409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qX5PWWWF43USLNXVgeToYpkCYDaMY6YQEwK1ZN4gNn0=;
-        b=hktsqOc1tafRD4/FryxK5X/49l5BPJFmab1iZDbmfUqzUHuaJW0PmQVeqcAufpJPgs0jJy
-        IhRKxS6yM5IJ1JVvL06yJ2kFRikoDwF+wd1NqoiPFa94TJVVqAZoTUHqy4No8kDhY3BQp3
-        /LEZl1kpQzWKtuzTzeCNWldX6dhkhFU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-Z-oQx_gRMoiBt1ek90H-wA-1; Thu, 18 Mar 2021 12:36:45 -0400
-X-MC-Unique: Z-oQx_gRMoiBt1ek90H-wA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S231963AbhCRQhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:37:40 -0400
+Received: from ms.lwn.net ([45.79.88.28]:52030 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232134AbhCRQhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:37:24 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D6EA1922977;
-        Thu, 18 Mar 2021 16:36:44 +0000 (UTC)
-Received: from treble (ovpn-120-92.rdu2.redhat.com [10.10.120.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB5B260916;
-        Thu, 18 Mar 2021 16:36:42 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 11:36:40 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suze.cz,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] objtool: Rework rebuild_reloc logic
-Message-ID: <20210318163640.5u6rucdk66aodun7@treble>
-References: <20210312171613.533405394@infradead.org>
- <20210312171653.649709484@infradead.org>
- <20210317033417.lbwemc2j2cpsdlzd@treble>
- <YFG53wkgw6nDBgIl@hirez.programming.kicks-ass.net>
- <20210318004917.sytcivxy5h2ujttc@treble>
- <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
+        by ms.lwn.net (Postfix) with ESMTPSA id E2D732E5;
+        Thu, 18 Mar 2021 16:37:23 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E2D732E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1616085444; bh=pWbzF1wgIUiO8lLs6lJoTFe088GpnU5XVDRIVFq/5Ok=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=e48pDaT9fmQ8ixzvsSt301dPeftXj1BshL6H+kPC2MY4a6u0bbOAMG4LNpdSgJstY
+         sFXGk34Yr/N8e6t3VUsM2rCY5hxqBaF3gQvBXQuhcv85gVG2FrmwttrZH6LnONjHq2
+         9xezEugy1o4JuPHcj4sCcFyhFrcbwWunDddU/QtI7jsyCx4+xgU5Y1oydtDO37lxD1
+         E9oMvfouS4woufuQya2qosW04wCJITiQprm/D9jlbmtBT2GwPUswd+E8N8ZJY1CJ2g
+         z6qLze5ecujERovNo3M3BgdgQSYVeJLsEPUXN/0vN/vKCzKgg0zm2I5OLyhoKMfIDe
+         u3WwinKUwyxiA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Aditya <yashsri421@gmail.com>,
+        Markus Heiser <markus.heiser@darmarit.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+In-Reply-To: <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
+References: <20210309125324.4456-1-yashsri421@gmail.com>
+ <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
+ <871rcg2p8g.fsf@meer.lwn.net>
+ <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
+Date:   Thu, 18 Mar 2021 10:37:23 -0600
+Message-ID: <878s6kto3g.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFNOH1m+FrFK8TRN@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 01:57:03PM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 17, 2021 at 07:49:17PM -0500, Josh Poimboeuf wrote:
-> > On Wed, Mar 17, 2021 at 09:12:15AM +0100, Peter Zijlstra wrote:
-> > > On Tue, Mar 16, 2021 at 10:34:17PM -0500, Josh Poimboeuf wrote:
-> > > > On Fri, Mar 12, 2021 at 06:16:18PM +0100, Peter Zijlstra wrote:
-> > > > > --- a/tools/objtool/elf.c
-> > > > > +++ b/tools/objtool/elf.c
-> > > > > @@ -479,6 +479,8 @@ void elf_add_reloc(struct elf *elf, stru
-> > > > >  
-> > > > >  	list_add_tail(&reloc->list, &sec->reloc_list);
-> > > > >  	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
-> > > > > +
-> > > > > +	sec->rereloc = true;
-> > > > >  }
-> > > > 
-> > > > Can we just reuse sec->changed for this?  Something like this on top
-> > > > (untested of course):
-> > > 
-> > > I think my worry was that we'd dirty too much and slow down the write,
-> > > but I haven't done any actual performance measurements on this.
-> > 
-> > Really?  I thought my proposal was purely aesthetic, no functional
-> > change, but my brain is toasty this week due to other distractions so
-> > who knows.
-> 
-> I was thinking you could get a section changed without touching
-> relocations, but while that is theoretically possible, it is exceedingly
-> unlikely (and objtool doesn't do that).
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-Hm?  This is a *relocation* section, not a normal one.  So by
-definition, it only changes when its relocations change.
+> I wonder if we could extend kernel-doc (not your preferred option as
+> it seems) for a new dedicated warning message or maintain a separate
+> kernel-doc sanity checking script to emit a dedicated warning based on
+> some heuristics that suggests when a "header comment" is probably
+> unintentionally declared as a "kernel-doc comment" when it really
+> should not be.
+>
+> Jonathan, would you then prefer to have a separate kernel-doc sanity
+> checking script that then allows us to maintain checking for patterns
+> we already cleaned up?
 
--- 
-Josh
+Having a warning in kernel-doc for "This comment starts with /** but
+isn't a kerneldoc comment" could be useful, I guess.  That is the real
+problem, not the fact that it appears at the top of the file.  I'm all
+for tools that help us to clean things up, but let's not add
+line-counting hacks to try to paper it over.
 
+Thanks,
+
+jon
