@@ -2,102 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D426E34048A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1C034048B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCRLYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhCRLYU (ORCPT
+        id S230014AbhCRLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:24:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229803AbhCRLYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:24:20 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798F4C06174A;
-        Thu, 18 Mar 2021 04:24:19 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso5169619wmi.3;
-        Thu, 18 Mar 2021 04:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7qJv0lmltyhc5pLle5TGq0wHOrg4Xv+8MBOabo0U+fQ=;
-        b=cbdK40LKe8CsIG8ZwTUMcukZVEkgnIWdPSsm7+P0bECdTtthwoS9fuXpZkR4Z7rRgQ
-         Pb5Nb43hNMfp57cYd0Us0hOm12SOtZyFyn0b3sKReFBkC7VAyr3Cek1O/IGnrOI+BVt4
-         qD7yRQUkDjlh0IAFKGvpPnYugURNC6t8xElERQvEKCViTZniQGgac8GO5wrxtO+M2FeW
-         ifeGr7eiFWbavrxBrTdzvmWl++rxYv86oS1YsHvu3kSdlssvawBM+C053+24xBiEzBHk
-         L2NnmLO07DzXz110GZpvgFf+lwx5nm76CuPJr1CpRkOg/hZzQvvG6CIvqHciHdsAl8Uh
-         q5KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=7qJv0lmltyhc5pLle5TGq0wHOrg4Xv+8MBOabo0U+fQ=;
-        b=WcfqX3ubnUAROImKexgJugNwsfrNuobwIoK96+UELp+tQAh8V5WHQdpSxkzxNlaOSe
-         NVnGR7/Mh0IhieLNDjkiD8/1RC0kJ7LI5LYPTfGzJ/s1WWc3df4Po6wFDvAGpfL8JbyD
-         9Xf/9tJnK3BUTshOuu7BInn+wME1A2wskogNfF7wh7BicehpSPIIIZvzLiLSKVIqRS0g
-         wJKnKacefJtK+45xl1XI243SWXQob2PHiiNwmFCJPVUX5Cju0Js+CVqRaS0kWLOd6HCe
-         J2EBA2potPhY/h2uyyAmMjge+8BTVibOHVMwQGCmvvAuKbUc0Q3yGPramKttEqDml6Gh
-         HlQQ==
-X-Gm-Message-State: AOAM533zAoJZVj6wDvtT/FuQXrjXt5Mp8tCS5PNBlOjmBpqSwoOY4/V5
-        VQvwOg9kYg9zRZWAMEc1ni/UhodLuFk=
-X-Google-Smtp-Source: ABdhPJz3lLcv0vMupNne2uqgg3lfiSO4Nvz15rmiJ7mwQrBj4JL+DXzW1AhOMwvUJEb5juWUTAZfeA==
-X-Received: by 2002:a7b:c410:: with SMTP id k16mr3045685wmi.121.1616066658306;
-        Thu, 18 Mar 2021 04:24:18 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id g5sm2666179wrq.30.2021.03.18.04.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 04:24:17 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 18 Mar 2021 12:24:15 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Xu Yihang <xuyihang@huawei.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] x86: Fix unused variable 'hi'
-Message-ID: <20210318112415.GA301630@gmail.com>
-References: <20210318074607.124663-1-xuyihang@huawei.com>
+        Thu, 18 Mar 2021 07:24:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616066663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CKgKig4qhgfYAN5+Xyhcsw2h6SqxVFiqlkAsYQ9Uxzk=;
+        b=VORpiYkA/QsPCekkF8VTA0z1QR/17TlQ/5FwwA0bPFkXNy00JxfeVEBPAeYy5qryxLcKc+
+        euApSAwe55ay3rUz1SogfFfUjfa+ufPr7lAlRWcSWAY38jE8DQE5oNUKlui3BfTEd1A2Lg
+        cery1gVxjcWiJJq3sD1xnLSdxCybxWo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-7p8QkfV3OtC-7pYIeYaAnw-1; Thu, 18 Mar 2021 07:24:21 -0400
+X-MC-Unique: 7p8QkfV3OtC-7pYIeYaAnw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74AE88189C6;
+        Thu, 18 Mar 2021 11:24:19 +0000 (UTC)
+Received: from [10.36.113.61] (ovpn-113-61.ams2.redhat.com [10.36.113.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 696DE5C1D1;
+        Thu, 18 Mar 2021 11:24:17 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210309175546.5877-1-osalvador@suse.de>
+ <20210309175546.5877-2-osalvador@suse.de>
+ <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
+ <20210315102224.GA24699@linux>
+ <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
+ <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
+ <20210317140847.GA20407@linux>
+ <f996f570-eed9-509f-553c-280a62dc6d20@redhat.com>
+ <YFMPBFSJPq2VEOk9@localhost.localdomain>
+ <YFMtuKZ8Ho66D8hN@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <51c645b3-1220-80c4-e44c-4c0411222148@redhat.com>
+Date:   Thu, 18 Mar 2021 12:24:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <YFMtuKZ8Ho66D8hN@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210318074607.124663-1-xuyihang@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Xu Yihang <xuyihang@huawei.com> wrote:
-
-> Fixes the following W=1 kernel build warning(s):
-> arch/x86/hyperv/hv_apic.c:58:15: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
+On 18.03.21 11:38, Oscar Salvador wrote:
+> On Thu, Mar 18, 2021 at 09:27:48AM +0100, Oscar Salvador wrote:
+>>> If we check for
+>>>
+>>> IS_ALIGNED(nr_vmemmap_pages, PMD_SIZE), please add a proper TODO comment
+>>> that this is most probably the wrong place to take care of this.
+>>
+>> Sure, I will stuff the check in there and place a big TODO comment so we
+>> do not forget about addressing this issue the right way.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
-> ---
->  arch/x86/hyperv/hv_apic.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Ok, I realized something while working on v5.
 > 
-> diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
-> index 284e73661a18..c0b0a5774f31 100644
-> --- a/arch/x86/hyperv/hv_apic.c
-> +++ b/arch/x86/hyperv/hv_apic.c
-> @@ -55,7 +55,8 @@ static void hv_apic_icr_write(u32 low, u32 id)
->  
->  static u32 hv_apic_read(u32 reg)
->  {
-> -	u32 reg_val, hi;
-> +	u32 hi __maybe_unused;
-> +	u32 reg_val;
->  
->  	switch (reg) {
->  	case APIC_EOI:
+> Here is what I have right now:
+> 
+>   bool mhp_supports_memmap_on_memory(unsigned long size)
+>   {
+>          /*
+>           * Note: We calculate for a single memory section. The calculation
+>           * implicitly covers memory blocks that span multiple sections.
+>           *
+>           * Not all archs define SECTION_SIZE, but MIN_MEMORY_BLOCK_SIZE always
+>           * equals SECTION_SIZE, so use that instead.
+>           */
+>          unsigned long nr_vmemmap_pages = MIN_MEMORY_BLOCK_SIZE / PAGE_SIZE;
 
-Why and under what config does this function trigger the warning?
+Even clearer would be just using "size / PAGE_SIZE" here. The you can 
+even drop the comment.
 
+>          unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
+>          unsigned long remaining_size = size - vmemmap_size;
+>   
+>          /*
+>           * Besides having arch support and the feature enabled at runtime, we
+>           * need a few more assumptions to hold true:
+>           *
+>           * a) We span a single memory block: memory onlining/offlinin;g happens
+>           *    in memory block granularity. We don't want the vmemmap of online
+>           *    memory blocks to reside on offline memory blocks. In the future,
+>           *    we might want to support variable-sized memory blocks to make the
+>           *    feature more versatile.
+>           *
+>           * b) The vmemmap pages span complete PMDs: We don't want vmemmap code
+>           *    to populate memory from the altmap for unrelated parts (i.e.,
+>           *    other memory blocks)
+>           *
+>           * c) The vmemmap pages (and thereby the pages that will be exposed to
+>           *    the buddy) have to cover full pageblocks: memory onlining/offlining
+>           *    code requires applicable ranges to be page-aligned, for example, to
+>           *    set the migratetypes properly.
+>           *
+>           * TODO: Although we have a check here to make sure that vmemmap pages
+>           *       fully populate a PMD, it is not the right place to check for
+>           *       this. A much better solution involves improving vmemmap code
+>           *       to fallback to base pages when trying to populate vmemmap using
+>           *       altmap as an alternative source of memory, and we do not exactly
+>           *       populate a single PMD.
+>           */
+>          return memmap_on_memory &&
+>                 IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+>                 size == memory_block_size_bytes() &&
+>                 remaining_size &&
+>                 IS_ALIGNED(remaining_size, pageblock_size) &&
+>                 IS_ALIGNED(vmemmap_size, PMD_SIZE);
+>   }
+> 
+>   Assume we are on x86_64 to simplify the case.
+> 
+>   Above, nr_vmemmap_pages would be 32768 and vmemmap_size 2MB (exactly a
+>   PMD).
+> 
+>   Now, although correct, this nr_vmemmap_pages does not match with the
+>   altmap->alloc.
+> 
+>   static void * __meminit altmap_alloc_block_buf(unsigned long size,
+>    struct altmap)
+>   {
+>     ...
+>     ...
+>     nr_pfns = size >> PAGE_SHIFT; //size is PMD_SIZE
+>     altmap->alloc += nr_pfns;
+>   }
+> 
+>   altmap->alloc will be 512, 512 * 4K pages = 2MB.
+> 
+> Of course, the reason they do not match is because in one case, we are
+> saying a) how many pfns we need to cover a PMD_SIZE, while in the
+> other case we say b) how many pages we need to cover SECTION_SIZE
+> 
+> Then b) multiply for page_size to get the current size of it.
+
+I don't follow. 2MB == 2MB. And if there would be difference then we 
+would be in the problem I brought up: vmemmap code allocating too much 
+via the altmap, which can be very bad because might be populating more 
+vmemmap than we actually need.
+
+> 
+> So, I have mixed feeling about this.
+> Would it be more clear to just do:
+> 
+>   bool mhp_supports_memmap_on_memory(unsigned long size)
+>   {
+>          /*
+>           * Note: We calculate for a single memory section. The calculation
+>           * implicitly covers memory blocks that span multiple sections.
+>           */
+
+Then this comment is wrong
+
+>          unsigned long nr_vmemmap_pages = PMD_SIZE / PAGE_SIZE;
+
+And this stuff just gets confusing.
+
+nr_vmemmap_pages = 2MiB / 4 KiB = 512;
+
+>          unsigned long vmemmap_size = nr_vmemmap_pages * PAGE_SIZE;
+
+vmemmap_size = 512 * 4KiB = 2 MiB.
+
+That calculation wasn't very useful (/ PAGE_SIZE * PAGE_SIZE)?
+
+>          unsigned long remaining_size = size - vmemmap_size;
+
+And here we could get something like
+
+remaining_size = 2 GiB - 2 MiB
+
+?
+
+Which does not make any sense.
+
+> 	...
+> 	...
+> 
+> 
+
+
+-- 
 Thanks,
 
-	Ingo
+David / dhildenb
+
