@@ -2,249 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AC6340420
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7688C340421
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhCRLCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhCRLCb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:02:31 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651A9C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:02:31 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id z2so5019239wrl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RaGPtlv7SLOWssA/2OUjy96UMHcyvtNafHHhHgBI9nE=;
-        b=neqRkEFXfZtkXLH4oNWGmf98m9VyR+4pLz7ASX4JlNjSA6r6ofaHXscCkatdoeYd5k
-         aRfr5v8VAE6CtRo7HZlZ65DmqICPLY8kkVkihKsluSQcGn3SgGUB/o7MUze+ng08Hmv9
-         TL7LKIkxU0b33vA6ReNJYCye9qZjTPlI3wONrsLDAiiZddT4kebuRD9d+rRXJYQp2e3B
-         PCIM9nQI6rC18zQbFtlhYEKgzxH0gE5q6MWOdX4RtQjHIGKgbWAZnz/v6PX23SyMKBvU
-         /hAsigmRLuPntdq+nMH6jHjHw1/VWop6UFemTQ9ap7osnLB+t5QNs8ctn8ORhViD8nUg
-         d+uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RaGPtlv7SLOWssA/2OUjy96UMHcyvtNafHHhHgBI9nE=;
-        b=HWc1wzsVXzwsYMeFA1jX8j6DToZyGRoSrvAoOcOI9A3uJ1tJgH/85zCAIlAv2XFKm1
-         XvMQIXxTeVbJkZPU21qVMVpT8nxJ62VsZof1FKZOmPSz+eDF41ONbX44B037dTQJkeQW
-         5O86+chs1rXU90e5LKGHYIOoh1HCE6eySd7tsIrwX0P0VfTM9iVzmc1Gk3JkVctBBgYe
-         b5kARjxk0SBgqO1tsivUt6fsPdmW8G+AopvBZoaaX7UaNa76uRcYYBhrKsbS2UmVyt5w
-         rRVc5cUIP2+4XIiYChuzUxt1byf/tHYhcplaXmXcNxQti1Q6F0fQc9D757Uj9to9cbV5
-         fQDg==
-X-Gm-Message-State: AOAM5335opGJ8DjuwFGGwoyjcW6C0pflekcHB3YNnRZLgHV4I21dEc8o
-        Zc1BRX0CPUZwt/+UBJaHNyfs1paxFbOg78xfhQAxnQ==
-X-Google-Smtp-Source: ABdhPJwFsXGsLWhLFOZr4bxCvM8KZC8buTThv4SMuDErXUoXK9GWDjMjklpqTSS37yJlD7sfGHJb4PqkhUXq40SX3e0=
-X-Received: by 2002:a05:6000:250:: with SMTP id m16mr9289960wrz.325.1616065349871;
- Thu, 18 Mar 2021 04:02:29 -0700 (PDT)
+        id S230393AbhCRLDK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Mar 2021 07:03:10 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14094 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230136AbhCRLCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 07:02:53 -0400
+IronPort-SDR: d6/eiQ2voP0pvDBOaAwkgH/mdrvz6iZuQyUYmYw4+e6MG5DlvcsTl70H8huchR8HowNSCimmTL
+ ckUtTvFuEBNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="251008988"
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="251008988"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 04:02:52 -0700
+IronPort-SDR: bNT7KYB+76E3RzAE6Jt7jqof9XE8wZgYdUk8RkvRXFUXkTmW32O3Ooo+aooqO241gb+BaYKvfv
+ 6EsaUcn7xEnA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; 
+   d="scan'208";a="411851578"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 18 Mar 2021 04:02:50 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id EA8FE249; Thu, 18 Mar 2021 13:03:02 +0200 (EET)
+Date:   Thu, 18 Mar 2021 14:03:02 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
+Message-ID: <20210318110302.nxddmrhmgmlw4adq@black.fi.intel.com>
+References: <YEsryBEFq4HuLKBs@suse.de>
+ <CAJfpegu+T-4m=OLMorJrZyWaDNff1eviKUaE2gVuMmLG+g9JVQ@mail.gmail.com>
+ <YEtc54pWLLjb6SgL@suse.de>
+ <20210312131123.GZ3479805@casper.infradead.org>
+ <YE8tQc66C6MW7EqY@suse.de>
+ <20210315110659.GT2577561@casper.infradead.org>
+ <YFMct4z1gEa8tXkh@suse.de>
+ <CAJfpeguX7NrdTH4JLbCtkQ1u7TFvUh+8s7RmwB_wmuPHJsQyiA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210221093758.210981-1-anup.patel@wdc.com> <20210221093758.210981-8-anup.patel@wdc.com>
- <20210305232245.GA820565@robh.at.kernel.org> <CAAhSdy0TwcE17-GJp664of4DV_R+6Q-S_h-N4Sbv9KL4Xofxvg@mail.gmail.com>
- <CAL_JsqKPwND6BGq3gEuMugEnv4TNvM2_DMdB-p-v7qh5NXyPiQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqKPwND6BGq3gEuMugEnv4TNvM2_DMdB-p-v7qh5NXyPiQ@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 18 Mar 2021 16:32:18 +0530
-Message-ID: <CAAhSdy0ex1PjGa+=KgkSYFd+BteH7txJSrRdOhZnetwXaL42hQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 7/8] dt-bindings: Add bindings documentation for
- RISC-V idle states
-To:     Rob Herring <robh@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sandeep Tripathy <milun.tripathy@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Liush <liush@allwinnertech.com>, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAJfpeguX7NrdTH4JLbCtkQ1u7TFvUh+8s7RmwB_wmuPHJsQyiA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 9:24 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Mar 7, 2021 at 8:18 PM Anup Patel <anup@brainfault.org> wrote:
+On Thu, Mar 18, 2021 at 11:59:59AM +0100, Miklos Szeredi wrote:
+> [CC linux-mm]
+> 
+> On Thu, Mar 18, 2021 at 10:25 AM Luis Henriques <lhenriques@suse.de> wrote:
 > >
-> > On Sat, Mar 6, 2021 at 4:52 AM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Sun, Feb 21, 2021 at 03:07:57PM +0530, Anup Patel wrote:
-> > > > The RISC-V CPU idle states will be described in DT under the
-> > > > /cpus/riscv-idle-states DT node. This patch adds the bindings
-> > > > documentation for riscv-idle-states DT nodes and idle state DT
-> > > > nodes under it.
+> > (I thought Vlastimil was already on CC...)
+> >
+> > On Mon, Mar 15, 2021 at 11:06:59AM +0000, Matthew Wilcox wrote:
+> > > On Mon, Mar 15, 2021 at 09:47:45AM +0000, Luis Henriques wrote:
+> > > > On Fri, Mar 12, 2021 at 01:11:23PM +0000, Matthew Wilcox wrote:
+> > > > > On Fri, Mar 12, 2021 at 12:21:59PM +0000, Luis Henriques wrote:
+> > > > > > > > I've seen a bug report (5.10.16 kernel splat below) that seems to be
+> > > > > > > > reproducible in kernels as early as 5.4.
+> > > > >
+> > > > > If this is reproducible, can you turn this BUG_ON into a VM_BUG_ON_PAGE()
+> > > > > so we know what kind of problem we're dealing with?  Assuming the SUSE
+> > > > > tumbleweed kernels enable CONFIG_DEBUG_VM, which I'm sure they do.
 > > > >
-> > > > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > > > ---
-> > > >  .../bindings/riscv/idle-states.yaml           | 250 ++++++++++++++++++
-> > > >  1 file changed, 250 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/riscv/idle-states.yaml
+> > > > Just to make sure I got this right, you want to test something like this:
 > > > >
-> > > > diff --git a/Documentation/devicetree/bindings/riscv/idle-states.yaml b/Documentation/devicetree/bindings/riscv/idle-states.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..3eff763fed23
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/riscv/idle-states.yaml
-> > > > @@ -0,0 +1,250 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/riscv/idle-states.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: RISC-V idle states binding description
-> > > > +
-> > > > +maintainers:
-> > > > +  - Anup Patel <anup.patel@wdc.com>
-> > > > +
-> > > > +description: |+
-> > > > +  RISC-V systems can manage power consumption dynamically, where HARTs
-> > > > +  (or CPUs) [1] can be put in different platform specific suspend (or
-> > > > +  idle) states (ranging from simple WFI, power gating, etc). The RISC-V
-> > > > +  SBI [2] hart state management extension provides a standard mechanism
-> > > > +  for OSes to request HART state transitions.
-> > > > +
-> > > > +  The platform specific suspend (or idle) states of a hart can be either
-> > > > +  retentive or non-rententive in nature. A retentive suspend state will
-> > > > +  preserve hart register and CSR values for all privilege modes whereas
-> > > > +  a non-retentive suspend state will not preserve hart register and CSR
-> > > > +  values. The suspend (or idle) state entered by executing the WFI
-> > > > +  instruction is considered standard on all RISC-V systems and therefore
-> > > > +  must not be listed in device tree.
-> > > > +
-> > > > +  The device tree binding definition for RISC-V idle states described
-> > > > +  in this document is quite similar to the ARM idle states [3].
-> > > > +
-> > > > +  References
-> > > > +
-> > > > +  [1] RISC-V Linux Kernel documentation - CPUs bindings
-> > > > +      Documentation/devicetree/bindings/riscv/cpus.yaml
-> > > > +
-> > > > +  [2] RISC-V Supervisor Binary Interface (SBI)
-> > > > +      http://github.com/riscv/riscv-sbi-doc/riscv-sbi.adoc
-> > > > +
-> > > > +  [3] ARM idle states binding description - Idle states bindings
-> > > > +      Documentation/devicetree/bindings/arm/idle-states.yaml
+> > > >                             }
+> > > >                     }
+> > > > -                   BUG_ON(page_mapped(page));
+> > > > +                   VM_BUG_ON_PAGE(page_mapped(page), page);
+> > > >                     ret2 = do_launder_page(mapping, page);
+> > > >                     if (ret2 == 0) {
+> > > >                             if (!invalidate_complete_page2(mapping, page))
 > > >
-> > > I'd assume there's common parts we can share.
+> > > Yes, exactly.
 > >
-> > Yes, except few properties most are the same.
+> > Ok, finally I got some feedback from the bug reporter.  Please see bellow
+> > the kernel log with the VM_BUG_ON_PAGE() in place.  Also note that this is
+> > on a 5.12-rc3, vanilla.
 > >
-> > We can have a shared DT bindings for both ARM and RISC-V but
-> > both architectures will always have some architecture specific details
-> > (or properties) which need to be documented under arch specific
-> > DT documentation. Is it okay if this is done as a separate series ?
->
-> No...
-
-Okay, I will create a common DT bindings for both ARM and RISC-V
-in the next revision.
-
->
-> > > > +
-> > > > +properties:
-> > > > +  $nodename:
-> > > > +    const: riscv-idle-states
-> > >
-> > > Just 'idle-states' like Arm.
+> > Cheers,
+> > --
+> > Luís
 > >
-> > I had tried "idle-states" node name but DT bindings check complaints
-> > conflict with ARM idle state bindings.
->
-> ...and this being one reason why.
->
-> Actually, I think this can all be in 1 doc if you want. It's fine with
-> me if a common doc has RiscV and Arm specific properties.
+> > [16247.536348] page:00000000dfe36ab1 refcount:673 mapcount:0 mapping:00000000f982a7f8 index:0x1400 pfn:0x4c65e00
+> > [16247.536359] head:00000000dfe36ab1 order:9 compound_mapcount:0 compound_pincount:0
+> 
+> This is a compound page alright.   Have no idea how it got into fuse's
+> pagecache.
 
-Sure, will add common DT bindings.
 
->
-> > > > +
-> > > > +patternProperties:
-> > > > +  "^(cpu|cluster)-":
-> > > > +    type: object
-> > > > +    description: |
-> > > > +      Each state node represents an idle state description and must be
-> > > > +      defined as follows.
-> > > > +
-> > >
-> > >        additionalProperties: false
+Luis, do you have CONFIG_READ_ONLY_THP_FOR_FS enabled?
+
+> > [16247.536361] memcg:ffff8e730012b000
+> > [16247.536364] aops:fuse_file_aops [fuse] ino:8b8 dentry name:"cc1plus"
+> > [16247.536379] flags: 0xaffff800010037(locked|referenced|uptodate|lru|active|head)
+> > [16247.536385] raw: 00affff800010037 ffffd6519ed9c448 ffffd651abea5b08 ffff8eb2f9a02ef8
+> > [16247.536388] raw: 0000000000001400 0000000000000000 000002a1ffffffff ffff8e730012b000
+> > [16247.536389] page dumped because: VM_BUG_ON_PAGE(page_mapped(page))
+> > [16247.536399] ------------[ cut here ]------------
+> > [16247.536400] kernel BUG at mm/truncate.c:678!
+> > [16247.536406] invalid opcode: 0000 [#1] SMP PTI
+> > [16247.536416] CPU: 42 PID: 2063761 Comm: g++ Not tainted 5.12.0-rc3-1.g008d601-default #1 openSUSE Tumbleweed (unreleased)
+> > [16247.536423] Hardware name: Supermicro X11DPi-N(T)/X11DPi-N, BIOS 3.1a 10/16/2019
+> > [16247.536427] RIP: 0010:invalidate_inode_pages2_range+0x3b4/0x550
+> > [16247.536436] Code: 00 00 00 4c 89 e6 e8 eb 0f 03 00 4c 89 ff e8 63 40 01 00 84 c0 0f 84 23 fe ff ff 48 c7 c6 d0 1d f4 b1 4c 89 ff e8 ec 82 02 00 <0f> 0b 48 8b 45 78 48 8b 80 80 00 00 00 48 85 c0 0f 84 fb fe ff ff
+> > [16247.536444] RSP: 0000:ffffa18cb0af7a40 EFLAGS: 00010246
+> > [16247.536450] RAX: 0000000000000036 RBX: 000000000000000d RCX: ffff8ef13fc9a748
+> > [16247.536455] RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8ef13fc9a740
+> > [16247.536460] RBP: ffff8eb2f9a02ef8 R08: ffff8ef23ffb48a8 R09: 000000000004fffb
+> > [16247.536464] R10: 00000000ffff0000 R11: 3fffffffffffffff R12: 0000000000001400
+> > [16247.536468] R13: ffff8eb2f9a02f00 R14: 0000000000000000 R15: ffffd651b1978000
+> > [16247.536473] FS:  00007f97c1717740(0000) GS:ffff8ef13fc80000(0000) knlGS:0000000000000000
+> > [16247.536478] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [16247.536483] CR2: 00007fd48a25a7c0 CR3: 00000040aa3ac006 CR4: 00000000007706e0
+> > [16247.536487] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [16247.536491] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [16247.536495] PKRU: 55555554
+> > [16247.536498] Call Trace:
+> > [16247.536506]  fuse_finish_open+0x82/0x150 [fuse]
+> > [16247.536520]  fuse_open_common+0x1a8/0x1b0 [fuse]
+> > [16247.536530]  ? fuse_open_common+0x1b0/0x1b0 [fuse]
+> > [16247.536540]  do_dentry_open+0x14e/0x380
+> > [16247.536547]  path_openat+0xaf6/0x10a0
+> > [16247.536555]  do_filp_open+0x88/0x130
+> > [16247.536560]  ? security_prepare_creds+0x6d/0x90
+> > [16247.536566]  ? __kmalloc+0x157/0x2e0
+> > [16247.536575]  do_open_execat+0x6d/0x1a0
+> > [16247.536581]  bprm_execve+0x128/0x660
+> > [16247.536587]  do_execveat_common+0x192/0x1c0
+> > [16247.536593]  __x64_sys_execve+0x39/0x50
+> > [16247.536599]  do_syscall_64+0x33/0x80
+> > [16247.536606]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [16247.536614] RIP: 0033:0x7f97c0efec37
+> > [16247.536621] Code: Unable to access opcode bytes at RIP 0x7f97c0efec0d.
+> > [16247.536625] RSP: 002b:00007ffdc2fdea68 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
+> > [16247.536631] RAX: ffffffffffffffda RBX: 00007f97c17176a0 RCX: 00007f97c0efec37
+> > [16247.536635] RDX: 0000000000ea42c0 RSI: 0000000000ea5848 RDI: 0000000000ea5d00
+> > [16247.536639] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> > [16247.536643] R10: 00007ffdc2fdde60 R11: 0000000000000202 R12: 0000000000000000
+> > [16247.536647] R13: 0000000000000001 R14: 0000000000ea5d00 R15: 0000000000000000
+> > [16247.536653] Modules linked in: overlay rpcsec_gss_krb5 nfsv4 dns_resolver nfsv3 nfs fscache iscsi_ibft iscsi_boot_sysfs rfkill dmi_sysfs intel_rapl_msr intel_rapl_common joydev isst_if_common ipmi_ssif i40iw ib_uverbs iTCO_wdt intel_pmc_bxt skx_edac ib_core hid_generic iTCO_vendor_support nfit libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel acpi_ipmi kvm usbhid i2c_i801 mei_me i40e irqbypass efi_pstore pcspkr ipmi_si ioatdma i2c_smbus lpc_ich mei intel_pch_thermal dca ipmi_devintf ipmi_msghandler tiny_power_button acpi_pad button nls_iso8859_1 nls_cp437 vfat fat nfsd nfs_acl auth_rpcgss lockd grace sunrpc fuse configfs nfs_ssc ast i2c_algo_bit drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core drm_ttm_helper ttm xhci_pci xhci_pci_renesas drm xhci_hcd crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd usbcore wmi sg br_netfilter bridge stp llc dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc
+> > [16247.536758]  scsi_dh_alua msr efivarfs
+> > [16247.536800] ---[ end trace e1493f55bf5b3a34 ]---
+> > [16247.544126] RIP: 0010:invalidate_inode_pages2_range+0x3b4/0x550
+> > [16247.544140] Code: 00 00 00 4c 89 e6 e8 eb 0f 03 00 4c 89 ff e8 63 40 01 00 84 c0 0f 84 23 fe ff ff 48 c7 c6 d0 1d f4 b1 4c 89 ff e8 ec 82 02 00 <0f> 0b 48 8b 45 78 48 8b 80 80 00 00 00 48 85 c0 0f 84 fb fe ff ff
+> > [16247.544148] RSP: 0000:ffffa18cb0af7a40 EFLAGS: 00010246
+> > [16247.544153] RAX: 0000000000000036 RBX: 000000000000000d RCX: ffff8ef13fc9a748
+> > [16247.544158] RDX: 0000000000000000 RSI: 0000000000000027 RDI: ffff8ef13fc9a740
+> > [16247.544162] RBP: ffff8eb2f9a02ef8 R08: ffff8ef23ffb48a8 R09: 000000000004fffb
+> > [16247.544166] R10: 00000000ffff0000 R11: 3fffffffffffffff R12: 0000000000001400
+> > [16247.544170] R13: ffff8eb2f9a02f00 R14: 0000000000000000 R15: ffffd651b1978000
+> > [16247.544175] FS:  00007f97c1717740(0000) GS:ffff8ef13fc80000(0000) knlGS:0000000000000000
+> > [16247.544180] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [16247.544184] CR2: 00007f97c0efec0d CR3: 00000040aa3ac006 CR4: 00000000007706e0
+> > [16247.544188] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [16247.544191] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [16247.544194] PKRU: 55555554
+> > [16247.546763] BUG: Bad rss-counter state mm:00000000060c94f4 type:MM_ANONPAGES val:8
 > >
-> > okay, will update.
 > >
-> > >
-> > > > +    properties:
-> > > > +      compatible:
-> > > > +        const: riscv,idle-state
-> > > > +
-> > > > +      local-timer-stop:
-> > > > +        description:
-> > > > +          If present the CPU local timer control logic is lost on state
-> > > > +          entry, otherwise it is retained.
-> > > > +        type: boolean
-> > > > +
-> > > > +      entry-latency-us:
-> > > > +        description:
-> > > > +          Worst case latency in microseconds required to enter the idle state.
-> > > > +
-> > > > +      exit-latency-us:
-> > > > +        description:
-> > > > +          Worst case latency in microseconds required to exit the idle state.
-> > > > +          The exit-latency-us duration may be guaranteed only after
-> > > > +          entry-latency-us has passed.
-> > > > +
-> > > > +      min-residency-us:
-> > > > +        description:
-> > > > +          Minimum residency duration in microseconds, inclusive of preparation
-> > > > +          and entry, for this idle state to be considered worthwhile energy
-> > > > +          wise (refer to section 2 of this document for a complete description).
-> > > > +
-> > > > +      wakeup-latency-us:
-> > > > +        description: |
-> > > > +          Maximum delay between the signaling of a wake-up event and the CPU
-> > > > +          being able to execute normal code again. If omitted, this is assumed
-> > > > +          to be equal to:
-> > > > +
-> > > > +            entry-latency-us + exit-latency-us
-> > > > +
-> > > > +          It is important to supply this value on systems where the duration
-> > > > +          of PREP phase (see diagram 1, section 2) is non-neglibigle. In such
-> > > > +          systems entry-latency-us + exit-latency-us will exceed
-> > > > +          wakeup-latency-us by this duration.
-> > > > +
-> > > > +      idle-state-name:
-> > > > +        $ref: /schemas/types.yaml#/definitions/string
-> > > > +        description:
-> > > > +          A string used as a descriptive name for the idle state.
-> > > > +
-> > > > +    required:
-> > > > +      - compatible
-> > > > +      - entry-latency-us
-> > > > +      - exit-latency-us
-> > > > +      - min-residency-us
-> > > > +
-> > > > +additionalProperties: false
-> >
-> > I will move this up.
->
-> TBC, you need this at 2 levels. Both the idle-states node and child nodes.
 
-Sure, I will add at both levels.
-
-Regards,
-Anup
+-- 
+ Kirill A. Shutemov
