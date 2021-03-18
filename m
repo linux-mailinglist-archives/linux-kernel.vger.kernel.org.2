@@ -2,68 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1786333FF15
+	by mail.lfdr.de (Postfix) with ESMTP id 66FA033FF16
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 06:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbhCRFyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 01:54:03 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42300 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229454AbhCRFxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 01:53:36 -0400
-Received: from localhost.localdomain.localdomain (unknown [10.180.13.87])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Bx4+TZ6lJgXg0CAA--.7221S2;
-        Thu, 18 Mar 2021 13:53:29 +0800 (CST)
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-To:     mingo@redhat.com, peterz@infradead.org,
+        id S229698AbhCRFyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 01:54:05 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:31043 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhCRFxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 01:53:47 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F1GRX4sC9z9tvtv;
+        Thu, 18 Mar 2021 06:53:44 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id oB0Ub6KcefCg; Thu, 18 Mar 2021 06:53:44 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F1GRX3xNTz9tvtt;
+        Thu, 18 Mar 2021 06:53:44 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3CE8B8B884;
+        Thu, 18 Mar 2021 06:53:45 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id cKB2rdsh--uZ; Thu, 18 Mar 2021 06:53:44 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC9D38B75F;
+        Thu, 18 Mar 2021 06:53:41 +0100 (CET)
+Subject: Re: [PATCH v2] smp: kernel/panic.c - silence warnings
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, He Ying <heying24@huawei.com>,
+        frederic@kernel.org, paulmck@kernel.org, clg@kaod.org,
+        qais.yousef@arm.com, johnny.chenyi@huawei.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/rt: use DIV_ROUND_UP to calculate sysctl_sched_rr_timeslice
-Date:   Thu, 18 Mar 2021 13:53:29 +0800
-Message-Id: <1616046809-6379-1-git-send-email-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Bx4+TZ6lJgXg0CAA--.7221S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1UAFW8KF4xur4UCFyDKFg_yoW3ZFX_u3
-        saqr1Ykw1qvFyv9FsrAw48ArWagFyjqa47ZwnxKr17Jay8tw1DAr98CFZ5JFn5uw1xWa9F
-        yFsYq3Z0krsIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE-syl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jeXdbUUUUU=
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+References: <20210316084150.75201-1-heying24@huawei.com>
+ <20210317094908.GB1724119@gmail.com>
+ <9691919b-d014-7433-3345-812c9b19a677@csgroup.eu>
+ <YFH0sDpUIUmdpNkQ@hirez.programming.kicks-ass.net>
+ <fa3f9880-eb05-f18e-ae7f-4735209f4c94@csgroup.eu>
+ <YFI+YMo7zml+spKc@hirez.programming.kicks-ass.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f6cb47a6-45c9-ad8f-6657-90958a86c3e1@csgroup.eu>
+Date:   Thu, 18 Mar 2021 06:53:34 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <YFI+YMo7zml+spKc@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When HZ is 300, the value of sysctl_sched_rr_timeslice is different from
-the actual value. Therefore, replace with DIV_ROUND_UP to calculate
-sysctl_sched_rr_timeslice.
 
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
----
- kernel/sched/rt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index b980cc96604f..c684440eefdb 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -8,7 +8,7 @@
- #include "pelt.h"
- 
- int sched_rr_timeslice = RR_TIMESLICE;
--int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
-+int sysctl_sched_rr_timeslice = DIV_ROUND_UP(RR_TIMESLICE * MSEC_PER_SEC, HZ);
- 
- static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun);
- 
--- 
-2.27.0
+Le 17/03/2021 à 18:37, Peter Zijlstra a écrit :
+> On Wed, Mar 17, 2021 at 06:17:26PM +0100, Christophe Leroy wrote:
+>>
+>>
+>> Le 17/03/2021 à 13:23, Peter Zijlstra a écrit :
+>>> On Wed, Mar 17, 2021 at 12:00:29PM +0100, Christophe Leroy wrote:
+>>>> What do you mean ? 'extern' prototype is pointless for function prototypes
+>>>> and deprecated, no new function prototypes should be added with the 'extern'
+>>>> keyword.
+>>>>
+>>>> checkpatch.pl tells you: "extern prototypes should be avoided in .h files"
+>>>
+>>> I have a very strong preference for extern on function decls, to match
+>>> the extern on variable decl.
+>>
+>> You mean you also do 'static inline' variable declarations ?
+> 
+> That's a func definition, not a declaration. And you _can_ do static
+> variable definitions in a header file just fine, although that's
+> typically not what you'd want. Although sometimes I've seen people do:
+> 
+> static const int my_var = 10;
+> 
+> inline is an attribute that obviously doesn't work on variables.
+> 
+>> Using the extern keyword on function prototypes is superfluous visual
+>> noise so suggest removing it.
+> 
+> I don't agree; and I think the C spec is actually wrong there (too).
+> 
+> The thing is that it distinguishes between a forward declaration of a
+> function in the same TU and an external declaration for a function in
+> another TU.
+> 
+> That is; if I see:
+> 
+> void ponies(int legs);
+> 
+> I expect that function to be defined later in the same TU. IOW it's a
+> forward declaration. OTOH if I see:
+> 
+> extern void ponies(int legs);
+> 
+> I know I won't find it in this TU and the linker will end up involved.
 
+Yes I can understand that for a .c file where you want to distinguish between forward declaration of 
+functions defined in the file and functions declared outside. There, it is definitely an added value.
+
+But in .h, all functions must be defined somewhere else, otherwise you have another problem. So all 
+functions would have the 'extern' keyword according to your reasoning. Therefore that's just useless 
+and I fully agree with Checkpatch's commit that in that case that's "superfluous visual noise" 
+impeding readability and making it more difficult to fit the prototype on a single line.
+
+
+> 
+> Now, the C people figured that distinction was useless and allowed
+> sloppiness. But I still think there's merrit to that. And as mentioned
+> earlier, it is consistent with variable declarations.
+> 
