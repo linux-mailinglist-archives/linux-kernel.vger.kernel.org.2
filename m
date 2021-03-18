@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B44341129
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7524B34112D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 00:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhCRXp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 19:45:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:18216 "EHLO mga09.intel.com"
+        id S233317AbhCRXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 19:46:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230204AbhCRXpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 19:45:00 -0400
-IronPort-SDR: XL1vo9Xj1wBzTjntsoRZeYMxbj9fogu1kaG9o5jbAdoE57riL/tgZD3YdpTtpALykV/Ornc3ZU
- 68SO9ATrS93g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189884217"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="189884217"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 16:45:00 -0700
-IronPort-SDR: k0tDIEljJSTd8V/3WJ57iomiVdd4Ht6LTCEY49TX1F9JmTfddoPFIe0liMt7wkpCVRAuuLBVbW
- 1GELlZUNIz9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="389432556"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 18 Mar 2021 16:44:57 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lN2K1-0001Tj-6y; Thu, 18 Mar 2021 23:44:57 +0000
-Date:   Fri, 19 Mar 2021 07:44:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/iommu/debug: fix ifnullfree.cocci warnings
-Message-ID: <20210318234441.GA63469@f8e20a472e81>
-References: <202103190721.joUfcBzf-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103190721.joUfcBzf-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S233333AbhCRXq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:46:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E71564E81;
+        Thu, 18 Mar 2021 23:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1616111187;
+        bh=Q6IwZMnHQrWqg5zWmgJf0Ebi8/XOyNEUBJCBBfeMwho=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pkyU/9SsaUegsBiyD056d2/968LCZGIbrcp4noID/iGWNue/gnKHUnWbmuzrgA3Sc
+         IG3OtZdi84KVr6ugmWi4ktkMLMz9PqX7sUR+xzB6moH5TdMx09O1HExrMGhhkUmSzZ
+         JEDDvYTUz6Su6h3nJl/Du6zeBIbKIgEjWAXP9Ot8=
+Date:   Thu, 18 Mar 2021 16:46:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+Message-Id: <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
+In-Reply-To: <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk>
+References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+        <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk>
+        <CALvZod6tvrZ_sj=BnM4baQepexwvOPREx3qe5ZJrmqftrqwBEA@mail.gmail.com>
+        <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Thu, 18 Mar 2021 10:00:17 -0600 Jens Axboe <axboe@kernel.dk> wrote:
 
-arch/powerpc/kernel/iommu.c:76:2-16: WARNING: NULL check before some freeing functions is not needed.
+> On 3/18/21 9:53 AM, Shakeel Butt wrote:
+> > On Wed, Mar 17, 2021 at 3:30 PM Jens Axboe <axboe@kernel.dk> wrote:
+> >>
+> >> On 3/16/21 9:36 AM, Dan Schatzberg wrote:
+> >>> No major changes, just rebasing and resubmitting
+> >>
+> >> Applied for 5.13, thanks.
+> >>
+> > 
+> > I have requested a couple of changes in the patch series. Can this
+> > applied series still be changed or new patches are required?
+> 
+> I have nothing sitting on top of it for now, so as far as I'm concerned
+> we can apply a new series instead. Then we can also fold in that fix
+> from Colin that he posted this morning...
 
- NULL check before some freeing functions is not needed.
+The collision in memcontrol.c is a pain, but I guess as this is mainly
+a loop patch, the block tree is an appropriate route.
 
- Based on checkpatch warning
- "kfree(NULL) is safe this check is probably not required"
- and kfreeaddr.cocci by Julia Lawall.
+Here's the collision between "mm: Charge active memcg when no mm is
+set" and Shakeels's
+https://lkml.kernel.org/r/20210305212639.775498-1-shakeelb@google.com
 
-Generated by: scripts/coccinelle/free/ifnullfree.cocci
 
-Fixes: 691602aab9c3 ("powerpc/iommu/debug: Add debugfs entries for IOMMU tables")
-CC: Alexey Kardashevskiy <aik@ozlabs.ru>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   81aa0968b7ea6dbabcdcda37dc8434dca6e1565b
-commit: 691602aab9c3cce31d3ff9529c09b7922a5f6224 powerpc/iommu/debug: Add debugfs entries for IOMMU tables
-
- iommu.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
---- a/arch/powerpc/kernel/iommu.c
-+++ b/arch/powerpc/kernel/iommu.c
-@@ -72,8 +72,7 @@ static void iommu_debugfs_del(struct iom
+--- mm/memcontrol.c
++++ mm/memcontrol.c
+@@ -6728,8 +6730,15 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+ 		rcu_read_unlock();
+ 	}
  
- 	sprintf(name, "%08lx", tbl->it_index);
- 	liobn_entry = debugfs_lookup(name, iommu_debugfs_dir);
--	if (liobn_entry)
--		debugfs_remove(liobn_entry);
-+	debugfs_remove(liobn_entry);
- }
- #else
- static void iommu_debugfs_add(struct iommu_table *tbl){}
+-	if (!memcg)
+-		memcg = get_mem_cgroup_from_mm(mm);
++	if (!memcg) {
++		if (!mm) {
++			memcg = get_mem_cgroup_from_current();
++			if (!memcg)
++				memcg = get_mem_cgroup_from_mm(current->mm);
++		} else {
++			memcg = get_mem_cgroup_from_mm(mm);
++		}
++	}
+ 
+ 	ret = try_charge(memcg, gfp_mask, nr_pages);
+ 	if (ret)
+
+
+Which I resolved thusly:
+
+int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+{
+	struct mem_cgroup *memcg;
+	int ret;
+
+	if (mem_cgroup_disabled())
+		return 0;
+
+	if (!mm) {
+		memcg = get_mem_cgroup_from_current();
+		(!memcg)
+			memcg = get_mem_cgroup_from_mm(current->mm);
+	} else {
+		memcg = get_mem_cgroup_from_mm(mm);
+	}
+				
+	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
+	css_put(&memcg->css);
+
+	return ret;
+}
+
+
