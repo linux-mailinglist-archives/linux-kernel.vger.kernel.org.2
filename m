@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFD834038A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9783C34038C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhCRKj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:39:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33798 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230015AbhCRKiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:38:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAD23AC1E;
-        Thu, 18 Mar 2021 10:38:52 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 11:38:48 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFMtuKZ8Ho66D8hN@localhost.localdomain>
-References: <20210309175546.5877-1-osalvador@suse.de>
- <20210309175546.5877-2-osalvador@suse.de>
- <f600451e-48aa-184f-ae71-94e0abe9d6b1@redhat.com>
- <20210315102224.GA24699@linux>
- <a2bf7b25-1e7a-bb6b-2fcd-08a4f4636ed5@redhat.com>
- <a03fcbb3-5b77-8671-6376-13c360f5ae25@redhat.com>
- <20210317140847.GA20407@linux>
- <f996f570-eed9-509f-553c-280a62dc6d20@redhat.com>
- <YFMPBFSJPq2VEOk9@localhost.localdomain>
+        id S230158AbhCRKjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhCRKjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 06:39:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5017FC06174A;
+        Thu, 18 Mar 2021 03:38:57 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:38:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616063935;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1wdTRtnrBFsFQ6xJlLLoRyIXFu3v5Kcl+TfWKg8yJI=;
+        b=Y/dtYQpWuZJtLOcgYhXVj1jw8Z1HV4qbU94ZVdfFh2F6yC4WfS5TbwepotBl6Mt+ol7r97
+        QDcdJ33bhW3ebAl6D30X7Ixjhq7K5GDDPP5SHDNtaEy2Y+WbWWfQSv9k5pY/RckJ+uBKx4
+        ElUQ9c4CbAt73miAZdZhJoWYz1N6RQ+QyvmCBPTWGy5DhHKllXjL/jiFcC8JRautiIsUfd
+        rKxE0VPEGmqRAqi7x2D+hhNsyZ4YqKB//vgetDaBXLmIFeEOYacMTxpSd88kAFzBywzUe/
+        ENijuNfJyLfXUqKs/zsP21NWyx9DiOdN9qgJut4pR0lPjOsBiyOOn0N4S/zXOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616063935;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1wdTRtnrBFsFQ6xJlLLoRyIXFu3v5Kcl+TfWKg8yJI=;
+        b=ETMQGf1WyS0hxdFFggLNi8NWzfumbx5VXwLF2IEJhoSINwMYzW14WBzjIMllDpGL+a9upi
+        1VsePB8uSfmcU5AA==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] tools/x86/kcpuid: Add AMD leaf 0x8000001E
+Cc:     Borislav Petkov <bp@suse.de>, Feng Tang <feng.tang@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210315125901.30315-2-bp@alien8.de>
+References: <20210315125901.30315-2-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFMPBFSJPq2VEOk9@localhost.localdomain>
+Message-ID: <161606393512.398.9596866275749768661.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:27:48AM +0100, Oscar Salvador wrote:
-> > If we check for
-> > 
-> > IS_ALIGNED(nr_vmemmap_pages, PMD_SIZE), please add a proper TODO comment
-> > that this is most probably the wrong place to take care of this.
-> 
-> Sure, I will stuff the check in there and place a big TODO comment so we
-> do not forget about addressing this issue the right way.
+The following commit has been merged into the x86/misc branch of tip:
 
-Ok, I realized something while working on v5.
+Commit-ID:     f281854fa743f3474b2d0d69533301f48cf0e184
+Gitweb:        https://git.kernel.org/tip/f281854fa743f3474b2d0d69533301f48cf0e184
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Mon, 15 Mar 2021 13:55:14 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 18 Mar 2021 11:36:14 +01:00
 
-Here is what I have right now:
+tools/x86/kcpuid: Add AMD leaf 0x8000001E
 
- bool mhp_supports_memmap_on_memory(unsigned long size)
- {
-        /*
-         * Note: We calculate for a single memory section. The calculation
-         * implicitly covers memory blocks that span multiple sections.
-         *
-         * Not all archs define SECTION_SIZE, but MIN_MEMORY_BLOCK_SIZE always
-         * equals SECTION_SIZE, so use that instead.
-         */
-        unsigned long nr_vmemmap_pages = MIN_MEMORY_BLOCK_SIZE / PAGE_SIZE;
-        unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-        unsigned long remaining_size = size - vmemmap_size;
+Contains core IDs, node IDs and other topology info.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Feng Tang <feng.tang@intel.com>
+Link: https://lkml.kernel.org/r/20210315125901.30315-2-bp@alien8.de
+---
+ tools/arch/x86/kcpuid/cpuid.csv | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
+index dd94c07..4f1c4b0 100644
+--- a/tools/arch/x86/kcpuid/cpuid.csv
++++ b/tools/arch/x86/kcpuid/cpuid.csv
+@@ -379,12 +379,22 @@
+ 0x80000008,    0,  EAX,   15:8, lnr_adr_bits, Linear Address Bits
+ 0x80000007,    0,  EBX,      9, wbnoinvd, WBNOINVD
  
-        /*
-         * Besides having arch support and the feature enabled at runtime, we
-         * need a few more assumptions to hold true:
-         *
-         * a) We span a single memory block: memory onlining/offlinin;g happens
-         *    in memory block granularity. We don't want the vmemmap of online
-         *    memory blocks to reside on offline memory blocks. In the future,
-         *    we might want to support variable-sized memory blocks to make the
-         *    feature more versatile.
-         *
-         * b) The vmemmap pages span complete PMDs: We don't want vmemmap code
-         *    to populate memory from the altmap for unrelated parts (i.e.,
-         *    other memory blocks)
-         *
-         * c) The vmemmap pages (and thereby the pages that will be exposed to
-         *    the buddy) have to cover full pageblocks: memory onlining/offlining
-         *    code requires applicable ranges to be page-aligned, for example, to
-         *    set the migratetypes properly.
-         *
-         * TODO: Although we have a check here to make sure that vmemmap pages
-         *       fully populate a PMD, it is not the right place to check for
-         *       this. A much better solution involves improving vmemmap code
-         *       to fallback to base pages when trying to populate vmemmap using
-         *       altmap as an alternative source of memory, and we do not exactly
-         *       populate a single PMD.
-         */
-        return memmap_on_memory &&
-               IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-               size == memory_block_size_bytes() &&
-               remaining_size &&
-               IS_ALIGNED(remaining_size, pageblock_size) &&
-               IS_ALIGNED(vmemmap_size, PMD_SIZE);
- }
-
- Assume we are on x86_64 to simplify the case.
-
- Above, nr_vmemmap_pages would be 32768 and vmemmap_size 2MB (exactly a
- PMD).
-
- Now, although correct, this nr_vmemmap_pages does not match with the
- altmap->alloc.
-
- static void * __meminit altmap_alloc_block_buf(unsigned long size,
-  struct altmap)
- {
-   ...
-   ...
-   nr_pfns = size >> PAGE_SHIFT; //size is PMD_SIZE
-   altmap->alloc += nr_pfns;
- }
-
- altmap->alloc will be 512, 512 * 4K pages = 2MB.
-
-Of course, the reason they do not match is because in one case, we are
-saying a) how many pfns we need to cover a PMD_SIZE, while in the
-other case we say b) how many pages we need to cover SECTION_SIZE
-
-Then b) multiply for page_size to get the current size of it.
-
-So, I have mixed feeling about this.
-Would it be more clear to just do:
-
- bool mhp_supports_memmap_on_memory(unsigned long size)
- {
-        /*
-         * Note: We calculate for a single memory section. The calculation
-         * implicitly covers memory blocks that span multiple sections.
-         */
-        unsigned long nr_vmemmap_pages = PMD_SIZE / PAGE_SIZE;
-        unsigned long vmemmap_size = nr_vmemmap_pages * PAGE_SIZE;
-        unsigned long remaining_size = size - vmemmap_size;
-	...
-	...
-
-
--- 
-Oscar Salvador
-SUSE L3
++# 0x8000001E
++# EAX: Extended APIC ID
++0x8000001E,	0, EAX,   31:0, extended_apic_id, Extended APIC ID
++# EBX: Core Identifiers
++0x8000001E,	0, EBX,    7:0, core_id, Identifies the logical core ID
++0x8000001E,	0, EBX,   15:8, threads_per_core, The number of threads per core is threads_per_core + 1
++# ECX: Node Identifiers
++0x8000001E,	0, ECX,    7:0, node_id, Node ID
++0x8000001E,	0, ECX,   10:8, nodes_per_processor, Nodes per processor { 0: 1 node, else reserved }
++
+ # 8000001F: AMD Secure Encryption
+-0x8000001F,	0, EAX, 0, sme,	Secure Memory Encryption
+-0x8000001F,	0, EAX, 1, sev,	Secure Encrypted Virtualization
+-0x8000001F,	0, EAX, 2, vmpgflush, VM Page Flush MSR
+-0x8000001F,	0, EAX, 3, seves, SEV Encrypted State
+-0x8000001F,	0, EBX, 5:0, c-bit, Page table bit number used to enable memory encryption
+-0x8000001F,	0, EBX, 11:6, mem_encrypt_physaddr_width, Reduction of physical address space in bits with SME enabled
+-0x8000001F,	0, ECX, 31:0, num_encrypted_guests, Maximum ASID value that may be used for an SEV-enabled guest
+-0x8000001F,	0, EDX, 31:0, minimum_sev_asid, Minimum ASID value that must be used for an SEV-enabled, SEV-ES-disabled guest
++0x8000001F,	0, EAX,	     0, sme,	Secure Memory Encryption
++0x8000001F,	0, EAX,      1, sev,	Secure Encrypted Virtualization
++0x8000001F,	0, EAX,      2, vmpgflush, VM Page Flush MSR
++0x8000001F,	0, EAX,      3, seves, SEV Encrypted State
++0x8000001F,	0, EBX,    5:0, c-bit, Page table bit number used to enable memory encryption
++0x8000001F,	0, EBX,   11:6, mem_encrypt_physaddr_width, Reduction of physical address space in bits with SME enabled
++0x8000001F,	0, ECX,   31:0, num_encrypted_guests, Maximum ASID value that may be used for an SEV-enabled guest
++0x8000001F,	0, EDX,   31:0, minimum_sev_asid, Minimum ASID value that must be used for an SEV-enabled, SEV-ES-disabled guest
