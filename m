@@ -2,479 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1E0340616
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6485E34061F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCRMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCRMuv (ORCPT
+        id S231148AbhCRMxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:53:02 -0400
+Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:53174 "EHLO
+        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230335AbhCRMwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:50:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C1BC06174A;
-        Thu, 18 Mar 2021 05:50:50 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 12:50:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616071848;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=rHPeEyuOf73L8anqtISVsH25LiGLpyk/dhBjE8R7zS8=;
-        b=aVkY+cARs+oWpavOds5FoHGwIb225iUgT+pVnFSrLipb7+Ckk3g89C4sFwdqiMv7OhjM3u
-        Cqxu2uFrt4nWTnP+auggEbqKGVImlfcvedEe+wAtWoFhfsadQtFjL/0weKNq/Q35Oz5UJR
-        ewnBrluMDV6u/LTvQlyoA/c97Jr66NP6zhmecP/Vq3FgcCZkDaOEKskr7Z9e3vVxFISXf6
-        JiKJ5Bgx8rjRaA17bzkNknZ7MRo7zbbFGNxCcXTCF4NEnEFS+NjEO3y6mQU7zOKsM5sHIP
-        yDfp4c0UnDrjCoK1rqIzlHwugfI5Gy7RrCyLosy2ZYSS65DcmnH1/kIHuspbGg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616071848;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=rHPeEyuOf73L8anqtISVsH25LiGLpyk/dhBjE8R7zS8=;
-        b=eOtTXLgkE+kVGq/JdsvZBG/CqT57TXsVdftc3pvFAcXOB5DbyBY/1Ls+NpdftwJA4h1Jsf
-        Sm2kkUgP6XajMnDg==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Fix various typos
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mike Galbraith <efault@gmx.de>,
+        Thu, 18 Mar 2021 08:52:54 -0400
+Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
+        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1lMs8S-0007W3-GM; Thu, 18 Mar 2021 12:52:20 +0000
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
+ schedule_tail
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
         Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Terry Hu <kejia.hu@codethink.co.uk>,
+        =?UTF-8?Q?Javier_Jard=c3=b3n?= <javier.jardon@codethink.co.uk>
+References: <000000000000b74f1b05bd316729@google.com>
+ <CACT4Y+ZHMYijYAkeLMX=p9jx6pBivJz06h_1rGt-k9=AgfkWQg@mail.gmail.com>
+ <84b0471d-42c1-175f-ae1d-a18c310c7f77@codethink.co.uk>
+ <CACT4Y+ZsSRdQ5LzYMsgjrBAukgP-Vv8WSQsSoxguYjWvB1QnrA@mail.gmail.com>
+ <aa801bc7-cf6f-b77a-bbb0-28b0ff36e8ba@codethink.co.uk>
+ <816870e9-9354-ffbd-936b-40e38e4276a4@codethink.co.uk>
+ <4ce57c7e-6e5d-d136-0a81-395a4207ba44@codethink.co.uk>
+ <CACT4Y+ZJwJ9vcgCyabDUny0CnYmbHLRqU6m_KccdObS+7bBoGw@mail.gmail.com>
+ <CACT4Y+ay21Cw8TtUdyDAzXAJaqpDPyCKNW6XF1GKsHoNeL=qKw@mail.gmail.com>
+ <38efd34b-1ac5-f2a5-d090-83f909b3b87f@codethink.co.uk>
+ <CACT4Y+aTZZOGbY3r0bobO1+wEt4-r83KXbt1aGnp7xQ+Ji6gZw@mail.gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <23962e55-1533-289b-8544-982e3c5a7199@codethink.co.uk>
+Date:   Thu, 18 Mar 2021 12:52:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <161607184792.398.5335206467412782485.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CACT4Y+aTZZOGbY3r0bobO1+wEt4-r83KXbt1aGnp7xQ+Ji6gZw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On 18/03/2021 10:05, Dmitry Vyukov wrote:
+> On Thu, Mar 18, 2021 at 10:41 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>>
+>> On 12/03/2021 17:38, Dmitry Vyukov wrote:
+>>> On Fri, Mar 12, 2021 at 6:34 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>
+>>>> On Fri, Mar 12, 2021 at 5:36 PM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>>>>>
+>>>>> On 12/03/2021 16:34, Ben Dooks wrote:
+>>>>>> On 12/03/2021 16:30, Ben Dooks wrote:
+>>>>>>> On 12/03/2021 15:12, Dmitry Vyukov wrote:
+>>>>>>>> On Fri, Mar 12, 2021 at 2:50 PM Ben Dooks <ben.dooks@codethink.co.uk>
+>>>>>>>> wrote:
+>>>>>>>>>
+>>>>>>>>> On 10/03/2021 17:16, Dmitry Vyukov wrote:
+>>>>>>>>>> On Wed, Mar 10, 2021 at 5:46 PM syzbot
+>>>>>>>>>> <syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> Hello,
+>>>>>>>>>>>
+>>>>>>>>>>> syzbot found the following issue on:
+>>>>>>>>>>>
+>>>>>>>>>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for
+>>>>>>>>>>> arch_dup_tas..
+>>>>>>>>>>> git tree:
+>>>>>>>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+>>>>>>>>>>> console output:
+>>>>>>>>>>> https://syzkaller.appspot.com/x/log.txt?x=1212c6e6d00000
+>>>>>>>>>>> kernel config:
+>>>>>>>>>>> https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+>>>>>>>>>>> dashboard link:
+>>>>>>>>>>> https://syzkaller.appspot.com/bug?extid=e74b94fe601ab9552d69
+>>>>>>>>>>> userspace arch: riscv64
+>>>>>>>>>>>
+>>>>>>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>>>>>>
+>>>>>>>>>>> IMPORTANT: if you fix the issue, please add the following tag to
+>>>>>>>>>>> the commit:
+>>>>>>>>>>> Reported-by: syzbot+e74b94fe601ab9552d69@syzkaller.appspotmail.com
+>>>>>>>>>>
+>>>>>>>>>> +riscv maintainers
+>>>>>>>>>>
+>>>>>>>>>> This is riscv64-specific.
+>>>>>>>>>> I've seen similar crashes in put_user in other places. It looks like
+>>>>>>>>>> put_user crashes in the user address is not mapped/protected (?).
+>>>>>>>>>
+>>>>>>>>> I've been having a look, and this seems to be down to access of the
+>>>>>>>>> tsk->set_child_tid variable. I assume the fuzzing here is to pass a
+>>>>>>>>> bad address to clone?
+>>>>>>>>>
+>>>>>>>>>     From looking at the code, the put_user() code should have set the
+>>>>>>>>> relevant SR_SUM bit (the value for this, which is 1<<18 is in the
+>>>>>>>>> s2 register in the crash report) and from looking at the compiler
+>>>>>>>>> output from my gcc-10, the code looks to be dong the relevant csrs
+>>>>>>>>> and then csrc around the put_user
+>>>>>>>>>
+>>>>>>>>> So currently I do not understand how the above could have happened
+>>>>>>>>> over than something re-tried the code seqeunce and ended up retrying
+>>>>>>>>> the faulting instruction without the SR_SUM bit set.
+>>>>>>>>
+>>>>>>>> I would maybe blame qemu for randomly resetting SR_SUM, but it's
+>>>>>>>> strange that 99% of these crashes are in schedule_tail. If it would be
+>>>>>>>> qemu, then they would be more evenly distributed...
+>>>>>>>>
+>>>>>>>> Another observation: looking at a dozen of crash logs, in none of
+>>>>>>>> these cases fuzzer was actually trying to fuzz clone with some insane
+>>>>>>>> arguments. So it looks like completely normal clone's (e..g coming
+>>>>>>>> from pthread_create) result in this crash.
+>>>>>>>>
+>>>>>>>> I also wonder why there is ret_from_exception, is it normal? I see
+>>>>>>>> handle_exception disables SR_SUM:
+>>>>>>>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/riscv/kernel/entry.S#L73
+>>>>>>>>
+>>>>>>>
+>>>>>>> So I think if SR_SUM is set, then it faults the access to user memory
+>>>>>>> which the _user() routines clear to allow them access.
+>>>>>>>
+>>>>>>> I'm thinking there is at least one issue here:
+>>>>>>>
+>>>>>>> - the test in fault is the wrong way around for die kernel
+>>>>>>> - the handler only catches this if the page has yet to be mapped.
+>>>>>>>
+>>>>>>> So I think the test should be:
+>>>>>>>
+>>>>>>>            if (!user_mode(regs) && addr < TASK_SIZE &&
+>>>>>>>                            unlikely(regs->status & SR_SUM)
+>>>>>>>
+>>>>>>> This then should continue on and allow the rest of the handler to
+>>>>>>> complete mapping the page if it is not there.
+>>>>>>>
+>>>>>>> I have been trying to create a very simple clone test, but so far it
+>>>>>>> has yet to actually trigger anything.
+>>>>>>
+>>>>>> I should have added there doesn't seem to be a good way to use mmap()
+>>>>>> to allocate memory but not insert a vm-mapping post the mmap().
+>>>>>>
+>>>>> How difficult is it to try building a branch with the above test
+>>>>> modified?
+>>>>
+>>>> I don't have access to hardware, I don't have other qemu versions ready to use.
+>>>> But I can teach you how to run syzkaller locally :)
+>>>> I am not sure anybody run it on real riscv hardware at all. When
+>>>> Tobias ported syzkaller, Tobias also used qemu I think.
+>>>>
+>>>> I am now building with an inverted check to test locally.
+>>>>
+>>>> I don't fully understand but this code, but does handle_exception
+>>>> reset SR_SUM around do_page_fault? If so, then looking at SR_SUM in
+>>>> do_page_fault won't work with positive nor negative check.
+>>>
+>>>
+>>> The inverted check crashes during boot:
+>>>
+>>> --- a/arch/riscv/mm/fault.c
+>>> +++ b/arch/riscv/mm/fault.c
+>>> @@ -249,7 +249,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>>>                   flags |= FAULT_FLAG_USER;
+>>>
+>>>           if (!user_mode(regs) && addr < TASK_SIZE &&
+>>> -                       unlikely(!(regs->status & SR_SUM)))
+>>> +                       unlikely(regs->status & SR_SUM))
+>>>                   die_kernel_fault("access to user memory without
+>>> uaccess routines",
+>>>                                   addr, regs);
+>>>
+>>>
+>>> [   77.349329][    T1] Run /sbin/init as init process
+>>> [   77.868371][    T1] Unable to handle kernel access to user memory
+>>> without uaccess routines at virtual address 00000000000e8e39
+>>> [   77.870355][    T1] Oops [#1]
+>>> [   77.870766][    T1] Modules linked in:
+>>> [   77.871326][    T1] CPU: 0 PID: 1 Comm: init Not tainted
+>>> 5.12.0-rc2-00010-g0d7588ab9ef9-dirty #42
+>>> [   77.872057][    T1] Hardware name: riscv-virtio,qemu (DT)
+>>> [   77.872620][    T1] epc : __clear_user+0x36/0x4e
+>>> [   77.873285][    T1]  ra : padzero+0x9c/0xb0
+>>> [   77.873849][    T1] epc : ffffffe000bb7136 ra : ffffffe0004f42a0 sp
+>>> : ffffffe006f8fbc0
+>>> [   77.874438][    T1]  gp : ffffffe005d25718 tp : ffffffe006f98000 t0
+>>> : 00000000000e8e40
+>>> [   77.875031][    T1]  t1 : 00000000000e9000 t2 : 000000000001c49c s0
+>>> : ffffffe006f8fbf0
+>>> [   77.875618][    T1]  s1 : 00000000000001c7 a0 : 00000000000e8e39 a1
+>>> : 00000000000001c7
+>>> [   77.876204][    T1]  a2 : 0000000000000002 a3 : 00000000000e9000 a4
+>>> : ffffffe006f99000
+>>> [   77.876787][    T1]  a5 : 0000000000000000 a6 : 0000000000f00000 a7
+>>> : ffffffe00031c088
+>>> [   77.877367][    T1]  s2 : 00000000000e8e39 s3 : 0000000000001000 s4
+>>> : 0000003ffffffe39
+>>> [   77.877952][    T1]  s5 : 00000000000e8e39 s6 : 00000000000e9570 s7
+>>> : 00000000000e8e39
+>>> [   77.878535][    T1]  s8 : 0000000000000001 s9 : 00000000000e8e39
+>>> s10: ffffffe00c65f608
+>>> [   77.879126][    T1]  s11: ffffffe00816e8d8 t3 : ea3af0fa372b8300 t4
+>>> : 0000000000000003
+>>> [   77.879711][    T1]  t5 : ffffffc401dc45d8 t6 : 0000000000040000
+>>> [   77.880209][    T1] status: 0000000000040120 badaddr:
+>>> 00000000000e8e39 cause: 000000000000000f
+>>> [   77.880846][    T1] Call Trace:
+>>> [   77.881213][    T1] [<ffffffe000bb7136>] __clear_user+0x36/0x4e
+>>> [   77.881912][    T1] [<ffffffe0004f523e>] load_elf_binary+0xf8a/0x2400
+>>> [   77.882562][    T1] [<ffffffe0003e1802>] bprm_execve+0x5b0/0x1080
+>>> [   77.883145][    T1] [<ffffffe0003e38bc>] kernel_execve+0x204/0x288
+>>> [   77.883727][    T1] [<ffffffe003b70e94>] run_init_process+0x1fe/0x212
+>>> [   77.884337][    T1] [<ffffffe003b70ec6>] try_to_run_init_process+0x1e/0x66
+>>> [   77.884956][    T1] [<ffffffe003bc0864>] kernel_init+0x14a/0x200
+>>> [   77.885541][    T1] [<ffffffe000005570>] ret_from_exception+0x0/0x14
+>>> [   77.886955][    T1] ---[ end trace 1e934d07b8a4bed8 ]---
+>>> [   77.887705][    T1] Kernel panic - not syncing: Fatal exception
+>>> [   77.888333][    T1] SMP: stopping secondary CPUs
+>>> [   77.889357][    T1] Rebooting in 86400 seconds..
+>>
+>> I have reproduced this on qemu, not managed to get the real hardwre
+>> working with this branch yet.
+>>
+>> I have a working hypothesis now, having added debug to check the
+>> sstatus.SR_SUM flag and reviewed the assembly, I think this is
+>> what is happening:
+>>
+>> C code of "put_user(func(), address)" is generating code to do:
+>>
+>> 1:      __enable_user_access();
+>> 2:      cpu_reg = func();
+>> 3:      assembly for *address = cpu_reg;
+>> 4:      __disable_user_access();
+>>
+>> I think the call to func() with all the sanitisers enabled allow
+>> the func() to possibly schedule out. The __swtich_to() code does
+>> not restore the original status registers which means that if
+>> there is IO during the sleep SR_SUM may end up being cleared and
+>> never re-set. We get back to 3 and fault as 2 cleared the result of 1.
+>>
+>> It is very possible no-one has seen this before as generally the
+>> functions involved in feeding put_user() are fairly small and thus
+>> this system is both under load and has some reason to schedule then
+>> this bug has probably been rare to unseen.
+>>
+>> I think the correct solution is to store the SR_SUM bit status in
+>> the thread_struct and make __switch_to() save/restore this when
+>> changing between tasks/threads. Trying to re-order the code to
+>> force swapping of 1 and 2 may reduce the bug's window.
+>>
+>> Further thinking of the order of 1 and 2 is that we should probably
+>> fix that order so that func() is not run with the user-space access
+>> protection disabled.
+>>
+>> I'll try and make some sort of of small test case to avoid having
+>> to run syz-stress to provoke this.
+> 
+> Ouch!
+> Can't preempt kernel schedule at almost any instruction where
+> preemption is not disabled explicitly?  But if it's disabled, then the
+> instrumented code won't schedule as well, right? I suspect this may be
+> quite a bad issue for preempt kernels.
+> 
+> Shouldn't __put_user materialize the expression in a local var using
+> __typeof__ magic before __enable_user_access? I suspect it may
+> potentially lead to quite bad security implications.
+> 
+> It can also make sense to add checks to schedule to check that it's
+> not called from unexpected contexts.
 
-Commit-ID:     7aacb8c62f621e9f6f1b5f11bb19eb37ddbf00e2
-Gitweb:        https://git.kernel.org/tip/7aacb8c62f621e9f6f1b5f11bb19eb37ddbf00e2
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 18 Mar 2021 13:38:50 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 18 Mar 2021 13:46:27 +01:00
+I wrote a kernel thread that does:
 
-sched: Fix various typos
+#define rd_sstatus() ({ unsigned long result; asm("  csrr %0, sstatus" : 
+"=r"(result) :: "memory"); result; })
 
-Fix ~34 single-word typos in scheduler code comments.
 
-We have accumulated a few fun ones over the years. :-)
+static int test_thread1(void *data)
+{
+	unsigned int cpu = (unsigned int)data;
+	unsigned long status;
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mike Galbraith <efault@gmx.de>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: linux-kernel@vger.kernel.org
----
- include/linux/sched.h            |  2 +-
- kernel/sched/core.c              |  2 +-
- kernel/sched/cpuacct.c           |  2 +-
- kernel/sched/cpufreq_schedutil.c |  2 +-
- kernel/sched/cpupri.c            |  4 ++--
- kernel/sched/deadline.c          | 12 ++++++------
- kernel/sched/debug.c             |  2 +-
- kernel/sched/fair.c              | 14 +++++++-------
- kernel/sched/features.h          |  2 +-
- kernel/sched/idle.c              |  4 ++--
- kernel/sched/loadavg.c           |  2 +-
- kernel/sched/pelt.c              |  2 +-
- kernel/sched/pelt.h              |  2 +-
- kernel/sched/psi.c               |  6 +++---
- kernel/sched/rt.c                |  2 +-
- kernel/sched/sched.h             |  6 +++---
- kernel/sched/stats.c             |  2 +-
- 17 files changed, 34 insertions(+), 34 deletions(-)
+	pr_info("%s: thread starting on cpu %d\n", __func__, cpu);
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index cf245bc..05572e2 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1097,7 +1097,7 @@ struct task_struct {
- #ifdef CONFIG_CPUSETS
- 	/* Protected by ->alloc_lock: */
- 	nodemask_t			mems_allowed;
--	/* Seqence number to catch updates: */
-+	/* Sequence number to catch updates: */
- 	seqcount_spinlock_t		mems_allowed_seq;
- 	int				cpuset_mem_spread_rotor;
- 	int				cpuset_slab_spread_rotor;
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 28c4df6..3384ea7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8975,7 +8975,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
- 		return -EINVAL;
- 
- 	/*
--	 * Likewise, bound things on the otherside by preventing insane quota
-+	 * Likewise, bound things on the other side by preventing insane quota
- 	 * periods.  This also allows us to normalize in computing quota
- 	 * feasibility.
- 	 */
-diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
-index 941c28c..104a1ba 100644
---- a/kernel/sched/cpuacct.c
-+++ b/kernel/sched/cpuacct.c
-@@ -104,7 +104,7 @@ static u64 cpuacct_cpuusage_read(struct cpuacct *ca, int cpu,
- 
- 	/*
- 	 * We allow index == CPUACCT_STAT_NSTATS here to read
--	 * the sum of suages.
-+	 * the sum of usages.
- 	 */
- 	BUG_ON(index > CPUACCT_STAT_NSTATS);
- 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 50cbad8..7cc2e11 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -471,7 +471,7 @@ static void sugov_work(struct kthread_work *work)
- 
- 	/*
- 	 * Hold sg_policy->update_lock shortly to handle the case where:
--	 * incase sg_policy->next_freq is read here, and then updated by
-+	 * in case sg_policy->next_freq is read here, and then updated by
- 	 * sugov_deferred_update() just before work_in_progress is set to false
- 	 * here, we may miss queueing the new update.
- 	 *
-diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-index ec9be78..d583f2a 100644
---- a/kernel/sched/cpupri.c
-+++ b/kernel/sched/cpupri.c
-@@ -77,7 +77,7 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
- 	 * When looking at the vector, we need to read the counter,
- 	 * do a memory barrier, then read the mask.
- 	 *
--	 * Note: This is still all racey, but we can deal with it.
-+	 * Note: This is still all racy, but we can deal with it.
- 	 *  Ideally, we only want to look at masks that are set.
- 	 *
- 	 *  If a mask is not set, then the only thing wrong is that we
-@@ -186,7 +186,7 @@ int cpupri_find_fitness(struct cpupri *cp, struct task_struct *p,
- 	 * The cost of this trade-off is not entirely clear and will probably
- 	 * be good for some workloads and bad for others.
- 	 *
--	 * The main idea here is that if some CPUs were overcommitted, we try
-+	 * The main idea here is that if some CPUs were over-committed, we try
- 	 * to spread which is what the scheduler traditionally did. Sys admins
- 	 * must do proper RT planning to avoid overloading the system if they
- 	 * really care.
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index aac3539..9a29897 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -245,7 +245,7 @@ static void dl_change_utilization(struct task_struct *p, u64 new_bw)
- 		p->dl.dl_non_contending = 0;
- 		/*
- 		 * If the timer handler is currently running and the
--		 * timer cannot be cancelled, inactive_task_timer()
-+		 * timer cannot be canceled, inactive_task_timer()
- 		 * will see that dl_not_contending is not set, and
- 		 * will not touch the rq's active utilization,
- 		 * so we are still safe.
-@@ -267,7 +267,7 @@ static void dl_change_utilization(struct task_struct *p, u64 new_bw)
-  * fires.
-  *
-  * If the task wakes up again before the inactive timer fires,
-- * the timer is cancelled, whereas if the task wakes up after the
-+ * the timer is canceled, whereas if the task wakes up after the
-  * inactive timer fired (and running_bw has been decreased) the
-  * task's utilization has to be added to running_bw again.
-  * A flag in the deadline scheduling entity (dl_non_contending)
-@@ -385,7 +385,7 @@ static void task_contending(struct sched_dl_entity *dl_se, int flags)
- 		dl_se->dl_non_contending = 0;
- 		/*
- 		 * If the timer handler is currently running and the
--		 * timer cannot be cancelled, inactive_task_timer()
-+		 * timer cannot be canceled, inactive_task_timer()
- 		 * will see that dl_not_contending is not set, and
- 		 * will not touch the rq's active utilization,
- 		 * so we are still safe.
-@@ -1206,7 +1206,7 @@ extern bool sched_rt_bandwidth_account(struct rt_rq *rt_rq);
-  * Since rq->dl.running_bw and rq->dl.this_bw contain utilizations
-  * multiplied by 2^BW_SHIFT, the result has to be shifted right by
-  * BW_SHIFT.
-- * Since rq->dl.bw_ratio contains 1 / Umax multipled by 2^RATIO_SHIFT,
-+ * Since rq->dl.bw_ratio contains 1 / Umax multiplied by 2^RATIO_SHIFT,
-  * dl_bw is multiped by rq->dl.bw_ratio and shifted right by RATIO_SHIFT.
-  * Since delta is a 64 bit variable, to have an overflow its value
-  * should be larger than 2^(64 - 20 - 8), which is more than 64 seconds.
-@@ -1737,7 +1737,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
- 		p->dl.dl_non_contending = 0;
- 		/*
- 		 * If the timer handler is currently running and the
--		 * timer cannot be cancelled, inactive_task_timer()
-+		 * timer cannot be canceled, inactive_task_timer()
- 		 * will see that dl_not_contending is not set, and
- 		 * will not touch the rq's active utilization,
- 		 * so we are still safe.
-@@ -2745,7 +2745,7 @@ void __getparam_dl(struct task_struct *p, struct sched_attr *attr)
- 
- /*
-  * Default limits for DL period; on the top end we guard against small util
-- * tasks still getting rediculous long effective runtimes, on the bottom end we
-+ * tasks still getting ridiculously long effective runtimes, on the bottom end we
-  * guard against timer DoS.
-  */
- unsigned int sysctl_sched_dl_period_max = 1 << 22; /* ~4 seconds */
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 486f403..4b49cc2 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -815,7 +815,7 @@ void sysrq_sched_debug_show(void)
- }
- 
- /*
-- * This itererator needs some explanation.
-+ * This iterator needs some explanation.
-  * It returns 1 for the header position.
-  * This means 2 is CPU 0.
-  * In a hotplugged system some CPUs, including CPU 0, may be missing so we have
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2e2ab1e..afb895a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1125,7 +1125,7 @@ static unsigned int task_nr_scan_windows(struct task_struct *p)
- 	return rss / nr_scan_pages;
- }
- 
--/* For sanitys sake, never scan more PTEs than MAX_SCAN_WINDOW MB/sec. */
-+/* For sanity's sake, never scan more PTEs than MAX_SCAN_WINDOW MB/sec. */
- #define MAX_SCAN_WINDOW 2560
- 
- static unsigned int task_scan_min(struct task_struct *p)
-@@ -2577,7 +2577,7 @@ no_join:
- }
- 
- /*
-- * Get rid of NUMA staticstics associated with a task (either current or dead).
-+ * Get rid of NUMA statistics associated with a task (either current or dead).
-  * If @final is set, the task is dead and has reached refcount zero, so we can
-  * safely free all relevant data structures. Otherwise, there might be
-  * concurrent reads from places like load balancing and procfs, and we should
-@@ -3952,7 +3952,7 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-  *
-  *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
-  *
-- * NOTE: this only works when value + maring < INT_MAX.
-+ * NOTE: this only works when value + margin < INT_MAX.
-  */
- static inline bool within_margin(int value, int margin)
- {
-@@ -4256,7 +4256,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	/*
- 	 * When bandwidth control is enabled, cfs might have been removed
- 	 * because of a parent been throttled but cfs->nr_running > 1. Try to
--	 * add it unconditionnally.
-+	 * add it unconditionally.
- 	 */
- 	if (cfs_rq->nr_running == 1 || cfs_bandwidth_used())
- 		list_add_leaf_cfs_rq(cfs_rq);
-@@ -5311,7 +5311,7 @@ static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
-  * bits doesn't do much.
-  */
- 
--/* cpu online calback */
-+/* cpu online callback */
- static void __maybe_unused update_runtime_enabled(struct rq *rq)
- {
- 	struct task_group *tg;
-@@ -9690,7 +9690,7 @@ more_balance:
- 		 * load to given_cpu. In rare situations, this may cause
- 		 * conflicts (balance_cpu and given_cpu/ilb_cpu deciding
- 		 * _independently_ and at _same_ time to move some load to
--		 * given_cpu) causing exceess load to be moved to given_cpu.
-+		 * given_cpu) causing excess load to be moved to given_cpu.
- 		 * This however should not happen so much in practice and
- 		 * moreover subsequent load balance cycles should correct the
- 		 * excess load moved.
-@@ -9834,7 +9834,7 @@ out_one_pinned:
- 	/*
- 	 * newidle_balance() disregards balance intervals, so we could
- 	 * repeatedly reach this code, which would lead to balance_interval
--	 * skyrocketting in a short amount of time. Skip the balance_interval
-+	 * skyrocketing in a short amount of time. Skip the balance_interval
- 	 * increase logic to avoid that.
- 	 */
- 	if (env.idle == CPU_NEWLY_IDLE)
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 1bc2b15..422fa68 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -27,7 +27,7 @@ SCHED_FEAT(NEXT_BUDDY, false)
- SCHED_FEAT(LAST_BUDDY, true)
- 
- /*
-- * Consider buddies to be cache hot, decreases the likelyness of a
-+ * Consider buddies to be cache hot, decreases the likeliness of a
-  * cache buddy being migrated away, increases cache locality.
-  */
- SCHED_FEAT(CACHE_HOT_BUDDY, true)
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 7a92d60..7ca3d3d 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -163,7 +163,7 @@ static int call_cpuidle(struct cpuidle_driver *drv, struct cpuidle_device *dev,
-  *
-  * NOTE: no locks or semaphores should be used here
-  *
-- * On archs that support TIF_POLLING_NRFLAG, is called with polling
-+ * On architectures that support TIF_POLLING_NRFLAG, is called with polling
-  * set, and it returns with polling set.  If it ever stops polling, it
-  * must clear the polling bit.
-  */
-@@ -199,7 +199,7 @@ static void cpuidle_idle_call(void)
- 	 * Suspend-to-idle ("s2idle") is a system state in which all user space
- 	 * has been frozen, all I/O devices have been suspended and the only
- 	 * activity happens here and in interrupts (if any). In that case bypass
--	 * the cpuidle governor and go stratight for the deepest idle state
-+	 * the cpuidle governor and go straight for the deepest idle state
- 	 * available.  Possibly also suspend the local tick and the entire
- 	 * timekeeping to prevent timer interrupts from kicking us out of idle
- 	 * until a proper wakeup interrupt happens.
-diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
-index d2a6556..1c79896 100644
---- a/kernel/sched/loadavg.c
-+++ b/kernel/sched/loadavg.c
-@@ -189,7 +189,7 @@ calc_load_n(unsigned long load, unsigned long exp,
-  *    w:0 1 1           0 0           1 1           0 0
-  *
-  *    This ensures we'll fold the old NO_HZ contribution in this window while
-- *    accumlating the new one.
-+ *    accumulating the new one.
-  *
-  *  - When we wake up from NO_HZ during the window, we push up our
-  *    contribution, since we effectively move our sample point to a known
-diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
-index 2c613e1..a554e3b 100644
---- a/kernel/sched/pelt.c
-+++ b/kernel/sched/pelt.c
-@@ -133,7 +133,7 @@ accumulate_sum(u64 delta, struct sched_avg *sa,
- 			 *	runnable = running = 0;
- 			 *
- 			 * clause from ___update_load_sum(); this results in
--			 * the below usage of @contrib to dissapear entirely,
-+			 * the below usage of @contrib to disappear entirely,
- 			 * so no point in calculating it.
- 			 */
- 			contrib = __accumulate_pelt_segments(periods,
-diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-index 795e43e..1462846 100644
---- a/kernel/sched/pelt.h
-+++ b/kernel/sched/pelt.h
-@@ -130,7 +130,7 @@ static inline void update_idle_rq_clock_pelt(struct rq *rq)
- 	 * Reflecting stolen time makes sense only if the idle
- 	 * phase would be present at max capacity. As soon as the
- 	 * utilization of a rq has reached the maximum value, it is
--	 * considered as an always runnig rq without idle time to
-+	 * considered as an always running rq without idle time to
- 	 * steal. This potential idle time is considered as lost in
- 	 * this case. We keep track of this lost idle time compare to
- 	 * rq's clock_task.
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index ee3c5b4..c8480d7 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -62,7 +62,7 @@
-  * states, we would have to conclude a CPU SOME pressure number of
-  * 100%, since *somebody* is waiting on a runqueue at all
-  * times. However, that is clearly not the amount of contention the
-- * workload is experiencing: only one out of 256 possible exceution
-+ * workload is experiencing: only one out of 256 possible execution
-  * threads will be contended at any given time, or about 0.4%.
-  *
-  * Conversely, consider a scenario of 4 tasks and 4 CPUs where at any
-@@ -76,7 +76,7 @@
-  * we have to base our calculation on the number of non-idle tasks in
-  * conjunction with the number of available CPUs, which is the number
-  * of potential execution threads. SOME becomes then the proportion of
-- * delayed tasks to possibe threads, and FULL is the share of possible
-+ * delayed tasks to possible threads, and FULL is the share of possible
-  * threads that are unproductive due to delays:
-  *
-  *	threads = min(nr_nonidle_tasks, nr_cpus)
-@@ -446,7 +446,7 @@ static void psi_avgs_work(struct work_struct *work)
- 	mutex_unlock(&group->avgs_lock);
- }
- 
--/* Trigger tracking window manupulations */
-+/* Trigger tracking window manipulations */
- static void window_reset(struct psi_window *win, u64 now, u64 value,
- 			 u64 prev_growth)
- {
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8f720b7..408d11a 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1998,7 +1998,7 @@ static void push_rt_tasks(struct rq *rq)
-  *
-  * Each root domain has its own irq work function that can iterate over
-  * all CPUs with RT overloaded tasks. Since all CPUs with overloaded RT
-- * tassk must be checked if there's one or many CPUs that are lowering
-+ * task must be checked if there's one or many CPUs that are lowering
-  * their priority, there's a single irq work iterator that will try to
-  * push off RT tasks that are waiting to run.
-  *
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d2e09a6..24ac31b 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1214,7 +1214,7 @@ static inline void rq_clock_skip_update(struct rq *rq)
- 
- /*
-  * See rt task throttling, which is the only time a skip
-- * request is cancelled.
-+ * request is canceled.
-  */
- static inline void rq_clock_cancel_skipupdate(struct rq *rq)
- {
-@@ -1861,7 +1861,7 @@ struct sched_class {
- 
- 	/*
- 	 * The switched_from() call is allowed to drop rq->lock, therefore we
--	 * cannot assume the switched_from/switched_to pair is serliazed by
-+	 * cannot assume the switched_from/switched_to pair is serialized by
- 	 * rq->lock. They are however serialized by p->pi_lock.
- 	 */
- 	void (*switched_from)(struct rq *this_rq, struct task_struct *task);
-@@ -2452,7 +2452,7 @@ DECLARE_PER_CPU(struct irqtime, cpu_irqtime);
- 
- /*
-  * Returns the irqtime minus the softirq time computed by ksoftirqd.
-- * Otherwise ksoftirqd's sum_exec_runtime is substracted its own runtime
-+ * Otherwise ksoftirqd's sum_exec_runtime is subtracted its own runtime
-  * and never move forward.
-  */
- static inline u64 irq_time_read(int cpu)
-diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-index 750fb3c..3f93fc3 100644
---- a/kernel/sched/stats.c
-+++ b/kernel/sched/stats.c
-@@ -74,7 +74,7 @@ static int show_schedstat(struct seq_file *seq, void *v)
- }
- 
- /*
-- * This itererator needs some explanation.
-+ * This iterator needs some explanation.
-  * It returns 1 for the header position.
-  * This means 2 is cpu 0.
-  * In a hotplugged system some CPUs, including cpu 0, may be missing so we have
+	while (!kthread_should_stop()) {
+		status = rd_sstatus();
+		if (status & SR_SUM)
+			printk_ratelimited("%s: found sstaus=0x%08lx\n",
+					   __func__, status);
+		msleep(1);
+	}
+
+	pr_info("%s: thread exiting\n", __func__);
+	return 0;
+}
+
+And under the syz-stress I have the following
+
+[ 1192.124018] test_thread1: found sstaus=0x00040022
+
+this thread does not do any IO operations yet during a stress run
+it got entered with SR_SUM set (the 0x00040000) in the sstatus
+field.
+
+I think this is proof that #1 this is /rare/ and #2 we need to
+make __switch_user save at-least the SR_SUM field.
+
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
