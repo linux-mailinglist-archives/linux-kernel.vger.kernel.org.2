@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B91E34068D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6868C34069F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhCRNLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:11:00 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38202 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbhCRNKl (ORCPT
+        id S231126AbhCRNMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:12:35 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:50798 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231389AbhCRNMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:10:41 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID4fWk066024;
-        Thu, 18 Mar 2021 13:10:33 GMT
+        Thu, 18 Mar 2021 09:12:18 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IDC9Ch038581;
+        Thu, 18 Mar 2021 13:12:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5/uZvzbxmqehge0T8yaELmVoLsV8KJrdXcFlaUfC5/g=;
- b=aVxWSNr1/SCKOeIrN9/h2e3szbzo5zDGDPU46FmVO/hLmXVHIIYmutwnCt0rWLOFNOU0
- GMqbgwy8krp56DnKMzCONXReCaVfCA91Lmfg50YGp6kExGDjaoa7so1/T5pzVp9C7lxZ
- walXfXyAEEFZ65/myzSDHd0VesPtZaJHs7cUgobXKF/Pru05Up7ImKUERGk4vnTuscqM
- N8weFqgrch7l3ZacMx5dobsJ55NvXmwzn2eQzrsAVH44KXIhBYsLpt87D5dtG1uQIJKo
- KPEv5Fen51QmJiFIWcyNcuI+4pb6aO/b0ok+juB834L5M6O9qh5afMfBYai2EqXxR+h4 nw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 37a4ekvbwx-1
+ bh=wyniDUSLWY+45jNq99b+hwvVrJ2X/uu/AumI1WBt8Sg=;
+ b=ibEFpiFl/t4dW/NUKdqnD+jCpzAqZtX/4n31bfxMI6Gv6vA2JrL4SXsAsRqM3OmXYPUN
+ Yg/eHdjMAXVP0WjK4qMQfuIPK9qOZHcvSmnhl+e2pcA0GHwumPSljFOHbh9fxovel44i
+ DumYt4RpkF/bF0UY27OG1Zo0bMo/FVDhzMmqCJ9vskdMDh5fMPYzJVdk8vwGJjhHQDBX
+ 2kHSTiJJeMXGqi3wtVv+PB0BnfnEtsAchrE4nUnv/q4w71rWDDxOZgUTdHlti61wPpIs
+ XI5uEUBldcwLDvX+D7g3BtXH4EhZd+hgJ27W3bObqEn2r3hf31y9DP84al2aoo7CVP+3 XA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 378jwbqgq0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:10:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID4mmW032780;
-        Thu, 18 Mar 2021 13:10:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 3796yw67uh-1
+        Thu, 18 Mar 2021 13:12:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID5Y9P067517;
+        Thu, 18 Mar 2021 13:12:04 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 37a4evsnmg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:10:31 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12IDAUAm032130;
-        Thu, 18 Mar 2021 13:10:30 GMT
-Received: from mwanda (/102.36.221.92)
+        Thu, 18 Mar 2021 13:12:03 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12IDC28U014690;
+        Thu, 18 Mar 2021 13:12:02 GMT
+Received: from kadam (/102.36.221.92)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Mar 2021 06:10:29 -0700
-Date:   Thu, 18 Mar 2021 16:10:21 +0300
+        with ESMTP ; Thu, 18 Mar 2021 06:12:02 -0700
+Date:   Thu, 18 Mar 2021 16:11:52 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Namjae Jeon <namjae.jeon@samsung.com>
 Cc:     Hyunchul Lee <hyc.lee@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steve French <stfrench@microsoft.com>,
         Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] cifsd: fix a precedence bug in parse_dacl()
-Message-ID: <YFNRPcVUXZ3EiEXN@mwanda>
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-cifs@vger.kernel.org
+Subject: [PATCH RESEND] cifsd: fix a IS_ERR() vs NULL bug
+Message-ID: <20210318131152.GB21246@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180097
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103180097
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1015
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103180097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The shift has higher precedence than mask so this doesn't work as
-intended.
+The smb_direct_alloc_sendmsg() function never returns NULL, it only
+returns error pointers so the check needs to be updated.
 
-Fixes: ef24dca82789 ("cifsd: add support for ACLs")
+Fixes: cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- fs/cifsd/smbacl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+RESEND: Oops.  I forgot to CC linux-cifs on this.
 
-diff --git a/fs/cifsd/smbacl.c b/fs/cifsd/smbacl.c
-index 8d8360ca4751..294c5a8fe9af 100644
---- a/fs/cifsd/smbacl.c
-+++ b/fs/cifsd/smbacl.c
-@@ -520,7 +520,7 @@ static void parse_dacl(struct smb_acl *pdacl, char *end_of_acl,
- 			fattr->cf_gid;
- 		acl_state.groups->aces[acl_state.groups->n++].perms.allow =
- 			(mode & 0070) >> 3;
--		default_acl_state.group.allow = mode & 0070 >> 3;
-+		default_acl_state.group.allow = (mode & 0070) >> 3;
- 		default_acl_state.groups->aces[default_acl_state.groups->n].gid =
- 			fattr->cf_gid;
- 		default_acl_state.groups->aces[default_acl_state.groups->n++].perms.allow =
+ fs/cifsd/transport_rdma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/cifsd/transport_rdma.c b/fs/cifsd/transport_rdma.c
+index 1698f7ed9c2f..638b551019a1 100644
+--- a/fs/cifsd/transport_rdma.c
++++ b/fs/cifsd/transport_rdma.c
+@@ -997,8 +997,8 @@ static int smb_direct_create_header(struct smb_direct_transport *t,
+ 	int ret;
+ 
+ 	sendmsg = smb_direct_alloc_sendmsg(t);
+-	if (!sendmsg)
+-		return -ENOMEM;
++	if (IS_ERR(sendmsg))
++		return PTR_ERR(sendmsg);
+ 
+ 	/* Fill in the packet header */
+ 	packet = (struct smb_direct_data_transfer *)sendmsg->packet;
 -- 
 2.30.2
-
