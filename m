@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9194433FD54
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCFF33FD46
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 03:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhCRCl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Mar 2021 22:41:58 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.80]:25485 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhCRClZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:41:25 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 217EE823EC4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Mar 2021 21:41:25 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id MibFlHv6j1cHeMibFlsOPg; Wed, 17 Mar 2021 21:41:25 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=077KSEAS2xb5VEhFS9pC9E/z/1ME0eQIQJD6xAHitCY=; b=o+/dtnZL6jjO+1rqjpinf20z/A
-        22q7XfWAPSuEA1TpkG3W/NLwY9TOsQzX7xmKXKRlIOWCEi+Qck0nsHlJ8DsuKIVei+GApsp2dctYF
-        Cp7ZvTzu7IOt8saAGTB9TgNM/4nYYujpZt30YU9TNCG+S8Z7J98M7mw2/ilFdI8Xg+xqU7bq9S58B
-        N5MgVBPWwFPJwXsM113o2KviMw7t2V9Z3fsPUAzcdOkOHUDA8hB4taH0JBfoHipstsntrkS3ZCZ1P
-        BXIIMj86XW79raARuPJzXOqhzk94w8vaanrKXPA5nPzBDfs5IECwrxVzziiJZ8mZzNSZBgrpJgO5V
-        JTXtFDbg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:40396 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lMibE-00475T-P0; Wed, 17 Mar 2021 21:41:24 -0500
-Subject: Re: [PATCH] drivers/video/fbdev:modify 0 to NULL
-To:     ChunyouTang <tangchunyou@163.com>, gustavoars@kernel.org,
-        sam@ravnborg.org
+        id S230458AbhCRCeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Mar 2021 22:34:14 -0400
+Received: from m12-17.163.com ([220.181.12.17]:56016 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229720AbhCRCeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:34:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CpYMd
+        PsprCRjXvYnmb1EM2qnPp9FdkTspwNPYhwSUV0=; b=fadU3hnXdriW+QBKcE8S+
+        IoYsz+jLg6u9xpQqaaBZavHkvXO2tSi+KbeR0RsmbJirT4uYF4lORlv0BUrB9Btu
+        tFiBsSZRYm3Saut+9NEuxKdDCDFxwvqZfLCksFjWyw2FCmkjA5Dqm7RMfmj7X9No
+        uPzN6m9BgIvPgl1/4as9us=
+Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
+        by smtp13 (Coremail) with SMTP id EcCowADHzZ38u1JgNBNbqg--.26621S2;
+        Thu, 18 Mar 2021 10:33:45 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     gustavoars@kernel.org, sam@ravnborg.org
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, tangchunyou@yulong.com
-References: <20210318023329.488-1-tangchunyou@163.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <20f1664e-df4c-d085-cb25-1d05e8a793a3@embeddedor.com>
-Date:   Wed, 17 Mar 2021 20:41:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Subject: [PATCH] drivers/video/fbdev:modify 0 to NULL
+Date:   Thu, 18 Mar 2021 10:33:29 +0800
+Message-Id: <20210318023329.488-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210318023329.488-1-tangchunyou@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lMibE-00475T-P0
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:40396
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowADHzZ38u1JgNBNbqg--.26621S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZryruFWkKF4xJw43Gw45Jrb_yoWxZrg_Cr
+        4kZrZrWrWqkr1Syrn7A39avryrtw4UZ3Z7ZFnaqry3Cry3Cr1Fqr1UZrn29w4UWr1UXr9r
+        WrnFgrW0vr1SkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8C38UUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiTgVYUVUDIPi7GQABsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: tangchunyou <tangchunyou@yulong.com>
+
+modify 0 to NULL,info is a pointer,it should be
+
+compared with NULL,not 0
+
+Signed-off-by: tangchunyou <tangchunyou@yulong.com>
+---
+ drivers/video/fbdev/offb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/video/fbdev/offb.c b/drivers/video/fbdev/offb.c
+index 4501e84..cd1042f 100644
+--- a/drivers/video/fbdev/offb.c
++++ b/drivers/video/fbdev/offb.c
+@@ -412,7 +412,7 @@ static void __init offb_init_fb(const char *name,
+ 
+ 	info = framebuffer_alloc(sizeof(u32) * 16, NULL);
+ 
+-	if (info == 0) {
++	if (info == NULL) {
+ 		release_mem_region(res_start, res_size);
+ 		return;
+ 	}
+-- 
+1.9.1
 
 
-On 3/17/21 21:33, ChunyouTang wrote:
-> From: tangchunyou <tangchunyou@yulong.com>
-> 
-> modify 0 to NULL,info is a pointer,it should be
-> 
-> compared with NULL,not 0
-> 
-> Signed-off-by: tangchunyou <tangchunyou@yulong.com>
-> ---
->  drivers/video/fbdev/offb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/offb.c b/drivers/video/fbdev/offb.c
-> index 4501e84..cd1042f 100644
-> --- a/drivers/video/fbdev/offb.c
-> +++ b/drivers/video/fbdev/offb.c
-> @@ -412,7 +412,7 @@ static void __init offb_init_fb(const char *name,
->  
->  	info = framebuffer_alloc(sizeof(u32) * 16, NULL);
->  
-> -	if (info == 0) {
-> +	if (info == NULL) {
-
-if (!info) is better.
-
---
-Gustavo
-
->  		release_mem_region(res_start, res_size);
->  		return;
->  	}
-> 
