@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17F03402C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3BB3402CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 11:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCRKJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 06:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S230060AbhCRKKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 06:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhCRKJC (ORCPT
+        with ESMTP id S229649AbhCRKJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:09:02 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF2C06175F;
-        Thu, 18 Mar 2021 03:09:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 75so3623920lfa.2;
-        Thu, 18 Mar 2021 03:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jMxhISu+COlRrHc/EVrqMnT5LVw2161ovhdA7IBtSGw=;
-        b=N+Q0LUNoyVaDPJ1eJrZ67FhUa77q/Fz02On4l9bg9QACSIgykCKqUmFdsf53Ojgnbf
-         eyumUdx/TwjbtDOLgwCYAB7RDOtR57TMCBeyNSAY//ay7Tl2lccP2Ssym94kRXjxfYRe
-         lulL4E/vgpp41CghUdWNrhQunOsNpbRkQh1Z5uA9cr4OPAdKTqKspV2wEkOPVcm1LmJR
-         yZKXoXYlgW/Aj82akuKLiTGE5Fox66wxjP6rcBsCJbwoniHR5/N5xRjjkVjAEfQdY1MW
-         wabHvQrtRlGBXU/oemiBE0fxxY0J0doyEwDn/K3ybrpVrl7lPm8K8TOwVCHW7Z8VfYJf
-         AzpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jMxhISu+COlRrHc/EVrqMnT5LVw2161ovhdA7IBtSGw=;
-        b=IG0AFNQ4WIC7kIb1oqhO0NDJK4IpvBYtQMoHOV9DKFOKi5oYNqDC/BV9Gtr3IoH2cm
-         FMs+fvSr2r42szRdjBPArkOki56V6+y780HZ3xrW6yfFyKEi0qH0qiSI896Z5F/SCDWD
-         ywvmmefUjva1eWKcciuSJvoS6NdenabVMNcsg1d8HYaxGNWsyi9Xt1aa+qEHr4TnD6wH
-         an9cXBxh/pCVUaM1/Pr6Aho5lINHP7y0Ugv7D63w2LHAIaFUmQ0Lp14Sbf7tY7fYwmtz
-         IdX2/sg635XMHgnoc2K33eKSEoNXkHFZ3pV+ht+R7Yd3WIRao7tSSwmpDuvelJQKDFD1
-         81fA==
-X-Gm-Message-State: AOAM533B0nqqsdjnFA3SuMjAMpcZxmYRRvil0HpuTdKptUaWI6YivoUR
-        nH2jPe16oyAGQmh2VUFkPZLMuey11I6fmA==
-X-Google-Smtp-Source: ABdhPJx2/i763YoZT8agJf/e8IcPTQBDi5fhHCqQUnQpQ0jOlOdRn9E3L+UaYKsqgqqx/61KeZhUWQ==
-X-Received: by 2002:a05:6512:32ab:: with SMTP id q11mr4934722lfe.106.1616062140994;
-        Thu, 18 Mar 2021 03:09:00 -0700 (PDT)
-Received: from [192.168.1.101] ([178.176.78.3])
-        by smtp.gmail.com with ESMTPSA id z21sm173661ljh.104.2021.03.18.03.08.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 03:09:00 -0700 (PDT)
-Subject: Re: [PATCH 07/10] MIPS: disable CONFIG_IDE in bigsur_defconfig
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210318045706.200458-1-hch@lst.de>
- <20210318045706.200458-8-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <53035511-c140-b51a-dd1d-874b1041039a@gmail.com>
-Date:   Thu, 18 Mar 2021 13:08:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 18 Mar 2021 06:09:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8D3C06174A;
+        Thu, 18 Mar 2021 03:09:47 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:09:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616062185;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1RfqsN4pjQvnixC1LIKDGg9h4LEX2+AkMIT8KtYd68w=;
+        b=CqLIN3xzuPVmH174EkL3JaZWb0hmcU6aSjR1WNvv0+YH58MDJFajP4fGbNkE05zWMFnkvT
+        AD5QehMZPVEd1NcvB5SictYGExAn15HMtmXfQqRbEfUHq1GZhzReC81QWcVSG4umSA+8IR
+        bLtw3M4pD7jkS9/l3mdzRIOZ4+vH5FM3niVxsx3MSxqvnESquXNQQ0Sa+Q7r5MXBMIiT5N
+        ixsLPxcJcrCWGw2sE4lEKrw2S70hm7s6AxLLoPJIAr5m9Eh+wVkVSdkOFnEQ26LQYo3A/O
+        WzOqUgockwFUxNHTQp6fMiaouLs7/zLy5m7B3SeVKpfQUG2P9fjhfc6XVkU3vw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616062185;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1RfqsN4pjQvnixC1LIKDGg9h4LEX2+AkMIT8KtYd68w=;
+        b=4G+D47+6xlsIkCt2FOEY7GxazR+AvCCIyBFxIQTibpn7FwT0Pcsq5QuXz6a27sy9oDQ9ub
+        FRiUFUG8z+UOhcBg==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] selftests/x86: Add a missing .note.GNU-stack section
+ to thunks_32.S
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <487ed5348a43c031b816fa7e9efedb75dc324299.1614877299.git.luto@kernel.org>
+References: <487ed5348a43c031b816fa7e9efedb75dc324299.1614877299.git.luto@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210318045706.200458-8-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <161606218445.398.14725807693890108247.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+The following commit has been merged into the x86/misc branch of tip:
 
-On 3/18/21 7:57 AM, Christoph Hellwig wrote:
+Commit-ID:     f706bb59204ba1c47e896b456c97977fc97b7964
+Gitweb:        https://git.kernel.org/tip/f706bb59204ba1c47e896b456c97977fc97b7964
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Thu, 04 Mar 2021 09:01:55 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 18 Mar 2021 11:05:14 +01:00
 
-> bigsur_defconfig enables CONFIG_IDE for the tc86c001 ide driver, which
-> is a Toshiba plug in card that does not make much sense to use on bigsur
-    ^ for
+selftests/x86: Add a missing .note.GNU-stack section to thunks_32.S
 
-   Else that doesn't make much sense. :-)
+test_syscall_vdso_32 ended up with an executable stacks because the asm
+was missing the annotation that says that it is modern and doesn't need
+an executable stack. Add the annotation.
 
-> platforms.  For all other ATA cards libata support is already enabled.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-[...]
+This was missed in commit aeaaf005da1d ("selftests/x86: Add missing
+.note.GNU-stack sections").
 
-MBR, Sergei
+Fixes: aeaaf005da1d ("selftests/x86: Add missing .note.GNU-stack sections")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/487ed5348a43c031b816fa7e9efedb75dc324299.1614877299.git.luto@kernel.org
+---
+ tools/testing/selftests/x86/thunks_32.S | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/x86/thunks_32.S b/tools/testing/selftests/x86/thunks_32.S
+index a71d92d..f3f56e6 100644
+--- a/tools/testing/selftests/x86/thunks_32.S
++++ b/tools/testing/selftests/x86/thunks_32.S
+@@ -45,3 +45,5 @@ call64_from_32:
+ 	ret
+ 
+ .size call64_from_32, .-call64_from_32
++
++.section .note.GNU-stack,"",%progbits
