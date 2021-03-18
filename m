@@ -2,192 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF84340F48
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E08340F52
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 21:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhCRUlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 16:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S233110AbhCRUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 16:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbhCRUkp (ORCPT
+        with ESMTP id S231769AbhCRUmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:40:45 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DA8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:40:44 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id u144so1606740vkb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:40:44 -0700 (PDT)
+        Thu, 18 Mar 2021 16:42:11 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D29FC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:11 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id f12so5172818qtq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 13:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xol55/9H4SiYpqW9PDFqK2rSIMyEWIaJbvYIxkmuGOA=;
-        b=D1ja9+Cs7QVmfxGC2t4MBWS4rYjTTsocGFOGexTP0gi+5M1B8TFSVQYS/Mr+tWfIJ1
-         /qPtxE3EdhkgArFi8zW5u9kGkJijPDuS5AnlhlhkjXcr0YItpI5bX4jQ7gluT8JkiZsI
-         N9Tq9o5+Szipn+eGj7vv2Q4hbfzsP5AYjH0qBDOhPOsq5heHR6JGkHQxpT9PDfd6KcrW
-         z5mswn4Yc4rB/0i48ZdNeomjdXzBJ7C/xjxkj6R6EVs392CG5PB9E/I0F3ySq3ow8ikF
-         x0pn6B1ZQJnXWeRmm3V7Q47+XX2V1LK69/DSaSJstWTbsx7JkvpxggDC0GJQcedjnD2w
-         6DxQ==
+        bh=yOAtzI6XfjgzBwIu+EtPFo8QNNgd7hESHH8Nk+Ja34k=;
+        b=YiuPthPTj9K4DZzonYzJpHPIHwQFHfF2KQ1rQlIwX6jagxxhiwkVQ7qtZWE6Sh//gx
+         kVneIcG1TrbLMGNO4Qv0mCX5ZXOmsuWbmsfv5A6djSOfChuDMzqK3uIEADvP9IDBF5zv
+         8mj2R9ABhCWW9j9570+xb0MtoF6XCFuohQqyVDDs701NHJjZE5jOVk76/vjLM7iutOnd
+         MiOTzt/LpoK+PxTYfrebP1jIj7az8gvF/Uq5jJuT4hJkyVos7Njz9nzh/iHJYP9PuDDY
+         zLTcNSZWa07fgNa8VnsVKJmMvf4mcT2bWjtYXEybPS/DORjvuvb0dvf9KAAPpeqT9f1M
+         dKHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xol55/9H4SiYpqW9PDFqK2rSIMyEWIaJbvYIxkmuGOA=;
-        b=iQg+yINYpDH+XsTA1QshBYJ+Y4Gr/K8im6MpQcuSU6S3Tr2SWL89oIhTZm18Zhw5Ds
-         jv0m71GOZMUOG2O+LGiZZ+kXhIHvHM/RFUcUUkaFLcwAz5GSyIgcSlMMlthfBWh0G/4m
-         jY6e1VMJmFJ1KvK9sW3fLjETfhJbH9GEzIDqd09FCKznL1d5n4/VIcyJGQYwMdG4SbdW
-         CWJDWKx2TRZzMI+YDtNL3+gPTwhkLkzNQHOjn1dhkLh/GEIy2RZtZqmXbhiwA8dCeNLj
-         X8V8ct6L2fA/djD47RuQJY1XIIf4UIonWNWVcR8Pji9jAP/z75zvCgWDxocIUN0YqzIO
-         Ygnw==
-X-Gm-Message-State: AOAM5312F1qu/1M7B4XFz9I9Qy21Kra+77rNR+qm2Ud+0TxkLtgla10I
-        FOWrlZLhJlmEwH4gSEwRQksrPB3xmABqSG88w+AYSw==
-X-Google-Smtp-Source: ABdhPJza7/s835SEdRq/LrIOvtCqfvw6RkbFHI6+Rff1fy9HvfuZEf0HJuKK/0r6FgTZ34f9B4qTL3JMqPUUiJAUQIo=
-X-Received: by 2002:a1f:a5d7:: with SMTP id o206mr966897vke.22.1616100041505;
- Thu, 18 Mar 2021 13:40:41 -0700 (PDT)
+        bh=yOAtzI6XfjgzBwIu+EtPFo8QNNgd7hESHH8Nk+Ja34k=;
+        b=nqo/pOOgBAsEUgi10htXNHsch4XFPTII9SAFNQG/lLjQ0ZLfD4jBd3H5a/+VDWzrir
+         juYMyoFPADWLIljSqfjKuaAHQK+f3+9dnPHoSxRrCwkt9cvBD6C49f3Dtsd7mIPaIG8X
+         El/q/Z2wJEAvi8SPSIUb53J5RA1Wfq5bfXdU6xkIJsOkHk/aH5m/75RohPAuSbb+0F2J
+         C/p2gntNP8w3+aKEFkGW9M2d5fXI4Gn9gMTqto9NfEK5SlzXf/rW9m6I/vtINKDaB1+3
+         o+ZPHDVaa5B0JQ856shYLb0zQFfUu+3dlnY02TNfyAuwdI+BRhcvLtF+eOOFz+3AdzwT
+         60hw==
+X-Gm-Message-State: AOAM530xJbhxFEXrn92UjfvLc17V7Kx5zUgw6PaCIy3uHEnOljaTXqId
+        5R0mzLhO2f/0P1JbSD2e2GItP6Q1cD+5LjNoP9kmsA==
+X-Google-Smtp-Source: ABdhPJwbbwbQtsKdXGidS0XzrLmAq2xIk32hRRm0JCeqaQMKwgMzpgTOHvND+KsVFVSUU6lW++UO6E5dgGWp55eEBMQ=
+X-Received: by 2002:aed:2b06:: with SMTP id p6mr5496809qtd.101.1616100130193;
+ Thu, 18 Mar 2021 13:42:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210317181249.1062995-1-badhri@google.com> <PR3PR10MB41420951E2867C2E0E5272B980699@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <PR3PR10MB41420951E2867C2E0E5272B980699@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 18 Mar 2021 13:40:05 -0700
-Message-ID: <CAPTae5J_GdHsGQvNxgpffk5otyGhY8D48vddvin3A4fkz3KWUA@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: tcpm: Invoke power_supply_changed for tcpm-source-psy-
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20210317045949.1584952-1-joshdon@google.com> <20210318143158.GB17012@xsang-OptiPlex-9020>
+In-Reply-To: <20210318143158.GB17012@xsang-OptiPlex-9020>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 18 Mar 2021 13:41:59 -0700
+Message-ID: <CABk29Nu0+k3dLa5T-Z99EE7FdVSa1wb_OT3zTbXKUaf5Tb-iWA@mail.gmail.com>
+Subject: Re: [sched] 663017c554: WARNING:at_kernel/sched/core.c:#scheduler_tick
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Paul Turner <pjt@google.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Chen Yu <yu.c.chen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 8:26 AM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
->
-> On 17 March 2021 18:13, Badhri Jagan Sridharan wrote:
->
-> > tcpm-source-psy- does not invoke power_supply_changed API when
-> > one of the published power supply properties is changed.
-> > power_supply_changed needs to be called to notify
-> > userspace clients(uevents) and kernel clients.
-> >
-> > Fixes: f2a8aa053c176("typec: tcpm: Represent source supply through
-> > power_supply")
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > ---
-> > Changes since V1:
-> > - Fixed commit message as per Guenter's suggestion
-> > - Added Reviewed-by tags
-> > - cc'ed stable
-> > ---
-> >  drivers/usb/typec/tcpm/tcpm.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 11d0c40bc47d..e8936ea17f80 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -945,6 +945,7 @@ static int tcpm_set_current_limit(struct tcpm_port *port,
-> > u32 max_ma, u32 mv)
-> >
-> >       port->supply_voltage = mv;
-> >       port->current_limit = max_ma;
-> > +     power_supply_changed(port->psy);
-> >
-> >       if (port->tcpc->set_current_limit)
-> >               ret = port->tcpc->set_current_limit(port->tcpc, max_ma, mv);
-> > @@ -2931,6 +2932,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port,
-> > int *sink_pdo,
-> >
-> >       port->pps_data.supported = false;
-> >       port->usb_type = POWER_SUPPLY_USB_TYPE_PD;
-> > +     power_supply_changed(port->psy);
-> >
-> >       /*
-> >        * Select the source PDO providing the most power which has a
-> > @@ -2955,6 +2957,7 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port,
-> > int *sink_pdo,
-> >                               port->pps_data.supported = true;
-> >                               port->usb_type =
-> >                                       POWER_SUPPLY_USB_TYPE_PD_PPS;
-> > +                             power_supply_changed(port->psy);
-> >                       }
-> >                       continue;
-> >               default:
-> > @@ -3112,6 +3115,7 @@ static unsigned int tcpm_pd_select_pps_apdo(struct
-> > tcpm_port *port)
-> >                                                 port->pps_data.out_volt));
-> >               port->pps_data.op_curr = min(port->pps_data.max_curr,
-> >                                            port->pps_data.op_curr);
-> > +             power_supply_changed(port->psy);
-> >       }
-> >
-> >       return src_pdo;
->
-> Regarding selecting PDOs or PPS APDOs, surely we should only notify of a change
-> when we reach SNK_READY which means a new contract has been established? Until
-> that point it's possible any requested change could be rejected so why inform
-> clients before we know the settings have taken effect? I could be missing
-> something here as it's been a little while since I delved into this, but this
-> doesn't seem to make sense to me.
-
-I was trying to keep the power_supply_changed call close to the
-variables which are used to infer the power supply property values.
-Since port->pps_data.max_curr is already updated here and that's used
-to infer the CURRENT_MAX a client could still read this before the
-request goes through right ?
->
-> > @@ -3347,6 +3351,7 @@ static int tcpm_set_charge(struct tcpm_port *port, bool
-> > charge)
-> >                       return ret;
-> >       }
-> >       port->vbus_charge = charge;
-> > +     power_supply_changed(port->psy);
-> >       return 0;
-> >  }
-> >
-> > @@ -3530,6 +3535,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
-> >       port->try_src_count = 0;
-> >       port->try_snk_count = 0;
-> >       port->usb_type = POWER_SUPPLY_USB_TYPE_C;
-> > +     power_supply_changed(port->psy);
->
-> This is already taken care of at the end of this function, isn't it?
-I thought I deleted that. Looks like I didn't. Will send in a patch to
-remove that.
-Will wait for what we decide for the PPS case so that I can send in
-both in the same patch.
-
-Thanks,
-Badhri
-
->
-> >       port->nr_sink_caps = 0;
-> >       port->sink_cap_done = false;
-> >       if (port->tcpc->enable_frs)
-> > @@ -5957,7 +5963,7 @@ static int tcpm_psy_set_prop(struct power_supply
-> > *psy,
-> >               ret = -EINVAL;
-> >               break;
-> >       }
-> > -
-> > +     power_supply_changed(port->psy);
-> >       return ret;
-> >  }
-> >
-> > @@ -6110,6 +6116,7 @@ struct tcpm_port *tcpm_register_port(struct device
-> > *dev, struct tcpc_dev *tcpc)
-> >       err = devm_tcpm_psy_register(port);
-> >       if (err)
-> >               goto out_role_sw_put;
-> > +     power_supply_changed(port->psy);
-> >
-> >       port->typec_port = typec_register_port(port->dev, &port->typec_caps);
-> >       if (IS_ERR(port->typec_port)) {
-> > --
-> > 2.31.0.rc2.261.g7f71774620-goog
->
+The warning is WAI (holding spinlock for 100ms). However, since this
+is expected for locktorture, it makes sense to not have the warning
+enabled while the test is running. I can add that to the patch.
