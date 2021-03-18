@@ -2,116 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33353400C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1726E3400D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 09:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhCRIUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 04:20:35 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3309 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCRIUR (ORCPT
+        id S229810AbhCRIVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 04:21:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38680 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCRIVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 04:20:17 -0400
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F1Kcw0cmqz1455X;
-        Thu, 18 Mar 2021 16:17:04 +0800 (CST)
-Received: from dggpemm100010.china.huawei.com (7.185.36.24) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Mar 2021 16:20:06 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm100010.china.huawei.com (7.185.36.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 16:20:06 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Thu, 18 Mar 2021 16:20:06 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-CC:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        chenjiashang <chenjiashang@huawei.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?UkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8=?=
-Thread-Topic: =?utf-8?B?QSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw==?=
-Thread-Index: AQHXGtwEduPlUZeCNUCbiy3s/+KwAaqHJckAgADDZTCAAA0+AIABZ4Ng
-Date:   Thu, 18 Mar 2021 08:20:06 +0000
-Message-ID: <4d1c3bc0418e48b1b9d44799d65ea375@huawei.com>
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
- <FB4E11A5-84D4-4DAF-889E-FAA1BCD2E66F@gmail.com>
- <6a218e7fe42d41489d02f0b4e3ad2756@huawei.com>
- <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
-In-Reply-To: <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 18 Mar 2021 04:21:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 60C4B1F456D0
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v6 00/13] Add HANTRO G2/HEVC decoder support for IMX8MQ
+Date:   Thu, 18 Mar 2021 09:20:33 +0100
+Message-Id: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTmFkYXYsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTmFkYXYg
-QW1pdCBbbWFpbHRvOm5hZGF2LmFtaXRAZ21haWwuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgTWFy
-Y2ggMTgsIDIwMjEgMjoxMyBBTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3Ry
-dWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPg0K
-PiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPjsgTHUgQmFvbHUNCj4g
-PGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbT47IEpvZXJnIFJvZWRlbCA8am9yb0A4Ynl0ZXMub3Jn
-Pjsgd2lsbEBrZXJuZWwub3JnOw0KPiBhbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbTsgY2hlbmpp
-YXNoYW5nIDxjaGVuamlhc2hhbmdAaHVhd2VpLmNvbT47DQo+IGlvbW11QGxpc3RzLmxpbnV4LWZv
-dW5kYXRpb24ub3JnOyBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+Ow0K
-PiBMS01MIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogQSBw
-cm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw0KPiANCj4gDQo+IA0KPiA+IE9uIE1h
-ciAxNywgMjAyMSwgYXQgMjozNSBBTSwgTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3RydWN0
-dXJlIFNlcnZpY2UNCj4gUHJvZHVjdCBEZXB0LikgPGxvbmdwZW5nMkBodWF3ZWkuY29tPiB3cm90
-ZToNCj4gPg0KPiA+IEhpIE5hZGF2LA0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tDQo+ID4+IEZyb206IE5hZGF2IEFtaXQgW21haWx0bzpuYWRhdi5hbWl0QGdtYWlsLmNvbV0N
-Cj4gPj4+ICByZXByb2R1Y2UgdGhlIHByb2JsZW0gd2l0aCBoaWdoIHByb2JhYmlsaXR5ICh+NTAl
-KS4NCj4gPj4NCj4gPj4gSSBzYXcgTHUgcmVwbGllZCwgYW5kIGhlIGlzIG11Y2ggbW9yZSBrbm93
-bGVkZ2FibGUgdGhhbiBJIGFtIChJIHdhcw0KPiA+PiBqdXN0IGludHJpZ3VlZCBieSB5b3VyIGVt
-YWlsKS4NCj4gPj4NCj4gPj4gSG93ZXZlciwgaWYgSSB3ZXJlIHlvdSBJIHdvdWxkIHRyeSBhbHNv
-IHRvIHJlbW92ZSBzb21lDQo+ID4+IOKAnG9wdGltaXphdGlvbnPigJ0gdG8gbG9vayBmb3IgdGhl
-IHJvb3QtY2F1c2UgKGUuZy4sIHVzZSBkb21haW4gc3BlY2lmaWMNCj4gaW52YWxpZGF0aW9ucyBp
-bnN0ZWFkIG9mIHBhZ2Utc3BlY2lmaWMpLg0KPiA+Pg0KPiA+DQo+ID4gR29vZCBzdWdnZXN0aW9u
-ISBCdXQgd2UgZGlkIGl0IHRoZXNlIGRheXMsIHdlIHRyaWVkIHRvIHVzZSBnbG9iYWwgaW52YWxp
-ZGF0aW9ucyBhcw0KPiBmb2xsb3c6DQo+ID4gCQlpb21tdS0+Zmx1c2guZmx1c2hfaW90bGIoaW9t
-bXUsIGRpZCwgMCwgMCwNCj4gPiAJCQkJCQlETUFfVExCX0RTSV9GTFVTSCk7DQo+ID4gQnV0IGNh
-biBub3QgcmVzb2x2ZSB0aGUgcHJvYmxlbS4NCj4gPg0KPiA+PiBUaGUgZmlyc3QgdGhpbmcgdGhh
-dCBjb21lcyB0byBteSBtaW5kIGlzIHRoZSBpbnZhbGlkYXRpb24gaGludCAoaWgpDQo+ID4+IGlu
-IGlvbW11X2ZsdXNoX2lvdGxiX3BzaSgpLiBJIHdvdWxkIHJlbW92ZSBpdCB0byBzZWUgd2hldGhl
-ciB5b3UgZ2V0DQo+ID4+IHRoZSBmYWlsdXJlIHdpdGhvdXQgaXQuDQo+ID4NCj4gPiBXZSBhbHNv
-IG5vdGljZSB0aGUgSUgsIGJ1dCB0aGUgSUggaXMgYWx3YXlzIFpFUk8gaW4gb3VyIGNhc2UsIGFz
-IHRoZSBzcGVjIHNheXM6DQo+ID4gJycnDQo+ID4gUGFnaW5nLXN0cnVjdHVyZS1jYWNoZSBlbnRy
-aWVzIGNhY2hpbmcgc2Vjb25kLWxldmVsIG1hcHBpbmdzDQo+ID4gYXNzb2NpYXRlZCB3aXRoIHRo
-ZSBzcGVjaWZpZWQgZG9tYWluLWlkIGFuZCB0aGUNCj4gPiBzZWNvbmQtbGV2ZWwtaW5wdXQtYWRk
-cmVzcyByYW5nZSBhcmUgaW52YWxpZGF0ZWQsIGlmIHRoZSBJbnZhbGlkYXRpb24NCj4gPiBIaW50
-DQo+ID4gKElIKSBmaWVsZCBpcyBDbGVhci4NCj4gPiAnJycNCj4gPg0KPiA+IEl0IHNlZW1zIHRo
-ZSBzb2Z0d2FyZSBpcyBldmVyeXRoaW5nIGZpbmUsIHNvIHdlJ3ZlIG5vIGNob2ljZSBidXQgdG8g
-c3VzcGVjdCB0aGUNCj4gaGFyZHdhcmUuDQo+IA0KPiBPaywgSSBhbSBwcmV0dHkgbXVjaCBvdXQg
-b2YgaWRlYXMuIEkgaGF2ZSB0d28gbW9yZSBzdWdnZXN0aW9ucywgYnV0IHRoZXkgYXJlIG11Y2gN
-Cj4gbGVzcyBsaWtlbHkgdG8gaGVscC4gWWV0LCB0aGV5IGNhbiBmdXJ0aGVyIGhlbHAgdG8gcnVs
-ZSBvdXQgc29mdHdhcmUgYnVnczoNCj4gDQo+IDEuIGRtYV9jbGVhcl9wdGUoKSBzZWVtcyB0byBi
-ZSB3cm9uZyBJTUhPLiBJdCBzaG91bGQgaGF2ZSB1c2VkIFdSSVRFX09OQ0UoKQ0KPiB0byBwcmV2
-ZW50IHNwbGl0LXdyaXRlLCB3aGljaCBtaWdodCBwb3RlbnRpYWxseSBjYXVzZSDigJxpbnZhbGlk
-4oCdIChwYXJ0aWFsbHkNCj4gY2xlYXJlZCkgUFRFIHRvIGJlIHN0b3JlZCBpbiB0aGUgVExCLiBI
-YXZpbmcgc2FpZCB0aGF0LCB0aGUgc3Vic2VxdWVudCBJT1RMQiBmbHVzaA0KPiBzaG91bGQgaGF2
-ZSBwcmV2ZW50ZWQgdGhlIHByb2JsZW0uDQo+IA0KDQpZZXMsIHVzZSBXUklURV9PTkNFIGlzIG11
-Y2ggc2FmZXIsIGhvd2V2ZXIgSSB3YXMganVzdCB0ZXN0aW5nIHRoZSBmb2xsb3dpbmcgY29kZSwN
-Cml0IGRpZG4ndCByZXNvbHZlZCBteSBwcm9ibGVtLg0KDQpzdGF0aWMgaW5saW5lIHZvaWQgZG1h
-X2NsZWFyX3B0ZShzdHJ1Y3QgZG1hX3B0ZSAqcHRlKQ0Kew0KICAgICAgICBXUklURV9PTkNFKHB0
-ZS0+dmFsLCAwVUxMKTsNCn0NCg0KPiAyLiBDb25zaWRlciBlbnN1cmluZyB0aGF0IHRoZSBwcm9i
-bGVtIGlzIG5vdCBzb21laG93IHJlbGF0ZWQgdG8gcXVldWVkDQo+IGludmFsaWRhdGlvbnMuIFRy
-eSB0byB1c2UgX19pb21tdV9mbHVzaF9pb3RsYigpIGluc3RlYWQgb2YgcWlfZmx1c2hfaW90bGIo
-KS4NCj4gDQoNCkkgdHJpZWQgdG8gZm9yY2UgdG8gdXNlIF9faW9tbXVfZmx1c2hfaW90bGIoKSwg
-YnV0IG1heWJlIHNvbWV0aGluZyB3cm9uZywNCnRoZSBzeXN0ZW0gY3Jhc2hlZCwgc28gSSBwcmVm
-ZXIgdG8gbG93ZXIgdGhlIHByaW9yaXR5IG9mIHRoaXMgb3BlcmF0aW9uLg0KDQo+IFJlZ2FyZHMs
-DQo+IE5hZGF2DQo=
+The IMX8MQ got two VPUs but until now only G1 has been enabled.
+This series aim to add the second VPU (aka G2) and provide basic 
+HEVC decoding support.
+
+To be able to decode HEVC it is needed to add/update some of the
+structures in the uapi. In addition of them one HANTRO dedicated
+control is required to inform the driver of the numbre of bits to skip
+at the beginning of the slice header.
+The hardware require to allocate few auxiliary buffers to store the
+references frame or tile size data.
+
+The driver has been tested with fluster test suite stream.
+For example with this command: ./fluster.py run -ts JCT-VC-HEVC_V1 -d GStreamer-H.265-V4L2SL-Gst1.0
+ 
+This series depends of the reset rework posted here: https://www.spinics.net/lists/arm-kernel/msg878440.html
+
+Finally the both VPUs will have a node the device-tree and be
+independent from v4l2 point of view.
+
+A branch with all the dev is available here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/upstream_g2_v6
+
+version 6:
+ - fix the errors reported by kernel test robot
+
+version 5:
+ - use syscon instead of VPU reset driver.
+ - Do not break kernel/DT backward compatibility.
+ - Add documentation for dedicated Hantro control.
+ - Fix the remarks done by Ezequeil (typo, comments, unused function)
+ - Run v4l2-compliance without errors (see below).
+ - Do not add field to distinguish version, check postproc reg instead
+
+version 4:
+- Split the changes in hevc controls in 2 commits to make them easier to
+  review.
+- Change hantro_codec_ops run() prototype to return errors   
+- Hantro v4l2 dedicated control is now only an integer
+- rebase on top of VPU reset changes posted here:
+  https://www.spinics.net/lists/arm-kernel/msg878440.html
+- Various fix from previous remarks
+- Limit the modifications in API to what the driver needs
+
+version 3:
+- Fix typo in Hantro v4l2 dedicated control
+- Add documentation for the new structures and fields
+- Rebased on top of media_tree for-linus-5.12-rc1 tag
+
+version 2:
+- remove all change related to scaling
+- squash commits to a coherent split
+- be more verbose about the added fields
+- fix the comments done by Ezequiel about dma_alloc_coherent usage
+- fix Dan's comments about control copy, reverse the test logic
+in tile_buffer_reallocate, rework some goto and return cases.
+- be more verbose about why I change the bindings
+- remove all sign-off expect mime since it is confusing
+- remove useless clocks in VPUs nodes
+
+./v4l2-compliance -m 1 
+v4l2-compliance 1.21.0-4705, 64 bits, 64-bit time_t
+v4l2-compliance SHA: 733f7a54f79d 2021-02-03 08:25:49
+
+Compliance test for hantro-vpu device /dev/media1:
+
+Media Driver Info:
+	Driver name      : hantro-vpu
+	Model            : hantro-vpu
+	Serial           : 
+	Bus info         : platform: hantro-vpu
+	Media version    : 5.11.0
+	Hardware revision: 0x00000000 (0)
+	Driver version   : 5.11.0
+
+Required ioctls:
+	test MEDIA_IOC_DEVICE_INFO: OK
+	test invalid ioctls: OK
+
+Allow for multiple opens:
+	test second /dev/media1 open: OK
+	test MEDIA_IOC_DEVICE_INFO: OK
+	test for unlimited opens: OK
+
+Media Controller ioctls:
+	test MEDIA_IOC_G_TOPOLOGY: OK
+	Entities: 3 Interfaces: 1 Pads: 4 Links: 4
+	test MEDIA_IOC_ENUM_ENTITIES/LINKS: OK
+	test MEDIA_IOC_SETUP_LINK: OK
+
+Total for hantro-vpu device /dev/media1: 8, Succeeded: 8, Failed: 0, Warnings: 0
+--------------------------------------------------------------------------------
+Compliance test for hantro-vpu device /dev/video1:
+
+Driver Info:
+	Driver name      : hantro-vpu
+	Card type        : nxp,imx8mq-vpu-g2-dec
+	Bus info         : platform: hantro-vpu
+	Driver version   : 5.11.0
+	Capabilities     : 0x84204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+		Device Capabilities
+	Device Caps      : 0x04204000
+		Video Memory-to-Memory Multiplanar
+		Streaming
+		Extended Pix Format
+Media Driver Info:
+	Driver name      : hantro-vpu
+	Model            : hantro-vpu
+	Serial           : 
+	Bus info         : platform: hantro-vpu
+	Media version    : 5.11.0
+	Hardware revision: 0x00000000 (0)
+	Driver version   : 5.11.0
+Interface Info:
+	ID               : 0x0300000c
+	Type             : V4L Video
+Entity Info:
+	ID               : 0x00000001 (1)
+	Name             : nxp,imx8mq-vpu-g2-dec-source
+	Function         : V4L2 I/O
+	Pad 0x01000002   : 0: Source
+	  Link 0x02000008: to remote pad 0x1000004 of entity 'nxp,imx8mq-vpu-g2-dec-proc': Data, Enabled, Immutable
+
+Required ioctls:
+	test MC information (see 'Media Driver Info' above): OK
+	test VIDIOC_QUERYCAP: OK
+	test invalid ioctls: OK
+
+Allow for multiple opens:
+	test second /dev/video1 open: OK
+	test VIDIOC_QUERYCAP: OK
+	test VIDIOC_G/S_PRIORITY: OK
+	test for unlimited opens: OK
+
+Debug ioctls:
+	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+	test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+	test VIDIOC_ENUMAUDIO: OK (Not Supported)
+	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDIO: OK (Not Supported)
+	Inputs: 0 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+	Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+	test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls:
+	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+	test VIDIOC_QUERYCTRL: OK
+	test VIDIOC_G/S_CTRL: OK
+	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+	Standard Controls: 8 Private Controls: 1
+
+Format ioctls:
+	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+	test VIDIOC_G/S_PARM: OK (Not Supported)
+	test VIDIOC_G_FBUF: OK (Not Supported)
+	test VIDIOC_G_FMT: OK
+	test VIDIOC_TRY_FMT: OK
+	test VIDIOC_S_FMT: OK
+	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+	test Cropping: OK (Not Supported)
+	test Composing: OK (Not Supported)
+	test Scaling: OK (Not Supported)
+
+Codec ioctls:
+	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls:
+	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+	test VIDIOC_EXPBUF: OK
+	test Requests: OK
+
+Total for hantro-vpu device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+
+Grand Total for hantro-vpu device /dev/media1: 54, Succeeded: 54, Failed: 0, Warnings: 0
+
+Benjamin
+
+Benjamin Gaignard (13):
+  dt-bindings: mfd: Add 'nxp,imx8mq-vpu-ctrl' to syscon list
+  dt-bindings: media: nxp,imx8mq-vpu: Update the bindings for G2 support
+  media: hantro: Use syscon instead of 'ctrl' register
+  media: hevc: Add fields and flags for hevc PPS
+  media: hevc: Add decode params control
+  media: hantro: change hantro_codec_ops run prototype to return errors
+  media: hantro: Define HEVC codec profiles and supported features
+  media: hantro: Only use postproc when post processed formats are
+    defined
+  media: uapi: Add a control for HANTRO driver
+  media: hantro: handle V4L2_PIX_FMT_HEVC_SLICE control
+  media: hantro: Introduce G2/HEVC decoder
+  media: hantro: IMX8M: add variant for G2/HEVC codec
+  arm64: dts: imx8mq: Add node to G2 hardware
+
+ .../bindings/media/nxp,imx8mq-vpu.yaml        |  53 +-
+ .../devicetree/bindings/mfd/syscon.yaml       |   1 +
+ .../userspace-api/media/drivers/hantro.rst    |  14 +
+ .../userspace-api/media/drivers/index.rst     |   1 +
+ .../media/v4l/ext-ctrls-codec.rst             | 108 +++-
+ .../media/v4l/vidioc-queryctrl.rst            |   6 +
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     |  43 +-
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  26 +-
+ drivers/staging/media/hantro/Makefile         |   2 +
+ drivers/staging/media/hantro/hantro.h         |  18 +-
+ drivers/staging/media/hantro/hantro_drv.c     |  99 ++-
+ .../staging/media/hantro/hantro_g1_h264_dec.c |  10 +-
+ .../media/hantro/hantro_g1_mpeg2_dec.c        |   4 +-
+ .../staging/media/hantro/hantro_g1_vp8_dec.c  |   6 +-
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 587 ++++++++++++++++++
+ drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
+ .../staging/media/hantro/hantro_h1_jpeg_enc.c |   4 +-
+ drivers/staging/media/hantro/hantro_hevc.c    | 324 ++++++++++
+ drivers/staging/media/hantro/hantro_hw.h      |  69 +-
+ .../staging/media/hantro/hantro_postproc.c    |  14 +
+ drivers/staging/media/hantro/hantro_v4l2.c    |   5 +-
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   | 128 +++-
+ .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   4 +-
+ .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   4 +-
+ .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |   6 +-
+ drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
+ .../staging/media/sunxi/cedrus/cedrus_h265.c  |  12 +-
+ include/media/hevc-ctrls.h                    |  33 +-
+ include/uapi/linux/v4l2-controls.h            |  13 +
+ 31 files changed, 1681 insertions(+), 120 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
+ create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
+ create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
+
+-- 
+2.25.1
+
