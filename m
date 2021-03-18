@@ -2,176 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85803409E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2E13409EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 17:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhCRQRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 12:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232014AbhCRQR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:17:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C296764F1C;
-        Thu, 18 Mar 2021 16:17:26 +0000 (UTC)
-Date:   Thu, 18 Mar 2021 16:17:24 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        will@kernel.org, rui.xiang@huawei.com,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: stacktrace: Add skip when task == current
-Message-ID: <20210318161723.GA10758@arm.com>
-References: <20210317142050.57712-1-chenjun102@huawei.com>
- <20210317142050.57712-3-chenjun102@huawei.com>
- <20210317183636.GG12269@arm.com>
- <20210317193416.GB9786@C02TD0UTHF1T.local>
+        id S232026AbhCRQTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 12:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230465AbhCRQTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:19:01 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F253C06174A;
+        Thu, 18 Mar 2021 09:19:01 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id w37so5478854lfu.13;
+        Thu, 18 Mar 2021 09:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=B2DKBV/YowZ10akPq9567XaK/11k1NIOZ6i0V3sJmGA=;
+        b=rKg54RKbNtxxuuUeZnbgaWN9JwqMjSXa5hBgK2uVL/0gwNgcKdceUw1MCiPHXkcZWu
+         oBTNgSy6kZG4BaspjRe23U6Et1qd2uhdfditguaf7enV5l71R5rsjzy4NK6goULraKsj
+         XE4vibMAoRW8Kj8mRMi3jvl3fMNx3/NV4KhTT8y5C/fTHvsWVUeoeGkS9GeaLPw6vxif
+         S+BbMAsNy97/cTw/RznY3Kz3Nu+063BbFpKNfuNKXXFvMslj6lLj1U/5++pcDQ9kK00w
+         MgJP2GcgIz7uhovKx6mz5pF5FFnY1ZyqfbkPN+Usw2rw76UsD9CikpCDcv8DU2AIILAt
+         mGfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B2DKBV/YowZ10akPq9567XaK/11k1NIOZ6i0V3sJmGA=;
+        b=NxHYIAJMSmXWOE/I1zX/n2+IpTcp+2hMfA4GnOJout6Q8X6eYOoTZTpl0V1B59T9J9
+         4y98cezBjt1VE4DB82LHrEGRCW7Oz9fMeBmz9HSkNN81pR7TB/dc0unTmw1SqvlbrgNC
+         tYP4lukPNdib/WhkWVQSY6WY/GBwXlbMbcX6iFVQNrRMvJVdjgBpAyQlfcfBz0qSYWp+
+         XBcxSFO2OW4FgqSyZltA1J+e6Mqsbbz5Bwz0InoeftMZ1e35o8fVugFEA/I90ZrRAwkr
+         2RBu3FY2tQE4JQ0o4RwA+mKmKPoFlDC7UinVojn6703PWX9e7g8yZEvWqaVdKIO/cA86
+         rTUQ==
+X-Gm-Message-State: AOAM530+tRtLDNzACk9FsMe+RTSLXoU4aCVaIR6autV+pYmqXP9TKURV
+        p5OO4brp+qXs9JHY4uLmEdWTkPUkqUs=
+X-Google-Smtp-Source: ABdhPJzO+nJKWWoca/WUXHaTok8u8AjK6PXOTVy0BMilZn0ONZ3+9UReuU/8lomSMnBe/CSJBM8u9g==
+X-Received: by 2002:a05:6512:4c6:: with SMTP id w6mr5934656lfq.258.1616084339310;
+        Thu, 18 Mar 2021 09:18:59 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id d4sm276829lfs.45.2021.03.18.09.18.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 09:18:58 -0700 (PDT)
+Subject: Re: [PATCH v1] memory: tegra20: Add debug statistics
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210318115556.22792-1-digetx@gmail.com>
+ <acdbd1e3-8f38-1ee6-0980-3699df9e4375@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <26ef74e0-67ff-77c4-1682-8f8261b71463@gmail.com>
+Date:   Thu, 18 Mar 2021 19:18:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317193416.GB9786@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <acdbd1e3-8f38-1ee6-0980-3699df9e4375@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:34:16PM +0000, Mark Rutland wrote:
-> On Wed, Mar 17, 2021 at 06:36:36PM +0000, Catalin Marinas wrote:
-> > On Wed, Mar 17, 2021 at 02:20:50PM +0000, Chen Jun wrote:
-> > > On ARM64, cat /sys/kernel/debug/page_owner, all pages return the same
-> > > stack:
-> > >  stack_trace_save+0x4c/0x78
-> > >  register_early_stack+0x34/0x70
-> > >  init_page_owner+0x34/0x230
-> > >  page_ext_init+0x1bc/0x1dc
-> > > 
-> > > The reason is that:
-> > > check_recursive_alloc always return 1 because that
-> > > entries[0] is always equal to ip (__set_page_owner+0x3c/0x60).
-> > > 
-> > > The root cause is that:
-> > > commit 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > > make the save_trace save 2 more entries.
-> > > 
-> > > Add skip in arch_stack_walk when task == current.
-> > > 
-> > > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > > Signed-off-by: Chen Jun <chenjun102@huawei.com>
-> > > ---
-> > >  arch/arm64/kernel/stacktrace.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> > > index ad20981..c26b0ac 100644
-> > > --- a/arch/arm64/kernel/stacktrace.c
-> > > +++ b/arch/arm64/kernel/stacktrace.c
-> > > @@ -201,11 +201,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> > >  
-> > >  	if (regs)
-> > >  		start_backtrace(&frame, regs->regs[29], regs->pc);
-> > > -	else if (task == current)
-> > > +	else if (task == current) {
-> > > +		((struct stacktrace_cookie *)cookie)->skip += 2;
-> > >  		start_backtrace(&frame,
-> > >  				(unsigned long)__builtin_frame_address(0),
-> > >  				(unsigned long)arch_stack_walk);
-> > > -	else
-> > > +	} else
-> > >  		start_backtrace(&frame, thread_saved_fp(task),
-> > >  				thread_saved_pc(task));
-> > 
-> > I don't like abusing the cookie here. It's void * as it's meant to be an
-> > opaque type. I'd rather skip the first two frames in walk_stackframe()
-> > instead before invoking fn().
+18.03.2021 18:23, Krzysztof Kozlowski пишет:
+...
+>> +	mc->debugfs.root = debugfs_create_dir("mc", NULL);
+>> +	if (!mc->debugfs.root)
+>> +		dev_err(&pdev->dev, "failed to create debugfs directory\n");
 > 
-> I agree that we shouldn't touch cookie here.
+> It's error pointer, not null, but anyway there is no need for handling
+> debugfs error. See Greg KH's commits like "remove pointless check for
+> debugfs_create_dir()".
+
+Indeed!
+
+>> +
+>> +	if (mc->soc->init) {
+>> +		err = mc->soc->init(mc);
+>> +		if (err < 0)
+>> +			dev_err(&pdev->dev,
+>> +				"failed to register initialize SoC driver: %d\n",
 > 
-> I don't think that it's right to bodge this inside walk_stackframe(),
-> since that'll add bogus skipping for the case starting with regs in the
-> current task. If we need a bodge, it has to live in arch_stack_walk()
-> where we set up the initial unwinding state.
+> "failed to initialize SoC driver:...."
 
-Good point. However, instead of relying on __builtin_frame_address(1),
-can we add a 'skip' value to struct stackframe via arch_stack_walk() ->
-start_backtrace() that is consumed by walk_stackframe()?
+Good catch!
 
-> In another thread, we came to the conclusion that arch_stack_walk()
-> should start at its parent, and its parent should add any skipping it
-> requires.
-
-This makes sense.
-
-> Currently, arch_stack_walk() is off-by-one, and we can bodge that by
-> using __builtin_frame_address(1), though I'm waiting for some compiler
-> folk to confirm that's sound. Otherwise we need to add an assembly
-> trampoline to snapshot the FP, which is unfortunastely convoluted.
+>> +				err);
+>> +	}
+>> +
+>>  	err = tegra_mc_reset_setup(mc);
+>>  	if (err < 0)
+>>  		dev_err(&pdev->dev, "failed to register reset controller: %d\n",
+>> diff --git a/drivers/memory/tegra/tegra20.c b/drivers/memory/tegra/tegra20.c
+>> index 29ecf02805a0..513c07104296 100644
+>> --- a/drivers/memory/tegra/tegra20.c
+>> +++ b/drivers/memory/tegra/tegra20.c
+>> @@ -3,6 +3,8 @@
+>>   * Copyright (C) 2012 NVIDIA CORPORATION.  All rights reserved.
+>>   */
+>>  
+>> +#include <linux/bitfield.h>
+>> +#include <linux/delay.h>
+>>  #include <linux/of_device.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/string.h>
+>> @@ -11,6 +13,77 @@
+>>  
+>>  #include "mc.h"
+>>  
+>> +#define MC_STAT_CONTROL				0x90
+>> +#define MC_STAT_EMC_CLOCK_LIMIT			0xa0
+>> +#define MC_STAT_EMC_CLOCKS			0xa4
+>> +#define MC_STAT_EMC_CONTROL_0			0xa8
+>> +#define MC_STAT_EMC_CONTROL_1			0xac
+>> +#define MC_STAT_EMC_COUNT_0			0xb8
+>> +#define MC_STAT_EMC_COUNT_1			0xbc
+>> +
+>> +#define MC_STAT_CONTROL_CLIENT_ID		GENMASK(13,  8)
+>> +#define MC_STAT_CONTROL_EVENT			GENMASK(23, 16)
+>> +#define MC_STAT_CONTROL_PRI_EVENT		GENMASK(25, 24)
+>> +#define MC_STAT_CONTROL_FILTER_CLIENT_ENABLE	GENMASK(26, 26)
+>> +#define MC_STAT_CONTROL_FILTER_PRI		GENMASK(29, 28)
+>> +
+>> +#define MC_STAT_CONTROL_PRI_EVENT_HP		0
+>> +#define MC_STAT_CONTROL_PRI_EVENT_TM		1
+>> +#define MC_STAT_CONTROL_PRI_EVENT_BW		2
+>> +
+>> +#define MC_STAT_CONTROL_FILTER_PRI_DISABLE	0
+>> +#define MC_STAT_CONTROL_FILTER_PRI_NO		1
+>> +#define MC_STAT_CONTROL_FILTER_PRI_YES		2
+>> +
+>> +#define MC_STAT_CONTROL_EVENT_QUALIFIED		0
+>> +#define MC_STAT_CONTROL_EVENT_ANY_READ		1
+>> +#define MC_STAT_CONTROL_EVENT_ANY_WRITE		2
+>> +#define MC_STAT_CONTROL_EVENT_RD_WR_CHANGE	3
+>> +#define MC_STAT_CONTROL_EVENT_SUCCESSIVE	4
+>> +#define MC_STAT_CONTROL_EVENT_ARB_BANK_AA	5
+>> +#define MC_STAT_CONTROL_EVENT_ARB_BANK_BB	6
+>> +#define MC_STAT_CONTROL_EVENT_PAGE_MISS		7
+>> +#define MC_STAT_CONTROL_EVENT_AUTO_PRECHARGE	8
+>> +
+>> +#define EMC_GATHER_RST				(0 << 8)
+>> +#define EMC_GATHER_CLEAR			(1 << 8)
+>> +#define EMC_GATHER_DISABLE			(2 << 8)
+>> +#define EMC_GATHER_ENABLE			(3 << 8)
+>> +
+>> +#define MC_STAT_SAMPLE_TIME_USEC		16000
+>> +
+>> +/* we store collected statistics as a fixed point values */
+>> +#define MC_FX_FRAC_SCALE			100
+>> +
+>> +struct tegra20_mc_stat_gather {
+>> +	unsigned int pri_filter;
+>> +	unsigned int pri_event;
+>> +	unsigned int result;
+>> +	unsigned int client;
+>> +	unsigned int event;
+>> +	bool client_enb;
+>> +};
+>> +
+>> +struct tegra20_mc_stat {
+>> +	struct tegra20_mc_stat_gather gather0;
+>> +	struct tegra20_mc_stat_gather gather1;
+>> +	unsigned int sample_time_usec;
+>> +	struct tegra_mc *mc;
+>> +};
+>> +
+>> +struct tegra20_mc_client_stat {
+>> +	unsigned int events;
+>> +	unsigned int arb_high_prio;
+>> +	unsigned int arb_timeout;
+>> +	unsigned int arb_bandwidth;
+>> +	unsigned int rd_wr_change;
+>> +	unsigned int successive;
+>> +	unsigned int page_miss;
+>> +	unsigned int auto_precharge;
+>> +	unsigned int arb_bank_aa;
+>> +	unsigned int arb_bank_bb;
+>> +};
+>> +
+>>  static const struct tegra_mc_client tegra20_mc_clients[] = {
+>>  	{
+>>  		.id = 0x00,
+>> @@ -356,6 +429,274 @@ static const struct tegra_mc_icc_ops tegra20_mc_icc_ops = {
+>>  	.set = tegra20_mc_icc_set,
+>>  };
+>>  
+>> +static u32 tegra20_mc_stat_gather_control(struct tegra20_mc_stat_gather *g)
 > 
-> This report suggests that a caller of arch_stack_walk() is off-by-one
-> too, which suggests a larger cross-architecture semantic issue. I'll try
-> to take a look tomorrow.
+> "g" looks like pointer to const here
 
-I don't think the caller is off by one, at least not by the final skip
-value. __set_page_owner() wants the trace to start at its caller. The
-callee save_stack() in the same file adds a skip of 2.
-save_stack_trace() increments the skip before invoking
-arch_stack_walk(). So far, this assumes that arch_stack_walk() starts at
-its parent, i.e. save_stack_trace().
+I'll add couple more consts to the code for consistency.
 
-So save_stack_trace() only need to skip 1 and I think that's in line
-with the original report where the entries[0] is __set_page_owner(). We
-only need to skip one. Another untested quick hack (we should probably
-add the skip argument to start_backtrace()):
+>> +{
+>> +	u32 control;
+>> +
+>> +	control  = FIELD_PREP(MC_STAT_CONTROL_EVENT, g->event);
+>> +	control |= FIELD_PREP(MC_STAT_CONTROL_CLIENT_ID, g->client);
+>> +	control |= FIELD_PREP(MC_STAT_CONTROL_PRI_EVENT, g->pri_event);
+>> +	control |= FIELD_PREP(MC_STAT_CONTROL_FILTER_PRI, g->pri_filter);
+>> +	control |= FIELD_PREP(MC_STAT_CONTROL_FILTER_CLIENT_ENABLE, g->client_enb);
+>> +
+>> +	return control;
+>> +}
+...
+>> +static void tegra20_mc_collect_stats(struct tegra_mc *mc,
+>> +				     struct tegra20_mc_client_stat *stats)
+>> +{
+>> +	const struct tegra_mc_client *client0, *client1;
+>> +	unsigned int i, clienta, clientb;
+> 
+> Define the clienta and clientb inside the loop, to reduce the scope.
+> Unless it is used between the loop iterations?
 
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index eb29b1fe8255..0d32d932ac89 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -56,6 +56,7 @@ struct stackframe {
- 	DECLARE_BITMAP(stacks_done, __NR_STACK_TYPES);
- 	unsigned long prev_fp;
- 	enum stack_type prev_type;
-+	int skip;
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	int graph;
- #endif
-@@ -153,6 +154,7 @@ static inline void start_backtrace(struct stackframe *frame,
- {
- 	frame->fp = fp;
- 	frame->pc = pc;
-+	frame->skip = 0;
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	frame->graph = 0;
- #endif
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..a89b2ecbf3de 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -118,7 +118,9 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
- 	while (1) {
- 		int ret;
- 
--		if (!fn(data, frame->pc))
-+		if (frame->skip > 0)
-+			frame->skip--;
-+		else if (!fn(data, frame->pc))
- 			break;
- 		ret = unwind_frame(tsk, frame);
- 		if (ret < 0)
-@@ -201,11 +203,12 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 
- 	if (regs)
- 		start_backtrace(&frame, regs->regs[29], regs->pc);
--	else if (task == current)
-+	else if (task == current) {
- 		start_backtrace(&frame,
- 				(unsigned long)__builtin_frame_address(0),
- 				(unsigned long)arch_stack_walk);
--	else
-+		frame.skip = 1;
-+	} else
- 		start_backtrace(&frame, thread_saved_fp(task),
- 				thread_saved_pc(task));
- 
+okay
 
--- 
-Catalin
+>> +
+>> +	/* collect memory controller utilization percent for each client */
+>> +	for (i = 0; i < mc->soc->num_clients; i += 2) {
+>> +		client0 = &mc->soc->clients[i];
+>> +		client1 = &mc->soc->clients[i + 1];
+>> +
+>> +		if (i + 1 == mc->soc->num_clients)
+>> +			client1 = NULL;
+>> +
+>> +		tegra20_mc_stat_events(mc, client0, client1,
+>> +				       MC_STAT_CONTROL_FILTER_PRI_DISABLE,
+>> +				       MC_STAT_CONTROL_PRI_EVENT_HP,
+>> +				       MC_STAT_CONTROL_EVENT_QUALIFIED,
+>> +				       &stats[i + 0].events,
+>> +				       &stats[i + 1].events);
+>> +	}
+>> +
+>> +	/* collect more info from active clients */
+>> +	for (i = 0; i < mc->soc->num_clients; i++) {
+>> +		clientb = mc->soc->num_clients;
+>> +
+>> +		for (client0 = NULL; i < mc->soc->num_clients; i++) {
+>> +			if (stats[i].events) {
+>> +				client0 = &mc->soc->clients[i];
+>> +				clienta = i++;
+>> +				break;
+>> +			}
+>> +		}
+> 
+> Could all clients have 0 events ending with "clienta" being undefined?
+> "client0" would be non-NULL because of loop before.
+
+As per 6.8.5.3 of C99 standard, the declaration of a for-loop "is
+reached in the order of execution before the first evaluation of the
+controlling expression".
+
+http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
+
+>> +
+>> +		for (client1 = NULL; i < mc->soc->num_clients; i++) {
+>> +			if (stats[i].events) {
+>> +				client1 = &mc->soc->clients[i];
+>> +				clientb = i;
+>> +				break;
+>> +			}
+>> +		}
+>> +
+>> +		if (!client0 && !client1)
+>> +			break;
+
+this means that both client0 and client1 are set t0 NULL here if all
+clients have 0 events.
