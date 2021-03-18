@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81526340263
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339D334025F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 10:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCRJq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 05:46:59 -0400
-Received: from m12-17.163.com ([220.181.12.17]:53651 "EHLO m12-17.163.com"
+        id S229863AbhCRJqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 05:46:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhCRJqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 05:46:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KgawQ
-        vR0t/NPcYMe1qByne8sWSU1/NBPgw8Jk81KcJw=; b=pEm895Y1olyJxv+NCHBAl
-        ocDATiuTYfkST9hwmgzq5evra03XA3oCBT1N18VVdG9e4z6VMdJik0jEIbM6+HK+
-        aabiUUcw46rnQmY0jLNAynLB5bW64plXIhIuLg/Bq0R8K9/6FRx8OaZei6MHJrNL
-        TGohwi4lco9bp8hMNWeh8U=
-Received: from COOL-20200916KH.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowAD3BjtkIVNg_DWQqg--.30356S2;
-        Thu, 18 Mar 2021 17:46:15 +0800 (CST)
-From:   qiumibaozi_1@163.com
-To:     linus.walleij@linaro.org
-Cc:     linux-kernel@vger.kernel.org, ganjisheng <ganjisheng@yulong.com>
-Subject: [PATCH 5/5] Fix spelling of interrupts
-Date:   Thu, 18 Mar 2021 17:46:10 +0800
-Message-Id: <20210318094610.32-1-qiumibaozi_1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S229564AbhCRJqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:46:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE4B64F0C;
+        Thu, 18 Mar 2021 09:46:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616060790;
+        bh=hxJs/mIL6KwJJl4VSxDtA4EFb/qBN31GavYb1+99x9M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O9GvhqQrBSSRCOAg78sYzGAMoPboqFJbPcQ5Gv4sC41z1mY0CT+XeJBT4h0v+1DSs
+         ChTdKmkNx8bK0vF9VBUKz3nCQ7yZTpnD1lsSYEFpX6gosBBMOtYf3xW/LG+drfd7KZ
+         RnqZl2JI1PwFo0QEG2y6Lcwt96wIoCK6VTIvdpdM6vQW7xBaTtz74808m5CMonVTxm
+         vAS8VdBSa9fPVmU20cq8sS8Z/zkRgJEzK5Z4uPaKQioybj3Q2VKSU0y47fO6sSHVBv
+         z6o20IMSD0HdMD179kJpNrY11EKTLWiTeea3T8FXUzfI0syBwLU/mwxsh/KMhYbN6D
+         t3QgNnV++JSVw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] interconnect: qcom: Add SM8350 support
+Date:   Thu, 18 Mar 2021 15:16:15 +0530
+Message-Id: <20210318094617.951212-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAD3BjtkIVNg_DWQqg--.30356S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr48AF13GFWDuw1fXryUAwb_yoW3Jrg_uF
-        ykXrsIgw4rtF1SgF18ZF4fX3y0krW8ZFs7urnakFnrGFy2vF17Xa4DXr13Zr4xXrW5Zr90
-        yrW8tw4SvFy2kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5epB3UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5tlxzxxedr6xjbr6il2tof0z/xtbCBgBZ2F3I1EV3xQAAsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ganjisheng <ganjisheng@yulong.com>
+This adds support for interconnect support for SM8350 SoC
 
-Signed-off-by: ganjisheng <ganjisheng@yulong.com>
----
- drivers/mfd/ab8500-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes since v2:
+ - Plug gaps in indexes
+ - fix typo in commit log for patch2 and kconfig depends (for real this time)
 
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index a903791..f5b0874 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -133,7 +133,7 @@
- 
- /*
-  * Map interrupt numbers to the LATCH and MASK register offsets, Interrupt
-- * numbers are indexed into this array with (num / 8). The interupts are
-+ * numbers are indexed into this array with (num / 8). The interrupts are
-  * defined in linux/mfd/ab8500.h
-  *
-  * This is one off from the register names, i.e. AB8500_IT_MASK1_REG is at
+Changes since v1:
+ - Fix comments by Georgi, split the header
+ - Fix the macro for qns_llcc
+
+Vinod Koul (2):
+  dt-bindings: interconnect: Add Qualcomm SM8350 DT bindings
+  interconnect: qcom: Add SM8350 interconnect provider driver
+
+ .../bindings/interconnect/qcom,rpmh.yaml      |  10 +
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   2 +
+ drivers/interconnect/qcom/sm8350.c            | 633 ++++++++++++++++++
+ drivers/interconnect/qcom/sm8350.h            | 168 +++++
+ .../dt-bindings/interconnect/qcom,sm8350.h    | 172 +++++
+ 6 files changed, 994 insertions(+)
+ create mode 100644 drivers/interconnect/qcom/sm8350.c
+ create mode 100644 drivers/interconnect/qcom/sm8350.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8350.h
+
 -- 
-1.9.1
-
+2.26.3
 
