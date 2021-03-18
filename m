@@ -2,108 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF0A340783
+	by mail.lfdr.de (Postfix) with ESMTP id 6E098340784
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 15:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhCROM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 10:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        id S231543AbhCROM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 10:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhCROLx (ORCPT
+        with ESMTP id S230477AbhCROMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 10:11:53 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B17CC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:53 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id f26so7649163ljp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 07:11:53 -0700 (PDT)
+        Thu, 18 Mar 2021 10:12:09 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FA6C06175F;
+        Thu, 18 Mar 2021 07:12:08 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso5285109oti.11;
+        Thu, 18 Mar 2021 07:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Vt2EBjJBXCElMumS8zwBKc0QOehEP6EtoAAqvcQaqEs=;
-        b=YQ2OVI/437xQ7YL10S5QsdLJGLyeE8pwRZkYb5jLfFaPgIXhfhGjpT3B3/0wNGORFn
-         l9CTVOkyTVmV1OjaTrcoSgpdmaA0KbF7Qv4oNqxr7+zMEdYXOnr0u6SdnJASUzZW+eYQ
-         UNYpOc7BZD7j9MRvmi/MvMyryZwDDR+1HS/V9zy8q7z0TFaDWyk++H3UO9IFIYPEDbZ/
-         vYk9oZJe2AONCuCVd5bfwqElwR33k9tyNlB43ernUd4Ma4w9q7B9cZ6gXhp8WDdL4oG3
-         CD+NCyR4GFrCdXy4YTYf7PBp/blcl9MOvBLC+tS2mRdIe7aG5C1TZCK+XffHP88lDF0H
-         80Fg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=a50uAhSDderMggKK8RFXjAkHNeNGYqS63dv1RpSuGyc=;
+        b=pgxmK244IvKUUg6U3uQJetoS+P0+C8mca9STqv7sC4W8TZCh5gs2zqBkg6m0/1MHrd
+         zDFi6ctfeSfr8D88QSqD9ENo8Fl4YJw7lv2//Gpd8mYKT9ly3G7ZVDAOmodrP16TY9HS
+         uoGzDxmAp4r4JyuepHDPwpObn9sADhthag0/LMq3gq29wU0ZBi8RFp2hacxC3Edr+5Er
+         lUR9QIiOoDQgqsyjHZi0xHL3qwzfIclZOB+C2mjjAW80ukWtpIOziYTHHGQZvu28DGRu
+         5WKgq+LPHhqNfM7jkltObWELadokmy3rzlZP1I8knEpn0jzma24CppiQeUYNtKyl+5Gh
+         buiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Vt2EBjJBXCElMumS8zwBKc0QOehEP6EtoAAqvcQaqEs=;
-        b=fGtqKZIYOpjgW23HmoJS2oU4lUvltewpwmh2XNk1tzsZ2pW5z1tFbNFtq/7AY/Aevi
-         HAdSe+MnsSlMxK5v8xOuBRhmrvsUsU1JIkLeCl5t+YNyQfuG6k+9xVjIAXZS8Kvvxs/5
-         z5s+J1Es8QwUYSfgHRKkVz8obiiMi2PhEmHXtwLXXZ6LgCNaGr3JvggS64rhX8F9iVMp
-         htLDW594SrJnN2jIYTb1mIbJ7F/CfI8qjmTksrrGThQ9zJ3uiGfDifoQZJEqKTc/5rh8
-         0/zJpTpdCYmyJ8Bh5la6B5ud0fe76r7HmFI5j1wuf7OvPLzuUHL8fAfRAQPdsO8msMu6
-         E8nw==
-X-Gm-Message-State: AOAM532ojAcrYco+EPH/Bxqex5ZZryA2/Hl8zuIc6m3au87jdieRyfVV
-        hnRdgowYiZ/k6QiwsF36+q49iA==
-X-Google-Smtp-Source: ABdhPJxojxvq+dtSsOdkpC8Q31XAN0KpATHHBW6jE2fuSJ6SahyCKh2VTLcLCBrP+zua8vB5vfz04Q==
-X-Received: by 2002:a2e:b806:: with SMTP id u6mr5318194ljo.99.1616076711746;
-        Thu, 18 Mar 2021 07:11:51 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id f20sm254713ljn.123.2021.03.18.07.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 07:11:51 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Manu Gautam <mgautam@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 6/6] arm64: dts: qcom: use dp_phy to provide clocks to dispcc
-Date:   Thu, 18 Mar 2021 17:11:44 +0300
-Message-Id: <20210318141144.2147610-7-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210318141144.2147610-1-dmitry.baryshkov@linaro.org>
-References: <20210318141144.2147610-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=a50uAhSDderMggKK8RFXjAkHNeNGYqS63dv1RpSuGyc=;
+        b=Cqg8mpFZu1scP6vxN+fE6Cdetj0NjPzSktwRAZKBW2RkGe7rMcBoP4WOOfSrfGPpzJ
+         NlDVE9h0HGRiFc5cJADG2kGLfzOxFFd7+vVrjRBVnEVM0kVv2E3iYZzJuL/ri3rutdWv
+         eobxraFBJG7Dphx1jQ5Ri/FU99Y9Dlge6YZYrRaDDx6/T1RUWBHjILffUzh3VjzgSskp
+         Edy/Qbfyx9I2W0s+cngoh27CpDMBKJ8zk8pWnsftmEhuZ0r3Z3wU9LPBOJEYXW6W6pRn
+         DwhPZFbGR04/P07whUon2YXdtjUutHFXuPLHUwAr9QLa38miskAYhMp3GmZ5Vkt2c+pU
+         yP7Q==
+X-Gm-Message-State: AOAM530JQdoO6LdgvFvqTNuJbDQT3mo44RA+rjDIPazGqhSXJSXfjEM7
+        JKy3jpij+hHQat9IfcEDlqBPpxIEkMPlgogZlMc=
+X-Google-Smtp-Source: ABdhPJw4DThuBC9XHi/q9lTAvpKLtWEp1SFB4rMT1KtPPWqAyCi1s2Scsgg6cdjyBkmyan/VAEidSQQvMEkhEBLQHUs=
+X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr7771017oto.281.1616076728381;
+ Thu, 18 Mar 2021 07:12:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210312145545.26050-1-matthias.bgg@kernel.org> <20210312145545.26050-2-matthias.bgg@kernel.org>
+In-Reply-To: <20210312145545.26050-2-matthias.bgg@kernel.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Thu, 18 Mar 2021 15:11:56 +0100
+Message-ID: <CAFqH_500_xUU9=y1t=FFErD5LwUb8p9KT7qngW_t99_OPQWeVg@mail.gmail.com>
+Subject: Re: [PATCH 2/7] dt-bindigns: regulator: mtk: Drop unneeded compatible
+To:     matthias.bgg@kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <mbrugger@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Plug dp_phy-provided clocks to display clock controller.
+Hi Matthias,
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thank you for your patch. There is a typo in the subject line
+s/dt-bindigns/dt-bindings/ Rob might miss this patch as he filters the
+patches by subject I guess.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 0f79e6885004..a2478bd3590a 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2600,8 +2600,8 @@ dispcc: clock-controller@af00000 {
- 				 <&dsi0_phy 1>,
- 				 <&dsi1_phy 0>,
- 				 <&dsi1_phy 1>,
--				 <0>,
--				 <0>,
-+				 <&dp_phy 0>,
-+				 <&dp_phy 1>,
- 				 <0>,
- 				 <0>,
- 				 <0>,
-@@ -2614,8 +2614,8 @@ dispcc: clock-controller@af00000 {
- 				      "dsi0_phy_pll_out_dsiclk",
- 				      "dsi1_phy_pll_out_byteclk",
- 				      "dsi1_phy_pll_out_dsiclk",
--				      "dp_link_clk_divsel_ten",
--				      "dp_vco_divided_clk_src_mux",
-+				      "dp_phy_pll_link_clk",
-+				      "dp_phy_pll_vco_div_clk",
- 				      "dptx1_phy_pll_link_clk",
- 				      "dptx1_phy_pll_vco_div_clk",
- 				      "dptx2_phy_pll_link_clk",
--- 
-2.30.2
+Missatge de l'adre=C3=A7a <matthias.bgg@kernel.org> del dia dv., 12 de mar=
+=C3=A7
+2021 a les 15:57:
+>
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> The regulator does not need to have a device tree compatible, if it's
+> part of an MFD. We leave the node name to the SoC specific name (e.g.
+> mt6323regulator) to allow older kernels to work with the new binding.
+>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> ---
+>  .../bindings/regulator/mt6323-regulator.txt        |  2 +-
+>  .../bindings/regulator/mt6358-regulator.txt        |  4 +---
+>  .../bindings/regulator/mt6397-regulator.txt        | 14 +++++---------
+>  3 files changed, 7 insertions(+), 13 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/regulator/mt6323-regulator=
+.txt b/Documentation/devicetree/bindings/regulator/mt6323-regulator.txt
+> index a48749db4df36..69f32e1a6702e 100644
+> --- a/Documentation/devicetree/bindings/regulator/mt6323-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/mt6323-regulator.txt
+> @@ -19,7 +19,7 @@ LDO:
+>  Example:
+>
+>         pmic: mt6323 {
+> -               mt6323regulator: regulators {
+> +               mt6323regulator {
 
+If you convert this binding to YAML, you'll probably get a review that
+the node name must be just 'regulators' here. And then, looking at the
+other patches something will break I guess ...
+
+>                         mt6323_vproc_reg: buck_vproc{
+>                                 regulator-name =3D "vproc";
+>                                 regulator-min-microvolt =3D < 700000>;
+> diff --git a/Documentation/devicetree/bindings/regulator/mt6358-regulator=
+.txt b/Documentation/devicetree/bindings/regulator/mt6358-regulator.txt
+> index 9a90a92f2d7e1..ba1214da5bf7c 100644
+> --- a/Documentation/devicetree/bindings/regulator/mt6358-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/mt6358-regulator.txt
+> @@ -23,9 +23,7 @@ Example:
+>         pmic {
+>                 compatible =3D "mediatek,mt6358";
+>
+> -               mt6358regulator: mt6358regulator {
+> -                       compatible =3D "mediatek,mt6358-regulator";
+> -
+> +               mt6358regulator {
+>                         mt6358_vdram1_reg: buck_vdram1 {
+>                                 regulator-compatible =3D "buck_vdram1";
+>                                 regulator-name =3D "vdram1";
+> diff --git a/Documentation/devicetree/bindings/regulator/mt6397-regulator=
+.txt b/Documentation/devicetree/bindings/regulator/mt6397-regulator.txt
+> index c080086d3e629..2b14362ac56e1 100644
+> --- a/Documentation/devicetree/bindings/regulator/mt6397-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/mt6397-regulator.txt
+> @@ -1,11 +1,9 @@
+>  Mediatek MT6397 Regulator
+>
+> -Required properties:
+> -- compatible: "mediatek,mt6397-regulator"
+> -- mt6397regulator: List of regulators provided by this controller. It is=
+ named
+> -  according to its regulator type, buck_<name> and ldo_<name>.
+> -  The definition for each of these nodes is defined using the standard b=
+inding
+> -  for regulators at Documentation/devicetree/bindings/regulator/regulato=
+r.txt.
+> +List of regulators provided by this controller. It is named
+> +according to its regulator type, buck_<name> and ldo_<name>.
+> +The definition for each of these nodes is defined using the standard bin=
+ding
+> +for regulators at Documentation/devicetree/bindings/regulator/regulator.=
+txt.
+>
+>  The valid names for regulators are::
+>  BUCK:
+> @@ -23,9 +21,7 @@ Example:
+>         pmic {
+>                 compatible =3D "mediatek,mt6397";
+>
+> -               mt6397regulator: mt6397regulator {
+> -                       compatible =3D "mediatek,mt6397-regulator";
+> -
+> +               mt6397regulator {
+>                         mt6397_vpca15_reg: buck_vpca15 {
+>                                 regulator-compatible =3D "buck_vpca15";
+>                                 regulator-name =3D "vpca15";
+> --
+> 2.30.1
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
