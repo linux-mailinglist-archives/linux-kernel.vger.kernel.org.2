@@ -2,142 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4FA340712
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E4D34071B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhCRNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:44:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230010AbhCRNn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:43:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8902264E4D;
-        Thu, 18 Mar 2021 13:43:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616075039;
-        bh=M/awrcCSuKIqOO2dmf7RKrAzqBZawv3ByeWFBOHNV9Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tvzLhSlOEy7dCNqLkoFPSJ7DAlxsG5RAo0ns+QYpq+UrW9JrAUln88DcFs/NC0OJs
-         T+GBiXt5nHG8vVrImz57sLy1Krri1JXQIwe+PeXmVHvx3XaM85RFib2ALg12XqaaFB
-         fuy9UpJ2ezFNdlKGINaY3k8T2r/k07cicOzR/N3jzogfGsrrnkNeAVCKGZin7M19MH
-         OiE/XtNe3ry+YfI1fjH37CnNaOD5Z4MLNGTwp3GAKm8d7xwpjUQiZ4sXCtLDYS1pHx
-         3c6BtbyNjxYQBUEr38ghw3WHyIrRrBW3zT3g4bV/xfNTBCHbeZj1QiaCbBBo5m4roi
-         eUPIBahJZqtMQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] media: v4l2-core: explicitly clear ioctl input data
-Date:   Thu, 18 Mar 2021 14:43:19 +0100
-Message-Id: <20210318134334.2933141-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210318134334.2933141-1-arnd@kernel.org>
-References: <20210318134334.2933141-1-arnd@kernel.org>
+        id S230398AbhCRNpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:45:36 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:18850 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230511AbhCRNpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:45:15 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12IDg0xD011735;
+        Thu, 18 Mar 2021 14:45:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=1cBACOkWwFgVHLV1t08H9i06ryZ+4fiD69xR3S9lcVw=;
+ b=JchpHIeunO2KnBLqZHVTgCdLTG8myMSefqgkx+8OqFwdD8bTdBV07oHWUyzqr1S6RarE
+ QiYIEgNeGjFRh6EVc09gZQ2HSjTJYCnQktPLssEoKXSpWEZkKP4Nr/iY/bBlqpV/SgOf
+ /niu8H2IFaCH/ERHXbdMx3EzkubMXslJvJXVA4xhcWLIgRCHTj/kCJeTM0Glq8nUc+Xq
+ Uo1YDAJPNC+UfoLcvsO6vTJjvB3w1h9kPdYgjxCtKyOvKE1yBUnuohpAGDAJKsdWxkjp
+ MYrmWX8cjY9eDDXN8TgA6vJtIqM3I+JAomusxKmEu6cqMxCx9Dmw1xwpNWeroMzddARS Lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 378pr65pu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Mar 2021 14:45:02 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 72072100034;
+        Thu, 18 Mar 2021 14:45:02 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 56915226D15;
+        Thu, 18 Mar 2021 14:45:02 +0100 (CET)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Mar 2021 14:45:02
+ +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <wsa@kernel.org>, <robh+dt@kernel.org>
+CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <alain.volmat@foss.st.com>
+Subject: [PATCH v2 0/2] i2c: stm32f7: add SMBus-Alert support
+Date:   Thu, 18 Mar 2021 14:44:47 +0100
+Message-ID: <1616075089-28115-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_07:2021-03-17,2021-03-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+This serie adds support for SMBus Alert on the STM32F7.
+A new binding st,smbus-alert is added in order to differenciate
+with the existing smbus binding.
 
-As seen from a recent syzbot bug report, mistakes in the compat ioctl
-implementation can lead to uninitialized kernel stack data getting used
-as input for driver ioctl handlers.
+SMBA alert control and status logic must be enabled along with
+SMBALERT# pin configured via pinctrl in the device tree. This is the
+rational for adding "st,smbus-alert" property.
 
-The reported bug is now fixed, but it's possible that other related
-bugs are still present or get added in the future. As the drivers need
-to check user input already, the possible impact is fairly low, but it
-might still cause an information leak.
-
-To be on the safe side, always clear the entire ioctl buffer before
-calling the conversion handler functions that are meant to initialize
-them.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 51 ++++++++++++++++------------
- 1 file changed, 29 insertions(+), 22 deletions(-)
+v2:
+When SMBUS alert isn't available on the board (SMBA unused), this
+logic musn't be enabled. Enabling it unconditionally wrongly lead to get
+SMBA interrupts.
+So, add "st,smbus-alert" dedicated binding to have a smbus alert with a
+consistent pin configuration in DT.
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 2b1bb68dc27f..6cec92d0972c 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -3164,12 +3164,23 @@ static int video_get_user(void __user *arg, void *parg,
- 
- 	if (cmd == real_cmd) {
- 		if (copy_from_user(parg, (void __user *)arg, n))
--			err = -EFAULT;
--	} else if (in_compat_syscall()) {
--		err = v4l2_compat_get_user(arg, parg, cmd);
--	} else {
--		switch (cmd) {
-+			return -EFAULT;
-+
-+		/* zero out anything we don't copy from userspace */
-+		if (n < _IOC_SIZE(real_cmd))
-+			memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
-+
-+		return 0;
-+	}
-+
-+	/* zero out whole buffer first to deal with missing emulation */
-+	memset(parg, 0, _IOC_SIZE(real_cmd));
-+
-+	if (in_compat_syscall())
-+		return v4l2_compat_get_user(arg, parg, cmd);
-+
- #if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
-+	switch (cmd) {
- 		case VIDIOC_QUERYBUF_TIME32:
- 		case VIDIOC_QBUF_TIME32:
- 		case VIDIOC_DQBUF_TIME32:
-@@ -3182,28 +3193,24 @@ static int video_get_user(void __user *arg, void *parg,
- 
- 			*vb = (struct v4l2_buffer) {
- 				.index		= vb32.index,
--					.type		= vb32.type,
--					.bytesused	= vb32.bytesused,
--					.flags		= vb32.flags,
--					.field		= vb32.field,
--					.timestamp.tv_sec	= vb32.timestamp.tv_sec,
--					.timestamp.tv_usec	= vb32.timestamp.tv_usec,
--					.timecode	= vb32.timecode,
--					.sequence	= vb32.sequence,
--					.memory		= vb32.memory,
--					.m.userptr	= vb32.m.userptr,
--					.length		= vb32.length,
--					.request_fd	= vb32.request_fd,
-+				.type		= vb32.type,
-+				.bytesused	= vb32.bytesused,
-+				.flags		= vb32.flags,
-+				.field		= vb32.field,
-+				.timestamp.tv_sec	= vb32.timestamp.tv_sec,
-+				.timestamp.tv_usec	= vb32.timestamp.tv_usec,
-+				.timecode	= vb32.timecode,
-+				.sequence	= vb32.sequence,
-+				.memory		= vb32.memory,
-+				.m.userptr	= vb32.m.userptr,
-+				.length		= vb32.length,
-+				.request_fd	= vb32.request_fd,
- 			};
- 			break;
- 		}
--#endif
--		}
- 	}
-+#endif
- 
--	/* zero out anything we don't copy from userspace */
--	if (!err && n < _IOC_SIZE(real_cmd))
--		memset((u8 *)parg + n, 0, _IOC_SIZE(real_cmd) - n);
- 	return err;
- }
- 
+Alain Volmat (2):
+  dt-bindings: i2c: stm32f7: add st,smbus-alert binding for SMBus Alert
+  i2c: stm32f7: add SMBus-Alert support
+
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |  5 ++
+ drivers/i2c/busses/i2c-stm32f7.c              | 73 +++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+
 -- 
-2.29.2
+2.17.1
 
