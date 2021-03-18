@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF32F34060B
+	by mail.lfdr.de (Postfix) with ESMTP id 9296334060A
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 13:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhCRMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 08:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhCRMsO (ORCPT
+        id S231197AbhCRMsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 08:48:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36890 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231316AbhCRMsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 08:48:14 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D51C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:48:14 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id m7so1353079pgj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 05:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BofJtNQBNJ4TAm9k9nJlHtcjZFAjqPhR3+0IjCViRGw=;
-        b=s8bOBbSrPBOMGD0lno8oDiDRlBcWxaTtvNB/ZuKophFtB2a9PbjOBOkWdlt7QTGXSG
-         sYzly2DL9vAaQk55tSfL5WL5t40ZFN+ufb/wmBrgkdW7++twPejbsjNFfw3AkULJRDZe
-         Rh4Y131oP24y4EK2LS1FOZED4vJ1kpUC/P6L6NIqK8xjdC2DYY6WGMsx6F3L+F8y0Wwq
-         xtChmxtAHoCQ8k/wnZHIGMN2jAKgA1yLmC8sP6WWlemrQmscHhYaXE6v1vCJrNtjTvvT
-         WlRbovQwsYt9P0v40+LL7stOp1qJgu74dvNYH7Md4yDsFDQ4TV8ujDK+pc2QPQvgRA70
-         aWbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BofJtNQBNJ4TAm9k9nJlHtcjZFAjqPhR3+0IjCViRGw=;
-        b=qCvthSCQulj43ClkHR4nyxBdQCljGhYmu5i6GV/rcon6IBpu6l5KY2OdZWXoZ+tJu8
-         zd25ooj9oqtM0Ydgxux5bQoCE1LIFEJhaIyYHhE0oPysOlF8x8Um8v6W/AjNqBvuQ3yp
-         iVKccIe8lUW7+GOZYWsENg7WzS5Vfu1C+cdH9CgljOkJRFaQrB5kBXSePEu5EVC1EaTY
-         Be16+dtZuAXhPaF4VZodVwrxzrUoxKl1oRy/Mcp7UtIDMSWdgUMdczJWMYbTcL1G5Y3Z
-         xvH+M4JPjZMUL7WMqohYbUzpayLYbJhO3FuaSLp41MO0ljZ3TrIvD0LHe3tdKKKs70uf
-         M+yg==
-X-Gm-Message-State: AOAM5334cP/Tl/UIhxtvTMjwqJc9s9a4yKhxnHJ5024kUTFfQ7lJq2uw
-        3JyTpOsVcA93gpWCnjtnD2M01mPb1bWTZRb1WFg=
-X-Google-Smtp-Source: ABdhPJwFt95ZxZN7+6Qgkq7BjOLV+PPnNMeS0VmcuNwfFis8sqmOBM4QMXhk9okMRvo7CneCMcDa8AUSsHgJ1cWQZ1E=
-X-Received: by 2002:a05:6a00:1596:b029:200:c2c9:95e7 with SMTP id
- u22-20020a056a001596b0290200c2c995e7mr3969922pfk.73.1616071694084; Thu, 18
- Mar 2021 05:48:14 -0700 (PDT)
+        Thu, 18 Mar 2021 08:48:08 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lMs4M-0007re-NI; Thu, 18 Mar 2021 12:48:06 +0000
+Subject: Re: [PATCH][next] soc: xilinx: vcu: remove deadcode on null divider
+ check
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Tretter <m.tretter@pengutronix.de>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210184938.146124-1-colin.king@canonical.com>
+ <161301409895.1254594.6980739457487251623@swboyd.mtv.corp.google.com>
+ <20210211073906.GC30300@pengutronix.de>
+ <161307031421.1254594.40010291545314425@swboyd.mtv.corp.google.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <eef269e5-e16d-90ef-d765-8f50d7e2176a@canonical.com>
+Date:   Thu, 18 Mar 2021 12:48:06 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210318073921.13093-1-a.fatoum@pengutronix.de>
-In-Reply-To: <20210318073921.13093-1-a.fatoum@pengutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Mar 2021 14:47:58 +0200
-Message-ID: <CAHp75VcFy1=p6x0nj6wC-tK5ph6Puvx++8aVALLC0WTrkoN8AA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] driver core: clear deferred probe reason on probe retry
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sascha Hauer <kernel@pengutronix.de>, stable@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161307031421.1254594.40010291545314425@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 9:39 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> When retrying a deferred probe, any old defer reason string should be
-> discarded. Otherwise, if probe is deferred again at a different spot,
+On 11/02/2021 19:05, Stephen Boyd wrote:
+> Quoting Michael Tretter (2021-02-10 23:39:06)
+>> On Wed, 10 Feb 2021 19:28:18 -0800, Stephen Boyd wrote:
+>>> Quoting Colin King (2021-02-10 10:49:38)
+>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>
+>>>> The pointer 'divider' has previously been null checked followed by
+>>>> a return, hence the subsequent null check is redundant deadcode
+>>>> that can be removed.  Clean up the code and remove it.
+>>>>
+>>>> Fixes: 9c789deea206 ("soc: xilinx: vcu: implement clock provider for output clocks")
+>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>>> ---
+>>>>  drivers/clk/xilinx/xlnx_vcu.c | 3 ---
+>>>>  1 file changed, 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/clk/xilinx/xlnx_vcu.c b/drivers/clk/xilinx/xlnx_vcu.c
+>>>> index d66b1315114e..607936d7a413 100644
+>>>> --- a/drivers/clk/xilinx/xlnx_vcu.c
+>>>> +++ b/drivers/clk/xilinx/xlnx_vcu.c
+>>>> @@ -512,9 +512,6 @@ static void xvcu_clk_hw_unregister_leaf(struct clk_hw *hw)
+>>>>  
+>>>>         mux = clk_hw_get_parent(divider);
+>>>>         clk_hw_unregister_mux(mux);
+>>>> -       if (!divider)
+>>>> -               return;
+>>>> -
+>>>
+>>> This code is pretty confusing. Waiting for m.tretter@pengutronix.de to
+>>> reply
+>>
+>> Can you elaborate what you find confusing about this code. I would gladly try
+>> to clarify and improve the code.
+> 
+> The fact that pointers are being checked and then bailing out of the
+> function early, vs. doing something if the pointer is non-NULL.
+> 
+>>
+>> What happens here is that the driver registers a mux -> divider -> gate chain
+>> for each output clock, but only stores the gate clock. When unregistering the
+>> clocks, the driver starts at the gate and walks up to the mux while
+>> unregistering the clocks.
+>>
 
-probe -> the probe
+OK, so I think I understand this better, should the order of
+unregisteration be as follows:
 
-> but without setting a message, a now incorrect probe reason will remain.
+diff --git a/drivers/clk/xilinx/xlnx_vcu.c b/drivers/clk/xilinx/xlnx_vcu.c
+index d66b1315114e..66bac8421460 100644
+--- a/drivers/clk/xilinx/xlnx_vcu.c
++++ b/drivers/clk/xilinx/xlnx_vcu.c
+@@ -511,11 +511,11 @@ static void xvcu_clk_hw_unregister_leaf(struct
+clk_hw *hw)
+                return;
 
-a now incorrect -> now the incorrect
+        mux = clk_hw_get_parent(divider);
+-       clk_hw_unregister_mux(mux);
+-       if (!divider)
++       clk_hw_unregister_mux(divider);
++       if (!mux)
+                return;
 
-> This was observed with the i.MX I2C driver, which ultimately failed
-> to probe due to lack of the GPIO driver. The probe defer for GPIO
-> doesn't record a message, but a previous probe defer to clock_get did.
-> This had the effect that /sys/kernel/debug/devices_deferred listed
-> a misleading probe deferral reason.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Cc: stable@kernel.org
-> Fixes: d090b70ede02 ("driver core: add deferring probe reason to devices_deferred property")
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
->  drivers/base/dd.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 9179825ff646..e2cf3b29123e 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -97,6 +97,9 @@ static void deferred_probe_work_func(struct work_struct *work)
->
->                 get_device(dev);
->
-> +               kfree(dev->p->deferred_probe_reason);
-> +               dev->p->deferred_probe_reason = NULL;
-> +
->                 /*
->                  * Drop the mutex while probing each device; the probe path may
->                  * manipulate the deferred list
-> --
-> 2.29.2
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+-       clk_hw_unregister_divider(divider);
++       clk_hw_unregister_divider(mux);
