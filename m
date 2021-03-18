@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC563404A3
+	by mail.lfdr.de (Postfix) with ESMTP id B98063404A4
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 12:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCRLbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 07:31:53 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:34497 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhCRLbY (ORCPT
+        id S230078AbhCRLbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 07:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhCRLbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 07:31:24 -0400
-Received: from [192.168.1.155] ([77.4.36.33]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MmlfS-1m5VXZ0bbS-00jmiX; Thu, 18 Mar 2021 12:30:59 +0100
-Subject: Re: [PATCH v2 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
- <20210315095710.7140-2-henning.schild@siemens.com>
- <CAHp75VdXDcTfNL9QRQ5XE-zVLHacfMKHUxhse3=dAfJbOJdObQ@mail.gmail.com>
- <20210317201311.70528fd4@md1za8fc.ad001.siemens.net>
- <92080a68-9029-3103-9240-65c92d17bf16@redhat.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <6c7d165d-1332-2039-0af3-9875b482894b@metux.net>
-Date:   Thu, 18 Mar 2021 12:30:57 +0100
+        Thu, 18 Mar 2021 07:31:48 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBB3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:31:47 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id b9so3366343ejc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 04:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iE3o/hCM2p37deLsWlZAboSCZEN8A+uQjzYQvJph1UE=;
+        b=dvogcnO4LvDz0mM8v9Ii8P+kPwdmwm0km8vDh6nnJ9/HJLWk/kD4nmsvyx7iWz7sS6
+         2yUfG0NVwMo5v8H5xpRDrcwgXCnTO3dcqOzpNPL1DmT+t1vVe5QLsoI/6tXDjcDqwVKk
+         dAn2LMTvjgdysj19T6gmVeokCidjCL91Zx1PY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iE3o/hCM2p37deLsWlZAboSCZEN8A+uQjzYQvJph1UE=;
+        b=FbNsJO2rOYBQzfv1rKwhZO1lsaZbLp5jyBsDOyMfhRC/HQqMDLjjMiIYxSqCL+1Cg3
+         +DJvBh31jtcC9qun/cD0a5HiYBaBydXdFUa63Q3KKryluYpKF394WMS0OGgFfqdKRXu8
+         ZCjQA5DDCfG8KSiMpLvkfiY3w/6vda4Sf6+QJdYRluFgtzMlyUG6KaO6tkoPCdJkl2Ji
+         vL3n72bVEG8+GM9nc4fyBQuhMQHYd23UySgcr+llWV9k1QATH44PllJBnXyMuCzS38td
+         hqlKxWQSsbiLECbvJZEk9HIL5BQMSaEIWi/9TAW4kCvXx4WdvDvyL4qrIYpoLh5Luc7A
+         JI8Q==
+X-Gm-Message-State: AOAM532kXsngA6GNWdB8mRvSisXkBSFnLyYOU+ciASVWzxAnpHHeTQea
+        a1F8WJyEPlkVjdcxWnN1IuVr9w==
+X-Google-Smtp-Source: ABdhPJybRqvVoEF7H9burhDE0WQ10akUHpO34528D/mDYaPl65eHHApqxt1a3+8How9WbcQy/omrHg==
+X-Received: by 2002:a17:906:4955:: with SMTP id f21mr41777443ejt.74.1616067106225;
+        Thu, 18 Mar 2021 04:31:46 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id r10sm1642179eju.66.2021.03.18.04.31.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 04:31:45 -0700 (PDT)
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+ <YFDAfPCnS204jiD5@chrisdown.name> <YFHAdUB4lu4mJ9Ar@alley>
+ <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
+ <YFMvfawY+0CncS8G@alley>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <226a276d-2018-b419-4a6b-3ab21d3e4584@rasmusvillemoes.dk>
+Date:   Thu, 18 Mar 2021 12:31:44 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <92080a68-9029-3103-9240-65c92d17bf16@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
+In-Reply-To: <YFMvfawY+0CncS8G@alley>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:JGLu8sagB7EF08Mi28wDkDZPeRCXlhUQsAuk2VqGw6C2ovFpXYq
- MZX5iPLQkAKUefPkGfyWd+cDvY8eBFavjhmWF0GJO7VKEZzSyAhG8x2mhLYmorQAi9kXXeP
- tRwcI75aoVn+ZB9vTtKHXhaXmtfbNhyoPshTjv/R4L4zo+dAO5TReeK7TMO2jifsDuzfPr6
- iSRutrazEqFpZtj3203Sg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XYt+Ro5IIco=:fI9AaqtWnSTxTvtyMhIWW0
- MNzQmrQZ0AMAUGynhzL3oRChqrzcy6DLTOGJnSbteNVq1dzBL6WSiEXfpWu0LqQg+9Og+1XKL
- 9nP6GD+5fgrVvS94P8kGB6/lgM3uHdBCk206KEnRh/Nl/z6FiQaVDaJaLsxNdWWW72wm7CyN1
- IKrJLmgw0bik1FpyM04nCgRg/XpAXyYnw1/GZWipeNQRqZ/X3DdCD4Nj5wBcCn/fAYYZpMUGN
- 09ufck6mxZd9A0OqACSgvFNUrgfZexOpq8Fbv7ozZtKaKOjtfKy/aVHep79/Hh0xSqjaisypr
- GpvzG4j2MxTwovWNSUOiWwyNHs2xjBYwYUn3JXIfKkBC20FYJm/6jVy4v2LM+/9xfORC3ra0u
- IeqPhm8G+0VrRiANk8NuRvrp2PXYn7XdqA5RJ6bnA9JVoF43CD70+ZxHkfhzW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.03.21 21:03, Hans de Goede wrote:
+On 18/03/2021 11.46, Petr Mladek wrote:
 
-Hi,
+> BTW: Is the trick with int (printk)(const char *s, ...) documented
+> somewhere? Is it portable?
 
->> It just identifies the box and tells subsequent drivers which one it
->> is, which watchdog and LED path to take. Moving the knowledge of which
->> box has which LED/watchdog into the respective drivers seems to be the
->> better way to go.
->>
->> So we would end up with a LED and a watchdog driver both
->> MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
+It is completely standard and portable C, explicitly spelled out in the
+C standard itself. C99:
 
-Uh, isn't that a bit too broad ? This basically implies that Siemens
-will never produce boards with different configurations.
+===
+6.10.3 Macro replacement
 
->> and doing the identification with the inline dmi from that header,
->> doing p2sb with the support to come ... possibly a "//TODO\ninline" in
->> the meantime.
->>
->> So no "main platform" driver anymore, but still central platform
->> headers.
->>
->> Not sure how this sounds, but i think making that change should be
->> possible. And that is what i will try and go for in v3.
-> 
-> Dropping the main drivers/platform/x86 driver sounds good to me,
-> I was already wondering a bit about its function since it just
-> instantiates devs to which the other ones bind to then instantiate
-> more devs (in the LED case).
+10 [...] Each subsequent instance of the
+function-like macro name followed by a ( as the next preprocessing token
+introduces the
+sequence of preprocessing tokens that is replaced by the replacement
+list in the definition
+(an invocation of the macro). [...]
+===
 
-hmm, IMHO that depends on whether the individual sub-devices can be
-more generic than just that specific machine. (@Hanning: could you
-tell us more about that ?).
+and later
 
-Another question is how they're actually probed .. only dmi or maybe
-also pci dev ? (i've seen some refs to pci stuff in the led driver, but
-missed the other code thats called here).
+===
+7.1.4 Use of library functions
 
-IMHO, if the whole thing lives on some PCI device (which can be probed
-via pci ID), and that device has the knowledge, where the LED registers
-actually are (eg. based on device ID, pci mmio mapping, ...) then there
-should be some parent driver that instantiates the led devices (and
-possibly other board specific stuff). That would be a clear separation,
-modularization. In that case, maybe this LED driver could even be
-replaced by some really generic "register-based-LED" driver, which just
-needs to be fed with some parameters like register ranges, bitmasks, etc.
+1 [...] one
+of the techniques shown below can be used to ensure the declaration is
+not affected by
+such a macro. Any macro definition of a function can be suppressed
+locally by enclosing
+the name of the function in parentheses, because the name is then not
+followed by the left
+parenthesis that indicates expansion of a macro function name. For the
+same syntactic
+reason, it is permitted to take the address of a library function even
+if it is also defined as
+a macro.
+===
 
-OTOH, if everything can be derived entirely from DMI match, w/o things
-like pci mappings involved (IOW: behaves like directly wired to the
-cpu's mem/io bus, no other "intelligent" bus involved), and it's all
-really board specific logic (no generic led or gpio controllers
-involved), then it might be better to have entirely separate drivers.
+Also, the use of printk() inside the definition of a printk()
+function-like macro does not lead to infinite recursion, by
 
+===
+6.10.3.4 Rescanning and further replacement
 
--mtx
+2 If the name of the macro being replaced is found during this scan of
+the replacement list
+(not including the rest of the source file’s preprocessing tokens), it
+is not replaced.
+===
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Rasmus
