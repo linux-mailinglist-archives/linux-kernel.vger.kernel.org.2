@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD29340705
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1A3340706
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 14:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhCRNiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 09:38:03 -0400
-Received: from m12-11.163.com ([220.181.12.11]:32998 "EHLO m12-11.163.com"
+        id S230217AbhCRNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 09:38:04 -0400
+Received: from m12-18.163.com ([220.181.12.18]:42784 "EHLO m12-18.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229944AbhCRNhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 09:37:48 -0400
+        id S229951AbhCRNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:37:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=z0C4g
-        MZ+dKD2XjbwS4ucAAKLRBZSRIcbk8zV8GM1uBI=; b=EckjOLQqxkzwOLzCP6K7s
-        5e6UzkpPYjJeOJmgXG1cMAIpGqGxY+IY8jd5/xoZD+eErcogQUQ8ve2piaU9Zfbd
-        grqZy3jnznA62rMqrZeMHKNEx1X25H8wU7xdL3qTIjNIkreMdJdhkV/vKaM7EhZu
-        C4+FSAc59oi+0njdG/4oEA=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowADHv5ddV1NgetOZSw--.19292S2;
-        Thu, 18 Mar 2021 21:36:32 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     davem@davemloft.net, dan.carpenter@oracle.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] nfc/fdp: Simplify the return expression of fdp_nci_open()
-Date:   Thu, 18 Mar 2021 21:36:40 +0800
-Message-Id: <20210318133640.1377-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=3Qe0L
+        Vz4zCcGuUrxPrkUKDKeLuAg+MUbaKUkg2ec1CI=; b=nfD+JUr6ePI40NdGH2HWf
+        8fjxPePojS55PgGakYaVwWNsbD+iFxJ4zCM+v+dbYdl/ww14hagHiNkUURYaQr4I
+        Wg5QEycbuH0pdDsBTUkH5MzxxcKr4PQaP5eOm9RzKiQRHIo3TavYVwQPBJOf78sD
+        wDswST7p+aFijtRf/+8XS4=
+Received: from COOL-20200911ZP.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowAAnI_GDV1NgHojUZQ--.56749S2;
+        Thu, 18 Mar 2021 21:37:19 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     dongchun.zhu@mediatek.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tangchunyou@yulong.com
+Subject: [PATCH] driver/media/i2c:fix unneeded semicolon
+Date:   Thu, 18 Mar 2021 21:37:04 +0800
+Message-Id: <20210318133704.678-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADHv5ddV1NgetOZSw--.19292S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xWryxAw1kGF1UXFWxXrb_yoW3KrX_Cr
-        Z0vr48GF4UXF1Fy3srGwsxZryDKF1aqFWFgF4vgayayr98ZFs5Gw4Dury3XrWUW348AFy7
-        Wws8Ar1rAr1DKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnYg43UUUUU==
+X-CM-TRANSID: EsCowAAnI_GDV1NgHojUZQ--.56749S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU4BTYUUUUU
 X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQBZiV8ZNR6q6gAAsY
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiHhBZUVSItU27ngAAsH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+From: tangchunyou <tangchunyou@yulong.com>
 
-Simplify the return expression.
+delete unneeded semicolon
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Signed-off-by: tangchunyou <tangchunyou@yulong.com>
 ---
- drivers/nfc/fdp/fdp.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/media/i2c/ov02a10.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
-index 4dc7bd7..824f2da 100644
---- a/drivers/nfc/fdp/fdp.c
-+++ b/drivers/nfc/fdp/fdp.c
-@@ -236,15 +236,12 @@ static int fdp_nci_send_patch(struct nci_dev *ndev, u8 conn_id, u8 type)
+diff --git a/drivers/media/i2c/ov02a10.c b/drivers/media/i2c/ov02a10.c
+index 60b4bc6..c47b1d4 100644
+--- a/drivers/media/i2c/ov02a10.c
++++ b/drivers/media/i2c/ov02a10.c
+@@ -700,7 +700,7 @@ static int ov02a10_set_ctrl(struct v4l2_ctrl *ctrl)
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+-	};
++	}
  
- static int fdp_nci_open(struct nci_dev *ndev)
- {
--	int r;
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
- 	struct device *dev = &info->phy->i2c_dev->dev;
+ 	pm_runtime_put(&client->dev);
  
- 	dev_dbg(dev, "%s\n", __func__);
- 
--	r = info->phy_ops->enable(info->phy);
--
--	return r;
-+	return info->phy_ops->enable(info->phy);
- }
- 
- static int fdp_nci_close(struct nci_dev *ndev)
 -- 
 1.9.1
+
 
