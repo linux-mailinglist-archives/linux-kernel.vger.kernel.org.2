@@ -2,244 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5354340BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D86340B6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Mar 2021 18:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhCRRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 13:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
+        id S232435AbhCRRM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 13:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhCRRXd (ORCPT
+        with ESMTP id S232374AbhCRRLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:23:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE3EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=I7WBOJMqsONJKh5Go0RSycXHYXNYT82NDXP7uh/337E=; b=U8iIRtWte9gSeiArJwHj1Upind
-        swbSY+VjqdYQuaOx6obsp3ncPnt8uZuIJLLc96tuaA0Fq2XHZlWhU7HhgHuVF68U1E75LcIwBEs+W
-        D0zip1B3aSAYLsfo7taX8nWOfQaphnRIWQ5v2xdux+KDxPOJgmqeKfYmCUHzmwt+98HuXhshCRh10
-        7npMPl09HBnmBVqWl/hEwNrHm9qdjfu8doeHsvQV+bUpvSAtLCL62rye9QUJUSH9uhOOt+zvGm33m
-        ssGAJhc/lYYA8K7h4Og5XRZcQOcACZEFh3o7ZW1NdmA53DhPk3PC/D+kRUCfXiN+m+zCZO3hv7TPc
-        4qfzVFnA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lMwMp-005kET-Ir; Thu, 18 Mar 2021 17:23:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3099330700B;
-        Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 19F46238A4645; Thu, 18 Mar 2021 18:23:27 +0100 (CET)
-Message-ID: <20210318171919.580212227@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 18 Mar 2021 18:11:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
-        mbenes@suse.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v2 03/14] x86/retpoline: Simplify retpolines
-References: <20210318171103.577093939@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 18 Mar 2021 13:11:44 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32613C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:44 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id o70so32011023qke.16
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 10:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=TXt+gLVEDlmfHDoaitlym6lqHbHvj5KHcb6MKkix6ec=;
+        b=PkOJwFzqa+bKcWMOlWEWGdVZv44XgCWnd8dQxPkgPQeCAw9+2wn+vZKCbNvRBITJnO
+         E4flqZtO6Bo8LGXCuTK/3xUUUhqztLekRTg5LxN4MaCZhbTIE615T6WQmM+LIurHKGz8
+         xBj/sBDa2K13cvDXvOpfqTqID2xvbTAhSQPMpv8W5s0Woimk6LaTMi64G6v68Zb6PmxQ
+         OxshtCyJeEiMX51h4t8g283lTiE6arcNFUzC3S/qQxMOWvWk76kT8ZFq9zvgJa1i9wc4
+         iRu4MiL3l/x+j90pdN9KKPYjABxvZZ4lOeHk+0nUGrWKJSTBqedUi5/89m5Rkb51Gqlo
+         pZ6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=TXt+gLVEDlmfHDoaitlym6lqHbHvj5KHcb6MKkix6ec=;
+        b=creo6Apr471kmX9TbCYTk+/ePy74Tw80zXBdd3g+mpUD+nUPPzUqytZy1BYTZqAph1
+         h7ILzQ5ycQGRRPLFQWDd3Q3z4bGyKnJFPbBy4eIKXGL8erUFyg2aEUPB8of/awDzWHRB
+         fwIAXjfe8mbFwsXjB5loSU+Q4vWO1/Gy1lo/JVZRsnvzkwK5MHfvo/SVDwe7FQnCQ6+S
+         7K+VsIY2HtyR30JGjMPpHkwG+p3rlmspfKEIRYi8f2ht9rQ50bTREK+CkfUHvv5jCobi
+         88NXTF94nC8/knsy8Yl+pSWU1rhM+oPxiglbfpoRMc13l5mDrI36w5QDtgFtECPalrOz
+         KFbg==
+X-Gm-Message-State: AOAM531Qx5FgKNUKQ3v+UlBYpRkOUXP4f2crioANxyqqi0tmw+3LeMHX
+        OAn4jE+fKl4eiW/5Gi5I6N1UQf8lWecLTA/bD0w=
+X-Google-Smtp-Source: ABdhPJycJECdcehU6p3vt3y9KeNPwMneOSrpY/9MX0n4+srQKTy+PzfkDEKzvb3QCHQ+ckAP6Y3ANtGQbLvRJoPaWPU=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:ad4:5bad:: with SMTP id
+ 13mr5211633qvq.20.1616087503406; Thu, 18 Mar 2021 10:11:43 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:11:07 -0700
+In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
+Message-Id: <20210318171111.706303-14-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20210318171111.706303-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 13/17] arm64: use __pa_function
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to commit c9c324dc22aa ("objtool: Support stack layout changes
-in alternatives"), it is possible to simplify the retpolines.
+With CONFIG_CFI_CLANG, the compiler replaces function address
+references with the address of the function's CFI jump table
+entry. This means that __pa_symbol(function) returns the physical
+address of the jump table entry, which can lead to address space
+confusion as the jump table points to the function's virtual
+address. Therefore, use the __pa_function() macro to ensure we are
+always taking the address of the actual function instead.
 
-Currently our retpolines consist of 2 symbols,
-__x86_indirect_thunk_\reg, which is the compiler target, and
-__x86_retpoline_\reg, which is the actual retpoline. Both are
-consecutive in code and aligned such that for any one register they
-both live in the same cacheline:
-
-  0000000000000000 <__x86_indirect_thunk_rax>:
-   0:   ff e0                   jmpq   *%rax
-   2:   90                      nop
-   3:   90                      nop
-   4:   90                      nop
-
-  0000000000000005 <__x86_retpoline_rax>:
-   5:   e8 07 00 00 00          callq  11 <__x86_retpoline_rax+0xc>
-   a:   f3 90                   pause
-   c:   0f ae e8                lfence
-   f:   eb f9                   jmp    a <__x86_retpoline_rax+0x5>
-  11:   48 89 04 24             mov    %rax,(%rsp)
-  15:   c3                      retq
-  16:   66 2e 0f 1f 84 00 00 00 00 00   nopw   %cs:0x0(%rax,%rax,1)
-
-The thunk is an alternative_2, where one option is a jmp to the
-retpoline. This was done so that objtool didn't need to deal with
-alternatives with stack ops. But that problem has been solved, so now
-it is possible to fold the entire retpoline into the alternative to
-simplify and consolidate unused bytes:
-
-  0000000000000000 <__x86_indirect_thunk_rax>:
-   0:   ff e0                   jmpq   *%rax
-   2:   90                      nop
-   3:   90                      nop
-   4:   90                      nop
-   5:   90                      nop
-   6:   90                      nop
-   7:   90                      nop
-   8:   90                      nop
-   9:   90                      nop
-   a:   90                      nop
-   b:   90                      nop
-   c:   90                      nop
-   d:   90                      nop
-   e:   90                      nop
-   f:   90                      nop
-  10:   90                      nop
-  11:   66 66 2e 0f 1f 84 00 00 00 00 00        data16 nopw %cs:0x0(%rax,%rax,1)
-  1c:   0f 1f 40 00             nopl   0x0(%rax)
-
-Notice that since the longest alternative sequence is now:
-
-   0:   e8 07 00 00 00          callq  c <.altinstr_replacement+0xc>
-   5:   f3 90                   pause
-   7:   0f ae e8                lfence
-   a:   eb f9                   jmp    5 <.altinstr_replacement+0x5>
-   c:   48 89 04 24             mov    %rax,(%rsp)
-  10:   c3                      retq
-
-17 bytes, we have 15 bytes NOP at the end of our 32 byte slot. (IOW,
-if we can shrink the retpoline by 1 byte we can pack it more dense)
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/include/asm/asm-prototypes.h |    7 -------
- arch/x86/include/asm/nospec-branch.h  |    6 +++---
- arch/x86/lib/retpoline.S              |   34 +++++++++++++++++-----------------
- tools/objtool/check.c                 |    3 +--
- 4 files changed, 21 insertions(+), 29 deletions(-)
+ arch/arm64/include/asm/mmu_context.h      | 2 +-
+ arch/arm64/kernel/acpi_parking_protocol.c | 2 +-
+ arch/arm64/kernel/cpu-reset.h             | 2 +-
+ arch/arm64/kernel/cpufeature.c            | 2 +-
+ arch/arm64/kernel/psci.c                  | 3 ++-
+ arch/arm64/kernel/smp_spin_table.c        | 2 +-
+ 6 files changed, 7 insertions(+), 6 deletions(-)
 
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -22,15 +22,8 @@ extern void cmpxchg8b_emu(void);
- #define DECL_INDIRECT_THUNK(reg) \
- 	extern asmlinkage void __x86_indirect_thunk_ ## reg (void);
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index bd02e99b1a4c..16cc9a694bb2 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -140,7 +140,7 @@ static inline void cpu_replace_ttbr1(pgd_t *pgdp)
+ 		ttbr1 |= TTBR_CNP_BIT;
+ 	}
  
--#define DECL_RETPOLINE(reg) \
--	extern asmlinkage void __x86_retpoline_ ## reg (void);
--
- #undef GEN
- #define GEN(reg) DECL_INDIRECT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
+-	replace_phys = (void *)__pa_symbol(idmap_cpu_replace_ttbr1);
++	replace_phys = (void *)__pa_function(idmap_cpu_replace_ttbr1);
  
--#undef GEN
--#define GEN(reg) DECL_RETPOLINE(reg)
--#include <asm/GEN-for-each-reg.h>
--
- #endif /* CONFIG_RETPOLINE */
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -81,7 +81,7 @@
- .macro JMP_NOSPEC reg:req
- #ifdef CONFIG_RETPOLINE
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
--		      __stringify(jmp __x86_retpoline_\reg), X86_FEATURE_RETPOLINE, \
-+		      __stringify(jmp __x86_indirect_thunk_\reg), X86_FEATURE_RETPOLINE, \
- 		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
- #else
- 	jmp	*%\reg
-@@ -91,7 +91,7 @@
- .macro CALL_NOSPEC reg:req
- #ifdef CONFIG_RETPOLINE
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *%\reg), \
--		      __stringify(call __x86_retpoline_\reg), X86_FEATURE_RETPOLINE, \
-+		      __stringify(call __x86_indirect_thunk_\reg), X86_FEATURE_RETPOLINE, \
- 		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *%\reg), X86_FEATURE_RETPOLINE_AMD
- #else
- 	call	*%\reg
-@@ -129,7 +129,7 @@
- 	ALTERNATIVE_2(						\
- 	ANNOTATE_RETPOLINE_SAFE					\
- 	"call *%[thunk_target]\n",				\
--	"call __x86_retpoline_%V[thunk_target]\n",		\
-+	"call __x86_indirect_thunk_%V[thunk_target]\n",		\
- 	X86_FEATURE_RETPOLINE,					\
- 	"lfence;\n"						\
- 	ANNOTATE_RETPOLINE_SAFE					\
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -10,27 +10,31 @@
- #include <asm/unwind_hints.h>
- #include <asm/frame.h>
+ 	cpu_install_idmap();
+ 	replace_phys(ttbr1);
+diff --git a/arch/arm64/kernel/acpi_parking_protocol.c b/arch/arm64/kernel/acpi_parking_protocol.c
+index e7c941d8340d..e7f3af6043c5 100644
+--- a/arch/arm64/kernel/acpi_parking_protocol.c
++++ b/arch/arm64/kernel/acpi_parking_protocol.c
+@@ -99,7 +99,7 @@ static int acpi_parking_protocol_cpu_boot(unsigned int cpu)
+ 	 * that read this address need to convert this address to the
+ 	 * Boot-Loader's endianness before jumping.
+ 	 */
+-	writeq_relaxed(__pa_symbol(secondary_entry), &mailbox->entry_point);
++	writeq_relaxed(__pa_function(secondary_entry), &mailbox->entry_point);
+ 	writel_relaxed(cpu_entry->gic_cpu_id, &mailbox->cpu_id);
  
--.macro THUNK reg
--	.section .text.__x86.indirect_thunk
--
--	.align 32
--SYM_FUNC_START(__x86_indirect_thunk_\reg)
--	JMP_NOSPEC \reg
--SYM_FUNC_END(__x86_indirect_thunk_\reg)
--
--SYM_FUNC_START_NOALIGN(__x86_retpoline_\reg)
-+.macro RETPOLINE reg
- 	ANNOTATE_INTRA_FUNCTION_CALL
--	call	.Ldo_rop_\@
-+	call    .Ldo_rop_\@
- .Lspec_trap_\@:
- 	UNWIND_HINT_EMPTY
- 	pause
- 	lfence
--	jmp	.Lspec_trap_\@
-+	jmp .Lspec_trap_\@
- .Ldo_rop_\@:
--	mov	%\reg, (%_ASM_SP)
-+	mov     %\reg, (%_ASM_SP)
- 	UNWIND_HINT_FUNC
- 	ret
--SYM_FUNC_END(__x86_retpoline_\reg)
-+.endm
-+
-+.macro THUNK reg
-+	.section .text.__x86.indirect_thunk
-+
-+	.align 32
-+SYM_FUNC_START(__x86_indirect_thunk_\reg)
-+
-+	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
-+		      __stringify(RETPOLINE \reg), X86_FEATURE_RETPOLINE, \
-+		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
-+
-+SYM_FUNC_END(__x86_indirect_thunk_\reg)
+ 	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
+diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
+index ed50e9587ad8..dfba8cf921e5 100644
+--- a/arch/arm64/kernel/cpu-reset.h
++++ b/arch/arm64/kernel/cpu-reset.h
+@@ -22,7 +22,7 @@ static inline void __noreturn cpu_soft_restart(unsigned long entry,
  
- .endm
+ 	unsigned long el2_switch = !is_kernel_in_hyp_mode() &&
+ 		is_hyp_mode_available();
+-	restart = (void *)__pa_symbol(__cpu_soft_restart);
++	restart = (void *)__pa_function(__cpu_soft_restart);
  
-@@ -48,7 +52,6 @@ SYM_FUNC_END(__x86_retpoline_\reg)
+ 	cpu_install_idmap();
+ 	restart(el2_switch, entry, arg0, arg1, arg2);
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 066030717a4c..7ec1c2ccdc0b 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1460,7 +1460,7 @@ kpti_install_ng_mappings(const struct arm64_cpu_capabilities *__unused)
+ 	if (arm64_use_ng_mappings)
+ 		return;
  
- #define __EXPORT_THUNK(sym)	_ASM_NOKPROBE(sym); EXPORT_SYMBOL(sym)
- #define EXPORT_THUNK(reg)	__EXPORT_THUNK(__x86_indirect_thunk_ ## reg)
--#define EXPORT_RETPOLINE(reg)  __EXPORT_THUNK(__x86_retpoline_ ## reg)
+-	remap_fn = (void *)__pa_symbol(idmap_kpti_install_ng_mappings);
++	remap_fn = (void *)__pa_function(idmap_kpti_install_ng_mappings);
  
- #undef GEN
- #define GEN(reg) THUNK reg
-@@ -58,6 +61,3 @@ SYM_FUNC_END(__x86_retpoline_\reg)
- #define GEN(reg) EXPORT_THUNK(reg)
- #include <asm/GEN-for-each-reg.h>
+ 	cpu_install_idmap();
+ 	remap_fn(cpu, num_online_cpus(), __pa_symbol(swapper_pg_dir));
+diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+index 62d2bda7adb8..bfb1a6f8282d 100644
+--- a/arch/arm64/kernel/psci.c
++++ b/arch/arm64/kernel/psci.c
+@@ -38,7 +38,8 @@ static int __init cpu_psci_cpu_prepare(unsigned int cpu)
  
--#undef GEN
--#define GEN(reg) EXPORT_RETPOLINE(reg)
--#include <asm/GEN-for-each-reg.h>
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -800,8 +800,7 @@ static int add_jump_destinations(struct
- 		} else if (reloc->sym->type == STT_SECTION) {
- 			dest_sec = reloc->sym->sec;
- 			dest_off = arch_dest_reloc_offset(reloc->addend);
--		} else if (!strncmp(reloc->sym->name, "__x86_indirect_thunk_", 21) ||
--			   !strncmp(reloc->sym->name, "__x86_retpoline_", 16)) {
-+		} else if (!strncmp(reloc->sym->name, "__x86_indirect_thunk_", 21)) {
- 			/*
- 			 * Retpoline jumps are really dynamic jumps in
- 			 * disguise, so convert them accordingly.
-
+ static int cpu_psci_cpu_boot(unsigned int cpu)
+ {
+-	int err = psci_ops.cpu_on(cpu_logical_map(cpu), __pa_symbol(secondary_entry));
++	int err = psci_ops.cpu_on(cpu_logical_map(cpu),
++				  __pa_function(secondary_entry));
+ 	if (err)
+ 		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
+ 
+diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
+index 056772c26098..a80ff9092e86 100644
+--- a/arch/arm64/kernel/smp_spin_table.c
++++ b/arch/arm64/kernel/smp_spin_table.c
+@@ -88,7 +88,7 @@ static int smp_spin_table_cpu_prepare(unsigned int cpu)
+ 	 * boot-loader's endianness before jumping. This is mandated by
+ 	 * the boot protocol.
+ 	 */
+-	writeq_relaxed(__pa_symbol(secondary_holding_pen), release_addr);
++	writeq_relaxed(__pa_function(secondary_holding_pen), release_addr);
+ 	__flush_dcache_area((__force void *)release_addr,
+ 			    sizeof(*release_addr));
+ 
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
