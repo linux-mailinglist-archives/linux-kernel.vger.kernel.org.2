@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C043412D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 03:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5223412D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 03:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhCSC2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 22:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhCSC1g (ORCPT
+        id S231134AbhCSC3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 22:29:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229846AbhCSC3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 22:27:36 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1272FC06174A;
-        Thu, 18 Mar 2021 19:27:36 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id q3so1472602qkq.12;
-        Thu, 18 Mar 2021 19:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r3gQFACQh2J2voYdbNJbhk2x5hfKRQ+CwodIJFBLLlQ=;
-        b=D+pwhdG+PGHcEsrNP/dfpimJNAx4nfhh12lcLCxSvnoc0HPoSyG4SjJLxM3q1IagdJ
-         j/HbKS6aAoN8k8lYBqSSnSfzLT/ZZ0+2i+qbUgSazKKmu/piE88cbJKZBmnoAWhcBJ72
-         9Nl+wZDHYNvSrVa8Jsu8fpV+2pGndfDoY+v447STh/abD8TsKfhznc0LSsjJx39FbHRx
-         Of4U5la11acCkAWI+QuUG4nIKVGOfxrGZaIEV4eFwwI8/XRu29A3vsltbaJ0W9FnwYx7
-         KOMNpQqAwWglqD+04KlPx+r1TnemF1S9OY73jONTzQBz//OocyBN0qaZXbVUQUsZJcxA
-         EtKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r3gQFACQh2J2voYdbNJbhk2x5hfKRQ+CwodIJFBLLlQ=;
-        b=lPfOJ1uVMFcZaTfbHioYA1R2nGSL0UYVe9zlk09R9LpEYt1mwQ/zyr0TP4v/2d6MSa
-         B0I06R/4I6SM1OO75sudF4nMLBeIWzJ9g0S453oXPf4ebmMGvUTMDXKkwioH0tk95x+5
-         C5GJ4P9KfxEVCvWE3QrHb1tuq0r5cxLu9u0xp7FGVzNjgJ0763zcXAPN8NyM02MG/0WZ
-         Zur7qK7jj9hvMbgQB35RbDJXhkQ6DlHHtHSzgyBLip2QDhwci6udsy6+aEXhRD0ZLo/9
-         WgamZ21A6pHq4TInxM2b0HLfjdxnClZje0RH7tyXVWPc6J5DuHtULYLoxaCFv9HpQCJV
-         /P7Q==
-X-Gm-Message-State: AOAM531rqTQyulihNLLv1rDFaLAcFuYKm7t4bZU323mac18x4Lb4vXc7
-        tbAWOt4nwCdZ5y6BNPsEvgM=
-X-Google-Smtp-Source: ABdhPJy6oti7JVZmuM/u6IKcBhsExqWFVLcxTxAp6GtYiHE1339H5lXW1yhBwpkf92CY6cR0HXc+wQ==
-X-Received: by 2002:a37:8905:: with SMTP id l5mr7679827qkd.321.1616120855354;
-        Thu, 18 Mar 2021 19:27:35 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.87])
-        by smtp.gmail.com with ESMTPSA id o7sm3460814qkb.104.2021.03.18.19.27.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 19:27:34 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     cw00.choi@samsung.com, linux-pm@vger.kernel.org,
+        Thu, 18 Mar 2021 22:29:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616120971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qOZfEbLOvB3iicSPUmk8LezmphB3Nt9q612pXUh13u4=;
+        b=bPWJG4rG7Wp8F6IsQnmhHTEpcVWS1iiG6C+Q8nU7cVFMiZso8j9CbCpJDmrez7aaKSDGML
+        rksfSXEg7aGhG+/gwhGpPlKaI79pTWqeLCGaRm5gL0iWcZVa67fismDA7fdgCBOQg3utjc
+        kNOW0ES08DpgZ/exjqiy0/+usdQxf40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-mTgnzKrRM_afMceeSffleA-1; Thu, 18 Mar 2021 22:29:29 -0400
+X-MC-Unique: mTgnzKrRM_afMceeSffleA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6DE157083;
+        Fri, 19 Mar 2021 02:29:27 +0000 (UTC)
+Received: from treble (ovpn-113-46.rdu2.redhat.com [10.10.113.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6564910013C1;
+        Fri, 19 Mar 2021 02:29:26 +0000 (UTC)
+Date:   Thu, 18 Mar 2021 21:29:23 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
         linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] PM/devfreq: event: A typo fix
-Date:   Fri, 19 Mar 2021 07:55:21 +0530
-Message-Id: <20210319022521.20663-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+Subject: Re: [PATCH v2 11/14] objtool: Add elf_create_undef_symbol()
+Message-ID: <20210319022923.weykw3wtg3jysrm2@treble>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171920.068888092@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210318171920.068888092@infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 06:11:14PM +0100, Peter Zijlstra wrote:
+> Allow objtool to create undefined symbols; this allows creating
+> relocations to symbols not currently in the symbol table.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  tools/objtool/elf.c                 |   63 ++++++++++++++++++++++++++++++++++++
+>  tools/objtool/include/objtool/elf.h |    1 
+>  2 files changed, 64 insertions(+)
+> 
+> --- a/tools/objtool/elf.c
+> +++ b/tools/objtool/elf.c
+> @@ -724,6 +724,69 @@ static int elf_strtab_concat(struct elf
+>  	return len;
+>  }
+>  
+> +struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
+> +{
+> +	struct section *symtab;
+> +	struct symbol *sym;
+> +	Elf_Data *data;
+> +	Elf_Scn *s;
+> +
+> +	sym = malloc(sizeof(*sym));
+> +	if (!sym) {
+> +		perror("malloc");
+> +		return NULL;
+> +	}
+> +	memset(sym, 0, sizeof(*sym));
+> +
+> +	sym->name = strdup(name);
+> +
+> +	sym->sym.st_name = elf_strtab_concat(elf, sym->name, NULL);
+> +	if (sym->sym.st_name == -1)
+> +		return NULL;
+> +
+> +	sym->sym.st_info = 0x10; /* STB_GLOBAL, STT_NOTYPE */
 
-s/devie/device/
+There's a generic macro for this:
+	
+	sym->sym.st_info = GELF_ST_INFO(STB_GLOBAL, STT_NOTYPE);
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- include/linux/devfreq-event.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And sym->bind and sym->type should probably get set.
 
-diff --git a/include/linux/devfreq-event.h b/include/linux/devfreq-event.h
-index 4a50a5c71a5f..2489d11e0513 100644
---- a/include/linux/devfreq-event.h
-+++ b/include/linux/devfreq-event.h
-@@ -56,7 +56,7 @@ struct devfreq_event_data {
-  * @disable	: Disable the devfreq-event device.
-  * @reset	: Reset all setting of the devfreq-event device.
-  * @set_event	: Set the specific event type for the devfreq-event device.
-- * @get_event	: Get the result of the devfreq-event devie with specific
-+ * @get_event	: Get the result of the devfreq-event device with specific
-  *		  event type.
-  *
-  * This structure contains devfreq-event device operations which can be
---
-2.26.2
+-- 
+Josh
 
