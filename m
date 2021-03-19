@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703FD341CF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521FE341CFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCSMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:31:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36656 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhCSMbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:31:23 -0400
-Date:   Fri, 19 Mar 2021 12:31:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616157082;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ta6TbYc2KpxX9Gx0eKTed3N1z7DwvwubHJrt1xszU8w=;
-        b=xegow6TB2ptZo7yiaEQFzsY//u+m5BF3Z9Zt3/gGqZ2j6uTICFb9Hi67Fde7D2nf9G/3+F
-        maXU+RFr1tD9rp5RDO3q566xAzZjBF6ezewqEXN7j2pk7SDhxU4jXyMzz73eR07tplvmg4
-        UyqcH1Kum8C24BkTlZPVotqtzeDVCSH08s9afgKYAaI06dBVxx4CiWfnZ58bNA3tnwL/JK
-        ecgtTwENnKk0cp1iXWrh4SRDYkOxE7l+HIGHNGkNEgj9d4yrJwPWs/VW5DcdFhCNBDAPAV
-        YgMG4cVoglK/YiS3BSk2sAFbgZ9OFbIFQetg7Ghqv4RRdYCe/S4lBDqAg6Uh5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616157082;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ta6TbYc2KpxX9Gx0eKTed3N1z7DwvwubHJrt1xszU8w=;
-        b=/jZD7+J4c6MmBq1r04qAIXozhJgLPakNPBnoRhXd8Fqt8DrKcdRR8MNjnW+UDcIbly4flW
-        tM7EhWR7XEx9dYBg==
-From:   "tip-bot2 for Jiapeng Chong" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/kaslr: Return boolean values from a function
- returning bool
-Cc:     Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        id S229926AbhCSMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:34:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229766AbhCSMeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:34:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C25964EB6;
+        Fri, 19 Mar 2021 12:34:15 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 12:34:12 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1615283963-67277-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1615283963-67277-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH V2] mm/memtest: Add ARCH_USE_MEMTEST
+Message-ID: <20210319123412.GB6832@arm.com>
+References: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Message-ID: <161615708162.398.13397477159993396875.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Mon, Mar 01, 2021 at 10:02:06AM +0530, Anshuman Khandual wrote:
+> early_memtest() does not get called from all architectures. Hence enabling
+> CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
+> option might not trigger the memory pattern tests as would be expected in
+> normal circumstances. This situation is misleading.
+> 
+> The change here prevents the above mentioned problem after introducing a
+> new config option ARCH_USE_MEMTEST that should be subscribed on platforms
+> that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
+> Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
+> not be tested anyway.
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Commit-ID:     21d6a7dcbfba5e7b31f4e9d555a9be362578bfc3
-Gitweb:        https://git.kernel.org/tip/21d6a7dcbfba5e7b31f4e9d555a9be362578bfc3
-Author:        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-AuthorDate:    Tue, 09 Mar 2021 17:59:23 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 19 Mar 2021 13:25:07 +01:00
+For arm64:
 
-x86/kaslr: Return boolean values from a function returning bool
-
-Fix the following coccicheck warnings:
-
-  ./arch/x86/boot/compressed/kaslr.c:642:10-11: WARNING: return of 0/1 in
-  function 'process_mem_region' with return type bool.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1615283963-67277-1-git-send-email-jiapeng.chong@linux.alibaba.com
----
- arch/x86/boot/compressed/kaslr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index b92fffb..e366907 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -639,9 +639,9 @@ static bool process_mem_region(struct mem_vector *region,
- 
- 		if (slot_area_index == MAX_SLOT_AREA) {
- 			debug_putstr("Aborted e820/efi memmap scan (slot_areas full)!\n");
--			return 1;
-+			return true;
- 		}
--		return 0;
-+		return false;
- 	}
- 
- #if defined(CONFIG_MEMORY_HOTREMOVE) && defined(CONFIG_ACPI)
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
