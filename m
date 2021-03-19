@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E433F341FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E0A341FFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhCSOpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S230381AbhCSOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhCSOop (ORCPT
+        with ESMTP id S230312AbhCSOpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:44:45 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2829FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:44:45 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id r17so3828161pgi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iGtWWRPtYaesVII9xVuarQ74BpkCKYVsirQYS4eH+kw=;
-        b=VQopFqQ7Oi/j1u/8XxsX/Ys7cEFxGEox7f1bx6NoTv7BEvoz2YuGPDmss5cNrpjOzy
-         VAEKj4MFXAwl6WPpkX+M+hI1Hu7VonNAkypLrCqWQSz2YlE6bFVZrX+y7MYzhM61hIBF
-         hMAVmp/+eBnAWvLEUGT385c0lLIE3zNjKg3yEbrxcspNhbT85xP1rQObj/i7c8C1DsTJ
-         RuyzGHHLesk4ojCDSC8eApoQe9iKz0uFKGjxbFcDZGqjP1i/Qc/4i9fpNqpKjlA8WYdG
-         V7Lj9zoGrF4wQEB5h/JkCwP+fOh8CXDTsErgXHi2Lk46AUjB3sux/6XHCsHuo2j0YsyK
-         KJbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iGtWWRPtYaesVII9xVuarQ74BpkCKYVsirQYS4eH+kw=;
-        b=Vta2rQQ9nC9tZv/IHDFWKz+OBgbyZEhYvgrSTxHrEeANugoCaFrRENjfWuDDADUZwq
-         iZU9h8DzyHbs1KZJa2cidq/FyEehGPMMTwuMjTzdBi/Faf0saz10OSGgcgFlkVaTZCU2
-         xDvhj5+BbQ75ChZPkk7JF1vSCOSCyIQ4+FXw19GpZdPj4JesCaDhlVXEKXoLTm2sPiuC
-         FfV7PETkTyiSkU/troqBRUmR7PtXcq5viE+tWSK5Ea0kjYgp+4XGfW7hRLuPUiEwIxty
-         yVsKHJRgeICOlXsrYNdjtK+9ytU4mh5sWT0+oxhENR0vwKRUvGoicEjH1FCCrmm2oq9z
-         J3ug==
-X-Gm-Message-State: AOAM532jdGEX4yiS751bEaUZP++IHGDRmcUmDUimcavQIwuhDsTP9qcN
-        B4qpQOQjDzpSOSYob4mFRtB2vXhgXgyxVju52YinZQ==
-X-Google-Smtp-Source: ABdhPJzrBJishtLlW1vLHQuX3g9moCjtqg8gvKyfKMXQAVynNrWk794TQB88/EgV8doHLowCXDYIwqS+scDaYBD2Ma4=
-X-Received: by 2002:a63:ee4b:: with SMTP id n11mr11862551pgk.265.1616165084661;
- Fri, 19 Mar 2021 07:44:44 -0700 (PDT)
+        Fri, 19 Mar 2021 10:45:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D1DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:45:19 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lNGND-0008Fi-V4; Fri, 19 Mar 2021 15:45:11 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lNGNC-00020W-9y; Fri, 19 Mar 2021 15:45:10 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH v3 0/3] mainline ti tsc2046 adc driver
+Date:   Fri, 19 Mar 2021 15:45:06 +0100
+Message-Id: <20210319144509.7627-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210219215326.2227596-1-lyude@redhat.com> <20210219215326.2227596-13-lyude@redhat.com>
-In-Reply-To: <20210219215326.2227596-13-lyude@redhat.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 19 Mar 2021 15:44:33 +0100
-Message-ID: <CAG3jFysehSDHFFXAAc5VexAjyVhCq6hUyD8yWFsE6V3hv_9iPA@mail.gmail.com>
-Subject: Re: [PATCH 12/30] drm/bridge/analogix/anx6345: Cleanup on errors in anx6345_bridge_attach()
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Joe Perches <joe@perches.com>, Icenowy Zheng <icenowy@aosc.io>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Lyude,
+changes v3:
+- different spell fixes
+- add some notes about driver structure
+- rename the trigger to point on the touchscreen nature of it
+- rename DT binding to oversampling-ratio
+- make sure we have some defaults in case no DT property is set
 
-Thanks for the patch, it looks good to me.
+changes v2:
+- rework and extend DT binding properties
+- remove touchscreen related code from the IIO ADC driver
+- make trigger be active longer then IRQ is requesting. This is needed
+  to get "inactive" samples
+- make oversampling and settle time configurable
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
+this ADC based touchscreen controller share same set of challenges, it
+is better keep then as simple IIO ADC devices attached to a generic
+resistive-adc-touch driver.
 
-On Fri, 19 Feb 2021 at 22:58, Lyude Paul <lyude@redhat.com> wrote:
->
-> Another drive-by fix I found when fixing DP AUX adapter across the kernel
-> tree - make sure we don't leak resources (and by proxy-AUX adapters) on
-> failures in anx6345_bridge_attach() by unrolling on errors.
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  drivers/gpu/drm/bridge/analogix/analogix-anx6345.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
-> index 6258f16da0e8..aa6cda458eb9 100644
-> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
-> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
-> @@ -550,7 +550,7 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
->                                  DRM_MODE_CONNECTOR_eDP);
->         if (err) {
->                 DRM_ERROR("Failed to initialize connector: %d\n", err);
-> -               return err;
-> +               goto aux_unregister;
->         }
->
->         drm_connector_helper_add(&anx6345->connector,
-> @@ -562,16 +562,21 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
->                                            bridge->encoder);
->         if (err) {
->                 DRM_ERROR("Failed to link up connector to encoder: %d\n", err);
-> -               return err;
-> +               goto connector_cleanup;
->         }
->
->         err = drm_connector_register(&anx6345->connector);
->         if (err) {
->                 DRM_ERROR("Failed to register connector: %d\n", err);
-> -               return err;
-> +               goto connector_cleanup;
->         }
->
->         return 0;
-> +connector_cleanup:
-> +       drm_connector_cleanup(&anx6345->connector);
-> +aux_unregister:
-> +       drm_dp_aux_unregister(&anx6345->aux);
-> +       return err;
->  }
->
->  static void anx6345_bridge_detach(struct drm_bridge *bridge)
-> --
-> 2.29.2
->
+This driver can replace drivers/input/touchscreen/ads7846.c and has
+following advantages over it:
+- less code to maintain
+- shared code paths (resistive-adc-touch, iio-hwmon, etc)
+- can be used as plain IIO ADC to investigate signaling issues or test
+  real capacity of the plates and attached low-pass filters
+  (or use the touchscreen as a microphone if you like ;) )
+
+Oleksij Rempel (3):
+  dt-bindings:iio:adc: add generic settling-time-us and
+    oversampling-ratio channel properties
+  dt-bindings:iio:adc: add documentation for TI TSC2046 controller
+  iio: adc: add ADC driver for the TI TSC2046 controller
+
+ .../devicetree/bindings/iio/adc/adc.yaml      |   9 +
+ .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
+ MAINTAINERS                                   |   8 +
+ drivers/iio/adc/Kconfig                       |  12 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/ti-tsc2046.c                  | 728 ++++++++++++++++++
+ 6 files changed, 873 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+ create mode 100644 drivers/iio/adc/ti-tsc2046.c
+
+-- 
+2.29.2
+
