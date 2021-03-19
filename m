@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48FA34210D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B40342112
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhCSPfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230241AbhCSPfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:35:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9977B61939;
-        Fri, 19 Mar 2021 15:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616168114;
-        bh=pgU2KS1nOWcO/GtvyYFLP0IuVFfh+X+AIjuK5boE+C0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XnJ/4RxpZp1LQPH/lkvi6MNu0KeHMQywtvsJzdKga46/nshuN37NoPuxSixQzC/mt
-         R4k/qryfgGEdpJMQf0NZKVb14H7HAIVO9LzSGkkQZ490d+OoJIxMfj0+fw5sdmlTHW
-         CUu5qZhXsOZaOxKOBObdtWEeAoZWfwMCtzHWYmLiB5IEhpqpbYGq9URLOIrUFMpaHJ
-         8WGCNGp+xkSwK/gfHOXdTV7GUhRkQudKW8yJwJWjNzUeVxdlGLeuZNsWBwkospGeus
-         jYOVMpapZpX15LWFyWhKG+Gv08/MRlbbgyEmbUD8W3/C9qL/DQs7KdZMAeVbUw/5m1
-         o7AysMtOr1yjQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 22C8740647; Fri, 19 Mar 2021 12:35:12 -0300 (-03)
-Date:   Fri, 19 Mar 2021 12:35:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v2 0/3] perf-stat: share hardware PMCs with BPF
-Message-ID: <YFTEsOhbx4Il1nji@kernel.org>
-References: <20210316211837.910506-1-songliubraving@fb.com>
- <CAM9d7ci=hfFjq3+XuBcCZ0TUJxv6AmdFk0dkHFQD3wx27aJMjA@mail.gmail.com>
- <YFH//FRPvrPswhld@kernel.org>
- <7D48A756-C253-48DE-B536-826314778404@fb.com>
- <YFPCul51MjrlY65P@krava>
- <388AF530-5176-4DB9-93C4-6C302432CE12@gmail.com>
- <3E65B60E-B120-4E1A-BAF2-2FAEF136A4CD@fb.com>
- <CAM9d7ch_axD_4E0W7MEx8ueeq9QsvhxNWaJ0J3AtVgeKqKQmbA@mail.gmail.com>
+        id S229974AbhCSPhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhCSPhO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:37:14 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF780C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:37:13 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id 94so7040551qtc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dQ1ckpIxzyK43V/bt1ZmIWePw7DKixuOTINODiwH4kw=;
+        b=m14l6wiu+fXwfLllo0iU2RvWRZQ5bXXhrrLKC3wrfszJv/m8GYBpl4TbXgw5UGiKfm
+         /pCr6GKlmulJz5eZGSxMmx5/boZ1ZEsUeXc/bVJ535dXZxjhIAj5zkMPcd2jtrnpf1wb
+         FoN08eT7J5LEyUex9ZOHi4Vp64CpxXpCjCD/iOggZxRvp+bwiOVKdjp1elluZ00jP/rc
+         hJh7n5INvB9+XsGaUDaTluqerL+v0WhWCVZDsJZM8BJskQd297GmQWTUF15wwDPua3LE
+         eW+MfXmDgSYpoVi6XTrStFLFhKby4NCNbH2FvVLluO3mfEorX1jv7/ey0MHRzjOhGKRk
+         mClw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dQ1ckpIxzyK43V/bt1ZmIWePw7DKixuOTINODiwH4kw=;
+        b=R25QvvZCIdss96/2PfWFyEzU18nQfLQANpbM/C5junG7U8auZvZE7HlD+nO65+AEM8
+         0PGGZBHfm+4hmGBMh9c3/OfsJ9P1njEUGAX+o/Grpxb13T7v/MeRc6iIWkstRBfqzegY
+         NsPbgEC8PlrMnTGlLYJkKeVQKLuditRIE2lP8V7r0waSZ0y3K1fEhAUZgNExzflom49I
+         dFH6Xg6S6vaDyIZX77fD5Du1V3CELaMM7ycrlZ/LSLyPtzlAbwRBT4zpxOlKtQYY4oNt
+         QweX5FBbAY3ZmWMBARCygBPyrSG9lLUTPw6PMV5IazuyzhYyoSPqTvKz0J+adH3hWPxo
+         VTqw==
+X-Gm-Message-State: AOAM531J7CwF9nvk0kScEjOtE4y8AEj4WoWVWHR2lxquetwDHaN1QZec
+        /Ugc8uFsAlYf7RkX3xX52Mw+bA==
+X-Google-Smtp-Source: ABdhPJzkFeGmfUoPoXTTj2XkmHXy4A0QGvHxvX86PEAudoYeltGWlEI0qTYWYFa+6SGDGdDqh5mIGg==
+X-Received: by 2002:ac8:6e85:: with SMTP id c5mr8485912qtv.299.1616168232867;
+        Fri, 19 Mar 2021 08:37:12 -0700 (PDT)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id m25sm3990790qtq.59.2021.03.19.08.37.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:37:12 -0700 (PDT)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Add co-maintainer for Qualcomm tsens thermal drivers
+Date:   Fri, 19 Mar 2021 11:37:11 -0400
+Message-Id: <20210319153711.2836652-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ch_axD_4E0W7MEx8ueeq9QsvhxNWaJ0J3AtVgeKqKQmbA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Mar 19, 2021 at 09:54:59AM +0900, Namhyung Kim escreveu:
-> On Fri, Mar 19, 2021 at 9:22 AM Song Liu <songliubraving@fb.com> wrote:
-> > > On Mar 18, 2021, at 5:09 PM, Arnaldo <arnaldo.melo@gmail.com> wrote:
-> > > On March 18, 2021 6:14:34 PM GMT-03:00, Jiri Olsa <jolsa@redhat.com> wrote:
-> > >> On Thu, Mar 18, 2021 at 03:52:51AM +0000, Song Liu wrote:
-> > >>> perf stat -C 1,3,5                  107.063 [sec]
-> > >>> perf stat -C 1,3,5 --bpf-counters   106.406 [sec]
+Add myself as the maintainer for Qualcomm tsens drivers so that I
+can help Daniel by taking care of/reviewing changes to these drivers.
 
-> > >> I can't see why it's actualy faster than normal perf ;-)
-> > >> would be worth to find out
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > > Isn't this all about contended cases?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa84121c5611..ab66ab9a628e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14892,6 +14892,7 @@ F:	include/linux/if_rmnet.h
+ 
+ QUALCOMM TSENS THERMAL DRIVER
+ M:	Amit Kucheria <amitk@kernel.org>
++M:	Thara Gopinath <thara.gopinath@linaro.org>
+ L:	linux-pm@vger.kernel.org
+ L:	linux-arm-msm@vger.kernel.org
+ S:	Maintained
+-- 
+2.25.1
 
-> > Yeah, the normal perf is doing time multiplexing; while --bpf-counters
-> > doesn't need it.
-
-> Yep, so for uncontended cases, normal perf should be the same as the
-> baseline (faster than the bperf).  But for contended cases, the bperf
-> works faster.
-
-The difference should be small enough that for people that use this in a
-machine where contention happens most of the time, setting a
-~/.perfconfig to use it by default should be advantageous, i.e. no need
-to use --bpf-counters on the command line all the time.
-
-So, Namhyung, can I take that as an Acked-by or a Reviewed-by? I'll take
-a look again now but I want to have this merged on perf/core so that I
-can work on a new BPF SKEL to use this:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.bpf/bpf_perf_enable
-
-:-)
-
-- Arnaldo
