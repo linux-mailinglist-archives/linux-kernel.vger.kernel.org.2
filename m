@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFCD3427C4
+	by mail.lfdr.de (Postfix) with ESMTP id EC5173427C5
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhCSV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        id S231139AbhCSV3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhCSV2j (ORCPT
+        with ESMTP id S230439AbhCSV2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 17:28:39 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D841C061761
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA62C061760
         for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:28:39 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5482463pjv.1
+Received: by mail-pl1-x633.google.com with SMTP id q11so3541343pld.11
         for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9ijlYcKqhmRnIjh3GfaZu6VzSGgGwccaBk76YZfh88U=;
-        b=hNLL/iR5ciHz3nypbWaLIbBPySyhArn0Jn6KwOSnKW7StS7IyHeAh9dHsnn+rBVZuM
-         SZXdTNSxwVKq50x5Xf1v8bhM7QBb3pZu9DXAAd2wnWgI9CSi2PqravtbBDaRX8BVIsHo
-         Z26cDQYXGeG5i2SkY21uKSrrQC+cMtJEhj+u8=
+        bh=UG6lpZSAG8t+NfdJici9YkMGF34rxaYTMGPEmVDXXFs=;
+        b=MLSHMiMTiB7mt3alhEaLEzXy30yQVGSqjOQaEoJ+fMmm7jXcOgSe4dUYOHBUVtQAoo
+         EACGNTJqravRutmaGNxgSKvYygrROsELo2AuEBPiA+eHluemcJRxdgC1exUQhcTw9JAV
+         6GiVipDK7YSZ6/397AJn1FL5dldKhzNnrsitI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9ijlYcKqhmRnIjh3GfaZu6VzSGgGwccaBk76YZfh88U=;
-        b=Lt8bGJCY0Me6P94ppVf46oPp9WombkFndZ3JlCbFNYPGaE3GoNP5GV5fWlHsRxqaPU
-         U9Hk0rUn+/l5b1tBHz8PjGiP0YZ3cHJ3uE6WElY7ZEtEa5bXAPszvUZ2NDtQrVGvgp8V
-         OvitSEoF9fBth4Mp7+G38x48hYMLLv0KWMpf0XGWBdqpZhe27JsxfKFUO8jFSZyCsjHl
-         6Dlnw3GA1x356DXQldpRHyPq9Kaxzr7q7IOg6L7Hzqo3Aw33hhncB0lyA1YXefXUJ1Jr
-         jnxNCAsJOggQLhAFqc3FcwkCu8ySayCXnJDD1SJtD4pb2I7Fie3sPQCm4Mp948aYN1nd
-         K6hQ==
-X-Gm-Message-State: AOAM533gbKgoWl0S7nkV6LUYC5vyMEqP1rxwXGksxeAxDOtZSsUGQ0qr
-        PUI4u/2NFKWj9G7nBShKLB3tyQ==
-X-Google-Smtp-Source: ABdhPJyfUXAHNwViuz7nekDjbNriZkEy04Ykr/kaTbKMfCJtsvgOEgLVUNsmKw9hYWc1Hz7JsbqgUA==
-X-Received: by 2002:a17:902:6b43:b029:e6:3d73:e9fb with SMTP id g3-20020a1709026b43b02900e63d73e9fbmr16208336plt.37.1616189318964;
+        bh=UG6lpZSAG8t+NfdJici9YkMGF34rxaYTMGPEmVDXXFs=;
+        b=NgHLm+M50gTtDaXYY6dM8TD3uhQeOh7lLGy9Fn2oaKPS/nzdpj6qQZrPSfed8jsXcL
+         9Ax6Cr2KvCDc7JNH+Ll174pTdfToYATjGKoTArkDt7a/JzZeEPrbekl9L5KEyzw0A8zf
+         6dljGtGLpl7BRWUU6KglRSDHJgjLgceX9lvXo46GU3JIGKmCuF3knQEgt1RPiwunGpa/
+         +Xe3V0fzyYUbGYtJqtGMq0utveVMup8JLBFzV+kmrdYs795GP+MSAFoq7rBwBThZrTij
+         SUnNCfXh5PHh56x6/hB2NRZfJBPMCsibeKxZyRGldM8OF45eHqJTvU1pldASwBXlqkeL
+         zvKA==
+X-Gm-Message-State: AOAM530Upyhjufx93i9M3ZHzIQc2p/WJEFdfvbNmcpU46MpqPxm1p/oE
+        KgLYlivl2tcH5RAWJBw1hdyZoQ==
+X-Google-Smtp-Source: ABdhPJx5p2dC2D9xdAQh+xz6Dqkoe45t2LRG6o6KaMrIiaESFpoqFGsISuGBytSNX81p7ZVAdGHD9w==
+X-Received: by 2002:a17:90b:1090:: with SMTP id gj16mr464868pjb.57.1616189318649;
         Fri, 19 Mar 2021 14:28:38 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h14sm6057417pjc.37.2021.03.19.14.28.37
+        by smtp.gmail.com with ESMTPSA id d6sm6234615pfq.109.2021.03.19.14.28.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 19 Mar 2021 14:28:38 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
         Alexander Popov <alex.popov@linux.com>,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Jann Horn <jannh@google.com>,
         David Hildenbrand <david@redhat.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -67,73 +68,107 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-hardening@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 1/6] jump_label: Provide CONFIG-driven build state defaults
-Date:   Fri, 19 Mar 2021 14:28:30 -0700
-Message-Id: <20210319212835.3928492-2-keescook@chromium.org>
+Subject: [PATCH v7 2/6] init_on_alloc: Optimize static branches
+Date:   Fri, 19 Mar 2021 14:28:31 -0700
+Message-Id: <20210319212835.3928492-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210319212835.3928492-1-keescook@chromium.org>
 References: <20210319212835.3928492-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=aa54c44d1d71b9550d6015efc734f667917094a1; i=Vishx6UyAXwYzcnoSyP+eBB3iQyx+/i5smsbQfc0cnA=; m=vc4sSYlf+uaSlLSFP5TpbQv56VaSRpBLpRuMltXaB4Q=; p=mNH2Bo/K9vrGz9sBtTDV8UFO0eJ8yv8BbR/DeIaO1es=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBVF4EACgkQiXL039xtwCYoKQ//WsO JhBKVKfDUIyIOwrMCU3Z/kRQjSwDXUlgTtwiYp36T0IJ3d76UirWkyQFSy0y5HMNMyGbGhto2ftzU 7iBhSN/U2EHLY80ksg28k/Xw8jFC36JeiIgqYDWJHbE6d5D5MDzR6+ubtytgB1aNhCuOpETM6HMkZ t5Ckc7Bk31LbOuKiVpG6nzLce4/BxOYq9vzWNPU8g7YB17QXuTDWgurYMwMXytg5uUR6vdCgOKeaH fNyC+StIV1Lj9LzoYgRQKXXYFXduWjWKZ3WcYpJfwgStKSe9uhM6MvfA3aW9W6f5+n/SQS7Yejt5E YYTBCKbMqEIHMuruza2MOMKuyIoK9bT1qvbzDJCEoCXh/DuiSUbdxpMMgtcwPdkxiHHkUPzhkIl7H DwQY5X+eVbPVxL8W9QoKeq+8d/Ve4ASwv4kzDFC65vq5+WI6sK0pQsT4u/3Rcu8sEf0GC25e4tELr 7R0tPXMOgYkGsKM9dVtfSLbQJjvHmaRWJmZrufU9nmYGQuavWsaVkQJTKMY2SkUevJNw+KxlrUCmz gsgT24T5dWCOZao0jTacVwTJ/WKm7vV7SnxTvandK270LFmG5gK/1USGGs8znRoMJPkDE4Ktfzruf pZUWQhHZoMIENQGhElqSlhCvcRS0QOcc9VmehZJGxju+EVvlYvvLM5JDtvaCjRnw=
+X-Patch-Hashes: v=1; h=sha256; g=2f4b59272e09d0180c87e3d8378d95ea375990ec; i=7VrM8Pzr5MGi8vAaDOW4xeiDtVYbjHgJsdLlT/sxDXE=; m=OLLKLAHsfNT1d7+pflxMGJuAvSt8GZaetKIXzfk0ilc=; p=cKq4RSNZSRZ+ASTC07w37jURMQB1hxGsdgqU07adDH0=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBVF4EACgkQiXL039xtwCYLVQ/9Eol fG+MrYlh+iwD9I3wwONWUjypvuh2YfQUdlJ+mPPIR5GBa4jtQXlQiSHRZzT6cobAsmFX9T6mXf1if Cu/ZlrFupyCmBNTjUop4AUd4Iu9yFawJlbp57K6zFzDgjm4W69NufR/AXcNqTcPOFfSgNiLdwS4WD Jgh+o9SPvgt2QtjVjNi6upGgapbhZxkMGPMqZEEUAKaA0eByy606iKAwWwqDf5NoqFa68UO1F18mN fH2OcmxMxuNrR0HIipumCM2+iaLHsY3I2h/KMDuQGoR1wxXh3kbPJDTzwUePUbzZ4h+hgwPSpNPJ/ VWRkF6f7+cD0LnqItF5yfYiluJ59m9SJ4iq3OoE705AjhKpXkGdCLyvSLcEn4FRtvhfNYZ30IyBpx ANM8/85SuSLu2zY6m7bybkFpc58vlXvCcVqlHSFbors+eHtsNgq2XF/CEFuXVs4LVh/naVBS3QGsp Bw1Yv75UvW+SHMswZjH4Izy7DuxikfFeuxQmn3zGXz1gVWLIxgWoY2kQQUfMMJnK3DST7+/MQtgBx 8dxF2t0KO6PzMlrsYYQvIsKwcbt8M314ajqHO4Su66UMQUPCzr+c03JdbXFdFFpIeHeWVhMcsO4J9 1A22dhXFlPunSEVEDpbt6KtnqcJYOZrXD1hEwIoDht8YODbxV8nHpx1NU55LSB1g=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As shown in jump_label.h[1], choosing the initial state of static
-branches changes the assembly layout. If the condition is expected to
-be likely it's inline, and if unlikely it is out of line via a jump. A
-few places in the kernel use (or could be using) a CONFIG to choose the
-default state, which would give a small performance benefit to their
-compile-time declared default. Provide the infrastructure to do this.
+The state of CONFIG_INIT_ON_ALLOC_DEFAULT_ON (and ...ON_FREE...) did not
+change the assembly ordering of the static branches: they were always out
+of line. Use the new jump_label macros to check the CONFIG settings to
+default to the "expected" state, which slightly optimizes the resulting
+assembly code.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/jump_label.h?h=v5.11#n398
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/lkml/20200324220641.GT2452@worktop.programming.kicks-ass.net/
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Link: https://lore.kernel.org/lkml/CAG_fn=X0DVwqLaHJTO6Jw7TGcMSm77GKHinrd0m_6y0SzWOrFA@mail.gmail.com/
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Link: https://lore.kernel.org/lkml/5d626b9b-5355-be94-e8e2-1be47f880f30@suse.cz
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/linux/jump_label.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ include/linux/mm.h | 10 ++++++----
+ mm/page_alloc.c    |  4 ++--
+ mm/slab.h          |  6 ++++--
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
-index d92691262f51..05f5554d860f 100644
---- a/include/linux/jump_label.h
-+++ b/include/linux/jump_label.h
-@@ -382,6 +382,21 @@ struct static_key_false {
- 		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,	\
- 	}
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 77e64e3eac80..2ccd856ac0d1 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2871,18 +2871,20 @@ static inline void kernel_poison_pages(struct page *page, int numpages) { }
+ static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
+ #endif
  
-+#define _DEFINE_STATIC_KEY_1(name)	DEFINE_STATIC_KEY_TRUE(name)
-+#define _DEFINE_STATIC_KEY_0(name)	DEFINE_STATIC_KEY_FALSE(name)
-+#define DEFINE_STATIC_KEY_MAYBE(cfg, name)			\
-+	__PASTE(_DEFINE_STATIC_KEY_, IS_ENABLED(cfg))(name)
-+
-+#define _DEFINE_STATIC_KEY_RO_1(name)	DEFINE_STATIC_KEY_TRUE_RO(name)
-+#define _DEFINE_STATIC_KEY_RO_0(name)	DEFINE_STATIC_KEY_FALSE_RO(name)
-+#define DEFINE_STATIC_KEY_MAYBE_RO(cfg, name)			\
-+	__PASTE(_DEFINE_STATIC_KEY_RO_, IS_ENABLED(cfg))(name)
-+
-+#define _DECLARE_STATIC_KEY_1(name)	DECLARE_STATIC_KEY_TRUE(name)
-+#define _DECLARE_STATIC_KEY_0(name)	DECLARE_STATIC_KEY_FALSE(name)
-+#define DECLARE_STATIC_KEY_MAYBE(cfg, name)			\
-+	__PASTE(_DECLARE_STATIC_KEY_, IS_ENABLED(cfg))(name)
-+
- extern bool ____wrong_branch_error(void);
+-DECLARE_STATIC_KEY_FALSE(init_on_alloc);
++DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+ static inline bool want_init_on_alloc(gfp_t flags)
+ {
+-	if (static_branch_unlikely(&init_on_alloc))
++	if (static_branch_maybe(CONFIG_INIT_ON_ALLOC_DEFAULT_ON,
++				&init_on_alloc))
+ 		return true;
+ 	return flags & __GFP_ZERO;
+ }
  
- #define static_key_enabled(x)							\
-@@ -482,6 +497,10 @@ extern bool ____wrong_branch_error(void);
+-DECLARE_STATIC_KEY_FALSE(init_on_free);
++DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+ static inline bool want_init_on_free(void)
+ {
+-	return static_branch_unlikely(&init_on_free);
++	return static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
++				   &init_on_free);
+ }
  
- #endif /* CONFIG_JUMP_LABEL */
+ extern bool _debug_pagealloc_enabled_early;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3e4b29ee2b1e..267c04b8911d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -167,10 +167,10 @@ unsigned long totalcma_pages __read_mostly;
  
-+#define static_branch_maybe(config, x)					\
-+	(IS_ENABLED(config) ? static_branch_likely(x)			\
-+			    : static_branch_unlikely(x))
-+
- /*
-  * Advanced usage; refcount, branch is enabled when: count != 0
-  */
+ int percpu_pagelist_fraction;
+ gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
+-DEFINE_STATIC_KEY_FALSE(init_on_alloc);
++DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+ EXPORT_SYMBOL(init_on_alloc);
+ 
+-DEFINE_STATIC_KEY_FALSE(init_on_free);
++DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+ EXPORT_SYMBOL(init_on_free);
+ 
+ static bool _init_on_alloc_enabled_early __read_mostly
+diff --git a/mm/slab.h b/mm/slab.h
+index 076582f58f68..774c7221efdc 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -601,7 +601,8 @@ static inline void cache_random_seq_destroy(struct kmem_cache *cachep) { }
+ 
+ static inline bool slab_want_init_on_alloc(gfp_t flags, struct kmem_cache *c)
+ {
+-	if (static_branch_unlikely(&init_on_alloc)) {
++	if (static_branch_maybe(CONFIG_INIT_ON_ALLOC_DEFAULT_ON,
++				&init_on_alloc)) {
+ 		if (c->ctor)
+ 			return false;
+ 		if (c->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON))
+@@ -613,7 +614,8 @@ static inline bool slab_want_init_on_alloc(gfp_t flags, struct kmem_cache *c)
+ 
+ static inline bool slab_want_init_on_free(struct kmem_cache *c)
+ {
+-	if (static_branch_unlikely(&init_on_free))
++	if (static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
++				&init_on_free))
+ 		return !(c->ctor ||
+ 			 (c->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_POISON)));
+ 	return false;
 -- 
 2.25.1
 
