@@ -2,149 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA40341C15
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D55341C10
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCSMQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhCSMQf (ORCPT
+        id S229956AbhCSMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:16:25 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59009 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229962AbhCSMQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:16:35 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BCCC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:35 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4759982pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=affLRntRZcInzHgZqXHL31AIW6roXMHiPl+j3xoyydw=;
-        b=Wwr3uymKFr1n+YOBEyGZs0UOSJMaYAZ56KTR7KZVL7k18g5qAOBt+YgiJoL8G92Uv7
-         t5ZSkP2F51JdFVKcgvsGhdWRS7lBXt+T83x/JmFbldKB7GuiA6oVMRQVllzP+A/nlfkY
-         6OcwpsxZjmDLyHA/jJjRsthgxYbLCRaPfUTWLfYy0qtmxHxEYx3++3yEzCHb5ZFIPP1Y
-         FpwnGU/AiT/7tJroR5E+LgvNyPu96pkAcyTaIqSrz1CHc4HSrezFYQysVJOjCSLEPuTm
-         n4wgQWBO10IbmJMFeSAGIs16rA6lAm7o93XYLQCZp76IUd9q9ZtS/iK9+4fEbZan6bVK
-         WWEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=affLRntRZcInzHgZqXHL31AIW6roXMHiPl+j3xoyydw=;
-        b=dCf6du4m6Ea35uLm3CKFrTC9JD7NkCsENPVV8Py3tZl9mQAP6RBnwK+J7I4dkOoUQ+
-         U1zKCsfj2A1Ulgvq20wxYpU5xekpj3kfuaN1mVCc67jOkKf20YsL26AhIRENCt9Wi4WM
-         /Lq0qX3A2jZFiCt5OqiSIRll8FIA9TCDSI6mcut9xMoK0kO9xaJfdtk+bmRhF51dfFwG
-         RCsy7gdqT9u6BjSN9Gr5XDLM8psRxcaCZkzpIWs7dgiRY6SU2TnLBDEcedgkUHg0OZgm
-         q+4m6qTcXSo5MvnP2qJ93UAcHJkHKyJG+batnHdMSARkJzT6RsBSRoLMCQFm8tNACde1
-         GUdw==
-X-Gm-Message-State: AOAM532gTJdGo/jVWvL/lB9IX3VyTVTzmzVaaena/tT5SXVcCAuBDGem
-        RiUCdUpnlBxarDd+lRKTGSkVhYu+4J0dXKvJB0JfFA==
-X-Google-Smtp-Source: ABdhPJwrqbdyuQfn4t1x4h3FwSP0uWjg3FdAAnwpfMkicRuHl1UB8RVx3Ukwq3U6YKkcOX2CFsmx8BMA4NisJmIyh6E=
-X-Received: by 2002:a17:90a:d991:: with SMTP id d17mr9339151pjv.229.1616156194913;
- Fri, 19 Mar 2021 05:16:34 -0700 (PDT)
+        Fri, 19 Mar 2021 08:16:03 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lNE2q-003JAk-Au; Fri, 19 Mar 2021 13:16:00 +0100
+Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lNE2p-000jNP-U2; Fri, 19 Mar 2021 13:16:00 +0100
+Subject: Re: sparc: clang: error: unknown argument: '-mno-fpu'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+References: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
+ <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com>
+ <ebf12838-4525-a525-93bd-2229927e50ca@physik.fu-berlin.de>
+ <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <88ab1610-3096-b4a0-e1af-9443cb8b9953@physik.fu-berlin.de>
+Date:   Fri, 19 Mar 2021 13:15:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210315092015.35396-1-songmuchun@bytedance.com>
- <20210315092015.35396-8-songmuchun@bytedance.com> <20210319085948.GA5695@linux>
-In-Reply-To: <20210319085948.GA5695@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 19 Mar 2021 20:15:58 +0800
-Message-ID: <CAMZfGtXAgcJQp59AVuieqLT+1Qb3RGQmFK-SGNZH-T6K83Y=HQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v19 7/8] mm: hugetlb: add a kernel
- parameter hugetlb_free_vmemmap
-To:     Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 160.45.32.140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 4:59 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Mon, Mar 15, 2021 at 05:20:14PM +0800, Muchun Song wrote:
-> > --- a/arch/x86/mm/init_64.c
-> > +++ b/arch/x86/mm/init_64.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/gfp.h>
-> >  #include <linux/kcore.h>
-> >  #include <linux/bootmem_info.h>
-> > +#include <linux/hugetlb.h>
-> >
-> >  #include <asm/processor.h>
-> >  #include <asm/bios_ebda.h>
-> > @@ -1557,7 +1558,8 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
-> >  {
-> >       int err;
-> >
-> > -     if (end - start < PAGES_PER_SECTION * sizeof(struct page))
-> > +     if ((is_hugetlb_free_vmemmap_enabled()  && !altmap) ||
-> > +         end - start < PAGES_PER_SECTION * sizeof(struct page))
-> >               err = vmemmap_populate_basepages(start, end, node, NULL);
-> >       else if (boot_cpu_has(X86_FEATURE_PSE))
-> >               err = vmemmap_populate_hugepages(start, end, node, altmap);
->
-> I've been thinking about this some more.
->
-> Assume you opt-in the hugetlb-vmemmap feature, and assume you pass a valid altmap
-> to vmemmap_populate.
-> This will lead to use populating the vmemmap array with hugepages.
+On 3/19/21 12:56 PM, Arnd Bergmann wrote:
+>> We'll get there. There are some other SPARC-related clang bugs that need
+>> to be squashed first. We have made quite some improvements and it's actually
+>> maintained by the community. Of course, we don't have a commercial backer
+>> but that shouldn't be necessary for open source to work.
+> 
+> I meant there is no point for Naresh to do it as part of his build
+> testing with tuxmake.
+> If someone else gets it working, they can tell Naresh to try again, but until
+> then, I'd limit clang regression testing to x86, arm, powerpc, s390, mips, riscv
+> and arc.
 
-Right.
+It's definitely a useful report as I haven't done any tests in this regard yet
+and we're certainly interested in getting this to work. We previously had Nick
+give a session on building the kernel with clang in our monthly m68k meeting [1]
+and he said, they are interested in supporting as many architectures as possible
+in their efforts.
 
->
-> What if then, a HugeTLB gets allocated and falls within that memory range (backed
-> by hugetpages)?
+Adrian
 
-I am not sure whether we can allocate the HugeTLB pages from there.
-Will only device memory pass a valid altmap parameter to
-vmemmap_populate()? If yes, can we allocate HugeTLB pages from
-device memory? Sorry, I am not an expert on this.
+> [1] http://m68k.info/#llvm:linux:video
 
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-> AFAIK, this will get us in trouble as currently the code can only operate on memory
-> backed by PAGE_SIZE pages, right?
->
-> I cannot remember, but I do not think nothing prevents that from happening?
-> Am I missing anything?
-
-Maybe David H is more familiar with this.
-
-Hi David,
-
-Do you have some suggestions on this?
-
-Thanks.
-
-
->
-> --
-> Oscar Salvador
-> SUSE L3
