@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2268C342193
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9050234219C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCSQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S230092AbhCSQRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhCSQPO (ORCPT
+        with ESMTP id S229974AbhCSQR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:15:14 -0400
-X-Greylist: delayed 414 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Mar 2021 09:15:14 PDT
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335F0C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HyvzuApyZWWhqjrNFY29O48nFedCXNhIeOGcu6efov0=; b=oYvXx86zoiu3IvY4xgqCI2jac4
-        VUXa5TIfW+iJsVpVeFM6m5SYPFTRTF0hJaqLgoyVGVmmdC3RA6jdIAcKv5WREE2jrkf99+l0kn2Vs
-        9I8+VZ1S4IMGrr6s9rXiulNh153XQJKvexu8DWbe57j/0RKbN8ndAbpx8Gv+WxyPeLTEyU7zVCT7/
-        YGljORLLnQZM3kZrqqstM0qXvr2GDalnvsDHJd9yFQru4Z3ZjkuRCsbbFzqqM4vPqeslgdp+sutdc
-        lL5dDSh22JhNeYxohVDy/uWOEWWFQAXKh9fdjolyzdCkSikYItJCGUOnRQXAADzpAPOQkU8Yapu26
-        OpKNE/Ag==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNHmF-001Nji-I3; Fri, 19 Mar 2021 16:15:08 +0000
-Date:   Fri, 19 Mar 2021 09:15:07 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        lee.jones@linaro.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: csiostor: Fix a typo
-In-Reply-To: <20210319092311.31776-1-unixbhaskar@gmail.com>
-Message-ID: <efdb99f1-9035-ce8e-ec8c-a2d7684772af@bombadil.infradead.org>
-References: <20210319092311.31776-1-unixbhaskar@gmail.com>
+        Fri, 19 Mar 2021 12:17:27 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15CBC061763
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:17:26 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id e13so3778618vsl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rt1xbgAbnwLYYjFpykXaHRDqBSAXyYdKNm2t1F1L7JI=;
+        b=ogcJzaM3vfh24d6Al8bx+0Ztgu6erlK61zGnd6i9OYYJSH5cyaY+E6owFsQf5SMksz
+         2SqY+8Zlx2zXuFQ2igs6wHd4jsY+rG8ubwzzCQfH0nBbdFjAAkQzeSP2QV+sfuDb7u2N
+         3kkhe4gjLmP06beUsI0bKk0xj3Inr9z17AQ2IX200PoZ+UOmmYCM57qCkEIMaK7ARkya
+         O5yESSQScUScma+nL3OJwttJg9bJSxt/FXvEFByc24AYNDYICi0NCf4i7d9tnbEK6gZk
+         yhExuLXPXld4TNYY8ZNxF7XNkTdx0D4+kePDp+I8lQReJeEyTkamYIT2PPfuas1xf5Ey
+         g0Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rt1xbgAbnwLYYjFpykXaHRDqBSAXyYdKNm2t1F1L7JI=;
+        b=cCGUwhSNtJml7cLOoa1ANOXRahfoxvlDdaX/GrNmvdPS9XDn/A7ej4d7We7DLaO2rd
+         XoJ82Yz8/iX/kWnMrhr4IRyEilLZNyoQhOzDuSD7XKrqpGLlVShVhVRhIPGfdAJvY9fg
+         Nb3l3uSANVgLB3hyu4UXmLAqL0HHls1+vJhRQYo21MvxK+ZU3G5sbZV5L1RCiLHpw4K+
+         VKfnC4NF2fAxNNO5966ejhxVcAa0h3Vr4IhY35xkNVaoa4sjHpdz9CXJVWFMf7um7eJr
+         e599hEUHCATQL1P//h9ugsahDhXupjzmycTrNmPk/OVXVgmoxKCNyis+99fBc4ozdvr2
+         AFvA==
+X-Gm-Message-State: AOAM531kTG8aOsYF2VnLQAVZADburcPJojKz2qwGh7Y3HVihngS0MVX+
+        mECPG0YJ6B/pd4Vn5q69YL4FCKDyGw79vrWCVuUlfw==
+X-Google-Smtp-Source: ABdhPJw/sKF7iBW/KvkyGt5OC+722c1f7HkWufJpz/iIWy7f6/foyV9HotQx8W5rT++ceDlCVYoayDD6dEG1LSfx1Ao=
+X-Received: by 2002:a67:b447:: with SMTP id c7mr3324630vsm.54.1616170645439;
+ Fri, 19 Mar 2021 09:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_091507_616239_AE091AE0 
-X-CRM114-Status: GOOD (  13.26  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/boudaries/boundaries/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+References: <20210318171111.706303-1-samitolvanen@google.com>
+ <20210318171111.706303-2-samitolvanen@google.com> <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
+ <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
+ <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net> <20210319135229.GJ2696@paulmck-ThinkPad-P72>
+In-Reply-To: <20210319135229.GJ2696@paulmck-ThinkPad-P72>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 19 Mar 2021 09:17:14 -0700
+Message-ID: <CABCJKud=aJUSgWG==qqKi-+cKRCtRp4qLNgdDqoYKL+S9X7q4A@mail.gmail.com>
+Subject: Re: [PATCH v2 01/17] add support for Clang CFI
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
-
+On Fri, Mar 19, 2021 at 6:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> s/boudaries/boundaries/
+> On Fri, Mar 19, 2021 at 01:26:59PM +0100, Peter Zijlstra wrote:
+> > On Thu, Mar 18, 2021 at 04:48:43PM -0700, Sami Tolvanen wrote:
+> > > On Thu, Mar 18, 2021 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
+> > > > > +static void update_shadow(struct module *mod, unsigned long base_addr,
+> > > > > +             update_shadow_fn fn)
+> > > > > +{
+> > > > > +     struct cfi_shadow *prev;
+> > > > > +     struct cfi_shadow *next;
+> > > > > +     unsigned long min_addr, max_addr;
+> > > > > +
+> > > > > +     next = vmalloc(SHADOW_SIZE);
+> > > > > +
+> > > > > +     mutex_lock(&shadow_update_lock);
+> > > > > +     prev = rcu_dereference_protected(cfi_shadow,
+> > > > > +                                      mutex_is_locked(&shadow_update_lock));
+> > > > > +
+> > > > > +     if (next) {
+> > > > > +             next->base = base_addr >> PAGE_SHIFT;
+> > > > > +             prepare_next_shadow(prev, next);
+> > > > > +
+> > > > > +             min_addr = (unsigned long)mod->core_layout.base;
+> > > > > +             max_addr = min_addr + mod->core_layout.text_size;
+> > > > > +             fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
+> > > > > +
+> > > > > +             set_memory_ro((unsigned long)next, SHADOW_PAGES);
+> > > > > +     }
+> > > > > +
+> > > > > +     rcu_assign_pointer(cfi_shadow, next);
+> > > > > +     mutex_unlock(&shadow_update_lock);
+> > > > > +     synchronize_rcu_expedited();
+> > > >
+> > > > expedited is BAD(tm), why is it required and why doesn't it have a
+> > > > comment?
+> > >
+> > > Ah, this uses synchronize_rcu_expedited() because we have a case where
+> > > synchronize_rcu() hangs here with a specific SoC family after the
+> > > vendor's cpu_pm driver powers down CPU cores.
+> >
+> > Broken vendor drivers seem like an exceedingly poor reason for this.
 >
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> The vendor is supposed to make sure that RCU sees the CPU cores as either
+> deep idle or offline before powering them down.  My guess is that the
+> CPU is powered down, but RCU (and probably much else in the system)
+> thinks that the CPU is still up and running.  So I bet that you are
+> seeing other issues as well.
+>
+> I take it that the IPIs from synchronize_rcu_expedited() have the effect
+> of momentarily powering up those CPUs?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+I suspect you're correct. I'll change this to use synchronize_rcu() in v3.
 
-
-> ---
-> drivers/scsi/csiostor/csio_hw_t5.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/csiostor/csio_hw_t5.c b/drivers/scsi/csiostor/csio_hw_t5.c
-> index 1df8891d3725..86fded97d799 100644
-> --- a/drivers/scsi/csiostor/csio_hw_t5.c
-> +++ b/drivers/scsi/csiostor/csio_hw_t5.c
-> @@ -244,7 +244,7 @@ csio_t5_edc_read(struct csio_hw *hw, int idx, uint32_t addr, __be32 *data,
->  *
->  * Reads/writes an [almost] arbitrary memory region in the firmware: the
->  * firmware memory address, length and host buffer must be aligned on
-> - * 32-bit boudaries.  The memory is transferred as a raw byte sequence
-> + * 32-bit boundaries.  The memory is transferred as a raw byte sequence
->  * from/to the firmware's memory.  If this memory contains data
->  * structures which contain multi-byte integers, it's the callers
->  * responsibility to perform appropriate byte order conversions.
-> --
-> 2.26.2
->
->
+Sami
