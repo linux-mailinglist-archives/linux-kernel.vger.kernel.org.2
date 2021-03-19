@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A813420CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6087E3420C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhCSPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:22:20 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:36452 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhCSPWM (ORCPT
+        id S230096AbhCSPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhCSPVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:22:12 -0400
+        Fri, 19 Mar 2021 11:21:35 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A521C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:21:35 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id 61so9477432wrm.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1616167332; x=1647703332;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=3JSBlUFKcyKIVVyh2tD/o2Ia9bYRXCVww7vZxwWh5WE=;
-  b=i+t+5v4lnBJcUEAHk1Nz1ALb1o3cUP8Bi7siHUg8GfBhkxOEBTjg7sN5
-   X5GDhpIWBzKrk7XzzvNTuVTXxt+GhHwmV5Oepwjs9YXS3s9oe071ShXpd
-   2FLsQ9GE3OL4mFPDpQy59rw0qHv603Ejg7iC5DfxGRZTEDbbNG2RdY5SO
-   k=;
-X-IronPort-AV: E=Sophos;i="5.81,262,1610409600"; 
-   d="scan'208";a="920121226"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-9103.sea19.amazon.com with ESMTP; 19 Mar 2021 15:22:03 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id 7C521A181C;
-        Fri, 19 Mar 2021 15:22:02 +0000 (UTC)
-Received: from u8a88181e7b2355.ant.amazon.com (10.43.161.244) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 19 Mar 2021 15:21:55 +0000
-From:   Hanna Hawa <hhhawa@amazon.com>
-To:     <andy.shevchenko@gmail.com>, <tony@atomide.com>,
-        <haojian.zhuang@linaro.org>, <linus.walleij@linaro.org>
-CC:     <dwmw@amazon.co.uk>, <benh@amazon.com>, <ronenk@amazon.com>,
-        <talel@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
-        <tgershi@amazon.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hhhawa@amazon.com>
-Subject: [PATCH v4 1/3] pinctrl: pinctrl-single: remove unused variable
-Date:   Fri, 19 Mar 2021 17:21:31 +0200
-Message-ID: <20210319152133.28705-2-hhhawa@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210319152133.28705-1-hhhawa@amazon.com>
-References: <20210319152133.28705-1-hhhawa@amazon.com>
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZHMAhBAQOpphLRREZJlNVL6uBoRegoHiEupgJ4ClwKw=;
+        b=BeQ/Y7G9PKlLSgTvrVqTbv9UYOwFvwQV2vCiiXKrpFdx48ue4RJWqK2E5Y3hZBX0Zc
+         cRVLYAI4PKFcOpaD8KDxYlQVbGKLLSC0XGuySmfIV1xJ7P3J7gkrsggRSyd7n/GhIvwp
+         Csf/+kj/SYoazFwU7t7Q+PMp29QGE0HTy8GowqGzTWMGtmcdsgOSiiJK2e1maqB05JUv
+         P/68MkGcd14W8EKxbJzg0rkb/bmuYLW/u9JDDRIBwfb1p4BPkcyLEFBQ6UsCobSzKv2y
+         jmHkj/KS5zKOJsKRl8B0siydrMFBIJ+hQmh2zfkZYZmMkoJeC/G6cAf2hs96B7ZL8DZu
+         zSjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZHMAhBAQOpphLRREZJlNVL6uBoRegoHiEupgJ4ClwKw=;
+        b=NYxgaRgsUAsI8GVk6b/K7iTvNidtf4vhOj/Xr687C7zFMKLgYjJSPB5ESGUiG6omao
+         YVYDYjHDt+A/CwrXVEOHnESQDOlD9/EsrtJNTneOHqYGuticr0RgRhMgGWix1pcYL0EJ
+         iRFsg6tusgdMLAXSrmRVjEeA0lzKPx8EC9jpDcMXrQ83oKBAmglAF5oXbAqG6Gej1HYO
+         /PeIfTCJHpPwXim9KT9edbx8DWZ5w+PGkAI65Wx0BxQ7a8opxtveTT9mwm360QngXxfV
+         rQ0m9Bz5ftLTCZyP5EsRWQIFRiBFt1H+CITwBNuL0yqdcqwrOXwtHebQb/n16iMatdsZ
+         vFvQ==
+X-Gm-Message-State: AOAM532VzbgmCBFtRa69+wkpBPh+2Ws6kqZrehVBy50tJfRNLwi5hTYl
+        jVyDT1Ae/9p4LyFb3xCbEe7cBg==
+X-Google-Smtp-Source: ABdhPJzpd//qGkoZOkBXxWlfCTANMCBbP+Zjg7e/uHwpznDUuHjsxQ6xjLoT+rNA0RUU8Bvw9l8prg==
+X-Received: by 2002:a5d:67c8:: with SMTP id n8mr5097586wrw.351.1616167294369;
+        Fri, 19 Mar 2021 08:21:34 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:d49c:45f3:9d86:b2e9])
+        by smtp.gmail.com with ESMTPSA id 13sm6777119wmw.5.2021.03.19.08.21.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:21:34 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 15:21:32 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+Message-ID: <YFTBfKslrZsHYQPi@google.com>
+References: <20210125153057.3623715-1-balsini@android.com>
+ <20210125153057.3623715-3-balsini@android.com>
+ <CAK8P3a2VDH9-reuj8QTkFzbaU9XTUEOWFCmCVg1Snb6RjD6mHw@mail.gmail.com>
+ <YFN8IyFTdqhlS9Lf@google.com>
+ <CAK8P3a36ToSbvW1F_0w0gCiWGCoZgFwoLHmQ7Tz2jtwV++VrWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.244]
-X-ClientProxiedBy: EX13D37UWA004.ant.amazon.com (10.43.160.23) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a36ToSbvW1F_0w0gCiWGCoZgFwoLHmQ7Tz2jtwV++VrWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused parameter 'num_pins_in_register' from
-pcs_allocate_pin_table().
+On Thu, Mar 18, 2021 at 10:15:43PM +0100, Arnd Bergmann wrote:
+> On Thu, Mar 18, 2021 at 5:13 PM Alessio Balsini <balsini@android.com> wrote:
+> > On Tue, Mar 16, 2021 at 07:53:06PM +0100, Arnd Bergmann wrote:
+> > > On Mon, Jan 25, 2021 at 4:48 PM Alessio Balsini <balsini@android.com> wrote:
+> > > >
+> >
+> > Thanks for spotting this possible criticality.
+> >
+> > I noticed that 32-bit users pace was unable to use the
+> > FUSE_DEV_IOC_CLONE ioctl on 64-bit kernels, so this change avoid this
+> > issue by forcing the kernel to interpret 32 and 64 bit
+> > FUSE_DEV_IOC_CLONE command as if they were the same.
+> 
+> As far as I can tell from the kernel headers, the command code should
+> be the same for both 32-bit and 64-bit tasks: 0x8004e500.
+> Can you find out what exact value you see in the user space that was
+> causing problems, and how it ended up with a different value than
+> the 64-bit version?
+> 
+> If there are two possible command codes, I'd suggest you just change
+> the driver to handle both variants explicitly, but not any other one.
+> 
+> > This is the simplest solution I could find as the UAPI is not changed
+> > as, as you mentioned, the argument doesn't require any conversion.
+> >
+> > I understand that this might limit possible future extensions of the
+> > FUSE_DEV_IOC_XXX ioctls if their in/out argument changed depending on
+> > the architecture, but only at that point we can switch to using the
+> > compat layer, right?
+> >
+> > What I'm worried about is the direction, do you think this would be an
+> > issue?
+> >
+> > I can start working on a compat layer fix meanwhile.
+> 
+> For a proper well-designed ioctl interface, compat support should not
+> need anything beyond the '.compat_ioctl = compat_ptr_ioctl'
+> assignment.
+> 
+>        Arnd
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
----
- drivers/pinctrl/pinctrl-single.c | 2 --
- 1 file changed, 2 deletions(-)
+You are right and now I can see what happened here.
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 7771316dfffa..91c638b85d2c 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -703,14 +703,12 @@ static int pcs_add_pin(struct pcs_device *pcs, unsigned offset,
- static int pcs_allocate_pin_table(struct pcs_device *pcs)
- {
- 	int mux_bytes, nr_pins, i;
--	int num_pins_in_register = 0;
- 
- 	mux_bytes = pcs->width / BITS_PER_BYTE;
- 
- 	if (pcs->bits_per_mux) {
- 		pcs->bits_per_pin = fls(pcs->fmask);
- 		nr_pins = (pcs->size * BITS_PER_BYTE) / pcs->bits_per_pin;
--		num_pins_in_register = pcs->width / pcs->bits_per_pin;
- 	} else {
- 		nr_pins = pcs->size / mux_bytes;
- 	}
--- 
-2.17.1
+When I introduce the PASSTHROUGH ioctl, because of the 'void *', the
+command mismatches on _IOC_SIZE(nr). I solved this by only testing
+_IOC_NUMBER and _IOC_TYPE, implicitely (mistakenly) removing the
+_IOC_SIZE check.  So, the fuse_dev_ioctl was correctly rejecting the
+ioctl request from 32-bit userspace because of the wrong size and I was
+just forcing it to digest the wrong data regardless.
+Ouch!
+
+The commit message for this patch would still be incorrect, but I posted
+a fix here to bring the ioctl checking back to the original behavior:
+
+  https://lore.kernel.org/lkml/20210319150514.1315985-1-balsini@android.com/
+
+Thanks for spotting this!
+Alessio
 
