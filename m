@@ -2,132 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB72B34276D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC5634277B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhCSVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhCSVJd (ORCPT
+        id S229956AbhCSVNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:13:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40758 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229974AbhCSVMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:09:33 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA47C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:09:33 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id c6so7906725qtc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
-         :content-disposition;
-        bh=Zpz99ti9s3TrhMmoMNGsJo2F5GcF/oxCrc7dtqrT7gk=;
-        b=jp8NhXi7vGRwxUX3qLSXSsW94zPi0vfYCTdPsBEvkFOrerJmKSyvNHvO0ZfULuRc5+
-         4/uRVMZzhze92lTAO2taLdPhLfWrSqRWmIizWFuICMLSh2CyBQarruxCa6n4YpmyEfM7
-         ECvsxrKAnXDaAe/m1sfyXlMyasxAiyCmev4ffyj/uHGUTzAiOkDftUdrHimxnvfFkXH1
-         d/OdRFnOcKCkVeJ/MqgnFT1VfQdZk02rZbX2ao8aLdBN4PCvXCjovB4sXhjR6HMBme16
-         zfKAZDOFiI2FQvG/NM2ZRaLbe1w2lbGpU9OaZYMJvJJaWwRLpBKmJCyKA/oGii0E0l1X
-         enrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:mime-version:content-disposition;
-        bh=Zpz99ti9s3TrhMmoMNGsJo2F5GcF/oxCrc7dtqrT7gk=;
-        b=d/CSem2jZ28WFRbdya3AHo5KOo4KWvmwxTorXTgg1/VLWCs9Ja9poIQlyY6xZpTz8B
-         HvxHTAyz1Ffi8+V3sEHu+XXSgHiivxzA9/x6p4Tq3NnzCxWxehHz2GVGk4lReZgQ+Mc/
-         1f4Y6/p783TpoEmPDmxTWSvxN9FmGjZfSEIKW+javldRMLga8ceb4zD81lCy4U9u5f/8
-         Pzd0WqQrEqvLbTWPzUrQ3HGgxHTT9e0cRRcvBi7CAlVUjosA6lPj9ZjuWC5VDqKhWMlh
-         CfYqZnaQa7mhv5tu6jTE5hU15+PwD5whtyRJ3d7jp++67ONVHV95O2xulZKLDF6E61jI
-         1ZeQ==
-X-Gm-Message-State: AOAM533uXlFBtZDUFtzTKaMYRjnb+WUQezbPppnTfw5/WQifEONQxBb6
-        kjsyBT23Bki6NlzT25dU554M78rGUxKFeJLd
-X-Google-Smtp-Source: ABdhPJwvC9GV9xX5KBIYzo+sG4dmnJqGk+An0A4oXjDXsX3y4FEBOC9oZc9ICDX0iGE9sekW45V7Pg==
-X-Received: by 2002:aed:34c7:: with SMTP id x65mr547284qtd.229.1616188172374;
-        Fri, 19 Mar 2021 14:09:32 -0700 (PDT)
-Received: from Gentoo ([37.19.198.27])
-        by smtp.gmail.com with ESMTPSA id w9sm4776002qti.27.2021.03.19.14.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 14:09:31 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 02:39:21 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     david@fromorbit.com
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Subject: [unixbhaskar@gmail.com: [PATCH] lib: Fix a typo]
-Message-ID: <YFUTASslkS14RsXf@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        david@fromorbit.com, Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
+        Fri, 19 Mar 2021 17:12:39 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JL4I0p175600;
+        Fri, 19 Mar 2021 17:12:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pqOo7IEXZuN4o2GJtHjkXskjvWSpvNljjvnukPmdQyc=;
+ b=RhqaTjqMqjtjz0dgzJ+RN6GhsJptu8iJMc1ywMIIDasc5JZjQuQgbmegwS9q3X5vbDPx
+ vfpmYlBIYBsGfz2PvTYpeIN/JSoD68E5+LifXZnHwGN13IK/K0qNxeQ4a03QxH5zfOtl
+ ZQj2abg0TBRmQPNicJ+0elMUDPQz64nLSXncutBehOfXmnmiT259dwAC8Va4F4FGAbtl
+ yg2llCQBwW8t0dkFQftfYOT5qfKxUPnWYkBhBm0iSI0alapozyz4KhKla2af+4u58nLc
+ kCi22vBswnanLcEvB9j28hvyddXvTl1lvHDiFymHxNA9PTi0aMcQ+PbsxAA7R2I+CO0f PQ== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37c81yn50p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 17:12:30 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JL7KT4005774;
+        Fri, 19 Mar 2021 21:12:30 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma05wdc.us.ibm.com with ESMTP id 378n1a0vbm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 21:12:30 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JLCSlO10289550
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 21:12:29 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D562BBE056;
+        Fri, 19 Mar 2021 21:12:28 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55701BE04F;
+        Fri, 19 Mar 2021 21:12:28 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.33.183])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Mar 2021 21:12:28 +0000 (GMT)
+Subject: Re: [PATCH 1/2] ibmvfc: fix potential race in ibmvfc_wait_for_ops
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210319205029.312969-1-tyreld@linux.ibm.com>
+ <20210319205029.312969-2-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <754b6922-4b11-600e-5195-18381df6f23f@linux.vnet.ibm.com>
+Date:   Fri, 19 Mar 2021 16:12:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6bq9FZlzaaIdgDcQ"
-Content-Disposition: inline
+In-Reply-To: <20210319205029.312969-2-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_12:2021-03-19,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 clxscore=1011
+ lowpriorityscore=0 bulkscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
---6bq9FZlzaaIdgDcQ
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
------ Forwarded message from Bhaskar Chowdhury <unixbhaskar@gmail.com> -----
-
-Hi Dave,
-
-Can you please take it, as I haven't found anybody attached with this file,=
-but
-found you made some entry(I am trying to take advantage of you!! :)  ) ..
-
-Thanks,
-Bhaskar
-Date: Sat, 20 Mar 2021 02:31:55 +0530
-=46rom: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To: unixbhaskar@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] lib: Fix a typo
-X-Mailer: git-send-email 2.26.2
-
-
-s/funtion/function/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-  lib/list_sort.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/list_sort.c b/lib/list_sort.c
-index 52f0c258c895..282fe269f16a 100644
---- a/lib/list_sort.c
-+++ b/lib/list_sort.c
-@@ -107,7 +107,7 @@ static void merge_final(void *priv, cmp_func cmp, struc=
-t list_head *head,
-   * @head: the list to sort
-   * @cmp: the elements comparison function
-   *
-- * The comparison funtion @cmp must return > 0 if @a should sort after
-+ * The comparison function @cmp must return > 0 if @a should sort after
-   * @b ("@a > @b" if you want an ascending sort), and <=3D 0 if @a should
-   * sort before @b *or* their original order should be preserved.  It is
-   * always called with the element that came first in the input in @a,
---
-2.26.2
-
-
------ End forwarded message -----
-
---6bq9FZlzaaIdgDcQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBVEvkACgkQsjqdtxFL
-KRW5SAf/WhsCUV0YIE6q0yTihVsbhxIVj9yYf/TWC/xuf+aBcBRddjhQif1c4ZVd
-VPNeCLJVPhKbyPrAJ/ed2J+tM1Wq12SN79+uiz7jUwz/GrxH/ill4ndzCACLVA29
-/KrjhSrKSHryR1TOWKdTENAyTSPPicF1dLqSHwOKKqloW9ca+p6tdX7a0VIXgbaB
-6jTyvRQA2Fx334K4uNgepe8oMVJvEU4r6WdBqS+NLm1C0lAoZksGE6VMYg3S9n5a
-nbRz+Qh3z8BjoVUSJTC4kdxGdA90LkBVC8esbRv7C/rN9eLmPVz+M7dk2hy1H6lI
-q1GiVwQy93vHWV03St5fgz/BPiJ++A==
-=qKBD
------END PGP SIGNATURE-----
-
---6bq9FZlzaaIdgDcQ--
