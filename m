@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D7B34233C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AF934233D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhCSRZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhCSRZB (ORCPT
+        id S230315AbhCSR0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:26:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57754 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230264AbhCSRZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:25:01 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C9CC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:25:01 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ha17so5012810pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RPNBgVNWrZM19pIS372izv7KcqqWZ135/0V8aeAzGP4=;
-        b=K1efaQIPJngSEiTSfj5NbLVfNLqZtgPvqUfvC1WNYpzdFAu7/1XTpLPBBFtmSt+oY2
-         KVmLT9t34Y6/JS+Ig+PPncatAS2b/d4cD8tjJcN54O8jhVmiXiLmNkazHuqcVfqBBhC6
-         yW0J2Fu5AtsfqocA+fV3xcEFAv2KViqTGmszc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RPNBgVNWrZM19pIS372izv7KcqqWZ135/0V8aeAzGP4=;
-        b=ZNlwLeVOYFkAoD0UekCkLmA6yN6CODym145T96DoPR17TlevtB+eGy6kyEawatMj2D
-         StVGuZUdJXA8D7b4iHyzuxhNE/ajPzMVD7a+qnkbrrmvOTjZtblL5pWSiNk3Bx0YAmuL
-         RlExMHoyZLmnSalZ79u7I9INxWjxpaVhlgP66t1FKCglCEnaMwFv9q4nMXKJwxS0/24C
-         KGnIVCS17p4MeSmb4Lc3aAV47wH6CjYGqExsHQvAcXWZYM97VKchJCgoQU3tYg1PZd9S
-         JCxoNPTju9t9NIeLfxQf51nw8RzUd/Xwuoa0kkgIsGZpJN2LNheJk1vK5KAlImlk97kp
-         R/Mg==
-X-Gm-Message-State: AOAM532ieFMTUACT53PnGR7QBivW87ehLvQU/APT2e/+uAFxLWEjmpZ6
-        yXAohizXvszQAQU8RUPt9BsOnQ==
-X-Google-Smtp-Source: ABdhPJwQo7lLAkkNXduzlhCfNKIga0uRqxJV6ZyIr8rEdU6i+dH0dy8a1JUabwKCyr6ayySXYWHO+A==
-X-Received: by 2002:a17:90b:291:: with SMTP id az17mr10475690pjb.206.1616174700784;
-        Fri, 19 Mar 2021 10:25:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w4sm5976831pjk.55.2021.03.19.10.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:24:59 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:24:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v30 06/12] fs,security: Add sb_delete hook
-Message-ID: <202103191024.436E16509C@keescook>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-7-mic@digikod.net>
+        Fri, 19 Mar 2021 13:25:32 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JH2o33083296;
+        Fri, 19 Mar 2021 13:25:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Z2NhcHaeuUhIS9SDhxJh2ob1volSnUGX3h80P18tMVY=;
+ b=owWhywCDBNeQe3TTdvwthA/WK794t2XhEALSaQdYYm8wgjGNTVczGFeMemzwHgUhUoiP
+ +7kdxMa4Hmsv9OJytA17WzsVpglxQR+TMz6UBs9TDTVZXF75uLzmePv3nkWqS8ZeVaxd
+ 90+271DECiX37hFpm1FyZyqcvzggUEe/ePop4/3enZMFuKEn+j6Vlca6qEd48KmvPbk+
+ 0lxcEf0MR2VvrqrDvtfUd+AKR875Ak2NALYXfWpkqBgEMCNgHAGQqNr22k9lJx29e+Q7
+ 2FEoQ8MVwu9Bt3v79iQ+4YDV1XaxqftOkcY0ZoBNiproSaKVQCuMz8O1+n2ryZtSiE7q bQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37cybyskj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 13:25:27 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JHI4FM010572;
+        Fri, 19 Mar 2021 17:25:25 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 378n18b56r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 17:25:24 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JHPMAR23855444
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 17:25:22 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B34824C04E;
+        Fri, 19 Mar 2021 17:25:22 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D4484C044;
+        Fri, 19 Mar 2021 17:25:22 +0000 (GMT)
+Received: from [9.145.68.105] (unknown [9.145.68.105])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Mar 2021 17:25:22 +0000 (GMT)
+Subject: Re: [PATCH 1/3] gcov: combine common code
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes.berg@intel.com>
+References: <20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <816c7845-2ba5-2af2-6632-842f8d207633@linux.ibm.com>
+Date:   Fri, 19 Mar 2021 18:25:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210316204252.427806-7-mic@digikod.net>
+In-Reply-To: <20210315235453.e3fbb86e99a0.I08a3ee6dbe47ea3e8024956083f162884a958e40@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_06:2021-03-19,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103190118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:42:46PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
+On 15.03.2021 23:54, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
 > 
-> The sb_delete security hook is called when shutting down a superblock,
-> which may be useful to release kernel objects tied to the superblock's
-> lifetime (e.g. inodes).
+> There's a lot of duplicated code between gcc and clang
+> implementations, move it over to fs.c to simplify the
+> code, there's no reason to believe that for small data
+> like this one would not just implement the simple
+> convert_to_gcda() function.
 > 
-> This new hook is needed by Landlock to release (ephemerally) tagged
-> struct inodes.  This comes from the unprivileged nature of Landlock
-> described in the next commit.
-> 
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I successfully tested this patch set using GCC on s390, but had some
+problems using Clang with gcov-kernel (which seem unrelated to this
+patch set - still to be investigated).
+
+The removal of duplicated code definitively makes sense and this
+approach looks like it will help make the build-time test I have in mind
+for gcov-kernel easier to implement.
+
+As such, for all 3 patches (not sure if it makes a difference seeing
+that this has already landed in linux-next):
+
+Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+
+
+Regards,
+  Peter
 
 -- 
-Kees Cook
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
