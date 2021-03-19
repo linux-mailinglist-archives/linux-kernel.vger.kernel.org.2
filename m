@@ -2,164 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D9D341288
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A0934128E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhCSByL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:54:11 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:41531 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233206AbhCSBxw (ORCPT
+        id S231626AbhCSB6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhCSB62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:53:52 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A9ZhpB6iJvsmtHmbHsKShAWs1jHBQXjoji2hD?=
- =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLlkTp5YgBFpfmsGomlBUnd+5l8/JULMd6ZMTXOlW?=
- =?us-ascii?q?O0IOhZg7fK7DHtFib3/OwY9YoIScJDIfLqC1wSt6fHyS2ZN/pl/9Wd6qCvgo7l?=
- =?us-ascii?q?vhJQZCVncbtp4Qs8KivzKDwUeCB8CZA0FIWR66N8zlLORV0scs+5CnMZNtKzxe?=
- =?us-ascii?q?HjqZSOW347Li9iwAyPoBft07TiDiWfty10bxp/hZsk7kjJ+jaU2pme?=
-X-IronPort-AV: E=Sophos;i="5.81,259,1610380800"; 
-   d="scan'208";a="105876746"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 19 Mar 2021 09:53:50 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 9903D4CEA871;
-        Fri, 19 Mar 2021 09:53:44 +0800 (CST)
-Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 19 Mar 2021 09:53:44 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Fri, 19 Mar 2021 09:53:44 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
-Subject: [PATCH v3 10/10] fs/xfs: Add dedupe support for fsdax
-Date:   Fri, 19 Mar 2021 09:52:37 +0800
-Message-ID: <20210319015237.993880-11-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
+        Thu, 18 Mar 2021 21:58:28 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B73C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:58:28 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 30so4267613qva.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=JiVqDCFQoleLcPQiijGmNpe+GDIBYP9KaktrAuD4UeY=;
+        b=cO4PvwPZhiVCZOO4Js5LQU0t1J6I3JMpIhjSa3v6KeWVX0N9Izb3Uaa/eNRzjBejAQ
+         CwhTjbcdbJILCsEXAeNH42ehWKmLUTkUoygEsZMz505VcW28OuzdB6qsqecnHk09Gyk9
+         n+fI627jA2k5LPfSahTJ7iCKBmyf7oKOfCmOURgm/QGUUyKdpXDS8cWF/4kNobXdha9C
+         SBuPLQ/4d1uS8Md3wIH6qKhBCxw7yCKB4uSP4JfCXG1X4vLD9m2D1bRWVFc38Pre3Kmw
+         A3ahxOj2z/+ZkvcCXFCejzpuAH9UK+gIY/xh1cXlkj2MLeZ/1tNc6pJRMK7z6wBkCuT6
+         vWig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=JiVqDCFQoleLcPQiijGmNpe+GDIBYP9KaktrAuD4UeY=;
+        b=rhmPZS3cRXedTOTESf7yUD0BoaAdPOIzjkhzdvwUHumGwcNT46RcyB3488M6d4snIV
+         rdf1M6f44l5BYxBixpm48tZDsWveJlfSI5jihUttQTdDiyR9XBkR9cwjfxAb6f4g34UM
+         qS8D0futd1jYJM0TBvlks/5nLCAb6zpQx3N3Wlb2VQtCTGOCnvHZDlTzXti/m7NCfdsa
+         /V588swDRRqfzoidBe0uKbnv3AgsQQqIIwwuEKd9wMUFmGHYFwnoWM1LMpIQTGoZfaS7
+         bEaaW4z0bxI2U9ioIDCCXcngUK2hMtlj4z/L5XwdrjKrUDXKXEQV8zYO63jSAsBG0rNj
+         DJYg==
+X-Gm-Message-State: AOAM533CwS9ivzjT/1DI7XZaBgJON+9smFN+kp8D4WOPFpgZsxpOYv8S
+        QY6Mo9sEBsWr3YU/YXUCwYmuJQ==
+X-Google-Smtp-Source: ABdhPJwlcAocbwXbejNeQSSFfnPBhhYBU6u5C6+yT1lL+Fw+uGkbTnq8GUvnMW21Yldql/4+R6gHBw==
+X-Received: by 2002:a05:6214:268c:: with SMTP id gm12mr7129538qvb.36.1616119106845;
+        Thu, 18 Mar 2021 18:58:26 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id f27sm3177041qkh.118.2021.03.18.18.58.24
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 18 Mar 2021 18:58:26 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 18:58:23 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Peter Xu <peterx@redhat.com>
+cc:     Hugh Dickins <hughd@google.com>, Brian Geffon <bgeffon@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+Subject: Re: [PATCH] mm: Allow shmem mappings with MREMAP_DONTUNMAP
+In-Reply-To: <20210316201732.GD395976@xz-x1>
+Message-ID: <alpine.LSU.2.11.2103181828300.3440@eggly.anvils>
+References: <20210303175235.3308220-1-bgeffon@google.com> <alpine.LSU.2.11.2103131934290.18112@eggly.anvils> <20210316201732.GD395976@xz-x1>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 9903D4CEA871.A1D44
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add xfs_break_two_dax_layouts() to break layout for tow dax files.  Then
-call compare range function only when files are both DAX or not.
+On Tue, 16 Mar 2021, Peter Xu wrote:
+> 
+> I'm curious whether it's okay to expand MREMAP_DONTUNMAP to PFNMAP too..
+> E.g. vfio maps device MMIO regions with both VM_DONTEXPAND|VM_PFNMAP, to me it
+> makes sense to allow the userspace to get such MMIO region remapped/duplicated
+> somewhere else as long as the size won't change.  With the strict check as
+> above we kill all those possibilities.
+> 
+> Though in that case we'll still need commits like cd544fd1dc92 to protect any
+> customized ->mremap() when they're not supported.
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/xfs/xfs_file.c    | 20 ++++++++++++++++++++
- fs/xfs/xfs_inode.c   |  8 +++++++-
- fs/xfs/xfs_inode.h   |  1 +
- fs/xfs/xfs_reflink.c |  5 +++--
- 4 files changed, 31 insertions(+), 3 deletions(-)
+It would take me many hours to arrive at a conclusion on that:
+I'm going to spend the time differently, and let whoever ends up
+wanting MREMAP_DONTUNMAP on a VM_PFNMAP area research the safety
+of that for existing users.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 1987d15eab61..82467d08e3ce 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -784,6 +784,26 @@ xfs_break_dax_layouts(
- 			0, 0, xfs_wait_dax_page(inode));
- }
- 
-+int
-+xfs_break_two_dax_layouts(
-+	struct inode		*src,
-+	struct inode		*dest)
-+{
-+	int			error;
-+	bool			retry = false;
-+
-+retry:
-+	error = xfs_break_dax_layouts(src, &retry);
-+	if (error || retry)
-+		goto retry;
-+
-+	error = xfs_break_dax_layouts(dest, &retry);
-+	if (error || retry)
-+		goto retry;
-+
-+	return error;
-+}
-+
- int
- xfs_break_layouts(
- 	struct inode		*inode,
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index b7352bc4c815..c11b11e59a83 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -3651,8 +3651,10 @@ xfs_ilock2_io_mmap(
- 	struct xfs_inode	*ip2)
- {
- 	int			ret;
-+	struct inode		*inode1 = VFS_I(ip1);
-+	struct inode		*inode2 = VFS_I(ip2);
- 
--	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
-+	ret = xfs_iolock_two_inodes_and_break_layout(inode1, inode2);
- 	if (ret)
- 		return ret;
- 	if (ip1 == ip2)
-@@ -3660,6 +3662,10 @@ xfs_ilock2_io_mmap(
- 	else
- 		xfs_lock_two_inodes(ip1, XFS_MMAPLOCK_EXCL,
- 				    ip2, XFS_MMAPLOCK_EXCL);
-+
-+	if (IS_DAX(inode1) && IS_DAX(inode2))
-+		ret = xfs_break_two_dax_layouts(inode1, inode2);
-+
- 	return 0;
- }
- 
-diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-index eca333f5f715..9ed7a2895602 100644
---- a/fs/xfs/xfs_inode.h
-+++ b/fs/xfs/xfs_inode.h
-@@ -431,6 +431,7 @@ enum xfs_prealloc_flags {
- 
- int	xfs_update_prealloc_flags(struct xfs_inode *ip,
- 				  enum xfs_prealloc_flags flags);
-+int	xfs_break_two_dax_layouts(struct inode *inode1, struct inode *inode2);
- int	xfs_break_layouts(struct inode *inode, uint *iolock,
- 		enum layout_break_reason reason);
- 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 73c556c2ff76..e62b00c2a0c8 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -29,6 +29,7 @@
- #include "xfs_iomap.h"
- #include "xfs_sb.h"
- #include "xfs_ag_resv.h"
-+#include <linux/dax.h>
- 
- /*
-  * Copy on Write of Shared Blocks
-@@ -1303,8 +1304,8 @@ xfs_reflink_remap_prep(
- 	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
- 		goto out_unlock;
- 
--	/* Don't share DAX file data for now. */
--	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-+	/* Don't share DAX file data with non-DAX file. */
-+	if (IS_DAX(inode_in) != IS_DAX(inode_out))
- 		goto out_unlock;
- 
- 	if (IS_DAX(inode_in))
--- 
-2.30.1
+I did look to see what added VM_PFNMAP to the original VM_DONTEXPAND:
 
+v2.6.15
+commit 4d7672b46244abffea1953e55688c0ea143dd617
+Author: Linus Torvalds <torvalds@g5.osdl.org>
+Date:   Fri Dec 16 10:21:23 2005 -0800
 
+Make sure we copy pages inserted with "vm_insert_page()" on fork
 
+The logic that decides that a fork() might be able to avoid copying a VM
+area when it can be re-created by page faults didn't know about the new
+vm_insert_page() case.
+
+Also make some things a bit more anal wrt VM_PFNMAP.
+
+Pointed out by Hugh Dickins <hugh@veritas.com>
+
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+
+So apparently I do bear some anal responsibility.  My concern seems
+to have been that in those days an unexpected page fault in a special
+driver area would end up allocating an anonymous page, which would
+never get freed later.  Nowadays it looks like there's a SIGBUS for
+the equivalent situation.
+
+So probably VM_DONTEXPAND is less important than it was, and the
+additional VM_PFNMAP safety net no longer necessary, and you could
+strip it out of the old size check and Brian's new dontunmap check.
+
+But I give no guarantee: I don't know VM_PFNMAP users at all well.
+
+Hugh
