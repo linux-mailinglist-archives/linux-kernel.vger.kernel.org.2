@@ -2,193 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918C33423CC
+	by mail.lfdr.de (Postfix) with ESMTP id 965843423CE
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhCSRz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S230308AbhCSRza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhCSRzW (ORCPT
+        with ESMTP id S230304AbhCSRzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:55:22 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3BDC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:55:22 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so5692685wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H4E5zo6M+sGFb9jJfPuBMekAUt72xfRBAZEVdNXvosI=;
-        b=HkWCKtqano6hr83mTvHPNb1mTJD7j++xG4i3V1pZc+fMnH//eWACXOeqWIMYDAyiqD
-         CWBkqUiJ1zmtZ3OlxFIY9DcUS/euNcLz8nxn4AxgvZ1rE5qJAgMaRKnutzlS1iCHVLZf
-         S1ATj65HkMPVN9VP3K+xuo111cO9NYWhg1scM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=H4E5zo6M+sGFb9jJfPuBMekAUt72xfRBAZEVdNXvosI=;
-        b=DLRhpN+p/PBASlsubipBzai9JSeJ45tMgT963eCT9kscVpQb64m3A8b0qva4sAOPqF
-         nzQCxhEaQbkByn32sSeE739CTrtNBFHtyEiAC0W+ykRqr5SsJgWV14jt3msCYW5IMz/W
-         dK/KtjqRzcBg9Ddg87bK1Y4atevFKbdSIER81JM+r9A4siUFV8/8C870LJceSRbvZR57
-         Ue0gJU10z/QWp5zmDPZDP6520X1AW7lb1BmmBYGJvBQtpxGA+VYQ/d9psnjhErNHxPok
-         99rPB4MFVsOOnbyLlB7VP2u0IV4cAQD5cyKR7uqBnBNNTVQabNhbXFy5xdiIwkuztI6b
-         mnOQ==
-X-Gm-Message-State: AOAM530AqKPqhSxnM+HjkI8eRpLxanOboIglwy+m66F/JeCG20eCoziq
-        OZCTD7SYcpuh0JrXXgJWHYi9vg==
-X-Google-Smtp-Source: ABdhPJznH8/2o31By7revAgfT3dpRwhrdpC+rY/yFumwMUBtQGtz1iOu7IVxYDezg1HGlBR9UX23fg==
-X-Received: by 2002:a7b:c0c3:: with SMTP id s3mr4743813wmh.11.1616176521069;
-        Fri, 19 Mar 2021 10:55:21 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id s3sm7109143wmd.21.2021.03.19.10.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:55:20 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 18:55:18 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Leo Li <sunpeng.li@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
-Message-ID: <YFTlhh1ZSFffO+Nr@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Anthony Koo <Anthony.Koo@amd.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>, Leo Li <sunpeng.li@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-References: <20210303134319.3160762-1-lee.jones@linaro.org>
- <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
- <20210308091932.GB4931@dell>
- <YEobySvG0zPs9xhc@phenom.ffwll.local>
- <20210311135152.GT701493@dell>
- <20210317081729.GH701493@dell>
- <CAKMK7uEibsgXXTEM1d2CGSswp-koouPSouseP_rwLHTdpxfRpw@mail.gmail.com>
- <CAKMK7uHkJGDL8k3FfAqAM78honZR0euMcacW8UpdPZfS1J-7cA@mail.gmail.com>
- <20210319082407.GG2916463@dell>
+        Fri, 19 Mar 2021 13:55:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE3EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rUwGdU8Yedk4kRCKzbyc5m3bgGUr+REyzJApW/WqH2k=; b=tPPzkGgGH0ENXaQU2hnZoDDaEG
+        kZX09R4jXMCO1CV9teSr1VJpC/Qd0OrxiA0cjdUgyJo7TVF6+XulHM9yYtTUvgs1QD9xfMvOH9o4w
+        g4OzNPDnxcOQzC+E+0GbYdsrRbFRnkeWdDwMBy4v+G22UC0bt3EiWECuM9c+ZZ063lgKmxNtxGWzG
+        VGa+RPHLUS+HEepy8C8hHeLXBIUX7ClyYaYaCW9Sp/P7cgrvqpJCJ08thSXz1LbkHU9dI9Wh7xep3
+        8KNfPdn4XD5Y4EMqoCLjjkMysNdMR0PpfLUAh6X+eACgih80n6m27g7ANKhGVl79TPjNqHeWIdEoS
+        h1NRNhBQ==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJLH-001R9U-SO; Fri, 19 Mar 2021 17:55:24 +0000
+Date:   Fri, 19 Mar 2021 10:55:23 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] average: Mundane typo fix
+In-Reply-To: <20210319010126.9537-1-unixbhaskar@gmail.com>
+Message-ID: <88ccf363-c6c4-3aab-9f1-8da3ef23650@bombadil.infradead.org>
+References: <20210319010126.9537-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319082407.GG2916463@dell>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_105523_937787_31BF17FF 
+X-CRM114-Status: GOOD (  13.19  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > s/funtions/functions/
+    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
+    Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:24:07AM +0000, Lee Jones wrote:
-> On Thu, 18 Mar 2021, Daniel Vetter wrote:
-> 
-> > On Wed, Mar 17, 2021 at 9:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Wed, Mar 17, 2021 at 9:17 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > >
-> > > > On Thu, 11 Mar 2021, Lee Jones wrote:
-> > > >
-> > > > > On Thu, 11 Mar 2021, Daniel Vetter wrote:
-> > > > >
-> > > > > > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
-> > > > > > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
-> > > > > > >
-> > > > > > > > The vmwgfx ones look all good to me, so for
-> > > > > > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-> > > > > > > > That said, they were already signed off by Zack, so not sure what
-> > > > > > > > happened here.
-> > > > > > >
-> > > > > > > Yes, they were accepted at one point, then dropped without a reason.
-> > > > > > >
-> > > > > > > Since I rebased onto the latest -next, I had to pluck them back out of
-> > > > > > > a previous one.
-> > > > > >
-> > > > > > They should show up in linux-next again. We merge patches for next merge
-> > > > > > window even during the current merge window, but need to make sure they
-> > > > > > don't pollute linux-next. Occasionally the cut off is wrong so patches
-> > > > > > show up, and then get pulled again.
-> > > > > >
-> > > > > > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
-> > > > > > confusion here. But your patches should all be in linux-next again (they
-> > > > > > are queued up for 5.13 in drm-misc-next, I checked that).
-> > > > > >
-> > > > > > Sorry for the confusion here.
-> > > > >
-> > > > > Oh, I see.  Well so long as they don't get dropped, I'll be happy.
-> > > > >
-> > > > > Thanks for the explanation Daniel
-> > > >
-> > > > After rebasing today, all of my GPU patches have remained.  Would
-> > > > someone be kind enough to check that everything is still in order
-> > > > please?
-> > >
-> > > It's still broken somehow. I've kiced Maxime and Maarten again,
-> > > they're also on this thread.
-> > 
-> > You're patches have made it into drm-next meanwhile, so they should
-> > show up in linux-next through that tree at least. Except if that one
-> > also has some trouble.
-> 
-> Thanks for letting me know.
-> 
-> I see some patches made it back in, others didn't.
-> 
-> I'll resend the stragglers - bear with.
 
-The vmwgfx ones should all be back, the others I guess just werent ever
-applied. I'll vacuum them all up if you resend. Apologies for the wobbly
-ride.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+
+> s/funtions/functions/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+> include/linux/average.h | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/average.h b/include/linux/average.h
+> index a1a8f09631ce..0cb77b3e483c 100644
+> --- a/include/linux/average.h
+> +++ b/include/linux/average.h
+> @@ -11,7 +11,7 @@
+>  *
+>  * This implements a fixed-precision EWMA algorithm, with both the
+>  * precision and fall-off coefficient determined at compile-time
+> - * and built into the generated helper funtions.
+> + * and built into the generated helper functions.
+>  *
+>  * The first argument to the macro is the name that will be used
+>  * for the struct and helper functions.
+> --
+> 2.26.2
+>
+>
