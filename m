@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6800A34152D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9F2341516
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhCSFzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
+        id S233922AbhCSFxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233935AbhCSFyt (ORCPT
+        with ESMTP id S230337AbhCSFxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:54:49 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654C2C06174A;
-        Thu, 18 Mar 2021 22:54:49 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id g8so4499117qvx.1;
-        Thu, 18 Mar 2021 22:54:49 -0700 (PDT)
+        Fri, 19 Mar 2021 01:53:07 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85563C06174A;
+        Thu, 18 Mar 2021 22:53:06 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id f26so10481203ljp.8;
+        Thu, 18 Mar 2021 22:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VwMX9qHyqe/3hUjRFKiWWLVIki618AhoFOWNw//mTuU=;
-        b=i8Oa8K6OkSLHA5g4XHVYLkSXo1rvydNaumjG832FTk9rT7QxxWnCyM5d7hUTR9oytr
-         jcbvjab+bcArWV97qk+iDiBM6lGFmVOgDlzYpG5jW9AJ/617Kak0EVAbUQEMceX0cn8V
-         yRRdB6NkSFKPH+XtpprzGLLYpkOwIF3eO4E4qdL8ECwUwagXt9Ys5Dd/C/xtLDimLsa2
-         cttVQIxLYgETUKoKZlhfua236om3uhGtlpm8muinS2acyvwVDS46jJf/8T7fM5Aa0GUD
-         sGJh9NyeeOnU1imiqD9VUMQAdeSblMsEIOLHWorcS/tnC9EsNgMxVX9YUCQlPyJy4fE3
-         pLEg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ieKEg/I8DWyrNnzM2/enM81rs852gdyY9A7m+JJ808U=;
+        b=iquAE73D+G5vtFjan5O+JlTPfC66rcUGH/5thoAYHxPmC24aRf/jy+PA3N8+BpHx3u
+         g2KmGfunQ6z4ink3IHSgAg1+a+VbCxC5nivZehVhVfMDUa5V0lcH9eHLBAcfktr8HB8c
+         JXd/YLFYA/QBhunWB86TPz8WYOP2qb90C5psmvcS/0gnMmftlZJ6VOwD3mMBLpo+g75Y
+         9/o+y+Lke2U7b2OXIvaj9v29YDqNG4rRkFWPwNSgCPKmsNJj8FW4AcdIfAvLn89O/ldy
+         UlccC/CAB3UN3X1dzXG79XeZn3AByb9CGsFRvnx7RebEg1BJ/cbnVbk/xcJYqH2n8LIF
+         4jRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VwMX9qHyqe/3hUjRFKiWWLVIki618AhoFOWNw//mTuU=;
-        b=tHvBjZDN6gg927EYVswlWLrFExxE03Jk6sM3BcpgVXvj7if1V7T8vzH4cUHjEv9R2E
-         zqkEWPj6nrVBrfdW8Cw5ic+p17q2Z7rkp5rnaJmDjJnorLkPZ/jJf7+3wQNYhLBybBWy
-         /s83vHe9stZlW9UKPhUXIcvzSXjfz+zbDb5EODF3z1fSRn3/NhoBAKR7bsiwogbgFA6n
-         DfoZvOM2A/F6uQT73K+rxtLzo0JaCDBeOcDeDWpB/un6jGuIbOk+YOFGk4+fLygzdkQy
-         yiXxlVqj22J4DxJNUnUhONH9KK7SyDBGPv3QCTkt/sfMbSCfxMufTHVt21AQ+AP1C8zQ
-         2f9w==
-X-Gm-Message-State: AOAM532Do3VBwk45agVx6QVGR2tCnKkFqxnK9OwwcRnK1q/BeBMU12P7
-        hfVhGkvq6QtILb7817lSFJg=
-X-Google-Smtp-Source: ABdhPJyVk2NfJGiE3UidpHCIsCQuQ6TT446AV4nBhLZcfTyp4noUMUAtxrZWyWv/ByP09JKGDmSlEA==
-X-Received: by 2002:ad4:5c87:: with SMTP id o7mr7802073qvh.31.1616133288750;
-        Thu, 18 Mar 2021 22:54:48 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.87])
-        by smtp.gmail.com with ESMTPSA id j3sm3631294qki.84.2021.03.18.22.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 22:54:48 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] power: supply: charger-manager: Fix a typo
-Date:   Fri, 19 Mar 2021 11:22:30 +0530
-Message-Id: <20210319055230.32220-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ieKEg/I8DWyrNnzM2/enM81rs852gdyY9A7m+JJ808U=;
+        b=WqpnTYz9k2syMObDxb92llGYJPr2Bxo4sYM2EIMXZMbKDDMVps3bcnkIDO/mgyYEZL
+         pZ5A+XDb52T5B4Q6d8liyrRQsnprT1wh9V6N4GJsCCGAHiBN45gqkbVFGFM6muHb+dTy
+         bVJWa9iYYVLVpil6LbhS1Tn3Wt0aThAW+ke1QwgE+SLhA5G0CCN3JQma3VKvXybXJbQ6
+         X59qPqnhqVyF158A5bVJH2DZKLlfQaOHEp11vsziKvhCh1yR/uAlw7PCV9bpqb4I+6Yj
+         Af8sg7nGBHUc1MDaM9LSOeH+Bv+2H5jDND6rvrm7/odVley8Jji3zE11ALPcwIxUpiI5
+         p8+w==
+X-Gm-Message-State: AOAM533/zsnMVPNxvY+sOn2AvBjssJCxScKtomI+un3xrAfFpuZOpnxw
+        PwfnNdnM+hqxn4wxaUkQ5KXmjlEEHTo0bgLGMFw=
+X-Google-Smtp-Source: ABdhPJydyF85xrIO4j2aR2Wm5nIVy2epWPKLP+h7WXhkpS3H1B7/f3GVCd/4EXVHM/UTaYywdG+DosSaWPia01x72gk=
+X-Received: by 2002:a2e:9907:: with SMTP id v7mr3584997lji.256.1616133185055;
+ Thu, 18 Mar 2021 22:53:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210319004657.485503-1-liu.xuzhi@zte.com.cn>
+In-Reply-To: <20210319004657.485503-1-liu.xuzhi@zte.com.cn>
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 19 Mar 2021 00:52:54 -0500
+Message-ID: <CAH2r5mvXw8mdY1b56O6802NoemXMh70P4MJY0E-dr-rZ6=Cu-A@mail.gmail.com>
+Subject: Re: [PATCH] fs/cifs/: fix misspellings using codespell tool
+To:     menglong8.dong@gmail.com
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Steve French <sfrench@samba.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Liu xuzhi <liu.xuzhi@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/systme/system/
+merged into cifs-2.6.git for-next
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/power/supply/charger-manager.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Mar 18, 2021 at 7:50 PM <menglong8.dong@gmail.com> wrote:
+>
+> From: Liu xuzhi <liu.xuzhi@zte.com.cn>
+>
+> A typo is found out by codespell tool in 251th lines of cifs_swn.c:
+>
+> $ codespell ./fs/cifs/
+> ./cifs_swn.c:251: funciton  ==> function
+>
+> Fix a typo found by codespell.
+>
+> Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
+> ---
+>  fs/cifs/cifs_swn.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
+> index f2d730fffccb..d829b8bf833e 100644
+> --- a/fs/cifs/cifs_swn.c
+> +++ b/fs/cifs/cifs_swn.c
+> @@ -248,7 +248,7 @@ static int cifs_swn_send_unregister_message(struct cifs_swn_reg *swnreg)
+>
+>  /*
+>   * Try to find a matching registration for the tcon's server name and share name.
+> - * Calls to this funciton must be protected by cifs_swnreg_idr_mutex.
+> + * Calls to this function must be protected by cifs_swnreg_idr_mutex.
+>   * TODO Try to avoid memory allocations
+>   */
+>  static struct cifs_swn_reg *cifs_find_swn_reg(struct cifs_tcon *tcon)
+> --
+> 2.25.1
+>
 
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index 4dea8ecd70bc..45da870aecca 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -1604,7 +1604,7 @@ static int charger_manager_probe(struct platform_device *pdev)
- 	mutex_unlock(&cm_list_mtx);
 
- 	/*
--	 * Charger-manager is capable of waking up the systme from sleep
-+	 * Charger-manager is capable of waking up the system from sleep
- 	 * when event is happened through cm_notify_event()
- 	 */
- 	device_init_wakeup(&pdev->dev, true);
---
-2.26.2
+-- 
+Thanks,
 
+Steve
