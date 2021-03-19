@@ -2,213 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C98034135C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13EE341365
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhCSDJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 23:09:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:18178 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCSDJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 23:09:08 -0400
-IronPort-SDR: vcdKww3Sf7j3ACe+SCZp3cWi6kcJyJhAB0dbhvF6WujU0fNjy7ne2VRTa6f8wGlLqSy/HTcY3s
- 46eTm1gTnZHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189907059"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="189907059"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 20:09:08 -0700
-IronPort-SDR: 9V8Zj6KycH4PonMKGUOh9HTJmoeA667x5lbFQQKf9t4I7B+BMORToB0gB9K887OcCyA9vJw4TB
- 1gbXcLx/xCTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="591708236"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 18 Mar 2021 20:09:06 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lN5Va-0001Xk-4G; Fri, 19 Mar 2021 03:09:06 +0000
-Date:   Fri, 19 Mar 2021 11:08:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- d9f6e12fb0b7fcded0bac34b8293ec46f80dfc33
-Message-ID: <605415af.AgmqmQDk9l8XL8e8%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231864AbhCSDMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 23:12:55 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:42830 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231848AbhCSDMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 23:12:25 -0400
+Received: by mail-pg1-f173.google.com with SMTP id y27so2749956pga.9;
+        Thu, 18 Mar 2021 20:12:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QPnNt2Q5gwIGxq8YNJSmsWgPXb6d+RK8/YXCxxPJffM=;
+        b=qGKX9eMYZhJkmsFhWq2fhycavW3iW86NAA/k8IVvsKOGqcgvSrufOdmHMM7Kj19sgZ
+         Tvo3tcxJZ9P5OSb+MebaG18RRqItnSNmR+fUu+Xri9kVt+nvgeBsWLsuHp/o+UXwQxTc
+         AYSBnjM0367Ea08DYpq6YkG0jRaQaa7BHuMY2hMFsfFNgeMOYiVKqXMQLjAcoPUCXpwt
+         7SB6JoSHISdYM/047cJBzKhObZfcJe3TX43+ckVjFpoCwVyazizC0HQ8ZpDR+EAFUhGU
+         nH4j/RGBjAWtZT+E9sTImTbvK4oT2zAx6q68OoqlapKfcATelWSv0qgDMlBONBfB46J7
+         6CrA==
+X-Gm-Message-State: AOAM533kYdw6PJIJ3SRYTRMB7eyyRQ2YI1S3miT4iBsSU+srOjjZIzN+
+        bHKhx0glR60JB4LK8D3C4yOWRwQKMuJFOg==
+X-Google-Smtp-Source: ABdhPJwfFHQEQwnjE1zKW9cAw1O9qK8JUiS4pOAOpm6vvbl1t/JC568LJtBSzb7hPf2kaVpgpisIZw==
+X-Received: by 2002:aa7:96c9:0:b029:200:503d:19df with SMTP id h9-20020aa796c90000b0290200503d19dfmr7208817pfq.46.1616123544961;
+        Thu, 18 Mar 2021 20:12:24 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:14ae:768b:f663:b4db? ([2601:647:4000:d7:14ae:768b:f663:b4db])
+        by smtp.gmail.com with ESMTPSA id s194sm3752836pfs.57.2021.03.18.20.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 20:12:24 -0700 (PDT)
+Subject: Re: [PATCH v12 1/2] scsi: ufs: Enable power management for wlun
+To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, adrian.hunter@intel.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1616113283.git.asutoshd@codeaurora.org>
+ <56662082b6a17b448f40d87df7e52b45a5998c2a.1616113283.git.asutoshd@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e9dc046d-3a88-9802-df58-60209ea8484f@acm.org>
+Date:   Thu, 18 Mar 2021 20:12:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <56662082b6a17b448f40d87df7e52b45a5998c2a.1616113283.git.asutoshd@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: d9f6e12fb0b7fcded0bac34b8293ec46f80dfc33  x86: Fix various typos in comments
+On 3/18/21 5:35 PM, Asutosh Das wrote:
+> During runtime-suspend of ufs host, the scsi devices are
+> already suspended and so are the queues associated with them.
+> But the ufs host sends SSU to wlun during its runtime-suspend.
+> During the process blk_queue_enter checks if the queue is not in
+> suspended state. If so, it waits for the queue to resume, and never
+> comes out of it.
+> The commit
+> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+> adds the check if the queue is in suspended state in blk_queue_enter().
 
-elapsed time: 722m
+What is the role of the WLUN during runtime suspend and why does a
+command need to be sent to the WLUN during runtime suspend? Although it
+is possible to derive this from the source code, please explain this in
+the patch description.
 
-configs tested: 151
-configs skipped: 2
+What does the acronym SSU stand for? This doesn't seem like a commonly
+used kernel acronym to me so please expand that acronym.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Fix this by registering ufs device wlun as a scsi driver and
+> registering it for block runtime-pm. Also make this as a
+> supplier for all other luns. That way, this device wlun
+> suspends after all the consumers and resumes after
+> hba resumes.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                  maltasmvp_eva_defconfig
-sh                               j2_defconfig
-mips                       bmips_be_defconfig
-arm                          collie_defconfig
-arc                          axs101_defconfig
-sh                                  defconfig
-ia64                        generic_defconfig
-m68k                        mvme147_defconfig
-riscv                    nommu_k210_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                     tqm8560_defconfig
-mips                        nlm_xlp_defconfig
-arc                                 defconfig
-mips                     loongson1b_defconfig
-m68k                        m5407c3_defconfig
-sh                           se7712_defconfig
-m68k                       m5275evb_defconfig
-arm                           sunxi_defconfig
-xtensa                generic_kc705_defconfig
-arm                          exynos_defconfig
-arm                          lpd270_defconfig
-m68k                             allyesconfig
-ia64                             allmodconfig
-powerpc                 linkstation_defconfig
-xtensa                  audio_kc705_defconfig
-mips                        vocore2_defconfig
-arm                         at91_dt_defconfig
-sh                          r7780mp_defconfig
-powerpc                      ppc6xx_defconfig
-mips                          rb532_defconfig
-openrisc                 simple_smp_defconfig
-riscv                          rv32_defconfig
-powerpc                    mvme5100_defconfig
-arm64                            alldefconfig
-ia64                          tiger_defconfig
-um                           x86_64_defconfig
-m68k                       m5208evb_defconfig
-ia64                      gensparse_defconfig
-sh                            migor_defconfig
-powerpc                     kilauea_defconfig
-arm                          moxart_defconfig
-powerpc                    klondike_defconfig
-sh                     magicpanelr2_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                       ebony_defconfig
-mips                          ath79_defconfig
-sh                     sh7710voipgw_defconfig
-s390                                defconfig
-mips                      maltaaprp_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                       maple_defconfig
-powerpc                    adder875_defconfig
-sh                          kfr2r09_defconfig
-arm                         lpc32xx_defconfig
-s390                             alldefconfig
-xtensa                         virt_defconfig
-powerpc                 mpc832x_rdb_defconfig
-csky                             alldefconfig
-sh                   sh7724_generic_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                           se7721_defconfig
-nios2                               defconfig
-powerpc                    amigaone_defconfig
-arm                        mvebu_v5_defconfig
-arm                   milbeaut_m10v_defconfig
-powerpc                      makalu_defconfig
-powerpc                  mpc885_ads_defconfig
-m68k                        m5307c3_defconfig
-arm                        shmobile_defconfig
-mips                      pic32mzda_defconfig
-m68k                       m5249evb_defconfig
-um                             i386_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     pq2fads_defconfig
-arm                          pcm027_defconfig
-powerpc                      acadia_defconfig
-sh                        edosk7705_defconfig
-mips                             allyesconfig
-powerpc                     tqm8548_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     redwood_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                            hisi_defconfig
-mips                        nlm_xlr_defconfig
-m68k                                defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+That's an interesting solution.
 
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
+> -void __exit ufs_debugfs_exit(void)
+> +void ufs_debugfs_exit(void)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Is the above change related to the rest of this patch?
+
+>  static struct platform_driver ufs_qcom_pltform = {
+> diff --git a/drivers/scsi/ufs/ufs_bsg.c b/drivers/scsi/ufs/ufs_bsg.c
+> index 5b2bc1a..cbb5a90 100644
+> --- a/drivers/scsi/ufs/ufs_bsg.c
+> +++ b/drivers/scsi/ufs/ufs_bsg.c
+> @@ -97,7 +97,7 @@ static int ufs_bsg_request(struct bsg_job *job)
+>  
+>  	bsg_reply->reply_payload_rcv_len = 0;
+>  
+> -	pm_runtime_get_sync(hba->dev);
+> +	scsi_autopm_get_device(hba->sdev_ufs_device);
+
+Can the pm_runtime_get_sync() to scsi_autopm_get_device() changes be
+moved into a separate patch?
+
+> +static inline bool is_rpmb_wlun(struct scsi_device *sdev)
+> +{
+> +	return (sdev->lun == ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN));
+> +}
+
+Has this patch been verified with checkpatch? Checkpatch should have
+reported the following for the above code:
+
+	return is not a function, parentheses are not required
+
+> +static inline bool is_device_wlun(struct scsi_device *sdev)
+> +{
+> +	return (sdev->lun ==
+> +		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_UFS_DEVICE_WLUN));
+> +}
+
+Same comment here.
+
+>  		/*
+> -		 * Don't assume anything of pm_runtime_get_sync(), if
+> +		 * Don't assume anything of resume, if
+>  		 * resume fails, irq and clocks can be OFF, and powers
+>  		 * can be OFF or in LPM.
+>  		 */
+
+Please make better use of the horizontal space in the above comment by
+making comment lines longer.
+
+Thanks,
+
+Bart.
