@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C871E341C16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB14341C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhCSMRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhCSMQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:16:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED12FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:48 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id l1so2872977plg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rr62kvdI+jVNyeq/XYk+9hQihPrvCb+jP5s+Yn8CaNs=;
-        b=VSnovSkTGgj4jB2N5zRZSHAx9Hhij+eplAfOA0aNVD3ri2MuqDBjCMiJJekrqhOJbz
-         PLk9AnDCEOteFl+USLQKByq7ptWl/sNqDG25WRTPDKaxhixbY13lEkKY6c3eoipVuvYa
-         vtGgJheTT+LURHN9FqoOJ2A6Onqa0OOf0Uc3cvYpxwSsfXYtehpGTK5DkWlcjQk54pbc
-         BdrCNj44gE25cVXsl5tX0jzqVOiKpwavrPyFqWUlbDUblQNHtvnhfZDTMK+qdqlV0rmg
-         C1JDFWt9t1kXRWghJo+KndE6LKmYbZXqm1B2BdxQKW1OmPNpQroiLPvs2Yt/dXswj7bV
-         5b0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rr62kvdI+jVNyeq/XYk+9hQihPrvCb+jP5s+Yn8CaNs=;
-        b=o7Z5DUiZbDUTt7Tvp7KuzJNrK7/Za4LvhvKs20CKUFAESPRRyZrSnJUyuwuiSv15ov
-         u7j2R5Lyn/Temrjwas4zxjIXgeXQr09/o8iMvoLOLTyYfxsO8BE0weRW+XAGtuf046Za
-         5/dOFvt7QXY08P5LxMWf2nDVDKoS4paSvaHJkSjUpEIB3KUFt5PJlOwZBuPkwtk16rvH
-         DH3+62tdkeDMZPsPHMW4cFtQsSM6reiu8Ch5LcRApPly5W4uAR9SQ7i8pod9S9Tz+7j3
-         HxIkUM3rBGeA8Jd3oRoH1hBILrT38a6AI5iit8c/M2B57DXVPwbFFceaVXjbiV5MXRSV
-         y6DA==
-X-Gm-Message-State: AOAM532E8L9gxWf9/WgoMqG0r5pHGbQK6WGudSCueH/42UPYH3+IjLQM
-        ikGWTz3SgTthUNT2Wp25KMTXMQPjx/egcb8hR10=
-X-Google-Smtp-Source: ABdhPJx7IaIlDRm3rwmiM8Zop/6Z1jWa2tOc1g3Ijk1PnFzzc7dMOz6ba6OCHY+cbOY/cIxK6aU7PDvrsZvxU/PI4mA=
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
- z2-20020a170902ee02b02900e65397d79cmr9570103plb.21.1616156208463; Fri, 19 Mar
- 2021 05:16:48 -0700 (PDT)
+        id S230002AbhCSMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:17:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:48070 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229847AbhCSMRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:17:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06F64ED1;
+        Fri, 19 Mar 2021 05:17:10 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F02D83F70D;
+        Fri, 19 Mar 2021 05:17:07 -0700 (PDT)
+Subject: Re: [PATCH] dt: rockchip: rk3399: Add dynamic power coefficient for
+ GPU
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, heiko@sntech.de
+Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Jacob Chen <jacob2.chen@rock-chips.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Markus Reichl <m.reichl@fivetechno.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210319110511.24787-1-daniel.lezcano@linaro.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5db868e4-5b86-7b32-51e0-665a2e1fc1ac@arm.com>
+Date:   Fri, 19 Mar 2021 12:17:01 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
- <20210319110459.19966-2-a.fatoum@pengutronix.de> <CAHp75VdjefJHMu2ot7RoZZZis0aNyV097J34wxDSwLgh3bQ8Pg@mail.gmail.com>
- <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
-In-Reply-To: <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 19 Mar 2021 14:16:32 +0200
-Message-ID: <CAHp75Ves0+oebnSSYNNb=DcAuiN6-BFwp4jyDD9pSeg6FX2HKg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] driver core: add helper for deferred probe reason setting
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210319110511.24787-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 1:46 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> On 19.03.21 12:13, Andy Shevchenko wrote:
-> > On Fri, Mar 19, 2021 at 1:05 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>
-> >> We now have three places within the same file doing the same operation
-> >> of freeing this pointer and setting it anew. A helper make this
-> >
-> > makes
-> >
-> >> arguably easier to read, so add one.
-> >
-> > FWIW,
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->
-> Thanks will add for v3.
->
-> > Now I'm wondering why deferred_probe_reason is not defined with const.
-> >
-> > Can you check and maybe squeeze a patch in the middle (before these
-> > two of this series) to move to const?
->
-> The deferred_probe_reason is only used in this file and it either holds
-> NULL or a pointer to a dynamically allocated string. I don't see a reason
-> why the member should be const.
+On 2021-03-19 11:05, Daniel Lezcano wrote:
+> The DTPM framework is looking for upstream SoC candidates to share the
+> power numbers.
+> 
+> We can see around different numbers but the one which seems to be
+> consistent with the initial post for the values on the CPUs can be
+> found in the patch https://lore.kernel.org/patchwork/patch/810159/
 
-But we want to be reliant on the contents of the string, right?
-I would put this why it shouldn't be const.
+The kernel hacker in me would be more inclined to trust the BSP that the 
+vendor actively supports than a 5-year-old patch that was never pursued 
+upstream. Apparently that was last updated more recently:
 
-As far as I understand the strictness here is for good.
+https://github.com/rockchip-linux/kernel/commit/98d4505e1bd62ff028bd79fbd8284d64b6f468f8
 
---
-With Best Regards,
-Andy Shevchenko
+The ex-mathematician in me can't even comment either way without 
+evidence that whatever model expects to consume this value is even 
+comparable to whatever "arm,mali-simple-power-model" is. The way the 
+latter apparently needs an explicit "static" coefficient as well as a 
+"dynamic" one, and the value here being nearly 3 times that of a 
+similarly-named one in active use downstream (ChromeOS appears to still 
+be using the values from before the above commit), certainly incline me 
+to think they may not be...
+
+> I don't know the precision of this value but it is better than
+> nothing.
+
+But is it? If it leads to some throttling mechanism kicking in and 
+crippling GPU performance because it's massively overestimating power 
+consumption, that would be objectively worse for most users, no?
+
+Robin.
+
+> Hopefully, one day SoC vendors will be more generous with the power
+> numbers at least for the SoC which are from the previous generation
+> and give the community the opportunity to develop power based
+> frameworks.
+> ---
+>   arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index edbbf35fe19e..1ab1d293d2e9 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -1933,6 +1933,7 @@
+>   		interrupt-names = "job", "mmu", "gpu";
+>   		clocks = <&cru ACLK_GPU>;
+>   		#cooling-cells = <2>;
+> +		dynamic-power-coefficient = <977>;
+>   		power-domains = <&power RK3399_PD_GPU>;
+>   		status = "disabled";
+>   	};
+> 
