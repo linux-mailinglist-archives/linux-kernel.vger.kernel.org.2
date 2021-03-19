@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EC33427F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F31342800
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhCSVno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:43:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8668 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229942AbhCSVnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:43:07 -0400
-IronPort-SDR: RSiSITZep4KuY9xDwMvGo553udx8tKIJxQp1wf3YX+3AcAaiHQDfTUJY1d1wv7SNk1u5wvSoC+
- xP+qT3EzRbag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="190066754"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="190066754"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:43:06 -0700
-IronPort-SDR: iT/r8ByvMuU8XTKNeF3yq/D/QfUHXYpCYZjIvu/4fy4S0PaDOlSkasOytpgZFg7aZUrat2BnHp
- M2DQvWQ8JZmw==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="603266289"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.100.40]) ([10.212.100.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:43:05 -0700
-Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S230386AbhCSVsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:48:12 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:51134 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230186AbhCSVsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:48:03 -0400
+Received: from [IPv6:2a02:a03f:eaff:9f01:ffbc:9626:10f7:ec57] (unknown [IPv6:2a02:a03f:eaff:9f01:ffbc:9626:10f7:ec57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 337AE1E0439;
+        Fri, 19 Mar 2021 22:48:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1616190482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uwvZTs7CenIG7Y1DcblnnZI9mXGeyXads4q+ealbIlU=;
+        b=WRJyFK6j/+azuyfMLRa16i5s6wfsVc8agp/uCOkrMH+QiczpEC+qyloGkHtuvww9VKFj/R
+        hmxOKZSJNMyJlQ3hDk/nlUCy5FXQ3OBiFs29dSmEHmDjqQbWUoXCFsaqr5llCCMYhNJwoT
+        zFqGvKjQBNfR6HcWZQRc0jKwcPXhvm0osbuqbJN9m07cIqHIcJBQTbryImUl1ojbol25mC
+        iCg6C/1VxMrCFAyBZvBTeM7O76wvLfabOR7arWNBxG9iTw2zdFZZ0FKd6zvgcY8o0SWCjU
+        TbfevLhwW+IAIETKSb7gqEjSK+P2R9KzzzkHjXmjamwwFrOLo4qNW6wRBS8srw==
+Message-ID: <e89125c1ffb56f64c7c2037192e490d56ab12492.camel@svanheule.net>
+Subject: Re: [PATCH v2 2/2] gpio: Add Realtek Otto GPIO support
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316211552.GU4746@worktop.programming.kicks-ass.net>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <adb72123-e8b3-c022-47da-b8c423952caf@intel.com>
-Date:   Fri, 19 Mar 2021 14:43:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bert Vermeulen <bert@biot.com>
+Date:   Fri, 19 Mar 2021 22:48:00 +0100
+In-Reply-To: <CAHp75Vf=-WdJ3U6o1G-Xi4W7tkCzyij0FD3MNY1q0x6bkimxow@mail.gmail.com>
+References: <20210315082339.9787-1-sander@svanheule.net>
+         <20210315190806.66762-1-sander@svanheule.net>
+         <20210315190806.66762-3-sander@svanheule.net>
+         <CAHp75Vc6aaDhVN7LzvLNQjuOPguz+nbfmfpZ7TZHK=fNjCRz8w@mail.gmail.com>
+         <a7d410216d35ed2b3015bfdd8e21dafd9c42d9d4.camel@svanheule.net>
+         <CAHp75VdrqE0kBwzK9Jk7pZGjyfFnhatfa8UY0z-3T1w1PrbAbw@mail.gmail.com>
+         <9d736f272aae42b154a4fdfbcadc1572ee82f516.camel@svanheule.net>
+         <CAHp75Vf=-WdJ3U6o1G-Xi4W7tkCzyij0FD3MNY1q0x6bkimxow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210316211552.GU4746@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/16/2021 2:15 PM, Peter Zijlstra wrote:
-> On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
->> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
->> return/jump-oriented programming attacks.  Details are in "Intel 64 and
->> IA-32 Architectures Software Developer's Manual" [1].
->>
->> CET can protect applications and the kernel.  This series enables only
->> application-level protection, and has three parts:
->>
->>    - Shadow stack [2],
->>    - Indirect branch tracking [3], and
->>    - Selftests [4].
+On Fri, 2021-03-19 at 23:24 +0200, Andy Shevchenko wrote:
+> On Fri, Mar 19, 2021 at 11:20 PM Sander Vanheule <
+> sander@svanheule.net> wrote:
+> > On Fri, 2021-03-19 at 19:57 +0200, Andy Shevchenko wrote:
+> > > On Fri, Mar 19, 2021 at 5:51 PM Sander Vanheule
+> > > <sander@svanheule.net> wrote:
+> > > > On Wed, 2021-03-17 at 15:08 +0200, Andy Shevchenko wrote:
+> > > > > On Mon, Mar 15, 2021 at 11:11 PM Sander Vanheule <
+> > > > > sander@svanheule.net> wrote:
 > 
-> CET is marketing; afaict SS and IBT are 100% independent and there's no
-> reason what so ever to have them share any code, let alone a Kconfig
-> knob.
-> > In fact, I think all of this would improve is you remove the CET name
-> from all of this entirely. Put this series under CONFIG_X86_SHSTK (or
-> _SS) and use CONFIG_X86_IBT for the other one.
+> ...
 > 
-> Similarly with the .c file.
+> > > > > > +       return swab32(readl(ctrl->base +
+> > > > > > REALTEK_GPIO_REG_ISR));
+> > > > > 
+> > > > > Why swab?! How is this supposed to work on BE CPUs?
+> > > > > Ditto for all swabXX() usage.
+> > > > 
+> > > > My use of swab32/swahw32 has little to do with the CPU being BE
+> > > > or
+> > > > LE,
+> > > > but more with the register packing in the GPIO peripheral.
+> > > > 
+> > > > The supported SoCs have port layout A-B-C-D in the registers,
+> > > > where
+> > > > firmware built with Realtek's SDK always denotes A0 as the first
+> > > > GPIO
+> > > > line. So bit 24 in a register has the value for A0 (with the
+> > > > exception
+> > > > of the IMR register).
+> > > > 
+> > > > I wrote these wrapper functions to be able to use the BIT() macro
+> > > > with
+> > > > the GPIO line number, similar to how gpio-mmio uses ioread32be()
+> > > > when
+> > > > the BGPIOF_BIG_ENDIAN_BYTE_ORDER flag is used.
+> > > > 
+> > > > For the IMR register, port A again comes first, but is now 16
+> > > > bits
+> > > > wide
+> > > > instead of 8, with A0 at bits 16:17. That's why swahw32 is used
+> > > > for
+> > > > this register.
+> > > > 
+> > > > On the currently unsupported RTL9300-series, the port layout is
+> > > > reversed: D-C-B-A. GPIO line A0 is then at bit 0, so the swapping
+> > > > functions won't be required. When support for this alternate port
+> > > > layout is added, some code will need to be added to differentiate
+> > > > between the two cases.
+> > > 
+> > > Yes, you have different endianess on the hardware level, why not to
+> > > use the proper accessors (with or without utilization of the above
+> > > mentioned BGPIOF_BIG_ENDIAN_BYTE_ORDER)?
+> > 
+> > The point I was trying to make, is that it isn't an endianess issue.
+> > I
+> > shouldn't have used a register with single byte values to try to
+> > illustrate that.
+> > 
+> > Consider instead the interrupt masking registers. To write the IMR
+> > bits
+> > for port A (GPIO 0-7), a 16-bit value must be written. This value
+> > (e.g.
+> > u16 port_a_imr) is always BE, independent of the packing order of the
+> > ports in the registers:
+> > 
+> >    // On RTL8380: port A is in the upper word
+> >    writew(port_a_imr, base + OFFSET_IMR_AB);
+> > 
+> >    // On RTL9300: port A is in the lower word
+> >    writew(port_a_imr, base + OFFSET_IMR_AB + 2);
+> > 
+> > I want the low GPIO lines to be in the lower half-word, so I can
+> > manipulate GPIO lines 0-15 with simple mask and shift operations.
+> > 
+> > It just so happens, that all registers needed by bgpio_init contain
+> > single-byte values. With BGPIO_BIG_ENDIAN_BYTE_ORDER  the port order
+> > is
+> > reversed as required, but it's a bit of a misnomer here.
 > 
-> All this CET business is just pure confusion.
-> 
+> How many registers (per GPIO / port) do you have?
+> Can you list them and show endianess of the data for each of them and
+> for old and new hardware (something like a 3 column table)?
 
-What about this, we bring back CONFIG_X86_SHSTK and CONFIG_X86_IBT.
-For the CET name itself, can we change it to CFE (Control Flow 
-Enforcement), or just CF?
+Each GPIO bank, with 32 GPIO lines, consists of four 8-line ports.
+There are seven registers per port, but only five are used:
 
-In signal handling, ELF header parsing and arch_prctl(), shadow stack 
-and IBT pretty much share the same code.  It is better not to split them 
-into two sets of files.
+       |        | Data    | RTL8380    | RTL9300 
+Reg    | Offset | type    | byte order | byte order
+-------+--------+---------+------------+-----------
+DIR    | 0x08   | 4 * u8  | A-B-C-D    | D-C-B-A
+DATA   | 0x0C   | 4 * u8  | A-B-C-D    | D-C-B-A
+ISR    | 0x10   | 4 * u8  | A-B-C-D    | D-C-B-A
+IMR_AB | 0x14   | 2 * u16 | A-A-B-B    | B-B-A-A
+IMR_CD | 0x18   | 2 * u16 | C-C-D-D    | D-D-C-C
 
-Thanks,
-Yu-cheng
+The unused other registers are all 4*u8.
+
+A-B-C-D means:  (A << 24) | (B << 16) | (C << 8) | D
+A-A-B-B means:  (A << 16) | B
+
+--
+Best,
+Sander
+
