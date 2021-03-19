@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F10342078
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5164434207B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhCSPDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S230478AbhCSPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhCSPDV (ORCPT
+        with ESMTP id S230051AbhCSPE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:03:21 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0739EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:03:21 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id v2so3861564pgk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:03:21 -0700 (PDT)
+        Fri, 19 Mar 2021 11:04:28 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2BBC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:04:27 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 184so12356814ljf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:04:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q7Roh7B5+FwQQexECP34LRGge0KD+9IdWHo1Er07uE0=;
-        b=i3kH2vg4RsZbccsmkM2GFQkVr/zwjO7RemoQUXUoIr7wfFJm9ZZ3MLzkl8lytEX5YA
-         7OOIa9cJPIQhCIIxcbliLvLHLwAmw3G7BGAfj94cR1lJpYo7pifIdMwttDgfK0M+oZs9
-         YMWXgd1sg32vMCiGf0MsnxAerHRh/EwFeNJ4Y=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H7UBFkI1CX111uLLNeagBjcZUDj7ZLwK/yKKbbrE7F4=;
+        b=C0YjKyPTMBZyq22wQR2Ycbof9lyp6kIEFLRu6UYQ26FWP6VkAJ6/JQBmjBKV7EWBLz
+         BjhEpOYdLpOCiKvWbuMlY5LnupwEyWz7qN62FzhoAFcnZvZlPW2H6oei1qkdrS261jTe
+         cTHosaAiMVD2DTGxgfntMAwuKVRCxXruO/HV1d3UJlwRw1dhtmODI/VZVebt44eoVHKr
+         EHdA9BGmXBh+Yh7DNRBNpPT+mBcVTSDrrHSbnYeawGFpfI+hVGmjURrSUyP+AJJB3FNJ
+         ma1mfG8gPcVpjYL8ar0A97sJPbL0hYyASgAySErAa+xcVCGPXg8f0HQpRuThvNgC3aWm
+         RSbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q7Roh7B5+FwQQexECP34LRGge0KD+9IdWHo1Er07uE0=;
-        b=PODB5xzTXwMkOvzJcaPKeseYJCwzUOxDNi9MiYt7LTSrDiPVVG+L7PAcM8hOQ7H7ya
-         7KSMzWkl2u9qJTef0V/HxVAXjU6B5n6QQltWcxao4JEkt5Q0UFNFRY8sLqv9ljOjSFKo
-         dk59Ng61T4I0QlxTAhMZKXC97ysqxpXav3vjnpIy7zyDbVPvtURVMJsG0B8SrfXpeHF3
-         XCD/+D0pZf38nKfr8ONtrU1NbQMxucqxX3GAijqTknIkM8LmQgg/v0l8HmCkty/9i3oM
-         21a6wenusqvF4AmHfN3UnqxE52ym16DIbFZYce+NwLOCslFN7sWtRUypSfZnM5MhnloF
-         9q/A==
-X-Gm-Message-State: AOAM533kxmCMHmz22fXvhdG1hRLsYrutLoXSzwRH40iQZILOoGCCSvNz
-        kJdEToREIvk4kKGpFYL3h85UoQ==
-X-Google-Smtp-Source: ABdhPJzDhitGQobwUHAwMl2GkNZZr/BwlBh+dQLC1RA9lQikmH7lAUCxagM8szjGT0olxg3tJFH5OQ==
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr11563567pgq.7.1616166200586;
-        Fri, 19 Mar 2021 08:03:20 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:6577:f83d:5865:dfac])
-        by smtp.gmail.com with ESMTPSA id y15sm6607609pgi.31.2021.03.19.08.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 08:03:19 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 00:03:11 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     pmladek@suse.com, willy@infradead.org,
-        andriy.shevchenko@linux.intel.com, david@redhat.com,
-        linmiaohe@huawei.com, vbabka@suse.cz, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com
-Subject: Re: [PATCH v6 resend 0/3] mm, vsprintf: dump full information of
- page flags in pGp
-Message-ID: <YFS9L6vmwcR/z7hs@google.com>
-References: <20210319101246.73513-1-laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H7UBFkI1CX111uLLNeagBjcZUDj7ZLwK/yKKbbrE7F4=;
+        b=jAC2dszrgbPL5CpGkanycgSecP7dQpeTjcNew6+MZXFashGcRtpWXSUCcLe8pR+2GY
+         mKT4H4CTPugT3E0qhCbhLPplfqejz4zWmFMJE+wImdNBNPnar/5zv9crhwcuBaQlBPzH
+         eX2SZJt52bru2I0WCax/y3jC9lNF9IUNzhVMNC0swk/IMqBMQA+kbCp83S217agsbkUm
+         eZFj2jX3rjXxllYcmlmErQDRAYtOIVQDRFFP1x+aWVCaFk8YVSu9H8bNVMKJKYHoNR1K
+         Hsro/GZEthN+K8mjcFuSIUrKtq8xOpBRhocaNDCoEs/xXLXMzUe3l2oDQa7xJHq2SuiA
+         Uh/g==
+X-Gm-Message-State: AOAM530oV6hrzKztslBzGUlxEjpDOhTIi57SnaNSUVsGlId9CLZTA8Fe
+        w+4fZgUsY8mamII2CyvpFCRYvXGUUw9W1qQRho66mst+
+X-Google-Smtp-Source: ABdhPJwiVOIxhG/0M7C/3BZhB7apooldQHeENwszsMQq5DkPOjXNNJoqtYweesGkTbY0Y1sukcc+mai7Ig7xojmKim8=
+X-Received: by 2002:a2e:b5cd:: with SMTP id g13mr1222346ljn.372.1616166265911;
+ Fri, 19 Mar 2021 08:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319101246.73513-1-laoar.shao@gmail.com>
+References: <1615969652-80225-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1615969652-80225-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Date:   Fri, 19 Mar 2021 16:04:14 +0100
+Message-ID: <CAMeQTsbRo4_KfS5vpAjSUiOeL6Qn-yMfYPsWTEpmZTmgV7bfOQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/gma500: use NULL instead of using plain integer as pointer
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/19 18:12), Yafang Shao wrote:
-> 
-> The existed pGp shows the names of page flags only, rather than the full
-> information including section, node, zone, last cpuipid and kasan tag.
-> While it is not easy to parse these information manually because there
-> are so many flavors. We'd better interpret them in printf.
-> 
-> To be compitable with the existed format of pGp, the new introduced ones
-> also use '|' as the separator, then the user tools parsing pGp won't
-> need to make change, suggested by Matthew. The new added information is
-> tracked onto the end of the existed one, e.g.
-> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-> 
-> The documentation and test cases are also updated. The result of the
-> test cases as follows,
-> [68599.816764] test_printf: loaded.
-> [68599.819068] test_printf: all 388 tests passed
-> [68599.830367] test_printf: unloaded.
-> 
-> This patchset also includes some code cleanup in mm/slub.c.
+On Wed, Mar 17, 2021 at 9:27 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> This fixes the following sparse warnings:
+> drivers/gpu/drm/gma500/psb_drv.c:303:56: warning: Using plain integer as
+> NULL pointer
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-The series looks good to me. FWIW,
+Applied to drm-misc-next
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Thanks
+Patrik
+
+> ---
+>  drivers/gpu/drm/gma500/psb_drv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
+> index 0bcab06..c2aab62 100644
+> --- a/drivers/gpu/drm/gma500/psb_drv.c
+> +++ b/drivers/gpu/drm/gma500/psb_drv.c
+> @@ -303,7 +303,7 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
+>
+>         ret = -ENOMEM;
+>
+> -       dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
+> +       dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, NULL);
+>         if (!dev_priv->mmu)
+>                 goto out_err;
+>
+> --
+> 1.8.3.1
+>
