@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E71B342106
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BF3342108
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhCSPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhCSPdv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:33:51 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCAAC06174A;
-        Fri, 19 Mar 2021 08:33:50 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id z8so12446634ljm.12;
-        Fri, 19 Mar 2021 08:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r2m7MTSjA4rnSzTDMPsjd8IDozpayK6VTsVZGZVnC1Q=;
-        b=uBjF5lQLBZiiumq0YZ5me9gHwz34Ik/vbGc+KXTVVVgjOYROvvRpBv87eilAzMX/db
-         2HuTU6C4hBb0xMBfYZM6whHLwNQVXu+yUwQ9IKWjL+U1z9DkaOVHTZ8S0+pP/vT1c4Zw
-         h1JLdx8A4V1SG80obBn0EhYQXSbh8Ti2AbleFkTeWTNfubzZWRBQalc2eGMVuKL+5Syn
-         evSQuiW7qoi+8eWQzSBTR416zmrHLIRlWtX62SnPluoKHimHduIymANlQxvbg21vASWH
-         2W2ECN4p1niH/XAr11DkzWeQTnyQj9O4kZ2urusfMWLsJQhP1uLvFOzQBNT9EwRoqLve
-         DpcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r2m7MTSjA4rnSzTDMPsjd8IDozpayK6VTsVZGZVnC1Q=;
-        b=uCqtyDWyW2sTTjuE1hvJNEtSAkBQ0HiGfyT4v68+7WZQRDE2PQV4QdfKEwUfO5RPeF
-         m4iYKCLG8Lda106BjvAz2pk5R0vKEeuMFa53tC08jXJwARkGKSwSvnGGKz60JhrBYpJv
-         ePfZYof2dHr7TwR7lHCojZXAx+ynCWlgEoqU0E52rnuxKsgQOp9QBIZJklB3HptoNTYD
-         5Esnt7v7imJupSabqa/ENaCGKXg8cyqTCuXw53awvy1ApjgbzWSNUzjqJL/PPJ2ZsIU/
-         pr7FLiy7RH760qa6GkywEq2KixwZhLWgvky2pmoXspi/Bk0fuF1eK3RRrAxSY/BtgbM0
-         oytQ==
-X-Gm-Message-State: AOAM532MzbW1C+gqhiBe2gR24BHh9s32az3EypzNa4AloE3jopjnGSOl
-        TDioOmimZdfTbZFAgs/hE4VrVelT5GeTWSCzAuC+8EJ8
-X-Google-Smtp-Source: ABdhPJzpF4TWQznngDJXH3QO0WjoeBLQP65YZc6vf4KMW/QuCClTsO+FT2ub1TWw/Uj0nD3WKm7G1ArhIBnPW0LuyI4=
-X-Received: by 2002:a2e:981a:: with SMTP id a26mr1278220ljj.204.1616168029442;
- Fri, 19 Mar 2021 08:33:49 -0700 (PDT)
+        id S230336AbhCSPeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:34:36 -0400
+Received: from mga18.intel.com ([134.134.136.126]:56834 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230051AbhCSPeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:34:08 -0400
+IronPort-SDR: gwUVpFGvTQIX1qJEEWG+W+6bPNiUuM5XNlghrEfJs9LML+PUm6440o5GSObQAmFHzSkmjlwaao
+ 5qrpv538bD5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177498547"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="177498547"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 08:33:50 -0700
+IronPort-SDR: yINm3pIdT32OBVYL/oh8yB6chfhX+0N6/tKe1sMCd6dX4cDqfxWO6zIEd6sQoqUtT9th38EXPz
+ wkkmuPSyvF8Q==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="406832540"
+Received: from hyunyi-mobl1.amr.corp.intel.com (HELO [10.212.50.74]) ([10.212.50.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 08:33:49 -0700
+Subject: Re: [tip: x86/sgx] selftests/sgx: Improve error detection and
+ messages
+To:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org
+References: <20210318194301.11D9A984@viggo.jf.intel.com>
+ <161615392429.398.565615269339667317.tip-bot2@tip-bot2>
+ <20210319145807.GG6251@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <74d1970b-eb8a-8b7b-215b-592451e1a8c3@intel.com>
+Date:   Fri, 19 Mar 2021 08:33:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210319111652.474c0939@canb.auug.org.au> <CAFzhf4pCdJStzBcveahKYQFHJCKenuT+VZAP+8PWSEQcooKLgQ@mail.gmail.com>
- <4f90ff09-966c-4d86-a3bc-9b52107b6d8a@iogearbox.net> <70b99c99-ed58-3b05-92c9-3eaa1e18d722@fb.com>
-In-Reply-To: <70b99c99-ed58-3b05-92c9-3eaa1e18d722@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 19 Mar 2021 08:33:37 -0700
-Message-ID: <CAADnVQJTXiqZYY1bbKCKwm8_sUvLfUoNaMo8b_Buf=CMhOa+CA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210319145807.GG6251@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 8:17 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 3/19/21 12:21 AM, Daniel Borkmann wrote:
-> > On 3/19/21 3:11 AM, Piotr Krysiuk wrote:
-> >> Hi Daniel,
-> >>
-> >> On Fri, Mar 19, 2021 at 12:16 AM Stephen Rothwell <sfr@canb.auug.org.au>
-> >> wrote:
-> >>
-> >>> diff --cc kernel/bpf/verifier.c
-> >>> index 44e4ec1640f1,f9096b049cd6..000000000000
-> >>> --- a/kernel/bpf/verifier.c
-> >>> +++ b/kernel/bpf/verifier.c
-> >>> @@@ -5876,10 -6056,22 +6060,23 @@@ static int
-> >>> retrieve_ptr_limit(const str
-> >>>                  if (mask_to_left)
-> >>>                          *ptr_limit = MAX_BPF_STACK + off;
-> >>>                  else
-> >>>   -                      *ptr_limit = -off;
-> >>>   -              return 0;
-> >>>   +                      *ptr_limit = -off - 1;
-> >>>   +              return *ptr_limit >= max ? -ERANGE : 0;
-> >>> +       case PTR_TO_MAP_KEY:
-> >>> +               /* Currently, this code is not exercised as the only use
-> >>> +                * is bpf_for_each_map_elem() helper which requires
-> >>> +                * bpf_capble. The code has been tested manually for
-> >>> +                * future use.
-> >>> +                */
-> >>> +               if (mask_to_left) {
-> >>> +                       *ptr_limit = ptr_reg->umax_value + ptr_reg->off;
-> >>> +               } else {
-> >>> +                       off = ptr_reg->smin_value + ptr_reg->off;
-> >>> +                       *ptr_limit = ptr_reg->map_ptr->key_size - off;
-> >>> +               }
-> >>> +               return 0;
-> >>>
-> >>
-> >> PTR_TO_MAP_VALUE logic above looks like copy-paste of old
-> >> PTR_TO_MAP_VALUE
-> >> code from before "bpf: Fix off-by-one for area size in creating mask to
-> >> left" and is apparently affected by the same off-by-one, except this time
-> >> on "key_size" area and not "value_size".
-> >>
-> >> This needs to be fixed in the same way as we did with PTR_TO_MAP_VALUE.
-> >> What is the best way to proceed?
-> >
-> > Hm, not sure why PTR_TO_MAP_KEY was added by 69c087ba6225 in the first
-> > place, I
-> > presume noone expects this to be used from unprivileged as the comment
-> > says.
-> > Resolution should be to remove the PTR_TO_MAP_KEY case entirely from
-> > that switch
-> > until we have an actual user.
->
-> Alexei suggested so that we don't forget it in the future if
-> bpf_capable() requirement is removed.
->     https://lore.kernel.org/bpf/c837ae55-2487-2f39-47f6-a18781dc6fcc@fb.com/
->
-> I am okay with either way, fix it or remove it.
+On 3/19/21 7:58 AM, Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 11:38:44AM -0000, tip-bot2 for Dave Hansen wrote:
+>>  tools/testing/selftests/sgx/load.c | 66 ++++++++++++++++++++++-------
+>>  tools/testing/selftests/sgx/main.c |  2 +-
+>>  2 files changed, 53 insertions(+), 15 deletions(-)
+> Anything against some more tweaks ontop?
 
-I prefer to fix it.
+Looks good to me.
