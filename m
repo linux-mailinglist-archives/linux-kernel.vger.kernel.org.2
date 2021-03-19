@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9F734147C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB717341487
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhCSFGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:06:06 -0400
-Received: from mail-eopbgr80088.outbound.protection.outlook.com ([40.107.8.88]:20352
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229447AbhCSFFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:05:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SKlYDmIS3EsrEFqk9EDqqmelHEXcTdHrIQi9EtOP4WUYu1aYVHex8EE58G6nfKsvfRTl0vqw1k36QyxQnB8+wmi+jmnYqRMnqFemyy0UpD0RpVulyfL9HH74V9nvkJKcpuYfgudK2dOr+ktNxu0OhEhw0SSTOsbeQmZBJdqWdmVdxy9F/ucpy1PanaRomamdAxkfOm+PqG9vV/rBnrSa8WxGMYrh6EKjzlwW+qk2p01SDjG02qEIlL0f7QtEPXRfBCaeA1DLbOkRZazPEdlYb7gsRgMVasY3S39Yuj8tRNu08znvBu5ltmSpuH7hKcro+GmSmsbNNW7Qft/5jTqomw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sIIN4wSI/06BC/fRGEyn9V69cdtcUyh61mCAskc3EQM=;
- b=Ua3ngyM1aYaGtP0w9Rup/9RfVPnokmPupKfsoJX5Gl5esuQ10HvYeJU6+meLNlL9Q4kdFPSogpSi+wft7YKB0sJYY2kpTQjO6ymMCL6BNFxidelcmSqxnvT8jIG4gvTKvGP9cnV7d5y48Frqx7UrFJ6XXzjtniLrRoH6Jlaqm8Q7KyEWpCVx3uVv8hyaqkYhX/iGUY9k1Ks42PMyuyms7+GgFkgwehKWJGkXNtezOeD0xLKbBiqVPi16z+VG6aOk2g4fJKShGPrQnqvOklKNmzk2h3EQdDPJ1DZDSiZVp9U3VRh91UgY8JAUZOjsjSwN8EYTz2SzDDcohA9wtJP08w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sIIN4wSI/06BC/fRGEyn9V69cdtcUyh61mCAskc3EQM=;
- b=E401b/mPSoXkSAiT1iTh7H8QpYzFDjpFFshFFx68noymEv7jFvRqPSTUz7aIfiD41jgLLK+UZ3wSrUrzKBGzdXd/OTMeFxE5BGLxT+1Ex00d07ukIhmAb90ETZSTPAnwRM92hCMJv0eJRgy2cCSHkTzOCGVrFKV8UIiG0Urg0zY=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM5PR04MB3154.eurprd04.prod.outlook.com (2603:10a6:206:7::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Fri, 19 Mar
- 2021 05:05:34 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::ecad:ebb8:8eb0:d359]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::ecad:ebb8:8eb0:d359%7]) with mapi id 15.20.3955.023; Fri, 19 Mar 2021
- 05:05:34 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Clark Wang <xiaoning.wang@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 06/11] i2c: imx-lpi2c: improve i2c driver probe priority
-Thread-Topic: [PATCH 06/11] i2c: imx-lpi2c: improve i2c driver probe priority
-Thread-Index: AQHXGvpVE42KmqlLm0i92t+eRYIAsaqKxLjA
-Date:   Fri, 19 Mar 2021 05:05:34 +0000
-Message-ID: <AM6PR04MB4966AFFBF0547DBCB6658D9B80689@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
- <20210317065359.3109394-7-xiaoning.wang@nxp.com>
-In-Reply-To: <20210317065359.3109394-7-xiaoning.wang@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: fa8816af-93a1-4e64-4307-08d8ea94a0a4
-x-ms-traffictypediagnostic: AM5PR04MB3154:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM5PR04MB3154FF1EE1BA9D48A85768AA80689@AM5PR04MB3154.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1vRLHTqQkcugel5a2yKf9dJeXDwdQ0AmhEKbjHmHw+fjIf5epAM8mapcRjJf/aw7RLjYAnbmHw0D7XEfBPN92khYNtW7bABcnJpd43VlAoU5C5ffQ3i9q/CffK2UhhWypaIoFXUfzmQS0d+p9esL/M/7er0/g8NcKg0c2rOn8mSBiP3WCPGiftqD19/aZZztMmhGC1K+BWE+hrJsZgjevpnbNAkewgm4OZOOfbYQIN/Kf99tkrZsaNUQ5pGzYAgjcvdzO0Bpl9OK0sA/5P8L1WQEFg+NCh7gPdzPWUy5oG2sUwCdBDEOVCsqw/c6A/eFZH+RA0YjPphZVeIY4+NzsANSNAYGFy60ZbAC5GhF/dyQaWk56CtYcrrZhLnB5Nt3lF9KI5F/c4gsFEKdIiiD9dE/e2kMZbtU34SPpBVEaDZu3GOlwFP2+fFihBMY2gsLkyFCpP5Jj13coXvP8IKxNqGEUjbxMgYL4iA6PoAg1h8IhTEQ4U0ubikrv5US0OCicSVvGrH0V+5DJS0QhMxGj1S+SkO/kjIsrcnMk9Wl9A0u+wd0Jdju1C6O5wYM73N0KWg2wdxdwkETRYMJj/LV8A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(366004)(26005)(83380400001)(52536014)(4326008)(7696005)(55016002)(5660300002)(66946007)(71200400001)(44832011)(54906003)(38100700001)(2906002)(186003)(110136005)(478600001)(8676002)(9686003)(8936002)(76116006)(66476007)(66556008)(33656002)(86362001)(64756008)(316002)(6506007)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MEt0Nml6SzRrRFgyT1hWbTZTSTVZbnBDTXloNnBkYWlUM2FKTXF2OFVYYU84?=
- =?utf-8?B?aGswTnN6cG5ndDc4Qk8yNUoxWU11eU1yRU9rNXp4ZWorVE5iaEU2SmRaM0I1?=
- =?utf-8?B?Yi9oUzM3eGhFSmFTeVp6ck9jZWpqUGpCYUtBbmlZbmJvNmprVHF6dzY1NkRr?=
- =?utf-8?B?eWNCSEdFa1I0ODVwYy94RTBhYVVFR215TlZhWjEwTnFQajRyWVNZWkIwTFV4?=
- =?utf-8?B?cFdSK2F1VGpWYlZNcWp3SmVWV3BJS25MclIzcmF2UzJKODdLYXlpSFgzaDJV?=
- =?utf-8?B?cE5Nb1JnK2l6S05DRldUQTNadXhYNEIxQmdMV0NZLzBZbWlVOUllSEJKU0dx?=
- =?utf-8?B?YXd1c0p2TWxRbmZTOWN3aCtmSzJNT3o0Y1V3dDFveVhCb0ljTmNkcjVZQkVK?=
- =?utf-8?B?cGRHeTNYeG43OUdKbmE3TWU5UEhVUzFnY0VLeGNWZkhzRVd6akZxeGlQaTNn?=
- =?utf-8?B?REVwVy8xei9HNnV1allpTThOVXJTNy9uV05BWERrbE9rVmIzQ2tObDNjSDhG?=
- =?utf-8?B?d3gwZWxKM1k3SHcraGUrKzlVWHdTTGFMNDZZNTkwRDFNNVhuOHcybzhRK1Ra?=
- =?utf-8?B?TE8zait1eS9ZRFhZVmJ6R1dZbksxMEdBYlNzdGJlaFd0dXRxOTZKZGljM3lk?=
- =?utf-8?B?NmF3Sk9aQ1VKYlNWMzd4b2oyTUY5bDRjTWdJLzUxcC8rS3ovYldNK1N2RlIr?=
- =?utf-8?B?a0txT05EU3hNTDUvbXFNSS9pY2sva3U5TklxdlMyVFdnNGFKaHRFRjZndk1S?=
- =?utf-8?B?R1V4azg4T2Z2MUNOVkJZZ3VZZHhyWVZrRnBBZVowa3JON2JCdStOM2x6enBQ?=
- =?utf-8?B?TUNRS1BtdngxWWwrZVZMbkUrcXArZkVHYzlIRkJjanNsMjI0UGptYXZYODZ6?=
- =?utf-8?B?Ui9rSHRqZ1RFcStFbjJaU2lCSVl0VDhaSS9wV0VlMmVlaW05RFJBTUhCdDEr?=
- =?utf-8?B?WmtZUGRmUzY0RjhkY0l0bUMzdGE1L094TjY5NzYyVFVrWGNhenVOUWl0WkZQ?=
- =?utf-8?B?RTZHTW5KTnA3TVFHNHY1dFdCQkJ3a1hCL1F1MklLQVFrNThzdmg5VkZXcG9n?=
- =?utf-8?B?MkZaVGljTU5idGthT0FINStqZWs3N3B2ZjNFU1k4RUtvSGtBSWpSeEpXQWNs?=
- =?utf-8?B?bHdZWEMrOTlpQ1d2MGVCSnBjNzZoOElyRDBiZm51SjdML0NHVUNpUzMwK21F?=
- =?utf-8?B?RlRSVG56RzBPaDVqbTRZR0xNL3BERVFUQU9LU3Fmc3NhMGNuK0F6Mnc4ckl6?=
- =?utf-8?B?RTJrTWhIcG9LakRZUmdFOW41YnRmVVpLYTBnWnhvc21CbURpdjk0dzVCSkFs?=
- =?utf-8?B?UmdIbU5BYmxGYmJMaXhQQ29mbXdPZ1lmZFlnbDNaSU1PTEh3YXdiMWptbXla?=
- =?utf-8?B?TWhBNFhGY3l6UjdlWitXTEk4MEk5Z0hxbkJTT0lJdWVKSWx4eXptU2pDSnhJ?=
- =?utf-8?B?Z0xmZ0pYUkQ3Q3A3UWN0WTNTenQ1ajArL3drYlRHakNKZzFxblJSd1R5bTVS?=
- =?utf-8?B?cENMOXRKZmltcXcxRXYzdmNCSExpdldGV0Ntc01YLzhXaXNNT0M0Y2U1bmtY?=
- =?utf-8?B?VDBLN0ZaeHp0dGdtZk1FdmM0dHRXNEVNU0EwSmQ0LzQ2Q2NVcVpDZHUzM3dX?=
- =?utf-8?B?aHJ6eGMySUY4RlZwdkRUY0tvN1NGUGgxRUY0cjJiSUpuaVZNUkkwWkNJeG1t?=
- =?utf-8?B?YjdjdHpvVkc5UmpFa2Z1WTJXVDlPdGxOVGthQm03RCtIKzdGRGlLT2k2bHNy?=
- =?utf-8?Q?IHq2S2RV3nVrMbpiNEUMKjeOq2Wo+enw/b0lzbA?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233713AbhCSFJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhCSFJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 01:09:08 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F70DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:09:08 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id e8so4809618iok.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wxiszw2drMvmD7rMCrqyxvMPA5cWYCVt77mNQDKPxfA=;
+        b=dBAvAxhPJpQ1B5LQP3Xpsz3rdrt3babd8kz8Fkf1so7iIlHJ2JKNVUdPuh0lu50WzA
+         YBj6/Kvu15vRWdta1CCFkLZAkZHqe8lhOz03cXSp29Ik+lFIl5wXHgo4uQ41Ur0AVnFY
+         cyyPJGhNSbzKeliYPDJ3Xm/Z80Z9XIgfaWsiUEusZVlVr+0SFSIGGn7pa/+v4E9avYUr
+         Rg+v7IpN44Zr1pp/xOY6pueXktPrkst/X1Z6a8fRaFOoyJYYBUyl2Ayk9OxOGkZ0MN6l
+         P69hk8XJb+oZoYv06eWBHZ0q8Zsd2fneSeo8Ow5mHS+k73NMQBXxtRg8Z9lRdCf//V+q
+         yh1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wxiszw2drMvmD7rMCrqyxvMPA5cWYCVt77mNQDKPxfA=;
+        b=g/E9aGDikAY9BvYj3ARrJcMk/lgrxVs5vsrSqLX8BwjTiwSV10+Pb1/stdY0e6Q8Xo
+         PBYoBteAH5/uytgK1ZyyVTTCHj9jBGMkekNZjkrWT9gtETwNvU9p2DuYDI1yE6nyer5r
+         1ghT+qgkSn3das74SZtCQGExwGmMv1P67As+EgisDEWzS8Sb6DnFxrPK09dnlquT8S8M
+         3xThS3hwLggh76NO/WC0q6jYS2YpsOpqePGrnd9sDEkByoUNY/F/wjQkTpwRIFLuEuPq
+         mj7j18/iBwVpkr50tCimaAWvDBjOW3yGXCYQ4N0pRQyLadE9BKQ9SucqR48bSROxAwoB
+         /GNA==
+X-Gm-Message-State: AOAM532C8xWrytbKkWLseIlkNC/jT3cDxvXCHpbTCccdCZQ+ixJZ+wHc
+        6Mg64hg6J7z18HJWo9wK7QGuyk9xzTe2J5goWMMUPXYXSYvZtg==
+X-Google-Smtp-Source: ABdhPJxQvo9MhltZ6KTauPE4wRuWZsIIXIzg6KowTEhnPE0j9J/UnKwG770PEOeeOnIaWhWIEY3CMxs7BfWsdnH4+GM=
+X-Received: by 2002:a05:6602:2102:: with SMTP id x2mr1551399iox.83.1616130546505;
+ Thu, 18 Mar 2021 22:09:06 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa8816af-93a1-4e64-4307-08d8ea94a0a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2021 05:05:34.3051
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xN4SU0CoB8XjtMs+/NP+pzUPfzkph7qjNzL8DoUeI3ar391kwmMnL+j7gWi4HYRT8mUPcUTS3rLquHoop+rg9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3154
+References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
+ <20210317143805.GA5610@redhat.com> <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+ <20210318180450.GA9977@redhat.com>
+In-Reply-To: <20210318180450.GA9977@redhat.com>
+From:   qianli zhao <zhaoqianligood@gmail.com>
+Date:   Fri, 19 Mar 2021 13:08:55 +0800
+Message-ID: <CAPx_LQENxx0y5mFJjwRT2qMSLt7pbAmF30=eE-QduEwRVJEJ0Q@mail.gmail.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     christian@brauner.io, axboe@kernel.dk,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBDbGFyayBXYW5nIDx4aWFvbmluZy53YW5nQG54cC5jb20+DQo+IFNlbnQ6IFdlZG5l
-c2RheSwgTWFyY2ggMTcsIDIwMjEgMjo1NCBQTQ0KPiANCj4gdXNlIHN1YnN5c19pbml0Y2FsbCBm
-b3IgaTJjIGRyaXZlciB0byBpbXByb3ZlIGkyYyBkcml2ZXIgcHJvYmUgcHJpb3JpdHkNCg0KV2ls
-bCB0aGlzIGFmZmVjdCBETUEgc3VwcG9ydCB3aGljaCB3aWxsIGJlIHByb2JlZCBtdWNoIGxhdGVy
-IGNvbXBhcmVkIHdpdGggc3Vic3lzX2luaXRjYWxsPw0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBH
-YW8gUGFuIDxwYW5keS5nYW9AbnhwLmNvbT4NCg0KQWRkIHlvdXIgc2lnbi1vZmYNCg0KPiAtLS0N
-Cj4gIGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LWxwaTJjLmMgfCAxMiArKysrKysrKysrKy0N
-Cj4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0K
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1pbXgtbHBpMmMuYw0KPiBiL2Ry
-aXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LWxwaTJjLmMNCj4gaW5kZXggOGY5ZGQzZGQyOTUxLi44
-NmI2OTg1MmY3YmUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LWxw
-aTJjLmMNCj4gKysrIGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1pbXgtbHBpMmMuYw0KPiBAQCAt
-NzEwLDcgKzcxMCwxNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBscGkyY19pbXhf
-ZHJpdmVyID0gew0KPiAgCX0sDQo+ICB9Ow0KPiANCj4gLW1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIo
-bHBpMmNfaW14X2RyaXZlcik7DQo+ICtzdGF0aWMgaW50IF9faW5pdCBscGkyY19pbXhfaW5pdCh2
-b2lkKQ0KPiArew0KPiArCXJldHVybiBwbGF0Zm9ybV9kcml2ZXJfcmVnaXN0ZXIoJmxwaTJjX2lt
-eF9kcml2ZXIpOw0KPiArfQ0KPiArc3Vic3lzX2luaXRjYWxsKGxwaTJjX2lteF9pbml0KTsNCj4g
-Kw0KPiArc3RhdGljIHZvaWQgX19leGl0IGxwaTJjX2lteF9leGl0KHZvaWQpIHsNCj4gKwlwbGF0
-Zm9ybV9kcml2ZXJfdW5yZWdpc3RlcigmbHBpMmNfaW14X2RyaXZlcik7DQo+ICt9DQo+ICttb2R1
-bGVfZXhpdChscGkyY19pbXhfZXhpdCk7DQo+IA0KPiAgTU9EVUxFX0FVVEhPUigiR2FvIFBhbiA8
-cGFuZHkuZ2FvQG54cC5jb20+Iik7DQo+IE1PRFVMRV9ERVNDUklQVElPTigiSTJDIGFkYXB0ZXIg
-ZHJpdmVyIGZvciBMUEkyQyBidXMiKTsNCj4gLS0NCj4gMi4yNS4xDQoNCg==
+Hi,Oleg
+
+> But then I don't understand the SIGNAL_GROUP_EXIT check added by your
+> patch. Do we really need it if we want to avoid zap_pid_ns_processes()
+> when the global init exits?
+
+I think check SIGNAL_GROUP_EXIT is necessary,or panic() will happen
+after all init sub-threads do_exit(),so the following two situations
+will happen:
+1.According to the timing in the changelog,
+zap_pid_ns_processes()->BUG() maybe happened.
+2.The key variables of each init sub-threads will be in the exit
+state(such task->mm=3DNULL,task->flags=3DPF_EXITING,task->nsproxy=3DNULL),r=
+esulting
+in the failure to parse coredump from fulldump.
+
+So i think check SIGNAL_GROUP_EXIT is a simple and effective way to
+prevent these
+
+> Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
+> to panic earlier, before other init's sub-threads exit?
+
+Yes, my patch just want panic earlier before other init's sub-threads exit
+
+Oleg Nesterov <oleg@redhat.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=8819=E6=97=A5=
+=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=882:05=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 03/18, qianli zhao wrote:
+> >
+> > Hi,Oleg
+> >
+> > Thank you for your reply.
+> >
+> > >> When init sub-threads running on different CPUs exit at the same tim=
+e,
+> > >> zap_pid_ns_processe()->BUG() may be happened.
+> >
+> > > and why do you think your patch can't prevent this?
+> >
+> > > Sorry, I must have missed something. But it seems to me that you are =
+trying
+> > > to fix the wrong problem. Yes, zap_pid_ns_processes() must not be cal=
+led in
+> > > the root namespace, and this has nothing to do with CONFIG_PID_NS.
+> >
+> > Yes, i try to fix this exception by test SIGNAL_GROUP_EXIT and call
+> > panic before setting PF_EXITING to prevent zap_pid_ns_processes()
+> > being called when init do_exit().
+>
+> Ah, I didn't notice your patch does atomic_dec_and_test(signal->live)
+> before exit_signals() which sets PF_EXITING. Thanks for correcting me.
+>
+> So yes, I was wrong, your patch can prevent this. Although I'd like to
+> recheck if every do-something-if-group-dead action is correct in the
+> case we have a non-PF_EXITING thread...
+>
+> But then I don't understand the SIGNAL_GROUP_EXIT check added by your
+> patch. Do we really need it if we want to avoid zap_pid_ns_processes()
+> when the global init exits?
+>
+> > In addition, the patch also protects the init process state to
+> > successfully get usable init coredump.
+>
+> Could you spell please?
+>
+> Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
+> to panic earlier, before other init's sub-threads exit?
+>
+> Thanks,
+>
+> Oleg.
+>
