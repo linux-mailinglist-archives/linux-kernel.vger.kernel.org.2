@@ -2,182 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0348C34153E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98526341545
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhCSGGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S233917AbhCSGQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbhCSGGx (ORCPT
+        with ESMTP id S233818AbhCSGQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:06:53 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268CCC06174A;
-        Thu, 18 Mar 2021 23:06:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F1th551p5z9sRR;
-        Fri, 19 Mar 2021 17:06:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616134009;
-        bh=eiVMt2M3R6q7YinzTkvUK/ofoiVrSkJARODUGtcdwEE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d5mZNoV/+X6afN8Gehi4MUW3YYv0eXoDrnyGn4iNQZS+zijbi31IkoOPotbxjAVxk
-         +/HuqZ3iu4Vf80mXq30W00L1EL9yzi+xg7eDZI933+pkX5EOgi8ogsfrszZ2xueSqA
-         Gt58LycHFlguWcgAwGYEuKk9iSlbCeNzPjAZg/kB5TFUcEo5dYV8Lre+O7ZijKQhDO
-         zn3LLTFrqBhqtmbqUGEtKTV6N3iml26VNmPET2cYmmYV0hT2BQk7NSqs6JjiBLq/hU
-         liWuYPr5vtNXWXyvbdj/6/qwVBPdwOVI4n3NX2DXhT9HhTQqCfFLCr89BrZdYwx2Z1
-         OJ5uOR/pOCDYQ==
-Date:   Fri, 19 Mar 2021 17:06:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        James Morris <jmorris@namei.org>
-Cc:     James Morris <jamorris@linux.microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm tree with the security tree
-Message-ID: <20210319170643.3dac3446@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iBe.hE=bXl5Uz2dlh4SkLpM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Fri, 19 Mar 2021 02:16:07 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BCBC06174A;
+        Thu, 18 Mar 2021 23:16:07 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gb6so4152317pjb.0;
+        Thu, 18 Mar 2021 23:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9BaMMGzOpHD0VDxT5SymHo185nk+L06zmdo5u2GYgc8=;
+        b=ZzDg1uOEAWm8QJJ9nHn9MQEN4TCJbb7AtqP+HTGbkuCr6JpTx3Ls93Glc7sYZgyDM1
+         Z9W2q0+5OdbzUiFBDGzAhjciaBSqV0/Y9vV0jrEU1lyNyL024GFdGIT1lmbJYzO7JB02
+         mnRMpdl5rPa8b23/C8lxn+vrI5RQtS/zJRe3HG2JNURrFuyjBahhcKBANaWe0ELN/mcO
+         vU59VgkBzUwe/ivY9yiMbz0zJK21dwA/hpLqHieK659yvyYQPimmzap5a0EqKPifRHto
+         F3ND/KtPUopDxZlC3tw7EhO5MtowTjMNEOAvTbRJjknJeCeuD/YVUnxHQi2qP9Ss1aF/
+         +2wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9BaMMGzOpHD0VDxT5SymHo185nk+L06zmdo5u2GYgc8=;
+        b=lMWhFwI1iOuTgvjtFZrJf5qcxbOwTcPzVQKKloe3DojLQRy4PdZctkpvnjPXyObw2L
+         MpPKWj7DXtTAMSR8voxPsOYAm0N96Z9t9BhCPGz9ZezOuP5La+EH7QLsPc2Mk5LdiFO2
+         Dn0S/rkETGUJYUwbdgRa33YpcdEinsNxDM3cUOxj49eRnDJ1O1EsOrQKzEXMyBCFzQ2i
+         WF6YcjBBTuB2Q5kyZsezFthOjKZ8H9MBv7bwL9swlUOzOjs1Xfy3obfr4+OmlDJ+3yhe
+         oxAk2NZMv2q0YHiiyOoF6hjJJhu+6rnqb/8mRJ1RBBXqTQNP/I3akz54wbKLAANbrPBH
+         fOvw==
+X-Gm-Message-State: AOAM530gB+IkI5FeVaf+tft7P3Q5zL5kon7V2QX/sFkysPeAqTxEGSgg
+        yirWItFKzcMY10doo2yBTp8=
+X-Google-Smtp-Source: ABdhPJzD7StJBrcMqBQbYIw3n/bPA9damAKDDp5QGqq0S2PqehVBrjHorFuWRg+dNvnyR2/gNyfa5Q==
+X-Received: by 2002:a17:902:e98c:b029:e5:defc:ccf8 with SMTP id f12-20020a170902e98cb02900e5defcccf8mr13099782plb.20.1616134566704;
+        Thu, 18 Mar 2021 23:16:06 -0700 (PDT)
+Received: from lenovo.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id o1sm4223103pjp.4.2021.03.18.23.16.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Mar 2021 23:16:06 -0700 (PDT)
+From:   Orson Zhai <orsonzhai@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haidong.yao@unisoc.com,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: [PATCH v3 0/3] Fixes & a new supplementary feature to SPRD mailbox driver
+Date:   Fri, 19 Mar 2021 14:15:34 +0800
+Message-Id: <1616134537-27966-1-git-send-email-orsonzhai@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iBe.hE=bXl5Uz2dlh4SkLpM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Orson Zhai <orson.zhai@unisoc.com>
 
-Hi all,
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
+Fix a real problem for SPRD's mailbox driver in patch 1/3.
+Add supplementary inbox support for newly added sc9863a in patch 3/3 and
+change dt bindings yaml accordingly in patch 2/3.
 
-Today's linux-next merge of the akpm tree got conflicts in:
+Changes Log:
+V3:
+- Add Reviewed-by tag from Baolin for driver code.
+- Change interrupt-names syntax in dt-bindings according to Rob's comment.
 
-  arch/x86/entry/syscalls/syscall_32.tbl
-  arch/x86/entry/syscalls/syscall_64.tbl
-  include/linux/syscalls.h
-  include/uapi/asm-generic/unistd.h
+V2:
+- Change patches order. (Yaml go to the head of dirver)
+- Remove unnecessary initializing refcnt to zero. 
+- Add fix of possible crash caused by NULL of chan->cl. (Actually move from
+  changes to sprd-mailbox.c of patch v1)
+- Remove unnecessary "inline" for do_inbox_isr().
+- Fix yaml errors from Rob's robot checking.
+- Add sc9863a compatible string for real supplementary inbox usage. (sc9860
+  is not supported by supp-inbox)
+- Add more details to supp-inbox in commit messages.
 
-between commit:
+Orson Zhai (3):
+  mailbox: sprd: Introduce refcnt when clients requests/free channels
+  mailbox: sprd: Add supplementary inbox support
+  dt-bindings: mailbox: Add interrupt-names to SPRD mailbox
 
-  c5eafae25eb5 ("landlock: Add syscall implementations")
+ .../devicetree/bindings/mailbox/sprd-mailbox.yaml  |  13 +-
+ drivers/mailbox/sprd-mailbox.c                     | 135 ++++++++++++++++-----
+ 2 files changed, 113 insertions(+), 35 deletions(-)
 
-from the security tree and patch:
+-- 
+2.7.4
 
-  "arch, mm: wire up memfd_secret system call where relevant"
-
-from the akpm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/entry/syscalls/syscall_32.tbl
-index 28a1423ce32e,524a076e79ca..000000000000
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@@ -448,6 -448,4 +448,7 @@@
-  441	i386	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-  442	i386	mount_setattr		sys_mount_setattr
-  443	i386	quotactl_path		sys_quotactl_path
- -444	i386	memfd_secret		sys_memfd_secret
- +444	i386	landlock_create_ruleset	sys_landlock_create_ruleset
- +445	i386	landlock_add_rule	sys_landlock_add_rule
- +446	i386	landlock_restrict_self	sys_landlock_restrict_self
-++447	i386	memfd_secret		sys_memfd_secret
-diff --cc arch/x86/entry/syscalls/syscall_64.tbl
-index ecd551b08d05,440467ca352d..000000000000
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@@ -365,9 -365,7 +365,10 @@@
-  441	common	epoll_pwait2		sys_epoll_pwait2
-  442	common	mount_setattr		sys_mount_setattr
-  443	common	quotactl_path		sys_quotactl_path
- -444	common	memfd_secret		sys_memfd_secret
- +444	common	landlock_create_ruleset	sys_landlock_create_ruleset
- +445	common	landlock_add_rule	sys_landlock_add_rule
- +446	common	landlock_restrict_self	sys_landlock_restrict_self
-++447	common	memfd_secret		sys_memfd_secret
- =20
-  #
-  # Due to a historical design error, certain syscalls are numbered differe=
-ntly
-diff --cc include/linux/syscalls.h
-index 050511e8f1f8,019a1d876eb1..000000000000
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@@ -1045,11 -1043,7 +1045,12 @@@ asmlinkage long sys_pidfd_send_signal(i
-  				       siginfo_t __user *info,
-  				       unsigned int flags);
-  asmlinkage long sys_pidfd_getfd(int pidfd, int fd, unsigned int flags);
- +asmlinkage long sys_landlock_create_ruleset(const struct landlock_ruleset=
-_attr __user *attr,
- +		size_t size, __u32 flags);
- +asmlinkage long sys_landlock_add_rule(int ruleset_fd, enum landlock_rule_=
-type rule_type,
- +		const void __user *rule_attr, __u32 flags);
- +asmlinkage long sys_landlock_restrict_self(int ruleset_fd, __u32 flags);
-+ asmlinkage long sys_memfd_secret(unsigned long flags);
- =20
-  /*
-   * Architecture-specific system calls
-diff --cc include/uapi/asm-generic/unistd.h
-index 67093382a4e6,77d89b24341f..000000000000
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@@ -865,15 -865,13 +865,19 @@@ __SC_COMP(__NR_epoll_pwait2, sys_epoll_
-  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
-  #define __NR_quotactl_path 443
-  __SYSCALL(__NR_quotactl_path, sys_quotactl_path)
- +#define __NR_landlock_create_ruleset 444
- +__SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
- +#define __NR_landlock_add_rule 445
- +__SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
- +#define __NR_landlock_restrict_self 446
- +__SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
-+ #ifdef __ARCH_WANT_MEMFD_SECRET
- -#define __NR_memfd_secret 444
-++#define __NR_memfd_secret 447
-+ __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
-+ #endif
- =20
-  #undef __NR_syscalls
-- #define __NR_syscalls 447
- -#define __NR_syscalls 445
-++#define __NR_syscalls 448
- =20
-  /*
-   * 32 bit systems traditionally used different
-
---Sig_/iBe.hE=bXl5Uz2dlh4SkLpM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBUP3MACgkQAVBC80lX
-0GzQmwgApQOQLN4AC8PMlh11JAzm1DQrO9RmT+kWIc2oAm74EWzvHsKoM+tRm1+F
-MfOMYIhUYTWeWcs8ow9YOPQ6tWlqInaIBS2uukfT8kysgu0M3lQx/ga2JmpLOR8X
-Y6TNgjiYir3HG3Wo1tE3MxuABHu8G0IxyvAsxkAVGjgx5oNT0Syz3aCkdwkHZkXc
-+8nJNmwjp1di+nmueVGcr3He0LlsJqm7X1RQvHm3c5NJ6xrZXrPPsLLoZNYE/e8P
-he0+sLD0ICn3CihzrjR1x72W4mse6LisXg8L5tni8hF1IoAN3k2Y2dz5MvdtpUyO
-2bx/qIf8rPzVZXS8HJxqx8dqwLPESA==
-=e+to
------END PGP SIGNATURE-----
-
---Sig_/iBe.hE=bXl5Uz2dlh4SkLpM--
