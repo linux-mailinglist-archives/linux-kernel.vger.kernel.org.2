@@ -2,468 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB00134243D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6484134243E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhCSSNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S230304AbhCSSOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbhCSSNg (ORCPT
+        with ESMTP id S230281AbhCSSOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:13:36 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B58C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:13:35 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h20so3336387plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:13:35 -0700 (PDT)
+        Fri, 19 Mar 2021 14:14:11 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26211C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:14:11 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id l23-20020a05683004b7b02901b529d1a2fdso9369761otd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ljDUxHhI5knAs2UScFzcSE76aziVOLQBesL5rZ6HzJQ=;
-        b=CQRwGSXGerZStxZXd7wRyn4WmaJHV90l0R+ZRvzaGmmSLZ4aalYq6vtDgnM2hqpu9O
-         IEGefAQaoDief3x5t78uDVcYpLaRD2J3XfQtqZVYgRNrl/py8ghhxuwK0jmo4A93bGUU
-         W5OaGi5zpzx/kTN+ZtkCjmnZbWQxb00BFZRsk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t7kii8i5MvpTK371d7gij4/ROdmy9ZS9dtdrdIgpERw=;
+        b=tH30REVX7GFAAVKCT2DKJGA3jKve8kd/s5uEfAZozZFPLTDcg8nCiuJuMDhw8EylBz
+         QTY8aFlMFr1cjP4EJE5murjfj8zTcEzijciI7ZZOfHavd4iF1idyHTjhYqkksJHjf5R5
+         GnYxH2DWML8qBdOOsqgfLm0mfUNKxVwB5zVeyAOfX3FEOXCFxS7ewqF72Dn3IAix0eoT
+         w3ZbfvphE8BbUbB+lW4GrE+Wr/vrsx3RVr170DEcrK1VH9/yVs6SqPf9Ti/D3LnmOD6p
+         bDazwTrFeYkd0AHhkDx6BYOPq5QcLofhxVyMEPEYfwtTHJX5+De0oNUTWJ7LSTxFnss3
+         TmbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ljDUxHhI5knAs2UScFzcSE76aziVOLQBesL5rZ6HzJQ=;
-        b=L0FRiegoNJYxYC2oEf1XrwhB5xDgNpFOS+5JXyGH5RLxy1EpHUyxPweejatd8MgopY
-         hUFfTs+nJVE1PwFOG+pzrtEf8aSXJ7k/U9Br1TdykO5Z1qeTtK0LtkSctClWukewRTAO
-         efGSwd29BMhYNZB8+kNjmwNR8bFQdwE3SeEIoCV6D+R1+538F5RqcRmDlibq+GwsfxPr
-         pHTenZVk5LefxbCMEr3kAXLMk99f6JjCGxZE2zjhkr0sBzHmqu0w1WVCpT8nWMpekm1/
-         fFdTsaKCwkH/JwepLAAd5WGUoB1eZVgUOZGwFe8wYs04TpsLYFCuzZ1kyl7XMp0269/n
-         wgiA==
-X-Gm-Message-State: AOAM532r15zRJp4dxtE8NeIbb+zOT4DIaLPiBy6YlLSIge4kzUlQGQQU
-        27/p9NzSEiP3e3s8MMqG5cNDug==
-X-Google-Smtp-Source: ABdhPJzRTASDlC0XaUKiiyAaXCK+xEIsv685KTnLwpdWYncE41UnBl7uEy1r8Lur41+53DyLeAPDyA==
-X-Received: by 2002:a17:902:ee95:b029:e5:e2c7:5f76 with SMTP id a21-20020a170902ee95b02900e5e2c75f76mr15786345pld.25.1616177615042;
-        Fri, 19 Mar 2021 11:13:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gz12sm5888759pjb.33.2021.03.19.11.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 11:13:34 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 11:13:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v30 01/12] landlock: Add object management
-Message-ID: <202103191110.E30F88C7C@keescook>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-2-mic@digikod.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t7kii8i5MvpTK371d7gij4/ROdmy9ZS9dtdrdIgpERw=;
+        b=pL3dY4W50YxEJdYQTWSk7ECDEZZE2aAeUiHlAmUr1K4HMK+HCn5PAC7L8rE5AggAai
+         N271b2TBMYgoUu8zlmrJC7P/1VrPbPeOFDOJtpRquuLD7uDTY3vLe5zIjzyORU5/YSIU
+         2S3VGy2lqjOs1hS0qVK/ANW43BJV5qaI3+mSx4elotxPfNl2yySpCIjg2C8XoH/M6F+S
+         73+6sWhAt0y971KMXggoUN4eUkcxek5aFYUR4UCXFOQYYZ6UmM+h+7az3zjno6rkey4i
+         uOMH8WVcPYn9fzgIXZDGpIsFYP0jYwZDFZJXH3lnHfddXY8PXz19aXGsojhAdT1phVkq
+         OPyQ==
+X-Gm-Message-State: AOAM533EVKgxN8tLxEyDPm/2XEo559ez07iZsgurR7kgZ91kwEwc3lKN
+        7IIPwUHopWbBRzwBM7me0kUzQ1sGoTK/yWnPh7q03K0Q5E8=
+X-Google-Smtp-Source: ABdhPJyq79eRJv6Lt71XlLYgAXxA5utNtq+TeEHiEydT5TE6pXG6B9q90X21Evzyqb3ckNgB6X/lYjxskHZCoMTmuxk=
+X-Received: by 2002:a9d:d89:: with SMTP id 9mr2110488ots.23.1616177650625;
+ Fri, 19 Mar 2021 11:14:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210316204252.427806-2-mic@digikod.net>
+References: <20210319082428.3294591-1-lee.jones@linaro.org> <20210319082428.3294591-7-lee.jones@linaro.org>
+In-Reply-To: <20210319082428.3294591-7-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 19 Mar 2021 14:13:59 -0400
+Message-ID: <CADnq5_O7wFLzp7THHN15Diyw52XUN7w+HMks227LWcUvmXShcw@mail.gmail.com>
+Subject: Re: [PATCH 06/19] drm/amd/display/dc/calcs/dce_calcs: Move some large
+ variables from the stack to the heap
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Harry Wentland <hwentlan@amd.com>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:42:41PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> A Landlock object enables to identify a kernel object (e.g. an inode).
-> A Landlock rule is a set of access rights allowed on an object.  Rules
-> are grouped in rulesets that may be tied to a set of processes (i.e.
-> subjects) to enforce a scoped access-control (i.e. a domain).
-> 
-> Because Landlock's goal is to empower any process (especially
-> unprivileged ones) to sandbox themselves, we cannot rely on a
-> system-wide object identification such as file extended attributes.
-> Indeed, we need innocuous, composable and modular access-controls.
-> 
-> The main challenge with these constraints is to identify kernel objects
-> while this identification is useful (i.e. when a security policy makes
-> use of this object).  But this identification data should be freed once
-> no policy is using it.  This ephemeral tagging should not and may not be
-> written in the filesystem.  We then need to manage the lifetime of a
-> rule according to the lifetime of its objects.  To avoid a global lock,
-> this implementation make use of RCU and counters to safely reference
-> objects.
-> 
-> A following commit uses this generic object management for inodes.
-> 
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> Reviewed-by: Jann Horn <jannh@google.com>
-> Acked-by: Serge Hallyn <serge@hallyn.com>
-> Link: https://lore.kernel.org/r/20210316204252.427806-2-mic@digikod.net
++ Harry, Nick
+
+On Fri, Mar 19, 2021 at 4:24 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
+=E2=80=98calculate_bandwidth=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:2016:1: warni=
+ng: the frame size of 1216 bytes is larger than 1024 bytes [-Wframe-larger-=
+than=3D]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Colin Ian King <colin.king@canonical.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> 
-> Changes since v28:
-> * Improve Kconfig description (suggested by Serge Hallyn).
-> * Add Acked-by Serge Hallyn.
-> * Clean up comment.
-> 
-> Changes since v27:
-> * Update Kconfig for landlock_restrict_self(2).
-> * Cosmetic fixes: use 80 columns in Kconfig and align Makefile
->   declarations.
-> 
-> Changes since v26:
-> * Update Kconfig for landlock_enforce_ruleset_self(2).
-> * Fix spelling.
-> 
-> Changes since v24:
-> * Fix typo in comment (spotted by Jann Horn).
-> * Add Reviewed-by: Jann Horn <jannh@google.com>
-> 
-> Changes since v23:
-> * Update landlock_create_object() to return error codes instead of NULL.
->   This help error handling in callers.
-> * When using make oldconfig with a previous configuration already
->   including the CONFIG_LSM variable, no question is asked to update its
->   content.  Update the Kconfig help to warn about LSM stacking
->   configuration.
-> * Constify variable (spotted by Vincent Dagonneau).
-> 
-> Changes since v22:
-> * Fix spelling (spotted by Jann Horn).
-> 
-> Changes since v21:
-> * Update Kconfig help.
-> * Clean up comments.
-> 
-> Changes since v18:
-> * Account objects to kmemcg.
-> 
-> Changes since v14:
-> * Simplify the object, rule and ruleset management at the expense of a
->   less aggressive memory freeing (contributed by Jann Horn, with
->   additional modifications):
->   - Remove object->list aggregating the rules tied to an object.
->   - Remove landlock_get_object(), landlock_drop_object(),
->     {get,put}_object_cleaner() and landlock_rule_is_disabled().
->   - Rewrite landlock_put_object() to use a more simple mechanism
->     (no tricky RCU).
->   - Replace enum landlock_object_type and landlock_release_object() with
->     landlock_object_underops->release()
->   - Adjust unions and Sparse annotations.
->   Cf. https://lore.kernel.org/lkml/CAG48ez21bEn0wL1bbmTiiu8j9jP5iEWtHOwz4tURUJ+ki0ydYw@mail.gmail.com/
-> * Merge struct landlock_rule into landlock_ruleset_elem to simplify the
->   rule management.
-> * Constify variables.
-> * Improve kernel documentation.
-> * Cosmetic variable renames.
-> * Remove the "default" in the Kconfig (suggested by Jann Horn).
-> * Only use refcount_inc() through getter helpers.
-> * Update Kconfig description.
-> 
-> Changes since v13:
-> * New dedicated implementation, removing the need for eBPF.
-> 
-> Previous changes:
-> https://lore.kernel.org/lkml/20190721213116.23476-6-mic@digikod.net/
-> ---
->  MAINTAINERS                | 10 +++++
->  security/Kconfig           |  1 +
->  security/Makefile          |  2 +
->  security/landlock/Kconfig  | 21 +++++++++
->  security/landlock/Makefile |  3 ++
->  security/landlock/object.c | 67 ++++++++++++++++++++++++++++
->  security/landlock/object.h | 91 ++++++++++++++++++++++++++++++++++++++
->  7 files changed, 195 insertions(+)
->  create mode 100644 security/landlock/Kconfig
->  create mode 100644 security/landlock/Makefile
->  create mode 100644 security/landlock/object.c
->  create mode 100644 security/landlock/object.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aa84121c5611..87a2738dfdec 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9997,6 +9997,16 @@ F:	net/core/sock_map.c
->  F:	net/ipv4/tcp_bpf.c
->  F:	net/ipv4/udp_bpf.c
->  
-> +LANDLOCK SECURITY MODULE
-> +M:	Mickaël Salaün <mic@digikod.net>
-> +L:	linux-security-module@vger.kernel.org
-> +S:	Supported
-> +W:	https://landlock.io
-> +T:	git https://github.com/landlock-lsm/linux.git
-> +F:	security/landlock/
-> +K:	landlock
-> +K:	LANDLOCK
+>  .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  | 32 ++++++++++++++++---
+>  1 file changed, 28 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/g=
+pu/drm/amd/display/dc/calcs/dce_calcs.c
+> index e633f8a51edb6..9d8f2505a61c2 100644
+> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> @@ -98,16 +98,16 @@ static void calculate_bandwidth(
+>         int32_t num_cursor_lines;
+>
+>         int32_t i, j, k;
+> -       struct bw_fixed yclk[3];
+> -       struct bw_fixed sclk[8];
+> +       struct bw_fixed *yclk;
+> +       struct bw_fixed *sclk;
+>         bool d0_underlay_enable;
+>         bool d1_underlay_enable;
+>         bool fbc_enabled;
+>         bool lpt_enabled;
+>         enum bw_defines sclk_message;
+>         enum bw_defines yclk_message;
+> -       enum bw_defines tiling_mode[maximum_number_of_surfaces];
+> -       enum bw_defines surface_type[maximum_number_of_surfaces];
+> +       enum bw_defines *tiling_mode;
+> +       enum bw_defines *surface_type;
+>         enum bw_defines voltage;
+>         enum bw_defines pipe_check;
+>         enum bw_defines hsr_check;
+> @@ -122,6 +122,22 @@ static void calculate_bandwidth(
+>         int32_t number_of_displays_enabled_with_margin =3D 0;
+>         int32_t number_of_aligned_displays_with_no_margin =3D 0;
+>
+> +       yclk =3D kcalloc(3, sizeof(*yclk), GFP_KERNEL);
+> +       if (!yclk)
+> +               return;
 > +
->  LANTIQ / INTEL Ethernet drivers
->  M:	Hauke Mehrtens <hauke@hauke-m.de>
->  L:	netdev@vger.kernel.org
-> diff --git a/security/Kconfig b/security/Kconfig
-> index 7561f6f99f1d..15a4342b5d01 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -238,6 +238,7 @@ source "security/loadpin/Kconfig"
->  source "security/yama/Kconfig"
->  source "security/safesetid/Kconfig"
->  source "security/lockdown/Kconfig"
-> +source "security/landlock/Kconfig"
->  
->  source "security/integrity/Kconfig"
->  
-> diff --git a/security/Makefile b/security/Makefile
-> index 3baf435de541..47e432900e24 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -13,6 +13,7 @@ subdir-$(CONFIG_SECURITY_LOADPIN)	+= loadpin
->  subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
->  subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown
->  subdir-$(CONFIG_BPF_LSM)		+= bpf
-> +subdir-$(CONFIG_SECURITY_LANDLOCK)	+= landlock
->  
->  # always enable default capabilities
->  obj-y					+= commoncap.o
-> @@ -32,6 +33,7 @@ obj-$(CONFIG_SECURITY_SAFESETID)       += safesetid/
->  obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
->  obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
->  obj-$(CONFIG_BPF_LSM)			+= bpf/
-> +obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
->  
->  # Object integrity file lists
->  subdir-$(CONFIG_INTEGRITY)		+= integrity
-> diff --git a/security/landlock/Kconfig b/security/landlock/Kconfig
-> new file mode 100644
-> index 000000000000..c1e862a38410
-> --- /dev/null
-> +++ b/security/landlock/Kconfig
-> @@ -0,0 +1,21 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
+> +       sclk =3D kcalloc(8, sizeof(*sclk), GFP_KERNEL);
+> +       if (!sclk)
+> +               goto free_yclk;
 > +
-> +config SECURITY_LANDLOCK
-> +	bool "Landlock support"
-> +	depends on SECURITY
-> +	select SECURITY_PATH
-> +	help
-> +	  Landlock is a sandboxing mechanism that enables processes to restrict
-> +	  themselves (and their future children) by gradually enforcing
-> +	  tailored access control policies.  A Landlock security policy is a
-> +	  set of access rights (e.g. open a file in read-only, make a
-> +	  directory, etc.) tied to a file hierarchy.  Such policy can be
-> +	  configured and enforced by any processes for themselves using the
-> +	  dedicated system calls: landlock_create_ruleset(),
-> +	  landlock_add_rule(), and landlock_restrict_self().
+> +       tiling_mode =3D kcalloc(maximum_number_of_surfaces, sizeof(*tilin=
+g_mode), GFP_KERNEL);
+> +       if (!tiling_mode)
+> +               goto free_sclk;
 > +
-> +	  See Documentation/userspace-api/landlock.rst for further information.
+> +       surface_type =3D kcalloc(maximum_number_of_surfaces, sizeof(*surf=
+ace_type), GFP_KERNEL);
+> +       if (!surface_type)
+> +               goto free_tiling_mode;
 > +
-> +	  If you are unsure how to answer this question, answer N.  Otherwise,
-> +	  you should also prepend "landlock," to the content of CONFIG_LSM to
-> +	  enable Landlock at boot time.
-> diff --git a/security/landlock/Makefile b/security/landlock/Makefile
-> new file mode 100644
-> index 000000000000..cb6deefbf4c0
-> --- /dev/null
-> +++ b/security/landlock/Makefile
-> @@ -0,0 +1,3 @@
-> +obj-$(CONFIG_SECURITY_LANDLOCK) := landlock.o
-> +
-> +landlock-y := object.o
-> diff --git a/security/landlock/object.c b/security/landlock/object.c
-> new file mode 100644
-> index 000000000000..d674fdf9ff04
-> --- /dev/null
-> +++ b/security/landlock/object.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Landlock LSM - Object management
-> + *
-> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
-> + * Copyright © 2018-2020 ANSSI
-> + */
-> +
-> +#include <linux/bug.h>
-> +#include <linux/compiler_types.h>
-> +#include <linux/err.h>
-> +#include <linux/kernel.h>
-> +#include <linux/rcupdate.h>
-> +#include <linux/refcount.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include "object.h"
-> +
-> +struct landlock_object *landlock_create_object(
-> +		const struct landlock_object_underops *const underops,
-> +		void *const underobj)
-> +{
-> +	struct landlock_object *new_object;
-> +
-> +	if (WARN_ON_ONCE(!underops || !underobj))
-> +		return ERR_PTR(-ENOENT);
-> +	new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
 
-Is there any benefit to using a dedicated kmem_cache instead of kmalloc?
-I see later that you end up with variable-sized allocations, so this
-might be fine as-is.
 
-> +	if (!new_object)
-> +		return ERR_PTR(-ENOMEM);
-> +	refcount_set(&new_object->usage, 1);
-> +	spin_lock_init(&new_object->lock);
-> +	new_object->underops = underops;
-> +	new_object->underobj = underobj;
-> +	return new_object;
-> +}
-> +
-> +/*
-> + * The caller must own the object (i.e. thanks to object->usage) to safely put
-> + * it.
-> + */
-> +void landlock_put_object(struct landlock_object *const object)
-> +{
-> +	/*
-> +	 * The call to @object->underops->release(object) might sleep, e.g.
-> +	 * because of iput().
-> +	 */
-> +	might_sleep();
-> +	if (!object)
-> +		return;
-> +
-> +	/*
-> +	 * If the @object's refcount cannot drop to zero, we can just decrement
-> +	 * the refcount without holding a lock. Otherwise, the decrement must
-> +	 * happen under @object->lock for synchronization with things like
-> +	 * get_inode_object().
-> +	 */
-> +	if (refcount_dec_and_lock(&object->usage, &object->lock)) {
-> +		__acquire(&object->lock);
-> +		/*
-> +		 * With @object->lock initially held, remove the reference from
-> +		 * @object->underobj to @object (if it still exists).
-> +		 */
-> +		object->underops->release(object);
-> +		kfree_rcu(object, rcu_free);
-> +	}
-> +}
-> diff --git a/security/landlock/object.h b/security/landlock/object.h
-> new file mode 100644
-> index 000000000000..3e5d5b6941c3
-> --- /dev/null
-> +++ b/security/landlock/object.h
-> @@ -0,0 +1,91 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Landlock LSM - Object management
-> + *
-> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
-> + * Copyright © 2018-2020 ANSSI
-> + */
-> +
-> +#ifndef _SECURITY_LANDLOCK_OBJECT_H
-> +#define _SECURITY_LANDLOCK_OBJECT_H
-> +
-> +#include <linux/compiler_types.h>
-> +#include <linux/refcount.h>
-> +#include <linux/spinlock.h>
-> +
-> +struct landlock_object;
-> +
-> +/**
-> + * struct landlock_object_underops - Operations on an underlying object
-> + */
-> +struct landlock_object_underops {
-> +	/**
-> +	 * @release: Releases the underlying object (e.g. iput() for an inode).
-> +	 */
-> +	void (*release)(struct landlock_object *const object)
-> +		__releases(object->lock);
-> +};
-> +
-> +/**
-> + * struct landlock_object - Security blob tied to a kernel object
-> + *
-> + * The goal of this structure is to enable to tie a set of ephemeral access
-> + * rights (pertaining to different domains) to a kernel object (e.g an inode)
-> + * in a safe way.  This implies to handle concurrent use and modification.
-> + *
-> + * The lifetime of a &struct landlock_object depends of the rules referring to
-> + * it.
-> + */
-> +struct landlock_object {
-> +	/**
-> +	 * @usage: This counter is used to tie an object to the rules matching
-> +	 * it or to keep it alive while adding a new rule.  If this counter
-> +	 * reaches zero, this struct must not be modified, but this counter can
-> +	 * still be read from within an RCU read-side critical section.  When
-> +	 * adding a new rule to an object with a usage counter of zero, we must
-> +	 * wait until the pointer to this object is set to NULL (or recycled).
-> +	 */
-> +	refcount_t usage;
-> +	/**
-> +	 * @lock: Protects against concurrent modifications.  This lock must be
-> +	 * held from the time @usage drops to zero until any weak references
-> +	 * from @underobj to this object have been cleaned up.
-> +	 *
-> +	 * Lock ordering: inode->i_lock nests inside this.
-> +	 */
-> +	spinlock_t lock;
-> +	/**
-> +	 * @underobj: Used when cleaning up an object and to mark an object as
-> +	 * tied to its underlying kernel structure.  This pointer is protected
-> +	 * by @lock.  Cf. landlock_release_inodes() and release_inode().
-> +	 */
-> +	void *underobj;
-> +	union {
-> +		/**
-> +		 * @rcu_free: Enables lockless use of @usage, @lock and
-> +		 * @underobj from within an RCU read-side critical section.
-> +		 * @rcu_free and @underops are only used by
-> +		 * landlock_put_object().
-> +		 */
-> +		struct rcu_head rcu_free;
-> +		/**
-> +		 * @underops: Enables landlock_put_object() to release the
-> +		 * underlying object (e.g. inode).
-> +		 */
-> +		const struct landlock_object_underops *underops;
-> +	};
-> +};
-> +
-> +struct landlock_object *landlock_create_object(
-> +		const struct landlock_object_underops *const underops,
-> +		void *const underobj);
-> +
-> +void landlock_put_object(struct landlock_object *const object);
-> +
-> +static inline void landlock_get_object(struct landlock_object *const object)
-> +{
-> +	if (object)
-> +		refcount_inc(&object->usage);
-> +}
-> +
-> +#endif /* _SECURITY_LANDLOCK_OBJECT_H */
-> -- 
-> 2.30.2
-> 
+Harry or Nick can correct me if I'm wrong, but for this patch and the
+next one, I think this can be called from an atomic context.
 
-Either way, this object lifetime management looks okay to me:
+Alex
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+>         yclk[low] =3D vbios->low_yclk;
+>         yclk[mid] =3D vbios->mid_yclk;
+>         yclk[high] =3D vbios->high_yclk;
+> @@ -2013,6 +2029,14 @@ static void calculate_bandwidth(
+>                         }
+>                 }
+>         }
+> +
+> +       kfree(surface_type);
+> +free_tiling_mode:
+> +       kfree(tiling_mode);
+> +free_yclk:
+> +       kfree(yclk);
+> +free_sclk:
+> +       kfree(sclk);
+>  }
+>
+>  /***********************************************************************=
+********
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
