@@ -2,189 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3784534177E
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF634177F
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhCSI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:27:41 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14626 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234280AbhCSI1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:27:18 -0400
-IronPort-SDR: 4jLJQhajqZFm+CJv8R77SZTkK0LgxFL2IHFYGsynj6HoVC3gtbAiEB/c02oFq5BA9A2y0gTb7v
- R8cD/RQNHO+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189892177"
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="189892177"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 01:27:18 -0700
-IronPort-SDR: NQtUE5kuh3KKbQzNwzIvm9i6D2O/2DTfLNwT0zGcAugiE6t5CM4jZUMlKCUJoi8N/eaD4fCKvi
- /YqbbLy/l6rg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="372989546"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 19 Mar 2021 01:27:16 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lNATU-0001h2-3n; Fri, 19 Mar 2021 08:27:16 +0000
-Date:   Fri, 19 Mar 2021 16:26:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 8cd6e39544454f494981973eed15943c55382530
-Message-ID: <6054604c.ZY9SALBB+KOSSjPN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234366AbhCSI1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:27:43 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:36003 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234370AbhCSI1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:27:31 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mn2eN-1m508k21Zv-00k4Xz; Fri, 19 Mar 2021 09:27:29 +0100
+Received: by mail-oi1-f170.google.com with SMTP id i3so3931293oik.7;
+        Fri, 19 Mar 2021 01:27:29 -0700 (PDT)
+X-Gm-Message-State: AOAM533Ihr+PLa/+bmsHSMwQTgBv1RMRGRz2DxADtzmDvzOaS7NOvAlV
+        rJiczUqGXmnbCUZ2uaVB0xLj+eYYeqJXJaJPelw=
+X-Google-Smtp-Source: ABdhPJy2jQ9JuAxE+K1J1eCBybf0lxeN3IOFfRQ13WdcK8b0FXfVMfx6yj7r4z+BrbUCgKPvSM0RF3ODSeFZepyRCyI=
+X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr177972oie.4.1616142448131;
+ Fri, 19 Mar 2021 01:27:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
+ <20210316074409.2afwsaeqxuwvj7bd@vireshk-i7> <0dfff1ac-50bb-b5bc-72ea-880fd52ed60d@metux.net>
+ <CAK8P3a3f9bKdOOMgrA9TfeObyEd+eeg8JcTVT8AyS1+s=X2AjQ@mail.gmail.com>
+ <20210319035435.a4reve77hnvjdzwk@vireshk-i7> <b135b474-b167-67ad-588c-b0cfe8dc2998@intel.com>
+ <20210319054035.47tn747lkagpip6v@vireshk-i7> <834186be-71b1-a67c-8dee-b90527b459c8@intel.com>
+ <20210319063553.eq5aorcyiame6u2e@vireshk-i7>
+In-Reply-To: <20210319063553.eq5aorcyiame6u2e@vireshk-i7>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 19 Mar 2021 09:27:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0cBdBF6aHj-QMu1jwerYxFVyABm=r4SsyQkOBkbW=ZZg@mail.gmail.com>
+Message-ID: <CAK8P3a0cBdBF6aHj-QMu1jwerYxFVyABm=r4SsyQkOBkbW=ZZg@mail.gmail.com>
+Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jie Deng <jie.deng@intel.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:1Q37+QolqnRDKOxPz1feO/goy0qtbvnK9nsv9v6P+6CBZawPD8r
+ WzVVe9UAzu9w+zYR7Uj1IhlRlb+a9lV+WNhZVm2lShpaF2o3UwYQ//k6Z+sm14tid9x4H2i
+ PV7s969Ti1DNs326xRA+/b3AkX14oFlKUAr03oynXXJpF+tH3b5xKhdfeTIHucicxmJxgZ7
+ 9HyowpFWo3N+LuaSebZ2g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EHRUHhdsCFA=:w/QIAkZc2Y4K9o+P0sakqs
+ uYcWUhZ1nGQvx0RFqgktW/OT/0z8zZPnIt3yZR7JbCg+pUEFAyZOSesFu71727FzOg4ozK7XU
+ IAv9rjvHiARAUm7hNU8iGNL7sz3bQftaQSkbLwnGObiRZ3jcBwjtyNWCywChwFCExlq5lG2TA
+ 4GRTAmdPSGaMiyAjhYX2gHjxZsW2riWVRAm1BKKmyTI4kgjjSBkCLVuMe+Fc/O2pnKFhJtRPZ
+ lNOYxXDY0NiGIWVKmfkoX1iQbR6a642QjiU6OF6EYYzmhCaoJ07UvRpM6QWRVZo8CoDEjM2qt
+ 2nQ9d4drSKNQ2xtBwCKwHr3R45Sjnzztnx4tjvqMSRzX41hlG6D/dCCz0dXM+oulDckIShvcR
+ LX1YfTnJhBouXZcq3buT6KrMm5hZUvEbPP0yojv6oHFMXuvbhS5tRHzJ2mV3yc3WX5i09NkGZ
+ 5573CFjnse2DbQtK23gyaqmeJw0v9JJ3ugJbtpcIqNIzH3xHfohgb+rpaE+QVziro9rntw5fc
+ 5gwdO3q1W6stDwWLQ+IXhhi4c5LZFBnEmJzBOCR2GJ6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 8cd6e39544454f494981973eed15943c55382530  Merge branch 'x86/seves'
+On Fri, Mar 19, 2021 at 7:35 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 19-03-21, 14:29, Jie Deng wrote:
+> > I also see example drivers/i2c/busses/i2c-xiic.c. Some people might think
+> > this way is more clearer than
+> >
+> > updating each member in probe. Basically, I think it's just a matter of
+> > personal preference which doesn't
+>
+> Memory used by one instance of struct i2c_adapter (on arm64):
+>
+> struct i2c_adapter {
+...
+> };
+>
+> So, this extra instance that i2c-xiic.c is creating (and that you want to
+> create) is going to waste 1KB of memory and it will never be used.
+>
+> This is bad coding practice IMHO and it is not really about personal preference.
 
-elapsed time: 720m
+Agreed. At the minimum, it should have been written as an explicit
+memcpy() in the few drivers that have that pattern instead of a benign
+looking struct assignment, but even then there is nothing good about it
+really. Notably, the largest member by far is the 'struct device', and
+that by itself should be a red flag as a device is never meant to be
+allocated statically (this used to be common in pre-DT days, but
+even then was considered bad style).
 
-configs tested: 127
-configs skipped: 2
+I suppose the i2c_add_adapter()/i2c_add_numbered_adapter()
+interface could be redesigned to handle this better, since every
+driver needs to set the same few fields. That however requires finding
+someone to spend the effort on coming up with a nice design and
+converting lots of drivers over.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-arc                          axs101_defconfig
-sh                                  defconfig
-ia64                        generic_defconfig
-m68k                        mvme147_defconfig
-riscv                    nommu_k210_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                     tqm8560_defconfig
-mips                        nlm_xlp_defconfig
-arc                                 defconfig
-mips                     loongson1b_defconfig
-m68k                        m5407c3_defconfig
-sh                           se7712_defconfig
-m68k                       m5275evb_defconfig
-arm                           sunxi_defconfig
-ia64                             allmodconfig
-s390                          debug_defconfig
-mips                         bigsur_defconfig
-powerpc                         wii_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                            mps2_defconfig
-powerpc                  storcenter_defconfig
-x86_64                              defconfig
-s390                             alldefconfig
-arm                            dove_defconfig
-mips                            e55_defconfig
-powerpc                 linkstation_defconfig
-xtensa                  audio_kc705_defconfig
-mips                        vocore2_defconfig
-sh                          urquell_defconfig
-arm                        mvebu_v5_defconfig
-mips                       capcella_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                 decstation_r4k_defconfig
-sh                          lboxre2_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                       maple_defconfig
-powerpc                    adder875_defconfig
-sh                          kfr2r09_defconfig
-arm                         lpc32xx_defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc832x_rdb_defconfig
-csky                             alldefconfig
-sh                   sh7724_generic_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                          rb532_defconfig
-sh                           se7721_defconfig
-sh                     magicpanelr2_defconfig
-arm                          pxa3xx_defconfig
-m68k                       m5208evb_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     kmeter1_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     pq2fads_defconfig
-arm                          pcm027_defconfig
-powerpc                      acadia_defconfig
-sh                        edosk7705_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+       Arnd
