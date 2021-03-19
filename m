@@ -2,205 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E7C3415DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4261A3415DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhCSGd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233985AbhCSGdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:33:35 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58478C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:33:35 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z136so4966391iof.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:33:35 -0700 (PDT)
+        id S233985AbhCSGd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:33:59 -0400
+Received: from mail-eopbgr770100.outbound.protection.outlook.com ([40.107.77.100]:6053
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234000AbhCSGdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 02:33:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T5TAJ5pdYcY/TYyNdcut+vIZO84S+/gWK+JUCGC5YHDjNYoiRdBn7q25lc6VQRpdThPyGp1Lx8NZ653dR/ca9toy78DW8TPatavpLy69ZqtWDvioBO4KC5HrgPQvDZNNGkbgyGdaD2y0KRtVtIqHhjwP7bsH9uttp38FdJ8a1BrA3bj52Nl5kP3obWdekH8QB8H+9/xDE1IHRcZhIkU50t6LZFOAX2rNVU/5FfpHdAZWIjgbemyU7ENbgixKmLG5E5FQEPy33KS4s3pLu546RtE0inOShdLuCtxp3dIfwzvT91cQ+J/5I+i3pg03k5JRpWwiracdfQ1JdGse/Wj5MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q1sWkhw0jo66GHx+WA9GVn7DV+2NBU0XzoMS8bK3xs0=;
+ b=Bm9KJzPI4fDeXCzwHlv1AFUutbd8rWFt51Wz7CA2810fAoo+YSkg7pZW8Uu3ZLI9akFIIOSArlk8bXzyrgKGAgOx8/SFO79LYI1AWH1SeZP7jkHpi1qVRVJjALmW3uO+gv47lCwUYkcQJYBLBQ5kq3FYqJaciy9ffhxf4dIeT2WFiEC896TgxyLEfVZlKcN51VioWC7CmvvohnuAVtKZApXiCQeKxAIEb17fcuFcp+DKD9nsc/rRw0rpnDWSw7X+RzZo5jrbjGYEFVnuWVlQ39VVqYzYy19iPihy1mSLpS9qsnFEvL9iPtgCFpk2vLcpQCuFj9/b/lpeAtz4zdXTvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8JMFDnlbiquBJQkcZ6h8oNyX/u+0OOMYSlAiqQdHt08=;
-        b=pYiz6NEg6Z0fSu5Ki/lR+PH5sdV7XtjAylrQEhan2ILZCxm1vNpsjrDWcHfTY8FLIc
-         /gdBlm+1DsXJbVP4WL9Fw7tQaEgznATxuw/C8SSpOF5AgLHexKQWJi2L04bVPtq4mUjt
-         qYs9JnZRfdKC5VmNHkuMgg1tq9q0quJqy0Q/OXS7ngIUYHx0V4Hj7bXoz1g0jzd1nHDQ
-         dsjNXvTAL5GRqFRKx4gfgYjXcEAHy2PjpRIv0RT8Ji+K7qO9jQsFPNeL1zqktnmkfSmM
-         //VAiJK2XsaCO4l7SaJOCoBdW6N4Nzz+BMdRisWqgQE0YISutRfX1JXo5I07izRQzCsV
-         5Clg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8JMFDnlbiquBJQkcZ6h8oNyX/u+0OOMYSlAiqQdHt08=;
-        b=Y/Gm8BhhlKx6WxpAZAy9KW4Zz9aIBeT+dzNYS/MmziNPAOJIiB/28F+xYJ3T7Np9t0
-         FC927DxLnP1TzACyLs1xpc/A4RPzzzjShyVI5AT+hcMU5rSInxXeAce8fRjZ6iKynfgG
-         eLbpKFcMzA8rLLhLHqJGgMYMKO47MBbwZAvzctV+4dqIdEpCpHPp3Z/DjY9AX7RT2q4L
-         edIIo2l0uqnC++u2mhn1CroPA9NDm+iq8mVTQFilAT95b0AANGPS+epnMqEjp/3jC3YQ
-         KIB9M0Gr2L2gYt/hvLc5XTK6uYq1/QzA2zNE82TAfXJDs1znJ4IXqGmxBieOduTi0L2B
-         yA0g==
-X-Gm-Message-State: AOAM530FXwuB1SqKVMplKKVAcqGALOEDBsrc2TZIyorV/lifWjsby5Tr
-        dfrDKHzJ76lNTCr61RY6F7OTBMhDb4hSdiIPaps=
-X-Google-Smtp-Source: ABdhPJxlD9ePR573gboSQuP4pVF+ng+tUDrShxsfNOD95SpC+4SlYehsqqwvaGLGyMaUy0EI8SKATk9/ngH5WPB8sk4=
-X-Received: by 2002:a5d:87d5:: with SMTP id q21mr1612851ios.105.1616135614826;
- Thu, 18 Mar 2021 23:33:34 -0700 (PDT)
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q1sWkhw0jo66GHx+WA9GVn7DV+2NBU0XzoMS8bK3xs0=;
+ b=ztlNOq0W9ROYyykNpUAOjZHbjp6+nzJX3vNR9bM4oaVTvEWy2uAch7GVa8UvhZsurcOLI1l7r1HHVEn5il9V1pdUGYDwcDilmJwgJKzOo5nu4MfpVulQQ99xPhDJi7+JYfO6RbJQ1Zkuwc2uyt7McVZqndm7hRr1ws/oag487Ds=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB4581.namprd04.prod.outlook.com (2603:10b6:a03:15::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 19 Mar
+ 2021 06:33:34 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
+ 06:33:34 +0000
+Date:   Fri, 19 Mar 2021 14:33:28 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Robert Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH v6 2/5] drm/bridge: anx7625: fix not correct return value
+Message-ID: <ff689dae07ba1440b96f4804468d9c4203d22d68.1616135353.git.xji@analogixsemi.com>
+References: <cover.1616135353.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1616135353.git.xji@analogixsemi.com>
+X-Originating-IP: [60.251.58.79]
+X-ClientProxiedBy: HK2PR02CA0222.apcprd02.prod.outlook.com
+ (2603:1096:201:20::34) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com> <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com> <m1pmzwb7pd.fsf@fess.ebiederm.org>
-In-Reply-To: <m1pmzwb7pd.fsf@fess.ebiederm.org>
-From:   qianli zhao <zhaoqianligood@gmail.com>
-Date:   Fri, 19 Mar 2021 14:33:23 +0800
-Message-ID: <CAPx_LQHahNDvUkv08RZgUvbKZtdHNaSNRA1XqVDkNiwv5D=fXg@mail.gmail.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, christian@brauner.io,
-        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0222.apcprd02.prod.outlook.com (2603:1096:201:20::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 06:33:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6347149f-2bdd-4732-f221-08d8eaa0eb92
+X-MS-TrafficTypeDiagnostic: BYAPR04MB4581:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB4581A7CD05BF895C10A8D5C0C7689@BYAPR04MB4581.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:813;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XGNMo6zjF9vQyA5CubAjxfX3mT2Wl2ddaIQ0aRmFML+MKD1Kpe5A4ryXLSjFc5xBDcsjLmWJlj+SnhOlb6JdJUs3xQ/QjF6aeg4AcClE56RfdduU620yaqhhhRD7ZOo8N587idIvz8BuuP3VjbFnzwP1YqO+dZQf2BCJk+wgPhQTXpqf7w3+WSnwSV0PF0ABNHXRp0wrPX3nc0A2Xz5UvKR5YgZ/9GpTJYDOF7Dupr5Bk3uNNvDqHuAJScEOEJ3pUWSw5LJsilAYpCMnC5lUi1APiuktQcZtkcx8IER0NnRDypp0LfpkDjCKalyBGSSfIZywWZ6WOy4q03kkQ4tGJe7/laJrYu3tICzScFfVZ40dyE6U7X/p0PyIXjTNRdwp2LL+xqO06xXiSYVPzyEY9ltpOKguwXfj9JSyhPn3VIvZY0B1v+d8p2JsCUtUjEIuQmcF8nv4yh4ToTjW0/2M31MsxluZ6Uu0Y/0XBnzPC16Ht0eqZPjcY/dNWiMCcKC0NxHrrwBLtFeZo8jChMNHGwHiLe91TtTSlXFS/oRbseR7w7b7kL16kbyo/JQbG8WJha1Vv083hq+NWQWg62e/R6Rsn8KWVdAB0gjIePmkkNka4jA8sUnQWlLdicbCneBP8nMMSVrkGujyqZxd70PDog==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39840400004)(136003)(396003)(26005)(54906003)(7416002)(186003)(36756003)(2616005)(6486002)(86362001)(6496006)(956004)(38100700001)(16526019)(2906002)(52116002)(4744005)(8676002)(5660300002)(4326008)(110136005)(66476007)(316002)(478600001)(55236004)(66946007)(6666004)(83380400001)(66556008)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?txbuBMZZYMM+Yzy8LQPcn6ohSX9TvuOmfJ1S8srlYWgy01YmiFgt9SC8X7vU?=
+ =?us-ascii?Q?Ga2p6c8k2COpV6h4YPUzu+xhhA7Vyy0FNFZik0Fa/bFx9ZcJEyw50XjOu3rX?=
+ =?us-ascii?Q?52jTtHZuZxV91pueF8+AvdSFhdiryzRv6mrP6QJ+4NDTWOJrMjeMUfMGwhcE?=
+ =?us-ascii?Q?Sl1mhovEJRv4guWIYF/keBbcNdxubtxqqXE003plLZM9Wh4rwKlVuKts8yKS?=
+ =?us-ascii?Q?dNtJRrL83HtFWis2lRES/Vlq9UbPX5o166TcSA5csH34HZvqWRcmFD7Tg12S?=
+ =?us-ascii?Q?udfSmKXNvAMQKHgKJm5kvsdEZcBkMgSnnPNm8RZ9E7PL+4M5uDH3FEJa3UPQ?=
+ =?us-ascii?Q?gSZPfW5o8bN1Eeocgyxx3nxFzcYn2ZRBazFvQ/H1pKp+uGSFzb9wQuTMpZjG?=
+ =?us-ascii?Q?U5QFC2OIEKyhnhFysCEY/fz5WomhKbP2zz14Z2Zox8zQkxihrj0CDJZn3aNw?=
+ =?us-ascii?Q?X73fV3JkFqBwgdB5lkJcWjSxDjsjw3ORwW3LmTl61bQ2vLZom7A20ooUPHFb?=
+ =?us-ascii?Q?R5ocs/QWQENtEQloPf7/IeKk6//cj2zMAGrdp4AzgwkIcYvrzVd8ZPMwH+fz?=
+ =?us-ascii?Q?ZYm6KLo8oKdfkmX9tq48Gg1w2hcGToRQuxmoDT+XV5Utgw3+UCR3Ey9uyZtZ?=
+ =?us-ascii?Q?in0EsyNlGveM4jjkdmbHEZdKvSMj+0iYIgf2tldAVqZFu7gXZbtSgAMJNvQ7?=
+ =?us-ascii?Q?hoYv97wwr8WpvHrjcnFgoY0DSGJptQSqpbee7ApJjEuj/4+gfpecgkNzZB3j?=
+ =?us-ascii?Q?p9QRlXxKFfXrM6zoCrcaxbKUsVeLxcLE3aAVBoyi8on3PDA+l+6Dd8wPZSr8?=
+ =?us-ascii?Q?RunorAuFJ7mCVkPBO2gMB6gl3cHcesfDJzHBgsJJ5oJztahJKVrFkzwBJ/0i?=
+ =?us-ascii?Q?k2NQUnH96Bcxc+Xrk3kfL8Ng8y4iaR+0Rh1SSpHmzHuFktunEf69IMmNDXLH?=
+ =?us-ascii?Q?+3onrLMXis/+9r51ocnDY629IsknJlt3jciZfXR5no3kM5rATElWoVtR9XbU?=
+ =?us-ascii?Q?6HiLj+r+vmN82u9Ml2EgKcaGXt15Wo/u9zVShV/LmyfCElxHnaHB1aEvVwsh?=
+ =?us-ascii?Q?n85i8FQbfHc4ewQm72jOuoB0CmFWIJT086jR9byOcUCXbBbS6PeHSXIlM0rE?=
+ =?us-ascii?Q?5iAUXCZ72bkB/npryHPDjU0unoPw7qjEHdnvZpjOs4rnq4ugj/IX95e5Tot2?=
+ =?us-ascii?Q?fafApkZkACUj9XhO80pI3BqGuvGknTPitibdx5TUzCxMlYU/gfMNItac/lR/?=
+ =?us-ascii?Q?nk9/+4BP4yvpHVKpjhC9rclLP2Mfsaka2EgSzrvtHHKisciEmgu+nuouN1qV?=
+ =?us-ascii?Q?X36TOksxc3Ax+oaJn4oBArZM?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6347149f-2bdd-4732-f221-08d8eaa0eb92
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 06:33:34.4263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5iway/n71q6MdSy6kqlG2D01nPyOJuFAHT2k8vF2o25i1ZYExi3JuORB2o/ugoAxPW3PJOeMRyPsY84FKyMQEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4581
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,Eric
+At some time, the original code may return non zero value, force return 0
+if operation finished.
 
-> As I understand it this patch has two purposes:
-> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
-> 2. panic as early as possible so exiting threads don't removing
->   interesting debugging state.
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Your understanding is very correct,this is what my patch wants to do
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 65cc05982f82..04536cc7afe7 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -189,10 +189,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+ 			       AP_AUX_CTRL_STATUS);
+ 	if (val < 0 || (val & 0x0F)) {
+ 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
+-		val = -EIO;
++		return -EIO;
+ 	}
+ 
+-	return val;
++	return 0;
+ }
+ 
+ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+-- 
+2.25.1
 
-> I think if we are going to move the decrement of signal->live that
-> should be it's own patch and be accompanied with a good description of
-> why it is safe instead of having the decrement of signal->live be there
-> as a side effect of another change.
-
-I will think about the risks of movement of the decrement of
-signal->live before exit_signal().
-If is difficult to judge movement of the decrement of signal->live is
-safe,how about only test 'signal->live=3D=3D1' not use group_dead?
-
-Such as:
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e3..87f3595 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -767,6 +767,17 @@ void __noreturn do_exit(long code)
-        validate_creds_for_do_exit(tsk);
-
-        /*
-+        * If global init has exited,
-+        * panic immediately to get a useable coredump.
-+        */
-+       if (unlikely(is_global_init(tsk) &&
-+           ((atomic_read(&tsk->signal->live) =3D=3D 1) ||    /*current is
-last init thread*/
-+            (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
-+                       panic("Attempted to kill init! exitcode=3D0x%08x\n"=
-,
-+                               tsk->signal->group_exit_code ?: (int)code);
-+       }
-+
-+       /*
-         * We're taking recursive faults here in do_exit. Safest is to just
-         * leave this task alone and wait for reboot.
-         */
-@@ -784,16 +795,9 @@ void __noreturn do_exit(long code)
-        if (tsk->mm)
-                sync_mm_rss(tsk->mm);
-        acct_update_integrals(tsk);
-+
-        group_dead =3D atomic_dec_and_test(&tsk->signal->live);
-        if (group_dead) {
--               /*
--                * If the last thread of global init has exited, panic
--                * immediately to get a useable coredump.
--                */
--               if (unlikely(is_global_init(tsk)))
--                       panic("Attempted to kill init! exitcode=3D0x%08x\n"=
-,
--                               tsk->signal->group_exit_code ?: (int)code);
--
-
-Eric W. Biederman <ebiederm@xmission.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=881=
-9=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=883:09=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> Oleg Nesterov <oleg@redhat.com> writes:
->
-> > On 03/18, qianli zhao wrote:
-> >>
-> >> Hi,Oleg
-> >>
-> >> Thank you for your reply.
-> >>
-> >> >> When init sub-threads running on different CPUs exit at the same ti=
-me,
-> >> >> zap_pid_ns_processe()->BUG() may be happened.
-> >>
-> >> > and why do you think your patch can't prevent this?
-> >>
-> >> > Sorry, I must have missed something. But it seems to me that you are=
- trying
-> >> > to fix the wrong problem. Yes, zap_pid_ns_processes() must not be ca=
-lled in
-> >> > the root namespace, and this has nothing to do with CONFIG_PID_NS.
-> >>
-> >> Yes, i try to fix this exception by test SIGNAL_GROUP_EXIT and call
-> >> panic before setting PF_EXITING to prevent zap_pid_ns_processes()
-> >> being called when init do_exit().
-> >
-> > Ah, I didn't notice your patch does atomic_dec_and_test(signal->live)
-> > before exit_signals() which sets PF_EXITING. Thanks for correcting me.
-> >
-> > So yes, I was wrong, your patch can prevent this. Although I'd like to
-> > recheck if every do-something-if-group-dead action is correct in the
-> > case we have a non-PF_EXITING thread...
-> >
-> > But then I don't understand the SIGNAL_GROUP_EXIT check added by your
-> > patch. Do we really need it if we want to avoid zap_pid_ns_processes()
-> > when the global init exits?
-> >
-> >> In addition, the patch also protects the init process state to
-> >> successfully get usable init coredump.
-> >
-> > Could you spell please?
-> >
-> > Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
-> > to panic earlier, before other init's sub-threads exit?
->
-> That is my understanding.
->
-> As I understand it this patch has two purposes:
-> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
-> 2. panic as early as possible so exiting threads don't removing
->    interesting debugging state.
->
->
-> It is a bit tricky to tell if the movement of the decrement of
-> signal->live is safe.  That affects current_is_single threaded
-> which is used by unshare, setns of the time namespace, and setting
-> the selinux part of creds.
->
-> The usage in kernel/cgroup/cgroup.c:css_task_iter_advance seems safe.
-> Hmm, Maybe not.  Today cgroup_thread_change_begin is held around
-> setting PF_EXITING before signal->live is decremented.  So there seem to
-> be some subtle cgroup dependencies.
->
-> The usages of group_dead in do_exit seem safe, as except for the new
-> one everything is the same.
->
-> We could definitely take advantage of knowing group_dead in exit_signals
-> to simplify it's optimization to not rerouting signals to living
-> threads.
->
->
-> I think if we are going to move the decrement of signal->live that
-> should be it's own patch and be accompanied with a good description of
-> why it is safe instead of having the decrement of signal->live be there
-> as a side effect of another change.
->
-> Eric
