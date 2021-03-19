@@ -2,68 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94A3341BB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E685C341BB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCSLn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:43:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35660 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhCSLnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:43:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616154234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6XavM+VwOLTEyzDfW0LHTRkD6JR3SUxqoyIvE6dwWw0=;
-        b=PBigIA6gqdnbUdaBaEJ7C1obmLo7EwCX4sGPjPWGEsM3tYFAJcgCPe/oDgbp86P2Lcd4nD
-        hE0MuASM3hEiIYKgnBYvE12En0LpLtwtPwFcdCY8gWlIr/Jw2SJRdJYHsvJaS2OizZYv88
-        XMHvcWTphUn/6e6UU1TzP3dlxRAU2eU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 177B5AE05;
-        Fri, 19 Mar 2021 11:43:54 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 12:43:53 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YFSOeTrGXBzUkfml@alley>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
- <YFDAfPCnS204jiD5@chrisdown.name>
- <YFHAdUB4lu4mJ9Ar@alley>
- <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
- <YFMvfawY+0CncS8G@alley>
- <226a276d-2018-b419-4a6b-3ab21d3e4584@rasmusvillemoes.dk>
+        id S229807AbhCSLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCSLqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 07:46:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A3BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:46:13 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lNDa0-0005zG-3l; Fri, 19 Mar 2021 12:46:12 +0100
+Subject: Re: [PATCH v2 2/2] driver core: add helper for deferred probe reason
+ setting
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
+ <20210319110459.19966-2-a.fatoum@pengutronix.de>
+ <CAHp75VdjefJHMu2ot7RoZZZis0aNyV097J34wxDSwLgh3bQ8Pg@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
+Date:   Fri, 19 Mar 2021 12:46:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <226a276d-2018-b419-4a6b-3ab21d3e4584@rasmusvillemoes.dk>
+In-Reply-To: <CAHp75VdjefJHMu2ot7RoZZZis0aNyV097J34wxDSwLgh3bQ8Pg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-03-18 12:31:44, Rasmus Villemoes wrote:
-> On 18/03/2021 11.46, Petr Mladek wrote:
+On 19.03.21 12:13, Andy Shevchenko wrote:
+> On Fri, Mar 19, 2021 at 1:05 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> We now have three places within the same file doing the same operation
+>> of freeing this pointer and setting it anew. A helper make this
 > 
-> > BTW: Is the trick with int (printk)(const char *s, ...) documented
-> > somewhere? Is it portable?
+> makes
 > 
-> It is completely standard and portable C, explicitly spelled out in the
-> C standard itself. C99:
+>> arguably easier to read, so add one.
+> 
+> FWIW,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Thanks a lot for the detailed info.
+Thanks will add for v3.
 
-I still prefer to avoid using this "trick". But I am not going to
-block it if more people would prefer it.
+> Now I'm wondering why deferred_probe_reason is not defined with const.
+> 
+> Can you check and maybe squeeze a patch in the middle (before these
+> two of this series) to move to const?
 
-Best Regards,
-Petr
+The deferred_probe_reason is only used in this file and it either holds
+NULL or a pointer to a dynamically allocated string. I don't see a reason
+why the member should be const.
+
+Cheers,
+Ahmad
+
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>> v1 -> v2:
+>>  - no change
+>> ---
+>>  drivers/base/dd.c | 17 +++++++++++------
+>>  1 file changed, 11 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+>> index e2cf3b29123e..4201baa1cc13 100644
+>> --- a/drivers/base/dd.c
+>> +++ b/drivers/base/dd.c
+>> @@ -69,6 +69,12 @@ static char async_probe_drv_names[ASYNC_DRV_NAMES_MAX_LEN];
+>>   */
+>>  static bool defer_all_probes;
+>>
+>> +static void __device_set_deferred_probe_reason(const struct device *dev, char *reason)
+>> +{
+>> +       kfree(dev->p->deferred_probe_reason);
+>> +       dev->p->deferred_probe_reason = reason;
+>> +}
+>> +
+>>  /*
+>>   * deferred_probe_work_func() - Retry probing devices in the active list.
+>>   */
+>> @@ -97,8 +103,7 @@ static void deferred_probe_work_func(struct work_struct *work)
+>>
+>>                 get_device(dev);
+>>
+>> -               kfree(dev->p->deferred_probe_reason);
+>> -               dev->p->deferred_probe_reason = NULL;
+>> +               __device_set_deferred_probe_reason(dev, NULL);
+>>
+>>                 /*
+>>                  * Drop the mutex while probing each device; the probe path may
+>> @@ -140,8 +145,7 @@ void driver_deferred_probe_del(struct device *dev)
+>>         if (!list_empty(&dev->p->deferred_probe)) {
+>>                 dev_dbg(dev, "Removed from deferred list\n");
+>>                 list_del_init(&dev->p->deferred_probe);
+>> -               kfree(dev->p->deferred_probe_reason);
+>> -               dev->p->deferred_probe_reason = NULL;
+>> +               __device_set_deferred_probe_reason(dev, NULL);
+>>         }
+>>         mutex_unlock(&deferred_probe_mutex);
+>>  }
+>> @@ -220,11 +224,12 @@ void device_unblock_probing(void)
+>>  void device_set_deferred_probe_reason(const struct device *dev, struct va_format *vaf)
+>>  {
+>>         const char *drv = dev_driver_string(dev);
+>> +       char *reason;
+>>
+>>         mutex_lock(&deferred_probe_mutex);
+>>
+>> -       kfree(dev->p->deferred_probe_reason);
+>> -       dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
+>> +       reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
+>> +       __device_set_deferred_probe_reason(dev, reason);
+>>
+>>         mutex_unlock(&deferred_probe_mutex);
+>>  }
+>> --
+>> 2.29.2
+>>
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
