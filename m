@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1782134155D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70895341585
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbhCSG03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:26:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37806 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233865AbhCSG0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:26:04 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12J6PwdA040352;
-        Fri, 19 Mar 2021 01:25:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616135158;
-        bh=sfgae7YEBHArWauIp36inbiUJN+OT1t19yF7Avo2V4U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qoRVVsH+12d7wQiD5kzNcy22NHBJKc0hrm3cZSNgvwHpua/HAYrlKxDIhfBaAoKe4
-         R9ioD6d8Z6kcf+wB0ixJx6DP+ifMShLvWgoHwETvSZTrixFP1EpKNnVobAyyGjv+jD
-         PgyolRh0zpgUwUZ811gZ/xJP0twjZwtCE79jcl/I=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12J6Pw2q055334
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Mar 2021 01:25:58 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 19
- Mar 2021 01:25:58 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 19 Mar 2021 01:25:58 -0500
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12J6PtIr068351;
-        Fri, 19 Mar 2021 01:25:55 -0500
-Subject: Re: [PATCH v3 2/2] arm64: dts: ti: k3-am642: reserve gpio in mcu
- domain for firmware usage
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210319051950.17549-1-a-govindraju@ti.com>
- <20210319051950.17549-3-a-govindraju@ti.com>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <3d753b85-dd11-d4c3-5f24-e5c74f87b766@ti.com>
-Date:   Fri, 19 Mar 2021 11:55:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210319051950.17549-3-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S234081AbhCSG3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:29:18 -0400
+Received: from m12-17.163.com ([220.181.12.17]:49345 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234031AbhCSG2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 02:28:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=x3cPQSnqLJMkw7yP+D
+        zL9Ach3Zju3+3Kw9yXkblyQNQ=; b=lg437AYZsAHgecQPlXhmsEwLwtHMOCQCuF
+        SzVFKcu0CzbYOkPtL0UTaq+hdGY+7Ah2qTop8IWO3YBMdyKDR5dXkUoygk1eRvS+
+        vFXF/+VnSAOtvcuXsQX9tJZorZPMZbWSKT02RDEnJNWXMOw1BLnXt4V2CCU1BuGE
+        mxdbwzkN0=
+Received: from COOL-20200923LL.ccdomain.com (unknown [218.94.48.178])
+        by smtp13 (Coremail) with SMTP id EcCowAB3fpZHRFRghNYpqw--.38989S2;
+        Fri, 19 Mar 2021 14:27:23 +0800 (CST)
+From:   Guoqing chi <chi962464zy@163.com>
+To:     jic23@kernel.org
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Michael.Hennerich@analog.com,
+        marcelo.schmitt1@gmail.com, pmeerw@pmeerw.net,
+        chiguoqing@yulong.com
+Subject: [PATCH] iio: adc: ad7292: Modify the bool initialization assignment
+Date:   Fri, 19 Mar 2021 14:27:06 +0800
+Message-Id: <20210319062706.5135-1-chi962464zy@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EcCowAB3fpZHRFRghNYpqw--.38989S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF17XF1kAryxuF4kXF1kKrg_yoW3JFc_C3
+        W8Z3s7W395Aw10yrs8J3yfXr9Yk340gFs5Cr1Svwn3WF9xCanrCryv9r4Uta48ur47Ca45
+        ZF1UKr1Syw43WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUneuWJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiNwtaRFWBjy1OlAAAsO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guoqing Chi <chiguoqing@yulong.com>
 
+A bool initializer is best assigned to false rather than 0.
 
-On 19/03/21 10:49 am, Aswath Govindraju wrote:
-> The gpio0 subsystem present in MCU domain might be used by firmware and is
-> not pinned out in evm/sk. Therefore, reserve it for MCU firmware.
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
+---
+ drivers/iio/adc/ad7292.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+diff --git a/drivers/iio/adc/ad7292.c b/drivers/iio/adc/ad7292.c
+index 70e33dd1c9f7..3271a31afde1 100644
+--- a/drivers/iio/adc/ad7292.c
++++ b/drivers/iio/adc/ad7292.c
+@@ -260,7 +260,7 @@ static int ad7292_probe(struct spi_device *spi)
+ 	struct ad7292_state *st;
+ 	struct iio_dev *indio_dev;
+ 	struct device_node *child;
+-	bool diff_channels = 0;
++	bool diff_channels = false;
+ 	int ret;
+ 
+ 	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+-- 
+2.17.1
 
-Thanks and regards,
-Lokesh
 
