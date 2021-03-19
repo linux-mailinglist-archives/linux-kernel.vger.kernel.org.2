@@ -2,170 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4454342373
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9126342378
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhCSRgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhCSRgT (ORCPT
+        id S230188AbhCSRhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:37:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43469 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229991AbhCSRgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:36:19 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE8DC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:36:19 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g24so7342881qts.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tfsvGpLK+CuDrVdmeV4WHbj8Vk5nJ4Roy68oEY4gfyA=;
-        b=WTDYAcQY8XXEtUVTWUYj1UZ9W4ojknZfX8LZVQvAAN+HkIuawO0/AttbRhKWjPhcCC
-         GJSpxDkjmrAIKSM3t+ZMvrAIiU8XS5eUyfJMf3pjpDY4fNEw9o1/6DipQNLjxUjLYkr/
-         Y/x0nBvtvz8+0b3N/n1DzXM3jPy+2DXKL7zO/jDkb8uFzpMo32zJc4twjzrEt8VdXu0Y
-         qHwMWr+03PLl/retLPKsVjOxWpAhEEQGQWd7LiZGnEU6QWGDez8ZSzCRTW+ovn46V8Sp
-         QDv/j+Ip75kO9C8B63mcq6JqS/ZvfLW0X1H8uvyZXvCAb3EYJImlDVMkEgQfvGgt5m3r
-         YxqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tfsvGpLK+CuDrVdmeV4WHbj8Vk5nJ4Roy68oEY4gfyA=;
-        b=iPnTZWI3mEIp1ZYoJgijmPVmRhSLftgQHdGqzvUYBYzAYI+hJhKWkbD+IyYgsM13Uz
-         fxwunSJj7qNVhEQ+J8IlcdIu2cTo3ZzTPBZFc95tzRZibcy76amtJZ1+/Ojf4r4+RlPn
-         uDNm2tb6sxFyVsliQuoanIoYpW8adCfD5sAfPV8O1iT4aiC9aMxOWxUdK58NaqeifYEV
-         /B1Weq/dwK2AexewHy0o35N0Z92fiEhp189ULBGJNkafvQT9FIr6oojrFrNLJSYzpnlm
-         0tc4/fPxpuKHEuzEq6bhiEw8J53lCfxP3S1cG9ooIfKabN7lYh9NWRm45VP8Ygq+vvTj
-         CqlQ==
-X-Gm-Message-State: AOAM531QIJkKSCk+O84dT9ZzygqMdo0ZGvoNKQpQfUMOoExKNlSJezmQ
-        JXbWEKWnWI3AzIH6/J6W38PtEg==
-X-Google-Smtp-Source: ABdhPJztEQ6+2EmkeqiPV4c/LJI6bVpVMS3Y2j1tG0aYG7IDJ7uN/f76YXpplQssD8vVmn+tsRisJA==
-X-Received: by 2002:ac8:1009:: with SMTP id z9mr9201531qti.128.1616175378314;
-        Fri, 19 Mar 2021 10:36:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:18e3])
-        by smtp.gmail.com with ESMTPSA id h12sm5128779qko.29.2021.03.19.10.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:36:17 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 13:36:15 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH 2/2] mm: memcontrol: deprecate swapaccounting=0 mode
-Message-ID: <YFThD2qnSCx5MJEh@cmpxchg.org>
-References: <20210319054944.50048-1-hannes@cmpxchg.org>
- <20210319054944.50048-2-hannes@cmpxchg.org>
- <CALvZod6HYfoSnBoq7JGW1ifLmLMmwSAyCqjh+bJ6L9evAPVGLQ@mail.gmail.com>
+        Fri, 19 Mar 2021 13:36:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616175397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5eOAQHQd0/ZycZbF0USh+JA+Y7XaAJwV/qd8pF9Pi6w=;
+        b=HbuMnL3d/+gQnFeMmpJ0mDTj5k3r/XXE6qVRrcnOpW/4/lZGqSgsoGRwsGFgQnb0RE815R
+        TWSAji2PYb4J+WstkYetIYHYJgo2eB6PPpM3rcLYX3HVgKK46ztZK5vNUatzK9QGoPDbcL
+        LSoHaYUw7APlVKSp1zi7OunStdtvCMo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-ioeMyaxZNX6ROX7Fw6K4TA-1; Fri, 19 Mar 2021 13:36:33 -0400
+X-MC-Unique: ioeMyaxZNX6ROX7Fw6K4TA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECF39107B768;
+        Fri, 19 Mar 2021 17:36:29 +0000 (UTC)
+Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EB5160C04;
+        Fri, 19 Mar 2021 17:36:18 +0000 (UTC)
+Subject: Re: [PATCH v14 07/13] iommu/smmuv3: Implement cache_invalidate
+To:     "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
+        tn@semihalf.com, zhukeqian1@huawei.com
+Cc:     jean-philippe@linaro.org, wangxingang5@huawei.com,
+        lushenming@huawei.com, jiangkunkun@huawei.com,
+        vivek.gautam@arm.com, vsethi@nvidia.com, zhangfei.gao@linaro.org,
+        linuxarm@openeuler.org
+References: <20210223205634.604221-1-eric.auger@redhat.com>
+ <20210223205634.604221-8-eric.auger@redhat.com>
+ <c10c6405-5efe-5a41-2b3a-f3af85a528ba@hisilicon.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <d5dcb7fe-2e09-b1fb-24d6-36249f047632@redhat.com>
+Date:   Fri, 19 Mar 2021 18:36:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6HYfoSnBoq7JGW1ifLmLMmwSAyCqjh+bJ6L9evAPVGLQ@mail.gmail.com>
+In-Reply-To: <c10c6405-5efe-5a41-2b3a-f3af85a528ba@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:49:55AM -0700, Shakeel Butt wrote:
-> On Thu, Mar 18, 2021 at 10:49 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > The swapaccounting= commandline option already does very little
-> > today. To close a trivial containment failure case, the swap ownership
-> > tracking part of the swap controller has recently become mandatory
-> > (see commit 2d1c498072de ("mm: memcontrol: make swap tracking an
-> > integral part of memory control") for details), which makes up the
-> > majority of the work during swapout, swapin, and the swap slot map.
-> >
-> > The only thing left under this flag is the page_counter operations and
-> > the visibility of the swap control files in the first place, which are
-> > rather meager savings. There also aren't many scenarios, if any, where
-> > controlling the memory of a cgroup while allowing it unlimited access
-> > to a global swap space is a workable resource isolation stragegy.
+Hi Chenxiang,
+
+On 3/4/21 8:55 AM, chenxiang (M) wrote:
+> Hi Eric,
 > 
-> *strategy
-
-Will fix :)
-
-> > On the other hand, there have been several bugs and confusion around
-> > the many possible swap controller states (cgroup1 vs cgroup2 behavior,
-> > memory accounting without swap accounting, memcg runtime disabled).
-> >
-> > This puts the maintenance overhead of retaining the toggle above its
-> > practical benefits. Deprecate it.
-> >
-> > Suggested-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> [...]
-> >
-> >  static int __init setup_swap_account(char *s)
-> >  {
-> > -       if (!strcmp(s, "1"))
-> > -               cgroup_memory_noswap = false;
-> > -       else if (!strcmp(s, "0"))
-> > -               cgroup_memory_noswap = true;
-> > -       return 1;
-> > +       pr_warn_once("The swapaccount= commandline option is deprecated. "
-> > +                    "Please report your usecase to linux-mm@kvack.org if you "
-> > +                    "depend on this functionality.\n");
-> > +       return 0;
 > 
-> What's the difference between returning 0 or 1 here?
-
-It signals whether the parameter is "recognized" by the kernel as a
-valid thing to pass, or whether it's unknown. If it's unknown, it'll
-be passed on to the init system (which ignores it), so this resembles
-the behavior we'll have when we remove the __setup in the future.
-
-If somebody can make an argument why we should go with one over the
-other, I'll happily go with that.
-
-> >  __setup("swapaccount=", setup_swap_account);
-> >
-> > @@ -7291,27 +7287,13 @@ static struct cftype memsw_files[] = {
-> >         { },    /* terminate */
-> >  };
-> >
-> > -/*
-> > - * If mem_cgroup_swap_init() is implemented as a subsys_initcall()
-> > - * instead of a core_initcall(), this could mean cgroup_memory_noswap still
-> > - * remains set to false even when memcg is disabled via "cgroup_disable=memory"
-> > - * boot parameter. This may result in premature OOPS inside
-> > - * mem_cgroup_get_nr_swap_pages() function in corner cases.
-> > - */
-> >  static int __init mem_cgroup_swap_init(void)
-> >  {
-> > -       /* No memory control -> no swap control */
-> > -       if (mem_cgroup_disabled())
-> > -               cgroup_memory_noswap = true;
-> > -
-> > -       if (cgroup_memory_noswap)
-> > -               return 0;
-> > -
+> 在 2021/2/24 4:56, Eric Auger 写道:
+>> Implement domain-selective, pasid selective and page-selective
+>> IOTLB invalidations.
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>
+>> ---
+>>
+>> v13 -> v14:
+>> - Add domain invalidation
+>> - do global inval when asid is not provided with addr
+>>   granularity
+>>
+>> v7 -> v8:
+>> - ASID based invalidation using iommu_inv_pasid_info
+>> - check ARCHID/PASID flags in addr based invalidation
+>> - use __arm_smmu_tlb_inv_context and __arm_smmu_tlb_inv_range_nosync
+>>
+>> v6 -> v7
+>> - check the uapi version
+>>
+>> v3 -> v4:
+>> - adapt to changes in the uapi
+>> - add support for leaf parameter
+>> - do not use arm_smmu_tlb_inv_range_nosync or arm_smmu_tlb_inv_context
+>>   anymore
+>>
+>> v2 -> v3:
+>> - replace __arm_smmu_tlb_sync by arm_smmu_cmdq_issue_sync
+>>
+>> v1 -> v2:
+>> - properly pass the asid
+>> ---
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 74 +++++++++++++++++++++
+>>  1 file changed, 74 insertions(+)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 4c19a1114de4..df3adc49111c 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -2949,6 +2949,79 @@ static void arm_smmu_detach_pasid_table(struct iommu_domain *domain)
+>>  	mutex_unlock(&smmu_domain->init_mutex);
+>>  }
+>>  
+>> +static int
+>> +arm_smmu_cache_invalidate(struct iommu_domain *domain, struct device *dev,
+>> +			  struct iommu_cache_invalidate_info *inv_info)
+>> +{
+>> +	struct arm_smmu_cmdq_ent cmd = {.opcode = CMDQ_OP_TLBI_NSNH_ALL};
+>> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
+>> +
+>> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+>> +		return -EINVAL;
+>> +
+>> +	if (!smmu)
+>> +		return -EINVAL;
+>> +
+>> +	if (inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
+>> +		return -EINVAL;
+>> +
+>> +	if (inv_info->cache & IOMMU_CACHE_INV_TYPE_PASID ||
+>> +	    inv_info->cache & IOMMU_CACHE_INV_TYPE_DEV_IOTLB) {
+>> +		return -ENOENT;
+>> +	}
+>> +
+>> +	if (!(inv_info->cache & IOMMU_CACHE_INV_TYPE_IOTLB))
+>> +		return -EINVAL;
+>> +
+>> +	/* IOTLB invalidation */
+>> +
+>> +	switch (inv_info->granularity) {
+>> +	case IOMMU_INV_GRANU_PASID:
+>> +	{
+>> +		struct iommu_inv_pasid_info *info =
+>> +			&inv_info->granu.pasid_info;
+>> +
+>> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
+>> +			return -ENOENT;
+>> +		if (!(info->flags & IOMMU_INV_PASID_FLAGS_ARCHID))
+>> +			return -EINVAL;
+>> +
+>> +		__arm_smmu_tlb_inv_context(smmu_domain, info->archid);
+>> +		return 0;
+>> +	}
+>> +	case IOMMU_INV_GRANU_ADDR:
+>> +	{
+>> +		struct iommu_inv_addr_info *info = &inv_info->granu.addr_info;
+>> +		size_t size = info->nb_granules * info->granule_size;
+>> +		bool leaf = info->flags & IOMMU_INV_ADDR_FLAGS_LEAF;
+>> +
+>> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
+>> +			return -ENOENT;
+>> +
+>> +		if (!(info->flags & IOMMU_INV_ADDR_FLAGS_ARCHID))
+>> +			break;
+>> +
+>> +		arm_smmu_tlb_inv_range_domain(info->addr, size,
+>> +					      info->granule_size, leaf,
+>> +					      info->archid, smmu_domain);
 > 
-> Do we need a mem_cgroup_disabled() check here?
-
-cgroup_add_cftypes() implies this check from the cgroup side and will
-just do nothing and return success. So we don't need it now.
-
-But it is something we'd have to remember to add if we do add more
-code to this function later on.
-
-Either way works for me. I can add it if people think it's better.
-
+> Is it possible to add a check before the function to make sure that
+> info->granule_size can be recognized by SMMU?
+> There is a scenario which will cause TLBI issue: RIL feature is enabled
+> on guest but is disabled on host, and then on
+> host it just invalidate 4K/2M/1G once a time, but from QEMU,
+> info->nb_granules is always 1 and info->granule_size = size,
+> if size is not equal to 4K or 2M or 1G (for example size = granule_size
+> is 5M), it will only part of the size it wants to invalidate.
 > 
-> >         WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
-> >         WARN_ON(cgroup_add_legacy_cftypes(&memory_cgrp_subsys, memsw_files));
-> >
-> >         return 0;
-> >  }
-> > -core_initcall(mem_cgroup_swap_init);
-> > +subsys_initcall(mem_cgroup_swap_init);
-> >
-> >  #endif /* CONFIG_MEMCG_SWAP */
-> > --
-> > 2.30.1
-> >
+> I think maybe we can add a check here: if RIL is not enabled and also
+> size is not the granule_size (4K/2M/1G) supported by
+> SMMU hardware, can we just simply use the smallest granule_size
+> supported by hardware all the time?
+> 
+>> +
+>> +		arm_smmu_cmdq_issue_sync(smmu);
+>> +		return 0;
+>> +	}
+>> +	case IOMMU_INV_GRANU_DOMAIN:
+>> +		break;
+> 
+> I check the qemu code
+> (https://github.com/eauger/qemu/tree/v5.2.0-2stage-rfcv8), for opcode
+> CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL from guest OS
+> it calls smmu_inv_notifiers_all() to unamp all notifiers of all mr's,
+> but it seems not set event.entry.granularity which i think it should set
+> IOMMU_INV_GRAN_ADDR.
+this is because IOMMU_INV_GRAN_ADDR = 0. But for clarity I should rather
+set it explicitly ;-)
+> BTW, for opcode CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL, it needs to unmap
+> size = 0x1000000000000 on 48bit system (it may spend much time),  maybe
+> it is better
+> to set it as IOMMU_INV_GRANU_DOMAIN, then in host OS, send TLBI_NH_ALL
+> directly when IOMMU_INV_GRANU_DOMAIN.
+Yes you're right. If the host does not support RIL then it is an issue.
+This is going to be fixed in the next version.
+
+Thank you for the report!
+
+Best Regards
+
+Eric
+> 
+> 
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* Global S1 invalidation */
+>> +	cmd.tlbi.vmid   = smmu_domain->s2_cfg.vmid;
+>> +	arm_smmu_cmdq_issue_cmd(smmu, &cmd);
+>> +	arm_smmu_cmdq_issue_sync(smmu);
+>> +	return 0;
+>> +}
+>> +
+>>  static bool arm_smmu_dev_has_feature(struct device *dev,
+>>  				     enum iommu_dev_features feat)
+>>  {
+>> @@ -3048,6 +3121,7 @@ static struct iommu_ops arm_smmu_ops = {
+>>  	.put_resv_regions	= generic_iommu_put_resv_regions,
+>>  	.attach_pasid_table	= arm_smmu_attach_pasid_table,
+>>  	.detach_pasid_table	= arm_smmu_detach_pasid_table,
+>> +	.cache_invalidate	= arm_smmu_cache_invalidate,
+>>  	.dev_has_feat		= arm_smmu_dev_has_feature,
+>>  	.dev_feat_enabled	= arm_smmu_dev_feature_enabled,
+>>  	.dev_enable_feat	= arm_smmu_dev_enable_feature,
+> 
+
