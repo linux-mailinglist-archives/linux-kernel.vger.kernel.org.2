@@ -2,92 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C159341D93
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93AD341D99
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCSM6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:58:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32150 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhCSM57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:57:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616158678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AvDFQrBAbe8H5yunB45IdDhjKgC5KZgLyWB2+9tLEDs=;
-        b=XAOoZAZIQlPzrg2voNyUZQQwTqACMvOJTz3P+2zLpogPbXWwgsn1DZPoqBoxdi0kVcWvB+
-        M6eNwZ7IIOtQ6yklD8L/7VDCMe5w8UhV5SFrxmfsUl8vL8r922iFEf7o4wI8YRHkzI8VFQ
-        tNeg8CvViAN2Doae1zjpMWzR+hkYwQ4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-10XZudypN1ekSEFbUy3ynQ-1; Fri, 19 Mar 2021 08:57:56 -0400
-X-MC-Unique: 10XZudypN1ekSEFbUy3ynQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79A32180FCA0;
-        Fri, 19 Mar 2021 12:57:54 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 736B919CB1;
-        Fri, 19 Mar 2021 12:57:45 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 08:57:42 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
-        tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: Re: [PATCH] audit: log nftables configuration change events once per
- table
-Message-ID: <20210319125742.GM3141668@madcap2.tricolour.ca>
-References: <7e73ce4aa84b2e46e650b5727ee7a8244ec4a0ac.1616078123.git.rgb@redhat.com>
- <20210318163032.GS5298@orbyte.nwl.cc>
- <20210318183703.GL3141668@madcap2.tricolour.ca>
- <20210319125243.GU5298@orbyte.nwl.cc>
+        id S229844AbhCSM76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229766AbhCSM7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:59:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7000A64ECD;
+        Fri, 19 Mar 2021 12:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616158791;
+        bh=s1jBvRIzG2KtXnlm97XSiogBmYB5Emrm/1OV0N1QTEA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rwOsufUV2ChWTrrOGzFS76/AIq8CUh4toMupaCQSNNTfy1xIUPx4Drpf0tEypTeiX
+         SS/hsRPSFhgvYpmTNrM6+ny0hkWDmCSjSZfh1BaBaXz/Ic6KMb+Cz6XXHpwZxbbrX7
+         KNSlkdLOtHZ2Tc1PX93rDqzQSCOJG4CPZE9vyKL0+8MC4cdMeMG2aGjU+OF/s3Wxde
+         OHmDbsTjnRELvHu2wXHsg44dfi3MfSf4JEYk8rw7NCASrZ5y96omUiyblKhLhhxyFG
+         U8COopenns+BT+fbEaX1PzNn8qQ14YF4B/y3c0Q7KdxdutaIoRprjlEDxSsSpVyYfj
+         CkMD3eSqUUVZw==
+Date:   Fri, 19 Mar 2021 14:59:47 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFSgQ2RWqt4YyIV4@unreal>
+References: <YFHh3bopQo/CRepV@unreal>
+ <20210317112309.nborigwfd26px2mj@archlinux>
+ <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318103935.2ec32302@omen.home.shazbot.org>
+ <YFOMShJAm4j/3vRl@unreal>
+ <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210319125243.GU5298@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-19 13:52, Phil Sutter wrote:
-> On Thu, Mar 18, 2021 at 02:37:03PM -0400, Richard Guy Briggs wrote:
-> > On 2021-03-18 17:30, Phil Sutter wrote:
-> [...]
-> > > Why did you leave the object-related logs in place? They should reappear
-> > > at commit time just like chains and sets for instance, no?
-> > 
-> > There are other paths that can trigger these messages that don't go
-> > through nf_tables_commit() that affect the configuration data.  The
-> > counters are considered config data for auditing purposes and the act of
-> > resetting them is audittable.  And the only time we want to emit a
-> > record is when they are being reset.
+On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
+> On 18.03.21 18:22, Leon Romanovsky wrote:
 > 
-> Oh, I see. I wasn't aware 'nft reset' bypasses the transaction logic,
-> thanks for clarifying!
+> > Which email client do you use?
+> > Your responses are grouped as one huge block without any chance to respond
+> > to you on specific point or answer to your question.
+> 
+> I'm reading this thread in Tbird, and threading / quoting all looks
+> nice.
 
-That's my current understanding.  If someone else has a better
-understanding I'd be grateful if they could correct me.
+I'm not talking about threading or quoting but about response itself.
+See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
+Alex's response is one big chunk without any separations to paragraphs.
 
-> Cheers, Phil
+> 
+> > I see your flow and understand your position, but will repeat my
+> > position. We need to make sure that vendors will have incentive to
+> > supply quirks.
+> 
+> I really doubt we can influence that by any technical decision here in
+> the kernel.
 
-- RGB
+There are subsystems that succeeded to do it, for example netdev, RDMA e.t.c.
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+> 
+> > And regarding vendors, see Amey response below about his touchpad troubles.
+> > The cheap electronics vendors don't care about their users.
+> 
+> IMHO, the expensive ones don't care either.
+> 
+> Does eg. Dell publish board schematics ? Do they even publish exact part
+> lists (exact chipsets) along with their brochures, so customers can
+> check wether their HW is supported, before buying and trying out ?
 
+They do it because they are allowed to do it and not because they
+explicitly want to annoyance their customers. 
+
+> 
+> Doesn't seem so. I've personally seen a lot cases where some supposedly
+> supported HW turned out to be some completely different and unsupported
+> HW that's sold under exactly the same product ID. One of many reasons
+> for not giving them a single penny anymore.
+> 
+> IMHO, there're only very few changes of convincing some HW vendor for
+> doing a better job on driver side:
+> 
+> a) product is targeted for a niche that can't live without Linux
+>    (eg. embedded)
+> b) it's really *dangerous* for your market share if anything doesn't
+>    work properly on Linux (eg. certan server machines)
+> c) somebody *really* big (like Google) is gun-pointing at some supplier,
+>    who's got a lot to loose
+> d) a *massive* worldwide shitstorm against the vendor
+> 
+> [ And often, even a combination of them isn't enough. Did you know that
+>   even Google doesn't get all specs necessary to replace away the ugly
+>   FSP blob ? (it's the same w/ AMD, but meanwhile I'm pissed enought to
+>   reverse engineer their AGESA blob). ]
+
+I don't know about this specific Google case, but from my previous experience.
+The reasons why vendor says no to Google are usually due to licensing and legal
+issues and not open source vs. proprietary.
+
+> 
+> You see, what we do here in the kernel has no practical influence on
+> those hw vendors.
+
+I see it differently, but it doesn't matter. This is too theoretical
+discussion to my taste.
+
+> 
+> 
+> --mtx
+> 
+> -- 
+> ---
+> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+> GPG/PGP-Schlüssel zu.
+> ---
+> Enrico Weigelt, metux IT consult
+> Free software and Linux embedded engineering
+> info@metux.net -- +49-151-27565287
