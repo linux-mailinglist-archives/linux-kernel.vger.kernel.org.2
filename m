@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F874341B0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86984341B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCSLFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        id S229933AbhCSLFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhCSLFU (ORCPT
+        with ESMTP id S229847AbhCSLFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:05:20 -0400
+        Fri, 19 Mar 2021 07:05:11 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A0EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:05:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BEDC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:05:10 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <afa@pengutronix.de>)
-        id 1lNCwG-0000xr-P8; Fri, 19 Mar 2021 12:05:08 +0100
+        id 1lNCwG-0000y3-8e; Fri, 19 Mar 2021 12:05:08 +0100
 Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <afa@pengutronix.de>)
-        id 1lNCwF-0004fQ-C2; Fri, 19 Mar 2021 12:05:07 +0100
+        id 1lNCwF-0004wi-Tp; Fri, 19 Mar 2021 12:05:07 +0100
 From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Mark Brown <broonie@kernel.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     kernel@pengutronix.de, andy.shevchenko@gmail.com,
-        stable@kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] driver core: clear deferred probe reason on probe retry
-Date:   Fri, 19 Mar 2021 12:04:57 +0100
-Message-Id: <20210319110459.19966-1-a.fatoum@pengutronix.de>
+Subject: [PATCH v2 2/2] driver core: add helper for deferred probe reason setting
+Date:   Fri, 19 Mar 2021 12:04:58 +0100
+Message-Id: <20210319110459.19966-2-a.fatoum@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210319110459.19966-1-a.fatoum@pengutronix.de>
+References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
@@ -46,42 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When retrying a deferred probe, any old defer reason string should be
-discarded. Otherwise, if the probe is deferred again at a different spot,
-but without setting a message, the now incorrect probe reason will remain.
+We now have three places within the same file doing the same operation
+of freeing this pointer and setting it anew. A helper make this
+arguably easier to read, so add one.
 
-This was observed with the i.MX I2C driver, which ultimately failed
-to probe due to lack of the GPIO driver. The probe defer for GPIO
-doesn't record a message, but a previous probe defer to clock_get did.
-This had the effect that /sys/kernel/debug/devices_deferred listed
-a misleading probe deferral reason.
-
-Cc: stable@kernel.org
-Fixes: d090b70ede02 ("driver core: add deferring probe reason to devices_deferred property")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
 v1 -> v2:
- - reworded commit message (Andy)
- - collected Andy's Reviewed-by
+ - no change
 ---
- drivers/base/dd.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/dd.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 9179825ff646..e2cf3b29123e 100644
+index e2cf3b29123e..4201baa1cc13 100644
 --- a/drivers/base/dd.c
 +++ b/drivers/base/dd.c
-@@ -97,6 +97,9 @@ static void deferred_probe_work_func(struct work_struct *work)
+@@ -69,6 +69,12 @@ static char async_probe_drv_names[ASYNC_DRV_NAMES_MAX_LEN];
+  */
+ static bool defer_all_probes;
+ 
++static void __device_set_deferred_probe_reason(const struct device *dev, char *reason)
++{
++	kfree(dev->p->deferred_probe_reason);
++	dev->p->deferred_probe_reason = reason;
++}
++
+ /*
+  * deferred_probe_work_func() - Retry probing devices in the active list.
+  */
+@@ -97,8 +103,7 @@ static void deferred_probe_work_func(struct work_struct *work)
  
  		get_device(dev);
  
-+		kfree(dev->p->deferred_probe_reason);
-+		dev->p->deferred_probe_reason = NULL;
-+
+-		kfree(dev->p->deferred_probe_reason);
+-		dev->p->deferred_probe_reason = NULL;
++		__device_set_deferred_probe_reason(dev, NULL);
+ 
  		/*
  		 * Drop the mutex while probing each device; the probe path may
- 		 * manipulate the deferred list
+@@ -140,8 +145,7 @@ void driver_deferred_probe_del(struct device *dev)
+ 	if (!list_empty(&dev->p->deferred_probe)) {
+ 		dev_dbg(dev, "Removed from deferred list\n");
+ 		list_del_init(&dev->p->deferred_probe);
+-		kfree(dev->p->deferred_probe_reason);
+-		dev->p->deferred_probe_reason = NULL;
++		__device_set_deferred_probe_reason(dev, NULL);
+ 	}
+ 	mutex_unlock(&deferred_probe_mutex);
+ }
+@@ -220,11 +224,12 @@ void device_unblock_probing(void)
+ void device_set_deferred_probe_reason(const struct device *dev, struct va_format *vaf)
+ {
+ 	const char *drv = dev_driver_string(dev);
++	char *reason;
+ 
+ 	mutex_lock(&deferred_probe_mutex);
+ 
+-	kfree(dev->p->deferred_probe_reason);
+-	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
++	reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
++	__device_set_deferred_probe_reason(dev, reason);
+ 
+ 	mutex_unlock(&deferred_probe_mutex);
+ }
 -- 
 2.29.2
 
