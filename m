@@ -2,170 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D87342128
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAC334212A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhCSPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCSPqM (ORCPT
+        id S230359AbhCSPrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:47:13 -0400
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:46057 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230178AbhCSPqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:46:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCA4C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id v3so3956714pgq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qONpO4rhVUGycYg/TRvqp7wSV44IcWoCAbGRlkLp9Ss=;
-        b=rsTx4yyQbVw/axvuQK7riy8Ifnu/2vWnC+ipHqep+SkDFx7fxZGWhhFIMWg6OVsGvh
-         zyNlDtgVGgHkwH5IoxwYKqzCkyRHUdMfK7fn06V6lsmUcm/3uPmOG7uUS6WGTQY4Bpd+
-         WJV95QM9bXIgKyO4PxDQ4oC70Y43ZD1kvIdn+ikhfcGsgmgnvOadj91qkGxxuBPkSuLp
-         v9DDfvpBKUr59vQCL5eUeTcDYyoyeT+fkdbOqQbcb8w63Hi2ci3ZkY4AIHc1igWN+6xe
-         u9wTH9JnZ+EG0R8z4Ipx3rkZWiRk14cIpBSwHMfI5jpTVXe2HUNcRQLcl6DI11g+OPu5
-         xD1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qONpO4rhVUGycYg/TRvqp7wSV44IcWoCAbGRlkLp9Ss=;
-        b=LrqiPIeGBlmB3gLmF5Lsj4O5TVGzglcyn1nnrbxfbYdvmR2yYXml7XGDyeo7ys+Rm2
-         mWcYvPECnUzZ5l/uGvA+Rgz1YuCwHb5y0qdU/pE/jkrv9IbZkpoexgE4PKtZZSOQNLQG
-         10HKJunRO2FFuXiMt2A5aHjx6TAXydbjbq+501OZ5E9J4tkEuHyyPnLvZRFtXRn6eTHa
-         VRuFQVYUWnFDdvv+fvJp8q6g9UZDY7V/xMx/yuUydiasHE3s2M7ytQUeNooQYndtkdyN
-         bA6xTpJWb3e83fhfidpkXFjSKQ0DkoJP4faV7NiCDKAhYNHWjZfTDlF52e5r5BstHqkD
-         h/Yg==
-X-Gm-Message-State: AOAM532dVdXdMqNTqFyH9ketCdWJR0YiEShux0tThjIjn5vYVlsODa0U
-        EFiy+POh7yzdE28J2WAR54BO0vzgJJBPDyMKawg9TA==
-X-Google-Smtp-Source: ABdhPJwwUIg8Pn8ujsnmmyz5LCe4Dmjkxby7QcP4D6KPoSbz3fTxSqAdZ1HACiuD0mvkzCmd32zZlBml8RGzzzJ/9tA=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr12262932pgl.31.1616168771346;
- Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
+        Fri, 19 Mar 2021 11:46:40 -0400
+Date:   Fri, 19 Mar 2021 15:46:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616168798; bh=CE2JTG3g9f3Lov0MyYvQKYDl57x0SW1lEeVns2U4Wk4=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=JEOy+chxn8OC7fndP2ik3JUcSHBflRoK7nbE4hsasc6RQCMwGojtP4V0JPAjbW/55
+         1jyVKwVV0k9qyE6SHuTbpRwzl7ynj3JOdiTE/sqe3vrZaazJ1HFcFFcXgoeJ5mHxyx
+         RLaySOEgq6wEyhnUb1gOUdu566Iswrm3H2scatTqO0AiwynhDAOO6EUL+qpVy9iFmi
+         Hwh0QO4TJm5+xwQ5O7l7RC5wobzMgQzswKpx7c6ifZZ1xAjVJwyzxjRpU8pKaiInD5
+         V3jwpJuG3YKnuUAbL5UP84N2lFLDvgZ3qnK/RhYV5tBY2bm/1p65d4iSQQTqNQrBMG
+         geYpnoEqN/05A==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next] dsa: simplify Kconfig symbols and dependencies
+Message-ID: <20210319154617.187222-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210318110658.60892-1-songmuchun@bytedance.com>
- <20210318110658.60892-5-songmuchun@bytedance.com> <CALvZod5RSXiUHBkW4aaWOnak6LQ6QdSiGWMh9Wk_Q++dz6Y4_Q@mail.gmail.com>
- <CAMZfGtXSW8gX99SzYf7ourM5ZpsWYjWtiBL0MYpJXZeKB4HWXg@mail.gmail.com> <CALvZod5H-hL8myH1hy6YRis5vGT5JSYTQv5AeM0zagymCg0mcA@mail.gmail.com>
-In-Reply-To: <CALvZod5H-hL8myH1hy6YRis5vGT5JSYTQv5AeM0zagymCg0mcA@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 19 Mar 2021 23:45:35 +0800
-Message-ID: <CAMZfGtXHnaPFp67k4tD1Te4Y13wF5VHAQ5Vq_UyjzFCuTTe0+g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 4/5] mm: memcontrol: use obj_cgroup APIs
- to charge kmem pages
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 9:59 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Mar 18, 2021 at 9:05 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > On Fri, Mar 19, 2021 at 11:40 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Thu, Mar 18, 2021 at 4:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > [...]
-> > > >
-> > > > +static inline struct mem_cgroup *get_obj_cgroup_memcg(struct obj_cgroup *objcg)
-> > >
-> > > I would prefer get_mem_cgroup_from_objcg().
-> >
-> > Inspired by obj_cgroup_memcg() which returns the memcg from objcg.
-> > So I introduce get_obj_cgroup_memcg() which obtains a reference of
-> > memcg on the basis of obj_cgroup_memcg().
-> >
-> > So that the names are more consistent. Just my thought.
-> >
-> > So should I rename it to get_mem_cgroup_from_objcg?
-> >
->
-> If you look at other functions which get reference on mem_cgroup, they
-> have the format of get_mem_cgroup_*. Similarly the current function to
-> get a reference on obj_cgroup is get_obj_cgroup_from_current().
->
-> So, from the name get_obj_cgroup_memcg(), it seems like we are getting
-> reference on obj_cgroup but the function is getting reference on
-> mem_cgroup.
+1. Remove CONFIG_HAVE_NET_DSA.
 
-Make sense. I will use get_mem_cgroup_from_objcg(). Thanks.
+CONFIG_HAVE_NET_DSA is a legacy leftover from the times when drivers
+should have selected CONFIG_NET_DSA manually.
+Currently, all drivers has explicit 'depends on NET_DSA', so this is
+no more needed.
 
->
-> > >
-> > > > +{
-> > > > +       struct mem_cgroup *memcg;
-> > > > +
-> > > > +       rcu_read_lock();
-> > > > +retry:
-> > > > +       memcg = obj_cgroup_memcg(objcg);
-> > > > +       if (unlikely(!css_tryget(&memcg->css)))
-> > > > +               goto retry;
-> > > > +       rcu_read_unlock();
-> > > > +
-> > > > +       return memcg;
-> > > > +}
-> > > > +
-> > > >  #ifdef CONFIG_MEMCG_KMEM
-> > > >  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
-> > > >                                  gfp_t gfp, bool new_page)
-> > > > @@ -3070,15 +3088,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
-> > > >         struct mem_cgroup *memcg;
-> > > >         int ret;
-> > > >
-> > > > -       rcu_read_lock();
-> > > > -retry:
-> > > > -       memcg = obj_cgroup_memcg(objcg);
-> > > > -       if (unlikely(!css_tryget(&memcg->css)))
-> > > > -               goto retry;
-> > > > -       rcu_read_unlock();
-> > > > -
-> > > > +       memcg = get_obj_cgroup_memcg(objcg);
-> > > >         ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
-> > >
-> > > Why not manually inline __memcg_kmem_charge() here? This is the only user.
-> > >
-> > > Similarly manually inline __memcg_kmem_uncharge() into
-> > > obj_cgroup_uncharge_pages() and call obj_cgroup_uncharge_pages() in
-> > > obj_cgroup_release().
-> >
-> > Good point. I will do this.
-> >
-> > >
-> > > > -
-> > > >         css_put(&memcg->css);
-> > > >
-> > > >         return ret;
-> > > > @@ -3143,18 +3154,18 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
-> > > >   */
-> > > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-> > > >  {
-> > > > -       struct mem_cgroup *memcg;
-> > > > +       struct obj_cgroup *objcg;
-> > > >         int ret = 0;
-> > > >
-> > > > -       memcg = get_mem_cgroup_from_current();
-> > >
-> > > This was the only use of get_mem_cgroup_from_current(). Why not remove it?
-> >
-> > I saw a potential user.
-> >
-> >     [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
-> >
-> > To avoid reintroducing them. So I did not remove it.
-> >
->
-> Don't worry about that. Most probably that user would be changing this
-> function, so it would to better to introduce from scratch.
+2. CONFIG_HAVE_NET_DSA dependencies became CONFIG_NET_DSA's ones.
 
-OK. I will remove get_mem_cgroup_from_current(). Thanks for
-your suggestions.
+ - dropped !S390 dependency which was introduced to be sure NET_DSA
+   can select CONFIG_PHYLIB. DSA migrated to Phylink almost 3 years
+   ago and the PHY library itself doesn't depend on !S390 since
+   commit 870a2b5e4fcd ("phylib: remove !S390 dependeny from Kconfig");
+ - INET dependency is kept to be sure we can select NET_SWITCHDEV;
+ - NETDEVICES dependency is kept to be sure we can select PHYLINK.
+
+3. DSA drivers menu now depends on NET_DSA.
+
+Instead on 'depends on NET_DSA' on every single driver, the entire
+menu now depends on it. This eliminates a lot of duplicated lines
+from Kconfig with no loss (when CONFIG_NET_DSA=3Dm, drivers also can
+be only m or n).
+This also has a nice side effect that there's no more empty menu on
+configurations without DSA.
+
+4. Kbuild will now descend into 'drivers/net/dsa' only when
+   CONFIG_NET_DSA is y or m.
+
+This is safe since no objects inside this folder can be built without
+DSA core, as well as when CONFIG_NET_DSA=3Dm, no objects can be
+built-in.
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/net/Makefile    |  2 +-
+ drivers/net/dsa/Kconfig | 17 ++++-------------
+ net/dsa/Kconfig         | 10 +++-------
+ 3 files changed, 8 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+index f4990ff32fa4..040e20b81317 100644
+--- a/drivers/net/Makefile
++++ b/drivers/net/Makefile
+@@ -45,7 +45,7 @@ obj-$(CONFIG_ARCNET) +=3D arcnet/
+ obj-$(CONFIG_DEV_APPLETALK) +=3D appletalk/
+ obj-$(CONFIG_CAIF) +=3D caif/
+ obj-$(CONFIG_CAN) +=3D can/
+-obj-y +=3D dsa/
++obj-$(CONFIG_NET_DSA) +=3D dsa/
+ obj-$(CONFIG_ETHERNET) +=3D ethernet/
+ obj-$(CONFIG_FDDI) +=3D fddi/
+ obj-$(CONFIG_HIPPI) +=3D hippi/
+diff --git a/drivers/net/dsa/Kconfig b/drivers/net/dsa/Kconfig
+index 3af373e90806..a5f1aa911fe2 100644
+--- a/drivers/net/dsa/Kconfig
++++ b/drivers/net/dsa/Kconfig
+@@ -1,12 +1,12 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "Distributed Switch Architecture drivers"
+-=09depends on HAVE_NET_DSA
++=09depends on NET_DSA
+
+ source "drivers/net/dsa/b53/Kconfig"
+
+ config NET_DSA_BCM_SF2
+ =09tristate "Broadcom Starfighter 2 Ethernet switch support"
+-=09depends on HAS_IOMEM && NET_DSA
++=09depends on HAS_IOMEM
+ =09select NET_DSA_TAG_BRCM
+ =09select FIXED_PHY
+ =09select BCM7XXX_PHY
+@@ -18,7 +18,6 @@ config NET_DSA_BCM_SF2
+
+ config NET_DSA_LOOP
+ =09tristate "DSA mock-up Ethernet switch chip support"
+-=09depends on NET_DSA
+ =09select FIXED_PHY
+ =09help
+ =09  This enables support for a fake mock-up switch chip which
+@@ -28,7 +27,7 @@ source "drivers/net/dsa/hirschmann/Kconfig"
+
+ config NET_DSA_LANTIQ_GSWIP
+ =09tristate "Lantiq / Intel GSWIP"
+-=09depends on HAS_IOMEM && NET_DSA
++=09depends on HAS_IOMEM
+ =09select NET_DSA_TAG_GSWIP
+ =09help
+ =09  This enables support for the Lantiq / Intel GSWIP 2.1 found in
+@@ -36,7 +35,6 @@ config NET_DSA_LANTIQ_GSWIP
+
+ config NET_DSA_MT7530
+ =09tristate "MediaTek MT753x and MT7621 Ethernet switch support"
+-=09depends on NET_DSA
+ =09select NET_DSA_TAG_MTK
+ =09help
+ =09  This enables support for the MediaTek MT7530, MT7531, and MT7621
+@@ -44,7 +42,6 @@ config NET_DSA_MT7530
+
+ config NET_DSA_MV88E6060
+ =09tristate "Marvell 88E6060 ethernet switch chip support"
+-=09depends on NET_DSA
+ =09select NET_DSA_TAG_TRAILER
+ =09help
+ =09  This enables support for the Marvell 88E6060 ethernet switch
+@@ -64,7 +61,6 @@ source "drivers/net/dsa/xrs700x/Kconfig"
+
+ config NET_DSA_QCA8K
+ =09tristate "Qualcomm Atheros QCA8K Ethernet switch family support"
+-=09depends on NET_DSA
+ =09select NET_DSA_TAG_QCA
+ =09select REGMAP
+ =09help
+@@ -73,7 +69,6 @@ config NET_DSA_QCA8K
+
+ config NET_DSA_REALTEK_SMI
+ =09tristate "Realtek SMI Ethernet switch family support"
+-=09depends on NET_DSA
+ =09select NET_DSA_TAG_RTL4_A
+ =09select FIXED_PHY
+ =09select IRQ_DOMAIN
+@@ -93,7 +88,7 @@ config NET_DSA_SMSC_LAN9303
+
+ config NET_DSA_SMSC_LAN9303_I2C
+ =09tristate "SMSC/Microchip LAN9303 3-ports 10/100 ethernet switch in I2C =
+managed mode"
+-=09depends on NET_DSA && I2C
++=09depends on I2C
+ =09select NET_DSA_SMSC_LAN9303
+ =09select REGMAP_I2C
+ =09help
+@@ -102,7 +97,6 @@ config NET_DSA_SMSC_LAN9303_I2C
+
+ config NET_DSA_SMSC_LAN9303_MDIO
+ =09tristate "SMSC/Microchip LAN9303 3-ports 10/100 ethernet switch in MDIO=
+ managed mode"
+-=09depends on NET_DSA
+ =09select NET_DSA_SMSC_LAN9303
+ =09help
+ =09  Enable access functions if the SMSC/Microchip LAN9303 is configured
+@@ -110,7 +104,6 @@ config NET_DSA_SMSC_LAN9303_MDIO
+
+ config NET_DSA_VITESSE_VSC73XX
+ =09tristate
+-=09depends on NET_DSA
+ =09select FIXED_PHY
+ =09select VITESSE_PHY
+ =09select GPIOLIB
+@@ -120,7 +113,6 @@ config NET_DSA_VITESSE_VSC73XX
+
+ config NET_DSA_VITESSE_VSC73XX_SPI
+ =09tristate "Vitesse VSC7385/7388/7395/7398 SPI mode support"
+-=09depends on NET_DSA
+ =09depends on SPI
+ =09select NET_DSA_VITESSE_VSC73XX
+ =09help
+@@ -129,7 +121,6 @@ config NET_DSA_VITESSE_VSC73XX_SPI
+
+ config NET_DSA_VITESSE_VSC73XX_PLATFORM
+ =09tristate "Vitesse VSC7385/7388/7395/7398 Platform mode support"
+-=09depends on NET_DSA
+ =09depends on HAS_IOMEM
+ =09select NET_DSA_VITESSE_VSC73XX
+ =09help
+diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+index aaf8a452fd5b..8746b07668ae 100644
+--- a/net/dsa/Kconfig
++++ b/net/dsa/Kconfig
+@@ -1,15 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-config HAVE_NET_DSA
+-=09def_bool y
+-=09depends on INET && NETDEVICES && !S390
+-
+-# Drivers must select NET_DSA and the appropriate tagging format
+
+ menuconfig NET_DSA
+ =09tristate "Distributed Switch Architecture"
+-=09depends on HAVE_NET_DSA
+ =09depends on BRIDGE || BRIDGE=3Dn
+ =09depends on HSR || HSR=3Dn
++=09depends on INET && NETDEVICES
+ =09select GRO_CELLS
+ =09select NET_SWITCHDEV
+ =09select PHYLINK
+@@ -20,7 +15,8 @@ menuconfig NET_DSA
+
+ if NET_DSA
+
+-# tagging formats
++# Drivers must select the appropriate tagging format(s)
++
+ config NET_DSA_TAG_8021Q
+ =09tristate
+ =09select VLAN_8021Q
+--
+2.31.0
+
+
