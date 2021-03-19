@@ -2,185 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6573420D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015DF3420DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhCSPWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:22:49 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:52964 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhCSPW1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:22:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1616167347; x=1647703347;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=bZYCEYFK2BrFVJH8IcIPGqu6SV4/lJaOJHYFc3NgpgA=;
-  b=QsVGMc1tAsfcYXOczEiM8zbuCDquo2PwBWWxfZUU/Qvg7VRoqcAJELfO
-   2lkNrqU4VM3ETegU1elvGxOKtAHYj7G6c4cJDNqjyv41mLwds9GO2Z33U
-   aU+P8rUnsKddlZtUdCgrSaxUtuSfH1e1+Bw6/kY5c3w8hRF/XMZiOcJVq
-   A=;
-X-IronPort-AV: E=Sophos;i="5.81,262,1610409600"; 
-   d="scan'208";a="98885188"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Mar 2021 15:22:18 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id BC556A2351;
-        Fri, 19 Mar 2021 15:22:15 +0000 (UTC)
-Received: from u8a88181e7b2355.ant.amazon.com (10.43.161.244) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 19 Mar 2021 15:22:08 +0000
-From:   Hanna Hawa <hhhawa@amazon.com>
-To:     <andy.shevchenko@gmail.com>, <tony@atomide.com>,
-        <haojian.zhuang@linaro.org>, <linus.walleij@linaro.org>
-CC:     <dwmw@amazon.co.uk>, <benh@amazon.com>, <ronenk@amazon.com>,
-        <talel@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
-        <tgershi@amazon.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hhhawa@amazon.com>
-Subject: [PATCH v4 3/3] pinctrl: pinctrl-single: fix pcs_pin_dbg_show() when bits_per_mux is not zero
-Date:   Fri, 19 Mar 2021 17:21:33 +0200
-Message-ID: <20210319152133.28705-4-hhhawa@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210319152133.28705-1-hhhawa@amazon.com>
-References: <20210319152133.28705-1-hhhawa@amazon.com>
+        id S230105AbhCSPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:23:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhCSPXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:23:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE4E66192B;
+        Fri, 19 Mar 2021 15:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616167403;
+        bh=Ist7TXJDo//jARL87z+7k11JeR1R03Sp1atlXSKAzgk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wlnbysv+K5E3KxSUNkRMFEEFt8SS7kxaiVPNRn0J1Ie/VMX8/XJZiOvbwHiK22aZd
+         NOEr3N7Yn86TbPcV6kANYjxfhZZG1US7k1tplItE6aPf/aGsApjnbZUjWAUm9hXVws
+         b1nf5NarQwtZfZwhlptBOJ07EQj4jCl4V/3YQnq34SoKOraL5wsVpN1DFIlxh//k1o
+         7c9KuSvrBkUCrHkA/5lLOU8tNe2tTxdZ1Ql4j0wHeoA/jrikVogHKg+uhvd2yiG6af
+         GfLSK7dKy9sXV3JgkgCw88ddFRmwFBbWjPdiM1LhQBTcZ2Kw5lZxc/S7OqB+JTQVZf
+         L4IeeBUTrO4zQ==
+Date:   Fri, 19 Mar 2021 17:22:56 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com,
+        dave.hansen@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
+Message-ID: <YFTB0HD/4Hc0KvT3@kernel.org>
+References: <20210319040602.178558-1-kai.huang@intel.com>
+ <20210319084523.GA6251@zn.tnic>
+ <20210319220141.8bf20c54fdb06c6f93cde448@intel.com>
+ <YFS6Of4nnDJR+ZFk@kernel.org>
+ <20210319145931.GH6251@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.244]
-X-ClientProxiedBy: EX13D37UWA004.ant.amazon.com (10.43.160.23) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319145931.GH6251@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A System Error (SError, followed by kernel panic) was detected when
-trying to print the supported pins in a pinctrl device which supports
-multiple pins per register. This change fixes the pcs_pin_dbg_show() in
-pinctrl-single driver when bits_per_mux is not zero. In addition move
-offset calculation and pin offset in register to common function.
+On Fri, Mar 19, 2021 at 03:59:31PM +0100, Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 04:50:33PM +0200, Jarkko Sakkinen wrote:
+> > > > I was on the verge whether to merge that into the original patch since
+> > > > it is the top patch on the branch or create a new one but opted for
+> > > > former because this way it won't break bisection and people won't have
+> > > > to pay attention whether there's a fix patch to the NUMA patch too, in
+> > > > case they wanna backport and whatnot.
+> 
+> ...
+> 
+> > I understood Boris' comment that the fixes would not be squashed.
+> 
+> Please read it again and let me know what about it is not clear. It is
+> at the beginning of this mail.
 
-Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
-Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/pinctrl/pinctrl-single.c | 55 ++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 20 deletions(-)
+I did misread it for the first time.
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index f3394517cb2e..39aac32ed09c 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -270,20 +270,44 @@ static void __maybe_unused pcs_writel(unsigned val, void __iomem *reg)
- 	writel(val, reg);
- }
- 
-+static unsigned int pcs_pin_reg_offset_get(struct pcs_device *pcs,
-+					   unsigned int pin)
-+{
-+	unsigned int mux_bytes = pcs->width / BITS_PER_BYTE;
-+
-+	if (pcs->bits_per_mux) {
-+		unsigned int pin_offset_bytes;
-+
-+		pin_offset_bytes = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
-+		return (pin_offset_bytes / mux_bytes) * mux_bytes;
-+	}
-+
-+	return pin * mux_bytes;
-+}
-+
-+static unsigned int pcs_pin_shift_reg_get(struct pcs_device *pcs,
-+					  unsigned int pin)
-+{
-+	return (pin % (pcs->width / pcs->bits_per_pin)) * pcs->bits_per_pin;
-+}
-+
- static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
- 					struct seq_file *s,
- 					unsigned pin)
- {
- 	struct pcs_device *pcs;
--	unsigned val, mux_bytes;
-+	unsigned int val;
- 	unsigned long offset;
- 	size_t pa;
- 
- 	pcs = pinctrl_dev_get_drvdata(pctldev);
- 
--	mux_bytes = pcs->width / BITS_PER_BYTE;
--	offset = pin * mux_bytes;
-+	offset = pcs_pin_reg_offset_get(pcs, pin);
- 	val = pcs->read(pcs->base + offset);
-+
-+	if (pcs->bits_per_mux)
-+		val &= pcs->fmask << pcs_pin_shift_reg_get(pcs, pin);
-+
- 	pa = pcs->res->start + offset;
- 
- 	seq_printf(s, "%zx %08x %s ", pa, val, DRIVER_NAME);
-@@ -384,7 +408,6 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
- 	struct pcs_device *pcs = pinctrl_dev_get_drvdata(pctldev);
- 	struct pcs_gpiofunc_range *frange = NULL;
- 	struct list_head *pos, *tmp;
--	int mux_bytes = 0;
- 	unsigned data;
- 
- 	/* If function mask is null, return directly. */
-@@ -392,29 +415,27 @@ static int pcs_request_gpio(struct pinctrl_dev *pctldev,
- 		return -ENOTSUPP;
- 
- 	list_for_each_safe(pos, tmp, &pcs->gpiofuncs) {
-+		u32 offset;
-+
- 		frange = list_entry(pos, struct pcs_gpiofunc_range, node);
- 		if (pin >= frange->offset + frange->npins
- 			|| pin < frange->offset)
- 			continue;
--		mux_bytes = pcs->width / BITS_PER_BYTE;
- 
--		if (pcs->bits_per_mux) {
--			int byte_num, offset, pin_shift;
-+		offset = pcs_pin_reg_offset_get(pcs, pin);
- 
--			byte_num = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
--			offset = (byte_num / mux_bytes) * mux_bytes;
--			pin_shift = pin % (pcs->width / pcs->bits_per_pin) *
--				    pcs->bits_per_pin;
-+		if (pcs->bits_per_mux) {
-+			int pin_shift = pcs_pin_shift_reg_get(pcs, pin);
- 
- 			data = pcs->read(pcs->base + offset);
- 			data &= ~(pcs->fmask << pin_shift);
- 			data |= frange->gpiofunc << pin_shift;
- 			pcs->write(data, pcs->base + offset);
- 		} else {
--			data = pcs->read(pcs->base + pin * mux_bytes);
-+			data = pcs->read(pcs->base + offset);
- 			data &= ~pcs->fmask;
- 			data |= frange->gpiofunc;
--			pcs->write(data, pcs->base + pin * mux_bytes);
-+			pcs->write(data, pcs->base + offset);
- 		}
- 		break;
- 	}
-@@ -724,14 +745,8 @@ static int pcs_allocate_pin_table(struct pcs_device *pcs)
- 	for (i = 0; i < pcs->desc.npins; i++) {
- 		unsigned offset;
- 		int res;
--		int byte_num;
- 
--		if (pcs->bits_per_mux) {
--			byte_num = (pcs->bits_per_pin * i) / BITS_PER_BYTE;
--			offset = (byte_num / mux_bytes) * mux_bytes;
--		} else {
--			offset = i * mux_bytes;
--		}
-+		offset = pcs_pin_reg_offset_get(pcs, i);
- 		res = pcs_add_pin(pcs, offset);
- 		if (res < 0) {
- 			dev_err(pcs->dev, "error adding pins: %i\n", res);
--- 
-2.17.1
+So let's sanity: you *are* going to squash the patches together because
+that way it's factors easier to backport the whole thing?
 
+Is this the correct understanding?
+
+Fair point, I can cope with that.
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
+
+/Jarkko
