@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58739341D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F4B341D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhCSMvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:51:54 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34188 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhCSMvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:51:37 -0400
-Received: from zn.tnic (p200300ec2f091e000ec907ca620adac2.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1e00:ec9:7ca:620a:dac2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 556D11EC0324;
-        Fri, 19 Mar 2021 13:51:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616158295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Lk9msQ8lwSfedjnHkZUcL3GSRq6GlT11mzhXgP9EbMo=;
-        b=F+67ambvthhfUAsYvwdThId59yMF1DvrzPxZKes7jJ03u7skgNXENIosppMKtRqB7BOhvF
-        UZcVbO/t+Nvl9O1JIj4KXTyXNfmsamotMr6mBKDZbhKQpT+cJCgceO3zKAdI2EOrhIOL64
-        0FbpUMUhser7r1WhrE7NuAcKnv2/L4Y=
-Date:   Fri, 19 Mar 2021 13:51:29 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        id S230178AbhCSMuX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 08:50:23 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48699 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229847AbhCSMuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:50:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0USc56Kw_1616158190;
+Received: from 30.240.100.153(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0USc56Kw_1616158190)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Mar 2021 20:49:51 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
+ burst
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <YFNNWumXTSa3Bssl@lorien.usersys.redhat.com>
+Date:   Fri, 19 Mar 2021 20:51:59 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 23/28] x86/cet/shstk: Handle signals for shadow stack
-Message-ID: <20210319125129.GF6251@zn.tnic>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-24-yu-cheng.yu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210316151054.5405-24-yu-cheng.yu@intel.com>
+        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
+        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
+        Odin Ugedal <odin@ugedal.com>, Paul Turner <pjt@google.com>,
+        rostedt@goodmis.org, Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <CECB0471-7D8E-4FE0-9144-795553A3700B@linux.alibaba.com>
+References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
+ <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
+ <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
+ <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
+ <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
+ <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
+ <YFNNWumXTSa3Bssl@lorien.usersys.redhat.com>
+To:     Phil Auld <pauld@redhat.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:10:49AM -0700, Yu-cheng Yu wrote:
-> To deliver a signal, create a shadow stack restore token and put the token
-> and the signal restorer address on the shadow stack.  For sigreturn, verify
-> the token and restore from it the shadow stack pointer.
+
+
+> On Mar 18, 2021, at 8:59 PM, Phil Auld <pauld@redhat.com> wrote:
 > 
-> A shadow stack restore token marks a restore point of the shadow stack, and
-> the address in a token must point directly above the token, which is within
-> the same shadow stack.  This is distinctively different from other pointers
-> on the shadow stack; those pointers point to executable code area.
+> On Thu, Mar 18, 2021 at 09:26:58AM +0800 changhuaixin wrote:
+>> 
+>> 
+>>> On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+>>> 
+>>> On Wed, Mar 17, 2021 at 03:16:18PM +0800, changhuaixin wrote:
+>>> 
+>>>>> Why do you allow such a large burst? I would expect something like:
+>>>>> 
+>>>>> 	if (burst > quote)
+>>>>> 		return -EINVAL;
+>>>>> 
+>>>>> That limits the variance in the system. Allowing super long bursts seems
+>>>>> to defeat the entire purpose of bandwidth control.
+>>>> 
+>>>> I understand your concern. Surely large burst value might allow super
+>>>> long bursts thus preventing bandwidth control entirely for a long
+>>>> time.
+>>>> 
+>>>> However, I am afraid it is hard to decide what the maximum burst
+>>>> should be from the bandwidth control mechanism itself. Allowing some
+>>>> burst to the maximum of quota is helpful, but not enough. There are
+>>>> cases where workloads are bursty that they need many times more than
+>>>> quota in a single period. In such cases, limiting burst to the maximum
+>>>> of quota fails to meet the needs.
+>>>> 
+>>>> Thus, I wonder whether is it acceptable to leave the maximum burst to
+>>>> users. If the desired behavior is to allow some burst, configure burst
+>>>> accordingly. If that is causing variance, use share or other fairness
+>>>> mechanism. And if fairness mechanism still fails to coordinate, do not
+>>>> use burst maybe.
+>>> 
+>>> It's not fairness, bandwidth control is about isolation, and burst
+>>> introduces interference.
+>>> 
+>>>> In this way, cfs_b->buffer can be removed while cfs_b->max_overrun is
+>>>> still needed maybe.
+>>> 
+>>> So what is the typical avg,stdev,max and mode for the workloads where you find
+>>> you need this?
+>>> 
+>>> I would really like to put a limit on the burst. IMO a workload that has
+>>> a burst many times longer than the quota is plain broken.
+>> 
+>> I see. Then the problem comes down to how large the limit on burst shall be.
+>> 
+>> I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
+>> average	: 42.2%
+>> stddev	: 81.5%
+>> max		: 844.5%
+>> P95		: 183.3%
+>> P99		: 437.0%
+>> 
+>> If quota is 100000ms, burst buffer needs to be 8 times more in order for this workload not to be throttled.
+>> I can't say this is typical, but these workloads exist. On a machine running Kubernetes containers,
+>> where there is often room for such burst and the interference is hard to notice, users would prefer
+>> allowing such burst to being throttled occasionally.
+>> 
 > 
-> In sigreturn, restoring from a token ensures the target address is the
-> location pointed by the token.
+> I admit to not having followed all the history of this patch set. That said, when I see the above I just
+> think your quota is too low for your workload.
 > 
-> Introduce WRUSS, which is a kernel-mode instruction but writes directly to
-> user shadow stack.  It is used to construct the user signal stack as
-> described above.
+
+Yeah, more quota is helpful for this workload. But that usually prevents us from improving the total CPU
+usage by putting more work onto a single machine.
+
+> The burst (mis?)feature seems to be a way to bypass the quota.  And it sort of assumes cooperative
+> containers that will only burst when they need it and then go back to normal. 
 > 
-> Currently there is no systematic facility for extending a signal context.
-> Introduce a signal context extension 'struct sc_ext', which is used to save
-> shadow stack restore token address and WAIT_ENDBR status.  WAIT_ENDBR will
-> be introduced later in the Indirect Branch Tracking (IBT) series, but add
-> that into sc_ext now to keep the struct stable in case the IBT series is
-> applied later.
+>> In this sense, I suggest limit burst buffer to 16 times of quota or around. That should be enough for users to
+>> improve tail latency caused by throttling. And users might choose a smaller one or even none, if the interference
+>> is unacceptable. What do you think?
+>> 
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/x86/ia32/ia32_signal.c            |  17 +++
->  arch/x86/include/asm/cet.h             |   8 ++
->  arch/x86/include/asm/fpu/internal.h    |  10 ++
->  arch/x86/include/asm/special_insns.h   |  32 ++++++
->  arch/x86/include/uapi/asm/sigcontext.h |   9 ++
->  arch/x86/kernel/cet.c                  | 152 +++++++++++++++++++++++++
->  arch/x86/kernel/fpu/signal.c           | 100 ++++++++++++++++
->  arch/x86/kernel/signal.c               |  10 ++
->  8 files changed, 338 insertions(+)
+> Having quotas that can regularly be exceeded by 16 times seems to make the concept of a quota
+> meaningless.  I'd have thought a burst would be some small percentage.
+> 
+> What if several such containers burst at the same time? Can't that lead to overcommit that can effect
+> other well-behaved containers?
+> 
 
-The commit message lacks structure in explaining what the
-problem/missing functionality is and why this is solved the way it is,
-with stack tokens. Here's a good example how to structure it properly:
+I see. Maybe there should be some calculation on the probabilities of that, as Peter has replied.
 
-https://git.kernel.org/tip/323950a8a98b492ac2fa168e8e4c0becfb4554dd
+> 
+> Cheers,
+> Phil
+> 
+> -- 
 
-Also, this patch does a couple of things at once and it needs splitting
-for easier review.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
