@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E206D342423
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AE7342426
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCSSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhCSSKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:10:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F70C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xm5DJPnBkSUmEeu2sgduQCmr2CiajGavlMfQRDLlDYI=; b=KaUKqF4mo4CLY4OHNeReIV7s5P
-        Quuua0ul+xQkbS4gBLW3kCHQFRXnrO0jOVUhwzsJPxMwzXHpShsZ9LHPqIREkiKW4Qp7pqowRrOBV
-        VIxoc9UWrmr5vVzZPhuDRIVFY+sBOsnQ0Ig0zQXF8RthDL0hFD397bqwH0dh0rGQs2g/hL3ZFnsdn
-        VXmi4vggYLyLUvUBEMpuTXVRJG0GG/rBnBK4vd0qA4DEEEdPbtvaMzAw3aP2h85CeVEsZOH9KAIk9
-        KfFOsU1ExfPkt6Q6vfsuGvhdSugH8WBqJhRg4Suv0UNeNgJjB51kRCXhFcMT1kM+iSm5Z6XyWz4xD
-        JnSMd43g==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJZC-001RhB-HF; Fri, 19 Mar 2021 18:09:47 +0000
-Date:   Fri, 19 Mar 2021 11:09:46 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     tsbogend@alpha.franken.de, robin.murphy@arm.com,
-        tglx@linutronix.de, bhelgaas@google.com,
-        andriy.shevchenko@linux.intel.com, maz@kernel.org,
-        jonathan.derrick@intel.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: PCI: Fix a typo
-In-Reply-To: <20210319051514.16447-1-unixbhaskar@gmail.com>
-Message-ID: <d65057ff-c90-8cde-aef9-a5faf9e134a9@bombadil.infradead.org>
-References: <20210319051514.16447-1-unixbhaskar@gmail.com>
+        id S230304AbhCSSKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhCSSK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:10:27 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04E4F6194C;
+        Fri, 19 Mar 2021 18:10:19 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 14:10:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kairui Song <kasong@redhat.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rich Felker <dalias@libc.org>,
+        Robert Richter <rric@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Theodore Dubois <tblodt@icloud.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH RFC 0/3] drivers/char: remove /dev/kmem for good
+Message-ID: <20210319141018.5ee1a5ac@gandalf.local.home>
+In-Reply-To: <20210319143452.25948-1-david@redhat.com>
+References: <20210319143452.25948-1-david@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_110946_595202_2B1F997F 
-X-CRM114-Status: GOOD (  13.01  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/packt/packet/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Mar 2021 15:34:49 +0100
+David Hildenbrand <david@redhat.com> wrote:
 
+> Let's start a discussion if /dev/kmem is worth keeping around and
+> fixing/maintaining or if we should just remove it now for good.
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+The last time I used /dev/kmem was in 2003. While in Germany, my home
+firewall (in the US) got rooted. I could ssh into the box but had no way to
+shut it down because the rootkit took over all those commands (luckily it
+still allowed me to become root). I finally killed the box with:
 
->
-> s/packt/packet/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+ # ls -lR / > /dev/kmem
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+ ;-)
 
+But today I have other means of killing the box (or at least crippling it).
+Thus, it's obsolete in my book.
 
-> ---
-> arch/mips/pci/pci-xtalk-bridge.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
-> index 50f7d42cca5a..d2216942af18 100644
-> --- a/arch/mips/pci/pci-xtalk-bridge.c
-> +++ b/arch/mips/pci/pci-xtalk-bridge.c
-> @@ -385,7 +385,7 @@ static int bridge_domain_activate(struct irq_domain *domain,
-> 	bridge_set(bc, b_int_enable, 0x7ffffe00); /* more stuff in int_enable */
->
-> 	/*
-> -	 * Enable sending of an interrupt clear packt to the hub on a high to
-> +	 * Enable sending of an interrupt clear packet to the hub on a high to
-> 	 * low transition of the interrupt pin.
-> 	 *
-> 	 * IRIX sets additional bits in the address which are documented as
-> --
-> 2.26.2
->
->
+-- Steve
