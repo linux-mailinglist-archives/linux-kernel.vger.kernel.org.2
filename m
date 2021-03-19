@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C24341A52
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EA9341A5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCSKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:46:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42822 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhCSKqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:46:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 709A4ACC6;
-        Fri, 19 Mar 2021 10:46:21 +0000 (UTC)
-Subject: Re: [PATCH 1/2] selftests: add a kselftest for SLUB debugging
- functionality
-To:     Marco Elver <elver@google.com>, glittao@gmail.com
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        shuah@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <20210316124118.6874-1-glittao@gmail.com>
- <YFM96dY1pfk/rs3U@elver.google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <3ba2228a-1442-40b4-578f-f693d9a054e7@suse.cz>
-Date:   Fri, 19 Mar 2021 11:46:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229640AbhCSKr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:47:56 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:53124 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhCSKr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:47:27 -0400
+Received: from ios.cs.uni-dortmund.de (ios.cs.uni-dortmund.de [129.217.43.100])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12JAlMpE028261
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 11:47:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1616150845;
+        bh=BwZJz0cE5k+Q6MBdGXKhYD0FJLyqwpkKpvSZDhKSzis=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=S3qZiY6wRhfDgU2a/+WAuyX+SyTu0nDQ89r+fKfs93XDj1q65dEn/jiYdMe9EP6Wb
+         jXncNvJdsdeoSBg8rCmA1oHpcJQ4TQ9VLmKUBXc8Me0LDX+n+GAN8AZVRHYF1+sYBQ
+         Wh/s/dcziF5GKjhgWrpCIPmlbB8l6OlqTFJ+9bfE=
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To:     jack@suse.cz
+Cc:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Updated locking documentation for journal_head
+Date:   Fri, 19 Mar 2021 11:47:20 +0100
+Message-Id: <20210319104722.75467-1-alexander.lochmann@tu-dortmund.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <9864e9792b56bce87b016582a8759890079f7766>
+References: <9864e9792b56bce87b016582a8759890079f7766>
 MIME-Version: 1.0
-In-Reply-To: <YFM96dY1pfk/rs3U@elver.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/21 12:47 PM, Marco Elver wrote:
-> On Tue, Mar 16, 2021 at 01:41PM +0100, glittao@gmail.com wrote:
->> From: Oliver Glitta <glittao@gmail.com>
->> 
->> SLUB has resiliency_test() function which is hidden behind #ifdef
->> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
->> runs it. Kselftest should proper replacement for it.
->> 
->> Try changing byte in redzone after allocation and changing
->> pointer to next free node, first byte, 50th byte and redzone
->> byte. Check if validation finds errors.
->> 
->> There are several differences from the original resiliency test:
->> Tests create own caches with known state instead of corrupting
->> shared kmalloc caches.
->> 
->> The corruption of freepointer uses correct offset, the original
->> resiliency test got broken with freepointer changes.
->> 
->> Scratch changing random byte test, because it does not have
->> meaning in this form where we need deterministic results.
->> 
->> Add new option CONFIG_TEST_SLUB in Kconfig.
->> 
->> Add parameter to function validate_slab_cache() to return
->> number of errors in cache.
->> 
->> Signed-off-by: Oliver Glitta <glittao@gmail.com>
-> 
-> No objection per-se, but have you considered a KUnit-based test instead?
+LockDoc's results show that t_list_lock has been
+replaced by j_list_lock for b_next_transaction,
+b_tnext, and b_tprev.
+We, therefore, updated the documentation
+accordingly.
 
-To be honest, we didn't realize about that option.
+Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ include/linux/journal-head.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> There is no user space portion required to run this test, and a pure
-> in-kernel KUnit test would be cleaner. Various boiler-plate below,
-> including pr_err()s, the kselftest script etc. would simply not be
-> necessary.
-> 
-> This is only a suggestion, but just want to make sure you've considered
-> the option and weighed its pros/cons.
+diff --git a/include/linux/journal-head.h b/include/linux/journal-head.h
+index 75bc56109031..d68ae72784eb 100644
+--- a/include/linux/journal-head.h
++++ b/include/linux/journal-head.h
+@@ -80,13 +80,13 @@ struct journal_head {
+ 	 * Pointer to the running compound transaction which is currently
+ 	 * modifying the buffer's metadata, if there was already a transaction
+ 	 * committing it when the new transaction touched it.
+-	 * [t_list_lock] [b_state_lock]
++	 * [j_list_lock] [b_state_lock]
+ 	 */
+ 	transaction_t *b_next_transaction;
+ 
+ 	/*
+ 	 * Doubly-linked list of buffers on a transaction's data, metadata or
+-	 * forget queue. [t_list_lock] [b_state_lock]
++	 * forget queue. [j_list_lock] [b_state_lock]
+ 	 */
+ 	struct journal_head *b_tnext, *b_tprev;
+ 
+-- 
+2.20.1
 
-Thanks for the suggestion. But I hope we would expand the tests later to e.g.
-check the contents of various SLUB related sysfs files or even write to them,
-and for that goal kselftest seems to be a better starting place?
-
-Vlastimil
