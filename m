@@ -2,129 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC9B341CE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420CA341CE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhCSMZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhCSMZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:25:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18469C06175F;
-        Fri, 19 Mar 2021 05:25:10 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 12:25:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616156708;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EuFN8GZSBvQdVGnuFOlfzsjSkAhg+4MNcecV7My0xNU=;
-        b=Cm2r9omRdA2sy/IXNJ0vDXrkMMdSooH3GrDevAvIdmZ5Wo8zzGcQuJVza5B0iprA9WLKGW
-        KTndrFy45V5o1bdyYxgr4uwlTVCZyGYU40mwjNrzG+lRp9FWXtKZ2hl4iptJcbr8D0U5El
-        M9Spo1lEsvq8DgSNyIxpTnyyH16kHPkt5TJ0Pv/pTrM7JqZhQU+/JCiMICQqE64WMXyPZH
-        5p6leFa5VVRt7MGEWnZJ/F8LEeqGZy0zUZCIz8wooIvvkQdgzLVoYXnqhtV+t72gWIttWP
-        bzHbDk8gXRBhJOcuZMoeee/wFzpp07VrsvXQsrMIYGd0RHxsuoIm1k/qHPg4TQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616156708;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EuFN8GZSBvQdVGnuFOlfzsjSkAhg+4MNcecV7My0xNU=;
-        b=8lE0d5xzlUgOFrnPypq0KrZbefZDooYBTgKLbsKNjrL9bK7ZP/ARhpL0T/wPzFxzXYrMT2
-        bYhTuwqHu53K8jCQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] static_call: Align static_call_is_init()
- patching condition
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210318113610.636651340@infradead.org>
-References: <20210318113610.636651340@infradead.org>
+        id S230401AbhCSMZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230215AbhCSMZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:25:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DADC64F6E;
+        Fri, 19 Mar 2021 12:25:11 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 12:25:08 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Message-ID: <20210319122506.GA6832@arm.com>
+References: <20210225112122.2198845-1-arnd@kernel.org>
+ <20210317143757.GD12269@arm.com>
+ <20210317161838.GF12269@arm.com>
+ <CAK8P3a0FeuGLYhiPx=GLdewu2P=Hix7cpVsbF05i5WO5T2XPvQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <161615670801.398.11880263831906331601.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0FeuGLYhiPx=GLdewu2P=Hix7cpVsbF05i5WO5T2XPvQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Thu, Mar 18, 2021 at 09:41:54AM +0100, Arnd Bergmann wrote:
+> On Wed, Mar 17, 2021 at 5:18 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > On Wed, Mar 17, 2021 at 02:37:57PM +0000, Catalin Marinas wrote:
+> > > On Thu, Feb 25, 2021 at 12:20:56PM +0100, Arnd Bergmann wrote:
+> > > > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> > > > index bad2b9eaab22..926cdb597a45 100644
+> > > > --- a/arch/arm64/kernel/vmlinux.lds.S
+> > > > +++ b/arch/arm64/kernel/vmlinux.lds.S
+> > > > @@ -217,7 +217,7 @@ SECTIONS
+> > > >             INIT_CALLS
+> > > >             CON_INITCALL
+> > > >             INIT_RAM_FS
+> > > > -           *(.init.altinstructions .init.bss .init.bss.*)  /* from the EFI stub */
+> > > > +           *(.init.altinstructions .init.data.* .init.bss .init.bss.*)     /* from the EFI stub */
+> > >
+> > > INIT_DATA already covers .init.data and .init.data.*, so I don't think
+> > > we need this change.
+> >
+> > Ah, INIT_DATA only covers init.data.* (so no dot in front). The above
+> > is needed for the EFI stub.
+> 
+> I wonder if that is just a typo in INIT_DATA. Nico introduced it as part of
+> 266ff2a8f51f ("kbuild: Fix asm-generic/vmlinux.lds.h for
+> LD_DEAD_CODE_DATA_ELIMINATION"), so perhaps that should have
+> been .init.data.* instead.
 
-Commit-ID:     698bacefe993ad2922c9d3b1380591ad489355e9
-Gitweb:        https://git.kernel.org/tip/698bacefe993ad2922c9d3b1380591ad489355e9
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 18 Mar 2021 11:29:56 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 19 Mar 2021 13:16:44 +01:00
+I think it was the other Nicholas ;) (with an 'h'). The vmlinux.lds.h
+change indeed looks like a typo (it's been around since 4.18).
 
-static_call: Align static_call_is_init() patching condition
+> > However, I gave this a quick try and under Qemu with -cpu max and -smp 2
+> > (or more) it fails as below. I haven't debugged but the lr points to
+> > just after the switch_to() call. Maybe some section got discarded and we
+> > patched in the wrong instructions. It is fine with -cpu host or -smp 1.
+> 
+> Ah, interesting.
+> 
+> > -------------------8<------------------------
+> > smp: Bringing up secondary CPUs ...
+> > Detected PIPT I-cache on CPU1
+> > CPU1: Booted secondary processor 0x0000000001 [0x000f0510]
+> > Unable to handle kernel paging request at virtual address eb91d81ad2971160
+> > Mem abort info:
+> >   ESR = 0x86000004
+> >   EC = 0x21: IABT (current EL), IL = 32 bits
+> >   SET = 0, FnV = 0
+> >   EA = 0, S1PTW = 0
+> > [eb91d81ad2971160] address between user and kernel address ranges
+> > Internal error: Oops: 86000004 [#1] PREEMPT SMP
+> > Modules linked in:
+> > CPU: 1 PID: 16 Comm: migration/1 Not tainted 5.12.0-rc3-00002-g128e977c1322 #1
+> > Stopper: 0x0 <- 0x0
+> > pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
+> > pc : 0xeb91d81ad2971160
+> > lr : __schedule+0x230/0x6b8
+> > sp : ffff80001009bd60
+> > x29: ffff80001009bd60 x28: 0000000000000000
+> > x27: ffff0000000a6760 x26: ffff0000000b7540
+> > x25: 0080000000000000 x24: ffffd81ad3969000
+> > x23: ffff0000000a6200 x22: 6ee0d81ad2971658
+> > x21: ffff0000000a6200 x20: ffff000000080000
+> > x19: ffff00007fbc6bc0 x18: 0000000000000030
+> > x17: 0000000000000000 x16: 0000000000000000
+> > x15: 00008952b30a9a9e x14: 0000000000000366
+> > x13: 0000000000000192 x12: 0000000000000000
+> > x11: 0000000000000003 x10: 00000000000009b0
+> > x9 : ffff80001009bd30 x8 : ffff0000000a6c10
+> > x7 : ffff00007fbc6cc0 x6 : 00000000fffedb30
+> > x5 : 00000000ffffffff x4 : 0000000000000000
+> > x3 : 0000000000000008 x2 : 0000000000000000
+> > x1 : ffff0000000a6200 x0 : ffff0000000a3800
+> > Call trace:
+> >  0xeb91d81ad2971160
+> >  schedule+0x70/0x108
+> >  schedule_preempt_disabled+0x24/0x40
+> >  __kthread_parkme+0x68/0xd0
+> >  kthread+0x138/0x170
+> >  ret_from_fork+0x10/0x30
+> > Code: bad PC value
+> > ---[ end trace af3481062ecef3e7 ]---
+> 
+> This looks like it has just returned from __schedule() to schedule()
+> and is trying to return from that as well, through code like this:
+> 
+> .L562:
+> // /git/arm-soc/kernel/sched/core.c:5159: }
+>         ldp     x19, x20, [sp, 16]      //,,
+>         ldp     x29, x30, [sp], 32      //,,,
+>         hint    29 // autiasp
+>         ret
+> 
+> It looks like pointer authentication gone wrong, which ended up
+> with dereferencing the broken pointer in x22, and it explains why
+> it only happens with -cpu max. Presumably this also only happens
+> on secondary CPUs, so maybe the bit that initializes PAC on
+> secondary CPUs got discarded?
 
-The intent is to avoid writing init code after init (because the text
-might have been freed). The code is needlessly different between
-jump_label and static_call and not obviously correct.
+I seems that the whole alternative instructions section is gone, so any
+run-time code patching that the kernel does won't work. The kernel boots
+with the diff below but I'm not convinced we don't miss anything else.
+In some cases you get a linker warning about gc sections but not in this
+case. Maybe we need some more asserts to ensure that certain sections
+are not empty.
 
-The existing code relies on the fact that the module loader clears the
-init layout, such that within_module_init() always fails, while
-jump_label relies on the module state which is more obvious and
-matches the kernel logic.
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 11909782ee3e..036cc59033d3 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -203,7 +203,7 @@ SECTIONS
+ 	. = ALIGN(4);
+ 	.altinstructions : {
+ 		__alt_instructions = .;
+-		*(.altinstructions)
++		KEEP(*(.altinstructions))
+ 		__alt_instructions_end = .;
+ 	}
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Sumit Garg <sumit.garg@linaro.org>
-Link: https://lkml.kernel.org/r/20210318113610.636651340@infradead.org
----
- kernel/static_call.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+Do we need a KEEP(.init.altinstructions) as well? 
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 080c8a9..fc22590 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -149,6 +149,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 	};
- 
- 	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
-+		bool init = system_state < SYSTEM_RUNNING;
- 		struct module *mod = site_mod->mod;
- 
- 		if (!site_mod->sites) {
-@@ -168,6 +169,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 		if (mod) {
- 			stop = mod->static_call_sites +
- 			       mod->num_static_call_sites;
-+			init = mod->state == MODULE_STATE_COMING;
- 		}
- #endif
- 
-@@ -175,16 +177,8 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
- 		     site < stop && static_call_key(site) == key; site++) {
- 			void *site_addr = static_call_addr(site);
- 
--			if (static_call_is_init(site)) {
--				/*
--				 * Don't write to call sites which were in
--				 * initmem and have since been freed.
--				 */
--				if (!mod && system_state >= SYSTEM_RUNNING)
--					continue;
--				if (mod && !within_module_init((unsigned long)site_addr, mod))
--					continue;
--			}
-+			if (!init && static_call_is_init(site))
-+				continue;
- 
- 			if (!kernel_text_address((unsigned long)site_addr)) {
- 				WARN_ONCE(1, "can't patch static call site at %pS",
+BTW, the build fails with CONFIG_FUNCTION_TRACER enabled:
+
+aarch64-linux-gnu-ld: init/main.o(__patchable_function_entries): error: need linked-to section for --gc-sections
+
+-- 
+Catalin
