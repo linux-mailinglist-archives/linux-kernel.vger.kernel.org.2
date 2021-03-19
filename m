@@ -2,106 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BEC341867
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE0E341882
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhCSJcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:32:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55730 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229874AbhCSJbt (ORCPT
+        id S229646AbhCSJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:37:55 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2715 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCSJhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:31:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616146308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xSRPqSlHasWOtKCAmIMpsOHFNUheb5Kd9GbHS0kbp9c=;
-        b=Mcyrgt473KFucIX4zFquLx1NgqhXbOWwLmHyx5eWVDnrqcjNHe5LLCbwA9J1feTq/HOCaL
-        xNc/63Dr0C6kf/5z68/YEF26CkmuvX8LFpSQH2LAMGhdaH58QBsNAydBfnNBT4C90fQ5qD
-        EDh6hvr2+ZEMOJH7F8FcHxLpBret2y4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-lqwKAoI7O9iHcxVBM2DjNQ-1; Fri, 19 Mar 2021 05:31:46 -0400
-X-MC-Unique: lqwKAoI7O9iHcxVBM2DjNQ-1
-Received: by mail-ej1-f69.google.com with SMTP id bg7so12004799ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:31:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xSRPqSlHasWOtKCAmIMpsOHFNUheb5Kd9GbHS0kbp9c=;
-        b=Z4ZoZaJ+26G3Mzajes/aHO9nDcfrqkzFUq5unvojqoSurEyjU3sVjoCOf5VHTXjtMG
-         cCEqFs6EHvDxVMiC+lBTEu6vX0Xq+74MpWl2Ub09Inw5G5EfW4f+hbknOOkRFTAyVbzb
-         LfuUArzVzuKw0MFDxlcv7taeLRRKJjKJl4b6nEXy0a+hOSo1ljXvArHSu22XLgwepib2
-         eO8NGPARVoQkQHOhCO5ogRpXjh53u2bKmILiwZaDRFJZwBCPiIFUsg0jpXJQECeAgQCN
-         Ol38xda96KLtzib0gY8wlg0Gsg9+KntFFM3/GhG25Efitjg0062Vry29Cm8dQ+fyzDI4
-         dNIg==
-X-Gm-Message-State: AOAM531XSGkzbuSXZjoUpe3nTuB2pU4/JDUjEilTn8AaBGlA4P+xxcP6
-        4UATcZjHrTtRtAPaISypS3nU4dmyZoEmZo+Ei0r1luoMQA1E+Rcn9gBXbpBhg6ex3avBLJAIZEM
-        0wXapc1rSOhNLznuPyEQ3dyONXsKn29SW1Hv13INCTR5EI7WW3LihUZM/Gkuw09qyTonG8+zyjB
-        gI
-X-Received: by 2002:a50:ef0a:: with SMTP id m10mr8391632eds.261.1616146304973;
-        Fri, 19 Mar 2021 02:31:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3r72fWZ+WnHJwauh+tYRcGl/q0ZdX2psXYYooGwFbKXx25e3vDBNp41L0JN+IfnaYj0jlDQ==
-X-Received: by 2002:a50:ef0a:: with SMTP id m10mr8391608eds.261.1616146304755;
-        Fri, 19 Mar 2021 02:31:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g21sm3349054ejd.6.2021.03.19.02.31.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 02:31:44 -0700 (PDT)
-Subject: Re: [PATCH] documentation/kvm: additional explanations on
- KVM_SET_BOOT_CPU_ID
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        linux-doc@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <drjones@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210319091650.11967-1-eesposit@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8d48bf1b-208c-89fb-1150-b9d7f589e152@redhat.com>
-Date:   Fri, 19 Mar 2021 10:31:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 19 Mar 2021 05:37:41 -0400
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F1zG14Flrz681ZH;
+        Fri, 19 Mar 2021 17:32:57 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 10:37:34 +0100
+Received: from localhost (10.47.25.23) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 19 Mar
+ 2021 09:37:33 +0000
+Date:   Fri, 19 Mar 2021 09:36:16 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
+ a die
+Message-ID: <20210319093616.00001879@Huawei.com>
+In-Reply-To: <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+        <20210319041618.14316-2-song.bao.hua@hisilicon.com>
+        <YFRGIedW1fUlnmi+@kroah.com>
+        <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210319091650.11967-1-eesposit@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.25.23]
+X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/21 10:16, Emanuele Giuseppe Esposito wrote:
-> The ioctl KVM_SET_BOOT_CPU_ID fails when called after vcpu creation.
-> Add this explanation in the documentation.
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->   Documentation/virt/kvm/api.rst | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 38e327d4b479..bece398227f5 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -1495,7 +1495,8 @@ Fails if any VCPU has already been created.
->   
->   Define which vcpu is the Bootstrap Processor (BSP).  Values are the same
->   as the vcpu id in KVM_CREATE_VCPU.  If this ioctl is not called, the default
-> -is vcpu 0.
-> +is vcpu 0. This ioctl has to be called before vcpu creation,
-> +otherwise it will return EBUSY error.
->   
->   
->   4.42 KVM_GET_XSAVE
-> 
+On Fri, 19 Mar 2021 06:57:08 +0000
+"Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
 
-Queued, thanks.
+> > -----Original Message-----
+> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > Sent: Friday, March 19, 2021 7:35 PM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
+> > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
+> > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com; Jonathan
+> > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
+> > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O) <xuwei5@huawei.com>;
+> > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org; yangyicong
+> > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> > linuxarm@openeuler.org; hpa@zytor.com
+> > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
+> > a die
+> > 
+> > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:  
+> > > diff --git a/Documentation/admin-guide/cputopology.rst  
+> > b/Documentation/admin-guide/cputopology.rst  
+> > > index b90dafc..f9d3745 100644
+> > > --- a/Documentation/admin-guide/cputopology.rst
+> > > +++ b/Documentation/admin-guide/cputopology.rst
+> > > @@ -24,6 +24,12 @@ core_id:
+> > >  	identifier (rather than the kernel's).  The actual value is
+> > >  	architecture and platform dependent.
+> > >
+> > > +cluster_id:
+> > > +
+> > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
+> > > +	identifier (rather than the kernel's).  The actual value is
+> > > +	architecture and platform dependent.
+> > > +
+> > >  book_id:
+> > >
+> > >  	the book ID of cpuX. Typically it is the hardware platform's
+> > > @@ -56,6 +62,14 @@ package_cpus_list:
+> > >  	human-readable list of CPUs sharing the same physical_package_id.
+> > >  	(deprecated name: "core_siblings_list")
+> > >
+> > > +cluster_cpus:
+> > > +
+> > > +	internal kernel map of CPUs within the same cluster.
+> > > +
+> > > +cluster_cpus_list:
+> > > +
+> > > +	human-readable list of CPUs within the same cluster.
+> > > +
+> > >  die_cpus:
+> > >
+> > >  	internal kernel map of CPUs within the same die.  
+> > 
+> > Why are these sysfs files in this file, and not in a Documentation/ABI/
+> > file which can be correctly parsed and shown to userspace?  
+> 
+> Well. Those ABIs have been there for much a long time. It is like:
+> 
+> [root@ceph1 topology]# ls
+> core_id  core_siblings  core_siblings_list  physical_package_id thread_siblings  thread_siblings_list
+> [root@ceph1 topology]# pwd
+> /sys/devices/system/cpu/cpu100/topology
+> [root@ceph1 topology]# cat core_siblings_list
+> 64-127
+> [root@ceph1 topology]#
+> 
+> > 
+> > Any chance you can fix that up here as well?  
+> 
+> Yes. we will send a separate patch to address this, which won't
+> be in this patchset. This patchset will base on that one.
+> 
+> > 
+> > Also note that "list" is not something that goes in sysfs, sysfs is "one
+> > value per file", and a list is not "one value".  How do you prevent
+> > overflowing the buffer of the sysfs file if you have a "list"?
+> >   
+> 
+> At a glance, the list is using "-" rather than a real list
+> [root@ceph1 topology]# cat core_siblings_list
+> 64-127
+> 
+> Anyway, I will take a look if it has any chance to overflow.
 
-Paolo
+It could in theory be alternate CPUs as comma separated list.
+So it's would get interesting around 500-1000 cpus (guessing).
+
+Hopefully no one has that crazy a cpu numbering scheme but it's possible
+(note that cluster is fine for this, but I guess it might eventually
+happen for core-siblings list (cpus within a package).
+
+Shouldn't crash or anything like that but might terminate early.
+
+On sysfs file conversion, that got mentioned earlier but I forgot
+to remind Barry about it when he took this patch into his series.
+Sorry about that!
+
+Jonathan
+
+
+> 
+> > thanks,
+> > 
+> > greg k-h  
+> 
+> Thanks
+> Barry
+> 
 
