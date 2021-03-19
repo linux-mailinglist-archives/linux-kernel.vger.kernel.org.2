@@ -2,177 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C280341934
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E20341968
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhCSKCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229955AbhCSKB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:01:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B60D364F1F;
-        Fri, 19 Mar 2021 10:01:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616148118;
-        bh=XLFDw8khS5R5XbbGs996WELjZyr175WNcs5UdIpfIRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ueZ4Ty00UOKcVmirgOXqQUSiDvralM+0rUWatVk2a6TKRdWzI4NWLPla+quPZlVim
-         lQ1GojFfcyLcAO/7y63S1W6u7dCVAF2nbLg/lKBhpD5t6qYDjXAQAiK3JS3CZd2TKO
-         aCuNII3U/lwcqrgmkX8rp/MfjEcEs58CNzI97jdU=
-Date:   Fri, 19 Mar 2021 11:01:55 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
- die
-Message-ID: <YFR2kwakbcGiI37w@kroah.com>
-References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
- <20210319041618.14316-2-song.bao.hua@hisilicon.com>
- <YFRGIedW1fUlnmi+@kroah.com>
- <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
- <20210319093616.00001879@Huawei.com>
+        id S230398AbhCSKDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:03:49 -0400
+Received: from mail-ej1-f47.google.com ([209.85.218.47]:37561 "EHLO
+        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhCSKDG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:03:06 -0400
+Received: by mail-ej1-f47.google.com with SMTP id w3so8709191ejc.4;
+        Fri, 19 Mar 2021 03:03:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tf1bp42piR/kgUjUmb5eb/xY/TcOtjsqhzIfj9tnWTc=;
+        b=Fg+wiogf8F9ZkULQm4zPBt+n2RybYGPqKEsnuiHnXD4NPMiWjwsWiYLQuhe1udjRyu
+         HEFp5t6sQET2Aykcg8B7Oi1aApQjCah50MVF/IsLrdYwzadoX+ejPfMdA3p3bNYf38WP
+         +MgLjAWNA3wKx8MX7MEGZ9T1EnsaDi0U6NgqIqi1qmbs37BZR4Ge4KtAOkHhknrljasH
+         aA3f59iDXViLcMXBcZOoGXq5Z58XVx5nY2gEjWqVtnhH9slXCtP4MpdK20LEqGiVOXfD
+         yfmN8SM1f11dh2Tu+99VvAAA1bHE+A6HCL3DwllEnu//kz59OKXEWI+OEmRAmJZeXzjb
+         t9DA==
+X-Gm-Message-State: AOAM530ReIei6T5iN4fC18wEDRjEUeGGXED+MnVFBrh+kwLR+AmcXc71
+        1W7/rX1OG2GD8/DagWk01igz4liMwXU=
+X-Google-Smtp-Source: ABdhPJwkLluKt/Z5PWzK3oJAPrsRuwafX8TnbWne6McKFz3d3Je782fjlCE6GIgfyRCJvSl/CWnJmA==
+X-Received: by 2002:a17:906:35cf:: with SMTP id p15mr3349669ejb.379.1616148184358;
+        Fri, 19 Mar 2021 03:03:04 -0700 (PDT)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id si3sm3577875ejb.90.2021.03.19.03.03.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 03:03:03 -0700 (PDT)
+Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
+ alloc_workqueue call
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210318151626.17442-1-colin.king@canonical.com>
+ <13a1d187-4d6d-9e06-b94a-553d872de756@kernel.dk>
+ <62cd71bc-86e1-412d-b2b9-716c0f8021be@canonical.com>
+ <d32641ca-e34a-2bfd-9b86-28c95546f434@kernel.dk>
+ <20210319094759.GH2087@kadam>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <36888c20-48b7-373e-260a-6e8719c0ed60@kernel.org>
+Date:   Fri, 19 Mar 2021 11:03:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319093616.00001879@Huawei.com>
+In-Reply-To: <20210319094759.GH2087@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 09:36:16AM +0000, Jonathan Cameron wrote:
-> On Fri, 19 Mar 2021 06:57:08 +0000
-> "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+On 19/03/2021 10:47, Dan Carpenter wrote:
+> On Thu, Mar 18, 2021 at 02:42:33PM -0600, Jens Axboe wrote:
+>> On 3/18/21 2:24 PM, Colin Ian King wrote:
+>>> On 18/03/2021 20:12, Jens Axboe wrote:
+>>>> On 3/18/21 9:16 AM, Colin King wrote:
+>>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>>
+>>>>> The 3rd argument to alloc_workqueue should be the max_active count,
+>>>>> however currently it is the lo->lo_number that is intended for the
+>>>>> loop%d number. Fix this by adding in the missing max_active count.
+>>>>
+>>>> Dan, please fold this (or something similar) in when you're redoing the
+>>>> series.
+>>>>
+>>> Appreciate this fix being picked up. Are we going to lose the SoB?
+>>
+>> If it's being redone, would be silly to have that error in there. Do
+>> we have a tag that's appropriate for this? I often wonder when I'm
+>> folding in a fix. Ala Fixes-by: or something like that.
 > 
-> > > -----Original Message-----
-> > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > > Sent: Friday, March 19, 2021 7:35 PM
-> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
-> > > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
-> > > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
-> > > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> > > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com; Jonathan
-> > > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
-> > > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
-> > > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O) <xuwei5@huawei.com>;
-> > > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org; yangyicong
-> > > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
-> > > linuxarm@openeuler.org; hpa@zytor.com
-> > > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
-> > > a die
-> > > 
-> > > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:  
-> > > > diff --git a/Documentation/admin-guide/cputopology.rst  
-> > > b/Documentation/admin-guide/cputopology.rst  
-> > > > index b90dafc..f9d3745 100644
-> > > > --- a/Documentation/admin-guide/cputopology.rst
-> > > > +++ b/Documentation/admin-guide/cputopology.rst
-> > > > @@ -24,6 +24,12 @@ core_id:
-> > > >  	identifier (rather than the kernel's).  The actual value is
-> > > >  	architecture and platform dependent.
-> > > >
-> > > > +cluster_id:
-> > > > +
-> > > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
-> > > > +	identifier (rather than the kernel's).  The actual value is
-> > > > +	architecture and platform dependent.
-> > > > +
-> > > >  book_id:
-> > > >
-> > > >  	the book ID of cpuX. Typically it is the hardware platform's
-> > > > @@ -56,6 +62,14 @@ package_cpus_list:
-> > > >  	human-readable list of CPUs sharing the same physical_package_id.
-> > > >  	(deprecated name: "core_siblings_list")
-> > > >
-> > > > +cluster_cpus:
-> > > > +
-> > > > +	internal kernel map of CPUs within the same cluster.
-> > > > +
-> > > > +cluster_cpus_list:
-> > > > +
-> > > > +	human-readable list of CPUs within the same cluster.
-> > > > +
-> > > >  die_cpus:
-> > > >
-> > > >  	internal kernel map of CPUs within the same die.  
-> > > 
-> > > Why are these sysfs files in this file, and not in a Documentation/ABI/
-> > > file which can be correctly parsed and shown to userspace?  
-> > 
-> > Well. Those ABIs have been there for much a long time. It is like:
-> > 
-> > [root@ceph1 topology]# ls
-> > core_id  core_siblings  core_siblings_list  physical_package_id thread_siblings  thread_siblings_list
-> > [root@ceph1 topology]# pwd
-> > /sys/devices/system/cpu/cpu100/topology
-> > [root@ceph1 topology]# cat core_siblings_list
-> > 64-127
-> > [root@ceph1 topology]#
-> > 
-> > > 
-> > > Any chance you can fix that up here as well?  
-> > 
-> > Yes. we will send a separate patch to address this, which won't
-> > be in this patchset. This patchset will base on that one.
-> > 
-> > > 
-> > > Also note that "list" is not something that goes in sysfs, sysfs is "one
-> > > value per file", and a list is not "one value".  How do you prevent
-> > > overflowing the buffer of the sysfs file if you have a "list"?
-> > >   
-> > 
-> > At a glance, the list is using "-" rather than a real list
-> > [root@ceph1 topology]# cat core_siblings_list
-> > 64-127
-> > 
-> > Anyway, I will take a look if it has any chance to overflow.
-> 
-> It could in theory be alternate CPUs as comma separated list.
-> So it's would get interesting around 500-1000 cpus (guessing).
-> 
-> Hopefully no one has that crazy a cpu numbering scheme but it's possible
-> (note that cluster is fine for this, but I guess it might eventually
-> happen for core-siblings list (cpus within a package).
-> 
-> Shouldn't crash or anything like that but might terminate early.
+> I've always lobied for a Fixes-from: tag, but the kbuild-bot tells
+> everyone to add a Reported-by: tag.  But then a lot of people are like
+> Reported-by doesn't make sense.  And other people are like Reported-by
+> is fine, what's wrong with it?
 
-We have a broken sysfs api already for listing LED numbers that has had
-to be worked around in the past, please do not create a new one with
-that same problem, we should learn from them :)
+If the original commit is a fix and the fix for it is being squashed,
+then Reported-by might mislead.
 
-thanks,
+kbuild-bot tests also patches from list directly, so in such case the
+patch can be re-done with a risk of loosing kbuild's credits. But when
+the patch is already in the maintainer tree - just create a fixup. You
+preserve the development history and the kbuild's credits.
 
-greg k-h
+
+Best regards,
+Krzysztof
