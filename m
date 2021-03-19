@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BC93423FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0769342404
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhCSSGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:06:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:60110 "EHLO foss.arm.com"
+        id S230286AbhCSSGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:06:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:56593 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhCSSGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:06:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AEBB31B;
-        Fri, 19 Mar 2021 11:05:59 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6FD83F792;
-        Fri, 19 Mar 2021 11:05:56 -0700 (PDT)
-Subject: Re: [PATCH] dt: rockchip: rk3399: Add dynamic power coefficient for
- GPU
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, heiko@sntech.de
-Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210319110511.24787-1-daniel.lezcano@linaro.org>
- <5db868e4-5b86-7b32-51e0-665a2e1fc1ac@arm.com>
- <9322db05-2cad-453c-ec1b-1fdb3df142fa@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <11480a47-47da-c5b3-edad-c2dd8edb2cd9@arm.com>
-Date:   Fri, 19 Mar 2021 18:05:50 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230097AbhCSSGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:06:24 -0400
+IronPort-SDR: ckvKblsVR9f4OeKUSW5ZpmtlVEG5iI3k78uid9Gxz/rDlco5AHmmS1zlv6Myx61k3lwHKCiSu2
+ dbh5bLHxnNaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="187595067"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="187595067"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:06:23 -0700
+IronPort-SDR: /AnKk4h0Ng4+xzjWlggIp7YBDN2uKRn8cfFOGGOWQ3cP2q9+QqcPybMg/CwhcEXHPYnS/erhWA
+ JUHfBruesqNA==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="450954496"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:06:21 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lNJVq-00Dw7c-LM; Fri, 19 Mar 2021 20:06:18 +0200
+Date:   Fri, 19 Mar 2021 20:06:18 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 1/1] ACPI: scan: Use unique number for instance_no
+Message-ID: <YFToGiFbGkJDDaMF@smile.fi.intel.com>
+References: <20210312160137.19463-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0jHXQC+P1_FTq6TkMKAb=FsBH=cw3mUkp9rJUC7R1B-5A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9322db05-2cad-453c-ec1b-1fdb3df142fa@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jHXQC+P1_FTq6TkMKAb=FsBH=cw3mUkp9rJUC7R1B-5A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-19 14:35, Daniel Lezcano wrote:
+On Fri, Mar 19, 2021 at 06:00:38PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Mar 12, 2021 at 5:02 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Current mechanism of incrementing and decrementing plain integer
+> > to get a next free instance_no when creating an ACPI device is fragile.
+> >
+> > In case of hot plug event or namespace removal of the device instances
+> > with the low numbers the plain integer counter can't cover the gaps
+> > and become desynchronized with real state of affairs. If during next
+> > hot plug event or namespace injection the new instances of
+> > the devices need to be instantiated, the counter may mistakenly point
+> > to the existing instance_no and kernel will complain:
+> > "sysfs: cannot create duplicate filename '/bus/acpi/devices/XXXX1234:02'"
 > 
-> Hi Robin,
-> 
-> On 19/03/2021 13:17, Robin Murphy wrote:
->> On 2021-03-19 11:05, Daniel Lezcano wrote:
->>> The DTPM framework is looking for upstream SoC candidates to share the
->>> power numbers.
->>>
->>> We can see around different numbers but the one which seems to be
->>> consistent with the initial post for the values on the CPUs can be
->>> found in the patch https://lore.kernel.org/patchwork/patch/810159/
->>
->> The kernel hacker in me would be more inclined to trust the BSP that the
->> vendor actively supports than a 5-year-old patch that was never pursued
->> upstream. Apparently that was last updated more recently:
->>
->> https://github.com/rockchip-linux/kernel/commit/98d4505e1bd62ff028bd79fbd8284d64b6f468f8
-> 
-> Yes, I've seen this value also.
-> 
->> The ex-mathematician in me can't even comment either way without
->> evidence that whatever model expects to consume this value is even
->> comparable to whatever "arm,mali-simple-power-model" is. >
->> The way the
->> latter apparently needs an explicit "static" coefficient as well as a
->> "dynamic" one, and the value here being nearly 3 times that of a
->> similarly-named one in active use downstream (ChromeOS appears to still
->> be using the values from before the above commit), certainly incline me
->> to think they may not be...
-> 
-> Sorry, I'm missing the point :/
-> 
-> We dropped in the kernel any static power computation because as there
-> was no value, the resulting code was considered dead. So we rely on the
-> dynamic power only.
+> This is a slightly convoluted way of stating that there is a bug in
+> acpi_device_del().
 
-Right, so a 2-factor model is clearly not identical to a 1-factor model, 
-so how do we know that a value for one is valid for the other, even if 
-it happens to have a similar name? I'm not saying that it is or isn't; I 
-don't know. If someone can point to the downstream coefficient 
-definition being identical to the upstream one then great, let's use 
-that as justification. If not, then the justification of one arbitrary 
-meaningless number over any other is a bit misleading.
+Any suggestion how to massage the above?
+But in the dry end, yes, decrementing is a bug.
 
->>> I don't know the precision of this value but it is better than
->>> nothing.
->>
->> But is it? If it leads to some throttling mechanism kicking in and
->> crippling GPU performance because it's massively overestimating power
->> consumption, that would be objectively worse for most users, no?
+> Yes, there is one, the instance_no decrementation is clearly incorrect.
 > 
-> No because there is no sustainable power specified for the thermal zones
-> related to the GPU.
-OK, that's some reassurance at least. Does the exact value have any 
-material effect? If not, what's to stop us from using an obviously 
-made-up value like 1, and saying so?
+> > Replace plain integer approach by using IDA framework.
+> 
+> Also the general idea of using IDA for the instance numbering is a good one IMO.
 
-Robin.
+...
+
+> > -       unsigned int instance_no;
+> > +       struct ida no;
+> 
+> struct ida instance_ida; ?
+
+Will rename.
+
+...
+
+> > +       p = strrchr(dev_name(&device->dev), ':');
+> > +       if (!p)
+> > +               return -ENODATA;
+> > +
+> > +       error = kstrtoint(p + 1, 16, &result);
+> > +       if (error)
+> > +               return error;
+> > +
+> > +       return result;
+> 
+> I don't like the above at all.
+> 
+> I would just store the instance number in struct acpi_device_pnp (say).
+
+TBH, I simply didn't know which struct to touch and left this one and I also
+don't like it. Lemme see if acpi_device_pnp is good enough for that.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
