@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2B334230E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C51342315
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCSRMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:12:23 -0400
-Received: from mga02.intel.com ([134.134.136.20]:38527 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhCSRMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:12:16 -0400
-IronPort-SDR: 9lbRfEfRPo0h7/ZYqarS5g+CcioFJqU0tTE1IkyLFBSW78wkj68Mj4rAeUu5RrtGvpT5vTvaku
- RU0VDMv6y0fA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177063678"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="177063678"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:12:15 -0700
-IronPort-SDR: VbTWhJ2rgwdhOkRbc708GpiO2lxB1YMjIYwzSJznSjuXtAGNCMoVpcDc9aFVtXjBLoQ+7KUwO2
- 6tf1Q/GpaDgg==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="375012290"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:12:15 -0700
-Date:   Fri, 19 Mar 2021 10:14:39 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210319101439.19f35fd5@jacob-builder>
-In-Reply-To: <YFR10eeDVf5ZHV5l@myrica>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210318172234.3e8c34f7@jacob-builder>
-        <YFR10eeDVf5ZHV5l@myrica>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230221AbhCSRRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhCSRRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:17:16 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B84C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:17:15 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id bx7so11637309edb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NmOSs5tEu47Laoh1qxa+rl3JlDXehYKJh6XfrCU+SRM=;
+        b=OU2XM07/P0SFEX8dpG4FteiSW0vErpq78CdkpTISEI3TrhMSkCQcs2ABH6+r8ZkqkH
+         NZloQc4xFVaGBSYiMCFUkfobMcc+GMn30T3hfWLv4FEEUqpHWaVZGE2AeuluiUkET39b
+         t6WHSkoXxOlo5HJXOQr6qp1ePUp2KERBezcJio2ikhSdUIWgm8C5MKFx/ra+RI/IC7DF
+         s5yi/XZu5xM02hzzAy+lhL6rcfPl+U9Be+soziyfLPm1VE4HneXtj6foLwOOKTpLQPh7
+         lR7E1oBw+EKZuyWHKTfP3QW4b+cBxthHGrWJhPGxZIOn53SAltZYkjEk6wfy7KiUprKC
+         25fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NmOSs5tEu47Laoh1qxa+rl3JlDXehYKJh6XfrCU+SRM=;
+        b=afSvHspKnRTwkaA7A3pMRXmss8Lcwx+pVoFgulT4tkYW3XBO2f39KhQSv0ClIn0dj5
+         +CF5rC4XoOUt6g/piW1CZ4+S1jzlMoywEyTaSE6YffzTSCIzvJZnB8pOTLPlfPWBrhIZ
+         B41NmViYtiEb60lNpDFYhZcEU8tO08LO31r0YA55RpJDDRX+QiTOAu25bLt5Z0T55j8v
+         FFkI5kWOS5QgygWQNWfUs8Ka6Zt79okbTVag2sgB50mHJ7e2hQ4MIRhrSMoSkGXfhqCj
+         tHR8yPq+zVNL3Pacy8d+MSroj8asBCa419K1rYiupv2AVcePW0puFjwwECEYiWJsaswd
+         k+CA==
+X-Gm-Message-State: AOAM531gbAzKJrjr+N0aBuN4hc+Bstbxy+dGVmZR8JIf0be2LmGLKeMy
+        LraRkDbGFeSlYIxA9pOiE7fH67/MJpyRvxai
+X-Google-Smtp-Source: ABdhPJzOFq4v0Lwd4dwxfKOLdM+czU7z6OYUykk7hRaTQS/S4dNiOJFeqlritMVFyedzsDiN0+tPmg==
+X-Received: by 2002:a05:6402:1283:: with SMTP id w3mr10777157edv.340.1616174234323;
+        Fri, 19 Mar 2021 10:17:14 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id r25sm3914743edv.78.2021.03.19.10.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 10:17:13 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 17:17:12 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kdb: Refactor kdb_defcmd implementation
+Message-ID: <20210319171712.vlkgnmp7cbnayxdn@maple.lan>
+References: <20210309121747.859823-1-sumit.garg@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309121747.859823-1-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean-Philippe,
+On Tue, Mar 09, 2021 at 05:47:47PM +0530, Sumit Garg wrote:
+> Switch to use kdbtab_t instead of separate struct defcmd_set since
+> now we have kdb_register_table() to register pre-allocated kdb commands.
 
-On Fri, 19 Mar 2021 10:58:41 +0100, Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+This needs rewriting. I've been struggling for some time to figure out
+what it actually means means and how it related to the patch. I'm
+starting to conclude that this might not be my fault!
 
-> > Slightly off the title. As we are moving to use cgroup to limit PASID
-> > allocations, it would be much simpler if we enforce on the current
-> > task.  
-> 
-> Yes I think we should do that. Is there a problem with charging the
-> process that does the PASID allocation even if the PASID indexes some
-> other mm?
-Besides complexity, my second concern is that we are sharing the misc
-cgroup controller with other resources that do not have such behavior.
 
-Cgroup v2 also has unified hierarchy which also requires coherent behavior
-among controllers.
+> Also, switch to use a linked list for sub-commands instead of dynamic
+> array which makes traversing the sub-commands list simpler.
 
-Thanks,
+We can't call these things sub-commands! These days a sub-commands
+implies something like `git subcommand` and kdb doesn't have anything
+like that.
 
-Jacob
+
+> +struct kdb_subcmd {
+> +	char    *scmd_name;		/* Sub-command name */
+> +	struct  list_head list_node;	/* Sub-command node */
+> +};
+> +
+>  /* The KDB shell command table */
+>  typedef struct _kdbtab {
+>  	char    *cmd_name;		/* Command name */
+> @@ -175,6 +181,7 @@ typedef struct _kdbtab {
+>  	kdb_cmdflags_t cmd_flags;	/* Command behaviour flags */
+>  	struct list_head list_node;	/* Command list */
+>  	bool    is_dynamic;		/* Command table allocation type */
+> +	struct list_head kdb_scmds_head; /* Sub-commands list */
+>  } kdbtab_t;
+
+Perhaps this should be more like:
+
+struct defcmd_set {
+	kdbtab_t cmd;
+	struct list_head commands;
+	
+};
+
+This still gets registers using kdb_register_table() but it keeps the
+macro code all in once place:
+
+kdb_register_table(&macro->cmd, 1);
+
+I think that is what I *meant* to suggest ;-) . It also avoids having to
+talk about sub-commands! BTW I'm open to giving defcmd_set a better name
+(kdb_macro?) but I don't see why we want to give all commands a macro
+list.
+
+
+Daniel.
