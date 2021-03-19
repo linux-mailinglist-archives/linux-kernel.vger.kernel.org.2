@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B083423C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718423423C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCSRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCSRyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:54:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509FFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0ey7YfbgzAR3jH196JzXqYrJSyCm8QIKuZOJc+hwz/U=; b=VS+VfScgyEfNFcvWHbSF1a17CT
-        X+62m9+nHK+9BFu8/Y//fM6aPmO44pEqXjTHBSHyz1gdDXweRMbKE0c+rjEsbWlIvGs8kuBWNfOIY
-        zCYyCgKD8BdprZ/MUXiy5g13IGdE6eNsZp/L6WLrj8OaEjLS0C2OBeu0imIpTsBGN2PM5zWYcq6wr
-        UQ04FjlT/rck1cCCMyydRlB/GcZBb2Gt8iHFuqoPRRpU+eCviJ+UjbEQTpbAsJ2I1EWTDfRsCiqOv
-        nHdTwwUB6hTrPv1n3SneQh0fqhS2cosL8biwxlQ5Tqv2kdyMMzuZLlicgZ0DTdwDXl/PdbxO8Ypjj
-        IqFIMBTQ==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJK1-001R5X-VI; Fri, 19 Mar 2021 17:54:07 +0000
-Date:   Fri, 19 Mar 2021 10:54:05 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/inode.c: Fix a rudimentary typo
-In-Reply-To: <20210319005342.23795-1-unixbhaskar@gmail.com>
-Message-ID: <b6e29afe-96c2-1016-8a2-40baa542d92@bombadil.infradead.org>
-References: <20210319005342.23795-1-unixbhaskar@gmail.com>
+        id S230188AbhCSRy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230310AbhCSRya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BD2961986;
+        Fri, 19 Mar 2021 17:54:26 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 17:54:23 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, glittao@gmail.com,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: arm64: compiler_types.h:320:38: error: call to
+ __compiletime_assert_417
+Message-ID: <20210319175423.GE6832@arm.com>
+References: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_105406_026685_1B21D747 
-X-CRM114-Status: GOOD (  12.58  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > s/funtion/function/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 08:49:07PM +0530, Naresh Kamboju wrote:
+> [This email landed to Spam for some reason, sending it again with modified
+> subject]
+> 
+> While building arm64 kernel modules the following kernel warnings /
+> errors noticed on linux next 20210318 tag the gcc version is 7.3.0.
+> Build PASS with gcc-8, gcc-9 and gcc-10.
+> 
+>  In file included from <command-line>:0:0:
+>  In function 'resiliency_test',
+>      inlined from 'test_slub_init' at   lib/test_slub.c:120:2:
+>    include/linux/compiler_types.h:320:38: error: call to
+> '__compiletime_assert_417' declared with attribute error: BUILD_BUG_ON
+> failed: KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10
 
+KMALLOC_MIN_SIZE is 128 on arm64, so commit 1a58eef5def9 ("selftests:
+add a kselftest for SLUB debugging functionality") breaks the build. The
+test was previously in mm/slub.c hidden behind macro that no-one
+enabled.
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
-
-> s/funtion/function/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
-> fs/inode.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/inode.c b/fs/inode.c
-> index a047ab306f9a..38c2e6b58dc4 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1423,7 +1423,7 @@ EXPORT_SYMBOL(ilookup);
->  * function must never block --- find_inode() can block in
->  * __wait_on_freeing_inode() --- or when the caller can not increment
->  * the reference count because the resulting iput() might cause an
-> - * inode eviction.  The tradeoff is that the @match funtion must be
-> + * inode eviction.  The tradeoff is that the @match function must be
->  * very carefully implemented.
->  */
-> struct inode *find_inode_nowait(struct super_block *sb,
-> --
-> 2.26.2
->
->
+-- 
+Catalin
