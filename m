@@ -2,105 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4081A34246F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D58342475
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCSSRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhCSSQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:16:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE63AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:16:50 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616177809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVm/M1wNCF3Em/pKHELvCrZvvRoZ57O1vHAbw8cUDNs=;
-        b=K8LGrGZFGv2dSD8WaSVakBF8vnP2BksDLfbbWvrvqrSlyB9scuICGuwA9/nM765JTsuJG2
-        pXdalMrzaIaFLuIWJEvic4IzWXg9BFzMq+rUu3g5WOo2/VhKGCKRERJZJ5BUAwjb/0vssM
-        I2nYAJLGmAYiQbQoPdxzNLT7fU0Q9rinVU4gdg8+0VVewMgS+MfWXdsOM33FM3nzlESZ9t
-        ESo1HRASJ/ijTt98SrR/5wn2GeEVZzi9Tzd6MrPWSwBHMf3FJqpe9K9F2PfFQnn6d0weN3
-        tDjr7kKH6uwrye12QeLHTBmjMSWTaj+k9+XMHacJNJpk+ZFl7E9j92f4mCQxnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616177809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cVm/M1wNCF3Em/pKHELvCrZvvRoZ57O1vHAbw8cUDNs=;
-        b=kVG9GVlz5IGK5BremcbgC+gQfs9Tq8dccyWXxDLJBff5LRqP7ld0UvP/iQ8MucCrrdQrf6
-        G9rJWODCIErqBdAw==
-To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v4 7/9] kentry: Add debugging checks for proper kentry API usage
-In-Reply-To: <87pmzv5d90.fsf@nanos.tec.linutronix.de>
-References: <cover.1616004689.git.luto@kernel.org> <df38bc3aa82dc122c88bf902f6922ab7c22bf783.1616004689.git.luto@kernel.org> <87pmzv5d90.fsf@nanos.tec.linutronix.de>
-Date:   Fri, 19 Mar 2021 19:16:48 +0100
-Message-ID: <87h7l757qn.fsf@nanos.tec.linutronix.de>
+        id S230310AbhCSSSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:18:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49058 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230218AbhCSSSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:18:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 082F6AC23;
+        Fri, 19 Mar 2021 18:18:33 +0000 (UTC)
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
+ <20210312154331.32229-4-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 3/7] mm/page_alloc: Add a bulk page allocator
+Message-ID: <7c520bbb-efd7-7cad-95df-610000832a67@suse.cz>
+Date:   Fri, 19 Mar 2021 19:18:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210312154331.32229-4-mgorman@techsingularity.net>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19 2021 at 17:17, Thomas Gleixner wrote:
+On 3/12/21 4:43 PM, Mel Gorman wrote:
+> This patch adds a new page allocator interface via alloc_pages_bulk,
+> and __alloc_pages_bulk_nodemask. A caller requests a number of pages
+> to be allocated and added to a list. They can be freed in bulk using
+> free_pages_bulk().
+> 
+> The API is not guaranteed to return the requested number of pages and
+> may fail if the preferred allocation zone has limited free memory, the
+> cpuset changes during the allocation or page debugging decides to fail
+> an allocation. It's up to the caller to request more pages in batch
+> if necessary.
+> 
+> Note that this implementation is not very efficient and could be improved
+> but it would require refactoring. The intent is to make it available early
+> to determine what semantics are required by different callers. Once the
+> full semantics are nailed down, it can be refactored.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-> On Wed, Mar 17 2021 at 11:12, Andy Lutomirski wrote:
->> +
->> +#define DEBUG_ENTRY_WARN_ONCE(condition, format...) do {} while (0)
->
-> So we have a stub for !DEBUG
->
->> +static __always_inline void kentry_cpu_depth_add(unsigned int n) {}
->> +static void kentry_cpu_depth_check(unsigned int n) {}
->> +static __always_inline void kentry_cpu_depth_sub(unsigned int n) {}
->> +
->> +#endif
->> +
->>  /* See comment for enter_from_user_mode() in entry-common.h */
->>  static __always_inline void __enter_from_user_mode(struct pt_regs *regs)
->>  {
->> +	kentry_cpu_depth_add(1);
->>  	arch_check_user_regs(regs);
->>  	lockdep_hardirqs_off(CALLER_ADDR0);
->>=20=20
->> @@ -22,6 +78,14 @@ static __always_inline void __enter_from_user_mode(st=
-ruct pt_regs *regs)
->>=20=20
->>  	instrumentation_begin();
->>  	trace_hardirqs_off_finish();
->> +
->> +#ifdef CONFIG_DEBUG_ENTRY
->
-> Why do we need that #ifdeffery all over the place?
->
->> +	DEBUG_ENTRY_WARN_ONCE(
->> +		this_cpu_read(kentry_cpu_depth) !=3D 1,
->> +		"kentry: __enter_from_user_mode() called while kentry thought the CPU=
- was in the kernel (%u)",
->> +		this_cpu_read(kentry_cpu_depth));
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Because you directly access kentry_cpu_depth which makes the compiler
-unhappy.
+Although maybe premature, if it changes significantly due to the users'
+performance feedback, let's see :)
 
-And of course at the other place where you guard it with IS_ENABLED() it
-fails to build with CONFIG_DEBUG_ENTRY=3Dn
+Some nits below:
 
-kernel/entry/common.c:158:10: error: =E2=80=98struct task_struct=E2=80=99 h=
-as no member named =E2=80=98kentry_in_syscall=E2=80=99
-   current->kentry_in_syscall =3D true;
+...
 
-This is V4 of this series... Oh well.
+> @@ -4963,6 +4978,107 @@ static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
+>  	return true;
+>  }
+>  
+> +/*
+> + * This is a batched version of the page allocator that attempts to
+> + * allocate nr_pages quickly from the preferred zone and add them to list.
+> + *
+> + * Returns the number of pages allocated.
+> + */
+> +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> +			nodemask_t *nodemask, int nr_pages,
+> +			struct list_head *alloc_list)
+> +{
+> +	struct page *page;
+> +	unsigned long flags;
+> +	struct zone *zone;
+> +	struct zoneref *z;
+> +	struct per_cpu_pages *pcp;
+> +	struct list_head *pcp_list;
+> +	struct alloc_context ac;
+> +	gfp_t alloc_gfp;
+> +	unsigned int alloc_flags;
+> +	int allocated = 0;
+> +
+> +	if (WARN_ON_ONCE(nr_pages <= 0))
+> +		return 0;
+> +
+> +	if (nr_pages == 1)
+> +		goto failed;
+> +
+> +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+> +	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac,
+> +	&alloc_gfp, &alloc_flags))
 
-     tglx
+Unusual identation here.
+
+> +		return 0;
+> +	gfp = alloc_gfp;
+> +
+> +	/* Find an allowed local zone that meets the high watermark. */
+> +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+> +		unsigned long mark;
+> +
+> +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+> +		    !__cpuset_zone_allowed(zone, gfp)) {
+> +			continue;
+> +		}
+> +
+> +		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
+> +		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
+> +			goto failed;
+> +		}
+> +
+> +		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
+> +		if (zone_watermark_fast(zone, 0,  mark,
+> +				zonelist_zone_idx(ac.preferred_zoneref),
+> +				alloc_flags, gfp)) {
+> +			break;
+> +		}
+> +	}
+> +	if (!zone)
+> +		return 0;
+
+Why not also "goto failed;" here?
