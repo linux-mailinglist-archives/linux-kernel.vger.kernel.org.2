@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D76342620
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE0E342622
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhCSTYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
+        id S230452AbhCSTYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhCSTXa (ORCPT
+        with ESMTP id S230142AbhCSTYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:23:30 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB540C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:23:29 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id q3so4108537qkq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:23:29 -0700 (PDT)
+        Fri, 19 Mar 2021 15:24:06 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCA2C06174A;
+        Fri, 19 Mar 2021 12:24:06 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x28so11669383lfu.6;
+        Fri, 19 Mar 2021 12:24:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=BYTHl36kn9kfJcf6UwXe3wIty+C7YB3UI4HaqKn0xcA=;
-        b=UdFFhQQTfUrDQc6a5z2KU2Jqm8+k8dGKdfeCNIRfkCjaeIKtf4uC29isjm2t8miMYM
-         B3LqSV2RuBGkLHIET3hJlrRVdyRQv3XEBNgxEa8m4cXabmDj+voWzeH1ijS065X2IaZh
-         c4Yf+95sNcVhPdn5FR01sNZhChMCx45BmBtg3YVaTK/8jzA6jEd/DjS+cgU7gDU9CyyM
-         Qbh3Qn3XFahri33vNOAhAazdJNVlgNt/D2NYpSITX4Y+8Bs8wef3Ult90DCYTmvYPxVP
-         i92i7Bvh+9+lq8LKg3ygve+23TyGpOneJwSpAFrKCF6hu331kpi3vJx4HFJ+G5kEhbAN
-         msWw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vi3OhCV5xHRkQ6K9sU0vs2DTIjIbNhVBKwX3Itgewtw=;
+        b=Y3anoUmzvmht5ZeuS0K6pBMLsHIyBTiT+FQokPOsvcNHziSdnJEQ8yslfdisJ5QOsa
+         vXMDxQliBqYnos7M/g2MR9lXqjifBxNXgBdDr/irEv/ELG9pGPn0QuMbCATBToqI2iSj
+         5R0GdQfAr6f/2/47cD+v2zcedeKJA3tdhD+OyZQSCeq+Li6RyP/aljJGff2T0H9a1kNP
+         y9f9BbBxCyR4JTz1ikuQ0zzOpICj6Q2vMRMmPdOUdVa31yjL7ybMAMkmP3O8+eAyNo/E
+         BWAKNQcJqiI3n6Bhu8um3h/HiqARF9SKKJvlaf+44jk7ZT7BG115og8ZOrjkhRp5Y5Y0
+         0pmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BYTHl36kn9kfJcf6UwXe3wIty+C7YB3UI4HaqKn0xcA=;
-        b=Sws73VfLf3ov0WmqILWxEeJOgA/Bx/pk29rN5DVHOVVzCy+IZsQOcoywKn3ShcnDnE
-         IkBpRgzBLIJTmxkm5+9QasJXfONQNzEx469BBDMomXwdQlhiwYnsxBS/fMag0Sn91ZE6
-         kr0nWoPEqfSj38nYgOsWzMY1XuOvyqNWoCA0t3t8poTZdNY/KomneDbAMSnPmUiAWs8L
-         cqRB+joVpUm8EQj0tkpczah09FiRid9DFD7bKMr/4upBwpt931Q0mB4mOynmDunGwdhl
-         S2SdExaS1+1nwwtEXGWV2Xn1BXcySRLZ3ORgdtflB5CYaCgh9rUZbLi+YnJBbQNDUtR5
-         +2TA==
-X-Gm-Message-State: AOAM531air5QTaLvIkFhthNb2DmJK9hlpKlJEV5xJ/CFC0KrdmaW5lWC
-        YwlZrOSWIHEUPnkgrMyBBAxPlw==
-X-Google-Smtp-Source: ABdhPJxhQNMzILo6apipih+5ZUXIQwvOCZ2L6DQnl/0NQbprHKrXYZo5f0DI0jchWE0QlfrfT5sadg==
-X-Received: by 2002:a05:620a:22b7:: with SMTP id p23mr123466qkh.365.1616181809188;
-        Fri, 19 Mar 2021 12:23:29 -0700 (PDT)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id h16sm4362835qto.45.2021.03.19.12.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 12:23:28 -0700 (PDT)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, pmladek@suse.com,
-        ebiederm@xmission.com, keescook@chromium.org, anton@enomsg.org,
-        ccross@android.com, tony.luck@intel.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-Subject: [PATCH v3 1/1] kexec: dump kmessage before machine_kexec
-Date:   Fri, 19 Mar 2021 15:23:26 -0400
-Message-Id: <20210319192326.146000-2-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210319192326.146000-1-pasha.tatashin@soleen.com>
-References: <20210319192326.146000-1-pasha.tatashin@soleen.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vi3OhCV5xHRkQ6K9sU0vs2DTIjIbNhVBKwX3Itgewtw=;
+        b=Rw/pla4G6vhYaSYFgRxz2Q75uJfjQ5pUItUjkTye1ETgbzZviuOuf7DkdJ0bypDBjT
+         938sJsobO16wTO1XzPvdZEavsHOXlcn3AlIv6DnmlJRakuBWVpWxvJ0sm1RWspmiBKIM
+         DP24ewF8w8UhQhLhGFu+9nVmzg7cCsUIyQMEA5LxWG5ekMJZC2ekKlAtopbJyVydl9Ct
+         F/yhZ61czxPmdfMjU0rF/Bwv5Zk615B8jy0VWtCkaODO26ofbykYc9hBWqGEWU3w83Do
+         Vo3k6TudY6zS04CgdbHq6zU21oMh1QXFxGhEWubPiSB06HMUrmc4EwsQo18/a5M73Aok
+         WKTw==
+X-Gm-Message-State: AOAM53248En4fZy0KigeX9Zz3St2uCp4lp4vrePj+juI9vOcdfUF0Mjy
+        IT/j2sORi3/3cyofHVoiSBLBwNxL18Y=
+X-Google-Smtp-Source: ABdhPJwoyZSYjPu1c0Oe6ptKGdXXh2aNrlgJjHcwn6gXUsZP2xz3qT6czKotdtD5qUipYg6HbRl99w==
+X-Received: by 2002:a19:40c7:: with SMTP id n190mr1689219lfa.378.1616181844579;
+        Fri, 19 Mar 2021 12:24:04 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id m24sm717293lfq.184.2021.03.19.12.24.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 12:24:04 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
+ <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com> <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com> <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
+ <YFTRkBEr5T37NFpV@google.com>
+ <071c6681-f492-2c94-5686-30c30778f39d@gmail.com>
+ <YFTrpN8Qkv6ZY0Ci@google.com>
+ <007c0317-8819-a6b8-fdff-c0b5899c4f51@gmail.com>
+ <YFT1klxSFMlIXLHb@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <d2e24e65-9c9d-6b18-81bf-bc1c46c6e0f3@gmail.com>
+Date:   Fri, 19 Mar 2021 22:24:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <YFT1klxSFMlIXLHb@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmsg_dump(KMSG_DUMP_SHUTDOWN) is called before
-machine_restart(), machine_halt(), machine_power_off(), the only one that
-is missing is  machine_kexec().
+19.03.2021 22:03, Minchan Kim пишет:
+> On Fri, Mar 19, 2021 at 09:48:11PM +0300, Dmitry Osipenko wrote:
+>> 19.03.2021 21:21, Minchan Kim пишет:
+>>> On Fri, Mar 19, 2021 at 08:56:06PM +0300, Dmitry Osipenko wrote:
+>>>> 19.03.2021 19:30, Minchan Kim пишет:
+>>>>> +static void cma_kobj_release(struct kobject *kobj)
+>>>>> +{
+>>>>> +	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
+>>>>> +
+>>>>> +	kfree(cma_kobj);
+>>>>> +}
+>>>>
+>>>> Oh, wait.. I think this kfree wrong since cma_kobj belongs to the array.
+>>>
+>>> Oh, good spot. Let me use kzalloc.
+>>>
+>>
+>> Thinking a bit more about this.. it looks like actually it should be
+>> better to get back to the older variant of cma_stat, but allocate at the
+>> time of CMA initialization, rather than at the time of sysfs
+>> initialization. Then the cma_stat will be decoupled from the cma struct
+> 
+> IIRC, the problem was slab was not initiaized at CMA init point.
+> That's why I liked your suggestion.
 
-The dmesg output that it contains can be used to study the shutdown
-performance of both kernel and systemd during kexec reboot.
+Alright, if CMA init time is a problem, then the recent variant should
+be okay.
 
-Here is example of dmesg data collected after kexec:
+>> and cma_stat will be a self-contained object.
+> 
+> Yeah, self-contained is better but it's already weird to
+> have differnt lifetime for one object since CMA object
+> never die, technically.
+> 
 
-root@dplat-cp22:~# cat /sys/fs/pstore/dmesg-ramoops-0 | tail
-...
-<6>[   70.914592] psci: CPU3 killed (polled 0 ms)
-<5>[   70.915705] CPU4: shutdown
-<6>[   70.916643] psci: CPU4 killed (polled 4 ms)
-<5>[   70.917715] CPU5: shutdown
-<6>[   70.918725] psci: CPU5 killed (polled 0 ms)
-<5>[   70.919704] CPU6: shutdown
-<6>[   70.920726] psci: CPU6 killed (polled 4 ms)
-<5>[   70.921642] CPU7: shutdown
-<6>[   70.922650] psci: CPU7 killed (polled 0 ms)
+Indeed.
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
-Acked-by: Baoquan He <bhe@redhat.com>
----
- kernel/kexec_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+I found the Greg's original argument and not sure that it's really
+worthwhile to worry about the copycats since this is not a driver's code..
 
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index a0b6780740c8..6ee4a1cf6e8e 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -37,6 +37,7 @@
- #include <linux/compiler.h>
- #include <linux/hugetlb.h>
- #include <linux/objtool.h>
-+#include <linux/kmsg_dump.h>
- 
- #include <asm/page.h>
- #include <asm/sections.h>
-@@ -1179,6 +1180,7 @@ int kernel_kexec(void)
- 		machine_shutdown();
- 	}
- 
-+	kmsg_dump(KMSG_DUMP_SHUTDOWN);
- 	machine_kexec(kexec_image);
- 
- #ifdef CONFIG_KEXEC_JUMP
--- 
-2.25.1
-
+Maybe we could just add a clarifying comment for the kobj, telling why
+it's okay for CMA. Greg, doesn't it sound like a good compromise to you?
