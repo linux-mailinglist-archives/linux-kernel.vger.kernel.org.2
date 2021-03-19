@@ -2,179 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A84341998
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3C7341997
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhCSKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        id S229958AbhCSKKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCSKJ6 (ORCPT
+        with ESMTP id S229787AbhCSKJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:09:58 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F04CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:09:58 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id r12so8746655ejr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:09:58 -0700 (PDT)
+        Fri, 19 Mar 2021 06:09:50 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DF5C06174A;
+        Fri, 19 Mar 2021 03:09:50 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id n11so3342720pgm.12;
+        Fri, 19 Mar 2021 03:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BKRJI3Gl9mfhIYwGZ/LQlbVdVzEyCD4Zbdi95T0hnK4=;
-        b=BHKkdM9GakYEIIwoKk0MTOIM3AVoz+iF/J+SNXuMhba3Bs82TGGw4RQbUDixSlTqey
-         vi6zR+sQxWDw7QjxpTSqG5Xao4JPUU2tjaTf+Dx8CUN/pwrivqeyOZFbRaKmPz4Yri8a
-         7uSs5DFXxqov3M/EpCd7pd+McvxU/t/zCER0mxsCeUm1XlLYuRM+TQr+ZGtWbbJqGM7B
-         9qPPYxGeDPC1ZHfuAY2CcBCZyVk0iodEOzZQxFfw0RNSmhYZ0M+bzmr2i/+giDJ+upUm
-         EOvRpI04IKpK0CA+XrJi3VyCKT4x38oP/muAfxFD1m/PJ8Z8XDKZ9CYqKsIrV3fYKmel
-         mARg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7eEFmk9MSK3QRwRt7VI4+hJ+cCCmRn4xXTpfKaNrLNU=;
+        b=Vea1pmxxDjGZcOstSTMUz1HhtMaMOnNUsKKB49S2Bo5pub6A0ZqtiRhOCYuC3qhBFB
+         cCzATfNAq9F3q0TRKv4NqEI4nsdh5pCzXbkzTi9eYm0tHGKcZm7eC4vnxuZTBITPpijF
+         z06XClibv2jntDrNBi8JjA0XUUGGTWR70bKxDiNU2p7if737OeNwEaCgU8q+2m1ASex6
+         jsYuGmudSMc/ZHw2ApaR1ktsJl+kFNftbuUKnRJgQ9LoJ9OZdvsFHnzxmidrhmQ3xNCA
+         oLelXoNI66VDDDySzeiALvriQ00qpbKSXDa8H3TMSa4MmBZG91n05LDCVlib47hDTCCv
+         IHXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BKRJI3Gl9mfhIYwGZ/LQlbVdVzEyCD4Zbdi95T0hnK4=;
-        b=j4n4EYA6yrBlirn4bGqh0AFlmJdyHy3HYCYTJZeSbyBVvUktZIKWIvSN0Mq3e7bZgC
-         vqw7xqa/IoqatDBlodEtV6xtR3aID/+ZbdbktTLJ4DEawYnw2NUDFzXRtPOAYg3wdIYV
-         tCXvCU5Y75IFFcbYClrW2fSA+pLYxzjF69VyVydyxFAmLuueCxdFl04whDkhsA/KtadR
-         ASDHN/B5dud24j50rSG6aubtc6F1kK3buz57QbawU5214QeITL1bcn3vy+zz3wfeHzRL
-         aVRxnlPMpxTXYX/ye6m4lAkSGfK8EtBfYvdWwxgv/XES/qMworbzpmP4KcSiWOpGeqwE
-         YsPQ==
-X-Gm-Message-State: AOAM5338QZOp6tAoLAW1yHLJ8dy8tTxGpOpu2/DMYqUicANUq6qJVwNp
-        gGJ6+W0mbpb7n5L1uK7eaak=
-X-Google-Smtp-Source: ABdhPJyqkUWVRA5pO8yyaNf/wnPKJzEm+FtFT2ui/eSzhsAz/E8apxWpHjPXjJ0EIzLw1cNZpDmsQA==
-X-Received: by 2002:a17:906:40c7:: with SMTP id a7mr3389413ejk.109.1616148597037;
-        Fri, 19 Mar 2021 03:09:57 -0700 (PDT)
-Received: from agape (fi-19-219-204.service.infuturo.it. [151.19.219.204])
-        by smtp.gmail.com with ESMTPSA id h8sm3782323ede.25.2021.03.19.03.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 03:09:56 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2] staging: rtl8723bs: remove unnecessary logging in os_dep/ioctl_cfg80211.c
-Date:   Fri, 19 Mar 2021 11:09:23 +0100
-Message-Id: <20210319100923.4314-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210319092122.GF2087@kadam>
-References: <20210319092122.GF2087@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7eEFmk9MSK3QRwRt7VI4+hJ+cCCmRn4xXTpfKaNrLNU=;
+        b=g4XazUk040WvpaaYXRyCde5wz0D4DMDE8tsFZuCFmtT3uG4fuIX3qrNl0Lfx1oKSbJ
+         nTYnJGcRJkOs+m0Si0j/cySO/CdivirZkPx5AJ+uDmHhYPfzcthyiPXbusb5LC/BvWuK
+         ZQ5bJFf2B4xKUj0sBQCq0MvjMn+4lilSrC+Yxj0Bj1uxFwelYB40cL1Tsdhb/EgtGjg1
+         TRAaMUfErPtuRhJB6g7aTbWwQdQ/w7PR8ECxhT/0FheEo5awNqoc5tCWNVlgtUH+EerC
+         L3XSukFRzW/N9ljYifrYmEyiCN/CQ1ejLmP2BTu3Cpfytgr3WA/onhYqEpLTVyeM2t5+
+         W5FA==
+X-Gm-Message-State: AOAM533g50qaTVbnx7RSL6DF8kBUJIKC8T7n11XcgHzZEqRhj7RQPiw6
+        WWVZrt5TseKEdwpRqPuRIzx9kWqV8C+gwP/GZ1s=
+X-Google-Smtp-Source: ABdhPJwR7y4VE7GZgNbQ8KNJelhtQMIiMJ+SrEb906R5xLTAORIST/gPb0UA+qNUGutiLvFigCXohX5CWxJwqkRegNU=
+X-Received: by 2002:a65:4c08:: with SMTP id u8mr10555184pgq.203.1616148590170;
+ Fri, 19 Mar 2021 03:09:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+ <YFB0OcBg3Vj555eA@hovoldconsulting.com> <CAHp75VfcbC63t_eZeBOA0NY28BtGBD0YyLR6nSNuKAnKhXTSzA@mail.gmail.com>
+ <4771468d968a44789518bc547acf5f93@hisilicon.com> <YFRcYCMQrPXUG6ZU@hovoldconsulting.com>
+In-Reply-To: <YFRcYCMQrPXUG6ZU@hovoldconsulting.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 12:09:34 +0200
+Message-ID: <CAHp75VfAEj1X9-aOUxFYW52F2FeTxetPHA0KenAjCB49KXbx3A@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+To:     Johan Hovold <johan@kernel.org>,
+        =?UTF-8?B?RGXDoWssIEltcmU=?= <imre.deak@gmail.com>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the following checkpatch.pl issues:
+On Fri, Mar 19, 2021 at 10:09 AM Johan Hovold <johan@kernel.org> wrote:
+>
+> On Fri, Mar 19, 2021 at 06:36:39AM +0000, Song Bao Hua (Barry Song) wrote=
+:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
+> > > Sent: Tuesday, March 16, 2021 10:41 PM
+> > > To: Johan Hovold <johan@kernel.org>; Finn Thain <fthain@telegraphics.=
+com.au>;
+> > > Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>; Greg
+> > > Kroah-Hartman <gregkh@linuxfoundation.org>; Jiri Slaby <jirislaby@ker=
+nel.org>;
+> > > linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>; Linux =
+Samsung
+> > > SOC <linux-samsung-soc@vger.kernel.org>; open list:SERIAL DRIVERS
+> > > <linux-serial@vger.kernel.org>; Linux Kernel Mailing List
+> > > <linux-kernel@vger.kernel.org>; Hector Martin <marcan@marcan.st>; Arn=
+d
+> > > Bergmann <arnd@kernel.org>
+> > > Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags =
+in
+> > > interrupt handlers
+> > >
+> > > On Tue, Mar 16, 2021 at 11:02 AM Johan Hovold <johan@kernel.org> wrot=
+e:
+> > > >
+> > > > On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote=
+:
+> > > > > Since interrupt handler is called with disabled local interrupts,=
+ there
+> > > > > is no need to use the spinlock primitives disabling interrupts as=
+ well.
+> > > >
+> > > > This isn't generally true due to "threadirqs" and that can lead to
+> > > > deadlocks if the console code is called from hard irq context.
+> > > >
+> > > > Now, this is *not* the case for this particular driver since it doe=
+sn't
+> > > > even bother to take the port lock in console_write(). That should
+> > > > probably be fixed instead.
+> > > >
+> > > > See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
+> > >
+> > > Finn, Barry, something to check I think?
+> >
+> > My understanding is that spin_lock_irqsave can't protect the context
+> > the console_write() is called in hardirq for threaded_irq case mainly
+> > for preempt-rt scenarios as spin_lock_irqsave doesn't disable irq in
+> > that case at all.
+>
+> Forced threaded interrupts have so far run with interrupts enabled and
+> spin_lock_irqsave() would suffice on non-RT. This is about to change
+> though so that drivers don't need to worry about "threadirqs":
+>
+>         https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
+>
+> > See:
+> > https://www.kernel.org/doc/html/latest/locking/locktypes.html
+> > spinlock_t and PREEMPT_RT
+> > On a PREEMPT_RT kernel spinlock_t is mapped to a separate implementatio=
+n
+> > based on rt_mutex which changes the semantics:
+> > Preemption is not disabled.
+> > The hard interrupt related suffixes for spin_lock / spin_unlock operati=
+ons
+> > (_irq, _irqsave / _irqrestore) do not affect the CPU=E2=80=99s interrup=
+t disabled
+> > state.
+> >
+> > So if console_write() can interrupt our code in hardirq, we should
+> > move to raw_spin_lock_irqsave for this driver.
+>
+> No, no. RT handles this by deferring console writes apparently.
+>
+> > I think it is almost always wrong to call spin_lock_irqsave in hardirq.
+>
+> Again, no. It's even been a requirement due to "threadirqs" in some
+> cases (e.g. hrtimers) up until now (or rather until the above patch is
+> in mainline).
 
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-239: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:239:
-+	/* DBG_8192C("%s\n", __func__); */
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-569: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:569:
-+	DBG_8192C("%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-854: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:854:
-+	DBG_8192C("%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-1408: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:1408:
-+	DBG_8192C("%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-1645: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:1645:
-+	DBG_8192C("%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-2222: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2222:
-+	DBG_8192C("%s\n", __func__);
---
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-2230: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2230:
-+	DBG_8192C("%s\n", __func__);
+By the way, a good question Imre (Cc'ed) and I have discussed is the
+in-kernel documentation, i.e.
+https://www.kernel.org/doc/html/latest/kernel-hacking/locking.html.
+Should it be adjusted to reality?
 
-Changes in v2:
-	removed empty #ifdef block
-
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c   | 17 -----------------
- 1 file changed, 17 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index e70bb7f1ca3a..a577ddcce8cd 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -235,9 +235,6 @@ struct cfg80211_bss *rtw_cfg80211_inform_bss(struct adapter *padapter, struct wl
- 	struct wiphy *wiphy = wdev->wiphy;
- 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
- 
--
--	/* DBG_8192C("%s\n", __func__); */
--
- 	bssinf_len = pnetwork->network.IELength + sizeof(struct ieee80211_hdr_3addr);
- 	if (bssinf_len > MAX_BSSINFO_LEN) {
- 		DBG_871X("%s IE Length too long > %d byte\n", __func__, MAX_BSSINFO_LEN);
-@@ -566,8 +563,6 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
- 	struct security_priv *psecuritypriv =  &(padapter->securitypriv);
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 
--	DBG_8192C("%s\n", __func__);
--
- 	param->u.crypt.err = 0;
- 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
- 
-@@ -851,8 +846,6 @@ static int rtw_cfg80211_set_encryption(struct net_device *dev, struct ieee_param
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct security_priv *psecuritypriv = &padapter->securitypriv;
- 
--	DBG_8192C("%s\n", __func__);
--
- 	param->u.crypt.err = 0;
- 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
- 
-@@ -1404,10 +1397,6 @@ void rtw_cfg80211_surveydone_event_callback(struct adapter *padapter)
- 	struct __queue *queue	= &(pmlmepriv->scanned_queue);
- 	struct	wlan_network	*pnetwork = NULL;
- 
--#ifdef DEBUG_CFG80211
--	DBG_8192C("%s\n", __func__);
--#endif
--
- 	spin_lock_bh(&(pmlmepriv->scanned_queue.lock));
- 
- 	phead = get_list_head(queue);
-@@ -1642,12 +1631,9 @@ static int cfg80211_rtw_scan(struct wiphy *wiphy
- 
- static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, u32 changed)
- {
--	DBG_8192C("%s\n", __func__);
- 	return 0;
- }
- 
--
--
- static int rtw_cfg80211_set_wpa_version(struct security_priv *psecuritypriv, u32 wpa_version)
- {
- 	DBG_8192C("%s, wpa_version =%d\n", __func__, wpa_version);
-@@ -2219,7 +2205,6 @@ static int cfg80211_rtw_set_txpower(struct wiphy *wiphy,
- 	struct wireless_dev *wdev,
- 	enum nl80211_tx_power_setting type, int mbm)
- {
--	DBG_8192C("%s\n", __func__);
- 	return 0;
- }
- 
-@@ -2227,8 +2212,6 @@ static int cfg80211_rtw_get_txpower(struct wiphy *wiphy,
- 	struct wireless_dev *wdev,
- 	int *dbm)
- {
--	DBG_8192C("%s\n", __func__);
--
- 	*dbm = (12);
- 
- 	return 0;
--- 
-2.20.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
