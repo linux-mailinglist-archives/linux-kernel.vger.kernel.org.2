@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9673421D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A71B33421DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhCSQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:27:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230041AbhCSQ1A (ORCPT
+        id S230039AbhCSQ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:27:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56920 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhCSQ1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:27:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616171219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p64iFkslqxnuTZmrG9ex1+VZNpSbfarQfW4/L2fWYZs=;
-        b=haPe1CEcLMmHwUmDSJjpblPb6gu/+hI0/lz36/4+2HbmBTfS8k74fHgVHhp1cwDxVcYDOP
-        MdnNbjR/0tCYC+kYEMByT+Xwuq6ADZa5smU8rDX28Lwghfbu6a76xx1/VFwhFUEnLwik2G
-        E4RSt2/PSlia6ZB1eF/+mQEt+wW/XSA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-Tld3CbwTPDKbtt1KjT2dPg-1; Fri, 19 Mar 2021 12:26:56 -0400
-X-MC-Unique: Tld3CbwTPDKbtt1KjT2dPg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5E4F107ACCA;
-        Fri, 19 Mar 2021 16:26:53 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.172])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7A15460BF1;
-        Fri, 19 Mar 2021 16:26:51 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 19 Mar 2021 17:26:53 +0100 (CET)
-Date:   Fri, 19 Mar 2021 17:26:50 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     qianli zhao <zhaoqianligood@gmail.com>, christian@brauner.io,
-        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-Message-ID: <20210319162649.GA19971@redhat.com>
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com>
- <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com>
- <m1pmzwb7pd.fsf@fess.ebiederm.org>
+        Fri, 19 Mar 2021 12:27:16 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 997D520B39C5;
+        Fri, 19 Mar 2021 09:27:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 997D520B39C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616171236;
+        bh=Wsdbg1M1cJRQ0/oeaxzGq2LeLW2IuQM+xw0EQ7ZsQjY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=a3QuHKGJPWFyLqX6zl9nTAbnVB4AZxpBk+ci/qqImu+j0JkaLSUO2X5GgEyWI/ULw
+         o0kjzwgV8o1Rf6HRQxj+jyN9eksyuYYd4Ytesu22m1786vx6QPZsnCN2XtlDgHbGoo
+         okcBBEjge/cB60mlKO3Cx7HtwT7o59a9Cn+CxkcU=
+Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-3-madvenka@linux.microsoft.com>
+ <20210318174029.GM5469@sirena.org.uk>
+ <6474b609-b624-f439-7bf7-61ce78ff7b83@linux.microsoft.com>
+ <20210319132208.GD5619@sirena.org.uk>
+ <e8d596c3-b1ec-77a6-f387-92ecd2ebfceb@linux.microsoft.com>
+ <eb0def39-efcf-52ac-ce46-5982e8555dc1@linux.microsoft.com>
+ <20210319162031.GG5619@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <f2cc4d67-8acc-1b80-edd7-23336beea4c1@linux.microsoft.com>
+Date:   Fri, 19 Mar 2021 11:27:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m1pmzwb7pd.fsf@fess.ebiederm.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210319162031.GG5619@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/18, Eric W. Biederman wrote:
->
-> Oleg Nesterov <oleg@redhat.com> writes:
->
-> > On 03/18, qianli zhao wrote:
-> >>
-> >> In addition, the patch also protects the init process state to
-> >> successfully get usable init coredump.
-> >
-> > Could you spell please?
-> >
-> > Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
-> > to panic earlier, before other init's sub-threads exit?
->
-> That is my understanding.
->
-> As I understand it this patch has two purposes:
-> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
-> 2. panic as early as possible so exiting threads don't removing
->    interesting debugging state.
 
-Yes, this was my understanding too, but the changelog didn't look
-clear to me.
 
-And I'd say that it is not that we want to avoid BUG_ON() in
-zap_pid_ns_processes() when !CONFIG_PID_NS, we want to avoid
-zap_pid_ns_processes() in the root namespace, regardless of
-CONFIG_PID_NS.
+On 3/19/21 11:20 AM, Mark Brown wrote:
+> On Fri, Mar 19, 2021 at 10:02:52AM -0500, Madhavan T. Venkataraman wrote:
+>> On 3/19/21 9:40 AM, Madhavan T. Venkataraman wrote:
+> 
+>>> Actually now I look again it's just not adding anything on EL2 entries
+>>> at all, they use a separate set of macros which aren't updated - this
+>>> will only update things for EL0 and EL1 entries so my comment above
+>>> about this tracking EL2 as EL1 isn't accurate.
+> 
+>> So, do I need to do anything here?
+> 
+> Probably worth some note somewhere about other stack types existing and
+> how they end up being handled, in the changelog at least.
+> 
+OK.
 
-> It is a bit tricky to tell if the movement of the decrement of
-> signal->live is safe.
-
-Agreed, this was my concern. I see nothing wrong at first glance,
-but I can easily miss something.
-
-Oleg.
-
+Madhavan
