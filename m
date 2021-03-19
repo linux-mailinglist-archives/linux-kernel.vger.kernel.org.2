@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31ACC341C70
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784F2341C73
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhCSMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58474 "EHLO mail.kernel.org"
+        id S229805AbhCSMUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhCSMUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:20:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CC1764F65;
-        Fri, 19 Mar 2021 12:20:19 +0000 (UTC)
+        id S230316AbhCSMUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:20:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C00DB6146D;
+        Fri, 19 Mar 2021 12:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156419;
-        bh=0WUz7ExhoeU5E9tBpK+ViFg/1w5fhR5zj2NSQgMzYWk=;
+        s=korg; t=1616156422;
+        bh=HdbIVlhi+KrHLSVZ2TLqcSo72xulVN1bqgio34ZDE6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rx3KJjL+poOdxl3nre+mihGvT6BlbICW36rqgSCVLimXiLOg/qJPGuMUitFNoL9Qv
-         WyStvKPX3yLkJgmgzssUjYYq1ZoIx9C1fyIqrpVWd82KznXZaLuN3tE0BQw21pXfTq
-         5NnXOU6C31ME9hgZHqMnCrhh1KP2XPJlfxbTAN4c=
+        b=DPAWOsm1I5n9niXHflUnk6luHuFYj2ig9/kvEQvXMqy9ClHKxQ35akFN7jxcwf10A
+         vlynLU9+aCv8ph4UeK44tY10dVzU7gVjau85bdnaVauXirLRhHAMshknMHHFC3W9fF
+         dW7msEsSIIsncDfU1k97YdBiltax9UjgkhM6Cvhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCH 5.10 08/13] RDMA/srp: Fix support for unpopulated and unbalanced NUMA nodes
-Date:   Fri, 19 Mar 2021 13:19:05 +0100
-Message-Id: <20210319121745.370839960@linuxfoundation.org>
+        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.10 09/13] fuse: fix live lock in fuse_iget()
+Date:   Fri, 19 Mar 2021 13:19:06 +0100
+Message-Id: <20210319121745.408809708@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
 References: <20210319121745.112612545@linuxfoundation.org>
@@ -42,179 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+From: Amir Goldstein <amir73il@gmail.com>
 
-commit 2b5715fc17386a6223490d5b8f08d031999b0c0b upstream.
+commit 775c5033a0d164622d9d10dd0f0a5531639ed3ed upstream.
 
-The current code computes a number of channels per SRP target and spreads
-them equally across all online NUMA nodes.  Each channel is then assigned
-a CPU within this node.
+Commit 5d069dbe8aaf ("fuse: fix bad inode") replaced make_bad_inode()
+in fuse_iget() with a private implementation fuse_make_bad().
 
-In the case of unbalanced, or even unpopulated nodes, some channels do not
-get a CPU associated and thus do not get connected.  This causes the SRP
-connection to fail.
+The private implementation fails to remove the bad inode from inode
+cache, so the retry loop with iget5_locked() finds the same bad inode
+and marks it bad forever.
 
-This patch solves the issue by rewriting channel computation and
-allocation:
+kmsg snip:
 
-- Drop channel to node/CPU association as it had no real effect on
-  locality but added unnecessary complexity.
+[ ] rcu: INFO: rcu_sched self-detected stall on CPU
+...
+[ ]  ? bit_wait_io+0x50/0x50
+[ ]  ? fuse_init_file_inode+0x70/0x70
+[ ]  ? find_inode.isra.32+0x60/0xb0
+[ ]  ? fuse_init_file_inode+0x70/0x70
+[ ]  ilookup5_nowait+0x65/0x90
+[ ]  ? fuse_init_file_inode+0x70/0x70
+[ ]  ilookup5.part.36+0x2e/0x80
+[ ]  ? fuse_init_file_inode+0x70/0x70
+[ ]  ? fuse_inode_eq+0x20/0x20
+[ ]  iget5_locked+0x21/0x80
+[ ]  ? fuse_inode_eq+0x20/0x20
+[ ]  fuse_iget+0x96/0x1b0
 
-- Tweak the number of channels allocated to reduce CPU contention when
-  possible:
-  - Up to one channel per CPU (instead of up to 4 by node)
-  - At least 4 channels per node, unless ch_count module parameter is
-    used.
-
-Link: https://lore.kernel.org/r/9cb4d9d3-30ad-2276-7eff-e85f7ddfb411@suse.com
-Signed-off-by: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Yi Zhang <yi.zhang@redhat.com>
+Fixes: 5d069dbe8aaf ("fuse: fix bad inode")
+Cc: stable@vger.kernel.org # 5.10+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c |  116 ++++++++++++++----------------------
- 1 file changed, 48 insertions(+), 68 deletions(-)
+ fs/fuse/fuse_i.h |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3624,7 +3624,7 @@ static ssize_t srp_create_target(struct
- 	struct srp_rdma_ch *ch;
- 	struct srp_device *srp_dev = host->srp_dev;
- 	struct ib_device *ibdev = srp_dev->dev;
--	int ret, node_idx, node, cpu, i;
-+	int ret, i, ch_idx;
- 	unsigned int max_sectors_per_mr, mr_per_cmd = 0;
- 	bool multich = false;
- 	uint32_t max_iu_len;
-@@ -3749,81 +3749,61 @@ static ssize_t srp_create_target(struct
- 		goto out;
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -862,6 +862,7 @@ static inline u64 fuse_get_attr_version(
  
- 	ret = -ENOMEM;
--	if (target->ch_count == 0)
-+	if (target->ch_count == 0) {
- 		target->ch_count =
--			max_t(unsigned int, num_online_nodes(),
--			      min(ch_count ?:
--					  min(4 * num_online_nodes(),
--					      ibdev->num_comp_vectors),
--				  num_online_cpus()));
-+			min(ch_count ?:
-+				max(4 * num_online_nodes(),
-+				    ibdev->num_comp_vectors),
-+				num_online_cpus());
-+	}
-+
- 	target->ch = kcalloc(target->ch_count, sizeof(*target->ch),
- 			     GFP_KERNEL);
- 	if (!target->ch)
- 		goto out;
+ static inline void fuse_make_bad(struct inode *inode)
+ {
++	remove_inode_hash(inode);
+ 	set_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state);
+ }
  
--	node_idx = 0;
--	for_each_online_node(node) {
--		const int ch_start = (node_idx * target->ch_count /
--				      num_online_nodes());
--		const int ch_end = ((node_idx + 1) * target->ch_count /
--				    num_online_nodes());
--		const int cv_start = node_idx * ibdev->num_comp_vectors /
--				     num_online_nodes();
--		const int cv_end = (node_idx + 1) * ibdev->num_comp_vectors /
--				   num_online_nodes();
--		int cpu_idx = 0;
--
--		for_each_online_cpu(cpu) {
--			if (cpu_to_node(cpu) != node)
--				continue;
--			if (ch_start + cpu_idx >= ch_end)
--				continue;
--			ch = &target->ch[ch_start + cpu_idx];
--			ch->target = target;
--			ch->comp_vector = cv_start == cv_end ? cv_start :
--				cv_start + cpu_idx % (cv_end - cv_start);
--			spin_lock_init(&ch->lock);
--			INIT_LIST_HEAD(&ch->free_tx);
--			ret = srp_new_cm_id(ch);
--			if (ret)
--				goto err_disconnect;
--
--			ret = srp_create_ch_ib(ch);
--			if (ret)
--				goto err_disconnect;
--
--			ret = srp_alloc_req_data(ch);
--			if (ret)
--				goto err_disconnect;
--
--			ret = srp_connect_ch(ch, max_iu_len, multich);
--			if (ret) {
--				char dst[64];
--
--				if (target->using_rdma_cm)
--					snprintf(dst, sizeof(dst), "%pIS",
--						 &target->rdma_cm.dst);
--				else
--					snprintf(dst, sizeof(dst), "%pI6",
--						 target->ib_cm.orig_dgid.raw);
--				shost_printk(KERN_ERR, target->scsi_host,
--					     PFX "Connection %d/%d to %s failed\n",
--					     ch_start + cpu_idx,
--					     target->ch_count, dst);
--				if (node_idx == 0 && cpu_idx == 0) {
--					goto free_ch;
--				} else {
--					srp_free_ch_ib(target, ch);
--					srp_free_req_data(target, ch);
--					target->ch_count = ch - target->ch;
--					goto connected;
--				}
-+	for (ch_idx = 0; ch_idx < target->ch_count; ++ch_idx) {
-+		ch = &target->ch[ch_idx];
-+		ch->target = target;
-+		ch->comp_vector = ch_idx % ibdev->num_comp_vectors;
-+		spin_lock_init(&ch->lock);
-+		INIT_LIST_HEAD(&ch->free_tx);
-+		ret = srp_new_cm_id(ch);
-+		if (ret)
-+			goto err_disconnect;
-+
-+		ret = srp_create_ch_ib(ch);
-+		if (ret)
-+			goto err_disconnect;
-+
-+		ret = srp_alloc_req_data(ch);
-+		if (ret)
-+			goto err_disconnect;
-+
-+		ret = srp_connect_ch(ch, max_iu_len, multich);
-+		if (ret) {
-+			char dst[64];
-+
-+			if (target->using_rdma_cm)
-+				snprintf(dst, sizeof(dst), "%pIS",
-+					&target->rdma_cm.dst);
-+			else
-+				snprintf(dst, sizeof(dst), "%pI6",
-+					target->ib_cm.orig_dgid.raw);
-+			shost_printk(KERN_ERR, target->scsi_host,
-+				PFX "Connection %d/%d to %s failed\n",
-+				ch_idx,
-+				target->ch_count, dst);
-+			if (ch_idx == 0) {
-+				goto free_ch;
-+			} else {
-+				srp_free_ch_ib(target, ch);
-+				srp_free_req_data(target, ch);
-+				target->ch_count = ch - target->ch;
-+				goto connected;
- 			}
--
--			multich = true;
--			cpu_idx++;
- 		}
--		node_idx++;
-+		multich = true;
- 	}
- 
- connected:
 
 
