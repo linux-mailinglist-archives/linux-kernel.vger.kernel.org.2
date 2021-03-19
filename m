@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58063342420
+	by mail.lfdr.de (Postfix) with ESMTP id D3C0D342421
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhCSSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S230376AbhCSSJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCSSI5 (ORCPT
+        with ESMTP id S230367AbhCSSJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:08:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D4C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7IMe3EI0F09CABp2BTZzKk4vCEjpzO2UA3Cr+FhKrno=; b=Fdulizs3yTlWagIoOyLAbUhEfL
-        T2YJkORsM5rcfD56NPaOg6NW2ciReddg/RmIyTR9WD3bphmkTV0jM9Oec35bG8+D5BrvRVOzpYQIh
-        l4OhSgt+lo5C2HbFsptfgwZcyEVNeEP3e/SZhMPuosQfK6PH5k0IZlV8iQ6qEzUrLonwXaMaDkM2L
-        zFJQ9DLgCVQwzTImlmh1vAWqgZdspvCkMvWczjHjH/BIJVL/khGdAmiE7hUNFLzHlbtjGo6JIGs80
-        VXkA0nLKVNBFsEJDgFTXcd/+KLsIiIUvWi1msjwQrdwvZtCmjVVRIv7gFFMjtQM04dRr3oxGzZPni
-        TDvyMD7w==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJYM-001RgA-0Q; Fri, 19 Mar 2021 18:08:55 +0000
-Date:   Fri, 19 Mar 2021 11:08:53 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     monstr@monstr.eu, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] microblaze: Fix a typo
-In-Reply-To: <20210319045323.21241-1-unixbhaskar@gmail.com>
-Message-ID: <6dc64c0-3c3a-b0f1-58bf-0907c9aac9a@bombadil.infradead.org>
-References: <20210319045323.21241-1-unixbhaskar@gmail.com>
+        Fri, 19 Mar 2021 14:09:08 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AB2C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:09:08 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id w37so11348981lfu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wuZyAZ3JnSH71+O2rOQSNjgWBlPwFLx0QGqENzzRt1Y=;
+        b=WZPkxBhuxRsAx+6pPD260n4G1MPazcwQOg7ern0mx2r+f/GbkTbGm9yAP/nJAJHM/Q
+         LLYMgEOoT3fT8t9Ic45pvQ5z4GM9Sf/TdGEHFt4fMsxkvltq7bnJ2Te2YS/oxYxSEvjH
+         DwmZPZw7By5T/97M8cGS8HEW1Noz7BISsl0eZWNGokUnDchhwz6G/aLN+Tmf8RS3dES2
+         GEKWm2ygbnGUDB/AbWWKGrYYyWU83X9ROyv3F2dvc3PYx5qWkJ0maaIsS7Mn2uVkucfq
+         U+sbXoQ5zuj+1Nan4/aAd4YbZE9GHjX/g7A0HNXWY/JrCm1DWSbd9e4PMamfy2gRl9jf
+         88Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wuZyAZ3JnSH71+O2rOQSNjgWBlPwFLx0QGqENzzRt1Y=;
+        b=Qqsms4hUMroeOuxOyAQiro4gYUInnftuRa0HESjiC2BMkFjseoIso6ljbXrujy3xF0
+         Vi8j6oPLWGkDuwit4uD3rLQjgG5DExQOpYjvzP63KtgPbly1AvH9OjtxXhrpnCOXrPJW
+         MVEhpUbNDAevcIK4lHhcS3P7ddjlj3gOCaSy2KeF5jAs9sXxMsyR+Ukuj5zccV6CVbsE
+         ITuN4dRZU0p3LbScOdxM6xOBNa8pRwvhUHBHEcWNZb5jx3sDZrJ0zek9gbRq25rawy/V
+         CfkPdBIFx/RHiVkzHS7jA0pvTv2Ac/H+N1ci10tMScZd2A9P0UZZFcqMAn74mooYWwJo
+         41kQ==
+X-Gm-Message-State: AOAM531KTQ7wPGl+5lHNqgpkYs/MIcqYGPGilkzdN7v35Dt6je7AkLNF
+        7j70Af0lNmyyE1Mg4ubNoQqpWqkheqjmKrPg1heGVQ==
+X-Google-Smtp-Source: ABdhPJy3Jr9yI0SKHAkqxj1Juh6tv3KqeT0+FHrj9cLEc6TjswCE14y0fjTv8zPZxEeTD21jdo7zcaBZ0+aHB/8NLeE=
+X-Received: by 2002:a05:6512:34c3:: with SMTP id w3mr1457103lfr.437.1616177346474;
+ Fri, 19 Mar 2021 11:09:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_110854_068917_D7CB8815 
-X-CRM114-Status: GOOD (  11.17  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/storign/storing/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+References: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
+ <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com>
+ <ebf12838-4525-a525-93bd-2229927e50ca@physik.fu-berlin.de> <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 19 Mar 2021 11:08:55 -0700
+Message-ID: <CAKwvOd=TYuzcXK056nn4M4i475op=mvgNJA894FYH0gLSXY_PQ@mail.gmail.com>
+Subject: Re: sparc: clang: error: unknown argument: '-mno-fpu'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 4:56 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Mar 19, 2021 at 12:38 PM John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+> > On 3/19/21 12:31 PM, Arnd Bergmann wrote:
+> > > On Fri, Mar 19, 2021 at 8:36 AM Naresh Kamboju
+> > > <naresh.kamboju@linaro.org> wrote:
+> > >>
+> > >> Linux mainline master build breaks for sparc defconfig.
+> > >> There are multiple errors / warnings with clang-12 and clang-11 and 10.
+> > >>  - sparc (defconfig) with clang-12, clang-11 and clang-10
+> > >>  - sparc (tinyconfig) with clang-12, clang-11 and clang-10
+> > >>  - sparc (allnoconfig) with clang-12, clang-11 and clang-10
+> > >>
+> > >> make --silent --keep-going --jobs=8
+> > >> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=sparc
+> > >> CROSS_COMPILE=sparc64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> > >> clang'
+> > >
+> > > I don't think anyone has successfully built a sparc kernel with clang,
+> > > and I don't
+> > > think it's worth trying either, given how little upstream work the
+> > > sparc port sees overall.
+> >
+> > We'll get there. There are some other SPARC-related clang bugs that need
+> > to be squashed first. We have made quite some improvements and it's actually
+> > maintained by the community. Of course, we don't have a commercial backer
+> > but that shouldn't be necessary for open source to work.
+>
+> I meant there is no point for Naresh to do it as part of his build
+> testing with tuxmake.
+> If someone else gets it working, they can tell Naresh to try again, but until
+> then, I'd limit clang regression testing to x86, arm, powerpc, s390, mips, riscv
+> and arc.
+
+We definitely cannot yet build arc.
+$ cmake ... -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="ARC"
+$ ARCH=arc CROSS_COMPILE=arc-linux-gnu- make LLVM=1 -j72 defconfig vmlinux
+...
+clang-13: error: unknown argument: '-mmedium-calls'
+clang-13: error: unknown argument: '-fsection-anchors'
+clang-13: error: unknown argument: '-mlock'
+clang-13: error: unknown argument: '-mswape'
+clang-13: error: unknown argument: '-mno-sdata'
+clang-13: error: unknown argument: '-fcall-used-gp'
 
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
-
->
-> s/storign/storing/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
-> arch/microblaze/lib/uaccess_old.S | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/microblaze/lib/uaccess_old.S b/arch/microblaze/lib/uaccess_old.S
-> index 0e8cc2710c27..eca290090038 100644
-> --- a/arch/microblaze/lib/uaccess_old.S
-> +++ b/arch/microblaze/lib/uaccess_old.S
-> @@ -188,7 +188,7 @@ w2:	sw	r4, r5, r3
-> 	.text
->
-> .align 4 /* Alignment is important to keep icache happy */
-> -page:	/* Create room on stack and save registers for storign values */
-> +page:	/* Create room on stack and save registers for storing values */
-> 	addik   r1, r1, -40
-> 	swi	r5, r1, 0
-> 	swi	r6, r1, 4
-> --
-> 2.26.2
->
->
+-- 
+Thanks,
+~Nick Desaulniers
