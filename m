@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F589341E9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27032341EA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCSNnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:43:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230024AbhCSNnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:43:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 812E864F04;
-        Fri, 19 Mar 2021 13:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616161380;
-        bh=7mQCTG/AIZnXq4/oljSjBp3t2b8XcL14K/DhpsnZ5WY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hSI/v73kwjbmtzZbm0OIzh40eyB+o05loZRX372Uaji6cwRlyjMJLn72rtxgbJBxq
-         eUefiXvrpnG1YIBMaXFd8jjR7gM64/lfJwU44yFXTc6ZJzcNMGyvOKMJQVFnCI4HBg
-         WURVRSTINeA5Jzt1iOmKl6eB8ZQncs1OW1uxXcMc=
-Date:   Fri, 19 Mar 2021 14:42:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        willy@infradead.org, david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-Message-ID: <YFSqYUfaxMajR/aq@kroah.com>
-References: <20210309062333.3216138-1-minchan@kernel.org>
- <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
- <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+        id S229996AbhCSNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:44:14 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:46735 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhCSNn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:43:57 -0400
+Received: by mail-oi1-f172.google.com with SMTP id m13so4798248oiw.13;
+        Fri, 19 Mar 2021 06:43:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5ZzDN7D8RGi6ZW/yyDxL9t3qkp73cKM3VEN+oqEJhWs=;
+        b=B5r4T+p6cmbKqsHrtGZ3MtMnMC2RtPe6EHk8kcJC3Uffn892M9T5S0qNXqdtzR21XW
+         qgPNJSwZEztAzQv5NyLBLCw1Xbk5UGcuH8m5KAcAYXE+jpS2+qz3gRv6R+cC3JukRZNJ
+         bFzkiOMQRibUeK9DPDiiLZTFlHNSuI8bbS20/YQVU/TRX2aUfMf4Q1Ba0TfJRCbygcMY
+         FAZIJGZ8TfxoHsuIZcG77z8hlir96BZ0uMVCiymB9h8EkPdGUzJSS576Kgi3r1htr1lW
+         /6TAwFiTDa4VmieLV0UckZl3H9rvuolOv7n4A5G1l/hLjNLE4FJDGPn0I767LmgJfRRr
+         bV7w==
+X-Gm-Message-State: AOAM533kQi9oOOye9ud7UHjYJqy0s3XLDl4MZ9xoKx+K6V1Jc1bRAtc1
+        mznBnue+xUmjUtevOwGe5h+XqzMN18v6VSyVujc=
+X-Google-Smtp-Source: ABdhPJz8nqjw9vDEvVfTofW90lxMCMuOlFEgkt/GVdm7SinSp9IA6/mY8Z6qjCcAJZhh8pbKtwr38DY3jf8vyY2jnLI=
+X-Received: by 2002:aca:c4c5:: with SMTP id u188mr1079430oif.71.1616161437306;
+ Fri, 19 Mar 2021 06:43:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+References: <5448054.DvuYhMxLoT@kreacher> <4304785.LvFx2qVVIh@kreacher> <CAPDyKFpU45vQMB_gdGnodV1=-fORJgtG3VXpeLaKvw4p5vMZhQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFpU45vQMB_gdGnodV1=-fORJgtG3VXpeLaKvw4p5vMZhQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 19 Mar 2021 14:43:42 +0100
+Message-ID: <CAJZ5v0iCSrN0Nf=2zfz=9GJKip8JY4MH1_kMS1A_MX3qmeZVDw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] Revert "PM: runtime: Update device status before
+ letting suppliers suspend"
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "elaine.zhang" <zhangqing@rock-chips.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 04:39:41PM +0300, Dmitry Osipenko wrote:
-> 19.03.2021 15:44, Dmitry Osipenko пишет:
-> ...
-> >>  #include <linux/debugfs.h>
-> >> +#include <linux/kobject.h>
-> >> +
-> >> +struct cma_stat {
-> >> +	spinlock_t lock;
-> >> +	/* the number of CMA page successful allocations */
-> >> +	unsigned long nr_pages_succeeded;
-> >> +	/* the number of CMA page allocation failures */
-> >> +	unsigned long nr_pages_failed;
-> >> +	struct kobject kobj;
-> >> +};
-> >>  
-> >>  struct cma {
-> >>  	unsigned long   base_pfn;
-> >> @@ -16,6 +26,9 @@ struct cma {
-> >>  	struct debugfs_u32_array dfs_bitmap;
-> >>  #endif
-> >>  	char name[CMA_MAX_NAME];
-> >> +#ifdef CONFIG_CMA_SYSFS
-> >> +	struct cma_stat	*stat;
-> >> +#endif
-> 
-> What is the point of allocating stat dynamically?
+On Fri, Mar 19, 2021 at 2:31 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Thu, 18 Mar 2021 at 19:15, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> >
+> > Revert commit 44cc89f76464 ("PM: runtime: Update device status
+> > before letting suppliers suspend") that introduced a race condition
+> > into __rpm_callback() which allowed a concurrent rpm_resume() to
+> > run and resume the device prematurely after its status had been
+> > changed to RPM_SUSPENDED by __rpm_callback().
+>
+> Huh, the code path is not entirely easy to follow. :-)
+>
+> Did you find this by code inspection or did you get an error report?
 
-Because static kobjects make me cry.
+There was a bug report that caused me to look at the code once again.
 
+> > Fixes: 44cc89f76464 ("PM: runtime: Update device status before letting suppliers suspend")
+> > Link: https://lore.kernel.org/linux-pm/24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com/
+> > Reported by: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Thanks!
