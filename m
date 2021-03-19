@@ -2,197 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288E83421D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9673421D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCSQ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:26:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:56178 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229926AbhCSQZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:25:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFF2931B;
-        Fri, 19 Mar 2021 09:25:46 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CA283F718;
-        Fri, 19 Mar 2021 09:25:44 -0700 (PDT)
-Subject: Re: [PATCH 3/6] iova: Allow rcache range upper limit to be
- configurable
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        hch@lst.de, m.szyprowski@samsung.com
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxarm@huawei.com
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-4-git-send-email-john.garry@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <26fb1b79-2e46-09f6-1814-48fec4205f32@arm.com>
-Date:   Fri, 19 Mar 2021 16:25:39 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229991AbhCSQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:27:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47614 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230041AbhCSQ1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:27:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616171219;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p64iFkslqxnuTZmrG9ex1+VZNpSbfarQfW4/L2fWYZs=;
+        b=haPe1CEcLMmHwUmDSJjpblPb6gu/+hI0/lz36/4+2HbmBTfS8k74fHgVHhp1cwDxVcYDOP
+        MdnNbjR/0tCYC+kYEMByT+Xwuq6ADZa5smU8rDX28Lwghfbu6a76xx1/VFwhFUEnLwik2G
+        E4RSt2/PSlia6ZB1eF/+mQEt+wW/XSA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-Tld3CbwTPDKbtt1KjT2dPg-1; Fri, 19 Mar 2021 12:26:56 -0400
+X-MC-Unique: Tld3CbwTPDKbtt1KjT2dPg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5E4F107ACCA;
+        Fri, 19 Mar 2021 16:26:53 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.172])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7A15460BF1;
+        Fri, 19 Mar 2021 16:26:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 19 Mar 2021 17:26:53 +0100 (CET)
+Date:   Fri, 19 Mar 2021 17:26:50 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     qianli zhao <zhaoqianligood@gmail.com>, christian@brauner.io,
+        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+Message-ID: <20210319162649.GA19971@redhat.com>
+References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
+ <20210317143805.GA5610@redhat.com>
+ <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+ <20210318180450.GA9977@redhat.com>
+ <m1pmzwb7pd.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
-In-Reply-To: <1616160348-29451-4-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m1pmzwb7pd.fsf@fess.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-19 13:25, John Garry wrote:
-> Some LLDs may request DMA mappings whose IOVA length exceeds that of the
-> current rcache upper limit.
-> 
-> This means that allocations for those IOVAs will never be cached, and
-> always must be allocated and freed from the RB tree per DMA mapping cycle.
-> This has a significant effect on performance, more so since commit
-> 4e89dce72521 ("iommu/iova: Retry from last rb tree node if iova search
-> fails"), as discussed at [0].
-> 
-> Allow the range of cached IOVAs to be increased, by providing an API to set
-> the upper limit, which is capped at IOVA_RANGE_CACHE_MAX_SIZE.
-> 
-> For simplicity, the full range of IOVA rcaches is allocated and initialized
-> at IOVA domain init time.
-> 
-> Setting the range upper limit will fail if the domain is already live
-> (before the tree contains IOVA nodes). This must be done to ensure any
-> IOVAs cached comply with rule of size being a power-of-2.
-> 
-> [0] https://lore.kernel.org/linux-iommu/20210129092120.1482-1-thunder.leizhen@huawei.com/
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   drivers/iommu/iova.c | 37 +++++++++++++++++++++++++++++++++++--
->   include/linux/iova.h | 11 ++++++++++-
->   2 files changed, 45 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index cecc74fb8663..d4f2f7fbbd84 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -49,6 +49,7 @@ init_iova_domain(struct iova_domain *iovad, unsigned long granule,
->   	iovad->flush_cb = NULL;
->   	iovad->fq = NULL;
->   	iovad->anchor.pfn_lo = iovad->anchor.pfn_hi = IOVA_ANCHOR;
-> +	iovad->rcache_max_size = IOVA_RANGE_CACHE_DEFAULT_SIZE;
->   	rb_link_node(&iovad->anchor.node, NULL, &iovad->rbroot.rb_node);
->   	rb_insert_color(&iovad->anchor.node, &iovad->rbroot);
->   	init_iova_rcaches(iovad);
-> @@ -194,7 +195,7 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
->   	 * rounding up anything cacheable to make sure that can't happen. The
->   	 * order of the unadjusted size will still match upon freeing.
->   	 */
-> -	if (fast && size < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
-> +	if (fast && size < (1 << (iovad->rcache_max_size - 1)))
->   		size = roundup_pow_of_two(size);
->   
->   	if (size_aligned)
-> @@ -901,7 +902,7 @@ static bool iova_rcache_insert(struct iova_domain *iovad, unsigned long pfn,
->   {
->   	unsigned int log_size = order_base_2(size);
->   
-> -	if (log_size >= IOVA_RANGE_CACHE_MAX_SIZE)
-> +	if (log_size >= iovad->rcache_max_size)
->   		return false;
->   
->   	return __iova_rcache_insert(iovad, &iovad->rcaches[log_size], pfn);
-> @@ -946,6 +947,38 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
->   	return iova_pfn;
->   }
->   
-> +void iova_rcache_set_upper_limit(struct iova_domain *iovad,
-> +				 unsigned long iova_len)
-> +{
-> +	unsigned int rcache_index = order_base_2(iova_len) + 1;
-> +	struct rb_node *rb_node = &iovad->anchor.node;
-> +	unsigned long flags;
-> +	int count = 0;
-> +
-> +	spin_lock_irqsave(&iovad->iova_rbtree_lock, flags);
-> +	if (rcache_index <= iovad->rcache_max_size)
-> +		goto out;
-> +
-> +	while (1) {
-> +		rb_node = rb_prev(rb_node);
-> +		if (!rb_node)
-> +			break;
-> +		count++;
-> +	}
-> +
-> +	/*
-> +	 * If there are already IOVA nodes present in the tree, then don't
-> +	 * allow range upper limit to be set.
-> +	 */
-> +	if (count != iovad->reserved_node_count)
-> +		goto out;
-> +
-> +	iovad->rcache_max_size = min_t(unsigned long, rcache_index,
-> +				       IOVA_RANGE_CACHE_MAX_SIZE);
-> +out:
-> +	spin_unlock_irqrestore(&iovad->iova_rbtree_lock, flags);
-> +}
-> +
->   /*
->    * Try to satisfy IOVA allocation range from rcache.  Fail if requested
->    * size is too big or the DMA limit we are given isn't satisfied by the
-> diff --git a/include/linux/iova.h b/include/linux/iova.h
-> index fd3217a605b2..952b81b54ef7 100644
-> --- a/include/linux/iova.h
-> +++ b/include/linux/iova.h
-> @@ -25,7 +25,8 @@ struct iova {
->   struct iova_magazine;
->   struct iova_cpu_rcache;
->   
-> -#define IOVA_RANGE_CACHE_MAX_SIZE 6	/* log of max cached IOVA range size (in pages) */
-> +#define IOVA_RANGE_CACHE_DEFAULT_SIZE 6
-> +#define IOVA_RANGE_CACHE_MAX_SIZE 10 /* log of max cached IOVA range size (in pages) */
+On 03/18, Eric W. Biederman wrote:
+>
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+> > On 03/18, qianli zhao wrote:
+> >>
+> >> In addition, the patch also protects the init process state to
+> >> successfully get usable init coredump.
+> >
+> > Could you spell please?
+> >
+> > Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
+> > to panic earlier, before other init's sub-threads exit?
+>
+> That is my understanding.
+>
+> As I understand it this patch has two purposes:
+> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
+> 2. panic as early as possible so exiting threads don't removing
+>    interesting debugging state.
 
-No.
+Yes, this was my understanding too, but the changelog didn't look
+clear to me.
 
-And why? If we're going to allocate massive caches anyway, whatever is 
-the point of *not* using all of them?
+And I'd say that it is not that we want to avoid BUG_ON() in
+zap_pid_ns_processes() when !CONFIG_PID_NS, we want to avoid
+zap_pid_ns_processes() in the root namespace, regardless of
+CONFIG_PID_NS.
 
-It only makes sense for a configuration knob to affect the actual rcache 
-and depot allocations - that way, big high-throughput systems with 
-plenty of memory can spend it on better performance, while small systems 
-- that often need IOMMU scatter-gather precisely *because* memory is 
-tight and thus easily fragmented - don't have to pay the (not 
-insignificant) cost for caches they don't need.
+> It is a bit tricky to tell if the movement of the decrement of
+> signal->live is safe.
 
-Robin.
+Agreed, this was my concern. I see nothing wrong at first glance,
+but I can easily miss something.
 
->   #define MAX_GLOBAL_MAGS 32	/* magazines per bin */
->   
->   struct iova_rcache {
-> @@ -74,6 +75,7 @@ struct iova_domain {
->   	unsigned long	start_pfn;	/* Lower limit for this domain */
->   	unsigned long	dma_32bit_pfn;
->   	unsigned long	max32_alloc_size; /* Size of last failed allocation */
-> +	unsigned long	rcache_max_size; /* Upper limit of cached IOVA RANGE */
->   	struct iova_fq __percpu *fq;	/* Flush Queue */
->   
->   	atomic64_t	fq_flush_start_cnt;	/* Number of TLB flushes that
-> @@ -158,6 +160,8 @@ int init_iova_flush_queue(struct iova_domain *iovad,
->   struct iova *find_iova(struct iova_domain *iovad, unsigned long pfn);
->   void put_iova_domain(struct iova_domain *iovad);
->   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
-> +void iova_rcache_set_upper_limit(struct iova_domain *iovad,
-> +				 unsigned long iova_len);
->   #else
->   static inline int iova_cache_get(void)
->   {
-> @@ -238,6 +242,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
->   					 struct iova_domain *iovad)
->   {
->   }
-> +
-> +static inline void iova_rcache_set_upper_limit(struct iova_domain *iovad,
-> +					       unsigned long iova_len)
-> +{
-> +}
->   #endif
->   
->   #endif
-> 
+Oleg.
+
