@@ -2,94 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D82341D09
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA6C341D0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCSMjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:39:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28942 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229756AbhCSMi6 (ORCPT
+        id S230076AbhCSMje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:39:34 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13648 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhCSMjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:38:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616157537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Nh6bcyuWZCqRSHSG44N4kRbYxNxawsK0voffZty4Fo=;
-        b=QtkCktcc2O1SX5hqykOlBzkImEN8PgizBWl3GjluckbWep17AurXhidjMiJPoEwu1ppHqz
-        miuHC3Tl5W3jti5CMAfFHjik/I/cmQb01ix4ldGZB3f6LFzrpaEOyWwwsDcf5xmhWxJ07F
-        4YZcLgZaalUXX3unzljNQmsG33b06i0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-Xjn3G3yyMqKO2ca5tH47EA-1; Fri, 19 Mar 2021 08:38:53 -0400
-X-MC-Unique: Xjn3G3yyMqKO2ca5tH47EA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 487F6801817;
-        Fri, 19 Mar 2021 12:38:52 +0000 (UTC)
-Received: from localhost (ovpn-12-153.pek2.redhat.com [10.72.12.153])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C566E60CCB;
-        Fri, 19 Mar 2021 12:38:47 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 20:38:45 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     menglong8.dong@gmail.com
-Cc:     dyoung@redhat.com, vgoyal@redhat.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tiantao6@hisilicon.com,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: Re: [PATCH] crash_dump: remove duplicate include in crash_dump.h
-Message-ID: <20210319123845.GA2289@MiWiFi-R3L-srv>
-References: <20210313103521.364854-1-zhang.yunkai@zte.com.cn>
+        Fri, 19 Mar 2021 08:39:02 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F23Kp26y5zmZdn;
+        Fri, 19 Mar 2021 20:36:30 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Mar 2021 20:38:52 +0800
+Subject: Re: [PATCH v6] perf annotate: Fix sample events lost in stdio mode
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210317094409.94293-1-yangjihong1@huawei.com>
+ <CAM9d7cjg059U8rn+BDfFrPAQ8xBUaMRJWsdbpm8f2bMcvx7OiQ@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <62845bff-fbca-e1d3-ce41-d7b925c0046b@huawei.com>
+Date:   Fri, 19 Mar 2021 20:38:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210313103521.364854-1-zhang.yunkai@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAM9d7cjg059U8rn+BDfFrPAQ8xBUaMRJWsdbpm8f2bMcvx7OiQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/13/21 at 02:35am, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> 
-> 'linux/pgtable.h' included in 'crash_dump.h' is duplicated.
-> It is also included in the 8th line.
 
-Tian Tao posted one to address the same issue, his log is better. Please
-update with below to repost.
 
-linux/pgtable.h is included more than once, Remove the one that isn't
-necessary.
+On 2021/3/18 14:13, Namhyung Kim wrote:
+> Hello,
+> 
+> On Wed, Mar 17, 2021 at 6:44 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> In hist__find_annotations function, since different hist_entry may point to same
+>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
+>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+>>
+>> However, there is a problem, for example, run the following command:
+>>
+>>   # perf record -e branch-misses -e branch-instructions -a sleep 1
+>>
+>> perf.data file contains different types of sample event.
+>>
+>> If the same IP sample event exists in branch-misses and branch-instructions,
+>> this event uses the same symbol. When annotate branch-misses events, notes->src
+>> corresponding to this event is set to null, as a result, when annotate
+>> branch-instructions events, this event is skipped and no annotate is output.
+>>
+>> Solution of this patch is to remove zfree in hists__find_annotations and
+>> change sort order to "dso,symbol" to avoid duplicate output when different
+>> processes correspond to the same symbol.
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> ---
+>>
+>> Changes since v5:
+>>    - Add Signed-off-by tag.
+>>
+>> Changes since v4:
+>>    - Use the same sort key "dso,symbol" in branch stack mode.
+>>
+>> Changes since v3:
+>>    - Modify the first line of comments.
+>>
+>> Changes since v2:
+>>    - Remove zfree in hists__find_annotations.
+>>    - Change sort order to avoid duplicate output.
+>>
+>> Changes since v1:
+>>    - Change processed flag variable from u8 to bool.
+>>
+>>   tools/perf/builtin-annotate.c | 13 ++++++-------
+>>   1 file changed, 6 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+>> index a23ba6bb99b6..92c55f292c11 100644
+>> --- a/tools/perf/builtin-annotate.c
+>> +++ b/tools/perf/builtin-annotate.c
+>> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
+>>                  } else {
+>>                          hist_entry__tty_annotate(he, evsel, ann);
+>>                          nd = rb_next(nd);
+>> -                       /*
+>> -                        * Since we have a hist_entry per IP for the same
+>> -                        * symbol, free he->ms.sym->src to signal we already
+>> -                        * processed this symbol.
+>> -                        */
+>> -                       zfree(&notes->src->cycles_hist);
+>> -                       zfree(&notes->src);
+>>                  }
+>>          }
+>>   }
+>> @@ -619,6 +612,12 @@ int cmd_annotate(int argc, const char **argv)
+>>
+>>          setup_browser(true);
+>>
+>> +       /*
+>> +        * Events of different processes may correspond to the same
+>> +        * symbol, we do not care about the processes in annotate,
+>> +        * set sort order to avoid repeated output.
+>> +        */
+>> +       sort_order = "dso,symbol";
+> 
+> At this point, I think there's not much value having separate
+> setup_sorting() for branch mode.
+> 
+Yes, two setup_sorting can be combined into one setup_sorting(NULL),
+the v7 patch has been submitted, please check it :)
 
-> 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> ---
->  include/linux/crash_dump.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
-> index a5192b718dbe..6bd8a33cb740 100644
-> --- a/include/linux/crash_dump.h
-> +++ b/include/linux/crash_dump.h
-> @@ -8,8 +8,6 @@
->  #include <linux/pgtable.h>
->  #include <uapi/linux/vmcore.h>
->  
-> -#include <linux/pgtable.h> /* for pgprot_t */
-> -
->  #ifdef CONFIG_CRASH_DUMP
->  #define ELFCORE_ADDR_MAX	(-1ULL)
->  #define ELFCORE_ADDR_ERR	(-2ULL)
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
+https://lore.kernel.org/patchwork/patch/1399031/
 
+Thanks,
+Yang
+> Thanks,
+> Namhyung
+> 
+> 
+>>          if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
+>>                  sort__mode = SORT_MODE__BRANCH;
+>>                  if (setup_sorting(annotate.session->evlist) < 0)
+>> --
+>> 2.30.GIT
+>>
+> .
+> 
