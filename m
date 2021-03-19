@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C89342008
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8C2342015
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhCSOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhCSOq1 (ORCPT
+        id S230297AbhCSOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:47:43 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43710 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhCSOrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:46:27 -0400
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:400:200::c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3A1C06174A;
-        Fri, 19 Mar 2021 07:46:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1616165176; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rMr6806o7Cdl9QE76yrzHiCVEWBOHQEpk3zpAmEqVZAiukbXGrMv4DSL2AdudtIVg3
-    HrWgzdFZHsBbZglimmjaCVSGHJ1dF1qhzjZGszNlm2D68hCF2nFJ+Wb/4LJbvsy7DCnT
-    aK5lf8t0pT8ahGcsxHIDQqlmB2CgKcd65V/7knMMIruZ6/iMZ2VXHntOLUN9MdmD0865
-    wAs70dN1e9p8IrVH4++nBBweFSu2Jp6A8xYNuXzE91bmrXW3kW5GNlPn7KrDK9JG4HZE
-    da3xFNVwg48nlV+EwfKkVTFaYtUMrYvNkYtwMLLanPHC0voMYnSB0gmWsmSuIPLet2hM
-    tjFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616165176;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0g6ivdcZkjFnRkFc2L1BIjTwwTdxzAc71cxW0S+jmO0=;
-    b=GOAa2zWTDNA6HC63RjxDIimZORdDg4oy9udHuCZvUnUOZoVOpib9Tbt3vnMw1JjIzA
-    /TEyFMoZRvDjWpn1EeP91+M8w3url/w3nETgbIpL+seOuIQWiJ8+fdPTu4vCcnYNZa7b
-    JIgS/AK7RMYhzCoFZOy7pYAyJQ/HHqCT8Qxkbv6KlXHWAWj8HM6OHczbuLJob6uDsW1f
-    FpW4sZ/5fAmMohmj5OG+reo3iLr2j1oQ9CKLNkC5lR6KdUwM3ZnBKM9Wo5jSG1OYzdUa
-    o8L+H8HnbRAkahHZYLQN8eA6cc9PLFKCLfbWKcRQptHhYGRDOcynbXOcfnB63CX/n1fQ
-    D3Ig==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616165176;
-    s=strato-dkim-0002; d=aepfle.de;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0g6ivdcZkjFnRkFc2L1BIjTwwTdxzAc71cxW0S+jmO0=;
-    b=UpOoT4DfYVY7wH4zHa5ZyKoUQo9z81hOgKa2GcwjrfG+nInCKdc/XeTwc3gl3SQv4S
-    V84iP9KSai/uzGLXnYl86ihR9NoLEY2hu/fGkyXKHzpeyHYmQQgVZ04gZM6j7i0hx7Rk
-    0A7xjcMHXKmUDyl+rTG3kPYrB/U68T9tbpsZltAMF870DRfPgo2gHVhOq9S7B/ftgVOa
-    33s/32egi8L3aamgzWabOBSSJrZ+pZlnBwiSiIvTS3MQqe3U3/7Sa2XeLBSBIJWhNEIb
-    Bmip0W+GxTtoVvfch/WGiwUqz1msNn56lfPvJdGL/7TnDijW/bKrpES/T7Pq1il6i092
-    7gsg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDXdoX8l8pYAcz5OTWOn4/A=="
-X-RZG-CLASS-ID: mo00
-Received: from sender
-    by smtp.strato.de (RZmta 47.21.0 SBL|AUTH)
-    with ESMTPSA id k0a44fx2JEkFBBr
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 19 Mar 2021 15:46:15 +0100 (CET)
-Date:   Fri, 19 Mar 2021 15:46:07 +0100
-From:   Olaf Hering <olaf@aepfle.de>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tools/hv: async name resolution in kvp_daemon
-Message-ID: <20210319154607.550198ad.olaf@aepfle.de>
-In-Reply-To: <20210319144145.4064-1-olaf@aepfle.de>
-References: <20210319144145.4064-1-olaf@aepfle.de>
-X-Mailer: Claws Mail 2021.03.05 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        Fri, 19 Mar 2021 10:47:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JEaOTx135621;
+        Fri, 19 Mar 2021 14:46:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=XNO61FOtBVkhZAr4aIEkfaV06YebUAqWlN4HB4v3cPQ=;
+ b=dSr4+HP/s7HaUjw6k9kW0TrCt73vSpsQqvNjPKKwVjvDNfY3m6TyLuHaLkNcYv+/viLo
+ CXhpDuwnhg9HhSPT553+MULe9Dz9xtX+DH6xxnBAr0AHjXs4j07eSDuVZQaUK3kyddgD
+ dr2m0/RTz/AyByniU1w99zpavm3GKNh4x0wm0DLet9GO/5rXI2oC6OaznlRdcqDnLprv
+ /juzqmepU/8j/hTBrxawvN3OKA2c7Io38vPOiEOL9H+/fMAO9/JCzKrRlx82Q8CSHVth
+ UQe9bfAINdCuVOvbIUqWJh8uqNFlQ+0J7klb2d73QMufkf6dkK47eDJBDHeVd5nB3EOZ nw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 378p1p376a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 14:46:55 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JEa6hS137011;
+        Fri, 19 Mar 2021 14:46:53 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 37cf2vj35h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 14:46:53 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12JEklC5009955;
+        Fri, 19 Mar 2021 14:46:51 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Mar 2021 07:46:47 -0700
+Date:   Fri, 19 Mar 2021 17:46:37 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] stm: class: dummy_stm: fix an error code in dummy_stm_init()
+Message-ID: <YFS5TWHDqL7nIBEv@mwanda>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/zx4IEKm519yE9fAl5ina=vF"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 malwarescore=0
+ spamscore=0 phishscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103190106
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103190106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zx4IEKm519yE9fAl5ina=vF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+If the kasprintf() allocation fails after the first iteration through
+the loop then it returns success instead of -ENOMEM as intended.
 
-Am Fri, 19 Mar 2021 15:41:44 +0100
-schrieb Olaf Hering <olaf@aepfle.de>:
+Fixes: bcfdf8afdebe ("stm class: dummy_stm: Create multiple devices")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/hwtracing/stm/dummy_stm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> FullyQualifiedDomainName
+diff --git a/drivers/hwtracing/stm/dummy_stm.c b/drivers/hwtracing/stm/dummy_stm.c
+index 38528ffdc0b3..36d32e7afb35 100644
+--- a/drivers/hwtracing/stm/dummy_stm.c
++++ b/drivers/hwtracing/stm/dummy_stm.c
+@@ -68,7 +68,7 @@ static int dummy_stm_link(struct stm_data *data, unsigned int master,
+ 
+ static int dummy_stm_init(void)
+ {
+-	int i, ret = -ENOMEM;
++	int i, ret;
+ 
+ 	if (nr_dummies < 0 || nr_dummies > DUMMY_STM_MAX)
+ 		return -EINVAL;
+@@ -80,8 +80,10 @@ static int dummy_stm_init(void)
+ 
+ 	for (i = 0; i < nr_dummies; i++) {
+ 		dummy_stm[i].name = kasprintf(GFP_KERNEL, "dummy_stm.%d", i);
+-		if (!dummy_stm[i].name)
++		if (!dummy_stm[i].name) {
++			ret = -ENOMEM;
+ 			goto fail_unregister;
++		}
+ 
+ 		dummy_stm[i].sw_start		= master_min;
+ 		dummy_stm[i].sw_end		= master_max;
+-- 
+2.30.1
 
-I think in the past I did asked MSFT what the host side really expects. May=
-be this time there will be an answer.
-
-Why would the host expect a FQDN from a VM? Why would it care about DNS lay=
-out of the network within the VM?
-
-Basically my copy of hv_kvp_daemon just sends `uname -n` to the host. This =
-is more correct. This does not waste any network resources. This, up to now=
-, led to no complains.
-
-So, what is the purpose of this API?
-
-
-Olaf
-
---Sig_/zx4IEKm519yE9fAl5ina=vF
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAmBUuTEACgkQ86SN7mm1
-DoAMXg//UW9gD7vVI9LReBYKUQ/9Qo8NZdh63xk/JHI+Jx9KEA84M8t6Y5HxwEdd
-oy/SkGV2K6HLRXAYB3yjYmeXSbzsmugKfDlBortyxYewbP/dTkuMIamvcGPHaT/s
-sHyWkV/kVYhh4F6iRF7FsQTlshQHHSZoExQrKSct8QJ6rwkOrS4spn7D/Lxwj5hq
-Tkn4MQ23oOfA6vfhxRqBTSPQ/TqRrLnzx0vYxEplj5JYD8c/BryzrEY9AibjS4Ma
-c8B29ZKbZe8ppj4nLczMs9GERXeWWQYkxaaB0uj1PE31soHglIZ+wHZQbGpc2/V+
-aeHg+XQUnnwxEGCv72HOaXyQTeOfqReRM9PjsNXPglKb82ghDU2piVzDbdrgCPQk
-yeuft8CP/Z8RHJav6oXRdlzMmimMxz4Z66MMHrAgp0t380Jf+prOXL41Gx9eJ/mU
-e5Hmj8xGDmyhRK1oUfl/4+Hdjtxf6hqmaRf6kXMBCdq1mTKhOZj7AgI/54rwKfMD
-4arPwycRon/dSZd8707126rbSryz0Olly01lTgDijCPqj1X2IO2bzOVWsYgqEaSr
-InwFCf6GKdgzolYPKT4Urf5tjp6JRoP6sGInQFUgP2z+zkT5R7VrNpnTjX0/Z2bO
-c4oqou3Q7G1gAtjWqdSa61LQ+qWn51YmBvjh6Omt5rxMf7jJ8Dg=
-=osfl
------END PGP SIGNATURE-----
-
---Sig_/zx4IEKm519yE9fAl5ina=vF--
