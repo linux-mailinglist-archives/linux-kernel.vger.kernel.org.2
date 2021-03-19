@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347C4341350
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 03:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202C4341352
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbhCSC7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 22:59:21 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:45416 "EHLO
+        id S233475AbhCSC7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 22:59:52 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:48408 "EHLO
         mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhCSC7F (ORCPT
+        with ESMTP id S231618AbhCSC7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 22:59:05 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 339CAE0213;
-        Fri, 19 Mar 2021 10:59:02 +0800 (CST)
+        Thu, 18 Mar 2021 22:59:36 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id AB61EE0187;
+        Fri, 19 Mar 2021 10:59:33 +0800 (CST)
 From:   Wang Qing <wangqing@vivo.com>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org
 Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] dma-buf: use wake_up_process() instead of wake_up_state()
-Date:   Fri, 19 Mar 2021 10:58:54 +0800
-Message-Id: <1616122734-11581-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH] futex: use wake_up_process() instead of wake_up_state()
+Date:   Fri, 19 Mar 2021 10:59:20 +0800
+Message-Id: <1616122760-11790-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHhhJHkIeHxpDQh8eVkpNSk1KSUlMT0lOTUhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        oVCBIfWUFZQ0sYHU5PHR8aSx4eVkpNSk1KSUlMTEhCQkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
         FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mgw6Txw6Lj8POU4UCB84Eko9
-        GToKFE9VSlVKTUpNSklJTE9JQ0tDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUJZV1kIAVlBSkxNTTcG
-X-HM-Tid: 0a78486c06cb2c17kusn339cae0213
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mhg6Dzo6LT8LA04dCA9WUVEQ
+        MBkwCxNVSlVKTUpNSklJTExPQ05PVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFKT09PNwY+
+X-HM-Tid: 0a78486c81952c17kusnab61ee0187
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,19 +42,19 @@ and it is more convenient for analysis and statistics
 
 Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/dma-buf/dma-fence.c | 2 +-
+ kernel/futex.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
-index 7475e09..de51326
---- a/drivers/dma-buf/dma-fence.c
-+++ b/drivers/dma-buf/dma-fence.c
-@@ -655,7 +655,7 @@ dma_fence_default_wait_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
- 	struct default_wait_cb *wait =
- 		container_of(cb, struct default_wait_cb, base);
+diff --git a/kernel/futex.c b/kernel/futex.c
+index e68db77..078a1f9
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1820,7 +1820,7 @@ void requeue_pi_wake_futex(struct futex_q *q, union futex_key *key,
  
--	wake_up_state(wait->task, TASK_NORMAL);
-+	wake_up_process(wait->task);
+ 	q->lock_ptr = &hb->lock;
+ 
+-	wake_up_state(q->task, TASK_NORMAL);
++	wake_up_process(q->task);
  }
  
  /**
