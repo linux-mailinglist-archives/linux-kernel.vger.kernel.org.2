@@ -2,260 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDB334265E
+	by mail.lfdr.de (Postfix) with ESMTP id B272134265F
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhCSTjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        id S230386AbhCSTjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhCSTjG (ORCPT
+        with ESMTP id S230092AbhCSTjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:39:06 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACD4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:39:06 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r12so11549555ejr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+RGsCEMUFSYEdYRwbEYSMZ0Hpk+/jkoO6bx9V2//bbY=;
-        b=FUVW6urBwsR0SGIxzRaogwm3w2VFA0OK5DXBO2PhE/IiUUjUvWQVw+2E/2wfFqSqDx
-         QMy7MGMA/qB2kbSj548uIJQBR1GwQ8SyZAaYBib6JpyYej1c8jAcXf2xCQ4A0xfR8A8C
-         jsZJqWlN2DECOq7P/+m8wuctZPRjS8HqkTal1EBbGcZ4YOVktvPCqEbIdZjmiGnlhnEg
-         /pi2k+7iu9DVvHNfMDAWuRy4AbgMW9DDyhcBdXT4KbJTL7A0Es7iwgR1k9Bpukn8FXdc
-         SejfgogVeYqDDAJWpM9aux+bEpQC8HB0m0HXN/OT02Gv2N22OZpf5E+JnPlGdyAiqejZ
-         zaTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+RGsCEMUFSYEdYRwbEYSMZ0Hpk+/jkoO6bx9V2//bbY=;
-        b=IJfNdGBYZRV1N8VkkQS9LEGixen06IphPJgjS3sNB2fXumSwsxoe06PoS/qmkt2GsP
-         oVBkuoe6FIt+8rKbHsNZ+jA64TV6qGl9ncnZ02Xmu1XztQBSlJgOTS5KhYlvHRvIfMqW
-         l4hAAPtcMXxaY8b+Dgs0XqL9iTkLcQhYqsnwOCIEEJaHq5d6rsD4bMjva+8k3+vspFh7
-         6UtG9HTVMNm/YA0DrLeE7pwiEj6BVxKAglFUZqDPZkXR9TGBWYrEMrHsZEVPqL6VgCT1
-         9LcbHv9XUfuSWk5pkqoU/Anoj5wi+cvx5p0X6WPrfRrm020jLQ7X5uRxBFYZYRAZS87X
-         2b9w==
-X-Gm-Message-State: AOAM531UEOYBHl4ejCbreebtnjpyOakmyHY2qz6TOuCXAU6j9MKHiqqU
-        gct4GNGnEaYKC9pQaDVHCwWND0he5fl1856Yp5dsIg==
-X-Google-Smtp-Source: ABdhPJzxWXQiENgt57OW8Dew9TbFMoV8ERb9e+3KhZafNMxzqQiLO18czzQVeouvk2YKtsvYz3ilK3PiGQLvYbzSpWU=
-X-Received: by 2002:a17:906:70d:: with SMTP id y13mr6123434ejb.170.1616182744163;
- Fri, 19 Mar 2021 12:39:04 -0700 (PDT)
+        Fri, 19 Mar 2021 15:39:23 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B18C06174A;
+        Fri, 19 Mar 2021 12:39:22 -0700 (PDT)
+Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lNKxt-00038L-11; Fri, 19 Mar 2021 20:39:21 +0100
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1615116592.git.linux@leemhuis.info>
+ <148a84de8d109ebbc01a337fb93cb246410c4351.1615116592.git.linux@leemhuis.info>
+ <878s6o18kq.fsf@meer.lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v2 2/2] docs: reporting-issues.rst: shortcut for reporting
+ stable regressions
+Message-ID: <3d8b94a7-42e0-d47d-55a6-155324e10243@leemhuis.info>
+Date:   Fri, 19 Mar 2021 20:39:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210319121747.203523570@linuxfoundation.org>
-In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 20 Mar 2021 01:08:52 +0530
-Message-ID: <CA+G9fYs6BxWn=Myx=RvjTqpR9cwAnJ5qfgC2xdEhg-3sfYf2EA@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/31] 5.11.8-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <878s6o18kq.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616182762;da2fb3e8;
+X-HE-SMSGID: 1lNKxt-00038L-11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 17:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.8 release.
-> There are 31 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.8-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 15.03.21 21:11, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
+> 
+>> Provide a much shorter and easier process for users that deal with
+>> regressions in stable and longterm kernels, as those should be reported
+>> quickly.
+>>
+>> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+>> CC: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Seems generally good, but I had a couple of comments...
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thx for your feedback.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Summary
-------------------------------------------------------------------------
+> […]
+>> + * If you are facing a regression within a stable or longterm version line
+>> +   (say something broke when updating from 5.10.4 to 5.10.5), head over to
+>> +   'Dealing with regressions within a stable and longterm kernel line'.
+> I would s/head over/scroll down/.  Otherwise readers may well wondering
+> where to go to find this section.
 
-kernel: 5.11.8-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 48a0708a31ceced042f5acd1d6a225a2fb66ebf3
-git describe: v5.11.7-32-g48a0708a31ce
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.7-32-g48a0708a31ce
+Good idea. Used this phrase somewhere else also, addressed it there in a
+septate patch in the series I just sent:
+https://lore.kernel.org/linux-doc/cover.1616181657.git.linux@leemhuis.info/
 
-No regressions (compared to build v5.11.7)
+> [...]
+>> + * Make sure it's not the kernel's surroundings that are causing the issue
+>> +   you face.
+> I can imagine that a lot of readers would have no idea what that means.
+> In fact, I'm not entirely sure what that means...
 
-No fixes (compared to build v5.11.7)
+That's why it explained in the reference section. That is a bit hard to
+spot just from the patch.
 
-Ran 66943 total tests in the following environments and test suites.
+> [...]
+>> +Regression in stable or longterm kernel?
+>> +----------------------------------------
+>> +
+>> +    *If you are facing a regression within a stable or longterm version line
+>> +    (say something broke when updating from 5.10.4 to 5.10.5), head over to
+>> +    'Dealing with regressions within a stable and longterm kernel line'.*
+> So you want to send them back upward here?
 
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
+No, this is just repeating the text from the step-by-step guide, as it's
+done everywhere in the reference section. It's hard to see in the diff
+and more clear when you look at the document as a whole.
 
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* libhugetlbfs
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* fwts
-* kselftest-bpf
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* network-basic-tests
-* kselftest-
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-membarri[
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* kunit
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* perf
-* ssuite
+>> +Regression within a stable and longterm kernel version line are something the
+>> +Linux developers want to fix badly, as such issues are even more unwanted than
+>> +regression in the main development branch, as they can quickly affect a lot of
+>> +people. The developers thus want to learn about such issues as quickly as
+>> +possible, hence there is a streamlined process to report them. Note,
+>> +regressions with newer kernel version line (say something broke when switching
+>> +from 5.9.15 to 5.10.5) do not qualify.
+> Given the length of this file, I really wonder if there isn't some way
+> to cut back on the amount of repeated text?
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+The latest series addresses this:
+https://lore.kernel.org/linux-doc/cover.1616181657.git.linux@leemhuis.info/
+
+To avoid repeated text I had to use this in the end:
+``` Perform the first three steps in the section "Reporting issues only
+occurring in older kernel version lines" above. ```
+
+Not ideal, but not too bad and works.
+
+Thx again for your suggestions!
+
+Ciao, Thorsten
