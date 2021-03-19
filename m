@@ -2,189 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EBF3424FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5884E3424FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhCSSlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhCSSkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:40:53 -0400
-Received: from smtp-1908.mail.infomaniak.ch (smtp-1908.mail.infomaniak.ch [IPv6:2001:1600:4:17::1908])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3853C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:40:52 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F2CQB6zD9zMq7Rl;
-        Fri, 19 Mar 2021 19:40:50 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F2CQ42r3Czlh8T4;
-        Fri, 19 Mar 2021 19:40:44 +0100 (CET)
-Subject: Re: [PATCH v30 10/12] selftests/landlock: Add user space tests
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-11-mic@digikod.net> <202103191026.D936362B@keescook>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <e98a1f48-4c35-139d-af88-b6e65fbb5c3f@digikod.net>
-Date:   Fri, 19 Mar 2021 19:41:00 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <202103191026.D936362B@keescook>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S230235AbhCSSli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:41:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:60894 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230226AbhCSSlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:41:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67D5A31B;
+        Fri, 19 Mar 2021 11:41:21 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4BEFE3F792;
+        Fri, 19 Mar 2021 11:41:20 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Jun <chenjun102@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
+Subject: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
+Date:   Fri, 19 Mar 2021 18:41:06 +0000
+Message-Id: <20210319184106.5688-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We recently converted arm64 to use arch_stack_walk() in commit:
 
-On 19/03/2021 18:56, Kees Cook wrote:
-> On Tue, Mar 16, 2021 at 09:42:50PM +0100, Mickaël Salaün wrote:
->> From: Mickaël Salaün <mic@linux.microsoft.com>
->>
->> Test all Landlock system calls, ptrace hooks semantic and filesystem
->> access-control with multiple layouts.
->>
->> Test coverage for security/landlock/ is 93.6% of lines.  The code not
->> covered only deals with internal kernel errors (e.g. memory allocation)
->> and race conditions.
->>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: Jann Horn <jannh@google.com>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Serge E. Hallyn <serge@hallyn.com>
->> Cc: Shuah Khan <shuah@kernel.org>
->> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->> Reviewed-by: Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>
->> Link: https://lore.kernel.org/r/20210316204252.427806-11-mic@digikod.net
-> 
-> This is terrific. I love the coverage. How did you measure this, BTW?
+  5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
 
-I used gcov: https://www.kernel.org/doc/html/latest/dev-tools/gcov.html
+The core stacktrace code expects that (when tracing the current task)
+arch_stack_walk() starts a trace at its caller, and does not include
+itself in the trace. However, arm64's arch_stack_walk() includes itself,
+and so traces include one more entry than callers expect. The core
+stacktrace code which calls arch_stack_walk() tries to skip a number of
+entries to prevent itself appearing in a trace, and the additional entry
+prevents skipping one of the core stacktrace functions, leaving this in
+the trace unexpectedly.
 
-> To increase it into memory allocation failures, have you tried
-> allocation fault injection:
-> https://www.kernel.org/doc/html/latest/fault-injection/fault-injection.html
+We can fix this by having arm64's arch_stack_walk() begin the trace with
+its caller. The first value returned by the trace will be
+__builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
+first frame record to be unwound will be __builtin_frame_address(1),
+i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
+is also marked noinline.
 
-Yes, it is used by syzkaller, but I don't know how to extract this
-specific coverage.
+While __builtin_frame_address(1) is not safe in portable code, local GCC
+developers have confirmed that it is safe on arm64. To find the caller's
+frame record, the builtin can safely dereference the current function's
+frame record or (in theory) could stash the original FP into another GPR
+at function entry time, neither of which are problematic.
 
-> 
->> [...]
->> +TEST(inconsistent_attr) {
->> +	const long page_size = sysconf(_SC_PAGESIZE);
->> +	char *const buf = malloc(page_size + 1);
->> +	struct landlock_ruleset_attr *const ruleset_attr = (void *)buf;
->> +
->> +	ASSERT_NE(NULL, buf);
->> +
->> +	/* Checks copy_from_user(). */
->> +	ASSERT_EQ(-1, landlock_create_ruleset(ruleset_attr, 0, 0));
->> +	/* The size if less than sizeof(struct landlock_attr_enforce). */
->> +	ASSERT_EQ(EINVAL, errno);
->> +	ASSERT_EQ(-1, landlock_create_ruleset(ruleset_attr, 1, 0));
->> +	ASSERT_EQ(EINVAL, errno);
-> 
-> Almost everywhere you're using ASSERT instead of EXPECT. Is this correct
-> (in the sense than as soon as an ASSERT fails the rest of the test is
-> skipped)? I do see you using EXPECT is some places, but I figured I'd
-> ask about the intention here.
+Prior to this patch, the tracing code would unexpectedly show up in
+traces of the current task, e.g.
 
-I intentionally use ASSERT as much as possible, but I use EXPECT when an
-error could block a test or when it could stop a cleanup (i.e. teardown).
+| # cat /proc/self/stack
+| [<0>] stack_trace_save_tsk+0x98/0x100
+| [<0>] proc_pid_stack+0xb4/0x130
+| [<0>] proc_single_show+0x60/0x110
+| [<0>] seq_read_iter+0x230/0x4d0
+| [<0>] seq_read+0xdc/0x130
+| [<0>] vfs_read+0xac/0x1e0
+| [<0>] ksys_read+0x6c/0xfc
+| [<0>] __arm64_sys_read+0x20/0x30
+| [<0>] el0_svc_common.constprop.0+0x60/0x120
+| [<0>] do_el0_svc+0x24/0x90
+| [<0>] el0_svc+0x2c/0x54
+| [<0>] el0_sync_handler+0x1a4/0x1b0
+| [<0>] el0_sync+0x170/0x180
 
-> 
->> +/*
->> + * TEST_F_FORK() is useful when a test drop privileges but the corresponding
->> + * FIXTURE_TEARDOWN() requires them (e.g. to remove files from a directory
->> + * where write actions are denied).  For convenience, FIXTURE_TEARDOWN() is
->> + * also called when the test failed, but not when FIXTURE_SETUP() failed.  For
->> + * this to be possible, we must not call abort() but instead exit smoothly
->> + * (hence the step print).
->> + */
-> 
-> Hm, interesting. I think this should be extracted into a separate patch
-> and added to the test harness proper.
+After this patch, the tracing code will not show up in such traces:
 
-I agree, but it may require some modifications to fit nicely in
-kselftest_harness.h . For now, it works well for my use case. I'll send
-patches once Landlock is merged. In fact, I already made
-kselftest_harness.h available for other users than seccomp. ;)
+| # cat /proc/self/stack
+| [<0>] proc_pid_stack+0xb4/0x130
+| [<0>] proc_single_show+0x60/0x110
+| [<0>] seq_read_iter+0x230/0x4d0
+| [<0>] seq_read+0xdc/0x130
+| [<0>] vfs_read+0xac/0x1e0
+| [<0>] ksys_read+0x6c/0xfc
+| [<0>] __arm64_sys_read+0x20/0x30
+| [<0>] el0_svc_common.constprop.0+0x60/0x120
+| [<0>] do_el0_svc+0x24/0x90
+| [<0>] el0_svc+0x2c/0x54
+| [<0>] el0_sync_handler+0x1a4/0x1b0
+| [<0>] el0_sync+0x170/0x180
 
-> 
-> Could this be solved with TEARDOWN being called on SETUP failure?
+Erring on the side of caution, I've given this a spin with a bunch of
+toolchains, verifying the output of /proc/self/stack and checking that
+the assembly looked sound. For GCC (where we require version 5.1.0 or
+later) I tested with the kernel.org crosstool binares for versions
+5.5.0, 6.4.0, 6.5.0, 7.3.0, 7.5.0, 8.1.0, 8.3.0, 8.4.0, 9.2.0, and
+10.1.0. For clang (where we require version 10.0.1 or later) I tested
+with the llvm.org binary releases of 11.0.0, and 11.0.1.
 
-The goal of this helper is to still be able to call TEARDOWN when TEST
-failed, not SETUP.
+Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Chen Jun <chenjun102@huawei.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+---
+ arch/arm64/kernel/stacktrace.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-> 
->> +#define TEST_F_FORK(fixture_name, test_name) \
->> +	static void fixture_name##_##test_name##_child( \
->> +		struct __test_metadata *_metadata, \
->> +		FIXTURE_DATA(fixture_name) *self, \
->> +		const FIXTURE_VARIANT(fixture_name) *variant); \
->> +	TEST_F(fixture_name, test_name) \
->> +	{ \
->> +		int status; \
->> +		const pid_t child = fork(); \
->> +		if (child < 0) \
->> +			abort(); \
->> +		if (child == 0) { \
->> +			_metadata->no_print = 1; \
->> +			fixture_name##_##test_name##_child(_metadata, self, variant); \
->> +			if (_metadata->skip) \
->> +				_exit(255); \
->> +			if (_metadata->passed) \
->> +				_exit(0); \
->> +			_exit(_metadata->step); \
->> +		} \
->> +		if (child != waitpid(child, &status, 0)) \
->> +			abort(); \
->> +		if (WIFSIGNALED(status) || !WIFEXITED(status)) { \
->> +			_metadata->passed = 0; \
->> +			_metadata->step = 1; \
->> +			return; \
->> +		} \
->> +		switch (WEXITSTATUS(status)) { \
->> +		case 0: \
->> +			_metadata->passed = 1; \
->> +			break; \
->> +		case 255: \
->> +			_metadata->passed = 1; \
->> +			_metadata->skip = 1; \
->> +			break; \
->> +		default: \
->> +			_metadata->passed = 0; \
->> +			_metadata->step = WEXITSTATUS(status); \
->> +			break; \
->> +		} \
->> +	} \
-> 
-> This looks like a subset of __wait_for_test()? Could __TEST_F_IMPL() be
-> updated instead to do this? (Though the fork overhead might not be great
-> for everyone.)
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index ad20981dfda4..d55bdfb7789c 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -194,8 +194,9 @@ void show_stack(struct task_struct *tsk, unsigned long *sp, const char *loglvl)
+ 
+ #ifdef CONFIG_STACKTRACE
+ 
+-void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+-		     struct task_struct *task, struct pt_regs *regs)
++noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
++			      void *cookie, struct task_struct *task,
++			      struct pt_regs *regs)
+ {
+ 	struct stackframe frame;
+ 
+@@ -203,8 +204,8 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+ 		start_backtrace(&frame, regs->regs[29], regs->pc);
+ 	else if (task == current)
+ 		start_backtrace(&frame,
+-				(unsigned long)__builtin_frame_address(0),
+-				(unsigned long)arch_stack_walk);
++				(unsigned long)__builtin_frame_address(1),
++				(unsigned long)__builtin_return_address(0));
+ 	else
+ 		start_backtrace(&frame, thread_saved_fp(task),
+ 				thread_saved_pc(task));
+-- 
+2.11.0
 
-Yes, it will probably be my approach to update kselftest_harness.h .
