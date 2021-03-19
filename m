@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D383423C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B083423C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhCSRxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        id S230286AbhCSRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhCSRxT (ORCPT
+        with ESMTP id S230142AbhCSRyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:53:19 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D59C06174A;
-        Fri, 19 Mar 2021 10:53:17 -0700 (PDT)
+        Fri, 19 Mar 2021 13:54:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509FFC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=5b5bolNJYoHvpbguUfHCrjOiVB1eiZ/SyLUPdIsBqrE=; b=fapckYyyVxKxd05dheNDlrTlv
-        uFcmGtMwFwzwBPEbnfZHhBlGlW9zqTLadk1HYzxRYAwklFLtV9Ox76oL3XfZFqn6UE1mg/IROkVj3
-        79f+WCg+fD7E2jnn1NqHDS3WGxIyuIatzqJmPNCsZxFSkCBNJu9EFI0JI2gN0m43clGoTG/R0W/fh
-        oEixbjDCYeE7nceZZwUWWrI/Ve1MweoQ8ZXHSGEwt/4o53r61OjolSZJcVNk3E10ogAN9vvDsQqgy
-        MhUzclWSUDU/yZFF8vu1i02HG9tGrP42frcpWnKzo5X6m8xslMqMzvtfBYxMIR2nmTOd6rlatvgWI
-        vvWNoMRwA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51488)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lNJJA-0004hZ-VN; Fri, 19 Mar 2021 17:53:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lNJJA-0000jP-3r; Fri, 19 Mar 2021 17:53:12 +0000
-Date:   Fri, 19 Mar 2021 17:53:12 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210319175311.GW1463@shell.armlinux.org.uk>
-References: <20210318045706.200458-1-hch@lst.de>
- <20210318045706.200458-3-hch@lst.de>
- <20210319170753.GV1463@shell.armlinux.org.uk>
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0ey7YfbgzAR3jH196JzXqYrJSyCm8QIKuZOJc+hwz/U=; b=VS+VfScgyEfNFcvWHbSF1a17CT
+        X+62m9+nHK+9BFu8/Y//fM6aPmO44pEqXjTHBSHyz1gdDXweRMbKE0c+rjEsbWlIvGs8kuBWNfOIY
+        zCYyCgKD8BdprZ/MUXiy5g13IGdE6eNsZp/L6WLrj8OaEjLS0C2OBeu0imIpTsBGN2PM5zWYcq6wr
+        UQ04FjlT/rck1cCCMyydRlB/GcZBb2Gt8iHFuqoPRRpU+eCviJ+UjbEQTpbAsJ2I1EWTDfRsCiqOv
+        nHdTwwUB6hTrPv1n3SneQh0fqhS2cosL8biwxlQ5Tqv2kdyMMzuZLlicgZ0DTdwDXl/PdbxO8Ypjj
+        IqFIMBTQ==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJK1-001R5X-VI; Fri, 19 Mar 2021 17:54:07 +0000
+Date:   Fri, 19 Mar 2021 10:54:05 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/inode.c: Fix a rudimentary typo
+In-Reply-To: <20210319005342.23795-1-unixbhaskar@gmail.com>
+Message-ID: <b6e29afe-96c2-1016-8a2-40baa542d92@bombadil.infradead.org>
+References: <20210319005342.23795-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319170753.GV1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_105406_026685_1B21D747 
+X-CRM114-Status: GOOD (  12.58  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > s/funtion/function/
+    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
+    Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:07:53PM +0000, Russell King - ARM Linux admin wrote:
-> On Thu, Mar 18, 2021 at 05:56:58AM +0100, Christoph Hellwig wrote:
-> > footbridge_defconfig enables CONFIG_IDE but no actual host controller
-> > driver, so just drop it.
-> 
-> I have been using the Cypress 82C693 IDE driver on Footbridge for a
-> CD ROM drive, and I know it doesn't work with the PATA driver - as
-> I need to disable BM DMA, otherwise the 82C693/DC21285 combination
-> deadlocks the PCI bus. The PATA driver doesn't support disabling
-> BM DMA without disabling it for all PATA ports, which is really
-> annoying for my IT821x card in the same machine.
-> 
-> So, I'm rather stuck using the PATA driver for the HDDs and the
-> IDE driver for the CD ROM.
-> 
-> That said, a commit a while back "cleaning up" the PCI layer appears
-> to have totally shafted the 82C693, as the kernel tries to request
-> IO resources at the legacy IDE addresses against the PCI bus resource
-> which only covers 0x1000-0xffff. Hence, the 82C693 IDE ports are non-
-> functional at the moment.
-> 
-> I'm debating about trying to find a fix to the PCI breakage that was
-> introduced by "ARM: move PCI i/o resource setup into common code".
-> 
-> I hadn't noticed it because I don't use the CD ROM drive very often,
-> and I don't upgrade the kernel that often either on the machine -
-> but it has been running 24x7 for almost two decades.
-
-Okay, a bit more on this...
-
-If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
-actually are not present on the CY82C693) then the IDE driver works
-for me, but the PATA driver does not:
-
-cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
-cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
-legacy IDE will be removed in 2021, please switch to libata
-Report any missing HW support to linux-ide@vger.kernel.org
-    ide0: BM-DMA at 0x1080-0x1087
-    ide1: BM-DMA at 0x1088-0x108f
-Probing IDE interface ide0...
-hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
-hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
-...
-
-(unbind Cypress_IDE and try binding pata_cypress)
-
-pata_cypress 0000:00:06.1: no available native port
 
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+
+> s/funtion/function/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+> fs/inode.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index a047ab306f9a..38c2e6b58dc4 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -1423,7 +1423,7 @@ EXPORT_SYMBOL(ilookup);
+>  * function must never block --- find_inode() can block in
+>  * __wait_on_freeing_inode() --- or when the caller can not increment
+>  * the reference count because the resulting iput() might cause an
+> - * inode eviction.  The tradeoff is that the @match funtion must be
+> + * inode eviction.  The tradeoff is that the @match function must be
+>  * very carefully implemented.
+>  */
+> struct inode *find_inode_nowait(struct super_block *sb,
+> --
+> 2.26.2
+>
+>
