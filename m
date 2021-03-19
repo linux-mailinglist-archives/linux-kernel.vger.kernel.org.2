@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74634342270
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4190334226C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhCSQtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhCSQso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230205AbhCSQso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 19 Mar 2021 12:48:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E527C06174A;
-        Fri, 19 Mar 2021 09:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Rkw34tqvp9ADJCx4j+4Sapfq6ylmx57b1tZJEf0MLzo=; b=AzBkcVVJ9hLMYNIfui3Ciu+vqF
-        UXXBIzvU6+fEwtCrrmcDFqZR6jDqGKZ8Wxp4pDfGomBI3L9M2dIiVerh9clT1Kcf9X4wx1JKixu6A
-        mM8kE4n2yWdWcMUFyl7vCPUoSdEJGFNw1DqlwA68Ki0bNUkSfhzoOO/zCwoCdpEmXamuwZ4Oy6FQ9
-        A9qecdkOO1G8VtPQIcO+NNJ4Cx7f4b1ArMv+J+pLPcUNNt6awXYUjM9SFQN8zXC3aFJZMQm+L7lKw
-        XCwmXx7VP2B5Rwq8DruFGaMnC2G3Rf4OKwYjYA1LddcYoEN3nYnXftG1R5YDBFizaY9IEv8P9NsuG
-        gNmPAEQQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNIIR-004iZG-4q; Fri, 19 Mar 2021 16:48:30 +0000
-Date:   Fri, 19 Mar 2021 16:48:23 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     William Kucharski <william.kucharski@oracle.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH] net/rds: correct socket tunable error in rds_tcp_tune()
-Message-ID: <20210319164823.GA1124392@casper.infradead.org>
-References: <20210317145204.7282-1-william.kucharski@oracle.com>
+Received: from angie.orcam.me.uk ([157.25.102.26]:37910 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhCSQsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:48:35 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 112A792009C; Fri, 19 Mar 2021 17:48:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 0ABFF92009B;
+        Fri, 19 Mar 2021 17:48:33 +0100 (CET)
+Date:   Fri, 19 Mar 2021 17:48:32 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Christoph Hellwig <hch@lst.de>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: remove the legacy ide driver
+In-Reply-To: <20210318045706.200458-1-hch@lst.de>
+Message-ID: <alpine.DEB.2.21.2103191712550.21463@angie.orcam.me.uk>
+References: <20210318045706.200458-1-hch@lst.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317145204.7282-1-william.kucharski@oracle.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 08:52:04AM -0600, William Kucharski wrote:
-> Correct an error where setting /proc/sys/net/rds/tcp/rds_tcp_rcvbuf would
-> instead modify the socket's sk_sndbuf and would leave sk_rcvbuf untouched.
-> 
-> Signed-off-by: William Kucharski <william.kucharski@oracle.com>
+On Thu, 18 Mar 2021, Christoph Hellwig wrote:
 
-Looks like a pretty clear copy-n-paste error.  I think Coverity have
-started looking for issues like this?
+> we've been trying to get rid of the legacy ide driver for a while now,
+> and finally scheduled a removal for 2021, which is three month old now.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+ Hmm, there's still a regression in that pata_legacy unconditionally pokes 
+at random I/O port locations corresponding to all the known possible ATA 
+interface mappings with ISA option cards:
 
-Also, maybe,
+scsi host0: pata_legacy
+ata1: PATA max PIO4 cmd 0x1f0 ctl 0x3f6 irq 14
+ata1.00: ATA-4: ST310211A, 3.54, max UDMA/100
+ata1.00: 19541088 sectors, multi 16: LBA
+ata1.00: configured for PIO
+scsi 0:0:0:0: Direct-Access     ATA      ST310211A        3.54 PQ: 0 ANSI: 5
+scsi 0:0:0:0: Attached scsi generic sg0 type 0
+sd 0:0:0:0: [sda] 19541088 512-byte logical blocks: (10.0 GB/9.32 GiB)
+sd 0:0:0:0: [sda] Write Protect is off
+sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't 
+support DPO or FUA
+ sda: sda1 sda2 sda3
+sd 0:0:0:0: [sda] Attached SCSI disk
+scsi host1: pata_legacy
+ata2: PATA max PIO4 cmd 0x170 ctl 0x376 irq 15
+scsi host1: pata_legacy
+ata3: PATA max PIO4 cmd 0x1e8 ctl 0x3ee irq 11
+scsi host1: pata_legacy
+ata4: PATA max PIO4 cmd 0x168 ctl 0x36e irq 10
+scsi host1: pata_legacy
+ata5: PATA max PIO4 cmd 0x1e0 ctl 0x3e6 irq 8
+scsi host1: pata_legacy
+ata6: PATA max PIO4 cmd 0x160 ctl 0x366 irq 12
 
-Fixes: c6a58ffed536 ("RDS: TCP: Add sysctl tunables for sndbuf/rcvbuf on rds-tcp socket")
+This seems needlessly dangerous to me.  With the old IDE driver I could 
+(and did) specify "ide_generic.probe_mask=1" to avoid this clutter (the 
+ISA card used with this system has a single ATA port only).
+
+ I guess it's easy to fix by carrying the `probe_mask' parameter over and 
+I think we'd rather wait with the removal of the IDE subsystem until we 
+have a release with this option supported.  I may look into it unless 
+someone beats me to it.
+
+ Overall I find it rather disturbing that nobody has noticed this issue 
+over all these years.
+
+ NB it is only earlier this year that I recovered this system from a PSU 
+failure several years ago, which took the disk the system previously had 
+with it, so myself I had no chance to get at it any earlier, though I did 
+mean to have a look as soon as I saw the notice about the scheduled IDE 
+removal.
+
+  Maciej
