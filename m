@@ -2,204 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7F83418D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9734B341848
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhCSJwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:52:23 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46337 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhCSJwG (ORCPT
+        id S229648AbhCSJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhCSJaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:52:06 -0400
-X-Greylist: delayed 1670 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Mar 2021 05:52:06 EDT
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 12J9FMco021248
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 17:15:22 +0800 (GMT-8)
-        (envelope-from kuohsiang_chou@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 12J9ErwR021038;
-        Fri, 19 Mar 2021 17:14:53 +0800 (GMT-8)
-        (envelope-from kuohsiang_chou@aspeedtech.com)
-Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Mar
- 2021 17:23:47 +0800
-From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
-        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
-Subject: [PATCH V3] drm/ast: Disable fast reset after DRAM initial
-Date:   Fri, 19 Mar 2021 17:23:40 +0800
-Message-ID: <20210319092340.140267-1-kuohsiang_chou@aspeedtech.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
-References: <HK2PR06MB330087DBCD724A93EBACC17C8CA10@HK2PR06MB3300.apcprd06.prod.outlook.com>
+        Fri, 19 Mar 2021 05:30:06 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58478C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:30:06 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so4863084wmj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h7Hm+ghwkLRDBAXMVNnrJw9KnhlIxQw5KKOJ32yVNwQ=;
+        b=B91xc1g1F0dratEusEbJbkRCwWFgBHj6CI00wIY1FiNueZeWwbhdDux76Y05VbhH34
+         6HANw5RONyLoVtsA7hFSiOpX8ncK/aJW0rfvVSsaZK0fBb1x21Nnk5ykZIbWGQiztLIF
+         jZBcMME2jGhhv1LfeOept+9NYEKRGx471crt8i8/lozGOLQvX9UDom3UXlFCpKYNQZHo
+         6Vv7PaMDOtX78JxdmUj2LIPmWydkwIJ3OXO1XrGaE2Ul4tHILN9J+JEQ1vZ6PVvep9o4
+         mI+w/RyooZB523RBlknIrcOCWK+K/qvrx75BDZh27bKEEJkRnKEk3BvhRKOV9aQVs7St
+         TU1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h7Hm+ghwkLRDBAXMVNnrJw9KnhlIxQw5KKOJ32yVNwQ=;
+        b=cElxjLOOlOs2bc2Ef9Hb4ZEx1M63fliuq1Szd2IQjeGgx8R/hzTE/OUdPu5mqngNUw
+         cAbmo0ppMpkcJCRifNOT/zXAD8DHDvjiH5nUF8MVxACs4cZMtu6RGoiMDWZfIy5LBzpY
+         3RDUrd8eBB7anYCD1KN7D1cknLxtyKWrKkzVyvFjZxf0yo8YYb7UMgI2UrWXLgDCFB7f
+         PrX6hHILyX3MjFjQlMM2G2AjDjbmuL+41Zyzj96yl5e6N5CeUl9+kt5+2S2MEPqsIL2M
+         Z/swv2tKDN85cX33dvOpAZ4BGT6WvpVec3WFdcbVW6z05mz3NMGZG4yX7ZnO5wo6s0ZF
+         NwqA==
+X-Gm-Message-State: AOAM532/XOfUwP1ONxF8mG4uXm6JEOos8FaAsxG822LPVpSrhdTAMF8P
+        cwNWWLBq9DZaeH399A7nVqJaRQ==
+X-Google-Smtp-Source: ABdhPJwuN6X1S9bPZn0gh5KHG32FcDe6PvNMjiCNqgkQ05fhB+gQUu/EBFvYfuhbNDlPrgEME0nJhA==
+X-Received: by 2002:a05:600c:198d:: with SMTP id t13mr2888475wmq.73.1616146203868;
+        Fri, 19 Mar 2021 02:30:03 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id p6sm6779058wru.2.2021.03.19.02.30.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 02:30:03 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     robh@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        perex@perex.cz, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/7] ASoC: codecs: add wcd938x support
+Date:   Fri, 19 Mar 2021 09:29:12 +0000
+Message-Id: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.206]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 12J9ErwR021038
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Bug][AST2500]
+This patchset adds support for Qualcomm WCD938X codec.
 
-V1:
-When AST2500 acts as stand-alone VGA so that DRAM and DVO initialization
-have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
-However, HW suggests disable Fast reset mode after DRAM initializaton,
-because fast reset mode is mainly designed for ARM ICE debugger.
-Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be
-first enabled to avoid system deadlock before disable fast reset mode.
+Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+connected over SoundWire. This device has two SoundWire devices, RX and
+TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+7 x TX diff inputs, 8 DMICs and MBHC.
 
-V2:
-Use to_pci_dev() to get revision of PCI configuration.
+Even though this device has two SoundWire devices, only tx device has
+access to main codec Control/Status Registers!
 
-V3:
-If SCU00 is not unlocked, just enter its password again.
-It is unnecessary to clear AHB lock condition and restore WDT default
-setting again, before Fast-reset clearing.
+This patchset along with other SoundWire patches on the list
+have been tested on SM8250 MTP device.
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
----
- drivers/gpu/drm/ast/ast_drv.h  |  1 +
- drivers/gpu/drm/ast/ast_main.c |  5 +++
- drivers/gpu/drm/ast/ast_post.c | 68 +++++++++++++++++++++-------------
- 3 files changed, 48 insertions(+), 26 deletions(-)
+Am planning to send support for MBHC once this driver gets accepted!
 
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
-index da6dfb677540..a2cf5fef2399 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
- void ast_post_gpu(struct drm_device *dev);
- u32 ast_mindwm(struct ast_private *ast, u32 r);
- void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
-+void ast_patch_ahb_2500(struct ast_private *ast);
- /* ast dp501 */
- void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
- bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index 3775fe26f792..0e4dfcc25623 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
- {
- 	struct device_node *np = dev->pdev->dev.of_node;
- 	struct ast_private *ast = to_ast_private(dev);
-+	struct pci_dev *pdev = to_pci_dev(dev->dev);
- 	uint32_t data, jregd0, jregd1;
+Thanks,
+srini
 
- 	/* Defaults */
-@@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
- 	jregd0 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
- 	jregd1 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff);
- 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
-+		/* Patch AST2500 */
-+		if (((pdev->revision & 0xF0) == 0x40) && ((jregd0 & 0xC0) == 0))
-+			ast_patch_ahb_2500(ast);
-+
- 		/* Double check it's actually working */
- 		data = ast_read32(ast, 0xf004);
- 		if (data != 0xFFFFFFFF) {
-diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
-index 8902c2f84bf9..4f194c5fd2c2 100644
---- a/drivers/gpu/drm/ast/ast_post.c
-+++ b/drivers/gpu/drm/ast/ast_post.c
-@@ -2026,6 +2026,30 @@ static bool ast_dram_init_2500(struct ast_private *ast)
- 	return true;
- }
+Many thanks for reviewing v2.
 
-+void ast_patch_ahb_2500(struct ast_private *ast)
-+{
-+	u32	data;
-+
-+	/* Clear bus lock condition */
-+	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
-+	ast_moutdwm(ast, 0x1e600084, 0x00010000);
-+	ast_moutdwm(ast, 0x1e600088, 0x00000000);
-+	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+	data = ast_mindwm(ast, 0x1e6e2070);
-+	if (data & 0x08000000) {					/* check fast reset */
-+
-+		ast_moutdwm(ast, 0x1E785004, 0x00000010);
-+		ast_moutdwm(ast, 0x1E785008, 0x00004755);
-+		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
-+		udelay(1000);
-+	}
-+	do {
-+		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+		data = ast_mindwm(ast, 0x1e6e2000);
-+	}	while (data != 1);
-+	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
-+}
-+
- void ast_post_chip_2500(struct drm_device *dev)
- {
- 	struct ast_private *ast = to_ast_private(dev);
-@@ -2033,39 +2057,31 @@ void ast_post_chip_2500(struct drm_device *dev)
- 	u8 reg;
 
- 	reg = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
--	if ((reg & 0x80) == 0) {/* vga only */
-+	if ((reg & 0xC0) == 0) {/* vga only */
- 		/* Clear bus lock condition */
--		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
--		ast_moutdwm(ast, 0x1e600084, 0x00010000);
--		ast_moutdwm(ast, 0x1e600088, 0x00000000);
--		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
--		ast_write32(ast, 0xf004, 0x1e6e0000);
--		ast_write32(ast, 0xf000, 0x1);
--		ast_write32(ast, 0x12000, 0x1688a8a8);
--		while (ast_read32(ast, 0x12000) != 0x1)
--			;
--
--		ast_write32(ast, 0x10000, 0xfc600309);
--		while (ast_read32(ast, 0x10000) != 0x1)
--			;
-+		ast_patch_ahb_2500(ast);
-+
-+		/* Disable watchdog */
-+		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
-+		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
-+		/* Reset USB port */
-+		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
-+		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
-+		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
-+			mdelay(100);
-+			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
-+		}
-+		/* Modify eSPI reset pin */
-+		temp = ast_mindwm(ast, 0x1E6E2070);
-+		if (temp & 0x02000000)
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
+Changes since v2:
+	- fixed dt_binding_check error
 
- 		/* Slow down CPU/AHB CLK in VGA only mode */
- 		temp = ast_read32(ast, 0x12008);
- 		temp |= 0x73;
- 		ast_write32(ast, 0x12008, temp);
 
--		/* Reset USB port to patch USB unknown device issue */
--		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
--		temp  = ast_mindwm(ast, 0x1e6e2094);
--		temp |= 0x00004000;
--		ast_moutdwm(ast, 0x1e6e2094, temp);
--		temp  = ast_mindwm(ast, 0x1e6e2070);
--		if (temp & 0x00800000) {
--			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
--			mdelay(100);
--			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
--		}
--
- 		if (!ast_dram_init_2500(ast))
- 			drm_err(dev, "DRAM init failed !\n");
+Srinivas Kandagatla (7):
+  ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+  ASoC: codecs: wcd-clsh: add new version support
+  ASoC: codecs: wcd938x: add basic driver
+  ASoC: codecs: wcd938x: add basic controls
+  ASoC: codecs: wcd938x: add playback dapm widgets
+  ASoC: codecs: wcd938x: add capture dapm widgets
+  ASoC: codecs: wcd938x: add audio routing
 
---
-2.18.4
+ .../bindings/sound/qcom,wcd938x.yaml          |  165 +
+ sound/soc/codecs/Kconfig                      |    9 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/wcd-clsh-v2.c                |  350 +-
+ sound/soc/codecs/wcd-clsh-v2.h                |   16 +
+ sound/soc/codecs/wcd938x-sdw.c                |  291 ++
+ sound/soc/codecs/wcd938x.c                    | 3623 +++++++++++++++++
+ sound/soc/codecs/wcd938x.h                    |  676 +++
+ 8 files changed, 5122 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ create mode 100644 sound/soc/codecs/wcd938x-sdw.c
+ create mode 100644 sound/soc/codecs/wcd938x.c
+ create mode 100644 sound/soc/codecs/wcd938x.h
+
+-- 
+2.21.0
 
