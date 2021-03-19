@@ -2,134 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C61341388
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5ED834138E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbhCSDg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 23:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S233559AbhCSDkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 23:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbhCSDgl (ORCPT
+        with ESMTP id S231351AbhCSDkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 23:36:41 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BCBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 20:36:41 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id l123so4927835pfl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 20:36:41 -0700 (PDT)
+        Thu, 18 Mar 2021 23:40:04 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9560C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 20:40:03 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u10so7880810lff.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 20:40:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YThJXKoad88QyIUzJQjgHEKYHEHZlB/t9+1Xws9BWbo=;
-        b=VD/B9cBb2K0S5lmYwaCJosnP9TGGztKB/20JQ/fkjVjsoPdByO4kUXUEqrDflhCX+C
-         HPiW2HJantqBOkGpty+EeKd1wDi1qXyxhree4Xy3osahOFJDq2flVQZcRIg5vZKsnMI9
-         Folr58pqKFC1vWRJZan8ui7JUGvSXLHCgcRVA=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DN1htinD/rvt+eRcaheNveowyjIyAAls26Xb5z4rh3Y=;
+        b=keUjPKzNyXkHT3ju6jATjlakZ+W21Mf3wMGJYydgHBGevSgtwWHJaCxwu59LAJgewI
+         BhRJZ+XTepaOY2p2riwL2ezTECve6A27yXmZTIUey1H4nTEAsuzP8LfPa7Kx9VDVv8l2
+         mBUOQCpPxP++/S6nhNHmwMY9HiV3uzlChv9c7mEZeiaGG7Jm+is+B4dDMYiDT57Pao0W
+         j2ZJHVXC+/dBdQ2ubP2r0zHN1r9FOMiYGKbQwSlDkSHdNaWLyqzWEVr8cXmhc0AKD0mX
+         7luAMpDc9mIzn9eLZk8YVsQCXty80tP1UbvzVPxxrvQINTizaXyVq0eUgl6k8KkD9W2i
+         nxAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YThJXKoad88QyIUzJQjgHEKYHEHZlB/t9+1Xws9BWbo=;
-        b=IWGjsY98poY4hLVeyNouA//m7SJbESnxVfZJJkTN9t7udZiFEwLmto8shUzpNl/erX
-         ra298jVP3AWbytKGa+MIxGOP0nG0mc331BrkaiuI4E/EGeM03RxpZR8oq8fasNBxKmi4
-         WlMD6xU5cPSRcpqxCpLbQIjHuUEtZ6R9MUyLWhonZTzqfFuVlrM6wjsWz8h606BVXGU9
-         xE7hjmKBEj6HwaE99u9PHt6CQSGZUvwUSPG/gvd1aiiJp6xu+RyvSygLKqpemiMmJV7a
-         zOi0TPXpWv1MO2rwAVm455rtJtd4B3E0zwM8MJohn7HCfZWXic5lE25byY5znSnaJEkz
-         m4Sw==
-X-Gm-Message-State: AOAM533b5xnoYFVJvmW3e3HO66A8fm8ggophqTPjWS0w/yPWQgAgNJTM
-        eKFAj8PkanHSuNmS/ni21XGZmg==
-X-Google-Smtp-Source: ABdhPJxcgUFvELXlvjD3ZpIDWD4ma+4r1W70Db0GBPaVPBvvUcnVbbUp9j1C3AIHlM2Zid/+2jEi5g==
-X-Received: by 2002:a62:5b43:0:b029:1ef:21ad:846 with SMTP id p64-20020a625b430000b02901ef21ad0846mr7206410pfb.51.1616125000617;
-        Thu, 18 Mar 2021 20:36:40 -0700 (PDT)
-Received: from evanbenn1.syd.corp.google.com ([2401:fa00:9:15:d0d6:1466:f005:1b0a])
-        by smtp.gmail.com with ESMTPSA id z2sm3909741pfq.198.2021.03.18.20.36.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 20:36:40 -0700 (PDT)
-From:   Evan Benn <evanbenn@chromium.org>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Evan Benn <evanbenn@chromium.org>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/coccinelle: Add script to detect sign extension
-Date:   Fri, 19 Mar 2021 14:36:15 +1100
-Message-Id: <20210319142952.1.I2c82789dba4e68d61595862188e8bf4d31a05d38@changeid>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DN1htinD/rvt+eRcaheNveowyjIyAAls26Xb5z4rh3Y=;
+        b=R5IfMhAaf47+tTeUAox8OgKkHMwxi9mSWlygZrnnaBDzc1YYnL1E7qgLdFyLc47MPH
+         R92dkmpwYxkoFuPn41ZcOE9x7femv9ok8/mJ5jpzoKjlVpvcyDduSH1rFla+cOw8FFa1
+         2d56EszxMrspV0K14RwZFBmjqJVki4xVG+j+7ODrPfT6BVRUT9TenftzuENMYHIgOSA+
+         cCh5k58goLJvpRZ5LSEPyz2lHIxz/7JI8p9p8L/pzNs8YHBI+vVDA7l2lnYkqaXsH7QG
+         tV4E4Q4LexYbmYHtGayCOAkQdeKdUNifELZk3YPISHvDLAbC8fxKJhQ2rhmhvjmFw5gT
+         tEaA==
+X-Gm-Message-State: AOAM531r5JpD/rm8s7yi6USs/wo4i/wCGUf2+mNopExitJepW9MnNHxK
+        pBzwYDaATdBgJoORHIwb8RDpmjGfCakRmXnyJfVCjA==
+X-Google-Smtp-Source: ABdhPJw6lb+SdqDwvZaxVMgRXpD6HXSDxZKbrG0Y8YvfqUUbvNSwUfEFB4RLN9YS0xbH8E1qzhkm71susgP21Ma3TFs=
+X-Received: by 2002:a05:6512:b93:: with SMTP id b19mr3286251lfv.432.1616125202132;
+ Thu, 18 Mar 2021 20:40:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210318110658.60892-1-songmuchun@bytedance.com> <20210318110658.60892-5-songmuchun@bytedance.com>
+In-Reply-To: <20210318110658.60892-5-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 18 Mar 2021 20:39:50 -0700
+Message-ID: <CALvZod5RSXiUHBkW4aaWOnak6LQ6QdSiGWMh9Wk_Q++dz6Y4_Q@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] mm: memcontrol: use obj_cgroup APIs to charge kmem pages
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Mar 18, 2021 at 4:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+[...]
+>
+> +static inline struct mem_cgroup *get_obj_cgroup_memcg(struct obj_cgroup *objcg)
 
-I am attempting to create a coccinelle script that will detect possibly buggy
-usage of the bitwise operators where integer promotion may result in bugs,
-usually due to sign extension.
+I would prefer get_mem_cgroup_from_objcg().
 
-I know this script needs a lot more work, but I am just beginning to learn the
-syntax of coccinelle. At this stage I am mainly looking for advice if this is
-even worth continuing, or if I am on the wrong track entirely. 
+> +{
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +retry:
+> +       memcg = obj_cgroup_memcg(objcg);
+> +       if (unlikely(!css_tryget(&memcg->css)))
+> +               goto retry;
+> +       rcu_read_unlock();
+> +
+> +       return memcg;
+> +}
+> +
+>  #ifdef CONFIG_MEMCG_KMEM
+>  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+>                                  gfp_t gfp, bool new_page)
+> @@ -3070,15 +3088,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+>         struct mem_cgroup *memcg;
+>         int ret;
+>
+> -       rcu_read_lock();
+> -retry:
+> -       memcg = obj_cgroup_memcg(objcg);
+> -       if (unlikely(!css_tryget(&memcg->css)))
+> -               goto retry;
+> -       rcu_read_unlock();
+> -
+> +       memcg = get_obj_cgroup_memcg(objcg);
+>         ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
 
-Here is an example of the bug I hope to find:
+Why not manually inline __memcg_kmem_charge() here? This is the only user.
 
-https://lore.kernel.org/lkml/20210317013758.GA134033@roeck-us.net/
+Similarly manually inline __memcg_kmem_uncharge() into
+obj_cgroup_uncharge_pages() and call obj_cgroup_uncharge_pages() in
+obj_cgroup_release().
 
-Where ints and unsigned are mixed in bitwise operations, and the sizes differ.
+> -
+>         css_put(&memcg->css);
+>
+>         return ret;
+> @@ -3143,18 +3154,18 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
+>   */
+>  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+>  {
+> -       struct mem_cgroup *memcg;
+> +       struct obj_cgroup *objcg;
+>         int ret = 0;
+>
+> -       memcg = get_mem_cgroup_from_current();
 
-Thanks
+This was the only use of get_mem_cgroup_from_current(). Why not remove it?
 
-Evan Benn
+> -       if (memcg && !mem_cgroup_is_root(memcg)) {
+> -               ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+> +       objcg = get_obj_cgroup_from_current();
+> +       if (objcg) {
+> +               ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
+>                 if (!ret) {
+> -                       page->memcg_data = (unsigned long)memcg |
+> +                       page->memcg_data = (unsigned long)objcg |
+>                                 MEMCG_DATA_KMEM;
+>                         return 0;
+>                 }
+> -               css_put(&memcg->css);
+> +               obj_cgroup_put(objcg);
+>         }
+>         return ret;
+>  }
+[...]
+>  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>  {
+>         unsigned long nr_pages;
+> +       struct mem_cgroup *memcg;
+> +       struct obj_cgroup *objcg;
+>
+>         VM_BUG_ON_PAGE(PageLRU(page), page);
+>
+> -       if (!page_memcg(page))
+> -               return;
+> -
+>         /*
+>          * Nobody should be changing or seriously looking at
+> -        * page_memcg(page) at this point, we have fully
+> +        * page memcg or objcg at this point, we have fully
+>          * exclusive access to the page.
+>          */
+> +       if (PageMemcgKmem(page)) {
+> +               objcg = __page_objcg(page);
+> +               memcg = get_obj_cgroup_memcg(objcg);
 
-Signed-off-by: Evan Benn <evanbenn@chromium.org>
----
+Can you add a comment that this get matches the put at the end of the
+function and kmem pages do not hold memcg references anymore.
 
- .../coccinelle/tests/int_sign_extend.cocci    | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 scripts/coccinelle/tests/int_sign_extend.cocci
-
-diff --git a/scripts/coccinelle/tests/int_sign_extend.cocci b/scripts/coccinelle/tests/int_sign_extend.cocci
-new file mode 100644
-index 000000000000..bad61e37e4e7
---- /dev/null
-+++ b/scripts/coccinelle/tests/int_sign_extend.cocci
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/// Mixing signed and unsigned types in bitwise operations risks problems when
-+/// the 'Usual arithmetic conversions' are applied.
-+/// For example:
-+/// https://lore.kernel.org/lkml/20210317013758.GA134033@roeck-us.net/
-+/// When a signed int and an unsigned int are compared there is no problem.
-+/// But if the unsigned is changed to a unsigned long, for example by using BIT
-+/// the signed value will be sign-extended and could result in incorrect logic.
-+// Confidence:
-+// Copyright: (C) 2021 Evan Benn <evanbenn@chromium.org>
-+// Comments:
-+// Options:
-+
-+virtual context
-+virtual org
-+virtual report
-+
-+@r@
-+position p;
-+{int} s;
-+{unsigned long} u;
-+@@
-+    s@p & u
-+
-+@script:python depends on org@
-+p << r.p;
-+@@
-+
-+cocci.print_main("sign extension when comparing bits of signed and unsigned values", p)
-+
-+@script:python depends on report@
-+p << r.p;
-+@@
-+
-+coccilib.report.print_report(p[0],"sign extension when comparing bits of signed and unsigned values")
--- 
-2.31.0.291.g576ba9dcdaf-goog
-
+> +       } else {
+> +               memcg = __page_memcg(page);
+> +       }
+> +
+> +       if (!memcg)
+> +               return;
+>
+> -       if (ug->memcg != page_memcg(page)) {
+> +       if (ug->memcg != memcg) {
+>                 if (ug->memcg) {
+>                         uncharge_batch(ug);
+>                         uncharge_gather_clear(ug);
+>                 }
+> -               ug->memcg = page_memcg(page);
+> +               ug->memcg = memcg;
+>                 ug->dummy_page = page;
+>
+>                 /* pairs with css_put in uncharge_batch */
+> -               css_get(&ug->memcg->css);
+> +               css_get(&memcg->css);
+>         }
+>
+>         nr_pages = compound_nr(page);
+> -       ug->nr_pages += nr_pages;
+>
+> -       if (PageMemcgKmem(page))
+> +       if (PageMemcgKmem(page)) {
+> +               ug->nr_memory += nr_pages;
+>                 ug->nr_kmem += nr_pages;
+> -       else
+> +
+> +               page->memcg_data = 0;
+> +               obj_cgroup_put(objcg);
+> +       } else {
+> +               /* LRU pages aren't accounted at the root level */
+> +               if (!mem_cgroup_is_root(memcg))
+> +                       ug->nr_memory += nr_pages;
+>                 ug->pgpgout++;
+>
+> -       page->memcg_data = 0;
+> -       css_put(&ug->memcg->css);
+> +               page->memcg_data = 0;
+> +       }
+> +
+> +       css_put(&memcg->css);
+>  }
+>
+>  /**
+> --
+> 2.11.0
+>
