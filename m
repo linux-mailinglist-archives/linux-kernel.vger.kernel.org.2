@@ -2,105 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8AA342578
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28447342589
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhCSS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:56:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230473AbhCSSzm (ORCPT
+        id S230507AbhCSS54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhCSS5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:55:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616180142;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8xhqBj1C2kdr5sJYwc/42X0mlsjXH69Z0Bc0cRPniHE=;
-        b=f6Ndekpty7CKF/gGvgCH1qE+xDYdLaepG/xts7QxXcWvJ61iGZ96Y3Uv9OqCUf94kxdEuM
-        f4CnAdsQ7lfFIZZb6hi00ZSFxImUnuXmYZyZ02PcQ/balHH5KxYuTcNESRIUvjUSTQ2DV1
-        MZv/p2K+9/+QM/XXx2Aar8GrcQvbQ6M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-wgDJ3bvsNqumYSfWz2EF5A-1; Fri, 19 Mar 2021 14:55:39 -0400
-X-MC-Unique: wgDJ3bvsNqumYSfWz2EF5A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9086981746A;
-        Fri, 19 Mar 2021 18:55:37 +0000 (UTC)
-Received: from krava (unknown [10.40.195.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0A9A4610F3;
-        Fri, 19 Mar 2021 18:55:35 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 19:55:35 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, acme@redhat.com, namhyung@kernel.org,
-        jolsa@kernel.org
-Subject: Re: [PATCH v2 1/3] perf-stat: introduce bperf, share hardware PMCs
- with BPF
-Message-ID: <YFTzp9CA2/il8p77@krava>
-References: <20210316211837.910506-1-songliubraving@fb.com>
- <20210316211837.910506-2-songliubraving@fb.com>
- <YFPC4UbLWzTuzyER@krava>
- <YFTwdWxUvqHDNe1x@kernel.org>
+        Fri, 19 Mar 2021 14:57:41 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079B8C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:57:40 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id 11so6541812pfn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+ARMNZdORcwZHyTBcp0LfNJtX5idoKO6mMLl8I2vul8=;
+        b=Z7F3kFo/VDaBVbJVAStnHQDEhUdf4n8PDfoorw2hl7hlDsBjay176p0QAY1nOep5EN
+         GoSbgp4HkvZFWRjxSq4llepmA+IqVoMiDZd0dShfMZXHDUIx1vRJ+4s7dzv1C/aUS0sc
+         V32Zl+gmW6O4KBbO0i9Z0PPwl8yBdJtyjpTeQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+ARMNZdORcwZHyTBcp0LfNJtX5idoKO6mMLl8I2vul8=;
+        b=L+YT7sv1gZrXUbG10y+VvLQj6Q1E3v2cnFC9QRDtcE3SB8TAcG4iTyMTfAQCI1QGu7
+         +kjT7LVZnJ4vAZM7IwYG3V/BO8xlQN6x5taULwDmie3B7hs+g2ctVOf4X3w2i6zDsrn8
+         XuMZNhS+4Vf5w0v5rctafzrVTqc5J5qnfoIqlri+JffXreHvgoneZY1zeLuJh2Xr6QSK
+         nO1Jh+sphXDPA+9WV7YfE3Mzb9OO5imyj1nftWUMmS8f/mJEKTH93d7ak0dodm8HFNaG
+         rxngetQqaxZI6CakXZy6NwN0H+hZ7LxCKvKz2QgoU6nGJ5piY7+ytGZgxu59KDZq2xXV
+         cc4A==
+X-Gm-Message-State: AOAM532gr4uloaZgMCbW7MD50DZaYUGVqX1YzH6jjTOEIsmeqMLuHqUL
+        TIem3YOXJgriVrQzjcxFs0E10A==
+X-Google-Smtp-Source: ABdhPJyFzmcsL01nknQUed0WZD7+sNXok+4SU/jGDlRL8k3BLDDOsYFR22DxJkDBiUX0DFbR4gIt7w==
+X-Received: by 2002:a63:5942:: with SMTP id j2mr12740232pgm.351.1616180260468;
+        Fri, 19 Mar 2021 11:57:40 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 142sm6268015pfz.196.2021.03.19.11.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 11:57:39 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 11:57:38 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v30 07/12] landlock: Support filesystem access-control
+Message-ID: <202103191148.6E819426D@keescook>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-8-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YFTwdWxUvqHDNe1x@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316204252.427806-8-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 03:41:57PM -0300, Arnaldo Carvalho de Melo wrote:
+On Tue, Mar 16, 2021 at 09:42:47PM +0100, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> Using Landlock objects and ruleset, it is possible to tag inodes
+> according to a process's domain.  To enable an unprivileged process to
+> express a file hierarchy, it first needs to open a directory (or a file)
+> and pass this file descriptor to the kernel through
+> landlock_add_rule(2).  When checking if a file access request is
+> allowed, we walk from the requested dentry to the real root, following
+> the different mount layers.  The access to each "tagged" inodes are
+> collected according to their rule layer level, and ANDed to create
+> access to the requested file hierarchy.  This makes possible to identify
+> a lot of files without tagging every inodes nor modifying the
+> filesystem, while still following the view and understanding the user
+> has from the filesystem.
+> 
+> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
+> keep the same struct inodes for the same inodes whereas these inodes are
+> in use.
+> 
+> This commit adds a minimal set of supported filesystem access-control
+> which doesn't enable to restrict all file-related actions.  This is the
+> result of multiple discussions to minimize the code of Landlock to ease
+> review.  Thanks to the Landlock design, extending this access-control
+> without breaking user space will not be a problem.  Moreover, seccomp
+> filters can be used to restrict the use of syscall families which may
+> not be currently handled by Landlock.
+> 
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Serge E. Hallyn <serge@hallyn.com>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/20210316204252.427806-8-mic@digikod.net
+> [...]
+> +	spin_lock(&sb->s_inode_list_lock);
+> +	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+> +		struct landlock_object *object;
+> +
+> +		/* Only handles referenced inodes. */
+> +		if (!atomic_read(&inode->i_count))
+> +			continue;
+> +
+> +		/*
+> +		 * Checks I_FREEING and I_WILL_FREE  to protect against a race
+> +		 * condition when release_inode() just called iput(), which
+> +		 * could lead to a NULL dereference of inode->security or a
+> +		 * second call to iput() for the same Landlock object.  Also
+> +		 * checks I_NEW because such inode cannot be tied to an object.
+> +		 */
+> +		spin_lock(&inode->i_lock);
+> +		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
+> +			spin_unlock(&inode->i_lock);
+> +			continue;
+> +		}
 
-SNIP
+This (and elsewhere here) seems like a lot of inode internals getting
+exposed. Can any of this be repurposed into helpers? I see this test
+scattered around the kernel a fair bit:
 
->   LD       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf-in.o
->   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
->   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/bpftool
->   GEN-SKEL /tmp/build/perf/util/bpf_skel/bpf_prog_profiler.skel.h
->   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h
->   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h
-> libbpf: map 'prev_readings': unexpected def kind var.
-> Error: failed to open BPF object file: Invalid argument
-> libbpf: map 'diff_readings': unexpected def kind var.
-> Error: failed to open BPF object file: Invalid argument
+$ git grep I_FREEING | grep I_WILL_FREE | grep I_NEW | wc -l
+9
 
-I'm getting clean build for the same options,
-could you please send the same output also with 'JOBS=1 V=1'
+> +static inline u32 get_mode_access(const umode_t mode)
+> +{
+> +	switch (mode & S_IFMT) {
+> +	case S_IFLNK:
+> +		return LANDLOCK_ACCESS_FS_MAKE_SYM;
+> +	case 0:
+> +		/* A zero mode translates to S_IFREG. */
+> +	case S_IFREG:
+> +		return LANDLOCK_ACCESS_FS_MAKE_REG;
+> +	case S_IFDIR:
+> +		return LANDLOCK_ACCESS_FS_MAKE_DIR;
+> +	case S_IFCHR:
+> +		return LANDLOCK_ACCESS_FS_MAKE_CHAR;
+> +	case S_IFBLK:
+> +		return LANDLOCK_ACCESS_FS_MAKE_BLOCK;
+> +	case S_IFIFO:
+> +		return LANDLOCK_ACCESS_FS_MAKE_FIFO;
+> +	case S_IFSOCK:
+> +		return LANDLOCK_ACCESS_FS_MAKE_SOCK;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +		return 0;
+> +	}
 
+I'm assuming this won't be reachable from userspace.
 
-> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h] Error 255
-> make[2]: *** Waiting for unfinished jobs....
-> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h] Error 255
-> make[1]: *** [Makefile.perf:236: sub-make] Error 2
-> make: *** [Makefile:110: install-bin] Error 2
-> make: Leaving directory '/home/acme/git/perf/tools/perf'
-> [acme@quaco perf]$ clang -v
-> clang version 11.0.0 (https://github.com/llvm/llvm-project 67420f1b0e9c673ee638f2680fa83f468019004f)
-> Target: x86_64-unknown-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/local/bin
-> Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
-> Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
-> Candidate multilib: .;@m64
-> Candidate multilib: 32;@m32
-> Selected multilib: .;@m64
-> [acme@quaco perf]$
+> [...]
+> index a5d6ef334991..f8e8e980454c 100644
+> --- a/security/landlock/setup.c
+> +++ b/security/landlock/setup.c
+> @@ -11,17 +11,24 @@
+>  
+>  #include "common.h"
+>  #include "cred.h"
+> +#include "fs.h"
+>  #include "ptrace.h"
+>  #include "setup.h"
+>  
+> +bool landlock_initialized __lsm_ro_after_init = false;
+> +
+>  struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+>  	.lbs_cred = sizeof(struct landlock_cred_security),
+> +	.lbs_inode = sizeof(struct landlock_inode_security),
+> +	.lbs_superblock = sizeof(struct landlock_superblock_security),
+>  };
+>  
+>  static int __init landlock_init(void)
+>  {
+>  	landlock_add_cred_hooks();
+>  	landlock_add_ptrace_hooks();
+> +	landlock_add_fs_hooks();
+> +	landlock_initialized = true;
+
+I think this landlock_initialized is logically separate from the optional
+DEFINE_LSM "enabled" variable, but I thought I'd double check. :)
+
+It seems like it's used here to avoid releasing superblocks before
+landlock_init() is called? What is the scenario where that happens?
+
+>  	pr_info("Up and running.\n");
+>  	return 0;
+>  }
+> diff --git a/security/landlock/setup.h b/security/landlock/setup.h
+> index 9fdbf33fcc33..1daffab1ab4b 100644
+> --- a/security/landlock/setup.h
+> +++ b/security/landlock/setup.h
+> @@ -11,6 +11,8 @@
+>  
+>  #include <linux/lsm_hooks.h>
+>  
+> +extern bool landlock_initialized;
+> +
+>  extern struct lsm_blob_sizes landlock_blob_sizes;
+>  
+>  #endif /* _SECURITY_LANDLOCK_SETUP_H */
+> -- 
+> 2.30.2
 > 
 
-I have:
+The locking and inode semantics are pretty complex, but since, again,
+it's got significant test and syzkaller coverage, it looks good to me.
 
-[jolsa@dell-r440-01 linux-perf]$ clang --version
-clang version 11.0.0 (Fedora 11.0.0-2.fc33)
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
-InstalledDir: /usr/bin
+With the inode helper cleanup:
 
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-jirka
-
+-- 
+Kees Cook
