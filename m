@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C163419AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E177A3419B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCSKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:14:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38372 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229838AbhCSKO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:14:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22F38AC17;
-        Fri, 19 Mar 2021 10:14:26 +0000 (UTC)
-Subject: Re: [PATCH v5 2/5] mm,compaction: Let
- isolate_migratepages_{range,block} return error codes
-To:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210317111251.17808-1-osalvador@suse.de>
- <20210317111251.17808-3-osalvador@suse.de> <YFIOTTC7wgXHQRpy@dhcp22.suse.cz>
- <20210317143827.GA20965@linux> <YFIZVvQllaZHDgzW@dhcp22.suse.cz>
- <843f68e7-6fe6-54e7-976b-af8647482ac1@suse.cz>
- <YFMprphu2jEf+OY7@dhcp22.suse.cz>
- <5b294e86-e6a4-71ea-6a7e-1a611c6ccccf@suse.cz>
- <YFM7VPo06EuzfN4b@dhcp22.suse.cz> <20210319095742.GA6409@linux>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5e7e6f51-489e-eac0-f817-d80015835b25@suse.cz>
-Date:   Fri, 19 Mar 2021 11:14:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229873AbhCSKQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhCSKP4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:15:56 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C137CC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:15:55 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id r193so5466294ior.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GtahXJp+uaR41csgfyvASKpwx1k07B8T9fka/mVTFKI=;
+        b=MJUbI9ZVYA2st4wYNHTZvoSpQVpqGitTSxbV6Ztrg6W3NT8n3zeEjZ4g62iOG6wUQt
+         2XJ5/NGfbtIAh+HIIco/1RIiKyN/kuG4SThxOKaQX6hQD96IKjdehhwuuDUclsM+ibW4
+         2EGRPKz2YGjq4f4piYZw4vy4Q6bHowNjIEorwvK2SBLSsClGoXrq3lrDMSUGU6ZyZ9Bj
+         afO7b1FJ930U+BM+t9QRBMMLVTnrMsuo11We0Xn5rLJZwBZG1OjpF3cu9C9wPEJDiXex
+         8EYHQ118TGpJuLut1Eubnvr0LdGTUAmPRIz8fI8+0PkPHyBSTP0KPHW4gvvFcX0gwtny
+         T1xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GtahXJp+uaR41csgfyvASKpwx1k07B8T9fka/mVTFKI=;
+        b=oeMfQt6Z6eeGS2BpvCkGP8A3gITROEwq7QVi9N85EGZjWJuuUgRWKd5f72Fd0d+s2P
+         tdOj0bg/3F057KyvI8IcdiL1PkuGueyjkDHGFanmTG7zV79+k0tGIIadwqj1IfIzLeOD
+         qx34lLkANOTXiBHEvFxFZQtOlKHdSQHDtdI6ItNeCv9tHRTV0XzGwEx9RXKn7duzPyDZ
+         g/0N7+9VwS/wlL+r/FgknZ6ZC4rijliivUKj0MaIQSRtUqG6BNOf8ww3LPIXb/zCfNwu
+         6T0qfdC/memlIKE6Scd2cvnI7Oiouo5/XlgtznPVhk/8aXJZ7sICEnEIssAdN1sXElx6
+         MKMg==
+X-Gm-Message-State: AOAM533xzKt5s1o7yjsWxcZI2CW1nVSd1huQYk6KWlQtk9p/Sh9Li+8T
+        /lg8bDfZYs40JnpUDFR8by2w53O/kXwEfcROfio=
+X-Google-Smtp-Source: ABdhPJyG/NhpFiy3gCt+bGl+cqjH1OdXj3G0hOtfGzGM8+BJ/GPedDIXEHu5CvM+KGgcX/NiNbkFpzSp30Uh7eLd9Ko=
+X-Received: by 2002:a5d:9c50:: with SMTP id 16mr2218315iof.66.1616148955025;
+ Fri, 19 Mar 2021 03:15:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319095742.GA6409@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210319101246.73513-1-laoar.shao@gmail.com>
+In-Reply-To: <20210319101246.73513-1-laoar.shao@gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 19 Mar 2021 18:15:19 +0800
+Message-ID: <CALOAHbAO+2ZHjF8RH4aGFh2Zh9y0-Uwu+rv-NrQjF49YjA-j2w@mail.gmail.com>
+Subject: Re: [PATCH v6 resend 0/3] mm, vsprintf: dump full information of page
+ flags in pGp
+To:     Petr Mladek <pmladek@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 10:57 AM, Oscar Salvador wrote:
-> On Thu, Mar 18, 2021 at 12:36:52PM +0100, Michal Hocko wrote:
->> Yeah, makes sense. I am not a fan of the above form of documentation.
->> Btw. maybe renaming the field would be even better, both from the
->> intention and review all existing users. I would go with pfn_iter or
->> something that wouldn't make it sound like migration specific.
-> 
-> Just to be sure we are on the same page, you meant something like the following
-> (wrt. comments):
-> 
->  /*
->   * compact_control is used to track pages being migrated and the free pages
->   * they are being migrated to during memory compaction. The free_pfn starts
->   * at the end of a zone and migrate_pfn begins at the start. Movable pages
->   * are moved to the end of a zone during a compaction run and the run
->   * completes when free_pfn <= migrate_pfn
->   *
->   * freepages:           List of free pages to migrate to
->   * migratepages:        List of pages that need to be migrated
->   * nr_freepages:        Number of isolated free pages
->   ...
->   */
->   struct compact_control {
->           struct list_head freepages;
->           ...
+On Fri, Mar 19, 2021 at 6:13 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> The existed pGp shows the names of page flags only, rather than the full
+> information including section, node, zone, last cpuipid and kasan tag.
+> While it is not easy to parse these information manually because there
+> are so many flavors. We'd better interpret them in printf.
+>
+> To be compitable with the existed format of pGp, the new introduced ones
+> also use '|' as the separator, then the user tools parsing pGp won't
+> need to make change, suggested by Matthew. The new added information is
+> tracked onto the end of the existed one, e.g.
+> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+>
+> The documentation and test cases are also updated. The result of the
+> test cases as follows,
+> [68599.816764] test_printf: loaded.
+> [68599.819068] test_printf: all 388 tests passed
+> [68599.830367] test_printf: unloaded.
+>
+> This patchset also includes some code cleanup in mm/slub.c.
+>
+> v6:
+> - fixes the build failure and test failure reported by kernel test robot
+>
+> v5:
+> - remove the bitmap and better name the struct, per Petr
+>
+> v4:
+> - extend %pGp instead of introducing new format, per Matthew
+>
+> v3:
+> - coding improvement, per Joe and Andy
+> - the possible impact on debugfs and the fix of it, per Joe and Matthew
+> - introduce new format instead of changing pGp, per Andy
+>
+> v2:
+> - various coding improvement, per Joe, Miaohe, Vlastimil and Andy
+> - remove the prefix completely in patch #2, per Vlastimil
+> - Update the test cases, per Andy
+>
+> Yafang Shao (3):
+>   mm, slub: use pGp to print page flags
+>   mm, slub: don't combine pr_err with INFO
+>   vsprintf: dump full information of page flags in pGp
+>
+>  Documentation/core-api/printk-formats.rst |  2 +-
+>  lib/test_printf.c                         | 90 ++++++++++++++++++++---
+>  lib/vsprintf.c                            | 66 +++++++++++++++--
+>  mm/slub.c                                 | 13 ++--
+>  4 files changed, 149 insertions(+), 22 deletions(-)
+>
+> --
+> 2.18.2
+>
 
-No I meant this:
+Hi Petr,
 
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -225,7 +225,13 @@ struct compact_control {
-        unsigned int nr_freepages;      /* Number of isolated free pages */
-        unsigned int nr_migratepages;   /* Number of pages to migrate */
-        unsigned long free_pfn;         /* isolate_freepages search base */
--       unsigned long migrate_pfn;      /* isolate_migratepages search base */
-+       /*
-+        * Acts as an in/out parameter to page isolation for migration.
-+        * isolate_migratepages uses it as a search base.
-+        * isolate_migratepages_block will update the value to the next pfn
-+        * after the last isolated one.
-+        */
-+       unsigned long migrate_pfn;
-        unsigned long fast_start_pfn;   /* a pfn to start linear scan from */
-        struct zone *zone;
-        unsigned long total_migrate_scanned;
+Any comments on this version ?
 
-
-> With the preface that I am not really familiar with compaction code:
-> 
-> About renaming the variable to something else, I wouldn't do it.
-> I see migrate_pfn being used in contexts where migration gets mentioned,
-> e.g: 
-
-I also don't like the renaming much. "Migration" is important as this is about
-pages to be migrated, and there's "free_pfn" field tracking scan for free pages as
-migration target. So the name can't be as generic as "pfn_iter".
-
->  /*
->   * Briefly search the free lists for a migration source that already has
->   * some free pages to reduce the number of pages that need migration
->   * before a pageblock is free.
->   */
->  fast_find_migrateblock(struct compact_control *cc)
->  {
->   ...
->   unsigned long pfn = cc->migrate_pfn;
->  }
-> 
-> isolate_migratepages()
->  /* Record where migration scanner will be restarted. */
-> 
-> 
-> So, I would either stick with it, or add a new 'iter_pfn'/'next_pfn_scan'
-> field if we feel the need to.
-> 
-> 
-
+Thanks
+Yafang
