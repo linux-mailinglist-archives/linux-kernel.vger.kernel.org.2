@@ -2,102 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C4D3422C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F953422C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhCSRBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhCSRBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:01:09 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A00C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:01:09 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id u19so4094247pgh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=abcrisGGTGsUAWQ5KoqT7ElR97XBM2BFMqmIjep2vmg=;
-        b=HvE8G3ao+LwRCd+a6Gbl1e2h4jfqTUv7r/eu7nd1o1eBKdfIirZ4kiJTFGW5x6y+/2
-         8Ja4Zry3nJSBB3pa2Kubv5GA2G2tXdvQlRv0Y8OXN0ymGruB73rW8JGaJZ3RY7jHC7gM
-         WJTBve7lV+PwmNe5lTBqrpZ+9f0UWBGRnj0JAETRoP5gnAdbx5uLwn+NZKz3cWXajcIO
-         zTtA6I45Rh4X/d5FKNJp7teDWp9jO04MvAMx8OnhcX9YPdHiXFlTFtlym/A+Ky055eRq
-         hqwGhWdnXAdLfDXoV09ITjh0E+s96TGw6cvPUq2eojChafTowplLiHSKN7avIBg6+nAi
-         /Tlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=abcrisGGTGsUAWQ5KoqT7ElR97XBM2BFMqmIjep2vmg=;
-        b=OxeCh3HVjTGe85b+HS7x9XZHwT38ts//FmKb7VoWy5CpOv+eGUoAZ30PlGfICTTuBn
-         KzH0QYQ2uDtCnDZFGOV1jXfRA4CZQxPlgGmqB3v1BRrmE8zqFNEH1zG7igYyQ6G/4Jm+
-         Q1BMfTtY/Z3p0x0gPjKnRHHTI5oKmVIo3E8l9OraJmm08v//w3OyfM0kFyJBfX/I+2BM
-         eqc+c//tXvzcO6asOE0sUmGPMn1m2DA46EQ5cPCYiBCPugBt36e/7naQ2QnEyP1rDVSr
-         c6Ymj12Xt0Z15HXzLG2evVDQhH0rY72PzOQkt2YdwHdJJFzqVQmhZpO9HreLTTpiZE4B
-         pUTQ==
-X-Gm-Message-State: AOAM533HNtYOmd0AMa3xlaBNp50FwwZz2jA8CsMfwa6rRUnNnebUaJ0j
-        Ww/VzaQj/HrWk2Qj5ykio2sISoiaoICkATuA1rsQaOAWKugVdA==
-X-Google-Smtp-Source: ABdhPJzlLokuD5CVt4V1gtMOAmgeXqrksxJ6IMatvnRINYbOyNE/4DGODt/j0KH7js1AablTfParVLbL1d26YGFpxSQ=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr12548461pgl.31.1616173268970;
- Fri, 19 Mar 2021 10:01:08 -0700 (PDT)
+        id S230332AbhCSRCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:02:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230319AbhCSRB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F51E61957;
+        Fri, 19 Mar 2021 17:01:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616173319;
+        bh=ImJ7NjjGCPlZokQB3RH+hBE4XrmgjZ3pX+lrjICInmY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EZjC4EUQqojgUbpm9ey6k8xabzOi8GzCd+175xrM+TaWfDx2n3DtZ9PXIOHlW/fRm
+         ts5GuTm3zXmsj5+gFQFUU+BuPwv701r6pl+8FsZ3NxpMVQor/HQEEf1Q9WG8+pgcEw
+         3CjMadwyadoQ8Jz40KUaGx2WEs9XoXPCEV3J3D38JE0dx9UdAx+Fv1pYCkkT5/WQ0r
+         JjxbgPGioA/FVjj2QKb9SkZtFCQ5lh1dSVkkeamOAO4zyMtldrt0lykY17fNTu4Qsw
+         KlgmOoXESM2sb357PrF5DPa6tdUsZI1LtVCVRuo3sFrWDOvD8v8z7AB16sA1pHZ9kN
+         XCYAhlcQPXjbg==
+Date:   Fri, 19 Mar 2021 10:01:54 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        kvm-ppc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: Clang: powerpc: kvm/book3s_hv_nested.c:264:6: error: stack frame
+ size of 2480 bytes in function 'kvmhv_enter_nested_guest'
+Message-ID: <20210319170154.oe5sa6ohjbyucbws@archlinux-ax161>
+References: <CA+G9fYu=a0pk79He2DoQ9NGHkbG58PMhqJsEk=xiQv+v495Dmw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210316124903.35011-1-cristian.marussi@arm.com>
- <20210316124903.35011-26-cristian.marussi@arm.com> <CA+=V6c08cVmsCV_sDn5CogzbyN5KyNKL=u+WkAE0cPz2fqPhjQ@mail.gmail.com>
- <20210316222132.GA6875@e120937-lin> <CA+=V6c1=hWbF1_5wL7nMDK_CXqDVmgDXWvJjUC-XqZRGGewafA@mail.gmail.com>
- <20210318121202.6xf2lqm7udqvla24@bogus>
-In-Reply-To: <20210318121202.6xf2lqm7udqvla24@bogus>
-From:   Jyoti Bhayana <jbhayana@google.com>
-Date:   Fri, 19 Mar 2021 10:00:58 -0700
-Message-ID: <CA+=V6c1j=Mbz4o_NpvMf7OgUkLVCZdqxgbq+1RMAHh8pNcyuMQ@mail.gmail.com>
-Subject: Re: [PATCH v7 25/38] iio/scmi: port driver to the new
- scmi_sensor_proto_ops interface
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, james.quinlan@broadcom.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <souvik.chakravarty@arm.com>,
-        Guru Nagarajan <gurunagarajan@google.com>,
-        Enrico Granata <egranata@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYu=a0pk79He2DoQ9NGHkbG58PMhqJsEk=xiQv+v495Dmw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- iio/scmi: port driver to the new scmi_sensor_proto_ops interface
+Hi Naresh,
 
-    Port driver to the new SCMI Sensor interface based on protocol handles
-    and common devm_get_ops().
+Thank you for the testing and report.
 
-    Cc: Jyoti Bhayana <jbhayana@google.com>
-    Cc: Jonathan Cameron <jic23@kernel.org>
-    Acked-by: Jyoti Bhayana <jbhayana@google.com>
-    Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+On Fri, Mar 19, 2021 at 12:50:42PM +0530, Naresh Kamboju wrote:
+> Linux mainline master build breaks for powerpc defconfig.
+> There are multiple errors / warnings with clang-12 and clang-11 and 10.
+>  - powerpc (defconfig) with clang-12
+>  - powerpc (defconfig) with clang-11
+>  - powerpc (defconfig) with clang-10
+> 
+> The following build errors / warnings triggered with clang-12.
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp LLVM=1 ARCH=powerpc
+> CROSS_COMPILE=powerpc64le-linux-gnu- 'HOSTCC=sccache clang'
+> 'CC=sccache clang'
+> /builds/linux/arch/powerpc/kvm/book3s_hv_nested.c:264:6: error: stack
+> frame size of 2480 bytes in function 'kvmhv_enter_nested_guest'
+> [-Werror,-Wframe-larger-than=]
+> long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+>      ^
+> 1 error generated.
+> make[3]: *** [/builds/linux/scripts/Makefile.build:271:
+> arch/powerpc/kvm/book3s_hv_nested.o] Error 1
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+Yes, unfortunately, this is a clang-12 regression that was exposed by
+commit 97e4910232fa ("linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*")
+and it is being tracked on both our GitHub issue tracker and LLVM's
+bugzilla:
 
+https://github.com/ClangBuiltLinux/linux/issues/1292
+https://bugs.llvm.org/show_bug.cgi?id=49610
 
-On Thu, Mar 18, 2021 at 5:12 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Tue, Mar 16, 2021 at 10:38:43PM -0700, Jyoti Bhayana wrote:
-> > Hi Christian,
-> >
-> > Thanks for the detailed explanation. Sounds good to me.
-> >
->
-> Can I get official Reviewed-by or Acked-by please if you are fine with the
-> change ?
->
-> I definitely need one from Jonathan to merge this and one from Jyoti is
-> added bonus .
->
-> --
-> Regards,
-> Sudeep
+Once it has been sorted out, we can potentially work around that by just
+raising the limit for that particular file (not sure what the PowerPC
+maintainers will want to do).
+
+> The following build errors / warnings triggered with clang-10 and clang-11.
+>  - powerpc (defconfig) with clang-11
+>  - powerpc (defconfig) with clang-10
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp LLVM=1 ARCH=powerpc
+> CROSS_COMPILE=powerpc64le-linux-gnu- 'HOSTCC=sccache clang'
+> 'CC=sccache clang'
+> 
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/sigtramp.o: compiled for a little endian
+> system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/sigtramp.o
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/gettimeofday.o: compiled for a little
+> endian system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/gettimeofday.o
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/datapage.o: compiled for a little endian
+> system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/datapage.o
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/cacheflush.o: compiled for a little endian
+> system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/cacheflush.o
+> /usr/bin/powerpc64le-linux-gnu-ld: arch/powerpc/kernel/vdso32/note.o:
+> compiled for a little endian system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/note.o
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/getcpu.o: compiled for a little endian
+> system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/getcpu.o
+> /usr/bin/powerpc64le-linux-gnu-ld:
+> arch/powerpc/kernel/vdso32/vgettimeofday.o: compiled for a little
+> endian system and target is big endian
+> /usr/bin/powerpc64le-linux-gnu-ld: failed to merge target specific
+> data of file arch/powerpc/kernel/vdso32/vgettimeofday.o
+> clang: error: unable to execute command: Segmentation fault (core dumped)
+> clang: error: linker command failed due to signal (use -v to see invocation)
+> make[2]: *** [/builds/linux/arch/powerpc/kernel/vdso32/Makefile:51:
+> arch/powerpc/kernel/vdso32/vdso32.so.dbg] Error 254
+> make[2]: Target 'include/generated/vdso32-offsets.h' not remade
+> because of errors.
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> build link,
+> https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline/-/jobs/1110841371#L59
+> 
+
+This is a deficiency in clang that has been fixed in clang-12:
+
+https://github.com/llvm/llvm-project/commit/0a23fbd28c7509f2f980946091e6055bf27164d2
+
+but tuxmake can resolve it by using a more appropriate CROSS_COMPILE
+variable for powerpc64 big-endian (powerpc64-linux-gnu-):
+
+https://gitlab.com/Linaro/tuxmake/-/issues/108
+
+Cheers,
+Nathan
