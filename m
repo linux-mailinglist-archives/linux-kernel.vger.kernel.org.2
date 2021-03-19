@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724E6341EA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB7F341EAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhCSNop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        id S229821AbhCSNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCSNob (ORCPT
+        with ESMTP id S230090AbhCSNp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:44:31 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4DCC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:44:31 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so5270419wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:44:31 -0700 (PDT)
+        Fri, 19 Mar 2021 09:45:27 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA7FC06174A;
+        Fri, 19 Mar 2021 06:45:23 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id o10so10074357lfb.9;
+        Fri, 19 Mar 2021 06:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=SrPXMdsT8fh/wUuXWu6/XdTRaAoBqvPSi7osz8TT9SU=;
-        b=U6R1VBR7eogovqe6fbsKMg5rSPuVNlwRpsQj7zgx5iIkAphJM281y9IMs1+1oloRuU
-         IXjNVsdVkcYMH5Uun5Tb6+DKDB2ll9TYNJLw/eHctGukmi5uDfwSVInQd3PgXwYe4Bm8
-         lhnpZqaKhEL1Oti1UB3WgXu/ALz2kAcvM8mUENcaeWbbcBX64Q+X8kLVaT73LZ/d0KAy
-         TJ/kIbZvOxysalhkY703OtBRqgLboDTt0gbUQL9KfTUfz570+kqI3M4j5NthsgESxZ1D
-         nnCryXE7M0zSct8hpFrH6ZkSdaH9rsDGG63WNBQoHDokk9QPG85SqWvPb96BMXZ1zYat
-         2Vxg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CrdgYAIit68h21frWi2ZVer6TtigI0fqgyoc16zz0Io=;
+        b=tPYUzv/xKUBsLh1NGzoqXhfQNLyRmfQwj+tNEcLeIWzPjq8lyGlFyU2N6kNXfOWeNd
+         fsHjXQcSb3ZzbXGLkE33Ss+nH3TbSLhYlzooJ36/3ieWbrdfBH1W5NjW19wXZix4AqUp
+         2knS9YwX9CLH0TyETD/A/9OH+/YGC3I/Ii35TIATWMkAlSS0CNfKfK6CUiKiYWrFfTCh
+         Dx8PHQjZzq+HdawjImlYY6XXXC1anpHlb2SmhFWnX/uxnuLaTCoDBfWNZ0H2LdUXDFfd
+         km94tay1J/6VU08qGbnKILB752/apws1Sf+ZzmbjhKf6sZqGE14bmjyO2uKVjvM0dHi6
+         VqwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SrPXMdsT8fh/wUuXWu6/XdTRaAoBqvPSi7osz8TT9SU=;
-        b=jIJSAtReXh59JydtWuE74cFAhJpsvBeWP7k4rnu72Ote9Z4f5yumNEdcR8IB4wu0UE
-         vJH3wfTK0W4+wI3CDAhW9bxugQ7UrT1la16oi7yqjFdBjYefkoWbVRzu1AR9Qv4buPoA
-         hvXDtVP/A7sV/1hM34/eC/cQNGstIoj9LT3ezzIZHYs15u1nbdyEnhzQHnSgAr0hptK/
-         CDV4i3OZ3MWiqLN2I4B6tWw8XWvJEMJ4fE3HHFMgZb1GWO5y9A9ty2Y/XSfwtIYH4QDw
-         lr2njWPqOZFCNclYJ/fqar2MrOXoUHAe0bBvMn28tb9IHWuBio9yApW3HO06m1wflnS2
-         pRUw==
-X-Gm-Message-State: AOAM532kFjWxbagBGorjRXZ4K/ZR/zlVK/HBHbe77rmRodmwhv0o4ZHm
-        56CU1hwOkoyvMnAADrPItwJZFw==
-X-Google-Smtp-Source: ABdhPJw0eghg2ZDKjaor7MbxmSXtlraqPUEAPJEv3PG9iEAsL4DxgNxTwpwnFkISye/A6z/DYyY8FQ==
-X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr3772915wmq.71.1616161470266;
-        Fri, 19 Mar 2021 06:44:30 -0700 (PDT)
-Received: from localhost.localdomain ([163.172.76.58])
-        by smtp.googlemail.com with ESMTPSA id h8sm7829080wrt.94.2021.03.19.06.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 06:44:29 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     alexandre.torgue@st.com, davem@davemloft.net,
-        jernej.skrabec@siol.net, joabreu@synopsys.com,
-        marek.belisko@gmail.com, mripard@kernel.org,
-        peppe.cavallaro@st.com, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
-Date:   Fri, 19 Mar 2021 13:44:22 +0000
-Message-Id: <20210319134422.9351-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CrdgYAIit68h21frWi2ZVer6TtigI0fqgyoc16zz0Io=;
+        b=ntxYJpjoAvzgKwk91stuP1iRybeNBW6NCZNZcuA59ac2ipjhHFIfd12xEg6NIk9oAN
+         RS05OviPB/1iV3EpGykdf3hBmClernlu/My2//G+qhbXU1cURiIn2SYt4vSq/IqYRvDz
+         sqaC94b2+hhSIaOVyRusMZXo7TRCjB5nLF5JjPZTt/YbDbuz9J7onJMtNSJnmZjtMXwV
+         ft3v2NZvcSqL21ZzGqzpqrBkoIqz4yABvlJtOUZ/HOgF3utuVWUNWFnZoNZ36ut3HdCv
+         Ii+4YjdjLKBs6DvrBKuHJeaNg/cfyBYMMRxgMPpffT/Yu4Iii3dKFaIYdcqDYjaps70m
+         1hkQ==
+X-Gm-Message-State: AOAM531Wx7roO+M9DZFno6/RYk2Kmw/S21T82MDFzz5Lim6SkLPR2CA7
+        3s2gMmjgKYpik1+0HEcr9albZ59uidk=
+X-Google-Smtp-Source: ABdhPJxfx9OTueeAe3Wr0OSGXEVnA61+I9fHIrcN6kyLmBD7u4yIyDFTFFqfxSUAO6+5AQ5NI81poA==
+X-Received: by 2002:ac2:4c8c:: with SMTP id d12mr894834lfl.1.1616161522150;
+        Fri, 19 Mar 2021 06:45:22 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id h17sm631164lfc.289.2021.03.19.06.45.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 06:45:21 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20210309062333.3216138-1-minchan@kernel.org>
+ <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
+ <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com> <YFSqYUfaxMajR/aq@kroah.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
+Date:   Fri, 19 Mar 2021 16:45:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <YFSqYUfaxMajR/aq@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTU cannot be changed on dwmac-sun8i. (ip link set eth0 mtu xxx returning EINVAL)
-This is due to tx_fifo_size being 0, since this value is used to compute valid
-MTU range.
-Like dwmac-sunxi (with commit 806fd188ce2a ("net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes"))
-dwmac-sun8i need to have tx and rx fifo sizes set.
-I have used values from datasheets.
-After this patch, setting a non-default MTU (like 1000) value works and network is still useable.
+19.03.2021 16:42, Greg Kroah-Hartman пишет:
+> On Fri, Mar 19, 2021 at 04:39:41PM +0300, Dmitry Osipenko wrote:
+>> 19.03.2021 15:44, Dmitry Osipenko пишет:
+>> ...
+>>>>  #include <linux/debugfs.h>
+>>>> +#include <linux/kobject.h>
+>>>> +
+>>>> +struct cma_stat {
+>>>> +	spinlock_t lock;
+>>>> +	/* the number of CMA page successful allocations */
+>>>> +	unsigned long nr_pages_succeeded;
+>>>> +	/* the number of CMA page allocation failures */
+>>>> +	unsigned long nr_pages_failed;
+>>>> +	struct kobject kobj;
+>>>> +};
+>>>>  
+>>>>  struct cma {
+>>>>  	unsigned long   base_pfn;
+>>>> @@ -16,6 +26,9 @@ struct cma {
+>>>>  	struct debugfs_u32_array dfs_bitmap;
+>>>>  #endif
+>>>>  	char name[CMA_MAX_NAME];
+>>>> +#ifdef CONFIG_CMA_SYSFS
+>>>> +	struct cma_stat	*stat;
+>>>> +#endif
+>>
+>> What is the point of allocating stat dynamically?
+> 
+> Because static kobjects make me cry.
+> 
 
-Tested-on: sun8i-h3-orangepi-pc
-Tested-on: sun8i-r40-bananapi-m2-ultra
-Tested-on: sun50i-a64-bananapi-m64
-Tested-on: sun50i-h5-nanopi-neo-plus2
-Tested-on: sun50i-h6-pine-h64
-Fixes: 9f93ac8d408 ("net-next: stmmac: Add dwmac-sun8i")
-Reported-by: Belisko Marek <marek.belisko@gmail.com>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index 6b75cf2603ff..e62efd166ec8 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -1214,6 +1214,8 @@ static int sun8i_dwmac_probe(struct platform_device *pdev)
- 	plat_dat->init = sun8i_dwmac_init;
- 	plat_dat->exit = sun8i_dwmac_exit;
- 	plat_dat->setup = sun8i_dwmac_setup;
-+	plat_dat->tx_fifo_size = 4096;
-+	plat_dat->rx_fifo_size = 16384;
- 
- 	ret = sun8i_dwmac_set_syscon(&pdev->dev, plat_dat);
- 	if (ret)
--- 
-2.26.2
-
+I meant that it's already a part of struct cma, it looks like the stat
+could be embedded into struct cma and then kobj could be initialized
+separately.
