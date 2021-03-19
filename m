@@ -2,152 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1974934231A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2B334230E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhCSRUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhCSRUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:20:19 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B4DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:20:18 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id y1so12873603ljm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BkRxICNeg5DYscXEGEcqd4ui8J4BudI3HPDlVjLS4/s=;
-        b=guKEZmHG3VKWVbRkUkqS326KvwlSHdPvZzHa/1CkYDmr54RI3pXNEHVpEPJmaS3N3X
-         /EqoPZGZMmv2p3unSm6MlDxz3VPHiDwoeGwoZtelQwb4N/q+by09AHLgY2aoyEtt8Far
-         xcfp/7lRvIBDpORnuuQP/pZlLNDFxgj3WXCjI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BkRxICNeg5DYscXEGEcqd4ui8J4BudI3HPDlVjLS4/s=;
-        b=ALLbYRePzErNFmTNPXgjyFWGVfDTj1pXBOWTvyhoBaCccpAN5pFV8URn0phYbvL7e4
-         uLEZnansA2oCqiWR2Qmj3PvZVyO12z5R1KY1ai6t9us/UVQQ0EPsB7jDUJusWK2u3RzZ
-         eB3/rTuvfaOyARIeoyeklbavYBd3uCXlzhCEUYCQL1vmBE9d9+eHGqy0nvXnZJuxhINq
-         3o/WuW7PcGZ0+AlFLRxi0o9WOoJ0Lbf5Fnvnr27Kwxt32q8LWTY4jwD4rI7WP1cUy7Dv
-         Q2elLFnKThGMlsdYn5cASsBkUy3VYfJATCx8WorNrikgjYdC15AejZjzpykwiELghr5N
-         g0CQ==
-X-Gm-Message-State: AOAM5310ajbkGBzrwOAaxtBAFrv6pmT+F3LZhvNJWQQFymlkjZkC/jQP
-        P8/YtbhcgQ1HTNanFzWy8C91rvy20Lf2Vg==
-X-Google-Smtp-Source: ABdhPJybpQI8Ab731z6JvmYRHXmFP9oYK9Et54UFGxfsgftEog5/XbE/ASvEMOeFIPIrELM3XiOKMA==
-X-Received: by 2002:a2e:85d5:: with SMTP id h21mr1586750ljj.20.1616174416850;
-        Fri, 19 Mar 2021 10:20:16 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id f1sm854207ljk.126.2021.03.19.10.20.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 10:20:16 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id u4so12905998ljo.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:20:16 -0700 (PDT)
-X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr1318559lfv.421.1616174058718;
- Fri, 19 Mar 2021 10:14:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319143452.25948-1-david@redhat.com>
-In-Reply-To: <20210319143452.25948-1-david@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 19 Mar 2021 10:14:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
-Message-ID: <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] drivers/char: remove /dev/kmem for good
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jonas Bonn <jonas@southpole.se>,
+        id S230286AbhCSRMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:12:23 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38527 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229949AbhCSRMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:12:16 -0400
+IronPort-SDR: 9lbRfEfRPo0h7/ZYqarS5g+CcioFJqU0tTE1IkyLFBSW78wkj68Mj4rAeUu5RrtGvpT5vTvaku
+ RU0VDMv6y0fA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177063678"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="177063678"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:12:15 -0700
+IronPort-SDR: VbTWhJ2rgwdhOkRbc708GpiO2lxB1YMjIYwzSJznSjuXtAGNCMoVpcDc9aFVtXjBLoQ+7KUwO2
+ 6tf1Q/GpaDgg==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="375012290"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:12:15 -0700
+Date:   Fri, 19 Mar 2021 10:14:39 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kairui Song <kasong@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Rich Felker <dalias@libc.org>,
-        Robert Richter <rric@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Theodore Dubois <tblodt@icloud.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        William Cohen <wcohen@redhat.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210319101439.19f35fd5@jacob-builder>
+In-Reply-To: <YFR10eeDVf5ZHV5l@myrica>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210318172234.3e8c34f7@jacob-builder>
+        <YFR10eeDVf5ZHV5l@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 7:35 AM David Hildenbrand <david@redhat.com> wrote:
->
-> Let's start a discussion if /dev/kmem is worth keeping around and
-> fixing/maintaining or if we should just remove it now for good.
+Hi Jean-Philippe,
 
-I'll happily do this for the next merge window, but would really want
-distros to confirm that they don't enable it.
+On Fri, 19 Mar 2021 10:58:41 +0100, Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
 
-I can confirm that it's certainly not enabled on any of the machines I
-have, but..
+> > Slightly off the title. As we are moving to use cgroup to limit PASID
+> > allocations, it would be much simpler if we enforce on the current
+> > task.  
+> 
+> Yes I think we should do that. Is there a problem with charging the
+> process that does the PASID allocation even if the PASID indexes some
+> other mm?
+Besides complexity, my second concern is that we are sharing the misc
+cgroup controller with other resources that do not have such behavior.
 
-             Linus
+Cgroup v2 also has unified hierarchy which also requires coherent behavior
+among controllers.
+
+Thanks,
+
+Jacob
