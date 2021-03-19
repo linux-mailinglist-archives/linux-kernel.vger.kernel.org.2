@@ -2,132 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F3534121E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556D7341231
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhCSBag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:30:36 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13197 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhCSBaX (ORCPT
+        id S230018AbhCSBiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhCSBh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:30:23 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1mVK0PCrzmYdp;
-        Fri, 19 Mar 2021 09:27:53 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 09:30:10 +0800
-Subject: Re: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210129155730.3a1d49c5@omen.home.shazbot.org>
- <MWHPR11MB188684B42632FD0B9B5CA1C08CB69@MWHPR11MB1886.namprd11.prod.outlook.com>
- <47bf7612-4fb0-c0bb-fa19-24c4e3d01d3f@huawei.com>
- <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
- <4f904b23-e434-d42b-15a9-a410f3b4edb9@huawei.com>
- <MWHPR11MB188656845973A662A7E96BDA8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <c152f419-acc4-ee33-dab1-ff0f9baf2f24@huawei.com>
- <a535a91a-3af7-b43d-8399-01255a070f2b@linux.intel.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <4327b3ac-858d-30d0-9fe4-bd4ccc0fbd40@huawei.com>
-Date:   Fri, 19 Mar 2021 09:30:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 18 Mar 2021 21:37:57 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C95EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:37:57 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 546AA4FD;
+        Fri, 19 Mar 2021 02:37:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616117875;
+        bh=Thu4D/gcRRsbB+L0SIeYzvGUWd62xfEsqC7314uIkow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hQUqiLdN1WXbE1yq6Vp1mvoIrlhXYKoCIGLGbT7XObzRG5LsNq304MvDnPVD3Xn6I
+         AAMRoAFJzGMdnI8fvUhvNTsmOg/yjCccqQ+Gb656QQjGJr2KbOa6Jvx1pTUNQZAAUz
+         xjG5Z3JfybboQiyx+coFV99MOU/ZFE+rdGu+XsV4=
+Date:   Fri, 19 Mar 2021 03:37:17 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        git@xilinx.com
+Subject: Re: [PATCH v2] phy: zynqmp: Handle the clock enable/disable properly
+Message-ID: <YFQATabI/3V/aTfL@pendragon.ideasonboard.com>
+References: <1615288664-45034-1-git-send-email-manish.narani@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <a535a91a-3af7-b43d-8399-01255a070f2b@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1615288664-45034-1-git-send-email-manish.narani@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolu,
+Hi Manish,
 
-On 2021/3/19 8:33, Lu Baolu wrote:
-> On 3/18/21 7:53 PM, Shenming Lu wrote:
->> On 2021/3/18 17:07, Tian, Kevin wrote:
->>>> From: Shenming Lu <lushenming@huawei.com>
->>>> Sent: Thursday, March 18, 2021 3:53 PM
->>>>
->>>> On 2021/2/4 14:52, Tian, Kevin wrote:>>> In reality, many
->>>>>>> devices allow I/O faulting only in selective contexts. However, there
->>>>>>> is no standard way (e.g. PCISIG) for the device to report whether
->>>>>>> arbitrary I/O fault is allowed. Then we may have to maintain device
->>>>>>> specific knowledge in software, e.g. in an opt-in table to list devices
->>>>>>> which allows arbitrary faults. For devices which only support selective
->>>>>>> faulting, a mediator (either through vendor extensions on vfio-pci-core
->>>>>>> or a mdev wrapper) might be necessary to help lock down non-faultable
->>>>>>> mappings and then enable faulting on the rest mappings.
->>>>>>
->>>>>> For devices which only support selective faulting, they could tell it to the
->>>>>> IOMMU driver and let it filter out non-faultable faults? Do I get it wrong?
->>>>>
->>>>> Not exactly to IOMMU driver. There is already a vfio_pin_pages() for
->>>>> selectively page-pinning. The matter is that 'they' imply some device
->>>>> specific logic to decide which pages must be pinned and such knowledge
->>>>> is outside of VFIO.
->>>>>
->>>>>  From enabling p.o.v we could possibly do it in phased approach. First
->>>>> handles devices which tolerate arbitrary DMA faults, and then extends
->>>>> to devices with selective-faulting. The former is simpler, but with one
->>>>> main open whether we want to maintain such device IDs in a static
->>>>> table in VFIO or rely on some hints from other components (e.g. PF
->>>>> driver in VF assignment case). Let's see how Alex thinks about it.
->>>>
->>>> Hi Kevin,
->>>>
->>>> You mentioned selective-faulting some time ago. I still have some doubt
->>>> about it:
->>>> There is already a vfio_pin_pages() which is used for limiting the IOMMU
->>>> group dirty scope to pinned pages, could it also be used for indicating
->>>> the faultable scope is limited to the pinned pages and the rest mappings
->>>> is non-faultable that should be pinned and mapped immediately? But it
->>>> seems to be a little weird and not exactly to what you meant... I will
->>>> be grateful if you can help to explain further. :-)
->>>>
->>>
->>> The opposite, i.e. the vendor driver uses vfio_pin_pages to lock down
->>> pages that are not faultable (based on its specific knowledge) and then
->>> the rest memory becomes faultable.
->>
->> Ahh...
->> Thus, from the perspective of VFIO IOMMU, if IOPF enabled for such device,
->> only the page faults within the pinned range are valid in the registered
->> iommu fault handler...
-> 
-> Isn't it opposite? The pinned pages will never generate any page faults.
-> I might miss some contexts here.
-It seems that vfio_pin_pages() just pin some pages and record the pinned scope to pfn_list of vfio_dma.
-No mapping is established, so we still has page faults.
+Thank you for the patch.
 
-IIUC, vfio_pin_pages() is used to
-1. pin pages for non-iommu backed devices.
-2. mark dirty scope for non-iommu backed devices and iommu backed devices.
+On Tue, Mar 09, 2021 at 04:47:44PM +0530, Manish Narani wrote:
+> The current driver is not handling the clock enable/disable operations
+> properly. The clocks need to be handled correctly by enabling or
+> disabling at appropriate places. This patch adds code to handle the
+> same.
+> 
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> ---
+>  drivers/phy/xilinx/phy-zynqmp.c | 57 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 50 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
+> index 2b65f84..37fcecf 100644
+> --- a/drivers/phy/xilinx/phy-zynqmp.c
+> +++ b/drivers/phy/xilinx/phy-zynqmp.c
+> @@ -219,6 +219,7 @@ struct xpsgtr_dev {
+>  	struct mutex gtr_mutex; /* mutex for locking */
+>  	struct xpsgtr_phy phys[NUM_LANES];
+>  	const struct xpsgtr_ssc *refclk_sscs[NUM_LANES];
+> +	struct clk *clk[NUM_LANES];
+>  	bool tx_term_fix;
+>  	unsigned int saved_icm_cfg0;
+>  	unsigned int saved_icm_cfg1;
+> @@ -818,11 +819,15 @@ static struct phy *xpsgtr_xlate(struct device *dev,
+>  static int __maybe_unused xpsgtr_suspend(struct device *dev)
+>  {
+>  	struct xpsgtr_dev *gtr_dev = dev_get_drvdata(dev);
+> +	unsigned int i;
+>  
+>  	/* Save the snapshot ICM_CFG registers. */
+>  	gtr_dev->saved_icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
+>  	gtr_dev->saved_icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
+>  
+> +	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
+> +		clk_disable_unprepare(gtr_dev->clk[i]);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -832,6 +837,13 @@ static int __maybe_unused xpsgtr_resume(struct device *dev)
+>  	unsigned int icm_cfg0, icm_cfg1;
+>  	unsigned int i;
+>  	bool skip_phy_init;
+> +	int err;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++) {
+> +		err = clk_prepare_enable(gtr_dev->clk[i]);
+> +		if (err)
+> +			goto err_clk_put;
+> +	}
+>  
+>  	icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
+>  	icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
+> @@ -852,6 +864,12 @@ static int __maybe_unused xpsgtr_resume(struct device *dev)
+>  		gtr_dev->phys[i].skip_phy_init = skip_phy_init;
+>  
+>  	return 0;
+> +
+> +err_clk_put:
+> +	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
+> +		clk_disable_unprepare(gtr_dev->clk[i]);
 
-Thanks,
-Keqian
+You should only disable the clocks that have been successfully enabled.
+Something like this should do:
 
-> 
->> I have another question here, for the IOMMU backed devices, they are already
->> all pinned and mapped when attaching, is there a need to call vfio_pin_pages()
->> to lock down pages for them? Did I miss something?...
-> 
-> Best regards,
-> baolu
-> .
-> 
+	while (i-- > 0)
+		clk_disable_unprepare(gtr_dev->clk[i]);
+
+> +
+> +	return err;
+>  }
+>  
+>  static const struct dev_pm_ops xpsgtr_pm_ops = {
+> @@ -865,6 +883,7 @@ static const struct dev_pm_ops xpsgtr_pm_ops = {
+>  static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
+>  {
+>  	unsigned int refclk;
+> +	int ret;
+>  
+>  	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->refclk_sscs); ++refclk) {
+>  		unsigned long rate;
+> @@ -874,14 +893,22 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
+>  
+>  		snprintf(name, sizeof(name), "ref%u", refclk);
+>  		clk = devm_clk_get_optional(gtr_dev->dev, name);
+> -		if (IS_ERR(clk))
+> -			return dev_err_probe(gtr_dev->dev, PTR_ERR(clk),
+> -					     "Failed to get reference clock %u\n",
+> -					     refclk);
+> +		if (IS_ERR(clk)) {
+> +			ret = dev_err_probe(gtr_dev->dev, PTR_ERR(clk),
+> +					    "Failed to get reference clock %u\n",
+> +					    refclk);
+> +			goto err_clk_put;
+> +		}
+>  
+>  		if (!clk)
+>  			continue;
+>  
+> +		gtr_dev->clk[refclk] = clk;
+> +
+> +		ret = clk_prepare_enable(gtr_dev->clk[refclk]);
+> +		if (ret)
+> +			goto err_clk_put;
+> +
+>  		/*
+>  		 * Get the spread spectrum (SSC) settings for the reference
+>  		 * clock rate.
+> @@ -899,11 +926,18 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
+>  			dev_err(gtr_dev->dev,
+>  				"Invalid rate %lu for reference clock %u\n",
+>  				rate, refclk);
+> -			return -EINVAL;
+> +			ret = -EINVAL;
+> +			goto err_clk_put;
+>  		}
+>  	}
+>  
+>  	return 0;
+> +
+> +err_clk_put:
+> +	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->clk); refclk++)
+> +		clk_disable_unprepare(gtr_dev->clk[refclk]);
+
+Here too you will disable a clock that hasn't been enabled if
+clk_prepare_enable() failed. Clocks that haven't been retrieved at all
+are fine, as clk_disable_unprepare() can be safely called with a NULL
+pointer. This could be fixed by replacing the code above with
+
+		ret = clk_prepare_enable(clk);
+		if (ret)
+			goto err_clk_put;
+
+		gtr_dev->clk[refclk] = clk;
+
+> +
+> +	return ret;
+>  }
+>  
+>  static int xpsgtr_probe(struct platform_device *pdev)
+> @@ -912,6 +946,7 @@ static int xpsgtr_probe(struct platform_device *pdev)
+>  	struct xpsgtr_dev *gtr_dev;
+>  	struct phy_provider *provider;
+>  	unsigned int port;
+> +	unsigned int i;
+>  	int ret;
+>  
+>  	gtr_dev = devm_kzalloc(&pdev->dev, sizeof(*gtr_dev), GFP_KERNEL);
+> @@ -951,7 +986,8 @@ static int xpsgtr_probe(struct platform_device *pdev)
+>  		phy = devm_phy_create(&pdev->dev, np, &xpsgtr_phyops);
+>  		if (IS_ERR(phy)) {
+>  			dev_err(&pdev->dev, "failed to create PHY\n");
+> -			return PTR_ERR(phy);
+> +			ret = PTR_ERR(phy);
+> +			goto err_clk_put;
+>  		}
+>  
+>  		gtr_phy->phy = phy;
+> @@ -962,9 +998,16 @@ static int xpsgtr_probe(struct platform_device *pdev)
+>  	provider = devm_of_phy_provider_register(&pdev->dev, xpsgtr_xlate);
+>  	if (IS_ERR(provider)) {
+>  		dev_err(&pdev->dev, "registering provider failed\n");
+> -		return PTR_ERR(provider);
+> +		ret = PTR_ERR(provider);
+> +		goto err_clk_put;
+>  	}
+>  	return 0;
+> +
+> +err_clk_put:
+> +	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
+> +		clk_disable_unprepare(gtr_dev->clk[i]);
+> +
+> +	return ret;
+>  }
+>  
+>  static const struct of_device_id xpsgtr_of_match[] = {
+
+-- 
+Regards,
+
+Laurent Pinchart
