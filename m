@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4A2341521
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91120341524
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhCSFyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S233968AbhCSFyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhCSFxv (ORCPT
+        with ESMTP id S233916AbhCSFxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:53:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E397C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:51 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4304819pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:51 -0700 (PDT)
+        Fri, 19 Mar 2021 01:53:55 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0456EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id b184so5122769pfa.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M8yI9pONKYY0sMtxSPqYhJCaoBpRMHpHxuKzPkbcKnw=;
-        b=a/Q+9zFOi/z88f5a29IjqDzLSR/ARlMu9Daw7AVTBSPe2vtRyniWR0+tbU1cc6Npnp
-         1YOrqlNzlf3ruak326Hvc3ywll+VpvFmMpqrxQ+/yCfMXaEirsJ9D8Ko2qBotoJFtIX2
-         sbyrDTRApMht6MyaMza4ebQVAtBaLfWoC3fp4=
+        bh=hUuLvnE4iNx9waeqgL5Xgn7vAWrbF4/6uYgvJNfJksg=;
+        b=UVOTQqJHmqbSvw07EbUCTFAVj5IMI31Xz8uAB6N6OxqUi9fvgpOSEhhVcnnyVWpW+s
+         5bo73igaDKOwnax+Vqrf1uP/AUeY23eXLoiJrxepJwIofAghqVltSB383yzb5807HEYF
+         yZh/wHRNZ4KzOdfB5knPeXK6yV93hxkQ9rxTw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M8yI9pONKYY0sMtxSPqYhJCaoBpRMHpHxuKzPkbcKnw=;
-        b=Pu81Zcmi11/2TxyBAQVWdEVpYbx3KVGheHYNQ/rouRgfm3aP7rGjmPO+OprUjez+GR
-         fU6OiaXeMsTu+Bbz2qnStpzPFgXV0pO8Ah4U+vu6GED9n/EhMkjOM2EYjuILYsHu2Pbf
-         ky2lep7sMLTnVzWCas2P77/nfz0n5ZC+1bVRiQdaJA0L4DXhzY54dx42XojLKThjx27w
-         j8621XRihraUj8vnDcV0mw8I1V/1jYMtl04dbG51Dw8PVkYSoGL6kFajUbln7rkkarwv
-         LLhBy/tAp7y7hwsIIsZw361TXBnf6pyvRBAk0OPxksth04I4CLKtxdyg1o2d50CJCbmb
-         +Uxg==
-X-Gm-Message-State: AOAM532V2D87H4wkZZctYvbNnmgjobI9IG3SwXPhPSJlN5SyyNjWlWj7
-        eRUYoXDic8uTPCnKIqfb7yJg9g==
-X-Google-Smtp-Source: ABdhPJxLbOpxIyVOyEuInGFY94ZDdn7+DAxWKQOvTw3ngM5mq7Jp8WsvaEaU1LEU5QGO/xyViA5FSQ==
-X-Received: by 2002:a17:90b:1987:: with SMTP id mv7mr7819501pjb.152.1616133231281;
-        Thu, 18 Mar 2021 22:53:51 -0700 (PDT)
+        bh=hUuLvnE4iNx9waeqgL5Xgn7vAWrbF4/6uYgvJNfJksg=;
+        b=q77shpqNWPorHSevG0cNgKSvvOa+shSvLPe5hF8ICvwdVLsHpOZnT3ZhqnLhh5/+lT
+         Rrkgn5zKckOYGeqj/2L2G7zm/k21RXSqDlQPEIbaTt9eoZcKYA9abByuNDIUtv2+HK8B
+         LUHuB+jbhTmnXsAJqOC7ViJH64cwpDuEpxN/wHS8ZxuCiNhkbDB8JtZWkEoocN/382gy
+         9J3O8AHINi6fDcYdQ9o4zPXLZb/CyPdjvxvSbmOjllSFmAmqg11vVAIqEwKZqrXOrvlw
+         2HKF4zUiyYnuveo6TOrxBvuTPgfovMqO6PtwURJ6c2SvG5I682PdiydvwAQEbdmEKETa
+         L2AQ==
+X-Gm-Message-State: AOAM53158aOpZ7UGIwaioNsYayLQ5qOtcqjz1sf9AS6BV7E9XmaBTZ5E
+        HpQ1I89i9g9iG8ajXOKds9+cuQ==
+X-Google-Smtp-Source: ABdhPJxVy4XVGCcz82gGDVFXdWhb4Y4yAGSiwmz+FlkVcTFDrFAkDmAg+DhTeTysBhsmD/fZmXSEfw==
+X-Received: by 2002:aa7:8dda:0:b029:1fa:19b3:7ed9 with SMTP id j26-20020aa78dda0000b02901fa19b37ed9mr7681554pfr.32.1616133234579;
+        Thu, 18 Mar 2021 22:53:54 -0700 (PDT)
 Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:6577:f83d:5865:dfac])
-        by smtp.gmail.com with ESMTPSA id o13sm4043704pgv.40.2021.03.18.22.53.48
+        by smtp.gmail.com with ESMTPSA id o13sm4043704pgv.40.2021.03.18.22.53.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 22:53:50 -0700 (PDT)
+        Thu, 18 Mar 2021 22:53:54 -0700 (PDT)
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Ricardo Ribalda <ribalda@chromium.org>
@@ -53,9 +53,9 @@ Cc:     Tomasz Figa <tfiga@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv3 1/6] media: v4l UAPI: add ROI selection targets
-Date:   Fri, 19 Mar 2021 14:53:37 +0900
-Message-Id: <20210319055342.127308-2-senozhatsky@chromium.org>
+Subject: [PATCHv3 2/6] media: v4l UAPI: document ROI selection targets
+Date:   Fri, 19 Mar 2021 14:53:38 +0900
+Message-Id: <20210319055342.127308-3-senozhatsky@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210319055342.127308-1-senozhatsky@chromium.org>
 References: <20210319055342.127308-1-senozhatsky@chromium.org>
@@ -65,35 +65,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UVC 1.5 requires Region Of Interest control to implement
-GET_CUR, GET_DEF, GET_MIN and GET_MAX requests. This patch
-adds new V4L2 selection API targets that will implement
-those ROI requests.
+Document V4L2 selection targets that will be used to ROI
+implementation.
 
 Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 ---
- include/uapi/linux/v4l2-common.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../media/v4l/selection-api-configuration.rst | 22 +++++++++++++++
+ .../media/v4l/selection-api-examples.rst      | 28 +++++++++++++++++++
+ .../media/v4l/v4l2-selection-targets.rst      | 24 ++++++++++++++++
+ 3 files changed, 74 insertions(+)
 
-diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-index 7d21c1634b4d..3651ebb8cb23 100644
---- a/include/uapi/linux/v4l2-common.h
-+++ b/include/uapi/linux/v4l2-common.h
-@@ -78,6 +78,14 @@
- #define V4L2_SEL_TGT_COMPOSE_BOUNDS	0x0102
- /* Current composing area plus all padding pixels */
- #define V4L2_SEL_TGT_COMPOSE_PADDED	0x0103
-+/* Current Region of Interest area */
-+#define V4L2_SEL_TGT_ROI		0x0200
-+/* Default Region of Interest area */
-+#define V4L2_SEL_TGT_ROI_DEFAULT	0x0201
-+/* Region of Interest minimum values */
-+#define V4L2_SEL_TGT_ROI_BOUNDS_MIN	0x0202
-+/* Region of Interest maximum values */
-+#define V4L2_SEL_TGT_ROI_BOUNDS_MAX	0x0203
+diff --git a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+index fee49bf1a1c0..b5fdd765e2db 100644
+--- a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
++++ b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+@@ -135,3 +135,25 @@ and the height of rectangles obtained using ``V4L2_SEL_TGT_CROP`` and
+ ``V4L2_SEL_TGT_COMPOSE`` targets. If these are not equal then the
+ scaling is applied. The application can compute the scaling ratios using
+ these values.
++
++Configuration of Region of Interest (ROI)
++=========================================
++
++The range of auto-controls values and of coordinates of the top left
++corner, width and height of areas that can be ROI is given by the
++``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
++targets. It is recommended for the driver developers to put the top/left
++corner at position ``(0,0)``.
++
++The top left corner, width and height of the Region of Interest area
++and auto-controls currently being employed by the device are given by
++the ``V4L2_SEL_TGT_ROI`` target. It uses the same coordinate system
++as ``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``.
++
++In order to change active ROI top left, width and height coordinates
++and ROI auto-controls use ``V4L2_SEL_TGT_ROI`` target.
++
++Each capture device has a default ROI rectangle and auto-controls
++value given by the ``V4L2_SEL_TGT_ROI_DEFAULT`` target. Drivers shall
++set the ROI rectangle to the default when the driver is first loaded,
++but not later.
+diff --git a/Documentation/userspace-api/media/v4l/selection-api-examples.rst b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
+index 5f8e8a1f59d7..ad2664888700 100644
+--- a/Documentation/userspace-api/media/v4l/selection-api-examples.rst
++++ b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
+@@ -82,3 +82,31 @@ Example: Querying for scaling factors
+ 	/* computing scaling factors */
+ 	hscale = (double)compose.r.width / crop.r.width;
+ 	vscale = (double)compose.r.height / crop.r.height;
++
++Setting Region Of Interest area to half of the default value
++
++Example: Simple ROI
++===========================
++
++.. code-block:: c
++
++	struct v4l2_selection roi = {
++	    .type = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++	    .target = V4L2_SEL_TGT_ROI_DEFAULT,
++	};
++	struct v4l2_rect r;
++
++	ret = ioctl(fd, VIDIOC_G_SELECTION, &roi);
++	if (ret)
++	    exit(-1);
++	/* setting smaller ROI rectangle */
++	r.width = roi.r.width / 2;
++	r.height = roi.r.height / 2;
++	r.left = roi.r.width / 4;
++	r.top = roi.r.height / 4;
++	roi.r = r;
++	roi.target = V4L2_SEL_TGT_ROI;
++	roi.flags = V4L2_SEL_FLAG_ROI_AUTO_EXPOSURE;
++	ret = ioctl(fd, VIDIOC_S_SELECTION, &roi);
++	if (ret)
++	    exit(-1);
+diff --git a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+index b46bae984f35..d1dc9c50eb05 100644
+--- a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
++++ b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+@@ -75,6 +75,30 @@ of the two interfaces they are used.
+ 	modified by hardware.
+       - Yes
+       - No
++    * - ``V4L2_SEL_TGT_ROI``
++      - 0x0200
++      - Current Region of Interest rectangle and auto-controls value.
++      - Yes
++      - No
++    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
++      - 0x0201
++      - Suggested Region of Interest rectangle and auto-controls value.
++      - Yes
++      - No
++    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MIN``
++      - 0x0202
++      - Minimum bounds of the Region of Interest rectangle and minimum
++	auto-controls value. All valid ROI rectangles and auto-controls
++	should be within minimum-maximum range.
++      - Yes
++      - No
++    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
++      - 0x0203
++      - Maximum bounds of the Region of Interest rectangle and maximum
++	auto-controls value. All valid ROI rectangles and auto-controls
++	should be within minimum-maximum range.
++      - Yes
++      - No
  
- /* Selection flags */
- #define V4L2_SEL_FLAG_GE		(1 << 0)
+ .. raw:: latex
+ 
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
