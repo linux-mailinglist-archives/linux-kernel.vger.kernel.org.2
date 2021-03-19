@@ -2,309 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6289E341CA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B97341CB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhCSMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60248 "EHLO mail.kernel.org"
+        id S230336AbhCSMWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:22:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231352AbhCSMVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CB6864F70;
-        Fri, 19 Mar 2021 12:21:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156481;
-        bh=r/bVGHenP7XBqQv+m6bF6cw2Ci3EIukOx+aKQItQ/7A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=omkAoBdpl5TxhgwfLfPPUyC++hEQD1YnfpVmrzGHtdUCzlsg2px50FQIXKj/MNU8w
-         osFr76iNr0aEuOUwLEj294dxdYIR/l+CzOwezfbJmSsQ6d2HQ6RvR+1xYW+39HrSQo
-         Qs3veh9A1AMVOkAZ3nBJ7foy6RViVTRdsdhcde68=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 5.11 31/31] crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
-Date:   Fri, 19 Mar 2021 13:19:25 +0100
-Message-Id: <20210319121748.211622571@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
-References: <20210319121747.203523570@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229954AbhCSMVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:21:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 973EA64F78;
+        Fri, 19 Mar 2021 12:21:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616156509;
+        bh=FTrIIc6U927CHQHSTFFu24LOI1k62Z24yFYNKhrFFkQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=df7qCg7DUsM7d+mywJhhnkvCeYfXepMuvvYxv/e/I8glxQdD1vJjj0kX3LNhStvw1
+         d5sfjkBVL4xnzqvAqStdk7EnquVecNOl+x1BajLb1rW4kABrlPMxWmXHPDkGjZ/zUs
+         Sd8e5K39WqRdMpDaFdU4vYN7kQU+PVTNq3UtpFtS3xEguURyTKkO+nLwG6TxRaLUiV
+         Qy2OYIAmBTGI2CcajoGLle5RWpEJNDXfMYmaQqXCdB+hpri7eo4hTDC1QJ+VnfeTuN
+         yykJNaqZKY6sFsQWNXkDJ/LywJf79bs+fEXg8ZFYpNYyyq+NTHmIm19c3JUIcGbJ7N
+         tUUgHh1aWm32g==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org
+Subject: [PATCH -tip v3 00/11] kprobes: Fix stacktrace with kretprobes on x86
+Date:   Fri, 19 Mar 2021 21:21:43 +0900
+Message-Id: <161615650355.306069.17260992641363840330.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+Hello,
 
-commit 86ad60a65f29dd862a11c22bb4b5be28d6c5cef1 upstream.
+Here is the 3rd version of the series to fix the stacktrace with kretprobe
+on x86.
 
-The XTS asm helper arrangement is a bit odd: the 8-way stride helper
-consists of back-to-back calls to the 4-way core transforms, which
-are called indirectly, based on a boolean that indicates whether we
-are performing encryption or decryption.
+The previous version is;
 
-Given how costly indirect calls are on x86, let's switch to direct
-calls, and given how the 8-way stride doesn't really add anything
-substantial, use a 4-way stride instead, and make the asm core
-routine deal with any multiple of 4 blocks. Since 512 byte sectors
-or 4 KB blocks are the typical quantities XTS operates on, increase
-the stride exported to the glue helper to 512 bytes as well.
+https://lore.kernel.org/bpf/161553130371.1038734.7661319550287837734.stgit@devnote2/
 
-As a result, the number of indirect calls is reduced from 3 per 64 bytes
-of in/output to 1 per 512 bytes of in/output, which produces a 65% speedup
-when operating on 1 KB blocks (measured on a Intel(R) Core(TM) i7-8650U CPU)
+Instead of solving generic stacktrace, this version is focusing on x86
+stack unwinders. Anyway this introduces the generic APIs for the solution,
+other architectures can fix their unwinder with that.
 
-Fixes: 9697fa39efd3f ("x86/retpoline/crypto: Convert crypto assembler indirect jumps")
-Tested-by: Eric Biggers <ebiggers@google.com> # x86_64
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In this version, generic stacktrace fixups in [4/11] is dropped. Instead,
+[4/11] is just providing kretprobe_find_ret_addr(). And previous ORC
+unwinder fix patch is splitted into [9/11] and [10/11].
+[9/11] fixes x86 kretprobe trampoline so that it pushes an additional
+kretprobe_trampoline at the bottom of stackframe as a fake return address
+according to Josh's suggestion. And [10/11] fixes all unwinders in x86
+(guess, frame, and ORC). 
+Finally, [11/11] is renewed to check the kretprobe_trampoline address
+correctly instead of removing all indicator logic, because except for
+the x86, it will see the kretprobe_trampoline in the stack trace until
+it is fixed on each architecture.
+
+With this series, unwinder can unwind stack correctly from ftrace as below;
+
+  # cd /sys/kernel/debug/tracing
+  # echo > trace
+  # echo r vfs_read >> kprobe_events
+  # echo r full_proxy_read >> kprobe_events
+  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+  # echo 1 > events/kprobes/enable
+  # echo 1 > options/sym-offset
+  # cat /sys/kernel/debug/kprobes/list
+ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+  # echo 0 > events/kprobes/enable
+  # cat trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <...>-135     [005] ...1     9.422114: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
+           <...>-135     [005] ...1     9.422158: <stack trace>
+ => kretprobe_trace_func+0x209/0x2f0
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xca/0x150
+ => trampoline_handler+0x44/0x70
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+ => 0
+
+This shows the double return probes (vfs_read and full_proxy_read) on the stack
+correctly unwinded. (vfs_read was called from ksys_read+0x5f and full_proxy_read
+was called from vfs_read+0xab)
+
+This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+the pt_regs passed to kretprobe user handler is correctly set the real return
+address. So user handlers can get it via instruction_pointer() API.
+
+You can also get this series from 
+ git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v3
+
+Thank you,
+
 ---
- arch/x86/crypto/aesni-intel_asm.S  |  115 ++++++++++++++++++++++---------------
- arch/x86/crypto/aesni-intel_glue.c |   25 ++++----
- 2 files changed, 84 insertions(+), 56 deletions(-)
 
---- a/arch/x86/crypto/aesni-intel_asm.S
-+++ b/arch/x86/crypto/aesni-intel_asm.S
-@@ -2715,25 +2715,18 @@ SYM_FUNC_END(aesni_ctr_enc)
- 	pxor CTR, IV;
- 
- /*
-- * void aesni_xts_crypt8(const struct crypto_aes_ctx *ctx, u8 *dst,
-- *			 const u8 *src, bool enc, le128 *iv)
-+ * void aesni_xts_encrypt(const struct crypto_aes_ctx *ctx, u8 *dst,
-+ *			  const u8 *src, unsigned int len, le128 *iv)
-  */
--SYM_FUNC_START(aesni_xts_crypt8)
-+SYM_FUNC_START(aesni_xts_encrypt)
- 	FRAME_BEGIN
--	testb %cl, %cl
--	movl $0, %ecx
--	movl $240, %r10d
--	leaq _aesni_enc4, %r11
--	leaq _aesni_dec4, %rax
--	cmovel %r10d, %ecx
--	cmoveq %rax, %r11
- 
- 	movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
- 	movups (IVP), IV
- 
- 	mov 480(KEYP), KLEN
--	addq %rcx, KEYP
- 
-+.Lxts_enc_loop4:
- 	movdqa IV, STATE1
- 	movdqu 0x00(INP), INC
- 	pxor INC, STATE1
-@@ -2757,71 +2750,103 @@ SYM_FUNC_START(aesni_xts_crypt8)
- 	pxor INC, STATE4
- 	movdqu IV, 0x30(OUTP)
- 
--	CALL_NOSPEC r11
-+	call _aesni_enc4
- 
- 	movdqu 0x00(OUTP), INC
- 	pxor INC, STATE1
- 	movdqu STATE1, 0x00(OUTP)
- 
--	_aesni_gf128mul_x_ble()
--	movdqa IV, STATE1
--	movdqu 0x40(INP), INC
--	pxor INC, STATE1
--	movdqu IV, 0x40(OUTP)
--
- 	movdqu 0x10(OUTP), INC
- 	pxor INC, STATE2
- 	movdqu STATE2, 0x10(OUTP)
- 
--	_aesni_gf128mul_x_ble()
--	movdqa IV, STATE2
--	movdqu 0x50(INP), INC
--	pxor INC, STATE2
--	movdqu IV, 0x50(OUTP)
--
- 	movdqu 0x20(OUTP), INC
- 	pxor INC, STATE3
- 	movdqu STATE3, 0x20(OUTP)
- 
--	_aesni_gf128mul_x_ble()
--	movdqa IV, STATE3
--	movdqu 0x60(INP), INC
--	pxor INC, STATE3
--	movdqu IV, 0x60(OUTP)
--
- 	movdqu 0x30(OUTP), INC
- 	pxor INC, STATE4
- 	movdqu STATE4, 0x30(OUTP)
- 
- 	_aesni_gf128mul_x_ble()
--	movdqa IV, STATE4
--	movdqu 0x70(INP), INC
--	pxor INC, STATE4
--	movdqu IV, 0x70(OUTP)
- 
--	_aesni_gf128mul_x_ble()
-+	add $64, INP
-+	add $64, OUTP
-+	sub $64, LEN
-+	ja .Lxts_enc_loop4
-+
- 	movups IV, (IVP)
- 
--	CALL_NOSPEC r11
-+	FRAME_END
-+	ret
-+SYM_FUNC_END(aesni_xts_encrypt)
-+
-+/*
-+ * void aesni_xts_decrypt(const struct crypto_aes_ctx *ctx, u8 *dst,
-+ *			  const u8 *src, unsigned int len, le128 *iv)
-+ */
-+SYM_FUNC_START(aesni_xts_decrypt)
-+	FRAME_BEGIN
-+
-+	movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
-+	movups (IVP), IV
-+
-+	mov 480(KEYP), KLEN
-+	add $240, KEYP
-+
-+.Lxts_dec_loop4:
-+	movdqa IV, STATE1
-+	movdqu 0x00(INP), INC
-+	pxor INC, STATE1
-+	movdqu IV, 0x00(OUTP)
-+
-+	_aesni_gf128mul_x_ble()
-+	movdqa IV, STATE2
-+	movdqu 0x10(INP), INC
-+	pxor INC, STATE2
-+	movdqu IV, 0x10(OUTP)
-+
-+	_aesni_gf128mul_x_ble()
-+	movdqa IV, STATE3
-+	movdqu 0x20(INP), INC
-+	pxor INC, STATE3
-+	movdqu IV, 0x20(OUTP)
-+
-+	_aesni_gf128mul_x_ble()
-+	movdqa IV, STATE4
-+	movdqu 0x30(INP), INC
-+	pxor INC, STATE4
-+	movdqu IV, 0x30(OUTP)
-+
-+	call _aesni_dec4
- 
--	movdqu 0x40(OUTP), INC
-+	movdqu 0x00(OUTP), INC
- 	pxor INC, STATE1
--	movdqu STATE1, 0x40(OUTP)
-+	movdqu STATE1, 0x00(OUTP)
- 
--	movdqu 0x50(OUTP), INC
-+	movdqu 0x10(OUTP), INC
- 	pxor INC, STATE2
--	movdqu STATE2, 0x50(OUTP)
-+	movdqu STATE2, 0x10(OUTP)
- 
--	movdqu 0x60(OUTP), INC
-+	movdqu 0x20(OUTP), INC
- 	pxor INC, STATE3
--	movdqu STATE3, 0x60(OUTP)
-+	movdqu STATE3, 0x20(OUTP)
- 
--	movdqu 0x70(OUTP), INC
-+	movdqu 0x30(OUTP), INC
- 	pxor INC, STATE4
--	movdqu STATE4, 0x70(OUTP)
-+	movdqu STATE4, 0x30(OUTP)
-+
-+	_aesni_gf128mul_x_ble()
-+
-+	add $64, INP
-+	add $64, OUTP
-+	sub $64, LEN
-+	ja .Lxts_dec_loop4
-+
-+	movups IV, (IVP)
- 
- 	FRAME_END
- 	ret
--SYM_FUNC_END(aesni_xts_crypt8)
-+SYM_FUNC_END(aesni_xts_decrypt)
- 
- #endif
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -97,6 +97,12 @@ asmlinkage void aesni_cbc_dec(struct cry
- #define AVX_GEN2_OPTSIZE 640
- #define AVX_GEN4_OPTSIZE 4096
- 
-+asmlinkage void aesni_xts_encrypt(const struct crypto_aes_ctx *ctx, u8 *out,
-+				  const u8 *in, unsigned int len, u8 *iv);
-+
-+asmlinkage void aesni_xts_decrypt(const struct crypto_aes_ctx *ctx, u8 *out,
-+				  const u8 *in, unsigned int len, u8 *iv);
-+
- #ifdef CONFIG_X86_64
- 
- static void (*aesni_ctr_enc_tfm)(struct crypto_aes_ctx *ctx, u8 *out,
-@@ -104,9 +110,6 @@ static void (*aesni_ctr_enc_tfm)(struct
- asmlinkage void aesni_ctr_enc(struct crypto_aes_ctx *ctx, u8 *out,
- 			      const u8 *in, unsigned int len, u8 *iv);
- 
--asmlinkage void aesni_xts_crypt8(const struct crypto_aes_ctx *ctx, u8 *out,
--				 const u8 *in, bool enc, le128 *iv);
--
- /* asmlinkage void aesni_gcm_enc()
-  * void *ctx,  AES Key schedule. Starts on a 16 byte boundary.
-  * struct gcm_context_data.  May be uninitialized.
-@@ -547,14 +550,14 @@ static void aesni_xts_dec(const void *ct
- 	glue_xts_crypt_128bit_one(ctx, dst, src, iv, aesni_dec);
- }
- 
--static void aesni_xts_enc8(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
-+static void aesni_xts_enc32(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
- {
--	aesni_xts_crypt8(ctx, dst, src, true, iv);
-+	aesni_xts_encrypt(ctx, dst, src, 32 * AES_BLOCK_SIZE, (u8 *)iv);
- }
- 
--static void aesni_xts_dec8(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
-+static void aesni_xts_dec32(const void *ctx, u8 *dst, const u8 *src, le128 *iv)
- {
--	aesni_xts_crypt8(ctx, dst, src, false, iv);
-+	aesni_xts_decrypt(ctx, dst, src, 32 * AES_BLOCK_SIZE, (u8 *)iv);
- }
- 
- static const struct common_glue_ctx aesni_enc_xts = {
-@@ -562,8 +565,8 @@ static const struct common_glue_ctx aesn
- 	.fpu_blocks_limit = 1,
- 
- 	.funcs = { {
--		.num_blocks = 8,
--		.fn_u = { .xts = aesni_xts_enc8 }
-+		.num_blocks = 32,
-+		.fn_u = { .xts = aesni_xts_enc32 }
- 	}, {
- 		.num_blocks = 1,
- 		.fn_u = { .xts = aesni_xts_enc }
-@@ -575,8 +578,8 @@ static const struct common_glue_ctx aesn
- 	.fpu_blocks_limit = 1,
- 
- 	.funcs = { {
--		.num_blocks = 8,
--		.fn_u = { .xts = aesni_xts_dec8 }
-+		.num_blocks = 32,
-+		.fn_u = { .xts = aesni_xts_dec32 }
- 	}, {
- 		.num_blocks = 1,
- 		.fn_u = { .xts = aesni_xts_dec }
+Josh Poimboeuf (1):
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+
+Masami Hiramatsu (10):
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_function_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
 
 
+ arch/arc/include/asm/ptrace.h       |    5 ++
+ arch/arc/kernel/kprobes.c           |    2 -
+ arch/arm/probes/kprobes/core.c      |    3 -
+ arch/arm64/kernel/probes/kprobes.c  |    3 -
+ arch/csky/kernel/probes/kprobes.c   |    2 -
+ arch/ia64/include/asm/ptrace.h      |    8 ++-
+ arch/ia64/kernel/kprobes.c          |   15 ++---
+ arch/mips/kernel/kprobes.c          |    3 -
+ arch/parisc/kernel/kprobes.c        |    4 +
+ arch/powerpc/kernel/kprobes.c       |   13 -----
+ arch/riscv/kernel/probes/kprobes.c  |    2 -
+ arch/s390/kernel/kprobes.c          |    2 -
+ arch/sh/kernel/kprobes.c            |    2 -
+ arch/sparc/kernel/kprobes.c         |    2 -
+ arch/x86/include/asm/kprobes.h      |    1 
+ arch/x86/include/asm/unwind.h       |   17 ++++++
+ arch/x86/include/asm/unwind_hints.h |    5 ++
+ arch/x86/kernel/kprobes/core.c      |   30 ++++++++---
+ arch/x86/kernel/unwind_frame.c      |    4 +
+ arch/x86/kernel/unwind_guess.c      |    3 -
+ arch/x86/kernel/unwind_orc.c        |    6 +-
+ include/linux/kprobes.h             |   41 ++++++++++++--
+ kernel/kprobes.c                    |   99 ++++++++++++++++++++++++-----------
+ kernel/trace/trace_output.c         |   17 +-----
+ lib/error-inject.c                  |    3 +
+ 25 files changed, 187 insertions(+), 105 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
