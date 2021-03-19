@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E01342320
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1E4342334
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCSRXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:23:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhCSRXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:23:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5229D61974;
-        Fri, 19 Mar 2021 17:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616174614;
-        bh=hNX+LrkMfSM0iqEf9EP/S+4IJ0fzrmsW7oiN9xVuizM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DUAJvP/1PLsmXsxmv4ro/UftGandWMqTqawyUoeg7wqxec7qSCZV3rlQWrUr50Mm5
-         EtvuyhavZERplHcVJGiX4+dHAG7aw+/0VjCTD9Qdb9cpN4Q3iC4bHXykdl4mC4hcvy
-         SVewctdKDZiUeIxHyZSQ0fUbO77yIy/z1PTZOmOGof3Ok7zdWax/PdFhXwdBm5hJRX
-         n6n4kFx4TIOs/rEAbGePhTBL7bkyyWO8vmyea+c+KRAjQ0YgjXzNINLCHQ5msqCgO3
-         ZY9FktO66JKCpOcJ3IMBhPo3F1Dup8wKqd9rTs7Yss4Oyoc9BB7LNygltiSQbFxKn2
-         wO11hCfam1KTg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2538835239E5; Fri, 19 Mar 2021 10:23:34 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:23:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Marco Elver <elver@google.com>, Theodore Ts'o <tytso@mit.edu>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [syzbot] KCSAN: data-race in start_this_handle /
- start_this_handle
-Message-ID: <20210319172334.GN2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <0000000000008de88005bd40ac36@google.com>
- <20210311142503.GA31816@quack2.suse.cz>
- <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
- <YEoybjJpCQzNx15r@elver.google.com>
- <YEo3gYOU/VnmHCeV@mit.edu>
- <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
- <9dd08907-654c-bc38-fd9f-4324304152af@i-love.sakura.ne.jp>
+        id S230259AbhCSRY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhCSRYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:24:32 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A7CC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:24:32 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y200so6364648pfb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=y3HPFVQQ8OcLuuAynRQtdLIpt1ZlQVl3Ddi5JOdBy0s=;
+        b=ijJD/g9ZP1Yyl5fSfAFOPGlYJua+C5SS43o3CNhGgSeVXgnDiCqKQcxgzUtQ61O1a6
+         H1DD1WppKq7fzQ315rtxWK9GISWoLs2ph+RpDHyd71ihbwa/fgRSHBtsctslONiHt+uZ
+         IeDn5qP5KUNNOs2PjSdqbqFrlcXgz6WS/Gnp4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y3HPFVQQ8OcLuuAynRQtdLIpt1ZlQVl3Ddi5JOdBy0s=;
+        b=XccFD31d7jcdU8yVJAvyO0Aci5yQFWyXWn9gJrKtqpZ/a7VWXnQg2NaZIxuMe9c2ik
+         foLOFCC0CwGPyEAE66psmXvmYCkKp+E7s61fkPBkMldauiJuWlb2P8vo0yAfBDMFvTHs
+         K8Z/Mzc4n74lqdEkIRAHE4rRaD3k8HK6hnbKzToOz0K56fCfP+Xygg85eQAWAQUYxzNR
+         4VLNdjGGgY/tRV71JdToWkwsNtAY0sqN6dTLTK2DBSvtQuz4bhHnW8DOHblkuTxt1u0V
+         yJ8SDr5w9K8SssOKeuzlr4+oXoz1MfduoAE39/tJST9lAZLwgAlMFMEuEBRqEclbH9Yl
+         lklA==
+X-Gm-Message-State: AOAM533H7KY53qgD3TdrDCThhyGXv/wyNcNKMuKsWn7F1Ck+XQTLd2ff
+        TWht6i+E91e/CK36ZTr+EJ5vzw==
+X-Google-Smtp-Source: ABdhPJxof2S7NAyn0wwLIRht63qQ8yxLGkdNHCaohi74HUCi/0cELJkStbwnSdwtemmhQBNrzgFv4w==
+X-Received: by 2002:a65:4887:: with SMTP id n7mr12266351pgs.14.1616174671959;
+        Fri, 19 Mar 2021 10:24:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 2sm5994795pfi.116.2021.03.19.10.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 10:24:31 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 10:24:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: Re: [PATCH v30 05/12] LSM: Infrastructure management of the
+ superblock
+Message-ID: <202103191024.40EBCA2C@keescook>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-6-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <9dd08907-654c-bc38-fd9f-4324304152af@i-love.sakura.ne.jp>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316204252.427806-6-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 11:15:42PM +0900, Tetsuo Handa wrote:
-> On 2021/03/12 0:54, Marco Elver wrote:
-> >> But the more we could have the compiler automatically figure out
-> >> things without needing an explicit tag, it would seem to me that this
-> >> would be better, since manual tagging is going to be more error-prone.
-> > 
-> > What you're alluding to here would go much further than a data race
-> > detector ("data race" is still just defined by the memory model). The
-> > wish that there was a static analysis tool that would automatically
-> > understand the "concurrency semantics as intended by the developer" is
-> > something that'd be nice to have, but just doesn't seem realistic.
-> > Because how can a tool tell what the developer intended, without input
-> > from that developer?
+On Tue, Mar 16, 2021 at 09:42:45PM +0100, Mickaël Salaün wrote:
+> From: Casey Schaufler <casey@schaufler-ca.com>
 > 
-> Input from developers is very important for not only compilers and tools
-> but also allowing bug-explorers to understand what is happening.
-> ext4 currently has
+> Move management of the superblock->sb_security blob out of the
+> individual security modules and into the security infrastructure.
+> Instead of allocating the blobs from within the modules, the modules
+> tell the infrastructure how much space is required, and the space is
+> allocated there.
 > 
->   possible deadlock in start_this_handle (2)
->   https://syzkaller.appspot.com/bug?id=38c060d5757cbc13fdffd46e80557c645fbe79ba
-> 
-> which even maintainers cannot understand what is happening.
-> How can bug-explorers know implicit logic which maintainers believe safe and correct?
-> It is possible that some oversight in implicit logic is the cause of
-> "possible deadlock in start_this_handle (2)".
-> Making implicit assumptions clear helps understanding.
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: John Johansen <john.johansen@canonical.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 
-Just to be clear, the above diagnostic is from lockdep rather than KCSAN.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-According to the sample crash result, different code paths acquire
-jdb2_handle and the __fs_reclaim_map in different orders.  It looks
-to me that __fs_reclaim_map isn't really a lock, but rather a mode
-indicator.  If so, lockdep should set it up accordingly, perhaps
-in a manner similar to rcu_lock_map.
-
-> Will "KCSAN: data-race in start_this_handle / start_this_handle" be addressed by marking?
-> syzbot is already waiting for
-> "KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata" at
-> https://syzkaller.appspot.com/bug?id=5eb10023f53097f003e72c6a7c1a6f14b7c22929 .
-
-The first thing is to work out what the code should be doing.  What KCSAN
-is saying is that a variable is being locklessly updated.  Is it really
-OK for that variable to be locklessly updated?  If not, a larger fix
-is required.
-
-For more information, please see Marco's LWN series:
-https://lwn.net/Articles/816850/ and https://lwn.net/Articles/816854/
-
-Alternatively, you can refer to the documentation being proposed for
-the Linux kernel tree:
-
-https://lore.kernel.org/lkml/20210304004543.25364-3-paulmck@kernel.org/
-
-> > If there's worry marking accesses is error-prone, then that might be a
-> > signal that the concurrency design is too complex (or the developer
-> > hasn't considered all cases).
-> > 
-> > For that reason, we need to mark accesses to tell the compiler and
-> > tooling where to expect concurrency, so that 1) the compiler generates
-> > correct code, and 2) tooling such as KCSAN can double-check what the
-> > developer intended is actually what's happening.
-> 
-> and 3) bug-explorers can understand what the developers are assuming/missing.
-
-If the above information doesn't help the bug explorers, please let me
-know.
-
-							Thanx, Paul
+-- 
+Kees Cook
