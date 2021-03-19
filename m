@@ -2,173 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934D7342021
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEF0342027
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCSOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:48:48 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47194 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhCSOsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:48:22 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
- id e69104418b086582; Fri, 19 Mar 2021 15:48:20 +0100
-Received: from kreacher.localnet (89-64-81-50.dynamic.chello.pl [89.64.81.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id E1BC0667D8E;
-        Fri, 19 Mar 2021 15:48:19 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     "elaine.zhang" <zhangqing@rock-chips.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v2 2/2] PM: runtime: Defer suspending suppliers
-Date:   Fri, 19 Mar 2021 15:47:31 +0100
-Message-ID: <2773244.e9J7NaK4W3@kreacher>
-In-Reply-To: <4641414.31r3eYUQgx@kreacher>
-References: <5448054.DvuYhMxLoT@kreacher> <4641414.31r3eYUQgx@kreacher>
+        id S230250AbhCSOuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229942AbhCSOt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 10:49:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C0B64F18;
+        Fri, 19 Mar 2021 14:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616165399;
+        bh=UoynskV7fDPrJijSCnZ2qxW/urS45B41pOpEfEeHJ2Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YUQ7CFLEYMfkn27VZ45tPrHUQH2JbOeIqaPGoqX9NNS/gdQiwtMxEBJKUigeeXjF/
+         huq92IXhri3bpfMUDUgmQsfl8X+ORxF3wGqIETnLtnj3WzFGb6eEHHyUp7fSJz03Dk
+         MQw1iDn1lej2OqLna8Tz+UbnRP6QWPPu3mLUy0TdoLlypMp/OyB5e2nWwutW2Nabhl
+         4N1bwnpqODB3BlrIoStIY5DOZFa/z0EuCClSRQbqJCohG/mA/q1ynoasNUqVXHi4PJ
+         wVK3Hy2RoXsa+ZQNtavPuYiLY9PWMgRiPrEb5h1JjrM0aw9MaJ6Scq69uWRQZiVh89
+         2MulgGfAzRK9g==
+Date:   Fri, 19 Mar 2021 16:49:32 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com,
+        dave.hansen@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
+Message-ID: <YFS5/Mt0C4tEimru@kernel.org>
+References: <20210319040602.178558-1-kai.huang@intel.com>
+ <20210319084523.GA6251@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudefkedgieelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeetgefgleetgeduheeugeeikeevudelueelvdeufeejfeffgeefjedugfetfeehhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekledrieegrdekuddrhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurdehtddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeiihhgrnhhgqhhinhhgsehrohgtkhdqtghhihhpshdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319084523.GA6251@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Mar 19, 2021 at 09:45:23AM +0100, Borislav Petkov wrote:
+> On Fri, Mar 19, 2021 at 05:06:02PM +1300, Kai Huang wrote:
+> > Below kernel bug happened when running simple SGX application when EPC
+> > is under pressure.  The root cause is with commit 5b8719504e3a
+> > ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()"),
+> > __sgx_alloc_epc_page() returns NULL when there's no free EPC page can be
+> > allocated, while old behavior was it always returned ERR_PTR(-ENOMEM) in
+> > such case.
+> > 
+> > Fix by directly returning the page if __sgx_alloc_epc_page_from_node()
+> > allocates a valid page in fallback to non-local allocation, and always
+> > returning ERR_PTR(-ENOMEM) if no EPC page can be allocated.
+> > 
+> > [  253.474764] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> > [  253.500101] #PF: supervisor write access in kernel mode
+> > [  253.525462] #PF: error_code(0x0002) - not-present page
+> > ...
+> > [  254.102041] Call Trace:
+> > [  254.126699]  sgx_ioc_enclave_add_pages+0x241/0x770
+> > [  254.151305]  sgx_ioctl+0x194/0x4b0
+> > [  254.174976]  ? handle_mm_fault+0xd0/0x260
+> > [  254.198470]  ? do_user_addr_fault+0x1ef/0x570
+> > [  254.221827]  __x64_sys_ioctl+0x91/0xc0
+> > [  254.244546]  do_syscall_64+0x38/0x90
+> > [  254.266728]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  254.289232] RIP: 0033:0x7fdc4cf4031b
+> > ...
+> > [  254.711480] CR2: 0000000000000008
+> > [  254.735494] ---[ end trace 970dce6d4cdf7f64 ]---
+> > [  254.759915] RIP: 0010:sgx_alloc_epc_page+0x46/0x152
+> > ...
+> > 
+> > Fixes: 5b8719504e3a("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+> > Signed-off-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/main.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> I was on the verge whether to merge that into the original patch since
+> it is the top patch on the branch or create a new one but opted for
+> former because this way it won't break bisection and people won't have
+> to pay attention whether there's a fix patch to the NUMA patch too, in
+> case they wanna backport and whatnot.
+> 
+> Here's the new version:
+> 
+> Thx.
+> 
 
-Because the PM-runtime status of the device is not updated in
-__rpm_callback(), attempts to suspend the suppliers of the given
-device triggered by the rpm_put_suppliers() call in there may
-cause a supplier to be suspended completely before the status of
-the consumer is updated to RPM_SUSPENDED, which is confusing.
+Yeah, I'd also prefer to keep Dave's and Kai's patches as separate entitied.
 
-To avoid that (1) modify __rpm_callback() to only decrease the
-PM-runtime usage counter of each supplier and (2) make rpm_suspend()
-try to suspend the suppliers after changing the consumer's status to
-RPM_SUSPENDED, in analogy with the device's parent.
+Just in case, this was the Dave's fix:
 
-Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
-Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
-Reported-by: elaine.zhang <zhangqing@rock-chips.com>
-Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+https://patchwork.kernel.org/project/intel-sgx/patch/20210318214933.29341-1-dave.hansen@intel.com/
 
-v1 -> v2:
-   * Change a function name as requested by Ulf.
-   * Add the R-by tag from Ulf.
-   * Use spin_unlock_irq()/spin_lock_irq() around the rpm_suspend_suppliers()
-     call in rpm_suspend().
-
----
- drivers/base/power/runtime.c |   45 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/base/power/runtime.c
-===================================================================
---- linux-pm.orig/drivers/base/power/runtime.c
-+++ linux-pm/drivers/base/power/runtime.c
-@@ -305,7 +305,7 @@ static int rpm_get_suppliers(struct devi
- 	return 0;
- }
- 
--static void rpm_put_suppliers(struct device *dev)
-+static void __rpm_put_suppliers(struct device *dev, bool try_to_suspend)
- {
- 	struct device_link *link;
- 
-@@ -313,10 +313,30 @@ static void rpm_put_suppliers(struct dev
- 				device_links_read_lock_held()) {
- 
- 		while (refcount_dec_not_one(&link->rpm_active))
--			pm_runtime_put(link->supplier);
-+			pm_runtime_put_noidle(link->supplier);
-+
-+		if (try_to_suspend)
-+			pm_request_idle(link->supplier);
- 	}
- }
- 
-+static void rpm_put_suppliers(struct device *dev)
-+{
-+	__rpm_put_suppliers(dev, true);
-+}
-+
-+static void rpm_suspend_suppliers(struct device *dev)
-+{
-+	struct device_link *link;
-+	int idx = device_links_read_lock();
-+
-+	list_for_each_entry_rcu(link, &dev->links.suppliers, c_node,
-+				device_links_read_lock_held())
-+		pm_request_idle(link->supplier);
-+
-+	device_links_read_unlock(idx);
-+}
-+
- /**
-  * __rpm_callback - Run a given runtime PM callback for a given device.
-  * @cb: Runtime PM callback to run.
-@@ -344,8 +364,10 @@ static int __rpm_callback(int (*cb)(stru
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
--			if (retval)
-+			if (retval) {
-+				rpm_put_suppliers(dev);
- 				goto fail;
-+			}
- 
- 			device_links_read_unlock(idx);
- 		}
-@@ -368,9 +390,9 @@ static int __rpm_callback(int (*cb)(stru
- 		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
- 			idx = device_links_read_lock();
- 
-- fail:
--			rpm_put_suppliers(dev);
-+			__rpm_put_suppliers(dev, false);
- 
-+fail:
- 			device_links_read_unlock(idx);
- 		}
- 
-@@ -642,8 +664,11 @@ static int rpm_suspend(struct device *de
- 		goto out;
- 	}
- 
-+	if (dev->power.irq_safe)
-+		goto out;
-+
- 	/* Maybe the parent is now able to suspend. */
--	if (parent && !parent->power.ignore_children && !dev->power.irq_safe) {
-+	if (parent && !parent->power.ignore_children) {
- 		spin_unlock(&dev->power.lock);
- 
- 		spin_lock(&parent->power.lock);
-@@ -652,6 +677,14 @@ static int rpm_suspend(struct device *de
- 
- 		spin_lock(&dev->power.lock);
- 	}
-+	/* Maybe the suppliers are now able to suspend. */
-+	if (dev->power.links_count > 0) {
-+		spin_unlock_irq(&dev->power.lock);
-+
-+		rpm_suspend_suppliers(dev);
-+
-+		spin_lock_irq(&dev->power.lock);
-+	}
- 
-  out:
- 	trace_rpm_return_int_rcuidle(dev, _THIS_IP_, retval);
-
-
-
+/Jarkko
