@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C16341D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F93341D39
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhCSMo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:44:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37462 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbhCSMoF (ORCPT
+        id S230317AbhCSMob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:44:31 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46168 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhCSMoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:44:05 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12JCfv4J048333;
-        Fri, 19 Mar 2021 07:41:57 -0500
+        Fri, 19 Mar 2021 08:44:10 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12JCg1tV108007;
+        Fri, 19 Mar 2021 07:42:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616157717;
-        bh=WnJojV2RIcrSpG/FMHpx7hS8r2BmwynHcxEFLLXKjTQ=;
+        s=ti-com-17Q1; t=1616157721;
+        bh=TsbqIXJs6B38X8Auxf3dPsgKPxUh2cFtxGTPMXU1r1Y=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Z/0OYnUq8Y14U0inB4NQ9WodFC7Fx1QcyxpxgOhFOvlicQQSuAlNZJKfkHvk28XsH
-         a90xE809D2H+8Bxa8+YsiJBTh3k+DF0cLN7ubTaVBlHI1uHkeKn8yj2IDlYFSVmDFj
-         zDfftVyF7cqnKr/hdRNRUZjgwrnuvxG3VXdGgijM=
+        b=MH/ru8TIlcMGgFTsJCMW8zQQ+VM/7LVNbBrC9xUCN++JJR5K4fgnNVY/V7NMFQOUc
+         feVLcekWOQmXxdDEp4B3v38epOHiXAeVS53Yv5digEoKrGesPTUnx4jqXEMUxV12tb
+         8xYRcuvpQKTd4aylUfCwJrSCYdhMwSIQI/qM6YfU=
 Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12JCfvXf084873
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12JCg1Iw124724
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Mar 2021 07:41:57 -0500
+        Fri, 19 Mar 2021 07:42:01 -0500
 Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
  (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 19
- Mar 2021 07:41:57 -0500
+ Mar 2021 07:42:01 -0500
 Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
  (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 19 Mar 2021 07:41:57 -0500
+ Frontend Transport; Fri, 19 Mar 2021 07:42:01 -0500
 Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12JCfTf7011913;
-        Fri, 19 Mar 2021 07:41:54 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12JCfTf8011913;
+        Fri, 19 Mar 2021 07:41:57 -0500
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Swapnil Jakhade <sjakhade@cadence.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-phy@lists.infradead.org>, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v7 06/13] phy: cadence: Sierra: Move all reset_control_get*() to a separate function
-Date:   Fri, 19 Mar 2021 18:11:21 +0530
-Message-ID: <20210319124128.13308-7-kishon@ti.com>
+Subject: [PATCH v7 07/13] phy: cadence: Sierra: Explicitly request exclusive reset control
+Date:   Fri, 19 Mar 2021 18:11:22 +0530
+Message-ID: <20210319124128.13308-8-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210319124128.13308-1-kishon@ti.com>
 References: <20210319124128.13308-1-kishon@ti.com>
@@ -58,69 +58,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change. Group devm_reset_control_get() and
-devm_reset_control_get_optional() to a separate function.
+No functional change. Since the reset controls obtained in
+Sierra is exclusively used by the Sierra device, use
+exclusive reset control request API calls.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- drivers/phy/cadence/phy-cadence-sierra.c | 36 ++++++++++++++++--------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+ drivers/phy/cadence/phy-cadence-sierra.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index 7bf1b4c7774a..935f165404e4 100644
+index 935f165404e4..44c52a0842dc 100644
 --- a/drivers/phy/cadence/phy-cadence-sierra.c
 +++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -509,6 +509,28 @@ static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
- 	return 0;
- }
- 
-+static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
-+				      struct device *dev)
-+{
-+	struct reset_control *rst;
-+
-+	rst = devm_reset_control_get(dev, "sierra_reset");
-+	if (IS_ERR(rst)) {
-+		dev_err(dev, "failed to get reset\n");
-+		return PTR_ERR(rst);
-+	}
-+	sp->phy_rst = rst;
-+
-+	rst = devm_reset_control_get_optional(dev, "sierra_apb");
-+	if (IS_ERR(rst)) {
-+		dev_err(dev, "failed to get apb reset\n");
-+		return PTR_ERR(rst);
-+	}
-+	sp->apb_rst = rst;
-+
-+	return 0;
-+}
-+
- static int cdns_sierra_phy_probe(struct platform_device *pdev)
+@@ -514,14 +514,14 @@ static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
  {
- 	struct cdns_sierra_phy *sp;
-@@ -559,17 +581,9 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+ 	struct reset_control *rst;
  
--	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
--	if (IS_ERR(sp->phy_rst)) {
--		dev_err(dev, "failed to get reset\n");
--		return PTR_ERR(sp->phy_rst);
--	}
--
--	sp->apb_rst = devm_reset_control_get_optional(dev, "sierra_apb");
--	if (IS_ERR(sp->apb_rst)) {
--		dev_err(dev, "failed to get apb reset\n");
--		return PTR_ERR(sp->apb_rst);
--	}
-+	ret = cdns_sierra_phy_get_resets(sp, dev);
-+	if (ret)
-+		return ret;
+-	rst = devm_reset_control_get(dev, "sierra_reset");
++	rst = devm_reset_control_get_exclusive(dev, "sierra_reset");
+ 	if (IS_ERR(rst)) {
+ 		dev_err(dev, "failed to get reset\n");
+ 		return PTR_ERR(rst);
+ 	}
+ 	sp->phy_rst = rst;
  
- 	ret = clk_prepare_enable(sp->clk);
- 	if (ret)
+-	rst = devm_reset_control_get_optional(dev, "sierra_apb");
++	rst = devm_reset_control_get_optional_exclusive(dev, "sierra_apb");
+ 	if (IS_ERR(rst)) {
+ 		dev_err(dev, "failed to get apb reset\n");
+ 		return PTR_ERR(rst);
 -- 
 2.17.1
 
