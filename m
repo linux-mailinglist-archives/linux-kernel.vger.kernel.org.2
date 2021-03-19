@@ -2,189 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176F63420EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A653420ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhCSPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        id S230417AbhCSPZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbhCSPYa (ORCPT
+        with ESMTP id S230177AbhCSPZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:24:30 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6439C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:24:29 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id r193so6483026ior.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:24:29 -0700 (PDT)
+        Fri, 19 Mar 2021 11:25:11 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C7FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:25:11 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so6895435pjh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AkAIkwKnHKlHjriaSzDP0d59Qoo4Ts3Lr/GHkUvhrrE=;
-        b=GM0LzDP98p/0+cCI2Hy4w6dKNVA0yX++upe3JaTimCZF2EBhxNO7pRoRpuz+dvjxIw
-         rcIO6L6ihpCA/ArOmTIQZP9edaAf1pKFvY1uXRjwRxtGsUnVC9LTH/tZ30a7xnl7sKe3
-         jmFxIojYi/KdxFUxRe9chnldEEwLTNVnycyVh0xLCf4d4lwq5Sk3eYjoBijzTDP7CmOA
-         ZsDKU3hL8SWAbJzWCdAMKQXa9aHr2cEWKrWBunS8aKILxrVSThsJOdJEifAfvO8PlgZf
-         vzpibmcfQ7PklzuiEGs4GrSAIHmx81dxrwLr9a16x5n+ckNw4iljVdUwuodxmjwNi5+9
-         I3ZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubcs0Ulnb7+ecMoLP+SH+vifS5g0Za2K8fsbw01RIbE=;
+        b=lfjE6Uzj9X3CSX3vYcKPg2zZhqx2FrfiJ3g/E1GFg76kpcTLxUrn2CYmEbQPhyA6KK
+         n6+ZQ8w97auqeQ7Hzkz087b9+Tbyzvs6TLjUxWnsAufiErWR1a9D5Q9+SkGz1hdVcyMq
+         K7LAxWmTvacNYbT510h/T4dFpnClN/WapVbpZwzOgjqOS2qEWMl1d6w+Ij4MdWC7XLgl
+         AZndUZAwylRFXNSL+ZTgf+CW9tUMaSJFt7PhULR+VHC1qavk3TMPo5uNxtlKKFGZ2HXH
+         XkswqecIoVF5LbLR74N66TDIkJtYYy/C1QoB+2SQ3owFzfMuIRNPytt6JxSwpQIOopu+
+         KfSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AkAIkwKnHKlHjriaSzDP0d59Qoo4Ts3Lr/GHkUvhrrE=;
-        b=CSMvlNPpnbNrANywXyfgBWpZpHqWTPdFdhMllHCq6qlDekQdUCmAJ4wwgHKV/y2qih
-         c4JHWb/O7mIOAlTbcHfVci543IdfR8C/mavTg8wCwJzq4sfVi3bgi4XHH9BcTByMa8jv
-         VzpJArhz5hrVPFbsswyeR8TEOlFXHOcmYQx+KbLhkmztzOi0bstIJKIvsm7whZPk4z4R
-         ZEHRVNgFdKUIMeUCOxhMXhrg2S7Kbgh+PWDbiV7EJuPF2arjcSJbEPldEvNShNJ2jIia
-         4+6Nxrw1yNIWc+sZnZbH6NZOAGeGs5L2xEQ5wW2Vg3zNnnUct53o4egxj0QbD1jzUR8m
-         p8DA==
-X-Gm-Message-State: AOAM530kvQcVnIPqx0x/3AwWjBbsRLWLn9wl7aZfz23NpJYv5h6KYUs2
-        dA4lozUIAQDUAVLOCK9CShYFEA==
-X-Google-Smtp-Source: ABdhPJzL0MqwiO2Bx/yuXfWytZzMkOa7KzbIv6YLsJhxO8/G1B2RLhYkUmI3padcw+pMwIixijdq3g==
-X-Received: by 2002:a05:6602:2f0c:: with SMTP id q12mr3131098iow.82.1616167469400;
-        Fri, 19 Mar 2021 08:24:29 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id b5sm2686887ioq.7.2021.03.19.08.24.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubcs0Ulnb7+ecMoLP+SH+vifS5g0Za2K8fsbw01RIbE=;
+        b=gVCe55B3RhxYk9+TGB1sVYAI/R4rOVGW9XdH3fClJNE6unP8utxTzWibylz1Zh5ntr
+         hs506ZK1bHsV1DcyNX5XiRA3u/9A56aRHEWORYPcTxIr4npbE6z6goVlEYtzwY4LPJMJ
+         QS2a9myHyQdIJxZ/X2qJRPTS06Zjp1R+ulJF1Z+zBULHggNOJQSWsRKt8yE0kh2c+n9b
+         +Po2uY8aY2w2FrJ6sENTJc1QDMIs/iqEdn0Ea0O9cBH1T25TGCjbplEfiPK9a7ABAxqb
+         Xm1royfmUs6If6avlkiyPbkk3pL1GMKrKu1K7/IUtl4tz3MiaQdwX01r1bKZyKrlymgw
+         eEkQ==
+X-Gm-Message-State: AOAM530Bszt986BeRz2LgkvYN0yH5uTduaAM4BHd/sWuOsg1eym7nPZ8
+        iNFe31/cEXIq8C8/FyVGUPwMGLuNd3on4Q==
+X-Google-Smtp-Source: ABdhPJyQEWmhY5pMFSpEq1J36JDEAIhHWB0wsE3Fw2vI2noMagO1WK4XLoCG88mg7descMf1BnVgGg==
+X-Received: by 2002:a17:90a:f403:: with SMTP id ch3mr10315211pjb.126.1616167510934;
+        Fri, 19 Mar 2021 08:25:10 -0700 (PDT)
+Received: from localhost.localdomain ([113.172.181.219])
+        by smtp.gmail.com with ESMTPSA id d138sm336346pfd.55.2021.03.19.08.25.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 08:24:29 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/5] net: ipa: define QSB limits in configuration data
-Date:   Fri, 19 Mar 2021 10:24:22 -0500
-Message-Id: <20210319152422.1803714-6-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210319152422.1803714-1-elder@linaro.org>
-References: <20210319152422.1803714-1-elder@linaro.org>
+        Fri, 19 Mar 2021 08:25:10 -0700 (PDT)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        minhquangbui99@gmail.com
+Subject: [PATCH] userfaultfd: Write protect when virtual memory range has no page table entry
+Date:   Fri, 19 Mar 2021 22:24:28 +0700
+Message-Id: <20210319152428.52683-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the maximum number of reads and writes to configure for the
-QSB masters used for IPA in configuration data.
+userfaultfd_writeprotect() use change_protection() to clear write bit in
+page table entries (pte/pmd). So, later write to this virtual address
+range causes a page fault, which is then handled by userspace program.
+However, change_protection() has no effect when there is no page table
+entries associated with that virtual memory range (a newly mapped memory
+range). As a result, later access to that memory range causes allocating a
+page table entry with write bit still set (due to VM_WRITE flag in
+vma->vm_flags).
 
-We don't use these values yet; the next commit takes care of that.
+Add checks for VM_UFFD_WP in vma->vm_flags when allocating new page table
+entry in missing page table entry page fault path.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
- drivers/net/ipa/ipa_data-sc7180.c | 10 ++++++++++
- drivers/net/ipa/ipa_data-sdm845.c | 14 ++++++++++++++
- drivers/net/ipa/ipa_data.h        | 24 ++++++++++++++++++++++--
- 3 files changed, 46 insertions(+), 2 deletions(-)
+ mm/huge_memory.c | 12 ++++++++++++
+ mm/memory.c      | 10 ++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/net/ipa/ipa_data-sc7180.c b/drivers/net/ipa/ipa_data-sc7180.c
-index f65abc19ae9d7..216f790b22b66 100644
---- a/drivers/net/ipa/ipa_data-sc7180.c
-+++ b/drivers/net/ipa/ipa_data-sc7180.c
-@@ -9,6 +9,14 @@
- #include "ipa_endpoint.h"
- #include "ipa_mem.h"
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index ae907a9c2050..9bb16a55a48c 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -636,6 +636,11 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
  
-+/* QSB configuration for the SC7180 SoC. */
-+static const struct ipa_qsb_data ipa_qsb_data[] = {
-+	[IPA_QSB_MASTER_DDR] = {
-+		.max_writes	= 8,
-+		.max_reads	= 12,
-+	},
-+};
+ 		entry = mk_huge_pmd(page, vma->vm_page_prot);
+ 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
++		if (userfaultfd_wp(vma)) {
++			entry = pmd_wrprotect(entry);
++			entry = pmd_mkuffd_wp(entry);
++		}
 +
- /* Endpoint configuration for the SC7180 SoC. */
- static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 	[IPA_ENDPOINT_AP_COMMAND_TX] = {
-@@ -328,6 +336,8 @@ static const struct ipa_clock_data ipa_clock_data = {
- /* Configuration data for the SC7180 SoC. */
- const struct ipa_data ipa_data_sc7180 = {
- 	.version	= IPA_VERSION_4_2,
-+	.qsb_count	= ARRAY_SIZE(ipa_qsb_data),
-+	.qsb_data	= ipa_qsb_data,
- 	.endpoint_count	= ARRAY_SIZE(ipa_gsi_endpoint_data),
- 	.endpoint_data	= ipa_gsi_endpoint_data,
- 	.resource_data	= &ipa_resource_data,
-diff --git a/drivers/net/ipa/ipa_data-sdm845.c b/drivers/net/ipa/ipa_data-sdm845.c
-index 8cae9325eb08e..d9659fd22322a 100644
---- a/drivers/net/ipa/ipa_data-sdm845.c
-+++ b/drivers/net/ipa/ipa_data-sdm845.c
-@@ -11,6 +11,18 @@
- #include "ipa_endpoint.h"
- #include "ipa_mem.h"
+ 		page_add_new_anon_rmap(page, vma, haddr, true);
+ 		lru_cache_add_inactive_or_unevictable(page, vma);
+ 		pgtable_trans_huge_deposit(vma->vm_mm, vmf->pmd, pgtable);
+@@ -643,6 +648,13 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+ 		update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
+ 		add_mm_counter(vma->vm_mm, MM_ANONPAGES, HPAGE_PMD_NR);
+ 		mm_inc_nr_ptes(vma->vm_mm);
++
++		if (userfaultfd_huge_pmd_wp(vma, *vmf->pmd)) {
++			spin_unlock(vmf->ptl);
++			count_vm_event(THP_FAULT_ALLOC);
++			count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
++			return handle_userfault(vmf, VM_UFFD_WP);
++		}
+ 		spin_unlock(vmf->ptl);
+ 		count_vm_event(THP_FAULT_ALLOC);
+ 		count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
+diff --git a/mm/memory.c b/mm/memory.c
+index 5efa07fb6cdc..b835746545bf 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3564,6 +3564,11 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+ 	if (vma->vm_flags & VM_WRITE)
+ 		entry = pte_mkwrite(pte_mkdirty(entry));
  
-+/* QSB configuration for the SDM845 SoC. */
-+static const struct ipa_qsb_data ipa_qsb_data[] = {
-+	[IPA_QSB_MASTER_DDR] = {
-+		.max_writes	= 8,
-+		.max_reads	= 8,
-+	},
-+	[IPA_QSB_MASTER_PCIE] = {
-+		.max_writes	= 4,
-+		.max_reads	= 12,
-+	},
-+};
++	if (userfaultfd_wp(vma)) {
++		entry = pte_wrprotect(entry);
++		entry = pte_mkuffd_wp(entry);
++	}
 +
- /* Endpoint configuration for the SDM845 SoC. */
- static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 	[IPA_ENDPOINT_AP_COMMAND_TX] = {
-@@ -353,6 +365,8 @@ static const struct ipa_clock_data ipa_clock_data = {
- /* Configuration data for the SDM845 SoC. */
- const struct ipa_data ipa_data_sdm845 = {
- 	.version	= IPA_VERSION_3_5_1,
-+	.qsb_count	= ARRAY_SIZE(ipa_qsb_data),
-+	.qsb_data	= ipa_qsb_data,
- 	.endpoint_count	= ARRAY_SIZE(ipa_gsi_endpoint_data),
- 	.endpoint_data	= ipa_gsi_endpoint_data,
- 	.resource_data	= &ipa_resource_data,
-diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
-index b476fc373f7fe..d50cd5ae7714f 100644
---- a/drivers/net/ipa/ipa_data.h
-+++ b/drivers/net/ipa/ipa_data.h
-@@ -49,6 +49,22 @@
- #define IPA_RESOURCE_GROUP_SRC_MAX	5
- #define IPA_RESOURCE_GROUP_DST_MAX	5
+ 	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+ 			&vmf->ptl);
+ 	if (!pte_none(*vmf->pte)) {
+@@ -3590,6 +3595,11 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
  
-+/** enum ipa_qsb_master_id - array index for IPA QSB configuration data */
-+enum ipa_qsb_master_id {
-+	IPA_QSB_MASTER_DDR,
-+	IPA_QSB_MASTER_PCIE,
-+};
+ 	/* No need to invalidate - it was non-present before */
+ 	update_mmu_cache(vma, vmf->address, vmf->pte);
 +
-+/**
-+ * struct ipa_qsb_data - Qualcomm System Bus configuration data
-+ * @max_writes:	Maximum outstanding write requests for this master
-+ * @max_reads:	Maximum outstanding read requests for this master
-+ */
-+struct ipa_qsb_data {
-+	u8 max_writes;
-+	u8 max_reads;
-+};
-+
- /**
-  * struct gsi_channel_data - GSI channel configuration data
-  * @tre_count:		number of TREs in the channel ring
-@@ -285,14 +301,18 @@ struct ipa_clock_data {
- /**
-  * struct ipa_data - combined IPA/GSI configuration data
-  * @version:		IPA hardware version
-- * @endpoint_count:	number of entries in endpoint_data array
-+ * @qsb_count:		number of entries in the qsb_data array
-+ * @qsb_data:		Qualcomm System Bus configuration data
-+ * @endpoint_count:	number of entries in the endpoint_data array
-  * @endpoint_data:	IPA endpoint/GSI channel data
-  * @resource_data:	IPA resource configuration data
-- * @mem_count:		number of entries in mem_data array
-+ * @mem_count:		number of entries in the mem_data array
-  * @mem_data:		IPA-local shared memory region data
-  */
- struct ipa_data {
- 	enum ipa_version version;
-+	u32 qsb_count;		/* # entries in qsb_data[] */
-+	const struct ipa_qsb_data *qsb_data;
- 	u32 endpoint_count;	/* # entries in endpoint_data[] */
- 	const struct ipa_gsi_endpoint_data *endpoint_data;
- 	const struct ipa_resource_data *resource_data;
++	if (userfaultfd_pte_wp(vma, *vmf->pte)) {
++		pte_unmap_unlock(vmf->pte, vmf->ptl);
++		return handle_userfault(vmf, VM_UFFD_WP);
++	}
+ unlock:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 	return ret;
 -- 
-2.27.0
+2.25.1
 
