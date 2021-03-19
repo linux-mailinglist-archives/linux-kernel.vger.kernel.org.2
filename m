@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B98C341A62
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C24341A52
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhCSKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:48:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14015 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhCSKsO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:48:14 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F20t12K00zPkhD;
-        Fri, 19 Mar 2021 18:45:45 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 18:48:02 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: hisilicon/hpre - fix Kconfig
-Date:   Fri, 19 Mar 2021 18:45:39 +0800
-Message-ID: <1616150739-12133-1-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S229618AbhCSKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:46:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42822 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229638AbhCSKqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:46:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 709A4ACC6;
+        Fri, 19 Mar 2021 10:46:21 +0000 (UTC)
+Subject: Re: [PATCH 1/2] selftests: add a kselftest for SLUB debugging
+ functionality
+To:     Marco Elver <elver@google.com>, glittao@gmail.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        shuah@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20210316124118.6874-1-glittao@gmail.com>
+ <YFM96dY1pfk/rs3U@elver.google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <3ba2228a-1442-40b4-578f-f693d9a054e7@suse.cz>
+Date:   Fri, 19 Mar 2021 11:46:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <YFM96dY1pfk/rs3U@elver.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hpre select 'CRYPTO_ECDH' and 'CRYPTO_CURVE25519'.
+On 3/18/21 12:47 PM, Marco Elver wrote:
+> On Tue, Mar 16, 2021 at 01:41PM +0100, glittao@gmail.com wrote:
+>> From: Oliver Glitta <glittao@gmail.com>
+>> 
+>> SLUB has resiliency_test() function which is hidden behind #ifdef
+>> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+>> runs it. Kselftest should proper replacement for it.
+>> 
+>> Try changing byte in redzone after allocation and changing
+>> pointer to next free node, first byte, 50th byte and redzone
+>> byte. Check if validation finds errors.
+>> 
+>> There are several differences from the original resiliency test:
+>> Tests create own caches with known state instead of corrupting
+>> shared kmalloc caches.
+>> 
+>> The corruption of freepointer uses correct offset, the original
+>> resiliency test got broken with freepointer changes.
+>> 
+>> Scratch changing random byte test, because it does not have
+>> meaning in this form where we need deterministic results.
+>> 
+>> Add new option CONFIG_TEST_SLUB in Kconfig.
+>> 
+>> Add parameter to function validate_slab_cache() to return
+>> number of errors in cache.
+>> 
+>> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+> 
+> No objection per-se, but have you considered a KUnit-based test instead?
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+To be honest, we didn't realize about that option.
 
-diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-index c45adb1..e572f99 100644
---- a/drivers/crypto/hisilicon/Kconfig
-+++ b/drivers/crypto/hisilicon/Kconfig
-@@ -65,10 +65,11 @@ config CRYPTO_DEV_HISI_HPRE
- 	depends on UACCE || UACCE=n
- 	depends on ARM64 || (COMPILE_TEST && 64BIT)
- 	depends on ACPI
--	select CRYPTO_LIB_CURVE25519_GENERIC
- 	select CRYPTO_DEV_HISI_QM
- 	select CRYPTO_DH
- 	select CRYPTO_RSA
-+	select CRYPTO_CURVE25519
-+	select CRYPTO_ECDH
- 	help
- 	  Support for HiSilicon HPRE(High Performance RSA Engine)
- 	  accelerator, which can accelerate RSA and DH algorithms.
--- 
-2.8.1
+> There is no user space portion required to run this test, and a pure
+> in-kernel KUnit test would be cleaner. Various boiler-plate below,
+> including pr_err()s, the kselftest script etc. would simply not be
+> necessary.
+> 
+> This is only a suggestion, but just want to make sure you've considered
+> the option and weighed its pros/cons.
 
+Thanks for the suggestion. But I hope we would expand the tests later to e.g.
+check the contents of various SLUB related sysfs files or even write to them,
+and for that goal kselftest seems to be a better starting place?
+
+Vlastimil
