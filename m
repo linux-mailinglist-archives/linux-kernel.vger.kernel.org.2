@@ -2,264 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925E53428AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C503428AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhCSWZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhCSWZd (ORCPT
+        id S231153AbhCSW0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:26:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29402 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230490AbhCSWZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:25:33 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA62C061760;
-        Fri, 19 Mar 2021 15:25:33 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id y124-20020a1c32820000b029010c93864955so8047702wmy.5;
-        Fri, 19 Mar 2021 15:25:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0qJ0F+Ko5F17OCQ9a8TQBdPdWsAoef7x4iebSXWjHz4=;
-        b=C7uO0ez3RF444hrIrM9Iv2072ivubOU3jSVQq4FnQiRqph94jp1+01AFHPyslDQK4z
-         FwHTnegiI9Epb5P3F0+1/o51XHrZ6tZ7Z2phTZkNztJddgiAwR8wqukC9VJuwlJdNtpf
-         aoKINvSkuG87/UoMXaR/NmpHz0tuXK0OXFT6xZxzjSlgy5rWU/wVsnF34PrEtkGyAAJb
-         isjCNS2qoGg0Dc+KcaJ57Ou9VkDINw2p/JQ+21Y+AkA8sXeAVw9Du5WadIQ1fBAn1Kea
-         AlSbUq0shiwS8IeM2Bm/sZXMOxwafBP7qyXFdiThNBFmdwakoPIE1Zn2CxxB55PWLJiL
-         0DcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0qJ0F+Ko5F17OCQ9a8TQBdPdWsAoef7x4iebSXWjHz4=;
-        b=CNftl2B8UGlV4KJrAZ46B9MSSeMMmfRmG1PmAQ0S2kCLHDIp/zFAPwLK05wFO68ET8
-         6TW9by3BLBNiKDnS2ucCb4nwYSeGenmjQQf/jGQffE5fRw//HUuyEfkVNvW6+40p1a5B
-         EWZAfXx1yaSliPl+zkX3PGQxzOjx6h4UfQ7eaMZlRfHPr5mPmEeURLYPTLliuVv+ol7r
-         gwI8FUmBfRgKNlsDp+zVEZPwDORglEOHkKV/JS1EPo1gekYavR2KP9a0TJwCBs34NU9D
-         EkWLP3Ux8OFzWNQwaIimqG09V7xYEXmvju3FCxzefHrVkUf+rtsprNL1Of07C6P9WTHc
-         Bt8A==
-X-Gm-Message-State: AOAM5310RJjHHHHY4Tsg8XgSKURDDAjkIeea895TUUVHBcbr8t4U/KUx
-        3Jt37OY4AnUyToyB4qTHDls=
-X-Google-Smtp-Source: ABdhPJwzP1ce+0dIeV/2+ib339ExEqc3pFRBnhNYzsVL1+ucoQURn/m2yADVSNoBDyWYQFZnba4coA==
-X-Received: by 2002:a7b:c5c8:: with SMTP id n8mr5432346wmk.63.1616192732337;
-        Fri, 19 Mar 2021 15:25:32 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id v3sm7767424wmj.25.2021.03.19.15.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 15:25:31 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] userfaultfd.2: Add write-protect mode
-To:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-kernel@vger.kernel.org,
-        Linux MM Mailing List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-References: <20210310222300.200054-1-peterx@redhat.com>
- <20210310222300.200054-3-peterx@redhat.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <75a4cec1-dc64-1c85-19eb-655c1d4209fc@gmail.com>
-Date:   Fri, 19 Mar 2021 23:25:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Mar 2021 18:25:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616192747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Id8lKuzviOLir6fJj9EbKS5v9KIiHuyo8EpvVLbwXV0=;
+        b=USEe2b12aCcKjyigTXD1MrJ8SRT3PedS9olEPVXQcbiGIyzuL/V/qidpEWOwTy4fRn6QMw
+        xevid3mIi+1+6WLFmZ9kINqH8GW4MlJ/pEKGoZknwVd5zL+NbMnj4ZMoJ6v9bu/mANrIzL
+        nUtLeDT9WyaEYDTgPlsUxMEAWF7hBOQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-I9ohOC_MMVWdYe0Edf_HjQ-1; Fri, 19 Mar 2021 18:25:45 -0400
+X-MC-Unique: I9ohOC_MMVWdYe0Edf_HjQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3106F87A82A;
+        Fri, 19 Mar 2021 22:25:44 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9467210013C1;
+        Fri, 19 Mar 2021 22:25:40 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 16:25:40 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
+Subject: Re: [PATCH v1 07/14] vfio: Add a device notifier interface
+Message-ID: <20210319162540.0c5fe9dd@omen.home.shazbot.org>
+In-Reply-To: <20210310075639.GB662265@infradead.org>
+References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
+        <161524010999.3480.14282676267275402685.stgit@gimli.home>
+        <20210310075639.GB662265@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210310222300.200054-3-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Wed, 10 Mar 2021 07:56:39 +0000
+Christoph Hellwig <hch@infradead.org> wrote:
 
-Please, see a few minor comments below.
+> On Mon, Mar 08, 2021 at 02:48:30PM -0700, Alex Williamson wrote:
+> > Using a vfio device, a notifier block can be registered to receive
+> > select device events.  Notifiers can only be registered for contained
+> > devices, ie. they are available through a user context.  Registration
+> > of a notifier increments the reference to that container context
+> > therefore notifiers must minimally respond to the release event by
+> > asynchronously removing notifiers.  
+> 
+> Notifiers generally are a horrible multiplexed API.  Can't we just
+> add a proper method table for the intended communication channel?
 
-Thanks,
+I've been trying to figure out how, but I think not.  A user can have
+multiple devices, each with entirely separate IOMMU contexts.  For each
+device, the user can create an mmap of memory to that device and add it
+to every other IOMMU context.  That enables peer to peer DMA between
+all the devices, across all the IOMMU contexts.  But each individual
+device has no direct reference to any IOMMU context other than its own.
+A callback on the IOMMU can't reach those other contexts either, there's
+no guarantee those other contexts are necessarily managed via the same
+vfio IOMMU backend driver.  A notifier is the best I can come up with,
+please suggest if you have other ideas.  Thanks,
 
 Alex
 
-On 3/10/21 11:22 PM, Peter Xu wrote:
-> Write-protect mode is supported starting from Linux 5.7.
-> 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  man2/userfaultfd.2 | 103 ++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 101 insertions(+), 2 deletions(-)
-> 
-> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
-> index 555e37409..d1f9aad24 100644
-> --- a/man2/userfaultfd.2
-> +++ b/man2/userfaultfd.2
-> @@ -78,6 +78,32 @@ all memory ranges that were registered with the object are unregistered
->  and unread events are flushed.
->  .\"
->  .PP
-> +Userfaultfd supports two modes of registration:
-> +.TP
-> +.BR UFFDIO_REGISTER_MODE_MISSING " (since 4.10)"
-> +When registered with
-> +.B UFFDIO_REGISTER_MODE_MISSING
-> +mode, the userspace will receive a page fault message when a missing page is
-
-SC (see below)
-
-> +accessed.
-> +The faulted thread will be stopped from execution until the page fault is
-> +resolved from the userspace by either an
-> +.B UFFDIO_COPY
-> +or an
-> +.B UFFDIO_ZEROPAGE
-> +ioctl.
-> +.TP
-> +.BR UFFDIO_REGISTER_MODE_WP " (since 5.7)"
-> +When registered with
-> +.B UFFDIO_REGISTER_MODE_WP
-> +mode, the userspace will receive a page fault message when a write-protected
-> +page is written.
-
-Prefer breaking sentences at subordinate clauses rather than at random
-points:
-
-[
-mode, the userspace will receive a page fault message
-when a write-protected page is written.
-]
-
-There are other similar cases around the patch, marked with SC.
-
-> +The faulted thread will be stopped from execution until the userspace
-
-SC
-
-> +un-write-protect the page using an> +.B UFFDIO_WRITEPROTECT
-> +ioctl.
-> +.PP
-> +Multiple modes can be enabled at the same time for the same memory range.
-> +.PP
->  Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
->  thread ID information into the fault message.
->  One needs to enable this feature explicitly using the
-> @@ -144,6 +170,17 @@ single threaded non-cooperative userfaultfd manager implementations.
->  .\" and limitations remaining in 4.11
->  .\" Maybe it's worth adding a dedicated sub-section...
->  .\"
-> +.PP
-> +Starting from Linux 5.7, userfaultfd is able to do synchronous page dirty
-
-SC
-
-> +tracking using the new write-protection register mode.
-> +One should check against the feature bit
-> +.B UFFD_FEATURE_PAGEFAULT_FLAG_WP
-> +before using this feature.
-> +Similar to the original userfaultfd missing mode, the write-protect mode will
-> +generate an userfaultfd message when the protected page is written.
-> +The user needs to resolve the page fault by unprotecting the faulted page and
-> +kick the faulted thread to continue.
-> +For more information, please refer to "Userfaultfd write-protect mode" section.
->  .SS Userfaultfd operation
->  After the userfaultfd object is created with
->  .BR userfaultfd (),
-> @@ -219,6 +256,64 @@ userfaultfd can be used only with anonymous private memory mappings.
->  Since Linux 4.11,
->  userfaultfd can be also used with hugetlbfs and shared memory mappings.
->  .\"
-> +.SS Userfaultfd write-protect mode (since 5.7)
-> +Since Linux 5.7, userfaultfd supports write-protect mode.
-> +The user needs to first check availability of this feature using
-> +.B UFFDIO_API
-> +ioctl against the feature bit
-> +.B UFFD_FEATURE_PAGEFAULT_FLAG_WP
-> +before using this feature.
-> +.PP
-> +To register with userfaultfd write-protect mode, the user needs to initiate the
-> +.B UFFDIO_REGISTER
-> +ioctl with mode
-> +.B UFFDIO_REGISTER_MODE_WP
-> +set.
-> +Note that it's legal to monitor the same memory range with multiple modes.
-> +For example, the user can do
-> +.B UFFDIO_REGISTER
-> +with the mode set to
-> +.BR "UFFDIO_REGISTER_MODE_MISSING | UFFDIO_REGISTER_MODE_WP" .
-> +When there is only
-> +.B UFFDIO_REGISTER_MODE_WP
-> +registered, the userspace will
-> +.I not
-> +receive any message when a missing page is written.
-> +Instead, the userspace will only receive a write-protect page fault message
-> +when an existing but write-protected page got written.
-> +.PP
-> +After the
-> +.B UFFDIO_REGISTER
-> +ioctl completed with
-> +.B UFFDIO_REGISTER_MODE_WP
-> +mode set, the user can write-protect any existing memory within the range using
-
-SC (break at the comma better)
-
-> +the ioctl
-> +.B UFFDIO_WRITEPROTECT
-> +where
-> +.I uffdio_writeprotect.mode
-> +should be set to
-> +.BR UFFDIO_WRITEPROTECT_MODE_WP .
-> +.PP
-> +When a write-protect event happens, the userspace will receive a page fault
-
-SC (break at the comma better)
-
-> +message whose
-> +.I uffd_msg.pagefault.flags
-> +will be with
-> +.B UFFD_PAGEFAULT_FLAG_WP
-> +flag set.  Note: since only writes can trigger such kind of fault,
-
-Break at the point above too.
-
-> +write-protect messages will always be with
-> +.B UFFD_PAGEFAULT_FLAG_WRITE
-> +bit set too along with bit
-> +.BR UFFD_PAGEFAULT_FLAG_WP .
-> +.PP
-> +To resolve a write-protection page fault, the user should initiate another
-> +.B UFFDIO_WRITEPROTECT
-> +ioctl, whose
-> +.I uffd_msg.pagefault.flags
-> +should have the flag
-> +.B UFFDIO_WRITEPROTECT_MODE_WP
-> +cleared upon the faulted page or range.
-> +.PP
-> +Write-protect mode only supports private anonymous memory.
->  .SS Reading from the userfaultfd structure
->  Each
->  .BR read (2)
-> @@ -364,8 +459,12 @@ flag (see
->  .BR ioctl_userfaultfd (2))
->  and this flag is set, this a write fault;
->  otherwise it is a read fault.
-> -.\"
-> -.\" UFFD_PAGEFAULT_FLAG_WP is not yet supported.
-> +.TP
-> +.B UFFD_PAGEFAULT_FLAG_WP
-> +If the address is in a range that was registered with the
-> +.B UFFDIO_REGISTER_MODE_WP
-> +flag, when this bit is set it means it's a write-protect fault.  Otherwise it's
-> +a page missing fault.
-
-Break at the point.
-
->  .RE
->  .TP
->  .I pagefault.feat.pid
-> 
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
