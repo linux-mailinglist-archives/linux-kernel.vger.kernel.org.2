@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DC5342596
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3483934259A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhCSTAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbhCSTAY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:00:24 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43440C06174A;
-        Fri, 19 Mar 2021 12:00:23 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u20so13204729lja.13;
-        Fri, 19 Mar 2021 12:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=upYBQNguiL04oAnOuIZVoxunH/QGosMTk93Yec7+Rbg=;
-        b=T6mohFpQrPvDkTsnbhIZZTClnjt+wgrlDkN7EPqfVoRBeExZ0bweCm5hAVH1lmC5oH
-         HfdbvZ3Am39pEy0irud+ZBabpuZ2Rbm0yi70vvi0OllOexkgQljG5ia3UF/M+GK/DhHO
-         mgl1gmHh6LVtOVYvxLJ4Bsaj7AI3DygblXtJ6qG6qLuDrNGPvHLIYKPRUlTpT/X4JLRx
-         t8GiNDJ0B0kz/Gogayji2Upnhq6uDsrubBhF4FzD84lglW13yusbMcPkk5CVyuBaK+xm
-         xXArMEXdb4IcHLWKpjWLBkhsMIrVFd7rup8DGI1Zc+wRYYYwuSgGWMg00h0d88uNAQXp
-         PQzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=upYBQNguiL04oAnOuIZVoxunH/QGosMTk93Yec7+Rbg=;
-        b=dGiG69PKaD1GO34aachLG74LuxHNNBGBDDjmJyOF6BGn5+nsQPvZP6h1uwyqm42Ynr
-         PlRCuEXqrbu7hV6GkeG0jGYgk0lRO9w6ZRI2cB6Ca4/nCeQAb4wgd8o5XdqoXtS7UayV
-         Q0r/XSe6q/RxBQrFhrEbzG1pkJSdbK/6sPjZF8w5+suhlaGdhhXs68TwYwD+c7kOnuc2
-         xVmj2zKL1/juy6XtlpgD7mCi+1bX5ndrtln3KuaoIr8c4nKU01ezgZwNk9pZqAaqE0fE
-         Eq/S1AXgIz08W5YrWq7g9ME4AMkLFXBdrltP3VLO38d7ci6a77JsNiKksaZ0M4yG7H6T
-         UFrg==
-X-Gm-Message-State: AOAM531XBPvcbMN/la1OJ4c0axGgYDBoEesrMBs3k+T0/vb2G4Qs8fN2
-        8jdrrItkeIe8V9+Q+z2WHShUVZOhixk=
-X-Google-Smtp-Source: ABdhPJwEHL4qNsfPRyoywMlkjZ69cy0QzZ+Nmm2U/SqQusVLnQuVWolvt/bER/1HMjW/b+LXWHB8/g==
-X-Received: by 2002:a2e:98c5:: with SMTP id s5mr1735067ljj.218.1616180421079;
-        Fri, 19 Mar 2021 12:00:21 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id f8sm715617lfs.143.2021.03.19.12.00.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 12:00:20 -0700 (PDT)
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        willy@infradead.org, david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
- <YFSrgfAyp+dYWi7k@kroah.com> <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
- <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com> <YFS06OLp70nWWLFi@kroah.com>
- <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com> <YFTITw73Wga0/F0V@kroah.com>
- <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
- <YFTRkBEr5T37NFpV@google.com>
- <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
- <YFTq/nhQaeNSWPWs@google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c255e5d8-d5b3-875b-f162-82d1fa988de2@gmail.com>
-Date:   Fri, 19 Mar 2021 22:00:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229974AbhCSTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:02:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhCSTCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 15:02:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B762361931;
+        Fri, 19 Mar 2021 19:02:08 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 19:02:06 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chen Jun <chenjun102@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
+Message-ID: <20210319190205.GI6832@arm.com>
+References: <20210319184106.5688-1-mark.rutland@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YFTq/nhQaeNSWPWs@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319184106.5688-1-mark.rutland@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.03.2021 21:18, Minchan Kim пишет:
->>> +#define CMA_ATTR_RO(_name) \
->>> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
->>> +
->>> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
->>> +			struct kobj_attribute *attr, char *buf)
->> The indentations are still wrong.
->>
->> CHECK: Alignment should match open parenthesis
-> Hmm, I didn't know that we have that kinds of rule.
-> Maybe, my broken checkpatch couldn't catch it up.
-> Thanks.
+On Fri, Mar 19, 2021 at 06:41:06PM +0000, Mark Rutland wrote:
+> We recently converted arm64 to use arch_stack_walk() in commit:
 > 
-> $ ./scripts/checkpatch.pl 0001-mm-cma-support-sysfs.patch
-> Traceback (most recent call last):
->   File "scripts/spdxcheck.py", line 6, in <module>
->     from ply import lex, yacc
+>   5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
 > 
+> The core stacktrace code expects that (when tracing the current task)
+> arch_stack_walk() starts a trace at its caller, and does not include
+> itself in the trace. However, arm64's arch_stack_walk() includes itself,
+> and so traces include one more entry than callers expect. The core
+> stacktrace code which calls arch_stack_walk() tries to skip a number of
+> entries to prevent itself appearing in a trace, and the additional entry
+> prevents skipping one of the core stacktrace functions, leaving this in
+> the trace unexpectedly.
 > 
-> < snip >
+> We can fix this by having arm64's arch_stack_walk() begin the trace with
+> its caller. The first value returned by the trace will be
+> __builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
+> first frame record to be unwound will be __builtin_frame_address(1),
+> i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
+> is also marked noinline.
 > 
+> While __builtin_frame_address(1) is not safe in portable code, local GCC
+> developers have confirmed that it is safe on arm64. To find the caller's
+> frame record, the builtin can safely dereference the current function's
+> frame record or (in theory) could stash the original FP into another GPR
+> at function entry time, neither of which are problematic.
+> 
+> Prior to this patch, the tracing code would unexpectedly show up in
+> traces of the current task, e.g.
+> 
+> | # cat /proc/self/stack
+> | [<0>] stack_trace_save_tsk+0x98/0x100
+> | [<0>] proc_pid_stack+0xb4/0x130
+> | [<0>] proc_single_show+0x60/0x110
+> | [<0>] seq_read_iter+0x230/0x4d0
+> | [<0>] seq_read+0xdc/0x130
+> | [<0>] vfs_read+0xac/0x1e0
+> | [<0>] ksys_read+0x6c/0xfc
+> | [<0>] __arm64_sys_read+0x20/0x30
+> | [<0>] el0_svc_common.constprop.0+0x60/0x120
+> | [<0>] do_el0_svc+0x24/0x90
+> | [<0>] el0_svc+0x2c/0x54
+> | [<0>] el0_sync_handler+0x1a4/0x1b0
+> | [<0>] el0_sync+0x170/0x180
+> 
+> After this patch, the tracing code will not show up in such traces:
+> 
+> | # cat /proc/self/stack
+> | [<0>] proc_pid_stack+0xb4/0x130
+> | [<0>] proc_single_show+0x60/0x110
+> | [<0>] seq_read_iter+0x230/0x4d0
+> | [<0>] seq_read+0xdc/0x130
+> | [<0>] vfs_read+0xac/0x1e0
+> | [<0>] ksys_read+0x6c/0xfc
+> | [<0>] __arm64_sys_read+0x20/0x30
+> | [<0>] el0_svc_common.constprop.0+0x60/0x120
+> | [<0>] do_el0_svc+0x24/0x90
+> | [<0>] el0_svc+0x2c/0x54
+> | [<0>] el0_sync_handler+0x1a4/0x1b0
+> | [<0>] el0_sync+0x170/0x180
+> 
+> Erring on the side of caution, I've given this a spin with a bunch of
+> toolchains, verifying the output of /proc/self/stack and checking that
+> the assembly looked sound. For GCC (where we require version 5.1.0 or
+> later) I tested with the kernel.org crosstool binares for versions
+> 5.5.0, 6.4.0, 6.5.0, 7.3.0, 7.5.0, 8.1.0, 8.3.0, 8.4.0, 9.2.0, and
+> 10.1.0. For clang (where we require version 10.0.1 or later) I tested
+> with the llvm.org binary releases of 11.0.0, and 11.0.1.
+> 
+> Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Chen Jun <chenjun102@huawei.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Will Deacon <will@kernel.org>
 
-That's probably because I use the --strict option of checkpatch by default.
+Thanks Mark. I think we should add a cc stable, just with Fixes doesn't
+always seem to end up in a stable kernel:
+
+Cc: <stable@vger.kernel.org> # 5.10.x
+
+With that:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
