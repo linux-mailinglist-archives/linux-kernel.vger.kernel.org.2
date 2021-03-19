@@ -2,168 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6CC342048
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5F234204F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhCSOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhCSOyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:54:41 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C668C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:54:41 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id jy13so10162130ejc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=5LxGSvdfhBgXA9/vt7weVi24/gBgmdo0yCkTsbvOMGc=;
-        b=AvJykrTH2Q44dpunvZa1TDAqcTF5a0NtpEThBnr1wBPHPuTspGC5HDdIqCCEJ+fokA
-         Xi55RMx6aUe4J1++O2Rnaoalh6UakUG6JzXhyBD1i7Qm4zDuTJIU/jqriGuCpDzUQXkB
-         LYT3HKtI7z9i8QQ7GCwA6S1NjrqE/uQjrhYIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=5LxGSvdfhBgXA9/vt7weVi24/gBgmdo0yCkTsbvOMGc=;
-        b=LpJlUlZZenwKmiWQvDrNRkhGdRXF7TuqroARrRRX3p4/gr4eutT/oSom3bdNdoQagR
-         885yttV4o6Cf4gbsfD7xHrMaargeecAGD9jtnVP6NB+7Z9P3weDP7A0g2VxnE2DTZl/A
-         rlX8nBEVo1+RXTB8ipeXcNabfksKjYi6vpdb+zsUH0unqZhz0dpshtyvJ1CjUPHY1V+y
-         HQbnsxHflX+JHiDHC8fDsqT4t/v8DA9nLZMNIil8C1+ELUiM4CXDextG79THx5nfPl6v
-         pInrT2oCiNM0Chq+3zNalWTAl3YLw2DB5Qeq6Gor2g5xgXvQ7gKDgbK2RHgI/9blbcKs
-         Wh6Q==
-X-Gm-Message-State: AOAM533mJoe62utn3fuWSFhhwFzVW2EnN4olKaDU21wsk5CuVpf3iwsq
-        VOy+oP9jpa6irHvFRjxIybjmZA==
-X-Google-Smtp-Source: ABdhPJwOUSsvj1QWMXnRmoiI1EgyWCffsISxRsq0qGqvSx5cdsMAN/7ljirdZjieocGKqWVCBMZGZQ==
-X-Received: by 2002:a17:906:71d3:: with SMTP id i19mr4867632ejk.347.1616165679905;
-        Fri, 19 Mar 2021 07:54:39 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:fa59:71ff:fe7e:8d21])
-        by smtp.gmail.com with ESMTPSA id r17sm4127977edt.70.2021.03.19.07.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 07:54:39 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 14:54:39 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     linux-nfs@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH] SUNRPC: Output oversized frag reclen as ASCII if printable
-Message-ID: <YFS7L4FIQBDtIY9d@chrisdown.name>
+        id S229936AbhCSO4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229914AbhCSO4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 10:56:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C63064F18;
+        Fri, 19 Mar 2021 14:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616165796;
+        bh=LMF6VcFLzMWcvJlrobie++1BU4E1KOgfLPmAne7lKKo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OGLl458+qA7HrVWVEkJBIjl2/SyMntcd5k1C5HCbg2hs9InlN7I2SGH9wJN/UArnO
+         dlNyjV0AWxqr/F9OXBK8mxaeEKdFrbONTjAWDMaCVDQ7Va4s69Uhz5fg5OauZtUdWo
+         Q1OgxNbnvWnRHp3AbMwTTCFfekSNmMx3NNj8G0kLaYC4pegPbIJfvKqFfw7pQ7IzY9
+         yVbmIycWzkB+oDAepgQkPmFIkJUcdcf2Yn/eIplcyds5wOCXddZYzzpIsot7xhk4QR
+         oi7X8GuaS3zkBlpSAbIUDYAFVSGYWwEZ3mBPY2pf+FOdZPY1xzdY2fvAXJbwX9R6GR
+         AFXv0ZDlmIXuA==
+Received: by mail-oi1-f172.google.com with SMTP id m13so5041647oiw.13;
+        Fri, 19 Mar 2021 07:56:36 -0700 (PDT)
+X-Gm-Message-State: AOAM530Jh+PcOIXPLMqKy2aZJ/3An8OwbI7ZFifT0zBZntPij8cZ75qA
+        +C5aeAFe7jFP8YM4XrUcXvf6/pPgHCJPHt/qGoU=
+X-Google-Smtp-Source: ABdhPJzs22NYplRNCgFniIEUfcVHb2z9VYKGx4WfHkWBTnO61TWk1PXtdP6RhG5AXzRZAFRg/1jqwU2AWebZF31Q7JI=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr1250554oie.67.1616165795957;
+ Fri, 19 Mar 2021 07:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+References: <20210312105530.2219008-1-lee.jones@linaro.org> <20210312105530.2219008-7-lee.jones@linaro.org>
+In-Reply-To: <20210312105530.2219008-7-lee.jones@linaro.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 19 Mar 2021 15:56:19 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a234A2WmPFJxXmf-n+J7TP3A=DyDWEr657zxaML7V9UWQ@mail.gmail.com>
+Message-ID: <CAK8P3a234A2WmPFJxXmf-n+J7TP3A=DyDWEr657zxaML7V9UWQ@mail.gmail.com>
+Subject: Re: [PATCH 06/11] block: drbd: drbd_main: Remove duplicate field initialisation
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jens Axboe <axboe@kernel.dk>, drbd-dev@lists.linbit.com,
+        linux-block <linux-block@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reclen is taken directly from the first four bytes of the message
-with the highest bit stripped, which makes it ripe for protocol mixups.
-For example, if someone tries to send a HTTP GET request to us, we'll
-interpret it as a 1195725856-sized fragment (ie. (u32)'GET '), and print
-a ratelimited KERN_NOTICE with that number verbatim.
+On Fri, Mar 12, 2021 at 11:57 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> [P_RETRY_WRITE] is initialised more than once.
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/block/drbd/drbd_main.c: In function =E2=80=98cmdname=E2=80=99:
+>  drivers/block/drbd/drbd_main.c:3660:22: warning: initialized field overw=
+ritten [-Woverride-init]
+>  drivers/block/drbd/drbd_main.c:3660:22: note: (near initialization for =
+=E2=80=98cmdnames[44]=E2=80=99)
+>
+> Cc: Philipp Reisner <philipp.reisner@linbit.com>
+> Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: drbd-dev@lists.linbit.com
+> Cc: linux-block@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-This can be confusing for downstream users, who don't know what messages
-like "fragment too large: 1195725856" actually mean, or that they
-indicate some misconfigured infrastructure elsewhere.
+Looks correct. I had actually posted a slightly different fix last year,
+but either one addresses the warning:
 
-To allow users to more easily understand and debug these cases, add the
-number interpreted as ASCII if all characters are printable:
+https://lore.kernel.org/lkml/20201026215043.3893318-1-arnd@kernel.org/
 
-    RPC: fragment too large: 1195725856 (ASCII "GET ")
-
-If demand grows elsewhere, a new printk format that takes a number and
-outputs it in various formats is also a possible solution. For now, it
-seems reasonable to put this here since this particular code path is the
-one that has repeatedly come up in production.
-
-Signed-off-by: Chris Down <chris@chrisdown.name>
-Cc: Chuck Lever <chuck.lever@oracle.com>
-Cc: J. Bruce Fields <bfields@redhat.com>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: David S. Miller <davem@davemloft.net>
----
- net/sunrpc/svcsock.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
-
-diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-index 2e2f007dfc9f..046b1d104340 100644
---- a/net/sunrpc/svcsock.c
-+++ b/net/sunrpc/svcsock.c
-@@ -46,6 +46,7 @@
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
- #include <asm/ioctls.h>
-+#include <linux/ctype.h>
- 
- #include <linux/sunrpc/types.h>
- #include <linux/sunrpc/clnt.h>
-@@ -863,6 +864,34 @@ static void svc_tcp_clear_pages(struct svc_sock *svsk)
- 	svsk->sk_datalen = 0;
- }
- 
-+/* The reclen is taken directly from the first four bytes of the message with
-+ * the highest bit stripped, which makes it ripe for protocol mixups. For
-+ * example, if someone tries to send a HTTP GET request to us, we'll interpret
-+ * it as a 1195725856-sized fragment (ie. (u32)'GET '), and print a ratelimited
-+ * KERN_NOTICE with that number verbatim.
-+ *
-+ * To allow users to more easily understand and debug these cases, this
-+ * function decodes the purported length as ASCII, and returns it if all
-+ * characters were printable. Otherwise, we return NULL.
-+ *
-+ * WARNING: Since we reuse the u32 directly, the return value is not null
-+ * terminated, and must be printed using %.*s with
-+ * sizeof(svc_sock_reclen(svsk)).
-+ */
-+static char *svc_sock_reclen_ascii(struct svc_sock *svsk)
-+{
-+	u32 len_be = cpu_to_be32(svc_sock_reclen(svsk));
-+	char *len_be_ascii = (char *)&len_be;
-+	size_t i;
-+
-+	for (i = 0; i < sizeof(len_be); i++) {
-+		if (!isprint(len_be_ascii[i]))
-+			return NULL;
-+	}
-+
-+	return len_be_ascii;
-+}
-+
- /*
-  * Receive fragment record header into sk_marker.
-  */
-@@ -870,6 +899,7 @@ static ssize_t svc_tcp_read_marker(struct svc_sock *svsk,
- 				   struct svc_rqst *rqstp)
- {
- 	ssize_t want, len;
-+	char *reclen_ascii;
- 
- 	/* If we haven't gotten the record length yet,
- 	 * get the next four bytes.
-@@ -898,9 +928,14 @@ static ssize_t svc_tcp_read_marker(struct svc_sock *svsk,
- 	return svc_sock_reclen(svsk);
- 
- err_too_large:
--	net_notice_ratelimited("svc: %s %s RPC fragment too large: %d\n",
-+	reclen_ascii = svc_sock_reclen_ascii(svsk);
-+	net_notice_ratelimited("svc: %s %s RPC fragment too large: %d%s%.*s%s\n",
- 			       __func__, svsk->sk_xprt.xpt_server->sv_name,
--			       svc_sock_reclen(svsk));
-+			       svc_sock_reclen(svsk),
-+			       reclen_ascii ? " (ASCII \"" : "",
-+			       (int)sizeof(u32),
-+			       reclen_ascii ?: "",
-+			       reclen_ascii ? "\")" : "");
- 	set_bit(XPT_CLOSE, &svsk->sk_xprt.xpt_flags);
- err_short:
- 	return -EAGAIN;
--- 
-2.30.2
-
+         Arnd
