@@ -2,65 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85B3341611
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1DB3415FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbhCSGlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:41:02 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14380 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbhCSGk3 (ORCPT
+        id S234194AbhCSGhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:37:12 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3372 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233970AbhCSGgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:40:29 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F1vNm38pXz90RD;
-        Fri, 19 Mar 2021 14:38:32 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 14:40:22 +0800
-From:   Daode Huang <huangdaode@huawei.com>
-To:     <luobin9@huawei.com>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 4/4] net: hinic: convert strlcpy to strscpy
-Date:   Fri, 19 Mar 2021 14:36:25 +0800
-Message-ID: <1616135785-122085-5-git-send-email-huangdaode@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616135785-122085-1-git-send-email-huangdaode@huawei.com>
-References: <1616135785-122085-1-git-send-email-huangdaode@huawei.com>
+        Fri, 19 Mar 2021 02:36:44 -0400
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F1vHp3mMXz5db6;
+        Fri, 19 Mar 2021 14:34:14 +0800 (CST)
+Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 19 Mar 2021 14:36:39 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 14:36:39 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Fri, 19 Mar 2021 14:36:39 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Finn Thain <fthain@telegraphics.com.au>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: RE: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Thread-Topic: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Thread-Index: AQHXGcbz+WrshjNySUOLBee938cMg6qFzJyAgAAKqICABQXQgA==
+Date:   Fri, 19 Mar 2021 06:36:39 +0000
+Message-ID: <4771468d968a44789518bc547acf5f93@hisilicon.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+ <YFB0OcBg3Vj555eA@hovoldconsulting.com>
+ <CAHp75VfcbC63t_eZeBOA0NY28BtGBD0YyLR6nSNuKAnKhXTSzA@mail.gmail.com>
+In-Reply-To: <CAHp75VfcbC63t_eZeBOA0NY28BtGBD0YyLR6nSNuKAnKhXTSzA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.211]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usage of strlcpy in linux kernel has been recently
-deprecated[1], so convert hinic driver to strscpy
-
-[1] https://lore.kernel.org/lkml/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL
-=V6A6G1oUZcprmknw@mail.gmail.com/
-
-Signed-off-by: Daode Huang <huangdaode@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_ethtool.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index c340d9a..c7848c3 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -543,8 +543,8 @@ static void hinic_get_drvinfo(struct net_device *netdev,
- 	struct hinic_hwif *hwif = hwdev->hwif;
- 	int err;
- 
--	strlcpy(info->driver, HINIC_DRV_NAME, sizeof(info->driver));
--	strlcpy(info->bus_info, pci_name(hwif->pdev), sizeof(info->bus_info));
-+	strscpy(info->driver, HINIC_DRV_NAME, sizeof(info->driver));
-+	strscpy(info->bus_info, pci_name(hwif->pdev), sizeof(info->bus_info));
- 
- 	err = hinic_get_mgmt_version(nic_dev, mgmt_ver);
- 	if (err)
--- 
-2.8.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5keSBTaGV2Y2hlbmtv
+IFttYWlsdG86YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNvbV0NCj4gU2VudDogVHVlc2RheSwgTWFy
+Y2ggMTYsIDIwMjEgMTA6NDEgUE0NCj4gVG86IEpvaGFuIEhvdm9sZCA8am9oYW5Aa2VybmVsLm9y
+Zz47IEZpbm4gVGhhaW4gPGZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1PjsNCj4gU29uZyBCYW8g
+SHVhIChCYXJyeSBTb25nKSA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+DQo+IENjOiBLcnp5
+c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGNhbm9uaWNhbC5jb20+OyBHcmVn
+DQo+IEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPjsgSmlyaSBTbGFi
+eSA8amlyaXNsYWJ5QGtlcm5lbC5vcmc+Ow0KPiBsaW51eC1hcm0gTWFpbGluZyBMaXN0IDxsaW51
+eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBMaW51eCBTYW1zdW5nDQo+IFNPQyA8
+bGludXgtc2Ftc3VuZy1zb2NAdmdlci5rZXJuZWwub3JnPjsgb3BlbiBsaXN0OlNFUklBTCBEUklW
+RVJTDQo+IDxsaW51eC1zZXJpYWxAdmdlci5rZXJuZWwub3JnPjsgTGludXggS2VybmVsIE1haWxp
+bmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IEhlY3RvciBNYXJ0aW4g
+PG1hcmNhbkBtYXJjYW4uc3Q+OyBBcm5kDQo+IEJlcmdtYW5uIDxhcm5kQGtlcm5lbC5vcmc+DQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHR0eTogc2VyaWFsOiBzYW1zdW5nX3R0eTogcmVtb3ZlIHNw
+aW5sb2NrIGZsYWdzIGluDQo+IGludGVycnVwdCBoYW5kbGVycw0KPiANCj4gT24gVHVlLCBNYXIg
+MTYsIDIwMjEgYXQgMTE6MDIgQU0gSm9oYW4gSG92b2xkIDxqb2hhbkBrZXJuZWwub3JnPiB3cm90
+ZToNCj4gPg0KPiA+IE9uIE1vbiwgTWFyIDE1LCAyMDIxIGF0IDA3OjEyOjEyUE0gKzAxMDAsIEty
+enlzenRvZiBLb3psb3dza2kgd3JvdGU6DQo+ID4gPiBTaW5jZSBpbnRlcnJ1cHQgaGFuZGxlciBp
+cyBjYWxsZWQgd2l0aCBkaXNhYmxlZCBsb2NhbCBpbnRlcnJ1cHRzLCB0aGVyZQ0KPiA+ID4gaXMg
+bm8gbmVlZCB0byB1c2UgdGhlIHNwaW5sb2NrIHByaW1pdGl2ZXMgZGlzYWJsaW5nIGludGVycnVw
+dHMgYXMgd2VsbC4NCj4gPg0KPiA+IFRoaXMgaXNuJ3QgZ2VuZXJhbGx5IHRydWUgZHVlIHRvICJ0
+aHJlYWRpcnFzIiBhbmQgdGhhdCBjYW4gbGVhZCB0bw0KPiA+IGRlYWRsb2NrcyBpZiB0aGUgY29u
+c29sZSBjb2RlIGlzIGNhbGxlZCBmcm9tIGhhcmQgaXJxIGNvbnRleHQuDQo+ID4NCj4gPiBOb3cs
+IHRoaXMgaXMgKm5vdCogdGhlIGNhc2UgZm9yIHRoaXMgcGFydGljdWxhciBkcml2ZXIgc2luY2Ug
+aXQgZG9lc24ndA0KPiA+IGV2ZW4gYm90aGVyIHRvIHRha2UgdGhlIHBvcnQgbG9jayBpbiBjb25z
+b2xlX3dyaXRlKCkuIFRoYXQgc2hvdWxkDQo+ID4gcHJvYmFibHkgYmUgZml4ZWQgaW5zdGVhZC4N
+Cj4gPg0KPiA+IFNlZSBodHRwczovL2xvcmUua2VybmVsLm9yZy9yL1g3a3ZpaVJ3dXh2UHhDOE9A
+bG9jYWxob3N0Lg0KPiANCj4gRmlubiwgQmFycnksIHNvbWV0aGluZyB0byBjaGVjayBJIHRoaW5r
+Pw0KDQpNeSB1bmRlcnN0YW5kaW5nIGlzIHRoYXQgc3Bpbl9sb2NrX2lycXNhdmUgY2FuJ3QgcHJv
+dGVjdCB0aGUgY29udGV4dA0KdGhlIGNvbnNvbGVfd3JpdGUoKSBpcyBjYWxsZWQgaW4gaGFyZGly
+cSBmb3IgdGhyZWFkZWRfaXJxIGNhc2UgbWFpbmx5DQpmb3IgcHJlZW1wdC1ydCBzY2VuYXJpb3Mg
+YXMgc3Bpbl9sb2NrX2lycXNhdmUgZG9lc24ndCBkaXNhYmxlIGlycSBpbg0KdGhhdCBjYXNlIGF0
+IGFsbC4NClNlZToNCmh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0ZXN0L2xvY2tp
+bmcvbG9ja3R5cGVzLmh0bWwNCnNwaW5sb2NrX3QgYW5kIFBSRUVNUFRfUlQNCk9uIGEgUFJFRU1Q
+VF9SVCBrZXJuZWwgc3BpbmxvY2tfdCBpcyBtYXBwZWQgdG8gYSBzZXBhcmF0ZSBpbXBsZW1lbnRh
+dGlvbg0KYmFzZWQgb24gcnRfbXV0ZXggd2hpY2ggY2hhbmdlcyB0aGUgc2VtYW50aWNzOg0KUHJl
+ZW1wdGlvbiBpcyBub3QgZGlzYWJsZWQuDQpUaGUgaGFyZCBpbnRlcnJ1cHQgcmVsYXRlZCBzdWZm
+aXhlcyBmb3Igc3Bpbl9sb2NrIC8gc3Bpbl91bmxvY2sgb3BlcmF0aW9ucw0KKF9pcnEsIF9pcnFz
+YXZlIC8gX2lycXJlc3RvcmUpIGRvIG5vdCBhZmZlY3QgdGhlIENQVeKAmXMgaW50ZXJydXB0IGRp
+c2FibGVkDQpzdGF0ZS4NCg0KU28gaWYgY29uc29sZV93cml0ZSgpIGNhbiBpbnRlcnJ1cHQgb3Vy
+IGNvZGUgaW4gaGFyZGlycSwgd2Ugc2hvdWxkDQptb3ZlIHRvIHJhd19zcGluX2xvY2tfaXJxc2F2
+ZSBmb3IgdGhpcyBkcml2ZXIuDQoNCkkgdGhpbmsgaXQgaXMgYWxtb3N0IGFsd2F5cyB3cm9uZyB0
+byBjYWxsIHNwaW5fbG9ja19pcnFzYXZlIGluIGhhcmRpcnEuDQoNCj4gDQo+IC0tDQo+IFdpdGgg
+QmVzdCBSZWdhcmRzLA0KPiBBbmR5IFNoZXZjaGVua28NCg0KVGhhbmtzDQpCYXJyeQ0K
