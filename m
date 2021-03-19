@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EF73414F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAEC3414FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhCSFkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233756AbhCSFki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:40:38 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BAAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:40:38 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so6204482pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:40:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=5x5odp979WLlXOJ6f4tJdUumqOt4vIxvWJ/PSurH5YU=;
-        b=O5MoIDuBIiaRpqaMmMntsxJHfiJlwp/xwuI0glHnfA7PqqqmUaH4ttcw53qTWVbwAo
-         biZg2EXn7OtYFAK8R8GeA7nOGZpX4H1Dz3epp+PYQvcQIszCTaWoXyKQD4WFBNKpvVw3
-         KmU/hDS7/LfdlDl5JXKVS9UTvbQg0BylSZ8Of2GplJaaU1LEu73ks0DTAiOTuisLzNLQ
-         r/jQ6hqXhS5tnyD6Wj84LbwwdbLg+jqSLaOzK0YEflxycdPxUwhXRLxC18ScUGuMZypT
-         mmRv/TLOo0ZuNQVOi4Dit8C9UXWoB13NnrERnyV8bQgzYiu0Pk0Ske0i6WTn7o4ivQPq
-         5PXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=5x5odp979WLlXOJ6f4tJdUumqOt4vIxvWJ/PSurH5YU=;
-        b=dMRdhfbVCZZnvjgJz6mVkeKV5Xfobk62wdJqrSIU70gghOAYa/lToymJPGusyYBZdS
-         Xbflz8S/oMQ6KsUmnz/H6JYHRRTQOwb1vE0S5q9w/DjSQbBO8w0lM3xNR2QHksdOmhr2
-         uB6AQE1V2fAGdsOI3POoZcmfU6kHhAlghafYIG7N+eMNG8sVbT69JCM4Fe5lVXtUC+ip
-         kzAjsWXllpfHKj3f7bHCQKJabHlYY/vzU09usu4AWIVJ6X+NgRZEvunRtKVoRlhSydd4
-         yRPWBsl84uv1LVeSEVIa3Kb04JGaRXc0WAuRMtqRXzp6SVH/ZOsWSIhtxZhyISaoCimv
-         +hlQ==
-X-Gm-Message-State: AOAM532FWSqoh2jbeApD1zW5vT7mjnZ1MQcMMUI359TZ+khls8vkYKnV
-        8vPQp6R1F4G5CmP8iuZWLZk4dg==
-X-Google-Smtp-Source: ABdhPJxAo7Q7H3ZY6NJki9+yMkvvdRRONgQNnTam9TUlspQeSDpavDAOXtycALGM+DAQmaEOiJ8LAA==
-X-Received: by 2002:a17:90a:f40c:: with SMTP id ch12mr8055908pjb.176.1616132437613;
-        Thu, 18 Mar 2021 22:40:37 -0700 (PDT)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id j3sm4187463pjf.36.2021.03.18.22.40.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Mar 2021 22:40:36 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 11:10:35 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210319054035.47tn747lkagpip6v@vireshk-i7>
-References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
- <20210316074409.2afwsaeqxuwvj7bd@vireshk-i7>
- <0dfff1ac-50bb-b5bc-72ea-880fd52ed60d@metux.net>
- <CAK8P3a3f9bKdOOMgrA9TfeObyEd+eeg8JcTVT8AyS1+s=X2AjQ@mail.gmail.com>
- <20210319035435.a4reve77hnvjdzwk@vireshk-i7>
- <b135b474-b167-67ad-588c-b0cfe8dc2998@intel.com>
+        id S233897AbhCSFna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230337AbhCSFm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 01:42:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9AA164DCC;
+        Fri, 19 Mar 2021 05:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616132578;
+        bh=eUscbhRfkwQ3BScJNzBWpmoaoPTaH2/CrSy667cXmSo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tgqo1fiAkRoibCXJIE+kRXm9B7zHFlQ3ZjkYujbyCmY/dDEE0Jy62q6f9XXHt4iIO
+         /p23bnuLpXB29+L+t3a70FztoobrfKvnmT0Bs1saabnWd5AfaTGDAlt8Xo70I0G34/
+         d0ZZJZRz+N53xxtXUF/HDClQdzyjJVEmAxDJHb5NYlSFrlPOW0yjOFNNxSi4KpHyz+
+         ibM33xZZQNJIerRMOx6TVMCPKGq2OwKzZv63v542d1a1I3cOGUP2Uf2gx+phrVEzcv
+         lkgm2gw/7bksxlh3HS+1ofIrAfbfBnso20XPGttISS7t0j3moc6w016C1YOxuSHJZg
+         LuaAb2k8uy4Rw==
+Date:   Fri, 19 Mar 2021 07:42:31 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, dave.hansen@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
+Message-ID: <YFQ5x8cTPIlywDtW@kernel.org>
+References: <20210319040602.178558-1-kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b135b474-b167-67ad-588c-b0cfe8dc2998@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210319040602.178558-1-kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-03-21, 13:31, Jie Deng wrote:
+On Fri, Mar 19, 2021 at 05:06:02PM +1300, Kai Huang wrote:
+> Below kernel bug happened when running simple SGX application when EPC
+> is under pressure.  The root cause is with commit 5b8719504e3a
+> ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()"),
+> __sgx_alloc_epc_page() returns NULL when there's no free EPC page can be
+> allocated, while old behavior was it always returned ERR_PTR(-ENOMEM) in
+> such case.
 > 
-> On 2021/3/19 11:54, Viresh Kumar wrote:
-> > On 18-03-21, 15:52, Arnd Bergmann wrote:
-> > > Allowing multiple virtio-i2c controllers in one system, and multiple i2c
-> > > devices attached to each controller is clearly something that has to work.
-> > Good.
-> > 
-> > > I don't actually see a limitation though. Viresh, what is the problem
-> > > you see for having multiple controllers?
-> > I thought this would be a problem in that case as we are using the global
-> > virtio_adapter here.
-> > 
-> > +       vi->adap = &virtio_adapter;
-> > +       i2c_set_adapdata(vi->adap, vi);
-> > 
-> > Multiple calls to probe() will end up updating the same pointer inside adap.
-> > 
-> > +       vi->adap->dev.parent = &vdev->dev;
-> > 
-> > Same here, overwrite.
-> > 
-> > +       /* Setup ACPI node for controlled devices which will be probed through ACPI */
-> > +       ACPI_COMPANION_SET(&vi->adap->dev, ACPI_COMPANION(pdev));
-> > +       vi->adap->timeout = HZ / 10;
-> > 
-> > These may be fine, but still not ideal I believe.
-> > 
-> > +       ret = i2c_add_adapter(vi->adap);
-> > i
-> > This should be a problem as well, we must be adding this to some sort of list,
-> > doing some RPM stuff, etc ?
-> > 
-> > Jie, the solution is to allocate memory for adap at runtime in probe and remove
-> > the virtio_adapter structure completely.
+> Fix by directly returning the page if __sgx_alloc_epc_page_from_node()
+> allocates a valid page in fallback to non-local allocation, and always
+> returning ERR_PTR(-ENOMEM) if no EPC page can be allocated.
+> 
+> [  253.474764] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> [  253.500101] #PF: supervisor write access in kernel mode
+> [  253.525462] #PF: error_code(0x0002) - not-present page
+> ...
+> [  254.102041] Call Trace:
+> [  254.126699]  sgx_ioc_enclave_add_pages+0x241/0x770
+> [  254.151305]  sgx_ioctl+0x194/0x4b0
+> [  254.174976]  ? handle_mm_fault+0xd0/0x260
+> [  254.198470]  ? do_user_addr_fault+0x1ef/0x570
+> [  254.221827]  __x64_sys_ioctl+0x91/0xc0
+> [  254.244546]  do_syscall_64+0x38/0x90
+> [  254.266728]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  254.289232] RIP: 0033:0x7fdc4cf4031b
+> ...
+> [  254.711480] CR2: 0000000000000008
+> [  254.735494] ---[ end trace 970dce6d4cdf7f64 ]---
+> [  254.759915] RIP: 0010:sgx_alloc_epc_page+0x46/0x152
+> ...
+> 
+> Fixes: 5b8719504e3a("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+
+
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index fe26e7e91c25..7105e34da530 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -508,10 +508,10 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+>  
+>  		page = __sgx_alloc_epc_page_from_node(nid);
+>  		if (page)
+> -			break;
+> +			return page;
+>  	}
+>  
+> -	return page;
+> +	return ERR_PTR(-ENOMEM);
+>  }
+>  
+>  /**
+> -- 
+> 2.30.2
 > 
 > 
-> If you want to support that. Then I think we don't need to change the
-> following at all.
-> 
-> > +    .algo = &virtio_algorithm,
-> > +
-> > +        return ret;
-> > +
-> > +    vi->adap = virtio_adapter;
-> This is strange, why are you allocating memory for adapter twice ?
-> Once for virtio_adapter and once for vi->adap ? Either fill the fields
-> directly for v->adap here and remove virtio_adapter or make vi->adap a
-> pointer.
 
-Yes, your previous version was partly okay but you don't need the
-virtio_algorithm structure to be allocated. There are only 4 fields you are
-updating here, just fill them directly in vi->adap.
-
-(FWIW, I also suggested the same when I said
-"Either fill the fields directly for v->adap here and remove virtio_adapter".
-)
-
-See how drivers/i2c/busses/i2c-versatile.c and most of the other drivers have
-done it.
-
--- 
-viresh
+/Jarkko
