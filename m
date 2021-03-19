@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC0F34189E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF75341873
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhCSJll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCSJlL (ORCPT
+        id S229941AbhCSJdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:33:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14097 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhCSJci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:41:11 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C0CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:41:11 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=61211)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@lam.works>)
-        id 1lNBcw-0008Ff-NG
-        for linux-kernel@vger.kernel.org; Fri, 19 Mar 2021 10:41:06 +0100
-Subject: Merge Linux and Gnu as Inu? Was Re: For those who did not get this
- yet, Fair Pay discussion is over, and concluded with LCPU.
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@lam.works>
-To:     linux-kernel@vger.kernel.org
-References: <15b1b173-accb-6746-630b-a0945a49bb9d@lam.works>
- <c72dd306-4a65-bd32-669e-551f44ca86c6@lam.works>
-Message-ID: <d07ffae7-3eae-9a18-b3c1-39e4e2461c6f@lam.works>
-Date:   Fri, 19 Mar 2021 10:40:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 19 Mar 2021 05:32:38 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1zCP3c0tz19Gf8;
+        Fri, 19 Mar 2021 17:30:41 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Mar 2021 17:32:30 +0800
+From:   'w00385741 <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Oder Chiou <oder_chiou@realtek.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Jack Yu <jack.yu@realtek.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] ASoC: rt1019: make symbol 'rt1019_i2c_driver' static
+Date:   Fri, 19 Mar 2021 09:41:02 +0000
+Message-ID: <20210319094102.4185096-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <c72dd306-4a65-bd32-669e-551f44ca86c6@lam.works>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even better Inu OS, and Inu Licence, merges the relevant parts of Linux 
-and Gnu, drops the X and rejects other irrelevant parts. This will be 
-the angle I support.
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-Serenity.
-Ywe Cærlyn
-https://www.youtube.com/channel/UC3BcyFY1Bphc7smGH-IGLVw/featured
+The sparse tool complains as follows:
 
-Den 17.03.2021 10:28, skrev Ywe Cærlyn:
-> Something that occured to me also, why not just change licence to NiX 
-> licence? NiX is a generally known name of open source unix derivative 
-> variants.
-> 
-> Serenity.
-> 
-> Den 17.03.2021 08:14, skrev Ywe Cærlyn:
->> I got some mails on some old posts here, please update: Fair Pay 
->> discussion is over, and concluded with LCPU.
->>
->> My media chan is here: 
->> https://www.youtube.com/channel/UC3BcyFY1Bphc7smGH-IGLVw Bit Qabbi, 
->> which always has been about the monotheistic angle, now also with the 
->> term Qabbi, taking inspiration from the muslim shaped Qaba, for design.
->>
->> Knowing the muslim debate follows, we have made a joke reply to this, 
->> seeing that it is mostly based in a deviant Eid, which I am not 
->> interested in. https://www.youtube.com/channel/UCDDmHQv0dTHPjdwJwKrjLqQ
->>
->> A discussion on reality goes to the standard expression of Alla, and 
->> this should then be the goal, and is already on my projects.
->>
->> Trance actually was this in the 90s, but when it reached that stage, 
->> many became confused, and it mostly failed. (While it did actually 
->> represent reality in media a few times). I was ready for this and DID
->> become a muslim.
->>
->> LCPU representing natural progression in computing space.
->>
->> Serenity,
->> Ywe Cærlyn
->> (Best read in Cursive).
->>
->>
+sound/soc/codecs/rt1019.c:927:19: warning:
+ symbol 'rt1019_i2c_driver' was not declared. Should it be static?
+
+This symbol is not used outside of rt1019.c, so this
+commit marks it static.
+
+Fixes: 7ec79d3850d0 ("ASoC: rt1019: add rt1019 amplifier driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ sound/soc/codecs/rt1019.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt1019.c b/sound/soc/codecs/rt1019.c
+index fb275686a00f..5138f028d9f2 100644
+--- a/sound/soc/codecs/rt1019.c
++++ b/sound/soc/codecs/rt1019.c
+@@ -924,7 +924,7 @@ static int rt1019_i2c_probe(struct i2c_client *i2c,
+ 		&soc_component_dev_rt1019, rt1019_dai, ARRAY_SIZE(rt1019_dai));
+ }
+ 
+-struct i2c_driver rt1019_i2c_driver = {
++static struct i2c_driver rt1019_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt1019",
+ 		.of_match_table = of_match_ptr(rt1019_of_match),
+
