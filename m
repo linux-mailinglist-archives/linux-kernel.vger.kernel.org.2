@@ -2,97 +2,494 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BF33418B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3AC3418BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhCSJp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:45:27 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53119 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhCSJpU (ORCPT
+        id S229805AbhCSJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCSJsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:45:20 -0400
-Received: by mail-io1-f69.google.com with SMTP id v5so29634979ioq.19
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:45:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GKPXbiVNuIwQHsRuMAbWdUTxkPnfWdxXiRjOZg6AQ8o=;
-        b=bHEHEcgZ0mHVRjsBzlpRdKReGnQR6N3mTrPgDTEnnrm7YTj+dhVqbPDSt9CDwaTTTv
-         WWdZBcJPi2fbl2k6WLkzOPPDALBxfRfu/gmP2mzZLWSRInEmCQqzKgsttr8inxzXNkFY
-         GtwcX16K47Y4LiA8LL31WxtTxBZ2dex+iN8XHJGlRy8zsGN/Wsj0+9ZW5RWoBpS1I/Ov
-         HUAkiRbzu3tOQBDtCgy8mh01gCRv86OIWzWaAyUwiw1uKkmVJieM32mFSYgJ1rNnK6jm
-         zuCEcCXeOFRZOKmyStMUIqvRQgPSRvX63SGnqUR5WwYx1Hi2OpZoSz5VKG0WZ6c6U/kE
-         W+IA==
-X-Gm-Message-State: AOAM5300DycSd36pgTb1cgvQ/YRPnonPO+IvHHcQu0l1YJg3lo+t/acN
-        fJKlTeIE7xtz+4Q+QDvwagKhwOrFHPWNx+TZn/4Phl0m5HYE
-X-Google-Smtp-Source: ABdhPJzFsa8iygFbN7hXAnw0CQ8QrVL80j/Moe3pG4vWZO4TIsqy8BNsvqV6wI+wIxFnNVAI9mM6pRVrRHC7Hu2Ls5SXJl3Ra17u
+        Fri, 19 Mar 2021 05:48:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54432C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FL98dJe6LUC1UXgwxrVI5N5yKW62jyZF78cRbTNAVD8=; b=wBtJly1FjwocHJ6rUJoK7HIWgX
+        8w6fNgu1LYTG9WhO9VQmgOaXDEilzy/4GnfDmB7SRhYK5CRiA7wXr+YBDxoxNZJmWMlgGgeL1ssnB
+        shayrtqqOclFEANR/KmXWnz83RJxF1wckQ9+VekGYqq+lXJNVGlJGGADW0bxVesd6AxufMZt0mmq7
+        ppDavv0jpSMTvWBW56rbfeEetVFcPgHzC3bi3K/oTYnyMCw2sjlCsHc9IVcvukYgvfTfRwblwtmpo
+        wWzgxl/r7JUNBkL2tlILcgiA0E65aBzjT1Bl8ZUKqZVckHKbP/KrUO8+CnpqJv/e3arHC9qyLJ1sF
+        +b4/xgXA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNBjF-004F3k-Pe; Fri, 19 Mar 2021 09:47:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5CE630018A;
+        Fri, 19 Mar 2021 10:47:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C2E862B4C3BDF; Fri, 19 Mar 2021 10:47:36 +0100 (CET)
+Date:   Fri, 19 Mar 2021 10:47:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/14] objtool: Add elf_create_reloc() helper
+Message-ID: <YFRzOFp5/pHaLDti@hirez.programming.kicks-ass.net>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171919.887152166@infradead.org>
+ <20210319014246.c6trc4x3qewro32c@treble>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:14cb:: with SMTP id b11mr2114361iow.175.1616147119654;
- Fri, 19 Mar 2021 02:45:19 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 02:45:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f8ca3305bde0922e@google.com>
-Subject: [syzbot] WARNING in percpu_ref_exit (3)
-From:   syzbot <syzbot+fedc0f6148b1b9a42593@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319014246.c6trc4x3qewro32c@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Mar 18, 2021 at 08:42:46PM -0500, Josh Poimboeuf wrote:
+> On Thu, Mar 18, 2021 at 06:11:11PM +0100, Peter Zijlstra wrote:
+> > We have 4 instances of adding a relocation. Create a common helper
+> > to avoid growing even more.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> I'm not a fan of the API -- how about squashing this in?  Untested, of
+> course.
 
-syzbot found the following issue on:
+Can do.. I do seem to have over-cooked it a bit.
 
-HEAD commit:    bf152b0b Merge tag 'for_linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14532c1ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2f52d48cfe68458
-dashboard link: https://syzkaller.appspot.com/bug?extid=fedc0f6148b1b9a42593
-compiler:       Debian clang version 11.0.1-2
+> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+> index d2afe2454de4..b3bd97b2b034 100644
+> --- a/tools/objtool/elf.c
+> +++ b/tools/objtool/elf.c
+> @@ -447,76 +447,73 @@ static int read_symbols(struct elf *elf)
+>  	return -1;
+>  }
+>  
+> -static void elf_add_reloc(struct elf *elf, struct reloc *reloc)
+> +int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
+> +		  unsigned int type, struct symbol *sym, int addend)
+>  {
+> -	struct section *sec = reloc->sec;
+> +	struct reloc *reloc;
+> +
+> +	reloc = malloc(sizeof(*reloc));
+> +	if (!reloc) {
+> +		perror("malloc");
+> +		return -1;
+> +	}
+> +	memset(reloc, 0, sizeof(*reloc));
+> +
+> +	reloc->sec = sec->reloc;
+> +	reloc->offset = offset;
+> +	reloc->type = type;
+> +	reloc->sym = sym;
+> +	reloc->addend = addend;
+>  
+>  	list_add_tail(&reloc->list, &sec->reloc_list);
+>  	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
+>  
+> -	sec->changed = true;
+> -}
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I'm thinking we have to mark something changed though; I've added
+sec->reloc->changed = true; there.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fedc0f6148b1b9a42593@syzkaller.appspotmail.com
+> +static int insn_to_sym_addend(struct section *sec, unsigned long offset,
+> +			      struct symbol **sym, int *addend)
+>  {
+>  	if (sec->sym) {
+> +		*sym = sec->sym;
+> +		*addend = offset;
+> +		return 0;
+>  	}
+>  
+>  	/*
+>  	 * The Clang assembler strips section symbols, so we have to reference
+>  	 * the function symbol instead:
+>  	 */
+> +	*sym = find_symbol_containing(sec, offset);
+> +	if (!*sym) {
+>  		/*
+>  		 * Hack alert.  This happens when we need to reference the NOP
+>  		 * pad insn immediately after the function.
+>  		 */
+> +		*sym = find_symbol_containing(sec, offset - 1);
+>  	}
+>  
+> +	if (!*sym) {
+> +		WARN("can't find symbol containing %s+0x%lx", sec->name, offset);
+> +		return -1;
+>  	}
+>  
+> +	*addend = offset - (*sym)->offset;
+> +	return 0;
+> +}
+>  
+> +int elf_add_reloc_to_insn(struct elf *elf, struct section *sec,
+> +			  unsigned long offset, unsigned int type,
+> +			  struct section *insn_sec, unsigned long insn_off)
+> +{
+> +	struct symbol *sym;
+> +	int addend;
+>  
+> +	if (insn_to_sym_addend(insn_sec, insn_off, &sym, &addend))
+> +		return -1;
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 68 at lib/percpu-refcount.c:113 __percpu_ref_exit lib/percpu-refcount.c:113 [inline]
-WARNING: CPU: 0 PID: 68 at lib/percpu-refcount.c:113 percpu_ref_exit+0x1e0/0x1f0 lib/percpu-refcount.c:134
-Modules linked in:
-CPU: 1 PID: 68 Comm: kworker/u4:2 Not tainted 5.12.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-RIP: 0010:__percpu_ref_exit lib/percpu-refcount.c:113 [inline]
-RIP: 0010:percpu_ref_exit+0x1e0/0x1f0 lib/percpu-refcount.c:134
-Code: c7 c7 80 67 ce 8c 4c 89 e6 e8 9c 96 84 05 48 8b 3c 24 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 65 8b e8 fd e8 00 68 a5 fd <0f> 0b e9 d0 fe ff ff 66 0f 1f 84 00 00 00 00 00 41 57 41 56 41 55
-RSP: 0018:ffffc90000fbfba0 EFLAGS: 00010293
-RAX: ffffffff83d35710 RBX: 0000607f46034a90 RCX: ffff88801195b780
-RDX: 0000000000000000 RSI: 0000607f46034a90 RDI: 0000000000000000
-RBP: ffff8880292ae580 R08: ffffffff83d355a5 R09: fffffbfff1f290ca
-R10: fffffbfff1f290ca R11: 0000000000000000 R12: ffff8880292ae590
-R13: ffff8880121a6000 R14: 1ffff11002434c00 R15: 1ffff11002434c01
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32d23000 CR3: 0000000013897000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_ring_ctx_free fs/io_uring.c:8419 [inline]
- io_ring_exit_work+0x580/0xa90 fs/io_uring.c:8565
- process_one_work+0x789/0xfd0 kernel/workqueue.c:2275
- worker_thread+0xac1/0x1300 kernel/workqueue.c:2421
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Might be simpler to not have that function and just do it here instead.
 
+>  
+> +	return elf_add_reloc(elf, sec, offset, type, sym, addend);
+>  }
+
+
+
+Full patch, because diff on a diff on a diff is getting ludicrous hard
+to read :-)
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ check.c               |   78 +++++++++-------------------------------------
+ elf.c                 |   84 ++++++++++++++++++++++++++++++++------------------
+ include/objtool/elf.h |   10 ++++-
+ orc_gen.c             |   30 +++--------------
+ 4 files changed, 84 insertions(+), 118 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -433,8 +433,7 @@ static int add_dead_ends(struct objtool_
+ 
+ static int create_static_call_sections(struct objtool_file *file)
+ {
+-	struct section *sec, *reloc_sec;
+-	struct reloc *reloc;
++	struct section *sec;
+ 	struct static_call_site *site;
+ 	struct instruction *insn;
+ 	struct symbol *key_sym;
+@@ -460,8 +459,7 @@ static int create_static_call_sections(s
+ 	if (!sec)
+ 		return -1;
+ 
+-	reloc_sec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!reloc_sec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	idx = 0;
+@@ -471,25 +469,11 @@ static int create_static_call_sections(s
+ 		memset(site, 0, sizeof(struct static_call_site));
+ 
+ 		/* populate reloc for 'addr' */
+-		reloc = malloc(sizeof(*reloc));
+-
+-		if (!reloc) {
+-			perror("malloc");
++		if (elf_add_reloc_to_insn(file->elf, sec,
++					  idx * sizeof(struct static_call_site),
++					  R_X86_64_PC32,
++					  insn->sec, insn->offset))
+ 			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-
+-		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
+-		if (!reloc->sym) {
+-			WARN_FUNC("static call tramp: missing containing symbol",
+-				  insn->sec, insn->offset);
+-			return -1;
+-		}
+-
+-		reloc->type = R_X86_64_PC32;
+-		reloc->offset = idx * sizeof(struct static_call_site);
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		/* find key symbol */
+ 		key_name = strdup(insn->call_dest->name);
+@@ -526,18 +510,11 @@ static int create_static_call_sections(s
+ 		free(key_name);
+ 
+ 		/* populate reloc for 'key' */
+-		reloc = malloc(sizeof(*reloc));
+-		if (!reloc) {
+-			perror("malloc");
++		if (elf_add_reloc(file->elf, sec,
++				  idx * sizeof(struct static_call_site) + 4,
++				  R_X86_64_PC32, key_sym,
++				  is_sibling_call(insn) * STATIC_CALL_SITE_TAIL))
+ 			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-		reloc->sym = key_sym;
+-		reloc->addend = is_sibling_call(insn) ? STATIC_CALL_SITE_TAIL : 0;
+-		reloc->type = R_X86_64_PC32;
+-		reloc->offset = idx * sizeof(struct static_call_site) + 4;
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		idx++;
+ 	}
+@@ -547,8 +524,7 @@ static int create_static_call_sections(s
+ 
+ static int create_mcount_loc_sections(struct objtool_file *file)
+ {
+-	struct section *sec, *reloc_sec;
+-	struct reloc *reloc;
++	struct section *sec;
+ 	unsigned long *loc;
+ 	struct instruction *insn;
+ 	int idx;
+@@ -571,8 +547,7 @@ static int create_mcount_loc_sections(st
+ 	if (!sec)
+ 		return -1;
+ 
+-	reloc_sec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!reloc_sec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	idx = 0;
+@@ -581,32 +556,11 @@ static int create_mcount_loc_sections(st
+ 		loc = (unsigned long *)sec->data->d_buf + idx;
+ 		memset(loc, 0, sizeof(unsigned long));
+ 
+-		reloc = malloc(sizeof(*reloc));
+-		if (!reloc) {
+-			perror("malloc");
++		if (elf_add_reloc_to_insn(file->elf, sec,
++					  idx * sizeof(unsigned long),
++					  R_X86_64_64,
++					  insn->sec, insn->offset))
+ 			return -1;
+-		}
+-		memset(reloc, 0, sizeof(*reloc));
+-
+-		if (insn->sec->sym) {
+-			reloc->sym = insn->sec->sym;
+-			reloc->addend = insn->offset;
+-		} else {
+-			reloc->sym = find_symbol_containing(insn->sec, insn->offset);
+-
+-			if (!reloc->sym) {
+-				WARN("missing symbol for insn at offset 0x%lx\n",
+-				     insn->offset);
+-				return -1;
+-			}
+-
+-			reloc->addend = insn->offset - reloc->sym->offset;
+-		}
+-
+-		reloc->type = R_X86_64_64;
+-		reloc->offset = idx * sizeof(unsigned long);
+-		reloc->sec = reloc_sec;
+-		elf_add_reloc(file->elf, reloc);
+ 
+ 		idx++;
+ 	}
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -211,32 +211,6 @@ struct reloc *find_reloc_by_dest(const s
+ 	return find_reloc_by_dest_range(elf, sec, offset, 1);
+ }
+ 
+-void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
+-			      struct reloc *reloc)
+-{
+-	if (sec->sym) {
+-		reloc->sym = sec->sym;
+-		reloc->addend = offset;
+-		return;
+-	}
+-
+-	/*
+-	 * The Clang assembler strips section symbols, so we have to reference
+-	 * the function symbol instead:
+-	 */
+-	reloc->sym = find_symbol_containing(sec, offset);
+-	if (!reloc->sym) {
+-		/*
+-		 * Hack alert.  This happens when we need to reference the NOP
+-		 * pad insn immediately after the function.
+-		 */
+-		reloc->sym = find_symbol_containing(sec, offset - 1);
+-	}
+-
+-	if (reloc->sym)
+-		reloc->addend = offset - reloc->sym->offset;
+-}
+-
+ static int read_sections(struct elf *elf)
+ {
+ 	Elf_Scn *s = NULL;
+@@ -473,14 +447,66 @@ static int read_symbols(struct elf *elf)
+ 	return -1;
+ }
+ 
+-void elf_add_reloc(struct elf *elf, struct reloc *reloc)
++int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
++		  unsigned int type, struct symbol *sym, int addend)
+ {
+-	struct section *sec = reloc->sec;
++	struct reloc *reloc;
++
++	reloc = malloc(sizeof(*reloc));
++	if (!reloc) {
++		perror("malloc");
++		return -1;
++	}
++	memset(reloc, 0, sizeof(*reloc));
++
++	reloc->sec = sec->reloc;
++	reloc->offset = offset;
++	reloc->type = type;
++	reloc->sym = sym;
++	reloc->addend = addend;
+ 
+ 	list_add_tail(&reloc->list, &sec->reloc_list);
+ 	elf_hash_add(elf->reloc_hash, &reloc->hash, reloc_hash(reloc));
+ 
+-	sec->changed = true;
++	sec->reloc->changed = true;
++
++	return 0;
++}
++
++int elf_add_reloc_to_insn(struct elf *elf, struct section *sec,
++			  unsigned long offset, unsigned int type,
++			  struct section *insn_sec, unsigned long insn_off)
++{
++	struct symbol *sym;
++	int addend;
++
++	if (sec->sym) {
++		sym = sec->sym;
++		addend = offset;
++
++	} else {
++		/*
++		 * The Clang assembler strips section symbols, so we have to
++		 * reference the function symbol instead:
++		 */
++		sym = find_symbol_containing(sec, offset);
++		if (!sym) {
++			/*
++			 * Hack alert.  This happens when we need to reference
++			 * the NOP pad insn immediately after the function.
++			 */
++			sym = find_symbol_containing(sec, offset - 1);
++		}
++
++		if (!sym) {
++			WARN("can't find symbol containing %s+0x%lx", sec->name, offset);
++			return -1;
++		}
++
++		addend = offset - sym->offset;
++	}
++
++	return elf_add_reloc(elf, sec, offset, type, sym, addend);
+ }
+ 
+ static int read_rel_reloc(struct section *sec, int i, struct reloc *reloc, unsigned int *symndx)
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -123,7 +123,13 @@ static inline u32 reloc_hash(struct relo
+ struct elf *elf_open_read(const char *name, int flags);
+ struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
+ struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+-void elf_add_reloc(struct elf *elf, struct reloc *reloc);
++
++int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
++		  unsigned int type, struct symbol *sym, int addend);
++int elf_add_reloc_to_insn(struct elf *elf, struct section *sec,
++			  unsigned long offset, unsigned int type,
++			  struct section *insn_sec, unsigned long insn_off);
++
+ int elf_write_insn(struct elf *elf, struct section *sec,
+ 		   unsigned long offset, unsigned int len,
+ 		   const char *insn);
+@@ -140,8 +146,6 @@ struct reloc *find_reloc_by_dest(const s
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+ struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+-void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
+-			      struct reloc *reloc);
+ 
+ #define for_each_sec(file, sec)						\
+ 	list_for_each_entry(sec, &file->elf->sections, list)
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -82,12 +82,11 @@ static int init_orc_entry(struct orc_ent
+ }
+ 
+ static int write_orc_entry(struct elf *elf, struct section *orc_sec,
+-			   struct section *ip_rsec, unsigned int idx,
++			   struct section *ip_sec, unsigned int idx,
+ 			   struct section *insn_sec, unsigned long insn_off,
+ 			   struct orc_entry *o)
+ {
+ 	struct orc_entry *orc;
+-	struct reloc *reloc;
+ 
+ 	/* populate ORC data */
+ 	orc = (struct orc_entry *)orc_sec->data->d_buf + idx;
+@@ -96,25 +95,9 @@ static int write_orc_entry(struct elf *e
+ 	orc->bp_offset = bswap_if_needed(orc->bp_offset);
+ 
+ 	/* populate reloc for ip */
+-	reloc = malloc(sizeof(*reloc));
+-	if (!reloc) {
+-		perror("malloc");
++	if (elf_add_reloc_to_insn(elf, ip_sec, idx * sizeof(int), R_X86_64_PC32,
++				  insn_sec, insn_off))
+ 		return -1;
+-	}
+-	memset(reloc, 0, sizeof(*reloc));
+-
+-	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
+-	if (!reloc->sym) {
+-		WARN("missing symbol for insn at offset 0x%lx",
+-		     insn_off);
+-		return -1;
+-	}
+-
+-	reloc->type = R_X86_64_PC32;
+-	reloc->offset = idx * sizeof(int);
+-	reloc->sec = ip_rsec;
+-
+-	elf_add_reloc(elf, reloc);
+ 
+ 	return 0;
+ }
+@@ -153,7 +136,7 @@ static unsigned long alt_group_len(struc
+ 
+ int orc_create(struct objtool_file *file)
+ {
+-	struct section *sec, *ip_rsec, *orc_sec;
++	struct section *sec, *orc_sec;
+ 	unsigned int nr = 0, idx = 0;
+ 	struct orc_list_entry *entry;
+ 	struct list_head orc_list;
+@@ -242,13 +225,12 @@ int orc_create(struct objtool_file *file
+ 	sec = elf_create_section(file->elf, ".orc_unwind_ip", 0, sizeof(int), nr);
+ 	if (!sec)
+ 		return -1;
+-	ip_rsec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
+-	if (!ip_rsec)
++	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
+ 		return -1;
+ 
+ 	/* Write ORC entries to sections: */
+ 	list_for_each_entry(entry, &orc_list, list) {
+-		if (write_orc_entry(file->elf, orc_sec, ip_rsec, idx++,
++		if (write_orc_entry(file->elf, orc_sec, sec, idx++,
+ 				    entry->insn_sec, entry->insn_off,
+ 				    &entry->orc))
+ 			return -1;
