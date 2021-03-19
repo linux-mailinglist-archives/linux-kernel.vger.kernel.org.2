@@ -2,153 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E941341DDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B2F341DE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhCSNM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhCSNL6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:11:58 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C88BC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:11:58 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id q3so2729943qkq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d3g17e9VigHay445f+y3uOuEFw2fZxjZoG+ibZHgzqs=;
-        b=QRjC59j5f2KAXnT+xggIRU3EeQqNyNa1/VA5jxpsEKFdH9Bs/hgBgTYAEWyqCK0ng2
-         KEmtWwjyz4QEpUO6q7+mmSSnAx+BTv2TQric/bzirrz4IrTVirXsVkUstE5/2nokA5QT
-         HRD5qZSmjPIIJlY22foLQ8m/P5xCCxU3wY6jCQ4Jdr3QdWDtqAx1AU11U2bJ2c6STh1d
-         /7yBWALoOQYUDdmDuFILh2r2XubZ6ngcuKkjwcIRyAM8HzxA7WXeIDz9RQxYPluqe6fJ
-         WaqJQ4uHPH1LbjmZCSiep+6pY3/SKa7n3hvBCH9sZMniwGlnmwF5t8vVVioTPsuEjalA
-         Deeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d3g17e9VigHay445f+y3uOuEFw2fZxjZoG+ibZHgzqs=;
-        b=qVqlnXJz/gzI7rwIS4WZjdxwnUBGmW/gboKhN668o5qatB9WpS0MEWKvvbnu2lTpwd
-         bKYe32qiEKS8LZYbOypMkFDsvO5ouUOrofcwFvJlYWjXl936gzhjw7A/hwOaN1IhhpDx
-         +aM0MsoB2iaLgmimIMpI4+U9boGwF2qp+4UWad8Q8HzsILroSdmTcVVWKBqLIIxhLJ44
-         CDMuaLIvEIkBCyB5vzo9cIcTETBEwZBZNs4G/kA8LZ0RFBQm2T3njCEUFl6jAxmmfxZc
-         EDhcfaSoqsggzOSafTVR9PISDcy9lTl8nsdkd5MzDRRfCyHb0o3940mKnLOkjXATT3+1
-         1U0Q==
-X-Gm-Message-State: AOAM530nssyjJWuTgLOzcJZ7zIbO2ru+AUgqCiGwX/30MbSiiMJi7Tqd
-        QFbgud/wiyIB4OiEScO8VpLqpbHPgHTrVA==
-X-Google-Smtp-Source: ABdhPJxkamjzDpqd4OAfQMTSHB0KHh3yRsaka6xNNhYNYOwQ/yCLvUrhLPVJv1q/BFwbMkGEsp7tMQ==
-X-Received: by 2002:ae9:e50c:: with SMTP id w12mr9150152qkf.13.1616159516953;
-        Fri, 19 Mar 2021 06:11:56 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c5sm4358607qkl.21.2021.03.19.06.11.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 06:11:56 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Subject: Re: [PATCH v11 5/9] drivers: thermal: tsens: Fix bug in sensor enable
- for msm8960
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210319005228.1250-1-ansuelsmth@gmail.com>
- <20210319005228.1250-6-ansuelsmth@gmail.com>
-Message-ID: <c1771c13-5a9a-ed4e-cf30-9494b165f00b@linaro.org>
-Date:   Fri, 19 Mar 2021 09:11:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230187AbhCSNMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:12:31 -0400
+Received: from mail-eopbgr50093.outbound.protection.outlook.com ([40.107.5.93]:37955
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230046AbhCSNMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:12:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iHgZMHANRuzN5oM/eMd0kpxIkjhReC96l8mH1tQk7Sz1Cy+60tt2TLwqspf1kMNHJcEVxD3HSMj8S8C1eNs91qZcK8O0RhJWEjlT0JP7g2AIUW1vopaAmXj1+1jcDRo5MYAuSKTcbbZGH1z2vXzluQEpi7vGCr/GxkkUiEefe2dxW1A3vx+0iAuyEarBhhwvoy9K8epy3L+MRyQrdpU7kDG8UnK46QTNCjUP0MnTMvHX9bojvhEig8flo/5odcBPWVOVH/YPUST6RjTMzO8bgkA68Pfd1JqPxBabSs17yMpVUD33ucXAO2/ku4ZojoewvzguKmMmQq3prKbeJiJXGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BF6b5TSmUUXG7v+KNnS/9kyYgihNqOASCZYgkLCb6xk=;
+ b=SlDqjHi0VzmQ4Div3W5l1FZYyO9mumGeerUa/G9+YGTtt6OP16cOb6geGMAsUJScka6q1+K4h3k70y3meJDIYFXYwa4YbtY8KnrsjlUjr/5PL+lmOCPgso6lriGjKDmtHC3TPzPV+7u1XNdn0M1LfAfnljAxz5sot/C3lldU3dIKNwzEi2hSdd5Kzi1m1WwWg1iN8HzNeIhbdUGwsVZkXIzv212cJXREXJWJXGaPyFrBo54QWveFexmjR0xDauKDYElh6DK+opXQgacNRQ8yXJ2OBC5yKrJ/J6q37hPBBR4YbAtFqZKZ+88NJGoBAqRe0t+a5Y/lRJDP/t8xPmt8ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=gmail.com smtp.mailfrom=nokia.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=nokia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BF6b5TSmUUXG7v+KNnS/9kyYgihNqOASCZYgkLCb6xk=;
+ b=K7NiQcOQ/EwFueRDlVep6lorpWX1M8Nqony2+ra13rBnsrFMi28hDD2qo8AbxZrne3r7PMzwBMht4gStX7UnF7ABrchLR0AVztc9efN87mT9JzQJ0jqRAm8Zs2+EBRwRPLgsZmGaHH3aHbVZlvEaFd1LYG/Qd8D/PrNSGyYwFHw=
+Received: from MR2P264CA0040.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500::28) by
+ AM0PR07MB5492.eurprd07.prod.outlook.com (2603:10a6:208:fd::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.10; Fri, 19 Mar 2021 13:12:13 +0000
+Received: from VE1EUR03FT061.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:500:0:cafe::6d) by MR2P264CA0040.outlook.office365.com
+ (2603:10a6:500::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Fri, 19 Mar 2021 13:12:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ VE1EUR03FT061.mail.protection.outlook.com (10.152.19.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 13:12:12 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 12JDC9dO020060;
+        Fri, 19 Mar 2021 13:12:09 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3] gpio: pl061: Support implementations without GPIOINTR line
+Date:   Fri, 19 Mar 2021 14:12:05 +0100
+Message-Id: <20210319131205.62775-1-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-In-Reply-To: <20210319005228.1250-6-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: f41d4217-12f9-4068-ba02-08d8ead89c46
+X-MS-TrafficTypeDiagnostic: AM0PR07MB5492:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB54920E101C71B01F0530D15188689@AM0PR07MB5492.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G14NCAm/Q3HprSz0CEUsgG40IJ7ffO4s02HwK2kW/U6wOOs/D2Y8tyGv1kgw1z6+JLDcScSJn47o076oAIVbkAoNrI1i0Qxn5t1GexC/N0aqYsq1fa75a9UjsPnAy6vaGQogQfXBqv44UNNO/F6Lt4dUa/wk0ynraFf6scql2vPDJBNvhViK7mNVqY/H6WQH+HaVnKIfv2aS91w8JiU3Fsgc9BQJwdVE6v4H7uPmFnlDG07jGBo4KBNBlfX889zy3lopLKzPw71mQplECoybsq9SucxcdDUQV6H/dnVdhN1INLPRSHisK8kMdtn19nW88xXQykh85BpVbXhr5Kxmz81Nfl5BOWK5uqBtrdPqQqi+0nPKdN75SyE46glcTauRudLY7Eq3qJT0UoV5LP1FTEcrKtELh9GJY9miPBJXeG/EjXZn9fpXorHChXzdmfzOIg+s/yLusGNwO2UoctgqMa4e1El01+kfczuP97LlP+vzhR19n4YSAzxGp6dFX/DWBGmfd72gn7UTum3MxcC7diglpKaNhAmyTmQY13ipjGOjgQA8wP1iFfy1appytWjZtMS0AgoQncKTB4SfiSsIE/CEVzQpWqFsFfMvQUHQqiYLcGp5yrIc+7/xM5mEnJgSziNNYX2pUFsjo3r3oHUtQQsj2zs1iCtnysUXe8W5SnUEuYi60g7IDBBJVvsEQHDV+K0tJCPCf+Ef6xuJBsl+tUSaGWnh5sY5wO8+r7n44W36yl9R9MRVEdn7gT+DX/x84XhFeyx8jSnj3sYq2pgUUg==
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(36840700001)(46966006)(36860700001)(6666004)(36756003)(2906002)(2616005)(8676002)(47076005)(54906003)(86362001)(966005)(478600001)(82310400003)(6916009)(70206006)(316002)(26005)(82740400003)(1076003)(70586007)(83380400001)(81166007)(4326008)(356005)(186003)(5660300002)(336012)(8936002)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 13:12:12.7632
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f41d4217-12f9-4068-ba02-08d8ead89c46
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT061.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB5492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-On 3/18/21 8:52 PM, Ansuel Smith wrote:
-> Device based on tsens VER_0 contains a hardware bug that results in some
-> problem with sensor enablement. Sensor id 6-11 can't be enabled
-> selectively and all of them must be enabled in one step.
+There are several implementations of PL061 which lack GPIOINTR signal in
+hardware and only have individual GPIOMIS[7:0] interrupts. Use the
+hierarchical interrupt support of the gpiolib in these cases (if at least 8
+IRQs are configured for the PL061).
 
-Thanks for rewording!
+One in-tree example is arch/arm/boot/dts/axm55xx.dtsi, PL061 instances have
+8 IRQs defined, but current driver supports only the first one, so only one
+pin would work as IRQ trigger.
 
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->   drivers/thermal/qcom/tsens-8960.c | 24 +++++++++++++++++++++---
->   1 file changed, 21 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens-8960.c b/drivers/thermal/qcom/tsens-8960.c
-> index 86585f439985..bdc64d4188bf 100644
-> --- a/drivers/thermal/qcom/tsens-8960.c
-> +++ b/drivers/thermal/qcom/tsens-8960.c
-> @@ -27,9 +27,9 @@
->   #define EN			BIT(0)
->   #define SW_RST			BIT(1)
->   #define SENSOR0_EN		BIT(3)
-> +#define MEASURE_PERIOD		BIT(18)
->   #define SLP_CLK_ENA		BIT(26)
->   #define SLP_CLK_ENA_8660	BIT(24)
-> -#define MEASURE_PERIOD		1
->   #define SENSOR0_SHIFT		3
->   
->   /* INT_STATUS_ADDR bitmasks */
-> @@ -126,17 +126,35 @@ static int resume_8960(struct tsens_priv *priv)
->   static int enable_8960(struct tsens_priv *priv, int id)
->   {
->   	int ret;
-> -	u32 reg, mask;
-> +	u32 reg, mask = BIT(id);
->   
->   	ret = regmap_read(priv->tm_map, CNTL_ADDR, &reg);
->   	if (ret)
->   		return ret;
->   
-> -	mask = BIT(id + SENSOR0_SHIFT);
-> +	/* HARDWARE BUG:
-> +	 * On platform with more than 6 sensors, all the remaining
-> +	 * sensors needs to be enabled all togheder or underfined
-> +	 * results are expected. (Sensor 6-7 disabled, Sensor 3
-> +	 * disabled...) In the original driver, all the sensors
-> +	 * are enabled in one step hence this bug is not triggered.
-> +	 */
-> +	if (id > 5) {
-> +		mask = GENMASK(10, 6);
-> +
-> +		/* Sensors already enabled. Skip. */
-> +		if ((reg & mask) == mask)
+Link: https://lore.kernel.org/linux-gpio/CACRpkdZpYzpMDWqJobSYH=JHgB74HbCQihOtexs+sVyo6SRJdA@mail.gmail.com/
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+Changelog:
+v3: pl061_populate_parent_fwspec() -> pl061_populate_parent_alloc_arg()
+v2: Add pl061_populate_parent_fwspec()
 
-This is a bug. You have to do mask <<= SENSOR0_SHIFT; before reg & mask.
+ drivers/gpio/Kconfig      |  1 +
+ drivers/gpio/gpio-pl061.c | 97 +++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 91 insertions(+), 7 deletions(-)
 
-> +			return 0;
-> +	}
-> +
-> +	mask <<= SENSOR0_SHIFT;
-> +
->   	ret = regmap_write(priv->tm_map, CNTL_ADDR, reg | SW_RST);
->   	if (ret)
->   		return ret;
->   
-> +	reg |= MEASURE_PERIOD;
-> +
->   	if (priv->num_sensors > 1)
->   		reg |= mask | SLP_CLK_ENA | EN;
->   	else
-> 
-
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index e3607ec..456c0a5 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -469,6 +469,7 @@ config GPIO_PL061
+ 	depends on ARM_AMBA
+ 	select IRQ_DOMAIN
+ 	select GPIOLIB_IRQCHIP
++	select IRQ_DOMAIN_HIERARCHY
+ 	help
+ 	  Say yes here to support the PrimeCell PL061 GPIO device
+ 
+diff --git a/drivers/gpio/gpio-pl061.c b/drivers/gpio/gpio-pl061.c
+index f1b53dd..5bfb5f6 100644
+--- a/drivers/gpio/gpio-pl061.c
++++ b/drivers/gpio/gpio-pl061.c
+@@ -24,6 +24,7 @@
+ #include <linux/slab.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm.h>
++#include <linux/of_irq.h>
+ 
+ #define GPIODIR 0x400
+ #define GPIOIS  0x404
+@@ -283,6 +284,69 @@ static int pl061_irq_set_wake(struct irq_data *d, unsigned int state)
+ 	return irq_set_irq_wake(pl061->parent_irq, state);
+ }
+ 
++static int pl061_child_to_parent_hwirq(struct gpio_chip *gc, unsigned int child,
++				       unsigned int child_type,
++				       unsigned int *parent,
++				       unsigned int *parent_type)
++{
++	struct amba_device *adev = to_amba_device(gc->parent);
++	unsigned int irq = adev->irq[child];
++	struct irq_data *d = irq_get_irq_data(irq);
++
++	if (!d)
++		return -EINVAL;
++
++	*parent_type = irqd_get_trigger_type(d);
++	*parent = irqd_to_hwirq(d);
++	return 0;
++}
++
++#ifdef CONFIG_OF
++static void *pl061_populate_parent_alloc_arg(struct gpio_chip *gc,
++					     unsigned int parent_hwirq,
++					     unsigned int parent_type)
++{
++	struct device_node *dn = to_of_node(gc->irq.fwnode);
++	struct of_phandle_args pha;
++	struct irq_fwspec *fwspec;
++	int i;
++
++	if (WARN_ON(!dn))
++		return NULL;
++
++	fwspec = kmalloc(sizeof(*fwspec), GFP_KERNEL);
++	if (!fwspec)
++		return NULL;
++
++	/*
++	 * This brute-force here is because of the fact PL061 is often paired
++	 * with GIC-v3, which has 3-cell IRQ specifier (SPI/PPI selection), and
++	 * unexpected range shifts in hwirq mapping (SPI IRQs are shifted by
++	 * 32). So this is about reversing of gic_irq_domain_translate().
++	 */
++	for (i = 0; i < PL061_GPIO_NR; i++) {
++		unsigned int p, pt;
++
++		if (pl061_child_to_parent_hwirq(gc, i, parent_type, &p, &pt))
++			continue;
++		if (p == parent_hwirq)
++			break;
++	}
++	if (WARN_ON(i == PL061_GPIO_NR))
++		return NULL;
++
++	if (WARN_ON(of_irq_parse_one(dn, i, &pha)))
++		return NULL;
++
++	fwspec->fwnode = gc->irq.parent_domain->fwnode;
++	fwspec->param_count = pha.args_count;
++	for (i = 0; i < pha.args_count; i++)
++		fwspec->param[i] = pha.args[i];
++
++	return fwspec;
++}
++#endif
++
+ static int pl061_probe(struct amba_device *adev, const struct amba_id *id)
+ {
+ 	struct device *dev = &adev->dev;
+@@ -330,16 +394,35 @@ static int pl061_probe(struct amba_device *adev, const struct amba_id *id)
+ 
+ 	girq = &pl061->gc.irq;
+ 	girq->chip = &pl061->irq_chip;
+-	girq->parent_handler = pl061_irq_handler;
+-	girq->num_parents = 1;
+-	girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
+-				     GFP_KERNEL);
+-	if (!girq->parents)
+-		return -ENOMEM;
+-	girq->parents[0] = irq;
+ 	girq->default_type = IRQ_TYPE_NONE;
+ 	girq->handler = handle_bad_irq;
+ 
++	/*
++	 * There are some PL061 implementations which lack GPIOINTR in hardware
++	 * and only have individual GPIOMIS[7:0] signals. We distinguish them by
++	 * the number of IRQs assigned to the AMBA device.
++	 */
++	if (adev->irq[PL061_GPIO_NR - 1]) {
++		girq->fwnode = dev->fwnode;
++		girq->parent_domain =
++			irq_get_irq_data(adev->irq[PL061_GPIO_NR - 1])->domain;
++		girq->child_to_parent_hwirq = pl061_child_to_parent_hwirq;
++#ifdef CONFIG_OF
++		girq->populate_parent_alloc_arg =
++			pl061_populate_parent_alloc_arg;
++#endif
++	} else {
++		WARN_ON(adev->irq[1]);
++
++		girq->parent_handler = pl061_irq_handler;
++		girq->num_parents = 1;
++		girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
++					     GFP_KERNEL);
++		if (!girq->parents)
++			return -ENOMEM;
++		girq->parents[0] = irq;
++	}
++
+ 	ret = devm_gpiochip_add_data(dev, &pl061->gc, pl061);
+ 	if (ret)
+ 		return ret;
 -- 
-Warm Regards
-Thara
+2.10.2
+
