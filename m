@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D7E342572
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79B5342550
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhCSSzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:55:50 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:57716 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230419AbhCSSyd (ORCPT
+        id S230341AbhCSSyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:54:09 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44630 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCSSxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:54:33 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 66ECC1D14;
-        Fri, 19 Mar 2021 21:54:18 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1616180058;
-        bh=DEFt+sXGg7JOOvRIm/3Fv7qu1Ak/4ec1VreW5WxH/nw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=M7GyJv6KT2QsKsyzodklAo3s8G9ZI5SuYobT/BNiskk7pX5tNEvPG1Wwgzt9KPujb
-         Wz5HMF1UoaKBc4BZ526nAC1WLy9PSD4KTNMcUmzYRcAirwPgWVp5TmMMjpYmpEQgRp
-         xoEywjfiM8nesSOhmMn5Amrj1nFDwU6L8roDUQz4=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 19 Mar 2021 21:54:18 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v24 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 19 Mar 2021 21:52:10 +0300
-Message-ID: <20210319185210.1703925-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210319185210.1703925-1-almaz.alexandrovich@paragon-software.com>
-References: <20210319185210.1703925-1-almaz.alexandrovich@paragon-software.com>
+        Fri, 19 Mar 2021 14:53:52 -0400
+Received: by mail-ot1-f44.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso9473219oti.11;
+        Fri, 19 Mar 2021 11:53:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lSfZo+OL3h9++SEiG+mrCiK5ZCq1/nFoZ4zdT/1Zs7s=;
+        b=CgyvLQ6fNWMcEw0Ne+D80YpoJly9pDDvIXIIplq4G78do7wxEqvLHyPupXNAVh1mZ5
+         2uWondAYGdp5yAasStyQLGzl0aMAOSpS00fx0T8Tm5jhYGUZD9tCnsvdtUuX0YwgWfhH
+         XHVX0b3pbxsOgsTVeYT5Eg8tyXpskXsT4ceT334Ukw8naUe5KLDU5qLcIkTDCwq3dMeC
+         gcqrBoV+6yhOsnpjrnPgkvflUTqEIqe5+hopeE4+mOHTh+BKeBy2Tfn1hXkjVyK/6LLR
+         gbopxp+edf6nKoiGkfYUwW/ZhQdiamPiVqS+7CIDwNGiV64SZA4Adfv+t7yeZxAcG0fk
+         nX1Q==
+X-Gm-Message-State: AOAM5331mxH5Iy4FQx/c/rmzR6hWHBtVWqrQb+94LV0YqpaNS0kKeoBh
+        PLLV80i5KSXED9hLKJzcNwwIbqD84UWCsIVomsQ=
+X-Google-Smtp-Source: ABdhPJyZpXjIAhejBCf9YSSjkZjx3d0dP0mxrMGqTl4H3x513BdYGHBulfFLdWRauiFZmL6DmpxqD38oqWNFpKYAUMY=
+X-Received: by 2002:a9d:4811:: with SMTP id c17mr2266158otf.206.1616180031721;
+ Fri, 19 Mar 2021 11:53:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20210312032430.13664-1-chris.chiu@canonical.com>
+ <20210313102545.GB11435@duo.ucw.cz> <CAJZ5v0g7pEMA-QTonuVgMVmFCcHwnTtYYCaw7mVertPfhHNt8w@mail.gmail.com>
+ <20210319184828.GA5022@amd>
+In-Reply-To: <20210319184828.GA5022@amd>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 19 Mar 2021 19:53:40 +0100
+Message-ID: <CAJZ5v0ihOVEFvcLLPmXGQ7aj91+BLpJQm12HE=pLpHKbDv-9jA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: video: Add missing callback back for Sony VPCEH3U1E
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, chris.chiu@canonical.com,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On Fri, Mar 19, 2021 at 7:48 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> On Fri 2021-03-19 17:44:32, Rafael J. Wysocki wrote:
+> > On Sat, Mar 13, 2021 at 11:27 AM Pavel Machek <pavel@ucw.cz> wrote:
+> > >
+> > > On Fri 2021-03-12 11:24:30, chris.chiu@canonical.com wrote:
+> > > > From: Chris Chiu <chris.chiu@canonical.com>
+> > > >
+> > > > The .callback of the quirk for Sony VPCEH3U1E was unintetionally
+> > > > removed by the commit 25417185e9b5 ("ACPI: video: Add DMI quirk
+> > > > for GIGABYTE GB-BXBT-2807"). Add it back to make sure the quirk
+> > > > for Sony VPCEH3U1E works as expected.
+> > > >
+> > > > Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> > > > Reported-by: Pavel Machek <pavel@ucw.cz>
+> > >
+> > > Thanks for doing this.
+> > >
+> > > Reviewed-by: Pavel Machek (CIP) <pavel@denx.de>
+> >
+> > Applied as 5.12-rc5 material, thanks!
+>
+> Commit 25417185e9b5 made it into stable, so this one should be Cc:
+> stable as well. Sorry for noticing that late.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Well, do you know which -stable series it went into?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa84121c5611..0d743d101916 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12769,6 +12769,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
--- 
-2.25.4
-
+I've added a "Cc: stable" tag to this one, but it most likely doesn't
+cover all of them.
