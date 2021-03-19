@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275743418F3
+	by mail.lfdr.de (Postfix) with ESMTP id 726FC3418F4
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCSJ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:57:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45614 "EHLO
+        id S229787AbhCSJ5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:57:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27676 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229646AbhCSJ4o (ORCPT
+        by vger.kernel.org with ESMTP id S229854AbhCSJ5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:56:44 -0400
+        Fri, 19 Mar 2021 05:57:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616147803;
+        s=mimecast20190719; t=1616147822;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ysOGQ+JuPnyfkvsyXVUk/A0GgAxeDgtK3Jp6pwQPGCg=;
-        b=Kdh5s9X3t+h7meJi+EJu21uDo/2+ETeiUUaa6s+QXuYs8mDFq34mO/ZhuW3G8V8n4+KDS0
-        g5ULmVaZNeLGrUTcXFR9rZ1lNmLR6qRrzLyCozozoR3FyULamnm3kMlEwlCKR86ERDt1QV
-        c9vtZ7iDd0vBx4hMGqNcsHbv4b1BBNY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-x6fs_XrMOC2Xm5V4rmziZA-1; Fri, 19 Mar 2021 05:56:42 -0400
-X-MC-Unique: x6fs_XrMOC2Xm5V4rmziZA-1
-Received: by mail-wm1-f70.google.com with SMTP id s192so12695788wme.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:56:42 -0700 (PDT)
+        bh=3l3BfTP70gXS5Doqn0pw4lSC+ETHFzwyHhsUK4GEBKU=;
+        b=RuU4kqz5fsi9ox2BUiAntEbtUfkysIdHxNrCd2KfzsEaSC3GysIwvcwlo50dlfXUVY6qvb
+        TjVnY3mb+Zrp99vZLr0G+vBdqzvhm8LvlndBcYmlmchsc2kMR7DVUVBWmjJ4msyFGgY7Tx
+        fDnxydbiDLTnkjnXk7YmYXcZ+rmj4+Y=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-ZimiY1hjPw-CffLOF2lmeQ-1; Fri, 19 Mar 2021 05:56:59 -0400
+X-MC-Unique: ZimiY1hjPw-CffLOF2lmeQ-1
+Received: by mail-wr1-f72.google.com with SMTP id b6so6217233wrq.22
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:56:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ysOGQ+JuPnyfkvsyXVUk/A0GgAxeDgtK3Jp6pwQPGCg=;
-        b=JmLxA4pmEAHp/KKj8hMVUxuxs76Iw3S96NmSPMdQrFRzeNxNA5Db6AwmG2TCdJW0z2
-         1/CxBxCI7qyODK6P7sb64ECBTc4mGYTNrF8dJEg0bjRG6EcUWkjo8wYzz6l2EqLhqXQM
-         H8ourm97EDpe1VZ62uchaCn3elhZVJ9y5e2dCWPTzMAXIF2r5O/EQGB8mKtzYAy4PrsC
-         EtKa6Wg2YBodiZ3Bay2xt7u3zkgiBhiFfo8Upt9vSh7o+EYzE2oi7uJ3AYV92Ch57CDq
-         Cfa+5aTTQHueEDyD3yUeKq5uhkxhgzQHBleHx49xCmHoMmItmFEZcRtVmabOBJKC8P25
-         AlCQ==
-X-Gm-Message-State: AOAM532ZvZvU9EgUEpwfk/fvuUG3Z+wTszCcMPJl2wpc7IXZCAUhz1lG
-        OK9OyHwbLWG+noYe6J5MhQ8tW9fYhWKuNJvT22+hBs6Y2NgnBsb9I0QEUXjg8yO57AnG9RRxt6F
-        tU9ABdbftzSoolA+ZNXi2ARBhTXx3gzsulAjvEGxj
-X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr3001416wmg.171.1616147800804;
-        Fri, 19 Mar 2021 02:56:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3mEE6CSIZmWxiZ1XdIJ72ZTiVHg0YQRrSzZBZE3GwjnidS+39Es1MG0HcFFBZdOYiKYjsbTZEIXLbb0wk0kQ=
-X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr3001400wmg.171.1616147800686;
- Fri, 19 Mar 2021 02:56:40 -0700 (PDT)
+        bh=3l3BfTP70gXS5Doqn0pw4lSC+ETHFzwyHhsUK4GEBKU=;
+        b=cs+h/YQxqp02EfKx684oFQClHdkveaSv08Z8kn47NjMAQlp1ucLeSZ3CYG11bQZ5O0
+         Iq+qb8Vhk/0werqlW4x62f11FetE9jXlNia0CLxccWmveDUpC4c+kolXtLtUrBLt6oDK
+         7ZA9Z7dVmLR/8UZazd2XnukfMKi94GvF/l5rm/KhMSPQE1D33UOn/xHGljksfbUNx4sY
+         e40A26PJtrsMRPj6NXttphl+odWIc2Ae9cu/N7GfstyizihbtoqgB8dELoB+VytxNRcG
+         rAIYkji3ZqjpT133jqaCZOkg8rfS4B8EJAUs+Au8xnokbh6BpFpU/6xG3qLx5lo/1URR
+         0Gcw==
+X-Gm-Message-State: AOAM532T/lQanwbqkqv2g8n6b0iHiu31qnmec5JmlGoyuYGMostetlGm
+        s6S+mV8OE+9LkqiOkBzR+qXC5RJdOSFBiGVGQZNtIkkn4iltl+/43BlU/HNkXEirBaGvnGn/mWq
+        cUs5Y35bkeuuygOjF3HyI37QHWv2tYpDUzkrzmwK1
+X-Received: by 2002:a5d:560e:: with SMTP id l14mr3638690wrv.10.1616147818278;
+        Fri, 19 Mar 2021 02:56:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydXZ7PTUXXk61n8Vm+NGA5deM8sQ8DWxF3xA9WDgrGsCesLVfERpF5oUV4xlX2RUpBfsYQ1O9Hc0Hb/dn7k7o=
+X-Received: by 2002:a5d:560e:: with SMTP id l14mr3638680wrv.10.1616147818103;
+ Fri, 19 Mar 2021 02:56:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319082428.3294591-1-lee.jones@linaro.org> <20210319082428.3294591-16-lee.jones@linaro.org>
-In-Reply-To: <20210319082428.3294591-16-lee.jones@linaro.org>
+References: <20210319082428.3294591-1-lee.jones@linaro.org> <20210319082428.3294591-11-lee.jones@linaro.org>
+In-Reply-To: <20210319082428.3294591-11-lee.jones@linaro.org>
 From:   Karol Herbst <kherbst@redhat.com>
-Date:   Fri, 19 Mar 2021 10:56:29 +0100
-Message-ID: <CACO55ttoFZdD6y_3sBr0aJseX=zZ=09E3bRXYyNy1djVSb2oew@mail.gmail.com>
-Subject: Re: [PATCH 15/19] drm/nouveau/nv50_display: Remove superfluous
- prototype for local static functions
+Date:   Fri, 19 Mar 2021 10:56:47 +0100
+Message-ID: <CACO55tvYCgxXuqwoyXbVL50zLqPGQck_EjMxK_yePgG6tHnxKw@mail.gmail.com>
+Subject: Re: [PATCH 10/19] drm/nouveau/nouveau_bo: Remove unused variables 'dev'
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+Cc:     Jeremy Kolb <jkolb@brandeis.edu>, David Airlie <airlied@linux.ie>,
         nouveau <nouveau@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
+        linaro-mm-sig@lists.linaro.org, Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -69,45 +70,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Mar 19, 2021 at 9:25 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Fixes the following build error:
+> Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/nouveau/dispnv50/disp.c:2530:1: error: conflicting types=
- for =E2=80=98nv50_display_fini=E2=80=99
->  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
->  drivers/gpu/drm/nouveau/nv50_display.h:36:6: note: previous declaration =
-of =E2=80=98nv50_display_fini=E2=80=99 was her
->  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
->  drivers/gpu/drm/nouveau/nv50_display.h:35:6: note: previous declaration =
-of =E2=80=98nv50_display_init=E2=80=99 was here
->  drivers/gpu/drm/nouveau/dispnv50/disp.c:2581:1: error: static declaratio=
-n of =E2=80=98nv50_display_destroy=E2=80=99 follows non-static declaration
->  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
->  drivers/gpu/drm/nouveau/nv50_display.h:34:6: note: previous declaration =
-of =E2=80=98nv50_display_destroy=E2=80=99 was here
+>  drivers/gpu/drm/nouveau/nouveau_bo.c: In function =E2=80=98nouveau_ttm_t=
+t_populate=E2=80=99:
+>  drivers/gpu/drm/nouveau/nouveau_bo.c:1228:17: warning: variable =E2=80=
+=98dev=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/nouveau/nouveau_bo.c: In function =E2=80=98nouveau_ttm_t=
+t_unpopulate=E2=80=99:
+>  drivers/gpu/drm/nouveau/nouveau_bo.c:1252:17: warning: variable =E2=80=
+=98dev=E2=80=99 set but not used [-Wunused-but-set-variable]
 >
 > Cc: Ben Skeggs <bskeggs@redhat.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: Jeremy Kolb <jkolb@brandeis.edu>
 > Cc: dri-devel@lists.freedesktop.org
 > Cc: nouveau@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/nouveau/nv50_display.h | 3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
+>  1 file changed, 4 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/nouveau/nv50_display.h b/drivers/gpu/drm/nou=
-veau/nv50_display.h
-> index fbd3b15583bc8..2421401d12636 100644
-> --- a/drivers/gpu/drm/nouveau/nv50_display.h
-> +++ b/drivers/gpu/drm/nouveau/nv50_display.h
-> @@ -31,7 +31,4 @@
->  #include "nouveau_reg.h"
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouve=
+au/nouveau_bo.c
+> index 281e9ed139895..913035ab85ec2 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+> @@ -1250,7 +1250,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+>  {
+>         struct ttm_tt *ttm_dma =3D (void *)ttm;
+>         struct nouveau_drm *drm;
+> -       struct device *dev;
+>         bool slave =3D !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
 >
->  int  nv50_display_create(struct drm_device *);
-> -void nv50_display_destroy(struct drm_device *);
-> -int  nv50_display_init(struct drm_device *);
-> -void nv50_display_fini(struct drm_device *);
->  #endif /* __NV50_DISPLAY_H__ */
+>         if (ttm_tt_is_populated(ttm))
+> @@ -1263,7 +1262,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
+>         }
+>
+>         drm =3D nouveau_bdev(bdev);
+> -       dev =3D drm->dev->dev;
+>
+>         return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
+>  }
+> @@ -1273,14 +1271,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev=
+,
+>                           struct ttm_tt *ttm)
+>  {
+>         struct nouveau_drm *drm;
+> -       struct device *dev;
+>         bool slave =3D !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
+>
+>         if (slave)
+>                 return;
+>
+>         drm =3D nouveau_bdev(bdev);
+> -       dev =3D drm->dev->dev;
+>
+>         return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+>  }
 > --
 > 2.27.0
 >
