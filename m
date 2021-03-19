@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBFF342519
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BD534251D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhCSSpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:45:02 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9756 "EHLO
+        id S230521AbhCSSpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:45:23 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42774 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230259AbhCSSoW (ORCPT
+        by vger.kernel.org with ESMTP id S230223AbhCSSoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 14:44:22 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JIgpn2010351;
-        Fri, 19 Mar 2021 19:43:27 +0100
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JIg5LT007150;
+        Fri, 19 Mar 2021 19:43:28 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=jmWA8otALcGjJwMAr/3jxxE9Yj0qkPNm345kDhBJnTk=;
- b=43PULLinB4ULKJKCFzHH3Iedx+s4ImKzSIkFpJKEcsujAogFYlmg2TK9jV68koUQ2Pbl
- SLHpXtwx9ZufYHvfo1FwOtnCQIOKdGot6oOXo++CT/l5+0gIDbmmMunh06C97qJEjYM8
- 8CbLTIS2xnH7mga5Q3TEVbulVTzZRS6x1biyvZa2IH2JFjF5ItcRLB6bB4/sR+clX7bV
- g7TuggNKmyViwFe0YQgOcfbZ8W+ZJ/nsvZENd6K7Zj0JH3PNgTeA3uisiVX4gEBVVDCZ
- KPJ7KbLj00wdgyPVuBGb2nXBg1jM5xW4b1+URpMjOYpPUHbfXtgkmS+FjxGI9JBr13e4 yA== 
+ bh=WPsJD07taG6bSi67dQZQOBWHCrvFMzxNJLWjag8WCLg=;
+ b=zk8Uv9JTj3cidFrdljg1NFDz4H4W6P4azuDR1ihHguJflXGoKtnOqAoSHRjyGHVAYWWq
+ cjsk4osSMke887jZnw/mT+T+3wOvwqqqmmoopDku9Yhvh0RpdR4g153zdj4NxeMMqeJQ
+ IwIE+uE9LcGDALfekvup1BsshTHbJtymMh/I0vbEYG68Wusc/PEM2RUcJ7rjBAGYZ1iS
+ q/GIM9m/0sBRj6+VFcCQfFvfdHmEjpZl8lw2d6KwTTezf7WuByKuiOy/6cM92X4htfJe
+ 8P9aOuK4QGf9I9CtGV4f54C0dix/ht1vfWUYYdnB6Rnoe2ESCK7WtP9RWQAxf7CxCXLP nw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 378pr6d1g5-1
+        by mx07-00178001.pphosted.com with ESMTP id 378psa4ygs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 19:43:27 +0100
+        Fri, 19 Mar 2021 19:43:28 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CA1E110002A;
-        Fri, 19 Mar 2021 19:43:26 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8F19810002A;
+        Fri, 19 Mar 2021 19:43:27 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B620E2721FC;
-        Fri, 19 Mar 2021 19:43:26 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Mar 2021 19:43:26
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D0B62721FC;
+        Fri, 19 Mar 2021 19:43:27 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Mar 2021 19:43:27
  +0100
 From:   Erwan Le Ray <erwan.leray@foss.st.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -52,16 +52,16 @@ CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         Valentin Caron <valentin.caron@foss.st.com>,
         Patrice Chotard <patrice.chotard@foss.st.com>
-Subject: [PATCH 4/5] serial: stm32: update wakeup IRQ management
-Date:   Fri, 19 Mar 2021 19:42:52 +0100
-Message-ID: <20210319184253.5841-5-erwan.leray@foss.st.com>
+Subject: [PATCH 5/5] ARM: dts: stm32: Add wakeup management on stm32mp15x UART nodes
+Date:   Fri, 19 Mar 2021 19:42:53 +0100
+Message-ID: <20210319184253.5841-6-erwan.leray@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210319184253.5841-1-erwan.leray@foss.st.com>
 References: <20210319184253.5841-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-19_10:2021-03-19,2021-03-19 signatures=0
@@ -69,113 +69,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Add EXTI lines to the following UART nodes which are used for
+wakeup from CStop.
+- EXTI line 26 to USART1
+- EXTI line 27 to USART2
+- EXTI line 28 to USART3
+- EXTI line 29 to USART6
+- EXTI line 30 to UART4
+- EXTI line 31 to UART5
+- EXTI line 32 to UART7
+- EXTI line 33 to UART8
 
-The wakeup specific IRQ management is no more needed to wake up the stm32
-plaform. A relationship has been established between the EXTI and
-the EVENT IRQ, just need to declare the EXTI interrupt instead of the
-UART event IRQ.
-
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index cc054f07bd83..cba4f4ddf164 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -924,7 +924,7 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 	}
+diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+index 4b8031782555..e242d7211059 100644
+--- a/arch/arm/boot/dts/stm32mp151.dtsi
++++ b/arch/arm/boot/dts/stm32mp151.dtsi
+@@ -452,32 +452,36 @@
+ 		usart2: serial@4000e000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x4000e000 0x400>;
+-			interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART2_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
- 	/* Configure wake up from low power on start bit detection */
--	if (stm32_port->wakeirq > 0) {
-+	if (stm32_port->wakeup_src) {
- 		cr3 &= ~USART_CR3_WUS_MASK;
- 		cr3 |= USART_CR3_WUS_START_BIT;
- 	}
-@@ -1044,11 +1044,8 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
- 	if (ret)
- 		return ret;
+ 		usart3: serial@4000f000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x4000f000 0x400>;
+-			interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 28 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART3_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
--	if (stm32port->info->cfg.has_wakeup) {
--		stm32port->wakeirq = platform_get_irq_optional(pdev, 1);
--		if (stm32port->wakeirq <= 0 && stm32port->wakeirq != -ENXIO)
--			return stm32port->wakeirq ? : -ENODEV;
--	}
-+	stm32port->wakeup_src = stm32port->info->cfg.has_wakeup &&
-+		of_property_read_bool(pdev->dev.of_node, "wakeup-source");
+ 		uart4: serial@40010000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x40010000 0x400>;
+-			interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 30 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART4_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
- 	stm32port->fifoen = stm32port->info->cfg.has_fifo;
+ 		uart5: serial@40011000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x40011000 0x400>;
+-			interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 31 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART5_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
-@@ -1283,17 +1280,11 @@ static int stm32_usart_serial_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+@@ -577,16 +581,18 @@
+ 		uart7: serial@40018000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x40018000 0x400>;
+-			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 32 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART7_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
--	if (stm32port->wakeirq > 0) {
--		ret = device_init_wakeup(&pdev->dev, true);
--		if (ret)
--			goto err_uninit;
--
--		ret = dev_pm_set_dedicated_wake_irq(&pdev->dev,
--						    stm32port->wakeirq);
-+	if (stm32port->wakeup_src) {
-+		device_set_wakeup_capable(&pdev->dev, true);
-+		ret = dev_pm_set_wake_irq(&pdev->dev, stm32port->port.irq);
- 		if (ret)
- 			goto err_nowup;
--
--		device_set_wakeup_enable(&pdev->dev, false);
- 	}
+ 		uart8: serial@40019000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x40019000 0x400>;
+-			interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 33 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc UART8_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
- 	ret = stm32_usart_of_dma_rx_probe(stm32port, pdev);
-@@ -1343,14 +1334,13 @@ static int stm32_usart_serial_probe(struct platform_device *pdev)
- 				  TX_BUF_L, stm32port->tx_buf,
- 				  stm32port->tx_dma_buf);
+@@ -665,8 +671,9 @@
+ 		usart6: serial@44003000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x44003000 0x400>;
+-			interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 29 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART6_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
--	if (stm32port->wakeirq > 0)
-+	if (stm32port->wakeup_src)
- 		dev_pm_clear_wake_irq(&pdev->dev);
+@@ -1505,8 +1512,9 @@
+ 		usart1: serial@5c000000 {
+ 			compatible = "st,stm32h7-uart";
+ 			reg = <0x5c000000 0x400>;
+-			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts-extended = <&exti 26 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&rcc USART1_K>;
++			wakeup-source;
+ 			status = "disabled";
+ 		};
  
- err_nowup:
--	if (stm32port->wakeirq > 0)
--		device_init_wakeup(&pdev->dev, false);
-+	if (stm32port->wakeup_src)
-+		device_set_wakeup_capable(&pdev->dev, false);
- 
--err_uninit:
- 	stm32_usart_deinit_port(stm32port);
- 
- 	return ret;
-@@ -1396,7 +1386,7 @@ static int stm32_usart_serial_remove(struct platform_device *pdev)
- 				  TX_BUF_L, stm32_port->tx_buf,
- 				  stm32_port->tx_dma_buf);
- 
--	if (stm32_port->wakeirq > 0) {
-+	if (stm32_port->wakeup_src) {
- 		dev_pm_clear_wake_irq(&pdev->dev);
- 		device_init_wakeup(&pdev->dev, false);
- 	}
-@@ -1512,7 +1502,7 @@ static void __maybe_unused stm32_usart_serial_en_wakeup(struct uart_port *port,
- 	struct stm32_port *stm32_port = to_stm32_port(port);
- 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
--	if (stm32_port->wakeirq <= 0)
-+	if (!stm32_port->wakeup_src)
- 		return;
- 
- 	/*
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index 94b568aa46bb..a86773f1a4c4 100644
---- a/drivers/tty/serial/stm32-usart.h
-+++ b/drivers/tty/serial/stm32-usart.h
-@@ -269,7 +269,7 @@ struct stm32_port {
- 	bool tx_dma_busy;	 /* dma tx busy               */
- 	bool hw_flow_control;
- 	bool fifoen;
--	int wakeirq;
-+	bool wakeup_src;
- 	int rdr_mask;		/* receive data register mask */
- 	struct mctrl_gpios *gpios; /* modem control gpios */
- };
 -- 
 2.17.1
 
