@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD003422CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C5E3422D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhCSREQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:04:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhCSRDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:03:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D4A61959;
-        Fri, 19 Mar 2021 17:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616173423;
-        bh=fnbNfVXXSTD6OJ8WdQ6LVfKjqUArSJ75bhS89QA902k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=B1GcSm/D1kNRA0qRKWzu/c3ZKpVm3TzqwxezJDa+PSERqt2ezZwTqJ0xg/uqfvb/A
-         QC/GflPaOyJQBVdzr3zYPnsDs4Pozyl0h/stZmVQiOrVAIGZHZ9uOPrYZPAUjY1sQI
-         55M9NmgMJUikwyNi2jBgszYm0vpHXn7pI7PdXnx+ic7lPPI8VwNmzrXaGOtLMy/+2V
-         /qnVKM8XZrhfihkUovSYDaVyEI1ZGJNLhviLxUFpgEWAEL7Mh+3Tygq0V/g55+xvwZ
-         ByQzENQ8wRkvL83YCA0EOwh+yssAHg2V5QlRjn785+0aTg/sFOd7dX6GARRr2wMA8m
-         b+IBDwwCHhg/Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 017E035239E5; Fri, 19 Mar 2021 10:03:42 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:03:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 01/17] add support for Clang CFI
-Message-ID: <20210319170342.GM2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-2-samitolvanen@google.com>
- <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
- <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
- <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net>
- <20210319135229.GJ2696@paulmck-ThinkPad-P72>
- <CABCJKud=aJUSgWG==qqKi-+cKRCtRp4qLNgdDqoYKL+S9X7q4A@mail.gmail.com>
+        id S230090AbhCSRIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCSRIS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:08:18 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81857C06174A;
+        Fri, 19 Mar 2021 10:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jLA7jhfpTD/gf7DnkGIEr5ZaUexlkr8MeBHoScCGjoc=; b=pMboij1OQVxOZWL2QhcrYt1e4
+        ToGGhJKSzZbwG4tYuMdaRP9gPpt3iDu4b/G0NaXY7sfwKJxe/52mpTd2kmN5uIR5OsW75mf8jZUrW
+        WPnmH10ZCaejYOkmlHOdVaKWey6fs9pQ+H0cXPhiBrS3kdeoHaW7IDL1BrUx4ffaGPhE2rhmpqyDi
+        zp2OU8cfqORCkRugVwO8Lpt0dlHOJ40hS8BdqlNhbrVpI/5Z5fhzcM4icQAGc8x1tnyWcva1k1eEV
+        UVCAxGz0YiWDQP6WR61CDg1sx+GUloA3+yrX3gr9Q9J4KiPOdAu4lIeh5WxMpF1hbmHKVLWazLGsN
+        nMDLsXwzw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51482)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lNIbN-0004eU-6D; Fri, 19 Mar 2021 17:07:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lNIbJ-0000hT-70; Fri, 19 Mar 2021 17:07:53 +0000
+Date:   Fri, 19 Mar 2021 17:07:53 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210319170753.GV1463@shell.armlinux.org.uk>
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-3-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKud=aJUSgWG==qqKi-+cKRCtRp4qLNgdDqoYKL+S9X7q4A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210318045706.200458-3-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 09:17:14AM -0700, Sami Tolvanen wrote:
-> On Fri, Mar 19, 2021 at 6:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Mar 19, 2021 at 01:26:59PM +0100, Peter Zijlstra wrote:
-> > > On Thu, Mar 18, 2021 at 04:48:43PM -0700, Sami Tolvanen wrote:
-> > > > On Thu, Mar 18, 2021 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > > On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
-> > > > > > +static void update_shadow(struct module *mod, unsigned long base_addr,
-> > > > > > +             update_shadow_fn fn)
-> > > > > > +{
-> > > > > > +     struct cfi_shadow *prev;
-> > > > > > +     struct cfi_shadow *next;
-> > > > > > +     unsigned long min_addr, max_addr;
-> > > > > > +
-> > > > > > +     next = vmalloc(SHADOW_SIZE);
-> > > > > > +
-> > > > > > +     mutex_lock(&shadow_update_lock);
-> > > > > > +     prev = rcu_dereference_protected(cfi_shadow,
-> > > > > > +                                      mutex_is_locked(&shadow_update_lock));
-> > > > > > +
-> > > > > > +     if (next) {
-> > > > > > +             next->base = base_addr >> PAGE_SHIFT;
-> > > > > > +             prepare_next_shadow(prev, next);
-> > > > > > +
-> > > > > > +             min_addr = (unsigned long)mod->core_layout.base;
-> > > > > > +             max_addr = min_addr + mod->core_layout.text_size;
-> > > > > > +             fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
-> > > > > > +
-> > > > > > +             set_memory_ro((unsigned long)next, SHADOW_PAGES);
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     rcu_assign_pointer(cfi_shadow, next);
-> > > > > > +     mutex_unlock(&shadow_update_lock);
-> > > > > > +     synchronize_rcu_expedited();
-> > > > >
-> > > > > expedited is BAD(tm), why is it required and why doesn't it have a
-> > > > > comment?
-> > > >
-> > > > Ah, this uses synchronize_rcu_expedited() because we have a case where
-> > > > synchronize_rcu() hangs here with a specific SoC family after the
-> > > > vendor's cpu_pm driver powers down CPU cores.
-> > >
-> > > Broken vendor drivers seem like an exceedingly poor reason for this.
-> >
-> > The vendor is supposed to make sure that RCU sees the CPU cores as either
-> > deep idle or offline before powering them down.  My guess is that the
-> > CPU is powered down, but RCU (and probably much else in the system)
-> > thinks that the CPU is still up and running.  So I bet that you are
-> > seeing other issues as well.
-> >
-> > I take it that the IPIs from synchronize_rcu_expedited() have the effect
-> > of momentarily powering up those CPUs?
-> 
-> I suspect you're correct. I'll change this to use synchronize_rcu() in v3.
+On Thu, Mar 18, 2021 at 05:56:58AM +0100, Christoph Hellwig wrote:
+> footbridge_defconfig enables CONFIG_IDE but no actual host controller
+> driver, so just drop it.
 
-You might also suggest to the vendor that they look for a missing
-rcu_idle_enter(), rcu_irq_exit(), or similar on the code path that the
-outgoing CPUs follow before getting powered down.  That way, they won't
-be wasting power from irrelevant IPIs.  You see, RCU will eventually
-send IPIs to non-responding CPUs for normal grace periods.
+I have been using the Cypress 82C693 IDE driver on Footbridge for a
+CD ROM drive, and I know it doesn't work with the PATA driver - as
+I need to disable BM DMA, otherwise the 82C693/DC21285 combination
+deadlocks the PCI bus. The PATA driver doesn't support disabling
+BM DMA without disabling it for all PATA ports, which is really
+annoying for my IT821x card in the same machine.
 
-							Thanx, Paul
+So, I'm rather stuck using the PATA driver for the HDDs and the
+IDE driver for the CD ROM.
+
+That said, a commit a while back "cleaning up" the PCI layer appears
+to have totally shafted the 82C693, as the kernel tries to request
+IO resources at the legacy IDE addresses against the PCI bus resource
+which only covers 0x1000-0xffff. Hence, the 82C693 IDE ports are non-
+functional at the moment.
+
+I'm debating about trying to find a fix to the PCI breakage that was
+introduced by "ARM: move PCI i/o resource setup into common code".
+
+I hadn't noticed it because I don't use the CD ROM drive very often,
+and I don't upgrade the kernel that often either on the machine -
+but it has been running 24x7 for almost two decades.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
