@@ -2,467 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78758341473
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70F234146D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbhCSE6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 00:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhCSE6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:58:12 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDE8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 21:58:12 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id l13so5876148qtu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 21:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=protocubo.io; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PQOzXEuBU6egIF2HRxRZI7fnvbkZdLavUt/2EZLfmpg=;
-        b=fil0dI3VTsHCkMF1FYcih2jgh/wDvMqwZ1yLrNhVFmQ42xaJeDtcuGC3ik7d7YDEZx
-         SjYPcOWXqV0sJHqkZ3HTiGbkkfKr4s5Dxm+sWCRYS4uwft0iJYIsm599je+0KdLLeEx5
-         huuj5FxwZjFKLhB/tg3CWTPxabHMfghedq8h8Ud/ChT9flESLqk09dG/3oznAAlrY0VH
-         0RFAWxT3ttdAidPqy1f20r/XoXrsAamlwTMUHFii8eJbNaku/6J0IX6ZMIGK9q0EvASi
-         V0UeMsHPCh81+O+EqxZcZO+KeQ9c3BEOWnZHTTWJ5QLeAR8hJI2Hm141MOwchpVHSgZH
-         ZNVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PQOzXEuBU6egIF2HRxRZI7fnvbkZdLavUt/2EZLfmpg=;
-        b=WmvVVyapam2OGBFPMSnBcx1CuNn/yAWYk44hoy2cMqTLVpexbk6KnZtlWnyh+BVNNO
-         BD+OSdCE3oxucUvDo8tVobWpzZZmROykezb68DCvWJQq/ulPVKxl2jNT4PStLQeltFYV
-         2C9vBMqTaGzHmBjSQ1Xin8UtIyAXOutzABJp9y3GaVBYqZkvcMJxLupjmYVIIpxueXil
-         8Z252/EWJlHBcxTzLRjYRXHaTy2Equ0G2gFhRuj11Bkw0njsvcnf3KljkoarR+wMv0pk
-         JHP4PKXgPhSZEgygdosrrOEoN9QXj4yOahWCeKtGJLDDuoLfu3rLw9P9e8nawQgKFFo2
-         S86w==
-X-Gm-Message-State: AOAM533JlbNGyrCpyJL0ZvyJFOikW9k7YAkETD7sxt2Sw8Z5mCJgc8BM
-        RrNewgV1TBse0499XhRpn1D+WWgq5+ssFU10
-X-Google-Smtp-Source: ABdhPJykZxKHvHSt8zUSQ5X4znnM5hU1xvr2U51MF57uSTuL/zgWwXpIdqxyFjPWLR98ydEyELbwMw==
-X-Received: by 2002:ac8:6043:: with SMTP id k3mr6537229qtm.161.1616129891626;
-        Thu, 18 Mar 2021 21:58:11 -0700 (PDT)
-Received: from calvin.localdomain ([2804:14d:5c5a:802e:bdc9:ded9:cc08:a4e9])
-        by smtp.gmail.com with ESMTPSA id g7sm3053414qti.20.2021.03.18.21.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 21:58:10 -0700 (PDT)
-From:   Jonas Malaco <jonas@protocubo.io>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-input@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonas Malaco <jonas@protocubo.io>
-Subject: [PATCH v2] hwmon: add driver for NZXT Kraken X42/X52/X62/X72
-Date:   Fri, 19 Mar 2021 01:55:44 -0300
-Message-Id: <20210319045544.416138-1-jonas@protocubo.io>
-X-Mailer: git-send-email 2.31.0
+        id S233751AbhCSE5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 00:57:19 -0400
+Received: from mail-vi1eur05on2062.outbound.protection.outlook.com ([40.107.21.62]:43174
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233736AbhCSE4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 00:56:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jSgNasMEuJYV/vswR005sq1s2UK0y5wPXSVPs4hGxG+oxXKXWDLRIrGeh13jNco9X6P0ndaAZT+fFgRqfkWiR4ckSoCeHFQW+rpnmrAX/8GeswQ2qjzoxemxTTzvmhvHyL1CPULA+/sNA3G9ZDd5EeIt4NY3KD+hpReiXsSkhF+9QG55QgeFtefCrEZHUAlPRzIQQpReOFAq45W66CmKziISkPJMx0I+4WT09kyBu9NmnqGc1o/l1TB2HAhdLWdIkvCWyuvALhcQGdWicsc2UXmUH0X/Npm84VrJDXh/sdtHZg7VstbM774ppbFImAnVaG4nQ/3e5DATpZCZ9gpUZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKb8KbAlJohFNPkML+hPh0aeBtp7BDPUhnfpxqyGu2Q=;
+ b=LsZ3tTNTU5Wbpldf0SY/5EOdQaYmV5F2cc8IqyiNmzXEHoaUqK+OfEbTsYmfLShn882H347ogu/1MpnzLAU1fUdbvn6dY0Ugam8EvOxL99ouIvPO6pq6FgYfxy/08RN93e3+hBPZVCDgh/+WHP0y5stGZySiZbn5mJznhyVZJioUekvT0bIwBVYoh6CUioBUlqldqKL+myDWT/Qr9VMIoySLtDvN7s8HO1QGLdnGkcvMnsgqsN+69I3AaYf0Xk66IWnirH/h7njTbNoR8wGAU//Ghh/hKyfDaK2iaBETZTjw7EQBFwsMhES22FD6juN6ZSTPFW9Xku9ObzgN8JWE2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKb8KbAlJohFNPkML+hPh0aeBtp7BDPUhnfpxqyGu2Q=;
+ b=fNzxmxYz5stKwfa9qMnkzLPHb/xWRz9ma3QmuFRV9/1GBYr5t5BMEM+cJUqdkJzdIG7jVWvLtfhABbEXGlwVmAQlXh0Qog7ASbsHjg0kO4WU4sCJ4ynF+xvAwZX4TgqnsHy74LdKhl0+E1gmZiUls/zhFM9ilTUlMBvQEgUYtYc=
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
+ by AM6PR0402MB3895.eurprd04.prod.outlook.com (2603:10a6:209:1a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
+ 2021 04:56:47 +0000
+Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::ecad:ebb8:8eb0:d359]) by AM6PR04MB4966.eurprd04.prod.outlook.com
+ ([fe80::ecad:ebb8:8eb0:d359%7]) with mapi id 15.20.3955.023; Fri, 19 Mar 2021
+ 04:56:47 +0000
+From:   Aisheng Dong <aisheng.dong@nxp.com>
+To:     Clark Wang <xiaoning.wang@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 05/11] i2c: imx-lpi2c: add debug message when i2c
+ peripheral clk doesn't work
+Thread-Topic: [PATCH 05/11] i2c: imx-lpi2c: add debug message when i2c
+ peripheral clk doesn't work
+Thread-Index: AQHXGvpTVx9VOWHIOECRhHtxaLmGl6qKwekw
+Date:   Fri, 19 Mar 2021 04:56:47 +0000
+Message-ID: <AM6PR04MB4966E686EEE0FE022996B26880689@AM6PR04MB4966.eurprd04.prod.outlook.com>
+References: <20210317065359.3109394-1-xiaoning.wang@nxp.com>
+ <20210317065359.3109394-6-xiaoning.wang@nxp.com>
+In-Reply-To: <20210317065359.3109394-6-xiaoning.wang@nxp.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0e5ba71f-2d23-4caa-afce-08d8ea936663
+x-ms-traffictypediagnostic: AM6PR0402MB3895:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR0402MB3895E67AF27DDD55F398A0CE80689@AM6PR0402MB3895.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1417;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pL5vtH3jYEntQgU+rgwq5hReF4F9rfvHEw/jHqEtu/vzSqDUjaZENE928M5lks/f0cCug+h7h0kib/XjqbWcKS6mDmNq6jzj1HbetYQfn9Q2lLMON0Gc4SrNHgKF2XqpwQ0L4y1m4TwBKoQH+e4sVKaRT7Eg2o/9c2h7BGRU56cqFGuhstbKKrLF3Yq3qkWIXyu72QSmvvZmgk156RbyuEGBmWSQCvy0X0TfkvsJn0MCXQXd1lTitYY2FSBf+LZsf7qdwAv7demANJpRGhkTD90hH7MxfcqGLZOMJZ2XGSQQ8G5AUlRQFVP/eOqt91bemMJOFeVmxfdoCYAsT6se0nMa3tnuloqCNaivvIePnXTVcItN2W+FFBMQNVR3mW9yPlDhNlIM7c7EUAOe7IMHrbOtx/nLMUYHbIIsyIiC9u/LbT2WzWOB7B4BSpyE0AeuE2ciaTK3HEhJO/DdU8aGGEbeiBNQRulUIGdZ82YfW8gn2XAza1dKZOzVsCsMePbhZpcTCfijCHHnY4Bstol25+4CWIP81d/y/iy2/WceeT5bka6HEf/Jf6moPfiZJQmRPGe/eeUJEekrYb5a2w8AfJOFq43TLuHLrHal6TdJEX6kcOJvkp/P6WScZMVL7SGJugjEOW7VvNvyYf9D9+vk1tUZur6j8c/5ojTRBWYAMdM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(136003)(39860400002)(6506007)(15650500001)(86362001)(38100700001)(2906002)(8936002)(8676002)(7696005)(33656002)(5660300002)(71200400001)(52536014)(83380400001)(26005)(55016002)(186003)(66446008)(66476007)(66556008)(64756008)(76116006)(66946007)(110136005)(9686003)(44832011)(54906003)(316002)(4326008)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?YXU5ZVBybi9jMDEvYys4b0kvRFhWNFJ5OEc3bXhEQUd0ZXUvR3duMWRMU2tz?=
+ =?utf-8?B?dDNKYWozcnVCZ3cxSTcweXoyd2I4bWk5M05xOXhiNDNlcG1oVU5QVHQvZzQv?=
+ =?utf-8?B?YzAvM2k2UG9CVDhDa2dSS1dLL1FyQ2dyRXV2OFlMSGdhV2ZCbUdlbldjeXlR?=
+ =?utf-8?B?VVJSNG5QN0NVemVta0Q2R2FIb2lqV3BPd0Voc1BxVzBsZnA0VWYxWUNxV1RE?=
+ =?utf-8?B?YmU3cUZTNFV1U1hFSjQrTHVDblEzV2JSMUZ1U0paWk53L1VONmpkbXRaT1FI?=
+ =?utf-8?B?VTBjUVNjYUh3MkZjK3JLTzNzNzRnRDhtaFpRVnJQem5yVEN3K09kNmF5aEE4?=
+ =?utf-8?B?dDBVSVI2T2JPa1ZiWE1Pb1VnMkxnMHNWM3pMSjZZRWRLcjhlVE1BZXViNTJk?=
+ =?utf-8?B?aGlCVWllWGNqS1E1YmFrUnRlU0toemFzazdJOHl3UGRpcFFqWGNtZDZ1MEI2?=
+ =?utf-8?B?NlZLQ2JIbWRJRUl0dkxJOGhiU0Fhb0w5T1A0OXhXOHM5M3dJZExscXFZWm4v?=
+ =?utf-8?B?aEhOaTNJVFFzNzJ5ZWN2RW9WMXlZLzFxaDdUaXNML3Mvendrb05HQmpJZk5H?=
+ =?utf-8?B?ZmJXcHFvZU03cXNnZjRqeTNBY0ZQODltNkZjcmFOZ0hoQ1gxaS8zaEl6THY1?=
+ =?utf-8?B?clpEa29CQTJScFlvZWJMcG9nVUtWV0JIMjdhUk5yTmJSNTczblZ0dkFlNXFp?=
+ =?utf-8?B?SElYMkVkUWhFZjNkTzN0ZzZBV2FsTWs4VHRwdkp1NXVvdGdTRDZpTUtZNy9h?=
+ =?utf-8?B?WmRSSG8rUzcxYXAxeUVNTCt4TWJiMEdxcUZvRkhGQ1hQdEk1U1kxK2N5dnZt?=
+ =?utf-8?B?RTZZYUlSdnFMZGJwWW1rclhoM2I5VnFsWFByMkdtZkFoeSttYUU3RXNyYzAx?=
+ =?utf-8?B?Qm1POHRTeDJDc2dreTFMakVubG13K0RxcEtFWFpOc1ozOTB4dHhXWCtsRVk4?=
+ =?utf-8?B?dk1KNytRanFMeHNxWGVvMndxNWR2bW1ZbG5KejVjMHBheWRLcDBlNGEyenVh?=
+ =?utf-8?B?OE55dU5WUXZFTzNZQTc4YlA0S2c3aGFaclhaSEQ5UW9XREJEdk84b2daRGNO?=
+ =?utf-8?B?NjdHcm5BUVFyTFFyWDhaNTAzeENZOHUzNENudTBPaG8zMlhGWi9XV05TYWhB?=
+ =?utf-8?B?UFQzNTNPYjBScFpWdks4YjRRRVZxcHUraXJJR3lzTCsvVy9vTXNGQ0luRk5v?=
+ =?utf-8?B?aEVkOVZqY1lMek96ajVDd1pQQWt1eWhaYmxJN0FERlhRUUZvQmRoTGxiZ0N0?=
+ =?utf-8?B?MFF3U0ZQL1Q5MGRhaXlwZENrcjVyajdkc0lhUUtleThpak1SNjJsV3IyZnFj?=
+ =?utf-8?B?MnJWR3pJY3BuS3ZDUmhobXBZQkhpc2FFZFcyT0ZPQ3RlWTRaMmt6dmg4L2M1?=
+ =?utf-8?B?V04zelRDN0d0cHpOaUw2UnZVQlFQZUp2M25UbG1nSGdYNWNGc0wrUGg4d2wz?=
+ =?utf-8?B?TEpRZ2h4eHBLQ1VWOTlVVjgxUjJ4K1MrM0RDNDQ5WjE0UFh1MGFyNGI1WlhX?=
+ =?utf-8?B?VmZQZytTNjFqZmgya25mSGZwNHl4RkFXMi9yQXRHQ0p4UjhSaXFEak55b0ZL?=
+ =?utf-8?B?eFUwMk9pTVhLNkkremRQUWdTcW1CQmIrY0NWMHVmR1N4a2Jpc2F2S1FZNGoz?=
+ =?utf-8?B?d3hBdndwaklNSUZXMjloTERua3hKKzBHY2NBd1R3c2tGbjZmRS8zWnZZOVlv?=
+ =?utf-8?B?ckVCT3NMS0tBQ21GRUh0VHZRd3U3RUgwc1dGRHhTVUo0MmUvKzhFMzY5UEhD?=
+ =?utf-8?Q?iSEMJ96fTFcT0oZm/ZWWSygW3HU5tgVqq3Qq1c1?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e5ba71f-2d23-4caa-afce-08d8ea936663
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2021 04:56:47.0778
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WEVTyTUFaeWYHqyAxF5PlExa4tFeZrirj7TfnufK1hP8WM6yEODW0fZ16j9lUYzcnycmsjrGuk7oMaaBPrgAOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3895
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are "all-in-one" CPU liquid coolers that can be monitored and
-controlled through a proprietary USB HID protocol.
-
-While the models have differently sized radiators and come with varying
-numbers of fans, they are all indistinguishable at the software level.
-
-The driver exposes fan/pump speeds and coolant temperature through the
-standard hwmon sysfs interface.
-
-Fan and pump control, while supported by the devices, are not currently
-exposed.  The firmware accepts up to 61 trip points per channel
-(fan/pump), but the same set of trip temperatures has to be maintained
-for both; with pwmX_auto_point_Y_temp attributes, users would need to
-maintain this invariant themselves.
-
-Instead, fan and pump control, as well as LED control (which the device
-also supports for 9 addressable RGB LEDs on the CPU water block) are
-left for existing and already mature user-space tools, which can still
-be used alongside the driver, thanks to hidraw.  A link to one, which I
-also maintain, is provided in the documentation.
-
-The implementation is based on USB traffic analysis.  It has been
-runtime tested on x86_64, both as a built-in driver and as a module.
-
-Signed-off-by: Jonas Malaco <jonas@protocubo.io>
----
-Changes in v2:
-- remove unnecessary type, attr and channel checks from _is_visible
-- remove unnecessary attr and channel checks from _read/_read_string
-- remove the spinlock by computing values in the event handler
-- add comment describing how the device reports data
-- report missing or stale data to user-space
-- adjust copyright notice
-
- Documentation/hwmon/index.rst        |   1 +
- Documentation/hwmon/nzxt-kraken2.rst |  42 +++++
- MAINTAINERS                          |   7 +
- drivers/hwmon/Kconfig                |  10 ++
- drivers/hwmon/Makefile               |   1 +
- drivers/hwmon/nzxt-kraken2.c         | 235 +++++++++++++++++++++++++++
- 6 files changed, 296 insertions(+)
- create mode 100644 Documentation/hwmon/nzxt-kraken2.rst
- create mode 100644 drivers/hwmon/nzxt-kraken2.c
-
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index d4b422edbe3a..48bfa7887dd4 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -143,6 +143,7 @@ Hardware Monitoring Kernel Drivers
-    npcm750-pwm-fan
-    nsa320
-    ntc_thermistor
-+   nzxt-kraken2
-    occ
-    pc87360
-    pc87427
-diff --git a/Documentation/hwmon/nzxt-kraken2.rst b/Documentation/hwmon/nzxt-kraken2.rst
-new file mode 100644
-index 000000000000..94025de65a81
---- /dev/null
-+++ b/Documentation/hwmon/nzxt-kraken2.rst
-@@ -0,0 +1,42 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Kernel driver nzxt-kraken2
-+==========================
-+
-+Supported devices:
-+
-+* NZXT Kraken X42
-+* NZXT Kraken X52
-+* NZXT Kraken X62
-+* NZXT Kraken X72
-+
-+Author: Jonas Malaco
-+
-+Description
-+-----------
-+
-+This driver enables hardware monitoring support for NZXT Kraken X42/X52/X62/X72
-+all-in-one CPU liquid coolers.  Three sensors are available: fan speed, pump
-+speed and coolant temperature.
-+
-+Fan and pump control, while supported by the firmware, are not currently
-+exposed.  The addressable RGB LEDs, present in the integrated CPU water block
-+and pump head, are not supported either.  But both features can be found in
-+existing user-space tools (e.g. `liquidctl`_).
-+
-+.. _liquidctl: https://github.com/liquidctl/liquidctl
-+
-+Usage Notes
-+-----------
-+
-+As these are USB HIDs, the driver can be loaded automatically by the kernel and
-+supports hot swapping.
-+
-+Sysfs entries
-+-------------
-+
-+=======================	========================================================
-+fan1_input		Fan speed (in rpm)
-+fan2_input		Pump speed (in rpm)
-+temp1_input		Coolant temperature (in millidegrees Celsius)
-+=======================	========================================================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0635b30e467c..b8f9fc5eaf08 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12911,6 +12911,13 @@ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
- S:	Supported
- F:	drivers/nfc/nxp-nci
- 
-+NZXT-KRAKEN2 HARDWARE MONITORING DRIVER
-+M:	Jonas Malaco <jonas@protocubo.io>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/nzxt-kraken2.rst
-+F:	drivers/hwmon/nzxt-kraken2.c
-+
- OBJAGG
- M:	Jiri Pirko <jiri@nvidia.com>
- L:	netdev@vger.kernel.org
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 54f04e61fb83..0ddc974b102e 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1492,6 +1492,16 @@ config SENSORS_NSA320
- 	  This driver can also be built as a module. If so, the module
- 	  will be called nsa320-hwmon.
- 
-+config SENSORS_NZXT_KRAKEN2
-+	tristate "NZXT Kraken X42/X51/X62/X72 liquid coolers"
-+	depends on USB_HID
-+	help
-+	  If you say yes here you get support for hardware monitoring for the
-+	  NZXT Kraken X42/X52/X62/X72 all-in-one CPU liquid coolers.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called nzxt-kraken2.
-+
- source "drivers/hwmon/occ/Kconfig"
- 
- config SENSORS_PCF8591
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index fe38e8a5c979..59e78bc212cf 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -155,6 +155,7 @@ obj-$(CONFIG_SENSORS_NCT7904)	+= nct7904.o
- obj-$(CONFIG_SENSORS_NPCM7XX)	+= npcm750-pwm-fan.o
- obj-$(CONFIG_SENSORS_NSA320)	+= nsa320-hwmon.o
- obj-$(CONFIG_SENSORS_NTC_THERMISTOR)	+= ntc_thermistor.o
-+obj-$(CONFIG_SENSORS_NZXT_KRAKEN2) += nzxt-kraken2.o
- obj-$(CONFIG_SENSORS_PC87360)	+= pc87360.o
- obj-$(CONFIG_SENSORS_PC87427)	+= pc87427.o
- obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
-diff --git a/drivers/hwmon/nzxt-kraken2.c b/drivers/hwmon/nzxt-kraken2.c
-new file mode 100644
-index 000000000000..a04892301a2c
---- /dev/null
-+++ b/drivers/hwmon/nzxt-kraken2.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * nzxt-kraken2.c - hwmon driver for NZXT Kraken X42/X52/X62/X72 coolers
-+ *
-+ * The device asynchronously sends HID reports (with id 0x04) twice a second to
-+ * communicate current fan speed, pump speed and coolant temperature.  The
-+ * device does not respond to Get_Report requests for this status report.
-+ *
-+ * Copyright 2019-2021  Jonas Malaco <jonas@protocubo.io>
-+ */
-+
-+#include <asm/unaligned.h>
-+#include <linux/hid.h>
-+#include <linux/hwmon.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+
-+#define STATUS_REPORT_ID	0x04
-+#define STATUS_VALIDITY		2 /* seconds; equivalent to 4 missed updates */
-+
-+static const char *const kraken2_temp_label[] = {
-+	"Coolant",
-+};
-+
-+static const char *const kraken2_fan_label[] = {
-+	"Fan",
-+	"Pump",
-+};
-+
-+struct kraken2_priv_data {
-+	struct hid_device *hid_dev;
-+	struct device *hwmon_dev;
-+	s32 temp_input[1];
-+	u16 fan_input[2];
-+	unsigned long updated; /* jiffies */
-+};
-+
-+static umode_t kraken2_is_visible(const void *data,
-+				  enum hwmon_sensor_types type,
-+				  u32 attr, int channel)
-+{
-+	return 0444;
-+}
-+
-+static int kraken2_read(struct device *dev, enum hwmon_sensor_types type,
-+			u32 attr, int channel, long *val)
-+{
-+	struct kraken2_priv_data *priv = dev_get_drvdata(dev);
-+
-+	if (time_after(jiffies, priv->updated + STATUS_VALIDITY * HZ))
-+		return -ENODATA;
-+
-+	switch (type) {
-+	case hwmon_temp:
-+		*val = priv->temp_input[channel];
-+		break;
-+	case hwmon_fan:
-+		*val = priv->fan_input[channel];
-+		break;
-+	default:
-+		return -EOPNOTSUPP; /* unreachable */
-+	}
-+
-+	return 0;
-+}
-+
-+static int kraken2_read_string(struct device *dev, enum hwmon_sensor_types type,
-+			       u32 attr, int channel, const char **str)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		*str = kraken2_temp_label[channel];
-+		break;
-+	case hwmon_fan:
-+		*str = kraken2_fan_label[channel];
-+		break;
-+	default:
-+		return -EOPNOTSUPP; /* unreachable */
-+	}
-+	return 0;
-+}
-+
-+static const struct hwmon_ops kraken2_hwmon_ops = {
-+	.is_visible = kraken2_is_visible,
-+	.read = kraken2_read,
-+	.read_string = kraken2_read_string,
-+};
-+
-+static const struct hwmon_channel_info *kraken2_info[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT | HWMON_T_LABEL),
-+	HWMON_CHANNEL_INFO(fan,
-+			   HWMON_F_INPUT | HWMON_F_LABEL,
-+			   HWMON_F_INPUT | HWMON_F_LABEL),
-+	NULL
-+};
-+
-+static const struct hwmon_chip_info kraken2_chip_info = {
-+	.ops = &kraken2_hwmon_ops,
-+	.info = kraken2_info,
-+};
-+
-+static int kraken2_raw_event(struct hid_device *hdev,
-+			     struct hid_report *report, u8 *data, int size)
-+{
-+	struct kraken2_priv_data *priv;
-+
-+	if (size < 7 || report->id != STATUS_REPORT_ID)
-+		return 0;
-+
-+	priv = hid_get_drvdata(hdev);
-+
-+	/*
-+	 * The fractional byte of the coolant temperature has been observed to
-+	 * be in the interval [1,9], but some of these steps are also
-+	 * consistently skipped for certain integer parts.
-+	 *
-+	 * For the lack of a better idea, assume that the resolution is 0.1°C,
-+	 * and that the missing steps are artifacts of how the firmware
-+	 * processes the raw sensor data.
-+	 */
-+	priv->temp_input[0] = data[1] * 1000 + data[2] * 100;
-+
-+	priv->fan_input[0] = get_unaligned_be16(data + 3);
-+	priv->fan_input[1] = get_unaligned_be16(data + 5);
-+
-+	priv->updated = jiffies;
-+
-+	return 0;
-+}
-+
-+static int kraken2_probe(struct hid_device *hdev,
-+			 const struct hid_device_id *id)
-+{
-+	struct kraken2_priv_data *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&hdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->hid_dev = hdev;
-+	hid_set_drvdata(hdev, priv);
-+
-+	/*
-+	 * Initialize ->updated to STATUS_VALIDITY seconds in the past, making
-+	 * the initial empty data invalid for kraken2_read without the need for
-+	 * a special case there.
-+	 */
-+	priv->updated = jiffies - STATUS_VALIDITY * HZ;
-+
-+	ret = hid_parse(hdev);
-+	if (ret) {
-+		hid_err(hdev, "hid parse failed with %d\n", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * Enable hidraw so existing user-space tools can continue to work.
-+	 */
-+	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
-+	if (ret) {
-+		hid_err(hdev, "hid hw start failed with %d\n", ret);
-+		goto fail_and_stop;
-+	}
-+
-+	ret = hid_hw_open(hdev);
-+	if (ret) {
-+		hid_err(hdev, "hid hw open failed with %d\n", ret);
-+		goto fail_and_close;
-+	}
-+
-+	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "kraken2",
-+							  priv, &kraken2_chip_info,
-+							  NULL);
-+	if (IS_ERR(priv->hwmon_dev)) {
-+		ret = PTR_ERR(priv->hwmon_dev);
-+		hid_err(hdev, "hwmon registration failed with %d\n", ret);
-+		goto fail_and_close;
-+	}
-+
-+	return 0;
-+
-+fail_and_close:
-+	hid_hw_close(hdev);
-+fail_and_stop:
-+	hid_hw_stop(hdev);
-+	return ret;
-+}
-+
-+static void kraken2_remove(struct hid_device *hdev)
-+{
-+	struct kraken2_priv_data *priv = hid_get_drvdata(hdev);
-+
-+	hwmon_device_unregister(priv->hwmon_dev);
-+
-+	hid_hw_close(hdev);
-+	hid_hw_stop(hdev);
-+}
-+
-+static const struct hid_device_id kraken2_table[] = {
-+	{ HID_USB_DEVICE(0x1e71, 0x170e) }, /* NZXT Kraken X42/X52/X62/X72 */
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(hid, kraken2_table);
-+
-+static struct hid_driver kraken2_driver = {
-+	.name = "nzxt-kraken2",
-+	.id_table = kraken2_table,
-+	.probe = kraken2_probe,
-+	.remove = kraken2_remove,
-+	.raw_event = kraken2_raw_event,
-+};
-+
-+static int __init kraken2_init(void)
-+{
-+	return hid_register_driver(&kraken2_driver);
-+}
-+
-+static void __exit kraken2_exit(void)
-+{
-+	hid_unregister_driver(&kraken2_driver);
-+}
-+
-+/*
-+ * When compiled into the kernel, initialize after the hid bus.
-+ */
-+late_initcall(kraken2_init);
-+module_exit(kraken2_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Jonas Malaco <jonas@protocubo.io>");
-+MODULE_DESCRIPTION("Hwmon driver for NZXT Kraken X42/X52/X62/X72 coolers");
-
-base-commit: c37e19c3791abf5814fa63fc081bd2fa2d7d9258
--- 
-2.31.0
-
+PiBGcm9tOiBDbGFyayBXYW5nIDx4aWFvbmluZy53YW5nQG54cC5jb20+DQo+IFNlbnQ6IFdlZG5l
+c2RheSwgTWFyY2ggMTcsIDIwMjEgMjo1NCBQTQ0KPiANCj4gYWRkIGRlYnVnIG1lc3NhZ2Ugd2hl
+biBpMmMgcGVyaXBoZXJhbCBjbGsgcmF0ZSBpcyAwLCB0aGVuIGRpcmVjdGx5IHJldHVybg0KPiAt
+RUlOVkFMLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogR2FvIFBhbiA8cGFuZHkuZ2FvQG54cC5jb20+
+DQo+IFJldmlld2VkLWJ5OiBBbmR5IER1YW4gPGZ1Z2FuZy5kdWFuQG54cC5jb20+DQoNCkRyb3Ag
+b2xkIHJldmlldyB3aGVuIHBhdGNoIGlzIGNoYW5nZWQNCg0KPiAtLS0NCj4gIGRyaXZlcnMvaTJj
+L2J1c3Nlcy9pMmMtaW14LWxwaTJjLmMgfCA3ICsrKysrKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA2
+IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L2kyYy9idXNzZXMvaTJjLWlteC1scGkyYy5jDQo+IGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1p
+bXgtbHBpMmMuYw0KPiBpbmRleCBlNzE4YmI2YjIzODcuLjhmOWRkM2RkMjk1MSAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1pbXgtbHBpMmMuYw0KPiArKysgYi9kcml2ZXJz
+L2kyYy9idXNzZXMvaTJjLWlteC1scGkyYy5jDQo+IEBAIC0yMDksNyArMjA5LDEyIEBAIHN0YXRp
+YyBpbnQgbHBpMmNfaW14X2NvbmZpZyhzdHJ1Y3QgbHBpMmNfaW14X3N0cnVjdA0KPiAqbHBpMmNf
+aW14KQ0KPiANCj4gIAlscGkyY19pbXhfc2V0X21vZGUobHBpMmNfaW14KTsNCj4gDQo+IC0JY2xr
+X3JhdGUgPSBjbGtfZ2V0X3JhdGUobHBpMmNfaW14LT5jbGspOw0KDQpJIGd1ZXNzIHRoZSBrZXJu
+ZWwgY2FuJ3QgY29tcGlsZSByaWdodCBiZWZvcmUgdGhpcyBwYXRjaCBiZWNhdXNlIGxwaTJjX2lt
+eC0+Y2xrIHdhcw0KUmVtb3ZlZCBJbiBmb3JtZXIgcGF0Y2gNCllvdSBuZWVkIGRvdWJsZSBjaGVj
+ayBub3QgYnJlYWsgYmlzZWN0DQoNCj4gKwljbGtfcmF0ZSA9IGNsa19nZXRfcmF0ZShscGkyY19p
+bXgtPmNsa19wZXIpOw0KPiArCWlmICghY2xrX3JhdGUpIHsNCj4gKwkJZGV2X2RiZygmbHBpMmNf
+aW14LT5hZGFwdGVyLmRldiwgImNsa19wZXIgcmF0ZSBpcyAwXG4iKTsNCg0Kcy9kZXZfZGJnL2Rl
+dl9lcnINCg0KPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwl9DQo+ICsNCj4gIAlpZiAobHBpMmNf
+aW14LT5tb2RlID09IEhTIHx8IGxwaTJjX2lteC0+bW9kZSA9PSBVTFRSQV9GQVNUKQ0KPiAgCQlm
+aWx0ID0gMDsNCj4gIAllbHNlDQo+IC0tDQo+IDIuMjUuMQ0KDQo=
