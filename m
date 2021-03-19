@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D8D341C7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A58341C85
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhCSMVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
+        id S231250AbhCSMVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:21:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhCSMUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:20:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E7A26146D;
-        Fri, 19 Mar 2021 12:20:41 +0000 (UTC)
+        id S230464AbhCSMUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:20:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B168164F65;
+        Fri, 19 Mar 2021 12:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156441;
-        bh=3ob6B08D6cc1vZiJslOsSrCpp0UcvZFIHaFBC6mw9IU=;
+        s=korg; t=1616156444;
+        bh=+4RG9UnQOAnxH+YGmJ+fg5x6tRkTfu7mIz+I7CiuxjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2aM4TEAuIz+dtZm5TjFYt8QTzfE0tTfYZq9jmLczH09Sr+3ipaqus1ZkOcGNnwRp0
-         inMvZ+Gv2F3J8TFCNzaqcagKL9cUXtKZFx9w+8Kd4wOZh1Klsrdx8URCodraVnm5k8
-         VrjW2FU+kDW56ddCnw38V1AiorMA9Hr05Ojj2xeo=
+        b=b4461rsRO24QEGJDIzbFj/pjZw/i+1jHTcA/DqsLwtS2F4NbWris5zGd7IckAY7uU
+         VBse4ZrWHOr831TTKw/QUdPn+FC78yBg3MIFd8Ulf/MKSHSbv77VNN2a+/g0XDzRD+
+         xlZvTyrNV4dh2YSkusVJ1cWpasLYVqIAJUeAnRss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 02/31] KVM: x86/mmu: Expand on the comment in kvm_vcpu_ad_need_write_protect()
-Date:   Fri, 19 Mar 2021 13:18:56 +0100
-Message-Id: <20210319121747.290778628@linuxfoundation.org>
+Subject: [PATCH 5.11 03/31] KVM: x86/mmu: Set SPTE_AD_WRPROT_ONLY_MASK if and only if PML is enabled
+Date:   Fri, 19 Mar 2021 13:18:57 +0100
+Message-Id: <20210319121747.319793770@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
 References: <20210319121747.203523570@linuxfoundation.org>
@@ -42,37 +42,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 2855f98265dc579bd2becb79ce0156d08e0df813 ]
+[ Upstream commit 44ac5958a6c1fd91ac8810fbb37194e377d78db5 ]
 
-Expand the comment about need to use write-protection for nested EPT
-when PML is enabled to clarify that the tagging is a nop when PML is
-_not_ enabled.  Without the clarification, omitting the PML check looks
-wrong at first^Wfifth glance.
+Check that PML is actually enabled before setting the mask to force a
+SPTE to be write-protected.  The bits used for the !AD_ENABLED case are
+in the upper half of the SPTE.  With 64-bit paging and EPT, these bits
+are ignored, but with 32-bit PAE paging they are reserved.  Setting them
+for L2 SPTEs without checking PML breaks NPT on 32-bit KVM.
 
+Fixes: 1f4e5fc83a42 ("KVM: x86: fix nested guest live migration with PML")
+Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210213005015.1651772-8-seanjc@google.com>
+Message-Id: <20210225204749.1512652-2-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/mmu_internal.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu_internal.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index bfc6389edc28..8404145fb179 100644
+index 8404145fb179..cf101b73a360 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -79,7 +79,10 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
- 	 * When using the EPT page-modification log, the GPAs in the log
- 	 * would come from L2 rather than L1.  Therefore, we need to rely
- 	 * on write protection to record dirty pages.  This also bypasses
--	 * PML, since writes now result in a vmexit.
-+	 * PML, since writes now result in a vmexit.  Note, this helper will
-+	 * tag SPTEs as needing write-protection even if PML is disabled or
-+	 * unsupported, but that's ok because the tag is consumed if and only
-+	 * if PML is enabled.  Omit the PML check to save a few uops.
+@@ -76,15 +76,15 @@ static inline struct kvm_mmu_page *sptep_to_sp(u64 *sptep)
+ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
+ {
+ 	/*
+-	 * When using the EPT page-modification log, the GPAs in the log
+-	 * would come from L2 rather than L1.  Therefore, we need to rely
+-	 * on write protection to record dirty pages.  This also bypasses
+-	 * PML, since writes now result in a vmexit.  Note, this helper will
+-	 * tag SPTEs as needing write-protection even if PML is disabled or
+-	 * unsupported, but that's ok because the tag is consumed if and only
+-	 * if PML is enabled.  Omit the PML check to save a few uops.
++	 * When using the EPT page-modification log, the GPAs in the CPU dirty
++	 * log would come from L2 rather than L1.  Therefore, we need to rely
++	 * on write protection to record dirty pages, which bypasses PML, since
++	 * writes now result in a vmexit.  Note, the check on CPU dirty logging
++	 * being enabled is mandatory as the bits used to denote WP-only SPTEs
++	 * are reserved for NPT w/ PAE (32-bit KVM).
  	 */
- 	return vcpu->arch.mmu == &vcpu->arch.guest_mmu;
+-	return vcpu->arch.mmu == &vcpu->arch.guest_mmu;
++	return vcpu->arch.mmu == &vcpu->arch.guest_mmu &&
++	       kvm_x86_ops.cpu_dirty_log_size;
  }
+ 
+ bool is_nx_huge_page_enabled(void);
 -- 
 2.30.1
 
