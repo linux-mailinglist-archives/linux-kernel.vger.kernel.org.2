@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5D434207C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B685D342084
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCSPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:04:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230232AbhCSPEv (ORCPT
+        id S229990AbhCSPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhCSPGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616166290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zLqdQIzS2QxcA5cy/lN81+jC3rlHpWNz6jKvsOXt1B8=;
-        b=YPYzyUMEoLr5Ry7a4BoGIRXHFHHBelB+Bn8Ml4sT+JnB+s7OvggqdyynyUAx8bsGywAmvp
-        5mDmes5Qj2EO+fhkb3nKhKOyjDubZMLECZYtezpNaQncDlWRoPPX9Tpmve1D2S+MFTOynm
-        z1Y/QOg7ivzckgMGMenUTvyowZ8ItAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-D_5mqc-WMh618AQxYqt4lQ-1; Fri, 19 Mar 2021 11:04:46 -0400
-X-MC-Unique: D_5mqc-WMh618AQxYqt4lQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61F2E911E4;
-        Fri, 19 Mar 2021 15:04:45 +0000 (UTC)
-Received: from treble (ovpn-119-18.rdu2.redhat.com [10.10.119.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E4AC360CD7;
-        Fri, 19 Mar 2021 15:04:43 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 10:04:41 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
+        Fri, 19 Mar 2021 11:06:43 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A58C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:06:43 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v11so9438941wro.7
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O1cliPNt4IOuiJ9NAYStWdoDOAvSKQBjj0GaKYwsRdg=;
+        b=C7B11toD2TiZrKj3lUFGE6nIMpJt59OarnlrWaEPVb/dlUNaAI44URh9mHbRj5Mtsm
+         CFbdzOKA5NliU2BRgP9V7b/Wyj87h0LMQWZnjq8/oAXMyKDgeTLzx22oETziyJkwdGCt
+         vRuvYYbZVZ2iMw4pujpbyzsO+WQ9m/W3s22lEB+Jd4INJtM5OS0I0rewOFW1klije2Gk
+         hD/uF+swP6rbRbbeGXdzyph++nVVpjVtxFfg0RR/oS69IHjcKpGVwTe6rqzNbeFNXy9q
+         PA2mm79+6wP4DjDzPS13Alx+sWEqLzoljLVWHUqjih7ACGLUcKCuwkxNXt0X076iFnx3
+         MeWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O1cliPNt4IOuiJ9NAYStWdoDOAvSKQBjj0GaKYwsRdg=;
+        b=BdCQplKgL+c+2rlMuhur/1MDnm5Qf6sUtz46xWRjXHpjlBnlBMXO+H9YmDJPdIW2EO
+         m7suLLyAB1qfjkPzxPGT2JZPX9VVNYRLZvBU3i5lowUdei8/Sm7EGWOeImLCzRb5nJRY
+         aE0QpFHp+rYAh8f8Bokbn2357q8+24Z9qTe1zeVHbz+IQLR5MULCIIx6tp3zbT9GPatK
+         qDUFjRYSO44f14t2hzIselap48/n5vbLwhF3+XNHVDd/kGXgH3XZ3XqyxPDRFAsJm7bd
+         ASIipb8HT2pTKMt/7tu4aBjsGG6AVPFnh/UgbulQqYbkaxfWgUTCS2pEEAl+7u/6JpGl
+         h0cg==
+X-Gm-Message-State: AOAM531QHe6TzV5FQ2jIQ5euV7U/6mdXtGtY4OEGearW4pWvnXK7q5qf
+        IDk1cE2tiEMU3eBIiadP7hUxqQ==
+X-Google-Smtp-Source: ABdhPJylifZpjlgybLtsRkl9QRce48/5Mik44BkROT+y6TCzi+J69u+qGfIUwuE5ieQk3X0q5NEtUA==
+X-Received: by 2002:a5d:4686:: with SMTP id u6mr5040256wrq.60.1616166401927;
+        Fri, 19 Mar 2021 08:06:41 -0700 (PDT)
+Received: from balsini.lon.corp.google.com ([2a00:79e0:d:210:d49c:45f3:9d86:b2e9])
+        by smtp.gmail.com with ESMTPSA id w6sm8381391wrl.49.2021.03.19.08.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:06:41 -0700 (PDT)
+From:   Alessio Balsini <balsini@android.com>
+To:     Arnd Bergmann <arnd@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>
+Cc:     kernel-team@android.com, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/14] objtool: Extract elf_symbol_add()
-Message-ID: <20210319150441.3sbxb33v2onbndib@treble>
-References: <20210318171103.577093939@infradead.org>
- <20210318171920.007925810@infradead.org>
- <20210319021403.idfcvrzuj3ywbxhx@treble>
- <YFR0vesRq5DDFCSE@hirez.programming.kicks-ass.net>
+Subject: [PATCH] fs/fuse: Fix matching of FUSE_DEV_IOC_CLONE command
+Date:   Fri, 19 Mar 2021 15:05:14 +0000
+Message-Id: <20210319150514.1315985-1-balsini@android.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFR0vesRq5DDFCSE@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:54:05AM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 18, 2021 at 09:14:03PM -0500, Josh Poimboeuf wrote:
-> > On Thu, Mar 18, 2021 at 06:11:13PM +0100, Peter Zijlstra wrote:
-> > > Create a common helper to add symbols.
-> > > 
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  tools/objtool/elf.c |   57 ++++++++++++++++++++++++++++++----------------------
-> > >  1 file changed, 33 insertions(+), 24 deletions(-)
-> > > 
-> > > --- a/tools/objtool/elf.c
-> > > +++ b/tools/objtool/elf.c
-> > > @@ -290,12 +290,41 @@ static int read_sections(struct elf *elf
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static bool elf_symbol_add(struct elf *elf, struct symbol *sym)
-> > 
-> > How about "elf_add_symbol()" for consistency with my other suggestions
-> > (elf_add_reloc() and elf_add_string()).  And return an int.
-> 
-> Changed the nane, how about void? This latest incarnation doesn't
-> actually have an error path. Still doesn't hurt to have one and not use
-> it I suppose...
+With commit f8425c939663 ("fuse: 32-bit user space ioctl compat for fuse
+device") the matching constraints for the FUSE_DEV_IOC_CLONE ioctl
+command are relaxed, limited to the testing of command type and number.
+As Arnd noticed, this is wrong as it wouldn't ensure the correctness of
+the data size or direction for the received FUSE device ioctl.
 
-void would be my preference, just to avoid unnecessary error handling
-boilerplate in the caller.
+Fix by bringing back the comparison of the ioctl received by the FUSE
+device to the originally generated FUSE_DEV_IOC_CLONE.
 
+Fixes: f8425c939663 ("fuse: 32-bit user space ioctl compat for fuse device")
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Alessio Balsini <balsini@android.com>
+---
+ fs/fuse/dev.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index c0fee830a34e..a5ceccc5ef00 100644
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -2233,11 +2233,8 @@ static long fuse_dev_ioctl(struct file *file, unsigned int cmd,
+ 	int oldfd;
+ 	struct fuse_dev *fud = NULL;
+ 
+-	if (_IOC_TYPE(cmd) != FUSE_DEV_IOC_MAGIC)
+-		return -ENOTTY;
+-
+-	switch (_IOC_NR(cmd)) {
+-	case _IOC_NR(FUSE_DEV_IOC_CLONE):
++	switch (cmd) {
++	case FUSE_DEV_IOC_CLONE:
+ 		res = -EFAULT;
+ 		if (!get_user(oldfd, (__u32 __user *)arg)) {
+ 			struct file *old = fget(oldfd);
 -- 
-Josh
+2.31.0.291.g576ba9dcdaf-goog
 
