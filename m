@@ -2,165 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6443411CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832E23411D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhCSAyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
+        id S233404AbhCSA4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbhCSAxm (ORCPT
+        with ESMTP id S229657AbhCSA4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:53:42 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A75C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:53:42 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id u9so6907913ejj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:53:42 -0700 (PDT)
+        Thu, 18 Mar 2021 20:56:04 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1571C06174A;
+        Thu, 18 Mar 2021 17:56:03 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id 94so5632407qtc.0;
+        Thu, 18 Mar 2021 17:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=S62dHTtCQlIfJI/mhZhC3VouKv424+X6c3HcczHvRZo=;
-        b=Q7dgNseLCIoNGFW0I3O8d7KFa3aLYBgV2gYyeeEjCgsKbbF6rMRVWz8I5k5GslEeVB
-         inDohtaIg/fLnL7S27y3qmY34k2zhTItF2p1zpLQFVLbUcRP4pWcs5CcMZUBkHadqi/d
-         xLiB3Hzxi1o37sLqULtUSPAK+BznD12u81Urb0otDSakwrdzcdzQT3I8Grtf0TL/q/Uk
-         8zu56lub+rcZk+8xbnIyWYInO6AYstjcVTYgPi9QAUK9qIUqtWY/GjGL4TvJZfQ86Nnw
-         QmCYr1x7nLCMIvh+9s41Iob+LRkR7d1+N0ItUc8d+J3pDNSBOZVHDVJ22ymeooI5gEWH
-         6UCA==
+        bh=3/qfLSyLd0K9YGBbsrkX6y/zxovsImFNR4VD6QZeGkI=;
+        b=RYUQcQDTiHBQersdyIlqcOM22jD3MwhlaHLHXE9hrTJE6c1kFSKKvc5Fkn4tSFXLQx
+         AUmfGyPoKIzzWzXJCgdl8Kj53WVKI4NETi5Sh4x7wB9nTcoszT6oLEI0hLi6dsfTKY0x
+         OMd5kK5zqqusQVSOqx6OOVRwkIPXVAJhv6GgI5dD5BwzbOEAIpaEDxBkGHk58YT4z2N3
+         vAyRFQss/db0CVMuCuoKJB5AO73DhZWxvUaLbilCcWgsYRds2iQ+mz5ERgmhagcRPyse
+         txoFDHFk38wF2HOT912T3+mKRXiK/pQBDqlIgkjlaSQKL2B+CGic6sP0WzTm8y+tYGED
+         M5mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=S62dHTtCQlIfJI/mhZhC3VouKv424+X6c3HcczHvRZo=;
-        b=KUfnGGkS/0mKKZUE8jpon7/lAn5gyQhDk1E/rEg8zdMLXgXgK3lUfk1Tuha8EBq4xI
-         3CNn1uFHctpZNjCymnWavy2X91BefaVn9no4QTMeGNCSVsaKDSvCPXbGt5pxgLXPE3G/
-         C6w0vUIZECRxP9xKpQMl0/EFvE7P2YE7e+yfw817A+J7Egbf5Eh13FVbiENHsU7RgmR7
-         yBeowvAVTisfGKFk1ZxpDd1CBtb0mPiLfg4JsaNXkqgJwSGwoVAKlWtoYMKG8Lpei7Af
-         WzZ8900q7s5mZFL/sQyxaykRCo9CebfbKVE4kk6bv0vq97SV/ZJVkZ5LGGKfORW5MWUI
-         EfvA==
-X-Gm-Message-State: AOAM532I26lhr9H7rTmeXHohN7u5kKouET4+J6cbU2ZfUMKWSrdUTk85
-        CnXIo+2A9Pr/fTRlbRyTvvd3zwfeR9Myqb3Cjjwrgkao2a4=
-X-Google-Smtp-Source: ABdhPJxFaCT2uu2jYhd7se0srF/T16JC5LCzYNImCWKMWewHYgy9AjWy4bOzb1le4RcDwfqg2dGNoZFMU4BItTJXAAA=
-X-Received: by 2002:a17:907:7249:: with SMTP id ds9mr1481050ejc.9.1616115221138;
- Thu, 18 Mar 2021 17:53:41 -0700 (PDT)
+        bh=3/qfLSyLd0K9YGBbsrkX6y/zxovsImFNR4VD6QZeGkI=;
+        b=rO1aX6XL2ktURYIIWwrVKB1LQ0jOwmN5Vjg5YroRWDUiC4pHxkzcDd+tgtwfLDcYZz
+         2xnld46ZbeyvAaPTgr4CFiSutw/iczSlg4x0mPE9Vr2KPkrnUL6W3N5oUk4ybqY7Jg5D
+         WmG0/zV2E5lvE0RukRr9pj/utDIM24ht7OdXE3RU2FD2HQmyWnJT/2im2qun8bI4tdVw
+         BRxzuJzd3F0TWqY8c/M6Zo6BtB8ezvw+bd+C01Lk7zUMRevogBiY3GZ+a24KAhNQgaK7
+         1yM4E3jZqnCEqYoxmOVgvOpILZM6E4vd/CM/B7a8oHM5m62akp4SquSgBa+MS4qbAYzy
+         eYEA==
+X-Gm-Message-State: AOAM533lHitFen4mw9o95vtnZ8yT6q9EQ6lekB5eCMbdM9zCZJVy+oUq
+        JXn2EhF0qsev1ncJ0RP1WSpLILxpji5FG3kQ
+X-Google-Smtp-Source: ABdhPJxq4i7nB2mxLIjfC82G/X3cc5MA28UM+DRIRDZEtfKdckVKadT8wpQdDhlgnA71DceRfA5sew==
+X-Received: by 2002:a05:622a:253:: with SMTP id c19mr6276095qtx.355.1616115362720;
+        Thu, 18 Mar 2021 17:56:02 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.87])
+        by smtp.gmail.com with ESMTPSA id j6sm3205216qkm.81.2021.03.18.17.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 17:56:02 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] fs/inode.c: Fix a rudimentary typo
+Date:   Fri, 19 Mar 2021 06:23:42 +0530
+Message-Id: <20210319005342.23795-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 19 Mar 2021 10:53:29 +1000
-Message-ID: <CAPM=9tzyh8Qeo4Sc_VHApCKRt8pBT4nW_20VYOv1TJkKmwm8ew@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.12-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+s/funtion/function/
 
-Regular fixes pull, pretty small set of fixes, a couple of i915 and
-amdgpu, one ttm, one nouveau and one omap. Probably smaller than usual
-for this time, so we'll see if something pops up next week or if this
-will continue to stay small.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Dave.
+diff --git a/fs/inode.c b/fs/inode.c
+index a047ab306f9a..38c2e6b58dc4 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1423,7 +1423,7 @@ EXPORT_SYMBOL(ilookup);
+  * function must never block --- find_inode() can block in
+  * __wait_on_freeing_inode() --- or when the caller can not increment
+  * the reference count because the resulting iput() might cause an
+- * inode eviction.  The tradeoff is that the @match funtion must be
++ * inode eviction.  The tradeoff is that the @match function must be
+  * very carefully implemented.
+  */
+ struct inode *find_inode_nowait(struct super_block *sb,
+--
+2.26.2
 
-drm-fixes-2021-03-19:
-drm fixes for 5.12-rc4
-
-ttm:
-- Make ttm_bo_unpin() not wraparound on too many unpins.
-
-omap:
-- Fix coccicheck warning in omap.
-
-amdgpu:
-- DCN 3.0 gamma fixes
-- DCN 2.1 corrupt screen fix
-
-i915:
-- Workaround async flip + VT-d frame corruption on HSW/BDW
-- Fix NMI watchdog crash due to uninitialized OA buffer use on gen12+
-
-nouveau:
-- workaround oops with bo syncing
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0=
-:
-
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-03-19
-
-for you to fetch changes up to e94c55b8e0a0bbe9a026250cf31e2fa45957d776:
-
-  nouveau: Skip unvailable ttm page entries (2021-03-19 10:38:31 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.12-rc4
-
-ttm:
-- Make ttm_bo_unpin() not wraparound on too many unpins.
-
-omap:
-- Fix coccicheck warning in omap.
-
-amdgpu:
-- DCN 3.0 gamma fixes
-- DCN 2.1 corrupt screen fix
-
-i915:
-- Workaround async flip + VT-d frame corruption on HSW/BDW
-- Fix NMI watchdog crash due to uninitialized OA buffer use on gen12+
-
-nouveau:
-- workaround oops with bo syncing
-
-----------------------------------------------------------------
-Calvin Hou (1):
-      drm/amd/display: Correct algorithm for reversed gamma
-
-Christian K=C3=B6nig (1):
-      drm/ttm: make ttm_bo_unpin more defensive
-
-Dave Airlie (3):
-      Merge tag 'drm-misc-fixes-2021-03-18' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'amd-drm-fixes-5.12-2021-03-18' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-03-18' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-Dillon Varone (1):
-      drm/amd/display: Remove MPC gamut remap logic for DCN30
-
-Junlin Yang (1):
-      drm/omap: dsi: fix unsigned expression compared with zero
-
-Sung Lee (1):
-      drm/amd/display: Copy over soc values before bounding box creation
-
-Tobias Klausmann (1):
-      nouveau: Skip unvailable ttm page entries
-
-Umesh Nerlige Ramappa (1):
-      i915/perf: Start hrtimer only if sampling the OA buffer
-
-Ville Syrj=C3=A4l=C3=A4 (1):
-      drm/i915: Workaround async flip + VT-d corruption on HSW/BDW
-
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 34 ++----------------=
-----
- .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |  5 ++++
- .../gpu/drm/amd/display/dc/dcn30/dcn30_cm_common.c | 26 ++++++++++++-----
- drivers/gpu/drm/i915/i915_perf.c                   | 13 ++++-----
- drivers/gpu/drm/i915/i915_reg.h                    | 23 ++++++++++++++-
- drivers/gpu/drm/i915/intel_pm.c                    | 16 +++++++++-
- drivers/gpu/drm/nouveau/nouveau_bo.c               |  8 +++++
- drivers/gpu/drm/omapdrm/dss/dsi.c                  |  7 +++--
- include/drm/ttm/ttm_bo_api.h                       |  6 ++--
- 9 files changed, 83 insertions(+), 55 deletions(-)
