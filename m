@@ -2,169 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF843427E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51943427ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCSVg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhCSVgH (ORCPT
+        id S230304AbhCSVjs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 17:39:48 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2721 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhCSVjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:36:07 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1DEC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:36:06 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id l79so6271827oib.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gd8/LS9G/arRtGpvSNTnyt+X8KIH+uan5nzLifBdm54=;
-        b=llXCL9/c8u+lPuPiYaXG3P6ezw9Xx6uGG7S+O4ZtL8gIcFQGCrOOCDj5RUpO/xuCpu
-         iGrcysjj1ps8KVwpcku9vLv6dQTkLk4Lq9JxPxpuoTgrZRQW4X5dWeWipeEeP/DKVbEX
-         H/VBrceoqc59JQnVhZvsJDFy0mYkdM7NMnP15TUNCvG6n1/jXBH0+nHxmmfbAzRjMUWc
-         5gEVpKEd1TvNT+ZCcXHntTIbMAgLinN2LslONFFh2aPaoR8f1fecoUJfZbiA3XU5HZpI
-         n6/dx4JQoTEHug8AvQwiFCuhJBKLl/EHS2TlDa/Tghr0p1RC7OXMv6tPCPwC6m0DBgKg
-         NIVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gd8/LS9G/arRtGpvSNTnyt+X8KIH+uan5nzLifBdm54=;
-        b=IODZGfl359QA7dTIaYE8c+v1tQ5NWOmupyu0561q3LZ1w57LCLGYJh90EJa8zwcQWg
-         jIJbhPY536a6fzYrvLys04arArkwfpN1x4SgUO4Vpj89S/LQgZ5zcDtwGJFIvB5rbHzu
-         AbwFUtwshQQi/OmkwcQdF/fyhurp5xJqsG6OxM15PpGxheJ7zUBodyKombaU0jZk4Dej
-         QQHOLrFMBX9AbyPfbL9i2aK457ER4XDmYQtiDtY+gLqHFwGBmgqznyeFUSSFZ2fOwEVm
-         I/cBcExcxGeJTDog2S8R2tOXBfyCUaDbYDlehqxvLIIvSef6wTaYmcxP4kdvhx3Vh9Cx
-         lRwA==
-X-Gm-Message-State: AOAM532D36WT1EELOaHO0qjWO7LaS9pW3Xqg+DksgdAnZMe28ioJxtzY
-        19aYw8iQd2DSbYQEm8DDFPO8eRsaPus893l2R2l+6eNm
-X-Google-Smtp-Source: ABdhPJw1aufG+kZg8BweLNMDZwZcwQT/Rj4rIr1Z2VE+Qg+T+1hZHQroIxBcW2e/AAzj4sICZPIxY7Z57VTL1hL6er4=
-X-Received: by 2002:aca:af10:: with SMTP id y16mr2440946oie.120.1616189766078;
- Fri, 19 Mar 2021 14:36:06 -0700 (PDT)
+        Fri, 19 Mar 2021 17:39:19 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F2HGf3y6Sz680nJ;
+        Sat, 20 Mar 2021 05:34:34 +0800 (CST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 22:39:12 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 21:39:10 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Sat, 20 Mar 2021 05:39:08 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: [RFC PATCH v5 3/4] scheduler: scan idle cpu in cluster before
+ scanning the whole llc
+Thread-Topic: [RFC PATCH v5 3/4] scheduler: scan idle cpu in cluster before
+ scanning the whole llc
+Thread-Index: AQHXHHeZxLBmsb3r8EeP8F1S7SeSAaqL0GzQ
+Date:   Fri, 19 Mar 2021 21:39:08 +0000
+Message-ID: <d6d9167ea9a3414bad052bbbbe3720e9@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-4-song.bao.hua@hisilicon.com>
+In-Reply-To: <20210319041618.14316-4-song.bao.hua@hisilicon.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.173]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210319164418.1.I5d51cc12776ee8993a1a54089b548952f75ada41@changeid>
- <CADnq5_OguuMsqT7MVC=ieNZm9mqyVUsGpQDHr59BWtBJJUvFoA@mail.gmail.com>
- <54fc883a-c149-3f43-fb79-3cbff13e7b6a@amd.com> <CAP8nV8rL6eYSDyQ1jyv267ER8_E+rMBQkza2ZYZvwvdE+=sd3Q@mail.gmail.com>
-In-Reply-To: <CAP8nV8rL6eYSDyQ1jyv267ER8_E+rMBQkza2ZYZvwvdE+=sd3Q@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 19 Mar 2021 17:35:55 -0400
-Message-ID: <CADnq5_O5AOK7B-3AM-qpPXcWD1LgdpnfLMd8NBds0Jfd_tZCBQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Set AMDGPU_DM_DEFAULT_MIN_BACKLIGHT to 0
-To:     Evan Benn <evanbenn@gmail.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Evan Benn <evanbenn@chromium.org>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>, David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Anand <amistry@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 5:31 PM Evan Benn <evanbenn@gmail.com> wrote:
->
-> On Sat, 20 Mar 2021 at 02:10, Harry Wentland <harry.wentland@amd.com> wrote:
-> > On 2021-03-19 10:22 a.m., Alex Deucher wrote:
-> > > On Fri, Mar 19, 2021 at 3:23 AM Evan Benn <evanbenn@chromium.org> wrote:
-> > >>
-> > >> AMDGPU_DM_DEFAULT_MIN_BACKLIGHT was set to the value of 12
-> > >> to ensure no display backlight will flicker at low user brightness
-> > >> settings. However this value is quite bright, so for devices that do not
-> > >> implement the ACPI ATIF
-> > >> ATIF_FUNCTION_QUERY_BRIGHTNESS_TRANSFER_CHARACTERISTICS
-> > >> functionality the user cannot set the brightness to a low level even if
-> > >> the display would support such a low PWM.
-> > >>
-> > >> This ATIF feature is not implemented on for example AMD grunt chromebooks.
-> > >>
-> > >> Signed-off-by: Evan Benn <evanbenn@chromium.org>
-> > >>
-> > >> ---
-> > >> I could not find a justification for the reason for the value. It has
-> > >> caused some noticable regression for users: https://bugzilla.kernel.org/show_bug.cgi?id=203439>>>
-> > >> Maybe this can be either user controlled or userspace configured, but
-> > >> preventing users from turning their backlight dim seems wrong.
-> > >
-> > > My understanding is that some panels flicker if you set the min to a
-> > > value too low.  This was a safe minimum if the platform didn't specify
-> > > it's own safe minimum.  I think we'd just be trading one bug for
-> > > another (flickering vs not dim enough).  Maybe a whitelist or
-> > > blacklist would be a better solution?
-> > >
-> >
-> > Yeah, this is a NACK from me as-is for the reasons Alex described.
->
-> Thanks Harry + Alex,
->
-> I agree this solution is not the best.
->
-> >
-> > I agree a whitelist approach might be best.
->
-> Do you have any idea what an allowlist could be keyed on?
-> Is the flickering you observed here a function of the panel or the gpu
-> or some other component?
-> Maybe we could move the minimum level into the logic for that hardware.
->
 
-Maybe the panel string from the EDID?  Either that or something from
-dmi data?  Harry would probably have a better idea.
 
-Alex
+> -----Original Message-----
+> From: Song Bao Hua (Barry Song)
+> Sent: Friday, March 19, 2021 5:16 PM
+> To: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
+> rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de
+> Cc: msys.mizuma@gmail.com; valentin.schneider@arm.com;
+> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+> juri.lelli@redhat.com; mark.rutland@arm.com; sudeep.holla@arm.com;
+> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; x86@kernel.org;
+> xuwei (O) <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; hpa@zytor.com; Song Bao Hua
+> (Barry Song) <song.bao.hua@hisilicon.com>
+> Subject: [RFC PATCH v5 3/4] scheduler: scan idle cpu in cluster before scanning
+> the whole llc
+> 
+> On kunpeng920, cpus within one cluster can communicate wit each other
+> much faster than cpus across different clusters. A simple hackbench
+> can prove that.
+> hackbench running on 4 cpus in single one cluster and 4 cpus in
+> different clusters shows a large contrast:
+> (1) within a cluster:
+> root@ubuntu:~# taskset -c 0,1,2,3 hackbench -p -T -l 20000 -g 1
+> Running in threaded mode with 1 groups using 40 file descriptors each
+> (== 40 tasks)
+> Each sender will pass 20000 messages of 100 bytes
+> Time: 4.285
+> 
+> (2) across clusters:
+> root@ubuntu:~# taskset -c 0,4,8,12 hackbench -p -T -l 20000 -g 1
+> Running in threaded mode with 1 groups using 40 file descriptors each
+> (== 40 tasks)
+> Each sender will pass 20000 messages of 100 bytes
+> Time: 5.524
+> 
+> This inspires us to change the wake_affine path to scan cluster before
+> scanning the whole LLC to try to gatter related tasks in one cluster,
+> which is done by this patch.
+> 
+> To evaluate the performance impact to related tasks talking with each
+> other, we run the below hackbench with different -g parameter from 2
+> to 14, for each different g, we run the command 10 times and get the
+> average time:
+> $ numactl -N 0 hackbench -p -T -l 20000 -g $1
+> 
+> hackbench will report the time which is needed to complete a certain number
+> of messages transmissions between a certain number of tasks, for example:
+> $ numactl -N 0 hackbench -p -T -l 20000 -g 10
+> Running in threaded mode with 10 groups using 40 file descriptors each
+> (== 400 tasks)
+> Each sender will pass 20000 messages of 100 bytes
+> 
+> The below is the result of hackbench w/ and w/o cluster patch:
+> g=    2      4     6       8      10     12      14
+> w/o: 1.8151 3.8499 5.5142 7.2491 9.0340 10.7345 12.0929
+> w/ : 1.7881 3.7371 5.3301 6.9747 8.6909  9.9235 11.2608
+> 
+> Obviously some recent commits have improved the hackbench. So the change
+> in wake_affine path brings less increase on hackbench compared to what
+> we got in RFC v4.
+> And obviously it is much more tricky to leverage wake_affine compared to
+> leveraging the scatter of tasks in the previous patch as load balance
+> might pull tasks which have been compact in a cluster so alternative
+> suggestions welcome.
+> 
+> In order to figure out how many times cpu is picked from the cluster and
+> how many times cpu is picked out of the cluster, a tracepoint for debug
+> purpose is added in this patch. And an userspace bcc script to print the
+> histogram of the result of select_idle_cpu():
+> #!/usr/bin/python
+> #
+> # selectidlecpu.py	select idle cpu histogram.
+> #
+> # A Ctrl-C will print the gathered histogram then exit.
+> #
+> # 18-March-2021 Barry Song Created this.
+> 
+> from __future__ import print_function
+> from bcc import BPF
+> from time import sleep
+> 
+> # load BPF program
+> b = BPF(text="""
+> 
+> BPF_HISTOGRAM(dist);
+> 
+> TRACEPOINT_PROBE(sched, sched_select_idle_cpu)
+> {
+> 	u32 e;
+> 	if (args->idle / 4 == args->target/4)
+> 		e = 0; /* idle cpu from same cluster */
 
-> >
-> > Is this fix perhaps for OLED panels? If so we could use a different
-> > min-value for OLED panels that don't do PWM, but use 12 for everything else.
->
-> All the chromebooks I have worked with LCD + LED backlight have been
-> fine with a backlight set to 0.
-> We do have OLED panels too, but I'm not aware of what they do.
->
-> > Harry
-> >
-> > > Alex
-> > >
-> > >
-> > >>
-> > >> Also reviewed here: https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2748377>>>
-> > >>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
-> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > >> index 573cf17262da..0129bd69b94e 100644
-> > >> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > >> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > >> @@ -3151,7 +3151,7 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
-> > >>          return 0;
-> > >>   }
-> > >>
-> > >> -#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 12
-> > >> +#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 0
-> > >>   #define AMDGPU_DM_DEFAULT_MAX_BACKLIGHT 255
-> > >>   #define AUX_BL_DEFAULT_TRANSITION_TIME_MS 50
-> > >>
-> > >> --
-> > >> 2.31.0.291.g576ba9dcdaf-goog
-> > >>
-> > >> _______________________________________________
-> > >> dri-devel mailing list
-> > >> dri-devel@lists.freedesktop.org
-> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel>> _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel>>
-> >
+Oops here, as -1/4 = 1/4 = 2/4 = 3/4 = 0
+So a part of -1 is put here(local cluster) incorrectly.
+
+> 	else if (args->idle != -1)
+> 		e = 1; /* idle cpu from different clusters */
+> 	else
+> 		e = 2; /* no idle cpu */
+> 
+> 	dist.increment(e);
+> 	return 0;
+> }
+> """)
+
+Fixed it to:
+
+TRACEPOINT_PROBE(sched, sched_select_idle_cpu)
+{
+        u32 e;
+        if (args->idle == -1)
+                e = 2; /* no idle cpu */
+        else if (args->idle / 4 == args->target / 4)
+                e = 0; /* idle cpu from same cluster */
+        else
+                e = 1; /* idle cpu from different clusters */
+
+        dist.increment(e);
+        return 0;
+}
+
+> 
+> # header
+> print("Tracing... Hit Ctrl-C to end.")
+> 
+> # trace until Ctrl-C
+> try:
+> 	sleep(99999999)
+> except KeyboardInterrupt:
+> 	print()
+> 
+> # output
+> 
+> print("\nlinear histogram")
+> print("~~~~~~~~~~~~~~~~")
+> b["dist"].print_linear_hist("idle")
+> 
+> Even while g=14 and the system is quite busy, we can see there are some
+> chances idle cpu is picked from local cluster:
+> linear histogram
+> ~~~~~~~~~~~~~~
+>      idle          : count     distribution
+>         0          : 15234281 |***********                             |
+>         1          : 18494    |                                        |
+>         2          : 53066152 |****************************************|
+> 
+> 0: local cluster
+> 1: out of the cluster
+> 2: select_idle_cpu() returns -1
+
+After fixing the script, the new histogram is like:
+linear histogram
+~~~~~~~~~~~~~~~~
+     idle          : count     distribution
+        0          : 2765930  |*                                       |
+        1          : 68934    |                                        |
+        2          : 77667475 |****************************************|
+
+We get 
+Local cluster: 3.4358%
+Out of cluster: 0.0856%
+-1(no idle before nr becomes 0): 96.4785%
+
+> 
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  include/trace/events/sched.h | 22 ++++++++++++++++++++++
+>  kernel/sched/fair.c          | 32 +++++++++++++++++++++++++++++++-
+>  2 files changed, 53 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index cbe3e15..86608cf 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -136,6 +136,28 @@
+>  );
+> 
+>  /*
+> + * Tracepoint for select_idle_cpu:
+> + */
+> +TRACE_EVENT(sched_select_idle_cpu,
+> +
+> +	TP_PROTO(int target, int idle),
+> +
+> +	TP_ARGS(target, idle),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(	int,	target			)
+> +		__field(	int,	idle			)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->target	= target;
+> +		__entry->idle = idle;
+> +	),
+> +
+> +	TP_printk("target=%d idle=%d", __entry->target, __entry->idle)
+> +);
+> +
+> +/*
+>   * Tracepoint for waking up a task:
+>   */
+>  DECLARE_EVENT_CLASS(sched_wakeup_template,
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index c92ad9f2..3892d42 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6150,7 +6150,12 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, int t
+>  	if (!this_sd)
+>  		return -1;
+> 
+> -	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +	if (!sched_cluster_active())
+> +		cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +#ifdef CONFIG_SCHED_CLUSTER
+> +	if (sched_cluster_active())
+> +		cpumask_and(cpus, cpu_cluster_mask(target), p->cpus_ptr);
+> +#endif
+> 
+>  	if (sched_feat(SIS_PROP) && !smt) {
+>  		u64 avg_cost, avg_idle, span_avg;
+> @@ -6171,6 +6176,29 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, int t
+>  		time = cpu_clock(this);
+>  	}
+> 
+> +#ifdef CONFIG_SCHED_CLUSTER
+> +	if (sched_cluster_active()) {
+> +		for_each_cpu_wrap(cpu, cpus, target) {
+> +			if (smt) {
+> +				i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> +				if ((unsigned int)i < nr_cpumask_bits)
+> +					return i;
+> +
+> +			} else {
+> +				if (!--nr)
+> +					return -1;
+> +				idle_cpu = __select_idle_cpu(cpu);
+> +				if ((unsigned int)idle_cpu < nr_cpumask_bits) {
+> +					goto done;
+> +				}
+> +			}
+
+BTW, if I return -1 here directly and don't fall back to LLC, I
+can even get a better benchmark:
+
+g=            2      4     6       8      10     12      14
+w/o:        1.8151 3.8499 5.5142 7.2491 9.0340 10.7345 12.0929
+w/ :        1.7881 3.7371 5.3301 6.9747 8.6909  9.9235 11.2608
+return -1:  1.8324 3.6140 5.1029 6.5016 8.1867  9.7559 10.7716
+
+so it seems the wake-up path change is much more trivial to
+get a real and good impact, comparing to the previous 2/4
+patch in which we are only spreading tasks.
+
+> +		}
+> +
+> +		cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +		cpumask_andnot(cpus, cpus, cpu_cluster_mask(target));
+> +	}
+> +#endif
+> +
+>  	for_each_cpu_wrap(cpu, cpus, target) {
+>  		if (smt) {
+>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> @@ -6186,6 +6214,7 @@ static int select_idle_cpu(struct task_struct *p, struct
+> sched_domain *sd, int t
+>  		}
+>  	}
+> 
+> +done:
+>  	if (smt)
+>  		set_idle_cores(this, false);
+> 
+> @@ -6324,6 +6353,7 @@ static int select_idle_sibling(struct task_struct *p,
+> int prev, int target)
+>  		return target;
+> 
+>  	i = select_idle_cpu(p, sd, target);
+> +	trace_sched_select_idle_cpu(target, i);
+>  	if ((unsigned)i < nr_cpumask_bits)
+>  		return i;
+> 
+> --
+> 1.8.3.1
+
+Thanks
+Barry
+
