@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C02341195
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9E4341198
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhCSAra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
+        id S230032AbhCSAso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbhCSArH (ORCPT
+        with ESMTP id S232221AbhCSAsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:47:07 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783DBC06174A;
-        Thu, 18 Mar 2021 17:47:07 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b184so4681851pfa.11;
-        Thu, 18 Mar 2021 17:47:07 -0700 (PDT)
+        Thu, 18 Mar 2021 20:48:20 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC889C06174A;
+        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id f17so2144236plr.0;
+        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pMjjN3dGBQb3GjpDVh58+2sh65rE4RFeTUG4XEdacoU=;
-        b=Z8EwSpkZogScuwMCaJ4MsU1qLtpGhZ8NZhIU5QDrj/DtarcfWVSbWBWfJ+1HCd9zgW
-         WOU8ZvADfIS88Cl7BUtuAHQiHYnATozsOrJX2ng2rKOMlUBth2V3cIsEFpiNc18y+9yW
-         E3qNOGV7w2ZWYXfj6D9YklyFdhpwvsX6BEUAgW/FRZXUDS+8KcdYnkcWkYQeT/VBS/BB
-         fn/jdXNZ8ZCm3DUJnwt/pT78gbp6wIagndO1cEaXmHq/JQD6mNTREamxNGYw7nuaO2P8
-         glo5Mxp5sN1zEUm/Sf+kLd08jgD6hyvjbMvnI5tpTU2olxDSTKmjJmM0fMEyt/JloBRM
-         BVyg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eG1QzwIi3xEaakEPyWiwcIUMucRPcW0kIWxB+VdX0Ok=;
+        b=RAJG3mFP99nhvmv/KZWxUCdFpGEmKA3rijSW/KwwIvPUb9UZQ6Jg0EyQveb7G4h9fU
+         pkKdfJGMdcIm4HI8uAVUa5Nzv5Zg4BsnDy2d+JmuFQzST8gNpib1b6rpiGNtvsMPhPOC
+         LuJikCi/pTxL5zf9qwXIeLEFzpgbaTtIx5lksikP75lA4DjNhVOHDtGblLuffgfQNSmG
+         iftKfGmNegPkTPItGtRXgUJVFUVTSrMS/FWSdPOvaAyUNDzyCrYvqQgRk1G/AUC4p7UC
+         x53i7x8hpHXAlhD+e1Wa/QaFLzV3EUGQP9EqVnhWX4iPJvyM6NevwDVaL7Kw5/iotfQp
+         ujjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pMjjN3dGBQb3GjpDVh58+2sh65rE4RFeTUG4XEdacoU=;
-        b=hsLYjFO91XnVDMfODPmF+Y8dVbhUa3OdTTaRj6RpdQW3t+F4gkPqv78kIZz2jf2s74
-         238Hft/yTOYZO535RybSoNUiNKvKnKeECbvxYb9SeOVIghVjEo8HoTrnCEQbyAkY2tfr
-         gXSMC1oyo6SfcjKGC9bJuH3ahHEJkzHMTNGZDQNmdmZS2H7AltWsm49pPYvCIcE/WPcL
-         0r5MqhWZkv/m07zPx4falZDWOjGdelDNiKzvP1PcMSqdPQ/FWVFqdIFAROxuYpJtrWkU
-         Bro0KyZf7KqpZ8pulgRLwZzlZ3mZwOTv+X3+g7Ijryurie8ZW1UVT67fKZkqZZbMyQ7/
-         DH5A==
-X-Gm-Message-State: AOAM531WcRSFOOb0E6VBxSeKzeOs1EznES1+XWpoh8QJCslKmNbM6Nyz
-        t+dJ0jLuYo097AV2iuxim2wU0JpYeNU=
-X-Google-Smtp-Source: ABdhPJyYwjthzI4fYRoszLzF8Efq2LwsU5gX+tYbtd7hN33/jVGNNdyye62nPlyEQSJChLg5Rvs2aQ==
-X-Received: by 2002:a63:c604:: with SMTP id w4mr3157673pgg.283.1616114823866;
-        Thu, 18 Mar 2021 17:47:03 -0700 (PDT)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id y8sm3715645pfe.36.2021.03.18.17.47.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 17:47:03 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: liu.xuzhi@zte.com.cn
-To:     linux-cifs@vger.kernel.org
-Cc:     sfrench@samba.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, Liu xuzhi <liu.xuzhi@zte.com.cn>
-Subject: [PATCH] fs/cifs/: fix misspellings using codespell tool
-Date:   Thu, 18 Mar 2021 17:46:57 -0700
-Message-Id: <20210319004657.485503-1-liu.xuzhi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=eG1QzwIi3xEaakEPyWiwcIUMucRPcW0kIWxB+VdX0Ok=;
+        b=BhJ732lROpyQxDoBghK/D82NDhtqDRrXRLXxQSGR4PwDMdvEEIJCspVpYA4yiRKvwG
+         RLWst+8RxItwIybhs5f9X3/sfm+ujcrQcCpZdties2QhWbnWlVYHSndA+beCaBd+FY+L
+         andrKEjOerN33OxiLfGPsGZT8MFHbRd8Sxo3ok6nuYJoKutelQuc4bb0jaejlVxeyQYp
+         z8zYEsv4+8F9VMfyqoZBELocXr4MON6xB4qPFaGq1uOK2KACIqu8Qeix1cQ3qCSDN0OE
+         ziceKYCrJ2xgq06MUnrOyh58Hgu580/D7fSSbRRDCYlA9QUgD3fHQjXTGvua6aoI79M4
+         7YGA==
+X-Gm-Message-State: AOAM530ooVV2YCKoSJWJjoMwK6nEXqbSn78euKr0PzLpd965NEMYMOrQ
+        /mHsBXmK/Xv7wulY8uSC16w=
+X-Google-Smtp-Source: ABdhPJytY1xkTdXpw1JPFJu5Rw5Dhn60wo+Djui6kIuuXt0aDtxR6iyqkWGn1AA/gx0cUCg8L8D8GA==
+X-Received: by 2002:a17:902:bf92:b029:e6:bc0:25ac with SMTP id v18-20020a170902bf92b02900e60bc025acmr12452727pls.49.1616114898109;
+        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g2sm3388274pfi.28.2021.03.18.17.48.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Mar 2021 17:48:17 -0700 (PDT)
+Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
+To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, opendmb@gmail.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20210318191816.4185226-1-f.fainelli@gmail.com>
+ <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
+ <e7850feb-b7cd-e279-e3fc-a9bdba162423@arm.com>
+ <f0940ea7-79f6-af57-aa7d-d121abb99012@gmail.com>
+ <16d1c66f-5451-2515-af73-a6b44d996e92@arm.com>
+ <a8a05321-3fd0-d1c4-9d76-ec2e79e310ec@gmail.com>
+ <3dd81519-4a73-efb8-abf0-0b766f993a8b@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a7a858e9-d6e6-cd06-85fc-8826e45d460e@gmail.com>
+Date:   Thu, 18 Mar 2021 17:48:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <3dd81519-4a73-efb8-abf0-0b766f993a8b@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu xuzhi <liu.xuzhi@zte.com.cn>
 
-A typo is found out by codespell tool in 251th lines of cifs_swn.c:
 
-$ codespell ./fs/cifs/
-./cifs_swn.c:251: funciton  ==> function
+On 3/18/2021 4:35 PM, Robin Murphy wrote:
+> On 2021-03-18 21:31, Florian Fainelli wrote:
+>>
+>>
+>> On 3/18/2021 12:53 PM, Robin Murphy wrote:
+>>> On 2021-03-18 19:43, Florian Fainelli wrote:
+>>>>
+>>>>
+>>>> On 3/18/2021 12:34 PM, Robin Murphy wrote:
+>>>>> On 2021-03-18 19:22, Florian Fainelli wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 3/18/2021 12:18 PM, Florian Fainelli wrote:
+>>>>>>> It may be useful to disable the SWIOTLB completely for testing or
+>>>>>>> when a
+>>>>>>> platform is known not to have any DRAM addressing limitations
+>>>>>>> what so
+>>>>>>> ever.
+>>>>>
+>>>>> Isn't that what "swiotlb=noforce" is for? If you're confident that
+>>>>> we've
+>>>>> really ironed out *all* the awkward corners that used to blow up if
+>>>>> various internal bits were left uninitialised, then it would make
+>>>>> sense
+>>>>> to just tweak the implementation of what we already have.
+>>>>
+>>>> swiotlb=noforce does prevent dma_direct_map_page() from resorting to
+>>>> the
+>>>> swiotlb, however what I am also after is reclaiming these 64MB of
+>>>> default SWIOTLB bounce buffering memory because my systems run with
+>>>> large amounts of reserved memory into ZONE_MOVABLE and everything in
+>>>> ZONE_NORMAL is precious at that point.
+>>>
+>>> It also forces io_tlb_nslabs to the minimum, so it should be claiming
+>>> considerably less than 64MB. IIRC the original proposal *did* skip
+>>> initialisation completely, but that turned up the aforementioned issues.
+>>
+>> AFAICT in that case we will have iotlb_n_slabs will set to 1, which will
+>> still make us allocate io_tlb_n_slabs << IO_TLB_SHIFT bytes in
+>> swiotlb_init(), which still gives us 64MB.
+> 
+> Eh? When did 2KB become 64MB? IO_TLB_SHIFT is 11, so that's at most one
+> page in anyone's money...
 
-Fix a typo found by codespell.
+Yes, sorry incorrect shift applied here. Still, and I believe this is
+what you mean below, architecture code setting swiotlb_force =
+SWIOTLB_NO_FORCE does not result in not allocating the SWIOTLB, because
+io_tlb_nslabs is still left set to 0 so swiotlb_init() will proceed with
+allocating the default size.
 
-Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
----
- fs/cifs/cifs_swn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+>>>>> I wouldn't necessarily disagree with adding "off" as an additional
+>>>>> alias
+>>>>> for "noforce", though, since it does come across as a bit wacky for
+>>>>> general use.
+>>>>>
+>>>>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>>>>>
+>>>>>> Christoph, in addition to this change, how would you feel if we
+>>>>>> qualified the swiotlb_init() in arch/arm/mm/init.c with a:
+>>>>>>
+>>>>>>
+>>>>>> if (memblock_end_of_DRAM() >= SZ_4G)
+>>>>>>       swiotlb_init(1)
+>>>>>
+>>>>> Modulo "swiotlb=force", of course ;)
+>>>>
+>>>> Indeed, we would need to handle that case as well. Does it sound
+>>>> reasonable to do that to you as well?
+>>>
+>>> I wouldn't like it done to me personally, but for arm64, observe what
+>>> mem_init() in arch/arm64/mm/init.c already does.
+> 
+> In fact I should have looked more closely at that myself - checking
+> debugfs on my 4GB arm64 board actually shows io_tlb_nslabs = 0, and
+> indeed we are bypassing initialisation completely and (ab)using
+> SWIOTLB_NO_FORCE to cover it up, so I guess it probably *is* safe now
+> for the noforce option to do the same for itself and save even that one
+> page.
 
-diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
-index f2d730fffccb..d829b8bf833e 100644
---- a/fs/cifs/cifs_swn.c
-+++ b/fs/cifs/cifs_swn.c
-@@ -248,7 +248,7 @@ static int cifs_swn_send_unregister_message(struct cifs_swn_reg *swnreg)
- 
- /*
-  * Try to find a matching registration for the tcon's server name and share name.
-- * Calls to this funciton must be protected by cifs_swnreg_idr_mutex.
-+ * Calls to this function must be protected by cifs_swnreg_idr_mutex.
-  * TODO Try to avoid memory allocations
-  */
- static struct cifs_swn_reg *cifs_find_swn_reg(struct cifs_tcon *tcon)
+OK, I can submit a patch that does that. 5.12-rc3 works correctly for me
+here as well and only allocates SWIOTLB when needed which in our case is
+either:
+
+- we have DRAM at PA >= 4GB
+- we have limited peripherals (Raspberry Pi 4 derivative) that can only
+address the lower 1GB
+
+Now let's see if we can get ARM 32-bit to match :)
 -- 
-2.25.1
-
+Florian
