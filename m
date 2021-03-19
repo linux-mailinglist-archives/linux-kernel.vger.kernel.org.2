@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32A9341C5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25A1341CA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhCSMUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57794 "EHLO mail.kernel.org"
+        id S230060AbhCSMWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:22:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhCSMUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:20:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A116146D;
-        Fri, 19 Mar 2021 12:20:01 +0000 (UTC)
+        id S230186AbhCSMVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:21:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C0F64E6B;
+        Fri, 19 Mar 2021 12:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156402;
-        bh=XKDqBZZfl+KZQVlMjVScLpjaVVbp4NEIbL8ssPi90og=;
+        s=korg; t=1616156484;
+        bh=jPY6lFZzrAeNep+w5h5CkZxf5znhDuYseRrhYcXv2rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xq9KNoWBoG1CbhwXWnTYynsUv5JIru0YQ/48Ydw1qCwxetaNMYEfSlZtAViie6vA1
-         9wzcxeSUYtrcfF3eGpfwkE3MzYQwBCGt9zADmxqKc/2YVLyg3CTS7N2H/RUpW46l96
-         HCJSRSREOEQwf8uP4HeFgzhfFSSh9FMYo1m6iEWE=
+        b=gnc6kSV97vgElgz89pJMvXvKxLbg8NVVT+/VkZP+mlSmX5jFiKCYqtjNnNKBj2X/I
+         d0T09JcxpIQODIauEInJyCUxZgMnFxacZrecOUCecR2w94deqgl++t+dutxsiBjMNp
+         rZiLY8N9j964LuOPy1YZmOkhEarq6j0pvKidwONA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 13/13] net: dsa: b53: Support setting learning on port
-Date:   Fri, 19 Mar 2021 13:19:10 +0100
-Message-Id: <20210319121745.543243995@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 17/31] gfs2: Add common helper for holding and releasing the freeze glock
+Date:   Fri, 19 Mar 2021 13:19:11 +0100
+Message-Id: <20210319121747.755532362@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
-References: <20210319121745.112612545@linuxfoundation.org>
+In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
+References: <20210319121747.203523570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,120 +40,241 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit f9b3827ee66cfcf297d0acd6ecf33653a5f297ef upstream.
+[ Upstream commit c77b52c0a137994ad796f44544c802b0b766e496 ]
 
-Add support for being able to set the learning attribute on port, and
-make sure that the standalone ports start up with learning disabled.
+Many places in the gfs2 code queued and dequeued the freeze glock.
+Almost all of them acquire it in SHARED mode, and need to specify the
+same LM_FLAG_NOEXP and GL_EXACT flags.
 
-We can remove the code in bcm_sf2 that configured the ports learning
-attribute because we want the standalone ports to have learning disabled
-by default and port 7 cannot be bridged, so its learning attribute will
-not change past its initial configuration.
+This patch adds common helper functions gfs2_freeze_lock and gfs2_freeze_unlock
+to make the code more readable, and to prepare for the next patch.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c |   18 ++++++++++++++++++
- drivers/net/dsa/b53/b53_regs.h   |    1 +
- drivers/net/dsa/bcm_sf2.c        |   15 +--------------
- 3 files changed, 20 insertions(+), 14 deletions(-)
+ fs/gfs2/ops_fstype.c |  6 ++----
+ fs/gfs2/recovery.c   |  8 +++-----
+ fs/gfs2/super.c      | 42 ++++++++++++++----------------------------
+ fs/gfs2/util.c       | 25 +++++++++++++++++++++++++
+ fs/gfs2/util.h       |  3 +++
+ 5 files changed, 47 insertions(+), 37 deletions(-)
 
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -510,6 +510,19 @@ void b53_imp_vlan_setup(struct dsa_switc
- }
- EXPORT_SYMBOL(b53_imp_vlan_setup);
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 61fce59cb4d3..4ee56f5e93cb 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -1198,14 +1198,12 @@ static int gfs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	if (sb_rdonly(sb)) {
+ 		struct gfs2_holder freeze_gh;
  
-+static void b53_port_set_learning(struct b53_device *dev, int port,
-+				  bool learning)
+-		error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED,
+-					   LM_FLAG_NOEXP | GL_EXACT,
+-					   &freeze_gh);
++		error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
+ 		if (error) {
+ 			fs_err(sdp, "can't make FS RO: %d\n", error);
+ 			goto fail_per_node;
+ 		}
+-		gfs2_glock_dq_uninit(&freeze_gh);
++		gfs2_freeze_unlock(&freeze_gh);
+ 	} else {
+ 		error = gfs2_make_fs_rw(sdp);
+ 		if (error) {
+diff --git a/fs/gfs2/recovery.c b/fs/gfs2/recovery.c
+index a3c1911862f0..8f9c6480a5df 100644
+--- a/fs/gfs2/recovery.c
++++ b/fs/gfs2/recovery.c
+@@ -470,9 +470,7 @@ void gfs2_recover_func(struct work_struct *work)
+ 
+ 		/* Acquire a shared hold on the freeze lock */
+ 
+-		error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED,
+-					   LM_FLAG_NOEXP | LM_FLAG_PRIORITY |
+-					   GL_EXACT, &thaw_gh);
++		error = gfs2_freeze_lock(sdp, &thaw_gh, LM_FLAG_PRIORITY);
+ 		if (error)
+ 			goto fail_gunlock_ji;
+ 
+@@ -524,7 +522,7 @@ void gfs2_recover_func(struct work_struct *work)
+ 		clean_journal(jd, &head);
+ 		up_read(&sdp->sd_log_flush_lock);
+ 
+-		gfs2_glock_dq_uninit(&thaw_gh);
++		gfs2_freeze_unlock(&thaw_gh);
+ 		t_rep = ktime_get();
+ 		fs_info(sdp, "jid=%u: Journal replayed in %lldms [jlck:%lldms, "
+ 			"jhead:%lldms, tlck:%lldms, replay:%lldms]\n",
+@@ -546,7 +544,7 @@ void gfs2_recover_func(struct work_struct *work)
+ 	goto done;
+ 
+ fail_gunlock_thaw:
+-	gfs2_glock_dq_uninit(&thaw_gh);
++	gfs2_freeze_unlock(&thaw_gh);
+ fail_gunlock_ji:
+ 	if (jlocked) {
+ 		gfs2_glock_dq_uninit(&ji_gh);
+diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
+index 2f56acc41c04..ea312a94ce69 100644
+--- a/fs/gfs2/super.c
++++ b/fs/gfs2/super.c
+@@ -173,9 +173,7 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
+ 	if (error)
+ 		return error;
+ 
+-	error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED,
+-				   LM_FLAG_NOEXP | GL_EXACT,
+-				   &freeze_gh);
++	error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
+ 	if (error)
+ 		goto fail_threads;
+ 
+@@ -205,12 +203,12 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
+ 
+ 	set_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
+ 
+-	gfs2_glock_dq_uninit(&freeze_gh);
++	gfs2_freeze_unlock(&freeze_gh);
+ 
+ 	return 0;
+ 
+ fail:
+-	gfs2_glock_dq_uninit(&freeze_gh);
++	gfs2_freeze_unlock(&freeze_gh);
+ fail_threads:
+ 	if (sdp->sd_quotad_process)
+ 		kthread_stop(sdp->sd_quotad_process);
+@@ -452,7 +450,7 @@ static int gfs2_lock_fs_check_clean(struct gfs2_sbd *sdp)
+ 	}
+ 
+ 	if (error)
+-		gfs2_glock_dq_uninit(&sdp->sd_freeze_gh);
++		gfs2_freeze_unlock(&sdp->sd_freeze_gh);
+ 
+ out:
+ 	while (!list_empty(&list)) {
+@@ -616,21 +614,12 @@ int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
+ 	gfs2_holder_mark_uninitialized(&freeze_gh);
+ 	if (sdp->sd_freeze_gl &&
+ 	    !gfs2_glock_is_locked_by_me(sdp->sd_freeze_gl)) {
+-		if (!log_write_allowed) {
+-			error = gfs2_glock_nq_init(sdp->sd_freeze_gl,
+-						   LM_ST_SHARED, LM_FLAG_TRY |
+-						   LM_FLAG_NOEXP | GL_EXACT,
+-						   &freeze_gh);
+-			if (error == GLR_TRYFAILED)
+-				error = 0;
+-		} else {
+-			error = gfs2_glock_nq_init(sdp->sd_freeze_gl,
+-						   LM_ST_SHARED,
+-						   LM_FLAG_NOEXP | GL_EXACT,
+-						   &freeze_gh);
+-			if (error && !gfs2_withdrawn(sdp))
+-				return error;
+-		}
++		error = gfs2_freeze_lock(sdp, &freeze_gh,
++					 log_write_allowed ? 0 : LM_FLAG_TRY);
++		if (error == GLR_TRYFAILED)
++			error = 0;
++		if (error && !gfs2_withdrawn(sdp))
++			return error;
+ 	}
+ 
+ 	gfs2_flush_delete_work(sdp);
+@@ -661,8 +650,7 @@ int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
+ 				   atomic_read(&sdp->sd_reserving_log) == 0,
+ 				   HZ * 5);
+ 	}
+-	if (gfs2_holder_initialized(&freeze_gh))
+-		gfs2_glock_dq_uninit(&freeze_gh);
++	gfs2_freeze_unlock(&freeze_gh);
+ 
+ 	gfs2_quota_cleanup(sdp);
+ 
+@@ -772,10 +760,8 @@ void gfs2_freeze_func(struct work_struct *work)
+ 	struct super_block *sb = sdp->sd_vfs;
+ 
+ 	atomic_inc(&sb->s_active);
+-	error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED,
+-				   LM_FLAG_NOEXP | GL_EXACT, &freeze_gh);
++	error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
+ 	if (error) {
+-		fs_info(sdp, "GFS2: couldn't get freeze lock : %d\n", error);
+ 		gfs2_assert_withdraw(sdp, 0);
+ 	} else {
+ 		atomic_set(&sdp->sd_freeze_state, SFS_UNFROZEN);
+@@ -785,7 +771,7 @@ void gfs2_freeze_func(struct work_struct *work)
+ 				error);
+ 			gfs2_assert_withdraw(sdp, 0);
+ 		}
+-		gfs2_glock_dq_uninit(&freeze_gh);
++		gfs2_freeze_unlock(&freeze_gh);
+ 	}
+ 	deactivate_super(sb);
+ 	clear_bit_unlock(SDF_FS_FROZEN, &sdp->sd_flags);
+@@ -853,7 +839,7 @@ static int gfs2_unfreeze(struct super_block *sb)
+                 return 0;
+ 	}
+ 
+-	gfs2_glock_dq_uninit(&sdp->sd_freeze_gh);
++	gfs2_freeze_unlock(&sdp->sd_freeze_gh);
+ 	mutex_unlock(&sdp->sd_freeze_mutex);
+ 	return wait_on_bit(&sdp->sd_flags, SDF_FS_FROZEN, TASK_INTERRUPTIBLE);
+ }
+diff --git a/fs/gfs2/util.c b/fs/gfs2/util.c
+index 574bea29f21e..e6c93e811c3e 100644
+--- a/fs/gfs2/util.c
++++ b/fs/gfs2/util.c
+@@ -91,6 +91,31 @@ int check_journal_clean(struct gfs2_sbd *sdp, struct gfs2_jdesc *jd,
+ 	return error;
+ }
+ 
++/**
++ * gfs2_freeze_lock - hold the freeze glock
++ * @sdp: the superblock
++ * @freeze_gh: pointer to the requested holder
++ * @caller_flags: any additional flags needed by the caller
++ */
++int gfs2_freeze_lock(struct gfs2_sbd *sdp, struct gfs2_holder *freeze_gh,
++		     int caller_flags)
 +{
-+	u16 reg;
++	int flags = LM_FLAG_NOEXP | GL_EXACT | caller_flags;
++	int error;
 +
-+	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
-+	if (learning)
-+		reg &= ~BIT(port);
-+	else
-+		reg |= BIT(port);
-+	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
++	error = gfs2_glock_nq_init(sdp->sd_freeze_gl, LM_ST_SHARED, flags,
++				   freeze_gh);
++	if (error && error != GLR_TRYFAILED)
++		fs_err(sdp, "can't lock the freeze lock: %d\n", error);
++	return error;
 +}
 +
- int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
- {
- 	struct b53_device *dev = ds->priv;
-@@ -523,6 +536,7 @@ int b53_enable_port(struct dsa_switch *d
- 	cpu_port = dsa_to_port(ds, port)->cpu_dp->index;
- 
- 	b53_br_egress_floods(ds, port, true, true);
-+	b53_port_set_learning(dev, port, false);
- 
- 	if (dev->ops->irq_enable)
- 		ret = dev->ops->irq_enable(dev, port);
-@@ -656,6 +670,7 @@ static void b53_enable_cpu_port(struct b
- 	b53_brcm_hdr_setup(dev->ds, port);
- 
- 	b53_br_egress_floods(dev->ds, port, true, true);
-+	b53_port_set_learning(dev, port, false);
- }
- 
- static void b53_enable_mib(struct b53_device *dev)
-@@ -1839,6 +1854,8 @@ int b53_br_join(struct dsa_switch *ds, i
- 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
- 	dev->ports[port].vlan_ctl_mask = pvlan;
- 
-+	b53_port_set_learning(dev, port, true);
++void gfs2_freeze_unlock(struct gfs2_holder *freeze_gh)
++{
++	if (gfs2_holder_initialized(freeze_gh))
++		gfs2_glock_dq_uninit(freeze_gh);
++}
 +
- 	return 0;
- }
- EXPORT_SYMBOL(b53_br_join);
-@@ -1886,6 +1903,7 @@ void b53_br_leave(struct dsa_switch *ds,
- 		vl->untag |= BIT(port) | BIT(cpu_port);
- 		b53_set_vlan_entry(dev, pvid, vl);
- 	}
-+	b53_port_set_learning(dev, port, false);
- }
- EXPORT_SYMBOL(b53_br_leave);
+ static void signal_our_withdraw(struct gfs2_sbd *sdp)
+ {
+ 	struct gfs2_glock *live_gl = sdp->sd_live_gh.gh_gl;
+diff --git a/fs/gfs2/util.h b/fs/gfs2/util.h
+index a4443dd8a94b..69e1a0ae5a4d 100644
+--- a/fs/gfs2/util.h
++++ b/fs/gfs2/util.h
+@@ -149,6 +149,9 @@ int gfs2_io_error_i(struct gfs2_sbd *sdp, const char *function,
  
---- a/drivers/net/dsa/b53/b53_regs.h
-+++ b/drivers/net/dsa/b53/b53_regs.h
-@@ -115,6 +115,7 @@
- #define B53_UC_FLOOD_MASK		0x32
- #define B53_MC_FLOOD_MASK		0x34
- #define B53_IPMC_FLOOD_MASK		0x36
-+#define B53_DIS_LEARNING		0x3c
+ extern int check_journal_clean(struct gfs2_sbd *sdp, struct gfs2_jdesc *jd,
+ 			       bool verbose);
++extern int gfs2_freeze_lock(struct gfs2_sbd *sdp,
++			    struct gfs2_holder *freeze_gh, int caller_flags);
++extern void gfs2_freeze_unlock(struct gfs2_holder *freeze_gh);
  
- /*
-  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -222,23 +222,10 @@ static int bcm_sf2_port_setup(struct dsa
- 	reg &= ~P_TXQ_PSM_VDD(port);
- 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
- 
--	/* Enable learning */
--	reg = core_readl(priv, CORE_DIS_LEARN);
--	reg &= ~BIT(port);
--	core_writel(priv, reg, CORE_DIS_LEARN);
--
- 	/* Enable Broadcom tags for that port if requested */
--	if (priv->brcm_tag_mask & BIT(port)) {
-+	if (priv->brcm_tag_mask & BIT(port))
- 		b53_brcm_hdr_setup(ds, port);
- 
--		/* Disable learning on ASP port */
--		if (port == 7) {
--			reg = core_readl(priv, CORE_DIS_LEARN);
--			reg |= BIT(port);
--			core_writel(priv, reg, CORE_DIS_LEARN);
--		}
--	}
--
- 	/* Configure Traffic Class to QoS mapping, allow each priority to map
- 	 * to a different queue number
- 	 */
+ #define gfs2_io_error(sdp) \
+ gfs2_io_error_i((sdp), __func__, __FILE__, __LINE__)
+-- 
+2.30.1
+
 
 
