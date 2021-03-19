@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3A1341B1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2335C341B2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhCSLHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:07:18 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11241 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230081AbhCSLHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:07:02 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F21LX1c91z9tx8s;
-        Fri, 19 Mar 2021 12:07:00 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5BZWUwXysFnB; Fri, 19 Mar 2021 12:07:00 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F21LW6k02z9tx94;
-        Fri, 19 Mar 2021 12:06:59 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 16F4B8B972;
-        Fri, 19 Mar 2021 12:07:01 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Lg4zbuWVj8vk; Fri, 19 Mar 2021 12:07:01 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 449998B975;
-        Fri, 19 Mar 2021 12:07:00 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 06A95675FB; Fri, 19 Mar 2021 11:07:00 +0000 (UTC)
-Message-Id: <638fa99530beb29f82f94370057d110e91272acc.1616151715.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1616151715.git.christophe.leroy@csgroup.eu>
-References: <cover.1616151715.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 10/10] powerpc/signal32: Simplify logging in sigreturn()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, cmr@codefail.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 19 Mar 2021 11:07:00 +0000 (UTC)
+        id S229844AbhCSLKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhCSLKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 07:10:12 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28000C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:10:12 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id bf3so10281307edb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8B0a0EdllmYlGiT/rpLNY2Bhn7KsHQ1lj7+dw2VrguA=;
+        b=KKzYPWb5mPWk0IdcP8KlJ1H9MXyYPvIufjrrAWG7cz7usZ5S/BwWWQQIaAjINoviVg
+         T2Uzj2TpTMj2N1HFnyU8/tvt0+kmQnWqSKaVFItKeQbksTF/2/g39kV1f+MdUI73eBtB
+         xmYLBDeisqXwhHFUmkeRG67ShY7gTdR3jB+JBUifCngUo4n6DVjeQom9w1BF1YNmhFTA
+         b7bY9FYdLCAmJSSG9c10ZQeP/mr91HFIN4p6tnxjLJC3dkZlmnhlcjvCy+In2zt6HzcC
+         BGbqxql2NspfH5xYMpS8zR6zLRsVZOreJ2dQAVyB/pCfGN4qyhTa0ygGKYXrgFOzergv
+         ta4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8B0a0EdllmYlGiT/rpLNY2Bhn7KsHQ1lj7+dw2VrguA=;
+        b=TVIEzkD5sMT+0C1MEVZAGPywdVx1/tTPVhWchH3h5G9aTi1/F22MZHy8fxxx6qn/Bc
+         +UklmYy2InXxat/+QAl7VWd2KP6lzFQiILp1wMfmvf3YeTGa0IP3ApR2nD29+Xg95FjM
+         JThLHZNJbBHex+eZZuDz0SpaEWbujL6R3so4qhT1W+0K+T3C0c5/G3jUk/uZBPGFZ2qy
+         KCzSE/TWFu+srxTUMLOcgiP9bHztQhKMRu7+dV2W2KInzncqJD4pbDkK4zV3kyfimszn
+         8xXAbluWem/cNZ3uiQCdskwrERniYAxIoy6rohQaKHDOdA1I48ysuKEJew6JXKNQywC2
+         yRLg==
+X-Gm-Message-State: AOAM533rAcn8j5MdqWHpnjddq7tCs0CwfbKChJCAIRNL6vKS+Dtt1X9W
+        4mq6BHraW9rLwCQEJbpxBM8=
+X-Google-Smtp-Source: ABdhPJxlyvp4ztIb/4FN/fkbPns9/QU+TE2eH92u5lloV6kjrWOpTswWi8SsluNumqJ7QxC4TJH/HQ==
+X-Received: by 2002:a05:6402:447:: with SMTP id p7mr8848007edw.89.1616152210825;
+        Fri, 19 Mar 2021 04:10:10 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id gz20sm3556111ejc.25.2021.03.19.04.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 04:10:10 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 19 Mar 2021 12:10:08 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [PATCH-tip 0/5] locking/locktorture: Fix locktorture ww_mutex
+ test problems
+Message-ID: <20210319111008.GA4029764@gmail.com>
+References: <20210318172814.4400-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318172814.4400-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same spirit as commit debf122c777f ("powerpc/signal32: Simplify logging
-in handle_rt_signal32()"), remove this intermediate 'addr' local var.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/signal_32.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+* Waiman Long <longman@redhat.com> wrote:
 
-diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-index 592b889e3836..5be267b3a13e 100644
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -1352,7 +1352,6 @@ SYSCALL_DEFINE0(sigreturn)
- 	struct sigcontext __user *sc;
- 	struct sigcontext sigctx;
- 	struct mcontext __user *sr;
--	void __user *addr;
- 	sigset_t set;
- 	struct mcontext __user *mcp;
- 	struct mcontext __user *tm_mcp = NULL;
-@@ -1363,7 +1362,6 @@ SYSCALL_DEFINE0(sigreturn)
- 
- 	sf = (struct sigframe __user *)(regs->gpr[1] + __SIGNAL_FRAMESIZE);
- 	sc = &sf->sctx;
--	addr = sc;
- 	if (copy_from_user(&sigctx, sc, sizeof(sigctx)))
- 		goto badframe;
- 
-@@ -1392,16 +1390,19 @@ SYSCALL_DEFINE0(sigreturn)
- 			goto badframe;
- 	} else {
- 		sr = (struct mcontext __user *)from_user_ptr(sigctx.regs);
--		addr = sr;
--		if (restore_user_regs(regs, sr, 1))
--			goto badframe;
-+		if (restore_user_regs(regs, sr, 1)) {
-+			signal_fault(current, regs, "sys_sigreturn", sr);
-+
-+			force_sig(SIGSEGV);
-+			return 0;
-+		}
- 	}
- 
- 	set_thread_flag(TIF_RESTOREALL);
- 	return 0;
- 
- badframe:
--	signal_fault(current, regs, "sys_sigreturn", addr);
-+	signal_fault(current, regs, "sys_sigreturn", sc);
- 
- 	force_sig(SIGSEGV);
- 	return 0;
--- 
-2.25.0
+> This is a follow-up patch series for the previous patchset on fixing
+> locktorture ww_mutex test problem [1]. The first 3 patches of that
+> series were merged into tip. It turns out that the last one of the
+> three wasn't quite right. So this patch series revert the last patch.
 
+I zapped that 3rd commit from locking/urgent yesterday already, so we 
+can cleanly apply the 4 patches from this series.
+
+Thanks,
+
+	Ingo
