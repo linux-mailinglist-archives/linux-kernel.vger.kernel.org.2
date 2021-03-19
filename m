@@ -2,118 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAE7341CEF
+	by mail.lfdr.de (Postfix) with ESMTP id 34AAB341CEE
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhCSM1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
+        id S230090AbhCSM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhCSM12 (ORCPT
+        with ESMTP id S229785AbhCSM11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:27:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CCAC06175F;
+        Fri, 19 Mar 2021 08:27:27 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B34C06174A;
         Fri, 19 Mar 2021 05:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HGGyfd8GrXRUYl8t/lIrcBczKW5EZl0r2vGbtH69BjM=; b=adFFxpGZQzg62xh/9Ba4l9lwfu
-        F6vR/ZaT6jVOK8XBdN443zktlYfZQFE6KzBnW5MwH3eVqjWSvBEUOKrp/4w94gPSdWAWxhHJ3V1wM
-        JHocPFEFyKktLVXuAuzwFOWOp/KNeXMoG9xD4e0pSSw5guUU6iX3zwS+9iJaXvGVtoak9cQUiKXdk
-        aaTRO8gzVbVR2DUv+LCZp6q/nOcMAZFn5oDnxPol2/x260iyr/gFYohOT8wUIn7bWOGSaBBFsHhXM
-        5W9vjiPOxO3G/F43MluX4VccPO0R+IdphdHCQCiZ5xy5MJJ3Wg5a8xTujshBLU4gCmsDllD60Lvyz
-        4nI6ItgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNEDU-004Ogd-1x; Fri, 19 Mar 2021 12:27:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F237K6NRyz1rwmj;
+        Fri, 19 Mar 2021 13:27:25 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F237K5SLrz1sP6p;
+        Fri, 19 Mar 2021 13:27:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id MU9L8Oh3MJrv; Fri, 19 Mar 2021 13:27:24 +0100 (CET)
+X-Auth-Info: bYCrlARcTWfl6al/iUdn1szIH6OAWhWOabP4GkDjfyk=
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E33C307975;
-        Fri, 19 Mar 2021 13:26:59 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7709D21244621; Fri, 19 Mar 2021 13:26:59 +0100 (CET)
-Date:   Fri, 19 Mar 2021 13:26:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 01/17] add support for Clang CFI
-Message-ID: <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net>
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-2-samitolvanen@google.com>
- <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
- <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 19 Mar 2021 13:27:24 +0100 (CET)
+Subject: Re: [PATCH 5.11 12/31] gpiolib: Read "gpio-line-names" from a
+ firmware node
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Roman Guskov <rguskov@dh-electronics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210319121747.203523570@linuxfoundation.org>
+ <20210319121747.594813307@linuxfoundation.org>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <5c3f2fb9-c1bf-5939-2e83-8cd0fa6d0c20@denx.de>
+Date:   Fri, 19 Mar 2021 13:27:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
+In-Reply-To: <20210319121747.594813307@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 04:48:43PM -0700, Sami Tolvanen wrote:
-> On Thu, Mar 18, 2021 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
-> > > +static void update_shadow(struct module *mod, unsigned long base_addr,
-> > > +             update_shadow_fn fn)
-> > > +{
-> > > +     struct cfi_shadow *prev;
-> > > +     struct cfi_shadow *next;
-> > > +     unsigned long min_addr, max_addr;
-> > > +
-> > > +     next = vmalloc(SHADOW_SIZE);
-> > > +
-> > > +     mutex_lock(&shadow_update_lock);
-> > > +     prev = rcu_dereference_protected(cfi_shadow,
-> > > +                                      mutex_is_locked(&shadow_update_lock));
-> > > +
-> > > +     if (next) {
-> > > +             next->base = base_addr >> PAGE_SHIFT;
-> > > +             prepare_next_shadow(prev, next);
-> > > +
-> > > +             min_addr = (unsigned long)mod->core_layout.base;
-> > > +             max_addr = min_addr + mod->core_layout.text_size;
-> > > +             fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
-> > > +
-> > > +             set_memory_ro((unsigned long)next, SHADOW_PAGES);
-> > > +     }
-> > > +
-> > > +     rcu_assign_pointer(cfi_shadow, next);
-> > > +     mutex_unlock(&shadow_update_lock);
-> > > +     synchronize_rcu_expedited();
-> >
-> > expedited is BAD(tm), why is it required and why doesn't it have a
-> > comment?
+On 3/19/21 1:19 PM, Greg Kroah-Hartman wrote:
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Ah, this uses synchronize_rcu_expedited() because we have a case where
-> synchronize_rcu() hangs here with a specific SoC family after the
-> vendor's cpu_pm driver powers down CPU cores.
+> [ Upstream commit b41ba2ec54a70908067034f139aa23d0dd2985ce ]
+> 
+> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> and iterates over all of its DT subnodes when registering each GPIO
+> bank gpiochip. Each gpiochip has:
+> 
+>    - gpio_chip.parent = dev,
+>      where dev is the device node of the pin controller
+>    - gpio_chip.of_node = np,
+>      which is the OF node of the GPIO bank
+> 
+> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> 
+> The original code behaved correctly, as it extracted the "gpio-line-names"
+> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> 
+> To achieve the same behaviour, read property from the firmware node.
 
-Broken vendor drivers seem like an exceedingly poor reason for this.
-
-> Would you say expedited is bad enough that we should avoid it here?
-> The function is called only when kernel modules are loaded or
-> unloaded, so not very frequently.
-
-Module unload is pretty crap (it has stop_machine), so an expedited
-would not really be noticable, but module load isn't nearly as bad.
-
-Also, getting the vendor to fix their driver seems like a good thing :-)
-
-So please consider using regular synchronize_rcu() here.
+I think we agreed to drop this one for now before, see
+[PATCH 5.10 081/290] gpiolib: Read "gpio-line-names" from a firmware node
+Message-ID: <YFIo3A14Fb4Hty4O@kroah.com>
