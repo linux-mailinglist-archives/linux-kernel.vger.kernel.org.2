@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7703134266C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6734266E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhCSTpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:45:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230297AbhCSTpa (ORCPT
+        id S230411AbhCSTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhCSTpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:45:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616183129;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X/KdonTuSFjSMSOYRBj5KwLuZSZ8C3R0H74LqotwgAk=;
-        b=brZsffYrR2iPnaBiEb7jtap9FHiYsV+1TfgA4oQYvvWFxWTrXiPpsFacHwk6uvH9iKc5C6
-        Gl74hfeJFQ39zzpaU2Ekh3fz7Xr9vixS94S9QxxHJx7l06YL7FJO3R6tf7Uc/eAIq1NUFK
-        LSSBMYk8GoVzLANHzKJMN3H1XhKnwlQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-zdH_h7_yO-SOsIKbD4QekA-1; Fri, 19 Mar 2021 15:45:25 -0400
-X-MC-Unique: zdH_h7_yO-SOsIKbD4QekA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C274E107ACCA;
-        Fri, 19 Mar 2021 19:45:22 +0000 (UTC)
-Received: from optiplex-lnx.redhat.com (unknown [10.3.128.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 400B45D9E3;
-        Fri, 19 Mar 2021 19:45:18 +0000 (UTC)
-From:   Rafael Aquini <aquini@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/slab_common: provide "slab_merge" option for !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT) builds
-Date:   Fri, 19 Mar 2021 15:45:03 -0400
-Message-Id: <20210319194506.200159-1-aquini@redhat.com>
-In-Reply-To: <20210319192233.199099-1-aquini@redhat.com>
-References: <20210319192233.199099-1-aquini@redhat.com>
+        Fri, 19 Mar 2021 15:45:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71423C06175F;
+        Fri, 19 Mar 2021 12:45:42 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e14so3436013plj.2;
+        Fri, 19 Mar 2021 12:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0iG9i0hkyLebN0rrxlD9RQ2LdGYygnU0VLbpS3c4IRk=;
+        b=NmnEUZh/mG38WsmKqMoGP/bFCNSRtEm07atlNjDURO9qH2FksvyTqya9HEULPbBSDP
+         5tiU1iM8Offa/AAxF0dmmVdo62PdAHmqDlnRZhMokJ1HFgo50q926GyFET6E8yPtXkBo
+         VRdvPxvbfUI/mFAQzV7MDnvVSSPWH2ZonsltFA9vElxbaeLABCp4hPFQfuvgzkrtYR/S
+         cXFC8hX/c7eC1MyMz7egoNpKuWHvQzKMVePunhUIvrZJYI0+UEltRceXeJndlvchewO8
+         C/syoOiiRP2rlgrhajw2Hix/n/EywylXWtSE1keAxGXYKTIekc/x87gIuPUMUMC/8Y+t
+         g6ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0iG9i0hkyLebN0rrxlD9RQ2LdGYygnU0VLbpS3c4IRk=;
+        b=tELqgTtnOjm18GKF9wgB5V+fjyzTwFeVmIijVhWPFC9GD9cV0Lf7cyuxPl8+INFiT7
+         vyuOBDCcGQ4jvhcCRcv8ZWr2vwlxmxEbM1eqBC/XR8VrEKsGBD9aiaANkft/xCgBpZZi
+         AF7sRzHznhPFle2vA99lD/ijFsjXyOYJYVaVV/AXIadoVfzV94wXW7ru9pRieGNHvZ5x
+         EZo3j1qT55dTNkaKFQ53Zc6rnbJURorKz8kp7dpd92vasE/lErpAk13ciMwEAvXvumln
+         /i947P+DLHJKY1SBClSxkQair+5zZBK+EY5oI59gfz2J/fKZgxfQTBJSppVQ9UBUEALl
+         fCEA==
+X-Gm-Message-State: AOAM532ID/qDV5tve17yLxWwWR0J2h7LBya7CYHUAdLkaKt59URJzcYd
+        dw6FW2LaxUVwmdgtMwTeqQv+yauU6jPAnpHz/LM=
+X-Google-Smtp-Source: ABdhPJzBi2AY/dZ5Ts/M/JMMkgDtkUN7DQZiemjvgYyWLdVgAFMe5e1q9MkFQG0JmHIxsOdBSEVfcTswXF/I6ASnR9c=
+X-Received: by 2002:a17:902:be02:b029:e6:bb0d:6c1e with SMTP id
+ r2-20020a170902be02b02900e6bb0d6c1emr15754118pls.77.1616183142004; Fri, 19
+ Mar 2021 12:45:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com> <e5c2d82c-0158-3997-80b6-4aab56c61367@huawei.com>
+In-Reply-To: <e5c2d82c-0158-3997-80b6-4aab56c61367@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 19 Mar 2021 12:45:30 -0700
+Message-ID: <CAM_iQpV4HX5L1b8ofUig-bi3r_MDdsjThqaxfoRCd=02XZBprQ@mail.gmail.com>
+Subject: Re: [Linuxarm] [PATCH net] net: sched: fix packet stuck problem for
+ lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        bpf <bpf@vger.kernel.org>, Jonas Bonn <jonas.bonn@netrounds.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a minor addition to the allocator setup options to provide
-a simple way to on demand enable back cache merging for builds
-that by default run with CONFIG_SLAB_MERGE_DEFAULT not set.
+On Fri, Mar 19, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> I had done some performance test to see if there is value to
+> fix the packet stuck problem and support lockless qdisc bypass,
+> here is some result using pktgen in 'queue_xmit' mode on a dummy
+> device as Paolo Abeni had done in [1], and using pfifo_fast qdisc:
+>
+> threads  vanilla    locked-qdisc    vanilla+this_patch
+>    1     2.6Mpps      2.9Mpps            2.5Mpps
+>    2     3.9Mpps      4.8Mpps            3.6Mpps
+>    4     5.6Mpps      3.0Mpps            4.7Mpps
+>    8     2.7Mpps      1.6Mpps            2.8Mpps
+>    16    2.2Mpps      1.3Mpps            2.3Mpps
+>
+> locked-qdisc: test by removing the "TCQ_F_NOLOCK | TCQ_F_CPUSTATS".
 
-Signed-off-by: Rafael Aquini <aquini@redhat.com>
----
-v2 changelog:
-* fix __setup("slab_merge", setup_slab_nomerge); typo
+I read this as this patch introduces somehow a performance
+regression for -net, as the lockless bypass patch you submitted is
+for -net-next.
 
- Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
- mm/slab_common.c                                | 8 ++++++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..06519eecbfec 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4877,6 +4877,10 @@
- 
- 	slram=		[HW,MTD]
- 
-+	slab_merge	[MM]
-+			Enable merging of slabs with similar size when the
-+			kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
-+
- 	slab_nomerge	[MM]
- 			Disable merging of slabs with similar size. May be
- 			necessary if there is some reason to distinguish
-@@ -4924,6 +4928,9 @@
- 			lower than slub_max_order.
- 			For more information see Documentation/vm/slub.rst.
- 
-+	slub_merge	[MM, SLUB]
-+			Same with slab_merge.
-+
- 	slub_nomerge	[MM, SLUB]
- 			Same with slab_nomerge. This is supported for legacy.
- 			See slab_nomerge for more information.
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 88e833986332..b84dd734b75f 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -71,11 +71,19 @@ static int __init setup_slab_nomerge(char *str)
- 	return 1;
- }
- 
-+static int __init setup_slab_merge(char *str)
-+{
-+	slab_nomerge = false;
-+	return 1;
-+}
-+
- #ifdef CONFIG_SLUB
- __setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-+__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
- #endif
- 
- __setup("slab_nomerge", setup_slab_nomerge);
-+__setup("slab_merge", setup_slab_merge);
- 
- /*
-  * Determine the size of a slab object
--- 
-2.26.2
-
+Thanks.
