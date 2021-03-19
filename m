@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C21342418
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3259234241B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhCSSHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:07:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38668 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhCSSHW (ORCPT
+        id S230338AbhCSSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhCSSIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:07:22 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616177240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N/8Nu3USqDW0VZ0PQNVW7F6Z8q5r5aRdzpPPyhxSPnQ=;
-        b=r03o7ug+2f07DjMuGAREBcUndDDmBfbmLY2CgkTC2F9Hf43eFnuPRyw81Gi01P11H/X7Nr
-        rW6VHsktqPtQmIZuGQPGb2Lt1X5uqQ5Q0a/pXs0UQ0K/l8/Tphv+NzRqgwl3O7Aelax1r1
-        yrHUOSjS6EW66CadpMFRA4R8vmu28L45ftroRKPOxp5ZENk5lUQ8QZO37jBGoOnRvPlZ7c
-        cupnNKx3pbDv0U6BWmfIn1q4LaEjYvOTGLBJeni0pg95Subm1Cd0t5cY7opWyDw6kDD3gB
-        +3PCajhGCDWiHemaxOOY9/032QvL0KWwtpOfdNegn16v/WfsWNyaQFla1Sdncg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616177240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N/8Nu3USqDW0VZ0PQNVW7F6Z8q5r5aRdzpPPyhxSPnQ=;
-        b=WLd/MAV88ztjcdmZgt56koSN7b2ULlpg23UGyIx81nQqhtkjnJPg/MD7VmPfL58nOc0T6Z
-        H9o3+KJnsxeRw0AA==
-To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v4 4/9] kentry: Simplify the common syscall API
-In-Reply-To: <0e04f8d34cb52320110057021184d8facec7e1a6.1616004689.git.luto@kernel.org>
-References: <cover.1616004689.git.luto@kernel.org> <0e04f8d34cb52320110057021184d8facec7e1a6.1616004689.git.luto@kernel.org>
-Date:   Fri, 19 Mar 2021 19:07:20 +0100
-Message-ID: <87lfaj586f.fsf@nanos.tec.linutronix.de>
+        Fri, 19 Mar 2021 14:08:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90842C06174A;
+        Fri, 19 Mar 2021 11:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vHfHyXotbRzGZh7y4q6pGdO4bWDVhUMZBFQ0KkjrwPU=; b=iozU64Xb4N0CWU4tgHMvEiJzgP
+        5aAVKi3e8aOUxW+gAXhE0xiFIthJysSAFGfZ8UISNOroK6nQrdghBfhcSXUnKI2Wd8604LTnlVluK
+        5dl/LgSLrAHghhNNRg69cFtchNA1tkl+svPALeAVbq7KNLxl+5gyZByHaj65UpIaL85HgyTLMtpSu
+        JpgjyUt7QTUES17BQRwqxdB3Ytyh/8rFwm1Z9Fp7a0SfwojMaqHnDSr8e5WDckwHzZvALFx+7Wwcu
+        bMe2lMIl/lPVM5aufgHuGcNY0PZeEz4C2PZbAiOVhSCR3C5bP/BN3PCXqWbelIXDf2tArOFI24oBe
+        RlHTiVxw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJXF-004nzY-9E; Fri, 19 Mar 2021 18:07:51 +0000
+Date:   Fri, 19 Mar 2021 18:07:45 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+Message-ID: <20210319180745.GB3420@casper.infradead.org>
+References: <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
+ <YFSrgfAyp+dYWi7k@kroah.com>
+ <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
+ <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
+ <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com>
+ <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
+ <YFTRkBEr5T37NFpV@google.com>
+ <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17 2021 at 11:12, Andy Lutomirski wrote:
-> @@ -119,31 +119,12 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
->  void enter_from_user_mode(struct pt_regs *regs);
->  
->  /**
-> + * kentry_syscall_begin - Prepare to invoke a syscall handler
->   * @regs:	Pointer to currents pt_regs
->   * @syscall:	The syscall number
->   *
->   * Invoked from architecture specific syscall entry code with interrupts
-> - * enabled after invoking syscall_enter_from_user_mode_prepare() and extra
-> - * architecture specific work.
-> + * enabled after kentry_enter_from_usermode or a similar function.
+On Fri, Mar 19, 2021 at 08:29:29PM +0300, Dmitry Osipenko wrote:
+> > +static ssize_t alloc_pages_success_show(struct kobject *kobj,
+> > +			struct kobj_attribute *attr, char *buf)
+> 
+> The indentations are still wrong.
+> 
+> CHECK: Alignment should match open parenthesis
+> #321: FILE: mm/cma_sysfs.c:28:
+> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
+> +                       struct kobj_attribute *attr, char *buf)
 
-Please write functions with () at the end. Also what the heck means
-'similar function' here? I really spent quite some time to document this
-stuff and it wants to stay that way.
+This is bullshit.  Do not waste people's time with this frivolity.
 
->   *
-> + * Called with IRQs on.  Returns with IRQs still on.
-
-interrupts enabled please. This is technical documentation and not twatter.
-
-> +void kentry_syscall_end(struct pt_regs *regs);
-
-Thanks,
-
-        tglx
