@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37F53421DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E713421DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCSQ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:28:18 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:40721 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhCSQ2A (ORCPT
+        id S230107AbhCSQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhCSQ2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 12:28:00 -0400
-Received: by mail-ot1-f42.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so8787112otb.7;
-        Fri, 19 Mar 2021 09:28:00 -0700 (PDT)
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2FCC06174A;
+        Fri, 19 Mar 2021 09:27:59 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 7so3471885qka.7;
+        Fri, 19 Mar 2021 09:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GB8fLktR1tASbymjnw9MkDMpjTuRuzJA8+s7LyK6qUQ=;
+        b=eJed0rdQmwld1oV5DxS1T1YtkrbMaqJ1tOXo4HOxJxPS7I0t+1BK1131yQRBhY0c+0
+         +a19lDqoVbwMkqJ82rQqePPUQ9PQsCtUDy8dYdAWEZ6ojU4Wja4Sa4dsigEXtLkusiAX
+         GwgC6POaDS39VhIA0yTzLD0JhB8xhftzQA/wNElUk22lu3izcL2tBGh+Cnki9jK2xWQ7
+         uhfknpBJPZZTt0x9RtA1Pmg8VO1WL63RdOe0FZCCxheqUERCc5UD+VlODkT+eU8ByBfJ
+         EfFzXqR1JWhWqQx4m5oiK+OavkbxjJSsntwEFUP45GWG0Ec3ppbzWr26IleYojzHc/Q7
+         B2Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fe9T/9T1yaTbtskKSKGC++4srcmBZ9L9xm28oaCiUwE=;
-        b=Yyg9dzu2vOSGEhr/WpivbM0CUel0ys9Ajoq4JWOSGdcJUn5Gi6DVn42PZ3PmXwlosm
-         qxHOMp6pSqOPsLft6QK8RQbd2Njwg/M8Bh4Or22ZQQ+ZpTZ+oiJp+WD2WVP5Z5a1Nxfb
-         3v7ui6AJJhCkumA4P0fIW0Tc64QjcT8JpYZSIPeudNMvUeIPJsUnl1uY+5ul4blblVz4
-         HrM01V9QviYTnr6o9bjxkt65ReFBZdFVVNd1yOxDr5jT/SIVGE+5hZf5LtBco3lEpk3g
-         yLa0wpgL3j3q3sdoICKcRnc6Io3w2zpOdbX3W1lq7hDHm2rdFf5QKqYm7k3ButIAn14h
-         Dyvw==
-X-Gm-Message-State: AOAM530OxGOtHkC95a6CGrnMEHOBp6FLLW8eIp2HE8Tt7/l1VgcZ2KZm
-        jKEJbRIL5dSfHmjn8Py2VMH3p38/Y+QA8ib9SaSJDMJM
-X-Google-Smtp-Source: ABdhPJx2dV5TQWqkiNncIeOLpFwD6tY5lh33XPAnU0wRpd3lm6foyFIjNBkn3rlDbvk0K+u740kTjV1u0g4JOj8Yu0Q=
-X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr1794535otr.321.1616171279743;
- Fri, 19 Mar 2021 09:27:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GB8fLktR1tASbymjnw9MkDMpjTuRuzJA8+s7LyK6qUQ=;
+        b=IQ5yrghe/62o7RFuT+f8CDu85WL2Rp8Yo0/NKScERYt62IICDkK7us8QPJPKghftWj
+         53vccPXRmKESZ1m4hc7mtsbPGJkKzTfascrvP2w/djnvf7+oyoBPQSpFCDMjDRxSi3Fd
+         lzQmJ0t8tCv6o+pWWqqHjh1WA3tpOkvW4e6I5NTjxhqF8hqnMpurS5Yk7m0uErMPT4H5
+         AwOtJDRQyi73784cjRsBHC/zNJ58C0oU8GdzCcKY+3tBQHaVsHp5n09uoBJmZLgiKSx8
+         b+BZZeOERmzxoWlWeAWvvYoG70rEarhj3UxIVpAeyURPgyfqp20d/KpSostA0icmbDMt
+         iPbQ==
+X-Gm-Message-State: AOAM533sRmWLlNvVDAffGRuyu769Kp/VVm+pAznLHnQDYG37fYJ4Y1j7
+        Z1vEKJLAsaCqhFp46VbL6cKd0yB2UydIrw==
+X-Google-Smtp-Source: ABdhPJy/VCPTl8fX2bMyhhXNPffa662QTa4mLfvAb7DD5SAuVqVKrO+huQdgRCH/0ahCgaRobzmFdg==
+X-Received: by 2002:a37:98f:: with SMTP id 137mr10025758qkj.357.1616171278841;
+        Fri, 19 Mar 2021 09:27:58 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:41da])
+        by smtp.gmail.com with ESMTPSA id p8sm4119303qtu.8.2021.03.19.09.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 09:27:58 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 12:27:55 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+Message-ID: <YFTRCwqMAhLtST17@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+ <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk>
+ <CALvZod6tvrZ_sj=BnM4baQepexwvOPREx3qe5ZJrmqftrqwBEA@mail.gmail.com>
+ <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk>
+ <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
+ <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
+ <YFTIepcb+qm/+/9d@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+ <CALvZod7TyCb1c9iPYmf4aGiCgcb9fboRDXiChaYDCBQHii+J7A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210313104214.1548076-1-slyfox@gentoo.org> <20210315031913.icgekcdrbw4clikm@vireshk-i7>
-In-Reply-To: <20210315031913.icgekcdrbw4clikm@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 19 Mar 2021 17:27:48 +0100
-Message-ID: <CAJZ5v0iWVyTvE6BZveaXBR03OYCHWUx8JiWiPtahMt-8gRgfpw@mail.gmail.com>
-Subject: Re: [PATCH] ia64: fix format string for ia64-acpi-cpu-freq
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Sergei Trofimovich <slyfox@gentoo.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7TyCb1c9iPYmf4aGiCgcb9fboRDXiChaYDCBQHii+J7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 4:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 13-03-21, 10:42, Sergei Trofimovich wrote:
-> > Fix warning with %lx / s64 mismatch:
-> >
-> >   CC [M]  drivers/cpufreq/ia64-acpi-cpufreq.o
-> >     drivers/cpufreq/ia64-acpi-cpufreq.c: In function 'processor_get_pstate':
-> >       warning: format '%lx' expects argument of type 'long unsigned int',
-> >       but argument 3 has type 's64' {aka 'long long int'} [-Wformat=]
-> >
-> > CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> > CC: Viresh Kumar <viresh.kumar@linaro.org>
-> > CC: linux-pm@vger.kernel.org
-> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> > ---
-> >  drivers/cpufreq/ia64-acpi-cpufreq.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/ia64-acpi-cpufreq.c b/drivers/cpufreq/ia64-acpi-cpufreq.c
-> > index 2efe7189ccc4..c6bdc455517f 100644
-> > --- a/drivers/cpufreq/ia64-acpi-cpufreq.c
-> > +++ b/drivers/cpufreq/ia64-acpi-cpufreq.c
-> > @@ -54,7 +54,7 @@ processor_set_pstate (
-> >       retval = ia64_pal_set_pstate((u64)value);
-> >
-> >       if (retval) {
-> > -             pr_debug("Failed to set freq to 0x%x, with error 0x%lx\n",
-> > +             pr_debug("Failed to set freq to 0x%x, with error 0x%llx\n",
-> >                       value, retval);
-> >               return -ENODEV;
-> >       }
-> > @@ -77,7 +77,7 @@ processor_get_pstate (
-> >
-> >       if (retval)
-> >               pr_debug("Failed to get current freq with "
-> > -                     "error 0x%lx, idx 0x%x\n", retval, *value);
-> > +                     "error 0x%llx, idx 0x%x\n", retval, *value);
-> >
-> >       return (int)retval;
-> >  }
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Fri, Mar 19, 2021 at 09:20:16AM -0700, Shakeel Butt wrote:
+> One suggestion would be to make get_mem_cgroup_from_mm() more generic
+> (i.e. handle !mm && active_memcg() case) and avoid
+> get_mem_cgroup_from_current() as it might go away.
 
-Applied as 5.13 material, thanks!
+Yeah, that occurred to me as well. I'll take a stab at doing that.
