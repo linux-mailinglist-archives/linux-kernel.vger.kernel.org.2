@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB14341C18
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8180341C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhCSMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:17:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:48070 "EHLO foss.arm.com"
+        id S230042AbhCSMTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhCSMRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:17:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06F64ED1;
-        Fri, 19 Mar 2021 05:17:10 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F02D83F70D;
-        Fri, 19 Mar 2021 05:17:07 -0700 (PDT)
-Subject: Re: [PATCH] dt: rockchip: rk3399: Add dynamic power coefficient for
- GPU
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, heiko@sntech.de
-Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210319110511.24787-1-daniel.lezcano@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <5db868e4-5b86-7b32-51e0-665a2e1fc1ac@arm.com>
-Date:   Fri, 19 Mar 2021 12:17:01 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229745AbhCSMSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:18:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC3E64F6B;
+        Fri, 19 Mar 2021 12:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616156313;
+        bh=lThyQ9QYgd9MZQVa9dAL+2MTC4LQveUHougX4A+Vf3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pGIVxUA0F+zz5eokJmhyWxCRsg1nXED90ItuHhiXprn4nFclZwlAqfBG7LZjOZu6k
+         FmkcRby3XitkM5DUGUSgbnBSN9MqPWFWBAlJKHXe7ZN1Xv44K6iLKMOKeiMxwvyDcO
+         uKZ133M1IB7tCAF6bEyPEg+V7iYrJynrfvDWbrCk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 0/8] 4.19.182-rc1 review
+Date:   Fri, 19 Mar 2021 13:18:19 +0100
+Message-Id: <20210319121744.114946147@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210319110511.24787-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.182-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.182-rc1
+X-KernelTest-Deadline: 2021-03-21T12:17+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-19 11:05, Daniel Lezcano wrote:
-> The DTPM framework is looking for upstream SoC candidates to share the
-> power numbers.
-> 
-> We can see around different numbers but the one which seems to be
-> consistent with the initial post for the values on the CPUs can be
-> found in the patch https://lore.kernel.org/patchwork/patch/810159/
+This is the start of the stable review cycle for the 4.19.182 release.
+There are 8 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-The kernel hacker in me would be more inclined to trust the BSP that the 
-vendor actively supports than a 5-year-old patch that was never pursued 
-upstream. Apparently that was last updated more recently:
+Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
+Anything received after that time might be too late.
 
-https://github.com/rockchip-linux/kernel/commit/98d4505e1bd62ff028bd79fbd8284d64b6f468f8
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.182-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-The ex-mathematician in me can't even comment either way without 
-evidence that whatever model expects to consume this value is even 
-comparable to whatever "arm,mali-simple-power-model" is. The way the 
-latter apparently needs an explicit "static" coefficient as well as a 
-"dynamic" one, and the value here being nearly 3 times that of a 
-similarly-named one in active use downstream (ChromeOS appears to still 
-be using the values from before the above commit), certainly incline me 
-to think they may not be...
+thanks,
 
-> I don't know the precision of this value but it is better than
-> nothing.
+greg k-h
 
-But is it? If it leads to some throttling mechanism kicking in and 
-crippling GPU performance because it's massively overestimating power 
-consumption, that would be objectively worse for most users, no?
+-------------
+Pseudo-Shortlog of commits:
 
-Robin.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.182-rc1
 
-> Hopefully, one day SoC vendors will be more generous with the power
-> numbers at least for the SoC which are from the previous generation
-> and give the community the opportunity to develop power based
-> frameworks.
-> ---
->   arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index edbbf35fe19e..1ab1d293d2e9 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -1933,6 +1933,7 @@
->   		interrupt-names = "job", "mmu", "gpu";
->   		clocks = <&cru ACLK_GPU>;
->   		#cooling-cells = <2>;
-> +		dynamic-power-coefficient = <977>;
->   		power-domains = <&power RK3399_PD_GPU>;
->   		status = "disabled";
->   	};
-> 
+Florian Fainelli <f.fainelli@gmail.com>
+    net: dsa: b53: Support setting learning on port
+
+DENG Qingfang <dqfext@gmail.com>
+    net: dsa: tag_mtk: fix 802.1ad VLAN egress
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf: Add sanity check for upper ptr_limit
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf: Simplify alu_limit masking for pointer arithmetic
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf: Fix off-by-one for area size in creating mask to left
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf: Prohibit alu ops for pointer types not defining ptr_limit
+
+Suzuki K Poulose <suzuki.poulose@arm.com>
+    KVM: arm64: nvhe: Save the SPE context early
+
+Jan Kara <jack@suse.cz>
+    ext4: check journal inode extents more carefully
+
+
+-------------
+
+Diffstat:
+
+ Makefile                         |  4 ++--
+ arch/arm64/include/asm/kvm_hyp.h |  3 +++
+ arch/arm64/kvm/hyp/debug-sr.c    | 24 +++++++++++++---------
+ arch/arm64/kvm/hyp/switch.c      |  4 +++-
+ drivers/net/dsa/b53/b53_common.c | 19 ++++++++++++++++++
+ drivers/net/dsa/b53/b53_regs.h   |  1 +
+ drivers/net/dsa/bcm_sf2.c        |  5 -----
+ fs/ext4/block_validity.c         | 43 ++++++++++++++++++++--------------------
+ fs/ext4/ext4.h                   |  6 +++---
+ fs/ext4/extents.c                | 16 ++++++---------
+ fs/ext4/indirect.c               |  6 ++----
+ fs/ext4/inode.c                  |  5 ++---
+ fs/ext4/mballoc.c                |  4 ++--
+ kernel/bpf/verifier.c            | 33 +++++++++++++++++++-----------
+ net/dsa/tag_mtk.c                | 19 ++++++++++++------
+ 15 files changed, 114 insertions(+), 78 deletions(-)
+
+
