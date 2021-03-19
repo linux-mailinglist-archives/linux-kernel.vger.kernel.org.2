@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F303C342118
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB73342121
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhCSPiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:38:54 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59334 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhCSPif (ORCPT
+        id S230119AbhCSPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:44:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2716 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhCSPoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:38:35 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lNHCl-000Eaz-9N; Fri, 19 Mar 2021 16:38:27 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lNHCl-000QbO-1A; Fri, 19 Mar 2021 16:38:27 +0100
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     Piotr Krysiuk <piotras@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20210319111652.474c0939@canb.auug.org.au>
- <CAFzhf4pCdJStzBcveahKYQFHJCKenuT+VZAP+8PWSEQcooKLgQ@mail.gmail.com>
- <4f90ff09-966c-4d86-a3bc-9b52107b6d8a@iogearbox.net>
- <70b99c99-ed58-3b05-92c9-3eaa1e18d722@fb.com>
- <CAADnVQJTXiqZYY1bbKCKwm8_sUvLfUoNaMo8b_Buf=CMhOa+CA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <931588db-5b54-97c2-7042-0be789ae2ed6@iogearbox.net>
-Date:   Fri, 19 Mar 2021 16:38:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 19 Mar 2021 11:44:17 -0400
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F27Jb6CZpz67vY9;
+        Fri, 19 Mar 2021 23:35:43 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 16:44:15 +0100
+Received: from [10.47.10.104] (10.47.10.104) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 19 Mar
+ 2021 15:44:14 +0000
+Subject: Re: [PATCH 0/6] dma mapping/iommu: Allow IOMMU IOVA rcache range to
+ be configured
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <joro@8bytes.org>, <will@kernel.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <m.szyprowski@samsung.com>,
+        <robin.murphy@arm.com>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <20210319134047.GA5729@lst.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ff8e54fb-db3f-cf47-f4f7-95b1619bdbf6@huawei.com>
+Date:   Fri, 19 Mar 2021 15:42:03 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJTXiqZYY1bbKCKwm8_sUvLfUoNaMo8b_Buf=CMhOa+CA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210319134047.GA5729@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26113/Fri Mar 19 12:14:45 2021)
+X-Originating-IP: [10.47.10.104]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 4:33 PM, Alexei Starovoitov wrote:
-> On Fri, Mar 19, 2021 at 8:17 AM Yonghong Song <yhs@fb.com> wrote:
->> On 3/19/21 12:21 AM, Daniel Borkmann wrote:
->>> On 3/19/21 3:11 AM, Piotr Krysiuk wrote:
->>>> Hi Daniel,
->>>>
->>>> On Fri, Mar 19, 2021 at 12:16 AM Stephen Rothwell <sfr@canb.auug.org.au>
->>>> wrote:
->>>>
->>>>> diff --cc kernel/bpf/verifier.c
->>>>> index 44e4ec1640f1,f9096b049cd6..000000000000
->>>>> --- a/kernel/bpf/verifier.c
->>>>> +++ b/kernel/bpf/verifier.c
->>>>> @@@ -5876,10 -6056,22 +6060,23 @@@ static int
->>>>> retrieve_ptr_limit(const str
->>>>>                   if (mask_to_left)
->>>>>                           *ptr_limit = MAX_BPF_STACK + off;
->>>>>                   else
->>>>>    -                      *ptr_limit = -off;
->>>>>    -              return 0;
->>>>>    +                      *ptr_limit = -off - 1;
->>>>>    +              return *ptr_limit >= max ? -ERANGE : 0;
->>>>> +       case PTR_TO_MAP_KEY:
->>>>> +               /* Currently, this code is not exercised as the only use
->>>>> +                * is bpf_for_each_map_elem() helper which requires
->>>>> +                * bpf_capble. The code has been tested manually for
->>>>> +                * future use.
->>>>> +                */
->>>>> +               if (mask_to_left) {
->>>>> +                       *ptr_limit = ptr_reg->umax_value + ptr_reg->off;
->>>>> +               } else {
->>>>> +                       off = ptr_reg->smin_value + ptr_reg->off;
->>>>> +                       *ptr_limit = ptr_reg->map_ptr->key_size - off;
->>>>> +               }
->>>>> +               return 0;
->>>>
->>>> PTR_TO_MAP_VALUE logic above looks like copy-paste of old
->>>> PTR_TO_MAP_VALUE
->>>> code from before "bpf: Fix off-by-one for area size in creating mask to
->>>> left" and is apparently affected by the same off-by-one, except this time
->>>> on "key_size" area and not "value_size".
->>>>
->>>> This needs to be fixed in the same way as we did with PTR_TO_MAP_VALUE.
->>>> What is the best way to proceed?
->>>
->>> Hm, not sure why PTR_TO_MAP_KEY was added by 69c087ba6225 in the first
->>> place, I
->>> presume noone expects this to be used from unprivileged as the comment
->>> says.
->>> Resolution should be to remove the PTR_TO_MAP_KEY case entirely from
->>> that switch
->>> until we have an actual user.
+On 19/03/2021 13:40, Christoph Hellwig wrote:
+> On Fri, Mar 19, 2021 at 09:25:42PM +0800, John Garry wrote:
+>> For streaming DMA mappings involving an IOMMU and whose IOVA len regularly
+>> exceeds the IOVA rcache upper limit (meaning that they are not cached),
+>> performance can be reduced.
 >>
->> Alexei suggested so that we don't forget it in the future if
->> bpf_capable() requirement is removed.
->>      https://lore.kernel.org/bpf/c837ae55-2487-2f39-47f6-a18781dc6fcc@fb.com/
+>> This is much more pronounced from commit 4e89dce72521 ("iommu/iova: Retry
+>> from last rb tree node if iova search fails"), as discussed at [0].
 >>
->> I am okay with either way, fix it or remove it.
+>> IOVAs which cannot be cached are highly involved in the IOVA aging issue,
+>> as discussed at [1].
 > 
-> I prefer to fix it.
+> I'm confused.  If this a limit in the IOVA allocator, dma-iommu should
+> be able to just not grow the allocation so larger without help from
+> the driver.
 
-If the bpf_capable() is removed, the verifier would bail out on PTR_TO_MAP_KEY
-if not covered in the switch given the recent fixes we did. I can fix it up after
-merge if we think bpf_for_each_map_elem() will be used by unpriv in future..
+This is not an issue with the IOVA allocator.
+
+The issue is with how the IOVA code handles caching of IOVAs. 
+Specifically, when we DMA unmap, for an IOVA whose length is above a 
+fixed threshold, the IOVA is freed, rather than being cached. See 
+free_iova_fast().
+
+For performance reasons, I want that threshold increased for my driver 
+to avail of the caching of all lengths of IOVA which we may see - 
+currently we see IOVAs whose length exceeds that threshold. But it may 
+not be good to increase that threshold for everyone.
+
+ > If contrary to the above description it is device-specific, the driver
+ > could simply use dma_get_max_seg_size().
+ > .
+ >
+
+But that is for a single segment, right? Is there something equivalent 
+to tell how many scatter-gather elements which we may generate, like 
+scsi_host_template.sg_tablesize?
+
+Thanks,
+John
+
+
