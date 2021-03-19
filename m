@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C4E34229B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEFD3422D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhCSQ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        id S229987AbhCSRFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhCSQ5E (ORCPT
+        with ESMTP id S230057AbhCSRFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:57:04 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E31FC06174A;
-        Fri, 19 Mar 2021 09:57:04 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id ABD581F46C3F;
-        Fri, 19 Mar 2021 16:57:02 +0000 (GMT)
-Date:   Fri, 19 Mar 2021 17:56:59 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH v7 3/3] mtd: rawnand: Add support for secure regions in
- NAND memory
-Message-ID: <20210319175659.17c9e8e6@collabora.com>
-In-Reply-To: <20210319150010.32122-4-manivannan.sadhasivam@linaro.org>
-References: <20210319150010.32122-1-manivannan.sadhasivam@linaro.org>
-        <20210319150010.32122-4-manivannan.sadhasivam@linaro.org>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 19 Mar 2021 13:05:37 -0400
+X-Greylist: delayed 3437 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Mar 2021 10:05:37 PDT
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54208C06174A;
+        Fri, 19 Mar 2021 10:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uSAfUGkez8ZG0++WaHfLkBr4CBdHX0udqIExMWcpnFE=; b=mhF9wuZe936zo3byWW+7v68Ej8
+        2fcqCplR1VsIiI+NQLmTgHtqjlLDKzGaoK16jjzyUiywYVmEPQnVwPM4PbkVCoZe5WZ8DEUnAJieB
+        ER/+/EAFwGWL4TimMm5S1BZqclysiwgJ3Vdvd3dqBD8TduivgqqN7cmIMduJKMO5GzKWn57glRmY+
+        uR7cZdkgFh+JGSZjztilYvPWSHaHSbKNnBISYcMnaLh6d4funzCpDaQG8mFTZR31MPjBQ4yyn5Jiy
+        cl+/xdJHIBlCU/BkL+pCUK6RBmBMGUVErme2jCog2H9hCOWTTz7O1DTJNWxsiGr3CHVR0O2qhxJzs
+        6T1z8ifg==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNHfH-001NV3-NO; Fri, 19 Mar 2021 16:07:56 +0000
+Date:   Fri, 19 Mar 2021 09:07:55 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     dan.j.williams@intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, yuyufen@huawei.com, songliubraving@fb.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] md/raid6:  Couple of typo fixes
+In-Reply-To: <20210319083540.31016-1-unixbhaskar@gmail.com>
+Message-ID: <2b59cdc-fdb7-be14-ebdc-a49b47594b32@bombadil.infradead.org>
+References: <20210319083540.31016-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_090755_785537_9BEE29E7 
+X-CRM114-Status: GOOD (  14.39  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/boudary/boundary/
+    > s/compliled/compiled/ > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 20:30:10 +0530
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
 
-> @@ -2737,6 +2783,11 @@ static int nand_read_page_swecc(struct nand_chip *chip, uint8_t *buf,
->  	uint8_t *ecc_code = chip->ecc.code_buf;
->  	unsigned int max_bitflips = 0;
->  
-> +	/* Check if the region is secured */
-> +	ret = nand_check_secure_region(chip, ((loff_t)page << chip->page_shift), 0);
-> +	if (ret)
-> +		return ret;
-> +
 
-I'm lost. Why do you need to do that here if it's already done in
-nand_do_read_{ops,oob}()?
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
 
->  	chip->ecc.read_page_raw(chip, buf, 1, page);
->  
->  	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+>
+> s/boudary/boundary/
+> s/compliled/compiled/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+> crypto/async_tx/raid6test.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/crypto/async_tx/raid6test.c b/crypto/async_tx/raid6test.c
+> index 66db82e5a3b1..c9d218e53bcb 100644
+> --- a/crypto/async_tx/raid6test.c
+> +++ b/crypto/async_tx/raid6test.c
+> @@ -217,7 +217,7 @@ static int raid6_test(void)
+> 		err += test(12, &tests);
+> 	}
+>
+> -	/* the 24 disk case is special for ioatdma as it is the boudary point
+> +	/* the 24 disk case is special for ioatdma as it is the boundary point
+> 	 * at which it needs to switch from 8-source ops to 16-source
+> 	 * ops for continuation (assumes DMA_HAS_PQ_CONTINUE is not set)
+> 	 */
+> @@ -241,7 +241,7 @@ static void raid6_test_exit(void)
+> }
+>
+> /* when compiled-in wait for drivers to load first (assumes dma drivers
+> - * are also compliled-in)
+> + * are also compiled-in)
+>  */
+> late_initcall(raid6_test);
+> module_exit(raid6_test_exit);
+> --
+> 2.26.2
+>
+>
