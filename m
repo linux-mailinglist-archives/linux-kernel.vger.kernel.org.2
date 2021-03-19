@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8F1341B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC41D341B86
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCSL2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        id S229805AbhCSLav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhCSL1r (ORCPT
+        with ESMTP id S229618AbhCSLab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:27:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4282AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:27:47 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id x13so8738145wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:27:47 -0700 (PDT)
+        Fri, 19 Mar 2021 07:30:31 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FE1C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:30:30 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id m7so3469575pgj.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=2VJaPR0cL5VhiRl/G98uxV1YtiqmA8CybmYYke4TwKI=;
-        b=KMjl+VBJcDtflimUBJBK78KSATLmG9uVLVByHXgpxmc6DOcX9hQU34JCY/ldwGshcT
-         YJBpLs8zmTWOM0KVKtpHzdbqO0FkI8qUn8TIsGSN5/ClfRslx2Ic6TGVQOe/0PsmmPsM
-         VjCvD5nXEu6Sn2LrS9gwfr5aeNv9o0m3WHl9xCnSYzZakFOMzpyh3F8V1IyC3/+8KsRt
-         J0A/qQF9Dv1SC1AoTfBA2y2nG779nkBXrz8bYGAdON3kaBZwmE85ezhIO+sm0blEs5HT
-         M8fg90yUHbLVwaEM0CShvJN6qIpYfmAgqeK4eJwZSrLhuo3BLXt0pWSVKxHOCVLpVJ0Q
-         +5jA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mBRi75+4ZXFYImT5TGU9kGKxGRhGqVxM6M+tAV+mb/E=;
+        b=UazQNSNh6OqCQMM7wl92C43GmrPxGV3RZTO1y89v5bBE501r/9WKGlixY+7tAGZMeL
+         v1rihy7KJQrRr70kCLg1utX4ZLw15BnWYkmDtcze4PGsl5h7zGOhqRfvfnX7iZri2IeK
+         m/E/gTkDMa8E8Jsmtqf12BlJY9luyi+9POcFQErCOwISZg9gXbdzRWg7CGnS6s0afTFs
+         WUKpqnWVcxnm86q8NVsJV6ijswLLKfpq6/o5BLRXQ00OZJLwvJ3rYSR5fYBo/vmkhNxx
+         ns5vkqPFqwJyGnanDCUOVTbGsq9M6ylYB7FQINiZPwOtBnWlRFqlE2Adv0FI5b9jdTDc
+         ejeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2VJaPR0cL5VhiRl/G98uxV1YtiqmA8CybmYYke4TwKI=;
-        b=ZxO/45GXxMn+QaLWOhHABtPwYghYIb9XkTHNP/Fz2sGzh6nD2TiR79Q3PjFaAaumWE
-         TP3NptMMc2CltGwH6fWL1OP9d/0vRWPtCDdh/ewtPXhcqlwD9MUU7vKPQlRTlYUReAcD
-         OSKgGVZugGcoOgl0Z7TxZUdnxyNfnPBB9YnrQjmmA6bJkVMmHH0Hvj+PDkSRHYtLnjVD
-         7lLMOvePO0na27VTbdN+9stCGgYyv9RFWFC7cQo2f55JqQhkNtmS5OM40WvJF0vOmVV3
-         6ex9VR3lUQ+yplC/9YI0rAVgTru8NEOZm9XqsVWYSL6Gokhc99kdPRhW0Q0N1bowHaMo
-         gmIw==
-X-Gm-Message-State: AOAM53153gZ+y2VkXjkm0oZw8QkNkXLeet/F1IazNeTVLGOgnUTvON1m
-        Iv9rM96H1LvcdkSr9vVrcLzxSg==
-X-Google-Smtp-Source: ABdhPJwIXBunKgGFPhv+gFeiV3dd3BaZbnDn4LZu4azzEckiqCYMC/J3ClDH1Q1xkf1o5KRlOVpwBA==
-X-Received: by 2002:adf:e5cf:: with SMTP id a15mr3961013wrn.226.1616153265918;
-        Fri, 19 Mar 2021 04:27:45 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:60ac:4ae1:fb5b:5813? ([2a01:e34:ed2f:f020:60ac:4ae1:fb5b:5813])
-        by smtp.googlemail.com with ESMTPSA id a14sm7272722wrn.5.2021.03.19.04.27.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 04:27:45 -0700 (PDT)
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sm8350: Add thermal zones and
- throttling support
-To:     Robert Foss <robert.foss@linaro.org>, amitk@kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        rui.zhang@intel.com, Rob Herring <robh+dt@kernel.org>,
-        linux-pm@vger.kernel.org, MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Vinod Koul <vinod.koul@linaro.org>
-References: <20210319104855.85075-1-robert.foss@linaro.org>
- <20210319104855.85075-2-robert.foss@linaro.org>
- <CAG3jFytSoTP1UDWAYR=rAdHLBr9rU49ZF1=F9rfqZptCBuJFTQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <5fdd232b-6392-8684-2be2-6ff4375b7a8c@linaro.org>
-Date:   Fri, 19 Mar 2021 12:27:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mBRi75+4ZXFYImT5TGU9kGKxGRhGqVxM6M+tAV+mb/E=;
+        b=l9sGuzeBynG3b0kZ+IQiJKuCXQoD1QtVPnwTCDPwSC1anxaKQ03sPXJDllhDikhIsx
+         ZzGXmvSx8WPSkeFNlWrKr7S+RrAoJnZpMmKlB30dbKh8A/+KaAof2jc+Fd+Sr/5YQBOa
+         Yfbzo0HsuzMh20MAjKOTwD0RKhgcJ2AJ0ZeynClQhn90WjgY+2C2VzlrOpS53JtKfqm3
+         WgBeYtS4lgPeD7soHboteYvaT2S2UPK9EKHPiP5kpBOwI93av+Rvvd+Xu9uUFXeE+yqN
+         q1jS3MFcz1d3+7UQb9VIy/3pWguN1tHklQzwT0IZPZEcKfmE3WJvKXmim9qYafacj5dv
+         JFUw==
+X-Gm-Message-State: AOAM533Fo6o2PCYqzMAb5TAK1dI/dCpG54jSOoH1vCsrPku6HQwhWvsm
+        PxjJcdMjxgdR4cLTWJVcHwk10HNyyJWVSaVOzk6PXA==
+X-Google-Smtp-Source: ABdhPJyueJqbCvxvjsAE48+4+uzNTfZK3apwOOTQ5ZGtvQfah7LFUXUY4ry2appxkZ5SC84t3BxNou620Ggqog2+hro=
+X-Received: by 2002:a05:6a00:b54:b029:207:2a04:7b05 with SMTP id
+ p20-20020a056a000b54b02902072a047b05mr8786871pfo.12.1616153430352; Fri, 19
+ Mar 2021 04:30:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFytSoTP1UDWAYR=rAdHLBr9rU49ZF1=F9rfqZptCBuJFTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210219215326.2227596-1-lyude@redhat.com> <20210219215326.2227596-19-lyude@redhat.com>
+In-Reply-To: <20210219215326.2227596-19-lyude@redhat.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 19 Mar 2021 12:30:19 +0100
+Message-ID: <CAG3jFyv2F7ri4wQcwipoLT6nr-K_SWpLcAFi_B0Lo_O+KaWo2w@mail.gmail.com>
+Subject: Re: [PATCH 18/30] drm/print: Fixup DRM_DEBUG_KMS_RATELIMITED()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 12:24, Robert Foss wrote:
-> On Fri, 19 Mar 2021 at 11:49, Robert Foss <robert.foss@linaro.org> wrote:
->>
->> sm8350 has 29 thermal sensors split across two tsens controllers. Add
->> the thermal zones to expose them and wireup the cpus to throttle their
->> frequencies on crossing passive temperature thresholds.
->>
->> Signed-off-by: Robert Foss <robert.foss@linaro.org>
->> ---
+Hey Lyude,
 
-[ ... ]
+Thanks for the patch,
 
->> +               };
->> +
->> +               // TODO: What is the NSP subsystem?
-> 
-> This comment should not have been included, will remove in v2
+On Fri, 19 Feb 2021 at 22:59, Lyude Paul <lyude@redhat.com> wrote:
+>
+> Since we're about to move drm_dp_helper.c over to drm_dbg_*(), we'll want
+> to make sure that we can also add ratelimited versions of these macros in
+> order to retain some of the previous debugging output behavior we had.
+>
+> However, as I was preparing to do this I noticed that the current
+> rate limited macros we have are kind of bogus. It looks like when I wrote
+> these, I didn't notice that we'd always be calling __ratelimit() even if
+> the debugging message we'd be printing would normally be filtered out due
+> to the relevant DRM debugging category being disabled.
+>
+> So, let's fix this by making sure to check drm_debug_enabled() in our
+> ratelimited macros before calling __ratelimit(), and start using
+> drm_dev_printk() in order to print debugging messages since that will save
+> us from doing a redundant drm_debug_enabled() check. And while we're at it,
+> let's move the code for this into another macro that we can reuse for
+> defining new ratelimited DRM debug macros more easily.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  include/drm/drm_print.h | 20 ++++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+> index f32d179e139d..3a0c3fe4d292 100644
+> --- a/include/drm/drm_print.h
+> +++ b/include/drm/drm_print.h
+> @@ -524,16 +524,20 @@ void __drm_err(const char *format, ...);
+>  #define DRM_DEBUG_DP(fmt, ...)                                         \
+>         __drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
+>
+> -
+> -#define DRM_DEBUG_KMS_RATELIMITED(fmt, ...)                            \
+> -({                                                                     \
+> -       static DEFINE_RATELIMIT_STATE(_rs,                              \
+> -                                     DEFAULT_RATELIMIT_INTERVAL,       \
+> -                                     DEFAULT_RATELIMIT_BURST);         \
+> -       if (__ratelimit(&_rs))                                          \
+> -               drm_dev_dbg(NULL, DRM_UT_KMS, fmt, ##__VA_ARGS__);      \
+> +#define __DRM_DEFINE_DBG_RATELIMITED(category, drm, fmt, ...)                                    \
+> +({                                                                                               \
+> +       static DEFINE_RATELIMIT_STATE(rs_, DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST); \
+> +       const struct drm_device *drm_ = (drm);                                                   \
+> +                                                                                                 \
+> +       if (drm_debug_enabled(DRM_UT_ ## category) && __ratelimit(&rs_))                         \
+> +               drm_dev_printk(drm_ ? drm_->dev : NULL, KERN_DEBUG, fmt, ## __VA_ARGS__);        \
+>  })
 
-Please trim when replying to a large patch file.
-
-[ ... ]
-
->> +                       trips {
->> +                               nspss1_alert0: trip-point0 {
->> +                                       temperature = <90000>;
->> +                                       hysteresis = <1000>;
->> +                                       type = "hot";
->> +                               };
->> +                       };
->> +               };
->> +
->> +               // TODO: What is the NSP subsystem?
-> 
-> This comment should not have been included, will remove in v2
-
-[ ... ]
-
->> +                       trips {
->> +                               nspss2_alert0: trip-point0 {
->> +                                       temperature = <90000>;
->> +                                       hysteresis = <1000>;
->> +                                       type = "hot";
->> +                               };
->> +                       };
->> +               };
->> +
->> +               // TODO: What is the NSP subsystem?
-> 
-> This comment should not have been included, will remove in v2
-> 
-
-[ ... ]
+checkpatch --strict is unhappy about the tabs/spaces in this patch
 
 
+ERROR: code indent should use tabs where possible
+#48: FILE: include/drm/drm_print.h:531:
++
+                           \$
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+WARNING: please, no spaces at the start of a line
+#48: FILE: include/drm/drm_print.h:531:
++
+                           \$
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
+>
+> +#define drm_dbg_kms_ratelimited(drm, fmt, ...) \
+> +       __DRM_DEFINE_DBG_RATELIMITED(KMS, drm, fmt, ## __VA_ARGS__)
+> +
+> +#define DRM_DEBUG_KMS_RATELIMITED(fmt, ...) drm_dbg_kms_ratelimited(NULL, fmt, ## __VA_ARGS__)
+> +
+>  /*
+>   * struct drm_device based WARNs
+>   *
+> --
+> 2.29.2
+>
