@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9AE341E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351BC341E0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhCSNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:20:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49632 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229862AbhCSNUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:20:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30453AE5C;
-        Fri, 19 Mar 2021 13:20:21 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v6 5/5] mm,page_alloc: Drop unnecessary checks from pfn_range_valid_contig
-Date:   Fri, 19 Mar 2021 14:20:04 +0100
-Message-Id: <20210319132004.4341-6-osalvador@suse.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210319132004.4341-1-osalvador@suse.de>
-References: <20210319132004.4341-1-osalvador@suse.de>
+        id S230014AbhCSNXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhCSNWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:22:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911E5C06174A;
+        Fri, 19 Mar 2021 06:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2KS9BVm2N7BFC51UrW+/8IGJ0MRGc1xx7mmgTk+g7Ck=; b=n3IUUh3aXo0JWD2wwOFW2ef/JX
+        7he8eoKNWqSKvmwXduCO9vGrHKcg6SnwHcWTHJz45edEUqaq/hk8q727hY2kq9y+jTFam61GWQrhG
+        fmfHy5usrFG5GE9yqN8jAw8ePQ6miFu5YdhdXtNUwb1GYKYsbxiX8h/xOTD7qgAT3ZAhYH9G+vjhe
+        L8g1fXJrm4rd3vUE4Ho2bTvg3vU4DixQcHhX1a/yYR/xYepeqAIlRcNguEJRERXQcB9jfShsBIsie
+        liOlvmtwm1KYswYxVtFGkUXreaphaYAvVDtIZ/CKukhYqlB5DpNYwgkol/zsXmaXvINPWvHH8E2V3
+        H2OmBNDA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNF4L-004Rbo-Ez; Fri, 19 Mar 2021 13:21:42 +0000
+Date:   Fri, 19 Mar 2021 13:21:37 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <20210319132137.GZ3420@casper.infradead.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319071547.60973-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pfn_range_valid_contig() bails out when it finds an in-use page or a
-hugetlb page, among other things.
-We can drop the in-use page check since __alloc_contig_pages can migrate
-away those pages, and the hugetlb page check can go too since
-isolate_migratepages_range is now capable of dealing with hugetlb pages.
-Either way, those checks are racy so let the end function handle it
-when the time comes.
+On Fri, Mar 19, 2021 at 03:15:47AM -0400, Johannes Weiner wrote:
+> When the freeing of a higher-order page block (non-compound) races
+> with a speculative page cache lookup, __free_pages() needs to leave
+> the first order-0 page in the chunk to the lookup but free the buddy
+> pages that the lookup doesn't know about separately.
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
-Suggested-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- mm/page_alloc.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ce6a14a446a4..516302b280de 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8685,12 +8685,6 @@ static bool pfn_range_valid_contig(struct zone *z, unsigned long start_pfn,
- 
- 		if (PageReserved(page))
- 			return false;
--
--		if (page_count(page) > 0)
--			return false;
--
--		if (PageHuge(page))
--			return false;
- 	}
- 	return true;
- }
--- 
-2.16.3
-
+Thanks.
