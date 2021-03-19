@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35443342136
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C28342138
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhCSPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229893AbhCSPvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:51:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 066C661958;
-        Fri, 19 Mar 2021 15:51:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616169067;
-        bh=Gq99zMTfS839iv5eD+lVSuZ2Ekpn/SvAmKBiII1gFqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e1GIJDW3rChLnNn9n4eQ1LHldoFJ6HeIt7DsCetvfiPM8ubbd2cXV1UCTXQZ0k9yM
-         hSs0N7I6dXCphrb8Q5HrwdXpW7KXRDGzi+SpXAGPNDyajnFRno5l9xYQW36IB+IQrZ
-         G4toEeHaDgByQq1oJ653krn9ah/15n0uuMDR3nR4kN91Y6whOwCGgf5oq+/lewJQf5
-         hiLpkP/K+kt2JPGrVM7mw7di5aHmPouwfCUDVBfwMhoR+YJvyDc7MLsdRONLj334gN
-         PT0dCyzgkT+zBa/AWS7MwaRsJomj8dYb14ECJd7fHu4ZL15V0EoTEChUnxe02p0RiG
-         GZ8IGSsbjQidA==
-Date:   Fri, 19 Mar 2021 17:51:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFTIZ8nbQ3U25RGl@unreal>
-References: <YFHsW/1MF6ZSm8I2@unreal>
- <20210317131718.3uz7zxnvoofpunng@archlinux>
- <YFILEOQBOLgOy3cy@unreal>
- <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318103935.2ec32302@omen.home.shazbot.org>
- <YFOMShJAm4j/3vRl@unreal>
- <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
- <YFSgQ2RWqt4YyIV4@unreal>
- <27aedf13-9c08-0ac7-e6ef-a027913c288a@metux.net>
+        id S230298AbhCSPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhCSPv1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:51:27 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8D3C06174A;
+        Fri, 19 Mar 2021 08:51:26 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id u7so7022800qtq.12;
+        Fri, 19 Mar 2021 08:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yQLsk2Tp9wfXFgh3gpmNEHc/1LVc0qNRoZDzdBhuURQ=;
+        b=bCWupG2mTUy75B9SdmzjE60Wm4fflLRjowQwVn0gS6PS4fBpwtA4DG4NH5Ooo3tjeb
+         Crja/7T/8mXD/ardmLAx9Cgj9xa8d+7v4SAYzzWKKlTF9zMvmgsqI7cDS2DVMNvfaNqm
+         LOnBD/IscqHTTRHxI0+clnR7I7MtJsFKSnRmftmwUX9WDsHYGy3JCbi8ZzuASOeNKxvN
+         3zwlzI1Lsg8ODU9JsRK0o+Mrj105/EzdsFRDCKYRigFK6nXnRLSH6W+8swv8w6IIZ21t
+         yIoQbHXSuiQUxqfhpVfSgAxe4zd87/cXTnjfUxvlzRsMa6bcG9GblChEkIpSopFEyxX3
+         n5BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yQLsk2Tp9wfXFgh3gpmNEHc/1LVc0qNRoZDzdBhuURQ=;
+        b=X2fi0yy7OZZFnKcKfsZVVIJAKkvgYn9RRTZhD8qcKR53vcWfYK4f4kHhm8RiyITOj4
+         3txXvoarfo9PKQRXL/gAPO06Rwclvilqk3U9O142iymCrwXQhyxLqDEEd4RBuxDCWKJ9
+         0tcCcujghogHSfTpecYgbkx3EYd9nubaS3FJcUKdOcR1hjmhqQ8hrmcZPSTkN70Elt2F
+         lWHQ/AqYqNWsR04C7JCSiNiajEORBDSQcBX3znQpIcyXOdZpJB9EL61YZAG+wCI0OFzx
+         izhVSv4gyf3/NeX1Dh9NLYtrZNU++/22ZltpjYtX02Qj+JDhUFG1DjFd1otz5UK9GTTY
+         nXHg==
+X-Gm-Message-State: AOAM531W0+BQnQbJLmhpgOPrkIuybAfKhpIYQhrejCyfg+FpSCP1eRZZ
+        dMPa6pjI3rvadJAKuS0tjR4=
+X-Google-Smtp-Source: ABdhPJzNqvzvMhVdlCo1/tWbfYEFMlXh88JQxyq0y9CijEHAeLnaGQDSE/InVASZ3LecfuKpQYtIQA==
+X-Received: by 2002:a05:622a:49:: with SMTP id y9mr8885658qtw.0.1616169085886;
+        Fri, 19 Mar 2021 08:51:25 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:41da])
+        by smtp.gmail.com with ESMTPSA id m13sm4559989qkk.16.2021.03.19.08.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:51:25 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 11:51:22 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+Message-ID: <YFTIepcb+qm/+/9d@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+ <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk>
+ <CALvZod6tvrZ_sj=BnM4baQepexwvOPREx3qe5ZJrmqftrqwBEA@mail.gmail.com>
+ <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk>
+ <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
+ <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <27aedf13-9c08-0ac7-e6ef-a027913c288a@metux.net>
+In-Reply-To: <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 02:48:12PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 19.03.21 13:59, Leon Romanovsky wrote:
+On Thu, Mar 18, 2021 at 05:56:28PM -0700, Shakeel Butt wrote:
+> 
+> We need something similar for mem_cgroup_swapin_charge_page() as well.
+> 
+> It is better to take this series in mm tree and Jens is ok with that [1].
+> 
+> [1] https://lore.kernel.org/linux-next/4fea89a5-0e18-0791-18a8-4c5907b0d2c4@kernel.dk/
 
-<...>
-
-> In any case, I still fail to see why giving operators an debug knob
-> should make anything worse.
-
-I see this patch as a workaround to stop and provide quirks for reset issues.
-As a way forward, we can do this sysfs visible for DEBUG/EXPERT .config builds.
-What do you think?
-
-> 
-> > > [ And often, even a combination of them isn't enough. Did you know that
-> > >    even Google doesn't get all specs necessary to replace away the ugly
-> > >    FSP blob ? (it's the same w/ AMD, but meanwhile I'm pissed enought to
-> > >    reverse engineer their AGESA blob). ]
-> > 
-> > I don't know about this specific Google case, but from my previous experience.
-> > The reasons why vendor says no to Google are usually due to licensing and legal
-> > issues and not open source vs. proprietary.
-> 
-> In short words: Google did (still does?) build their own mainboards and
-> FW (IIRC that's where LinuxBoot came from), but even with their HUGE
-> quantities (they buy cpus in quantities of truck loads) they still did
-> not manage to get any specs for writing their own early init w/o the
-> proprietary FSP.
-> 
-> The licensing / legal issues can either be:
-> 
-> a) we, the mightly Intel Corp., have been so extremly stupid for
->    licensing some vital IP stuff (what exactly could that be, in exactly
->    the prime domain of Intel ?) and signing such insane crontracts, that
->    we're not allowed to tell anybody how to actually use our own
->    products (yes: initializing the CPU and built-in interfaces belongs
->    exactly into that category)
-> b) we, the mighty Intel Corp., couldn't build something on our own, but
->    just stolen IP (in our primary domain) and are scared that anybody
->    could find out from just reading some early setup code.
-> c) we, the mighty Intel Corp., rule the world and we give a phrack on
->    what some tiny Customers like Google want from us.
-> d) we, the mightly Intel Corp., did do what our name tells: INTEL,
->    and we don't want anybody raise unpleasant questions.
-
-I would say
- e) We, Intel, have fixes and optimization logic (patented or specific to different
- customers) that is applicable  to our HW and we can't open it to Google because it
- will be used against us, in procurement and development. See recent article about
- ex-Intel employee who used this information when placed bids in Microsoft.
- https://www.usnews.com/news/best-states/oregon/articles/2021-02-08/intel-sues-engineer-who-went-to-microsoft-over-trade-secrets
-
-> 
-> 
-> choose your poison :P
-> 
-> 
-> --mtx
-> 
-> -- 
-> ---
-> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schlüssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
+It sounds like there are no concerns about the loop-related work in
+the patch series. I'll rebase on the mm tree and resubmit.
