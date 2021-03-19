@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C73341EBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEDC341EC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhCSNtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230002AbhCSNtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:49:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229974AbhCSNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:50:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229866AbhCSNuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:50:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616161804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CQRUYlPssr7tEQfrFmciIthl3TwcqXqF65U6ThZOyFw=;
+        b=HObBaYPhnbN1fscreTzcfnZdIE4Ue7Ji8XYmGzutGB4/I/wXfB80KIT7MggmjFwoDKQdTw
+        TIKCJX+ZvIEvw/W90zG7/96AgDa6A4mDiCjrA8zN65xJef8Is0g0kO2j2dnf54WRo8vIwc
+        gv9cz/PjvcIROO3Gjys10be+V+mI4T0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-ET1b4oiTMxSPbZv3iVMPwA-1; Fri, 19 Mar 2021 09:50:02 -0400
+X-MC-Unique: ET1b4oiTMxSPbZv3iVMPwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1D9F64E74;
-        Fri, 19 Mar 2021 13:49:23 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 09:49:22 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Zqiang <qiang.zhang@windriver.com>
-Subject: [GIT PULL] workqueue/tracing: Copy workqueue name to buffer in
- trace event
-Message-ID: <20210319094922.16e06f8a@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 456C318C89E4;
+        Fri, 19 Mar 2021 13:50:01 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-114.rdu2.redhat.com [10.10.114.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BAAF5C1D1;
+        Fri, 19 Mar 2021 13:49:48 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 16CDD220BCF; Fri, 19 Mar 2021 09:49:48 -0400 (EDT)
+Date:   Fri, 19 Mar 2021 09:49:48 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        miklos@szeredi.hu, jasowang@redhat.com, mst@redhat.com
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+Message-ID: <20210319134948.GA402287@redhat.com>
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-3-ckuehl@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318135223.1342795-3-ckuehl@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 08:52:22AM -0500, Connor Kuehl wrote:
+> If an incoming FUSE request can't fit on the virtqueue, the request is
+> placed onto a workqueue so a worker can try to resubmit it later where
+> there will (hopefully) be space for it next time.
+> 
+> This is fine for requests that aren't larger than a virtqueue's maximum
+> capacity. However, if a request's size exceeds the maximum capacity of
+> the virtqueue (even if the virtqueue is empty), it will be doomed to a
+> life of being placed on the workqueue, removed, discovered it won't fit,
+> and placed on the workqueue yet again.
+> 
+> Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
+> Descriptors) of the virtio spec:
+> 
+>   "A driver MUST NOT create a descriptor chain longer than the Queue
+>   Size of the device."
+> 
+> To fix this, limit the number of pages FUSE will use for an overall
+> request. This way, each request can realistically fit on the virtqueue
+> when it is decomposed into a scattergather list and avoid violating
+> section 2.6.5.3.1 of the virtio spec.
 
-Linus,
+Hi Connor,
 
-Fix workqueue trace event unsafe string reference
-
-After adding a verifier to test all strings printed in trace events
-to make sure they either point to a string on the ring buffer,
-or to read only core kernel memory, it triggered on a workqueue
-trace event. The trace event workqueue_queue_work references
-the allocated name of the workqueue in the output. If the workqueue
-is freed before the trace is read, then the trace will dereference
-freed memory. Update the trace event to use the __string(), __assign_str(),
-and __get_str() helpers to handle such cases.
-
-I also removed the stable tag as I found the problem commit was
-just added to 5.12-rc1.
-
-Please pull the latest trace-v5.12-rc3 tree, which can be found at:
+So as of now if a request is bigger than what virtqueue can support,
+it never gets dispatched and caller waits infinitely? So this patch
+will fix it by forcing fuse to split the request. That sounds good.
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.12-rc3
+[..]
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 8868ac31a3c0..a6ffba85d59a 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -18,6 +18,12 @@
+>  #include <linux/uio.h>
+>  #include "fuse_i.h"
+>  
+> +/* Used to help calculate the FUSE connection's max_pages limit for a request's
+> + * size. Parts of the struct fuse_req are sliced into scattergather lists in
+> + * addition to the pages used, so this can help account for that overhead.
+> + */
+> +#define FUSE_HEADER_OVERHEAD    4
 
-Tag SHA1: ebefc006c81af126b0e8247406b26c69577c675f
-Head SHA1: 83b62687a05205847d627f29126a8fee3c644335
+How did yo arrive at this overhead. Is it following.
 
+- One sg element for fuse_in_header.
+- One sg element for input arguments.
+- One sg element for fuse_out_header.
+- One sg element for output args.
 
-Steven Rostedt (VMware) (1):
-      workqueue/tracing: Copy workqueue name to buffer in trace event
+Thanks
+Vivek
 
-----
- include/trace/events/workqueue.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
----------------------------
-commit 83b62687a05205847d627f29126a8fee3c644335
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Thu Mar 18 11:44:08 2021 -0400
-
-    workqueue/tracing: Copy workqueue name to buffer in trace event
-    
-    The trace event "workqueue_queue_work" references an unsafe string in
-    dereferencing the name of the workqueue. As the name is allocated, it
-    could later be freed, and the pointer to that string could stay on the
-    tracing buffer. If the trace buffer is read after the string is freed, it
-    will reference an unsafe pointer.
-    
-    I added a new verifier to make sure that all strings referenced in the
-    output of the trace buffer is safe to read and this triggered on the
-    workqueue_queue_work trace event:
-    
-    workqueue_queue_work: work struct=00000000b2b235c7 function=gc_worker workqueue=(0xffff888100051160:events_power_efficient)[UNSAFE-MEMORY] req_cpu=256 cpu=1
-    workqueue_queue_work: work struct=00000000c344caec function=flush_to_ldisc workqueue=(0xffff888100054d60:events_unbound)[UNSAFE-MEMORY] req_cpu=256 cpu=4294967295
-    workqueue_queue_work: work struct=00000000b2b235c7 function=gc_worker workqueue=(0xffff888100051160:events_power_efficient)[UNSAFE-MEMORY] req_cpu=256 cpu=1
-    workqueue_queue_work: work struct=000000000b238b3f function=vmstat_update workqueue=(0xffff8881000c3760:mm_percpu_wq)[UNSAFE-MEMORY] req_cpu=1 cpu=1
-    
-    Also, if this event is read via a user space application like perf or
-    trace-cmd, the name would only be an address and useless information:
-    
-    workqueue_queue_work: work struct=0xffff953f80b4b918 function=disk_events_workfn workqueue=ffff953f8005d378 req_cpu=8192 cpu=5
-    
-    Cc: Zqiang <qiang.zhang@windriver.com>
-    Cc: Tejun Heo <tj@kernel.org>
-    Fixes: 7bf9c4a88e3e3 ("workqueue: tracing the name of the workqueue instead of it's address")
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/include/trace/events/workqueue.h b/include/trace/events/workqueue.h
-index 970cc2ea2850..6154a2e72bce 100644
---- a/include/trace/events/workqueue.h
-+++ b/include/trace/events/workqueue.h
-@@ -30,7 +30,7 @@ TRACE_EVENT(workqueue_queue_work,
- 	TP_STRUCT__entry(
- 		__field( void *,	work	)
- 		__field( void *,	function)
--		__field( const char *,	workqueue)
-+		__string( workqueue,	pwq->wq->name)
- 		__field( unsigned int,	req_cpu	)
- 		__field( unsigned int,	cpu	)
- 	),
-@@ -38,13 +38,13 @@ TRACE_EVENT(workqueue_queue_work,
- 	TP_fast_assign(
- 		__entry->work		= work;
- 		__entry->function	= work->func;
--		__entry->workqueue	= pwq->wq->name;
-+		__assign_str(workqueue, pwq->wq->name);
- 		__entry->req_cpu	= req_cpu;
- 		__entry->cpu		= pwq->pool->cpu;
- 	),
- 
- 	TP_printk("work struct=%p function=%ps workqueue=%s req_cpu=%u cpu=%u",
--		  __entry->work, __entry->function, __entry->workqueue,
-+		  __entry->work, __entry->function, __get_str(workqueue),
- 		  __entry->req_cpu, __entry->cpu)
- );
- 
