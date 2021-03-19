@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B6C3423DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547543423DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhCSR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
+        id S229987AbhCSR6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhCSR44 (ORCPT
+        with ESMTP id S230367AbhCSR5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:56:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C4BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/2Y1OwGEzXvD6PhFI0NTCqzSzvDFFKVPWIaku64VVVM=; b=j0CTxvkifpqB5TRCg01v+fZzlG
-        Zk6yrZrhmn/7H5t7ziv4hhJKXtUULuQrk9Hr/u0X+9/chRR8Bu7Bpqe3/zsq/oyIw/MAecqVlopxI
-        RUPjxDTOFQ3L3TkRt1wsJKSj6h49GFkInZ+RPvmO6UizXiilHflW+6+j9rDtf3qRC88cZ6fHRMHDG
-        8CtQrhP/TJWdWfed7Fc7Yoz4DErgvoHSUz4FlWXdF3Vjh5FnQN8YUObAH0L/NGQUGVp6lHXV2ldOm
-        mUFYQqoj9C8TIKwOj4DVQa6wgnIfvWUdexrpfkST3U6Ys1sRxWp0B7kfhac1/DT5S+IP9T9L6kMs7
-        1mz2FHIg==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJMe-001RDI-Bs; Fri, 19 Mar 2021 17:56:49 +0000
-Date:   Fri, 19 Mar 2021 10:56:48 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dm: ebs: Several typo fixes
-In-Reply-To: <20210319011750.23468-1-unixbhaskar@gmail.com>
-Message-ID: <d639d14b-39cd-6a11-5536-4b8fcc9f3a7@bombadil.infradead.org>
-References: <20210319011750.23468-1-unixbhaskar@gmail.com>
+        Fri, 19 Mar 2021 13:57:45 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A02DC06174A;
+        Fri, 19 Mar 2021 10:57:45 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q5so6431466pfh.10;
+        Fri, 19 Mar 2021 10:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2mOuHKD0JWNPyTnS6xCqcxhUtEeEE1ODpShZbCe3d/U=;
+        b=nfpZ0TcD94lEBjcu726Cfru/DoQOzFy7PylCdjgur1T/Hfl+p7xP4vxYGlunzXHoRe
+         IpkPlcmeVP225Ss7tLkdzQIor3rk1OvPbTXiTumQCuCXh1Z0fS3IBYEWQzzEn1sj3Ih4
+         XVZBs3HSoP1Un6Px4ODwyFVJGtmpla463XvC3/wQCd/oe8RKBlJUzbcPq43rcBO3exxf
+         06ycQS23jgAkpU4y+zENZWY8PEqlhZC+enfEHBWIcIaoYtnbZj4TX4hyy5DtFms1mFbX
+         jWuRADZxMPeTYuVyjkZ1sbq78SyPUI3A/nq6L+uPCs9FOHPSHh/spVXHA6RbTl9+oiP4
+         7c8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2mOuHKD0JWNPyTnS6xCqcxhUtEeEE1ODpShZbCe3d/U=;
+        b=J+D8E6lPKVQUetNdEG07T/8y6RbEuOmSUJ9Oci1WOyhjyXcb/VBJ8oGkurIt+k1/zV
+         rXhABoxhcgzg0AEPoLOZK+laC4Nev4cT+vMdJf4l3ZmLxqHb72DLV+CKvXb7kohGq1/k
+         M3bTJ2X1RU0NCXtKKWEKC2fdsHY3GobAaYpMxXnJLrQLKlX9RMITEmkHgR/KkhGmenyE
+         WA0C2gz8FI0uME7YEpW1aN4g2jc51W/m/9DCA5rcl8l2/wyZaVkxwCPTBCnEdUVmS8YC
+         GotSkNnVMlfXi/gsRN4fVXXt+fvTuFMEtSpQQz9BM4o5G0FzVGJPowlioVbBPb6Cwt+d
+         F79g==
+X-Gm-Message-State: AOAM532y6kNbSvdt82MzS8+2nnP2salE+jh/1P6HH3cIaKQoQLN5kbcA
+        Vri8npdXJIkq4jjj0/HIC+Hhucqdmo04pGb5YPI=
+X-Google-Smtp-Source: ABdhPJxHw/1t8tXyIfGGvo/j9gXzEeKGwGR2258hjHISoO/K+/IK8SZCvQFGurRuO9IuvoSnnBVfcruTROTMSK30cro=
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr12520886pgf.4.1616176664463;
+ Fri, 19 Mar 2021 10:57:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_105648_424076_8AC441EE 
-X-CRM114-Status: GOOD (  14.41  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/retrievd/retrieved/
-    > s/misalignement/misalignment/ > s/funtion/function/ > > Signed-off-by:
-   Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy Dunlap <rdunlap@infradead.org>
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+References: <20210315082339.9787-1-sander@svanheule.net> <20210315190806.66762-1-sander@svanheule.net>
+ <20210315190806.66762-3-sander@svanheule.net> <CAHp75Vc6aaDhVN7LzvLNQjuOPguz+nbfmfpZ7TZHK=fNjCRz8w@mail.gmail.com>
+ <a7d410216d35ed2b3015bfdd8e21dafd9c42d9d4.camel@svanheule.net>
+In-Reply-To: <a7d410216d35ed2b3015bfdd8e21dafd9c42d9d4.camel@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 19:57:28 +0200
+Message-ID: <CAHp75VdrqE0kBwzK9Jk7pZGjyfFnhatfa8UY0z-3T1w1PrbAbw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] gpio: Add Realtek Otto GPIO support
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bert Vermeulen <bert@biot.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 5:51 PM Sander Vanheule <sander@svanheule.net> wrote:
+> On Wed, 2021-03-17 at 15:08 +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 15, 2021 at 11:11 PM Sander Vanheule <
+> > sander@svanheule.net> wrote:
 
+...
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+> > > +#include <linux/swab.h>
+> >
+> > Not sure why you need this? See below.
 
+> > > +       return swab32(readl(ctrl->base + REALTEK_GPIO_REG_ISR));
+> >
+> > Why swab?! How is this supposed to work on BE CPUs?
+> > Ditto for all swabXX() usage.
 >
-> s/retrievd/retrieved/
-> s/misalignement/misalignment/
-> s/funtion/function/
+> My use of swab32/swahw32 has little to do with the CPU being BE or LE,
+> but more with the register packing in the GPIO peripheral.
 >
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> The supported SoCs have port layout A-B-C-D in the registers, where
+> firmware built with Realtek's SDK always denotes A0 as the first GPIO
+> line. So bit 24 in a register has the value for A0 (with the exception
+> of the IMR register).
+>
+> I wrote these wrapper functions to be able to use the BIT() macro with
+> the GPIO line number, similar to how gpio-mmio uses ioread32be() when
+> the BGPIOF_BIG_ENDIAN_BYTE_ORDER flag is used.
+>
+> For the IMR register, port A again comes first, but is now 16 bits wide
+> instead of 8, with A0 at bits 16:17. That's why swahw32 is used for
+> this register.
+>
+> On the currently unsupported RTL9300-series, the port layout is
+> reversed: D-C-B-A. GPIO line A0 is then at bit 0, so the swapping
+> functions won't be required. When support for this alternate port
+> layout is added, some code will need to be added to differentiate
+> between the two cases.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Yes, you have different endianess on the hardware level, why not to
+use the proper accessors (with or without utilization of the above
+mentioned BGPIOF_BIG_ENDIAN_BYTE_ORDER)?
 
-> ---
-> drivers/md/dm-ebs-target.c | 6 +++---
-> 1 file changed, 3 insertions(+), 3 deletions(-)
+...
+
+> > > +       case IRQ_TYPE_NONE:
+> > > +               type = 0;
+> > > +               handler = handle_bad_irq;
+> > > +               break;
+> >
+> > Why is it here? Make it default like many other GPIO drivers do.
+
+> > > +       irq_set_handler_locked(data, handler);
+> >
+> > handler is always the same. Use it directly here.
 >
-> diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
-> index 55bcfb74f51f..71475a2410be 100644
-> --- a/drivers/md/dm-ebs-target.c
-> +++ b/drivers/md/dm-ebs-target.c
-> @@ -28,7 +28,7 @@ struct ebs_c {
-> 	spinlock_t lock;		/* Guard bios input list above. */
-> 	sector_t start;			/* <start> table line argument, see ebs_ctr below. */
-> 	unsigned int e_bs;		/* Emulated block size in sectors exposed to upper layer. */
-> -	unsigned int u_bs;		/* Underlying block size in sectors retrievd from/set on lower layer device. */
-> +	unsigned int u_bs;		/* Underlying block size in sectors retrieved from/set on lower layer device. */
-> 	unsigned char block_shift;	/* bitshift sectors -> blocks used in dm-bufio API. */
-> 	bool u_bs_set:1;		/* Flag to indicate underlying block size is set on table line. */
-> };
-> @@ -43,7 +43,7 @@ static inline sector_t __block_mod(sector_t sector, unsigned int bs)
-> 	return sector & (bs - 1);
-> }
->
-> -/* Return number of blocks for a bio, accounting for misalignement of start and end sectors. */
-> +/* Return number of blocks for a bio, accounting for misalignment of start and end sectors. */
-> static inline unsigned int __nr_blocks(struct ebs_c *ec, struct bio *bio)
-> {
-> 	sector_t end_sector = __block_mod(bio->bi_iter.bi_sector, ec->u_bs) + bio_sectors(bio);
-> @@ -171,7 +171,7 @@ static void __ebs_forget_bio(struct ebs_c *ec, struct bio *bio)
-> 	dm_bufio_forget_buffers(ec->bufio, __sector_to_block(ec, sector), blocks);
-> }
->
-> -/* Worker funtion to process incoming bios. */
-> +/* Worker function to process incoming bios. */
-> static void __ebs_process_bios(struct work_struct *ws)
-> {
-> 	int r;
-> --
-> 2.26.2
->
->
+> I'll drop the IRQ_TYPE_NONE case. Do I understand it correctly, that
+> IRQ_TYPE_NONE should never be used as the new value, but only as the
+> default initial value?
+
+Initially you initialize the default handler to be "bad" (in order to
+easily catch up issues with IRQ configurations).
+When ->irq_set_type() is called, if everything is okay it will lock
+the handler to the proper one.
+
+-- 
+With Best Regards,
+Andy Shevchenko
