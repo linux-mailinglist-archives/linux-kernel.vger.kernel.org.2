@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A73341ED3
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA1341ED4
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCSNwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53136 "EHLO mail.kernel.org"
+        id S230113AbhCSNwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:52:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:35689 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhCSNwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:52:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 471DA64F11;
-        Fri, 19 Mar 2021 13:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616161950;
-        bh=eXYRVG8V5cFHhvvCxRCR6CpklONXTFOtZAF1rugeN1k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aaSzKBB6WrtY0zuvqawgEQnvaHKWbIGyDSanjQm7iV2Hcw4DpxMYu7Sd7V6odgg36
-         4H80Ac4DMy3kMqPBNzLlh89krAyZacKoDjKmYE8NpYvm5LtiY/OZxsp4yKwJsKtZBP
-         wlr5FlyjFQwaObt+oYxx9QHXq3wsDA1DiIwPyyzan6HPv7x/PA04UWLXNtPrdHD3R4
-         PdvbSoE+EV7KI+YhGn9fwJLQfUPLf9wx6R4vniJavbHlIcpxtdnRLj3zRh5QBV7qH6
-         Ixfc08P6a7WhWsOYuphp4RNLt25LV7Cws1jcVyVLFxW//GX7LfY43IUZaas4Zx7nSq
-         t7ZgtZaxjhaIQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 00923352261C; Fri, 19 Mar 2021 06:52:29 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 06:52:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 01/17] add support for Clang CFI
-Message-ID: <20210319135229.GJ2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210318171111.706303-1-samitolvanen@google.com>
- <20210318171111.706303-2-samitolvanen@google.com>
- <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
- <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
- <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net>
+        id S229936AbhCSNwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:52:47 -0400
+IronPort-SDR: ive6hKuFTUIvcmyInSnP2tDbFFrZ2BgcdhspYvJCtamyJVyKqhzDC24lqTPJ5sKRPPjg0pzg+K
+ Jp+sM4FohZPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="189987342"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="189987342"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 06:52:47 -0700
+IronPort-SDR: YNF8CPXV+IYFng1K1eaVAQh11SNitPCITE3gei6N+X9otQaAOBt9/124pzpgd5+3jTxljWpScR
+ J/Bl7zhD4W5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="374956703"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga006.jf.intel.com with SMTP; 19 Mar 2021 06:52:44 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 19 Mar 2021 15:52:43 +0200
+Date:   Fri, 19 Mar 2021 15:52:43 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 04/19] include: drm: drm_atomic: Make use of
+ 'new_plane_state'
+Message-ID: <YFSsq745gswwET6A@intel.com>
+References: <20210319082428.3294591-1-lee.jones@linaro.org>
+ <20210319082428.3294591-5-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319082428.3294591-5-lee.jones@linaro.org>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:26:59PM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 18, 2021 at 04:48:43PM -0700, Sami Tolvanen wrote:
-> > On Thu, Mar 18, 2021 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
-> > > > +static void update_shadow(struct module *mod, unsigned long base_addr,
-> > > > +             update_shadow_fn fn)
-> > > > +{
-> > > > +     struct cfi_shadow *prev;
-> > > > +     struct cfi_shadow *next;
-> > > > +     unsigned long min_addr, max_addr;
-> > > > +
-> > > > +     next = vmalloc(SHADOW_SIZE);
-> > > > +
-> > > > +     mutex_lock(&shadow_update_lock);
-> > > > +     prev = rcu_dereference_protected(cfi_shadow,
-> > > > +                                      mutex_is_locked(&shadow_update_lock));
-> > > > +
-> > > > +     if (next) {
-> > > > +             next->base = base_addr >> PAGE_SHIFT;
-> > > > +             prepare_next_shadow(prev, next);
-> > > > +
-> > > > +             min_addr = (unsigned long)mod->core_layout.base;
-> > > > +             max_addr = min_addr + mod->core_layout.text_size;
-> > > > +             fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
-> > > > +
-> > > > +             set_memory_ro((unsigned long)next, SHADOW_PAGES);
-> > > > +     }
-> > > > +
-> > > > +     rcu_assign_pointer(cfi_shadow, next);
-> > > > +     mutex_unlock(&shadow_update_lock);
-> > > > +     synchronize_rcu_expedited();
-> > >
-> > > expedited is BAD(tm), why is it required and why doesn't it have a
-> > > comment?
-> > 
-> > Ah, this uses synchronize_rcu_expedited() because we have a case where
-> > synchronize_rcu() hangs here with a specific SoC family after the
-> > vendor's cpu_pm driver powers down CPU cores.
+On Fri, Mar 19, 2021 at 08:24:13AM +0000, Lee Jones wrote:
+> In the macro for_each_oldnew_plane_in_state() 'new_plane_state' is provided
+> as a container for state->planes[i].new_state, but is not utilised in
+> some use-cases, so we fake-use it instead.
 > 
-> Broken vendor drivers seem like an exceedingly poor reason for this.
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function ‘amdgpu_dm_commit_cursors’:
+>  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:7649:44: warning: variable ‘new_plane_state’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  include/drm/drm_atomic.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+> index ac5a28eff2c86..259e6970dc836 100644
+> --- a/include/drm/drm_atomic.h
+> +++ b/include/drm/drm_atomic.h
+> @@ -871,7 +871,8 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
+>  			     ((plane) = (__state)->planes[__i].ptr,	\
+>  			      (void)(plane) /* Only to avoid unused-but-set-variable warning */, \
+>  			      (old_plane_state) = (__state)->planes[__i].old_state,\
+> -			      (new_plane_state) = (__state)->planes[__i].new_state, 1))
+> +			      (new_plane_state) = (__state)->planes[__i].new_state, \
+> +			      (void)(new_plane_state) /* Only to avoid unused-but-set-variable warning */, 1))
 
-The vendor is supposed to make sure that RCU sees the CPU cores as either
-deep idle or offline before powering them down.  My guess is that the
-CPU is powered down, but RCU (and probably much else in the system)
-thinks that the CPU is still up and running.  So I bet that you are
-seeing other issues as well.
+In this case you can just switch the code to use
+for_each_old_plane_in_state() instead.
 
-I take it that the IPIs from synchronize_rcu_expedited() have the effect
-of momentarily powering up those CPUs?
+>  
+>  /**
+>   * for_each_oldnew_plane_in_state_reverse - iterate over all planes in an atomic
+> -- 
+> 2.27.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-							Thanx, Paul
+-- 
+Ville Syrjälä
+Intel
