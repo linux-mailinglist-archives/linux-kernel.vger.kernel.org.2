@@ -2,162 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEDB341355
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C98034135C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 04:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhCSDBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 23:01:00 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37552 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233493AbhCSDAb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 23:00:31 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12J2tsLt019226;
-        Fri, 19 Mar 2021 02:58:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=aLRq90divF6wIwL30clJceTWzYANjRqogdwRl2T+2Mo=;
- b=SxVR8GCZQXELh/SziPEi6t8/u/gKh9CNL6swjABgVf7Id2WIQySljHproDYIUZMVEjSP
- 4g/OrVuWxdzGplt1do5zGa7rcAltxedvaJyQPdoyB5kWvNepQUorGWVzPl9db2TH2i9j
- g1g4455sswEQ3w2wCA3ZzQSgODxDrWSsGlVQWHtxWp7N+0sB8OADlyBRke5+N7WbXN/f
- KGIGaVYMIka4gwg++uAKfRggy2Wdq/jAdWy1T6f8MgvNUnng0WlNsDnuAMqRZe7iQViQ
- og23Gv8WsWtb+2ag5VBoCNrIl4b/zrQ27QgzA5APnhQyRnevrqWaD1EFPo69EGdNL507 sw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 378nbmhfpm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 02:58:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12J2o2Te076477;
-        Fri, 19 Mar 2021 02:58:24 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
-        by aserp3020.oracle.com with ESMTP id 37cf2uyejw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 02:58:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cll8Q9m7pWK0EP42Be75WmRxdT37BLIlHQneFMbVeyqo1j3M/zS20dYCoOo33paka1529OPq2KpzohFg/tUePSSz82mlwm5VJtfQbAeumEx35IIQYSThEh7GtNxCPdSGl8+jrMBEaTuJx95N6NnoVibe3TQ7LrrkqOkyvq0oz+WXRoK96ttpKftC+DxSqVuah/6KV6dCZEut6JnuR158NMqOvi/+cpsjVnfVG1QDW32UYEXUah+5XMG58Kqj52HS90wHZm7H5FfozTtN2R7bXiRzVfKxaPUQXL/qJLF7L22HpYCEP07K/JLJJ3AYUi1eV1jOgMA8Jejzb4yZAGJQRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLRq90divF6wIwL30clJceTWzYANjRqogdwRl2T+2Mo=;
- b=Dj1pBGydS1cBoSUVXQm0GwKnWQy+YZlobg44jDD0P9xC6nYXdYLmfpbE/woK1lMAK5Z/lleSSHWl+ry7BrZpL+sUdFb9GvqMQTCNkBX9Lb6mf2Q+SpqdQqzB9UcLqTujuKupr3Yxo2+1eZAx66BzPSL3evq9OUohyqXk/D3USyM0twkKUDBnXC7qxZoTjzG9nDsOPicShynGdJdlaTxA6uZUQ1DezjoYN6hu+YIC2BaHKwI18eMSlrlRtppo09By1rTgxq/p81ZXZS5ZS3Bkw/BsLUT7ijYzrYYdFsHo+qXJHmam1yidNQAzi2f/8zZj1lXT70PWmuQrEjwtPXeJBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLRq90divF6wIwL30clJceTWzYANjRqogdwRl2T+2Mo=;
- b=yjRfeeGZo20lDSQld+fng8/+70yAqqt4g9O1up0uAfg7h1en6g9Jx7phtd1wNn9YfDPNWmnWGk8x7CNfsW5xIA7kn1DhigBNQu27BWRYI3zcRFGMTg7cFIOY8gSBcjyyTJauSnLE/8+fQ+/4Vga0ta6UlXdfbKfyNxmpov1yjp4=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4488.namprd10.prod.outlook.com (2603:10b6:510:35::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 02:58:22 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 02:58:22 +0000
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        c by <James.Bottomley@SteelEye.com>,
-        GOTO Masanori <gotom@debian.or.jp>, gotom@debian.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Richard Hirst <richard@sleepie.demon.co.uk>,
-        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
-Subject: Re: [PATCH 0/8] [Set 3 v2] Rid W=1 warnings in SCSI
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq15z1nq2fw.fsf@ca-mkp.ca.oracle.com>
-References: <20210317091125.2910058-1-lee.jones@linaro.org>
-Date:   Thu, 18 Mar 2021 22:58:19 -0400
-In-Reply-To: <20210317091125.2910058-1-lee.jones@linaro.org> (Lee Jones's
-        message of "Wed, 17 Mar 2021 09:11:17 +0000")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SJ0PR03CA0319.namprd03.prod.outlook.com
- (2603:10b6:a03:39d::24) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S231708AbhCSDJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 23:09:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18178 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229948AbhCSDJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 23:09:08 -0400
+IronPort-SDR: vcdKww3Sf7j3ACe+SCZp3cWi6kcJyJhAB0dbhvF6WujU0fNjy7ne2VRTa6f8wGlLqSy/HTcY3s
+ 46eTm1gTnZHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189907059"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="189907059"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 20:09:08 -0700
+IronPort-SDR: 9V8Zj6KycH4PonMKGUOh9HTJmoeA667x5lbFQQKf9t4I7B+BMORToB0gB9K887OcCyA9vJw4TB
+ 1gbXcLx/xCTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="591708236"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 18 Mar 2021 20:09:06 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lN5Va-0001Xk-4G; Fri, 19 Mar 2021 03:09:06 +0000
+Date:   Fri, 19 Mar 2021 11:08:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ d9f6e12fb0b7fcded0bac34b8293ec46f80dfc33
+Message-ID: <605415af.AgmqmQDk9l8XL8e8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0319.namprd03.prod.outlook.com (2603:10b6:a03:39d::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 02:58:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed1a813f-1e88-4246-6065-08d8ea82db58
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4488:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB44880465ADE2A2A5BFA9FBC08E689@PH0PR10MB4488.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iJ739Bpo8tVMUp4tdG6TucnMIYBOT2PReGxgyoDoTQD9nJ2tse63ksyR0yyf7hwWt8q4xNexyBnjrhJztCpEZu68jj35m0pfW+d0opx61cB5wFAGssLOc5Whs6FPcND51pkhP2i9X4msnLOcqaw4SQPW/EX3HOhKg5cqquqmy9tcBvcHvFWFdrqCydD063lCDj+NjSey9LiWKwka2FB1B0Pa8Xa+1fNmJt7u4B8fxwgBio2oNyX0dAOxFv+klZzE6IH0QVcNLfOrmAdQ933l9zbm4xaGeCkDFMSXzLJohcir5KVHyt/m5EAlldGAIELfujT6qixfC5KPswN23Kl6mwE1dpvlJ9cZARQ9cGQQAaaDJf10pTjriwP0AhWwQFWQgLk3HwTZKq3NENOxpghUt4tZJosDhxlNA6YAYjpxCcSchoVFMmJRMtzqF221BBYVaxopRHq4IgPmMeuTuzu28s5O1gOMM0xwnPPSgAit4rCUlFW+VsAj48+kv6pEjeRnko1ItKw3+kQqIigE6385yH9fc8jtKPcXE+TGs+T6oqf62Q0unYR/ZbaRuLvI4DW8Dgh6Nz6Owci/edC2KvTBh8xx/2YGWy8U/cN/OdpBInhHvhNgW9Z2ryCwN5NMqPfufHR/22KvMVrQnsenwh/jrOE5NnFvAaVsd4m/6cDgYFM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(39860400002)(366004)(7696005)(83380400001)(26005)(316002)(16526019)(186003)(5660300002)(36916002)(52116002)(86362001)(55016002)(8936002)(54906003)(66556008)(66946007)(4326008)(2906002)(7416002)(66476007)(956004)(558084003)(6916009)(8676002)(478600001)(38100700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4fpdzHYKBK5l4Rakpgla4mg2ylCW16bBgilAOgEzK9A1xsuIB1MFSSSMXgrF?=
- =?us-ascii?Q?HC+LB4/ycdWj/fPW9b8qqCuHoOIb4HOVH3CH2lrMcYkkv/JJGA+lixR4Uadq?=
- =?us-ascii?Q?usgJ072/BMEVfxc49xgIVQLNn41VmfA9cO91tKy2Q+fgt1uRVTRB0gSGkMe5?=
- =?us-ascii?Q?MCDLgbI8GSsMKCNkYdEi9qG5VbIIWBGTjDLfNyl58NrS9tRbfRRSsi4ajfWD?=
- =?us-ascii?Q?1t/pEy5tdAuRGFLUEz01HTW9hq8UvjDrShvCCHZMmpMl/qyNFafvrS7eS/hP?=
- =?us-ascii?Q?WTtidT4/5jmWxL9pNETOB59ohQIFqdGKADec+phnY6YLRMc7jp57c7Hat+iK?=
- =?us-ascii?Q?7Fil9jTKX0cM9FKfJce9rZCQ3D8iNWdv6hPi8hU4a3qDzQAxyJyiOGwXrCIN?=
- =?us-ascii?Q?RcfbZPBbS1Em3VVt8W446dVYw4oHARIJEdZrz14HhRVidxPTpOIH+CqamiOQ?=
- =?us-ascii?Q?v+8RueWD36ZehS1nP0TvZdLn8CYodd7SNefRexHa2y+3sRVOVDHy34oKKCJ8?=
- =?us-ascii?Q?sjoBPrLtlYTFFIPU2NgjNmwk/MXWXp4ymkdIqENZxlLspWAT3fWzyIPNPJi6?=
- =?us-ascii?Q?OkDk3/wSTRnD2EUYUn+KNOhk++C2x6phtwq4JpUAFNwyz3iEdK6o+jNj3WgS?=
- =?us-ascii?Q?0u7dk/1LuJBmabkp+Gw5hH01A8d40ilF3uATZOYVBnMpwH8m0Se8yLnEoh8x?=
- =?us-ascii?Q?VLxW8TpyB11bmnRU+XBctBjhcYExlvPovdGo8noZJLOwCRFmiaRWSSWzHPh0?=
- =?us-ascii?Q?oR29pNSqSpKqEdHGz6K0nQUE+YBQ7myDITVTg+d4vOpbIYEAVXz+KZsxChMl?=
- =?us-ascii?Q?HqEmudSfP0OFVm1C9nTp6Jw+9eFIvV/5lRUf2/ov7GFjLwSKt/yGYBizqoA6?=
- =?us-ascii?Q?vKFqzasudiCVpDo9yevDyd0xpuUYCBiujIgPI50XO86ePnXbVMa3VVhKYqgr?=
- =?us-ascii?Q?XInvXF2kh0SzR6yfeD7SPe7HW2kE70NGfzwLlWp0ggahdmVNmS8BRdPdZdlQ?=
- =?us-ascii?Q?J/25IVWeFjy9fxJLnFGXYMp/1fco/yRIrSjlHHAdp3Z4E1k7dy0HoDHr+JCD?=
- =?us-ascii?Q?LEGT/5ZYBbo3zU85lj6OVPlHsRoniOJelO3+7uKo2IHyTZVWgiFRxaSrER/j?=
- =?us-ascii?Q?sF0EQ8+7squvQ3mmMJW6JPQwsQ339kR+33j8EfPATX+fU8eVnK3TDLEsFnSa?=
- =?us-ascii?Q?qUCwKFFiXwEAsjqa9pvVV2mCJyDUNg6jcVjb7IWnavkIaDQEXKGxWA0y9oP2?=
- =?us-ascii?Q?0kb/AVKSBPUN4LF7DlujubNwnlV17XzK/lzLHw72NEuJAT+Mwe0mh4aFrE3a?=
- =?us-ascii?Q?Vrd27MgyOIpeChrr5tDL2INo?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed1a813f-1e88-4246-6065-08d8ea82db58
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 02:58:22.0889
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yRtWp5YWgrO6NVyhgrJ7wxycmcJV8aeFIih0nnf+JoSWEhZuwSGiOToxCzClKFlvMg7b6yUawN4u4EmLZkQ0ZgvCDYU5e7ggU6G3f5dOAS0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4488
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 malwarescore=0
- spamscore=0 phishscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103190020
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103190020
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: d9f6e12fb0b7fcded0bac34b8293ec46f80dfc33  x86: Fix various typos in comments
 
-Lee,
+elapsed time: 722m
 
-> This set contains functional changes.
->
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+configs tested: 151
+configs skipped: 2
 
-Applied to 5.13/scsi-staging, thanks!
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                  maltasmvp_eva_defconfig
+sh                               j2_defconfig
+mips                       bmips_be_defconfig
+arm                          collie_defconfig
+arc                          axs101_defconfig
+sh                                  defconfig
+ia64                        generic_defconfig
+m68k                        mvme147_defconfig
+riscv                    nommu_k210_defconfig
+h8300                    h8300h-sim_defconfig
+powerpc                     tqm8560_defconfig
+mips                        nlm_xlp_defconfig
+arc                                 defconfig
+mips                     loongson1b_defconfig
+m68k                        m5407c3_defconfig
+sh                           se7712_defconfig
+m68k                       m5275evb_defconfig
+arm                           sunxi_defconfig
+xtensa                generic_kc705_defconfig
+arm                          exynos_defconfig
+arm                          lpd270_defconfig
+m68k                             allyesconfig
+ia64                             allmodconfig
+powerpc                 linkstation_defconfig
+xtensa                  audio_kc705_defconfig
+mips                        vocore2_defconfig
+arm                         at91_dt_defconfig
+sh                          r7780mp_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          rb532_defconfig
+openrisc                 simple_smp_defconfig
+riscv                          rv32_defconfig
+powerpc                    mvme5100_defconfig
+arm64                            alldefconfig
+ia64                          tiger_defconfig
+um                           x86_64_defconfig
+m68k                       m5208evb_defconfig
+ia64                      gensparse_defconfig
+sh                            migor_defconfig
+powerpc                     kilauea_defconfig
+arm                          moxart_defconfig
+powerpc                    klondike_defconfig
+sh                     magicpanelr2_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                       ebony_defconfig
+mips                          ath79_defconfig
+sh                     sh7710voipgw_defconfig
+s390                                defconfig
+mips                      maltaaprp_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                       maple_defconfig
+powerpc                    adder875_defconfig
+sh                          kfr2r09_defconfig
+arm                         lpc32xx_defconfig
+s390                             alldefconfig
+xtensa                         virt_defconfig
+powerpc                 mpc832x_rdb_defconfig
+csky                             alldefconfig
+sh                   sh7724_generic_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                           se7721_defconfig
+nios2                               defconfig
+powerpc                    amigaone_defconfig
+arm                        mvebu_v5_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                      makalu_defconfig
+powerpc                  mpc885_ads_defconfig
+m68k                        m5307c3_defconfig
+arm                        shmobile_defconfig
+mips                      pic32mzda_defconfig
+m68k                       m5249evb_defconfig
+um                             i386_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                     pq2fads_defconfig
+arm                          pcm027_defconfig
+powerpc                      acadia_defconfig
+sh                        edosk7705_defconfig
+mips                             allyesconfig
+powerpc                     tqm8548_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                     redwood_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                            hisi_defconfig
+mips                        nlm_xlr_defconfig
+m68k                                defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210318
+i386                 randconfig-a005-20210318
+i386                 randconfig-a003-20210318
+i386                 randconfig-a002-20210318
+i386                 randconfig-a006-20210318
+i386                 randconfig-a004-20210318
+x86_64               randconfig-a011-20210318
+x86_64               randconfig-a016-20210318
+x86_64               randconfig-a013-20210318
+x86_64               randconfig-a015-20210318
+x86_64               randconfig-a014-20210318
+x86_64               randconfig-a012-20210318
+i386                 randconfig-a013-20210318
+i386                 randconfig-a016-20210318
+i386                 randconfig-a011-20210318
+i386                 randconfig-a014-20210318
+i386                 randconfig-a015-20210318
+i386                 randconfig-a012-20210318
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210318
+x86_64               randconfig-a001-20210318
+x86_64               randconfig-a005-20210318
+x86_64               randconfig-a002-20210318
+x86_64               randconfig-a003-20210318
+x86_64               randconfig-a004-20210318
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
