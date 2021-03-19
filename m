@@ -2,390 +2,615 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FE53417D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A383417D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCSI5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhCSI5e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:57:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55661C06174A;
-        Fri, 19 Mar 2021 01:57:34 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 08:57:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616144252;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vWx2DVG83kqvriy4T06PLNSXUJWER/4ep1pK9JkLHjc=;
-        b=yaDDsjqNc71ZVIU5F4eby8iL/RHX7yviwuEo/4iV9cD8u0FPcIvcobUAfh/VbhBYSm22E7
-        dnQMpeeSXLf+vRtub1RXLeyJdgg3crkPMfLxiWRIfdi+UD66e+V4iGM3s0vmcWn8YO3Wk/
-        aGS2F63ePKZiZyps7aVBFUgovPGp24fuwGu+VfUS9qby05N5US+trWGpDpZrjJ99xT/ItD
-        SRhb6Nrgy7oi0w5eoPMMUZ5km1kTsn65xopm5gtPm5NoK3hQJJEIw2EpfLchP/J/NZMSQf
-        y76jqVmnK1enK5Rq+cqlaf02oq7QHsJJ4Ux8xDEHWBbNRqZgxVlB9xOzaXaIhw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616144252;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vWx2DVG83kqvriy4T06PLNSXUJWER/4ep1pK9JkLHjc=;
-        b=EA4QcAbPv2fuzJuI2fPkeSUxm/q4Nt3p154BbfGvrw1jT8RRsIZc2aBGhcnByQdkjZbZwL
-        7EbQvzqpxQRCQGCw==
-From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Kai Huang <kai.huang@intel.com>, Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210317235332.362001-2-jarkko.sakkinen@intel.com>
-References: <20210317235332.362001-2-jarkko.sakkinen@intel.com>
+        id S229870AbhCSI6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:58:42 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:50443 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229793AbhCSI6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:58:13 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id F37E8160060
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:58:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1616144288; bh=9kUQbkp9rCJHPZ6E03dCL73JdkTduNzrxpz0e71+rWQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d94DrIkV+xjO8r84luKvmJgu+zW0CehVyRwqunvsurYGC5RbfuQO48G8jUMUzEp9Y
+         W17Cb2POE8WiZ2K86GyM502IWQTKdRUaU2W0fEwBFyslQb+yh4Wvq2/aqoBs6toSaE
+         4XPku8pLSib6SSSmORMDIFsVpyDTltTHL/EL3hr3zMaa1+i1n8AxRHKEqpGEgB88F4
+         WBlupSEXwp5UsmzeGzXmlc2HadR07UwwB3l6iG/t8Jq57C5Kc6Ga1/Eyyacexk6+e4
+         YgdN2WbZlDjgUUJciNqgjDBNWoCY+OWN3yfuQHCF++QsAKwKjlpxSxgq4YQEu1RkVi
+         hCngYSiBOd6iA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4F1yTp1g3Kz9rxc;
+        Fri, 19 Mar 2021 09:58:06 +0100 (CET)
+Date:   Fri, 19 Mar 2021 09:58:05 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v4] hwmon: corsair-psu: add support for critical values
+Message-ID: <20210319095805.378b7e0e@monster.powergraphx.local>
+In-Reply-To: <20210318190150.GA152326@roeck-us.net>
+References: <YFNg6vGk3sQmyqgB@monster.powergraphx.local>
+        <20210318190150.GA152326@roeck-us.net>
 MIME-Version: 1.0
-Message-ID: <161614425165.398.3287917236699589316.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Thu, 18 Mar 2021 12:01:50 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-Commit-ID:     323950a8a98b492ac2fa168e8e4c0becfb4554dd
-Gitweb:        https://git.kernel.org/tip/323950a8a98b492ac2fa168e8e4c0becfb4554dd
-Author:        Jarkko Sakkinen <jarkko@kernel.org>
-AuthorDate:    Thu, 18 Mar 2021 01:53:31 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 19 Mar 2021 09:27:54 +01:00
+> On Thu, Mar 18, 2021 at 03:17:14PM +0100, Wilken Gottwalt wrote:
+> > Adds support for reading the critical values of the temperature sensors
+> > and the rail sensors (voltage and current) once and caches them. Updates
+> > the naming of the constants following a more clear scheme. Also updates
+> > the documentation and fixes some typos. Updates is_visible and ops_read
+> > functions to be more readable.
+> >=20
+> > The new sensors output of a Corsair HX850i will look like this:
+> > corsairpsu-hid-3-1
+> > Adapter: HID adapter
+> > v_in:        230.00 V
+> > v_out +12v:   12.14 V  (crit min =3D  +8.41 V, crit max =3D +15.59 V)
+> > v_out +5v:     5.03 V  (crit min =3D  +3.50 V, crit max =3D  +6.50 V)
+> > v_out +3.3v:   3.30 V  (crit min =3D  +2.31 V, crit max =3D  +4.30 V)
+> > psu fan:        0 RPM
+> > vrm temp:     +46.2=B0C  (crit =3D +70.0=B0C)
+> > case temp:    +39.8=B0C  (crit =3D +70.0=B0C)
+> > power total: 152.00 W
+> > power +12v:  108.00 W
+> > power +5v:    41.00 W
+> > power +3.3v:   5.00 W
+> > curr +12v:     9.00 A  (crit max =3D +85.00 A)
+> > curr +5v:      8.31 A  (crit max =3D +40.00 A)
+> > curr +3.3v:    1.62 A  (crit max =3D +40.00 A)
+> >=20
+> > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+>=20
+> Applied.
 
-x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()
+Thank very much. Hmm, I actually could calculate the in_curr value from tot=
+al
+power and the ac input as a replacement if the value can not be read. What =
+do
+you think?
 
-Background
-==========
+> Thanks,
+> Guenter
+>=20
+> > ---
+> > Changed in v4:
+> >   - simplified private data structure and collection of critical values=
+ and
+> >     unsupported command check
+> >=20
+> > Changes in v3:
+> >   - introduced a quirk check function to catch non-working commands
+> >   - split is_visible function into subfunctions
+> >   - moved the "is value valid" checks into the is_visibility subfunction
+> >   - simplified hwmon_ops_read function
+> >   - rearranged sysfs entries in the documentation like suggested
+> >=20
+> > Changes in v2:
+> >   - simplified reading/caching of critical values and hwmon_ops_read fu=
+nction
+> >   - removed unnecessary debug output and comments
+> > ---
+> >  Documentation/hwmon/corsair-psu.rst |  13 +-
+> >  drivers/hwmon/corsair-psu.c         | 325 +++++++++++++++++++++++-----
+> >  2 files changed, 282 insertions(+), 56 deletions(-)
+> >=20
+> > diff --git a/Documentation/hwmon/corsair-psu.rst b/Documentation/hwmon/=
+corsair-psu.rst
+> > index 396b95c9a76a..e8378e7a1d8c 100644
+> > --- a/Documentation/hwmon/corsair-psu.rst
+> > +++ b/Documentation/hwmon/corsair-psu.rst
+> > @@ -47,19 +47,30 @@ Sysfs entries
+> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >  curr1_input		Total current usage
+> >  curr2_input		Current on the 12v psu rail
+> > +curr2_crit		Current max critical value on the 12v psu rail
+> >  curr3_input		Current on the 5v psu rail
+> > +curr3_crit		Current max critical value on the 5v psu rail
+> >  curr4_input		Current on the 3.3v psu rail
+> > +curr4_crit		Current max critical value on the 3.3v psu rail
+> >  fan1_input		RPM of psu fan
+> >  in0_input		Voltage of the psu ac input
+> >  in1_input		Voltage of the 12v psu rail
+> > +in1_crit		Voltage max critical value on the 12v psu rail
+> > +in1_lcrit		Voltage min critical value on the 12v psu rail
+> >  in2_input		Voltage of the 5v psu rail
+> > -in3_input		Voltage of the 3.3 psu rail
+> > +in2_crit		Voltage max critical value on the 5v psu rail
+> > +in2_lcrit		Voltage min critical value on the 5v psu rail
+> > +in3_input		Voltage of the 3.3v psu rail
+> > +in3_crit		Voltage max critical value on the 3.3v psu rail
+> > +in3_lcrit		Voltage min critical value on the 3.3v psu rail
+> >  power1_input		Total power usage
+> >  power2_input		Power usage of the 12v psu rail
+> >  power3_input		Power usage of the 5v psu rail
+> >  power4_input		Power usage of the 3.3v psu rail
+> >  temp1_input		Temperature of the psu vrm component
+> > +temp1_crit		Temperature max cirtical value of the psu vrm component
+> >  temp2_input		Temperature of the psu case
+> > +temp2_crit		Temperature max critical value of psu case
+> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> > =20
+> >  Usage Notes
+> > diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+> > index b0953eeeb2d3..3a5807e4a2ef 100644
+> > --- a/drivers/hwmon/corsair-psu.c
+> > +++ b/drivers/hwmon/corsair-psu.c
+> > @@ -53,11 +53,17 @@
+> >  #define CMD_TIMEOUT_MS		250
+> >  #define SECONDS_PER_HOUR	(60 * 60)
+> >  #define SECONDS_PER_DAY		(SECONDS_PER_HOUR * 24)
+> > +#define RAIL_COUNT		3 /* 3v3 + 5v + 12v */
+> > +#define TEMP_COUNT		2
+> > =20
+> >  #define PSU_CMD_SELECT_RAIL	0x00 /* expects length 2 */
+> > -#define PSU_CMD_IN_VOLTS	0x88 /* the rest of the commands expect lengt=
+h 3 */
+> > +#define PSU_CMD_RAIL_VOLTS_HCRIT 0x40 /* the rest of the commands expe=
+ct length 3 */
+> > +#define PSU_CMD_RAIL_VOLTS_LCRIT 0x44
+> > +#define PSU_CMD_RAIL_AMPS_HCRIT	0x46
+> > +#define PSU_CMD_TEMP_HCRIT	0x4F
+> > +#define PSU_CMD_IN_VOLTS	0x88
+> >  #define PSU_CMD_IN_AMPS		0x89
+> > -#define PSU_CMD_RAIL_OUT_VOLTS	0x8B
+> > +#define PSU_CMD_RAIL_VOLTS	0x8B
+> >  #define PSU_CMD_RAIL_AMPS	0x8C
+> >  #define PSU_CMD_TEMP0		0x8D
+> >  #define PSU_CMD_TEMP1		0x8E
+> > @@ -116,6 +122,15 @@ struct corsairpsu_data {
+> >  	u8 *cmd_buffer;
+> >  	char vendor[REPLY_SIZE];
+> >  	char product[REPLY_SIZE];
+> > +	long temp_crit[TEMP_COUNT];
+> > +	long in_crit[RAIL_COUNT];
+> > +	long in_lcrit[RAIL_COUNT];
+> > +	long curr_crit[RAIL_COUNT];
+> > +	u8 temp_crit_support;
+> > +	u8 in_crit_support;
+> > +	u8 in_lcrit_support;
+> > +	u8 curr_crit_support;
+> > +	bool in_curr_cmd_support; /* not all commands are supported on every =
+PSU */
+> >  };
+> > =20
+> >  /* some values are SMBus LINEAR11 data which need a conversion */
+> > @@ -193,7 +208,10 @@ static int corsairpsu_request(struct corsairpsu_da=
+ta *priv, u8 cmd, u8
+> > rail, voi=20
+> >  	mutex_lock(&priv->lock);
+> >  	switch (cmd) {
+> > -	case PSU_CMD_RAIL_OUT_VOLTS:
+> > +	case PSU_CMD_RAIL_VOLTS_HCRIT:
+> > +	case PSU_CMD_RAIL_VOLTS_LCRIT:
+> > +	case PSU_CMD_RAIL_AMPS_HCRIT:
+> > +	case PSU_CMD_RAIL_VOLTS:
+> >  	case PSU_CMD_RAIL_AMPS:
+> >  	case PSU_CMD_RAIL_WATTS:
+> >  		ret =3D corsairpsu_usb_cmd(priv, 2, PSU_CMD_SELECT_RAIL, rail, NULL);
+> > @@ -229,9 +247,13 @@ static int corsairpsu_get_value(struct corsairpsu_=
+data *priv, u8 cmd, u8
+> > rail, l */
+> >  	tmp =3D ((long)data[3] << 24) + (data[2] << 16) + (data[1] << 8) + da=
+ta[0];
+> >  	switch (cmd) {
+> > +	case PSU_CMD_RAIL_VOLTS_HCRIT:
+> > +	case PSU_CMD_RAIL_VOLTS_LCRIT:
+> > +	case PSU_CMD_RAIL_AMPS_HCRIT:
+> > +	case PSU_CMD_TEMP_HCRIT:
+> >  	case PSU_CMD_IN_VOLTS:
+> >  	case PSU_CMD_IN_AMPS:
+> > -	case PSU_CMD_RAIL_OUT_VOLTS:
+> > +	case PSU_CMD_RAIL_VOLTS:
+> >  	case PSU_CMD_RAIL_AMPS:
+> >  	case PSU_CMD_TEMP0:
+> >  	case PSU_CMD_TEMP1:
+> > @@ -256,75 +278,265 @@ static int corsairpsu_get_value(struct corsairps=
+u_data *priv, u8 cmd, u8
+> > rail, l return ret;
+> >  }
+> > =20
+> > -static umode_t corsairpsu_hwmon_ops_is_visible(const void *data, enum =
+hwmon_sensor_types type,
+> > -					       u32 attr, int channel)
+> > +static void corsairpsu_get_criticals(struct corsairpsu_data *priv)
+> >  {
+> > -	if (type =3D=3D hwmon_temp && (attr =3D=3D hwmon_temp_input || attr =
+=3D=3D hwmon_temp_label))
+> > -		return 0444;
+> > -	else if (type =3D=3D hwmon_fan && (attr =3D=3D hwmon_fan_input || att=
+r =3D=3D hwmon_fan_label))
+> > -		return 0444;
+> > -	else if (type =3D=3D hwmon_power && (attr =3D=3D hwmon_power_input ||=
+ attr =3D=3D
+> > hwmon_power_label))
+> > -		return 0444;
+> > -	else if (type =3D=3D hwmon_in && (attr =3D=3D hwmon_in_input || attr =
+=3D=3D hwmon_in_label))
+> > +	long tmp;
+> > +	int rail;
+> > +
+> > +	for (rail =3D 0; rail < TEMP_COUNT; ++rail) {
+> > +		if (!corsairpsu_get_value(priv, PSU_CMD_TEMP_HCRIT, rail, &tmp)) {
+> > +			priv->temp_crit_support |=3D BIT(rail);
+> > +			priv->temp_crit[rail] =3D tmp;
+> > +		}
+> > +	}
+> > +
+> > +	for (rail =3D 0; rail < RAIL_COUNT; ++rail) {
+> > +		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS_HCRIT, rail, &tmp=
+)) {
+> > +			priv->in_crit_support |=3D BIT(rail);
+> > +			priv->in_crit[rail] =3D tmp;
+> > +		}
+> > +
+> > +		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS_LCRIT, rail, &tmp=
+)) {
+> > +			priv->in_lcrit_support |=3D BIT(rail);
+> > +			priv->in_lcrit[rail] =3D tmp;
+> > +		}
+> > +
+> > +		if (!corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS_HCRIT, rail, &tmp)=
+) {
+> > +			priv->curr_crit_support |=3D BIT(rail);
+> > +			priv->curr_crit[rail] =3D tmp;
+> > +		}
+> > +	}
+> > +}
+> > +
+> > +static void corsairpsu_check_cmd_support(struct corsairpsu_data *priv)
+> > +{
+> > +	long tmp;
+> > +
+> > +	priv->in_curr_cmd_support =3D !corsairpsu_get_value(priv, PSU_CMD_IN_=
+AMPS, 0, &tmp);
+> > +}
+> > +
+> > +static umode_t corsairpsu_hwmon_temp_is_visible(const struct corsairps=
+u_data *priv, u32 attr,
+> > +						int channel)
+> > +{
+> > +	umode_t res =3D 0444;
+> > +
+> > +	switch (attr) {
+> > +	case hwmon_temp_input:
+> > +	case hwmon_temp_label:
+> > +	case hwmon_temp_crit:
+> > +		if (channel > 0 && !(priv->temp_crit_support & BIT(channel - 1)))
+> > +			res =3D 0;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	return res;
+> > +}
+> > +
+> > +static umode_t corsairpsu_hwmon_fan_is_visible(const struct corsairpsu=
+_data *priv, u32 attr,
+> > +					       int channel)
+> > +{
+> > +	switch (attr) {
+> > +	case hwmon_fan_input:
+> > +	case hwmon_fan_label:
+> >  		return 0444;
+> > -	else if (type =3D=3D hwmon_curr && (attr =3D=3D hwmon_curr_input || a=
+ttr =3D=3D hwmon_curr_label))
+> > +	default:
+> > +		return 0;
+> > +	}
+> > +}
+> > +
+> > +static umode_t corsairpsu_hwmon_power_is_visible(const struct corsairp=
+su_data *priv, u32 attr,
+> > +						 int channel)
+> > +{
+> > +	switch (attr) {
+> > +	case hwmon_power_input:
+> > +	case hwmon_power_label:
+> >  		return 0444;
+> > +	default:
+> > +		return 0;
+> > +	};
+> > +}
+> > =20
+> > -	return 0;
+> > +static umode_t corsairpsu_hwmon_in_is_visible(const struct corsairpsu_=
+data *priv, u32 attr,
+> > +					      int channel)
+> > +{
+> > +	umode_t res =3D 0444;
+> > +
+> > +	switch (attr) {
+> > +	case hwmon_in_input:
+> > +	case hwmon_in_label:
+> > +	case hwmon_in_crit:
+> > +		if (channel > 0 && !(priv->in_crit_support & BIT(channel - 1)))
+> > +			res =3D 0;
+> > +		break;
+> > +	case hwmon_in_lcrit:
+> > +		if (channel > 0 && !(priv->in_lcrit_support & BIT(channel - 1)))
+> > +			res =3D 0;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	};
+> > +
+> > +	return res;
+> >  }
+> > =20
+> > -static int corsairpsu_hwmon_ops_read(struct device *dev, enum hwmon_se=
+nsor_types type, u32
+> > attr,
+> > -				     int channel, long *val)
+> > +static umode_t corsairpsu_hwmon_curr_is_visible(const struct corsairps=
+u_data *priv, u32 attr,
+> > +						int channel)
+> >  {
+> > -	struct corsairpsu_data *priv =3D dev_get_drvdata(dev);
+> > -	int ret;
+> > +	umode_t res =3D 0444;
+> > =20
+> > -	if (type =3D=3D hwmon_temp && attr =3D=3D hwmon_temp_input && channel=
+ < 2) {
+> > -		ret =3D corsairpsu_get_value(priv, channel ? PSU_CMD_TEMP1 : PSU_CMD=
+_TEMP0,
+> > channel,
+> > -					   val);
+> > -	} else if (type =3D=3D hwmon_fan && attr =3D=3D hwmon_fan_input) {
+> > -		ret =3D corsairpsu_get_value(priv, PSU_CMD_FAN, 0, val);
+> > -	} else if (type =3D=3D hwmon_power && attr =3D=3D hwmon_power_input) {
+> > +	switch (attr) {
+> > +	case hwmon_curr_input:
+> > +		if (channel =3D=3D 0 && !priv->in_curr_cmd_support)
+> > +			res =3D 0;
+> > +		break;
+> > +	case hwmon_curr_label:
+> > +	case hwmon_curr_crit:
+> > +		if (channel > 0 && !(priv->curr_crit_support & BIT(channel - 1)))
+> > +			res =3D 0;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	return res;
+> > +}
+> > +
+> > +static umode_t corsairpsu_hwmon_ops_is_visible(const void *data, enum =
+hwmon_sensor_types type,
+> > +					       u32 attr, int channel)
+> > +{
+> > +	const struct corsairpsu_data *priv =3D data;
+> > +
+> > +	switch (type) {
+> > +	case hwmon_temp:
+> > +		return corsairpsu_hwmon_temp_is_visible(priv, attr, channel);
+> > +	case hwmon_fan:
+> > +		return corsairpsu_hwmon_fan_is_visible(priv, attr, channel);
+> > +	case hwmon_power:
+> > +		return corsairpsu_hwmon_power_is_visible(priv, attr, channel);
+> > +	case hwmon_in:
+> > +		return corsairpsu_hwmon_in_is_visible(priv, attr, channel);
+> > +	case hwmon_curr:
+> > +		return corsairpsu_hwmon_curr_is_visible(priv, attr, channel);
+> > +	default:
+> > +		return 0;
+> > +	}
+> > +}
+> > +
+> > +static int corsairpsu_hwmon_temp_read(struct corsairpsu_data *priv, u3=
+2 attr, int channel,
+> > +				      long *val)
+> > +{
+> > +	int err =3D -EOPNOTSUPP;
+> > +
+> > +	switch (attr) {
+> > +	case hwmon_temp_input:
+> > +		return corsairpsu_get_value(priv, channel ? PSU_CMD_TEMP1 : PSU_CMD_=
+TEMP0,
+> > +					    channel, val);
+> > +	case hwmon_temp_crit:
+> > +		*val =3D priv->temp_crit[channel];
+> > +		err =3D 0;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +static int corsairpsu_hwmon_power_read(struct corsairpsu_data *priv, u=
+32 attr, int channel,
+> > +				       long *val)
+> > +{
+> > +	if (attr =3D=3D hwmon_power_input) {
+> >  		switch (channel) {
+> >  		case 0:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_TOTAL_WATTS, 0, val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_TOTAL_WATTS, 0, val);
+> >  		case 1 ... 3:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_RAIL_WATTS, channel - 1,=
+ val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_RAIL_WATTS, channel - 1,
+> > val); default:
+> > -			return -EOPNOTSUPP;
+> > +			break;
+> >  		}
+> > -	} else if (type =3D=3D hwmon_in && attr =3D=3D hwmon_in_input) {
+> > +	}
+> > +
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static int corsairpsu_hwmon_in_read(struct corsairpsu_data *priv, u32 =
+attr, int channel, long
+> > *val) +{
+> > +	int err =3D -EOPNOTSUPP;
+> > +
+> > +	switch (attr) {
+> > +	case hwmon_in_input:
+> >  		switch (channel) {
+> >  		case 0:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_IN_VOLTS, 0, val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_IN_VOLTS, 0, val);
+> >  		case 1 ... 3:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_RAIL_OUT_VOLTS, channel =
+- 1,
+> > val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_RAIL_VOLTS, channel - 1,
+> > val); default:
+> > -			return -EOPNOTSUPP;
+> > +			break;
+> >  		}
+> > -	} else if (type =3D=3D hwmon_curr && attr =3D=3D hwmon_curr_input) {
+> > +		break;
+> > +	case hwmon_in_crit:
+> > +		*val =3D priv->in_crit[channel - 1];
+> > +		err =3D 0;
+> > +		break;
+> > +	case hwmon_in_lcrit:
+> > +		*val =3D priv->in_lcrit[channel - 1];
+> > +		err =3D 0;
+> > +		break;
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +static int corsairpsu_hwmon_curr_read(struct corsairpsu_data *priv, u3=
+2 attr, int channel,
+> > +				      long *val)
+> > +{
+> > +	int err =3D -EOPNOTSUPP;
+> > +
+> > +	switch (attr) {
+> > +	case hwmon_curr_input:
+> >  		switch (channel) {
+> >  		case 0:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_IN_AMPS, 0, val);
+> >  		case 1 ... 3:
+> > -			ret =3D corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS, channel - 1, =
+val);
+> > -			break;
+> > +			return corsairpsu_get_value(priv, PSU_CMD_RAIL_AMPS, channel - 1, v=
+al);
+> >  		default:
+> > -			return -EOPNOTSUPP;
+> > +			break;
+> >  		}
+> > -	} else {
+> > -		return -EOPNOTSUPP;
+> > +		break;
+> > +	case hwmon_curr_crit:
+> > +		*val =3D priv->curr_crit[channel - 1];
+> > +		err =3D 0;
+> > +		break;
+> > +	default:
+> > +		break;
+> >  	}
+> > =20
+> > -	if (ret < 0)
+> > -		return ret;
+> > +	return err;
+> > +}
+> > =20
+> > -	return 0;
+> > +static int corsairpsu_hwmon_ops_read(struct device *dev, enum hwmon_se=
+nsor_types type, u32
+> > attr,
+> > +				     int channel, long *val)
+> > +{
+> > +	struct corsairpsu_data *priv =3D dev_get_drvdata(dev);
+> > +
+> > +	switch (type) {
+> > +	case hwmon_temp:
+> > +		return corsairpsu_hwmon_temp_read(priv, attr, channel, val);
+> > +	case hwmon_fan:
+> > +		if (attr =3D=3D hwmon_fan_input)
+> > +			return corsairpsu_get_value(priv, PSU_CMD_FAN, 0, val);
+> > +		return -EOPNOTSUPP;
+> > +	case hwmon_power:
+> > +		return corsairpsu_hwmon_power_read(priv, attr, channel, val);
+> > +	case hwmon_in:
+> > +		return corsairpsu_hwmon_in_read(priv, attr, channel, val);
+> > +	case hwmon_curr:
+> > +		return corsairpsu_hwmon_curr_read(priv, attr, channel, val);
+> > +	default:
+> > +		return -EOPNOTSUPP;
+> > +	}
+> >  }
+> > =20
+> >  static int corsairpsu_hwmon_ops_read_string(struct device *dev, enum h=
+wmon_sensor_types type,
+> > @@ -360,8 +572,8 @@ static const struct hwmon_channel_info *corsairpsu_=
+info[] =3D {
+> >  	HWMON_CHANNEL_INFO(chip,
+> >  			   HWMON_C_REGISTER_TZ),
+> >  	HWMON_CHANNEL_INFO(temp,
+> > -			   HWMON_T_INPUT | HWMON_T_LABEL,
+> > -			   HWMON_T_INPUT | HWMON_T_LABEL),
+> > +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> > +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT),
+> >  	HWMON_CHANNEL_INFO(fan,
+> >  			   HWMON_F_INPUT | HWMON_F_LABEL),
+> >  	HWMON_CHANNEL_INFO(power,
+> > @@ -371,14 +583,14 @@ static const struct hwmon_channel_info *corsairps=
+u_info[] =3D {
+> >  			   HWMON_P_INPUT | HWMON_P_LABEL),
+> >  	HWMON_CHANNEL_INFO(in,
+> >  			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > -			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > -			   HWMON_I_INPUT | HWMON_I_LABEL,
+> > -			   HWMON_I_INPUT | HWMON_I_LABEL),
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT,
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT,
+> > +			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_LCRIT | HWMON_I_CRIT),
+> >  	HWMON_CHANNEL_INFO(curr,
+> >  			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > -			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > -			   HWMON_C_INPUT | HWMON_C_LABEL,
+> > -			   HWMON_C_INPUT | HWMON_C_LABEL),
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT,
+> > +			   HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_CRIT),
+> >  	NULL
+> >  };
+> > =20
+> > @@ -513,6 +725,9 @@ static int corsairpsu_probe(struct hid_device *hdev=
+, const struct
+> > hid_device_id goto fail_and_stop;
+> >  	}
+> > =20
+> > +	corsairpsu_get_criticals(priv);
+> > +	corsairpsu_check_cmd_support(priv);
+> > +
+> >  	priv->hwmon_dev =3D hwmon_device_register_with_info(&hdev->dev, "cors=
+airpsu", priv,
+> >  							  &corsairpsu_chip_info, 0);
+> > =20
 
-SGX enclave memory is enumerated by the processor in contiguous physical
-ranges called Enclave Page Cache (EPC) sections.  Currently, there is a
-free list per section, but allocations simply target the lowest-numbered
-sections.  This is functional, but has no NUMA awareness.
-
-Fortunately, EPC sections are covered by entries in the ACPI SRAT table.
-These entries allow each EPC section to be associated with a NUMA node,
-just like normal RAM.
-
-Solution
-========
-
-Implement a NUMA-aware enclave page allocator.  Mirror the buddy allocator
-and maintain a list of enclave pages for each NUMA node.  Attempt to
-allocate enclave memory first from local nodes, then fall back to other
-nodes.
-
-Note that the fallback is not as sophisticated as the buddy allocator
-and is itself not aware of NUMA distances.  When a node's free list is
-empty, it searches for the next-highest node with enclave pages (and
-will wrap if necessary).  This could be improved in the future.
-
-Other
-=====
-
-NUMA_KEEP_MEMINFO dependency is required for phys_to_target_node().
-
- [ Kai Huang: Do not return NULL from __sgx_alloc_epc_page() because
-   callers do not expect that and that leads to a NULL ptr deref. ]
-
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/lkml/158188326978.894464.217282995221175417.stgit@dwillia2-desk3.amr.corp.intel.com/
-Link: https://lkml.kernel.org/r/20210317235332.362001-2-jarkko.sakkinen@intel.com
----
- arch/x86/Kconfig               |   1 +-
- arch/x86/kernel/cpu/sgx/main.c | 119 ++++++++++++++++++++------------
- arch/x86/kernel/cpu/sgx/sgx.h  |  16 ++--
- 3 files changed, 88 insertions(+), 48 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879..35391e9 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1931,6 +1931,7 @@ config X86_SGX
- 	depends on CRYPTO_SHA256=y
- 	select SRCU
- 	select MMU_NOTIFIER
-+	select NUMA_KEEP_MEMINFO if NUMA
- 	help
- 	  Intel(R) Software Guard eXtensions (SGX) is a set of CPU instructions
- 	  that can be used by applications to set aside private regions of code
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index f3a5cd2..5c9c5e5 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -23,9 +23,21 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
-  * with sgx_reclaimer_lock acquired.
-  */
- static LIST_HEAD(sgx_active_page_list);
--
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
- 
-+/* The free page list lock protected variables prepend the lock. */
-+static unsigned long sgx_nr_free_pages;
-+
-+/* Nodes with one or more EPC sections. */
-+static nodemask_t sgx_numa_mask;
-+
-+/*
-+ * Array with one list_head for each possible NUMA node.  Each
-+ * list contains all the sgx_epc_section's which are on that
-+ * node.
-+ */
-+static struct sgx_numa_node *sgx_numa_nodes;
-+
- static LIST_HEAD(sgx_dirty_page_list);
- 
- /*
-@@ -312,6 +324,7 @@ static void sgx_reclaim_pages(void)
- 	struct sgx_epc_section *section;
- 	struct sgx_encl_page *encl_page;
- 	struct sgx_epc_page *epc_page;
-+	struct sgx_numa_node *node;
- 	pgoff_t page_index;
- 	int cnt = 0;
- 	int ret;
-@@ -383,28 +396,18 @@ skip:
- 		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
- 
- 		section = &sgx_epc_sections[epc_page->section];
--		spin_lock(&section->lock);
--		list_add_tail(&epc_page->list, &section->page_list);
--		section->free_cnt++;
--		spin_unlock(&section->lock);
--	}
--}
--
--static unsigned long sgx_nr_free_pages(void)
--{
--	unsigned long cnt = 0;
--	int i;
--
--	for (i = 0; i < sgx_nr_epc_sections; i++)
--		cnt += sgx_epc_sections[i].free_cnt;
-+		node = section->node;
- 
--	return cnt;
-+		spin_lock(&node->lock);
-+		list_add_tail(&epc_page->list, &node->free_page_list);
-+		sgx_nr_free_pages++;
-+		spin_unlock(&node->lock);
-+	}
- }
- 
- static bool sgx_should_reclaim(unsigned long watermark)
- {
--	return sgx_nr_free_pages() < watermark &&
--	       !list_empty(&sgx_active_page_list);
-+	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
- }
- 
- static int ksgxd(void *p)
-@@ -451,45 +454,56 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
- 
--static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- {
--	struct sgx_epc_page *page;
-+	struct sgx_numa_node *node = &sgx_numa_nodes[nid];
-+	struct sgx_epc_page *page = NULL;
- 
--	spin_lock(&section->lock);
-+	spin_lock(&node->lock);
- 
--	if (list_empty(&section->page_list)) {
--		spin_unlock(&section->lock);
-+	if (list_empty(&node->free_page_list)) {
-+		spin_unlock(&node->lock);
- 		return NULL;
- 	}
- 
--	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
-+	page = list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
- 	list_del_init(&page->list);
--	section->free_cnt--;
-+	sgx_nr_free_pages--;
-+
-+	spin_unlock(&node->lock);
- 
--	spin_unlock(&section->lock);
- 	return page;
- }
- 
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-- * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-- * page is no longer needed it must be released with sgx_free_epc_page().
-+ * Iterate through NUMA nodes and reserve ia free EPC page to the caller. Start
-+ * from the NUMA node, where the caller is executing.
-  *
-  * Return:
-- *   an EPC page,
-- *   -errno on error
-+ * - an EPC page:	A borrowed EPC pages were available.
-+ * - NULL:		Out of EPC pages.
-  */
- struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
--	struct sgx_epc_section *section;
- 	struct sgx_epc_page *page;
--	int i;
-+	int nid_of_current = numa_node_id();
-+	int nid;
- 
--	for (i = 0; i < sgx_nr_epc_sections; i++) {
--		section = &sgx_epc_sections[i];
-+	if (node_isset(nid_of_current, sgx_numa_mask)) {
-+		page = __sgx_alloc_epc_page_from_node(nid_of_current);
-+		if (page)
-+			return page;
-+	}
-+
-+	/* Fall back to the non-local NUMA nodes: */
-+	while (true) {
-+		nid = next_node_in(nid, sgx_numa_mask);
-+		if (nid == nid_of_current)
-+			break;
- 
--		page = __sgx_alloc_epc_page_from_section(section);
-+		page = __sgx_alloc_epc_page_from_node(nid);
- 		if (page)
- 			return page;
- 	}
-@@ -600,6 +614,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- void sgx_free_epc_page(struct sgx_epc_page *page)
- {
- 	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
-+	struct sgx_numa_node *node = section->node;
- 	int ret;
- 
- 	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-@@ -608,10 +623,12 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
- 		return;
- 
--	spin_lock(&section->lock);
--	list_add_tail(&page->list, &section->page_list);
--	section->free_cnt++;
--	spin_unlock(&section->lock);
-+	spin_lock(&node->lock);
-+
-+	list_add_tail(&page->list, &node->free_page_list);
-+	sgx_nr_free_pages++;
-+
-+	spin_unlock(&node->lock);
- }
- 
- static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
-@@ -632,8 +649,6 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
- 	}
- 
- 	section->phys_addr = phys_addr;
--	spin_lock_init(&section->lock);
--	INIT_LIST_HEAD(&section->page_list);
- 
- 	for (i = 0; i < nr_pages; i++) {
- 		section->pages[i].section = index;
-@@ -642,7 +657,7 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
- 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
- 	}
- 
--	section->free_cnt = nr_pages;
-+	sgx_nr_free_pages += nr_pages;
- 	return true;
- }
- 
-@@ -661,8 +676,13 @@ static bool __init sgx_page_cache_init(void)
- {
- 	u32 eax, ebx, ecx, edx, type;
- 	u64 pa, size;
-+	int nid;
- 	int i;
- 
-+	sgx_numa_nodes = kmalloc_array(num_possible_nodes(), sizeof(*sgx_numa_nodes), GFP_KERNEL);
-+	if (!sgx_numa_nodes)
-+		return false;
-+
- 	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
- 		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
- 
-@@ -685,6 +705,21 @@ static bool __init sgx_page_cache_init(void)
- 			break;
- 		}
- 
-+		nid = numa_map_to_online_node(phys_to_target_node(pa));
-+		if (nid == NUMA_NO_NODE) {
-+			/* The physical address is already printed above. */
-+			pr_warn(FW_BUG "Unable to map EPC section to online node. Fallback to the NUMA node 0.\n");
-+			nid = 0;
-+		}
-+
-+		if (!node_isset(nid, sgx_numa_mask)) {
-+			spin_lock_init(&sgx_numa_nodes[nid].lock);
-+			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
-+			node_set(nid, sgx_numa_mask);
-+		}
-+
-+		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
-+
- 		sgx_nr_epc_sections++;
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index bc8af04..653af8c 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -30,21 +30,25 @@ struct sgx_epc_page {
- };
- 
- /*
-+ * Contains the tracking data for NUMA nodes having EPC pages. Most importantly,
-+ * the free page list local to the node is stored here.
-+ */
-+struct sgx_numa_node {
-+	struct list_head free_page_list;
-+	spinlock_t lock;
-+};
-+
-+/*
-  * The firmware can define multiple chunks of EPC to the different areas of the
-  * physical memory e.g. for memory areas of the each node. This structure is
-  * used to store EPC pages for one EPC section and virtual memory area where
-  * the pages have been mapped.
-- *
-- * 'lock' must be held before accessing 'page_list' or 'free_cnt'.
-  */
- struct sgx_epc_section {
- 	unsigned long phys_addr;
- 	void *virt_addr;
- 	struct sgx_epc_page *pages;
--
--	spinlock_t lock;
--	struct list_head page_list;
--	unsigned long free_cnt;
-+	struct sgx_numa_node *node;
- };
- 
- extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
