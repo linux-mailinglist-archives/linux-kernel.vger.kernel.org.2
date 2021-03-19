@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5F234204F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFC3342058
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhCSO4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43076 "EHLO mail.kernel.org"
+        id S230294AbhCSO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:58:29 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:56420 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhCSO4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:56:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C63064F18;
-        Fri, 19 Mar 2021 14:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616165796;
-        bh=LMF6VcFLzMWcvJlrobie++1BU4E1KOgfLPmAne7lKKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OGLl458+qA7HrVWVEkJBIjl2/SyMntcd5k1C5HCbg2hs9InlN7I2SGH9wJN/UArnO
-         dlNyjV0AWxqr/F9OXBK8mxaeEKdFrbONTjAWDMaCVDQ7Va4s69Uhz5fg5OauZtUdWo
-         Q1OgxNbnvWnRHp3AbMwTTCFfekSNmMx3NNj8G0kLaYC4pegPbIJfvKqFfw7pQ7IzY9
-         yVbmIycWzkB+oDAepgQkPmFIkJUcdcf2Yn/eIplcyds5wOCXddZYzzpIsot7xhk4QR
-         oi7X8GuaS3zkBlpSAbIUDYAFVSGYWwEZ3mBPY2pf+FOdZPY1xzdY2fvAXJbwX9R6GR
-         AFXv0ZDlmIXuA==
-Received: by mail-oi1-f172.google.com with SMTP id m13so5041647oiw.13;
-        Fri, 19 Mar 2021 07:56:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530Jh+PcOIXPLMqKy2aZJ/3An8OwbI7ZFifT0zBZntPij8cZ75qA
-        +C5aeAFe7jFP8YM4XrUcXvf6/pPgHCJPHt/qGoU=
-X-Google-Smtp-Source: ABdhPJzs22NYplRNCgFniIEUfcVHb2z9VYKGx4WfHkWBTnO61TWk1PXtdP6RhG5AXzRZAFRg/1jqwU2AWebZF31Q7JI=
-X-Received: by 2002:a05:6808:313:: with SMTP id i19mr1250554oie.67.1616165795957;
- Fri, 19 Mar 2021 07:56:35 -0700 (PDT)
+        id S229925AbhCSO6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 10:58:10 -0400
+Received: from zn.tnic (p200300ec2f091e0035ab8ae551405c9b.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1e00:35ab:8ae5:5140:5c9b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 366131EC027A;
+        Fri, 19 Mar 2021 15:58:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616165889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iuimkE8hnuyAWPRRvF4BeQ9cNaIgtl3BXo5mh7Z2PJM=;
+        b=rpeLzLQlKJY8BRO6M70dZ8LrsJFFmmD/35kjEHcq9fM7AslRb+EZMY1NfyYr1u8ttT/G/k
+        EsnHOmsQMl80fqN394X2G/T4OOMZzX3IX3ywi9WNnQrTf/Rjo5L2wB7nocZ/yQIFIGPYbf
+        XsKo5MrAGO4GUwzTYWA9LTXPDOCw/60=
+Date:   Fri, 19 Mar 2021 15:58:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org
+Subject: Re: [tip: x86/sgx] selftests/sgx: Improve error detection and
+ messages
+Message-ID: <20210319145807.GG6251@zn.tnic>
+References: <20210318194301.11D9A984@viggo.jf.intel.com>
+ <161615392429.398.565615269339667317.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <20210312105530.2219008-1-lee.jones@linaro.org> <20210312105530.2219008-7-lee.jones@linaro.org>
-In-Reply-To: <20210312105530.2219008-7-lee.jones@linaro.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 19 Mar 2021 15:56:19 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a234A2WmPFJxXmf-n+J7TP3A=DyDWEr657zxaML7V9UWQ@mail.gmail.com>
-Message-ID: <CAK8P3a234A2WmPFJxXmf-n+J7TP3A=DyDWEr657zxaML7V9UWQ@mail.gmail.com>
-Subject: Re: [PATCH 06/11] block: drbd: drbd_main: Remove duplicate field initialisation
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jens Axboe <axboe@kernel.dk>, drbd-dev@lists.linbit.com,
-        linux-block <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <161615392429.398.565615269339667317.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 11:57 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> [P_RETRY_WRITE] is initialised more than once.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/block/drbd/drbd_main.c: In function =E2=80=98cmdname=E2=80=99:
->  drivers/block/drbd/drbd_main.c:3660:22: warning: initialized field overw=
-ritten [-Woverride-init]
->  drivers/block/drbd/drbd_main.c:3660:22: note: (near initialization for =
-=E2=80=98cmdnames[44]=E2=80=99)
->
-> Cc: Philipp Reisner <philipp.reisner@linbit.com>
-> Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: drbd-dev@lists.linbit.com
-> Cc: linux-block@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Mar 19, 2021 at 11:38:44AM -0000, tip-bot2 for Dave Hansen wrote:
+>  tools/testing/selftests/sgx/load.c | 66 ++++++++++++++++++++++-------
+>  tools/testing/selftests/sgx/main.c |  2 +-
+>  2 files changed, 53 insertions(+), 15 deletions(-)
 
-Looks correct. I had actually posted a slightly different fix last year,
-but either one addresses the warning:
+Anything against some more tweaks ontop?
 
-https://lore.kernel.org/lkml/20201026215043.3893318-1-arnd@kernel.org/
+---
+diff --git a/tools/testing/selftests/sgx/load.c b/tools/testing/selftests/sgx/load.c
+index 4c149f46d798..f441ac34b4d4 100644
+--- a/tools/testing/selftests/sgx/load.c
++++ b/tools/testing/selftests/sgx/load.c
+@@ -156,7 +156,7 @@ bool encl_load(const char *path, struct encl *encl)
+ 	 * the owner or in the owning group.
+ 	 */
+ 	if (!(sb.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))) {
+-		fprintf(stderr, "no execute permissions on device file\n");
++		fprintf(stderr, "no execute permissions on device file %s\n", device_path);
+ 		goto err;
+ 	}
+ 
+@@ -167,12 +167,15 @@ bool encl_load(const char *path, struct encl *encl)
+ 	}
+ 	munmap(ptr, PAGE_SIZE);
+ 
++#define ERR_MSG \
++"mmap() succeeded for PROT_READ, but failed for PROT_EXEC.\n" \
++" Check that current user has execute permissions on %s and \n" \
++" that /dev does not have noexec set: mount | grep \"/dev .*noexec\"\n" \
++" If so, remount it executable: mount -o remount,exec /dev\n\n"
++
+ 	ptr = mmap(NULL, PAGE_SIZE, PROT_EXEC, MAP_SHARED, fd, 0);
+ 	if (ptr == (void *)-1) {
+-		perror("ERROR: mmap for exec");
+-		fprintf(stderr, "mmap() succeeded for PROT_READ, but failed for PROT_EXEC\n");
+-		fprintf(stderr, "check that user has execute permissions on %s and\n", device_path);
+-		fprintf(stderr, "that /dev does not have noexec set: 'mount | grep \"/dev .*noexec\"'\n");
++		fprintf(stderr, ERR_MSG, device_path);
+ 		goto err;
+ 	}
+ 	munmap(ptr, PAGE_SIZE);
 
-         Arnd
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
