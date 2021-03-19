@@ -2,64 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005C6342389
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CAA34238B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhCSRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:41:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229960AbhCSRlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:41:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E2661925;
-        Fri, 19 Mar 2021 17:41:10 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 17:41:08 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        will@kernel.org, dan.j.williams@intel.com, aryabinin@virtuozzo.com,
-        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
-        ardb@kernel.org, andreyknvl@google.com, broonie@kernel.org,
-        linux@roeck-us.net, rppt@kernel.org, tyhicks@linux.microsoft.com,
-        robin.murphy@arm.com, vincenzo.frascino@arm.com,
-        gustavoars@kernel.org, lecopzer@gmail.com
-Subject: Re: [PATCH v3 0/5] arm64: kasan: support CONFIG_KASAN_VMALLOC
-Message-ID: <20210319174108.GD6832@arm.com>
-References: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
+        id S230146AbhCSRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhCSRlo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:41:44 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF43C06174A;
+        Fri, 19 Mar 2021 10:41:43 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 75so11231586lfa.2;
+        Fri, 19 Mar 2021 10:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UJBwv3+scWtdnjoEEcvwzg70Xr2SAona42n3GhDaRo8=;
+        b=EGxUeaqh7gZ6zW6IxD0oLKsRXYcvjWT/cWSuO1zUBl/uag8YlM6DggPJMLLvVkNIei
+         S2EEVQ5ik667esLxtTLddpIkIioh9MLinW0z38Ki2f541TkMMBJwnhkmITSp5n3Inr7P
+         orIP5rLVLcCnDStiRyLf6LzKYbBpbuxaSMV5RWpbKTQzwXLLJFxXoL3WYoSuisEIUelz
+         7DwTG6v1bYVbYAgDjnjYK+icR7v0u5hWTeIrQKQvz2O1YgoFZPfA4SpEBT61dSOkx/au
+         pMywlyy1DFBD3weNpN2m4kGG0CkWRvKEqH/GUJnWy4ZHkHfXazRLhQIavFCjfwrqno0l
+         3QHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UJBwv3+scWtdnjoEEcvwzg70Xr2SAona42n3GhDaRo8=;
+        b=fIJHHnqxvygYfy0dVZDVSP6XUZ5ddNCkT7BWYJ2aj9adi/X1FvnPpoElYafzF1gsdF
+         HmjLwB/1HIkj3+0vsPTWU9blYQphwP/jORW90NnA7+i5Q+UmGuFlA61FNp3Ks8kk71de
+         i2bozKscARXUoABF2TALP2SYFSPr4K/EAJTIkrBGf6yUtXu9t0KvLHiiZMSCWJhAgCf2
+         h+txBKI8GInYNHttqiRRwcaQrI/586z72lThgSLd7z93cbfCS8XdogK2+N/iGatpVn+p
+         7sSkSiE6z9zsJom39UrKMSINyaK31w24Vp7ELZUYVqUftc4zPeBbgZskv0GJSdLOQkB8
+         6lrg==
+X-Gm-Message-State: AOAM533Y3ZJYrGHrDnswqePGGty2XoZXxS23fMBJlx/xd2xcDA8VrTry
+        dOtcCtUBMEgnlruLS5nporMAMMrBSQg=
+X-Google-Smtp-Source: ABdhPJw37m3EPlJ8q46cVxOkVst/rTJG4abkNKD3e0LChybJTMCGYEWRlX9IN/R9Ei0YQjH86lSnQw==
+X-Received: by 2002:a19:e48:: with SMTP id 69mr1327591lfo.469.1616175702251;
+        Fri, 19 Mar 2021 10:41:42 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id 192sm847746ljj.95.2021.03.19.10.41.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 10:41:41 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+ <YFSqYUfaxMajR/aq@kroah.com> <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
+ <YFSrgfAyp+dYWi7k@kroah.com> <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
+ <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com> <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com> <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
+ <YFTRkBEr5T37NFpV@google.com>
+ <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+Message-ID: <f451e60c-750f-a6d8-e035-e665391f9261@gmail.com>
+Date:   Fri, 19 Mar 2021 20:41:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lecopzer,
+19.03.2021 20:29, Dmitry Osipenko пишет:
+> +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
+> +{
+> +	atomic64_add(count, &cma->nr_pages_succeeded);
+> +}
+> +
+> +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
+> +{
+> +	atomic64_add(count, &cma->nr_pages_failed);
+> +}
 
-On Sat, Feb 06, 2021 at 04:35:47PM +0800, Lecopzer Chen wrote:
-> Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> ("kasan: support backing vmalloc space with real shadow memory")
-> 
-> Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-> but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-> by not to populate the vmalloc area except for kimg address.
-
-Do you plan an update to a newer kernel like 5.12-rc3?
-
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> Acked-by: Andrey Konovalov <andreyknvl@google.com>
-> Tested-by: Andrey Konovalov <andreyknvl@google.com>
-> Tested-by: Ard Biesheuvel <ardb@kernel.org>
-
-You could move these to individual patches rather than the cover letter,
-assuming that they still stand after the changes you've made. Also note
-that Andrey K no longer has the @google.com email address if you cc him
-on future patches (replace it with @gmail.com).
-
-Thanks.
-
--- 
-Catalin
+The atomic looks good, but aren't CMA allocations already protected by
+the CMA core? Do we really need to worry about racing here?
