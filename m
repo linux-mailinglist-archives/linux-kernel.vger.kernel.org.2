@@ -2,178 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760B234248E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D747342494
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCSSWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:22:53 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44025 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhCSSWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:22:30 -0400
-IronPort-SDR: 8bAKtSDQMGKz5EY2kQ3zPL7dDXGrHXC+ZCXPM/O1k+ehu5z6tqaPNZSbscIS1zbrjAtMfomyd+
- Eux3upZRQdvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="275015753"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="275015753"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:22:30 -0700
-IronPort-SDR: OXb4ZlJdEYHKk0QQ+oNIDdm9cVzvDrYXRqrfD6npsWMuwEkO7NgO7LsXNCCR8H2rsU1KRq4GQM
- +USaTqo26cqw==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="406896980"
-Received: from hyunyi-mobl1.amr.corp.intel.com (HELO [10.212.50.74]) ([10.212.50.74])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:22:29 -0700
-Subject: Re: [PATCH v1 1/1] x86/tdx: Add tdcall() and tdvmcall() helper
- functions
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
- <20210318213053.203403-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YFTXdG+zZ32gVIPc@google.com>
- <c72d9ca6-7a5c-b614-5d20-b86d2abebdee@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5485f0ac-da86-4f68-d277-9f0bba5c4ef5@intel.com>
-Date:   Fri, 19 Mar 2021 11:22:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230090AbhCSSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhCSSYo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:24:44 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916B6C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:24:44 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id l79so5744268oib.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Bcw5RupkibLZJIssKn/HrlopTaukHSpPItO2c/relWo=;
+        b=M5wR/G3qdMGXM1MTTQEYVBpbX/44DhQ8WqR9oyZnPq2hpZTLv5ck7LHOPlz606CBUz
+         05cqgkjfsJbtSePcgIJrYxiMseKby3aCvtulqImT0z2R90H+qJuv3CrkyCoLRxm0KmUL
+         a3nmM7WbRGJ6A3acz0ivDfLz70gLWw2rW3TYNyxhRxFIGlMEQ2TVzkM5Gm2i9NH+gTw8
+         Kz8e1djtvNBR4R/0L0+vp3OAYmRGCeDXRj/YjD+fwR6oZzfIJG1meAveXX3DFbMx49Dd
+         BHGKJQCOlT8jM612M2zF361mTp90QBDxl30k0ludFlJxqiQCmmf6JQN6iMobmJC5S1vJ
+         tvkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bcw5RupkibLZJIssKn/HrlopTaukHSpPItO2c/relWo=;
+        b=sTbhsx744oCdOwHKEj2jLhdMf02CyB6t4cIC4Rt0aXMDjFFAGElqaENjuoxEo4rePG
+         KpOg6y4fmndmt0jBqKM9ntzqHDSWzisBL4Xw8H5RlV3Nw2o9X5TVQk0Whv2GFW2VlJmz
+         dhk0npenzNE2/5uxgwHP+eoUN+um/TesVXTDN6cfmYnEe3bHcKFt5QzXdk/7jvlxzQdY
+         d0z0SfRjHeppl7c0y3k1RTX4mUDl7xS7umLojNjE4bDN+1aRx/yubYsWtEVMjR2//SRu
+         xisQq0g9sU7Y+3fueUnW1S36gvGInmOCZiB43pnjLbASP46CEdHrpKWy1SL0E7UuLyj4
+         3HpQ==
+X-Gm-Message-State: AOAM532mxA2Glykz1KqnFxGraBGpgzN2YGXwCHkLALNkGz6v0MeX1CFT
+        ioTcup8bEpb0ZdphW+75GvTt35G/dLB2pn/a2gsSleSE
+X-Google-Smtp-Source: ABdhPJyy3N3qJKjKFgm4fgpqhvgVBz1b2x8B62Ny15EF/rJe5Bi8kqn8rSYh9pFR/NsmTVn/+rOwdGxKBmga09GtVOU=
+X-Received: by 2002:aca:af10:: with SMTP id y16mr1950101oie.120.1616178283865;
+ Fri, 19 Mar 2021 11:24:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c72d9ca6-7a5c-b614-5d20-b86d2abebdee@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210319082428.3294591-1-lee.jones@linaro.org> <20210319082428.3294591-9-lee.jones@linaro.org>
+In-Reply-To: <20210319082428.3294591-9-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 19 Mar 2021 14:24:33 -0400
+Message-ID: <CADnq5_OuAC99FOz3x3QtdEF+rGpbsoGH11VA_BvoDFQnz_FrGA@mail.gmail.com>
+Subject: Re: [PATCH 08/19] drm/amd/display/dc/dce80/dce80_resource: Make local
+ functions static
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 10:42 AM, Kuppuswamy, Sathyanarayanan wrote:
->>> @@ -4,6 +4,58 @@
->>>   #include <asm/tdx.h>
->>>   #include <asm/cpufeature.h>
->>>   +void tdcall(u64 leafid, struct tdcall_regs *regs)
->>> +{
->>> +    asm volatile(
->>> +            /* RAX = leafid (TDCALL LEAF ID) */
->>> +            "  movq %0, %%rax;"
->>> +            /* Move regs->r[*] data to regs r[a-c]x,  r8-r5 */
->>> +            "  movq 8(%1), %%rcx;"
->> 
->> I am super duper opposed to using inline asm.  Large blocks are
->> hard to read,
-> I think this point is arguable. Based on the review comments I
-> received so far, people prefer inline assembly compared to asm sub
-> functions.
+On Fri, Mar 19, 2021 at 4:24 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:527:17: =
+warning: no previous prototype for =E2=80=98dce80_aux_engine_create=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:565:20: =
+warning: no previous prototype for =E2=80=98dce80_i2c_hw_create=E2=80=99 [-=
+Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:581:20: =
+warning: no previous prototype for =E2=80=98dce80_i2c_sw_create=E2=80=99 [-=
+Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:715:22: =
+warning: no previous prototype for =E2=80=98dce80_link_encoder_create=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:754:22: =
+warning: no previous prototype for =E2=80=98dce80_clock_source_create=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:778:6: w=
+arning: no previous prototype for =E2=80=98dce80_clock_source_destroy=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:868:6: w=
+arning: no previous prototype for =E2=80=98dce80_validate_bandwidth=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_resource.c:913:16: =
+warning: no previous prototype for =E2=80=98dce80_validate_global=E2=80=99 =
+[-Wmissing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Anthony Koo <Anthony.Koo@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-It's arguable, but Sean makes a pretty compelling case.
+Applied.  Thanks!
 
-I actually think inline assembly is a monstrosity.  It's insanely arcane
-and, as I hope you have noted, does not scale nicely beyond one or two
-instructions.
+Alex
 
->> and even harder to maintain.  E.g. the %1 usage falls apart if an
->> output constraint is added; that can be avoided by defining a local
->> const/imm (I forget what they're called), but it doesn't help
->> readability.
-> we can use OFFSET() calls to improve the readability and avoid this 
-> issue. Also IMO, any one adding constraints should know how this
-> would affect the asm code.
 
-This is about *maintainability*.  How _easily_ can someone change this
-code in the future?  Sean's arguing that it's *hard* to correctly add a
-constraint.  Unfortunately, our supply of omnipotent kernel developers
-is a bit short.
-
->>> +            "  movq 16(%1), %%rdx;"
->>> +            "  movq 24(%1), %%r8;"
->>> +            "  movq 32(%1), %%r9;"
->>> +            "  movq 40(%1), %%r10;"
->>> +            "  movq 48(%1), %%r11;"
->>> +            "  movq 56(%1), %%r12;"
->>> +            "  movq 64(%1), %%r13;"
->>> +            "  movq 72(%1), %%r14;"
->>> +            "  movq 80(%1), %%r15;"
->> 
->> This is extremely unsafe, and wasteful.  Putting the onus on the 
->> caller to zero out unused registers, with no mechanism to
->> enforce/encourage doing so,
-> For encouragement, we can add a comment to this function about
-> callers responsibility. makes it
->> likely that the kernel will leak information to the VMM, e.g. in
->> the form of stack data due to a partially initialized "regs".
-> Unless you create sub-functions for each use cases, callers cannot
-> avoid this responsibility.
-
-I don't think we're quite at the point where we throw up our hands.
-
-It would be pretty simple to have an initializer that zeros the
-registers out, or looks at the argument mask and does it more precisely.
- Surely we can do *something*.
-
->>     /* Offset for fields in tdvmcall_output */
->>     OFFSET(TDVMCALL_r12, tdvmcall_output, r13);
->>     OFFSET(TDVMCALL_r13, tdvmcall_output, r13);
->>     OFFSET(TDVMCALL_r14, tdvmcall_output, r14);
->>     OFFSET(TDVMCALL_r15, tdvmcall_output, r15);
->>
->> SYM_FUNC_START(__tdvmcall)
->>     FRAME_BEGIN
->>
->>     /* Save/restore non-volatile GPRs that are exposed to the VMM. */
->>          push %r15
->>          push %r14
->>          push %r13
->>          push %r12
-
-I might have some tweaks for the assembly once someone puts a real patch
-together.  But, that looks a lot more sane than the inline assembly to me.
+> ---
+>  .../drm/amd/display/dc/dce80/dce80_resource.c    | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/driv=
+ers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> index 612450f992782..725d92e40cd30 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> @@ -526,7 +526,7 @@ static struct output_pixel_processor *dce80_opp_creat=
+e(
+>         return &opp->base;
+>  }
+>
+> -struct dce_aux *dce80_aux_engine_create(
+> +static struct dce_aux *dce80_aux_engine_create(
+>         struct dc_context *ctx,
+>         uint32_t inst)
+>  {
+> @@ -564,7 +564,7 @@ static const struct dce_i2c_mask i2c_masks =3D {
+>                 I2C_COMMON_MASK_SH_LIST_DCE_COMMON_BASE(_MASK)
+>  };
+>
+> -struct dce_i2c_hw *dce80_i2c_hw_create(
+> +static struct dce_i2c_hw *dce80_i2c_hw_create(
+>         struct dc_context *ctx,
+>         uint32_t inst)
+>  {
+> @@ -580,7 +580,7 @@ struct dce_i2c_hw *dce80_i2c_hw_create(
+>         return dce_i2c_hw;
+>  }
+>
+> -struct dce_i2c_sw *dce80_i2c_sw_create(
+> +static struct dce_i2c_sw *dce80_i2c_sw_create(
+>         struct dc_context *ctx)
+>  {
+>         struct dce_i2c_sw *dce_i2c_sw =3D
+> @@ -714,7 +714,7 @@ static const struct encoder_feature_support link_enc_=
+feature =3D {
+>                 .flags.bits.IS_TPS3_CAPABLE =3D true
+>  };
+>
+> -struct link_encoder *dce80_link_encoder_create(
+> +static struct link_encoder *dce80_link_encoder_create(
+>         const struct encoder_init_data *enc_init_data)
+>  {
+>         struct dce110_link_encoder *enc110 =3D
+> @@ -753,7 +753,7 @@ static struct panel_cntl *dce80_panel_cntl_create(con=
+st struct panel_cntl_init_d
+>         return &panel_cntl->base;
+>  }
+>
+> -struct clock_source *dce80_clock_source_create(
+> +static struct clock_source *dce80_clock_source_create(
+>         struct dc_context *ctx,
+>         struct dc_bios *bios,
+>         enum clock_source_id id,
+> @@ -777,7 +777,7 @@ struct clock_source *dce80_clock_source_create(
+>         return NULL;
+>  }
+>
+> -void dce80_clock_source_destroy(struct clock_source **clk_src)
+> +static void dce80_clock_source_destroy(struct clock_source **clk_src)
+>  {
+>         kfree(TO_DCE110_CLK_SRC(*clk_src));
+>         *clk_src =3D NULL;
+> @@ -867,7 +867,7 @@ static void dce80_resource_destruct(struct dce110_res=
+ource_pool *pool)
+>         }
+>  }
+>
+> -bool dce80_validate_bandwidth(
+> +static bool dce80_validate_bandwidth(
+>         struct dc *dc,
+>         struct dc_state *context,
+>         bool fast_validate)
+> @@ -912,7 +912,7 @@ static bool dce80_validate_surface_sets(
+>         return true;
+>  }
+>
+> -enum dc_status dce80_validate_global(
+> +static enum dc_status dce80_validate_global(
+>                 struct dc *dc,
+>                 struct dc_state *context)
+>  {
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
