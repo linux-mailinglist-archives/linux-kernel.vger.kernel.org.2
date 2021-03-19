@@ -2,246 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B033417FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4361C341803
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhCSJKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:10:31 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:40951 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229469AbhCSJKJ (ORCPT
+        id S229784AbhCSJLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:11:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229770AbhCSJL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:10:09 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id NB8tlL0cMGEYcNB8xlR8DD; Fri, 19 Mar 2021 10:10:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1616145007; bh=kdwiGTlyiyal7/iY1DUBB7afqQIwIOb4sbTTL/ZdtuA=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=dYxJLCARxKf3raFFrKahGCNEORZUmKdUJi7wngdewVWmkBTBeykOEL1cswy9xjmAq
-         9DWsgY7z+j9jDVQL6F4RJddm23pr0SPDob9jurMIONXVSZ2f+WmiizYx17deviU4VS
-         bxIZHk8HJxRiQ0lHnUm81ALW3Em+qVXN9s7il9YINFiEt3M3XuY4y9Op2CNuaBH7YG
-         qearfefUA4N3nkSYj8g5+XpkTWVe71WBtRWitF7LSHlmks4IaEztsSy+Ptw0xSq5wf
-         Vup3iLr/sArZ+TJfsAApBJVLuusL3T3ODJS3qMH9PihwBnTt3Jp/lbv9yrdDthC/TX
-         PT/DH40Nsgd1g==
-Subject: Re: [PATCH v7 13/17] media: uvcvideo: Return -EACCES to inactive
- controls
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-References: <20210318202928.166955-1-ribalda@chromium.org>
- <20210318202928.166955-14-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <21b313b4-dbdf-c1bd-450d-723c601cb61a@xs4all.nl>
-Date:   Fri, 19 Mar 2021 10:10:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Fri, 19 Mar 2021 05:11:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616145086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8io2IJ6KWUcM3lZUql+YWG5SEcwRMojg79JpmzqXaPM=;
+        b=L7zkaGPCpHB4f7TDOrvNl8jAvf5NQjTVKmw/T9GVApBqtskL3zwZwcbqyJwsSSnBZFf4iH
+        qvriISG4Nm2wJ+KpZRhUZlTBkyIrjrzFodleFyxe3g5YDpGuiqRGHi7zSi1jkL9LuEik0e
+        2lQ4Oa9I4xgEGEd7tzYXaf62DygB36A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-tsjrav6cP7afHvB1Kmuk5w-1; Fri, 19 Mar 2021 05:11:24 -0400
+X-MC-Unique: tsjrav6cP7afHvB1Kmuk5w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31BE783DD21;
+        Fri, 19 Mar 2021 09:11:23 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B2CD6F98A;
+        Fri, 19 Mar 2021 09:11:17 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 10:11:14 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     linux-kselftest@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] selftests/kvm: add set_boot_cpu_id test
+Message-ID: <20210319091114.agftfyhb2ispaktv@kamzik.brq.redhat.com>
+References: <20210318151624.490861-1-eesposit@redhat.com>
+ <20210318151624.490861-2-eesposit@redhat.com>
+ <20210318162036.sf6vgq2ntbgulpzb@kamzik.brq.redhat.com>
+ <a81f1f39-8ff0-4fd9-d859-57569c437f39@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210318202928.166955-14-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfN7fWmTHLuVF5erNe1DtrY4Dw/sV9PzsnaT3yvQeSbtzBYy3Yq3heugGI0pbHHp7RTzq57Wrm5pYs0kYwebBga/rqeMmz/eRX+lvdVXlp2CNyBPk60uP
- 8be29rEwy9QKVESmY5ipKhrKq2nAJUAeFuPSr5kk7Qtdz4tXZlyz58je0rqtW0aRPkQMR1GGeMYItREYu3KSd/+m9nQGKeyGerUq1qFqXICRmAY/FA3e56dW
- np/4aiANuisla42TIe/H2brQy6PrBwflfn5hy2aqh7V8rGLylf8kDQo3vY2+HBP6ScxpeJBrhNUnciwJ2BtIi0DtcRoIb2Qf5SKz7dCCUDqaJgvLftj4zrNo
- Hj7WUlEnaAimOiQwr243G0oMgGgKCkkXmSFPy8YUpaxO67l+y2ZAU9sXRodGntc3wBem8bqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a81f1f39-8ff0-4fd9-d859-57569c437f39@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/2021 21:29, Ricardo Ribalda wrote:
-> If a control is inactive return -EACCES to let the userspace know that
-> the value will not be applied automatically when the control is active
-> again.
+On Fri, Mar 19, 2021 at 09:34:40AM +0100, Emanuele Giuseppe Esposito wrote:
+> On 18/03/2021 17:20, Andrew Jones wrote:
+> > On Thu, Mar 18, 2021 at 04:16:24PM +0100, Emanuele Giuseppe Esposito wrote:
+> > > +static void run_vm_bsp(uint32_t bsp_vcpu)
+> > 
+> > I think the 'bsp' suffixes and prefixes make the purpose of this function
+> > and its argument more confusing. Just
+> > 
+> >   static void run_vm(uint32_t vcpu)
+> > 
+> > would be more clear to me.
 > 
-> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 68 ++++++++++++++++++++++----------
->  drivers/media/usb/uvc/uvc_v4l2.c | 11 +++++-
->  drivers/media/usb/uvc/uvcvideo.h |  2 +-
->  3 files changed, 58 insertions(+), 23 deletions(-)
+> The idea here was "run vm with this vcpu as BSP", implicitly assuming that
+> there are alwasy 2 vcpu inside, so we are picking one as BSP.
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 24fd5afc4e4f..1ec8333811bc 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1046,8 +1046,33 @@ static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
->  	return 0;
->  }
->  
-> +static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
-> +				 struct uvc_control *ctrl,
-> +				 struct uvc_control_mapping *mapping)
-> +{
-> +	struct uvc_control_mapping *master_map = NULL;
-> +	struct uvc_control *master_ctrl = NULL;
-> +	s32 val;
-> +	int ret;
-> +
-> +	if (!mapping->master_id)
-> +		return false;
-> +
-> +	__uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-> +			   &master_ctrl, 0);
-> +
-> +	if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> +		return false;
-> +
-> +	ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> +	if (ret < 0 || val == mapping->master_manual)
-> +		return false;
-> +
-> +	return true;
-> +}
-
-This doesn't work. The problem is that you need to test the new value for the
-master control against master_manual, and you are testing against the old value.
-
-So for my uvc camera I have this situation after boot:
-
-                  auto_exposure 0x009a0901 (menu)   : min=0 max=3 default=3 value=3 (Aperture Priority Mode)
-                                1: Manual Mode
-                                3: Aperture Priority Mode
-         exposure_time_absolute 0x009a0902 (int)    : min=3 max=2047 step=1 default=250 value=250 flags=inactive
-
-But trying to change both auto_exposure to manual AND set the new exposure_time_absolute
-will fail:
-
-$ v4l2-ctl -c auto_exposure=1,exposure_time_absolute=251
-VIDIOC_S_EXT_CTRLS: failed: Permission denied
-Error setting controls: Permission denied
-
-This works though with the uvc driver as is currently in the kernel.
-
-Unfortunately, this is not something that is explicitly tested in v4l2-compliance.
-
-Regards,
-
-	Hans
-
-> +
->  int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
-> -			   bool read)
-> +			   unsigned long ioctl)
->  {
->  	struct uvc_control_mapping *mapping;
->  	struct uvc_control *ctrl;
-> @@ -1059,11 +1084,26 @@ int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
->  	if (!ctrl)
->  		return -EINVAL;
->  
-> -	if (!(ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR) && read)
-> -		return -EACCES;
-> -
-> -	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR) && !read)
-> -		return -EACCES;
-> +	switch (ioctl) {
-> +	case VIDIOC_G_CTRL:
-> +	case VIDIOC_G_EXT_CTRLS:
-> +		if (!(ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> +			return -EACCES;
-> +		break;
-> +	case VIDIOC_S_EXT_CTRLS:
-> +	case VIDIOC_S_CTRL:
-> +		if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
-> +			return -EACCES;
-> +		if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-> +			return -EACCES;
-> +		break;
-> +	case VIDIOC_TRY_EXT_CTRLS:
-> +		if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
-> +			return -EACCES;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
->  
->  	return 0;
->  }
-> @@ -1087,8 +1127,6 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	struct uvc_control_mapping *mapping,
->  	struct v4l2_queryctrl *v4l2_ctrl)
->  {
-> -	struct uvc_control_mapping *master_map = NULL;
-> -	struct uvc_control *master_ctrl = NULL;
->  	const struct uvc_menu_info *menu;
->  	unsigned int i;
->  
-> @@ -1104,18 +1142,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
->  		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
->  
-> -	if (mapping->master_id)
-> -		__uvc_find_control(ctrl->entity, mapping->master_id,
-> -				   &master_map, &master_ctrl, 0);
-> -	if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
-> -		s32 val;
-> -		int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> -		if (ret < 0)
-> -			return ret;
-> -
-> -		if (val != mapping->master_manual)
-> -				v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
-> -	}
-> +	if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-> +		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
->  
->  	if (!ctrl->cached) {
->  		int ret = uvc_ctrl_populate_cache(chain, ctrl);
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index fbb99f3c2fb4..ddebdeb5a81b 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -999,6 +999,10 @@ static int uvc_ioctl_g_ctrl(struct file *file, void *fh,
->  	struct v4l2_ext_control xctrl;
->  	int ret;
->  
-> +	ret = uvc_ctrl_is_accessible(chain, ctrl->id, VIDIOC_G_CTRL);
-> +	if (ret)
-> +		return ret;
-> +
->  	memset(&xctrl, 0, sizeof(xctrl));
->  	xctrl.id = ctrl->id;
->  
-> @@ -1023,6 +1027,10 @@ static int uvc_ioctl_s_ctrl(struct file *file, void *fh,
->  	struct v4l2_ext_control xctrl;
->  	int ret;
->  
-> +	ret = uvc_ctrl_is_accessible(chain, ctrl->id, VIDIOC_S_CTRL);
-> +	if (ret)
-> +		return ret;
-> +
->  	memset(&xctrl, 0, sizeof(xctrl));
->  	xctrl.id = ctrl->id;
->  	xctrl.value = ctrl->value;
-> @@ -1054,8 +1062,7 @@ static int uvc_ctrl_check_access(struct uvc_video_chain *chain,
->  	int ret = 0;
->  
->  	for (i = 0; i < ctrls->count; ++ctrl, ++i) {
-> -		ret = uvc_ctrl_is_accessible(chain, ctrl->id,
-> -					    ioctl == VIDIOC_G_EXT_CTRLS);
-> +		ret = uvc_ctrl_is_accessible(chain, ctrl->id, ioctl);
->  		if (ret)
->  			break;
->  	}
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 9471c342a310..a93aeedb5499 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -903,7 +903,7 @@ static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
->  int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
->  int uvc_ctrl_set(struct uvc_fh *handle, struct v4l2_ext_control *xctrl);
->  int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
-> -			   bool read);
-> +			   unsigned long ioctl);
->  
->  int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
->  		      struct uvc_xu_control_query *xqry);
+> Maybe
 > 
+> run_vm_2_vcpu(uint32_t bsp_vcpid)
+> 
+> is better?
+
+run_vm() is probably still sufficient for the function name. I better
+understand the naming of the function's argument now, so the bsp prefix
+does make sense.
+
+> 
+> > 
+> > > +{
+> > > +	struct kvm_vm *vm;
+> > > +	bool is_bsp_vcpu1 = bsp_vcpu == VCPU_ID1;
+> > 
+> > Could add another define
+> > 
+> >   #define BSP_VCPU VCPU_ID1
+> > 
+> > And then instead of creating the above bool, just do
+> > 
+> >   if (vcpu == BSP_VCPU)
+> 
+> I think it will be even more confusing to have BSP_VCPU fixed to VCPU_ID1,
+> because in the tests before and after I use VCPU_ID0 as BSP.
+> 
+> 	run_vm_bsp(VCPU_ID0);
+> 	run_vm_bsp(VCPU_ID1);
+> 	run_vm_bsp(VCPU_ID0);
+
+Agreed. I hadn't read that far down and hadn't grasped the purpose
+of run_vm[_bsp]'s argument before. But, can we get rid of the
+is_bsp_vcpu1 boolean anyway? 'if (bsp_vcpu == VCPU_ID1)' is terse
+enough, and it better exposes the logic.
+
+> 
+> > 
+> > > +
+> > > +	vm = create_vm();
+> > > +
+> > > +	if (is_bsp_vcpu1)
+> > > +		vm_ioctl(vm, KVM_SET_BOOT_CPU_ID, (void *) VCPU_ID1);
+> > 
+> > Does this ioctl need to be called before creating the vcpus? The
+> > documentation in Documentation/virt/kvm/api.rst doesn't say that.
+> 
+> Yes, it has to be called before creating the vcpus, as also shown in the
+> test function "check_set_bsp_busy". KVM checks that created_vcpus is 0
+> before setting the bsp field.
+> 
+> arch/x86/kvm/x86.c
+> 		case KVM_SET_BOOT_CPU_ID:
+> 		...
+> 		if (kvm->created_vcpus)
+> 			r = -EBUSY;
+> 		else
+> 			kvm->arch.bsp_vcpu_id = arg;
+> 
+> I will update the documentation to include also this information.
+
+Great!
+
+And I'll try to improve the KVM selftests API to better support these
+types of tests without having to copy so much code.
+
+> 
+> > If it can be called after creating the vcpus, then
+> > vm_create_default_with_vcpus() can be used and there's no need
+> > for the create_vm() and add_x86_vcpu() functions.
+> 
+> Just use the
+> > same guest code for both, but pass the cpu index to the guest
+> > code function allowing something like
+> > 
+> >     if (cpu == BSP_VCPU)
+> > 	GUEST_ASSERT(get_bsp_flag() != 0);
+> >     else
+> > 	GUEST_ASSERT(get_bsp_flag() == 0);
+> > 
+> I might be wrong, but there seems not to be an easy way to pass arguments to
+> the guest function.
+
+There are several tests that pass the CPU index to the guest function
+which you can use as examples. Take a look at e.g. steal_time.c. The
+trick is to set the argument(s) with vcpu_args_set().
+
+Thanks,
+drew
 
