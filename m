@@ -2,95 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C28342138
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED6134213F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhCSPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S230347AbhCSPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhCSPv1 (ORCPT
+        with ESMTP id S230284AbhCSPvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:51:27 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8D3C06174A;
-        Fri, 19 Mar 2021 08:51:26 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id u7so7022800qtq.12;
-        Fri, 19 Mar 2021 08:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yQLsk2Tp9wfXFgh3gpmNEHc/1LVc0qNRoZDzdBhuURQ=;
-        b=bCWupG2mTUy75B9SdmzjE60Wm4fflLRjowQwVn0gS6PS4fBpwtA4DG4NH5Ooo3tjeb
-         Crja/7T/8mXD/ardmLAx9Cgj9xa8d+7v4SAYzzWKKlTF9zMvmgsqI7cDS2DVMNvfaNqm
-         LOnBD/IscqHTTRHxI0+clnR7I7MtJsFKSnRmftmwUX9WDsHYGy3JCbi8ZzuASOeNKxvN
-         3zwlzI1Lsg8ODU9JsRK0o+Mrj105/EzdsFRDCKYRigFK6nXnRLSH6W+8swv8w6IIZ21t
-         yIoQbHXSuiQUxqfhpVfSgAxe4zd87/cXTnjfUxvlzRsMa6bcG9GblChEkIpSopFEyxX3
-         n5BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yQLsk2Tp9wfXFgh3gpmNEHc/1LVc0qNRoZDzdBhuURQ=;
-        b=X2fi0yy7OZZFnKcKfsZVVIJAKkvgYn9RRTZhD8qcKR53vcWfYK4f4kHhm8RiyITOj4
-         3txXvoarfo9PKQRXL/gAPO06Rwclvilqk3U9O142iymCrwXQhyxLqDEEd4RBuxDCWKJ9
-         0tcCcujghogHSfTpecYgbkx3EYd9nubaS3FJcUKdOcR1hjmhqQ8hrmcZPSTkN70Elt2F
-         lWHQ/AqYqNWsR04C7JCSiNiajEORBDSQcBX3znQpIcyXOdZpJB9EL61YZAG+wCI0OFzx
-         izhVSv4gyf3/NeX1Dh9NLYtrZNU++/22ZltpjYtX02Qj+JDhUFG1DjFd1otz5UK9GTTY
-         nXHg==
-X-Gm-Message-State: AOAM531W0+BQnQbJLmhpgOPrkIuybAfKhpIYQhrejCyfg+FpSCP1eRZZ
-        dMPa6pjI3rvadJAKuS0tjR4=
-X-Google-Smtp-Source: ABdhPJzNqvzvMhVdlCo1/tWbfYEFMlXh88JQxyq0y9CijEHAeLnaGQDSE/InVASZ3LecfuKpQYtIQA==
-X-Received: by 2002:a05:622a:49:: with SMTP id y9mr8885658qtw.0.1616169085886;
-        Fri, 19 Mar 2021 08:51:25 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:41da])
-        by smtp.gmail.com with ESMTPSA id m13sm4559989qkk.16.2021.03.19.08.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 08:51:25 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 11:51:22 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
-Message-ID: <YFTIepcb+qm/+/9d@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
- <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk>
- <CALvZod6tvrZ_sj=BnM4baQepexwvOPREx3qe5ZJrmqftrqwBEA@mail.gmail.com>
- <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk>
- <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
- <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
+        Fri, 19 Mar 2021 11:51:40 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD946C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:51:35 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eaff:9f01:ffbc:9626:10f7:ec57] (unknown [IPv6:2a02:a03f:eaff:9f01:ffbc:9626:10f7:ec57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 2D2EA1E028B;
+        Fri, 19 Mar 2021 16:51:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1616169093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KHu/bWBDWcOGFH8ElI16GIvRT2i23adhxH7rfaQXLL8=;
+        b=EENJK7v3+SqmUS7WP2PHlCZn3urahuvIqWEuIZ8MrDbrqGm4tLYU7iGQaSFV+pI2pxmlTp
+        +MHscDEmJyk8mwSM/MGWGRcNUVlhpH7lm32NtT2s9AK0krjQ7Si8cTti4rfAAVa0cOO2Ab
+        dKEtKmqvDG1mmsPu7ByX/KzVeBh4YtO3yh8XXTpBaOO5REjE6KtrdsSzxoVaKwmDeb1neB
+        InbPYzqywzXEDWul8fL9WZY0hVsduG8Dqmq3O5eBX+S+rXZzWIhzwGR6BqQy9gGfFavGNw
+        /xA1LSP5N2/2xhFB6VcM4NXA5feN6jOaLpugx2gUDBbtDaXNFe8iaS4E0xxfJg==
+Message-ID: <a7d410216d35ed2b3015bfdd8e21dafd9c42d9d4.camel@svanheule.net>
+Subject: Re: [PATCH v2 2/2] gpio: Add Realtek Otto GPIO support
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bert Vermeulen <bert@biot.com>
+Date:   Fri, 19 Mar 2021 16:51:31 +0100
+In-Reply-To: <CAHp75Vc6aaDhVN7LzvLNQjuOPguz+nbfmfpZ7TZHK=fNjCRz8w@mail.gmail.com>
+References: <20210315082339.9787-1-sander@svanheule.net>
+         <20210315190806.66762-1-sander@svanheule.net>
+         <20210315190806.66762-3-sander@svanheule.net>
+         <CAHp75Vc6aaDhVN7LzvLNQjuOPguz+nbfmfpZ7TZHK=fNjCRz8w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 05:56:28PM -0700, Shakeel Butt wrote:
-> 
-> We need something similar for mem_cgroup_swapin_charge_page() as well.
-> 
-> It is better to take this series in mm tree and Jens is ok with that [1].
-> 
-> [1] https://lore.kernel.org/linux-next/4fea89a5-0e18-0791-18a8-4c5907b0d2c4@kernel.dk/
+Hi Andy,
 
-It sounds like there are no concerns about the loop-related work in
-the patch series. I'll rebase on the mm tree and resubmit.
+Thanks for the review. I'll address the style comments in a v3. Some
+further comments and discussion below.
+
+
+On Wed, 2021-03-17 at 15:08 +0200, Andy Shevchenko wrote:
+> On Mon, Mar 15, 2021 at 11:11 PM Sander Vanheule < 
+> sander@svanheule.net> wrote:
+> > +       depends on OF_GPIO
+> 
+> Don't see how it's used.
+
+It isn't, so I'll remove it.
+
+
+> > +#include <linux/of_irq.h>
+> 
+> Why?
+> Perhaps what you need is property.h and mod_devicetable.h. See below.
+
+With you suggestions, I was able to drop most explicit OF references.
+Only of_device_id remains, for which I'll include mod_devicetable.h.
+
+
+> > +#include <linux/swab.h>
+> 
+> Not sure why you need this? See below.
+
+[snip]
+
+> 
+> > +
+> > +static inline u32 realtek_gpio_isr_read(struct realtek_gpio_ctrl
+> > *ctrl)
+> > +{
+> > +       return swab32(readl(ctrl->base + REALTEK_GPIO_REG_ISR));
+> 
+> Why swab?! How is this supposed to work on BE CPUs?
+> Ditto for all swabXX() usage.
+
+My use of swab32/swahw32 has little to do with the CPU being BE or LE,
+but more with the register packing in the GPIO peripheral.
+
+The supported SoCs have port layout A-B-C-D in the registers, where
+firmware built with Realtek's SDK always denotes A0 as the first GPIO
+line. So bit 24 in a register has the value for A0 (with the exception
+of the IMR register).
+
+I wrote these wrapper functions to be able to use the BIT() macro with
+the GPIO line number, similar to how gpio-mmio uses ioread32be() when
+the BGPIOF_BIG_ENDIAN_BYTE_ORDER flag is used.
+
+For the IMR register, port A again comes first, but is now 16 bits wide
+instead of 8, with A0 at bits 16:17. That's why swahw32 is used for
+this register.
+
+On the currently unsupported RTL9300-series, the port layout is
+reversed: D-C-B-A. GPIO line A0 is then at bit 0, so the swapping
+functions won't be required. When support for this alternate port
+layout is added, some code will need to be added to differentiate
+between the two cases.
+
+
+> > +}
+> > +
+> > +static inline void realtek_gpio_isr_clear(struct realtek_gpio_ctrl
+> > *ctrl,
+> > +       unsigned int pin_mask)
+> > +{
+> > +       writel(swab32(pin_mask), ctrl->base +
+> > REALTEK_GPIO_REG_ISR);
+> > +}
+> > +
+> > +static inline void realtek_gpio_update_imr(struct
+> > realtek_gpio_ctrl *ctrl,
+> > +       unsigned int imr_offset, u32 type, u32 mask)
+> > +{
+> > +       unsigned int reg;
+> > +
+> > +       if (imr_offset == 0)
+> > +               reg = REALTEK_GPIO_REG_IMR_AB;
+> > +       else
+> > +               reg = REALTEK_GPIO_REG_IMR_CD;
+> > +       writel(swahw32(type & mask), ctrl->base + reg);
+> > +}
+
+[snip]
+
+> > +       switch (flow_type & IRQ_TYPE_SENSE_MASK) {
+> 
+> > +       case IRQ_TYPE_NONE:
+> > +               type = 0;
+> > +               handler = handle_bad_irq;
+> > +               break;
+> 
+> Why is it here? Make it default like many other GPIO drivers do.
+> 
+> > +       case IRQ_TYPE_EDGE_FALLING:
+> > +               type = REALTEK_GPIO_IRQ_EDGE_FALLING;
+> > +               handler = handle_edge_irq;
+> > +               break;
+> > +       case IRQ_TYPE_EDGE_RISING:
+> > +               type = REALTEK_GPIO_IRQ_EDGE_RISING;
+> > +               handler = handle_edge_irq;
+> > +               break;
+> > +       case IRQ_TYPE_EDGE_BOTH:
+> > +               type = REALTEK_GPIO_IRQ_EDGE_BOTH;
+> > +               handler = handle_edge_irq;
+> > +               break;
+> > +       default:
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       irq_set_handler_locked(data, handler);
+> 
+> handler is always the same. Use it directly here.
+
+I'll drop the IRQ_TYPE_NONE case. Do I understand it correctly, that
+IRQ_TYPE_NONE should never be used as the new value, but only as the
+default initial value?
+
+
+Best,
+Sander
+
+
+
+
