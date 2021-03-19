@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D55341C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C871E341C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCSMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:16:25 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59009 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229962AbhCSMQD (ORCPT
+        id S230014AbhCSMRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhCSMQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:16:03 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lNE2q-003JAk-Au; Fri, 19 Mar 2021 13:16:00 +0100
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lNE2p-000jNP-U2; Fri, 19 Mar 2021 13:16:00 +0100
-Subject: Re: sparc: clang: error: unknown argument: '-mno-fpu'
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-References: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
- <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com>
- <ebf12838-4525-a525-93bd-2229927e50ca@physik.fu-berlin.de>
- <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <88ab1610-3096-b4a0-e1af-9443cb8b9953@physik.fu-berlin.de>
-Date:   Fri, 19 Mar 2021 13:15:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 19 Mar 2021 08:16:49 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED12FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id l1so2872977plg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rr62kvdI+jVNyeq/XYk+9hQihPrvCb+jP5s+Yn8CaNs=;
+        b=VSnovSkTGgj4jB2N5zRZSHAx9Hhij+eplAfOA0aNVD3ri2MuqDBjCMiJJekrqhOJbz
+         PLk9AnDCEOteFl+USLQKByq7ptWl/sNqDG25WRTPDKaxhixbY13lEkKY6c3eoipVuvYa
+         vtGgJheTT+LURHN9FqoOJ2A6Onqa0OOf0Uc3cvYpxwSsfXYtehpGTK5DkWlcjQk54pbc
+         BdrCNj44gE25cVXsl5tX0jzqVOiKpwavrPyFqWUlbDUblQNHtvnhfZDTMK+qdqlV0rmg
+         C1JDFWt9t1kXRWghJo+KndE6LKmYbZXqm1B2BdxQKW1OmPNpQroiLPvs2Yt/dXswj7bV
+         5b0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rr62kvdI+jVNyeq/XYk+9hQihPrvCb+jP5s+Yn8CaNs=;
+        b=o7Z5DUiZbDUTt7Tvp7KuzJNrK7/Za4LvhvKs20CKUFAESPRRyZrSnJUyuwuiSv15ov
+         u7j2R5Lyn/Temrjwas4zxjIXgeXQr09/o8iMvoLOLTyYfxsO8BE0weRW+XAGtuf046Za
+         5/dOFvt7QXY08P5LxMWf2nDVDKoS4paSvaHJkSjUpEIB3KUFt5PJlOwZBuPkwtk16rvH
+         DH3+62tdkeDMZPsPHMW4cFtQsSM6reiu8Ch5LcRApPly5W4uAR9SQ7i8pod9S9Tz+7j3
+         HxIkUM3rBGeA8Jd3oRoH1hBILrT38a6AI5iit8c/M2B57DXVPwbFFceaVXjbiV5MXRSV
+         y6DA==
+X-Gm-Message-State: AOAM532E8L9gxWf9/WgoMqG0r5pHGbQK6WGudSCueH/42UPYH3+IjLQM
+        ikGWTz3SgTthUNT2Wp25KMTXMQPjx/egcb8hR10=
+X-Google-Smtp-Source: ABdhPJx7IaIlDRm3rwmiM8Zop/6Z1jWa2tOc1g3Ijk1PnFzzc7dMOz6ba6OCHY+cbOY/cIxK6aU7PDvrsZvxU/PI4mA=
+X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id
+ z2-20020a170902ee02b02900e65397d79cmr9570103plb.21.1616156208463; Fri, 19 Mar
+ 2021 05:16:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
+ <20210319110459.19966-2-a.fatoum@pengutronix.de> <CAHp75VdjefJHMu2ot7RoZZZis0aNyV097J34wxDSwLgh3bQ8Pg@mail.gmail.com>
+ <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
+In-Reply-To: <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 14:16:32 +0200
+Message-ID: <CAHp75Ves0+oebnSSYNNb=DcAuiN6-BFwp4jyDD9pSeg6FX2HKg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] driver core: add helper for deferred probe reason setting
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 12:56 PM, Arnd Bergmann wrote:
->> We'll get there. There are some other SPARC-related clang bugs that need
->> to be squashed first. We have made quite some improvements and it's actually
->> maintained by the community. Of course, we don't have a commercial backer
->> but that shouldn't be necessary for open source to work.
-> 
-> I meant there is no point for Naresh to do it as part of his build
-> testing with tuxmake.
-> If someone else gets it working, they can tell Naresh to try again, but until
-> then, I'd limit clang regression testing to x86, arm, powerpc, s390, mips, riscv
-> and arc.
+On Fri, Mar 19, 2021 at 1:46 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> On 19.03.21 12:13, Andy Shevchenko wrote:
+> > On Fri, Mar 19, 2021 at 1:05 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >>
+> >> We now have three places within the same file doing the same operation
+> >> of freeing this pointer and setting it anew. A helper make this
+> >
+> > makes
+> >
+> >> arguably easier to read, so add one.
+> >
+> > FWIW,
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+> Thanks will add for v3.
+>
+> > Now I'm wondering why deferred_probe_reason is not defined with const.
+> >
+> > Can you check and maybe squeeze a patch in the middle (before these
+> > two of this series) to move to const?
+>
+> The deferred_probe_reason is only used in this file and it either holds
+> NULL or a pointer to a dynamically allocated string. I don't see a reason
+> why the member should be const.
 
-It's definitely a useful report as I haven't done any tests in this regard yet
-and we're certainly interested in getting this to work. We previously had Nick
-give a session on building the kernel with clang in our monthly m68k meeting [1]
-and he said, they are interested in supporting as many architectures as possible
-in their efforts.
+But we want to be reliant on the contents of the string, right?
+I would put this why it shouldn't be const.
 
-Adrian
+As far as I understand the strictness here is for good.
 
-> [1] http://m68k.info/#llvm:linux:video
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+--
+With Best Regards,
+Andy Shevchenko
