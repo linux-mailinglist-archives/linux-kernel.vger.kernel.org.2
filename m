@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F28E34241D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58063342420
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhCSSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:08:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38678 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhCSSIm (ORCPT
+        id S230351AbhCSSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhCSSI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:08:42 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616177321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfxtfjT60D0/i11pvfLUSVY8fTbGUW4gIYpe8cXpgbQ=;
-        b=DFMC5kdnTJv0ah+zOVlS3NTREv7DXSR0DR+ChsZ26pEcsrGI6ZzZYv2cSV0G7RqM+rphxh
-        96/gPdVGKq/jEngtFfhPRXdXptsEaHSZkF/Nh5P1ahyf7yu1x1Ky2HUbTEpCHOAxMkaRY4
-        QkHo26DtXisDPKfXPXSJaP3gvZLSy1zjVyaMRWsgqC/zzEPbHXxJfjmiqWvDtlFY7QkOjQ
-        gDFijuUAjtUPQ38wbnAoairSOtqETE+uLSMh3+XFIPZt5rpgH0MOKys4jOPXpdraf9ejnB
-        W9ukYy6zXTrP08QTSjOvn/AdcXVmAslGoTj14qkRKhLRprEmHB30SMBMdCeWOg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616177321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfxtfjT60D0/i11pvfLUSVY8fTbGUW4gIYpe8cXpgbQ=;
-        b=kRq7qiOLteStyH8xDOFTE47Aykp8lZM7bZHxFsanbAcwsueUs1ttykLOvj+9EL1iiM4aQD
-        sQeTyK4pjbRIQBCQ==
-To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v4 5/9] kentry: Remove enter_from/exit_to_user_mode()
-In-Reply-To: <8c0d187da7f8a44302c16e0a7325b3179d229331.1616004689.git.luto@kernel.org>
-References: <cover.1616004689.git.luto@kernel.org> <8c0d187da7f8a44302c16e0a7325b3179d229331.1616004689.git.luto@kernel.org>
-Date:   Fri, 19 Mar 2021 19:08:41 +0100
-Message-ID: <87k0q35846.fsf@nanos.tec.linutronix.de>
+        Fri, 19 Mar 2021 14:08:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D4C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7IMe3EI0F09CABp2BTZzKk4vCEjpzO2UA3Cr+FhKrno=; b=Fdulizs3yTlWagIoOyLAbUhEfL
+        T2YJkORsM5rcfD56NPaOg6NW2ciReddg/RmIyTR9WD3bphmkTV0jM9Oec35bG8+D5BrvRVOzpYQIh
+        l4OhSgt+lo5C2HbFsptfgwZcyEVNeEP3e/SZhMPuosQfK6PH5k0IZlV8iQ6qEzUrLonwXaMaDkM2L
+        zFJQ9DLgCVQwzTImlmh1vAWqgZdspvCkMvWczjHjH/BIJVL/khGdAmiE7hUNFLzHlbtjGo6JIGs80
+        VXkA0nLKVNBFsEJDgFTXcd/+KLsIiIUvWi1msjwQrdwvZtCmjVVRIv7gFFMjtQM04dRr3oxGzZPni
+        TDvyMD7w==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJYM-001RgA-0Q; Fri, 19 Mar 2021 18:08:55 +0000
+Date:   Fri, 19 Mar 2021 11:08:53 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     monstr@monstr.eu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] microblaze: Fix a typo
+In-Reply-To: <20210319045323.21241-1-unixbhaskar@gmail.com>
+Message-ID: <6dc64c0-3c3a-b0f1-58bf-0907c9aac9a@bombadil.infradead.org>
+References: <20210319045323.21241-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_110854_068917_D7CB8815 
+X-CRM114-Status: GOOD (  11.17  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/storign/storing/
+    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
+    Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17 2021 at 11:12, Andy Lutomirski wrote:
-> -/**
-> - * exit_to_user_mode - Fixup state when exiting to user mode
-> - *
-> - * Syscall/interrupt exit enables interrupts, but the kernel state is
-> - * interrupts disabled when this is invoked. Also tell RCU about it.
-> - *
-> - * 1) Trace interrupts on state
-> - * 2) Invoke context tracking if enabled to adjust RCU state
-> - * 3) Invoke architecture specific last minute exit code, e.g. speculation
-> - *    mitigations, etc.: arch_exit_to_user_mode()
-> - * 4) Tell lockdep that interrupts are enabled
-> - *
-> - * Invoked from architecture specific code when syscall_exit_to_user_mode()
-> - * is not suitable as the last step before returning to userspace. Must be
-> - * invoked with interrupts disabled and the caller must be
-> - * non-instrumentable.
-> - * The caller has to invoke syscall_exit_to_user_mode_work() before this.
-> - */
-> -void exit_to_user_mode(void);
 
-Oh well. There is this in the C code:
 
->  /* See comment for enter_from_user_mode() in entry-common.h */
->  static __always_inline void __exit_from_user_mode(void)
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
 
->  /* See comment for exit_to_user_mode() in entry-common.h */
->  static __always_inline void __exit_to_user_mode(void)
+>
+> s/storign/storing/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-So the comments are now stale and the documentation is lost.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Making the diffstat impressive is not the primary goal here.
-
-And looking at the rest of the comments there are still references to
-stuff you deleted. This is really not how it works.
-
-Thanks,
-
-        tglx
-
+> ---
+> arch/microblaze/lib/uaccess_old.S | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/microblaze/lib/uaccess_old.S b/arch/microblaze/lib/uaccess_old.S
+> index 0e8cc2710c27..eca290090038 100644
+> --- a/arch/microblaze/lib/uaccess_old.S
+> +++ b/arch/microblaze/lib/uaccess_old.S
+> @@ -188,7 +188,7 @@ w2:	sw	r4, r5, r3
+> 	.text
+>
+> .align 4 /* Alignment is important to keep icache happy */
+> -page:	/* Create room on stack and save registers for storign values */
+> +page:	/* Create room on stack and save registers for storing values */
+> 	addik   r1, r1, -40
+> 	swi	r5, r1, 0
+> 	swi	r6, r1, 4
+> --
+> 2.26.2
+>
+>
