@@ -2,244 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A134342685
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92468342693
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhCSTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S230499AbhCST5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhCSTx6 (ORCPT
+        with ESMTP id S230096AbhCST5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:53:58 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6750C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:53:57 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id j3so12117022edp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:53:57 -0700 (PDT)
+        Fri, 19 Mar 2021 15:57:11 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C91C06175F;
+        Fri, 19 Mar 2021 12:57:10 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id 94so7753489qtc.0;
+        Fri, 19 Mar 2021 12:57:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HZ9wljtafTTXPEC/zXLucHFY7bAqroopM+Vt3mSm4So=;
-        b=Hmt3jF2XxV8zTfdMVvEEqx/MyxkaGicIxCj/gXh8gNng8dCXVAWv9Zs79xVale5IPQ
-         epvFiZW0sGvpxFRYnAKnhumQbnw439N0ZzL6uY1bzx51t75zn7uJHSox6q/x2zVDKamG
-         hqZehFuMb1gfiUfJHX2S/lcIJ04kIpJIzrFCl7CFO9zjO/CiPMRDawK11xIQO/m2efuF
-         K2uzK6mbQDzGPqweTBOwq7FtTPA6y3jZMi7o2mwvNgdCuc+pDS6nH2cZLx2wRUSnQ/zC
-         tjTq1SIWNCg2t/Fd8GKFN3Oe84oiHpn0UO6tprvcRbUzwMsVHJfcNgE+hZnu/rLMWLoK
-         L/zw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mq4RLtzbMNYYLSOlP1OIlaJAP6JC9t4vaA4+WzcZxbs=;
+        b=o5PmwzfOFbrI+UkXMquda5EBJsCLIhdIa/jPrgB3UdzIZ0MtU6PZxWkerbqiQby1JQ
+         +cOxIfvvWOfMXI2DB+r841cGj2NnEgde/O0wepXDeCYYph8mYhKDUzQK3+g20RxrMUfm
+         Jm6jk6L4z9bdNC8xuKnIBrg2iTElT1odEDFDFeIyaeKJBw/x1WtT98QYqPnNV6IVPK/b
+         79FrdYH76TfhzL63DWcHZnUFqok6lGgsAjn4T7/2OSWHcQOuz5XetDc+LT8HhTArpdMa
+         ng7j4Jvk7bYP+nmm6qZ0VJ9SfU7jhxM73oQN9zCtnBBuw64ATHhM4zJMPLWtqq49hysN
+         YU8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HZ9wljtafTTXPEC/zXLucHFY7bAqroopM+Vt3mSm4So=;
-        b=Q+lxd2TMi8PlNg+hDXzk6IRAymDMzfWJvPISuEzaeXPJ+yeycpcdtjs0R5g+KyJ0r6
-         tXdD7PrkR7vBSJ3jwxvb5yNiV4oIlo06FvdJ2h8PVVwm2z8aKdxPA/z9eNdAmnhWHI+Z
-         ROiEljik9UQKS/QKHumXWqy1hgJFkjrR7TYs29egKRnwNwY+cOKhE4Kar2UXAq8G7BuM
-         2NmWc6fCEoDR9GNN/E8CG4nuTHlV52vLkdgZ5qdN9yck7BQIzpH760lCuA5vynlINUcI
-         Icw3x+Chlj9Y9dzu9yyUQblJ/fxOHl0TnlgM0QZ+kmAB/qvKemVW8nea7EkiemFUAGwf
-         alYA==
-X-Gm-Message-State: AOAM531wPHeG5RyJnomB9me7YNm0VvsJqWG0NNA6ZeT52rmO1bu04ubO
-        zvgILWPo8VYs+xa0lJT9IBJ+Qd1iHcHQlTbI+flnLw==
-X-Google-Smtp-Source: ABdhPJzD+/Dp0vDg154AOJlfxOnLf5CDCizwk8Jj2R+YyL2PoZ1B2U40b6MSyBWcLVCrUfPWj1ydLlsBBVINW4UAPVk=
-X-Received: by 2002:aa7:dd99:: with SMTP id g25mr11488935edv.230.1616183636302;
- Fri, 19 Mar 2021 12:53:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mq4RLtzbMNYYLSOlP1OIlaJAP6JC9t4vaA4+WzcZxbs=;
+        b=Hs6ggk8S8awiwGx7Z9Zmxmvz4a57Bo/8VPukCxl9Ip7ftXFwSmOXMPJ4i5Cd/SPR0P
+         INS97UV31YcZXaqMO8PRXqeJ337aF+W3oxFyQjltCY/6pVd1tNO07LpqCUKra7l39LSS
+         adUx6pXOd2QH6Db6xoAP872C8pU/P07VLiD9AiPAIAbqRDFVsWQ4haDP3Y54pKsaowdx
+         of847g1DOrnZ9UYCkQp3o+uVfWzIDsjxhXC2By1SBQoFyaBkbszezeDWz5qPalsbVZKd
+         aJvnr//y5eZZUND15uXEn88HhAxt9RlGxDMMOIpO/8NAACtK2YBD0wnIxIKSUCuJqah5
+         8stg==
+X-Gm-Message-State: AOAM533k1+YQXQjJJXgJ9EKbqlD3Qb5JZ30yKh5PlnrIHSMUQPKbfvzs
+        6TLC3+fIoVO1FSoB1dl2pFc=
+X-Google-Smtp-Source: ABdhPJzbPOwfzs6bCo5xs9rkVEFoD9tXan5rfabnghVZUDfyensGaL4rk4W9SqOKdkAbWpqI7Y9jrw==
+X-Received: by 2002:ac8:5313:: with SMTP id t19mr315700qtn.148.1616183829697;
+        Fri, 19 Mar 2021 12:57:09 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.27])
+        by smtp.gmail.com with ESMTPSA id i9sm5311076qko.69.2021.03.19.12.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 12:57:09 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] Trivial typo fix and sentence construction for better readability
+Date:   Sat, 20 Mar 2021 01:24:51 +0530
+Message-Id: <20210319195451.32456-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210319121745.112612545@linuxfoundation.org>
-In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 20 Mar 2021 01:23:44 +0530
-Message-ID: <CA+G9fYuwhmx-oi2+mdZRNn+3A0HUcR5Yn+6hjLts2u3guJR+_w@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/13] 5.10.25-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 17:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.25 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.25-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+ s/funtion/functions/
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+ Plus the sentence reconstructed for better readability.
 
-Summary
-------------------------------------------------------------------------
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+  Randy's suggestions incorporated.
 
-kernel: 5.10.25-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: b05da84e91a81ee89c814d51c18cc6f5b077256a
-git describe: v5.10.24-14-gb05da84e91a8
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.24-14-gb05da84e91a8
+ block/blk-mq-tag.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-No regressions (compared to build v5.10.24)
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e704d..c2bef283db63 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -373,8 +373,8 @@ static bool blk_mq_tagset_count_completed_rqs(struct request *rq,
+ }
 
-No fixes (compared to build v5.10.24)
+ /**
+- * blk_mq_tagset_wait_completed_request - wait until all completed req's
+- * complete funtion is run
++ * blk_mq_tagset_wait_completed_request - wait until all the  req's
++ *  functions completed their run
+  * @tagset:	Tag set to drain completed request
+  *
+  * Note: This function has to be run after all IO queues are shutdown
+--
+2.26.2
 
-Ran 57572 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-containers-tests
-* ltp-fs-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-
-* kselftest-lkdtm
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kunit
-* kselftest-bpf
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-tc-testing
-* kselftest-vm
-* kselftest-kexec
-* kselftest-x86
-* rcutorture
-* timesync-off
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
