@@ -2,144 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1C7341720
+	by mail.lfdr.de (Postfix) with ESMTP id BD66B341722
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhCSIKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbhCSIKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:10:08 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55488C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:10:08 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id l18so1498916edc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XgtABA/PScHZGookhQ2E5pGm9lq0LjK98naHGxTSbN8=;
-        b=hmBFTr1ieWWvj9bJquI4yZ4G5aN2xAwvvT3hFBQq5kMEruiYFIVUIF8TDkrOflqbY/
-         hff7nM7Ed9JBVGI+0ChwJZeE+u5ZuNH5nEuQZ+AwlVDtUS+6RuHtQEmPQXxPFVlUJo6Y
-         gQ6ZkTuay0ZHuhDYIhKv13j3PfhZOATtVmMfJ+OnabVag6jzLurBkr+5vLiss3ZBHXwd
-         PlIlaNgk1rByI27FN5D+lCndbTAQGD94OjzJqm7TEL3QedanK12tr7lkJ3ZH3u80V4RC
-         jY3DHUNWLSgS/IxWrnqbk9CIR8GDa/BmC7SiCuuUCh9o6W0gYrtG8jcsGt09qr4EtKMI
-         Ba+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XgtABA/PScHZGookhQ2E5pGm9lq0LjK98naHGxTSbN8=;
-        b=JSTmlz3K3tI33rj2pkhNdxITxkLQRSa0I0EGMoAXaGxV67TnXyx/4jf+6VEykHbOFD
-         JVBw4QXyzaUB1sS8PPoWHsLu+x4zmjR0UtExux6I6g8C//xPGvhgdVkv8YMAb4Mb5nEM
-         Jidqb6njl9Vaf7J5elECTHX/XgKj7CL9KxjZdZXJJH+W8DZrblAE9WIi2I+tdQnXCYJn
-         H2DVOiRZGC94vKb/XQMR34WZC1h4RKUMP1GYM66eccV3//zOi0hGK4QQyIEjnU7C9/x5
-         8vRgNK5/1+lwZhzj0bSqyrXsnW/RsIWtWRhP+sgBjrmsSFvbHRSM6fpHJ89XJwJ1PfwN
-         IC7Q==
-X-Gm-Message-State: AOAM533bOhAv5cXM7XR5suak7SNcGw5lceAsDXSBypAXuF8En5od1MKB
-        +VlUqliBtpwF+2lS26AiaAgC5w==
-X-Google-Smtp-Source: ABdhPJym1mhN5RQZ++Hm6Gazh+NWc10OyinKc4o0Sv9gWUyUob63YXlK9gxpT3ahmvMtfj5IGFkAgw==
-X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr8250200edb.105.1616141407037;
-        Fri, 19 Mar 2021 01:10:07 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id cw14sm3704018edb.8.2021.03.19.01.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 01:10:06 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 08:10:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Alex Davis <letmein@erols.com>, Ali Akcaagac <aliakc@web.de>,
-        Anil Ravindranath <anil_ravindranath@pmc-sierra.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Badari Pulavarty <pbadari@us.ibm.com>,
-        Bas Vermeulen <bvermeul@blackstar.xs4all.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Brian King <brking@us.ibm.com>,
-        Brian Macy <bmacy@sunshinecomputing.com>,
-        "Bryant G. Ly" <bryantly@linux.vnet.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "C.L. Huang" <ching@tekram.com.tw>,
-        Colin DeVilbiss <devilbis@us.ibm.com>,
-        Dave Boutcher <boutcher@us.ibm.com>,
-        Dave Boutcher <sleddog@us.ibm.com>,
-        David Chaw <david_chaw@adaptec.com>, dc395x@twibble.org,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Drew Eckhardt <drew@colorado.edu>,
-        Erich Chen <erich@tekram.com.tw>,
-        Eric Youngdale <eric@andante.org>,
-        FUJITA Tomonori <tomof@acm.org>,
-        Hannes Reinecke <hare@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        Jirka Hanika <geo@ff.cuni.cz>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Kurt Garloff <garloff@suse.de>,
-        Le Moal <damien.lemoal@hgst.com>,
-        "Leonard N. Zubkoff" <lnz@dandelion.com>,
-        Linda Xie <lxie@us.ibm.com>, linux-drivers@broadcom.com,
-        Linux GmbH <hare@suse.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-scsi@vger.kernel.org,
-        Luben Tuikov <luben_tuikov@adaptec.com>,
-        "Manoj N. Kumar" <manoj@linux.ibm.com>, Marvell <jyli@marvell.com>,
-        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Michael Cyr <mikecyr@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        MPT-FusionLinux.pdl@avagotech.com,
-        MPT-FusionLinux.pdl@broadcom.com,
-        "Nicholas A. Bellinger" <nab@kernel.org>,
-        Oliver Neukum <oliver@neukum.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Richard Gooch <rgooch@atnf.csiro.au>,
-        Santiago Leon <santil@us.ibm.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Shaun Tancheff <shaun.tancheff@seagate.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        target-devel@vger.kernel.org, Torben Mathiasen <tmm@image.dk>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Uma Krishnan <ukrishn@linux.ibm.com>, willy@debian.org
-Subject: Re: [PATCH 00/36] [Set 4] Rid W=1 warnings in SCSI
-Message-ID: <20210319081003.GF2916463@dell>
-References: <20210317091230.2912389-1-lee.jones@linaro.org>
- <yq1zgyzolqx.fsf@ca-mkp.ca.oracle.com>
+        id S234279AbhCSIKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:10:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234084AbhCSIJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:09:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 390DC64F68;
+        Fri, 19 Mar 2021 08:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616141389;
+        bh=8yyL1lc9w1zEvs02giHe/AkhySpLaZuLjBUihev2WZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Og2XGq/C9jDWrFpkn7jIMmJ42fTa76imA6COYLkGsphWC8N7QNr0CGZXcBkNn5hec
+         FsxHbz4caYtDKM9wsahMmOLDIGuNhvPqIYWUvn7rj5TCM4+MpAWWMS+31omZS6tZHn
+         7Mu77FSS7n1U/61aoUqnS9/1Wfaqh2F7DaKCm9CY40cD+92yxaX7iZjp1J8wuQHCK+
+         XqRk4V0Qa+TomLDA9SXtKcTPKXMjZJrZhDO86Zia5TTv1vk9G+stk7fogSpQpISehZ
+         uKgm+vhAevfpaX+HtrEfpCx9jzkB7yLVl+6NTkYm3Ciaz7Cl0vFlcAMV2IbtJePVXQ
+         nNOnd9DXYhk3Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lNACu-0001jF-Ft; Fri, 19 Mar 2021 09:10:09 +0100
+Date:   Fri, 19 Mar 2021 09:10:08 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Message-ID: <YFRcYCMQrPXUG6ZU@hovoldconsulting.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
+ <YFB0OcBg3Vj555eA@hovoldconsulting.com>
+ <CAHp75VfcbC63t_eZeBOA0NY28BtGBD0YyLR6nSNuKAnKhXTSzA@mail.gmail.com>
+ <4771468d968a44789518bc547acf5f93@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <yq1zgyzolqx.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <4771468d968a44789518bc547acf5f93@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021, Martin K. Petersen wrote:
-
+On Fri, Mar 19, 2021 at 06:36:39AM +0000, Song Bao Hua (Barry Song) wrote:
 > 
-> Lee,
 > 
-> > This set is part of a larger effort attempting to clean-up W=1 kernel
-> > builds, which are currently overwhelmingly riddled with niggly little
-> > warnings.
+> > -----Original Message-----
+> > From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
+> > Sent: Tuesday, March 16, 2021 10:41 PM
+> > To: Johan Hovold <johan@kernel.org>; Finn Thain <fthain@telegraphics.com.au>;
+> > Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>; Greg
+> > Kroah-Hartman <gregkh@linuxfoundation.org>; Jiri Slaby <jirislaby@kernel.org>;
+> > linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>; Linux Samsung
+> > SOC <linux-samsung-soc@vger.kernel.org>; open list:SERIAL DRIVERS
+> > <linux-serial@vger.kernel.org>; Linux Kernel Mailing List
+> > <linux-kernel@vger.kernel.org>; Hector Martin <marcan@marcan.st>; Arnd
+> > Bergmann <arnd@kernel.org>
+> > Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+> > interrupt handlers
+> > 
+> > On Tue, Mar 16, 2021 at 11:02 AM Johan Hovold <johan@kernel.org> wrote:
+> > >
+> > > On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
+> > > > Since interrupt handler is called with disabled local interrupts, there
+> > > > is no need to use the spinlock primitives disabling interrupts as well.
+> > >
+> > > This isn't generally true due to "threadirqs" and that can lead to
+> > > deadlocks if the console code is called from hard irq context.
+> > >
+> > > Now, this is *not* the case for this particular driver since it doesn't
+> > > even bother to take the port lock in console_write(). That should
+> > > probably be fixed instead.
+> > >
+> > > See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
+> > 
+> > Finn, Barry, something to check I think?
 > 
-> Applied to 5.13/scsi-staging, thanks! I fixed a few little things.
+> My understanding is that spin_lock_irqsave can't protect the context
+> the console_write() is called in hardirq for threaded_irq case mainly
+> for preempt-rt scenarios as spin_lock_irqsave doesn't disable irq in
+> that case at all.
 
-Thanks for your continued support Martin.
+Forced threaded interrupts have so far run with interrupts enabled and
+spin_lock_irqsave() would suffice on non-RT. This is about to change
+though so that drivers don't need to worry about "threadirqs":
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+	https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
+
+> See:
+> https://www.kernel.org/doc/html/latest/locking/locktypes.html
+> spinlock_t and PREEMPT_RT
+> On a PREEMPT_RT kernel spinlock_t is mapped to a separate implementation
+> based on rt_mutex which changes the semantics:
+> Preemption is not disabled.
+> The hard interrupt related suffixes for spin_lock / spin_unlock operations
+> (_irq, _irqsave / _irqrestore) do not affect the CPU’s interrupt disabled
+> state.
+> 
+> So if console_write() can interrupt our code in hardirq, we should
+> move to raw_spin_lock_irqsave for this driver.
+
+No, no. RT handles this by deferring console writes apparently.
+
+> I think it is almost always wrong to call spin_lock_irqsave in hardirq.
+
+Again, no. It's even been a requirement due to "threadirqs" in some
+cases (e.g. hrtimers) up until now (or rather until the above patch is
+in mainline).
+
+Johan
