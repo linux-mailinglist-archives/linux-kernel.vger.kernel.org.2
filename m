@@ -2,118 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653FF34247F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760B234248E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCSSUM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 14:20:12 -0400
-Received: from mga05.intel.com ([192.55.52.43]:43853 "EHLO mga05.intel.com"
+        id S230288AbhCSSWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:22:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44025 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229996AbhCSST5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:19:57 -0400
-IronPort-SDR: AfRTTIfnm3k8DZ2eVFVpbrXZQKaT1IyHxOdyI5aNGfzhVeu62FDDHSkUcmtqpIPEyDu4I6bQ0G
- 8FC/4JGiWt0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="275015314"
+        id S230186AbhCSSWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:22:30 -0400
+IronPort-SDR: 8bAKtSDQMGKz5EY2kQ3zPL7dDXGrHXC+ZCXPM/O1k+ehu5z6tqaPNZSbscIS1zbrjAtMfomyd+
+ Eux3upZRQdvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="275015753"
 X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="275015314"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:19:57 -0700
-IronPort-SDR: DaGp9VUiyAWOZGeJ59SlsgzZCYqJUVXG870PSyjGfjzTXCQPSSvNJ/3R6rY4fh0uK1NNYzRbnF
- iTJPUQsbE37w==
+   d="scan'208";a="275015753"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:22:30 -0700
+IronPort-SDR: OXb4ZlJdEYHKk0QQ+oNIDdm9cVzvDrYXRqrfD6npsWMuwEkO7NgO7LsXNCCR8H2rsU1KRq4GQM
+ +USaTqo26cqw==
 X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="375032714"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:19:56 -0700
-Date:   Fri, 19 Mar 2021 11:22:21 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210319112221.5123b984@jacob-builder>
-In-Reply-To: <20210319135432.GT2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210318172234.3e8c34f7@jacob-builder>
-        <YFR10eeDVf5ZHV5l@myrica>
-        <20210319124645.GP2356281@nvidia.com>
-        <YFSqDNJ5yagk4eO+@myrica>
-        <20210319135432.GT2356281@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="406896980"
+Received: from hyunyi-mobl1.amr.corp.intel.com (HELO [10.212.50.74]) ([10.212.50.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 11:22:29 -0700
+Subject: Re: [PATCH v1 1/1] x86/tdx: Add tdcall() and tdvmcall() helper
+ functions
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
+ <20210318213053.203403-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YFTXdG+zZ32gVIPc@google.com>
+ <c72d9ca6-7a5c-b614-5d20-b86d2abebdee@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5485f0ac-da86-4f68-d277-9f0bba5c4ef5@intel.com>
+Date:   Fri, 19 Mar 2021 11:22:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <c72d9ca6-7a5c-b614-5d20-b86d2abebdee@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On 3/19/21 10:42 AM, Kuppuswamy, Sathyanarayanan wrote:
+>>> @@ -4,6 +4,58 @@
+>>>   #include <asm/tdx.h>
+>>>   #include <asm/cpufeature.h>
+>>>   +void tdcall(u64 leafid, struct tdcall_regs *regs)
+>>> +{
+>>> +    asm volatile(
+>>> +            /* RAX = leafid (TDCALL LEAF ID) */
+>>> +            "  movq %0, %%rax;"
+>>> +            /* Move regs->r[*] data to regs r[a-c]x,  r8-r5 */
+>>> +            "  movq 8(%1), %%rcx;"
+>> 
+>> I am super duper opposed to using inline asm.  Large blocks are
+>> hard to read,
+> I think this point is arguable. Based on the review comments I
+> received so far, people prefer inline assembly compared to asm sub
+> functions.
 
-On Fri, 19 Mar 2021 10:54:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+It's arguable, but Sean makes a pretty compelling case.
 
-> On Fri, Mar 19, 2021 at 02:41:32PM +0100, Jean-Philippe Brucker wrote:
-> > On Fri, Mar 19, 2021 at 09:46:45AM -0300, Jason Gunthorpe wrote:  
-> > > On Fri, Mar 19, 2021 at 10:58:41AM +0100, Jean-Philippe Brucker wrote:
-> > >   
-> > > > Although there is no use for it at the moment (only two upstream
-> > > > users and it looks like amdkfd always uses current too), I quite
-> > > > like the client-server model where the privileged process does
-> > > > bind() and programs the hardware queue on behalf of the client
-> > > > process.  
-> > > 
-> > > This creates a lot complexity, how do does process A get a secure
-> > > reference to B? How does it access the memory in B to setup the HW?  
-> > 
-> > mm_access() for example, and passing addresses via IPC  
-> 
-> I'd rather the source process establish its own PASID and then pass
-> the rights to use it to some other process via FD passing than try to
-> go the other way. There are lots of security questions with something
-> like mm_access.
-> 
+I actually think inline assembly is a monstrosity.  It's insanely arcane
+and, as I hope you have noted, does not scale nicely beyond one or two
+instructions.
 
-Thank you all for the input, it sounds like we are OK to remove mm argument
-from iommu_sva_bind_device() and iommu_sva_alloc_pasid() for now?
+>> and even harder to maintain.  E.g. the %1 usage falls apart if an
+>> output constraint is added; that can be avoided by defining a local
+>> const/imm (I forget what they're called), but it doesn't help
+>> readability.
+> we can use OFFSET() calls to improve the readability and avoid this 
+> issue. Also IMO, any one adding constraints should know how this
+> would affect the asm code.
 
-Let me try to summarize PASID allocation as below:
+This is about *maintainability*.  How _easily_ can someone change this
+code in the future?  Sean's arguing that it's *hard* to correctly add a
+constraint.  Unfortunately, our supply of omnipotent kernel developers
+is a bit short.
 
-Interfaces	| Usage	|  Limit	| bind¹ |User visible
---------------------------------------------------------------------
-/dev/ioasid²	| G-SVA/IOVA	|  cgroup	| No	|Yes
---------------------------------------------------------------------
-char dev³	| SVA		|  cgroup	| Yes	|No
---------------------------------------------------------------------
-iommu driver	| default PASID|  no		| No	|No
---------------------------------------------------------------------
-kernel		| super SVA	| no		| yes   |No
---------------------------------------------------------------------
+>>> +            "  movq 16(%1), %%rdx;"
+>>> +            "  movq 24(%1), %%r8;"
+>>> +            "  movq 32(%1), %%r9;"
+>>> +            "  movq 40(%1), %%r10;"
+>>> +            "  movq 48(%1), %%r11;"
+>>> +            "  movq 56(%1), %%r12;"
+>>> +            "  movq 64(%1), %%r13;"
+>>> +            "  movq 72(%1), %%r14;"
+>>> +            "  movq 80(%1), %%r15;"
+>> 
+>> This is extremely unsafe, and wasteful.  Putting the onus on the 
+>> caller to zero out unused registers, with no mechanism to
+>> enforce/encourage doing so,
+> For encouragement, we can add a comment to this function about
+> callers responsibility. makes it
+>> likely that the kernel will leak information to the VMM, e.g. in
+>> the form of stack data due to a partially initialized "regs".
+> Unless you create sub-functions for each use cases, callers cannot
+> avoid this responsibility.
 
-¹ Allocated during SVA bind
-² PASIDs allocated via /dev/ioasid are not bound to any mm. But its
-  ownership is assigned to the process that does the allocation.
-³ Include uacce, other private device driver char dev such as idxd
+I don't think we're quite at the point where we throw up our hands.
 
-Currently, the proposed /dev/ioasid interface does not map individual PASID
-with an FD. The FD is at the ioasid_set granularity and bond to the current
-mm. We could extend the IOCTLs to cover individual PASID-FD passing case
-when use cases arise. Would this work?
+It would be pretty simple to have an initializer that zeros the
+registers out, or looks at the argument mask and does it more precisely.
+ Surely we can do *something*.
 
-Thanks,
+>>     /* Offset for fields in tdvmcall_output */
+>>     OFFSET(TDVMCALL_r12, tdvmcall_output, r13);
+>>     OFFSET(TDVMCALL_r13, tdvmcall_output, r13);
+>>     OFFSET(TDVMCALL_r14, tdvmcall_output, r14);
+>>     OFFSET(TDVMCALL_r15, tdvmcall_output, r15);
+>>
+>> SYM_FUNC_START(__tdvmcall)
+>>     FRAME_BEGIN
+>>
+>>     /* Save/restore non-volatile GPRs that are exposed to the VMM. */
+>>          push %r15
+>>          push %r14
+>>          push %r13
+>>          push %r12
 
-Jacob
+I might have some tweaks for the assembly once someone puts a real patch
+together.  But, that looks a lot more sane than the inline assembly to me.
