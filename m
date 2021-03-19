@@ -2,199 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3EA341853
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AA3341857
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCSJah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhCSJaO (ORCPT
+        id S229995AbhCSJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:31:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21651 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229844AbhCSJbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:30:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465E1C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:30:13 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id e18so8399388wrt.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/vUWvhAchaqpjbMn74HpIxb8CiMc71rLCGrcTJNmxv0=;
-        b=pNHdPIHmuys1S+NLA4GVXhsQwh0YiF8DEeE2g9Rhs3q/uiP+fReKsGbZjDsugpM4A0
-         PSKJQrHK+22w+DsUrCWQEoA+NlB7JVLJBfepykLFoFW06gjMPDmFzknFj5dY/Ja+qnhC
-         UaAmUdCBWL8PVsyFroDro1RhKarPVHXYGbcjiz0m3fYTClCuNL5OsX2hGilEA9b56x+r
-         4VCzyh9lt6VCs/rUwvyuF9snlP3VYAuwNe1gzubbLYtg0xnLtS1f1JcqhYgfNZGo5G4M
-         Rqo1+9avB/nWWLb6jh0Y1T/OuAJkzV4IOokk7eWVlaV8uZdacT9dQqRoqLuEc4UUyYn9
-         e7wA==
+        Fri, 19 Mar 2021 05:31:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616146263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oYHOK4lMWpC+xS3RIkmJjIMrFZxUWa5W6Haf+gFHPEo=;
+        b=ZbaBzumcn3ah7geulhQGpLnsre5yREMww26oPKfJeOU/h4ZamwJB9Knk5aOQDjlJ7EpBPH
+        WU/2agKMv5TdakjkK/Jbp3oBAeXSMjfmkVyR3uVDdG6ovqhPJrZ8zfjxtpLvYGi/I1mx9C
+        yse5KvNJ9JT/im51wgcSQbuZnaHwpm8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-V3QLBezwPxO4aAdQXn3CUg-1; Fri, 19 Mar 2021 05:31:01 -0400
+X-MC-Unique: V3QLBezwPxO4aAdQXn3CUg-1
+Received: by mail-ej1-f69.google.com with SMTP id e13so17908433ejd.21
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:31:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/vUWvhAchaqpjbMn74HpIxb8CiMc71rLCGrcTJNmxv0=;
-        b=ngKs2braxiy62lv/7MyKqXqXJu1aWydZ0o32CbswinCxdZNah27BZbu9enihSIBzyv
-         Pc/BzVq7mkkMXZrzS+NvcvVK62RdkZuaCqHeZELTPOVt1vqVWhugKFRwQIFAtSLP5kwt
-         ETuansQOBGixKCk56TXQmDr6bSzKSlyrgOqgupBF1mfgB0/Cf8ueR1gbglExmBd/3OgA
-         mR6300HR8A4Ep3Iv4vTgrmAspHNvATJSDTbpKyQlUUTK/wjj40Am3RBUdn9QZhIaGEJj
-         LN21g4Z7qyJsvTQK4kCWHDuEFyHTNJbGio+PTtfJuTkKDjoGexEnCfSafzZ4AqWy3NVK
-         /cqA==
-X-Gm-Message-State: AOAM531eWkf3SsvvytfPj6WWE7Xhsl7nbtizZ+vKytVpWoq2yMyfjXx4
-        Cd5DyJOT1pZG7rVW67nX2t+p+w==
-X-Google-Smtp-Source: ABdhPJwohojKWtyTcT7HFyM2s0tU2NVlaQmsEkP0ult9XOLTFZyW2e16y+H5yeIt/DAYhdRpW0hgCg==
-X-Received: by 2002:adf:f144:: with SMTP id y4mr3603415wro.408.1616146212029;
-        Fri, 19 Mar 2021 02:30:12 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id p6sm6779058wru.2.2021.03.19.02.30.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 02:30:11 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     robh@kernel.org, devicetree@vger.kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 7/7] ASoC: codecs: wcd938x: add audio routing
-Date:   Fri, 19 Mar 2021 09:29:19 +0000
-Message-Id: <20210319092919.21218-8-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
-References: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oYHOK4lMWpC+xS3RIkmJjIMrFZxUWa5W6Haf+gFHPEo=;
+        b=aeUOwkXiNGnOxBH/XLhO+dJe5z0G+uIDEo6mIbHQAlv5eNw0UGiriT8OYAUS7lQU6k
+         NHwqQnC1jr5QfcXWwWwEA0H8mRAcA4ouX9ukQUQhk15QzUhrcZlHENfivjVK+pVqN9IM
+         vu4G2R7+cItS+FOr3p9Z2CsQCbrxw4uEZGPlXfDCpCPmJx2ntJ0X7IywmoCgj7f9MmzR
+         QktpFpU40PaLcNEVqLLfbr7Qnfvk0dq5zGF/hFQnq7oDdCtypb6lw0SW8qJmGpMSgOEc
+         Ga1Vr+A/KvSz1i7n6yAMbZxkxeT9raa7g7OLPhI8x07FbM6IquE8rIems+kego+76Xkj
+         iQEQ==
+X-Gm-Message-State: AOAM531xqsI3GMeYDBXgzjJ5ec2sstsbsWGbRnHXTXoTPeEZtYDQaXXj
+        wJEfLhIKIewU2RPXYkTsZ9M4qTNsxzLDhGuHRsJ2FmiPk7eJkouTGmI1XJ+61N3iJHh7ot+SCNK
+        FIvBOhvefr50KhXZ8uw4HAQEfqWTDpmqPQHcwU6hKgy8W3ywjslE+EiUyPHXnEC0iaaU2rzHzhH
+        Qp
+X-Received: by 2002:aa7:ccd7:: with SMTP id y23mr8413402edt.190.1616146260211;
+        Fri, 19 Mar 2021 02:31:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyNNwR4QLQrbUFsrZg4XyjREPZfV4WMGAz+2dAqPL5WGkOm3iW6Wk0Ch8wxRb+d/pQvhZM56w==
+X-Received: by 2002:aa7:ccd7:: with SMTP id y23mr8413372edt.190.1616146259918;
+        Fri, 19 Mar 2021 02:30:59 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v8sm3688136edx.38.2021.03.19.02.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 02:30:59 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: Remove unused variable rc
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1616143992-30228-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e8dc7779-346f-b63a-59d0-bc70fceeb1cb@redhat.com>
+Date:   Fri, 19 Mar 2021 10:30:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1616143992-30228-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds audio routing for both playback and capture.
+On 19/03/21 09:53, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./arch/x86/kvm/emulate.c:4985:5-7: Unneeded variable: "rc". Return
+> "X86EMUL_CONTINUE" on line 5019.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/emulate.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> index f7970ba..8ae1e16 100644
+> --- a/arch/x86/kvm/emulate.c
+> +++ b/arch/x86/kvm/emulate.c
+> @@ -4982,8 +4982,6 @@ static unsigned imm_size(struct x86_emulate_ctxt *ctxt)
+>   static int decode_imm(struct x86_emulate_ctxt *ctxt, struct operand *op,
+>   		      unsigned size, bool sign_extension)
+>   {
+> -	int rc = X86EMUL_CONTINUE;
+> -
+>   	op->type = OP_IMM;
+>   	op->bytes = size;
+>   	op->addr.mem.ea = ctxt->_eip;
+> @@ -5016,7 +5014,7 @@ static int decode_imm(struct x86_emulate_ctxt *ctxt, struct operand *op,
+>   		}
+>   	}
+>   done:
+> -	return rc;
+> +	return X86EMUL_CONTINUE;
+>   }
+>   
+>   static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
+> 
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wcd938x.c | 97 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+Queued, thanks.
 
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index 31e3cf729568..0f801920ebac 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -3153,6 +3153,99 @@ static const struct snd_soc_dapm_widget wcd938x_rx_dapm_widgets[] = {
- 
- };
- 
-+static const struct snd_soc_dapm_route wcd938x_rx_audio_map[] = {
-+	{"IN1_HPHL", NULL, "VDD_BUCK"},
-+	{"IN1_HPHL", NULL, "CLS_H_PORT"},
-+
-+	{"RX1", NULL, "IN1_HPHL"},
-+	{"RX1", NULL, "RXCLK"},
-+	{"RDAC1", NULL, "RX1"},
-+	{"HPHL_RDAC", "Switch", "RDAC1"},
-+	{"HPHL PGA", NULL, "HPHL_RDAC"},
-+	{"HPHL", NULL, "HPHL PGA"},
-+
-+	{"IN2_HPHR", NULL, "VDD_BUCK"},
-+	{"IN2_HPHR", NULL, "CLS_H_PORT"},
-+	{"RX2", NULL, "IN2_HPHR"},
-+	{"RDAC2", NULL, "RX2"},
-+	{"RX2", NULL, "RXCLK"},
-+	{"HPHR_RDAC", "Switch", "RDAC2"},
-+	{"HPHR PGA", NULL, "HPHR_RDAC"},
-+	{"HPHR", NULL, "HPHR PGA"},
-+
-+	{"IN3_AUX", NULL, "VDD_BUCK"},
-+	{"IN3_AUX", NULL, "CLS_H_PORT"},
-+	{"RX3", NULL, "IN3_AUX"},
-+	{"RDAC4", NULL, "RX3"},
-+	{"RX3", NULL, "RXCLK"},
-+	{"AUX_RDAC", "Switch", "RDAC4"},
-+	{"AUX PGA", NULL, "AUX_RDAC"},
-+	{"AUX", NULL, "AUX PGA"},
-+
-+	{"RDAC3_MUX", "RX3", "RX3"},
-+	{"RDAC3_MUX", "RX1", "RX1"},
-+	{"RDAC3", NULL, "RDAC3_MUX"},
-+	{"EAR_RDAC", "Switch", "RDAC3"},
-+	{"EAR PGA", NULL, "EAR_RDAC"},
-+	{"EAR", NULL, "EAR PGA"},
-+};
-+
-+static const struct snd_soc_dapm_route wcd938x_audio_map[] = {
-+	{"ADC1_OUTPUT", NULL, "ADC1_MIXER"},
-+	{"ADC1_MIXER", "Switch", "ADC1 REQ"},
-+	{"ADC1 REQ", NULL, "ADC1"},
-+	{"ADC1", NULL, "AMIC1"},
-+
-+	{"ADC2_OUTPUT", NULL, "ADC2_MIXER"},
-+	{"ADC2_MIXER", "Switch", "ADC2 REQ"},
-+	{"ADC2 REQ", NULL, "ADC2"},
-+	{"ADC2", NULL, "HDR12 MUX"},
-+	{"HDR12 MUX", "NO_HDR12", "ADC2 MUX"},
-+	{"HDR12 MUX", "HDR12", "AMIC1"},
-+	{"ADC2 MUX", "INP3", "AMIC3"},
-+	{"ADC2 MUX", "INP2", "AMIC2"},
-+
-+	{"ADC3_OUTPUT", NULL, "ADC3_MIXER"},
-+	{"ADC3_MIXER", "Switch", "ADC3 REQ"},
-+	{"ADC3 REQ", NULL, "ADC3"},
-+	{"ADC3", NULL, "HDR34 MUX"},
-+	{"HDR34 MUX", "NO_HDR34", "ADC3 MUX"},
-+	{"HDR34 MUX", "HDR34", "AMIC5"},
-+	{"ADC3 MUX", "INP4", "AMIC4"},
-+	{"ADC3 MUX", "INP6", "AMIC6"},
-+
-+	{"ADC4_OUTPUT", NULL, "ADC4_MIXER"},
-+	{"ADC4_MIXER", "Switch", "ADC4 REQ"},
-+	{"ADC4 REQ", NULL, "ADC4"},
-+	{"ADC4", NULL, "ADC4 MUX"},
-+	{"ADC4 MUX", "INP5", "AMIC5"},
-+	{"ADC4 MUX", "INP7", "AMIC7"},
-+
-+	{"DMIC1_OUTPUT", NULL, "DMIC1_MIXER"},
-+	{"DMIC1_MIXER", "Switch", "DMIC1"},
-+
-+	{"DMIC2_OUTPUT", NULL, "DMIC2_MIXER"},
-+	{"DMIC2_MIXER", "Switch", "DMIC2"},
-+
-+	{"DMIC3_OUTPUT", NULL, "DMIC3_MIXER"},
-+	{"DMIC3_MIXER", "Switch", "DMIC3"},
-+
-+	{"DMIC4_OUTPUT", NULL, "DMIC4_MIXER"},
-+	{"DMIC4_MIXER", "Switch", "DMIC4"},
-+
-+	{"DMIC5_OUTPUT", NULL, "DMIC5_MIXER"},
-+	{"DMIC5_MIXER", "Switch", "DMIC5"},
-+
-+	{"DMIC6_OUTPUT", NULL, "DMIC6_MIXER"},
-+	{"DMIC6_MIXER", "Switch", "DMIC6"},
-+
-+	{"DMIC7_OUTPUT", NULL, "DMIC7_MIXER"},
-+	{"DMIC7_MIXER", "Switch", "DMIC7"},
-+
-+	{"DMIC8_OUTPUT", NULL, "DMIC8_MIXER"},
-+	{"DMIC8_MIXER", "Switch", "DMIC8"},
-+};
-+
- static int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
- {
- 	/* min micbias voltage is 1V and maximum is 2.85V */
-@@ -3332,6 +3425,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_rx = {
- 	.num_controls = ARRAY_SIZE(wcd938x_rx_snd_controls),
- 	.dapm_widgets = wcd938x_rx_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_rx_dapm_widgets),
-+	.dapm_routes = wcd938x_rx_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_rx_audio_map),
- };
- 
- static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_tx = {
-@@ -3341,6 +3436,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd938x_sdw_tx = {
- 	.num_controls = ARRAY_SIZE(wcd938x_snd_controls),
- 	.dapm_widgets = wcd938x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd938x_dapm_widgets),
-+	.dapm_routes = wcd938x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd938x_audio_map),
- };
- 
- static void wcd938x_dt_parse_micbias_info(struct device *dev, struct wcd938x_priv *wcd)
--- 
-2.21.0
+Paolo
 
