@@ -2,175 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9913424E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD4E3424E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhCSSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhCSSih (ORCPT
+        id S231268AbhCSSj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:39:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30148 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231234AbhCSSjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:38:37 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41774C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:38:37 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id o16so10101167wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MYEoRUOi3MntuNkgcxlA6PixhZq/KlalSw6PsKJS1mU=;
-        b=SUAFQoXy615WjK85B20Of9o5+6NbEcn/9xeVNPrxbOALG3VcWJDiiAEqTTzRKIXDzo
-         WxFi7vp9gDN8wGTK6caLhl4yrVdp+a4TpRE9h5QzU/BfvRSIjusPNwcZYfS4CiBOkpdi
-         17P0ouNK6+RS5cMOfbss/M6p3HRgbD+jYpQgkJGjSloocdpBJ+YQGLAgjY41pZWJOJv0
-         Km39jOr+Bi3VYPUEPZmr4g64G327d3XI33uY9xPG5J5+gUXpSRMB/s5A8FwKroROPdlo
-         N2n5AqzZTlpG0of7lTEads3/Iehu4hSSKdtCS1954fuMj68J4sdc93YpAKbJbxBtlof6
-         B0eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MYEoRUOi3MntuNkgcxlA6PixhZq/KlalSw6PsKJS1mU=;
-        b=W5rVIlgpie9ueQ39G3bd6YK/Rn8Em0Hmx6qy2HjubbIVNtF5F7hcsj3Jh2v7h89LYh
-         so0Hj3HOl3Y5spCLb857ipwXcZBUfoAiJhcZPr41M67aGcTciOUPhHY7ql+2Igc8pcGe
-         h561hU6EpVbIRCmyqooiWSNc/TG3r6tbySv0UEZy1HcN2amVo0hEFj9erUMAfhHAu6Kc
-         Ii78pSwj1z603MMWrR9eVkEoGO7EhDgftfRu1uxys2EyiHiwfMuOXOvh26NdICCXiR3u
-         lPH0z1uLx1Ic3CMcNZ/YcEG1sBaxwwyiWAoOPNj/Jhup2/ZlSk1+QDqYd2w+a72c2saY
-         zUaA==
-X-Gm-Message-State: AOAM530i+erL4Ql+nl7F48IVBtKhX1TqSZv+9VFIYbyEamVG2mRB1ZOX
-        KXHkNTPAPpP191IiQGav2iRiv7zDNCgljQ==
-X-Google-Smtp-Source: ABdhPJy1by9RHeFpSNx+To1gQgU5tcR6deACavE7xJJbx3XBXQciKlwzam3By8vz828NoTt3oZmW9A==
-X-Received: by 2002:adf:f78f:: with SMTP id q15mr5769517wrp.383.1616179115865;
-        Fri, 19 Mar 2021 11:38:35 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:ddd7:1eb:a66:7a85? ([2a01:e34:ed2f:f020:ddd7:1eb:a66:7a85])
-        by smtp.googlemail.com with ESMTPSA id p27sm7792340wmi.12.2021.03.19.11.38.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 11:38:35 -0700 (PDT)
-Subject: Re: [PATCH] dt: rockchip: rk3399: Add dynamic power coefficient for
- GPU
-To:     Robin Murphy <robin.murphy@arm.com>, heiko@sntech.de
-Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210319110511.24787-1-daniel.lezcano@linaro.org>
- <5db868e4-5b86-7b32-51e0-665a2e1fc1ac@arm.com>
- <9322db05-2cad-453c-ec1b-1fdb3df142fa@linaro.org>
- <11480a47-47da-c5b3-edad-c2dd8edb2cd9@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <54f3d4d4-ca01-d00c-09d6-4cf100538cbe@linaro.org>
-Date:   Fri, 19 Mar 2021 19:38:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 19 Mar 2021 14:39:02 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JIYkJT161697;
+        Fri, 19 Mar 2021 14:39:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=BOH7TQv1wsE3dEoU3qqN+5EXplktNRzzQe64eQZnSAI=;
+ b=IE2eoWRnSER3c8+QDiVzMG3AkcCLhJ0JDAX4AWDS4l00a/1BdiFmXtKM/U9lGBpKP1Kd
+ W/Ikne0mEKSJnngrkxWiiyB0aG/4VlQtI+BrCMahfckzgd9Hlzs5MyleFy1Jnyy8l9it
+ NQptlVFLCLYbaIknm6LaCNYJv9lY+xTLO/MUoPfoPPiEKcmGH8oBO6IWjwGoq7sBEDMi
+ Bc+UT+S5nKSOQhl3AfW25Fd4dBoeC51p/Q4nW5Zw2T437FSMa5JO8NFNFoRkeqXv9YZP
+ rGWcr1RkhXDMNl7Ai1zwpdQ+nEZIO8YRG4nyBrP6UZ/mDV6XllrMZxuWFUuewL7D26JP 7Q== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37c6tgaadk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 14:39:00 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JIa16O030010;
+        Fri, 19 Mar 2021 18:38:59 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 37brpfrygt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 18:38:58 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JIccPI34734536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 18:38:38 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D42FE4204C;
+        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 982F442052;
+        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
+Received: from osiris (unknown [9.171.9.107])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
+Date:   Fri, 19 Mar 2021 19:38:54 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.12-rc4
+Message-ID: <YFTvvrxm7BxAPIP5@osiris>
 MIME-Version: 1.0
-In-Reply-To: <11480a47-47da-c5b3-edad-c2dd8edb2cd9@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_10:2021-03-19,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 bulkscore=0 clxscore=1011 adultscore=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103190125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 19:05, Robin Murphy wrote:
-> On 2021-03-19 14:35, Daniel Lezcano wrote:
->>
->> Hi Robin,
->>
->> On 19/03/2021 13:17, Robin Murphy wrote:
->>> On 2021-03-19 11:05, Daniel Lezcano wrote:
->>>> The DTPM framework is looking for upstream SoC candidates to share the
->>>> power numbers.
->>>>
->>>> We can see around different numbers but the one which seems to be
->>>> consistent with the initial post for the values on the CPUs can be
->>>> found in the patch https://lore.kernel.org/patchwork/patch/810159/
->>>
->>> The kernel hacker in me would be more inclined to trust the BSP that the
->>> vendor actively supports than a 5-year-old patch that was never pursued
->>> upstream. Apparently that was last updated more recently:
->>>
->>> https://github.com/rockchip-linux/kernel/commit/98d4505e1bd62ff028bd79fbd8284d64b6f468f8
->>>
->>
->> Yes, I've seen this value also.
->>
->>> The ex-mathematician in me can't even comment either way without
->>> evidence that whatever model expects to consume this value is even
->>> comparable to whatever "arm,mali-simple-power-model" is. >
->>> The way the
->>> latter apparently needs an explicit "static" coefficient as well as a
->>> "dynamic" one, and the value here being nearly 3 times that of a
->>> similarly-named one in active use downstream (ChromeOS appears to still
->>> be using the values from before the above commit), certainly incline me
->>> to think they may not be...
->>
->> Sorry, I'm missing the point :/
->>
->> We dropped in the kernel any static power computation because as there
->> was no value, the resulting code was considered dead. So we rely on the
->> dynamic power only.
-> 
-> Right, so a 2-factor model is clearly not identical to a 1-factor model,
-> so how do we know that a value for one is valid for the other, even if
-> it happens to have a similar name? I'm not saying that it is or isn't; I
-> don't know. If someone can point to the downstream coefficient
-> definition being identical to the upstream one then great, let's use
-> that as justification. If not, then the justification of one arbitrary
-> meaningless number over any other is a bit misleading.
+Hi Linus,
 
-That's a call :)
+please pull three s390 specific bug fixes for 5.12-rc4.
 
->>>> I don't know the precision of this value but it is better than
->>>> nothing.
->>>
->>> But is it? If it leads to some throttling mechanism kicking in and
->>> crippling GPU performance because it's massively overestimating power
->>> consumption, that would be objectively worse for most users, no?
->>
->> No because there is no sustainable power specified for the thermal zones
->> related to the GPU.
-> OK, that's some reassurance at least. Does the exact value have any
-> material effect? 
+Thanks,
+Heiko
 
-Yes, it has when it is combined with other devices having also power
-values, like the CPUs and hopefully the DMC soon.
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
 
-If we can have more or less consistent power numbers for the DMC, CPU
-and GPU on the rock960, with the thermal zone having these three heating
-sources, we can use the DTPM framework to act on the power of the whole.
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
 
-I don't know the best coefficient, 733, 977 or 1780 [1]
+are available in the Git repository at:
 
-The value of 977 sound to me as a starting point.
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-4
 
+for you to fetch changes up to 0b13525c20febcfecccf6fc1db5969727401317d:
 
+  s390/pci: fix leak of PCI device structure (2021-03-15 19:10:56 +0100)
 
-[1]
-https://chromium.googlesource.com/chromiumos/third_party/kernel/+/factory-gru-8652.B-chromeos-4.4/arch/arm64/boot/dts/rockchip/rk3399-gru-kevin-r3.dts
+----------------------------------------------------------------
+s390 updates for 5.12-rc4
 
-> If not, what's to stop us from using an obviously
-> made-up value like 1, and saying so?
+- disable preemption when accessing local per-cpu variables in the new
+  counter set driver
 
+- fix by a factor of four increased steal time due to missing
+  cputime_to_nsecs() conversion
 
+- fix PCI device structure leak
 
+----------------------------------------------------------------
+Gerald Schaefer (1):
+      s390/vtime: fix increased steal time accounting
 
+Niklas Schnelle (1):
+      s390/pci: fix leak of PCI device structure
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thomas Richter (1):
+      s390/cpumf: disable preemption when accessing per-cpu variable
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+ arch/s390/include/asm/pci.h          |  2 +-
+ arch/s390/kernel/perf_cpum_cf_diag.c |  3 ++-
+ arch/s390/kernel/vtime.c             |  2 +-
+ arch/s390/pci/pci.c                  | 28 ++++++++++++++++++++++++----
+ arch/s390/pci/pci_event.c            | 18 ++++++------------
+ drivers/pci/hotplug/s390_pci_hpc.c   |  3 ++-
+ 6 files changed, 36 insertions(+), 20 deletions(-)
+
+diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
+index 053fe8b8dec7..a75d94a9bcb2 100644
+--- a/arch/s390/include/asm/pci.h
++++ b/arch/s390/include/asm/pci.h
+@@ -202,7 +202,7 @@ extern unsigned int s390_pci_no_rid;
+ ----------------------------------------------------------------------------- */
+ /* Base stuff */
+ int zpci_create_device(u32 fid, u32 fh, enum zpci_state state);
+-void zpci_remove_device(struct zpci_dev *zdev);
++void zpci_remove_device(struct zpci_dev *zdev, bool set_error);
+ int zpci_enable_device(struct zpci_dev *);
+ int zpci_disable_device(struct zpci_dev *);
+ int zpci_register_ioat(struct zpci_dev *, u8, u64, u64, u64);
+diff --git a/arch/s390/kernel/perf_cpum_cf_diag.c b/arch/s390/kernel/perf_cpum_cf_diag.c
+index bc302b86ce28..2e3e7edbe3a0 100644
+--- a/arch/s390/kernel/perf_cpum_cf_diag.c
++++ b/arch/s390/kernel/perf_cpum_cf_diag.c
+@@ -968,7 +968,7 @@ static int cf_diag_all_start(void)
+  */
+ static size_t cf_diag_needspace(unsigned int sets)
+ {
+-	struct cpu_cf_events *cpuhw = this_cpu_ptr(&cpu_cf_events);
++	struct cpu_cf_events *cpuhw = get_cpu_ptr(&cpu_cf_events);
+ 	size_t bytes = 0;
+ 	int i;
+ 
+@@ -984,6 +984,7 @@ static size_t cf_diag_needspace(unsigned int sets)
+ 		     sizeof(((struct s390_ctrset_cpudata *)0)->no_sets));
+ 	debug_sprintf_event(cf_diag_dbg, 5, "%s bytes %ld\n", __func__,
+ 			    bytes);
++	put_cpu_ptr(&cpu_cf_events);
+ 	return bytes;
+ }
+ 
+diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
+index 73c7afcc0527..f216a1b2f825 100644
+--- a/arch/s390/kernel/vtime.c
++++ b/arch/s390/kernel/vtime.c
+@@ -214,7 +214,7 @@ void vtime_flush(struct task_struct *tsk)
+ 	avg_steal = S390_lowcore.avg_steal_timer / 2;
+ 	if ((s64) steal > 0) {
+ 		S390_lowcore.steal_timer = 0;
+-		account_steal_time(steal);
++		account_steal_time(cputime_to_nsecs(steal));
+ 		avg_steal += steal;
+ 	}
+ 	S390_lowcore.avg_steal_timer = avg_steal;
+diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+index 600881d894dd..91064077526d 100644
+--- a/arch/s390/pci/pci.c
++++ b/arch/s390/pci/pci.c
+@@ -682,16 +682,36 @@ int zpci_disable_device(struct zpci_dev *zdev)
+ }
+ EXPORT_SYMBOL_GPL(zpci_disable_device);
+ 
+-void zpci_remove_device(struct zpci_dev *zdev)
++/* zpci_remove_device - Removes the given zdev from the PCI core
++ * @zdev: the zdev to be removed from the PCI core
++ * @set_error: if true the device's error state is set to permanent failure
++ *
++ * Sets a zPCI device to a configured but offline state; the zPCI
++ * device is still accessible through its hotplug slot and the zPCI
++ * API but is removed from the common code PCI bus, making it
++ * no longer available to drivers.
++ */
++void zpci_remove_device(struct zpci_dev *zdev, bool set_error)
+ {
+ 	struct zpci_bus *zbus = zdev->zbus;
+ 	struct pci_dev *pdev;
+ 
++	if (!zdev->zbus->bus)
++		return;
++
+ 	pdev = pci_get_slot(zbus->bus, zdev->devfn);
+ 	if (pdev) {
+-		if (pdev->is_virtfn)
+-			return zpci_iov_remove_virtfn(pdev, zdev->vfn);
++		if (set_error)
++			pdev->error_state = pci_channel_io_perm_failure;
++		if (pdev->is_virtfn) {
++			zpci_iov_remove_virtfn(pdev, zdev->vfn);
++			/* balance pci_get_slot */
++			pci_dev_put(pdev);
++			return;
++		}
+ 		pci_stop_and_remove_bus_device_locked(pdev);
++		/* balance pci_get_slot */
++		pci_dev_put(pdev);
+ 	}
+ }
+ 
+@@ -765,7 +785,7 @@ void zpci_release_device(struct kref *kref)
+ 	struct zpci_dev *zdev = container_of(kref, struct zpci_dev, kref);
+ 
+ 	if (zdev->zbus->bus)
+-		zpci_remove_device(zdev);
++		zpci_remove_device(zdev, false);
+ 
+ 	switch (zdev->state) {
+ 	case ZPCI_FN_STATE_ONLINE:
+diff --git a/arch/s390/pci/pci_event.c b/arch/s390/pci/pci_event.c
+index b4162da4e8a2..ac0c65cdd69d 100644
+--- a/arch/s390/pci/pci_event.c
++++ b/arch/s390/pci/pci_event.c
+@@ -76,13 +76,10 @@ void zpci_event_error(void *data)
+ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
+ {
+ 	struct zpci_dev *zdev = get_zdev_by_fid(ccdf->fid);
+-	struct pci_dev *pdev = NULL;
+ 	enum zpci_state state;
++	struct pci_dev *pdev;
+ 	int ret;
+ 
+-	if (zdev && zdev->zbus->bus)
+-		pdev = pci_get_slot(zdev->zbus->bus, zdev->devfn);
+-
+ 	zpci_err("avail CCDF:\n");
+ 	zpci_err_hex(ccdf, sizeof(*ccdf));
+ 
+@@ -124,8 +121,7 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
+ 	case 0x0303: /* Deconfiguration requested */
+ 		if (!zdev)
+ 			break;
+-		if (pdev)
+-			zpci_remove_device(zdev);
++		zpci_remove_device(zdev, false);
+ 
+ 		ret = zpci_disable_device(zdev);
+ 		if (ret)
+@@ -140,12 +136,10 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
+ 	case 0x0304: /* Configured -> Standby|Reserved */
+ 		if (!zdev)
+ 			break;
+-		if (pdev) {
+-			/* Give the driver a hint that the function is
+-			 * already unusable. */
+-			pdev->error_state = pci_channel_io_perm_failure;
+-			zpci_remove_device(zdev);
+-		}
++		/* Give the driver a hint that the function is
++		 * already unusable.
++		 */
++		zpci_remove_device(zdev, true);
+ 
+ 		zdev->fh = ccdf->fh;
+ 		zpci_disable_device(zdev);
+diff --git a/drivers/pci/hotplug/s390_pci_hpc.c b/drivers/pci/hotplug/s390_pci_hpc.c
+index c9e790c74051..a047c421debe 100644
+--- a/drivers/pci/hotplug/s390_pci_hpc.c
++++ b/drivers/pci/hotplug/s390_pci_hpc.c
+@@ -93,8 +93,9 @@ static int disable_slot(struct hotplug_slot *hotplug_slot)
+ 		pci_dev_put(pdev);
+ 		return -EBUSY;
+ 	}
++	pci_dev_put(pdev);
+ 
+-	zpci_remove_device(zdev);
++	zpci_remove_device(zdev, false);
+ 
+ 	rc = zpci_disable_device(zdev);
+ 	if (rc)
