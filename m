@@ -2,188 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1A734291F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0AC342906
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhCSXUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 19:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCSXUQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 19:20:16 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876A6C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:20:16 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v92so10579405ybi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=E7z8xVF+fWiGn0TFnbWDWHgOTYKvAGR0RJUvGhAunZo=;
-        b=K8aXtzFqa6wR3SqLb64Mti+wSQXoLt35gLpWMpMkJ5a8du9jNNgjlbmg0iOGeQkrQV
-         2u73vN72yUKvmb4uZLrnJ8F1S8t9M4UaABekwy5jTGENOqInkRzMZE0kVvoBfq/YsNwV
-         G+PEQsVZ51BEQ8NLN93H1ZSV6pTWBV7r2V1X44SI+FM8uLaCYUEWvm9zFg0vppxbEx68
-         H2e1ZKgC3rOeFDGhC5Nx/ub6ej1OtEMZIYB7qByYpiz7zwHmMZCLKu7qB9huagdbXmHV
-         A1nRro+T7Nul42DRkF3jOqKHskyzgKZQMu5bkh/loXEoc2Vg5eN+djeqAsdIRYPe0yPD
-         ZLlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=E7z8xVF+fWiGn0TFnbWDWHgOTYKvAGR0RJUvGhAunZo=;
-        b=o6Oe+j/JcJjuUSdvu2XMhpEzVFdLDXIYU+Gg/cXYE3JxZxE0PoQyIMx0vadinXLS0x
-         MNyoki1EiJwO//8A4BCdT0ngnsKxB0lCRkfytj5O+GCjgfNkAos1NeAPFFzfVwyD6XAl
-         a8hXoa3vzPlleG5+BF9M4Vqd8lOy////4nDKkB88KhmIow8NZx2HNyPc4R6j0TqADm9O
-         erYw7hUAiBK8OUlD75P4L/ZYF3z0FrTebf5YRSYijOmLCIXv7dhVhMRUftuEyKIYr+es
-         PK3YtRvBL4itCPCPZad8DFYBS2Y9wwl7oiRKkZZzmSVLbtcJNwHX5kYAYxxS98gl+ySG
-         m2eQ==
-X-Gm-Message-State: AOAM532+S7uGnGEN7BIEYyznlHn5qjPLbDhyGUw3vGzNAkp6LQrqKhhh
-        zEdYyyVSEs72sHC1xsJifAM6SLz41ec=
-X-Google-Smtp-Source: ABdhPJycaD8prj8+STy4qYHzk1rppIakcMFGXxWktSXQJ9w4xoY19OQEhhCcMleKskydYPBizOOu7Q0UFxE=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:115a:eb6e:42f6:f9d5])
- (user=seanjc job=sendgmr) by 2002:a25:67d6:: with SMTP id b205mr8924692ybc.394.1616196015764;
- Fri, 19 Mar 2021 16:20:15 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 19 Mar 2021 16:20:06 -0700
-In-Reply-To: <20210319232006.3468382-1-seanjc@google.com>
-Message-Id: <20210319232006.3468382-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210319232006.3468382-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 2/2] KVM: x86/mmu: Ensure TLBs are flushed when yielding
- during NX zapping
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229917AbhCSXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 19:02:31 -0400
+Received: from mga03.intel.com ([134.134.136.65]:16264 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229845AbhCSXCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 19:02:09 -0400
+IronPort-SDR: oK4UqgX8nC47hxPv7nJh4IIdjma3Hd+NJwS8ZbJyZHvbRtQTMRfRGOxHZCDZ9jVQODaGRiSRsp
+ X0l0hnB6MtjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="190017060"
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="190017060"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 16:02:08 -0700
+IronPort-SDR: WbKmoz4sUiiKsZfFCtm4prI2NIZY4twXdNZidjUx4LJOEAF5uEbhqkDf7cqil1QvjdV1BsnhEm
+ 9UzkuZFfTOdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="451030855"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 16:02:07 -0700
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+To:     "Gong, Richard" <richard.gong@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <21a8817a-e63e-6029-69a6-6bae5398439a@linux.intel.com>
+Date:   Fri, 19 Mar 2021 18:22:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two intertwined bugs in the NX huge page zapping that were introduced
-by the incorporation of the TDP MMU.  Because there is a unified list of
-NX huge pages, zapping can encounter both TDP MMU and legacy MMU pages,
-and the two MMUs have different tracking for TLB flushing.  If one flavor
-needs a flush, but the code for the other flavor yields, KVM will fail to
-flush before yielding.
 
-First, honor the "flush needed" return from kvm_tdp_mmu_zap_gfn_range(),
-which does the flush itself if and only if it yields, and otherwise
-expects the caller to do the flush.  This requires feeding the result
-into kvm_mmu_remote_flush_or_zap(), and so also fixes the case where the
-TDP MMU needs a flush, the legacy MMU does not, and the main loop yields.
+Hi Moritz,
 
-Second, tell the TDP MMU a flush is pending if the list of zapped pages
-from legacy MMUs is not empty, i.e. the legacy MMU needs a flush.  This
-fixes the case where the TDP MMU yields, but it iteslf does not require a
-flush.
+Thanks for approving the 1st patch of my version 5 patchest, which 
+submitted on 02/09/21.
 
-Fixes: 29cf0f5007a2 ("kvm: x86/mmu: NX largepage recovery for TDP MMU")
-Cc: stable@vger.kernel.org
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c     | 15 ++++++++++-----
- arch/x86/kvm/mmu/tdp_mmu.c |  6 +++---
- arch/x86/kvm/mmu/tdp_mmu.h |  3 ++-
- 3 files changed, 15 insertions(+), 9 deletions(-)
+Can you help review the remaining 6 patches from the same version 5 
+patchset? I need your ACKs to move forward, or please let me know if 
+additional work is need.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c6ed633594a2..413d6259340e 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5517,7 +5517,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 	}
- 
- 	if (is_tdp_mmu_enabled(kvm)) {
--		flush = kvm_tdp_mmu_zap_gfn_range(kvm, gfn_start, gfn_end);
-+		flush = kvm_tdp_mmu_zap_gfn_range(kvm, gfn_start, gfn_end,
-+						  false);
- 		if (flush)
- 			kvm_flush_remote_tlbs(kvm);
- 	}
-@@ -5939,6 +5940,8 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 	struct kvm_mmu_page *sp;
- 	unsigned int ratio;
- 	LIST_HEAD(invalid_list);
-+	bool flush = false;
-+	gfn_t gfn_end;
- 	ulong to_zap;
- 
- 	rcu_idx = srcu_read_lock(&kvm->srcu);
-@@ -5960,19 +5963,21 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 				      lpage_disallowed_link);
- 		WARN_ON_ONCE(!sp->lpage_disallowed);
- 		if (is_tdp_mmu_page(sp)) {
--			kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn,
--				sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level));
-+			gfn_end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
-+			flush = kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, gfn_end,
-+							  flush || !list_empty(&invalid_list));
- 		} else {
- 			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
- 			WARN_ON_ONCE(sp->lpage_disallowed);
- 		}
- 
- 		if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
--			kvm_mmu_commit_zap_page(kvm, &invalid_list);
-+			kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
- 			cond_resched_rwlock_write(&kvm->mmu_lock);
-+			flush = false;
- 		}
- 	}
--	kvm_mmu_commit_zap_page(kvm, &invalid_list);
-+	kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
- 
- 	write_unlock(&kvm->mmu_lock);
- 	srcu_read_unlock(&kvm->srcu, rcu_idx);
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 6cf08c3c537f..367f12bf1026 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -709,10 +709,10 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-  * SPTEs have been cleared and a TLB flush is needed before releasing the
-  * MMU lock.
-  */
--bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
-+bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
-+			       bool flush)
- {
- 	struct kvm_mmu_page *root;
--	bool flush = false;
- 
- 	for_each_tdp_mmu_root_yield_safe(kvm, root)
- 		flush = zap_gfn_range(kvm, root, start, end, true, flush);
-@@ -725,7 +725,7 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
- 	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
- 	bool flush;
- 
--	flush = kvm_tdp_mmu_zap_gfn_range(kvm, 0, max_gfn);
-+	flush = kvm_tdp_mmu_zap_gfn_range(kvm, 0, max_gfn, false);
- 	if (flush)
- 		kvm_flush_remote_tlbs(kvm);
- }
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 3b761c111bff..e39bee52d49e 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -8,7 +8,8 @@
- hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
- void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
- 
--bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end);
-+bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
-+			       bool flush);
- void kvm_tdp_mmu_zap_all(struct kvm *kvm);
- 
- int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
--- 
-2.31.0.rc2.261.g7f71774620-goog
+Many thanks for your time again!
 
+Regards,
+Richard
+
+
+On 2/25/21 7:07 AM, Gong, Richard wrote:
+> Hi Moritz,
+> 
+> Sorry for asking.
+> 
+> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+> 
+> Regards,
+> Richard
+> 
+> -----Original Message-----
+> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
+> Sent: Tuesday, February 9, 2021 4:20 PM
+> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+> Cc: Gong, Richard <richard.gong@intel.com>
+> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+> 
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+> 
+> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+> 
+> Bitstream authentication makes sure a signed bitstream has valid signatures.
+> 
+> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+> 
+> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
+> 
+> Richard Gong (7):
+>    firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+>    firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+>    firmware: stratix10-svc: extend SVC driver to get the firmware version
+>    fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+>    fpga: of-fpga-region: add authenticate-fpga-config property
+>    dt-bindings: fpga: add authenticate-fpga-config property
+>    fpga: stratix10-soc: extend driver for bitstream authentication
+> 
+>   .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+>   drivers/firmware/stratix10-svc.c                   | 12 ++++-
+>   drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+>   drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+>   include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+>   .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+>   include/linux/fpga/fpga-mgr.h                      |  3 ++
+>   7 files changed, 125 insertions(+), 18 deletions(-)
+> 
+> --
+> 2.7.4
+> 
