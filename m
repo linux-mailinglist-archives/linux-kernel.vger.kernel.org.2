@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE60342172
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11F0342174
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhCSQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:05:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37822 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhCSQF2 (ORCPT
+        id S230136AbhCSQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCSQIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:05:28 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616169927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=106TxHLyAtVBuDkUwRrxGzFn3N3YZC0Oy6JLDXxkcVM=;
-        b=n6uGhy4oFLlNYqoTAK0NnbF6MwaJDk9Uo9SiCgbud5ITjJvKDa7FN9znEu5CI2G2nNszX2
-        EPFOhJA6EWqKAs0/3yIuIHDR2T670qEFLXxg8nZHYtgDnfF95a7P5NL96sRYPbDuNsgrXF
-        AXJXplX08ASDvMgDdR9PH+taDshX8vMeXJhRpf6aMmbmFi3vwu0MbiwYENHRENElwK/HeQ
-        Cs8LabpHheH1VybxTD28GLAdRWKe6tf/Fhe0BkafEqABQ3shDiAkcAu1vjFBMlcFv0OiLV
-        AQ6ALunNdaYo49UJlF/5tG9uD1U7v+fyGx7cZIntixvcFx7U1bMEkBZGxZZ1zw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616169927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=106TxHLyAtVBuDkUwRrxGzFn3N3YZC0Oy6JLDXxkcVM=;
-        b=slKqoBUYD3EXzUUzx4Zqmba+Ip1ao4FJsSAQ60pplrT1XwRrgSLRtxr8AsUX11L+Znxxu/
-        8HqnthuPOzKNJ0CQ==
-To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v4 3/9] x86/entry: Convert ret_from_fork to C
-In-Reply-To: <f7ed7fa5b222afa2d2820e1d8c83fdc3fdd57af2.1616004689.git.luto@kernel.org>
-References: <cover.1616004689.git.luto@kernel.org> <f7ed7fa5b222afa2d2820e1d8c83fdc3fdd57af2.1616004689.git.luto@kernel.org>
-Date:   Fri, 19 Mar 2021 17:05:27 +0100
-Message-ID: <87v99n5dtk.fsf@nanos.tec.linutronix.de>
+        Fri, 19 Mar 2021 12:08:49 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43893C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:08:49 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lNHg7-0000is-Nd; Fri, 19 Mar 2021 17:08:47 +0100
+Subject: Re: [PATCH v2 2/2] driver core: add helper for deferred probe reason
+ setting
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
+ <20210319110459.19966-2-a.fatoum@pengutronix.de>
+ <CAHp75VdjefJHMu2ot7RoZZZis0aNyV097J34wxDSwLgh3bQ8Pg@mail.gmail.com>
+ <d8317cce-f5de-062f-70f5-6317032d6991@pengutronix.de>
+ <CAHp75Ves0+oebnSSYNNb=DcAuiN6-BFwp4jyDD9pSeg6FX2HKg@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <84861de0-a672-03de-3dc2-c14605a1fff2@pengutronix.de>
+Date:   Fri, 19 Mar 2021 17:08:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAHp75Ves0+oebnSSYNNb=DcAuiN6-BFwp4jyDD9pSeg6FX2HKg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17 2021 at 11:12, Andy Lutomirski wrote:
+Hello Andy,
 
-> ret_from_fork is written in asm, slightly differently, for x86_32 and
-> x86_64.  Convert it to C.
-> +__visible void noinstr ret_from_fork(struct task_struct *prev,
-> +				     int (*kernel_thread_fn)(void *),
-> +				     void *kernel_thread_arg,
-> +				     struct pt_regs *user_regs)
-> +{
-> +	instrumentation_begin();
-> +
-> +	schedule_tail(prev);
-> +
-> +	if (kernel_thread_fn) {
-> +		kernel_thread_fn(kernel_thread_arg);
-> +		user_regs->ax = 0;
+On 19.03.21 13:16, Andy Shevchenko wrote:
+> On Fri, Mar 19, 2021 at 1:46 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>> On 19.03.21 12:13, Andy Shevchenko wrote:
+>>> On Fri, Mar 19, 2021 at 1:05 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>>>
+>>>> We now have three places within the same file doing the same operation
+>>>> of freeing this pointer and setting it anew. A helper make this
+>>>
+>>> makes
+>>>
+>>>> arguably easier to read, so add one.
+>>>
+>>> FWIW,
+>>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>>
+>> Thanks will add for v3.
+>>
+>>> Now I'm wondering why deferred_probe_reason is not defined with const.
+>>>
+>>> Can you check and maybe squeeze a patch in the middle (before these
+>>> two of this series) to move to const?
+>>
+>> The deferred_probe_reason is only used in this file and it either holds
+>> NULL or a pointer to a dynamically allocated string. I don't see a reason
+>> why the member should be const.
+> 
+> But we want to be reliant on the contents of the string, right?
+> I would put this why it shouldn't be const.
+> 
+> As far as I understand the strictness here is for good.
 
-If you replace this with:
+I don't understand. Mind sending a patch that I can squash?
 
-   syscall_set_return_value(current, user_regs, 0, 0);
+Cheers,
+Ahmad
 
-then it's architecture agnostic and can move to kernel/entry, no?
+> 
+> --
+> With Best Regards,
+> Andy Shevchenko
+> 
 
-Thanks,
-
-        tglx
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
