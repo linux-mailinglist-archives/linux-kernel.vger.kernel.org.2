@@ -2,365 +2,1421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B24B34118D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F89134118F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhCSAlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:41:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55556 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230136AbhCSAlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:41:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616114463; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=nKbpL+MXOXfmWr7OykBCzihZEQAYD28qNBi+NK46kd0=; b=n0RvVYxPGE/VwJadcogquCknas9KvPpv3PrF2JbE0rZD6NAkKFUHSQTXlHMIKw4YVN/KNjWq
- 8J3xpYQFhRr4WCO+QxW1a01BP6aCtMdLBc/DRMAHUBizc7E7hXM9e1qTdnnMuitnlmA/0Q/I
- NIuyM+1gsJo5EEZQToO+uk0uFlo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6053f30f1de5dd7b9928d1ba (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 00:40:47
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 18B6BC433CA; Fri, 19 Mar 2021 00:40:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43CE8C433C6;
-        Fri, 19 Mar 2021 00:40:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 43CE8C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v10 1/2] scsi: ufs: Enable power management for wlun
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Bart Van Assche <bvanassche@acm.org>, cang@codeaurora.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        Linux-PM mailing list <linux-pm@vger.kernel.org>
-References: <cover.1614725302.git.asutoshd@codeaurora.org>
- <6e98724d-2e75-d1fe-188f-a7010f86c509@codeaurora.org>
- <20210306161616.GC74411@rowland.harvard.edu>
- <CAJZ5v0ihJe8rNjWRwNic_BQUvKbALNcjx8iiPAh5nxLhOV9duw@mail.gmail.com>
- <CAJZ5v0iJ4yqRTt=mTCC930HULNFNTgvO4f9ToVO6pNz53kxFkw@mail.gmail.com>
- <f1e9b21d-1722-d20b-4bae-df7e6ce50bbc@codeaurora.org>
- <2bd90336-18a9-9acd-5abb-5b52b27fc535@codeaurora.org>
- <b13086f3-eea1-51a7-2117-579d520f21fc@intel.com>
- <20cbd52d-7254-3e1c-06a3-712326c99f75@codeaurora.org>
- <c1b38327-fece-4e31-709b-84ec775c6e18@intel.com>
- <ae871d38-4865-5836-d370-e5f9b7be762c@codeaurora.org>
- <24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com>
- <CAJZ5v0iOT4oi8Ez5xgN9LE0E7J=_Vb7G8a-9etmu+QTvQ1j9ew@mail.gmail.com>
- <d9ea43fd-b065-0e6e-07cb-d6ec6ef97bae@codeaurora.org>
- <CAJZ5v0iTymqf0yRrfvHoxejzKiZ7hnGH+xXYTZhbDait5ULzTQ@mail.gmail.com>
- <36864099-e9a0-83bf-8c9d-d821bb102a72@codeaurora.org>
- <5a01ba2f-81d8-5b0f-6224-d47bd11c9f85@intel.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <9ad33d49-57d1-dc48-adab-7c22c6c6f55b@codeaurora.org>
-Date:   Thu, 18 Mar 2021 17:40:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232230AbhCSAmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232300AbhCSAm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 20:42:27 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F02C06174A;
+        Thu, 18 Mar 2021 17:42:27 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id o19so8861569edc.3;
+        Thu, 18 Mar 2021 17:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QlhCPiqNVo6whCEc9wH2mupvIr56J9VBdidWCikhcII=;
+        b=cZUMJhttWcDNRQ4PHubZnWrlNBDbatHt+ph2akTg/hgBrHX/V55cUM5cvOrX20cQOl
+         YfqxXXZFOZ0nDP4pkZDg641kPq6J2Wr0bRxTcEY87Am+l6QWXEQwirOQXMvlxQ0RryWA
+         EMjp6SMtXj3wz2oC99MTQ3DtNZmppAyCHexyBXOqZrzPCU8wZlasQIJ+eld49C9KwWyE
+         n7cHEVkhcrz9ggERWfLvRLpMBheqUyD3gvfWyJsecm3eQQQtDujEp+4AUD9U2K1xd9zW
+         Gst5BDAhVCIXuoJs1TUl2+s5SoIKDlgg8h9ncSUUY9qYANJDcoBnlGIGuQRxDqw9dxhG
+         7bAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QlhCPiqNVo6whCEc9wH2mupvIr56J9VBdidWCikhcII=;
+        b=KzZJ7q391ilY1T+RTmp8xM8EYvsJ6FUSY+VtEZ+/sNqBBCz3S70DKFWvSH0wzEfZpp
+         ff4Kkg5wWkbvftPOWrngaP2j+mwOQxd9206YTF3jtGUovY+sd5A37mYTRaUspSVwLYt7
+         KZjylQTe4MOPv3HQpI2QQNYzpya0Da0oLgvU5MPoSiPwOjnBY4c7pbzIRJVAGJzVcIBD
+         bIGlSTBnNOuceoZXF37tSods3KE3GqZ9M3ytJlsLyr3/IGQ2QtDJae1Fa+2JU4s3pLbW
+         y8i2EJAmIdramWENFucpeK6ocd/kxvZxusa0oalVOS8uAw5dTjcxU/R3MzbGYVVb/T0D
+         EZ6g==
+X-Gm-Message-State: AOAM531BGti5MsDgHh3tbwJ4N93hi6NtIDWYJhFrrnQxlXj9ircqZUbx
+        DGhpsH7FC0+pJUGgtBgTryQ=
+X-Google-Smtp-Source: ABdhPJxW56qREcXyDfeFYOxmaBg3O5wMkrg/oeXfzLl/DFy0W84RSX3TJFRbFlTNfy49f92JNznUgw==
+X-Received: by 2002:aa7:c345:: with SMTP id j5mr6653035edr.338.1616114545494;
+        Thu, 18 Mar 2021 17:42:25 -0700 (PDT)
+Received: from pop-os.localdomain (cpc97922-walt21-2-0-cust248.13-2.cable.virginm.net. [82.16.251.249])
+        by smtp.gmail.com with ESMTPSA id q12sm2777624ejy.91.2021.03.18.17.42.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 18 Mar 2021 17:42:25 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 00:42:23 +0000
+From:   Joe Sandom <joe.g.sandom@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v5] Added AMS tsl2591 driver implementation
+Message-ID: <20210319004223.tqaqpreo32vfnean@pop-os.localdomain>
+References: <20210309011715.23245-1-joe.g.sandom@gmail.com>
+ <20210313191554.3e8174d3@archlinux>
 MIME-Version: 1.0
-In-Reply-To: <5a01ba2f-81d8-5b0f-6224-d47bd11c9f85@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313191554.3e8174d3@archlinux>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/2021 12:16 PM, Adrian Hunter wrote:
-> On 18/03/21 7:58 pm, Asutosh Das (asd) wrote:
->> On 3/18/2021 10:54 AM, Rafael J. Wysocki wrote:
->>> On Thu, Mar 18, 2021 at 6:33 PM Asutosh Das (asd)
->>> <asutoshd@codeaurora.org> wrote:
->>>>
->>>> On 3/18/2021 7:00 AM, Rafael J. Wysocki wrote:
->>>>> On Wed, Mar 17, 2021 at 7:37 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>>>
->>>>>> On 16/03/21 10:35 pm, Asutosh Das (asd) wrote:
->>>>>>> On 3/16/2021 12:48 AM, Adrian Hunter wrote:
->>>>>>>> On 16/03/21 12:22 am, Asutosh Das (asd) wrote:
->>>>>>>>> On 3/14/2021 1:11 AM, Adrian Hunter wrote:
->>>>>>>>>> On 10/03/21 5:04 am, Asutosh Das (asd) wrote:
->>>>>>>>>>> On 3/9/2021 7:56 AM, Asutosh Das (asd) wrote:
->>>>>>>>>>>> On 3/8/2021 9:17 AM, Rafael J. Wysocki wrote:
->>>>>>>>>>>>> On Mon, Mar 8, 2021 at 5:21 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> On Sat, Mar 6, 2021 at 5:17 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> On Fri, Mar 05, 2021 at 06:54:24PM -0800, Asutosh Das (asd) wrote:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Now during my testing I see a weird issue sometimes (1 in 7).
->>>>>>>>>>>>>>>> Scenario - bootups
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Issue:
->>>>>>>>>>>>>>>> The supplier 'ufs_device_wlun 0:0:0:49488' goes into runtime suspend even
->>>>>>>>>>>>>>>> when one/more of its consumers are in RPM_ACTIVE state.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> *Log:
->>>>>>>>>>>>>>>> [   10.056379][  T206] sd 0:0:0:1: [sdb] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.062497][  T113] sd 0:0:0:5: [sdf] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.356600][   T32] sd 0:0:0:7: [sdh] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.362944][  T174] sd 0:0:0:3: [sdd] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.696627][   T83] sd 0:0:0:2: [sdc] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.704562][  T170] sd 0:0:0:6: [sdg] Synchronizing SCSI cache
->>>>>>>>>>>>>>>> [   10.980602][    T5] sd 0:0:0:0: [sda] Synchronizing SCSI cache
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> /** Printing all the consumer nodes of supplier **/
->>>>>>>>>>>>>>>> [   10.987327][    T5] ufs_device_wlun 0:0:0:49488: usage-count @ suspend: 0
->>>>>>>>>>>>>>>> <-- this is the usage_count
->>>>>>>>>>>>>>>> [   10.994440][    T5] ufs_rpmb_wlun 0:0:0:49476: PM state - 2
->>>>>>>>>>>>>>>> [   11.000402][    T5] scsi 0:0:0:49456: PM state - 2
->>>>>>>>>>>>>>>> [   11.005453][    T5] sd 0:0:0:0: PM state - 2
->>>>>>>>>>>>>>>> [   11.009958][    T5] sd 0:0:0:1: PM state - 2
->>>>>>>>>>>>>>>> [   11.014469][    T5] sd 0:0:0:2: PM state - 2
->>>>>>>>>>>>>>>> [   11.019072][    T5] sd 0:0:0:3: PM state - 2
->>>>>>>>>>>>>>>> [   11.023595][    T5] sd 0:0:0:4: PM state - 0 << RPM_ACTIVE
->>>>>>>>>>>>>>>> [   11.353298][    T5] sd 0:0:0:5: PM state - 2
->>>>>>>>>>>>>>>> [   11.357726][    T5] sd 0:0:0:6: PM state - 2
->>>>>>>>>>>>>>>> [   11.362155][    T5] sd 0:0:0:7: PM state - 2
->>>>>>>>>>>>>>>> [   11.366584][    T5] ufshcd-qcom 1d84000.ufshc: __ufshcd_wl_suspend - 8709
->>>>>>>>>>>>>>>> [   11.374366][    T5] ufs_device_wlun 0:0:0:49488: __ufshcd_wl_suspend -
->>>>>>>>>>>>>>>> (0) has rpm_active flags
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Do you mean that rpm_active of the link between the consumer and the
->>>>>>>>>>>>>> supplier is greater than 0 at this point and the consumer is
->>>>>>>>>>>>>
->>>>>>>>>>>>> I mean is rpm_active of the link greater than 1 (because 1 means "no
->>>>>>>>>>>>> active references to the supplier")?
->>>>>>>>>>>> Hi Rafael:
->>>>>>>>>>>> No - it is not greater than 1.
->>>>>>>>>>>>
->>>>>>>>>>>> I'm trying to understand what's going on in it; will update when I've something.
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>> RPM_ACTIVE, but the supplier suspends successfully nevertheless?
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> [   11.383376][    T5] ufs_device_wlun 0:0:0:49488:
->>>>>>>>>>>>>>>> ufshcd_wl_runtime_suspend <-- Supplier suspends fine.
->>>>>>>>>>>>>>>> [   12.977318][  T174] sd 0:0:0:4: [sde] Synchronizing SCSI cache
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> And the the suspend of sde is stuck now:
->>>>>>>>>>>>>>>> schedule+0x9c/0xe0
->>>>>>>>>>>>>>>> schedule_timeout+0x40/0x128
->>>>>>>>>>>>>>>> io_schedule_timeout+0x44/0x68
->>>>>>>>>>>>>>>> wait_for_common_io+0x7c/0x100
->>>>>>>>>>>>>>>> wait_for_completion_io+0x14/0x20
->>>>>>>>>>>>>>>> blk_execute_rq+0x90/0xcc
->>>>>>>>>>>>>>>> __scsi_execute+0x104/0x1c4
->>>>>>>>>>>>>>>> sd_sync_cache+0xf8/0x2a0
->>>>>>>>>>>>>>>> sd_suspend_common+0x74/0x11c
->>>>>>>>>>>>>>>> sd_suspend_runtime+0x14/0x20
->>>>>>>>>>>>>>>> scsi_runtime_suspend+0x64/0x94
->>>>>>>>>>>>>>>> __rpm_callback+0x80/0x2a4
->>>>>>>>>>>>>>>> rpm_suspend+0x308/0x614
->>>>>>>>>>>>>>>> pm_runtime_work+0x98/0xa8
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> I added 'DL_FLAG_RPM_ACTIVE' while creating links.
->>>>>>>>>>>>>>>>             if (hba->sdev_ufs_device) {
->>>>>>>>>>>>>>>>                     link = device_link_add(&sdev->sdev_gendev,
->>>>>>>>>>>>>>>>                                         &hba->sdev_ufs_device->sdev_gendev,
->>>>>>>>>>>>>>>>                                        DL_FLAG_PM_RUNTIME|DL_FLAG_RPM_ACTIVE);
->>>>>>>>>>>>>>>> I didn't expect this to resolve the issue anyway and it didn't.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Another interesting point here is when I resume any of the above suspended
->>>>>>>>>>>>>>>> consumers, it all goes back to normal, which is kind of expected. I tried
->>>>>>>>>>>>>>>> resuming the consumer and the supplier is resumed and the supplier is
->>>>>>>>>>>>>>>> suspended when all the consumers are suspended.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Any pointers on this issue please?
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> @Bart/@Alan - Do you've any pointers please?
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> It's very noticeable that although you seem to have isolated a bug in
->>>>>>>>>>>>>>> the power management subsystem (supplier goes into runtime suspend
->>>>>>>>>>>>>>> even when one of its consumers is still active), you did not CC the
->>>>>>>>>>>>>>> power management maintainer or mailing list.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> I have added the appropriate CC's.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Thanks Alan!
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> Hello
->>>>>>>>>>> I & Can (thanks CanG) debugged this further:
->>>>>>>>>>>
->>>>>>>>>>> Looks like this issue can occur if the sd probe is asynchronous.
->>>>>>>>>>>
->>>>>>>>>>> Essentially, the sd_probe() is done asynchronously and driver_probe_device() invokes pm_runtime_get_suppliers() before invoking sd_probe().
->>>>>>>>>>>
->>>>>>>>>>> But scsi_probe_and_add_lun() runs in a separate context.
->>>>>>>>>>> So the scsi_autopm_put_device() invoked from scsi_scan_host() context reduces the link->rpm_active to 1. And sd_probe() invokes scsi_autopm_put_device() and starts a timer. And then driver_probe_device() invoked from __device_attach_async_helper context reduces the link->rpm_active to 1 thus enabling the supplier to suspend before the consumer suspends.
->>>>>>>>>>>
->>>>>>>>>>> So if:
->>>>>>>>>>> Context T1:
->>>>>>>>>>> [1] scsi_probe_and_add_lun()
->>>>>>>>>>> [2]    |- scsi_autopm_put_device() - reduce the link->rpm_active to 1
->>>>>>>>>>>
->>>>>>>>>>> Context T2:
->>>>>>>>>>> __device_attach_async_helper()
->>>>>>>>>>>          |- driver_probe_device()
->>>>>>>>>>>              |- sd_probe()
->>>>>>>>>>> In between [1] and [2] say, driver_probe_device() -> sd_probe() is invoked in a separate context from __device_attach_async_helper().
->>>>>>>>>>> The driver_probe_device() -> pm_runtime_get_suppliers() but [2] would reduce link->rpm_active to 1.
->>>>>>>>>>> Then sd_probe() would invoke rpm_resume() and proceed as is.
->>>>>>>>>>> When sd_probe() invokes scsi_autopm_put_device() it'd start a timer, dev->power.timer_autosuspends = 1.
->>>>>>>>>>>
->>>>>>>>>>> Now then, pm_runtime_put_suppliers() is invoked from driver_probe_device() and that makes the link->rpm_active = 1.
->>>>>>>>>>> But by now, the corresponding 'sd dev' (consumer) usage_count = 0, state = RPM_ACTIVE and link->rpm_active = 1.
->>>>>>>>>>> At this point of time, all other 'sd dev' (consumers) _may_ be suspended or active but would have the link->rpm_active = 1.
->>>>>>>>>>
->>>>>>>>>> Is this with DL_FLAG_RPM_ACTIVE?  In that case, wouldn't active
->>>>>>>>>> consumers have link->rpm_active = 2 and also have incremented
->>>>>>>>>> the supplier's usage_count?
->>>>>>>
->>>>>>> Yes this is with DL_FLAG_RPM_ACTIVE.
->>>>>>>
->>>>>>> Please let me share a log here:
->>>>>>> BEF means - Before, AFT means After.
->>>>>>>
->>>>>>> [    6.843445][    T7] scsi 0:0:0:4: [UFSDBG]: ufshcd_setup_links:4779:  supp: usage_cnt: 3 Link - 0:0:0:49488 link-rpm_active: 2 avail_luns: 5
->>>>>>> [    6.892545][    T7] scsi 0:0:0:4: pm_runtime_get_suppliers: (0:0:0:49488): supp: usage_count: 5 rpm_active: 4
->>>>>>>
->>>>>>> In the above log, T7 is the context in which this scsi device is being added - scsi_sysfs_add_sdev()
->>>>>>>
->>>>>>> [    6.931846][    T7] ufs_rpmb_wlun 0:0:0:4: [UFSDBG]: ufshcd_rpmb_probe:9692: invoked
->>>>>>> [    6.941246][    T7] scsi 0:0:0:4: pm_runtime_put_suppliers: rpm_active: 4
->>>>>>>
->>>>>>> [    6.941246][    T7] scsi 0:0:0:4: pm_runtime_put_suppliers: (0:0:0:49488) [BEF] usage_count: 5
->>>>>>> [    6.941247][    T7] scsi 0:0:0:4: pm_runtime_put_suppliers: (0:0:0:49488) [AFT] usage_count: 4 rpm_active: 3
->>>>>>>
->>>>>>> [    6.941267][    T7] scsi 0:0:0:4: rpm_put_suppliers: [BEF] Supp (0:0:0:49488) usage_count: 4 rpm_active: 3
->>>>>>>
->>>>>>> ------ T196 Context comes in while T7 is running ----------
->>>>>>> [    6.941466][  T196] scsi 0:0:0:4: pm_runtime_get_suppliers: (0:0:0:49488): supp: usage_count: 5 rpm_active: 4
->>>>>>> --------------------------------------------------------------
->>>>>>>
->>>>>>> [    7.788397][    T7] scsi 0:0:0:4: rpm_put_suppliers: [AFT] Supp (0:0:0:49488) usage_count: 2 rpm_active: 1
->>>>>>
->>>>>>
->>>>>>
->>>>>>>
->>>>>>> -- 
->>>>>>>
->>>>>>> T196 is the context in which sd_probe() is invoked for this scsi device.
->>>>>>>
->>>>>>> [    7.974410][  T196] sd 0:0:0:4: [sde] Attached SCSI disk
->>>>>>> [    7.984188][  T196] sd 0:0:0:4: pm_runtime_put_suppliers: rpm_active: 2
->>>>>>> [    7.998424][  T196] sd 0:0:0:4: pm_runtime_put_suppliers: (0:0:0:49488) [BEF] usage_count: 4
->>>>>>> [    8.017320][  T196] sd 0:0:0:4: pm_runtime_put_suppliers: (0:0:0:49488) [AFT] usage_count: 1 rpm_active: 1
->>>>>>>
->>>>>>> The reference to the link is released after sd_probe() is completed.
->>>>>>> At this point, the rpm_active should be 2. And the rpm_active should become 1 when sd 0:0:0:4 actually suspends. But at the end of sd_probe() the suspend is only scheduled. However the supplier is now free to suspend.
->>>>>>>
->>>>>>> In this log, the usage_count of supplier becomes 0 here:
->>>>>>> [   11.963885][  T117] sd 0:0:0:7: rpm_put_suppliers: [BEF] Supp (0:0:0:49488) usage_count: 1 rpm_active: 2
->>>>>>> [   11.973821][  T117] sd 0:0:0:7: rpm_put_suppliers: [AFT] Supp (0:0:0:49488) usage_count: 0 rpm_active: 1
->>>>>>>
->>>>>>> However, the consumer sd 0:0:0:4 is still active but has released the reference to the supplier:
->>>>>>
->>>>>> If that is the case, then it is an error in PM not UFS.
->>>>>>
->>>>>> A second look at the code around rpm_put_suppliers() does look
->>>>>> potentially racy, since there does not appear to be anything
->>>>>> stopping the runtime_status changing between
->>>>>> spin_unlock_irq(&dev->power.lock) and device_links_read_lock().
->>>>>>
->>>>>> Rafael, can you comment?
->>>>>
->>>>> Indeed, if the device is suspending, changing its PM-runtime status to
->>>>> RPM_SUSPENDED and dropping its power.lock allows a concurrent
->>>>> rpm_resume() to run and resume the device before the suppliers can be
->>>>> suspended.
->>>>>
->>>>> That's incorrect and has been introduced by commit 44cc89f76464 ("PM:
->>>>> runtime: Update device status before letting suppliers suspend").
->>>>>
->>>>> It is probably better to revert that commit and address the original
->>>>> issue in a different way.
->>>>>
->>>> Hello,
->>>> One approach to address the original issue could be to prevent the scsi
->>>> devices from suspending until the probe is completed, perhaps?
->>>
->>> I was talking about the original issue that commit 44cc89f76464
->>> attempted to address.
->>>
->>> I'm not sure if and how it is related to the issue you have been debugging.
->>>
->> Hi Rafael
->> Thanks for clarifying that.
->> Understood.
->> I was referring to the issue that I've been discussing with Adrian.
+O Sat, Mar 13, 2021 at 07:15:54PM +0000, Jonathan Cameron wrote:
+> On Tue,  9 Mar 2021 01:17:15 +0000
+> Joe Sandom <joe.g.sandom@gmail.com> wrote:
 > 
-> For test purposes, you could try reverting 44cc89f76464, making the
-> other changes to the UFS driver, and see if the device_links issue
-> goes away.
+> > Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
+> > 
+> > This driver supports configuration via device tree and sysfs.
+> > Supported channels for raw infrared light intensity,
+> > raw combined light intensity and illuminance in lux.
+> > The driver additionally supports iio events on lower and
+> > upper thresholds.
+> > 
+> > This is a very-high sensitivity light-to-digital converter that
+> > transforms light intensity into a digital signal.
+> > 
+> > Datasheet: https://ams.com/tsl25911#tab/documents
+> > 
+> > Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
 > 
-Hi Adrian
+> A few minor details inline.  Very nearly good to go as far as
+> I am concerned.
+> 
+> Jonathan
+>
+Thanks for the feedback Jonathan, glad to hear that we're nearly ready
+to merge :). The changes for V6 are complete now, will give it a couple
+more days before I send it out in case Andy or anyone else has any points to raise
+> 
+> > ---
+> > 
+> > Changes in v5:
+> > - Added counterpart macro for integration time in ms to field value
+> > - Tidied up some of the GENMASK usage
+> > - Removed defines for ALS persist cycle literals, placed inline instead
+> > - Removed unnecessary array size check & break in tsl2591_als_time_to_fval()
+> > - Removed unnecessary casting and replaced with get_unaligned_le16() in
+> >   tsl2591_read_channel_data()
+> > - Cleaned up some return code checks on i2c calls
+> > - Explicit return codes rather than relying on default value at before
+> >   entering switch statements.
+> > - Combine exit paths on error labels - following proper kernel idiom
+> > - Cleaned up managed exit path for pm runtime
+> > - Using reverse xmas tree convention for local vars in functions
+> > - Corrected datasheet tag
+> > 
+> > Acknowledgements:
+> > - Thanks to Jonathan and Andy for the constructive feedback!
+> > 
+> > NOTE:
+> > Rob has reviewed the binding document and no changes required it
+> > seems. Not sure what the best practice/convention is here; is [PATCH v5]
+> > sufficient or do I still need to include the series number despite
+> > there being no updates to the binding? please advise. Thank you!
+> 
+> Always send out the full series and increase version number for all patches.
+> For those that haven't changed, just state that in the change log.
+> Remember to pick up tags from reviewers though for new versions.
+> 
+> When everyone is happy I'll use the b4 utility which pulls the latest
+> patch series down from lore.kernel.org and figures out any new tags
+> for that last version.  It doesn't go scraping earlier versions for
+> tags though.
+> 
+> I might just have picked it up except for the question over spurious
+> interrupt handling + giving Andy more time for another look if he
+> wants to take one.  We are fairly early in the cycle still though
+> so lets do this the slow and steady way of having a v6.
+> 
+Thanks for this. Will be sure to send the full series out for V6!
+> > 
+> >  drivers/iio/light/Kconfig   |   11 +
+> >  drivers/iio/light/Makefile  |    1 +
+> >  drivers/iio/light/tsl2591.c | 1193 +++++++++++++++++++++++++++++++++++
+> >  3 files changed, 1205 insertions(+)
+> >  create mode 100644 drivers/iio/light/tsl2591.c
+> > 
+> > diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
+> > index 33ad4dd0b5c7..6a69a9a3577a 100644
+> > --- a/drivers/iio/light/Kconfig
+> > +++ b/drivers/iio/light/Kconfig
+> > @@ -501,6 +501,17 @@ config TSL2583
+> >  	  Provides support for the TAOS tsl2580, tsl2581 and tsl2583 devices.
+> >  	  Access ALS data via iio, sysfs.
+> >  
+> > +config TSL2591
+> > +        tristate "TAOS TSL2591 ambient light sensor"
+> > +        depends on I2C
+> > +        help
+> > +          Select Y here for support of the AMS/TAOS TSL2591 ambient light sensor,
+> > +          featuring channels for combined visible + IR intensity and lux illuminance.
+> > +          Access data via iio and sysfs. Supports iio_events.
+> > +
+> > +          To compile this driver as a module, select M: the
+> > +          module will be called tsl2591.
+> > +
+> >  config TSL2772
+> >  	tristate "TAOS TSL/TMD2x71 and TSL/TMD2x72 Family of light and proximity sensors"
+> >  	depends on I2C
+> > diff --git a/drivers/iio/light/Makefile b/drivers/iio/light/Makefile
+> > index ea376deaca54..d10912faf964 100644
+> > --- a/drivers/iio/light/Makefile
+> > +++ b/drivers/iio/light/Makefile
+> > @@ -48,6 +48,7 @@ obj-$(CONFIG_ST_UVIS25_SPI)	+= st_uvis25_spi.o
+> >  obj-$(CONFIG_TCS3414)		+= tcs3414.o
+> >  obj-$(CONFIG_TCS3472)		+= tcs3472.o
+> >  obj-$(CONFIG_TSL2583)		+= tsl2583.o
+> > +obj-$(CONFIG_TSL2591)		+= tsl2591.o
+> >  obj-$(CONFIG_TSL2772)		+= tsl2772.o
+> >  obj-$(CONFIG_TSL4531)		+= tsl4531.o
+> >  obj-$(CONFIG_US5182D)		+= us5182d.o
+> > diff --git a/drivers/iio/light/tsl2591.c b/drivers/iio/light/tsl2591.c
+> > new file mode 100644
+> > index 000000000000..ddecb32e206d
+> > --- /dev/null
+> > +++ b/drivers/iio/light/tsl2591.c
+> > @@ -0,0 +1,1193 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (C) 2020 Joe Sandom <joe.g.sandom@gmail.com>
+> > + *
+> > + * Datasheet: https://ams.com/tsl25911#tab/documents
+> > + *
+> > + * Device driver for the TAOS TSL2591. This is a very-high sensitivity
+> > + * light-to-digital converter that transforms light intensity into a digital
+> > + * signal.
+> > + */
+> > +
+> > +#include <asm/unaligned.h>
+> > +#include <linux/bitfield.h>
+> > +#include <linux/debugfs.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/pm_runtime.h>
+> > +
+> > +#include <linux/iio/events.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/sysfs.h>
+> > +
+> > +/* ADC integration time, field value to time in ms*/
+> > +#define TSL2591_FVAL_TO_ATIME(x) (((x) + 1) * 100)
+> > +/* ADC integration time, time in ms to field value */
+> > +#define TSL2591_ATIME_TO_FVAL(x) (((x) / 100) - 1)
+> > +
+> > +/* TSL2591 register set */
+> > +#define TSL2591_ENABLE      0x00
+> > +#define TSL2591_CONTROL     0x01
+> > +#define TSL2591_AILTL       0x04
+> > +#define TSL2591_AILTH       0x05
+> > +#define TSL2591_AIHTL       0x06
+> > +#define TSL2591_AIHTH       0x07
+> > +#define TSL2591_NP_AILTL    0x08
+> > +#define TSL2591_NP_AILTH    0x09
+> > +#define TSL2591_NP_AIHTL    0x0A
+> > +#define TSL2591_NP_AIHTH    0x0B
+> > +#define TSL2591_PERSIST     0x0C
+> > +#define TSL2591_PACKAGE_ID  0x11
+> > +#define TSL2591_DEVICE_ID   0x12
+> > +#define TSL2591_STATUS      0x13
+> > +#define TSL2591_C0_DATAL    0x14
+> > +#define TSL2591_C0_DATAH    0x15
+> > +#define TSL2591_C1_DATAL    0x16
+> > +#define TSL2591_C1_DATAH    0x17
+> > +
+> > +/* TSL2591 command register definitions */
+> > +#define TSL2591_CMD_NOP             (BIT(5) | BIT(7))
+> > +#define TSL2591_CMD_SF              GENMASK(7, 5)
+> > +#define TSL2591_CMD_SF_INTSET       (BIT(2) | TSL2591_CMD_SF)
+> > +#define TSL2591_CMD_SF_CALS_I       (BIT(0) | BIT(2) | TSL2591_CMD_SF)
+> > +#define TSL2591_CMD_SF_CALS_NPI     (GENMASK(2, 0) | TSL2591_CMD_SF)
+> > +#define TSL2591_CMD_SF_CNP_ALSI     (BIT(1) | BIT(3) | TSL2591_CMD_SF)
+> > +
+> > +/* TSL2591 enable register definitions */
+> > +#define TSL2591_PWR_ON              BIT(0)
+> > +#define TSL2591_PWR_OFF             (0 << 0)
+> > +#define TSL2591_ENABLE_ALS          BIT(1)
+> > +#define TSL2591_ENABLE_ALS_INT      BIT(4)
+> > +#define TSL2591_ENABLE_SLEEP_INT    BIT(6)
+> > +#define TSL2591_ENABLE_NP_INT       BIT(7)
+> > +
+> > +/* TSL2591 control register definitions */
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_100MS  (0 << 0)
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_200MS  BIT(0)
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_300MS  BIT(1)
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_400MS  GENMASK(1, 0)
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_500MS  BIT(2)
+> > +#define TSL2591_CTRL_ALS_INTEGRATION_600MS  (BIT(0) | BIT(2))
+> > +#define TSL2591_CTRL_ALS_LOW_GAIN           (0 << 0)
+> > +#define TSL2591_CTRL_ALS_MED_GAIN           BIT(4)
+> > +#define TSL2591_CTRL_ALS_HIGH_GAIN          BIT(5)
+> > +#define TSL2591_CTRL_ALS_MAX_GAIN           GENMASK(5, 4)
+> > +#define TSL2591_CTRL_SYS_RESET              BIT(7)
+> > +
+> > +/* TSL2591 persist register definitions */
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_0        (0 << 0)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_ANY      BIT(0)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_2        BIT(1)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_3        GENMASK(1, 0)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_5        BIT(2)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_10       (BIT(0) | BIT(2))
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_15       GENMASK(2, 1)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_20       GENMASK(2, 0)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_25       BIT(3)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_30       (BIT(0) | BIT(3))
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_35       (BIT(1) | BIT(3))
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_40       (GENMASK(1, 0) | BIT(3))
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_45       GENMASK(3, 2)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_50       (BIT(0) | GENMASK(3, 2))
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_55       GENMASK(3, 1)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_60       GENMASK(3, 0)
+> > +#define TSL2591_PRST_ALS_INT_CYCLE_MAX      TSL2591_PRST_ALS_INT_CYCLE_60
+> > +
+> > +/* TSL2591 PID register mask */
+> > +#define TSL2591_PACKAGE_ID_MASK    GENMASK(5, 4)
+> > +
+> > +/* TSL2591 ID register mask */
+> > +#define TSL2591_DEVICE_ID_MASK     GENMASK(7, 0)
+> > +
+> > +/* TSL2591 status register masks */
+> > +#define TSL2591_STS_ALS_VALID_MASK   BIT(0)
+> > +#define TSL2591_STS_ALS_INT_MASK     BIT(4)
+> > +#define TSL2591_STS_NPERS_INT_MASK   BIT(5)
+> > +#define TSL2591_STS_VAL_HIGH_MASK    BIT(0)
+> > +
+> > +/* TSL2591 constant values */
+> > +#define TSL2591_PACKAGE_ID_VAL  0x00
+> > +#define TSL2591_DEVICE_ID_VAL   0x50
+> > +
+> > +/* Power off suspend delay time MS */
+> > +#define TSL2591_POWER_OFF_DELAY_MS   2000
+> > +
+> > +/* TSL2591 default values */
+> > +#define TSL2591_DEFAULT_ALS_INT_TIME          TSL2591_CTRL_ALS_INTEGRATION_300MS
+> > +#define TSL2591_DEFAULT_ALS_GAIN              TSL2591_CTRL_ALS_MED_GAIN
+> > +#define TSL2591_DEFAULT_ALS_PERSIST           TSL2591_PRST_ALS_INT_CYCLE_ANY
+> > +#define TSL2591_DEFAULT_ALS_LOWER_THRESH      100
+> > +#define TSL2591_DEFAULT_ALS_UPPER_THRESH      1500
+> > +
+> > +/* TSL2591 number of data registers */
+> > +#define TSL2591_NUM_DATA_REGISTERS     4
+> > +
+> > +/* TSL2591 number of valid status reads on ADC complete */
+> > +#define TSL2591_ALS_STS_VALID_COUNT    10
+> > +
+> > +/* TSL2591 maximum values */
+> > +#define TSL2591_MAX_ALS_INT_TIME_MS    600
+> > +#define TSL2591_ALS_MAX_VALUE	       (BIT(16) - 1)
+> > +
+> > +/*
+> > + * LUX calculations;
+> > + * AGAIN values from Adafruits TSL2591 Arduino library
+> > + * https://github.com/adafruit/Adafruit_TSL2591_Library
+> > + */
+> > +#define TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER   1
+> > +#define TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER   25
+> > +#define TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER  428
+> > +#define TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER   9876
+> > +#define TSL2591_LUX_COEFFICIENT                408
+> > +
+> > +struct tsl2591_als_settings {
+> > +	u16 als_lower_thresh;
+> > +	u16 als_upper_thresh;
+> > +	u8 als_int_time;
+> > +	u8 als_persist;
+> > +	u8 als_gain;
+> > +};
+> > +
+> > +struct tsl2591_chip {
+> > +	struct tsl2591_als_settings als_settings;
+> > +	struct i2c_client *client;
+> > +	/*
+> > +	 * Keep als_settings in sync with hardware state
+> > +	 * and ensure multiple readers are serialized.
+> > +	 */
+> > +	struct mutex als_mutex;
+> > +	bool events_enabled;
+> > +};
+> > +
+> > +/*
+> > + * Period table is ALS persist cycle x integration time setting
+> > + * Integration times: 100ms, 200ms, 300ms, 400ms, 500ms, 600ms
+> > + * ALS cycles: 1, 2, 3, 5, 10, 20, 25, 30, 35, 40, 45, 50, 55, 60
+> > + */
+> > +static const char * const tsl2591_als_period_list[] = {
+> > +	"0.1 0.2 0.3 0.5 1.0 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0",
+> > +	"0.2 0.4 0.6 1.0 2.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0",
+> > +	"0.3 0.6 0.9 1.5 3.0 6.0 7.5 9.0 10.5 12.0 13.5 15.0 16.5 18.0",
+> > +	"0.4 0.8 1.2 2.0 4.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0 22.0 24.0",
+> > +	"0.5 1.0 1.5 2.5 5.0 10.0 12.5 15.0 17.5 20.0 22.5 25.0 27.5 30.0",
+> > +	"0.6 1.2 1.8 3.0 6.0 12.0 15.0 18.0 21.0 24.0 27.0 30.0 33.0 36.0",
+> > +};
+> > +
+> > +static const int tsl2591_int_time_available[] = {
+> > +	100, 200, 300, 400, 500, 600,
+> > +};
+> > +
+> > +static const int tsl2591_calibscale_available[] = {
+> > +	1, 25, 428, 9876,
+> > +};
+> > +
+> > +static int tsl2591_gain_to_multiplier(const u8 als_gain)
+> > +{
+> > +	switch (als_gain) {
+> > +	case TSL2591_CTRL_ALS_LOW_GAIN:
+> > +		return TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER;
+> > +	case TSL2591_CTRL_ALS_MED_GAIN:
+> > +		return TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER;
+> > +	case TSL2591_CTRL_ALS_HIGH_GAIN:
+> > +		return TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER;
+> > +	case TSL2591_CTRL_ALS_MAX_GAIN:
+> > +		return TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static u8 tsl2591_multiplier_to_gain(const u32 multiplier)
+> > +{
+> > +	switch (multiplier) {
+> > +	case TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER:
+> > +		return TSL2591_CTRL_ALS_LOW_GAIN;
+> > +	case TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER:
+> > +		return TSL2591_CTRL_ALS_MED_GAIN;
+> > +	case TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER:
+> > +		return TSL2591_CTRL_ALS_HIGH_GAIN;
+> > +	case TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER:
+> > +		return TSL2591_CTRL_ALS_MAX_GAIN;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_persist_cycle_to_lit(const u8 als_persist)
+> > +{
+> > +	switch (als_persist) {
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
+> > +		return 1;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_2:
+> > +		return 2;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_3:
+> > +		return 3;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_5:
+> > +		return 5;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_10:
+> > +		return 10;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_15:
+> > +		return 15;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_20:
+> > +		return 20;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_25:
+> > +		return 25;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_30:
+> > +		return 30;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_35:
+> > +		return 35;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_40:
+> > +		return 40;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_45:
+> > +		return 45;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_50:
+> > +		return 50;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_55:
+> > +		return 55;
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_60:
+> > +		return 60;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_persist_lit_to_cycle(const u8 als_persist)
+> > +{
+> > +	switch (als_persist) {
+> > +	case 1:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_ANY;
+> > +	case 2:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_2;
+> > +	case 3:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_3;
+> > +	case 5:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_5;
+> > +	case 10:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_10;
+> > +	case 15:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_15;
+> > +	case 20:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_20;
+> > +	case 25:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_25;
+> > +	case 30:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_30;
+> > +	case 35:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_35;
+> > +	case 40:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_40;
+> > +	case 45:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_45;
+> > +	case 50:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_50;
+> > +	case 55:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_55;
+> > +	case 60:
+> > +		return TSL2591_PRST_ALS_INT_CYCLE_60;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_compatible_int_time(struct tsl2591_chip *chip,
+> > +				       const u32 als_integration_time)
+> > +{
+> > +	switch (als_integration_time) {
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_100MS:
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_200MS:
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_300MS:
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_400MS:
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_500MS:
+> > +	case TSL2591_CTRL_ALS_INTEGRATION_600MS:
+> > +		return 0;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_als_time_to_fval(const u32 als_integration_time)
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(tsl2591_int_time_available); ++i) {
+> > +		if (als_integration_time == tsl2591_int_time_available[i])
+> > +			return TSL2591_ATIME_TO_FVAL(als_integration_time);
+> > +	}
+> > +
+> > +	return -EINVAL;
+> > +}
+> > +
+> > +static int tsl2591_compatible_gain(struct tsl2591_chip *chip, const u8 als_gain)
+> > +{
+> > +	switch (als_gain) {
+> > +	case TSL2591_CTRL_ALS_LOW_GAIN:
+> > +	case TSL2591_CTRL_ALS_MED_GAIN:
+> > +	case TSL2591_CTRL_ALS_HIGH_GAIN:
+> > +	case TSL2591_CTRL_ALS_MAX_GAIN:
+> > +		return 0;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_compatible_als_persist_cycle(struct tsl2591_chip *chip,
+> > +						const u32 als_persist)
+> > +{
+> > +	switch (als_persist) {
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_2:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_3:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_5:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_10:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_15:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_20:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_25:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_30:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_35:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_40:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_45:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_50:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_55:
+> > +	case TSL2591_PRST_ALS_INT_CYCLE_60:
+> > +		return 0;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_wait_adc_complete(struct tsl2591_chip *chip)
+> > +{
+> > +	struct tsl2591_als_settings settings = chip->als_settings;
+> > +	struct i2c_client *client = chip->client;
+> > +	int delay;
+> > +	int ret;
+> > +	int i;
+> > +
+> > +	delay = TSL2591_FVAL_TO_ATIME(settings.als_int_time);
+> > +	if (!delay)
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * Sleep for ALS integration time to allow enough time
+> > +	 * for an ADC read cycle to complete. Check status after
+> > +	 * delay for ALS valid.
+> > +	 */
+> > +	msleep(delay);
+> > +
+> > +	/* Check for status ALS valid flag for up to 100ms */
+> > +	for (i = 0; i < TSL2591_ALS_STS_VALID_COUNT; ++i) {
+> > +		ret = i2c_smbus_read_byte_data(client,
+> > +					       TSL2591_CMD_NOP | TSL2591_STATUS);
+> > +		if (ret < 0) {
+> > +			dev_err(&client->dev, "Failed to read register\n");
+> > +			return -EINVAL;
+> > +		}
+> > +		ret = FIELD_GET(TSL2591_STS_ALS_VALID_MASK, ret);
+> > +		if (ret == TSL2591_STS_VAL_HIGH_MASK)
+> > +			break;
+> > +
+> > +		if (i == TSL2591_ALS_STS_VALID_COUNT - 1)
+> > +			return -ENODATA;
+> > +
+> > +		usleep_range(9000, 10000);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/*
+> > + * tsl2591_read_channel_data - Reads raw channel data and calculates lux
+> > + *
+> > + * Formula for lux calculation;
+> > + * Derived from Adafruit's TSL2591 library
+> > + * Link: https://github.com/adafruit/Adafruit_TSL2591_Library
+> > + * Counts Per Lux (CPL) = (ATIME_ms * AGAIN) / LUX DF
+> > + * lux = ((C0DATA - C1DATA) * (1 - (C1DATA / C0DATA))) / CPL
+> > + *
+> > + * Scale values to get more representative value of lux i.e.
+> > + * lux = ((C0DATA - C1DATA) * (1000 - ((C1DATA * 1000) / C0DATA))) / CPL
+> > + *
+> > + * Channel 0 = IR + Visible
+> > + * Channel 1 = IR only
+> > + */
+> > +static int tsl2591_read_channel_data(struct iio_dev *indio_dev,
+> > +				     struct iio_chan_spec const *chan,
+> > +				     int *val, int *val2)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	struct tsl2591_als_settings *settings = &chip->als_settings;
+> > +	struct i2c_client *client = chip->client;
+> > +
+> > +	u8 als_data[TSL2591_NUM_DATA_REGISTERS];
+> > +	int counts_per_lux, int_time_fval, gain_multi, lux;
+> > +	u16 als_ch0, als_ch1;
+> > +	int ret;
+> > +
+> > +	ret = tsl2591_wait_adc_complete(chip);
+> > +	if (ret < 0) {
+> > +		dev_err(&client->dev, "No data available. Err: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = i2c_smbus_read_i2c_block_data(client,
+> > +					    TSL2591_CMD_NOP | TSL2591_C0_DATAL,
+> > +					    sizeof(als_data), als_data);
+> > +	if (ret < 0) {
+> > +		dev_err(&client->dev, "Failed to read data bytes");
+> > +			return ret;
+> > +	}
+> > +
+> > +	als_ch0 = get_unaligned_le16(&als_data[0]);
+> > +	als_ch1 = get_unaligned_le16(&als_data[2]);
+> > +
+> > +	switch (chan->type) {
+> > +	case IIO_INTENSITY:
+> > +		if (chan->channel2 == IIO_MOD_LIGHT_BOTH)
+> > +			*val = als_ch0;
+> > +		else if (chan->channel2 == IIO_MOD_LIGHT_IR)
+> > +			*val = als_ch1;
+> > +		else
+> > +			return -EINVAL;
+> > +		break;
+> > +	case IIO_LIGHT:
+> > +		gain_multi = tsl2591_gain_to_multiplier(settings->als_gain);
+> > +		if (gain_multi < 0) {
+> > +			dev_err(&client->dev, "Invalid multiplier");
+> > +			return gain_multi;
+> > +		}
+> > +
+> > +		int_time_fval = TSL2591_FVAL_TO_ATIME(settings->als_int_time);
+> > +		/* Calculate counts per lux value */
+> > +		counts_per_lux = (int_time_fval * gain_multi) / TSL2591_LUX_COEFFICIENT;
+> > +
+> > +		dev_dbg(&client->dev, "Counts Per Lux: %d\n", counts_per_lux);
+> > +
+> > +		/* Calculate lux value */
+> > +		lux = ((als_ch0 - als_ch1) *
+> > +		       (1000 - ((als_ch1 * 1000) / als_ch0))) / counts_per_lux;
+> > +
+> > +		dev_dbg(&client->dev, "Raw lux calculation: %d\n", lux);
+> > +
+> > +		/* Divide by 1000 to get real lux value before scaling */
+> > +		*val = lux / 1000;
+> > +
+> > +		/* Get the decimal part of lux reading */
+> > +		*val2 = ((lux - (*val * 1000)) * 1000);
+> > +
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int tsl2591_set_als_gain_int_time(struct tsl2591_chip *chip)
+> > +{
+> > +	struct tsl2591_als_settings als_settings = chip->als_settings;
+> > +	struct i2c_client *client = chip->client;
+> > +	int ret;
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_CONTROL,
+> > +					als_settings.als_int_time | als_settings.als_gain);
+> > +	if (ret)
+> > +		dev_err(&client->dev, "Failed to set als gain & int time\n");
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_set_als_thresholds(struct tsl2591_chip *chip)
+> > +{
+> > +	struct tsl2591_als_settings als_settings = chip->als_settings;
+> > +	struct i2c_client *client = chip->client;
+> > +
+> > +	u8 als_lower_l, als_lower_h, als_upper_l, als_upper_h;
+> > +	int ret;
+> > +
+> > +	if (als_settings.als_lower_thresh >= als_settings.als_upper_thresh)
+> > +		return -EINVAL;
+> > +
+> > +	if (als_settings.als_upper_thresh > TSL2591_ALS_MAX_VALUE)
+> > +		return -EINVAL;
+> > +
+> > +	if (als_settings.als_upper_thresh < als_settings.als_lower_thresh)
+> > +		return -EINVAL;
+> > +
+> > +	als_lower_l = (als_settings.als_lower_thresh & 0xFF);
+> > +	als_lower_h = ((als_settings.als_lower_thresh >> 8) & 0xFF);
+> > +	als_upper_l = (als_settings.als_upper_thresh & 0xFF);
+> > +	als_upper_h = ((als_settings.als_upper_thresh >> 8) & 0xFF);
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_AILTL,
+> > +					als_lower_l);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "Failed to set als lower threshold\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_AILTH,
+> > +					als_lower_h);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "Failed to set als lower threshold\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_AIHTL,
+> > +					als_upper_l);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "Failed to set als upper threshold\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_AIHTH,
+> > +					als_upper_h);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "Failed to set als upper threshold\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int tsl2591_set_als_persist_cycle(struct tsl2591_chip *chip)
+> > +{
+> > +	struct tsl2591_als_settings als_settings = chip->als_settings;
+> > +	struct i2c_client *client = chip->client;
+> > +	int ret;
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_PERSIST,
+> > +					als_settings.als_persist);
+> > +	if (ret)
+> > +		dev_err(&client->dev, "Failed to set als persist cycle\n");
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_set_power_state(struct tsl2591_chip *chip, u8 state)
+> > +{
+> > +	struct i2c_client *client = chip->client;
+> > +	int ret;
+> > +
+> > +	ret = i2c_smbus_write_byte_data(client,
+> > +					TSL2591_CMD_NOP | TSL2591_ENABLE,
+> > +					state);
+> > +	if (ret)
+> > +		dev_err(&client->dev,
+> > +			"Failed to set the power state to %#04x\n", state);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static ssize_t tsl2591_in_illuminance_period_available_show(struct device *dev,
+> > +							    struct device_attribute *attr,
+> > +							    char *buf)
+> > +{
+> > +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +
+> > +	return snprintf(buf, PAGE_SIZE, "%s\n",
+> > +		       tsl2591_als_period_list[chip->als_settings.als_int_time]);
+> > +}
+> > +
+> > +static IIO_DEVICE_ATTR_RO(tsl2591_in_illuminance_period_available, 0);
+> > +
+> > +static struct attribute *tsl2591_event_attrs_ctrl[] = {
+> > +	&iio_dev_attr_tsl2591_in_illuminance_period_available.dev_attr.attr,
+> > +	NULL
+> > +};
+> > +
+> > +static const struct attribute_group tsl2591_event_attribute_group = {
+> > +	.attrs = tsl2591_event_attrs_ctrl,
+> > +};
+> > +
+> > +static const struct iio_event_spec tsl2591_events[] = {
+> > +	{
+> > +		.type = IIO_EV_TYPE_THRESH,
+> > +		.dir = IIO_EV_DIR_RISING,
+> > +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> > +	}, {
+> > +		.type = IIO_EV_TYPE_THRESH,
+> > +		.dir = IIO_EV_DIR_FALLING,
+> > +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> > +	}, {
+> > +		.type = IIO_EV_TYPE_THRESH,
+> > +		.dir = IIO_EV_DIR_EITHER,
+> > +		.mask_separate = BIT(IIO_EV_INFO_PERIOD) |
+> > +				BIT(IIO_EV_INFO_ENABLE),
+> > +	},
+> > +};
+> > +
+> > +static const struct iio_chan_spec tsl2591_channels[] = {
+> > +	{
+> > +		.type = IIO_INTENSITY,
+> > +		.modified = 1,
+> > +		.channel2 = IIO_MOD_LIGHT_IR,
+> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> > +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
+> > +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
+> > +	},
+> > +	{
+> > +		.type = IIO_INTENSITY,
+> > +		.modified = 1,
+> > +		.channel2 = IIO_MOD_LIGHT_BOTH,
+> > +		.event_spec = tsl2591_events,
+> > +		.num_event_specs = ARRAY_SIZE(tsl2591_events),
+> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> > +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
+> > +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
+> > +	},
+> > +	{
+> > +		.type = IIO_LIGHT,
+> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
+> > +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
+> > +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
+> > +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
+> > +	},
+> > +};
+> > +
+> > +static int tsl2591_read_raw(struct iio_dev *indio_dev,
+> > +			    struct iio_chan_spec const *chan,
+> > +			    int *val, int *val2, long mask)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	struct i2c_client *client = chip->client;
+> > +	int ret;
+> > +
+> > +	pm_runtime_get_sync(&client->dev);
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +
+> > +	switch (mask) {
+> > +	case IIO_CHAN_INFO_RAW:
+> > +		if (chan->type != IIO_INTENSITY) {
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
+> > +		if (ret < 0)
+> > +			break;
+> > +
+> > +		ret = IIO_VAL_INT;
+> > +		break;
+> > +	case IIO_CHAN_INFO_PROCESSED:
+> > +		if (chan->type != IIO_LIGHT) {
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
+> > +		if (ret < 0)
+> > +			break;
+> > +
+> > +		ret = IIO_VAL_INT_PLUS_MICRO;
+> > +		break;
+> > +	case IIO_CHAN_INFO_INT_TIME:
+> > +		if (chan->type != IIO_INTENSITY) {
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		*val = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
+> > +		ret = IIO_VAL_INT;
+> > +		break;
+> > +	case IIO_CHAN_INFO_CALIBSCALE:
+> > +		if (chan->type != IIO_INTENSITY) {
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		*val = tsl2591_gain_to_multiplier(chip->als_settings.als_gain);
+> > +		ret = IIO_VAL_INT;
+> > +		break;
+> > +	default:
+> > +		ret = -EINVAL;
+> > +	}
+> > +
+> > +	mutex_unlock(&chip->als_mutex);
+> > +
+> > +	pm_runtime_mark_last_busy(&client->dev);
+> > +	pm_runtime_put_autosuspend(&client->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_write_raw(struct iio_dev *indio_dev,
+> > +			     struct iio_chan_spec const *chan,
+> > +			     int val, int val2, long mask)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +
+> > +	u32 int_time;
+> > +	u8 gain;
+> > +	int ret;
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +
+> > +	switch (mask) {
+> > +	case IIO_CHAN_INFO_INT_TIME:
+> > +		int_time = tsl2591_als_time_to_fval(val);
+> > +		if (int_time < 0) {
+> > +			ret = int_time;
+> > +			goto err;
+> > +		}
+> > +		ret = tsl2591_compatible_int_time(chip, int_time);
+> > +		if (ret < 0)
+> > +			goto err;
+> > +
+> > +		chip->als_settings.als_int_time = int_time;
+> > +		break;
+> > +	case IIO_CHAN_INFO_CALIBSCALE:
+> > +		gain = tsl2591_multiplier_to_gain(val);
+> > +		if (gain < 0) {
+> > +			ret = gain;
+> > +			goto err;
+> > +		}
+> > +		ret = tsl2591_compatible_gain(chip, gain);
+> > +		if (ret < 0)
+> > +			goto err;
+> > +
+> > +		chip->als_settings.als_gain = gain;
+> > +		break;
+> > +	default:
+> > +		ret = -EINVAL;
+> > +		goto err;
+> > +	}
+> > +
+> > +	ret = tsl2591_set_als_gain_int_time(chip);
+> > +	if (ret < 0)
+> > +		goto err;
+> > +
+> > +err:
+> > +	mutex_unlock(&chip->als_mutex);
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_read_available(struct iio_dev *indio_dev,
+> > +				  struct iio_chan_spec const *chan,
+> > +				  const int **vals, int *type, int *length,
+> > +				  long mask)
+> > +{
+> > +	switch (mask) {
+> > +	case IIO_CHAN_INFO_INT_TIME:
+> > +		*length = ARRAY_SIZE(tsl2591_int_time_available);
+> > +		*vals = tsl2591_int_time_available;
+> > +		*type = IIO_VAL_INT;
+> > +		return IIO_AVAIL_LIST;
+> > +
+> > +	case IIO_CHAN_INFO_CALIBSCALE:
+> > +		*length = ARRAY_SIZE(tsl2591_calibscale_available);
+> > +		*vals = tsl2591_calibscale_available;
+> > +		*type = IIO_VAL_INT;
+> > +		return IIO_AVAIL_LIST;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+> > +
+> > +static int tsl2591_read_event_value(struct iio_dev *indio_dev,
+> > +				    const struct iio_chan_spec *chan,
+> > +				    enum iio_event_type type,
+> > +				    enum iio_event_direction dir,
+> > +				    enum iio_event_info info, int *val,
+> > +				    int *val2)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	struct i2c_client *client = chip->client;
+> > +	int als_persist, int_time, period;
+> > +	int ret;
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +
+> > +	switch (info) {
+> > +	case IIO_EV_INFO_VALUE:
+> > +		switch (dir) {
+> > +		case IIO_EV_DIR_RISING:
+> > +			*val = chip->als_settings.als_upper_thresh;
+> > +			break;
+> > +		case IIO_EV_DIR_FALLING:
+> > +			*val = chip->als_settings.als_lower_thresh;
+> > +			break;
+> > +		default:
+> > +			ret = -EINVAL;
+> > +			goto err;
+> > +		}
+> > +		ret = IIO_VAL_INT;
+> > +		break;
+> > +	case IIO_EV_INFO_PERIOD:
+> > +		ret = i2c_smbus_read_byte_data(client,
+> > +					       TSL2591_CMD_NOP | TSL2591_PERSIST);
+> > +		if (ret <= 0 || ret > TSL2591_PRST_ALS_INT_CYCLE_MAX)
+> > +			goto err;
+> > +
+> > +		als_persist = tsl2591_persist_cycle_to_lit(ret);
+> > +		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
+> > +		period = als_persist * (int_time * MSEC_PER_SEC);
+> > +
+> > +		*val = period / USEC_PER_SEC;
+> > +		*val2 = period % USEC_PER_SEC;
+> > +
+> > +		ret = IIO_VAL_INT_PLUS_MICRO;
+> > +		break;
+> > +	default:
+> > +		ret = -EINVAL;
+> > +		goto err;
+> > +	}
+> > +
+> > +err:
+> > +	mutex_unlock(&chip->als_mutex);
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_write_event_value(struct iio_dev *indio_dev,
+> > +				     const struct iio_chan_spec *chan,
+> > +				     enum iio_event_type type,
+> > +				     enum iio_event_direction dir,
+> > +				     enum iio_event_info info, int val,
+> > +				     int val2)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	int period, int_time, als_persist;
+> > +	int ret;
+> > +
+> > +	if (val < 0 || val2 < 0)
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +
+> > +	switch (info) {
+> > +	case IIO_EV_INFO_VALUE:
+> > +		if (val > TSL2591_ALS_MAX_VALUE) {
+> > +			ret = -EINVAL;
+> > +			goto err;
+> > +		}
+> > +
+> > +		/*
+> Suggestion below to wrap setting up cached state and hardware into
+> one call could also incorporate these adjustments.
+> 
+> ret = tsl2591_set_als_threshold_upper(chip, val);
+> Could be responsible for shifting the lower threshold, writing cache
+> and writing to hardware.
+> 
+Absolutely, definitely room for improvement here. I've taken the
+suggestion and have implemented in V6.
 
-Thanks for the review and comments.
+> > +		 * Lower threshold should not be greater than upper. If this
+> > +		 * is the case, then assert upper threshold to new lower
+> > +		 * threshold + 1 to avoid ordering issues when setting
+> > +		 * thresholds.
+> > +		 */
+> > +		if (dir == IIO_EV_DIR_FALLING)
+> > +			if (val > chip->als_settings.als_upper_thresh)
+> > +				chip->als_settings.als_upper_thresh = val + 1;
+> > +
+> > +		/*
+> > +		 * Upper threshold should not be less than lower. If this
+> > +		 * is the case, then assert lower threshold to new upper
+> > +		 * threshold - 1 to avoid ordering issues when setting
+> > +		 * thresholds.
+> > +		 */
+> > +		if (dir == IIO_EV_DIR_RISING)
+> > +			if (val < chip->als_settings.als_lower_thresh)
+> > +				chip->als_settings.als_lower_thresh = val - 1;
+> > +
+> > +		switch (dir) {
+> > +		case IIO_EV_DIR_RISING:
+> > +			chip->als_settings.als_upper_thresh = val;
+> > +			ret = tsl2591_set_als_thresholds(chip);
+> > +			if (ret < 0)
+> > +				goto err;
+> > +			break;
+> > +		case IIO_EV_DIR_FALLING:
+> > +			chip->als_settings.als_lower_thresh = val;
+> > +			ret = tsl2591_set_als_thresholds(chip);
+> > +			if (ret < 0)
+> > +				goto err;
+> > +			break;
+> > +		default:
+> > +			ret = -EINVAL;
+> > +			goto err;
+> > +		}
+> > +		break;
+> > +	case IIO_EV_INFO_PERIOD:
+> > +		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
+> > +
+> > +		period = ((val * MSEC_PER_SEC) +
+> > +			 (val2 / MSEC_PER_SEC)) / int_time;
+> > +
+> > +		als_persist = tsl2591_persist_lit_to_cycle(period);
+> > +		if (als_persist < 0) {
+> > +			ret = -EINVAL;
+> > +			goto err;
+> > +		}
+> > +
+> > +		ret = tsl2591_compatible_als_persist_cycle(chip, als_persist);
+> > +		if (ret < 0)
+> > +			goto err;
+> > +		chip->als_settings.als_persist = als_persist;
+> > +		ret = tsl2591_set_als_persist_cycle(chip);
+> 
+> This is very much a suggestion, feel free to ignore!
+> 
+> Rather than this approach a) set the value in chip, b) call function to update hardware,
+> how about instead having
+> 		ret = tsl2591_set_als_persist_cycle(chip, als_persist);
+> which does both those actions?
+> Bit trickier for threshold cases, but could be done there by having separate
+> upper and lower versions.
+>
+Agree, cleaner approach doing it this way. Implemented in V6!
 
-I addressed the comments and tested it. I still see the device_links 
-issue. I've pushed the change that I tested as v12.
+> > +		if (ret < 0)
+> > +			goto err;
+> > +		break;
+> > +	default:
+> > +		ret = -EINVAL;
+> > +		goto err;
+> > +	}
+> > +
+> > +err:
+> > +	mutex_unlock(&chip->als_mutex);
+> > +	return ret;
+> > +}
+> > +
+> > +static int tsl2591_read_event_config(struct iio_dev *indio_dev,
+> > +				     const struct iio_chan_spec *chan,
+> > +				     enum iio_event_type type,
+> > +				     enum iio_event_direction dir)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +
+> > +	return chip->events_enabled;
+> > +}
+> > +
+> > +static int tsl2591_write_event_config(struct iio_dev *indio_dev,
+> > +				      const struct iio_chan_spec *chan,
+> > +				      enum iio_event_type type,
+> > +				      enum iio_event_direction dir,
+> > +				      int state)
+> > +{
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	struct i2c_client *client = chip->client;
+> > +
+> > +	if (state && !chip->events_enabled) {
+> > +		chip->events_enabled = true;
+> > +		pm_runtime_get_sync(&client->dev);
+> > +	} else if (!state && chip->events_enabled) {
+> > +		chip->events_enabled = false;
+> > +		pm_runtime_mark_last_busy(&client->dev);
+> > +		pm_runtime_put_autosuspend(&client->dev);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct iio_info tsl2591_info = {
+> > +	.event_attrs = &tsl2591_event_attribute_group,
+> > +	.read_raw = tsl2591_read_raw,
+> > +	.write_raw = tsl2591_write_raw,
+> > +	.read_avail = tsl2591_read_available,
+> > +	.read_event_value = tsl2591_read_event_value,
+> > +	.write_event_value = tsl2591_write_event_value,
+> > +	.read_event_config = tsl2591_read_event_config,
+> > +	.write_event_config = tsl2591_write_event_config,
+> > +};
+> > +
+> > +static int __maybe_unused tsl2591_suspend(struct device *dev)
+> > +{
+> > +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	int ret;
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +	ret = tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
+> > +	mutex_unlock(&chip->als_mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int __maybe_unused tsl2591_resume(struct device *dev)
+> > +{
+> > +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	int power_state;
+> > +	int ret;
+> > +
+> > +	if (chip->events_enabled)
+> > +		power_state = TSL2591_PWR_ON |
+> > +			      TSL2591_ENABLE_ALS_INT |
+> > +			      TSL2591_ENABLE_ALS;
+> > +	else
+> > +		power_state = TSL2591_PWR_ON | TSL2591_ENABLE_ALS;
+> 
+> Trivial, but it might be clearer that we are just setting one extra flag if
+> written as
+> 
+> 	int power_state = TSL2591_PWR_ON | TSL2591_ENABLE_ALS;
+> 
+> 	if (chip->events_enabled)
+> 		power_state |= TSL2591_ENABLE_ALS_INT;
+>
+Absolutely. Much clearer! Implemented in V6
 
-# grep -H . /sys/bus/scsi/devices/*/power/runtime_status 
-          <
-/sys/bus/scsi/devices/0:0:0:0/power/runtime_status:suspending <
-/sys/bus/scsi/devices/0:0:0:1/power/runtime_status:suspended
-/sys/bus/scsi/devices/0:0:0:2/power/runtime_status:suspended
-/sys/bus/scsi/devices/0:0:0:3/power/runtime_status:suspending <
-/sys/bus/scsi/devices/0:0:0:4/power/runtime_status:suspending <
-/sys/bus/scsi/devices/0:0:0:49456/power/runtime_status:suspended
-/sys/bus/scsi/devices/0:0:0:49476/power/runtime_status:suspended
-/sys/bus/scsi/devices/0:0:0:49488/power/runtime_status:suspended <
-
-I think it couldn't resolve the issue because we're not stopping the 
-scsi devices from suspending after the async probe is scheduled.
-
--asd
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+> > +
+> > +	mutex_lock(&chip->als_mutex);
+> > +	ret = tsl2591_set_power_state(chip, power_state);
+> > +	mutex_unlock(&chip->als_mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct dev_pm_ops tsl2591_pm_ops = {
+> > +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+> > +	SET_RUNTIME_PM_OPS(tsl2591_suspend, tsl2591_resume, NULL)
+> > +};
+> > +
+> > +static irqreturn_t tsl2591_event_handler(int irq, void *private)
+> > +{
+> > +	struct iio_dev *dev_info = private;
+> > +	struct tsl2591_chip *chip = iio_priv(dev_info);
+> > +	struct i2c_client *client = chip->client;
+> > +
+> > +	if (!chip->events_enabled)
+> > +		return IRQ_HANDLED;
+> 
+> This looks like a spurious interrupt to me.  If it's not add a comment
+> explaining how we get here.  If it is spurious then
+> return IRQ_NONE; to indicate that we haven't handled it to the
+> interrupt code.
+>
+Good catch. This should definitely be IRQ_NONE. Implemented in V6
+> > +
+> > +	iio_push_event(dev_info,
+> > +		       IIO_UNMOD_EVENT_CODE(IIO_LIGHT, 0,
+> > +					    IIO_EV_TYPE_THRESH,
+> > +					    IIO_EV_DIR_EITHER),
+> > +					    iio_get_time_ns(dev_info));
+> > +
+> > +	/* Clear ALS irq */
+> > +	i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+> > +
+> > +static int tsl2591_load_defaults(struct tsl2591_chip *chip)
+> > +{
+> > +	int ret;
+> > +
+> > +	chip->als_settings.als_int_time = TSL2591_DEFAULT_ALS_INT_TIME;
+> > +	chip->als_settings.als_gain = TSL2591_DEFAULT_ALS_GAIN;
+> > +	chip->als_settings.als_persist = TSL2591_DEFAULT_ALS_PERSIST;
+> > +	chip->als_settings.als_lower_thresh = TSL2591_DEFAULT_ALS_LOWER_THRESH;
+> > +	chip->als_settings.als_upper_thresh = TSL2591_DEFAULT_ALS_UPPER_THRESH;
+> > +
+> > +	ret = tsl2591_set_als_gain_int_time(chip);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = tsl2591_set_als_persist_cycle(chip);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret = tsl2591_set_als_thresholds(chip);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void tsl2591_chip_off(void *data)
+> > +{
+> > +	struct iio_dev *indio_dev = data;
+> > +	struct tsl2591_chip *chip = iio_priv(indio_dev);
+> > +	struct i2c_client *client = chip->client;
+> > +
+> > +	pm_runtime_disable(&client->dev);
+> > +	pm_runtime_set_suspended(&client->dev);
+> > +	pm_runtime_put_noidle(&client->dev);
+> > +
+> > +	tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
+> > +}
+> > +
+> > +static int tsl2591_probe(struct i2c_client *client)
+> > +{
+> > +	struct tsl2591_chip *chip;
+> > +	struct iio_dev *indio_dev;
+> > +	int ret;
+> > +
+> > +	if (!i2c_check_functionality(client->adapter,
+> > +				     I2C_FUNC_SMBUS_BYTE_DATA)) {
+> > +		dev_err(&client->dev,
+> > +			"I2C smbus byte data functionality is not supported\n");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
+> > +	if (!indio_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	chip = iio_priv(indio_dev);
+> > +	chip->client = client;
+> > +	i2c_set_clientdata(client, indio_dev);
+> 
+> Not used that I can see.
+> 
+> > +
+> > +	if (client->irq) {
+> > +		ret = devm_request_threaded_irq(&client->dev, client->irq,
+> > +						NULL, tsl2591_event_handler,
+> > +						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> > +						"tsl2591_irq", indio_dev);
+> > +		if (ret) {
+> > +			dev_err(&client->dev, "IRQ request error %d\n", -ret);
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> > +
+> > +	mutex_init(&chip->als_mutex);
+> > +
+> > +	ret = i2c_smbus_read_byte_data(client,
+> > +				       TSL2591_CMD_NOP | TSL2591_DEVICE_ID);
+> > +	if (ret < 0) {
+> > +		dev_err(&client->dev,
+> > +			"Failed to read the device ID register\n");
+> > +		return ret;
+> > +	}
+> > +	ret = FIELD_GET(TSL2591_DEVICE_ID_MASK, ret);
+> > +	if (ret != TSL2591_DEVICE_ID_VAL) {
+> > +		dev_err(&client->dev, "Device ID: %#04x unknown\n", ret);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	indio_dev->info = &tsl2591_info;
+> > +	indio_dev->channels = tsl2591_channels;
+> > +	indio_dev->num_channels = ARRAY_SIZE(tsl2591_channels);
+> > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > +	indio_dev->name = chip->client->name;
+> > +	chip->events_enabled = false;
+> > +
+> > +	pm_runtime_enable(&client->dev);
+> > +	pm_runtime_set_autosuspend_delay(&client->dev,
+> > +					 TSL2591_POWER_OFF_DELAY_MS);
+> > +	pm_runtime_use_autosuspend(&client->dev);
+> > +
+> > +	/*
+> > +	 * Add chip off to automatically managed path and disable runtime
+> > +	 * power management. This ensures that the chip power management
+> > +	 * is handled correctly on driver remove. tsl2591_chip_off must be
+> > +	 * added to the managed path after pm runtime is enabled and before
+> > +	 * any error exit paths are met to ensure we're not left in a state
+> > +	 * of pm runtime not being disabled properly.
+> > +	 */
+> > +	ret = devm_add_action_or_reset(&client->dev, tsl2591_chip_off,
+> > +				       indio_dev);
+> > +	if (ret < 0)
+> > +		return -EINVAL;
+> > +
+> > +	ret = tsl2591_load_defaults(chip);
+> > +	if (ret < 0) {
+> > +		dev_err(&client->dev, "Failed to load sensor defaults\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	ret = i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
+> > +	if (ret < 0) {
+> > +		dev_err(&client->dev, "Failed to clear als irq\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return devm_iio_device_register(&client->dev, indio_dev);
+> > +}
+> > +
+> > +static const struct of_device_id tsl2591_of_match[] = {
+> > +	{ .compatible = "amstaos,tsl2591"},
+> > +	{}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, tsl2591_of_match);
+> > +
+> > +static struct i2c_driver tsl2591_driver = {
+> > +	.driver = {
+> > +		.name = "tsl2591",
+> > +		.pm = &tsl2591_pm_ops,
+> > +		.of_match_table = tsl2591_of_match,
+> > +	},
+> > +	.probe_new = tsl2591_probe
+> > +};
+> > +module_i2c_driver(tsl2591_driver);
+> > +
+> > +MODULE_AUTHOR("Joe Sandom <joe.g.sandom@gmail.com>");
+> > +MODULE_DESCRIPTION("TAOS tsl2591 ambient light sensor driver");
+> > +MODULE_LICENSE("GPL");
+> 
