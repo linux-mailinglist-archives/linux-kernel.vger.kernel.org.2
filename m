@@ -2,152 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991903427D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449D93427DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhCSVbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:31:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39724 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhCSVaw (ORCPT
+        id S231179AbhCSVbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhCSVbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:30:52 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616189451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIrn62Jabx8YZbo0dlW83NMOhEH+SN62wnApX+JD0MY=;
-        b=q7iKvEKt1c96SW2RY8Jm+vOSsY1D+TSFDHyynDyr5hdXtPYMgzBh7oj+LG4DYz1SFTvLBA
-        w89mg3gprHVeS9ph99TyTLwJOyxIyDnzV4OpyPF4sDbhTwfOBBB+WtkEiCjpBvwLcbX+gF
-        Q+rWDPYpmkHiW86RyUsPF78m2aVb+GUVXIKYWejgJ5MNtTnHvEeLyRvCgsbJRwRqVD6kIP
-        JPJsDOq+l/GSA/nY7LOf84nHeM5zuEwlO0Mpii9Htd64AKB3C5gHBNaPbCJj60s0Bb6h9G
-        QW57a9mrcRdEemZ0Zd2gHWRPUyBZ46SqIeRYTtK7bSYTKoEkLTDP3nHo6cPImg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616189451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIrn62Jabx8YZbo0dlW83NMOhEH+SN62wnApX+JD0MY=;
-        b=9gnAbB34Dm65IukQxtCHjyVJ3gDded/uPVVIszucKjzJ2KVyscsAi3odbRHCVhb280UrIk
-        8yXyIRRuQvq6OTDA==
-To:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: Re: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
-In-Reply-To: <20210313054910.2503968-3-fenghua.yu@intel.com>
-References: <20210313054910.2503968-1-fenghua.yu@intel.com> <20210313054910.2503968-3-fenghua.yu@intel.com>
-Date:   Fri, 19 Mar 2021 22:30:50 +0100
-Message-ID: <871rca6dbp.fsf@nanos.tec.linutronix.de>
+        Fri, 19 Mar 2021 17:31:12 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E99C06175F;
+        Fri, 19 Mar 2021 14:31:11 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso9880537otq.3;
+        Fri, 19 Mar 2021 14:31:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=B3tP1yffxFh4g5lNGA0wRa/qEAQmOuEjgkMUh6SA5pU=;
+        b=Vjd1Sso2HIhTeVWqkxFf0VIGFjw6NwHn4WhrCpcqmrJH+CP5E88UlnJX/SmLjt1eV9
+         F6iG2on/mw2Bks4HNJhvy5TkXYb+neNhfEAEzCSlkZoAmzhcvoJlaxNAj70Udkl803px
+         hQqdG/zuFO/LaGEYNA1WEMPDfwWV8WUFq0vaC/bnWZupRc4frZWuj/hwcdy7tppC5U8g
+         rgT8UrtLGDLX6RVVwc6fauUXnKrUNo9n464ryUT2Vj/PK/f8++LWzI2MY2QaJnXpujFc
+         8gO1HgK89AOw5+2B8GolPTO9AkQC0bfOB+90E89mihdxTOwcM9vHlAKSUluWt1cC7JNa
+         4bxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=B3tP1yffxFh4g5lNGA0wRa/qEAQmOuEjgkMUh6SA5pU=;
+        b=B+tdChx6XejzIfw96Gq0n30f8DZA+PFNTI8uWn4LkT0i+bbEUNKCDi7kPBvXuGBJ2C
+         GwGdMI3sI85amHN/xHXXpFulEERqaAwCZlAinjPjej8yONpFX8JWzGgewIdgPd5eE8LA
+         sypOQc3+O9rkcTt/wMuse+Q/s4bu0b/drvtY30vqg/Ax54hO5gD5vOopDOlbm6mJUYLy
+         NfBem3It+t2PPBQRIt5sisa1FPbwiiSUb5ymwMRA0A3tNl2YP0vD7oMgdvq1pVnsMArx
+         M76/Y3/jm7NKmzGcZJUBm8k1PXVqaEFn3Zm8D88XtBtuClOXSBMDr3auMoonru35Vbzd
+         6ddA==
+X-Gm-Message-State: AOAM531rl/9fjd2Dba1Uj4FaEdvNCBJPIQYKwJBQFHvLq56kzJS7Jl5Z
+        +FbCO1g8cIEW0EeOAfnhEpM=
+X-Google-Smtp-Source: ABdhPJzgTe1u0b/7yaDVHD4QCOf/M/jN28/0o+Ynd67gM3j1RoFO13+OBO54DWUNwVwoVCRvH9B/ng==
+X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr2533310ota.29.1616189471444;
+        Fri, 19 Mar 2021 14:31:11 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f22sm1431639otl.10.2021.03.19.14.31.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Mar 2021 14:31:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 19 Mar 2021 14:31:09 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     robh+dt@kernel.org, jdelvare@suse.com, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: Add vendor prefix and trivial device
+ for BluTek BPA-RS600
+Message-ID: <20210319213109.GA24334@roeck-us.net>
+References: <20210317040231.21490-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317040231.21490-1-chris.packham@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13 2021 at 05:49, Fenghua Yu wrote:
-> Change Log:
-> v5:
-> Address all comments from Thomas:
-> - Merge patch 2 and patch 3 into one patch so all "split_lock_detect="
->   options are processed in one patch.
+On Wed, Mar 17, 2021 at 05:02:29PM +1300, Chris Packham wrote:
+> Add vendor prefix "blutek" for BluTek Power.
+> Add trivial device entry for BPA-RS600.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-What? I certainly did not request that. I said:
+For my reference (waiting for bindings approval):
 
- "Why is this seperate and an all in one thing? patch 2/4 changes the
-  parameter first and 3/4 adds a new option...."
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-which means we want documentation for patch 2 and documentation for
-patch 3? 
+Guenter
 
-The ratelimit thing is clearly an extra functionality on top of that
-buslock muck.
-
-Next time I write it out..
-
-> +	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0) {
-> +		bld_ratelimit = ratelimit;
-
-So any rate up to INTMAX/s is valid here, right?
-
-> +	case sld_ratelimit:
-> +		/* Enforce no more than bld_ratelimit bus locks/sec. */
-> +		while (!__ratelimit(&get_current_user()->bld_ratelimit))
-> +			msleep(1000 / bld_ratelimit);
-
-which is cute because msleep() will always sleep until the next jiffie
-increment happens.
-
-What's not so cute here is the fact that get_current_user() takes a
-reference on current's UID on every invocation, but nothing ever calls
-free_uid(). I missed that last time over the way more obvious HZ division.
-
-> +++ b/kernel/user.c
-> @@ -103,6 +103,9 @@ struct user_struct root_user = {
->  	.locked_shm     = 0,
->  	.uid		= GLOBAL_ROOT_UID,
->  	.ratelimit	= RATELIMIT_STATE_INIT(root_user.ratelimit, 0, 0),
-> +#ifdef CONFIG_CPU_SUP_INTEL
-> +	.bld_ratelimit	= RATELIMIT_STATE_INIT(root_user.bld_ratelimit, 0, 0),
-> +#endif
->  };
->  
->  /*
-> @@ -172,6 +175,11 @@ void free_uid(struct user_struct *up)
->  		free_user(up, flags);
->  }
->  
-> +#ifdef CONFIG_CPU_SUP_INTEL
-> +/* Some Intel CPUs may set this for rate-limited bus locks. */
-> +int bld_ratelimit;
-> +#endif
-
-Of course this variable is still required to be in the core kernel code
-because?
-
-While you decided to munge this all together, you obviously ignored the
-following review comment:
-
-  "It also lacks the information that the ratelimiting is per UID
-   and not per task and why this was chosen to be per UID..."
-
-There is still no reasoning neither in the changelog nor in the cover
-letter nor in a reply to my review.
-
-So let me repeat my question and make it more explicit:
-
-  What is the justifucation for making this rate limit per UID and not
-  per task, per process or systemwide?
-
->  struct user_struct *alloc_uid(kuid_t uid)
->  {
->  	struct hlist_head *hashent = uidhashentry(uid);
-> @@ -190,6 +198,11 @@ struct user_struct *alloc_uid(kuid_t uid)
->  		refcount_set(&new->__count, 1);
->  		ratelimit_state_init(&new->ratelimit, HZ, 100);
->  		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
-> +#ifdef CONFIG_CPU_SUP_INTEL
-> +		ratelimit_state_init(&new->bld_ratelimit, HZ, bld_ratelimit);
-> +		ratelimit_set_flags(&new->bld_ratelimit,
-> +				    RATELIMIT_MSG_ON_RELEASE);
-> +#endif
-
-If this has a proper justification for being per user and having to add
-40 bytes per UID for something which is mostly unused then there are
-definitely better ways to do that than slapping #ifdefs into
-architecture agnostic core code.
-
-So if you instead of munging the code patches had split the
-documentation, then I could apply the first 3 patches and we would only
-have to sort out the ratelimiting muck.
-
-Thanks,
-
-        tglx
+> ---
+> 
+> Notes:
+>     Changes in v3:
+>     - None
+>     Changes in v2:
+>     - None
+> 
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> index a327130d1faa..569236e9bed0 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -50,6 +50,8 @@ properties:
+>            - atmel,atsha204a
+>              # i2c h/w elliptic curve crypto module
+>            - atmel,atecc508a
+> +            # BPA-RS600: Power Supply
+> +          - blutek,bpa-rs600
+>              # Bosch Sensortec pressure, temperature, humididty and VOC sensor
+>            - bosch,bme680
+>              # CM32181: Ambient Light Sensor
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index f6064d84a424..d9d7226f5dfe 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -169,6 +169,8 @@ patternProperties:
+>      description: Beckhoff Automation GmbH & Co. KG
+>    "^bitmain,.*":
+>      description: Bitmain Technologies
+> +  "^blutek,.*":
+> +    description: BluTek Power
+>    "^boe,.*":
+>      description: BOE Technology Group Co., Ltd.
+>    "^bosch,.*":
