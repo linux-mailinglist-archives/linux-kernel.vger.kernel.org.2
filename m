@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0E53424A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1253424AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhCSS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhCSS2K (ORCPT
+        id S230442AbhCSS3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:29:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31253 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230286AbhCSS3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:28:10 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389FDC06174A;
-        Fri, 19 Mar 2021 11:28:10 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dm8so11916086edb.2;
-        Fri, 19 Mar 2021 11:28:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EM7JC43IVWcp3nEFu0gDCR5Wo09NKYkxznZ0QTA4BIY=;
-        b=g0HxaZGZUz9eHQydmGhhhOzkdd7x7QGLC7lotAXvH6DCDD4me7BBoYKHvOdgUxntbp
-         4YFgXEBoXjzy/J7wHtYznj0jTRQF19gwHhDf8NTP2jrlOYs1IrsZMRDaiClK0V+XBtFF
-         5/WzixxeK0xIRqup/gczpB37jdDnVeUqIJ/BoOAcL6xZJ+eBeCAacE3OFKJB9cfcbjuj
-         tBUY+2yxAg1K8eogQCmqPyFonGIKdpO0HOcODXPEM9Azudlt1zocMCDCEIem81koMhVT
-         bZ6MNJl6xAGxmUri4gzHQnHdA8YLzJ0+ZNzDbeI/jxsSlBkTT2Rq848jKFRDt0s/dF2T
-         zvTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EM7JC43IVWcp3nEFu0gDCR5Wo09NKYkxznZ0QTA4BIY=;
-        b=r7gaGNGquzcO2K0X+fXlwIbdvZXMC3lfNyo1usASelrLDbgWiKBWRFYv418GlnHxAd
-         2XDC8cuWYhPqSUlEN+vNf3HkQQxJXwNToXgk7zpJnbNmTYi2swWBX9V8OnARS3XZrS82
-         qBuvdbpa6RBsEeFzt4vEfolYzU2L3fIrXRNgwr0XfMtAS2/epbbCe4Zo7tphZBZHgwHa
-         5M1/xTgQDryVuswg+4AkD9JRZ6yrnmo0zIITDqxZdouH5FITkS5FxCU2P2g+GutqLQ3s
-         BjTqcDfI7mOKnTGnNXa0v6ru8GfzlgWH38I1f2lNOblzjFcGmn2J9JP36+gvNLjj79m1
-         LZYQ==
-X-Gm-Message-State: AOAM531k3O88ILmjKCzW+Sa54xmQ+bW6W0CHsYauv71MKEFBxFpnbk0c
-        E8HhtVbNrISI0i+joAdNcxE=
-X-Google-Smtp-Source: ABdhPJyDuDcix29yDHCqJv0NQ+RcQSRulZQgDhDYfs8irdBW4RY58iYdVJTBb+sJ3W526dqEMYt+yw==
-X-Received: by 2002:aa7:da46:: with SMTP id w6mr11341879eds.40.1616178489040;
-        Fri, 19 Mar 2021 11:28:09 -0700 (PDT)
-Received: from localhost.localdomain ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id gb22sm3951070ejc.78.2021.03.19.11.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 11:28:08 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] MAINTAINERS: Add entry for Actions Semi Owl socinfo binding
-Date:   Fri, 19 Mar 2021 20:28:02 +0200
-Message-Id: <fc4dd769f497bcc955858cd5591d1e523d83d881.1616178258.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <cover.1616178258.git.cristian.ciocaltea@gmail.com>
-References: <cover.1616178258.git.cristian.ciocaltea@gmail.com>
+        Fri, 19 Mar 2021 14:29:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616178545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3wnp6ZfCmHQC3RhizXiAxrkd6ldfktjQBxi5hT4ZDXM=;
+        b=hk/fzR2eBUT7Vq1qSVp2pDvhdoW5QRT2vOlI+3e0befsjOBOkAcOCgNtD2hzlDaAx+rmU/
+        kO7OwqJce2qsQJp9nFOuJi/NxHWAtzxejNqjH9KpVkM7/kBVHCjXZJy0a+ud9bmWHtA1YR
+        dSeAkigctMnzO/WzClCc+2siZ4qXyso=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-1r82QA2UNwqNWngkTT4kgw-1; Fri, 19 Mar 2021 14:29:02 -0400
+X-MC-Unique: 1r82QA2UNwqNWngkTT4kgw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BD841084D6B
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 18:29:01 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC66360871;
+        Fri, 19 Mar 2021 18:29:00 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id AAC5058; Fri, 19 Mar 2021 15:28:56 -0300 (-03)
+Date:   Fri, 19 Mar 2021 15:28:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     hyunji-Hong <onlygod0807@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Tools: lib: string: Fix isspace() parameter to avoid
+ undefined behavior
+Message-ID: <20210319182856.GA2120@redhat.com>
+References: <20210319001415.8928-1-hyunji_hong@korea.ac.kr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319001415.8928-1-hyunji_hong@korea.ac.kr>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for the Actions Semi Owl socinfo binding.
+Em Fri, Mar 19, 2021 at 09:14:15AM +0900, hyunji-Hong escreveu:
+> isspace() could be vulnerable in terms of unpredictable results. So, the parameter of the isspace() should be cast with 'unsigned int'. We found out that information through these sites. (Microsoft, Stack Overflow)
+> url: [https://docs.microsoft.com/en-us/cpp/code-quality/c6328?view=msvc-160]
+> url: [https://stackoverflow.com/questions/122721]
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+tools/ and the kernel versions of isspace are implemented in
+include/linux/ctype.h and tools/include/linux/ctype.h.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 20b8e37ea34c..21d54ddcceb4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1533,6 +1533,7 @@ F:	Documentation/devicetree/bindings/mmc/owl-mmc.yaml
- F:	Documentation/devicetree/bindings/net/actions,owl-emac.yaml
- F:	Documentation/devicetree/bindings/pinctrl/actions,*
- F:	Documentation/devicetree/bindings/power/actions,owl-sps.txt
-+F:	Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
- F:	Documentation/devicetree/bindings/timer/actions,owl-timer.txt
- F:	arch/arm/boot/dts/owl-*
- F:	arch/arm/mach-actions/
--- 
-2.31.0
+- Arnaldo
+ 
+> Signed-off-by: SeungHoon Woo, Hyunji Hong, Kyeongseok Yang <hyunji_hong@korea.ac.kr>
+> ---
+>  tools/lib/string.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/string.c b/tools/lib/string.c
+> index 8b6892f959ab..7d01be5cdcf8 100644
+> --- a/tools/lib/string.c
+> +++ b/tools/lib/string.c
+> @@ -123,7 +123,7 @@ size_t __weak strlcpy(char *dest, const char *src, size_t size)
+>   */
+>  char *skip_spaces(const char *str)
+>  {
+> -	while (isspace(*str))
+> +	while (isspace((unsigned char)*str))
+>  		++str;
+>  	return (char *)str;
+>  }
+> @@ -146,7 +146,7 @@ char *strim(char *s)
+>  		return s;
+>  
+>  	end = s + size - 1;
+> -	while (end >= s && isspace(*end))
+> +	while (end >= s && isspace((unsigned char)*end))
+>  		end--;
+>  	*(end + 1) = '\0';
+>  
+> -- 
+> 2.17.1
 
