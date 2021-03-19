@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0455B341A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF52341A2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhCSKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:36:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40344 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhCSKgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:36:11 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lNCUD-0000se-W8
-        for linux-kernel@vger.kernel.org; Fri, 19 Mar 2021 10:36:10 +0000
-Received: by mail-ed1-f72.google.com with SMTP id k8so22580954edn.19
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:36:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ktHOzWahPd2LQ9icir3lUZmC+ztJuw75XTCkzt8BS98=;
-        b=SDBG9D0GGKV5MJ84sK5iin/iG185yifLSyARhS/2DrWLN5hlfj6aX++UUjE2+rSxAf
-         WO7mt/yw7+2onNe+G3p/HPmJLlOQOaHCZp/WvPi7a6HoBj4RJzDjL1zRWOjOUOTsMzrs
-         VR+MnU6BbxTtWCOlpjKy1NLWIEfHCwL79ZjM1P5TLaMPaADdk4QDZ+UQK7HVh/fE9z9V
-         +3YQJUXiGdX/Dmvc+O+sS0p5WPndENsctp+2G8DcL9QF3RuqjP9g9F2f3JTQ4/6SW9KU
-         frsx7xOHdILKzaVKtVAx45qxwcn7anIWGHn5YjIyeEwgVSlwjxMDX1uq+IOdyOR5AIlO
-         8jFw==
-X-Gm-Message-State: AOAM533ZaexO6sELvTuMUj/8q0yhWml4a0b2vM3j/W9Rn1dSDjo2erYV
-        57h6OP6/bnMbIVF/DvZYpoTKsLvH3uV9m46wBn8hq5iPnLsprOheJR+cT+MiF8xkA92fJwv4Ih1
-        Al8unjdZGtQPj8J1pVo+d0UquAJzF9PmkpNzaKghhEw==
-X-Received: by 2002:a17:907:72ce:: with SMTP id du14mr3504498ejc.301.1616150169794;
-        Fri, 19 Mar 2021 03:36:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAQyLtHwJgaaBm7E08MxH7vvE0tikBi/QO2/jypkyZkmGfwIH5ycZjFx2iwfpRXblNOupoDg==
-X-Received: by 2002:a17:907:72ce:: with SMTP id du14mr3504483ejc.301.1616150169636;
-        Fri, 19 Mar 2021 03:36:09 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id h8sm3822589ede.25.2021.03.19.03.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 03:36:09 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/3] ARM: dts: exynos: replace deprecated NTC/Murata compatibles
-Date:   Fri, 19 Mar 2021 11:36:05 +0100
-Message-Id: <161615015846.19086.10537563136172847080.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315124313.114842-1-krzysztof.kozlowski@canonical.com>
-References: <20210315124313.114842-1-krzysztof.kozlowski@canonical.com>
+        id S229751AbhCSKhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:37:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37424 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229844AbhCSKhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:37:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7D5C4ACC6;
+        Fri, 19 Mar 2021 10:37:01 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4B6301F2B5B; Fri, 19 Mar 2021 11:37:01 +0100 (CET)
+Date:   Fri, 19 Mar 2021 11:37:01 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     jack@suse.cz, Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Updated locking documentation for journal_head
+Message-ID: <20210319103701.GC4910@quack2.suse.cz>
+References: <9864e9792b56bce87b016582a8759890079f7766>
+ <20210319091819.113326-1-alexander.lochmann@tu-dortmund.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319091819.113326-1-alexander.lochmann@tu-dortmund.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 13:43:11 +0100, Krzysztof Kozlowski wrote:
-> The compatibles with "ntc" vendor prefix become deprecated and "murata"
-> should be used.
+On Fri 19-03-21 10:18:17, Alexander Lochmann wrote:
+> LockDoc's results show that t_list_lock has been
+> replaced by j_list_lock for b_next_transaction,
+> b_tnext, and b_tprev.
+> We, therefore, updated the documentation
+> accordingly.
+> 
+> Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+> Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
 
-Applied, thanks!
+Yeah, I think that was a typo since the beginning. Thanks for the fix. Feel
+free to add:
 
-[1/3] ARM: dts: exynos: replace deprecated NTC/Murata compatibles
-      commit: 61342bc64d03d88fbdddde6247f490504257f36d
-[2/3] ARM: dts: exynos: white-space cleanups
-      commit: 4a4f3a07a5c419ee8e527ff2c9a35eae93c3d04e
-[3/3] arm64: dts: exynos: white-space cleanups
-      commit: 7d2636e9d6dd884ae2ec6127f29963d4da0dfe6e
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Best regards,
+								Honza
+
+> ---
+>  include/linux/journal-head.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/journal-head.h b/include/linux/journal-head.h
+> index 75bc56109031..d68ae72784eb 100644
+> --- a/include/linux/journal-head.h
+> +++ b/include/linux/journal-head.h
+> @@ -80,13 +80,13 @@ struct journal_head {
+>  	 * Pointer to the running compound transaction which is currently
+>  	 * modifying the buffer's metadata, if there was already a transaction
+>  	 * committing it when the new transaction touched it.
+> -	 * [t_list_lock] [b_state_lock]
+> +	 * [j_list_lock] [b_state_lock]
+>  	 */
+>  	transaction_t *b_next_transaction;
+>  
+>  	/*
+>  	 * Doubly-linked list of buffers on a transaction's data, metadata or
+> -	 * forget queue. [t_list_lock] [b_state_lock]
+> +	 * forget queue. [j_list_lock] [b_state_lock]
+>  	 */
+>  	struct journal_head *b_tnext, *b_tprev;
+>  
+> -- 
+> 2.20.1
+> 
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
