@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D12341FD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E98D341FD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhCSOlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:41:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43212 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhCSOks (ORCPT
+        id S230264AbhCSOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230224AbhCSOlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:40:48 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 590E9209C398;
-        Fri, 19 Mar 2021 07:40:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 590E9209C398
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616164847;
-        bh=1zQaqS/XbK07XWlK6cwo3q5bC7o/WeaNHXa0xXx1Uh4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZX8aqmUc05ndJQXno8dUB7gDV7LXoR7hrDnVhjLGeuSRcxQvspUMtnr7Bnpl1CqHZ
-         RDn3Pp4u79tMqZYjFJhqTR6L0nUh8o61Xq5rM2z29rcmae23mNpTCh4Q8kLcGGNNJS
-         B9/owhj8huMaPL8OhCK0tZTv9AHW/IWtOsRUSpCE=
-Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-3-madvenka@linux.microsoft.com>
- <20210318174029.GM5469@sirena.org.uk>
- <6474b609-b624-f439-7bf7-61ce78ff7b83@linux.microsoft.com>
- <20210319132208.GD5619@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <e8d596c3-b1ec-77a6-f387-92ecd2ebfceb@linux.microsoft.com>
-Date:   Fri, 19 Mar 2021 09:40:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Mar 2021 10:41:04 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC952C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:41:04 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so4550661pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMTZPdTE/aMUDIoULLEYEVVyeOj9JMcW8Ag8gkApcG8=;
+        b=GYlAFBv2hVH9zVW7eDuOt74/YKU618uB0XcxKKzYydhK/xHH6uRUbGe/+odzkPTFKW
+         hEszJNjv6g5hyao1Oqax0qywro1jPO+BgzYqshqU6Bem1v5HUynvd0jTgbEgvgUBrI1S
+         5BG6Uwvk0JFWd8hod3flUFu8OHPeXrqrC9pew=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMTZPdTE/aMUDIoULLEYEVVyeOj9JMcW8Ag8gkApcG8=;
+        b=DTvtcLZXiUADkKT5T0cJXzb3360wF66m8Iolb1OAn1bISRWymL09EPVokYGiWN+lep
+         fWzhJmbfivHBgSmiGSxDevRUl5+FvnwsFSzoB2+lS2M3evpNi7yoG8ahSawiH9860CaZ
+         +8gga+J2ObcO3tqL0puRO89J2PKctM9zQS/7pAkq/40oT2/oLDia5LR787X9CniGBxH2
+         GPeY7uJvYIE4KQYvQG4l6urYK1wwgAvX2JWNf75mDWpbDnOE9eoAicDFh6q8ZQjJGBhg
+         4iR72RdlUJ6CGwfbrmJOs+DGxMTOHNj7tDK39lYPpjDu55jWMOKUgtiNFqDrMqChQRCm
+         tntA==
+X-Gm-Message-State: AOAM530t46ngRlM16OAm27oDvcsZ2XMkQDpxR0jrESWgiKfp9gdvtWUe
+        VJH02FedSWpXzdWsnSxWlb00KIAnDHtiHQ==
+X-Google-Smtp-Source: ABdhPJxlMSF9N8TsI+7JmybLd20c1cK01aJvUVhZRerB4UyQEjpJ8VtHIcBPF1ZR8qLARnh3lMogvw==
+X-Received: by 2002:a17:90a:516:: with SMTP id h22mr9634409pjh.222.1616164864070;
+        Fri, 19 Mar 2021 07:41:04 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-674e-5c6f-efc9-136d.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:674e:5c6f:efc9:136d])
+        by smtp.gmail.com with ESMTPSA id l4sm5692224pgn.77.2021.03.19.07.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 07:41:03 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@linux.ibm.com,
+        bsingharora@gmail.com
+Cc:     Daniel Axtens <dja@axtens.net>
+Subject: [PATCH v11 0/6] KASAN for powerpc64 radix
+Date:   Sat, 20 Mar 2021 01:40:52 +1100
+Message-Id: <20210319144058.772525-1-dja@axtens.net>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210319132208.GD5619@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Building on the work of Christophe, Aneesh and Balbir, I've ported
+KASAN to 64-bit Book3S kernels running on the Radix MMU.
 
+v11 applies to next-20210317. I had hoped to have it apply to
+powerpc/next but once again there are changes in the kasan core that
+clash. Also, thanks to mpe for fixing a build break with KASAN off.
 
-On 3/19/21 8:22 AM, Mark Brown wrote:
-> On Thu, Mar 18, 2021 at 05:22:49PM -0500, Madhavan T. Venkataraman wrote:
->> On 3/18/21 12:40 PM, Mark Brown wrote:
-> 
->>> Unless I'm misreading what's going on here this is more trying to set a
->>> type for the stack as a whole than for a specific stack frame.  I'm also
->>> finding this a bit confusing as the unwinder already tracks things it
->>> calls frame types and it handles types that aren't covered here like
->>> SDEI.  At the very least there's a naming issue here.
-> 
->> Both these frames are on the task stack. So, it is not a stack type.
-> 
-> OTOH it's also not something that applies to every frame but only to the
-> base frame from each stack which I think was more where I was coming
-> from there.  In any case, the issue is also that there's already another
-> thing that the unwinder calls a frame type so there's at least that
-> collision which needs to be resolved if nothing else.
-> 
+I'm not sure how best to progress this towards actually being merged
+when it has impacts across subsystems. I'd appreciate any input. Maybe
+the first four patches could go in via the kasan tree, that should
+make things easier for powerpc in a future cycle?
 
-The base frame from each stack as well as intermediate marker frames such
-as the EL1 frame and the Ftrace frame.
+v10 rebases on top of next-20210125, fixing things up to work on top
+of the latest changes, and fixing some review comments from
+Christophe. I have tested host and guest with 64k pages for this spin.
 
-As for the frame type, I will try to come up with a better name.
+There is now only 1 failing KUnit test: kasan_global_oob - gcc puts
+the ASAN init code in a section called '.init_array'. Powerpc64 module
+loading code goes through and _renames_ any section beginning with
+'.init' to begin with '_init' in order to avoid some complexities
+around our 24-bit indirect jumps. This means it renames '.init_array'
+to '_init_array', and the generic module loading code then fails to
+recognise the section as a constructor and thus doesn't run it. This
+hack dates back to 2003 and so I'm not going to try to unpick it in
+this series. (I suspect this may have previously worked if the code
+ended up in .ctors rather than .init_array but I don't keep my old
+binaries around so I have no real way of checking.)
 
->>> Taking a step back though do we want to be tracking this via pt_regs?
->>> It's reliant on us robustly finding the correct pt_regs and on having
->>> the things that make the stack unreliable explicitly go in and set the
->>> appropriate type.  That seems like it will be error prone, I'd been
->>> expecting to do something more like using sections to filter code for
->>> unreliable features based on the addresses of the functions we find on
->>> the stack or similar.  This could still go wrong of course but there's
->>> fewer moving pieces, and especially fewer moving pieces specific to
->>> reliable stack trace.
-> 
->> In that case, I suggest doing both. That is, check the type as well
->> as specific functions. For instance, in the EL1 pt_regs, in addition
->> to the above checks, check the PC against el1_sync(), el1_irq() and
->> el1_error(). I have suggested this in the cover letter.
-> 
->> If this is OK with you, we could do that. We want to make really sure that
->> nothing goes wrong with detecting the exception frame.
-> 
-> ...
-> 
->> If you dislike the frame type, I could remove it and just do the
->> following checks:
-> 
->> 	FP == pt_regs->regs[29]
->> 	PC == pt_regs->pc
->> 	and the address check against el1_*() functions
-> 
->> and similar changes for EL0 as well.
-> 
->> I still think that the frame type check makes it more robust.
-> 
-> Yeah, we know the entry points so they can serve the same role as
-> checking an explicitly written value.  It does mean one less operation
-> on exception entry, though I'm not sure that's that a big enough
-> overhead to actually worry about.  I don't have *super* strong opinons
-> against adding the explicitly written value other than it being one more
-> thing we don't otherwise use which we have to get right for reliable
-> stack trace, there's a greater risk of bitrot if it's not something that
-> we ever look at outside of the reliable stack trace code.
-> 
+(The previously failing stack tests are now skipped due to more
+accurate configuration settings.)
 
-So, I will add the address checks for robustness. I will think some more
-about the frame type.
+Details from v9: This is a significant reworking of the previous
+versions. Instead of the previous approach which supported inline
+instrumentation, this series provides only outline instrumentation.
 
->>>> EL1_FRAME
->>>> 	EL1 exception frame.
-> 
->>> We do trap into EL2 as well, the patch will track EL2 frames as EL1
->>> frames.  Even if we can treat them the same the naming ought to be
->>> clear.
-> 
->> Are you referring to ARMv8.1 VHE extension where the kernel can run
->> at EL2? Could you elaborate? I thought that EL2 was basically for
->> Hypervisors.
-> 
-> KVM is the main case, yes - IIRC otherwise it's mainly error handlers
-> but I might be missing something.  We do recommend that the kernel is
-> started at EL2 where possible.
-> 
-> Actually now I look again it's just not adding anything on EL2 entries
-> at all, they use a separate set of macros which aren't updated - this
-> will only update things for EL0 and EL1 entries so my comment above
-> about this tracking EL2 as EL1 isn't accurate.
-> 
+To get around the problem of accessing the shadow region inside code we run
+with translations off (in 'real mode'), we we restrict checking to when
+translations are enabled. This is done via a new hook in the kasan core and
+by excluding larger quantites of arch code from instrumentation. The upside
+is that we no longer require that you be able to specify the amount of
+physically contiguous memory on the system at compile time. Hopefully this
+is a better trade-off. More details in patch 6.
 
-OK.
+kexec works. Both 64k and 4k pages work. Running as a KVM host works, but
+nothing in arch/powerpc/kvm is instrumented. It's also potentially a bit
+fragile - if any real mode code paths call out to instrumented code, things
+will go boom.
 
-Madhavan
+Kind regards,
+Daniel
+
+Daniel Axtens (6):
+  kasan: allow an architecture to disable inline instrumentation
+  kasan: allow architectures to provide an outline readiness check
+  kasan: define and use MAX_PTRS_PER_* for early shadow tables
+  kasan: Document support on 32-bit powerpc
+  powerpc/mm/kasan: rename kasan_init_32.c to init_32.c
+  powerpc: Book3S 64-bit outline-only KASAN support
+
