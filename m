@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B294342344
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E37934235D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhCSR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCSR01 (ORCPT
+        id S230186AbhCSR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:29:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229949AbhCSR3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:26:27 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60E7C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:26:26 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so7045811pjq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G2ciI+8gLo1fSwlXD2q75g0c52yk/hMrZ0yweTlh3Wk=;
-        b=VcZIRP1tPwWzWYflvDs2QtRdxoWgthJmMjpQFcvI0cw/Oi8U3fDykMwMJHUCRgLwLN
-         IHz3cdgeMpGlUNdsWBkf889IaBIr31ob91+6VjKlBUZbqbRwigbvyhVbfasbWmvR5lSa
-         t3CWNSy3svupvHUJAS0mJ7ozPSUoiXCBicW70=
+        Fri, 19 Mar 2021 13:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616174946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LomUmpcQaVh6N02UFTSsiZ9QqjpSd6FGeimkZw0uTk8=;
+        b=cZbpI7yspIHvbMuZ4SGb28JmRk0dcXHHmxZAxeU7kRMDWk3+JmmJLZUIfRUJOMTVWKXe5/
+        yH7GVtNhdqfBIFlEH6rx9P5V0SbuEgjfECdFc/n4IbgTowLjN9K8L5ZjJvvEOyxEbStciF
+        vdQrHmuVrmiNXwGyfxBZH30ZdBWyNWI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-iHJfUg0VO4qn4vGlZ9zSvQ-1; Fri, 19 Mar 2021 13:29:04 -0400
+X-MC-Unique: iHJfUg0VO4qn4vGlZ9zSvQ-1
+Received: by mail-ed1-f69.google.com with SMTP id bm8so10035085edb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:29:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G2ciI+8gLo1fSwlXD2q75g0c52yk/hMrZ0yweTlh3Wk=;
-        b=tWOAjnQ3sY/i9smsj4E4RWpcrGk1mbgumhbWMfNcnCbfFFlKdE9KKg/HiNfHfOF5CF
-         p0IRP7DdkszDSFWDlsXSIhPHBchtj/8kzgVOSsTkGnY8L0Q8TzItFGWcx/Y7z1bSgusv
-         AwoJU8pSmYLuJwjD0UJ+5pPJ+tFMTxDgjGlRASCEOS5hT+W67LRnciLO6mSduFkKfcvc
-         WxXncG2aOde5RCRvSdv/jHoL6iIWW++e8M4lsytdP/yyhHYissXjrY6aMTYBtTn0kNl5
-         eXrvP9UQ6KJiHGcipd8N/N3lJIBYSXdipWOO9N4HY4V5Oiq9jAsvaDSL+FdoKgXPZ+Do
-         uqTQ==
-X-Gm-Message-State: AOAM531Re2FXTxXlrrroP2yJeeykewRP8wrbu5/azgXwIbytaVUTLCb7
-        bZ8i6LyIDxOENaMQI2tKdII+9A==
-X-Google-Smtp-Source: ABdhPJzOKA9F+yXMnxyRNFmJt9DfXWSRK0fZPjEUoInFJxIRVNA3uwgGEl8gbZRw8mSeGT/QAF3Jqw==
-X-Received: by 2002:a17:90a:a403:: with SMTP id y3mr10703577pjp.227.1616174786403;
-        Fri, 19 Mar 2021 10:26:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r23sm6188880pje.38.2021.03.19.10.26.25
+         :mime-version:content-disposition:in-reply-to;
+        bh=LomUmpcQaVh6N02UFTSsiZ9QqjpSd6FGeimkZw0uTk8=;
+        b=bbWXN0PDs+SVmJTmzT+S+ArjA+05kdtCpBsk+5qb8iSZlUuNuz8vZlTYxAo01Zfnnd
+         miLItjAeNf/EkzKcpsu0fZSdTfAqFojPUlTQBWSowCQ2PBA9NTQ54S3+FSsARf5H9jY4
+         bHr2QesvlvtNT53mXnRrmCJ1vibgNKc0BWbLWrIkB6QRm97NmMxDTnFBb288ZTzTuo3x
+         TaGHfkf7fHy+sLXqwrKOXi2l6SnVdmOlSYhB8SxNXuo7Jo0NCAoR/QxpF41g5aTlRWHJ
+         XbbZaFmBZu/l6eRwSxzHe3Op/rvTmyuFZk7NUgCWMvszjZgaRRRa3YDthOoOzwVtpAz1
+         wHpQ==
+X-Gm-Message-State: AOAM533MDoxA8nrdcYYdqMr8Y0QVxAGpgZwysFcIcBhPAUvF1E+U0iuC
+        EtHoOWQKy5Aw5hcwMOiaOHRcsBaOs47rQ387eTBK0fmd5gDn2i0Hcu+0GwlJDkyMIyl6PAJYQ0I
+        oZOgW3rb45xw58Hr4T2qqGTg=
+X-Received: by 2002:a17:906:4705:: with SMTP id y5mr5719793ejq.119.1616174943004;
+        Fri, 19 Mar 2021 10:29:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwn1utTL8I0+LkwA8AB1Fh4ktosHgIyrKuoo8t4HMBAku6kx8VKgoV/75izwollowIKwHDMBg==
+X-Received: by 2002:a17:906:4705:: with SMTP id y5mr5719783ejq.119.1616174942889;
+        Fri, 19 Mar 2021 10:29:02 -0700 (PDT)
+Received: from localhost (cpc111743-lutn13-2-0-cust979.9-3.cable.virginm.net. [82.17.115.212])
+        by smtp.gmail.com with ESMTPSA id sb4sm4056118ejb.71.2021.03.19.10.29.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:26:25 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:26:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v30 11/12] samples/landlock: Add a sandbox manager example
-Message-ID: <202103191026.E2F74F8D9@keescook>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-12-mic@digikod.net>
+        Fri, 19 Mar 2021 10:29:02 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 17:29:01 +0000
+From:   Aaron Tomlin <atomlin@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: try oom if reclaim is unable to make
+ forward progress
+Message-ID: <20210319172901.cror2u53b7caws3a@ava.usersys.com>
+X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
+X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
+References: <20210315165837.789593-1-atomlin@redhat.com>
+ <YFN8wXwJA59w9twA@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210316204252.427806-12-mic@digikod.net>
+In-Reply-To: <YFN8wXwJA59w9twA@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:42:51PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> Add a basic sandbox tool to launch a command which can only access a
-> list of file hierarchies in a read-only or read-write way.
-> 
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+Hi Michal,
 
-I'm very happy to see any example!
+On Thu 2021-03-18 17:16 +0100, Michal Hocko wrote:
+> On Mon 15-03-21 16:58:37, Aaron Tomlin wrote:
+> > In the situation where direct reclaim is required to make progress for
+> > compaction but no_progress_loops is already over the limit of
+> > MAX_RECLAIM_RETRIES consider invoking the oom killer.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Firstly, thank you for your response.
+
+> What is the problem you are trying to fix?
+
+If I understand correctly, in the case of a "costly" order allocation
+request that is permitted to repeatedly retry, it is possible to exceed the
+maximum reclaim retry threshold as long as "some" progress is being made
+even at the highest compaction priority. Furthermore, if the allocator has
+a fatal signal pending, this is not considered.
+
+In my opinion, it might be better to just give up straight away or try and
+use the OOM killer only in the non-costly order allocation scenario to
+assit reclaim. Looking at __alloc_pages_may_oom() the current logic is to
+entirely skip the OOM killer for a costly order request, which makes sense.
+
+
+Regards,
 
 -- 
-Kees Cook
+Aaron Tomlin
+
