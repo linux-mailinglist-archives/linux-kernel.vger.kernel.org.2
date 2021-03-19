@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2594F3418AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BF33418B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhCSJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:44:21 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:37628 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhCSJoS (ORCPT
+        id S229826AbhCSJp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:45:27 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:53119 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhCSJpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:44:18 -0400
-Received: by mail-il1-f197.google.com with SMTP id a14so15877865ilj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:44:18 -0700 (PDT)
+        Fri, 19 Mar 2021 05:45:20 -0400
+Received: by mail-io1-f69.google.com with SMTP id v5so29634979ioq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:45:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uknfhiMqksBM9hkMatz/l2UoJF3sQR2ymLAiLiFEZSU=;
-        b=YZRJNUy28oxZLvg9sqlozSyKd8dX3QSsE7ooLh86GDtfSs5n+ok9gYuu2Iox3yXOzl
-         HZ86Xa06PQwbQ0YPfjEZk0xItJOIZgwjIOYYwIhmZnDRjU1BeXFugEOnXSklTpU5Sxwf
-         bdNHRpFjcnXnNUVp2PNyC9MkK2KlHRwAzavyf07Ef5MAu+kWttgWzoSRIYkIDKM2seda
-         ykZGVXHL/qnO2oT5EpSFA88m96v3sFmb2FZryneqUcYbOdDmO1/liEp02+U8OSlbdGVP
-         DXaGCLvE1r+oYbJdx1Wq/2QDSmKBdhUD4tuxKWKQ058ZMOj5dBh8lQm2FS8OLZzcuQpf
-         z39Q==
-X-Gm-Message-State: AOAM532QVbaqPs3zxM5W+TGzZQHTY3GpR+mjVrcA9zW3q2PMTa4IXOkD
-        GZBLZV+M/q9ztlXx4frSXnWtaAoh3P9IkYeDwOhyP1sru3gk
-X-Google-Smtp-Source: ABdhPJz0qb78/BiPZ5MGBbbRVgHLoQX32MjXzVtLbWpjDQap5yfVbHfZJdEl/s9gXJtxZTpwArL/dIMb2egc9mZv0jVVqCrFbdRj
+        bh=GKPXbiVNuIwQHsRuMAbWdUTxkPnfWdxXiRjOZg6AQ8o=;
+        b=bHEHEcgZ0mHVRjsBzlpRdKReGnQR6N3mTrPgDTEnnrm7YTj+dhVqbPDSt9CDwaTTTv
+         WWdZBcJPi2fbl2k6WLkzOPPDALBxfRfu/gmP2mzZLWSRInEmCQqzKgsttr8inxzXNkFY
+         GtwcX16K47Y4LiA8LL31WxtTxBZ2dex+iN8XHJGlRy8zsGN/Wsj0+9ZW5RWoBpS1I/Ov
+         HUAkiRbzu3tOQBDtCgy8mh01gCRv86OIWzWaAyUwiw1uKkmVJieM32mFSYgJ1rNnK6jm
+         zuCEcCXeOFRZOKmyStMUIqvRQgPSRvX63SGnqUR5WwYx1Hi2OpZoSz5VKG0WZ6c6U/kE
+         W+IA==
+X-Gm-Message-State: AOAM5300DycSd36pgTb1cgvQ/YRPnonPO+IvHHcQu0l1YJg3lo+t/acN
+        fJKlTeIE7xtz+4Q+QDvwagKhwOrFHPWNx+TZn/4Phl0m5HYE
+X-Google-Smtp-Source: ABdhPJzFsa8iygFbN7hXAnw0CQ8QrVL80j/Moe3pG4vWZO4TIsqy8BNsvqV6wI+wIxFnNVAI9mM6pRVrRHC7Hu2Ls5SXJl3Ra17u
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1baf:: with SMTP id n15mr2101812ili.190.1616147058200;
- Fri, 19 Mar 2021 02:44:18 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 02:44:18 -0700
+X-Received: by 2002:a05:6602:14cb:: with SMTP id b11mr2114361iow.175.1616147119654;
+ Fri, 19 Mar 2021 02:45:19 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 02:45:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f14c105bde08f75@google.com>
-Subject: [syzbot] upstream boot error: WARNING in __context_tracking_enter
-From:   syzbot <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com>
-To:     alexandre.chartre@oracle.com, linux-kernel@vger.kernel.org,
-        mhiramat@kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Message-ID: <000000000000f8ca3305bde0922e@google.com>
+Subject: [syzbot] WARNING in percpu_ref_exit (3)
+From:   syzbot <syzbot+fedc0f6148b1b9a42593@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,103 +47,46 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    8b12a62a Merge tag 'drm-fixes-2021-03-19' of git://anongit..
+HEAD commit:    bf152b0b Merge tag 'for_linus' of git://git.kernel.org/pub..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e815aed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cfeed364fc353c32
-dashboard link: https://syzkaller.appspot.com/bug?extid=f09a12b2c77bfbbf51bd
-userspace arch: arm
+console output: https://syzkaller.appspot.com/x/log.txt?x=14532c1ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2f52d48cfe68458
+dashboard link: https://syzkaller.appspot.com/bug?extid=fedc0f6148b1b9a42593
+compiler:       Debian clang version 11.0.1-2
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com
+Reported-by: syzbot+fedc0f6148b1b9a42593@syzkaller.appspotmail.com
 
-l2tp_core: L2TP core driver, V2.0
-l2tp_ip: L2TP IP encapsulation support (L2TPv3)
-l2tp_netlink: L2TP netlink interface
-l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
-l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2TPv3)
-8021q: 802.1Q VLAN Support v1.8
-sctp: Hash tables configured (bind 64/102)
-NET: Registered protocol family 21
-Registered RDS/infiniband transport
-Registered RDS/tcp transport
-NET: Registered protocol family 43
-9pnet: Installing 9P2000 support
-Key type dns_resolver registered
-Key type ceph registered
-libceph: loaded (mon/osd proto 15/24)
-NET: Registered protocol family 40
-Registering SWP/SWPB emulation handler
-registered taskstats version 1
-Loading compiled-in X.509 certificates
-Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
-zswap: loaded using pool lzo/zbud
-Key type ._fscrypt registered
-Key type .fscrypt registered
-Key type fscrypt-provisioning registered
-Key type big_key registered
-Key type encrypted registered
-ima: No TPM chip found, activating TPM-bypass!
-ima: Allocated hash algorithm: sha256
-ima: No architecture policies found
-evm: Initialising EVM extended attributes:
-evm: security.selinux
-evm: security.ima
-evm: security.capability
-evm: HMAC attrs: 0x1
-printk: console [netcon0] enabled
-netconsole: network logging started
-gtp: GTP module loaded (pdp ctx size 64 bytes)
-ALSA device list:
-  #0: Dummy 1
-  #1: Loopback 1
-  #2: Virtual MIDI Card 1
-  #3: ARM AC'97 Interface PL041 rev0 at 0x1c040000, irq 36
-uart-pl011 1c090000.serial: no DMA platform data
-md: Skipping autodetection of RAID arrays. (raid=autodetect will force)
-EXT4-fs (vda): mounted filesystem without journal. Opts: (null). Quota mode: none.
-VFS: Mounted root (ext4 filesystem) readonly on device 253:0.
-devtmpfs: mounted
-Freeing unused kernel memory: 2048K
-Run /sbin/init as init process
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
-WARNING: CPU: 0 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
+WARNING: CPU: 0 PID: 68 at lib/percpu-refcount.c:113 __percpu_ref_exit lib/percpu-refcount.c:113 [inline]
+WARNING: CPU: 0 PID: 68 at lib/percpu-refcount.c:113 percpu_ref_exit+0x1e0/0x1f0 lib/percpu-refcount.c:134
 Modules linked in:
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc3-syzkaller #0
-Hardware name: ARM-Versatile Express
-Backtrace: 
-[<81804310>] (dump_backtrace) from [<81804584>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
- r7:00000080 r6:60000193 r5:00000000 r4:82b58444
-[<8180456c>] (show_stack) from [<8180bc58>] (__dump_stack lib/dump_stack.c:79 [inline])
-[<8180456c>] (show_stack) from [<8180bc58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
-[<8180bba0>] (dump_stack) from [<81805118>] (panic+0x130/0x378 kernel/panic.c:231)
- r7:81f487d4 r6:82a390e4 r5:00000000 r4:82c6b0d8
-[<81804fe8>] (panic) from [<802447b4>] (__warn+0xb0/0x164 kernel/panic.c:605)
- r3:82a2248c r2:00000000 r1:5b71e000 r0:81f487d4
- r7:0000010f
-[<80244704>] (__warn) from [<818053c8>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
- r7:8028c4b4 r6:0000010f r5:81f40c30 r4:00000000
-[<81805364>] (warn_slowpath_fmt) from [<8028c4b4>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
-[<81805364>] (warn_slowpath_fmt) from [<8028c4b4>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
- r8:00000000 r7:82a22498 r6:828ac940 r5:8181fbb0 r4:00000001
-[<8028c3c4>] (__seqprop_assert.constprop.0) from [<8028ea54>] (vtime_user_enter+0x1c/0x90 kernel/sched/cputime.c:709)
- r5:8181fbb0 r4:834f0000
-[<8028ea38>] (vtime_user_enter) from [<8181fbb0>] (__context_tracking_enter+0x148/0x334 kernel/context_tracking.c:82)
- r7:82a22498 r6:828ac940 r5:ffffe000 r4:00000001
-[<8181fa68>] (__context_tracking_enter) from [<80417170>] (context_tracking_enter kernel/context_tracking.c:122 [inline])
-[<8181fa68>] (__context_tracking_enter) from [<80417170>] (context_tracking_enter+0x54/0x84 kernel/context_tracking.c:106)
- r7:00000000 r6:00000000 r5:60000193 r4:00000001
-[<8041711c>] (context_tracking_enter) from [<804171bc>] (user_enter include/linux/context_tracking.h:28 [inline])
-[<8041711c>] (context_tracking_enter) from [<804171bc>] (context_tracking_user_enter+0x1c/0x20 kernel/context_tracking.c:130)
- r5:81820218 r4:00000000
-[<804171a0>] (context_tracking_user_enter) from [<802000d4>] (no_work_pending+0x8/0x38)
-Exception stack(0x834dffb0 to 0x834dfff8)
-ffa0:                                     00000000 00000000 00000000 00000000
-ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-ffe0: 00000000 7ec68ef0 00000000 76ee5a00 00000010 00000000
-Rebooting in 86400 seconds..
+CPU: 1 PID: 68 Comm: kworker/u4:2 Not tainted 5.12.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound io_ring_exit_work
+RIP: 0010:__percpu_ref_exit lib/percpu-refcount.c:113 [inline]
+RIP: 0010:percpu_ref_exit+0x1e0/0x1f0 lib/percpu-refcount.c:134
+Code: c7 c7 80 67 ce 8c 4c 89 e6 e8 9c 96 84 05 48 8b 3c 24 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 65 8b e8 fd e8 00 68 a5 fd <0f> 0b e9 d0 fe ff ff 66 0f 1f 84 00 00 00 00 00 41 57 41 56 41 55
+RSP: 0018:ffffc90000fbfba0 EFLAGS: 00010293
+RAX: ffffffff83d35710 RBX: 0000607f46034a90 RCX: ffff88801195b780
+RDX: 0000000000000000 RSI: 0000607f46034a90 RDI: 0000000000000000
+RBP: ffff8880292ae580 R08: ffffffff83d355a5 R09: fffffbfff1f290ca
+R10: fffffbfff1f290ca R11: 0000000000000000 R12: ffff8880292ae590
+R13: ffff8880121a6000 R14: 1ffff11002434c00 R15: 1ffff11002434c01
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32d23000 CR3: 0000000013897000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_ring_ctx_free fs/io_uring.c:8419 [inline]
+ io_ring_exit_work+0x580/0xa90 fs/io_uring.c:8565
+ process_one_work+0x789/0xfd0 kernel/workqueue.c:2275
+ worker_thread+0xac1/0x1300 kernel/workqueue.c:2421
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
 ---
