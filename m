@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347FD341A3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FC1341A3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhCSKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhCSKkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5CF464E6B;
-        Fri, 19 Mar 2021 10:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616150400;
-        bh=upXug4xn2cSMI3wX/C88hwIqnigSyE+kWd7XvhtAWx0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fQb6LIQ+LxulZcdqI5di1q2vhaiBCfkZzN/03rB+k9dHwWyRKyPN/OOsr8N61AUbo
-         G3jMqaXi6SkyXAdKwTI7qhfei+qX80s/hsKBQhHzn1eaPqbDtXf652VHZ/ku150Gmx
-         xZ1JdJjteMr9mPTKNoaojWKGPIZgJD50OblpFWD4=
-Date:   Fri, 19 Mar 2021 11:39:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christopher Li <sparse@chrisli.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [for-stable-4.19 PATCH 1/2] vmlinux.lds.h: Create section for
- protection against instrumentation
-Message-ID: <YFR/fQIePjDQcO5W@kroah.com>
-References: <20210318235416.794798-1-drinkcat@chromium.org>
- <20210319075410.for-stable-4.19.1.I222f801866f71be9f7d85e5b10665cd4506d78ec@changeid>
+        id S229873AbhCSKkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhCSKkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:40:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523B2C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:40:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f091e0031f92e39b93e7933.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1e00:31f9:2e39:b93e:7933])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BD84F1EC0266;
+        Fri, 19 Mar 2021 11:40:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616150441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QyYzaUcc39j+bPjdua1wzMkbnxXxaoxdtY3xpeCJyB8=;
+        b=MT/ocn5rTDfPQs2iKnJSR/4Kk6LsirOhEpYWLRjyR1+VNYolG/33Vx2uDMy5U383pQBrFZ
+        O1YyAHeQCnwb+seNwvNjjj8d5kGFvoMWQMzEKewyrGQ43hCNtyfkuffsKUdwfQh6+qCiX/
+        O9E8lQAG3VH0DyunYV1WC3hZC08Hi8s=
+Date:   Fri, 19 Mar 2021 11:40:45 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        mbenes@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/14] x86: Add insn_decode_kernel()
+Message-ID: <20210319104045.GE6251@zn.tnic>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171919.458304970@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210319075410.for-stable-4.19.1.I222f801866f71be9f7d85e5b10665cd4506d78ec@changeid>
+In-Reply-To: <20210318171919.458304970@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 07:54:15AM +0800, Nicolas Boichat wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Thu, Mar 18, 2021 at 06:11:04PM +0100, Peter Zijlstra wrote:
+> Add a helper to decode kernel instructions; there's no point in
+> endlessly repeating those last two arguments.
 > 
-> commit 6553896666433e7efec589838b400a2a652b3ffa upstream.
-> 
-> Some code pathes, especially the low level entry code, must be protected
-> against instrumentation for various reasons:
-> 
->  - Low level entry code can be a fragile beast, especially on x86.
-> 
->  - With NO_HZ_FULL RCU state needs to be established before using it.
-> 
-> Having a dedicated section for such code allows to validate with tooling
-> that no unsafe functions are invoked.
-> 
-> Add the .noinstr.text section and the noinstr attribute to mark
-> functions. noinstr implies notrace. Kprobes will gain a section check
-> later.
-> 
-> Provide also a set of markers: instrumentation_begin()/end()
-> 
-> These are used to mark code inside a noinstr function which calls
-> into regular instrumentable text section as safe.
-> 
-> The instrumentation markers are only active when CONFIG_DEBUG_ENTRY is
-> enabled as the end marker emits a NOP to prevent the compiler from merging
-> the annotation points. This means the objtool verification requires a
-> kernel compiled with this option.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Acked-by: Peter Zijlstra <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20200505134100.075416272@linutronix.de
-> 
-> [Nicolas: context conflicts in:
-> 	arch/powerpc/kernel/vmlinux.lds.S
-> 	include/asm-generic/vmlinux.lds.h
-> 	include/linux/compiler.h
-> 	include/linux/compiler_types.h]
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/include/asm/insn.h        |    2 ++
+>  arch/x86/kernel/alternative.c      |    2 +-
+>  arch/x86/kernel/cpu/mce/severity.c |    2 +-
+>  arch/x86/kernel/kprobes/core.c     |    4 ++--
+>  arch/x86/kernel/kprobes/opt.c      |    2 +-
+>  arch/x86/kernel/traps.c            |    2 +-
+>  tools/arch/x86/include/asm/insn.h  |    4 +++-
+>  7 files changed, 11 insertions(+), 7 deletions(-)
 
-Did you build this on x86?
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-I get the following build error:
+-- 
+Regards/Gruss,
+    Boris.
 
-ld:./arch/x86/kernel/vmlinux.lds:20: syntax error
-
-And that line looks like:
-
- . = ALIGN(8); *(.text.hot .text.hot.*) *(.text .text.fixup) *(.text.unlikely .text.unlikely.*) *(.text.unknown .text.unknown.*) . = ALIGN(8); __noinstr_text_start = .; *(.__attribute__((noinline)) __attribute__((no_instrument_function)) __attribute((__section__(".noinstr.text"))).text) __noinstr_text_end = .; *(.text..refcount) *(.ref.text) *(.meminit.text*) *(.memexit.text*)
-
-So I'm going to drop both of these patches from the queue.
-
-thanks,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
