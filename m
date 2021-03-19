@@ -2,67 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD31341FD2
+	by mail.lfdr.de (Postfix) with ESMTP id 50D12341FD1
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCSOlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhCSOkx (ORCPT
+        id S230201AbhCSOlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:41:18 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43212 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229926AbhCSOks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:40:53 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126D2C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:40:49 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id t18so10091997ejc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PsrnI48ySMteNGZy7QIyyURu5S7qa7kJDmOkJNl11Cw=;
-        b=IkcC4qr2yTWUlfbmTP2MjPqskcRrXhgdHOF6uBuoXHQVEFWcFrI9rDetVMmA/9lZyX
-         /zP6zimoQzPpUU2ncWnO1VDjCp0S3wtlWx2YufmEE3ns6Jm/fdymPxfRhkDdC4C15Rep
-         Px2QRwKMca5rAG5Za8fSVLqWDTR59u7eNL9B0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PsrnI48ySMteNGZy7QIyyURu5S7qa7kJDmOkJNl11Cw=;
-        b=SWqT7pPlmwGUVqtm19tAJcwkLDCLmZwnc9oYpfMbdqoYrZoZ80Zu3ApGHx31NrdPIU
-         Ztrypqpx2fLYjQT+cmnkEsiZ2MImFvyVC82XMtA4jEPm/93jyYp0wPtzHkmL/TEsrBx8
-         tm8h1kb2VpKVdhjbu3H4PQXnfwoScPbcO1LzI3qVlKEUKrpAoszz7fAXY7PqCHFgNNCm
-         pa7sWZtMx8rCKt47np4VYPD6+bCrMFd7zNkfM9Qm2q0brkRBJVceg62MxRj5I8PU+WIg
-         VGjPjsNhZyLb2T8CW7sRG7bqdvriY/HHOBFLTqL96yvmv5Nmz7tuHPt6pDp/xpwjbgxy
-         hvnA==
-X-Gm-Message-State: AOAM5320YieETDOpTUkNuHIm+fZoU2nl1dtxsWH7XcxDVxDsinF01zKM
-        OcY0XuXxzLgYIyLbTvbjEjiuQQ==
-X-Google-Smtp-Source: ABdhPJzHzB6EA1bmog3TArH1N6/9x3z2Y7umLsmKy+00vRx/4sSdCTXrPxdItH3dF/5ow/Yuol+R5Q==
-X-Received: by 2002:a17:906:3f8c:: with SMTP id b12mr4846664ejj.340.1616164847771;
+        Fri, 19 Mar 2021 10:40:48 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 590E9209C398;
         Fri, 19 Mar 2021 07:40:47 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id gt37sm3694510ejc.12.2021.03.19.07.40.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 07:40:47 -0700 (PDT)
-Subject: Re: [PATCH 2/3] static_call: Align static_call_is_init() patching
- condition
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.636651340@infradead.org>
- <f5ce3975-bda6-0e83-3a59-2fac25cc4f08@rasmusvillemoes.dk>
- <YFSxorIVeuA2zCXt@hirez.programming.kicks-ass.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <c4e9dfdf-c83a-3314-8c55-5b2371a56ec8@rasmusvillemoes.dk>
-Date:   Fri, 19 Mar 2021 15:40:46 +0100
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 590E9209C398
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616164847;
+        bh=1zQaqS/XbK07XWlK6cwo3q5bC7o/WeaNHXa0xXx1Uh4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZX8aqmUc05ndJQXno8dUB7gDV7LXoR7hrDnVhjLGeuSRcxQvspUMtnr7Bnpl1CqHZ
+         RDn3Pp4u79tMqZYjFJhqTR6L0nUh8o61Xq5rM2z29rcmae23mNpTCh4Q8kLcGGNNJS
+         B9/owhj8huMaPL8OhCK0tZTv9AHW/IWtOsRUSpCE=
+Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-3-madvenka@linux.microsoft.com>
+ <20210318174029.GM5469@sirena.org.uk>
+ <6474b609-b624-f439-7bf7-61ce78ff7b83@linux.microsoft.com>
+ <20210319132208.GD5619@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <e8d596c3-b1ec-77a6-f387-92ecd2ebfceb@linux.microsoft.com>
+Date:   Fri, 19 Mar 2021 09:40:46 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YFSxorIVeuA2zCXt@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210319132208.GD5619@sirena.org.uk>
 Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,39 +49,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 15.13, Peter Zijlstra wrote:
 
->> Dunno, probably overkill, but perhaps we could have an atomic_t (or
->> refcount, whatever) init_ref inited to 1, with init_ref_get() doing an
->> inc_unless_zero, and iff you get a ref, you're free to call (/patch)
->> __init functions and access __initdata, but must do init_ref_put(), with
->> PID1 dropping its initial ref and waiting for it to drop to 0 before
->> doing the *free_initmem() calls.
+
+On 3/19/21 8:22 AM, Mark Brown wrote:
+> On Thu, Mar 18, 2021 at 05:22:49PM -0500, Madhavan T. Venkataraman wrote:
+>> On 3/18/21 12:40 PM, Mark Brown wrote:
 > 
-> I'd as soon simply add another SYSTEM state. That way we don't have to
-> worry about who else looks at RUNNING for what etc..
+>>> Unless I'm misreading what's going on here this is more trying to set a
+>>> type for the stack as a whole than for a specific stack frame.  I'm also
+>>> finding this a bit confusing as the unwinder already tracks things it
+>>> calls frame types and it handles types that aren't covered here like
+>>> SDEI.  At the very least there's a naming issue here.
+> 
+>> Both these frames are on the task stack. So, it is not a stack type.
+> 
+> OTOH it's also not something that applies to every frame but only to the
+> base frame from each stack which I think was more where I was coming
+> from there.  In any case, the issue is also that there's already another
+> thing that the unwinder calls a frame type so there's at least that
+> collision which needs to be resolved if nothing else.
+> 
 
-I don't understand. How would that solve the
+The base frame from each stack as well as intermediate marker frames such
+as the EL1 frame and the Ftrace frame.
 
-PID1                           PIDX
-                               ok = system_state < INIT_MEM_GONE;
-system_state = INIT_MEM_GONE;
-free_initmem();
-system_state = RUNNING;
-                               if (ok)
-                                   poke init mem
+As for the frame type, I will try to come up with a better name.
 
-race? I really don't see any way arbitrary threads can reliably check
-how far PID1 has progressed at one point in time and use that
-information (a few lines) later to access init memory without
-synchronizing with PID1.
+>>> Taking a step back though do we want to be tracking this via pt_regs?
+>>> It's reliant on us robustly finding the correct pt_regs and on having
+>>> the things that make the stack unreliable explicitly go in and set the
+>>> appropriate type.  That seems like it will be error prone, I'd been
+>>> expecting to do something more like using sections to filter code for
+>>> unreliable features based on the addresses of the functions we find on
+>>> the stack or similar.  This could still go wrong of course but there's
+>>> fewer moving pieces, and especially fewer moving pieces specific to
+>>> reliable stack trace.
+> 
+>> In that case, I suggest doing both. That is, check the type as well
+>> as specific functions. For instance, in the EL1 pt_regs, in addition
+>> to the above checks, check the PC against el1_sync(), el1_irq() and
+>> el1_error(). I have suggested this in the cover letter.
+> 
+>> If this is OK with you, we could do that. We want to make really sure that
+>> nothing goes wrong with detecting the exception frame.
+> 
+> ...
+> 
+>> If you dislike the frame type, I could remove it and just do the
+>> following checks:
+> 
+>> 	FP == pt_regs->regs[29]
+>> 	PC == pt_regs->pc
+>> 	and the address check against el1_*() functions
+> 
+>> and similar changes for EL0 as well.
+> 
+>> I still think that the frame type check makes it more robust.
+> 
+> Yeah, we know the entry points so they can serve the same role as
+> checking an explicitly written value.  It does mean one less operation
+> on exception entry, though I'm not sure that's that a big enough
+> overhead to actually worry about.  I don't have *super* strong opinons
+> against adding the explicitly written value other than it being one more
+> thing we don't otherwise use which we have to get right for reliable
+> stack trace, there's a greater risk of bitrot if it's not something that
+> we ever look at outside of the reliable stack trace code.
+> 
 
-AFAICT, having an atomic_t object representing the init memory and a
-"no, you can't have a new reference" would guarantee correctness of the
-jump_label/static_call patching: If we get a reference, we do the
-patching just as for the rest of the kernel .text. If we don't, i.e.
-observe atomic_load(init_ref)==0, that may not necessarily mean that
-PID1 has actually discarded the memory yet, but no thread can currently
-or in the future actually run __init code, so it need not be patched.
+So, I will add the address checks for robustness. I will think some more
+about the frame type.
 
-Rasmus
+>>>> EL1_FRAME
+>>>> 	EL1 exception frame.
+> 
+>>> We do trap into EL2 as well, the patch will track EL2 frames as EL1
+>>> frames.  Even if we can treat them the same the naming ought to be
+>>> clear.
+> 
+>> Are you referring to ARMv8.1 VHE extension where the kernel can run
+>> at EL2? Could you elaborate? I thought that EL2 was basically for
+>> Hypervisors.
+> 
+> KVM is the main case, yes - IIRC otherwise it's mainly error handlers
+> but I might be missing something.  We do recommend that the kernel is
+> started at EL2 where possible.
+> 
+> Actually now I look again it's just not adding anything on EL2 entries
+> at all, they use a separate set of macros which aren't updated - this
+> will only update things for EL0 and EL1 entries so my comment above
+> about this tracking EL2 as EL1 isn't accurate.
+> 
+
+OK.
+
+Madhavan
