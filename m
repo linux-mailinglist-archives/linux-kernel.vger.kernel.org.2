@@ -2,70 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F6234287D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C763634287E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhCSWKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
+        id S230512AbhCSWLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhCSWKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:10:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 94AF961976;
-        Fri, 19 Mar 2021 22:10:07 +0000 (UTC)
+        id S230285AbhCSWKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 18:10:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EDC061979;
+        Fri, 19 Mar 2021 22:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616191807;
-        bh=8Rm8nUcbM7kjratMz5f7l43695kFr5pLKDKp+ifX8UM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PN9EzQfTDBWpVIBXDi/uprftc7AvzPgH5sB0GDZzznb084sTE77mZC2M1JMDc/g2e
-         6nCtcwNDCzEFvIWXkG1c/uv2x5Gx+e31dVZI5exfAai+ZP4AT/TOOQgxLlafwH0OAE
-         iIrXzVe9iuFOUPFYidtDOXVJ+nNdbOAl7QxgF2DHyj7s+VGQ/dLMqEVep5MpKt+AZ4
-         rFkivp9jOW1utJ99RGiT1MUZ8hLDNIMOSap2JwPRD2Bp2lRqYUycg1W4X5h+8XTJzc
-         sM+ngJHXi/1eK8iCldvKqvzA3erw/8XYc7jVjUhsg4S19m18/jbEMpk183zGXbDFJG
-         270v2nlCXlcyQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8260460A0B;
-        Fri, 19 Mar 2021 22:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1616191843;
+        bh=9dG8aL3BrKWbFS+Lqoql6t6iTEwSbP1Iz6LMq7AC1R0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jeoy602ofP6YvVVzI5eZImUy7ztEa/wuHa7l81NYDYPvXqNi4R3ALCVMu2Iayw38c
+         3DXh7b1CYR3Hmg4MkRrXwNoxSINNzXNA5PQ8oAV21/q/X8/+wSSv0UK7fxFxZqlmwX
+         nT6yOspGUmC1btzkJ/U78YYYfEXQzVv8pt0yZYWicd/InqwxCjEjT4T2KuZ9GhzADU
+         4HFqAtPssCaGZYkG6b9gHE05erUw9BR9W1S4fC2jjqH0C3EdRWsBvIhN6InRHPEohF
+         1P/tBvUH8PPTx7WPnrpXJTkndb8bhs0vWKhGIkvj6V/GK65mw7uXaODXKt0JelUQsL
+         4DowOYIAJh5sA==
+Date:   Fri, 19 Mar 2021 23:10:40 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210319221040.GC814853@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
+ <20210319135854.GA814853@lothringen>
+ <20210319175116.GO2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Remove insn_buf[] declaration in inner block
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161619180752.8344.17156572958677826281.git-patchwork-notify@kernel.org>
-Date:   Fri, 19 Mar 2021 22:10:07 +0000
-References: <20210318024851.49693-1-Jianlin.Lv@arm.com>
-In-Reply-To: <20210318024851.49693-1-Jianlin.Lv@arm.com>
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        iecedge@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319175116.GO2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Thu, 18 Mar 2021 10:48:51 +0800 you wrote:
-> Two insn_buf[16] variables are declared in the function, which act on
-> function scope and block scope respectively.
-> The statement in the inner blocks is redundant, so remove it.
+On Fri, Mar 19, 2021 at 10:51:16AM -0700, Paul E. McKenney wrote:
+> On Fri, Mar 19, 2021 at 02:58:54PM +0100, Frederic Weisbecker wrote:
+> > It's all a matter of personal taste but if I may suggest some namespace
+> > modifications:
+> > 
+> > get_state_synchronize_rcu() -> synchronize_rcu_poll_start_raw()
+> > start_poll_synchronize_rcu() -> synchronize_rcu_poll_start()
+> > poll_state_synchronize_rcu() -> synchronize_rcu_poll()
+> > cond_synchronize_rcu() -> synchronize_rcu_cond()
+> > 
+> > But it's up to you really.
 > 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> ---
->  kernel/bpf/verifier.c | 1 -
->  1 file changed, 1 deletion(-)
+> I am concerned about starting anything "synchronize_rcu" if that
+> thing doesn't unconditionally wait for a grace period.  "What do
+> you mean that there was no grace period?  Don't you see that call to
+> synchronize_rcu_poll_start_raw()???"
 
-Here is the summary with links:
-  - [bpf-next] bpf: Remove insn_buf[] declaration in inner block
-    https://git.kernel.org/bpf/bpf-next/c/9ef05281e5d0
+I see, that could indeed be confusing.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> 
+> This objection doesn't apply to cond_synchronize_rcu(), but it is
+> already in use, so any name change should be worked with the users.
+> All two of them.  ;-)
+
+Probably not worth it. We have cond_resched() as a schedule() counterpart
+for a reference after all.
+
+> > >  /**
+> > > + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> > > + *
+> > > + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
+> > 
+> > It may be worth noting that calling start_poll_synchronize_rcu() and then
+> > pass the cookie to cond_synchronize_rcu() soon after may end up waiting for
+> > one more grace period.
+> 
+> You mean this sequence of events?
+> 
+> 1.	cookie = start_poll_synchronize_rcu()
+> 
+> 2.	The grace period corresponding to cookie is almost over...
+> 
+> 3.	cond_synchronize_rcu() checks the cookie and sees that the
+> 	grace period has not yet expired.
+> 
+> 4.	The grace period corresponding to cookie completes.
+> 
+> 5.	Someone else starts a grace period.
+> 
+> 6.	cond_synchronize_rcu() invokes synchronize_rcu(), which waits
+> 	for the just-started grace period plus another grace period.
+> 	Thus, there has been no fewer than three full grace periods
+> 	between the call to start_poll_synchronize_rcu() and the
+> 	return from cond_synchronize_rcu().
+> 
+> Yes, this can happen!  And it can be worse, for example, it is quite
+> possible that cond_synchronize_rcu() would be preempted for multiple
+> grace periods at step 5, in which case it would still wait for almost
+> two additional grace periods.
+> 
+> Or are you thinking of something else?
+
+I didn't even think that far.
+My scenario was:
+
+1.	cookie = start_poll_synchronize_rcu()
+ 
+ 
+2.	cond_synchronize_rcu() checks the cookie and sees that the
+	grace period has not yet expired. So it calls synchronize_rcu()
+	which queues a callback.
+
+3.	The grace period for the cookie eventually completes.
+
+4.	The callback queued in 2. gets assigned a new grace period number.
+	That new grace period starts.
+
+5.	The new grace period completes and synchronize_rcu() returns.
 
 
+But I think this is due to some deep misunderstanding from my end.
+
+
+> > > + * If a full RCU grace period has elapsed since the earlier call from
+> > > + * which oldstate was obtained, return @true, otherwise return @false.
+> > > + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+> > 
+> > Rephrase suggestion for the last sentence:
+> > 
+> > "In case of failure, it's up to the caller to try polling again later or
+> > invoke synchronize_rcu() to wait for a new full grace period to complete."
+> 
+> How about like this?
+> 
+> /**
+>  * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+>  *
+>  * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+>  *
+>  * If a full RCU grace period has elapsed since the earlier call from
+>  * which oldstate was obtained, return @true, otherwise return @false.
+>  * If @false is returned, it is the caller's responsibilty to invoke this
+>  * function later on until it does return @true.  Alternatively, the caller
+>  * can explicitly wait for a grace period, for example, by passing @oldstate
+>  * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
+
+Yes very nice!
+
+Thanks!
