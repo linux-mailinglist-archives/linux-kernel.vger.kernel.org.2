@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ACF341D8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C4A341D8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCSM5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S230012AbhCSM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhCSM5X (ORCPT
+        with ESMTP id S230008AbhCSM5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:57:23 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487E5C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:57:23 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so5185340wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XpPGUE6BByswa3Ep4l8WzlVumVFkgxbvdRbN1GhWJbU=;
-        b=eQ2OMBnwvXNj4Zdcbf4Hf8XhhOBTeJwVU8tZfivPCrGq/tqqyHwo+0+7sVu6f/FsOF
-         2OxuJiRcYb+ik93a+6pEZWp7tjd8+5ZGYphQIC53Le4n8JIjcX44lFddF1HSGvwZed2B
-         Kdty/Fkttsnba/u2wxbAW5PS5T45tIkJ0NOMrBS5T1OqETZjK5ywTXFrxyTHOnG0UEDs
-         YwqAQK/gQEYhzSjBYukkAxpoaF+2mwqUDnY9us+Z2wK1PX5EK6/psOtGTwp+gwxvvLao
-         0b4J3h/UircWR7ovcTz20HRQhi0PF74RiV9kaVNlVJ+dVdgg+O5M2++cy91mMuVOguqX
-         kI7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XpPGUE6BByswa3Ep4l8WzlVumVFkgxbvdRbN1GhWJbU=;
-        b=WyEe0jkV/4lx652w6RA2jsY3UP0pZ0TEzeK4qYmcmxLUrYFPGjzgraqFNFDbBA601q
-         rxTTNgirxEKvlqGoV3aBub8iMhpXUC+FS7lXQbEFxrMrHfIPHDy1yDg+xfBIQNAe7O6v
-         arGpLopjH3ricj7PrhXD1QKXAGK5mAJb+VZ/R7Aadlma2yoMgQGXtRIcUCW86FPhay1J
-         g1mCpI58gjuDHfja0X0NqhQ2qdvoYcW7HgQ4tyA+pbpN0IsectayXj1NF0kOVKvvDy6E
-         Ow/OAM79Debgm4bEc99Q4jLEF5QjXpeWRyOlVBb6RJcxxZRsYY/9jPgm0VEOU2ooD4qi
-         sbaQ==
-X-Gm-Message-State: AOAM530exj/pDpJJqmVKYlbtNcqDar2A/7hmrnit54LzHVDlLxBf4SfJ
-        wpDq5w5MKPvtK7tdhQvjDMSBig==
-X-Google-Smtp-Source: ABdhPJwFVAyOf6DKJnWgPfK9dHaCFpWzGKth3FaOBlGYV9sO/L5kI4EXuCeCC1XVjuYkH/4Z1drgHQ==
-X-Received: by 2002:a1c:448a:: with SMTP id r132mr3621997wma.157.1616158641830;
-        Fri, 19 Mar 2021 05:57:21 -0700 (PDT)
-Received: from google.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id s84sm6605286wme.11.2021.03.19.05.57.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 05:57:21 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 12:57:16 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH] selinux: vsock: Set SID for socket returned by accept()
-Message-ID: <YFSfrIZAz6zHENT7@google.com>
-References: <20210317154448.1034471-1-dbrazdil@google.com>
- <CAHC9VhT_+i9V9N7NAdCCUgO5xBZpffvVPeh=jK8weZr3WzZ4Bw@mail.gmail.com>
+        Fri, 19 Mar 2021 08:57:38 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB10C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
+        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=fs1BI/kDPxpUnN2YfyefcBRApTniZpGXEnNk5mbyRPI=; b=bR+IhlEU7m0zTEXNyKdnBRdnDp
+        S64rpmFI69yooWeChT4QtgiW4qBjIjtAhJgC5GwNUjZgirSY5GWnG2wQ0bEvPqrshK9Ka8goBhikf
+        pStXD170FQK8lPXtrd4L4hUiwVQ4ZsRv/6PcQupUqGh36AXLBcOlIwqdeTGGbZHa0bY2aKH0TI1ct
+        btzOi4uajTKn/ZL14tzZjvqr+cJsMF0ZOj07/RZDrYukbnfeqDAczU4mm+SoRTNwvydtPE6SZMaHI
+        SMpuXwo4P4WzzO8raSsiCegtwS4nXkKQgm9QaIiRSJ9J/ah/L4jqoy2ajOw9HRJ2nwlBQIc8RTbl6
+        3PC69Row==;
+Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <jyri.sarha@iki.fi>)
+        id 1lNEh4-0004zv-6k; Fri, 19 Mar 2021 14:57:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhT_+i9V9N7NAdCCUgO5xBZpffvVPeh=jK8weZr3WzZ4Bw@mail.gmail.com>
+Date:   Fri, 19 Mar 2021 14:57:31 +0200
+From:   Jyri Sarha <jyri.sarha@iki.fi>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     Tomi Valkeinen <tomba@kernel.org>, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/tilcdc: fix LCD pixel clock setting
+In-Reply-To: <1180006566.16525.1616104029554@mail1.libero.it>
+References: <20210314151342.23404-1-dariobin@libero.it>
+ <7df3a270-1cc4-7a71-5e55-49a0dfb2c21f@kernel.org>
+ <1180006566.16525.1616104029554@mail1.libero.it>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <8adc90ef6ec8cb1ec3b8fdbdad0233cf@iki.fi>
+X-Sender: jyri.sarha@iki.fi
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 91.232.154.200
+X-SA-Exim-Mail-From: jyri.sarha@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-I'll post a v2 shortly but will address your comments here.
-
-> >  include/linux/lsm_hooks.h     |  7 +++++++
-> >  include/linux/security.h      |  5 +++++
-> >  net/vmw_vsock/af_vsock.c      |  1 +
-> >  security/security.c           |  5 +++++
-> >  security/selinux/hooks.c      | 10 ++++++++++
-> >  6 files changed, 29 insertions(+)
+On 2021-03-18 23:47, Dario Binacchi wrote:
+>> Il 17/03/2021 09:19 Tomi Valkeinen <tomba@kernel.org> ha scritto:
+>> 
+>> 
+>> On 14/03/2021 17:13, Dario Binacchi wrote:
+>> > As reported by TI spruh73x RM, the LCD pixel clock (LCD_PCLK) frequency
+>> > is obtained by dividing LCD_CLK, the LCD controller reference clock,
+>> > for CLKDIV:
+>> >
+>> > LCD_PCLK = LCD_CLK / CLKDIV
+>> >
+>> > where CLKDIV must be greater than 1.
+>> >
+>> > Therefore LCD_CLK must be set to 'req_rate * CLKDIV' instead of req_rate
+>> 
+>> The above doesn't make sense, the code already sets LCD_CLK to 
+>> 'req_rate
+>> * clkdiv', not req_rate.
+>> 
+>> > and the real LCD_CLK rate must be compared with 'req_rate * CLKDIV' and
+>> > not with req_rate.
+>> 
+>> This is true, the code looks at the wrong value.
+>> 
+>> > Passing req_rate instead of 'req_rate * CLKDIV' to the tilcdc_pclk_diff
+>> > routine caused it to fail even if LCD_CLK was properly set.
+>> >
+>> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
+>> >
+>> > ---
+>> >
+>> >   drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++----
+>> >   1 file changed, 5 insertions(+), 4 deletions(-)
+>> >
+>> > diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>> > index 30213708fc99..02f56c9a5da5 100644
+>> > --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>> > +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>> > @@ -203,7 +203,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+>> >   	struct drm_device *dev = crtc->dev;
+>> >   	struct tilcdc_drm_private *priv = dev->dev_private;
+>> >   	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
+>> > -	unsigned long clk_rate, real_rate, req_rate;
+>> > +	unsigned long clk_rate, real_rate, req_rate, clk_div_rate;
+>> >   	unsigned int clkdiv;
+>> >   	int ret;
+>> >
+>> > @@ -211,10 +211,11 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+>> >
+>> >   	/* mode.clock is in KHz, set_rate wants parameter in Hz */
+>> >   	req_rate = crtc->mode.clock * 1000;
+>> > -
+>> > -	ret = clk_set_rate(priv->clk, req_rate * clkdiv);
+>> > +	/* LCD clock divisor input rate */
+>> > +	clk_div_rate = req_rate * clkdiv;
+>> 
+>> "clk_div_rate" sounds a bit odd to me. Why not lcd_fck_rate, as that's
+>> the name used later? Or lcd_clk_rate. Or maybe lcd_clk_req_rate...
 > 
-> Additional comments below, but I think it would be a good idea for you
-> to test your patches on a more traditional Linux distribution as well
-> as Android.
+> I prefer lcd_clk_rate.
+> 
+> How about adding an additional patch that changes the variable names to 
+> make
+> the code more readable?
+> 
+> req_rate -> lcd_pclk_rate
+> clk_rate -> real_lcd_clk_rate
+> 
+> And add a comment to the function which highlights the relationship
+> LCD_CLK = LCD_PCLK * CLDIV ?
 > 
 
-No problem, I was going to add a test case into selinux-testsuite
-anyway. Done now (link in v2) and tested on Fedora 33 with v5.12-rc3.
+What about renaming current req_rate to pclk_rate (for pixel clock 
+rate), and calling pclk_rate * clkdiv = req_rate, as that is the rate we 
+need to request from the input clock? Adding lcd to local variable names 
+here is quite redundant after all. In any case req_rate is bit 
+misleading name here and probably part of the reason why the bug exists 
+in the first place.
 
-> > diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> > index 5546710d8ac1..a9bf3b90cb2f 100644
-> > --- a/net/vmw_vsock/af_vsock.c
-> > +++ b/net/vmw_vsock/af_vsock.c
-> > @@ -755,6 +755,7 @@ static struct sock *__vsock_create(struct net *net,
-> >                 vsk->buffer_size = psk->buffer_size;
-> >                 vsk->buffer_min_size = psk->buffer_min_size;
-> >                 vsk->buffer_max_size = psk->buffer_max_size;
-> > +               security_vsock_sk_clone(parent, sk);
+Best regards,
+Jyri
+
+
+
+>> 
+>> > +	ret = clk_set_rate(priv->clk, clk_div_rate);
+>> >   	clk_rate = clk_get_rate(priv->clk);
+>> > -	if (ret < 0 || tilcdc_pclk_diff(req_rate, clk_rate) > 5) {
+>> > +	if (ret < 0 || tilcdc_pclk_diff(clk_div_rate, clk_rate) > 5) {
+>> >   		/*
+>> >   		 * If we fail to set the clock rate (some architectures don't
+>> >   		 * use the common clock framework yet and may not implement
+>> >
+>> 
+>> I think this fix is fine, but looking at the current code, it's 
+>> calling
+>> tilcdc_pclk_diff(), but doesn't actually provide pixel clocks to the
+>> function, but fclk.
 > 
-> Did you try calling the existing security_sk_clone() hook here?  I
-> would be curious to hear why it doesn't work in this case.
+> Yes, I agree.
 > 
-> Feel free to educate me on AF_VSOCK, it's entirely possible I'm
-> misunderstanding something here :)
+> Thanks and regards,
+> Dario
 > 
-
-No, you're completely right. security_sk_clone does what's needed here.
-Adding a new hook was me trying to mimic other socket families going via
-selinux_conn_sid. Happy to reuse the existing hook - makes this a nice
-oneliner. :)
-
-Please note that I'm marking v2 with 'Fixes' for backporting. This does
-feel to me like a bug, an integration that was never considered. Please
-shout if you disagree.
-
--David
+>> 
+>>   Tomi
