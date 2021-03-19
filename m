@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944083417CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176973417D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCSI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhCSI4k (ORCPT
+        id S229638AbhCSI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:57:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35460 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhCSI5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:56:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9CAC06174A;
-        Fri, 19 Mar 2021 01:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=zqIRbM6Nn7HfU4zrksxtqJsFnb/7Sey+P8FGdDKOD2w=; b=hHdi9qLjM0GZCrcxueZ8JkcKL
-        dYf0692iB94dwWZlwGi+Y/XqrqZDTk58UxIdtFFMB10DI00g+GcZMgawTeS7BCMo6Z/vWeF7s1K5i
-        69dCrpoocj0X3P3PCa2KCoIgscedY53T5Ir+3TVNGIUaW5A9996paSiU0pUssZS6MsDDQ7lrCqxyi
-        zFwQ9nCbjHgUNXhgKYPP+4aLWeK/MG090BmAzLOXz3jOqMf63ouB6IW+KQbXeQ+CYJdiEVaIGosmy
-        cKStTjYNcAQhyPETLSU/7bRAY4VJeLZ8R7q2m7cHZ22AZ9z5xNaSnhTGKn9D3dIHkSUJxxFrzp+Bj
-        BpLtJ4T5Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51472)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lNAvn-0004Cw-E7; Fri, 19 Mar 2021 08:56:31 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lNAvk-0000Ro-I9; Fri, 19 Mar 2021 08:56:28 +0000
-Date:   Fri, 19 Mar 2021 08:56:28 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Wong Vee Khee <vee.khee.wong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: Re: [PATCH net V2 1/1] net: phy: fix invalid phy id when probe using
- C22
-Message-ID: <20210319085628.GT1463@shell.armlinux.org.uk>
-References: <20210318090937.26465-1-vee.khee.wong@intel.com>
- <3f7f68d0-6bbd-baa0-5de8-1e8a0a50a04d@gmail.com>
+        Fri, 19 Mar 2021 04:57:33 -0400
+Date:   Fri, 19 Mar 2021 08:57:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616144252;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0fAS4vxdT0qW0DzsRucTlbOn3gQoSqPCoumLuZg2W7M=;
+        b=kkpdPVB0zdV2TJh5geOfrb/1Q6Ao35F/lc0Ic/VcdXOBiTOQMnKW+TtKmNNXiUSty8kp7H
+        zUcCxRWUmuxKRQsTju77+jrNdkqiK6htmCq9fJAJBoNTHojJoLX5GW05zfhIF/K8vCwUEF
+        r0PMU5T9IM0lDNaw1fjsDGSe014W2efE4L+yidAjBkXOP4sXsxcs63rKLoiStOnqi/f9i5
+        NQSGbCx9YmlOTcTYF0oFGeU83adUQTVEOs9bQDxyo9ggNlctZX25iRU9OmTOF4/tTANkjJ
+        BP0vgNav9q8WfqR9Uzmxda+J6NIoXH2tSQDtrLWC3wozIdgzMFukQhWHabZdxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616144252;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0fAS4vxdT0qW0DzsRucTlbOn3gQoSqPCoumLuZg2W7M=;
+        b=PmjrRpcuK2UWPVaADNBc5WHKieukp9OUiDR2fj/m1xznHSdn5C0se5O3w1V0O0bgq9TgLN
+        1aXYXssEyh4PVMAA==
+From:   "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx: Fix uninitialized 'nid' variable
+Cc:     kernel test robot <lkp@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210318214933.29341-1-dave.hansen@intel.com>
+References: <20210318214933.29341-1-dave.hansen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f7f68d0-6bbd-baa0-5de8-1e8a0a50a04d@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Message-ID: <161614425117.398.12898724326370108722.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:40:45AM +0100, Heiner Kallweit wrote:
-> Is there a specific reason why c22 is probed first? Reversing the order
-> would solve the issue we speak about here.
-> c45-probing of c22-only PHY's shouldn't return false positives
-> (at least at a first glance).
+The following commit has been merged into the x86/sgx branch of tip:
 
-That would likely cause problems for the I2f MDIO driver, since a
-C45 read is indistinguishable from a C22 write on the I2C bus.
+Commit-ID:     262e88b63f55e3d2bacdf629874a0af486775572
+Gitweb:        https://git.kernel.org/tip/262e88b63f55e3d2bacdf629874a0af486775572
+Author:        Dave Hansen <dave.hansen@intel.com>
+AuthorDate:    Thu, 18 Mar 2021 14:49:33 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 19 Mar 2021 09:51:55 +01:00
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+x86/sgx: Fix uninitialized 'nid' variable
+
+The NUMA fallback in __sgx_alloc_epc_page() recently grew an
+additional 'nid' variable to prevent extra trips through the
+fallback loop in case where the thread is migrated around.
+
+But, the new copy is not properly initialized.  Fix it.
+
+This was found by some fancy clang that 0day runs.  My gcc
+does not detect it.
+
+Fixes: 5b8719504e3a ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/20210318214933.29341-1-dave.hansen@intel.com
+---
+ arch/x86/kernel/cpu/sgx/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 5c9c5e5..13a7599 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -489,7 +489,7 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+ {
+ 	struct sgx_epc_page *page;
+ 	int nid_of_current = numa_node_id();
+-	int nid;
++	int nid = nid_of_current;
+ 
+ 	if (node_isset(nid_of_current, sgx_numa_mask)) {
+ 		page = __sgx_alloc_epc_page_from_node(nid_of_current);
