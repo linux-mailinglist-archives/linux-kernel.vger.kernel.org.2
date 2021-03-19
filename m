@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB3334263E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFA734264E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhCSTcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:32:42 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:43488 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhCSTcQ (ORCPT
+        id S231180AbhCSTeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:34:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41326 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230467AbhCSTeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:32:16 -0400
-Date:   Fri, 19 Mar 2021 19:32:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616182334; bh=5yWe8Hx3mAzgD1cjJ6fOFRik6bzQ9/2qcyBrY/E5cZw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=VPTcDjFrZg96Qg6rq2J8Y02Dk/JQQeRfozk2s+srD9UjD0Pae7fK6jZNDHywDfuqv
-         QoSNznF0Y2Fu4jTDqAJk/L+SSANzlOjC1UY1Wg3xQdatfMxPEN0RpfFzvhYhSQyJiN
-         2QUMKosKWmfk7SRf/0mU3sZQ9epU6CuhhWj/4PbMZjiD3QK+gG2IW07MhmyxT6sUCO
-         eodVEOGQyuUh5Q5jN6LDpbSLJcAId8ASjVAil226Jker5X32wOdU5Nsb5P9VBi6pLX
-         y55LyCt09La1xRauNB+ZoeTPU8uM972GPeG/Qu4pMgeUitOq53WFfTqlm6ACt+bqn7
-         ZwESYQTIpZtHQ==
-To:     Masahiro Yamada <masahiroy@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH 2/2] kconfig: mention submenu type in comment blocks in .config
-Message-ID: <20210319193150.267510-3-alobakin@pm.me>
-In-Reply-To: <20210319193150.267510-1-alobakin@pm.me>
-References: <20210319193150.267510-1-alobakin@pm.me>
+        Fri, 19 Mar 2021 15:34:01 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JJXJI7161488;
+        Fri, 19 Mar 2021 15:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=QiNxQUHTB+LUXXdMQbtriTAifyLUm8O4BBI9qJujYMs=;
+ b=HPbRBdlaHS/zn30j9Spu03Pktsbaruqrul2VLvWrOEc5s1xXPB4AG7t8yZ4r7WukJ4tX
+ TzR326l1Qx6vyJTr6d14pJWNUZCihsN06XkIQsDk/anK8ifWwGqaXzjqXpdqvcefzMZl
+ Yq3QVmDGQ9zKg6zQ/3YH2lKvKp4iRV5RnoZPfC+Kb4xuBA5qlavgvFxPZFmNmc8BwwBA
+ FVk7lUvSI9Z2jee3h+QKc1gHvW98CZV3QrJ1q0ONK1ICUP0KuMb+qLvf8KJ9zqgMSTWh
+ VhdhIL4+JPWPsE1TozTOqscbT+yMnB22hnkllMXeqPZaSsEcIhdXfo/Ux0ISDU1A+Ucs 1Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37c7m74ctf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 15:34:01 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12JJY1Vt165196;
+        Fri, 19 Mar 2021 15:34:01 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37c7m74csy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 15:34:00 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JJW3tG016919;
+        Fri, 19 Mar 2021 19:33:58 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 378n18p00a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 19:33:58 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JJXt2A16384384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 19:33:55 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4619BA4054;
+        Fri, 19 Mar 2021 19:33:55 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9D62A405B;
+        Fri, 19 Mar 2021 19:33:54 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.2.56])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Mar 2021 19:33:54 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH v1 0/2] s390/kvm: VSIE: fix prefixing and MSO for MVPG
+Date:   Fri, 19 Mar 2021 20:33:52 +0100
+Message-Id: <20210319193354.399587-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_10:2021-03-19,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=880 lowpriorityscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 impostorscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To have a better understanding of the dotconfig blocks, mention if
-a particular block-commented section is a choice or a menu{,config}.
+The guest real address needs to pass through prefixing in order to yield
+the absolute address.
 
-Before:
+The absolute address needs to be offset by the MSO in order to get the
+host virtual address.
 
-CONFIG_TICK_ONESHOT=3Dy
-CONFIG_NO_HZ_COMMON=3Dy
+Claudio Imbrenda (2):
+  s390/kvm: split kvm_s390_real_to_abs
+  s390/kvm: VSIE: fix MVPG handling for prefixing and MSO
 
-CONFIG_NO_HZ_IDLE=3Dy
+ arch/s390/kvm/gaccess.h | 23 +++++++++++++++++------
+ arch/s390/kvm/vsie.c    | 10 +++++++---
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-CONFIG_HIGH_RES_TIMERS=3Dy
-
-After:
-
-CONFIG_TICK_ONESHOT=3Dy
-CONFIG_NO_HZ_COMMON=3Dy
-
-CONFIG_NO_HZ_IDLE=3Dy
-
-CONFIG_HIGH_RES_TIMERS=3Dy
-
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- scripts/kconfig/confdata.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index e4f0a21fd469..3f50d8b82a54 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -822,6 +822,17 @@ int conf_write_defconfig(const char *filename)
- =09return 0;
- }
-
-+static const char *menu_type_string(const struct menu *menu)
-+{
-+=09if (menu->sym && (menu->sym->flags & SYMBOL_CHOICE))
-+=09=09return " choice";
-+
-+=09if (menu->prompt && menu->prompt->type =3D=3D P_MENU)
-+=09=09return " menu";
-+
-+=09return "";
-+}
-+
- int conf_write(const char *name)
- {
- =09FILE *out;
-@@ -876,8 +887,8 @@ int conf_write(const char *name)
- =09=09=09str =3D menu_get_prompt(menu);
- =09=09=09fprintf(out, "\n"
- =09=09=09=09     "#\n"
--=09=09=09=09     "# %s\n"
--=09=09=09=09     "#\n", str);
-+=09=09=09=09     "# %s%s\n"
-+=09=09=09=09     "#\n", str, menu_type_string(menu));
- =09=09=09need_newline =3D false;
- =09=09}
-
-@@ -905,7 +916,8 @@ int conf_write(const char *name)
- =09=09=09     (menu->prompt && menu->prompt->type =3D=3D P_MENU)) &&
- =09=09=09    menu_is_visible(menu) && menu !=3D &rootmenu) {
- =09=09=09=09str =3D menu_get_prompt(menu);
--=09=09=09=09fprintf(out, "# end of %s\n", str);
-+=09=09=09=09fprintf(out, "# end of %s%s\n", str,
-+=09=09=09=09=09menu_type_string(menu));
- =09=09=09=09need_newline =3D true;
- =09=09=09}
- =09=09=09if (menu->next) {
---
-2.31.0
-
+-- 
+2.26.2
 
