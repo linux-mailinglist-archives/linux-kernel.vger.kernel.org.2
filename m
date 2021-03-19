@@ -2,88 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2064342923
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFAF342925
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCSXb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 19:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        id S229708AbhCSXdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 19:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhCSXbc (ORCPT
+        with ESMTP id S229638AbhCSXd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 19:31:32 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F8CC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:31:32 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id j7so8125221qtx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:31:32 -0700 (PDT)
+        Fri, 19 Mar 2021 19:33:28 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A58C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:33:28 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id u190so4719448qkd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:33:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4MwivssdDeTOOf4NlUgU3u4clY3jrfk9rBV7iONoIkQ=;
-        b=apJwdLJhcOeNIy+OY5T8d3HyFP7l5M4bxAqZdyf2JyUGQ5RKVMERPg5QpOScfORwig
-         2Mcs4MFi9Z3OYFnQr3eJKJGO2Zba6LFJ8A/bm5xGSqgxAjr9qsnmBkm9UzQnue6h0suo
-         wZ1wHMk2ODXr9p6JFTvdjW6KzBJBTskm/IhLyG3F2vGXL4Tn8sV4VRtJ0wuvXrJzxN2M
-         wDqBu6L1+zTKlJRC3ToDMKjwANk5LMPdej5LTL5ss/CufplrjWtmPb2/hZp/EaetqARY
-         JMLbQ4Bn2IHxSQ8toC7d6HC+R6Y7fWPinYI/fI/+5KyBOV1hKvykAikggd68cSPRcsK9
-         Uj0Q==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=H5VdK/uIKMT1pp4iCjsWX5lLDmAK1g5zh8chc7mIlAc=;
+        b=AY3pRnV72+SVoCn6bFK2m3d33V0kl3Xdda5vLh6PNQNNefCcAdDxuiD5hlz3URSd+i
+         IVpfjCNBFk7l3OILp3flc1HpKr+lYJewEk2+hdkYf4Anssy+2hawzWNpfP0J4MipfB0G
+         K8Zzp7g7MQNL6nWIRfRrOyvtsD0HLMAt8lC/cAY0WhmdMVriYj6dbDBOUzWsxbSW/Eer
+         uUdcZ08zjwC4OLH1mQoBs6fBjJstKgjzJb9MLdJpa4cP/B0ZjhqjvY02td2/Xk+LcRDd
+         nZckom5APFW679p2UegQaJ14GM8XCvZ2zQS9rWIqW79JELxZOtYzsV2e44iG9zbnfpgC
+         uj+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4MwivssdDeTOOf4NlUgU3u4clY3jrfk9rBV7iONoIkQ=;
-        b=N+bfOX568NjCC2whpAsm+4s6kAhfRh4KmXrnYXc0Q3226iHm9LwK7BwP6VmVJRHWdF
-         ygFdJ1XncwfjMELxhw7JlCIpif5dgK2ApGEHt8c8ztGJSrbPARBeW5IGSl7m78gW7PZD
-         4J8GXNmQ5NL63Ow+5fWOHya8gsP8HzAjW+KrIgJucB1W+ZFFJMd7NlmmLD6jx72kju9t
-         9cyPUYilWo1MC4x6zfdpJAb24WBXi1BMTNODPtvmIBMC/jTh2L+Pr7GXCxxJdLM6d+fM
-         1+4Xzef6qNx5shF9hmvVTd2TvoZuYWck3yMY+YK5UGtZXZ99NGKeCJcyCtpTJh5D5jPd
-         +tYQ==
-X-Gm-Message-State: AOAM530i8Gng2vhZEWQgUD5lT6AHsOPIhOOs4Wd6DCEJ3zQ6iDC7kpte
-        GOOVy3z1X6N3sRjKYDWBxSo=
-X-Google-Smtp-Source: ABdhPJx5LYbLxlRoXBnR2W9dM+oKdsbLr9TT0AzxWCnt+v8DYmI5kcfn8x2lU/d20Qjep3Gf1Kt8NQ==
-X-Received: by 2002:aed:2c22:: with SMTP id f31mr1002161qtd.219.1616196691319;
-        Fri, 19 Mar 2021 16:31:31 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.27])
-        by smtp.gmail.com with ESMTPSA id i9sm5679414qko.69.2021.03.19.16.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 16:31:30 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] perf/builtin-c2c.c: Fix a punctuation
-Date:   Sat, 20 Mar 2021 04:58:24 +0530
-Message-Id: <20210319232824.742-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=H5VdK/uIKMT1pp4iCjsWX5lLDmAK1g5zh8chc7mIlAc=;
+        b=JfacYUwacfQ/HwjGYsWD0A82KrYf/cQyHxmaF0Q96oLLZRvEKEFuEXX1m+UlxBBAZt
+         Gd0Cxkk4NrHJbh4wbkNmILuDi/2EEf+pvQnSCK2kFn/9ZbqWxJfnDpfRtsmX4b8hH7S3
+         d05MX4/1QGtQLJeLJLj08k1vmew08p1vUlrND+mEuX5im1oRRq2dECLEs238bSDeVw3n
+         ylAUeC2MIrpi6O9RzY3OUd0IUr4E+JMUJ8T1xwTWZ2yKBR6uKikdyzn7oKIbBxWfa1pn
+         zoanDzka3fAg3WqsyEDpI01bRduEo2kIDS25kiJzCpZbltJCQmNAuqk8ckGSMoUgfka9
+         btCA==
+X-Gm-Message-State: AOAM531ii3+ihYHrXQ8JuPYy5X5p3gp190b4E8RT/aoda6ZP4mjnDf69
+        jxfsgR0n0KJt8K5N3oKUdGvUaQ==
+X-Google-Smtp-Source: ABdhPJzSOdA+BZ4Cwwe9fFa3TylOFETyoXHTWal2DU9jC14FF6dLvr0K3mrLd/HkzIlioGc3Yeg0QQ==
+X-Received: by 2002:a37:a408:: with SMTP id n8mr1050785qke.6.1616196807028;
+        Fri, 19 Mar 2021 16:33:27 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e14sm5545018qka.56.2021.03.19.16.33.25
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 19 Mar 2021 16:33:26 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 16:33:14 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 1/2] mm: memcontrol: don't allocate cgroup swap arrays
+ when memcg is disabled
+In-Reply-To: <20210319054944.50048-1-hannes@cmpxchg.org>
+Message-ID: <alpine.LSU.2.11.2103191630090.1043@eggly.anvils>
+References: <20210319054944.50048-1-hannes@cmpxchg.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Mar 2021, Johannes Weiner wrote:
 
-s/dont/don\'t/
+> Since commit 2d1c498072de ("mm: memcontrol: make swap tracking an
+> integral part of memory control"), the cgroup swap arrays are used to
+> track memory ownership at the time of swap readahead and swapoff, even
+> if swap space *accounting* has been turned off by the user via
+> swapaccount=0 (which sets cgroup_memory_noswap).
+> 
+> However, the patch was overzealous: by simply dropping the
+> cgroup_memory_noswap conditionals in the swapon, swapoff and uncharge
+> path, it caused the cgroup arrays being allocated even when the memory
+> controller as a whole is disabled. This is a waste of that memory.
+> 
+> Restore mem_cgroup_disabled() checks, implied previously by
+> cgroup_memory_noswap, in the swapon, swapoff, and swap_entry_free
+> callbacks.
+> 
+> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- tools/perf/builtin-c2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Hugh Dickins <hughd@google.com>
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index e3b9d63077ef..af1c1b89e769 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -1813,7 +1813,7 @@ static int hpp_list__parse(struct perf_hpp_list *hpp_list,
- 	perf_hpp__setup_output_field(hpp_list);
+Thanks for the memory!
 
- 	/*
--	 * We dont need other sorting keys other than those
-+	 * We don't need other sorting keys other than those
- 	 * we already specified. It also really slows down
- 	 * the processing a lot with big number of output
- 	 * fields, so switching this off for c2c.
---
-2.26.2
-
+> ---
+>  mm/memcontrol.c  | 3 +++
+>  mm/swap_cgroup.c | 6 ++++++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 668d1d7c2645..49bdcf603af1 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7101,6 +7101,9 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
+>  	struct mem_cgroup *memcg;
+>  	unsigned short id;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+>  	id = swap_cgroup_record(entry, 0, nr_pages);
+>  	rcu_read_lock();
+>  	memcg = mem_cgroup_from_id(id);
+> diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+> index 7f34343c075a..08c3246f9269 100644
+> --- a/mm/swap_cgroup.c
+> +++ b/mm/swap_cgroup.c
+> @@ -171,6 +171,9 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
+>  	unsigned long length;
+>  	struct swap_cgroup_ctrl *ctrl;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return 0;
+> +
+>  	length = DIV_ROUND_UP(max_pages, SC_PER_PAGE);
+>  	array_size = length * sizeof(void *);
+>  
+> @@ -206,6 +209,9 @@ void swap_cgroup_swapoff(int type)
+>  	unsigned long i, length;
+>  	struct swap_cgroup_ctrl *ctrl;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+>  	mutex_lock(&swap_cgroup_mutex);
+>  	ctrl = &swap_cgroup_ctrl[type];
+>  	map = ctrl->map;
+> -- 
+> 2.30.1
