@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C503428AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED68F3428B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCSW0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:26:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29402 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230490AbhCSWZr (ORCPT
+        id S230433AbhCSWbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhCSWbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:25:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616192747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Id8lKuzviOLir6fJj9EbKS5v9KIiHuyo8EpvVLbwXV0=;
-        b=USEe2b12aCcKjyigTXD1MrJ8SRT3PedS9olEPVXQcbiGIyzuL/V/qidpEWOwTy4fRn6QMw
-        xevid3mIi+1+6WLFmZ9kINqH8GW4MlJ/pEKGoZknwVd5zL+NbMnj4ZMoJ6v9bu/mANrIzL
-        nUtLeDT9WyaEYDTgPlsUxMEAWF7hBOQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-I9ohOC_MMVWdYe0Edf_HjQ-1; Fri, 19 Mar 2021 18:25:45 -0400
-X-MC-Unique: I9ohOC_MMVWdYe0Edf_HjQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3106F87A82A;
-        Fri, 19 Mar 2021 22:25:44 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9467210013C1;
-        Fri, 19 Mar 2021 22:25:40 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 16:25:40 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
-Subject: Re: [PATCH v1 07/14] vfio: Add a device notifier interface
-Message-ID: <20210319162540.0c5fe9dd@omen.home.shazbot.org>
-In-Reply-To: <20210310075639.GB662265@infradead.org>
-References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
-        <161524010999.3480.14282676267275402685.stgit@gimli.home>
-        <20210310075639.GB662265@infradead.org>
+        Fri, 19 Mar 2021 18:31:09 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2DAC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 15:31:08 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id t5so5833951qvs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 15:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KddpZryhMVvzhVIwYfWKLC636YNqdm4/19kIUEAclns=;
+        b=Q7HzdPBPeEbRVYC4XtRQJeGSTnHy4ukvIEbr/kSxnYM4IcQ5WUx7weESIt+3mqVTQJ
+         S/+RP2YipjePRplqS5SVwZfixn/33ACtQnB6x9iDZWrqmkizu910BFmbh/INWRl//aBh
+         BEC9beV/uNHiEODWnNZrVxAnt7Uo6Ys46VJu9l78fY05CBjSLP1Atz5XA7a/IEOFiVw/
+         UPyRTE4HXEZSaGpR9Tf+rR60jqeCTaJEo59JEPZRTgPhix5YGLhHBp9OoGUI42UqvJZ7
+         lJFSbmsDX+ZkyI15KBwy+w/Pkre8cBenumOrbfj4kYoZq7o6QXf+AUOG7hqNWcI8QjYT
+         7Hgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KddpZryhMVvzhVIwYfWKLC636YNqdm4/19kIUEAclns=;
+        b=k822laeqVK41CX20BGs17dF823dGx2j7pWVlSj/lNS7ZeSwxa80quidr2djKA2DQlO
+         iima/SATiQnhT3gbdaG2GKSTzFMt4POGs8JEolX7xdJryH+ef2exlH/DdW5eKrxqsdnr
+         7hFdLfmLx5lceO/y95ZrTrUK/1tMgDnBSP9FN9L2HubGL61g+SdIcYl0ypDM/oLfSQNY
+         76dy3EiDXNVpjblEATDoLpmWFLXjQ0IaW5MzrJlO5rLPEdmnBZ8+t5vh0xg6z+OyOXXZ
+         FJObnOXVxCUXILQfcvM1MqVBX3hIpt+TlaKrzftJZjYA4zEvHQmPYaCyeAO1kNfOD168
+         knMA==
+X-Gm-Message-State: AOAM5338av2g5o7F1uOUR0cPc9hnA+LHj+wrfmSWPQnXUBNKZoj+VRIe
+        hpnMcAnA3LqtIO3aBIPCfHU=
+X-Google-Smtp-Source: ABdhPJzgabCRWFkF2CS9u2kCAjnqCvtOCamfp0qEIVgZEbfYR2ujHtxUPGHyNwonubfjoukVRxvW1w==
+X-Received: by 2002:a05:6214:1144:: with SMTP id b4mr11570107qvt.12.1616193068189;
+        Fri, 19 Mar 2021 15:31:08 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.27])
+        by smtp.gmail.com with ESMTPSA id t24sm4691228qto.23.2021.03.19.15.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 15:31:07 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     catalin.marinas@arm.com, will@kernel.org,
+        anshuman.khandual@arm.com, suzuki.poulose@arm.com,
+        gustavoars@kernel.org, vincenzo.frascino@arm.com,
+        unixbhaskar@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] arm64: cpuinfo: Fix a typo
+Date:   Sat, 20 Mar 2021 03:58:48 +0530
+Message-Id: <20210319222848.29928-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 07:56:39 +0000
-Christoph Hellwig <hch@infradead.org> wrote:
 
-> On Mon, Mar 08, 2021 at 02:48:30PM -0700, Alex Williamson wrote:
-> > Using a vfio device, a notifier block can be registered to receive
-> > select device events.  Notifiers can only be registered for contained
-> > devices, ie. they are available through a user context.  Registration
-> > of a notifier increments the reference to that container context
-> > therefore notifiers must minimally respond to the release event by
-> > asynchronously removing notifiers.  
-> 
-> Notifiers generally are a horrible multiplexed API.  Can't we just
-> add a proper method table for the intended communication channel?
+s/acurate/accurate/
 
-I've been trying to figure out how, but I think not.  A user can have
-multiple devices, each with entirely separate IOMMU contexts.  For each
-device, the user can create an mmap of memory to that device and add it
-to every other IOMMU context.  That enables peer to peer DMA between
-all the devices, across all the IOMMU contexts.  But each individual
-device has no direct reference to any IOMMU context other than its own.
-A callback on the IOMMU can't reach those other contexts either, there's
-no guarantee those other contexts are necessarily managed via the same
-vfio IOMMU backend driver.  A notifier is the best I can come up with,
-please suggest if you have other ideas.  Thanks,
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/arm64/kernel/cpuinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Alex
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index 77605aec25fe..51fcf99d5351 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -353,7 +353,7 @@ static void __cpuinfo_store_cpu(struct cpuinfo_arm64 *info)
+ 	 * with the CLIDR_EL1 fields to avoid triggering false warnings
+ 	 * when there is a mismatch across the CPUs. Keep track of the
+ 	 * effective value of the CTR_EL0 in our internal records for
+-	 * acurate sanity check and feature enablement.
++	 * accurate sanity check and feature enablement.
+ 	 */
+ 	info->reg_ctr = read_cpuid_effective_cachetype();
+ 	info->reg_dczid = read_cpuid(DCZID_EL0);
+--
+2.26.2
 
