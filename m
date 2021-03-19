@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F9F34179B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2EE341787
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhCSIiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:38:04 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:41450 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234399AbhCSIhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:37:41 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E301920530D;
-        Fri, 19 Mar 2021 09:37:39 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4A98320271D;
-        Fri, 19 Mar 2021 09:37:33 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EE295402D2;
-        Fri, 19 Mar 2021 09:37:24 +0100 (CET)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, andrew.smirnov@gmail.com,
-        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
-        stefan@agner.ch, lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH 3/3] PCI: imx: clear vreg bypass when pcie vph voltage is 3v3
-Date:   Fri, 19 Mar 2021 16:24:07 +0800
-Message-Id: <1616142247-13789-3-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616142247-13789-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1616142247-13789-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S234329AbhCSIb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234226AbhCSIa6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:30:58 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E0EC06174A;
+        Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so7788000oto.2;
+        Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aOBAOoUYVUuaQ/ANg0jzaMHaepXG3KDq4pE4MIvdG8o=;
+        b=ehKcIFpqcFvs6rmBGhhYLOmTa156yRI+RgCEmgIEkZfjrNkBsB7Su31mJPBIbzGPVA
+         iroPBc8wT7bt0wZcHbLRDyK4q6LtniOz0X3MB0C6sAiW4xQ06OTTyPgzfWFTcHurActw
+         rtAncV4a5KU1YpT5hEVwxgiFF0F4KmnMO/MNv5aUvkZu7YTrd8Q293NxvSlLyVN4rSEA
+         Zo+qsNIBemsj8hOvm/OAu38NzxqQ+5uOzcKSfG5nvB5DQMHBOidYiS9CK9g8uW25CyLw
+         trLjhuXGM9dGCkiDZmNhzOgsOicmkrsPXS6M0hHa38odvX4EqT0xcDVgylz6mT/TjgmD
+         HFZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aOBAOoUYVUuaQ/ANg0jzaMHaepXG3KDq4pE4MIvdG8o=;
+        b=LZ+CPysagYdivnAOXHdJGJyFy0WtoZ+k9UQnMNu4wBh5VMQo9fQh8nqV/jgM/MFscL
+         Mg5+y/z8Chzu8bvITH0zE8iNUavRd9tX15pFtJUNwWizj6m6vxmxxD1v28e1xqaTY14I
+         +XIdSZVGNAnKt3x34CGFPzScsmquWBO2iRV019TZiqzkpgZbNBc7f5uwaSBjd6MrN8tr
+         /LaM/wJ33MFzdKhFaTvDr9umgbv2nQyy560taVGVuoDLtoVNiMrhIG2u6S27liWE6PtX
+         d71G5284HKwcsBcMjzoH6tbnUkqdOT4Zb63XZDqVE3R+gyOMpS/dy8uaR9XRyFi2f4Ya
+         /CGQ==
+X-Gm-Message-State: AOAM531akDnfeUJXXvtfCZHfIoxxfgpSLsRSox5eM69rRE1xx3i6ocRG
+        a7hbc+Fa0GBb3ohZfOcZSW70tID9Y/ND3dFNTUA=
+X-Google-Smtp-Source: ABdhPJxk8oR3tZuE0wVizpmB2OZnYufj91eZnehno59lNg/ie7ktVZyajwutrf5ekj5wc59CR8jJZnhWvSE50F+P5cA=
+X-Received: by 2002:a9d:12a7:: with SMTP id g36mr190938otg.304.1616142657379;
+ Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <87tupl30kl.fsf@igel.home> <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
+ <87o8fhoieu.fsf@igel.home>
+In-Reply-To: <87o8fhoieu.fsf@igel.home>
+From:   Yixun Lan <yixun.lan@gmail.com>
+Date:   Fri, 19 Mar 2021 08:28:06 +0000
+Message-ID: <CALecT5gY1GK774TXyM+zA3J9Q8O90UKMs3bvRk13yg9_+cFO3Q@mail.gmail.com>
+Subject: Re: macb broken on HiFive Unleashed
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Claudiu.Beznea@microchip.com, linux-riscv@lists.infradead.org,
+        ckeepax@opensource.cirrus.com, andrew@lunn.ch, w@1wt.eu,
+        Nicolas.Ferre@microchip.com, daniel@0x0f.com,
+        alexandre.belloni@bootlin.com, pthombar@cadence.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both 1.8v and 3.3v power supplies can be feeded to i.MX8MQ PCIe PHY.
-In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-the VREG_BYPASS bits of GPR registers should be cleared from default
-value 1b'1 to 1b'0.
+HI Andreas:
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+On Wed, Mar 17, 2021 at 4:27 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>
+> It turned out to be a broken clock driver.
+>
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 853ea8e82952..c35d5511b55b 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -37,6 +37,7 @@
- #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
- #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE_EN	BIT(10)
- #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE	BIT(11)
-+#define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
- #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
- #define IMX8MQ_PCIE2_BASE_ADDR			0x33c00000
- 
-@@ -611,6 +612,10 @@ static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
- 
- static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- {
-+	struct dw_pcie *pci = imx6_pcie->pci;
-+	struct device *dev = pci->dev;
-+	struct device_node *node = dev->of_node;
-+
- 	switch (imx6_pcie->drvdata->variant) {
- 	case IMX8MQ:
- 		/*
-@@ -621,6 +626,16 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- 				   imx6_pcie_grp_offset(imx6_pcie),
- 				   IMX8MQ_GPR_PCIE_REF_USE_PAD,
- 				   IMX8MQ_GPR_PCIE_REF_USE_PAD);
-+		/*
-+		 * Regarding to the datasheet, the PCIE_VPH is suggested
-+		 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
-+		 * VREG_BYPASS should be cleared to zero.
-+		 */
-+		if (of_property_read_bool(node, "pcie-vph-3v3"))
-+			regmap_update_bits(imx6_pcie->iomuxc_gpr,
-+					   imx6_pcie_grp_offset(imx6_pcie),
-+					   IMX8MQ_GPR_PCIE_VREG_BYPASS,
-+					   0);
- 		break;
- 	case IMX7D:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
--- 
-2.17.1
+what's the exact root cause? and any solution?
+seems I face the same issue, upgrade kernel to 5.11, then eth0 fail to bring up
 
+Yixun Lan
