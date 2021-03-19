@@ -2,269 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BEB3416D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4519E3416DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhCSHq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 03:46:58 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:38301 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233819AbhCSHqm (ORCPT
+        id S234231AbhCSHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 03:48:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43829 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234175AbhCSHrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:46:42 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id N9q9lKba2GEYcN9qClQw37; Fri, 19 Mar 2021 08:46:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1616140001; bh=3ae83h17n3pC3v5WqYJtdC9LgBQTN7BkE8Nh1fXnTzw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=fldBBD7oQcp6z6bu1mPjQhPbEsxaUYoEPRLzhYIYXgUSg5Sp1tzylmMXbSl6Qi0Zv
-         VgunNR3zg/GYZCSK4AW74dnoBfSSCMGnA0ob/ojd+AsLxOyHz6Ufr5CUkAfiEh1psq
-         pgvVZ2V7bQNbY55xzHo6ky6QoJ3oTJnVEO2obOz59YBITXE3OImkmzdFnBrs6rkqH/
-         EQJ5EzMOQwusPACmzBSPGdGv+eiJR0SIiktAQMQ4NMWkn+iKf218F9CduYJXGMUZg/
-         hNNvpGJEM7bqyOgwoJh+ouhFdzgvSboKiLgIglJnMU6hGekX47ZfUcZ/KKtjP5l3ae
-         A/Kyxwpk2uh6Q==
-Subject: Re: [PATCH v7 07/17] media: uvcvideo: Add support for
- V4L2_CTRL_TYPE_CTRL_CLASS
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-References: <20210318202928.166955-1-ribalda@chromium.org>
- <20210318202928.166955-8-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <e80497a1-8737-f0f8-d7ed-f446926e38f7@xs4all.nl>
-Date:   Fri, 19 Mar 2021 08:46:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210318202928.166955-8-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJ79jaNrNQFjM4ScYBBxG/xMSB5d/w1hm2MwcMrx96yjFQWraaipj3lYaeteIzkRvLk1sZyjqrmvCTyXouv39sYWqXVaKlky8ufZ+2ilo9AoCO5Y8Yzt
- PGc4lNrkK0LXBjU21m1zno5M6UhBk7hzujsNGpNLiWmMbRaT74CGSyFvO2A7H0ImUalLP8bTGdjHHuAFpy34tnqqaKYLaZqbJN267Zph7pUk+VpIf68xRoKT
- HI+ozc/v/zhLCKK9dgDlNVQ0p3T/j4+pqK0ThOVT3VqnokoQkFjqcYYFGkKywBw/U6MS5EqRiMbVuRmVDq+zhZV5gngnuweKq2/yx5CX44xZe038f2oknKPO
- Pp3y4U4D6iZnyw0LBmx1Tzbv0o1NMudB7J2IbtWk5riQjJy11UXm4YZskJIlJIQQfluyyXNv
+        Fri, 19 Mar 2021 03:47:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616140071; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=FvJ5yBLgBQZV8r7U4qSnErjL3cCvpmDZCdhaBipeFLM=; b=nc38c+i2sTTjwgRXK0CSz19YvfFzGlQ4izXLfsjJXk1k5+jd4ihY3ZN8k26X4cIxS/SanItw
+ 2V9zvpLHkTJ+dm61DiBek4iq4czvc5bwmtiX2Uxy7irVnxNtoeudkVLoeHOXoxuQNUCKkgf0
+ iB9kyCJB4VmN26yA2KnBxYR0L+U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60545726e2200c0a0dbd98eb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 07:47:50
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31872C433ED; Fri, 19 Mar 2021 07:47:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31265C433CA;
+        Fri, 19 Mar 2021 07:47:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31265C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH] clk: qcom: camcc: Update the clock ops for the SC7180
+Date:   Fri, 19 Mar 2021 13:17:34 +0530
+Message-Id: <1616140054-5141-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/2021 21:29, Ricardo Ribalda wrote:
-> Create all the class controls for the device defined controls.
-> 
-> Fixes v4l2-compliance:
-> Control ioctls (Input 0):
-> 		fail: v4l2-test-controls.cpp(216): missing control class for class 00980000
-> 		fail: v4l2-test-controls.cpp(216): missing control tclass for class 009a0000
-> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Update the RCGs to use shared ops to park the RCGs at XO.
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+Signed-off-by: Taniya Das <tdas@codeaurora.org>
+---
+ drivers/clk/qcom/camcc-sc7180.c | 50 ++++++++++++++++++++---------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
-Regards,
+diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
+index dbac565..9bcf2f8 100644
+--- a/drivers/clk/qcom/camcc-sc7180.c
++++ b/drivers/clk/qcom/camcc-sc7180.c
+@@ -304,7 +304,7 @@ static struct clk_rcg2 cam_cc_bps_clk_src = {
+ 		.name = "cam_cc_bps_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
 
-	Hans
+@@ -325,7 +325,7 @@ static struct clk_rcg2 cam_cc_cci_0_clk_src = {
+ 		.name = "cam_cc_cci_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_5,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
 
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 94 ++++++++++++++++++++++++++++++++
->  drivers/media/usb/uvc/uvcvideo.h |  5 ++
->  2 files changed, 99 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index b75da65115ef..ba14733db757 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -357,6 +357,15 @@ static const struct uvc_control_info uvc_ctrls[] = {
->  	},
->  };
->  
-> +static const struct uvc_control_class uvc_control_class[] = {
-> +	{
-> +		.id		= V4L2_CID_CAMERA_CLASS,
-> +	},
-> +	{
-> +		.id		= V4L2_CID_USER_CLASS,
-> +	},
-> +};
-> +
->  static const struct uvc_menu_info power_line_frequency_controls[] = {
->  	{ 0, "Disabled" },
->  	{ 1, "50 Hz" },
-> @@ -1024,6 +1033,49 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
->  	return 0;
->  }
->  
-> +static int __uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
-> +				  u32 found_id)
-> +{
-> +	bool find_next = req_id & V4L2_CTRL_FLAG_NEXT_CTRL;
-> +	unsigned int i;
-> +
-> +	req_id &= V4L2_CTRL_ID_MASK;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
-> +		if (!(chain->ctrl_class_bitmap & BIT(i)))
-> +			continue;
-> +		if (!find_next) {
-> +			if (uvc_control_class[i].id == req_id)
-> +				return i;
-> +			continue;
-> +		}
-> +		if (uvc_control_class[i].id > req_id &&
-> +		    uvc_control_class[i].id < found_id)
-> +			return i;
-> +	}
-> +
-> +	return -ENODEV;
-> +}
-> +
-> +static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
-> +				u32 found_id, struct v4l2_queryctrl *v4l2_ctrl)
-> +{
-> +	int idx;
-> +
-> +	idx = __uvc_query_v4l2_class(chain, req_id, found_id);
-> +	if (idx < 0)
-> +		return -ENODEV;
-> +
-> +	memset(v4l2_ctrl, 0, sizeof(*v4l2_ctrl));
-> +	v4l2_ctrl->id = uvc_control_class[idx].id;
-> +	strscpy(v4l2_ctrl->name, v4l2_ctrl_get_name(v4l2_ctrl->id),
-> +		sizeof(v4l2_ctrl->name));
-> +	v4l2_ctrl->type = V4L2_CTRL_TYPE_CTRL_CLASS;
-> +	v4l2_ctrl->flags = V4L2_CTRL_FLAG_WRITE_ONLY
-> +			   | V4L2_CTRL_FLAG_READ_ONLY;
-> +	return 0;
-> +}
-> +
->  static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	struct uvc_control *ctrl,
->  	struct uvc_control_mapping *mapping,
-> @@ -1127,12 +1179,31 @@ int uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
->  	if (ret < 0)
->  		return -ERESTARTSYS;
->  
-> +	/* Check if the ctrl is a know class */
-> +	if (!(v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL)) {
-> +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, 0, v4l2_ctrl);
-> +		if (!ret)
-> +			goto done;
-> +	}
-> +
->  	ctrl = uvc_find_control(chain, v4l2_ctrl->id, &mapping);
->  	if (ctrl == NULL) {
->  		ret = -EINVAL;
->  		goto done;
->  	}
->  
-> +	/*
-> +	 * If we're enumerating control with V4L2_CTRL_FLAG_NEXT_CTRL, check if
-> +	 * a class should be inserted between the previous control and the one
-> +	 * we have just found.
-> +	 */
-> +	if (v4l2_ctrl->id & V4L2_CTRL_FLAG_NEXT_CTRL) {
-> +		ret = uvc_query_v4l2_class(chain, v4l2_ctrl->id, mapping->id,
-> +					   v4l2_ctrl);
-> +		if (!ret)
-> +			goto done;
-> +	}
-> +
->  	ret = __uvc_query_v4l2_ctrl(chain, ctrl, mapping, v4l2_ctrl);
->  done:
->  	mutex_unlock(&chain->ctrl_mutex);
-> @@ -1426,6 +1497,11 @@ static int uvc_ctrl_add_event(struct v4l2_subscribed_event *sev, unsigned elems)
->  	if (ret < 0)
->  		return -ERESTARTSYS;
->  
-> +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0) {
-> +		ret = 0;
-> +		goto done;
-> +	}
-> +
->  	ctrl = uvc_find_control(handle->chain, sev->id, &mapping);
->  	if (ctrl == NULL) {
->  		ret = -EINVAL;
-> @@ -1459,7 +1535,10 @@ static void uvc_ctrl_del_event(struct v4l2_subscribed_event *sev)
->  	struct uvc_fh *handle = container_of(sev->fh, struct uvc_fh, vfh);
->  
->  	mutex_lock(&handle->chain->ctrl_mutex);
-> +	if (__uvc_query_v4l2_class(handle->chain, sev->id, 0) >= 0)
-> +		goto done;
->  	list_del(&sev->node);
-> +done:
->  	mutex_unlock(&handle->chain->ctrl_mutex);
->  }
->  
-> @@ -1577,6 +1656,9 @@ int uvc_ctrl_get(struct uvc_video_chain *chain,
->  	struct uvc_control *ctrl;
->  	struct uvc_control_mapping *mapping;
->  
-> +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
-> +		return -EACCES;
-> +
->  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
->  	if (ctrl == NULL)
->  		return -EINVAL;
-> @@ -1596,6 +1678,9 @@ int uvc_ctrl_set(struct uvc_fh *handle,
->  	s32 max;
->  	int ret;
->  
-> +	if (__uvc_query_v4l2_class(chain, xctrl->id, 0) >= 0)
-> +		return -EACCES;
-> +
->  	ctrl = uvc_find_control(chain, xctrl->id, &mapping);
->  	if (ctrl == NULL)
->  		return -EINVAL;
-> @@ -2062,6 +2147,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  {
->  	struct uvc_control_mapping *map;
->  	unsigned int size;
-> +	unsigned int i;
->  
->  	/* Most mappings come from static kernel data and need to be duplicated.
->  	 * Mappings that come from userspace will be unnecessarily duplicated,
-> @@ -2085,6 +2171,14 @@ static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  	if (map->set == NULL)
->  		map->set = uvc_set_le_value;
->  
-> +	for (i = 0; i < ARRAY_SIZE(uvc_control_class); i++) {
-> +		if (V4L2_CTRL_ID2WHICH(uvc_control_class[i].id) ==
-> +						V4L2_CTRL_ID2WHICH(map->id)) {
-> +			chain->ctrl_class_bitmap |= BIT(i);
-> +			break;
-> +		}
-> +	}
-> +
->  	list_add_tail(&map->list, &ctrl->info.mappings);
->  	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
->  		map->name, ctrl->info.entity, ctrl->info.selector);
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 97df5ecd66c9..b81d3f65e52e 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -262,6 +262,10 @@ struct uvc_control_mapping {
->  		    u8 *data);
->  };
->  
-> +struct uvc_control_class {
-> +	u32 id;
-> +};
-> +
->  struct uvc_control {
->  	struct uvc_entity *entity;
->  	struct uvc_control_info info;
-> @@ -475,6 +479,7 @@ struct uvc_video_chain {
->  
->  	struct v4l2_prio_state prio;		/* V4L2 priority state */
->  	u32 caps;				/* V4L2 chain-wide caps */
-> +	u8 ctrl_class_bitmap;			/* Bitmap of valid classes */
->  };
->  
->  struct uvc_stats_frame {
-> 
+@@ -339,7 +339,7 @@ static struct clk_rcg2 cam_cc_cci_1_clk_src = {
+ 		.name = "cam_cc_cci_1_clk_src",
+ 		.parent_data = cam_cc_parent_data_5,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -360,7 +360,7 @@ static struct clk_rcg2 cam_cc_cphy_rx_clk_src = {
+ 		.name = "cam_cc_cphy_rx_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -379,7 +379,7 @@ static struct clk_rcg2 cam_cc_csi0phytimer_clk_src = {
+ 		.name = "cam_cc_csi0phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -393,7 +393,7 @@ static struct clk_rcg2 cam_cc_csi1phytimer_clk_src = {
+ 		.name = "cam_cc_csi1phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -407,7 +407,7 @@ static struct clk_rcg2 cam_cc_csi2phytimer_clk_src = {
+ 		.name = "cam_cc_csi2phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -421,7 +421,7 @@ static struct clk_rcg2 cam_cc_csi3phytimer_clk_src = {
+ 		.name = "cam_cc_csi3phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -443,7 +443,7 @@ static struct clk_rcg2 cam_cc_fast_ahb_clk_src = {
+ 		.name = "cam_cc_fast_ahb_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -466,7 +466,7 @@ static struct clk_rcg2 cam_cc_icp_clk_src = {
+ 		.name = "cam_cc_icp_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -488,7 +488,7 @@ static struct clk_rcg2 cam_cc_ife_0_clk_src = {
+ 		.name = "cam_cc_ife_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -510,7 +510,7 @@ static struct clk_rcg2 cam_cc_ife_0_csid_clk_src = {
+ 		.name = "cam_cc_ife_0_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -524,7 +524,7 @@ static struct clk_rcg2 cam_cc_ife_1_clk_src = {
+ 		.name = "cam_cc_ife_1_clk_src",
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -538,7 +538,7 @@ static struct clk_rcg2 cam_cc_ife_1_csid_clk_src = {
+ 		.name = "cam_cc_ife_1_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -553,7 +553,7 @@ static struct clk_rcg2 cam_cc_ife_lite_clk_src = {
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+ 		.flags = CLK_SET_RATE_PARENT,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -567,7 +567,7 @@ static struct clk_rcg2 cam_cc_ife_lite_csid_clk_src = {
+ 		.name = "cam_cc_ife_lite_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -590,7 +590,7 @@ static struct clk_rcg2 cam_cc_ipe_0_clk_src = {
+ 		.name = "cam_cc_ipe_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -613,7 +613,7 @@ static struct clk_rcg2 cam_cc_jpeg_clk_src = {
+ 		.name = "cam_cc_jpeg_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -635,7 +635,7 @@ static struct clk_rcg2 cam_cc_lrme_clk_src = {
+ 		.name = "cam_cc_lrme_clk_src",
+ 		.parent_data = cam_cc_parent_data_6,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -656,7 +656,7 @@ static struct clk_rcg2 cam_cc_mclk0_clk_src = {
+ 		.name = "cam_cc_mclk0_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -670,7 +670,7 @@ static struct clk_rcg2 cam_cc_mclk1_clk_src = {
+ 		.name = "cam_cc_mclk1_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -684,7 +684,7 @@ static struct clk_rcg2 cam_cc_mclk2_clk_src = {
+ 		.name = "cam_cc_mclk2_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -698,7 +698,7 @@ static struct clk_rcg2 cam_cc_mclk3_clk_src = {
+ 		.name = "cam_cc_mclk3_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -712,7 +712,7 @@ static struct clk_rcg2 cam_cc_mclk4_clk_src = {
+ 		.name = "cam_cc_mclk4_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -732,7 +732,7 @@ static struct clk_rcg2 cam_cc_slow_ahb_clk_src = {
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+ 		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
 
