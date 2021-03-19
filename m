@@ -2,216 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E10341983
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD1A341982
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCSKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:07:27 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13645 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhCSKHK (ORCPT
+        id S229880AbhCSKHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCSKGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:07:10 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1zyZ4L8fzmZcf;
-        Fri, 19 Mar 2021 18:04:38 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 18:06:57 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
-        <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: [PATCH v2 3/3] drivers/perf: convert sysfs sprintf family to sysfs_emit
-Date:   Fri, 19 Mar 2021 18:04:33 +0800
-Message-ID: <1616148273-16374-4-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616148273-16374-1-git-send-email-liuqi115@huawei.com>
-References: <1616148273-16374-1-git-send-email-liuqi115@huawei.com>
+        Fri, 19 Mar 2021 06:06:51 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A24BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:06:51 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x28so9106837lfu.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8XzLArLsyk3g5rpI/3JDxf1hyv3KFABRme1zPfvsqFk=;
+        b=FX0/ylSlO99cEwowCNM90yJ8AptNYb4gYqODKqjHRomDfA7cyKYnMM+IN1KcmGDw/U
+         Gk3BB3yjASGpiRxvFsZnPQjMWyv0u4A2n2sQ92f29IkGZFoCtVx4sLWVoCw/MSljyEcp
+         dTW0iStFiRjUhhwzFqsY2Yf5XTkXwRd3BWgCw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8XzLArLsyk3g5rpI/3JDxf1hyv3KFABRme1zPfvsqFk=;
+        b=kfp332mr0uXtT5+0CEjbGlFNm1Jn3am+Vk4sySm5jf9OQ7f+py0d3FLhkMeIMzrfxX
+         y0qdtSNZb2c2H0cMxI4F0vG5k1D5ntfMtExotceXSAnh7mJVOsxP6kmOQFXRlW3cH5Gr
+         X9VXE3rhdsT5SI9NvhHaTl+B1YqsM+O5ZBv9CG3rsh8DMGXgyIaanpBrMRngMzqtxqvA
+         C4vGSyOxF0HDrqwjjKvBnE28KTGfdMYCoOHfqEmPXJqACUw/wEULe/WTppdzMfo7qbC9
+         mX9HUkJkOjTIlPbpyTXbqohOLBT+hTG08DlRTLCXMckpuBA6wLA4h9vdmZjg2b2707YH
+         WQ6w==
+X-Gm-Message-State: AOAM5314pKDMhRISC9x4lBF8XX5/tJBwGhHgKt+TPtvY8+YBxMGLr66z
+        FhcJ7zT5H/3v6mvjQ97mlJGpw3WU6E17jyQHM2Tqwg==
+X-Google-Smtp-Source: ABdhPJyxThMXX8UYrDYd7Tzd5ZgGipqDmmdnDErvXETNp0XlpsA95sItuyuDrQLEOGSsyWBVaT2OT36Z5epdn8RRQh4=
+X-Received: by 2002:a05:6512:33cc:: with SMTP id d12mr332009lfg.487.1616148409546;
+ Fri, 19 Mar 2021 03:06:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <CAMp4zn9oEb6bJJLQWjSE1AFg6TqwkF3FOvFk2VSkKd+0Kj7TCg@mail.gmail.com>
+ <20210301110907.2qoxmiy55gpkgwnq@wittgenstein> <20210301132156.in3z53t5xxy3ity5@wittgenstein>
+ <202103011515.3A941F6@keescook> <20210318145454.d2xbetk2werv7j2u@wittgenstein>
+ <20210318203912.GA26982@ircssh-2.c.rugged-nimbus-611.internal>
+In-Reply-To: <20210318203912.GA26982@ircssh-2.c.rugged-nimbus-611.internal>
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+Date:   Fri, 19 Mar 2021 11:06:13 +0100
+Message-ID: <CACaBj2b1nQMeyQmKNFDB0Z=xkoZmHnFc91ssBX-9UKYwY8r3Gw@mail.gmail.com>
+Subject: Re: seccomp: Delay filter activation
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Keerti Lakshminarayan <keerti@netflix.com>,
+        Linux Containers List <containers@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hariharan Ananthakrishnan <hari@netflix.com>,
+        Kyle Anderson <kylea@netflix.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sprintf does not know the PAGE_SIZE maximum of the temporary buffer
-used for sysfs content and it's possible to overrun the buffer length.
+On Thu, Mar 18, 2021 at 9:39 PM Sargun Dhillon <sargun@sargun.me> wrote:
+> I believe that the OCI spec[2] is going to run into this class of problem=
+ unless
+> we introduce an out of band signaling mechanism. I think a valid way to h=
+andle
+> this is do a send() of the fd number (literal), and wait for the other si=
+de to
+> pidfd_getfd the seccomp filter, and wait for the socket to be closed to c=
+ontinue,
+> but I think we should maybe create an example (I volunteer) showing how t=
+o do this.
 
-Use sysfs_emit() function to ensures that no overrun is done.
+Well, we created a runc implementation for that OCI spec change and we
+hit exactly that[1].
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
+runc has a pipe mechanism to communicate already, so we use that. What
+we do is: do the seccomp syscall, send the plain fd number over the
+pipe and the parent gets the fd with pidfd_getfd()[2]. We use the pipe
+to sync, so no issues with that part.
+
+But, of course, if the seccomp filter blocks the syscall to send over
+the pipe, this fails.
+
+Christian, can you please elaborate on how you solve this on lxd? I'm
+curious to understand if we can use the same in runc or not.
+
+
+[1]: https://github.com/opencontainers/runc/pull/2682
+[2]: https://github.com/opencontainers/runc/pull/2682/files#diff-f0214a0f16=
+408fc7f168c6fc9837d189590025cc1813ebf7c1d751136936dfbfR172
+--=20
+Rodrigo Campos
 ---
- drivers/perf/arm_dmc620_pmu.c            | 2 +-
- drivers/perf/arm_smmuv3_pmu.c            | 2 +-
- drivers/perf/fsl_imx8_ddr_perf.c         | 4 ++--
- drivers/perf/hisilicon/hisi_uncore_pmu.c | 6 +++---
- drivers/perf/qcom_l2_pmu.c               | 2 +-
- drivers/perf/qcom_l3_pmu.c               | 4 ++--
- drivers/perf/thunderx2_pmu.c             | 4 ++--
- drivers/perf/xgene_pmu.c                 | 4 ++--
- 8 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
-index 66ad5b3..8e9002a 100644
---- a/drivers/perf/arm_dmc620_pmu.c
-+++ b/drivers/perf/arm_dmc620_pmu.c
-@@ -113,7 +113,7 @@ dmc620_pmu_event_show(struct device *dev,
- 
- 	eattr = container_of(attr, typeof(*eattr), attr);
- 
--	return sprintf(page, "event=0x%x,clkdiv2=0x%x\n", eattr->eventid, eattr->clkdiv2);
-+	return sysfs_emit(page, "event=0x%x,clkdiv2=0x%x\n", eattr->eventid, eattr->clkdiv2);
- }
- 
- #define DMC620_PMU_EVENT_ATTR(_name, _eventid, _clkdiv2)		\
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index fa9dfbc..45a399f 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -506,7 +506,7 @@ static ssize_t smmu_pmu_event_show(struct device *dev,
- 
- 	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
- 
--	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-+	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
- }
- 
- #define SMMU_EVENT_ATTR(name, config) \
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index c126fd8..2bbb931 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -110,7 +110,7 @@ static ssize_t ddr_perf_identifier_show(struct device *dev,
- {
- 	struct ddr_pmu *pmu = dev_get_drvdata(dev);
- 
--	return sprintf(page, "%s\n", pmu->devtype_data->identifier);
-+	return sysfs_emit(page, "%s\n", pmu->devtype_data->identifier);
- }
- 
- static umode_t ddr_perf_identifier_attr_visible(struct kobject *kobj,
-@@ -219,7 +219,7 @@ ddr_pmu_event_show(struct device *dev, struct device_attribute *attr,
- 	struct perf_pmu_events_attr *pmu_attr;
- 
- 	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-+	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
- }
- 
- #define IMX8_DDR_PMU_EVENT_ATTR(_name, _id)				\
-diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.c b/drivers/perf/hisilicon/hisi_uncore_pmu.c
-index 64ccf5e..5e2b5e1 100644
---- a/drivers/perf/hisilicon/hisi_uncore_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_pmu.c
-@@ -33,7 +33,7 @@ ssize_t hisi_format_sysfs_show(struct device *dev,
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
- 
--	return sprintf(buf, "%s\n", (char *)eattr->var);
-+	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
- }
- EXPORT_SYMBOL_GPL(hisi_format_sysfs_show);
- 
-@@ -47,7 +47,7 @@ ssize_t hisi_event_sysfs_show(struct device *dev,
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
- 
--	return sprintf(page, "config=0x%lx\n", (unsigned long)eattr->var);
-+	return sysfs_emit(page, "config=0x%lx\n", (unsigned long)eattr->var);
- }
- EXPORT_SYMBOL_GPL(hisi_event_sysfs_show);
- 
-@@ -59,7 +59,7 @@ ssize_t hisi_cpumask_sysfs_show(struct device *dev,
- {
- 	struct hisi_pmu *hisi_pmu = to_hisi_pmu(dev_get_drvdata(dev));
- 
--	return sprintf(buf, "%d\n", hisi_pmu->on_cpu);
-+	return sysfs_emit(buf, "%d\n", hisi_pmu->on_cpu);
- }
- EXPORT_SYMBOL_GPL(hisi_cpumask_sysfs_show);
- 
-diff --git a/drivers/perf/qcom_l2_pmu.c b/drivers/perf/qcom_l2_pmu.c
-index 8883af9..fc54a80 100644
---- a/drivers/perf/qcom_l2_pmu.c
-+++ b/drivers/perf/qcom_l2_pmu.c
-@@ -676,7 +676,7 @@ static ssize_t l2cache_pmu_event_show(struct device *dev,
- 	struct perf_pmu_events_attr *pmu_attr;
- 
- 	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-+	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
- }
- 
- #define L2CACHE_EVENT_ATTR(_name, _id)					     \
-diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
-index fb34b87..bba0780 100644
---- a/drivers/perf/qcom_l3_pmu.c
-+++ b/drivers/perf/qcom_l3_pmu.c
-@@ -615,7 +615,7 @@ static ssize_t l3cache_pmu_format_show(struct device *dev,
- 	struct dev_ext_attribute *eattr;
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sprintf(buf, "%s\n", (char *) eattr->var);
-+	return sysfs_emit(buf, "%s\n", (char *) eattr->var);
- }
- 
- #define L3CACHE_PMU_FORMAT_ATTR(_name, _config)				      \
-@@ -643,7 +643,7 @@ static ssize_t l3cache_pmu_event_show(struct device *dev,
- 	struct perf_pmu_events_attr *pmu_attr;
- 
- 	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
--	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
-+	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
- }
- 
- #define L3CACHE_EVENT_ATTR(_name, _id)					     \
-diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
-index e116815..06a6d56 100644
---- a/drivers/perf/thunderx2_pmu.c
-+++ b/drivers/perf/thunderx2_pmu.c
-@@ -128,7 +128,7 @@ __tx2_pmu_##_var##_show(struct device *dev,				\
- 			       char *page)				\
- {									\
- 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);			\
--	return sprintf(page, _format "\n");				\
-+	return sysfs_emit(page, _format "\n");				\
- }									\
- 									\
- static struct device_attribute format_attr_##_var =			\
-@@ -176,7 +176,7 @@ static ssize_t tx2_pmu_event_show(struct device *dev,
- 	struct dev_ext_attribute *eattr;
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sprintf(buf, "event=0x%lx\n", (unsigned long) eattr->var);
-+	return sysfs_emit(buf, "event=0x%lx\n", (unsigned long) eattr->var);
- }
- 
- #define TX2_EVENT_ATTR(name, config) \
-diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-index 44faa51..ffe3bde 100644
---- a/drivers/perf/xgene_pmu.c
-+++ b/drivers/perf/xgene_pmu.c
-@@ -170,7 +170,7 @@ static ssize_t xgene_pmu_format_show(struct device *dev,
- 	struct dev_ext_attribute *eattr;
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sprintf(buf, "%s\n", (char *) eattr->var);
-+	return sysfs_emit(buf, "%s\n", (char *) eattr->var);
- }
- 
- #define XGENE_PMU_FORMAT_ATTR(_name, _config)		\
-@@ -281,7 +281,7 @@ static ssize_t xgene_pmu_event_show(struct device *dev,
- 	struct dev_ext_attribute *eattr;
- 
- 	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sprintf(buf, "config=0x%lx\n", (unsigned long) eattr->var);
-+	return sysfs_emit(buf, "config=0x%lx\n", (unsigned long) eattr->var);
- }
- 
- #define XGENE_PMU_EVENT_ATTR(_name, _config)		\
--- 
-2.8.1
-
+Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
+=C3=B3pez Galeiras
+Registergericht/Court of registration: Amtsgericht Charlottenburg
+Registernummer/Registration number: HRB 171414 B
+Ust-ID-Nummer/VAT ID number: DE302207000
