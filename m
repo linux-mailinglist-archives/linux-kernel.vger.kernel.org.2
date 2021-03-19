@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB717341487
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5945934148C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhCSFJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        id S233765AbhCSFLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhCSFJI (ORCPT
+        with ESMTP id S230459AbhCSFKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:09:08 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F70DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:09:08 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id e8so4809618iok.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:09:08 -0700 (PDT)
+        Fri, 19 Mar 2021 01:10:55 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3657DC06174A;
+        Thu, 18 Mar 2021 22:10:55 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id l5so6981745ilv.9;
+        Thu, 18 Mar 2021 22:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wxiszw2drMvmD7rMCrqyxvMPA5cWYCVt77mNQDKPxfA=;
-        b=dBAvAxhPJpQ1B5LQP3Xpsz3rdrt3babd8kz8Fkf1so7iIlHJ2JKNVUdPuh0lu50WzA
-         YBj6/Kvu15vRWdta1CCFkLZAkZHqe8lhOz03cXSp29Ik+lFIl5wXHgo4uQ41Ur0AVnFY
-         cyyPJGhNSbzKeliYPDJ3Xm/Z80Z9XIgfaWsiUEusZVlVr+0SFSIGGn7pa/+v4E9avYUr
-         Rg+v7IpN44Zr1pp/xOY6pueXktPrkst/X1Z6a8fRaFOoyJYYBUyl2Ayk9OxOGkZ0MN6l
-         P69hk8XJb+oZoYv06eWBHZ0q8Zsd2fneSeo8Ow5mHS+k73NMQBXxtRg8Z9lRdCf//V+q
-         yh1Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q/RTfl6k6odiLrR5obGXAJjzHlZhKwqdCygdrq5sAW8=;
+        b=HIWZSvBJAkzeFS14n6kwaenLfC0Dn0dwCfgK/Tc8CZgkPKhoIPNkGoTcsgpelMPSGw
+         CKAvTVt8EXBaf/xhMGxpKc3FNo+noqhcvR6jcvqQXuM41HTDdN7haL+kAp4V3T57rWXe
+         jFKzaGRwwZQ4Q3TZA2A+vM5mi1t9vM/oB1wE4rls88/DHOzI4bE2uq7ARWEsBJ6tSDNZ
+         DytwWtmjwyLhqo6hM+BzulKU/bYi3czDxjGPOKnwC274pXEz+coggp3BJOH+bPejgMXg
+         E4AVXI38YiPE6tl9UDFQdqeosFv5iyP/dyxruZiB9Q8tcFe14rZEjPFz/PANbJMyXho5
+         FFKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wxiszw2drMvmD7rMCrqyxvMPA5cWYCVt77mNQDKPxfA=;
-        b=g/E9aGDikAY9BvYj3ARrJcMk/lgrxVs5vsrSqLX8BwjTiwSV10+Pb1/stdY0e6Q8Xo
-         PBYoBteAH5/uytgK1ZyyVTTCHj9jBGMkekNZjkrWT9gtETwNvU9p2DuYDI1yE6nyer5r
-         1ghT+qgkSn3das74SZtCQGExwGmMv1P67As+EgisDEWzS8Sb6DnFxrPK09dnlquT8S8M
-         3xThS3hwLggh76NO/WC0q6jYS2YpsOpqePGrnd9sDEkByoUNY/F/wjQkTpwRIFLuEuPq
-         mj7j18/iBwVpkr50tCimaAWvDBjOW3yGXCYQ4N0pRQyLadE9BKQ9SucqR48bSROxAwoB
-         /GNA==
-X-Gm-Message-State: AOAM532C8xWrytbKkWLseIlkNC/jT3cDxvXCHpbTCccdCZQ+ixJZ+wHc
-        6Mg64hg6J7z18HJWo9wK7QGuyk9xzTe2J5goWMMUPXYXSYvZtg==
-X-Google-Smtp-Source: ABdhPJxQvo9MhltZ6KTauPE4wRuWZsIIXIzg6KowTEhnPE0j9J/UnKwG770PEOeeOnIaWhWIEY3CMxs7BfWsdnH4+GM=
-X-Received: by 2002:a05:6602:2102:: with SMTP id x2mr1551399iox.83.1616130546505;
- Thu, 18 Mar 2021 22:09:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q/RTfl6k6odiLrR5obGXAJjzHlZhKwqdCygdrq5sAW8=;
+        b=UbmHh81fXoOHSRQF/isKBEXszKZe5P4N8/yf2vxJmWatF5srtU50GXjNgskf8/PE6d
+         if51PU/OTuDWBd4MhConR1ZkUONzKyLw070hbgOOVAnIDy2nil01iPz7d8LiIqRsUfCQ
+         yTxj/pQnZ0sPhehLNsnKd1ZXoNhfhTf7vxpxDgrQYb5+oJniaRoHWIbW7i0iOV4trS0u
+         AB01hygFwVGovycn3PzhVuHWmsjf6FigGCc47vwcPBqjoYUbY1OFI+RaU5msUPzV7nSP
+         FB4OCE8ICYwhMlpYFiCg3l+uPD42Hw0H52iBMk16bd4nP84xYTkr/GIHKNb9A1tZFgm+
+         4dqA==
+X-Gm-Message-State: AOAM5328ZrVy8Qak+3zo1pWQlK7EdAdMh4bvhVAieHvRRZjT1m6pIVRb
+        F+vtqGnhtwtnoA3mK/McB/4=
+X-Google-Smtp-Source: ABdhPJyDMEiim+cK4UdCEkJvVKxYX8BQKngf8KbCObwxfVQ3pBJjsKyemTMpQD85elWBonm0tZGVow==
+X-Received: by 2002:a05:6e02:1546:: with SMTP id j6mr1414704ilu.75.1616130654578;
+        Thu, 18 Mar 2021 22:10:54 -0700 (PDT)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id y20sm2025112ioy.10.2021.03.18.22.10.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 22:10:53 -0700 (PDT)
+From:   Tianling Shen <cnsztl@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johan Jonker <jbx6244@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        David Bauer <mail@david-bauer.net>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Tianling Shen <cnsztl@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Fri, 19 Mar 2021 13:10:46 +0800
+Message-Id: <20210319051047.27619-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com> <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com>
-In-Reply-To: <20210318180450.GA9977@redhat.com>
-From:   qianli zhao <zhaoqianligood@gmail.com>
-Date:   Fri, 19 Mar 2021 13:08:55 +0800
-Message-ID: <CAPx_LQENxx0y5mFJjwRT2qMSLt7pbAmF30=eE-QduEwRVJEJ0Q@mail.gmail.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     christian@brauner.io, axboe@kernel.dk,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,Oleg
+Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
 
-> But then I don't understand the SIGNAL_GROUP_EXIT check added by your
-> patch. Do we really need it if we want to avoid zap_pid_ns_processes()
-> when the global init exits?
+Changes in v5:
+- Dropped the empty PCIe node
+- Dropped useless `/delete-property/`
+- Renamed LED nodes
 
-I think check SIGNAL_GROUP_EXIT is necessary,or panic() will happen
-after all init sub-threads do_exit(),so the following two situations
-will happen:
-1.According to the timing in the changelog,
-zap_pid_ns_processes()->BUG() maybe happened.
-2.The key variables of each init sub-threads will be in the exit
-state(such task->mm=3DNULL,task->flags=3DPF_EXITING,task->nsproxy=3DNULL),r=
-esulting
-in the failure to parse coredump from fulldump.
+Changes in v4:
+- Correctly dropped `display-subsystem` node
+- Dropped meaningless `pwm-fan` node
+- Dropped wrong `sdmmc` node
+- Disabled `i2c4` and `uart0` as they don't exist in the design
+- Format fixes
 
-So i think check SIGNAL_GROUP_EXIT is a simple and effective way to
-prevent these
+Changes in v3:
+- Dropped non-existent node `display_subsystem`
 
-> Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
-> to panic earlier, before other init's sub-threads exit?
+Changes in v2:
+- Disable display for NanoPi R4S (reference commit: 74532de460ec)
+- Light "sys" LED on NanoPi R4S (reference commit: 833821eeab91)
 
-Yes, my patch just want panic earlier before other init's sub-threads exit
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Oleg Nesterov <oleg@redhat.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=8819=E6=97=A5=
-=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=882:05=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 03/18, qianli zhao wrote:
-> >
-> > Hi,Oleg
-> >
-> > Thank you for your reply.
-> >
-> > >> When init sub-threads running on different CPUs exit at the same tim=
-e,
-> > >> zap_pid_ns_processe()->BUG() may be happened.
-> >
-> > > and why do you think your patch can't prevent this?
-> >
-> > > Sorry, I must have missed something. But it seems to me that you are =
-trying
-> > > to fix the wrong problem. Yes, zap_pid_ns_processes() must not be cal=
-led in
-> > > the root namespace, and this has nothing to do with CONFIG_PID_NS.
-> >
-> > Yes, i try to fix this exception by test SIGNAL_GROUP_EXIT and call
-> > panic before setting PF_EXITING to prevent zap_pid_ns_processes()
-> > being called when init do_exit().
->
-> Ah, I didn't notice your patch does atomic_dec_and_test(signal->live)
-> before exit_signals() which sets PF_EXITING. Thanks for correcting me.
->
-> So yes, I was wrong, your patch can prevent this. Although I'd like to
-> recheck if every do-something-if-group-dead action is correct in the
-> case we have a non-PF_EXITING thread...
->
-> But then I don't understand the SIGNAL_GROUP_EXIT check added by your
-> patch. Do we really need it if we want to avoid zap_pid_ns_processes()
-> when the global init exits?
->
-> > In addition, the patch also protects the init process state to
-> > successfully get usable init coredump.
->
-> Could you spell please?
->
-> Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
-> to panic earlier, before other init's sub-threads exit?
->
-> Thanks,
->
-> Oleg.
->
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index c3036f95c7bc..4a6f772c1043 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -134,6 +134,7 @@ properties:
+               - friendlyarm,nanopi-m4
+               - friendlyarm,nanopi-m4b
+               - friendlyarm,nanopi-neo4
++              - friendlyarm,nanopi-r4s
+           - const: rockchip,rk3399
+ 
+       - description: GeekBuying GeekBox
+-- 
+2.17.1
+
