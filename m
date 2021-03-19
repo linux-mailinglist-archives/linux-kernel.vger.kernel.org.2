@@ -2,135 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD060342125
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D87342128
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhCSPpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
+        id S230263AbhCSPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhCSPok (ORCPT
+        with ESMTP id S229875AbhCSPqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:44:40 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9983DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:44:39 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ce10so10443693ejb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:44:39 -0700 (PDT)
+        Fri, 19 Mar 2021 11:46:12 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCA4C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id v3so3956714pgq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ls4UbC3zQvMulNVQ/pzUqFMVRoVv8OmcfnU28m1vLHo=;
-        b=Evz7dwHZb+efp4Pq4AqV8Nb7VV9VCNabDdCret5McBxPBFpY7i9yQ7mheYOI/Sdja+
-         ZwfIzFO3BKiaRLW+QahodyXhcExLCWvHXT34D7aknOgE2+zA9vUXDVRxabENC9UB+bnX
-         dLP9BZwcy/mvKsKDBLgDbJONJYlEneD22DVdQ=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qONpO4rhVUGycYg/TRvqp7wSV44IcWoCAbGRlkLp9Ss=;
+        b=rsTx4yyQbVw/axvuQK7riy8Ifnu/2vWnC+ipHqep+SkDFx7fxZGWhhFIMWg6OVsGvh
+         zyNlDtgVGgHkwH5IoxwYKqzCkyRHUdMfK7fn06V6lsmUcm/3uPmOG7uUS6WGTQY4Bpd+
+         WJV95QM9bXIgKyO4PxDQ4oC70Y43ZD1kvIdn+ikhfcGsgmgnvOadj91qkGxxuBPkSuLp
+         v9DDfvpBKUr59vQCL5eUeTcDYyoyeT+fkdbOqQbcb8w63Hi2ci3ZkY4AIHc1igWN+6xe
+         u9wTH9JnZ+EG0R8z4Ipx3rkZWiRk14cIpBSwHMfI5jpTVXe2HUNcRQLcl6DI11g+OPu5
+         xD1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ls4UbC3zQvMulNVQ/pzUqFMVRoVv8OmcfnU28m1vLHo=;
-        b=RLXp5IDU/i3KviArMc7EFFakSjvCMvenuRVWInpwuLgRD4mFzRHO3Q1PWOG+1114jr
-         +IcrXLyGl99gGEJH4tztUt+2+ir1M0VY9xi28dUhgiqveXaAvv58SuiY+/p9V5xbHPEC
-         bcCFqsYlm/wDynok1QeuBSq4prDUVYVKVDp3w9FwtCD+1d0/0bEPBw9CPKcLr/IPPsNy
-         ke6PTJ8XJ0y1M9iMugECeNHhcrsUi4GMfMOSehJ4LDjn0HaH4NSD1IRuvkka3W24YtEQ
-         7S7gU/KZ+58qQOp2LGOTf4CwVxd+1EqH8Tvg/Za18WReE3AI4zAdHXCysnmboP/NRvwW
-         uzYg==
-X-Gm-Message-State: AOAM532Iux5FiGp/rpOmuGLbAdxOLwGL/xrwdGnI+8bNTRQOhvq+clfr
-        OdG2a6cLz0Wsdy9lobpL+Tdbzg==
-X-Google-Smtp-Source: ABdhPJyoLiI3eFgfRhDN6nf9CkE/M7C3LDMykb7J9jakIo5L+2EvQB38hBWgbDaLrLtpNUojaljVCw==
-X-Received: by 2002:a17:906:3f88:: with SMTP id b8mr5244412ejj.36.1616168678354;
-        Fri, 19 Mar 2021 08:44:38 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id a22sm4282725edu.14.2021.03.19.08.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 08:44:37 -0700 (PDT)
-Subject: Re: [PATCH 2/3] static_call: Align static_call_is_init() patching
- condition
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.636651340@infradead.org>
- <f5ce3975-bda6-0e83-3a59-2fac25cc4f08@rasmusvillemoes.dk>
- <YFSxorIVeuA2zCXt@hirez.programming.kicks-ass.net>
- <c4e9dfdf-c83a-3314-8c55-5b2371a56ec8@rasmusvillemoes.dk>
-Message-ID: <34ceee59-4276-90b5-871b-cda303901ce3@rasmusvillemoes.dk>
-Date:   Fri, 19 Mar 2021 16:44:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qONpO4rhVUGycYg/TRvqp7wSV44IcWoCAbGRlkLp9Ss=;
+        b=LrqiPIeGBlmB3gLmF5Lsj4O5TVGzglcyn1nnrbxfbYdvmR2yYXml7XGDyeo7ys+Rm2
+         mWcYvPECnUzZ5l/uGvA+Rgz1YuCwHb5y0qdU/pE/jkrv9IbZkpoexgE4PKtZZSOQNLQG
+         10HKJunRO2FFuXiMt2A5aHjx6TAXydbjbq+501OZ5E9J4tkEuHyyPnLvZRFtXRn6eTHa
+         VRuFQVYUWnFDdvv+fvJp8q6g9UZDY7V/xMx/yuUydiasHE3s2M7ytQUeNooQYndtkdyN
+         bA6xTpJWb3e83fhfidpkXFjSKQ0DkoJP4faV7NiCDKAhYNHWjZfTDlF52e5r5BstHqkD
+         h/Yg==
+X-Gm-Message-State: AOAM532dVdXdMqNTqFyH9ketCdWJR0YiEShux0tThjIjn5vYVlsODa0U
+        EFiy+POh7yzdE28J2WAR54BO0vzgJJBPDyMKawg9TA==
+X-Google-Smtp-Source: ABdhPJwwUIg8Pn8ujsnmmyz5LCe4Dmjkxby7QcP4D6KPoSbz3fTxSqAdZ1HACiuD0mvkzCmd32zZlBml8RGzzzJ/9tA=
+X-Received: by 2002:a63:141e:: with SMTP id u30mr12262932pgl.31.1616168771346;
+ Fri, 19 Mar 2021 08:46:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c4e9dfdf-c83a-3314-8c55-5b2371a56ec8@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210318110658.60892-1-songmuchun@bytedance.com>
+ <20210318110658.60892-5-songmuchun@bytedance.com> <CALvZod5RSXiUHBkW4aaWOnak6LQ6QdSiGWMh9Wk_Q++dz6Y4_Q@mail.gmail.com>
+ <CAMZfGtXSW8gX99SzYf7ourM5ZpsWYjWtiBL0MYpJXZeKB4HWXg@mail.gmail.com> <CALvZod5H-hL8myH1hy6YRis5vGT5JSYTQv5AeM0zagymCg0mcA@mail.gmail.com>
+In-Reply-To: <CALvZod5H-hL8myH1hy6YRis5vGT5JSYTQv5AeM0zagymCg0mcA@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 19 Mar 2021 23:45:35 +0800
+Message-ID: <CAMZfGtXHnaPFp67k4tD1Te4Y13wF5VHAQ5Vq_UyjzFCuTTe0+g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 4/5] mm: memcontrol: use obj_cgroup APIs
+ to charge kmem pages
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 15.40, Rasmus Villemoes wrote:
-> On 19/03/2021 15.13, Peter Zijlstra wrote:
-> 
->>> Dunno, probably overkill, but perhaps we could have an atomic_t (or
->>> refcount, whatever) init_ref inited to 1, with init_ref_get() doing an
->>> inc_unless_zero, and iff you get a ref, you're free to call (/patch)
->>> __init functions and access __initdata, but must do init_ref_put(), with
->>> PID1 dropping its initial ref and waiting for it to drop to 0 before
->>> doing the *free_initmem() calls.
->>
->> I'd as soon simply add another SYSTEM state. That way we don't have to
->> worry about who else looks at RUNNING for what etc..
-> 
-> I don't understand. How would that solve the
-> 
-> PID1                           PIDX
->                                ok = system_state < INIT_MEM_GONE;
-> system_state = INIT_MEM_GONE;
-> free_initmem();
-> system_state = RUNNING;
->                                if (ok)
->                                    poke init mem
-> 
-> race? I really don't see any way arbitrary threads can reliably check
-> how far PID1 has progressed at one point in time and use that
-> information (a few lines) later to access init memory without
-> synchronizing with PID1.
-> 
-> AFAICT, having an atomic_t object representing the init memory 
+On Fri, Mar 19, 2021 at 9:59 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Thu, Mar 18, 2021 at 9:05 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > On Fri, Mar 19, 2021 at 11:40 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Thu, Mar 18, 2021 at 4:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > > >
+> > > [...]
+> > > >
+> > > > +static inline struct mem_cgroup *get_obj_cgroup_memcg(struct obj_cgroup *objcg)
+> > >
+> > > I would prefer get_mem_cgroup_from_objcg().
+> >
+> > Inspired by obj_cgroup_memcg() which returns the memcg from objcg.
+> > So I introduce get_obj_cgroup_memcg() which obtains a reference of
+> > memcg on the basis of obj_cgroup_memcg().
+> >
+> > So that the names are more consistent. Just my thought.
+> >
+> > So should I rename it to get_mem_cgroup_from_objcg?
+> >
+>
+> If you look at other functions which get reference on mem_cgroup, they
+> have the format of get_mem_cgroup_*. Similarly the current function to
+> get a reference on obj_cgroup is get_obj_cgroup_from_current().
+>
+> So, from the name get_obj_cgroup_memcg(), it seems like we are getting
+> reference on obj_cgroup but the function is getting reference on
+> mem_cgroup.
 
-something like
+Make sense. I will use get_mem_cgroup_from_objcg(). Thanks.
 
---- a/init/main.c
-+++ b/init/main.c
-@@ -1417,6 +1417,18 @@ void __weak free_initmem(void)
-        free_initmem_default(POISON_FREE_INITMEM);
- }
+>
+> > >
+> > > > +{
+> > > > +       struct mem_cgroup *memcg;
+> > > > +
+> > > > +       rcu_read_lock();
+> > > > +retry:
+> > > > +       memcg = obj_cgroup_memcg(objcg);
+> > > > +       if (unlikely(!css_tryget(&memcg->css)))
+> > > > +               goto retry;
+> > > > +       rcu_read_unlock();
+> > > > +
+> > > > +       return memcg;
+> > > > +}
+> > > > +
+> > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > >  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+> > > >                                  gfp_t gfp, bool new_page)
+> > > > @@ -3070,15 +3088,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+> > > >         struct mem_cgroup *memcg;
+> > > >         int ret;
+> > > >
+> > > > -       rcu_read_lock();
+> > > > -retry:
+> > > > -       memcg = obj_cgroup_memcg(objcg);
+> > > > -       if (unlikely(!css_tryget(&memcg->css)))
+> > > > -               goto retry;
+> > > > -       rcu_read_unlock();
+> > > > -
+> > > > +       memcg = get_obj_cgroup_memcg(objcg);
+> > > >         ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
+> > >
+> > > Why not manually inline __memcg_kmem_charge() here? This is the only user.
+> > >
+> > > Similarly manually inline __memcg_kmem_uncharge() into
+> > > obj_cgroup_uncharge_pages() and call obj_cgroup_uncharge_pages() in
+> > > obj_cgroup_release().
+> >
+> > Good point. I will do this.
+> >
+> > >
+> > > > -
+> > > >         css_put(&memcg->css);
+> > > >
+> > > >         return ret;
+> > > > @@ -3143,18 +3154,18 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
+> > > >   */
+> > > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+> > > >  {
+> > > > -       struct mem_cgroup *memcg;
+> > > > +       struct obj_cgroup *objcg;
+> > > >         int ret = 0;
+> > > >
+> > > > -       memcg = get_mem_cgroup_from_current();
+> > >
+> > > This was the only use of get_mem_cgroup_from_current(). Why not remove it?
+> >
+> > I saw a potential user.
+> >
+> >     [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+> >
+> > To avoid reintroducing them. So I did not remove it.
+> >
+>
+> Don't worry about that. Most probably that user would be changing this
+> function, so it would to better to introduce from scratch.
 
-+static atomic_t init_mem_ref = ATOMIC_INIT(1);
-+static DECLARE_COMPLETION(init_mem_may_go);
-+bool init_mem_get(void)
-+{
-+       return atomic_inc_not_zero(&init_mem_ref);
-+}
-+void init_mem_put(void)
-+{
-+       if (atomic_dec_and_test(&init_mem_ref))
-+               complete(&init_mem_may_go);
-+}
-+
- static int __ref kernel_init(void *unused)
- {
-        int ret;
-@@ -1424,6 +1436,8 @@ static int __ref kernel_init(void *unused)
-        kernel_init_freeable();
-        /* need to finish all async __init code before freeing the memory */
-        async_synchronize_full();
-+       init_mem_put();
-+       wait_for_completion(&init_mem_may_go);
-        kprobe_free_init_mem();
-        ftrace_free_init_mem();
-        kgdb_free_init_mem();
-
+OK. I will remove get_mem_cgroup_from_current(). Thanks for
+your suggestions.
