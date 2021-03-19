@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E812D341EE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718CD341EE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhCSN5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:57:37 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:9184 "EHLO smtp2.axis.com"
+        id S229736AbhCSN7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhCSN5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:57:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616162240;
-  x=1647698240;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/M28w1PF8lYT2vZv1ExYZlwHwTaCfjCoY/pOUH0jMv4=;
-  b=HgR1Bm7uoA/hU6k7RNx28MUzJxofu5Z5aWSxG3xOotFdy27zRyYZn/Tb
-   yf9OMWMnTM6vyBPfstILtKIs//v8l6Dc+jGCpFdDeiXGZjb69DMOzqgG3
-   oUw7YbZGsfwusAnm2TdYaoX6VQsvs7m5XYNsffbw07a/eidp5w8xiw4LC
-   X+Ze4U5Ztxtfs7fu9OiJ2gQ481qP1eRWj4Q9LY+X6XPzdCa7YQRcgKDhW
-   GM5TlI6bWmm93i/9GD7AB9Tkv0rM+1pJeNd5qFfrJBx7fKDfi3AsBedZY
-   BKNsm1uwFumy5vvn+b9hAbAA/4yCfp009/1j85wr7aVqehTYHOciLMmaz
-   w==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Steve French <sfrench@samba.org>
-CC:     <kernel@axis.com>, <tom@talpey.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] cifs: Silently ignore unknown oplock break handle
-Date:   Fri, 19 Mar 2021 14:57:11 +0100
-Message-ID: <20210319135711.11802-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        id S229785AbhCSN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E6264EF6;
+        Fri, 19 Mar 2021 13:58:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616162337;
+        bh=5AQG+kiA2GlRp3+0pXhhhe2SglUgXDnrTeLb68Cztss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RR0P2Fkws4o9YUsksXzoLAjCP/jPaP3W6mR3oAN/MgJrWET8H/YsjUnIAEbypnExG
+         5qXN3gG8zZwFHetPpO/8aAx8LF69Il51kELBNijYPVpYEOcG/dSQKEHQR7XQdK+rdk
+         el9fdK2ds2T0A/g4vb1Xbl9IrJLapLXksf5M9BWgudFCqaPy7o4sgvqZFeVp95vywd
+         WTqtA2T1JZzLKRtqnkdweXxP4FGUT+lum6HiF48XNJzjHwIxTlxGIq4rLYqqsRUsjp
+         D1tRdRhBrwpwJtv8yTZZQ/G7Rkpaw311aBiCM1oWr4UozGaTa9ji0ae0qg89zuOoTb
+         qu5rlNk7CxM8w==
+Date:   Fri, 19 Mar 2021 14:58:54 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/3] rcu: Provide polling interfaces for
+ Tree RCU grace periods
+Message-ID: <20210319135854.GA814853@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304002632.23870-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make SMB2 not print out an error when an oplock break is received for an
-unknown handle, similar to SMB1.  The debug message which is printed for
-these unknown handles may also be misleading, so fix that too.
+On Wed, Mar 03, 2021 at 04:26:30PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a non-blocking polling interface for RCU grace
+> periods, so this commit supplies start_poll_synchronize_rcu() and
+> poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> get_state_synchronize_rcu() may be used if future grace periods are
+> inevitable (perhaps due to a later call_rcu() invocation).  The new
+> start_poll_synchronize_rcu() is to be used if future grace periods
+> might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+> provides a lockless check for a grace period having elapsed since
+> the corresponding call to either of the get_state_synchronize_rcu()
+> or start_poll_synchronize_rcu().
+> 
+> As with get_state_synchronize_rcu(), the return value from either
+> get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> to a later call to either poll_state_synchronize_rcu() or the existing
+> (might_sleep) cond_synchronize_rcu().
 
-The SMB2 lease break path is not affected by this patch.
+It's all a matter of personal taste but if I may suggest some namespace
+modifications:
 
-Without this, a program which writes to a file from one thread, and
-opens, reads, and writes the same file from another thread triggers the
-below errors several times a minute when run against a Samba server
-configured with "smb2 leases = no".
+get_state_synchronize_rcu() -> synchronize_rcu_poll_start_raw()
+start_poll_synchronize_rcu() -> synchronize_rcu_poll_start()
+poll_state_synchronize_rcu() -> synchronize_rcu_poll()
+cond_synchronize_rcu() -> synchronize_rcu_cond()
 
- CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
- 00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
- 00000010: 00000001 00000000 ffffffff ffffffff  ................
- 00000020: 00000000 00000000 00000000 00000000  ................
- 00000030: 00000000 00000000 00000000 00000000  ................
+But it's up to you really.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
+>  /**
+> + * start_poll_state_synchronize_rcu - Snapshot and start RCU grace period
+> + *
+> + * Returns a cookie that is used by a later call to cond_synchronize_rcu()
 
-Notes:
-    v3:
-    - Change debug print to Tom Talpey's suggestion
-    
-    v2:
-    - Drop change to lease break
-    - Rewrite commit message
+It may be worth noting that calling start_poll_synchronize_rcu() and then
+pass the cookie to cond_synchronize_rcu() soon after may end up waiting for
+one more grace period.
 
- fs/cifs/smb2misc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> + * or poll_state_synchronize_rcu() to determine whether or not a full
+> + * grace period has elapsed in the meantime.  If the needed grace period
+> + * is not already slated to start, notifies RCU core of the need for that
+> + * grace period.
+> + *
+> + * Interrupts must be enabled for the case where it is necessary to awaken
+> + * the grace-period kthread.
+> + */
+> +unsigned long start_poll_synchronize_rcu(void)
+> +{
+> +	unsigned long flags;
+> +	unsigned long gp_seq = get_state_synchronize_rcu();
+> +	bool needwake;
+> +	struct rcu_data *rdp;
+> +	struct rcu_node *rnp;
+[...]
+> +
+> +/**
+> + * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
+> + *
+> + * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
+> + *
+> + * If a full RCU grace period has elapsed since the earlier call from
+> + * which oldstate was obtained, return @true, otherwise return @false.
+> + * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
 
-diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-index 60d4bd1eae2b..76cd05b8d53b 100644
---- a/fs/cifs/smb2misc.c
-+++ b/fs/cifs/smb2misc.c
-@@ -754,8 +754,8 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
- 		}
- 	}
- 	spin_unlock(&cifs_tcp_ses_lock);
--	cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
--	return false;
-+	cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
-+	return true;
- }
- 
- void
--- 
-2.28.0
+Rephrase suggestion for the last sentence:
 
+"In case of failure, it's up to the caller to try polling again later or
+invoke synchronize_rcu() to wait for a new full grace period to complete."
+
+
+In any case: Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+
+Thanks!
