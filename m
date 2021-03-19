@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3259234241B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FF334241A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhCSSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        id S230317AbhCSSI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCSSIL (ORCPT
+        with ESMTP id S229925AbhCSSID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:08:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90842C06174A;
-        Fri, 19 Mar 2021 11:08:11 -0700 (PDT)
+        Fri, 19 Mar 2021 14:08:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC79C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vHfHyXotbRzGZh7y4q6pGdO4bWDVhUMZBFQ0KkjrwPU=; b=iozU64Xb4N0CWU4tgHMvEiJzgP
-        5aAVKi3e8aOUxW+gAXhE0xiFIthJysSAFGfZ8UISNOroK6nQrdghBfhcSXUnKI2Wd8604LTnlVluK
-        5dl/LgSLrAHghhNNRg69cFtchNA1tkl+svPALeAVbq7KNLxl+5gyZByHaj65UpIaL85HgyTLMtpSu
-        JpgjyUt7QTUES17BQRwqxdB3Ytyh/8rFwm1Z9Fp7a0SfwojMaqHnDSr8e5WDckwHzZvALFx+7Wwcu
-        bMe2lMIl/lPVM5aufgHuGcNY0PZeEz4C2PZbAiOVhSCR3C5bP/BN3PCXqWbelIXDf2tArOFI24oBe
-        RlHTiVxw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJXF-004nzY-9E; Fri, 19 Mar 2021 18:07:51 +0000
-Date:   Fri, 19 Mar 2021 18:07:45 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-Message-ID: <20210319180745.GB3420@casper.infradead.org>
-References: <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
- <YFSrgfAyp+dYWi7k@kroah.com>
- <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
- <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
- <YFS06OLp70nWWLFi@kroah.com>
- <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com>
- <YFTITw73Wga0/F0V@kroah.com>
- <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
- <YFTRkBEr5T37NFpV@google.com>
- <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+        bh=qVZuZEyZBAS/ZgAMPEp7JyONmLh5M9RY5PXbkJLE8m0=; b=XLXLK8zZRT9V/6koOVD1foe6jE
+        uuj+c6QAkeX8KkWg+jAASxyGFpAMOKaNb+2Qol5C3U1HonK5LYEns4EPApR+4TBPb7i2CYTbIySi6
+        quBjuwU5uhBVzZSiuhRL0siaVa5JmCqz2pilOlrPBff/WU9E5qFbicBBBKIJRq3FP6s9O9rjioAdI
+        xaP8/7JZpzk8vgFiIKS3yQEtaQ/1ddMZvXlfamG11MvUFAYePhClBbhSqhFE7ApPVzxwYpaDez/YY
+        rMAqlAw6al5k9eA2BqxW/9yo7L1LWAWW6et39kh6572k9YxIfm7+hUjDYBla3phDr9q5aRb2kJvR/
+        nM4RbcnQ==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJXU-001RdU-Hv; Fri, 19 Mar 2021 18:08:01 +0000
+Date:   Fri, 19 Mar 2021 11:08:00 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sch_red: Fix a typo
+In-Reply-To: <20210319044623.20396-1-unixbhaskar@gmail.com>
+Message-ID: <ff38bd-991b-1e41-7b28-bfdeda3b4aba@bombadil.infradead.org>
+References: <20210319044623.20396-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_110800_615482_E7D0A2CA 
+X-CRM114-Status: GOOD (  12.98  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/recalcultion/recalculation/
+    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
+    Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:29:29PM +0300, Dmitry Osipenko wrote:
-> > +static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> > +			struct kobj_attribute *attr, char *buf)
-> 
-> The indentations are still wrong.
-> 
-> CHECK: Alignment should match open parenthesis
-> #321: FILE: mm/cma_sysfs.c:28:
-> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> +                       struct kobj_attribute *attr, char *buf)
 
-This is bullshit.  Do not waste people's time with this frivolity.
 
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+
+>
+> s/recalcultion/recalculation/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+> include/net/red.h | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/net/red.h b/include/net/red.h
+> index 932f0d79d60c..6b418b69dc48 100644
+> --- a/include/net/red.h
+> +++ b/include/net/red.h
+> @@ -287,7 +287,7 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms
+> 	int  shift;
+>
+> 	/*
+> -	 * The problem: ideally, average length queue recalcultion should
+> +	 * The problem: ideally, average length queue recalculation should
+> 	 * be done over constant clock intervals. This is too expensive, so
+> 	 * that the calculation is driven by outgoing packets.
+> 	 * When the queue is idle we have to model this clock by hand.
+> --
+> 2.26.2
+>
+>
