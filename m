@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9398A341BD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A28341BDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhCSL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhCSLzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:55:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0932460233;
-        Fri, 19 Mar 2021 11:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616154952;
-        bh=xEggSgwLTsxsRSBCrktgETXhVT4kXbKFtICLOdi9pY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AvllA/pNHM01eptUHALZqK7jqyXMvVBQyy3Hx/6pWSGz2zC6ZVyEFWmPuJSVPDd3R
-         6I77gkfy9yLXyZfPIB0HjJtdc62tYVEuDd1/RNd7GoPlKTTQRniu0+Gv41CynFYGdq
-         0DdY5Uh7Znaay4BVVuRq/Q79Ak9ueJzm9S6+Bvr8=
-Date:   Fri, 19 Mar 2021 12:55:50 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christopher Li <sparse@chrisli.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [for-stable-4.19 PATCH 1/2] vmlinux.lds.h: Create section for
- protection against instrumentation
-Message-ID: <YFSRRux3FHJVgWXt@kroah.com>
-References: <20210318235416.794798-1-drinkcat@chromium.org>
- <20210319075410.for-stable-4.19.1.I222f801866f71be9f7d85e5b10665cd4506d78ec@changeid>
- <YFR/fQIePjDQcO5W@kroah.com>
- <b5d3d0ed-953e-083d-15f6-4a1e3ed95428@oracle.com>
+        id S229927AbhCSL4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:56:42 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:43769 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhCSL4Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 07:56:25 -0400
+Received: from mail-oo1-f44.google.com ([209.85.161.44]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N8EdM-1ljAT20eQ4-014DNm; Fri, 19 Mar 2021 12:56:24 +0100
+Received: by mail-oo1-f44.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso2232918ooq.6;
+        Fri, 19 Mar 2021 04:56:23 -0700 (PDT)
+X-Gm-Message-State: AOAM531IpywpDCZL5mXIIbiEezdjbyKVHIEn3OBa72DLLxfeeuzdh9yQ
+        sH49UHXfs6/AoI0eljJGA2GWeq8sQKgfbi5h6os=
+X-Google-Smtp-Source: ABdhPJzd3Z0SvgafgJB3BryuSug06GbHK03nk7pE34toWuK8Akr6j87tVIkrQus7VV/22uXbjsvi3puMlYtcnFpCr/o=
+X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr1102738ool.66.1616154982844;
+ Fri, 19 Mar 2021 04:56:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5d3d0ed-953e-083d-15f6-4a1e3ed95428@oracle.com>
+References: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
+ <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com> <ebf12838-4525-a525-93bd-2229927e50ca@physik.fu-berlin.de>
+In-Reply-To: <ebf12838-4525-a525-93bd-2229927e50ca@physik.fu-berlin.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 19 Mar 2021 12:56:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+Message-ID: <CAK8P3a2WCYxG4-4x49Uc-+pXPciY5EsDqmNcEfufcXZp6Q3+MQ@mail.gmail.com>
+Subject: Re: sparc: clang: error: unknown argument: '-mno-fpu'
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:68NgCvHbLOSRr/cCYSltJEj1he71kT+3gn8cgjnf3IB+dOWhi6s
+ ET2DVayqURap6Y8o/jg1cgZH/qtwnxMyZVBQt+7OYJurJdV0sWVKsHUjMRINCJK//kYADU1
+ Pay8UWb4MwegdRqMSJJfOZrpkqN/zTS7Uu0NTLKiWJGafUt1zZhSnDCs/nMWoFJYhpDlioT
+ XrQ/a8dWrsNVTvCFPwwtQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2ZmDadyOC5U=:2By7NodaNkfmmuEG/EBWQC
+ vp3fcNks0aU5kTjT1lDtqBZQOwvRjpC3crSiBEDDgDZqeQrJbPRy5vOQaxqkW8zCsZPeZ7Y8Z
+ d2bpUWlMWAPz+3M20Jmkf2oEQNGICPcCU7V5Wt7kOeaFSnvCbRCYWSmDsqmmtwcWaBKFb9ynw
+ PFyi6IXS5JAIJcvwS26zkMxdtzcGOGOaqBwFZk7wX0XYghqPQ3XUSfBQ2f/dxjTvuZ2kP9Vy9
+ t4lbAkH5MRyg5GwjMUrbjWVi6mqtqACdZ0r0Zht7vc6BAVtkGlGwrVOq2HkaL1/+liUeS8hnb
+ bxueyAN6MFIu9pHKG7VU/7pnamI4qzhreQ8AavB0qfdRjqrahqrEBgInJyYiGD8FYWQ2i0wqs
+ kSDVRP33wRRuGUapHXw2E8YNqa/yf2UiR3p3EOqOTFLjdwkzaLImuLZ/dQX2F9+ZZPucg8Gog
+ sLyetEu5C20tsLfME8Izj6ZMd9m32h2Dg9MQeRbh+U+l2qmpFyPpQ+2TXBlOfuEownMIL2cZ1
+ 92Lobgu6C+M0ZNpx0Iidx76J3QpbahzxmgUqATAVIxl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 12:20:22PM +0100, Alexandre Chartre wrote:
-> 
-> On 3/19/21 11:39 AM, Greg Kroah-Hartman wrote:
-> > On Fri, Mar 19, 2021 at 07:54:15AM +0800, Nicolas Boichat wrote:
-> > > From: Thomas Gleixner <tglx@linutronix.de>
-> > > 
-> > > commit 6553896666433e7efec589838b400a2a652b3ffa upstream.
-> > > 
-> > > Some code pathes, especially the low level entry code, must be protected
-> > > against instrumentation for various reasons:
-> > > 
-> > >   - Low level entry code can be a fragile beast, especially on x86.
-> > > 
-> > >   - With NO_HZ_FULL RCU state needs to be established before using it.
-> > > 
-> > > Having a dedicated section for such code allows to validate with tooling
-> > > that no unsafe functions are invoked.
-> > > 
-> > > Add the .noinstr.text section and the noinstr attribute to mark
-> > > functions. noinstr implies notrace. Kprobes will gain a section check
-> > > later.
-> > > 
-> > > Provide also a set of markers: instrumentation_begin()/end()
-> > > 
-> > > These are used to mark code inside a noinstr function which calls
-> > > into regular instrumentable text section as safe.
-> > > 
-> > > The instrumentation markers are only active when CONFIG_DEBUG_ENTRY is
-> > > enabled as the end marker emits a NOP to prevent the compiler from merging
-> > > the annotation points. This means the objtool verification requires a
-> > > kernel compiled with this option.
-> > > 
-> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > > Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> > > Acked-by: Peter Zijlstra <peterz@infradead.org>
-> > > Link: https://lkml.kernel.org/r/20200505134100.075416272@linutronix.de
-> > > 
-> > > [Nicolas: context conflicts in:
-> > > 	arch/powerpc/kernel/vmlinux.lds.S
-> > > 	include/asm-generic/vmlinux.lds.h
-> > > 	include/linux/compiler.h
-> > > 	include/linux/compiler_types.h]
-> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > 
-> > Did you build this on x86?
-> > 
-> > I get the following build error:
-> > 
-> > ld:./arch/x86/kernel/vmlinux.lds:20: syntax error
-> > 
-> > And that line looks like:
-> > 
-> >   . = ALIGN(8); *(.text.hot .text.hot.*) *(.text .text.fixup) *(.text.unlikely .text.unlikely.*) *(.text.unknown .text.unknown.*) . = ALIGN(8); __noinstr_text_start = .; *(.__attribute__((noinline)) __attribute__((no_instrument_function)) __attribute((__section__(".noinstr.text"))).text) __noinstr_text_end = .; *(.text..refcount) *(.ref.text) *(.meminit.text*) *(.memexit.text*)
-> > 
-> 
-> In the NOINSTR_TEXT macro, noinstr is expanded with the value of the noinstr
-> macro from linux/compiler_types.h while it shouldn't.
-> 
-> The problem is possibly that the noinstr macro is defined for assembly. Make
-> sure that the macro is not defined for assembly e.g.:
-> 
-> #ifndef __ASSEMBLY__
-> 
-> /* Section for code which can't be instrumented at all */
-> #define noinstr								\
-> 	noinline notrace __attribute((__section__(".noinstr.text")))
-> 
-> #endif
+On Fri, Mar 19, 2021 at 12:38 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 3/19/21 12:31 PM, Arnd Bergmann wrote:
+> > On Fri, Mar 19, 2021 at 8:36 AM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> >>
+> >> Linux mainline master build breaks for sparc defconfig.
+> >> There are multiple errors / warnings with clang-12 and clang-11 and 10.
+> >>  - sparc (defconfig) with clang-12, clang-11 and clang-10
+> >>  - sparc (tinyconfig) with clang-12, clang-11 and clang-10
+> >>  - sparc (allnoconfig) with clang-12, clang-11 and clang-10
+> >>
+> >> make --silent --keep-going --jobs=8
+> >> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=sparc
+> >> CROSS_COMPILE=sparc64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> >> clang'
+> >
+> > I don't think anyone has successfully built a sparc kernel with clang,
+> > and I don't
+> > think it's worth trying either, given how little upstream work the
+> > sparc port sees overall.
+>
+> We'll get there. There are some other SPARC-related clang bugs that need
+> to be squashed first. We have made quite some improvements and it's actually
+> maintained by the community. Of course, we don't have a commercial backer
+> but that shouldn't be necessary for open source to work.
 
-This implies that the backport is incorrect, so I'll wait for an updated
-version...
+I meant there is no point for Naresh to do it as part of his build
+testing with tuxmake.
+If someone else gets it working, they can tell Naresh to try again, but until
+then, I'd limit clang regression testing to x86, arm, powerpc, s390, mips, riscv
+and arc.
 
-thanks,
-
-greg k-h
+         Arnd
