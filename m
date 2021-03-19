@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884FF34120D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C76A34120E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhCSBV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
+        id S232441AbhCSBXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbhCSBVW (ORCPT
+        with ESMTP id S232932AbhCSBWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:21:22 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25851C06174A;
-        Thu, 18 Mar 2021 18:21:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F1mLk2wLgz9sS8;
-        Fri, 19 Mar 2021 12:21:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616116878;
-        bh=MSKNZ1kC8T2iJgAgGCtWH+4uhSR1nvIZZMaad6Ml+wA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=npUyXz0ayQkf+FcFAFwp78LbF9EIl7LBPSyn+214gfU+t9qiKQttI9bXgfgvbE1rg
-         SQ19xDBTQbtuv6GTEXbPqVYr2GEeRnY19aPLNSQZUkcIXLRHH+EzIy/n7Q/9oZKdX1
-         oE/EwpgQrpumap05S7XoqcqAFx+lIwpuW4rXVmTGND8+GrsZd5subivIjFAZVYuWbi
-         D3qS73iqCkhmHiDsUFg470i7i1Ao3HrILYk4cQFiuiNl9a4IyRAFIhTqWIfPpynfZl
-         r3vHOmpA/cdfi3Kqo3Wrg9Zc8f4ECht6RmwWbsBGwZUBjV/+7mC1LJio2LcOaIE3Wr
-         YGRWkMvCSNLpg==
-Date:   Fri, 19 Mar 2021 12:21:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Dillon Varone <dillon.varone@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20210319122116.6c703583@canb.auug.org.au>
+        Thu, 18 Mar 2021 21:22:52 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3CEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:22:51 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id n138so7517378lfa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CW4McI8JkV+pieEAOjNv+vlbnY5aNnNxkeeFzG0tW8w=;
+        b=cDeKZHVFxabXMfipkJOP7Ibt7u7HVzssV//KJmna76gp11QpclpUxew/DscSIAVeT/
+         ILTnAIjHt4zXkV5rdRyMkftIzQhnm6/f4Fc1g/eFn3KcKwKdUaLvvXlCK9S6uSyQMJuy
+         z8rnpEi1ijjr2S0a5dAwX48+eC9eYYzuuKyUyW8TWRdIdYlNVAScpyqUbBB+tzRz0DXp
+         fwYpz0a0GpiFPVbBulejetQGfE9enAm6Qp3Az8rG1NCuJX/H5eajWjAZ3zEYkgbu4dGW
+         9z/ugj21ayFY1WgcWWhE9uw/ZP7lLMCb5UU9bvxnwru5IsOfv/1HtFzPEOaDcXXy7cUf
+         fuhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CW4McI8JkV+pieEAOjNv+vlbnY5aNnNxkeeFzG0tW8w=;
+        b=qly3HP+Hwnbc0HZJ9cmVPXBZuXJkyxsVJ3NTeX0sIG4jjxwD1IhXC8OcaACWEVhW+r
+         t74MQP+H6PDqJ1pKw6NHsG2v84zrK5kvQTRpUjsu0E+cKlTVE7rFaYiqH0JXZ69FocjZ
+         rsOCCnGStIkNCEnjPW+adSB/hyj/5K8n8RhWEWvK3xisiZ1uxGpof0Zhu6Aofarndm8v
+         ktw8szcrzFpDrFf3+vx56T5afRIZI6KH/Y9rkzm/IeESJQnrBjs8h0doyty0GQtftUpr
+         8p4PTxsM3meXBvlZldFEjz0y/BIoz8P+ja+Z9znMqFAFvMXvE0iO1LqHU75SPXdy1fcQ
+         iYTA==
+X-Gm-Message-State: AOAM533w9XKJrVtf6Dm6753W0PQbkRl0n+L/Yn1n7nkhdb9a8OUna2Y1
+        nmZWccZWC0EX1r71cko+1hO5q6JCrbMAtS54OvMRQnBIFk0=
+X-Google-Smtp-Source: ABdhPJyeKUzfk7qJwdmTpIOVyFefL4jP2HUWSjTzyZpGRUmli8dFZV88KSSE8oBfMULFwo4SPWZ4Um/djOyrGlRodTE=
+X-Received: by 2002:a19:ee19:: with SMTP id g25mr6696142lfb.83.1616116970201;
+ Thu, 18 Mar 2021 18:22:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LkXALco0NdIPjGu2j9rsfUr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210318110658.60892-1-songmuchun@bytedance.com> <20210318110658.60892-4-songmuchun@bytedance.com>
+In-Reply-To: <20210318110658.60892-4-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 18 Mar 2021 18:22:39 -0700
+Message-ID: <CALvZod7d-6UH+6CTWyH44W8YuzsC3TyaHwdtQSs9a+65hJr2UQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] mm: memcontrol: change ug->dummy_page only if
+ memcg changed
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LkXALco0NdIPjGu2j9rsfUr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Mar 18, 2021 at 4:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Just like assignment to ug->memcg, we only need to update ug->dummy_page
+> if memcg changed. So move it to there. This is a very small optimization.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Hi all,
-
-After merging the amdgpu tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
-
-ERROR: modpost: "dc_dsc_stream_bandwidth_in_kbps" [drivers/gpu/drm/amd/amdg=
-pu/amdgpu.ko] undefined!
-
-Caused by commit
-
-  a03f6c0e26b2 ("drm/amd/display: Add changes for dsc bpp in 16ths and unif=
-y bw calculations")
-
-I have used the amdgpu tree from next-20210318 fot today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LkXALco0NdIPjGu2j9rsfUr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBT/IwACgkQAVBC80lX
-0Gx7vgf/YbKHa9bzIizcoZsCshbmfmZ93bOeK9xr4dPfaOiCMFM96H4E4Z2XZmCN
-d1Nsrdk/BrWJkDiKYdnL0Gp3gYIzxmDc4AK8LOWv19NtEqZBb/A3eUTg6sq1mdJb
-dQfAUxtPnCng88/goUr2KA8mIZkZCa8/IWeAU68WmB5IMkLq77ji5jpqznXV1ELc
-nqJdIW0uw0z6v3sVYSeCsTpqoeJ/MOJXPQX0mqfErGya3RFMpW6VNC52+wIey3Kf
-6BCL93axIChbPjKCLxp0WJDuxTSeo2zrMPaDkC20/3S1h/hxzMNBF6K3WqTGOxLk
-wse8/JMNur/ITf4zLAX3+Iinhs0/4w==
-=m0Dv
------END PGP SIGNATURE-----
-
---Sig_/LkXALco0NdIPjGu2j9rsfUr--
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
