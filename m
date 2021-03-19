@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746E1341DCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BC1341DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCSNKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        id S230096AbhCSNLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCSNK0 (ORCPT
+        with ESMTP id S229875AbhCSNLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:10:26 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966A3C06174A;
-        Fri, 19 Mar 2021 06:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=qyl78rH+CQEMzVJyJ1SzVvYcEK1y17Tmg67PTGfJeTg=; b=x7XnhvHd7wdwfflWyP3v7HZX04
-        xbvcx8leSC3+eymowMLRTCMa3XhiFh4EOl3IecVaVIGP2BusrHaVI9FfDQQyr7u97e3Ere3Ai2Bfz
-        hkLOz4FnjukEMRR94YcEh+UYCyO1kVc+SAtOWvNCRXJ25AVzapX86aPNChZQWS9FJaGKK9MKPrGhk
-        Z3Ot5lw/aPWuuhEQG2DG4Fleice4laU0P9uLVjl+jZaSOBm6Wf3p7+IUiIrEfet5+Huey8b04yOLa
-        c7LWPdNB6amV0nF6nqgDQmjYjIfqZu9FPSppWlHVazcFktUdtwxOoFm1RajzHn8WrTPtsw1Iy/+Sc
-        nUNPhvz+BaBKPXsXGv3liBqAKxA0ZPUHo9WlryNfQIdgYDscNOe0zb5No2p+koRfWxgVUkpe7LtI4
-        kZSzUteS1PqOaIiX2w7J9URmiIYBoGukgOFGJr8QMCKRm8nZIDrZtdazKghgpWxlLTfZPQ+j4Dw6L
-        BRe3hp54LQPEAWOQBSiD2cHQ;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lNEtP-0002b5-Il; Fri, 19 Mar 2021 13:10:19 +0000
-Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
-To:     Jens Axboe <axboe@kernel.dk>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210319101654.638e8e95@canb.auug.org.au>
- <7ced6739-4458-2b5b-af5a-d3aa9d37656d@kernel.dk>
- <14e60889-156e-7682-71c1-7b86c9b019a5@samba.org>
- <6fc61af0-e113-15d3-dd71-a0415b0f546f@kernel.dk>
-From:   Stefan Metzmacher <metze@samba.org>
-Message-ID: <6cf57986-45c6-fb00-eb19-c7f4aeac82a5@samba.org>
-Date:   Fri, 19 Mar 2021 14:10:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Mar 2021 09:11:07 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42390C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:11:06 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b10so5996993iot.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FomIKOx2mj7TAYUlB1ZCPvBZagtXVL3wiwg1FK3ni7o=;
+        b=jkjDkZmIHc+1If7PMRab98D25OkHQM3Ug/BrFz+I/RViiODUTN9gnLIpSwOdnfEv78
+         uCOHFXbSmbKxWkwbSeep6hYaHMiXSJXmwD+lYMiQyHgtFsbQimIvSCp1edMGW2ieDrmI
+         XKdQN7Xooeaq77YRPyPwvoxQ4KBkmmBE/Rxug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FomIKOx2mj7TAYUlB1ZCPvBZagtXVL3wiwg1FK3ni7o=;
+        b=tMybsq/07dxO7lNzTZxHhoP8A2+Nh6n6cs5JMe7kwAkreajlsrjrAqyDairntr7TkN
+         OE7ug+MsgRbvm7gym1TIvhzacLwRuyoJidAQLXCDFW1OMgZN2AA7K7ixmq0yZmauj7Tp
+         W666Xq/Aaf9kdx8emGfNRk1eO1EdrxoB3ICUIinBWQT/z0nBTS3R2qKqmMWeHyyKAPVc
+         KpmAKlPm0xZwhN5IkGnBTXLEUIxhLlqK0LcyvV8onwrn9WPu8lnf2YQR+9SEx1jSUlw7
+         TQgp9JO2jorAJrssV7szufIi0mE1YPdVfqdh5c8px8vZ50q0E6zgwwbrhvcmduhbkSW3
+         4w5w==
+X-Gm-Message-State: AOAM531jBgb/FT84jc0YWJHwks+9SWk0SiUwfajRrQaLjqot4uxXp8us
+        2ZzERGEXFxk+M2MnIR7M1s2yOZGuz/3lcv8H
+X-Google-Smtp-Source: ABdhPJxotdGUSmBxczUqudjecucEoBYO6gx29UEgKr3Ix1NqiyZSzSsqhwQsev5ekZ/W69/OSVVfpw==
+X-Received: by 2002:a5e:841a:: with SMTP id h26mr2751424ioj.179.1616159465457;
+        Fri, 19 Mar 2021 06:11:05 -0700 (PDT)
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
+        by smtp.gmail.com with ESMTPSA id u5sm2602174iob.8.2021.03.19.06.11.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 06:11:05 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id v17so6008680iot.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:11:04 -0700 (PDT)
+X-Received: by 2002:a05:6602:722:: with SMTP id g2mr2702953iox.1.1616159464446;
+ Fri, 19 Mar 2021 06:11:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6fc61af0-e113-15d3-dd71-a0415b0f546f@kernel.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210312235521.1408503-1-ribalda@chromium.org>
+ <CANiDSCunsYwjB=PYYJnpaEnB3pg7No40gOE1jTVwxJkJJpE2Nw@mail.gmail.com> <20210319131011.GA3372@lst.de>
+In-Reply-To: <20210319131011.GA3372@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 19 Mar 2021 14:10:53 +0100
+X-Gmail-Original-Message-ID: <CANiDSCsid-gcq_HWWh=M0mOT947F7bj1QYANo4i0TwUSEkkEbg@mail.gmail.com>
+Message-ID: <CANiDSCsid-gcq_HWWh=M0mOT947F7bj1QYANo4i0TwUSEkkEbg@mail.gmail.com>
+Subject: Re: [PATCH v4 6/6] media: uvcvideo: Use dma_alloc_noncontiguous API
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christoph
 
-Am 19.03.21 um 14:08 schrieb Jens Axboe:
-> On 3/19/21 2:02 AM, Stefan Metzmacher wrote:
->>
->> Am 19.03.21 um 00:25 schrieb Jens Axboe:
->>> On 3/18/21 5:16 PM, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> Commit
->>>>
->>>>   c2c6c067c050 ("io_uring: remove structures from include/linux/io_uring.h")
->>>>
->>>> is missing a Signed-off-by from its author.
->>>
->>> Stefan, let me know if you're OK with me adding that, not sure how I missed
->>> that.
->>
->> Yes, sure :-)
->> I guess you removed it while adding 'Link:'
-> 
-> That was b4, I don't add those manually. But maybe it stripped those too,
-> annoying...
-> 
->> You may want to remove cc: stable from 3aab52c9a708f7183460d368700181ef0c2a09e6
->> ("io_uring: imply MSG_NOSIGNAL for send[msg]()/recv[msg]() calls")
->> for now.
->>
->> I'll want to do some more test with it on 5.12,
->> I guess we'd then have to backport it to stable as part of the
->> io_thread worker backport. I'll post some more details later
->> to the io-uring list.
-> 
-> Sure, let's do that. I also dropped the short link sever as well for now.
-> I do like it on principle, but it does have a risk of breaking valid
-> use cases.
+On Fri, Mar 19, 2021 at 2:10 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Fri, Mar 19, 2021 at 02:05:21PM +0100, Ricardo Ribalda wrote:
+> > > +                                   uvc_urb->sgt,
+> > > +                                   uvc_stream_dir(uvc_urb->stream));
+> > > +       return usb_submit_urb(uvc_urb->urb, GFP_KERNEL);
+> > > +}
+> >
+> > We should have mem_flags instead of GFP_KERNEL here
+> >
+> >
+> > Is it too late to fix it in your tree? Do I need to send a patch to fix it?
+>
+> As far as I know we don't have anything that has pulled in the tree yet,
+> so I can just fold the fix in.
 
-Thanks, I'll resubmit that with the MSG_WAITALL logic.
+Ohh good :). Thanks! and sorry again.
 
-metze
+
+
+-- 
+Ricardo Ribalda
