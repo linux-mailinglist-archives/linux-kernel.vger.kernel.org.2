@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCA9341D06
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CA2341D0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCSMh4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 08:37:56 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49740 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229745AbhCSMhn (ORCPT
+        id S230047AbhCSMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhCSMkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:37:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0USbqMlt_1616157458;
-Received: from 30.240.100.153(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0USbqMlt_1616157458)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Mar 2021 20:37:40 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
- burst
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <YFNsKGKRL3SaJNZk@hirez.programming.kicks-ass.net>
-Date:   Fri, 19 Mar 2021 20:39:47 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
-        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
-        Odin Ugedal <odin@ugedal.com>, pauld@redhead.com,
-        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
-        Shanpei Chen <shanpeic@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <2F207CE6-F849-457A-B0A6-3A8BFFE0AFFB@linux.alibaba.com>
-References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
- <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
- <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
- <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
- <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
- <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
- <YFNsKGKRL3SaJNZk@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Fri, 19 Mar 2021 08:40:23 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39ED7C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:40:23 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id n21so5910540ioa.7
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KQM+TnnK73mIR8dvkMWkIKwG/G6WwhfgXEfohLbUjJI=;
+        b=ifk76JjCf1aax6E7GBeDbL+c93oGjTB60QK5ee14RCT5+APXZhPJKUXYgFou/CV7+e
+         ItZVjc2cbgTDr8qFVBp4AJDeMheQJnZ6BO3PN297hH96BTowylsx5KatfLI775EmigrK
+         8vulGRAobwKCQjkN1SYFOQGmz+bINmo1jJV0naR7O42Lt4z345kZAZWJUXu1iEqP96F+
+         ltvePRzZFfIFvqvzsfV5YUDEn76aWqbacJ0olJm9NYBxtkYjdHHNY0kL1YZ5pEYR3P86
+         roJLy+CIfZIzTxPGoukdK01y7JxS8XzTilo9PXr4bgIq4lqURg9vMCHjCeVxxBhbOfOY
+         vqBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KQM+TnnK73mIR8dvkMWkIKwG/G6WwhfgXEfohLbUjJI=;
+        b=taaiS0uRtq0EGfif0faPPe9e4d0lnDG1vJXdOZv6B+GDCXxYe1UXhkZGVeAFTDjR4u
+         1LCX1VsrkvsyR83hkOLM+AX6LID4r1JZXfZi2pW7WYQ463Bz+u3/49UKcn7UBYDFIJRp
+         HKA92J73mGdpUMRl9CUVo3a1a06wQq7nYnJzjuy84kc8gQ4mlCnghcEdUotk7G69LNQl
+         ixN9LNETNDnqTTrJJUv45mNtu3LO/hVqBSlsFBS97zbhalAnvfAuwz378WgLcv6l621D
+         znM9pw0mWKa1+DMdhuWu5dXa8lkvgz8YsSKnEuNrGlTADgumNhQCRVx37SjUSaLWMoWT
+         smTQ==
+X-Gm-Message-State: AOAM530CBvwMUCHdXjQMGlXVECVoOIye5OlZFHiMQDPieNJ489RZiIX5
+        czZfSasGZvCxc8l8RPSj4GwH9WJcI/KUsS0F
+X-Google-Smtp-Source: ABdhPJxUaPsJMhQF3ZM9WmIYgUIzJEiLmwI9x1gBSK0PmZoRWH5sp5ky8unYoOay+2JTMX7fH1KXhQ==
+X-Received: by 2002:a02:77d0:: with SMTP id g199mr1135829jac.118.1616157622494;
+        Fri, 19 Mar 2021 05:40:22 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id x6sm2479363ioh.19.2021.03.19.05.40.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 05:40:22 -0700 (PDT)
+Subject: Re: [PATCH net-next 4/4] net: ipa: activate some commented assertions
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210319042923.1584593-1-elder@linaro.org>
+ <20210319042923.1584593-5-elder@linaro.org> <YFQwAYL15nEkfNf7@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <7520639c-f08b-cb25-1a62-7e3d69981f95@linaro.org>
+Date:   Fri, 19 Mar 2021 07:40:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <YFQwAYL15nEkfNf7@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/19/21 12:00 AM, Leon Romanovsky wrote:
+> On Thu, Mar 18, 2021 at 11:29:23PM -0500, Alex Elder wrote:
+>> Convert some commented assertion statements into real calls to
+>> ipa_assert().  If the IPA device pointer is available, provide it,
+>> otherwise pass NULL for that.
+>>
+>> There are lots more places to convert, but this serves as an initial
+>> verification of the new mechanism.  The assertions here implement
+>> both runtime and build-time assertions, both with and without the
+>> device pointer.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/net/ipa/ipa_reg.h   | 7 ++++---
+>>   drivers/net/ipa/ipa_table.c | 5 ++++-
+>>   2 files changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_reg.h b/drivers/net/ipa/ipa_reg.h
+>> index 732e691e9aa62..d0de85de9f08d 100644
+>> --- a/drivers/net/ipa/ipa_reg.h
+>> +++ b/drivers/net/ipa/ipa_reg.h
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/bitfield.h>
+>>   
+>>   #include "ipa_version.h"
+>> +#include "ipa_assert.h"
+>>   
+>>   struct ipa;
+>>   
+>> @@ -212,7 +213,7 @@ static inline u32 ipa_reg_bcr_val(enum ipa_version version)
+>>   			BCR_HOLB_DROP_L2_IRQ_FMASK |
+>>   			BCR_DUAL_TX_FMASK;
+>>   
+>> -	/* assert(version != IPA_VERSION_4_5); */
+>> +	ipa_assert(NULL, version != IPA_VERSION_4_5);
+> 
+> This assert will fire for IPA_VERSION_4_2, I doubt that this is
+> something you want.
 
+No, it will only fail if version == IPA_VERSION_4_5.
+The logic of an assertion is the opposite of BUG_ON().
+It fails only if the asserted condition yields false.
 
-> On Mar 18, 2021, at 11:05 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> On Thu, Mar 18, 2021 at 09:26:58AM +0800, changhuaixin wrote:
->>> On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> 
->>> So what is the typical avg,stdev,max and mode for the workloads where you find
->>> you need this?
->>> 
->>> I would really like to put a limit on the burst. IMO a workload that has
->>> a burst many times longer than the quota is plain broken.
->> 
->> I see. Then the problem comes down to how large the limit on burst shall be.
->> 
->> I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
-> 
-> So CPU usage isn't exactly what is required, job execution time is what
-> you're after. Assuming there is a relation...
-> 
+					-Alex
 
-Yes, job execution time is important. To be specific, it is to improve the CPU usage of the whole
-system to reduce the total cost of ownership, while not damaging job execution time. This
-requires lower the average CPU resource of underutilized cgroups, and allowing their bursts
-at the same time.
-
->> average	: 42.2%
->> stddev	: 81.5%
->> max		: 844.5%
->> P95		: 183.3%
->> P99		: 437.0%
 > 
-> Then your WCET is 844% of 100ms ? , which is .84s.
+> Thanks
 > 
-> But you forgot your mode; what is the most common duration, given P95 is
-> so high, I doubt that avg is representative of the most common duration.
-> 
-
-It is true.
-
->> If quota is 100000ms, burst buffer needs to be 8 times more in order
->> for this workload not to be throttled.
-> 
-> Where does that 100s come from? And an 800s burst is bizarre.
-> 
-> Did you typo [us] as [ms] ?
-> 
-
-Sorry, it should be 100000us.
-
->> I can't say this is typical, but these workloads exist. On a machine
->> running Kubernetes containers, where there is often room for such
->> burst and the interference is hard to notice, users would prefer
->> allowing such burst to being throttled occasionally.
-> 
-> Users also want ponies. I've no idea what kubernetes actually is or what
-> it has to do with containers. That's all just word salad.
-> 
->> In this sense, I suggest limit burst buffer to 16 times of quota or
->> around. That should be enough for users to improve tail latency caused
->> by throttling. And users might choose a smaller one or even none, if
->> the interference is unacceptable. What do you think?
-> 
-> Well, normal RT theory would suggest you pick your runtime around 200%
-> to get that P95 and then allow a full period burst to get your P99, but
-> that same RT theory would also have you calculate the resulting
-> interference and see if that works with the rest of the system...
-> 
-
-I am sorry that I don't know much about the RT theory you mentioned, and can't provide
-the desired calculation now. But I'd like to try and do some reading if that is needed.
-
-> 16 times is horrific.
-
-So can we decide on a more relative value now? Or is the interference probabilities still the
-missing piece?
-
-Is the paper you mentioned about called "Insensitivity results in statistical bandwidth sharing",
-or some related ones on statistical bandwidth results under some kind of fairness?
 
