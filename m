@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44634341B47
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00933341B4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhCSLTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:19:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46695 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229821AbhCSLSf (ORCPT
+        id S229919AbhCSLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhCSLUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:18:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616152715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7OZOX/YIlftmA53QwiWbR6JyXFIkXe3MO91yV2zu1HA=;
-        b=SBJ0SLimOum6zIn0TRNjffLweV04eGbI5HW34MJzYCd2QVz5NWqpIr6cv1WyGBOlO9hefr
-        9abMRoTXQxbWayD0+E7yKo0uHknMa7+6zm0q8/P0Fhl/UiYFXyNihM8fO2uviW9LnFiGAu
-        03iUU+m1+cknATUzoqcIvNUrZJY/1Eo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-TPUD3m5ONFaumC9dQMcdnw-1; Fri, 19 Mar 2021 07:18:31 -0400
-X-MC-Unique: TPUD3m5ONFaumC9dQMcdnw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DED8107ACCA;
-        Fri, 19 Mar 2021 11:18:30 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 86F145DAA5;
-        Fri, 19 Mar 2021 11:18:24 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] genirq/matrix: Prevent managed_allocated/total_allocated counters getting out-of-sync
-Date:   Fri, 19 Mar 2021 12:18:23 +0100
-Message-Id: <20210319111823.1105248-1-vkuznets@redhat.com>
+        Fri, 19 Mar 2021 07:20:11 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6BAC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:20:10 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id q127-20020a4a33850000b02901b646aa81b1so2201575ooq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=563BAybzVyHEsgNkhjo3Ec3csusCS7gRQaGdAB7Gmag=;
+        b=GwMpeYjU0UPUDm9dz3INLUYoGdgFNUt7NzD/7SI5sYjGE+9FyhjLK01joQgS5pc+CO
+         bP5DgKDTqGjtUvrNBmKSoLe5aISbyJGEu0zIV8MV9UhPRRlYEf6RXbeMgdApY8e8cGfn
+         ING6er4kHFjYi/y2G6v3WloSZAuluDdJ5C/HrtyzDz3b9XtYTZnRXbur2WZM1E5Pyz4j
+         u0gT5ZJrNGM1MHlb5MO3hzAlpPmzQEOyzyvT4MbhcH0kXYcChKlsQMSG5iZ9AWvuPZrp
+         gglcwl5xSFxAN5s7GpN/g8AQvt7Z3tXHmjOLQlHcuxy1NKQqqxR4qMH6eTYnkz+KTmBh
+         FnSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=563BAybzVyHEsgNkhjo3Ec3csusCS7gRQaGdAB7Gmag=;
+        b=GNXXY9qBivGHKMt7388jOKO4N62t31zWWC520YpoN+zxxB1Nyc0LWITa2Yym5xmXuC
+         5PZ/qEnBPqVOuZuHSSJ3kMMS1mvkrl8a/tvCroUP5+7YmhUzjAIPmeMCzD5zk1I+51Fd
+         DBuomw/Gx4orKbOt5ZSoZR6+wFY9JD5t+UUf8jd9gBlTvX08R0/yhNlTCSKf9Qqvb2Ps
+         4aviBMQ96QFRgAT2jr0MMOLc82/9WDcSvUo1TlAk3OgWj8SbK9Jx860SLffWbcN4GbwU
+         lQYqEgvmXkuuifpWdi9XWAJ9OAw4fFnFIlLEFJ88nORD5n+VAwBWvN099Qt7+30GglBt
+         +imQ==
+X-Gm-Message-State: AOAM530VQ9pOZ4IhCXXteUo/X1vEYK7wBg6mOteYa56Ly4ND4uEdD6d8
+        nvzA/k0M4YeVUSkhDPzPWhMbgz1cw8tAQYcOwa8feg==
+X-Google-Smtp-Source: ABdhPJxxLImaAPwO9waG0d7jrrqrIp8kbDzYx14Qc417p4oCxS11Mr56IHANMprCOhUvN7EIWCGQjbt6ugpIv1orY34=
+X-Received: by 2002:a05:6820:273:: with SMTP id c19mr993222ooe.54.1616152809948;
+ Fri, 19 Mar 2021 04:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210316124118.6874-1-glittao@gmail.com> <YFM96dY1pfk/rs3U@elver.google.com>
+ <3ba2228a-1442-40b4-578f-f693d9a054e7@suse.cz>
+In-Reply-To: <3ba2228a-1442-40b4-578f-f693d9a054e7@suse.cz>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 19 Mar 2021 12:19:58 +0100
+Message-ID: <CANpmjNPzO2ORHMb=WdSmZs-1k2NRzVda5rtLjvRnaGkb7xcCNw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests: add a kselftest for SLUB debugging functionality
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     glittao@gmail.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When irq_matrix_free() is called for an unallocated interrupt,
-managed_allocated/total_allocated counters get out of sync with the real
-state of the matrix. Later, when the last interrupt is freed, these
-counters will go negative (overflow). While this is certainly a problem of
-the calling code, we can do better in irq_matrix_free() and simplify
-debugging.
+On Fri, 19 Mar 2021 at 11:46, Vlastimil Babka <vbabka@suse.cz> wrote:
+> On 3/18/21 12:47 PM, Marco Elver wrote:
+> > On Tue, Mar 16, 2021 at 01:41PM +0100, glittao@gmail.com wrote:
+> >> From: Oliver Glitta <glittao@gmail.com>
+> >>
+> >> SLUB has resiliency_test() function which is hidden behind #ifdef
+> >> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+> >> runs it. Kselftest should proper replacement for it.
+> >>
+> >> Try changing byte in redzone after allocation and changing
+> >> pointer to next free node, first byte, 50th byte and redzone
+> >> byte. Check if validation finds errors.
+> >>
+> >> There are several differences from the original resiliency test:
+> >> Tests create own caches with known state instead of corrupting
+> >> shared kmalloc caches.
+> >>
+> >> The corruption of freepointer uses correct offset, the original
+> >> resiliency test got broken with freepointer changes.
+> >>
+> >> Scratch changing random byte test, because it does not have
+> >> meaning in this form where we need deterministic results.
+> >>
+> >> Add new option CONFIG_TEST_SLUB in Kconfig.
+> >>
+> >> Add parameter to function validate_slab_cache() to return
+> >> number of errors in cache.
+> >>
+> >> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+> >
+> > No objection per-se, but have you considered a KUnit-based test instead?
+>
+> To be honest, we didn't realize about that option.
+>
+> > There is no user space portion required to run this test, and a pure
+> > in-kernel KUnit test would be cleaner. Various boiler-plate below,
+> > including pr_err()s, the kselftest script etc. would simply not be
+> > necessary.
+> >
+> > This is only a suggestion, but just want to make sure you've considered
+> > the option and weighed its pros/cons.
+>
+> Thanks for the suggestion. But I hope we would expand the tests later to e.g.
+> check the contents of various SLUB related sysfs files or even write to them,
+> and for that goal kselftest seems to be a better starting place?
 
-An example of a problem described above:
-https://lore.kernel.org/lkml/20210318192819.636943062@linutronix.de/
+Not sure, but I would probably go about it this way:
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- kernel/irq/matrix.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+A. Anything that is purely in-kernel and doesn't require a user space
+component should be a KUnit test.
 
-diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
-index 651a4ad6d711..8e586858bcf4 100644
---- a/kernel/irq/matrix.c
-+++ b/kernel/irq/matrix.c
-@@ -423,7 +423,9 @@ void irq_matrix_free(struct irq_matrix *m, unsigned int cpu,
- 	if (WARN_ON_ONCE(bit < m->alloc_start || bit >= m->alloc_end))
- 		return;
- 
--	clear_bit(bit, cm->alloc_map);
-+	if (WARN_ON_ONCE(!test_and_clear_bit(bit, cm->alloc_map)))
-+		return;
-+
- 	cm->allocated--;
- 	if(managed)
- 		cm->managed_allocated--;
--- 
-2.30.2
+B. For any test that requires a user space component, it'd be a kselftest.
 
+And I think the best design here would also clearly separate those 2
+types of tests, and I wouldn't lump tests of type A into modules that
+are also used for B. That way, running tests of type A also is a bit
+easier, and if somebody wants to just quickly run those it's e.g. very
+quick to do so with kunit-tool.
+
+Thanks,
+-- Marco
