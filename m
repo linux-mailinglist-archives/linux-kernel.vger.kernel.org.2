@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71B33421DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37F53421DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCSQ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:27:47 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56920 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCSQ1Q (ORCPT
+        id S230056AbhCSQ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:28:18 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:40721 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhCSQ2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:27:16 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 997D520B39C5;
-        Fri, 19 Mar 2021 09:27:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 997D520B39C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616171236;
-        bh=Wsdbg1M1cJRQ0/oeaxzGq2LeLW2IuQM+xw0EQ7ZsQjY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=a3QuHKGJPWFyLqX6zl9nTAbnVB4AZxpBk+ci/qqImu+j0JkaLSUO2X5GgEyWI/ULw
-         o0kjzwgV8o1Rf6HRQxj+jyN9eksyuYYd4Ytesu22m1786vx6QPZsnCN2XtlDgHbGoo
-         okcBBEjge/cB60mlKO3Cx7HtwT7o59a9Cn+CxkcU=
-Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-3-madvenka@linux.microsoft.com>
- <20210318174029.GM5469@sirena.org.uk>
- <6474b609-b624-f439-7bf7-61ce78ff7b83@linux.microsoft.com>
- <20210319132208.GD5619@sirena.org.uk>
- <e8d596c3-b1ec-77a6-f387-92ecd2ebfceb@linux.microsoft.com>
- <eb0def39-efcf-52ac-ce46-5982e8555dc1@linux.microsoft.com>
- <20210319162031.GG5619@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <f2cc4d67-8acc-1b80-edd7-23336beea4c1@linux.microsoft.com>
-Date:   Fri, 19 Mar 2021 11:27:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Mar 2021 12:28:00 -0400
+Received: by mail-ot1-f42.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so8787112otb.7;
+        Fri, 19 Mar 2021 09:28:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fe9T/9T1yaTbtskKSKGC++4srcmBZ9L9xm28oaCiUwE=;
+        b=Yyg9dzu2vOSGEhr/WpivbM0CUel0ys9Ajoq4JWOSGdcJUn5Gi6DVn42PZ3PmXwlosm
+         qxHOMp6pSqOPsLft6QK8RQbd2Njwg/M8Bh4Or22ZQQ+ZpTZ+oiJp+WD2WVP5Z5a1Nxfb
+         3v7ui6AJJhCkumA4P0fIW0Tc64QjcT8JpYZSIPeudNMvUeIPJsUnl1uY+5ul4blblVz4
+         HrM01V9QviYTnr6o9bjxkt65ReFBZdFVVNd1yOxDr5jT/SIVGE+5hZf5LtBco3lEpk3g
+         yLa0wpgL3j3q3sdoICKcRnc6Io3w2zpOdbX3W1lq7hDHm2rdFf5QKqYm7k3ButIAn14h
+         Dyvw==
+X-Gm-Message-State: AOAM530OxGOtHkC95a6CGrnMEHOBp6FLLW8eIp2HE8Tt7/l1VgcZ2KZm
+        jKEJbRIL5dSfHmjn8Py2VMH3p38/Y+QA8ib9SaSJDMJM
+X-Google-Smtp-Source: ABdhPJx2dV5TQWqkiNncIeOLpFwD6tY5lh33XPAnU0wRpd3lm6foyFIjNBkn3rlDbvk0K+u740kTjV1u0g4JOj8Yu0Q=
+X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr1794535otr.321.1616171279743;
+ Fri, 19 Mar 2021 09:27:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319162031.GG5619@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210313104214.1548076-1-slyfox@gentoo.org> <20210315031913.icgekcdrbw4clikm@vireshk-i7>
+In-Reply-To: <20210315031913.icgekcdrbw4clikm@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 19 Mar 2021 17:27:48 +0100
+Message-ID: <CAJZ5v0iWVyTvE6BZveaXBR03OYCHWUx8JiWiPtahMt-8gRgfpw@mail.gmail.com>
+Subject: Re: [PATCH] ia64: fix format string for ia64-acpi-cpu-freq
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 15, 2021 at 4:19 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 13-03-21, 10:42, Sergei Trofimovich wrote:
+> > Fix warning with %lx / s64 mismatch:
+> >
+> >   CC [M]  drivers/cpufreq/ia64-acpi-cpufreq.o
+> >     drivers/cpufreq/ia64-acpi-cpufreq.c: In function 'processor_get_pstate':
+> >       warning: format '%lx' expects argument of type 'long unsigned int',
+> >       but argument 3 has type 's64' {aka 'long long int'} [-Wformat=]
+> >
+> > CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> > CC: Viresh Kumar <viresh.kumar@linaro.org>
+> > CC: linux-pm@vger.kernel.org
+> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+> > ---
+> >  drivers/cpufreq/ia64-acpi-cpufreq.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/ia64-acpi-cpufreq.c b/drivers/cpufreq/ia64-acpi-cpufreq.c
+> > index 2efe7189ccc4..c6bdc455517f 100644
+> > --- a/drivers/cpufreq/ia64-acpi-cpufreq.c
+> > +++ b/drivers/cpufreq/ia64-acpi-cpufreq.c
+> > @@ -54,7 +54,7 @@ processor_set_pstate (
+> >       retval = ia64_pal_set_pstate((u64)value);
+> >
+> >       if (retval) {
+> > -             pr_debug("Failed to set freq to 0x%x, with error 0x%lx\n",
+> > +             pr_debug("Failed to set freq to 0x%x, with error 0x%llx\n",
+> >                       value, retval);
+> >               return -ENODEV;
+> >       }
+> > @@ -77,7 +77,7 @@ processor_get_pstate (
+> >
+> >       if (retval)
+> >               pr_debug("Failed to get current freq with "
+> > -                     "error 0x%lx, idx 0x%x\n", retval, *value);
+> > +                     "error 0x%llx, idx 0x%x\n", retval, *value);
+> >
+> >       return (int)retval;
+> >  }
+>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-
-On 3/19/21 11:20 AM, Mark Brown wrote:
-> On Fri, Mar 19, 2021 at 10:02:52AM -0500, Madhavan T. Venkataraman wrote:
->> On 3/19/21 9:40 AM, Madhavan T. Venkataraman wrote:
-> 
->>> Actually now I look again it's just not adding anything on EL2 entries
->>> at all, they use a separate set of macros which aren't updated - this
->>> will only update things for EL0 and EL1 entries so my comment above
->>> about this tracking EL2 as EL1 isn't accurate.
-> 
->> So, do I need to do anything here?
-> 
-> Probably worth some note somewhere about other stack types existing and
-> how they end up being handled, in the changelog at least.
-> 
-OK.
-
-Madhavan
+Applied as 5.13 material, thanks!
