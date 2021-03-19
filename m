@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB733416D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3C03416DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhCSHlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 03:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S234213AbhCSHsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 03:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234223AbhCSHkx (ORCPT
+        with ESMTP id S234233AbhCSHri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:40:53 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C385BC06174A;
-        Fri, 19 Mar 2021 00:40:52 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so4550124wmc.0;
-        Fri, 19 Mar 2021 00:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MFOtFpKu091LQNgJ4z32DJVrKzARq3yiufp0Zl1ZyGU=;
-        b=OhbCqEK0eIKZg3IxvxZO9Q+D68KsZDtsQxLO+r6u08LA6onIVKZMHP4ozrfyCQEPyX
-         XKHsMx8PsaaUhfeLYxO1HG6JD8mEJtOJFhFmQDdmgUG9Lmb7bY86g5NJXiMq1OG8yJIU
-         cFzc2HNoq75Cd8bWBj0z59IR0PWD8FgG6HXKpqu7q8LUe5anCrCqjiAocVW5nmGMU+lt
-         xMrSfv+OugcZcQEimSwHPqqh9mLpSXzcJksFnKyyT7w34+uvW4RRVWlTYN8BC/iXtl5J
-         wE2OXyNvxFktjJYbRrVFi58suS+SplKuNfkEY/i5YWKcm7e/Mkb39rJ4T2TE/tDyfHNB
-         xdwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MFOtFpKu091LQNgJ4z32DJVrKzARq3yiufp0Zl1ZyGU=;
-        b=tPe9NCIcifZzX8GWjJLv5T39D8nxViDYH34RUjceok8ev/w9OCg4dEzospdW4zVoW3
-         qkCz1f4mJMTSXvFigrmtzOeqblQD3dsFdltcEWr7Tx3zVTymbSiOLTmevntEL+vBl6g2
-         tdTo4Nibyl4Iswihssg1W++oXrswbjTgMxA/fluM1s6uW+J+8L6/pwMnY6e1BzX6e1La
-         3D8KJtEZyv2KWcocwiI7w4Nc05x5iD/lzEh2/aJm/hKBgkf945jzPXfhLvc4aU3jBCuB
-         LE13ekRp5bRa9DxBsaAM6ixqlU7g8ZIeHC4htw+QrwtrTvbT2jsOV0ElHT706191DgPj
-         cJxw==
-X-Gm-Message-State: AOAM5301b6iGn2Z9Ng1gz0xhbbGk7f0T6e7CqoDXHyKTw8WHVw72TF6R
-        AqjUgDkcq3/2h2f6Vyjfqg2jYFEsa1bHJg==
-X-Google-Smtp-Source: ABdhPJxuPwXY9UzcCTiP7xMU87paMgTChDHL8+QYxxowmfnfkd46zbDQ6v3Xn/+L0quCqT+pyyytmw==
-X-Received: by 2002:a1c:541a:: with SMTP id i26mr2367511wmb.75.1616139651436;
-        Fri, 19 Mar 2021 00:40:51 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f1f:bb00:fd2c:a424:dc3d:ffa1? (p200300ea8f1fbb00fd2ca424dc3dffa1.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:fd2c:a424:dc3d:ffa1])
-        by smtp.googlemail.com with ESMTPSA id j16sm11064656wmi.2.2021.03.19.00.40.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 00:40:50 -0700 (PDT)
-To:     Wong Vee Khee <vee.khee.wong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-References: <20210318090937.26465-1-vee.khee.wong@intel.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net V2 1/1] net: phy: fix invalid phy id when probe using
- C22
-Message-ID: <3f7f68d0-6bbd-baa0-5de8-1e8a0a50a04d@gmail.com>
-Date:   Fri, 19 Mar 2021 08:40:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 19 Mar 2021 03:47:38 -0400
+X-Greylist: delayed 109 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Mar 2021 00:47:37 PDT
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378A4C06174A;
+        Fri, 19 Mar 2021 00:47:37 -0700 (PDT)
+Received: from sas1-6b1512233ef6.qloud-c.yandex.net (sas1-6b1512233ef6.qloud-c.yandex.net [IPv6:2a02:6b8:c14:44af:0:640:6b15:1223])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 8D0C62E1869;
+        Fri, 19 Mar 2021 10:45:46 +0300 (MSK)
+Received: from mail.yandex-team.ru (mail.yandex-team.ru [2a02:6b8:0:408:868:71a6:d203:8f53])
+        by sas1-6b1512233ef6.qloud-c.yandex.net (mxbackcorp/Yandex) with HTTP id RjXCO10PAW21-jkP0U1St;
+        Fri, 19 Mar 2021 10:45:46 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1616139946; bh=oYzw9yBamYcVEFuiIKWorYqGTToWeWfjmDgdEX5vWHw=;
+        h=Subject:In-Reply-To:Cc:Date:References:To:From:Message-Id;
+        b=d8agIJaJs8ywnSwg7SCNLlZvKUboPEkU99qAmepVI/kWfacx5/zGNAiFQSLtjdnap
+         WDZJKTgboUw7EpyUJBvPdNpfCbspvi8NnQVJPS4GWkq/EC+181AThp2z61Q5uttG0T
+         YGzm0uWYe/hJ6ubzhsIRlMzBsknNvdE2cniUbPoY=
+Authentication-Results: sas1-6b1512233ef6.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+X-Yandex-Sender-Uid: 1120000000084479
+X-Yandex-Avir: 1
+Received: from sas1-ec30c78b6c5b.qloud-c.yandex.net (sas1-ec30c78b6c5b.qloud-c.yandex.net [2a02:6b8:c14:2704:0:640:ec30:c78b])
+        by sas2-3467662b745a.qloud-c.yandex.net with LMTP id xc1xHhWXL8-j8Hy5040
+        for <dmtrmonakhov@yandex-team.ru>; Fri, 19 Mar 2021 10:45:36 +0300
+Received: by sas1-b43cfc766761.qloud-c.yandex.net with HTTP;
+        Fri, 19 Mar 2021 10:45:36 +0300
+From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>
+In-Reply-To: <20210319052859.3220-1-dmtrmonakhov@yandex-team.ru>
+References: <20210319052859.3220-1-dmtrmonakhov@yandex-team.ru>
+Subject: Re: [PATCH] io_uring: Try to merge io requests only for regular files
 MIME-Version: 1.0
-In-Reply-To: <20210318090937.26465-1-vee.khee.wong@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Fri, 19 Mar 2021 10:45:46 +0300
+Message-Id: <61611616138730@mail.yandex-team.ru>
+Content-Type: multipart/mixed;
+        boundary="----==--bound.300.sas1-b43cfc766761.qloud-c.yandex.net"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.03.2021 10:09, Wong Vee Khee wrote:
-> When using Clause-22 to probe for PHY devices such as the Marvell
-> 88E2110, PHY ID with value 0 is read from the MII PHYID registers
-> which caused the PHY framework failed to attach the Marvell PHY
-> driver.
-> 
-> Fixed this by adding a check of PHY ID equals to all zeroes.
-> 
-> Fixes: ee951005e95e ("net: phy: clean up get_phy_c22_id() invalid ID handling")
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Voon Weifeng <voon.weifeng@intel.com>
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+
+------==--bound.300.sas1-b43cfc766761.qloud-c.yandex.net
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+
+- stable@
+
+
+
+19.03.2021, 08:29, "Dmitry Monakhov" <dmtrmonakhov@yandex-team.ru>:
+> Otherwise we may endup blocking on pipe or socket.
+>
+> Fixes: 6d5d5ac ("io_uring: extend async work merge")
+> Testcase: https://github.com/dmonakhov/liburing/commit/16d171b6ef9d68e6db66650a83d98c5c721d01f6
+> Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
 > ---
-> v2 changelog:
->  - added fixes tag
->  - marked for net instead of net-next
-> ---
->  drivers/net/phy/phy_device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index cc38e326405a..c12c30254c11 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -809,8 +809,8 @@ static int get_phy_c22_id(struct mii_bus *bus, int addr, u32 *phy_id)
->  
->  	*phy_id |= phy_reg;
->  
-> -	/* If the phy_id is mostly Fs, there is no device there */
-> -	if ((*phy_id & 0x1fffffff) == 0x1fffffff)
-> +	/* If the phy_id is mostly Fs or all zeroes, there is no device there */
-> +	if (((*phy_id & 0x1fffffff) == 0x1fffffff) || (*phy_id == 0))
->  		return -ENODEV;
->  
->  	return 0;
-> 
+>  fs/io_uring.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 478df7e..848657c 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -2183,6 +2183,9 @@ static int __io_submit_sqe(struct io_ring_ctx *ctx, struct io_kiocb *req,
+>  static struct async_list *io_async_list_from_req(struct io_ring_ctx *ctx,
+>                                                   struct io_kiocb *req)
+>  {
+> + if (!(req->flags & REQ_F_ISREG))
+> + return NULL;
+> +
+IMHO it is reasonable to completely disable  io_should_merge logic because
+even with the this fix it still affected by latency spikes like follows:
 
-+ the authors of 0cc8fecf041d ("net: phy: Allow mdio buses to auto-probe c45 devices")
+->submit_read: req1[slow_hdd, sector=z]
+->submit_read: req2[nvme, sector=X]
+-> wait(req2)  -> fast
 
-In case of MDIOBUS_C22_C45 we probe c22 first, and then c45.
-This causes problems with c45 PHY's that have rudimentary c22 support
-and return 0 when reading the c22 PHY ID registers.
+->submit_read: req3[nvme, sector=Y] 
+--> wait(req3)  ->slow  
+  if completes if X and Y belongs to same page merge logic will wait for req1 to complete
 
-Is there a specific reason why c22 is probed first? Reversing the order
-would solve the issue we speak about here.
-c45-probing of c22-only PHY's shouldn't return false positives
-(at least at a first glance).
+
+
+
+------==--bound.300.sas1-b43cfc766761.qloud-c.yandex.net
+Content-Disposition: attachment;
+	filename="0001-io_uring-completely-disable-io_should_merge-logic.patch"
+Content-Transfer-Encoding: base64
+Content-Type: text/x-diff;
+	name="0001-io_uring-completely-disable-io_should_merge-logic.patch"
+
+RnJvbSBjMjRjZGE5YWE5MDI3NzVlNGUyMzU3NWI3NThmMDA5ZTlmYWU0NjQwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEbWl0cnkgTW9uYWtob3YgPGRtdHJtb25ha2hvdkB5YW5kZXgt
+dGVhbS5ydT4KRGF0ZTogRnJpLCAxOSBNYXIgMjAyMSAwODo0ODoxOCArMDMwMApTdWJqZWN0OiBb
+UEFUQ0hdIGlvX3VyaW5nOiBjb21wbGV0ZWx5IGRpc2FibGUgaW9fc2hvdWxkX21lcmdlIGxvZ2lj
+Cgppb19zaG91bGRfbWVyZ2UgbG9naWMgaXMgd2llcmQgYW5kIHByb25lIHRvIGxhdGVuY3kgc3Bp
+a2VzIGJlY2F1c2Ugb2Ygc2xvdyBuZWlnaGJvcnMuCgpTaWduZWQtb2ZmLWJ5OiBEbWl0cnkgTW9u
+YWtob3YgPGRtdHJtb25ha2hvdkB5YW5kZXgtdGVhbS5ydT4KCmRpZmYgLS1naXQgYS9mcy9pb191
+cmluZy5jIGIvZnMvaW9fdXJpbmcuYwppbmRleCA0NzhkZjdlLi5hNGZiM2E3IDEwMDY0NAotLS0g
+YS9mcy9pb191cmluZy5jCisrKyBiL2ZzL2lvX3VyaW5nLmMKQEAgLTEyODgsNyArMTI4OCw3IEBA
+IHN0YXRpYyBzc2l6ZV90IGlvX2ltcG9ydF9pb3ZlYyhzdHJ1Y3QgaW9fcmluZ19jdHggKmN0eCwg
+aW50IHJ3LAogCiBzdGF0aWMgaW5saW5lIGJvb2wgaW9fc2hvdWxkX21lcmdlKHN0cnVjdCBhc3lu
+Y19saXN0ICphbCwgc3RydWN0IGtpb2NiICpraW9jYikKIHsKLQlpZiAoYWwtPmZpbGUgPT0ga2lv
+Y2ItPmtpX2ZpbHApIHsKKwlpZiAoYWwtPmZpbGUgPT0ga2lvY2ItPmtpX2ZpbHAgJiYgMCkgewog
+CQlvZmZfdCBzdGFydCwgZW5kOwogCiAJCS8qCi0tIAoyLjcuNAoK
+------==--bound.300.sas1-b43cfc766761.qloud-c.yandex.net--
