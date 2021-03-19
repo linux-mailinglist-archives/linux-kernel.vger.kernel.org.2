@@ -2,138 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93AD341D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAFF341DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhCSM76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhCSM7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7000A64ECD;
-        Fri, 19 Mar 2021 12:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616158791;
-        bh=s1jBvRIzG2KtXnlm97XSiogBmYB5Emrm/1OV0N1QTEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rwOsufUV2ChWTrrOGzFS76/AIq8CUh4toMupaCQSNNTfy1xIUPx4Drpf0tEypTeiX
-         SS/hsRPSFhgvYpmTNrM6+ny0hkWDmCSjSZfh1BaBaXz/Ic6KMb+Cz6XXHpwZxbbrX7
-         KNSlkdLOtHZ2Tc1PX93rDqzQSCOJG4CPZE9vyKL0+8MC4cdMeMG2aGjU+OF/s3Wxde
-         OHmDbsTjnRELvHu2wXHsg44dfi3MfSf4JEYk8rw7NCASrZ5y96omUiyblKhLhhxyFG
-         U8COopenns+BT+fbEaX1PzNn8qQ14YF4B/y3c0Q7KdxdutaIoRprjlEDxSsSpVyYfj
-         CkMD3eSqUUVZw==
-Date:   Fri, 19 Mar 2021 14:59:47 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFSgQ2RWqt4YyIV4@unreal>
-References: <YFHh3bopQo/CRepV@unreal>
- <20210317112309.nborigwfd26px2mj@archlinux>
- <YFHsW/1MF6ZSm8I2@unreal>
- <20210317131718.3uz7zxnvoofpunng@archlinux>
- <YFILEOQBOLgOy3cy@unreal>
- <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318103935.2ec32302@omen.home.shazbot.org>
- <YFOMShJAm4j/3vRl@unreal>
- <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
+        id S229912AbhCSNDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCSNDC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:03:02 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BF2C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:02:51 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v8so2930868plz.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wXHovB37a0QJHpx5DUoWt2sw0VIuG6bxED3Ql0+897M=;
+        b=dgkAcgdbSkOYSSr8ldJ806F0J+eQwwbrjvnIZoF65DbRuswwFCq4Q7s/bSdjLikATT
+         U6F7dr28dS7cPEA34QgkivHVx7GcCFY1vkWdTMkxteN1o1PG4ctJWTh37ULXZxnMCVnM
+         Ei/ofXhNRPE+sdw9UZNLjSB7kP2c8n5CLlN0mOcZ5V79FbPOexLt9MbHA9VMyHewyHUI
+         xo6MSNKB0Bp1/2Vu8wBx51IbPEdVWE6RXgJtiCf8Ve5oupefeGICk1mvl/c7Gzz+zTPj
+         4H/MlVI+vygFfFeC+DcgWx605m4jNTkycjOlBEdfDNV3c8q8DpNEr2YooIH6y+ZkBh+F
+         P/KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wXHovB37a0QJHpx5DUoWt2sw0VIuG6bxED3Ql0+897M=;
+        b=ocS5k0vUF1tkC/P/pKxw8XTJEeJEKo0yhEHoH7/bFMRk2jqMQif/XfJUpJ4DVulKmq
+         HOFHk8FjKZXCMafSzV87JcccqwphqJJtSLbMg2nSlEbw+h1sn1Xxla0LD9jX0tLBf/e3
+         z7i7DriJLidRfIFW3P8sDOUPF5uXm5/Yi48Eu9pqguCEJcrl4QulLuUIrc6DFuIHC597
+         iPdmmhXmLZEQqfKH34McB2NZz8wHAd1FOu17SQEPgHYT8dKJVCip8AbelBAz0zpLidxq
+         pGoeito5GmQB3krypSpTDOpJTtp3YGF2o40/SiHQywg2LiG0BYdx/aLNBrjX4XBOiBRj
+         onYg==
+X-Gm-Message-State: AOAM533FOs4JMqthYMRMXRNIaEBO+GhayQa57AjuYtAPAKXHGfypsd5m
+        NknxjbOEsVyuqxoEeBaO2663Hve2O4cH9A==
+X-Google-Smtp-Source: ABdhPJxqNPs1177EKKmSattFT9ashy1tucFtFqMtHD+DZe1PbSmsJK8pSMzFDSIMsKhp+cfgYZJFsQ==
+X-Received: by 2002:a17:90a:c257:: with SMTP id d23mr9665158pjx.102.1616158970239;
+        Fri, 19 Mar 2021 06:02:50 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id ms21sm5618365pjb.5.2021.03.19.06.02.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 06:02:49 -0700 (PDT)
+Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
+ alloc_workqueue call
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210318151626.17442-1-colin.king@canonical.com>
+ <13a1d187-4d6d-9e06-b94a-553d872de756@kernel.dk>
+ <62cd71bc-86e1-412d-b2b9-716c0f8021be@canonical.com>
+ <d32641ca-e34a-2bfd-9b86-28c95546f434@kernel.dk>
+ <20210319094759.GH2087@kadam>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7f30c726-6351-6c70-bc8c-6a0aaad4d0a4@kernel.dk>
+Date:   Fri, 19 Mar 2021 07:02:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
+In-Reply-To: <20210319094759.GH2087@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 18.03.21 18:22, Leon Romanovsky wrote:
+On 3/19/21 3:47 AM, Dan Carpenter wrote:
+> On Thu, Mar 18, 2021 at 02:42:33PM -0600, Jens Axboe wrote:
+>> On 3/18/21 2:24 PM, Colin Ian King wrote:
+>>> On 18/03/2021 20:12, Jens Axboe wrote:
+>>>> On 3/18/21 9:16 AM, Colin King wrote:
+>>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>>
+>>>>> The 3rd argument to alloc_workqueue should be the max_active count,
+>>>>> however currently it is the lo->lo_number that is intended for the
+>>>>> loop%d number. Fix this by adding in the missing max_active count.
+>>>>
+>>>> Dan, please fold this (or something similar) in when you're redoing the
+>>>> series.
+>>>>
+>>> Appreciate this fix being picked up. Are we going to lose the SoB?
+>>
+>> If it's being redone, would be silly to have that error in there. Do
+>> we have a tag that's appropriate for this? I often wonder when I'm
+>> folding in a fix. Ala Fixes-by: or something like that.
 > 
-> > Which email client do you use?
-> > Your responses are grouped as one huge block without any chance to respond
-> > to you on specific point or answer to your question.
-> 
-> I'm reading this thread in Tbird, and threading / quoting all looks
-> nice.
+> I've always lobied for a Fixes-from: tag, but the kbuild-bot tells
+> everyone to add a Reported-by: tag.  But then a lot of people are like
+> Reported-by doesn't make sense.  And other people are like Reported-by
+> is fine, what's wrong with it?
 
-I'm not talking about threading or quoting but about response itself.
-See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
-Alex's response is one big chunk without any separations to paragraphs.
+I don't reported-by for this use either, as that is a lot more
+appropriate for a single fix that fixes an issue that was reported by
+(duh) that specific person.
 
-> 
-> > I see your flow and understand your position, but will repeat my
-> > position. We need to make sure that vendors will have incentive to
-> > supply quirks.
-> 
-> I really doubt we can influence that by any technical decision here in
-> the kernel.
+Fixes-from seems a lot better.
 
-There are subsystems that succeeded to do it, for example netdev, RDMA e.t.c.
+-- 
+Jens Axboe
 
-> 
-> > And regarding vendors, see Amey response below about his touchpad troubles.
-> > The cheap electronics vendors don't care about their users.
-> 
-> IMHO, the expensive ones don't care either.
-> 
-> Does eg. Dell publish board schematics ? Do they even publish exact part
-> lists (exact chipsets) along with their brochures, so customers can
-> check wether their HW is supported, before buying and trying out ?
-
-They do it because they are allowed to do it and not because they
-explicitly want to annoyance their customers. 
-
-> 
-> Doesn't seem so. I've personally seen a lot cases where some supposedly
-> supported HW turned out to be some completely different and unsupported
-> HW that's sold under exactly the same product ID. One of many reasons
-> for not giving them a single penny anymore.
-> 
-> IMHO, there're only very few changes of convincing some HW vendor for
-> doing a better job on driver side:
-> 
-> a) product is targeted for a niche that can't live without Linux
->    (eg. embedded)
-> b) it's really *dangerous* for your market share if anything doesn't
->    work properly on Linux (eg. certan server machines)
-> c) somebody *really* big (like Google) is gun-pointing at some supplier,
->    who's got a lot to loose
-> d) a *massive* worldwide shitstorm against the vendor
-> 
-> [ And often, even a combination of them isn't enough. Did you know that
->   even Google doesn't get all specs necessary to replace away the ugly
->   FSP blob ? (it's the same w/ AMD, but meanwhile I'm pissed enought to
->   reverse engineer their AGESA blob). ]
-
-I don't know about this specific Google case, but from my previous experience.
-The reasons why vendor says no to Google are usually due to licensing and legal
-issues and not open source vs. proprietary.
-
-> 
-> You see, what we do here in the kernel has no practical influence on
-> those hw vendors.
-
-I see it differently, but it doesn't matter. This is too theoretical
-discussion to my taste.
-
-> 
-> 
-> --mtx
-> 
-> -- 
-> ---
-> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schlüssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
