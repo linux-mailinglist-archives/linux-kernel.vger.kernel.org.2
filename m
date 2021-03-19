@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398C03425AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF0C3425A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhCSTD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:03:58 -0400
-Received: from mail.zx2c4.com ([104.131.123.232]:56506 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhCSTD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230317AbhCSTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 19 Mar 2021 15:03:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1616180598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IN+ydESw6o8X7Wr71+3xLjavHCnYCjO5YtnEjXc2xqc=;
-        b=ANsFEebuT8UujDMuec9I0+F4pS5K8XVJzeccGIydKKQh8IDTI8NowQpzfMvTMfDpYaaWMG
-        JOeUL2LE4xtQk7fxfcBmggIA+Y650zht+YZzj8+afJeJ8WHs06lbSqV28OyLOwaHqgDlN+
-        Te0EniVtdpkMaeqhCxqckzmW8mOSyV0=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d9c0995b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Fri, 19 Mar 2021 19:03:18 +0000 (UTC)
-Received: by mail-yb1-f171.google.com with SMTP id c131so7339479ybf.7;
-        Fri, 19 Mar 2021 12:03:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531u4ELDgeTKUfOEhYajbput+cxCXYnnTIkO8zZQdOcYh3ZMv8tV
-        LU2iIcWLCeOoJzP00+QyAm6aPurpLN0DipdKdlI=
-X-Google-Smtp-Source: ABdhPJyVtqiB1Ie45L3iLGrKcIwbe2e4TLDHlPmROylBQSw3Eog83JKjNPeCDeaQa5hvIoxSGuhCfJ9QgpnWl5tITiE=
-X-Received: by 2002:a25:38c5:: with SMTP id f188mr8383964yba.178.1616180597073;
- Fri, 19 Mar 2021 12:03:17 -0700 (PDT)
+Received: from smtp-bc0d.mail.infomaniak.ch ([45.157.188.13]:47187 "EHLO
+        smtp-bc0d.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230335AbhCSTDM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 15:03:12 -0400
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F2Cvy58JSzMqrNj;
+        Fri, 19 Mar 2021 20:03:10 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F2Cvt0cSqzlh8T3;
+        Fri, 19 Mar 2021 20:03:06 +0100 (CET)
+Subject: Re: [PATCH v30 02/12] landlock: Add ruleset and domain management
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-3-mic@digikod.net> <202103191114.C87C5E2B69@keescook>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
+Date:   Fri, 19 Mar 2021 20:03:22 +0100
+User-Agent: 
 MIME-Version: 1.0
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAM_iQpXvVZxBRHF6PBDOYSOSCj08nPyfcY0adKuuTg=cqffV+w@mail.gmail.com>
- <87eegddhsj.fsf@toke.dk> <CAHmME9qDU7VRmBV+v0tzLiUpMJykjswSDwqc9P43ZwG1UD7mzw@mail.gmail.com>
- <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com>
-In-Reply-To: <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 19 Mar 2021 13:03:06 -0600
-X-Gmail-Original-Message-ID: <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
-Message-ID: <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
-Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
- for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org, Thomas Gschwantner <tharre3@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202103191114.C87C5E2B69@keescook>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 1:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > That offer definitely still stands. Generalization sounds like a lot of fun.
-> >
-> > Keep in mind though that it's an eventually consistent queue, not an
-> > immediately consistent one, so that might not match all use cases. It
-> > works with wg because we always trigger the reader thread anew when it
-> > finishes, but that doesn't apply to everyone's queueing setup.
->
-> Thanks for mentioning this.
->
-> "multi-producer, single-consumer" seems to match the lockless qdisc's
-> paradigm too, for now concurrent enqueuing/dequeuing to the pfifo_fast's
-> queues() is not allowed, it is protected by producer_lock or consumer_lock.
 
-The other thing is that if you've got memory for a ring buffer rather
-than a list queue, we worked on an MPMC ring structure for WireGuard a
-few years ago that we didn't wind up using in the end, but it lives
-here:
-https://git.zx2c4.com/wireguard-monolithic-historical/tree/src/mpmc_ptr_ring.h?h=tg/mpmc-benchmark
+On 19/03/2021 19:40, Kees Cook wrote:
+> On Tue, Mar 16, 2021 at 09:42:42PM +0100, Mickaël Salaün wrote:
+>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>
+>> A Landlock ruleset is mainly a red-black tree with Landlock rules as
+>> nodes.  This enables quick update and lookup to match a requested
+>> access, e.g. to a file.  A ruleset is usable through a dedicated file
+>> descriptor (cf. following commit implementing syscalls) which enables a
+>> process to create and populate a ruleset with new rules.
+>>
+>> A domain is a ruleset tied to a set of processes.  This group of rules
+>> defines the security policy enforced on these processes and their future
+>> children.  A domain can transition to a new domain which is the
+>> intersection of all its constraints and those of a ruleset provided by
+>> the current process.  This modification only impact the current process.
+>> This means that a process can only gain more constraints (i.e. lose
+>> accesses) over time.
+>>
+>> Cc: James Morris <jmorris@namei.org>
+>> Cc: Jann Horn <jannh@google.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>> Acked-by: Serge Hallyn <serge@hallyn.com>
+>> Link: https://lore.kernel.org/r/20210316204252.427806-3-mic@digikod.net
+> 
+> (Aside: you appear to be self-adding your Link: tags -- AIUI, this is
+> normally done by whoever pulls your series. I've only seen Link: tags
+> added when needing to refer to something else not included in the
+> series.)
+
+It is an insurance to not lose history. :)
+
+> 
+>> [...]
+>> +static void put_rule(struct landlock_rule *const rule)
+>> +{
+>> +	might_sleep();
+>> +	if (!rule)
+>> +		return;
+>> +	landlock_put_object(rule->object);
+>> +	kfree(rule);
+>> +}
+> 
+> I'd expect this to be named "release" rather than "put" since it doesn't
+> do any lifetime reference counting.
+
+It does decrement rule->object->usage .
+
+> 
+>> +static void build_check_ruleset(void)
+>> +{
+>> +	const struct landlock_ruleset ruleset = {
+>> +		.num_rules = ~0,
+>> +		.num_layers = ~0,
+>> +	};
+>> +
+>> +	BUILD_BUG_ON(ruleset.num_rules < LANDLOCK_MAX_NUM_RULES);
+>> +	BUILD_BUG_ON(ruleset.num_layers < LANDLOCK_MAX_NUM_LAYERS);
+>> +}
+> 
+> This is checking that the largest possible stored value is correctly
+> within the LANDLOCK_MAX_* macro value?
+
+Yes, there is builtin checks for all Landlock limits.
+
+> 
+>> [...]
+> 
+> The locking all looks right, and given your test coverage and syzkaller
+> work, it's hard for me to think of ways to prove it out any better. :)
+
+Thanks!
+
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> 
