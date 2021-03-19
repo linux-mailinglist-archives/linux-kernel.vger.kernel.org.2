@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C7934285C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2743B342862
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhCSWFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbhCSWFF (ORCPT
+        id S230379AbhCSWGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:06:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39946 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhCSWFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:05:05 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608AAC06175F;
-        Fri, 19 Mar 2021 15:05:05 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id l1so3574871plg.12;
-        Fri, 19 Mar 2021 15:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GheYJTaOGhwLDSBIb7eWkaM5FXZgdhdQ2xOhE0dwmjM=;
-        b=I26obmCQ4BThtYzswWj4cGE8xrKgyvQxAMeG8SGbptfNUVkeFsT6IucTajjvtP1XGS
-         SgtILvdseO0ycNhVSRNP7Jn/WOKkzETSQS6xodlo16fCZs4p/ElZYezgCvLZa1YVZxz/
-         hnH+GmYk2OVFsBtQEpBqeLtFpUhOZPvciYNAvwlgshejhFo9XJaVOiTgGW0bElUOXO3a
-         3WyDV8LSfdeuWWs75kU/TTp8qtjgqC/6OOSchQCrE2Pk6XYCJyVy2awMzlgOHLvvWDuk
-         8s4BnlsxyUZJeBMRN/ChfZ3vqh+XY9nyZYUsV8g9MDAT4lw41H9Sv512nBSIHHLAWHcG
-         Ka1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GheYJTaOGhwLDSBIb7eWkaM5FXZgdhdQ2xOhE0dwmjM=;
-        b=UDGt2Sn7qFKlbR7GWRHqJE6H1qBU61ebaGpdV0Gd4XnhlZ5EsnLEBgvCbH1X37n+Zu
-         nEdeRSs3EJMfLDrXl1y6nkY+KqUXxFPBju3meIlXgqpYQ6bdkEZvlL7FXLiBd9MDNKGL
-         zeDP1q1vXqdF+iessTjTinF52CYEeY4dQIewPn8U6STNwBaMUj0elkNwj/6vCun7kdu+
-         +pZuwytgUkVK5DH9qkOs2CcSUKYPSkMkUhhNyAiuxb932IUt/XdU2pJX6jXGcED+cWBB
-         /NwVYRNlEu3BODRwZv8J3fQZCqiDCBGbw6NhPC5uVX8WvtTivZ+H2sj8FnSkzrJ1Md5A
-         x42A==
-X-Gm-Message-State: AOAM5324QlFqDG8fq0RGBkua8qYemY4tsS7RaeWAsTCanAUDqFyG69+J
-        2hJC/3s1hFf/NUxKvF3nQBc=
-X-Google-Smtp-Source: ABdhPJx96Q3EOTnSJ1VJxQHl7VHpUuNiozq1qjjcVFzkh4NXcJaQw9tj9E3nWjRl0oaIFSqcOk3Fug==
-X-Received: by 2002:a17:90a:e00c:: with SMTP id u12mr568434pjy.133.1616191504916;
-        Fri, 19 Mar 2021 15:05:04 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 9sm5599777pgy.79.2021.03.19.15.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 15:05:04 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 net-next 02/16] net: dsa: pass extack to
- dsa_port_{bridge,lag}_join
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20210318231829.3892920-1-olteanv@gmail.com>
- <20210318231829.3892920-3-olteanv@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ccfa00f0-4f57-fc0b-05d0-025519842ba6@gmail.com>
-Date:   Fri, 19 Mar 2021 15:05:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        Fri, 19 Mar 2021 18:05:53 -0400
+Date:   Fri, 19 Mar 2021 22:05:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616191552;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3QJThDCNo7fkHvbAFLjyOCFrm6AV3wYi52LiaHosYtU=;
+        b=FpUHegFfPbdGBho+LaiK++CeGrTShXhPWykdexx3hsDvw9zw4ouHbn7kEkEC4YJdMT2AOn
+        GzFuRFAPRppgce7+/G7JenFkl0xBAiol6Ixt4YgFKTNkZqrbf13b41/0IzFDMZuhdNiLRw
+        YZh0wG+AQJ52OOFg5Gy/jiaCfDIySK+pmxCRhUeoMh6tGqGMk3ZrwIMBvfsNPCgIJ6hbon
+        YIhesgR9TKb40y+wFUtRqX86mmT3EVeqE9XTyoSP14PGAuw1lJWbu5oE9flWSze6O6c+A5
+        CmFROUF7GI8WZRiHUCjbg90l044AIdB4b3Cu4oD+ezxOpcQ5tU8yOlMesZu5Bw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616191552;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3QJThDCNo7fkHvbAFLjyOCFrm6AV3wYi52LiaHosYtU=;
+        b=ThxpNtrdG1PpitVQEHc4P+kdjm1YIxoTjA4R0iRhTDXuT+VHFv/ISdvOSX4vbYekcgaZes
+        hrXO4TV07BIirpCQ==
+From:   "tip-bot2 for Johan Hovold" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/apic/of: Fix CPU devicetree-node lookups
+Cc:     Johan Hovold <johan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210312092033.26317-1-johan@kernel.org>
+References: <20210312092033.26317-1-johan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210318231829.3892920-3-olteanv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <161619155150.398.1617296870080727250.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/urgent branch of tip:
 
+Commit-ID:     dd926880da8dbbe409e709c1d3c1620729a94732
+Gitweb:        https://git.kernel.org/tip/dd926880da8dbbe409e709c1d3c1620729a94732
+Author:        Johan Hovold <johan@kernel.org>
+AuthorDate:    Fri, 12 Mar 2021 10:20:33 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 19 Mar 2021 23:01:49 +01:00
 
-On 3/18/2021 4:18 PM, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> This is a pretty noisy change that was broken out of the larger change
-> for replaying switchdev attributes and objects at bridge join time,
-> which is when these extack objects are actually used.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+x86/apic/of: Fix CPU devicetree-node lookups
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Architectures that describe the CPU topology in devicetree and do not have
+an identity mapping between physical and logical CPU ids must override the
+default implementation of arch_match_cpu_phys_id().
+
+Failing to do so breaks CPU devicetree-node lookups using of_get_cpu_node()
+and of_cpu_device_node_get() which several drivers rely on. It also causes
+the CPU struct devices exported through sysfs to point to the wrong
+devicetree nodes.
+
+On x86, CPUs are described in devicetree using their APIC ids and those
+do not generally coincide with the logical ids, even if CPU0 typically
+uses APIC id 0.
+
+Add the missing implementation of arch_match_cpu_phys_id() so that CPU-node
+lookups work also with SMP.
+
+Apart from fixing the broken sysfs devicetree-node links this likely does
+not affect current users of mainline kernels on x86.
+
+Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210312092033.26317-1-johan@kernel.org
+---
+ arch/x86/kernel/apic/apic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index bda4f2a..4f26700 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2342,6 +2342,11 @@ static int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
+ };
+ 
++bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
++{
++	return phys_id == cpuid_to_apicid[cpu];
++}
++
+ #ifdef CONFIG_SMP
+ /**
+  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
