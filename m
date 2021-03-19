@@ -2,218 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F693416E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2563416E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhCSHwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 03:52:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:42592 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234219AbhCSHwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:52:12 -0400
-IronPort-SDR: mnyaeRxkHKq4Q3yoSFWEYdq6knL+vA01SugPujhMfqyX90BumAqIqaD4KPk0lV8w6nf3MQ69Y7
- Q0H08Rpbz8HA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="177435365"
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="177435365"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 00:52:12 -0700
-IronPort-SDR: zjPrexRqxtCYtRmHSXN7LMBzQIpIurWqPudlUyZdovv25pEGo65DEw15rZi79Jkq9SEiI2HO/Z
- mJQSmrk8TaHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="591782733"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga005.jf.intel.com with ESMTP; 19 Mar 2021 00:52:06 -0700
-Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
- <20210319055322.lw4dhb2kwtrtd3qu@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <3eedeab5-04e6-885a-20f2-3ff2f05cf7d0@intel.com>
-Date:   Fri, 19 Mar 2021 15:52:05 +0800
+        id S234250AbhCSHxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 03:53:36 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:32010 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234249AbhCSHxK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 03:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1616140390; x=1647676390;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=nnz4ZVwvkmvROymiBn8exsRn4Oe7nIPr4PArq24HC78=;
+  b=QCDXb+vw/M/NDO/KtnrIslGC/+sVgMXyEJRu8Zs3t2Lmoc94m3kxygBb
+   iXpOAZWDnzdjoyZT1swsioAVqyf9r6tuQWDwNGLpOJ4D3kUeOm3I2u9i6
+   bL7KXEm6Q+v0kNBIl41oxZs2YT+Qf+pUIHclDDXjS/oHv9uNZeEliIHKd
+   I=;
+X-IronPort-AV: E=Sophos;i="5.81,261,1610409600"; 
+   d="scan'208";a="95927641"
+Subject: Re: [PATCH v3 3/3] pinctrl: pinctrl-single: fix pcs_pin_dbg_show() when
+ bits_per_mux is not zero
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 19 Mar 2021 07:53:02 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 64FECA187C;
+        Fri, 19 Mar 2021 07:53:01 +0000 (UTC)
+Received: from EX13D08UEE003.ant.amazon.com (10.43.62.118) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 19 Mar 2021 07:53:00 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
+ EX13D08UEE003.ant.amazon.com (10.43.62.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 19 Mar 2021 07:53:00 +0000
+Received: from [192.168.19.39] (10.1.212.29) by mail-relay.amazon.com
+ (10.43.62.224) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 19 Mar 2021 07:52:56 +0000
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "David Woodhouse" <dwmw@amazon.co.uk>, <benh@amazon.com>,
+        <ronenk@amazon.com>, <talel@amazon.com>, <jonnyc@amazon.com>,
+        <hanochu@amazon.com>, <tgershi@amazon.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210317214149.20833-1-hhhawa@amazon.com>
+ <20210317214149.20833-4-hhhawa@amazon.com>
+ <CAHp75VdYeVOHu5T37EBEjL5xfgjevzb-ErZb2QMy7defXDS5fg@mail.gmail.com>
+From:   "Hawa, Hanna" <hhhawa@amazon.com>
+Message-ID: <cd589749-7f37-9f7f-9d36-42032c724506@amazon.com>
+Date:   Fri, 19 Mar 2021 09:52:55 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210319055322.lw4dhb2kwtrtd3qu@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHp75VdYeVOHu5T37EBEjL5xfgjevzb-ErZb2QMy7defXDS5fg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/3/19 13:53, Viresh Kumar wrote:
-> On 16-03-21, 18:35, Jie Deng wrote:
->> +++ b/drivers/i2c/busses/i2c-virtio.c
->> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
->> +				struct virtio_i2c_req *reqs,
->> +				struct i2c_msg *msgs, int nr)
+
+On 3/18/2021 2:15 PM, Andy Shevchenko wrote:
+> 
+> 
+> On Wed, Mar 17, 2021 at 11:42 PM Hanna Hawa<hhhawa@amazon.com>  wrote:
+>> An SError was detected when trying to print the supported pins in a
+> What is SError? Yes, I have read a discussion, but here is the hint:
+> if a person sees this as a first text due to, for example, bisecting
+> an issue, what she/he can get from this cryptic name?
+
+What you suggest?
+s/An SError/A kernel-panic/?
+Or remove the sentence and keep the below:
+"
+This change fixes the pcs_pin_dbg_show() in pinctrl-single driver when 
+bits_per_mux is not zero. In addition move offset calculation and pin 
+offset in register to common function.
+"
+
+> 
+>> pinctrl device which supports multiple pins per register. This change
+>> fixes the pcs_pin_dbg_show() in pinctrl-single driver when bits_per_mux
+>> is not zero. In addition move offset calculation and pin offset in
+>> register to common function.
+> Reviewed-by: Andy Shevchenko<andy.shevchenko@gmail.com>
+
+Thanks
+
+> 
+>> Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+>> Signed-off-by: Hanna Hawa<hhhawa@amazon.com>
+>> ---
+>>   drivers/pinctrl/pinctrl-single.c | 57 +++++++++++++++++++++-----------
+>>   1 file changed, 37 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+>> index f3394517cb2e..4595acf6545e 100644
+>> --- a/drivers/pinctrl/pinctrl-single.c
+>> +++ b/drivers/pinctrl/pinctrl-single.c
+>> @@ -270,20 +270,46 @@ static void __maybe_unused pcs_writel(unsigned val, void __iomem *reg)
+>>          writel(val, reg);
+>>   }
+>>
+>> +static unsigned int pcs_pin_reg_offset_get(struct pcs_device *pcs,
+>> +                                          unsigned int pin)
 >> +{
->> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
->> +	int i, outcnt, incnt, err = 0;
+>> +       unsigned int mux_bytes;
 >> +
->> +	for (i = 0; i < nr; i++) {
->> +		if (!msgs[i].len)
->> +			break;
->> +
->> +		/*
->> +		 * Only 7-bit mode supported for this moment. For the address format,
->> +		 * Please check the Virtio I2C Specification.
->> +		 */
->> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
->> +
->> +		if (i != nr - 1)
->> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
->> +
->> +		outcnt = incnt = 0;
->> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
->> +		sgs[outcnt++] = &out_hdr;
->> +
->> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
-> You allocate a buffer here, lets see if they are freeing properly or not (I
-> remember that I gave same feedback earlier as well, but anyway).
+>> +       mux_bytes = pcs->width / BITS_PER_BYTE;
+> Can be folded to one line.
 
+Ack
 
-"MAY" allocate a buffer here.
-
-
->
->> +		if (!reqs[i].buf)
->> +			break;
+> 
+>> +       if (pcs->bits_per_mux) {
+>> +               unsigned int pin_offset_bytes;
 >> +
->> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
->> +
->> +		if (msgs[i].flags & I2C_M_RD)
->> +			sgs[outcnt + incnt++] = &msg_buf;
->> +		else
->> +			sgs[outcnt++] = &msg_buf;
->> +
->> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
->> +		sgs[outcnt + incnt++] = &in_hdr;
->> +
->> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
->> +		if (err < 0) {
->> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
->> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
-> On failure here, you freed the buffers for request "i" but not others..
+>> +               pin_offset_bytes = (pcs->bits_per_pin * pin) / BITS_PER_BYTE;
+>> +               return (pin_offset_bytes / mux_bytes) * mux_bytes;
+> Side note for the further improvements (in a separate change, because
+> I see that you just copied an original code, and after all this is
+> just a fix patch): this can be replaced by round down APIs (one which
+> works for arbitrary divisors).
 
+Agree, didn't want to change the formula as it's fix patch. (here and 
+below), this can be taken for further improvements.
 
-Others still need to be sent and then be freed.
-
-
->
->> +			break;
->> +		}
->> +	}
+> 
+>> +       }
 >> +
->> +	return i;
+>> +       return pin * mux_bytes;
 >> +}
 >> +
->> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
->> +					struct virtio_i2c_req *reqs,
->> +					struct i2c_msg *msgs, int nr)
+>> +static unsigned int pcs_pin_shift_reg_get(struct pcs_device *pcs,
+>> +                                         unsigned int pin)
 >> +{
->> +	struct virtio_i2c_req *req;
->> +	unsigned int len;
->> +	int i, j;
->> +
->> +	for (i = 0; i < nr; i++) {
->> +		req = virtqueue_get_buf(vq, &len);
->> +		if (!(req && req == &reqs[i])) {
->> +			pr_err("msg[%d]: addr=0x%x is out of order.\n", i, msgs[i].addr);
->> +			break;
-> Since you break here, what will happen to the buffer ? I thought
-> virtqueue_get_buf() will return a req only once and then you can't access it ?
-
-
-Will refine it along with the latter loop.
-
-
->
->> +		}
->> +
->> +		if (req->in_hdr.status != VIRTIO_I2C_MSG_OK) {
->> +			pr_err("msg[%d]: addr=0x%x backend error.\n", i, msgs[i].addr);
->> +			break;
->> +		}
->> +
->> +		i2c_put_dma_safe_msg_buf(req->buf, &msgs[i], true);
->> +	}
->> +
->> +	/*
->> +	 * Detach all the used buffers from the vq and
->> +	 * Release unused DMA safe buffer if any.
->> +	 */
->> +	for (j = i; j < nr; j++) {
->> +		req = virtqueue_get_buf(vq, &len);
->> +		if (req)
->> +			i2c_put_dma_safe_msg_buf(req->buf, &msgs[j], false);
-> This will come in play only if something failed in the earlier loop ? Or my
-> understanding incorrect ? Also this should be merged with the above for loop
-> itself, it is just doing part of it.
-
-
-Will refine it along with the earlier loop.
-
-
->
->> +	}
->> +
->> +	return i;
+>> +       return (pin % (pcs->width / pcs->bits_per_pin)) * pcs->bits_per_pin;
+> Also a side note: I'm wondering if this can be optimized to have less divisions.
+> 
 >> +}
 >> +
->> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
->> +{
->> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
->> +	struct virtqueue *vq = vi->vq;
->> +	struct virtio_i2c_req *reqs;
->> +	unsigned long time_left;
->> +	int ret, nr;
->> +
->> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
->> +	if (!reqs)
->> +		return -ENOMEM;
->> +
->> +	mutex_lock(&vi->lock);
->> +
->> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
->> +	if (ret == 0)
->> +		goto err_unlock_free;
->> +
->> +	nr = ret;
->> +	reinit_completion(&vi->completion);
->> +	virtqueue_kick(vq);
->> +
->> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
->> +	if (!time_left) {
-> On error here, we will surely not free the buffers, isn't it ?
+>>   static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
+>>                                          struct seq_file *s,
+>>                                          unsigned pin)
+>>   {
 
-
-Right. Will fix it. Thank you.
-
-
->> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
->> +		ret = -ETIMEDOUT;
->> +		goto err_unlock_free;
->> +	}
->> +
->> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr);
->> +
->> +err_unlock_free:
->> +	mutex_unlock(&vi->lock);
->> +	kfree(reqs);
->> +	return ret;
->> +}
+Thanks,
+Hanna
