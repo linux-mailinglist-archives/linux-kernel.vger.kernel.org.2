@@ -2,150 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC41D341B86
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82B6341B8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 12:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCSLav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 07:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCSLab (ORCPT
+        id S229847AbhCSLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 07:32:36 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:44903 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhCSLcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 07:30:31 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FE1C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:30:30 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m7so3469575pgj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 04:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mBRi75+4ZXFYImT5TGU9kGKxGRhGqVxM6M+tAV+mb/E=;
-        b=UazQNSNh6OqCQMM7wl92C43GmrPxGV3RZTO1y89v5bBE501r/9WKGlixY+7tAGZMeL
-         v1rihy7KJQrRr70kCLg1utX4ZLw15BnWYkmDtcze4PGsl5h7zGOhqRfvfnX7iZri2IeK
-         m/E/gTkDMa8E8Jsmtqf12BlJY9luyi+9POcFQErCOwISZg9gXbdzRWg7CGnS6s0afTFs
-         WUKpqnWVcxnm86q8NVsJV6ijswLLKfpq6/o5BLRXQ00OZJLwvJ3rYSR5fYBo/vmkhNxx
-         ns5vkqPFqwJyGnanDCUOVTbGsq9M6ylYB7FQINiZPwOtBnWlRFqlE2Adv0FI5b9jdTDc
-         ejeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mBRi75+4ZXFYImT5TGU9kGKxGRhGqVxM6M+tAV+mb/E=;
-        b=l9sGuzeBynG3b0kZ+IQiJKuCXQoD1QtVPnwTCDPwSC1anxaKQ03sPXJDllhDikhIsx
-         ZzGXmvSx8WPSkeFNlWrKr7S+RrAoJnZpMmKlB30dbKh8A/+KaAof2jc+Fd+Sr/5YQBOa
-         Yfbzo0HsuzMh20MAjKOTwD0RKhgcJ2AJ0ZeynClQhn90WjgY+2C2VzlrOpS53JtKfqm3
-         WgBeYtS4lgPeD7soHboteYvaT2S2UPK9EKHPiP5kpBOwI93av+Rvvd+Xu9uUFXeE+yqN
-         q1jS3MFcz1d3+7UQb9VIy/3pWguN1tHklQzwT0IZPZEcKfmE3WJvKXmim9qYafacj5dv
-         JFUw==
-X-Gm-Message-State: AOAM533Fo6o2PCYqzMAb5TAK1dI/dCpG54jSOoH1vCsrPku6HQwhWvsm
-        PxjJcdMjxgdR4cLTWJVcHwk10HNyyJWVSaVOzk6PXA==
-X-Google-Smtp-Source: ABdhPJyueJqbCvxvjsAE48+4+uzNTfZK3apwOOTQ5ZGtvQfah7LFUXUY4ry2appxkZ5SC84t3BxNou620Ggqog2+hro=
-X-Received: by 2002:a05:6a00:b54:b029:207:2a04:7b05 with SMTP id
- p20-20020a056a000b54b02902072a047b05mr8786871pfo.12.1616153430352; Fri, 19
- Mar 2021 04:30:30 -0700 (PDT)
+        Fri, 19 Mar 2021 07:32:17 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MDeAZ-1lVm4824PP-00Aktk; Fri, 19 Mar 2021 12:32:15 +0100
+Received: by mail-ot1-f49.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so8165521ota.9;
+        Fri, 19 Mar 2021 04:32:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531hTFkD5UpRviTvEZk8k7MmN3VSaBaW9hOeQk5q9T94qch2med0
+        Mqh220ctbEI7eCF4r5fQ5g6EeToTtg0lG1A2Jp8=
+X-Google-Smtp-Source: ABdhPJzziWzMyp+APwKyslsVmjhbEQ65dTouyXRSCjhbmf6+E7bGpjYyyQ3fQxl3+lX3nRcnhX45UaA7d6TnbRaeIDw=
+X-Received: by 2002:a9d:6341:: with SMTP id y1mr791241otk.210.1616153534185;
+ Fri, 19 Mar 2021 04:32:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210219215326.2227596-1-lyude@redhat.com> <20210219215326.2227596-19-lyude@redhat.com>
-In-Reply-To: <20210219215326.2227596-19-lyude@redhat.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 19 Mar 2021 12:30:19 +0100
-Message-ID: <CAG3jFyv2F7ri4wQcwipoLT6nr-K_SWpLcAFi_B0Lo_O+KaWo2w@mail.gmail.com>
-Subject: Re: [PATCH 18/30] drm/print: Fixup DRM_DEBUG_KMS_RATELIMITED()
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
+References: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
+In-Reply-To: <CA+G9fYseDSQ2Vgg5Cb=8HHdpm56aeVQH0Vdx7JK1SktGpRRkgw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 19 Mar 2021 12:31:57 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com>
+Message-ID: <CAK8P3a3Za8N2-Hs02nG0CcGJ+RcTrR0UqDOesd8E6PmhYRR2_A@mail.gmail.com>
+Subject: Re: sparc: clang: error: unknown argument: '-mno-fpu'
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jCIJn2ixaKElO0GPpK73IT2fpTy+h2VqeNQZuDk658szPLWkXMI
+ sT2eLM8OxiTmkSlFHF/05oqBROkwNBnNgy8jPnh6aiqPke2l/OJzMyKC95wkV001QbWkIxY
+ lMsa9WmVQ2bx5hi7g5aYxtxQwuDzSV/yLIeek93Nb7Muv47GroVeVlP6UtDqGQ6Fx3Q/gEC
+ XIHhyZii41Mf6UKblFtcw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:khtR9LemqXE=:s2dPl6qGySlnuLYj1pSabY
+ mIEdQf1o4wi3V7JuD7dP+eft8R/YKDxnd5QEvGmInqPu9eQqO18IfEetDNDCdiAzXGc9KLOYU
+ 8QIykZRTcpMvaKlkgVURellBdjqL1UinH8yERJWYt6LymJ4BtvRMGI+AuMJElRAcWG6d4Eci2
+ wFwbyKa0gymyLTQoA3l7xTCDuFGJipgBelEIt9+ETHsrOYqoMAbGZpmbxC1mjZpDI8hzX5Mop
+ euxbazIKJRNW9ado6O9lzTw3pU2CNTvJ/M+cP3Nga1aLV1l8CfmJBTqOl+8bcj26sPlgQFU5f
+ dr9YiL3NLtKpKiks331EqEErt5KxPHL+hnyRxt3R5hcVkp092umTF2rJd8xS1niT6O36pSIjz
+ EhsuFu4QDSDBVZhm75Kzj/tSIb5MT/6pmbHxGnmCAzxn4mLqGKkeM02O0OqxZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Lyude,
-
-Thanks for the patch,
-
-On Fri, 19 Feb 2021 at 22:59, Lyude Paul <lyude@redhat.com> wrote:
+On Fri, Mar 19, 2021 at 8:36 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> Since we're about to move drm_dp_helper.c over to drm_dbg_*(), we'll want
-> to make sure that we can also add ratelimited versions of these macros in
-> order to retain some of the previous debugging output behavior we had.
+> Linux mainline master build breaks for sparc defconfig.
+> There are multiple errors / warnings with clang-12 and clang-11 and 10.
+>  - sparc (defconfig) with clang-12, clang-11 and clang-10
+>  - sparc (tinyconfig) with clang-12, clang-11 and clang-10
+>  - sparc (allnoconfig) with clang-12, clang-11 and clang-10
 >
-> However, as I was preparing to do this I noticed that the current
-> rate limited macros we have are kind of bogus. It looks like when I wrote
-> these, I didn't notice that we'd always be calling __ratelimit() even if
-> the debugging message we'd be printing would normally be filtered out due
-> to the relevant DRM debugging category being disabled.
->
-> So, let's fix this by making sure to check drm_debug_enabled() in our
-> ratelimited macros before calling __ratelimit(), and start using
-> drm_dev_printk() in order to print debugging messages since that will save
-> us from doing a redundant drm_debug_enabled() check. And while we're at it,
-> let's move the code for this into another macro that we can reuse for
-> defining new ratelimited DRM debug macros more easily.
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  include/drm/drm_print.h | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
->
-> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
-> index f32d179e139d..3a0c3fe4d292 100644
-> --- a/include/drm/drm_print.h
-> +++ b/include/drm/drm_print.h
-> @@ -524,16 +524,20 @@ void __drm_err(const char *format, ...);
->  #define DRM_DEBUG_DP(fmt, ...)                                         \
->         __drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
->
-> -
-> -#define DRM_DEBUG_KMS_RATELIMITED(fmt, ...)                            \
-> -({                                                                     \
-> -       static DEFINE_RATELIMIT_STATE(_rs,                              \
-> -                                     DEFAULT_RATELIMIT_INTERVAL,       \
-> -                                     DEFAULT_RATELIMIT_BURST);         \
-> -       if (__ratelimit(&_rs))                                          \
-> -               drm_dev_dbg(NULL, DRM_UT_KMS, fmt, ##__VA_ARGS__);      \
-> +#define __DRM_DEFINE_DBG_RATELIMITED(category, drm, fmt, ...)                                    \
-> +({                                                                                               \
-> +       static DEFINE_RATELIMIT_STATE(rs_, DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST); \
-> +       const struct drm_device *drm_ = (drm);                                                   \
-> +                                                                                                 \
-> +       if (drm_debug_enabled(DRM_UT_ ## category) && __ratelimit(&rs_))                         \
-> +               drm_dev_printk(drm_ ? drm_->dev : NULL, KERN_DEBUG, fmt, ## __VA_ARGS__);        \
->  })
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=sparc
+> CROSS_COMPILE=sparc64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> clang'
 
-checkpatch --strict is unhappy about the tabs/spaces in this patch
+I don't think anyone has successfully built a sparc kernel with clang,
+and I don't
+think it's worth trying either, given how little upstream work the
+sparc port sees
+overall.
 
-
-ERROR: code indent should use tabs where possible
-#48: FILE: include/drm/drm_print.h:531:
-+
-                           \$
-
-WARNING: please, no spaces at the start of a line
-#48: FILE: include/drm/drm_print.h:531:
-+
-                           \$
-
-
->
-> +#define drm_dbg_kms_ratelimited(drm, fmt, ...) \
-> +       __DRM_DEFINE_DBG_RATELIMITED(KMS, drm, fmt, ## __VA_ARGS__)
-> +
-> +#define DRM_DEBUG_KMS_RATELIMITED(fmt, ...) drm_dbg_kms_ratelimited(NULL, fmt, ## __VA_ARGS__)
-> +
->  /*
->   * struct drm_device based WARNs
->   *
-> --
-> 2.29.2
->
+        Arnd
