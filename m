@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E27D341F08
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F4B341F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhCSOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        id S230051AbhCSOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhCSOKd (ORCPT
+        with ESMTP id S230063AbhCSOL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:10:33 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ABCC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:10:33 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id u144so2113499vkb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:10:33 -0700 (PDT)
+        Fri, 19 Mar 2021 10:11:26 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B40C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:11:24 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id 94so6805492qtc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+2pClJKNrDjC0jJNOAgxtn3SS7+pbCOoKqmxQWs/Zg=;
-        b=F1TVWoNN0IFWz9G5oqbkL0k5aGfTPkdeVBxEYg4MnZjKcTYVkWmGPxlDKx9QFMbd/a
-         W29zPnHyeumYQPQI3m86w1ZOmKeD6VVmjjbnEvtwM5Zyendc8vVAWys2D3Oo2vp69N67
-         ZkBJVHlQW8GI//oqDQE4BWvyuz1DkfvBiL7X1ygRaCQudOKCcrUfGBCVczd20hNbPctD
-         rYzkmYJR1R/J/cTB+UilIg9bj7TAC3MZ+gtEDz1Puiv320HLCnr2vag06E9w2KV5AEoV
-         +RzucoSt2YZedRFNVGDClg9sgmJiTGs5KnzIT5dqrRYUHBeFVPNVK0WH26Nofq+9jHpR
-         Nvzg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n05/sUnctT8JNpCXRuTVFYfsWiFecSrOrifRVD4fRAo=;
+        b=uQjDbyQuWf0O/YJbUTQbMaXA4pFNWX0tz2Myqmvcmf6G9Cd6FKUqO3gptczGs80b7/
+         Yh1P5BwMoIJck3kcZWF5mxExv5Qy+AOmFXD6Q8XkIqzbsrR3JveJEi0dlxcOiQoebzyP
+         04xz+97zEDc4qCB/lYqCVYKU2uUbv0ZXw+Y1EBzHVke3bIUuQjsz/8gcIS5sTb+iSIEZ
+         MGJJGhgUGCOxg85n5n6k7anttmwhcIRcxMsBogTCeZfujc7DzJ/vpwE79a06Mo/RbBiQ
+         u8MC2gI+FJeUzhSr7GLLUpAAQIeKFb0GRRQ3NCGKx75z2LF0Dt1S5tuqmHpmlzuBM3ZX
+         ao4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+2pClJKNrDjC0jJNOAgxtn3SS7+pbCOoKqmxQWs/Zg=;
-        b=qfDTcRZutDK9QD9wJtlKR3BGCCz2hi2tYquZ+uGy3cYAaNc+04qrU0Je917xKGrCn2
-         ZF7KfIUHbiw8j32WEr7D4XCXrvX0joXI0sFzBbbUxZgAqec4qQAsYaMVvyG8MMR9q7MH
-         iP+FWgsxlJb9f0+/UUvoaV92J7H4tQJfJLTFsBdwtdA+r5gGJTjtj2ugxPcCMMssFUgZ
-         i6BGvQpJOc+6XT9FP1EYBMBWpBNZ/T04ismVDE1A3C+48dDl4OwBqfaeHZ289IsTYVk2
-         n1ujD05Kw07Q0sgWz8FJKIp0+6V/9ujLtkD966my+Ybp8xLdAU5FP414d2Uxta4nD+Xi
-         Wsvg==
-X-Gm-Message-State: AOAM533adJfl8dzWyJ96HYvBsO6AUfsGaZFvULuFbZ867T11EeTEx6n1
-        6/3NxmDuFy7zQjJpWxhEpKj9oEb7H//4Tk4jtSJaxQ==
-X-Google-Smtp-Source: ABdhPJya1hVWD+5DJP5ed50sVNI7Btnb6+n4XM9kubcFDzzapxLfg1ql04vWdxhGFQKqYert8HlYu3HUGuo2gDnOUI0=
-X-Received: by 2002:a05:6122:11a6:: with SMTP id y6mr2699063vkn.6.1616163032596;
- Fri, 19 Mar 2021 07:10:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n05/sUnctT8JNpCXRuTVFYfsWiFecSrOrifRVD4fRAo=;
+        b=sUPjVN86aDdTluOC7PNLm7oEYFoWWDZZI/bH9aGmIzbJDu4fH+ELAXDce4LJd35Xg3
+         AFOziKyBEaUPoo6RdmNQnpVcG9CBPwWdgQ4rh5wwHbLWGJ/ZoOWbVplp4cUDfbKV+ZL1
+         MbwY+LU9x4JHArflf0NDs6FgoUIOc9WuTFF8jykzPH0DudEGsTJc/P0iRmmgsxsV8oS1
+         TZTZC7DPH1am3unoO+fRRLfhAY1h61l9k+e9qeAr+qN0lQfK8Whl+LWx+vWQ4mAhNqxx
+         Jg91YUWlGKn2njEbNQ9ZOOL1Y/5+9UxyMCRe5YQGhV0WcbiZd8B/cUfbvimXWl4UiFoG
+         XHwA==
+X-Gm-Message-State: AOAM530NIjr3obvZrhul+iidBWWouBJoowGdIJOQXBfW4ucCWDZnXIsM
+        o5h6DOrTC23p9NkU3WuN1BdR+MKl08iZOg==
+X-Google-Smtp-Source: ABdhPJwVohUpLTVKBQsZX8ZJ3mo/T8pKdNPg5RWYYQxr3M9rJmhdKyY6tuj7lSeJjc2dRHuYtN1goQ==
+X-Received: by 2002:aed:31e2:: with SMTP id 89mr8577216qth.272.1616163083298;
+        Fri, 19 Mar 2021 07:11:23 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id g6sm4496940qkd.62.2021.03.19.07.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 07:11:22 -0700 (PDT)
+Subject: Re: [PATCH v11 1/9] drivers: thermal: tsens: Add VER_0 tsens version
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210319005228.1250-1-ansuelsmth@gmail.com>
+ <20210319005228.1250-2-ansuelsmth@gmail.com>
+ <7c38ea02-d957-6f63-ccce-1c35dd5d04de@linaro.org>
+ <YFSm5rz3ivnzxoJ4@Ansuel-xps.localdomain>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <8850c559-45cb-45cd-9d39-287b8c041c79@linaro.org>
+Date:   Fri, 19 Mar 2021 10:11:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210319121357.255176-1-huobean@gmail.com> <20210319121357.255176-3-huobean@gmail.com>
-In-Reply-To: <20210319121357.255176-3-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 19 Mar 2021 15:09:55 +0100
-Message-ID: <CAPDyKFrU591aeH5GyuuQW8tPeNc9wav=t8wqF1EdTBbCc9xheg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: cavium: Remove redundant if-statement checkup
-To:     Bean Huo <huobean@gmail.com>
-Cc:     rric@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        "# 4.0+" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YFSm5rz3ivnzxoJ4@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 13:14, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> Currently, we have two ways to issue multiple-block read/write the
-> command to the eMMC. One is by normal IO request path fs->block->mmc.
-> Another one is that we can issue multiple-block read/write through
-> MMC ioctl interface. For the first path, mrq->stop, and mrq->stop->opcode
-> will be initialized in mmc_blk_data_prep(). However, for the second IO
-> path, mrq->stop is not initialized since it is a pre-defined multiple
-> blocks read/write.
 
-As a matter of fact this way is also supported for the regular block
-I/O path. To make the mmc block driver to use it, mmc host drivers
-need to announce that it's supported by setting MMC_CAP_CMD23.
 
-It looks like that is what your patch should be targeted towards, can
-you have a look at this instead?
+On 3/19/21 9:28 AM, Ansuel Smith wrote:
+> On Fri, Mar 19, 2021 at 09:11:38AM -0400, Thara Gopinath wrote:
+>>
+>>
+>> On 3/18/21 8:52 PM, Ansuel Smith wrote:
+>>> VER_0 is used to describe device based on tsens version before v0.1.
+>>> These device are devices based on msm8960 for example apq8064 or
+>>> ipq806x.
+>>
+>> Hi Ansuel,
+>>
+>> There are still checkpatch check warnings in this patch. Please run
+>> checkpatch.pl --strict and fix them. Once that is done, you can add
+>>
+>> Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+>>
+>> Warm Regards
+>> Thara
+>>
+> 
+> Hi,
+> thanks a lot for the review. The only warning I have is a line ending
+> with ( that i think I can't fix or I will go over the max char for line.
+> Do you have something more?
 
-Kind regards
-Uffe
+I see two warning for line ending with (. The max char limit is 100.
 
->
-> Meanwhile, if it is open-ended multiple block read/write command,
-> STOP_TRANSMISSION CMD12 will be issued later in mmc_blk_issue_drv_op(),
-> since it is MMC_IOC_MULTI_CMD.
->
-> So, delete these if-statement checkups, let these kinds of multiple-block
-> read/write request go.
->
-> Fixes 'ba3869ff32e4 ("mmc: cavium: Add core MMC driver for Cavium SOCs")'
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/mmc/host/cavium.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-> index 95a41983c6c0..8fb7cbcf62ad 100644
-> --- a/drivers/mmc/host/cavium.c
-> +++ b/drivers/mmc/host/cavium.c
-> @@ -654,8 +654,7 @@ static void cvm_mmc_dma_request(struct mmc_host *mmc,
->         struct mmc_data *data;
->         u64 emm_dma, addr;
->
-> -       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len ||
-> -           !mrq->stop || mrq->stop->opcode != MMC_STOP_TRANSMISSION) {
-> +       if (!mrq->data || !mrq->data->sg || !mrq->data->sg_len) {
->                 dev_err(&mmc->card->dev, "Error: %s no data\n", __func__);
->                 goto error;
->         }
-> --
-> 2.25.1
->
+-- 
+Warm Regards
+Thara
