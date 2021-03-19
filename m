@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0553C3412C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 03:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D793412C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 03:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhCSCUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 22:20:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54132 "EHLO mail.kernel.org"
+        id S233389AbhCSCUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 22:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230326AbhCSCUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230389AbhCSCUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Mar 2021 22:20:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4F82064F30;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3828B64DE2;
         Fri, 19 Mar 2021 02:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616120412;
-        bh=qzUn0wNfq6toZsJIKjh0nYE4QOxqNGAgcBQI2onEO0U=;
+        bh=mNbzQUv5TcsFqOYgQ8XdgeryHw1NmPLO3Coa8dhthRs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jHMS/CDkyoc3oOw7yWl7lci5PdjtVBnRHM8Ptm7wNbBfpI328tHzl9jM2ZhD+QMlh
-         Ic6A4wwvmWqBgJzZl1sSnXLm1h6VMSsAVgdik+4ir8nN/Yss+nFzpcMQrR155so4NS
-         O6vlOULXOVRNAKDxuRu33P1Wl8DnxUMtXe+7aDXkosNelXXNhohg9A0jscV5biJElV
-         RAz6VWXCBuAD1CYqgsMANbWSfrFWZkO5o/inmYOfp1PsmQ+hc9alIYZiJEJahvzWPW
-         tMeW5xQycpDzJqdovu85o5zDKQf44Vg5IS8xCfPwdtr24H8SfPOu/ULngzHjeJzKLY
-         heKxXPiTusx+g==
+        b=hOBhrR/E5ehUdjEYT3F5bkici03uRZ+HTzVbyG98PX4wtfNhsVi0akRueSX5tA/Q9
+         mRFK7G73EkezsurSfzEDn8eH/cp956dMd29Oib90iH3raBzLXSADm2n9RFz78XXLXT
+         ov9sxOVDAQBQWuNwEFdyfVpbmO2CeuiQ+SYiqpojLaVncZ2J6DxpRWjRCom3A68ygh
+         axrAJa0e3K6tzmzuHC+w9gvzewhGFRMIU/3fy9sJrraFs+9wHAGzh1EVVpOVW3KHia
+         TEnSvKKwdGSoYee6Jjr7YuFulwYsTR52JdX1VKbLjjapuA9EYVTd4bW3NquQlM48EM
+         nM909zPpk+ahw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 445A7600DF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 274C860191;
         Fri, 19 Mar 2021 02:20:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: ocelot: Fix deletetion of MRP entries from MAC
- table
+Subject: Re: [PATCH net-next] /net/core/: fix misspellings using codespell tool
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161612041227.22955.13723895013574396796.git-patchwork-notify@kernel.org>
+Message-Id: <161612041215.22955.9527590233602069118.git-patchwork-notify@kernel.org>
 Date:   Fri, 19 Mar 2021 02:20:12 +0000
-References: <20210318192938.504549-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20210318192938.504549-1-horatiu.vultur@microchip.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, vladimir.oltean@nxp.com,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
+References: <20210318115213.474322-1-xiong.zhenwu@zte.com.cn>
+In-Reply-To: <20210318115213.474322-1-xiong.zhenwu@zte.com.cn>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiong.zhenwu@zte.com.cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,20 +47,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 18 Mar 2021 20:29:38 +0100 you wrote:
-> When a MRP ring was deleted or disabled, the driver was iterating over
-> the ports to detect if any other MPR rings exists and in case it didn't
-> exist it would delete the MAC table entry. But the problem was that it
-> used the last iterated port to delete the MAC table entry and this could
-> be a NULL port.
+On Thu, 18 Mar 2021 04:52:13 -0700 you wrote:
+> From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
 > 
-> The fix consists of using the port on which the function was called.
+> A typo is found out by codespell tool in 1734th line of drop_monitor.c:
+> 
+> $ codespell ./net/core/
+> ./net/core/drop_monitor.c:1734: guarnateed  ==> guaranteed
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] net: ocelot: Fix deletetion of MRP entries from MAC table
-    https://git.kernel.org/netdev/net-next/c/d25fde64d1c2
+  - [net-next] /net/core/: fix misspellings using codespell tool
+    https://git.kernel.org/netdev/net-next/c/a835f9034efb
 
 You are awesome, thank you!
 --
