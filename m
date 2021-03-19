@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB6734196A
+	by mail.lfdr.de (Postfix) with ESMTP id 7C00734196B
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCSKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S230481AbhCSKDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhCSKDJ (ORCPT
+        with ESMTP id S230237AbhCSKDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:03:09 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06796C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:09 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id f9so12711843wml.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:08 -0700 (PDT)
+        Fri, 19 Mar 2021 06:03:11 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CF7C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:11 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id t14so4199958wrx.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=AA7WNBlUpAMSn2MPgzLs0H4xGSlUKHXKOJZW0a7DVr8=;
-        b=g6COKlYT+eckZdu5xAOckwGpUXKA9H6Qgud4TFedl+pq2YS9z0gDuP+KNGqmM+ZTED
-         ht7R/jAxdq01sOoYtLegobcdL/BF4TLsBHewEY7qhv3/Ob2uLkuy/dFaqNWUtUxXPDW4
-         Ik8ybK59zS1JZ/59bk91tr0PVu6Ab6kfoJ9TkSQ9a+LACl8aC1AXyL8bGVFi6TgxbhvP
-         Re24YoLaRJt6Z1lunO6V0LZdNPjWpeRaLzn5ITQasNnPF5QzgNYAZYgsDY7EuS8jZmxz
-         bjZ/pEV0OsrP0ehBWaOvArfR/BzilI9l9ZLsphurimgP4WEXDXAcfiqpC02XwUt1Ky9O
-         KPRA==
+        bh=B1o/tWAgXq2CfBeEXWR8qd9iUkNYsN5CjCSGu1Kqq9M=;
+        b=IIpYdevqjuz3Dt+0g749eHxi3/lKZ6lv2eB7vGkp8aylMJTha2kBOFJ33jcWwBBvbL
+         fsYtpnkTHIvNCNR0QP/MFIHW12ET3w3p0A83KgJqStIL+kvekjM0pCp9O8inXFXKFaIT
+         W89OAcxQWgjL8SdmPz+W5k6C6SUW7hFE6tgaj6uVOMXOFVcl8hiv0SdT9ikV4oEM+SCO
+         YAL8MIoUnRpPnSpMyXthiAIg/5Nb5gNforc+Um021Yg3JWTAgOU6VHrt3djShKLi8kvK
+         /jtr509scpifThJdhix+/zlgXKjF+OwzpsugsoXeGUIBqsmrbpOlZ3r6Q5y29wyATsd6
+         bynw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=AA7WNBlUpAMSn2MPgzLs0H4xGSlUKHXKOJZW0a7DVr8=;
-        b=o+sY6gwY9XQHzvGhLdA7ZP5kfbSXZMe2pi6AzH4IgW7cwmAABSt5Sz+3fti1WXs7jt
-         RZXw8zLoh4H6WfBpfqU6SEcyVXcgSDVyRaOVFqdUzEzwXRM6VRBKgQP14EDBYdYaltIV
-         pPhmalW0sjaq7j075lhEBJ28hiGLp/ZJ8lWbnHMRzs+/OvXzi+xalTKG7mdV9+g+6oqn
-         1ZXnEE7Jsq1EAjp3YT1YKdCa6A1T1iwzEu+QVJa3dhvMICkA51CNoRrOigfzZf/u/jZD
-         Sqyh6XLyCTlc47Tpu6fuXsYTmRbUkLsAeNMTDwwdXAuCtES6QfpFxy9GOTc5vNRiOSvh
-         fgYw==
-X-Gm-Message-State: AOAM5334Ia3Juqmc0a1p3/9+CyQlWAAsO1KMyZ49XS+hitDdds7skiyK
-        xBketEzUwriXiheoq/mI2AZqTYtLf8Oz
-X-Google-Smtp-Source: ABdhPJxdoamqBPvUaIPZGeaUvK2O5XS8PpgugDa2anPwgCns8QoOGnR1vBU/siA6pmqWqUz4MxMaMhNseFSJ
+        bh=B1o/tWAgXq2CfBeEXWR8qd9iUkNYsN5CjCSGu1Kqq9M=;
+        b=KhcN8cqAZmQFknq8NRnVmu+zAGN+Y0Wt0WhNkeXTu1HZs53CCjbsYLXSezCrB312bG
+         1rRpPRTd2i7TpZgpzWSDlalea+sFw6BRVZTwt+RhKN122CWqS6GBYps8srrIa3rPBzC2
+         m5vctZeDcZTUrH+HQP5LwynsFFwnp3ZosFNiWIRRMxDymxcT+WCfGZPJai2QItD8UZkM
+         +BD6FyBsHGDh7W53KWtVuxE/cqRkSeCctRoO24/oApIqsSZtPmih7kPfhqoVsOcLjSOU
+         P2cvIroDys2iIGdTQoUfdhVlwfo01FVwh/vEXx6caf/wPRDHM4TKy2AC8pfiP1KugXvE
+         BWTw==
+X-Gm-Message-State: AOAM532+Pts8OmdHDkNBS3rCj2SPlfvvL2Jq7OSEA1ySwS9mclAmXHJW
+        lgap9vv4GQyT15HKl0LIqTSH/pwB/ubt
+X-Google-Smtp-Source: ABdhPJzyJ6jBqZnIFYxLIb1hQMYw/VHqB942OhtZTNlNumNwml6dV0RIjHk4MQe4PNbig7/dbzfGrtulqVAG
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a7b:c18e:: with SMTP id
- y14mr1312625wmi.1.1616148187003; Fri, 19 Mar 2021 03:03:07 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:01:44 +0000
+ (user=qperret job=sendgmr) by 2002:a05:600c:3553:: with SMTP id
+ i19mr3005427wmq.1.1616148189759; Fri, 19 Mar 2021 03:03:09 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 10:01:45 +0000
 In-Reply-To: <20210319100146.1149909-1-qperret@google.com>
-Message-Id: <20210319100146.1149909-37-qperret@google.com>
+Message-Id: <20210319100146.1149909-38-qperret@google.com>
 Mime-Version: 1.0
 References: <20210319100146.1149909-1-qperret@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v6 36/38] KVM: arm64: Page-align the .hyp sections
+Subject: [PATCH v6 37/38] KVM: arm64: Disable PMU support in protected mode
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -66,73 +66,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will soon unmap the .hyp sections from the host stage 2 in Protected
-nVHE mode, which obviously works with at least page granularity, so make
-sure to align them correctly.
+The host currently writes directly in EL2 per-CPU data sections from
+the PMU code when running in nVHE. In preparation for unmapping the EL2
+sections from the host stage 2, disable PMU support in protected mode as
+we currently do not have a use-case for it.
 
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/kernel/vmlinux.lds.S | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ arch/arm64/kvm/perf.c | 3 ++-
+ arch/arm64/kvm/pmu.c  | 8 ++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index e96173ce211b..709d2c433c5e 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -15,9 +15,11 @@
+diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
+index 739164324afe..8f860ae56bb7 100644
+--- a/arch/arm64/kvm/perf.c
++++ b/arch/arm64/kvm/perf.c
+@@ -55,7 +55,8 @@ int kvm_perf_init(void)
+ 	 * hardware performance counters. This could ensure the presence of
+ 	 * a physical PMU and CONFIG_PERF_EVENT is selected.
+ 	 */
+-	if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0)
++	if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0
++				       && !is_protected_kvm_enabled())
+ 		static_branch_enable(&kvm_arm_pmu_available);
  
- #define HYPERVISOR_DATA_SECTIONS				\
- 	HYP_SECTION_NAME(.rodata) : {				\
-+		. = ALIGN(PAGE_SIZE);				\
- 		__hyp_rodata_start = .;				\
- 		*(HYP_SECTION_NAME(.data..ro_after_init))	\
- 		*(HYP_SECTION_NAME(.rodata))			\
-+		. = ALIGN(PAGE_SIZE);				\
- 		__hyp_rodata_end = .;				\
- 	}
+ 	return perf_register_guest_info_callbacks(&kvm_guest_cbs);
+diff --git a/arch/arm64/kvm/pmu.c b/arch/arm64/kvm/pmu.c
+index faf32a44ba04..03a6c1f4a09a 100644
+--- a/arch/arm64/kvm/pmu.c
++++ b/arch/arm64/kvm/pmu.c
+@@ -33,7 +33,7 @@ void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr)
+ {
+ 	struct kvm_host_data *ctx = this_cpu_ptr_hyp_sym(kvm_host_data);
  
-@@ -72,21 +74,14 @@ ENTRY(_text)
- jiffies = jiffies_64;
+-	if (!ctx || !kvm_pmu_switch_needed(attr))
++	if (!kvm_arm_support_pmu_v3() || !ctx || !kvm_pmu_switch_needed(attr))
+ 		return;
  
- #define HYPERVISOR_TEXT					\
--	/*						\
--	 * Align to 4 KB so that			\
--	 * a) the HYP vector table is at its minimum	\
--	 *    alignment of 2048 bytes			\
--	 * b) the HYP init code will not cross a page	\
--	 *    boundary if its size does not exceed	\
--	 *    4 KB (see related ASSERT() below)		\
--	 */						\
--	. = ALIGN(SZ_4K);				\
-+	. = ALIGN(PAGE_SIZE);				\
- 	__hyp_idmap_text_start = .;			\
- 	*(.hyp.idmap.text)				\
- 	__hyp_idmap_text_end = .;			\
- 	__hyp_text_start = .;				\
- 	*(.hyp.text)					\
- 	HYPERVISOR_EXTABLE				\
-+	. = ALIGN(PAGE_SIZE);				\
- 	__hyp_text_end = .;
+ 	if (!attr->exclude_host)
+@@ -49,7 +49,7 @@ void kvm_clr_pmu_events(u32 clr)
+ {
+ 	struct kvm_host_data *ctx = this_cpu_ptr_hyp_sym(kvm_host_data);
  
- #define IDMAP_TEXT					\
-@@ -322,11 +317,12 @@ SECTIONS
- #include "image-vars.h"
+-	if (!ctx)
++	if (!kvm_arm_support_pmu_v3() || !ctx)
+ 		return;
  
- /*
-- * The HYP init code and ID map text can't be longer than a page each,
-- * and should not cross a page boundary.
-+ * The HYP init code and ID map text can't be longer than a page each. The
-+ * former is page-aligned, but the latter may not be with 16K or 64K pages, so
-+ * it should also not cross a page boundary.
-  */
--ASSERT(__hyp_idmap_text_end - (__hyp_idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
--	"HYP init code too big or misaligned")
-+ASSERT(__hyp_idmap_text_end - __hyp_idmap_text_start <= PAGE_SIZE,
-+	"HYP init code too big")
- ASSERT(__idmap_text_end - (__idmap_text_start & ~(SZ_4K - 1)) <= SZ_4K,
- 	"ID map text too big or misaligned")
- #ifdef CONFIG_HIBERNATION
+ 	ctx->pmu_events.events_host &= ~clr;
+@@ -172,7 +172,7 @@ void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu)
+ 	struct kvm_host_data *host;
+ 	u32 events_guest, events_host;
+ 
+-	if (!has_vhe())
++	if (!kvm_arm_support_pmu_v3() || !has_vhe())
+ 		return;
+ 
+ 	preempt_disable();
+@@ -193,7 +193,7 @@ void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu)
+ 	struct kvm_host_data *host;
+ 	u32 events_guest, events_host;
+ 
+-	if (!has_vhe())
++	if (!kvm_arm_support_pmu_v3() || !has_vhe())
+ 		return;
+ 
+ 	host = this_cpu_ptr_hyp_sym(kvm_host_data);
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
