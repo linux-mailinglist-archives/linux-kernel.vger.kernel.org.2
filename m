@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD0E3426D1
+	by mail.lfdr.de (Postfix) with ESMTP id 97D3A3426D2
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhCSU0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 16:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S230461AbhCSU0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 16:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhCSUZ5 (ORCPT
+        with ESMTP id S230384AbhCSU0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:25:57 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C34C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:25:56 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id p19so6094686wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:25:56 -0700 (PDT)
+        Fri, 19 Mar 2021 16:26:07 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C97BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:26:07 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id r17so4458483pgi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3m+0Blv5n7X4ghIz+zLSJn1A6/2kIt/8W8KDouftYUc=;
-        b=nHtNjGrBJ98tS3ihrmTi9ZAEa1r1iIXPxVr2j+IakZ0huLcoROkDP5fFocCnzzcB66
-         hD1z7cDwSAO+XRTUttmUuUIQgJtLnez6T8EBRL9k12z3xkHU8dVWe1WKNssTPhQI1tW9
-         ZXiW/1mW2eqbOIIHluPsSoXIJSDn2rY0MBYUb1fLrg+yjWYbnTLaDpZsX/SCTdsMYvoH
-         mN84hRqlYar39ex6/WuwbCxzJd5TrgI50iRYWKS0O7UrIt5ey7XRy9G53VdhMMoH/65U
-         wQzsmVifk8F8dGJrzct1GVKmruTV9RAQ2FXQ1MImsMuicusn/SxM6aD6j1chOLYXySar
-         SGLQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=DZnZz49iawE3OZlAe1Ih+YRDhBu+JzguYvzhzsJxLQQ=;
+        b=BNgkduZW1CtflRKtlMGZvaKNp3OQC2y/o3lEnR9p4G43/wVO1iWiYNI//ZeUyPYczL
+         JxQmlabl0+UevAMdYJDZyfLGANjBUf51GHntjCiG1Ll7BuJc1mBWROvSmfqvgA+I4jaA
+         /JaHybC//mimlScpJ2Lyg4WyGYYV8k+iJNfjPO3RXIGJFVU3bz59Ckuf6Zl9B9DJPVBn
+         QcRqoAx/KegyaaXpeu1TZvJK3hCUNvquczHAeEFDo4p8k/tuCstTLk3cLioExTXgLFQQ
+         0yiTJIGQLSf1QENbMRBcl7Vly70ss8xDwGtelMH8m14fyyIHeXhZZujTRSvUHnoNaIaJ
+         fZ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3m+0Blv5n7X4ghIz+zLSJn1A6/2kIt/8W8KDouftYUc=;
-        b=RCG90kb7NFB1tmVQ7Gqwog/e3N8TZv+7OUpM9AkluWWaWmLnvAGJ3MwOfJr0vU7DGE
-         qFRSKWS/T5b/lF5kXLbNaf7C8RRAjt5MkO0XSLNQ118px7DkF7wqmZbJNTfw9hYN9tVY
-         dHYWRAfZDy0Y3ioEKvd9DARWb3XiukNUlmrjmtn1aUj85gTmCtqv/69PoxdsUFutydBd
-         G9/Iz/zbAG6z+oAQvxCrRyA3NNHc6SPoBSiwnw4I39D42/jnj1kE372oLliUS1sQaIER
-         E9fThF+PMGduxpqQvUBS9PMFf/yCzalryU5v+ClnHSyA7Ccbik2j0v5UQV+Go++0EzPX
-         GKyg==
-X-Gm-Message-State: AOAM531OHqx5HuyOyPnbTv5lfi85IrVoyRvh+B/qA4j/xQGIR/g6Fnf3
-        lKQjGs8kkmmoErFBGPsG/Glh37iA+YIBRg==
-X-Google-Smtp-Source: ABdhPJwZVp9QR1LumiiDbaPviiatvDCtefwYNSLA8em3zS8VOaPMNamxa8FzEra86SSF55L+Jy+4xw==
-X-Received: by 2002:a1c:f701:: with SMTP id v1mr3194099wmh.69.1616185555197;
-        Fri, 19 Mar 2021 13:25:55 -0700 (PDT)
-Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:ddd7:1eb:a66:7a85])
-        by smtp.gmail.com with ESMTPSA id b17sm9423638wrt.17.2021.03.19.13.25.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 13:25:54 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-pm@vger.kernel.org (open list:THERMAL/CPU_COOLING),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] thermal/drivers/cpuidle_cooling: Fix use after error
-Date:   Fri, 19 Mar 2021 21:25:22 +0100
-Message-Id: <20210319202522.891061-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YFMpUDNGIiLOzr0/@mwanda>
-References: <YFMpUDNGIiLOzr0/@mwanda>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DZnZz49iawE3OZlAe1Ih+YRDhBu+JzguYvzhzsJxLQQ=;
+        b=bFV20rgy0GzqZqICFYIxaLPCsRGw6EKH18GbEOliZ0MiTumEuLs8uz7WtuOFeKE2mX
+         8CpN4FUm4DfYlMCxSTphuEA4MFJfXj6nxlYPdz9gcukAEbfdW0Wwra2j3XhdbGsyjtwn
+         mjPE/IvJk2tOu7JddmzsyDwvy+62K0uOAlt12kddSoVwvRfrcHl2k9yBHv5g2BfsXoH+
+         5Lt5uplqXu/r1q4gR4KoidHyzCFLfSU8edUbo0e32FlDAqKVyuBiaqKneuJJdy+pNRVG
+         WG6hs/O/OigIgzZJbCL/VKzje3RPcMY/ljqpXeoG1Cj6Ravht8RM3REt7DRxG/r14kPa
+         +Ddg==
+X-Gm-Message-State: AOAM530wHCqfb5XtpaoCORR57kyAqOUxkgtBUaOWfTPOxj432DMxErB9
+        MuIqvmuTAc3JxXpoijYEMawBFVuC/hWSKA==
+X-Google-Smtp-Source: ABdhPJwgDCOD+fVy9f1NB/SJZgCnmAks8peYsEJrcP/owyjiSB2PNfW1J2EQu5hvf8JhzwJIV1mDaw==
+X-Received: by 2002:a63:b12:: with SMTP id 18mr13052286pgl.45.1616185565830;
+        Fri, 19 Mar 2021 13:26:05 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 197sm6306527pfc.1.2021.03.19.13.26.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 13:26:04 -0700 (PDT)
+Subject: Re: [PATCH V2] Trivial typo fix and sentence construction for better
+ readability
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@bombadil.infradead.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210319195451.32456-1-unixbhaskar@gmail.com>
+ <5ac591a4-2ed-311a-fcc2-3cc8443d71ef@bombadil.infradead.org>
+ <YFUEgeN+oR9n8uoN@Gentoo>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <bbe0aede-d821-3d26-d8b0-999f0adb406d@kernel.dk>
+Date:   Fri, 19 Mar 2021 14:26:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFUEgeN+oR9n8uoN@Gentoo>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the function successfully finishes it logs an information about
-the registration of the cooling device and use its name to build the
-message. Unfortunately it was freed right before:
+On 3/19/21 2:07 PM, Bhaskar Chowdhury wrote:
+> On 13:03 Fri 19 Mar 2021, Randy Dunlap wrote:
+>>
+>> Hm, needs some spacing fixes IMO. See below.
+>>
+>>
+>> On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote:
+>>
+>>>
+>>> s/funtion/functions/
+>>>
+>>> Plus the sentence reconstructed for better readability.
+>>>
+>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>> ---
+>>> Changes from V1:
+>>>  Randy's suggestions incorporated.
+>>>
+>>> block/blk-mq-tag.c | 4 ++--
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>>> index 9c92053e704d..c2bef283db63 100644
+>>> --- a/block/blk-mq-tag.c
+>>> +++ b/block/blk-mq-tag.c
+>>> @@ -373,8 +373,8 @@ static bool blk_mq_tagset_count_completed_rqs(struct request *rq,
+>>> }
+>>>
+>>> /**
+>>> - * blk_mq_tagset_wait_completed_request - wait until all completed req's
+>>> - * complete funtion is run
+>>> + * blk_mq_tagset_wait_completed_request - wait until all the  req's
+>>
+>>                                                             the req's
+>>
+>>> + *  functions completed their run
+>>
+>> and more indentation + wording on that line above:
+>>  *        functions have completed their run
+>>
+> Apology...my bad ...fixing ...V3 ...in quick time ...
 
-drivers/thermal/cpuidle_cooling.c:218 __cpuidle_cooling_register()
-	warn: 'name' was already freed.
+Easy, let's get this right instead of spinning tons of versions of a
+trivial patch. The text should be:
 
-Fix this by freeing after the message happened.
+Wait until all scheduled request completions have finished.
 
-Fixes: 6fd1b186d900 ("thermal/drivers/cpuidle_cooling: Use device name instead of auto-numbering")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/cpuidle_cooling.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+If we're fixing a typo, let's actually make it understandable too...
 
-diff --git a/drivers/thermal/cpuidle_cooling.c b/drivers/thermal/cpuidle_cooling.c
-index f32976163bad..4f41102e8b16 100644
---- a/drivers/thermal/cpuidle_cooling.c
-+++ b/drivers/thermal/cpuidle_cooling.c
-@@ -208,18 +208,20 @@ static int __cpuidle_cooling_register(struct device_node *np,
- 
- 	cdev = thermal_of_cooling_device_register(np, name, idle_cdev,
- 						  &cpuidle_cooling_ops);
--	kfree(name);
--
- 	if (IS_ERR(cdev)) {
- 		ret = PTR_ERR(cdev);
--		goto out_unregister;
-+		goto out_kfree_name;
- 	}
- 
- 	pr_debug("%s: Idle injection set with idle duration=%u, latency=%u\n",
- 		 name, idle_duration_us, latency_us);
- 
-+	kfree(name);
-+
- 	return 0;
- 
-+out_kfree_name:
-+	kfree(name);
- out_unregister:
- 	idle_inject_unregister(ii_dev);
- out_kfree:
 -- 
-2.25.1
+Jens Axboe
 
