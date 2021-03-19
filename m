@@ -2,223 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA803428CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790593428D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhCSWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:41:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10641 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230297AbhCSWkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:40:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616193650; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=L5CPkJaG6/npQPNqIZgrNJVRmGGHrEMi/ktpQVv42O8=; b=gwN7D6/Xk59fpwKMtVSisCMQ3CQ1V4hAcjsfYqTu+hy3VHgWAUu41WDdxOQi2YeZespW02LR
- H1dCmc6MICbLcMjPifoQKWnk8R5mm3AIIXcO+4bdc89GexeWZSFwty7wyHxbLDb9zWu/HbgZ
- qXHR5g4msOttUNu5DcS+DpUM1O8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60552872e3fca7d0a6090a0b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 22:40:49
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 22D05C433CA; Fri, 19 Mar 2021 22:40:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.100.126] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC068C433C6;
-        Fri, 19 Mar 2021 22:40:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC068C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
- switching modes in DRD
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Roger Quadros <rogerq@ti.com>
-References: <20210108015115.27920-1-john.stultz@linaro.org>
- <87bldzwr6x.fsf@kernel.org>
- <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
- <d95d0971-624e-a0e6-ac72-6ee3b1fb1106@synopsys.com>
- <06a44245-4f2f-69ba-fe46-b88a19f585c2@codeaurora.org>
- <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com>
- <fa5cc67e-3873-e6d9-8727-d160740b027e@codeaurora.org>
- <3db531c4-7058-68ec-8d4b-ff122c307697@synopsys.com>
- <8b5f7348-66d7-4902-eac8-593ab503db96@codeaurora.org>
-Message-ID: <ee47c2c6-f931-6229-13cd-d41a28b3b9c7@codeaurora.org>
-Date:   Fri, 19 Mar 2021 15:40:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231186AbhCSWnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:43:46 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44432 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230467AbhCSWn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 18:43:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JMaVo3129220;
+        Fri, 19 Mar 2021 22:42:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=fSb40QFl2RQtNLkyWtwhIACCmV7D5UJr3w+q7n05yEA=;
+ b=Vtvo/l3OAvsCVCzpherWhZmuek8K7Rnr4g6daZe5hXgbQTdpFuDIfFM0DLRW/UO3c92R
+ T/AMs27TiTXdyFQt+UwE5qIfphLGQiSfBeS0B9/KblzqbUW90aEjOCIN4o1ehXTR1Wgt
+ CaV5vDdb3kNpU/zClbpchDGxQrZFG00knfsrTSWsdtiFHAP9TJpakRMk6NUsODaku/JV
+ /P4jTxna1RUZIUnqPhdXSiBuXf3MzUtShfhmB8GXiXvFjt0OF3DvEn/N9YoiOKyL0b58
+ SQrUUOvGJy53/ploBWXRc1zVK/NrOx51otfkq9nTaxO+CBULgNc4dVBbr3cBE3xHXjcU lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 378nbmmg7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 22:42:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JMeGih155513;
+        Fri, 19 Mar 2021 22:42:25 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by userp3030.oracle.com with ESMTP id 3797b4sr1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 22:42:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oA7mYt3YhkDBygPcFUx3Fr4I7pLz7xnxwnl59uTOq2jMxSAR71fc6D7rfOVkhH7JTtZhvQwB8ir3CXJU7oRHAbeL9aCRd0AI5PheilU5ul1turao2IAZzx8NiVg9uR60xUp6SNjXSqYml7ctR4yjcwBUFQRzdbC0paj3fMRU6jFghmtnFy5lmWGIZsEvw8sNU3E7+JevbFZbblxVPYUAyaIa57GzY3uVpkOMPXZzRWmofMzI9w9n3NH5kVV60Np1cqILSJYSYHuSvilxdrXqz9bEDHIoePpndaD+QqBOQME5N8b9xLdE3uPyeCB35NuTxQsprNtZFZf3gG2a2cjlRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fSb40QFl2RQtNLkyWtwhIACCmV7D5UJr3w+q7n05yEA=;
+ b=jPEXCCGq0WwfGFrPWR9exQs//d7CeuxtxIZbt4eyNeqT5uNGr7RctTesnaJSDe8CNmIvzcht7WyR467Zl9+n+rz3tdbDl0Ug1RGdw5950w3Tp7m6Wjlkh8aSCmdV7K0XHiHd/DdCzZ0kpBG1WWWubLXiC0E0m4Gj7+zj3kf9AbGoVPJ5L4eO/VMzwjhL78CSUVa9XkGCWvIiaAoLbJh4Vsss57bX47kZ/GmbpbCZomdMMkhzFTZvcf+1kcA4DFs4pn8G6aNIJ/UfbfwBi8lF3CB80utH0kCtAwY0EXi/Vf1G+PfmQnwWK5Y5ibJ9+fWJgKA8S+FLSjlNxXmzgke7Vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fSb40QFl2RQtNLkyWtwhIACCmV7D5UJr3w+q7n05yEA=;
+ b=WrpbXPc00FvmUKKqqlvckf9iSR8RmJqrsqGtjsQ9nPL/eT8Hi2JKe5TbOcvl/hB9TbPd/WjL7X96LPqxeKxR29hfyHK9swrOjez9NTEgfgMD6ifQGSg65y64J1gkoRMlZ9GgwROY17TUF47LiHMZaDmzmyTzLdWYP04Y4MGTTEo=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB3160.namprd10.prod.outlook.com (2603:10b6:a03:151::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.23; Fri, 19 Mar
+ 2021 22:42:23 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%6]) with mapi id 15.20.3955.024; Fri, 19 Mar 2021
+ 22:42:23 +0000
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [RFC PATCH 0/8] make hugetlb put_page safe for all calling contexts
+Date:   Fri, 19 Mar 2021 15:42:01 -0700
+Message-Id: <20210319224209.150047-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR07CA0013.namprd07.prod.outlook.com
+ (2603:10b6:300:116::23) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-In-Reply-To: <8b5f7348-66d7-4902-eac8-593ab503db96@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR07CA0013.namprd07.prod.outlook.com (2603:10b6:300:116::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 22:42:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 347c5693-8632-412f-34da-08d8eb284366
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3160:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3160B23731D733DD9584811EE2689@BYAPR10MB3160.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AS1lpyPXhol+QfTMuj1SMvXY537WeuPb/AL9I92LhyMm6iwsWsi/RLCxg72qXN/0sc/cVfyUSYtWcjPtdls88xxDT8GfyLc9BOgC5JxnLT50GoM2lHMiLZHdxnYaCaeBfQz90Lj1uICpHAAqG37e+b9lI2tXDBoDj3Tw8urS/KZe8t04CL4XDTTqSXCMJNYwF0zEQBBipddrBI4kKPOcq1PCId0HE8UMfJSufqwAxyVV7Gv6Rncrwrkr/3llD9KbK4k6dG7m9LPAMkoaKj+P36AeDyq5bb8yp4Qglayfmu8qNgW9ZIaqc+awpuvh/wqSbIl9XdBf+mWd+ZsO9eOc5e/sxHUWSPXJ7lHTDKAzG4Dpu2YQTJlrZ4ev0U2SF8hqs5unO6zqd1egVD1G8uVu1W4SgwQ7mxK5w5okdj3R6nQMu14FXROcaKi1s8UkDXbsb0uzoYXdKAoR9WdgqyvDyOWA5/WPlD9Dw9NurMQ1WoJyJ5ViJsnywVNw9CwQG0q+Rk9JCEJRxMuPLrT12jXLTqIgPZefDHwYfpr7qoul00B0gyvhI3+RLXLjPon1Uxutz+p4JTuzGtvr6oPYHGUV9TnFKe7DOXYkiYyJi8B+int4p2Q/pxphmFYGkZuQETndShd42x95VT00/AHh0A/FJnBBz6QtmmFAH7DjS+zUUBPmkVNL+xdy3N1LooYm0leNBLbhB64Ku881QF3tmSKrRCPuzoxUFFMqQf0f3fN85d8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(136003)(366004)(376002)(8936002)(316002)(5660300002)(66946007)(36756003)(4326008)(186003)(66556008)(26005)(66476007)(54906003)(6486002)(16526019)(52116002)(7696005)(83380400001)(8676002)(956004)(966005)(44832011)(107886003)(7416002)(1076003)(2616005)(38100700001)(86362001)(478600001)(2906002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7mNU6VqZ75dPESUAl9iSgc9JRRteuTJ0jxMDSCUCQ04WtJcnpU/d4yeXYLR3?=
+ =?us-ascii?Q?v3ni2+UzPRuEUO6E8brzAAr1G75Mn5N0YkRxmeiprDxpwlIoM8Hp+YRu+hHN?=
+ =?us-ascii?Q?eWdn1qXFnd3lijA/V8GGW9X54hY+ynNSNF1BPu8p3A6PIc/cGFY059Lzp0ws?=
+ =?us-ascii?Q?3qfN5kRfyBql0S8DE2W7AvrD/++l9vuUsK8Gjcw71vzHW+UTPQF9asLoqaDZ?=
+ =?us-ascii?Q?Bq10JVlhOeWPzx1YLsvEsb8FDLcNe7RmN1GbLc9N2S7G9NzarMBYkOysm7a+?=
+ =?us-ascii?Q?debQMTL3qHy2tN97mByIja/DgjV8/jAal1JVx3qANzOfenDu2A9iPbCopDgR?=
+ =?us-ascii?Q?ThpiG3u4mDzlkPPJFeGtRGu1R2kYgtNG0WRaEagNpoLYzqSelWtGZKrCOTDL?=
+ =?us-ascii?Q?ZPApUCVUy2WyJmiJyChhMvLhNdDjJMsgbeLxpgc0+bhkpppfYCi51R6obS43?=
+ =?us-ascii?Q?XGqPLflRbYo26MZDdFtXYf8UnErB7irfTJHz/VDdYwNpoQ5Icn3i7tCEakjS?=
+ =?us-ascii?Q?UkMwzKhpQBYrxF3fGWxCQg8b3BufLkc0ti+76+7nqM5sadi1du4XwegNl89j?=
+ =?us-ascii?Q?oYQMyiT+mmRAGIojIS+gLJrunNl8+I/GPjHWAoYEenaEUpph2n51HlVwbyZq?=
+ =?us-ascii?Q?CSThYlYa8Ep9hfRcSdjxjsZIyBf0whwYoVh8HZbOHporc+zXE6IAOAVDpOAZ?=
+ =?us-ascii?Q?l55GeGGwN9aVfRKz2EVeTsDsA5Af9LL0Vn83HKJpfX18fUcZ+Iow60O/2bEK?=
+ =?us-ascii?Q?97kVDhR8xZiTFGovRr7sXW1ZlpqraUTpb0WUsbL2aTNE8+lb3X3i7NpT/kAN?=
+ =?us-ascii?Q?2NY9oU6pY6ED6ar6weJhDCCoFSDcGrBMSS0sJ11BbTxFuOmHWMD+a4Vc8d5V?=
+ =?us-ascii?Q?6HuUV0Iz56We2vsG8FL9md5oMEZcQXomc8/fBUCJtTU6tzIf4/u8FtVUeb78?=
+ =?us-ascii?Q?xE6TDQy+yB1tNbvJPtvOOVAZny7O7KNrYQI/dIVLCdHlhMevOeVqDmWWvzZS?=
+ =?us-ascii?Q?NXgV3g+Sz9t67a0FfYW2R16q7pqBhRNzNNaZ+Cd3A4mEIC5JKI86nvI7U2aD?=
+ =?us-ascii?Q?7ZGdgqcmUTXrWSlg9mmfhmpzHzuVUJWQbuWBhbMhfEJh/v954btFj855/DaD?=
+ =?us-ascii?Q?O90hsxCHqa6sL2+qVcf5RMdiqWHKMMOTLkoJzFSnyxpX9DX24W/erQ3EY+A7?=
+ =?us-ascii?Q?Cra2ZOaDh8YznODKEkPsAMFtkW63hrZ7xwhbthKsQrmdc3Kpx5vTOgGhVy/A?=
+ =?us-ascii?Q?+WxNrwMi28CsjPxiaH/0fpvMVBeExy7PKRnEDuGho3Hvxp9vQTy73A/tfQnw?=
+ =?us-ascii?Q?zJojxlDAsAppQemf4eG8FrWe?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 347c5693-8632-412f-34da-08d8eb284366
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 22:42:23.6857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N0AeUZDDSQ9sNpdDoFRz0p1JOZUnesKiuqj7xjWj6cCk6AEjEmS/N4ufcDdCr6ZyGdCdDbzVswj8BP8QvjcFrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3160
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103190156
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103190155
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This effort is the result a recent bug report [1].  In subsequent
+discussions [2], it was deemed necessary to properly fix the hugetlb
+put_page path (free_huge_page).  This RFC provides a possible way to
+address the issue.  Comments are welcome/encouraged as several attempts
+at this have been made in the past.
 
+This series is based on v5.12-rc3.  At a high level, this series does:
+- Patches 1 & 2 are cleanups/fixes to existing code in the areas to be
+  modified.
+- Patches 3, 4 & 5 are aimed at reducing lock hold times.  To be clear
+  the goal is to eliminate single lock hold times of a long duration.
+  Overall lock hold time is not addressed.  In addition, the known
+  long hold time in hugetlb_cgroup_css_offline still needs to be
+  addressed (suggestions welcome).
+- Patch 6 makes hugetlb_lock and subpool lock IRQ safe.  It also reverts
+  the code which defers calls to a workqueue if !in_task.
+- Patch 7 adds code to defer freeing of pages to a workqueue if the freeing
+  routines could possibly sleep.
+- Patch 8 adds a flag to gigantic pages allocated from CMA so that we
+  only defer freeing those pages.
 
-On 3/8/2021 10:33 PM, Wesley Cheng wrote:
-> 
-> 
-> On 3/8/2021 7:05 PM, Thinh Nguyen wrote:
->> Wesley Cheng wrote:
->>>
->>> On 3/6/2021 3:41 PM, Thinh Nguyen wrote:
->>>> Wesley Cheng wrote:
->>>>> On 1/8/2021 4:44 PM, Thinh Nguyen wrote:
->>>>>> Hi,
->>>>>>
->>>>>> John Stultz wrote:
->>>>>>> On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> John Stultz <john.stultz@linaro.org> writes:
->>>>>>>>> From: Yu Chen <chenyu56@huawei.com>
->>>>>>>>>
->>>>>>>>> Just resending this, as discussion died out a bit and I'm not
->>>>>>>>> sure how to make further progress. See here for debug data that
->>>>>>>>> was requested last time around:
->>>>>>>>>   https://urldefense.com/v3/__https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnsnlqd3w$ 
->>>>>>>>>
->>>>>>>>> With the current dwc3 code on the HiKey960 we often see the
->>>>>>>>> COREIDLE flag get stuck off in __dwc3_gadget_start(), which
->>>>>>>>> seems to prevent the reset irq and causes the USB gadget to
->>>>>>>>> fail to initialize.
->>>>>>>>>
->>>>>>>>> We had seen occasional initialization failures with older
->>>>>>>>> kernels but with recent 5.x era kernels it seemed to be becoming
->>>>>>>>> much more common, so I dug back through some older trees and
->>>>>>>>> realized I dropped this quirk from Yu Chen during upstreaming
->>>>>>>>> as I couldn't provide a proper rational for it and it didn't
->>>>>>>>> seem to be necessary. I now realize I was wrong.
->>>>>>>>>
->>>>>>>>> After resubmitting the quirk, Thinh Nguyen pointed out that it
->>>>>>>>> shouldn't be a quirk at all and it is actually mentioned in the
->>>>>>>>> programming guide that it should be done when switching modes
->>>>>>>>> in DRD.
->>>>>>>>>
->>>>>>>>> So, to avoid these !COREIDLE lockups seen on HiKey960, this
->>>>>>>>> patch issues GCTL soft reset when switching modes if the
->>>>>>>>> controller is in DRD mode.
->>>>>>>>>
->>>>>>>>> Cc: Felipe Balbi <balbi@kernel.org>
->>>>>>>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
->>>>>>>>> Cc: Yang Fei <fei.yang@intel.com>
->>>>>>>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>>>>>>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>>>>>>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
->>>>>>>>> Cc: Jun Li <lijun.kernel@gmail.com>
->>>>>>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>>>>> Cc: linux-usb@vger.kernel.org
->>>>>>>>> Signed-off-by: Yu Chen <chenyu56@huawei.com>
->>>>>>>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>>>>>>>> ---
->>>>>>>>> v2:
->>>>>>>>> * Rework to always call the GCTL soft reset in DRD mode,
->>>>>>>>>   rather then using a quirk as suggested by Thinh Nguyen
->>>>>>>>>
->>>>>>>>> v3:
->>>>>>>>> * Move GCTL soft reset under the spinlock as suggested by
->>>>>>>>>   Thinh Nguyen
->>>>>>>> Because this is such an invasive change, I would prefer that we get
->>>>>>>> Tested-By tags from a good fraction of the users before applying these
->>>>>>>> two changes.
->>>>>>> I'm happy to reach out to folks to try to get that. Though I'm
->>>>>>> wondering if it would be better to put it behind a dts quirk flag, as
->>>>>>> originally proposed?
->>>>>>>    https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnRWITZfc$ 
->>>>>>>
->>>>>>> That way folks can enable it for devices as they need?
->>>>>>>
->>>>>>> Again, I'm not trying to force this in as-is, just mostly sending it
->>>>>>> out again for discussion to understand what other approach might work.
->>>>>>>
->>>>>>> thanks
->>>>>>> -john
->>>>>> A quirk would imply something is broken/diverged from the design right?
->>>>>> But it's not the case here, and at least this is needed for HiKey960.
->>>>>> Also, I think Rob will be ok with not adding 1 more quirk to the dwc3
->>>>>> devicetree. :)
->>>>>>
->>>>>> BR,
->>>>>> Thinh
->>>>>>
->>>>> Hi All,
->>>>>
->>>>> Sorry for jumping in, but I checked the SNPS v1.90a databook, and that
->>>>> seemed to remove the requirement for the GCTL.softreset before writing
->>>>> to PRTCAPDIR.  Should we consider adding a controller version/IP check?
->>>>>
->>>> Hi Wesley,
->>>>
->>>> From what I see in the v1.90a databook and others, the flow remains the
->>>> same. I need to check internally, but I'm not aware of the change.
->>>>
->>> Hi Thinh,
->>>
->>> Hmmm, can you help check the register description for the PRTCAPDIR on
->>> your v1.90a databook?  (Table 1-19 Fields for Register: GCTL (Continued)
->>> Pg73)  When we compared the sequence in the description there to the
->>> previous versions it removed the GCTL.softreset.  If it still shows up
->>> on yours, then maybe my v1.90a isn't the final version?
->>>
->>> Thanks
->>> Wesley Cheng
->>>
->>
->> Hi Wesley,
->>
->> Actually your IP version type may use the newer flow. Can you print your
->> DWC3_VER_TYPE? I still need to verify internally to know which versions
->> need the update if any.
->>
->> Thanks,
->> Thinh
->>
-> Hi Thinh,
-> 
-> Sure, my DWC3_VER_TYPE output = 0x67612A2A
-> 
-> Thanks
-> Wesley Cheng
-> 
-Hi Thinh,
+[1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
+[2] http://lkml.kernel.org/r/20210311021321.127500-1-mike.kravetz@oracle.com
 
-Would you happen to have an update on the required sequence on the
-version shared?  Sorry for pushing, but we just wanted to finalize on
-it, since it does cause some functional issues w/o the soft reset in
-place, and causes a crash if we have the GCTL.softreset.
+Mike Kravetz (8):
+  hugetlb: add per-hstate mutex to synchronize user adjustments
+  hugetlb: recompute min_count when dropping hugetlb_lock
+  hugetlb: create remove_hugetlb_page() to separate functionality
+  hugetlb: call update_and_free_page without hugetlb_lock
+  hugetlb: change free_pool_huge_page to remove_pool_huge_page
+  hugetlb: make free_huge_page irq safe
+  hugetlb: add update_and_free_page_no_sleep for irq context
+  hugetlb: track hugetlb pages allocated via cma_alloc
 
-Thanks
-Wesley Cheng
+ include/linux/hugetlb.h |  20 +-
+ mm/hugetlb.c            | 450 +++++++++++++++++++++++++---------------
+ mm/hugetlb_cgroup.c     |  10 +-
+ 3 files changed, 310 insertions(+), 170 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.2
+
