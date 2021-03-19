@@ -2,178 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE200341A17
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB74341A10
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhCSKcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:32:17 -0400
-Received: from mx.i2x.nl ([5.2.79.48]:54082 "EHLO mx.i2x.nl"
+        id S229638AbhCSKbF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 06:31:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:44456 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCSKbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:31:50 -0400
-X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Mar 2021 06:31:50 EDT
-Received: from mail.vdorst.com (mail.vdorst.com [IPv6:fd00::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx.i2x.nl (Postfix) with ESMTPS id 24E975FB12;
-        Fri, 19 Mar 2021 11:25:56 +0100 (CET)
-Authentication-Results: mx.i2x.nl;
-        dkim=pass (2048-bit key; secure) header.d=vdorst.com header.i=@vdorst.com header.b="D239ADue";
-        dkim-atps=neutral
-Received: from www (unknown [192.168.2.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.vdorst.com (Postfix) with ESMTPSA id D3ED5B17AE5;
-        Fri, 19 Mar 2021 11:25:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.vdorst.com D3ED5B17AE5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vdorst.com;
-        s=default; t=1616149555;
-        bh=ANu+7V/Eez3ob22Ix7TLB1GB0Pyn7ZUcUF5mBZmRflI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D239ADueBEbxTpKgW1tWeevvifzhBeWXZ5vjOLSY8JL5A0XJ1wCmT3k2GUXoVF53a
-         x/kw+7T8XYClp3mFpP+XlaidYpYe8DDTxyh4qcunpyuH4OmMWq4Mevj7NrjB5X1ONF
-         PKYymWJtuoleV7AQwDUxid1li/+OqEnnZgdzkiphRJlEwWS9LoKtEf2RaXCjGbX6ec
-         B+oeuoisuWZY9SnmDn4KaOeEZMoofRttBj3AenQnApJ/4I/JKR6t60Atka/jajh8Sx
-         UYHYspNbDT+LkTRHdne2mrf8RR6ME7nrSXCinCm/9yneoqA4TAGy/Aaik2VG3+/wD6
-         7lgVOaVhYqRtQ==
-Received: from 2a02-a453-deab-1-caf8-57c0-c865-5881.fixed6.kpn.net
- (2a02-a453-deab-1-caf8-57c0-c865-5881.fixed6.kpn.net
- [2a02:a453:deab:1:caf8:57c0:c865:5881]) by www.vdorst.com (Horde Framework)
- with HTTPS; Fri, 19 Mar 2021 10:25:55 +0000
-Date:   Fri, 19 Mar 2021 10:25:55 +0000
-Message-ID: <20210319102555.Horde.jeA-oYm4tfkVqKj-gnqxRoo@www.vdorst.com>
-From:   =?utf-8?b?UmVuw6k=?= van Dorst <opensource@vdorst.com>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sander@svanheule.net, tsbogend@alpha.franken.de, john@phrozen.org,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: [PATCH net,v2] net: dsa: mt7530: setup core clock even in
- TRGMII mode
-References: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
- <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
-In-Reply-To: <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S229512AbhCSKal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:30:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81974ED1;
+        Fri, 19 Mar 2021 03:30:40 -0700 (PDT)
+Received: from [10.57.52.33] (unknown [10.57.52.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AAFA3F70D;
+        Fri, 19 Mar 2021 03:30:39 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v4 18/19] coresight: sink: Add TRBE driver
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <CAJ9a7VhHP3_mRWQujVPxcguF4W17tNhogGqAFj6MF2nJ+Y==Fw@mail.gmail.com>
+Date:   Fri, 19 Mar 2021 10:30:37 +0000
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Leo Yan <leo.yan@linaro.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <5685C840-7F03-4A53-9183-D5771308F5B8@arm.com>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-19-suzuki.poulose@arm.com>
+ <CAJ9a7VhHP3_mRWQujVPxcguF4W17tNhogGqAFj6MF2nJ+Y==Fw@mail.gmail.com>
+To:     Mike Leach <mike.leach@linaro.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>:
+Hi Mike
 
-> A recent change to MIPS ralink reset logic made it so mt7530 actually
-> resets the switch on platforms such as mt7621 (where bit 2 is the reset
-> line for the switch). That exposed an issue where the switch would not
-> function properly in TRGMII mode after a reset.
->
-> Reconfigure core clock in TRGMII mode to fix the issue.
->
-> Tested on Ubiquiti ER-X (MT7621) with TRGMII mode enabled.
->
-> Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> ---
->  drivers/net/dsa/mt7530.c | 52 +++++++++++++++++++---------------------
->  1 file changed, 25 insertions(+), 27 deletions(-)
->
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index f06f5fa2f898..9871d7cff93a 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -436,34 +436,32 @@ mt7530_pad_clk_setup(struct dsa_switch *ds,  
-> phy_interface_t interface)
->  			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
->
->  	/* Setup core clock for MT7530 */
-> -	if (!trgint) {
-> -		/* Disable MT7530 core clock */
-> -		core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
-> -
-> -		/* Disable PLL, since phy_device has not yet been created
-> -		 * provided for phy_[read,write]_mmd_indirect is called, we
-> -		 * provide our own core_write_mmd_indirect to complete this
-> -		 * function.
-> -		 */
-> -		core_write_mmd_indirect(priv,
-> -					CORE_GSWPLL_GRP1,
-> -					MDIO_MMD_VEND2,
-> -					0);
-> -
-> -		/* Set core clock into 500Mhz */
-> -		core_write(priv, CORE_GSWPLL_GRP2,
-> -			   RG_GSWPLL_POSDIV_500M(1) |
-> -			   RG_GSWPLL_FBKDIV_500M(25));
-> +	/* Disable MT7530 core clock */
-> +	core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
->
-> -		/* Enable PLL */
-> -		core_write(priv, CORE_GSWPLL_GRP1,
-> -			   RG_GSWPLL_EN_PRE |
-> -			   RG_GSWPLL_POSDIV_200M(2) |
-> -			   RG_GSWPLL_FBKDIV_200M(32));
-> -
-> -		/* Enable MT7530 core clock */
-> -		core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
-> -	}
-> +	/* Disable PLL, since phy_device has not yet been created
-> +	 * provided for phy_[read,write]_mmd_indirect is called, we
-> +	 * provide our own core_write_mmd_indirect to complete this
-> +	 * function.
-> +	 */
-> +	core_write_mmd_indirect(priv,
-> +				CORE_GSWPLL_GRP1,
-> +				MDIO_MMD_VEND2,
-> +				0);
-> +
-> +	/* Set core clock into 500Mhz */
-> +	core_write(priv, CORE_GSWPLL_GRP2,
-> +		   RG_GSWPLL_POSDIV_500M(1) |
-> +		   RG_GSWPLL_FBKDIV_500M(25));
-> +
-> +	/* Enable PLL */
-> +	core_write(priv, CORE_GSWPLL_GRP1,
-> +		   RG_GSWPLL_EN_PRE |
-> +		   RG_GSWPLL_POSDIV_200M(2) |
-> +		   RG_GSWPLL_FBKDIV_200M(32));
-> +
-> +	/* Enable MT7530 core clock */
-> +	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
->
->  	/* Setup the MT7530 TRGMII Tx Clock */
->  	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
-> --
-> 2.30.2
+> On 8 Mar 2021, at 17:26, Mike Leach <mike.leach@linaro.org> wrote:
+> 
+> Hi Suzuki,
+> 
+> On Thu, 25 Feb 2021 at 19:36, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>> 
+>> From: Anshuman Khandual <anshuman.khandual@arm.com>
+>> 
+>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
+>> accessible via the system registers. The TRBE supports different addressing
+>> modes including CPU virtual address and buffer modes including the circular
+>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
+>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
+>> access to the trace buffer could be prohibited by a higher exception level
+>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
+>> private interrupt (PPI) on address translation errors and when the buffer
+>> is full. Overall implementation here is inspired from the Arm SPE driver.
+>> 
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> 
+>> +
+>> +static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>> +                                           struct perf_output_handle *handle,
+>> +                                           void *config)
+>> +{
+>> +       struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +       struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+>> +       struct trbe_buf *buf = config;
+>> +       enum trbe_fault_action act;
+>> +       unsigned long size, offset;
+>> +       unsigned long write, base, status;
+>> +       unsigned long flags;
+>> +
+>> +       WARN_ON(buf->cpudata != cpudata);
+>> +       WARN_ON(cpudata->cpu != smp_processor_id());
+>> +       WARN_ON(cpudata->drvdata != drvdata);
+>> +       if (cpudata->mode != CS_MODE_PERF)
+>> +               return 0;
+>> +
+>> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+>> +
+>> +       /*
+>> +        * We are about to disable the TRBE. And this could in turn
+>> +        * fill up the buffer triggering, an IRQ. This could be consumed
+>> +        * by the PE asynchronously, causing a race here against
+>> +        * the IRQ handler in closing out the handle. So, let us
+>> +        * make sure the IRQ can't trigger while we are collecting
+>> +        * the buffer. We also make sure that a WRAP event is handled
+>> +        * accordingly.
+>> +        */
+>> +       local_irq_save(flags);
+>> +
+>> +       /*
+>> +        * If the TRBE was disabled due to lack of space in the AUX buffer or a
+>> +        * spurious fault, the driver leaves it disabled, truncating the buffer.
+>> +        * Since the etm_perf driver expects to close out the AUX buffer, the
+>> +        * driver skips it. Thus, just pass in 0 size here to indicate that the
+>> +        * buffer was truncated.
+>> +        */
+>> +       if (!is_trbe_enabled()) {
+>> +               size = 0;
+>> +               goto done;
+>> +       }
+>> +       /*
+>> +        * perf handle structure needs to be shared with the TRBE IRQ handler for
+>> +        * capturing trace data and restarting the handle. There is a probability
+>> +        * of an undefined reference based crash when etm event is being stopped
+>> +        * while a TRBE IRQ also getting processed. This happens due the release
+>> +        * of perf handle via perf_aux_output_end() in etm_event_stop(). Stopping
+>> +        * the TRBE here will ensure that no IRQ could be generated when the perf
+>> +        * handle gets freed in etm_event_stop().
+>> +        */
+>> +       trbe_drain_and_disable_local();
+>> +       write = get_trbe_write_pointer();
+>> +       base = get_trbe_base_pointer();
+>> +
+>> +       /* Check if there is a pending interrupt and handle it here */
+>> +       status = read_sysreg_s(SYS_TRBSR_EL1);
+>> +       if (is_trbe_irq(status)) {
+>> +
+>> +               /*
+>> +                * Now that we are handling the IRQ here, clear the IRQ
+>> +                * from the status, to let the irq handler know that it
+>> +                * is taken care of.
+>> +                */
+>> +               clr_trbe_irq();
+>> +               isb();
+>> +
+>> +               act = trbe_get_fault_act(status);
+>> +               /*
+>> +                * If this was not due to a WRAP event, we have some
+>> +                * errors and as such buffer is empty.
+>> +                */
+>> +               if (act != TRBE_FAULT_ACT_WRAP) {
+>> +                       size = 0;
+>> +                       goto done;
+>> +               }
+> 
+> We are using TRBE FILL mode - which halts capture on a full buffer and
+> triggers the IRQ, without disabling the source first.
+> This means that the mode is inherently lossy (unless by some unlikely
+> co-incidence the last byte that caused the wrap was also the last byte
+> to be sent from an ETE that was in the process of being disabled.)
+> Therefore we must have a perf_aux_output_flag(handle,
+> PERF_AUX_FLAG_TRUNCATED) call in here to signal that some trace was
+> lost, for consistence of operation with ETR etc, and intelpt.
+> 
 
-Hi Ilya,
+I agree that the there is a bit of loss here due to the FILL mode. But it is not  comparable to that of the ETR. In this case, the WRAP event is triggered when we flush the ETE. i.e, this could be mostly due to the fact that the tracing was enabled for the kernel mode and the last few bytes of trace which caused the FILL belong to the code responsible for stopping the components in the CoreSight trace. I personally do not think this data is of any interest to the user.
+Otherwise, if the data didn’t belong to the perf event side, it should have triggered the IRQ.
 
-Thanks for fixing this issue.
+This is true in case of the buffer overflow interrupt too, with a bit more data lost. i.e, since the interrupt is PPI, the overflow is triggered when the buffer is full (which includes the data that is cached in the TRBE). But there could be a bit of data that is still cached in the ETE, before it is captured in the trace. And the moment we get a FILL event, we stop executing anything that is relevant for the Trace session (as we are in the driver handling the interrupt).
+And then we reconfigure the buffer to continue the execution. Now, the interrupt delivery is not necessarily synchronous and there could be data lost in the interval between WRAP event and the IRQ is triggered.
 
-I remember that Frank also had an issue with TRGMII on his MT7623 ARM board.
-I never found why it did not work but this may be also fix his issue  
-on the MT7623 devices.
+I am OK with suggesting that there was some loss of trace data during the session, if we hit WRAP event. But this could cause worry to the consumers that they lost too much of trace data of their interest, while that is not the case.
 
-Added Frank to CC.
+>> +static inline unsigned long get_trbe_limit_pointer(void)
+>> +{
+>> +       u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>> +       unsigned long limit = (trblimitr >> TRBLIMITR_LIMIT_SHIFT) & TRBLIMITR_LIMIT_MASK;
+>> +       unsigned long addr = limit << TRBLIMITR_LIMIT_SHIFT;
+> 
+> Could this not be:
+> unsigned long addr = trblimitr & (TRBLIMITR_LIMIT_MASK <<
+> TRBLIMITR_LIMIT_SHIFT);
+> like the base ponter below?
+> 
 
-Tested on Ubiquiti ER-X-SFP (MT7621) with and without TRGMII mode enabled.
+Sure, it can be consistent.
 
-Tested-by: René van Dorst <opensource@vdorst.com>
 
-Greats,
+>> +
+>> +       WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+>> +       return addr;
+>> +}
+>> +
+>> +static inline unsigned long get_trbe_base_pointer(void)
+>> +{
+>> +       u64 trbbaser = read_sysreg_s(SYS_TRBBASER_EL1);
+>> +       unsigned long addr = trbbaser & (TRBBASER_BASE_MASK << TRBBASER_BASE_SHIFT);
+>> +
+>> +       WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+>> +       return addr;
+>> +}
+>> +
 
-René
+Thank you for the review
+
+Kind regards
+Suzuki
 
