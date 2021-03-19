@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410BD34182D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7810C341825
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhCSJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhCSJZc (ORCPT
+        id S229748AbhCSJX5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 05:23:57 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:58773 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhCSJXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:25:32 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE80C06174A;
-        Fri, 19 Mar 2021 02:25:32 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id c4so2150371qkg.3;
-        Fri, 19 Mar 2021 02:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRCh2wX8tgMUCklcnZV+Qo3HupS3FlJjITrZLEDGD4g=;
-        b=q1nJjhnRV5OcbsC6B50JNzLkKnOZ/oVBGivWeTPwJJ5GqDoRwdF2z3g8Wilo811rL9
-         oBth0jmpWFdNtvphQ7HWLB0F5yz40y/R74tDysE/9+0EFRDzbTZVHjkhzPlDGfJcLy29
-         SwrG/zsckK7yrJzq7gZiodZEaPY6h8rDIcWMZOr8R1uKUnS6UQnE1VF8+MlgHrapEPP+
-         kfPkt1eSbv/FjoAWk+1dH7I9YclYxde3A43i3uMfmDQQIb7mF++fAsXAeC35DEpeCMjB
-         9GbZ5q7JvDEtodMYnpRkDD4ZKIi4xl0RErxBAjG5uZUJisM454L7vQ0TRm1dYAEQObWq
-         UrwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRCh2wX8tgMUCklcnZV+Qo3HupS3FlJjITrZLEDGD4g=;
-        b=cGoWfWvSvYsMq7FBWeT7oHDBFupbqyPwpCB5UFf7PYGORpsKPc0WMI5EZ9J5OPo+Sn
-         NW2F3ItkCdi1Rai1iqeYKGuPAo25hFW95pkug9d0YoWBR0GnCN9xMOboDdP0SSKNTZ9U
-         N3XjY1c1YrZXVmFMCCwFM2uetgFQ74BRNbYDY/4slNwmsnhm2SiBx8rwcqo7xa94QFum
-         sJX46WLhP2UlhmGyFsY+o51ADX41noQTLGpW8f+fGN8JmNld8v+u9XdUP036CTbuSy7T
-         5D3+MV1vlXT6cEcpbXZcqfoV43bwmmG7w6H0I4xO9ssoupVibYVQIdexWUygPozW3LmE
-         slRA==
-X-Gm-Message-State: AOAM530FY/4xXpuaVE2g+4bS9GzE/RCGYKE+O5U4tNBd2N7iIcUhczUs
-        TJqWFzHyejfhwQ5oUy0DMEkEkNbtcNYMD/qM
-X-Google-Smtp-Source: ABdhPJwA+QL6CEKzMcSjMX02ysy42INTYOMwQEteAeSMuRLORWfY/QCg3BHwJb/HSO3yMcxFYyxhSg==
-X-Received: by 2002:a37:bc43:: with SMTP id m64mr1397070qkf.186.1616145931321;
-        Fri, 19 Mar 2021 02:25:31 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.87])
-        by smtp.gmail.com with ESMTPSA id r2sm3318539qti.4.2021.03.19.02.25.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 02:25:30 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        unixbhaskar@gmail.com, lee.jones@linaro.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] scsi: csiostor: Fix a typo
-Date:   Fri, 19 Mar 2021 14:53:11 +0530
-Message-Id: <20210319092311.31776-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 19 Mar 2021 05:23:43 -0400
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 8AD321C0006;
+        Fri, 19 Mar 2021 09:23:39 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 10:23:38 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Patrick Doyle <pdoyle@irobot.com>
+Subject: Re: [PATCH v1] mtd: nand: Fix BBT update issue
+Message-ID: <20210319102117.47774faf@xps13>
+In-Reply-To: <b04b128eaca91961597fa9586c7ccaa3934aaa03.1612501067.git.ytc-mb-yfuruyama7@kioxia.com>
+References: <1613435875-6846-1-git-send-email-ytc-mb-yfuruyama7@kioxia.com>
+        <b04b128eaca91961597fa9586c7ccaa3934aaa03.1612501067.git.ytc-mb-yfuruyama7@kioxia.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yoshio,
 
-s/boudaries/boundaries/
++ Patrick
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/scsi/csiostor/csio_hw_t5.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com> wrote on Tue, 16 Feb
+2021 09:37:55 +0900:
 
-diff --git a/drivers/scsi/csiostor/csio_hw_t5.c b/drivers/scsi/csiostor/csio_hw_t5.c
-index 1df8891d3725..86fded97d799 100644
---- a/drivers/scsi/csiostor/csio_hw_t5.c
-+++ b/drivers/scsi/csiostor/csio_hw_t5.c
-@@ -244,7 +244,7 @@ csio_t5_edc_read(struct csio_hw *hw, int idx, uint32_t addr, __be32 *data,
-  *
-  * Reads/writes an [almost] arbitrary memory region in the firmware: the
-  * firmware memory address, length and host buffer must be aligned on
-- * 32-bit boudaries.  The memory is transferred as a raw byte sequence
-+ * 32-bit boundaries.  The memory is transferred as a raw byte sequence
-  * from/to the firmware's memory.  If this memory contains data
-  * structures which contain multi-byte integers, it's the callers
-  * responsibility to perform appropriate byte order conversions.
---
-2.26.2
+> Fixed issue of manages BBT (Bad Block Table).
+> It didn't mark correctly when a specific block was bad block.
+> 
+> This issue occurs when the bad block mark (3-bit chunk) is 
+> crosses over 32 bit (e.g. Block10, Block21...) unit.
+> 
 
+Thanks for the patch and sorry for the very long wait period, I wanted
+to understand better the issue but I didn't had the time to do it.
+
+Would you mind having a look at Patrick's fix merged in U-Boot a year
+ago:
+
+commit 06fc4573b9d0878dd1d3b302884601263fe6e85f
+Author: Doyle, Patrick <pdoyle@irobot.com>
+Date:   Wed Jul 15 14:46:34 2020 +0000
+
+    Fix corner case in bad block table handling.
+    
+    In the unlikely event that both blocks 10 and 11 are marked as bad (on a
+    32 bit machine), then the process of marking block 10 as bad stomps on
+    cached entry for block 11.  There are (of course) other examples.
+    
+    Signed-off-by: Patrick Doyle <pdoyle@irobot.com>
+    Reviewed-by: Richard Weinberger <richard@nod.at>
+
+diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+index 84d60b86521..294daee7b22 100644
+--- a/drivers/mtd/nand/bbt.c
++++ b/drivers/mtd/nand/bbt.c
+@@ -127,7 +127,7 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
+                unsigned int rbits = bits_per_block + offs - BITS_PER_LONG;
+ 
+                pos[1] &= ~GENMASK(rbits - 1, 0);
+-               pos[1] |= val >> rbits;
++               pos[1] |= val >> (bits_per_block - rbits);
+        }
+ 
+        return 0;
+
+It looks both patches fix different errors but I wonder if merging Patrick's patch first would not make more sense. 
+
+Ideally, could you please send a series with the two patches, perhaps
+Patrick's patch first, then yours, adding a Fixes and Cc: stable tags
+to both?
+
+> Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
+> ---
+>  drivers/mtd/nand/bbt.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+> index 044adf913854..979c47e61381 100644
+> --- a/drivers/mtd/nand/bbt.c
+> +++ b/drivers/mtd/nand/bbt.c
+> @@ -112,18 +112,20 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
+>  			     ((entry * bits_per_block) / BITS_PER_LONG);
+>  	unsigned int offs = (entry * bits_per_block) % BITS_PER_LONG;
+>  	unsigned long val = status & GENMASK(bits_per_block - 1, 0);
+> +	unsigned long shift = ((bits_per_block + offs <= BITS_PER_LONG) ?
+> +					(offs + bits_per_block - 1) : (BITS_PER_LONG - 1));
+>  
+>  	if (entry >= nanddev_neraseblocks(nand))
+>  		return -ERANGE;
+>  
+> -	pos[0] &= ~GENMASK(offs + bits_per_block - 1, offs);
+> +	pos[0] &= ~GENMASK(shift, offs);
+>  	pos[0] |= val << offs;
+>  
+>  	if (bits_per_block + offs > BITS_PER_LONG) {
+>  		unsigned int rbits = bits_per_block + offs - BITS_PER_LONG;
+>  
+>  		pos[1] &= ~GENMASK(rbits - 1, 0);
+> -		pos[1] |= val >> rbits;
+> +		pos[1] |= (val >> (BITS_PER_LONG - offs));
+>  	}
+>  
+>  	return 0;
+
+Thanks,
+Miquèl
