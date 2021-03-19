@@ -2,250 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9603419B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE200341A17
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCSKQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:16:30 -0400
-Received: from mail-eopbgr40059.outbound.protection.outlook.com ([40.107.4.59]:40287
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229720AbhCSKQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:16:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lP3B2q9gaYAtIENYOp0u3/uBjIVXt3ZMEEbUGTwzMbbr082KE9oVfnSd/Ubjz5KPF5W44OY6Sdi47eMgmTpWRwo+lBHBAh6DDOGayjXN4fC7KOHdzS8et7jhOlAyhiLSWeAQAcYvWsqqaJexQvqzAw180K/nwblTQ23XW7X0dfKdyNp4+MNDQVkrarSvgIMr45LuY+CC5bXhKLseojacP5/xzr0DDc+oYvA9nsdkHxug9Vb/IaGGEfbcUHNNf11DPOj677PQwlpfojT6dzX8fws/7JzsdJafO3jLX9cHK3HTpwD/0f47NmY6nY/kIGNvDxMwexB8G0yNHyMr37GU2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kuCPuN4VdnfXo8onp4yP3064s5vYqLa1xQpgmgwj6Mo=;
- b=nnSW2eHQaJOJw7WluPIVlugwqUovZY6vFUPX3LuOM1gk499mHR0I7WqPyK1xx6GnawN4xncROcru2iF8cIlQE5gNGfnUplFNleoyYF2jjCrswx7/Abw84tVMGExdntnf1seVR7x47vSd45RIjbr5zSFVWjT87ciRmG2boSkQfDrs3YaiYsF04iNFMoxHX6Z5tyaiBZVHr9EmR5Gvmlyo/eQfWpCBemaC4TgJ9xecV5BLf43GVd4x4rBGNaUMRiIF4k1dzQuAuS8vQxlGqqWbt0ex+UVSi5QO75znj4UdXO4b28xmYC8dYM8bLR5JX41ZCOSvyVWnxCWQ3LFM+/S42w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kuCPuN4VdnfXo8onp4yP3064s5vYqLa1xQpgmgwj6Mo=;
- b=GByoDAkPwSppuiKd20yJhWJuaHbhOWqrJ23Eksi0GDSNguwItOaQu/PHoYl1RX2rSBQOaBlP67i4ZsBsxmHvmAtU+Dw2BKmO3ZR+Nm8/AK92WFmUVQwqbOF4n4ZkcAstbFmIozdiKdqWqrEZc1OwT16D0E4T5Z3iYtMPctEZDE0=
-Authentication-Results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB5803.eurprd04.prod.outlook.com (2603:10a6:10:a9::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 10:16:18 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3933.032; Fri, 19 Mar 2021
- 10:16:18 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 2/2] remoteproc: imx_rproc: support remote cores booted before Linux Kernel
-Date:   Fri, 19 Mar 2021 18:47:08 +0800
-Message-Id: <20210319104708.7754-2-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210319104708.7754-1-peng.fan@oss.nxp.com>
-References: <20210319104708.7754-1-peng.fan@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: MAXPR0101CA0030.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:d::16) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S229785AbhCSKcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:32:17 -0400
+Received: from mx.i2x.nl ([5.2.79.48]:54082 "EHLO mx.i2x.nl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229870AbhCSKbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:31:50 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Mar 2021 06:31:50 EDT
+Received: from mail.vdorst.com (mail.vdorst.com [IPv6:fd00::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx.i2x.nl (Postfix) with ESMTPS id 24E975FB12;
+        Fri, 19 Mar 2021 11:25:56 +0100 (CET)
+Authentication-Results: mx.i2x.nl;
+        dkim=pass (2048-bit key; secure) header.d=vdorst.com header.i=@vdorst.com header.b="D239ADue";
+        dkim-atps=neutral
+Received: from www (unknown [192.168.2.222])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.vdorst.com (Postfix) with ESMTPSA id D3ED5B17AE5;
+        Fri, 19 Mar 2021 11:25:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.vdorst.com D3ED5B17AE5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vdorst.com;
+        s=default; t=1616149555;
+        bh=ANu+7V/Eez3ob22Ix7TLB1GB0Pyn7ZUcUF5mBZmRflI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D239ADueBEbxTpKgW1tWeevvifzhBeWXZ5vjOLSY8JL5A0XJ1wCmT3k2GUXoVF53a
+         x/kw+7T8XYClp3mFpP+XlaidYpYe8DDTxyh4qcunpyuH4OmMWq4Mevj7NrjB5X1ONF
+         PKYymWJtuoleV7AQwDUxid1li/+OqEnnZgdzkiphRJlEwWS9LoKtEf2RaXCjGbX6ec
+         B+oeuoisuWZY9SnmDn4KaOeEZMoofRttBj3AenQnApJ/4I/JKR6t60Atka/jajh8Sx
+         UYHYspNbDT+LkTRHdne2mrf8RR6ME7nrSXCinCm/9yneoqA4TAGy/Aaik2VG3+/wD6
+         7lgVOaVhYqRtQ==
+Received: from 2a02-a453-deab-1-caf8-57c0-c865-5881.fixed6.kpn.net
+ (2a02-a453-deab-1-caf8-57c0-c865-5881.fixed6.kpn.net
+ [2a02:a453:deab:1:caf8:57c0:c865:5881]) by www.vdorst.com (Horde Framework)
+ with HTTPS; Fri, 19 Mar 2021 10:25:55 +0000
+Date:   Fri, 19 Mar 2021 10:25:55 +0000
+Message-ID: <20210319102555.Horde.jeA-oYm4tfkVqKj-gnqxRoo@www.vdorst.com>
+From:   =?utf-8?b?UmVuw6k=?= van Dorst <opensource@vdorst.com>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sander@svanheule.net, tsbogend@alpha.franken.de, john@phrozen.org,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: Re: [PATCH net,v2] net: dsa: mt7530: setup core clock even in
+ TRGMII mode
+References: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
+ <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by MAXPR0101CA0030.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 10:16:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a7231efc-144f-458b-ec24-08d8eac008d1
-X-MS-TrafficTypeDiagnostic: DB8PR04MB5803:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB58030E14231A6D1C11BA65D5C9689@DB8PR04MB5803.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z029hehTRuS5LOX9CeoDvQ8g2vBn0NZxL+e2MPveegxnR5ciT0rUiKZSb4rN9fo8TXsB9AzWrJvj8SqUdoE6TW0fp0Z/7QgAXfqDPjCDtT0eCIlb4Jspv8rQBC8Ey93ZIZX/JK83ZWJNTCb+Ir0uC6gJXYEqCEzm8qsZ9It4TqPxvzVdYJnM4x46eeXMW/23MO33m/jUbkhL57RQdl0hWTXcJtm/eYEPi/Un2vLxaCSGMSK7r6O9hD577hezSUIwWs1QL0OPYlDf5AeGMwMnzUD9x2GE2bXHyvn/LCFFr20hv9byZIarTD55PU0Pdx4EdVBRhvYEDLgG7V3dTGbmhZyYtJHNeNEpzfumnCdoJM4M4RK1+XVqT9afMNFOcAZvhGcXAquWL6EK6EmDsrPOLbt+Dpjm3yy0kltIbWi+nMIykgZYMtA/Wh1RVtvxxgIZst3vYDgOUrRHegL7lBlXyReaNG02qAgiRw34TRRzeQHt7RlTVBF422xKAYKK4GStmuEPSqgna2E38KFYMBkpZJ2MDGCbqHgs7AreOPdywybVqPt+nT3g61j3uJn15elAA7ECsTIZk8XSpsAS+/kQBOzGJl9oVeytt76kSTH1YQU4xD1RORQ8LftA9jNarNzJ0dzYRskCDK7wedTGz6CUT5KY8qtw9+zYAk6e50eaOBg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(39860400002)(366004)(376002)(2616005)(8936002)(316002)(956004)(26005)(38100700001)(8676002)(6512007)(7416002)(66946007)(66556008)(5660300002)(52116002)(6666004)(6486002)(2906002)(6506007)(186003)(86362001)(66476007)(16526019)(83380400001)(478600001)(4326008)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VDCLPtd34M9+oZ6QhKo3KzvKfkWrBGkY7vrUtgnZbAWZuScuxyMKuG2x0WbS?=
- =?us-ascii?Q?Di4p1k2aWhgATNRlcTscgfyljr7M0zmPKqmFP4TZR5iapxnjdqfIyfZHN1sN?=
- =?us-ascii?Q?ItPDoTO7ML/D9P6YvqSDR7028RoC6rOVPiV4W/eqAKuCC720eChuavky1+A9?=
- =?us-ascii?Q?CC2Vz973M46GyDW671BNcBxTSQl+eupVozBUBGT+9F6yzpIJ5cnMr13ZVxwM?=
- =?us-ascii?Q?UCdaayQEIshRQVXrVC/Rlo3hZo242KlXIOJAzVhSYVV7hl7Ro/Pf7LMIk4eP?=
- =?us-ascii?Q?acGwCUEb95oQ38hF/I7l3UwtGbmV0ASrPSxIsvGgY77KLXbsGlR0K7Waycle?=
- =?us-ascii?Q?RGUto7ribi0Bxr0NNsYDlVaiCa/bGp20mzUgest/PeT+2WZ2iYauxmGnh7ja?=
- =?us-ascii?Q?ntvjd3sH/ZP5oygNV2BDmnTh9eaR4JhErhDzWsrDloIEVw42Ht52SrvL4I4w?=
- =?us-ascii?Q?DR7f//1wJdkzx0rnqd5D+pw9YDSj5rkZFRW7+jBwaNovMArBiJdOnZC0+E8G?=
- =?us-ascii?Q?rVkRYvLjMjU9CNVHhUyUBd2vvi5zsYm2quMDGPD53J2B7ah58fvgPi/TrIR0?=
- =?us-ascii?Q?ipA1KXwc7LJCfEG50gPSEU4QCM4hHevppiO9MxcuDLGjHs1CGpULAdnVZ5E7?=
- =?us-ascii?Q?7RLL1OIqHHDwGgvl1PRFnZs8yAvAM35P0O4U3zOq0W9Dp+sU3kblFLQEHww6?=
- =?us-ascii?Q?fKz6o8vi/Y73yHFUvoPfCKx+EP5xK4+T7sR8vNC1piGi6VtlhAi2SVbglEAn?=
- =?us-ascii?Q?t6+HIVkC0d7pXg/kSsjlPYaAdwZljroMQkAFW9Wh3s7UzmM7IG2WDDi2YgIP?=
- =?us-ascii?Q?AAc2CVnxosWj9jyYTLc4ZWrCcDZmEmsWxxGI0XUQZQgEVXk8SKjnJ38cjZbR?=
- =?us-ascii?Q?txS0MVl6AWUIazVfYejXWPypiKG4ceEeXCTPejtzZrTeox/9XvOXKjAVLYy0?=
- =?us-ascii?Q?MCXmKe7163amOMMJkf8d3GIqSKGGNpTf6Q3fjyfLuBJqEkqPr8dQfXA9pb8f?=
- =?us-ascii?Q?KtCzj4dCnbVUc6n9u/GcnxvmBELsetlx5RZslTCBCbLmwU6qFroQqzP5yObO?=
- =?us-ascii?Q?hkNEbXHjeoGoc3kIIINFrGFeBsFzV3Y8Xa6mnMO9kdEOBHH9F2XL/K6I3DBp?=
- =?us-ascii?Q?ZvJwwlmcM9AeWqxI5EWE9okGGJmC1qHvqYo/Zuqj0lDAkLsEyMjezFIcRXTw?=
- =?us-ascii?Q?7+7mOsC69Iu+cIV70IdbFI12d/gjqgh2NC44yIP0AWj7pnc1AV8wt1u/zbf2?=
- =?us-ascii?Q?fp/eJvKfFqK6T4gQa5ZdUrMXp1yCZfeGP4RIqo39/C7BhZ8Rk4eGSMV2TVy5?=
- =?us-ascii?Q?6dQhCfNc2MS7YljajoldZQ5K5yttWdS9LbMCbzYFQ6slMg=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7231efc-144f-458b-ec24-08d8eac008d1
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 10:16:17.9019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TVvQDP6fWR65GyoiRuPnTMqRvXMlYuOvNzLaolBN4v24s9gUz/0E2N5zcqwckYLDjBORft3RXJfykcw7MmOITg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5803
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Quoting Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>:
 
-Support remote cores booted before Linux Kernel booting.
+> A recent change to MIPS ralink reset logic made it so mt7530 actually
+> resets the switch on platforms such as mt7621 (where bit 2 is the reset
+> line for the switch). That exposed an issue where the switch would not
+> function properly in TRGMII mode after a reset.
+>
+> Reconfigure core clock in TRGMII mode to fix the issue.
+>
+> Tested on Ubiquiti ER-X (MT7621) with TRGMII mode enabled.
+>
+> Fixes: 3f9ef7785a9c ("MIPS: ralink: manage low reset lines")
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> ---
+>  drivers/net/dsa/mt7530.c | 52 +++++++++++++++++++---------------------
+>  1 file changed, 25 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index f06f5fa2f898..9871d7cff93a 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -436,34 +436,32 @@ mt7530_pad_clk_setup(struct dsa_switch *ds,  
+> phy_interface_t interface)
+>  			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
+>
+>  	/* Setup core clock for MT7530 */
+> -	if (!trgint) {
+> -		/* Disable MT7530 core clock */
+> -		core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+> -
+> -		/* Disable PLL, since phy_device has not yet been created
+> -		 * provided for phy_[read,write]_mmd_indirect is called, we
+> -		 * provide our own core_write_mmd_indirect to complete this
+> -		 * function.
+> -		 */
+> -		core_write_mmd_indirect(priv,
+> -					CORE_GSWPLL_GRP1,
+> -					MDIO_MMD_VEND2,
+> -					0);
+> -
+> -		/* Set core clock into 500Mhz */
+> -		core_write(priv, CORE_GSWPLL_GRP2,
+> -			   RG_GSWPLL_POSDIV_500M(1) |
+> -			   RG_GSWPLL_FBKDIV_500M(25));
+> +	/* Disable MT7530 core clock */
+> +	core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+>
+> -		/* Enable PLL */
+> -		core_write(priv, CORE_GSWPLL_GRP1,
+> -			   RG_GSWPLL_EN_PRE |
+> -			   RG_GSWPLL_POSDIV_200M(2) |
+> -			   RG_GSWPLL_FBKDIV_200M(32));
+> -
+> -		/* Enable MT7530 core clock */
+> -		core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+> -	}
+> +	/* Disable PLL, since phy_device has not yet been created
+> +	 * provided for phy_[read,write]_mmd_indirect is called, we
+> +	 * provide our own core_write_mmd_indirect to complete this
+> +	 * function.
+> +	 */
+> +	core_write_mmd_indirect(priv,
+> +				CORE_GSWPLL_GRP1,
+> +				MDIO_MMD_VEND2,
+> +				0);
+> +
+> +	/* Set core clock into 500Mhz */
+> +	core_write(priv, CORE_GSWPLL_GRP2,
+> +		   RG_GSWPLL_POSDIV_500M(1) |
+> +		   RG_GSWPLL_FBKDIV_500M(25));
+> +
+> +	/* Enable PLL */
+> +	core_write(priv, CORE_GSWPLL_GRP1,
+> +		   RG_GSWPLL_EN_PRE |
+> +		   RG_GSWPLL_POSDIV_200M(2) |
+> +		   RG_GSWPLL_FBKDIV_200M(32));
+> +
+> +	/* Enable MT7530 core clock */
+> +	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+>
+>  	/* Setup the MT7530 TRGMII Tx Clock */
+>  	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+> --
+> 2.30.2
 
-Add rsc_table to hold the resource table published by remote cores
-Add attach hook
-Add imx_rproc_detect_mode to detect remote cores' working mode, and if
-remote cores are booted before booting Linux Kernel, parse the memory
-regions and initialize the table_ptr, table_sz, cached_table.
+Hi Ilya,
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/remoteproc/imx_rproc.c | 64 ++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+Thanks for fixing this issue.
 
-diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-index 24275429a7cc..fdaaf7599cc8 100644
---- a/drivers/remoteproc/imx_rproc.c
-+++ b/drivers/remoteproc/imx_rproc.c
-@@ -74,6 +74,16 @@ struct imx_rproc_att {
- 	int flags;
- };
- 
-+enum imx_rproc_mode {
-+	/* Linux load/kick remote core */
-+	IMX_RPROC_NORMAL,
-+	/*
-+	 * remote core booted before kicking Linux, and remote core
-+	 * could be stopped & restarted by Linux
-+	 */
-+	IMX_RPROC_EARLY_BOOT,
-+};
-+
- struct imx_rproc_dcfg {
- 	u32				src_reg;
- 	u32				src_mask;
-@@ -95,6 +105,8 @@ struct imx_rproc {
- 	struct mbox_chan		*rx_ch;
- 	struct work_struct		rproc_work;
- 	struct workqueue_struct		*workqueue;
-+	enum imx_rproc_mode		mode;
-+	void __iomem			*rsc_table;
- };
- 
- static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
-@@ -229,6 +241,9 @@ static int imx_rproc_stop(struct rproc *rproc)
- 	if (ret)
- 		dev_err(dev, "Failed to stop M4!\n");
- 
-+	if (priv->mode == IMX_RPROC_EARLY_BOOT)
-+		priv->mode = IMX_RPROC_NORMAL;
-+
- 	return ret;
- }
- 
-@@ -398,9 +413,15 @@ static void imx_rproc_kick(struct rproc *rproc, int vqid)
- 			__func__, vqid, err);
- }
- 
-+static int imx_rproc_attach(struct rproc *rproc)
-+{
-+	return 0;
-+}
-+
- static const struct rproc_ops imx_rproc_ops = {
- 	.start		= imx_rproc_start,
- 	.stop		= imx_rproc_stop,
-+	.attach		= imx_rproc_attach,
- 	.kick		= imx_rproc_kick,
- 	.da_to_va       = imx_rproc_da_to_va,
- 	.load		= rproc_elf_load_segments,
-@@ -470,6 +491,8 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
- 		}
- 		priv->mem[b].sys_addr = res.start;
- 		priv->mem[b].size = resource_size(&res);
-+		if (!strcmp(node->name, "rsc_table"))
-+			priv->rsc_table = priv->mem[b].cpu_addr;
- 		b++;
- 	}
- 
-@@ -536,6 +559,43 @@ static void imx_rproc_free_mbox(struct rproc *rproc)
- 	mbox_free_channel(priv->rx_ch);
- }
- 
-+static int imx_rproc_detect_mode(struct imx_rproc *priv)
-+{
-+	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
-+	struct rproc *rproc = priv->rproc;
-+	struct device *dev = priv->dev;
-+	int ret;
-+	u32 val;
-+
-+	ret = regmap_read(priv->regmap, dcfg->src_reg, &val);
-+	if (ret) {
-+		dev_err(dev, "Failed to read src\n");
-+		return ret;
-+	}
-+
-+	if (!(val & dcfg->src_stop))
-+		priv->mode = IMX_RPROC_EARLY_BOOT;
-+	else
-+		priv->mode = IMX_RPROC_NORMAL;
-+
-+	if (priv->mode == IMX_RPROC_EARLY_BOOT) {
-+		priv->rproc->state = RPROC_DETACHED;
-+
-+		ret = imx_rproc_parse_memory_regions(priv->rproc);
-+		if (ret)
-+			return ret;
-+
-+		if (!priv->rsc_table)
-+			return 0;
-+
-+		rproc->table_ptr = (struct resource_table *)priv->rsc_table;
-+		rproc->table_sz = SZ_1K;
-+		rproc->cached_table = NULL;
-+	}
-+
-+	return 0;
-+}
-+
- static int imx_rproc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -590,6 +650,10 @@ static int imx_rproc_probe(struct platform_device *pdev)
- 		goto err_put_mbox;
- 	}
- 
-+	ret = imx_rproc_detect_mode(priv);
-+	if (ret)
-+		goto err_put_mbox;
-+
- 	priv->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(priv->clk)) {
- 		dev_err(dev, "Failed to get clock\n");
--- 
-2.30.0
+I remember that Frank also had an issue with TRGMII on his MT7623 ARM board.
+I never found why it did not work but this may be also fix his issue  
+on the MT7623 devices.
+
+Added Frank to CC.
+
+Tested on Ubiquiti ER-X-SFP (MT7621) with and without TRGMII mode enabled.
+
+Tested-by: René van Dorst <opensource@vdorst.com>
+
+Greats,
+
+René
 
