@@ -2,359 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAE434238D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17310342391
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhCSRmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:42:32 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44683 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230039AbhCSRmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:42:24 -0400
-IronPort-SDR: YLzn8r9ZVepzy+zPzkNaHQNdmo3SXrieEcIrvm0LbEKMpJrk24xWO/Bjnp0S1cl1FgAt8QG9at
- MhSu85Y9LEkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="251289410"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="251289410"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:42:19 -0700
-IronPort-SDR: sPHQPzxSrvOV3q6MWk8N1E/hcwYlWp2lC1NU7ufgKPxvGg5v6pk1A5hQImGYg/X5/vcTbOBjQL
- 6dl4JdM/ASuw==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="441400483"
-Received: from hfritts-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.85.109])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:42:18 -0700
-Subject: Re: [PATCH v1 1/1] x86/tdx: Add tdcall() and tdvmcall() helper
- functions
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
- <20210318213053.203403-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YFTXdG+zZ32gVIPc@google.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <c72d9ca6-7a5c-b614-5d20-b86d2abebdee@linux.intel.com>
-Date:   Fri, 19 Mar 2021 10:42:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230186AbhCSRnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhCSRm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:42:58 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F4CC06174A;
+        Fri, 19 Mar 2021 10:42:58 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id l1so3298177plg.12;
+        Fri, 19 Mar 2021 10:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aCBxKGyN1RW9McR86Ob8DISjqGfg+CaKCVIqc4Cd+b4=;
+        b=nlkD62njG7eZA+nK9kojt3lTe8jXKPwyFlwaHD10T+uTYR+qjk11Epgurd4S7Ws6Bh
+         P/iMS7+vU1KiOKTKSoeoQKenAhFwJbsrW6SnSI2O9XZzrQcnfpsqiQpxVIw33EXQbeZi
+         xnx3DaDPm/kHhRcLtsPUIrjrrKA9sMKWq7DLRMn/+WQVPa5B7uETH1RHLY0moZ78K1Dh
+         6Ar3KeDnvFHen5vKyBoPgGBGPF0Q+gdPNL7sJWxX7E0i0cAcWQuFuOPa3rPj7v+uam0A
+         levOpW3GNzL5dfN5zG0jAFbBG+/TvjqmS6AnKDfzJpWvBjgz4EjfGxZ9nljQtoyPMETp
+         wCFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aCBxKGyN1RW9McR86Ob8DISjqGfg+CaKCVIqc4Cd+b4=;
+        b=S34Ti16GzEBkj23jS1PlJyp5tHTPi42MCRS6B5Yf2iFTiN+Az9phQ9ZrNYig3n3ckW
+         Nls14W9jxk5zvJE+39ImAk5sr01pZUiL48ulEGIZdsJo5QXmRKhbUd8NoA7WUoJ8Xq9j
+         gCFCncZZB7AUmsv19LMqLTj2Pe5z69WFAXjjRH0X2odU6NHmc6wG2V+sRCFcA3WYMM8x
+         CokuDEuoa9LvopjC+MpIAbz6fE3ripQ1DtsIcD7mOineSpgRKBPmwAUGtu4dwes80i2R
+         OzTCruNCEDUPKhYDUvN5emU2T7uOmt06zhhuSv33qt5VYt9qzLEjRWVVYc9TABB0U0Mn
+         EgOw==
+X-Gm-Message-State: AOAM530R2MoOx2GdhvECJbbKQp1p5yyXg5v6pdtotomrTGVW494xkAXx
+        rqdfBm36uINURpM7og3fmBYktrVg48ZZdZPZCSI=
+X-Google-Smtp-Source: ABdhPJxoo4vsSIeNDkBBr2mzZSj7vcXIsQn3r+AXxkiCjnO3Z0ouzSL6VmvOsWbYb+aTQulZXjfRzeLOqrwZg4+4I80=
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
+ p6-20020a170902a406b02900e678c471c8mr15307631plq.17.1616175777639; Fri, 19
+ Mar 2021 10:42:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YFTXdG+zZ32gVIPc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210319144509.7627-1-o.rempel@pengutronix.de> <20210319144509.7627-4-o.rempel@pengutronix.de>
+In-Reply-To: <20210319144509.7627-4-o.rempel@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 19:42:41 +0200
+Message-ID: <CAHp75Vcn=g-3NRXAEd5jEu4uxD_fHbybiDg=t9QiY80TNZuTgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] iio: adc: add ADC driver for the TI TSC2046 controller
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On Fri, Mar 19, 2021 at 4:45 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>
+> Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
+> the touchscreen use case. By implementing it as an IIO ADC device, we can
+> make use of resistive-adc-touch and iio-hwmon drivers.
+>
+> So far, this driver was tested with a custom version of resistive-adc-touch driver,
+> since it needs to be extended to make use of Z1 and Z2 channels. The X/Y
+> are working without additional changes.
 
-Thanks for the review.
+Since kbuild bot found some issues and it will be v4, some additional
+comments from me below.
 
-On 3/19/21 9:55 AM, Sean Christopherson wrote:
-> On Thu, Mar 18, 2021, Kuppuswamy Sathyanarayanan wrote:
->> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
->> index e44e55d1e519..7ae1d25e272b 100644
->> --- a/arch/x86/kernel/tdx.c
->> +++ b/arch/x86/kernel/tdx.c
->> @@ -4,6 +4,58 @@
->>   #include <asm/tdx.h>
->>   #include <asm/cpufeature.h>
->>   
->> +void tdcall(u64 leafid, struct tdcall_regs *regs)
->> +{
->> +	asm volatile(
->> +			/* RAX = leafid (TDCALL LEAF ID) */
->> +			"  movq %0, %%rax;"
->> +			/* Move regs->r[*] data to regs r[a-c]x,  r8-r5 */
->> +			"  movq 8(%1), %%rcx;"
-> 
-> I am super duper opposed to using inline asm.  Large blocks are hard to read,
-I think this point is arguable. Based on the review comments I received so far,
-people prefer inline assembly compared to asm sub functions.
-> and even harder to maintain.  E.g. the %1 usage falls apart if an output
-> constraint is added; that can be avoided by defining a local const/imm (I forget
-> what they're called), but it doesn't help readability.
-we can use OFFSET() calls to improve the readability and avoid this issue. Also IMO,
-any one adding constraints should know how this would affect the asm code.
-> 
->> +			"  movq 16(%1), %%rdx;"
->> +			"  movq 24(%1), %%r8;"
->> +			"  movq 32(%1), %%r9;"
->> +			"  movq 40(%1), %%r10;"
->> +			"  movq 48(%1), %%r11;"
->> +			"  movq 56(%1), %%r12;"
->> +			"  movq 64(%1), %%r13;"
->> +			"  movq 72(%1), %%r14;"
->> +			"  movq 80(%1), %%r15;"
-> 
-> This is extremely unsafe, and wasteful.  Putting the onus on the caller to zero
-> out unused registers, with no mechanism to enforce/encourage doing so,
-For encouragement, we can add a comment to this function about callers responsibility.
-  makes it
-> likely that the kernel will leak information to the VMM, e.g. in the form of
-> stack data due to a partially initialized "regs".
-Unless you create sub-functions for each use cases, callers cannot avoid this
-responsibility.
-> 
-> And although TDVMCALL is anything but speedy, requiring multiple memory
-> operations just to set a single register is unnecessary.  Not to mention
-> several of these registers are never used in the GHCI-defined TDVMCALLs. 
-This function is common between TDCALL and TDVMCALL. Extra registers you
-mentioned are related to other TDCALL usecases.
-  And,
-> since the caller defines the mask (which I also dislike), it's possible/likely
-> that many of these memory operations are wasteful even for registers that are
-> used by _some_ TDVMCALLs.  Unnecessary accesses are inevitable if we want a
-> common helper, but this is too much.
-using single function makes it easy to maintain, readable and less error prone.
-But I agree there are many unnecessary accesses for many users.
-> 
->> +			TDCALL ";"
->> +			/* Save TDCALL success/failure to regs->rax */
->> +			"  movq %%rax, (%1);"
->> +			/* Save rcx and rdx contents to regs->r[c-d]x */
->> +			"  movq %%rcx, 8(%1);"
->> +			"  movq %%rdx, 16(%1);"
->> +			/* Move content of registers R8-R15 regs->r[8-15] */
->> +			"  movq %%r8, 24(%1);"
->> +			"  movq %%r9, 32(%1);"
->> +			"  movq %%r10, 40(%1);"
->> +			"  movq %%r11, 48(%1);"
->> +			"  movq %%r12, 56(%1);"
->> +			"  movq %%r13, 64(%1);"
->> +			"  movq %%r14, 72(%1);"
->> +			"  movq %%r15, 80(%1);"
->> +
->> +		:
->> +		: "r" (leafid), "r" (regs)
->> +		: "memory", "rax", "rbx", "rcx", "rdx", "r8",
->> +		  "r9", "r10", "r11", "r12", "r13", "r14", "r15"
-> 
-> All these clobbers mean even more memory operations...
-> 
->> +		);
->> +
->> +}
->> +
->> +void tdvmcall(u64 subid, struct tdcall_regs *regs)
->> +{
->> +	/* Expose GPRs R8-R15 to VMM */
->> +	regs->rcx = 0xff00;
->> +	/* R10 = 0 (standard TDVMCALL) */
->> +	regs->r10 = TDVMCALL_STANDARD;
->> +	/* Save subid to r11 register */
->> +	regs->r11 = subid;
->> +
->> +	tdcall(TDVMCALL, regs);
-> 
-> This implies the caller is responsible for _all_ error checking.  The base
-> TDCALL should never fail; if it does, something is horribly wrong with TDX-Module
-> and panicking is absolutely the best option.
-I haven't added error checking to common function because some use cases like
-MSR and IO access does not need to panic with TDVMCALL failures.
+...
 
-To improve this, may be we can create sub-functions (similar to your code) like,
-1. tdvmcall() //with BUG_ON(regs.rax)
-2. _tdvmcall() // without error checks
-> 
-> The users of this are going to be difficult to read as well since the parameters
-> are stuff into a struct instead of being passed to a function.
-I think regs.rx = xx code format is more easier to read compared to passing
-parameters to the function.
-> 
-> IMO, throwing the bulk of the code in a proper asm subroutine and handling only
-> the GHCI-defined TDVMCALLs is the way to go.  If/when a VMM comes along that
-> wants to enlighten Linux guests to work with non-GCHI TDVMCALLs, enhancing this
-> madness can be their problem.
-> 
-> Completely untested...
-> 
-> struct tdvmcall_output {
-> 	u64 r12;
-> 	u64 r13;
-> 	u64 r14;
-> 	u64 r15;
-> }
-> 
-> u64 __tdvmcall(u64 fn, u64 p0, u64 p1, u64 p2, u64 p3,
-> 	       struct tdvmcall_output *out);
-This function is only for tdvmcall. If you want to create
-common function for all tdcall use cases, you would end
-up using struct for input as well.
-> 
-> 	/* Offset for fields in tdvmcall_output */
-> 	OFFSET(TDVMCALL_r12, tdvmcall_output, r13);
-> 	OFFSET(TDVMCALL_r13, tdvmcall_output, r13);
-> 	OFFSET(TDVMCALL_r14, tdvmcall_output, r14);
-> 	OFFSET(TDVMCALL_r15, tdvmcall_output, r15);
-> 
-> SYM_FUNC_START(__tdvmcall)
-> 	FRAME_BEGIN
-> 
-> 	/* Save/restore non-volatile GPRs that are exposed to the VMM. */
->          push %r15
->          push %r14
->          push %r13
->          push %r12
-> 
-> 	/*
-> 	 * 0    => RAX = TDCALL leaf
-> 	 * 0    => R10 = standard vs. vendor
-> 	 * RDI  => R11 = TDVMCALL function, e.g. exit reason
-> 	 * RSI  => R12 = input param 0
-> 	 * RDX  => R13 = input param 1
-> 	 * RCX  => R14 = input param 2
-> 	 * R8   => R15 = input param 3
-> 	 * MASK => RCX = TDVMCALL register behavior
-> 	 * R9   => N/A = output struct
-> 	 */
-> 	xor %eax, %eax
->          xor %r10d, %r10d
-> 	mov %rdi, %r11
-> 	mov %rsi, %r12
-> 	mov %rdx, %r13
-> 	mov %rcx, %r14
-> 	mov %r8,  %r15
-> 
->          /*
-> 	 * Expose R10 - R15, i.e. all GPRs that may be used by TDVMCALLs
-> 	 * defined in the GHCI.  Note, RAX and RCX are consumed, but only by
-> 	 * TDX-Module and so don't need to be listed in the mask.
-> 	 */
->          movl $0xfc00, %ecx
-> 
-> 	tdcall
-> 
-> 	/* Panic if TDCALL reports failure. */
-> 	test %rax, %rax
-> 	jnz 2f
-> 
-> 	/* Propagate TDVMCALL success/failure to return value. */
-> 	mov %r10, %rax
-> 
-> 	/*
-> 	 * On success, propagate TDVMCALL outputs values to the output struct,
-> 	 * if an output struct is provided.
-> 	 */
-> 	test %rax, %rax
-> 	jnz 1f
-> 	test %r9, %r9
-> 	jz 1f
-> 
-> 	movq %r12, $TDVMCALL_r12(%r9)
-> 	movq %r13, $TDVMCALL_r13(%r9)
-> 	movq %r14, $TDVMCALL_r14(%r9)
-> 	movq %r15, $TDVMCALL_r15(%r9)
-> 1:
-> 	/*
-> 	 * Zero out registers exposed to the VMM to avoid speculative execution
-> 	 * with VMM-controlled values.
-> 	 */
->          xor %r10d, %r10d
->          xor %r11d, %r11d
->          xor %r12d, %r12d
->          xor %r13d, %r13d
->          xor %r14d, %r14d
->          xor %r15d, %r15d
-> 
-> 	pop %r12
->          pop %r13
->          pop %r14
->          pop %r15
-> 
-> 	FRAME_END
-> 	ret
-> 2:
-> 	ud2
-> SYM_FUNC_END(__tdvmcall)
-> 
-> /*
->   * Wrapper for the semi-common case where errors are fatal and there is a
->   * single output value.
->   */
-> static inline u64 tdvmcall(u64 fn, u64 p0, u64 p1, u64 p2, u64 p3,
-> 			   struct tdvmcall_output *out)
-> {
-> 	struct tdvmcall_output out;
-> 	u64 err;
-> 
-> 	err = __tdvmcall(fn, p0, p1, p2, p3, &out);
-> 	BUG_ON(err);
-> 
-> 	return out.r11;
-> }
-> 
-> static void tdx_handle_cpuid(struct pt_regs *regs)
-> {
-> 	struct tdvmcall_output out;
-> 	u64 err;
-> 
-> 	err = __tdvmcall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
-> 	BUG_ON(err);
-> 
->          regs->ax = out.r11;
->          regs->bx = out.r12;
->          regs->cx = out.r13;
->          regs->dx = out.r14;
-> }
-> 
-> #define REG_MASK(size) ((1ULL << ((size) * 8)) - 1)
-> 
-> static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
-> {
->          u8 out = (exit_qual & 8) ? 0 : 1;
->          u8 size = (exit_qual & 7) + 1;
->          u16 port = exit_qual >> 16;
->          u64 val;
-> 
->          /* I/O strings ops are unrolled at build time. */
->          BUG_ON(exit_qual & 0x10);
-> 
-> 	if (!tdx_allowed_port(port))
-> 		return;
-> 
->          if (out)
->                  val = regs->ax & REG_MASK(size);
->          else
->                  val = 0;
-> 
->          val = tdvmcall(EXIT_REASON_IO_INSTRUCTION, port, size, out, val);
->          if (!out) {
->                  /* The upper bits of *AX are preserved for 2 and 1 byte I/O. */
->                  if (size < 4)
->                          val |= (regs->ax & ~REG_MASK(size));
->                  regs->ax = val;
->          }4
-> }
-> 
-> static u64 tdx_read_msr_safe(unsigned int msr, int *ret)
-> {
-> 	struct tdvmcall_output out;
-> 	u64 err;
-> 
-> 	WARN_ON_ONCE(tdx_is_context_switched_msr(msr));
-> 
-> 	if (msr == MSR_CSTAR) {
-> 		*ret = 0;
-> 		return 0;
-> 	}
-> 
-> 	err = __tdvmcall(EXIT_REASON_MSR_READ, regs->ax, regs->cx, 0, 0, &out);
-> 	if (err) {
-> 		*ret -EIO;
-> 		return 0;
-> 	}
-> 	return out.r11;
-> }
-> 
+> +#define        TI_TSC2046_SAMPLE_BITS \
+> +       (sizeof(struct tsc2046_adc_atom) * BITS_PER_BYTE)
+
+Isn't it something like BITS_PER_TYPE(struct ...) ?
+
+...
+
+> +struct tsc2046_adc_atom {
+> +       /*
+> +        * Command transmitted to the controller. This filed is empty on the RX
+> +        * buffer.
+> +        */
+> +       u8 cmd;
+> +       /*
+> +        * Data received from the controller. This filed is empty for the TX
+> +        * buffer
+> +        */
+> +       __be16 data;
+> +} __packed;
+
+filed -> field in both cases above.
+
+...
+
+> +       /*
+> +        * Lock to protect the layout and the spi transfer buffer.
+
+SPI
+
+> +        * tsc2046_adc_group_layout can be changed within update_scan_mode(),
+> +        * in this case the l[] and tx/rx buffer will be out of sync to each
+> +        * other.
+> +        */
+
+...
+
+> +static unsigned int tsc2046_adc_time_to_count(struct tsc2046_adc_priv *priv,
+> +                                             unsigned long time)
+> +{
+> +       unsigned int bit_count, sample_count;
+> +
+> +       bit_count = DIV_ROUND_UP(time * NSEC_PER_USEC, priv->time_per_bit_ns);
+
+Does it survive 32-bit builds?
+
+> +       sample_count = DIV_ROUND_UP(bit_count, TI_TSC2046_SAMPLE_BITS);
+> +
+> +       dev_dbg(&priv->spi->dev, "Effective speed %u, time per bit: %u, count bits: %u, count samples: %u\n",
+> +               priv->effective_speed_hz, priv->time_per_bit_ns,
+> +               bit_count, sample_count);
+> +
+> +       return sample_count;
+> +}
+
+...
+
+> +       /*
+> +        * if PD bits are 0, controller will automatically disable ADC, VREF and
+> +        * enable IRQ.
+> +        */
+> +       if (keep_power)
+> +               pd = TI_TSC2046_PD0_ADC_ON;
+> +       else
+> +               pd = 0;
+
+Can be ternary on one line, but it's up to you.
+
+...
+
+> +static u16 tsc2046_adc_get_value(struct tsc2046_adc_atom *buf)
+> +{
+> +       /* Last 3 bits on the wire are empty */
+
+Last?! You meant Least significant?
+Also, don't we lose precision if a new compatible chip appears that
+does fill those bits?
+
+Perhaps define the constant and put a comment why it's like this.
+
+> +       return get_unaligned_be16(&buf->data) >> 3;
+> +}
+
+...
+
+> +static size_t tsc2046_adc_group_set_layout(struct tsc2046_adc_priv *priv,
+> +                                          unsigned int group,
+> +                                          unsigned int ch_idx)
+> +{
+> +       struct tsc2046_adc_ch_cfg *ch = &priv->ch_cfg[ch_idx];
+> +       struct tsc2046_adc_group_layout *prev, *cur;
+> +       unsigned int max_count, count_skip;
+> +       unsigned int offset = 0;
+> +
+> +       if (group) {
+> +               prev = &priv->l[group - 1];
+> +               offset = prev->offset + prev->count;
+> +       }
+
+I guess you may easily refactor this by supplying a pointer to the
+current layout + current size.
+
+> +       cur = &priv->l[group];
+
+Also, can you move it down closer to the (single?) caller.
+
+> +}
+
+...
+
+> +static int tsc2046_adc_scan(struct iio_dev *indio_dev)
+> +{
+> +       struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
+> +       struct device *dev = &priv->spi->dev;
+> +       int group;
+> +       int ret;
+> +
+> +       ret = spi_sync(priv->spi, &priv->msg);
+> +       if (ret < 0) {
+
+> +               dev_err_ratelimited(dev, "SPI transfer filed: %pe\n",
+> +                                   ERR_PTR(ret));
+
+One line?
+
+> +               return ret;
+> +       }
+
+> +       ret = iio_push_to_buffers_with_timestamp(indio_dev, &priv->scan_buf,
+> +                                                iio_get_time_ns(indio_dev));
+> +       /* If consumer is kfifo, we may get a EBUSY here - ignore it. */
+
+the consumer
+
+> +       if (ret < 0 && ret != -EBUSY) {
+> +               dev_err_ratelimited(dev, "Failed to push scan buffer %pe\n",
+> +                                   ERR_PTR(ret));
+> +
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+
+
+...
+
+> +static enum hrtimer_restart tsc2046_adc_trig_more(struct hrtimer *hrtimer)
+> +{
+> +       struct tsc2046_adc_priv *priv = container_of(hrtimer,
+> +                                                    struct tsc2046_adc_priv,
+> +                                                    trig_timer);
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&priv->trig_lock, flags);
+> +
+> +       disable_irq_nosync(priv->spi->irq);
+
+> +       atomic_inc(&priv->trig_more_count);
+
+You already have a spin lock, do you need to use the atomic API?
+
+> +       iio_trigger_poll(priv->trig);
+> +
+> +       spin_unlock_irqrestore(&priv->trig_lock, flags);
+> +
+> +       return HRTIMER_NORESTART;
+> +}
+
+...
+
+> +       size_t size = 0;
+
+Move the assignment closer to the actual use of the variable.
+
+...
+
+> +       /*
+> +        * In case SPI controller do not report effective_speed_hz, use
+> +        * configure value and hope it will match
+
+Missed period.
+
+> +        */
+> +       if (!priv->effective_speed_hz)
+> +               priv->effective_speed_hz = priv->spi->max_speed_hz;
+
+Also can be ternary on one line, but it's up to you.
+
+...
+
+> +       name = devm_kasprintf(dev, GFP_KERNEL, "%s-%s",
+> +                             TI_TSC2046_NAME, dev_name(dev));
+
+No NULL check?
+Should be added or justified.
+
+...
+
+> +       trig->dev.parent = indio_dev->dev.parent;
+
+Don't we have this done by core (some recent patches in upstream)?
+
+...
+
+> +       ret = devm_iio_device_register(dev, indio_dev);
+> +       if (ret) {
+> +               dev_err(dev, "Failed to register iio device\n");
+
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+
+  return ret;
+or even
+  return devm_iio_device_register(dev, indio_dev);
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+With Best Regards,
+Andy Shevchenko
