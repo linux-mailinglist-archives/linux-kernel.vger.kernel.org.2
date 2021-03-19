@@ -2,152 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98577341210
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F3534121E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhCSBYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:24:08 -0400
-Received: from mail-mw2nam12on2048.outbound.protection.outlook.com ([40.107.244.48]:43392
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231375AbhCSBX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:23:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AqMhMm0PI7VKg4GxPHPbotYiBcojr0+nLvdB2ee2x/47V2H+J1EEp8XMu0CWyViLb7VsjswvodJNqAzP/o7y5qJf6htSLz0S/juYkaPRt393HrfeYImtzBgAGpO2aX3sl0dnhyly0sPUfRdE7Fm7UMPuxVfwpwiLaXKdlhPerMN8/Vj+Wzmb546UzqRoJo40KxygGITtwy/r4/GzjhNPr7LXua1nz0GMVgeCdfn8PyJKvQ5s6DFw0bOMPz20n7WnbjcnUvKgzWNZ1HT+xc6bxVPjGA4PefS/0kIFB7hmSx+7s3xp0lzy9/1s6i7+whINM6CIxuI0FlpBjs6O4/w+sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUPOVDzeOM1lnX3E6O81aEglFvA7amf6FgUqTfe5F0o=;
- b=P9Sn992Fv83ylwMKooEYLQbhc1qbU+zQWbvq+C4vQW5DfW1REXaTJJV++rQxKCBCMG3J5GKHGbb6yOC2ItXpi3C3HHk7gfCaegwx6LbcozgJMGxu+U3V4LZLeSe02sp/xRbrBaaHglMeYiMNElQo7p4w0XJGA9dElNuY1QCvgjSRuFfa1e0sM1XbUqDvKaK8WeaQc7EiGy9tVLD/BbMaRVyqHC+7z3brvwT2sI5KtYQiOPg4ocSQLfrEOB0iCRYxX7dRbqfJpaVCZtPQyp68PuJWJDd93TQ8mhak/c/2NvNHYKIvIy90wz2WaRPlh3eSyIrfwq4Phpb3Q7UIQYAFzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUPOVDzeOM1lnX3E6O81aEglFvA7amf6FgUqTfe5F0o=;
- b=oGnBNkLrRu+ZfA4RA5oY57eCPIzACFbBOcoJcwS2hp21Y++o7EQssY65SKEsKoGMDlYc6R5WBavIzKsX+Blv2mfhoPLMfEDYSA1358ngZ0fbgR9WL7v21jnaiieOwGbLc5s4SoM2jLm/g1EhMT1QVkzhGPvIm/QOzGyBpZpZajA=
-Received: from BN6PR13CA0048.namprd13.prod.outlook.com (2603:10b6:404:13e::34)
- by MN2PR12MB4607.namprd12.prod.outlook.com (2603:10b6:208:a1::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 01:23:53 +0000
-Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:13e:cafe::cb) by BN6PR13CA0048.outlook.office365.com
- (2603:10b6:404:13e::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend
- Transport; Fri, 19 Mar 2021 01:23:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB01.amd.com;
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 01:23:53 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 18 Mar
- 2021 20:23:52 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Thu, 18 Mar
- 2021 20:23:52 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
- Transport; Thu, 18 Mar 2021 20:23:48 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <shumingf@realtek.com>, <flove@realtek.com>,
-        <derek.fang@realtek.com>, <Alexander.Deucher@amd.com>,
-        <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/2] ASoC: amd: update spdx license for acp machine driver
-Date:   Fri, 19 Mar 2021 07:10:43 +0530
-Message-ID: <1616118056-5506-2-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616118056-5506-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1616118056-5506-1-git-send-email-Vijendar.Mukunda@amd.com>
+        id S232167AbhCSBag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:30:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13197 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhCSBaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 21:30:23 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1mVK0PCrzmYdp;
+        Fri, 19 Mar 2021 09:27:53 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Mar 2021 09:30:10 +0800
+Subject: Re: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20210125090402.1429-1-lushenming@huawei.com>
+ <20210129155730.3a1d49c5@omen.home.shazbot.org>
+ <MWHPR11MB188684B42632FD0B9B5CA1C08CB69@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <47bf7612-4fb0-c0bb-fa19-24c4e3d01d3f@huawei.com>
+ <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <4f904b23-e434-d42b-15a9-a410f3b4edb9@huawei.com>
+ <MWHPR11MB188656845973A662A7E96BDA8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <c152f419-acc4-ee33-dab1-ff0f9baf2f24@huawei.com>
+ <a535a91a-3af7-b43d-8399-01255a070f2b@linux.intel.com>
+CC:     Cornelia Huck <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
+        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <4327b3ac-858d-30d0-9fe4-bd4ccc0fbd40@huawei.com>
+Date:   Fri, 19 Mar 2021 09:30:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e8788de3-c263-4c1a-5030-08d8ea75a882
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4607:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB46078381C5F0C348D4652AD097689@MN2PR12MB4607.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fqn07Clj9mCL8kDQtZHLxiA/73ZgxCWuhlNjnnp91F+2kVcNFjFWFa2+OoF+jy3rpJtKf+pNQW7R66+aGKHBCw2NHC6rDa6/o/PtRzHBUXX28VuwJ8c2RVtUkmCk2ZM5iDvK5YDtlr7zeVotnxkCk/pdl/FzcuYC+oDcBpepDA+BIaFubmYsOJxTflW0Bbi+bCaPPxW7fQ0+uObmDgEyogAKRZzkC1jO987NVWaMs1yEvsCi7MjC0FFGUkzZxyLqhTsfsOJjYlqeYkXZslAYB4m9lFim7WG2HJ+w3InNwwjdJ2xs6bY+hAYEIoUE7QF3W4j6OR/Hgy+ZP04UYpDznGxSbzLt8LYWJI27JBU5IT6TdPi719cyybhxJp7vz2npwK0gcPUVHWZBKXFiLq0CuGbh7xXjMfhzz15lWJIYqTvWDASWcq27RW7TQMj4KPtWwokZP31nzYtShMLlUV4z0QDA7EXro5/5jnm4rSoBSxkL7FOS1IAHI8UAcsGgRZ1oY4tcZ6klnFUa4C/jlKdLd68CVndxNw4Ek90BBkFUj3BkCsya32FVffoy2pv3LfUN5aS6fy+6gqW+0aqfYuA0AJzZOkNyQuXibrsUzpljrqgAaIS4doR0UY8Z6nCYH+ykrAYAPHgVwBBcrGNOAGCa0Cbu7hjeimLzaO2NFzJ6AlmTY1xFbi/jBtB7g10TLaIO
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(136003)(376002)(46966006)(36840700001)(478600001)(82740400003)(7696005)(8676002)(110136005)(26005)(70206006)(70586007)(356005)(2906002)(83380400001)(81166007)(54906003)(336012)(6666004)(426003)(5660300002)(186003)(7416002)(8936002)(316002)(36756003)(82310400003)(2616005)(36860700001)(4326008)(86362001)(15650500001)(47076005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 01:23:53.1651
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8788de3-c263-4c1a-5030-08d8ea75a882
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4607
+In-Reply-To: <a535a91a-3af7-b43d-8399-01255a070f2b@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update SPDX license for acp machine driver.
+Hi Baolu,
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/acp-da7219-max98357a.c | 29 +++++------------------------
- 1 file changed, 5 insertions(+), 24 deletions(-)
+On 2021/3/19 8:33, Lu Baolu wrote:
+> On 3/18/21 7:53 PM, Shenming Lu wrote:
+>> On 2021/3/18 17:07, Tian, Kevin wrote:
+>>>> From: Shenming Lu <lushenming@huawei.com>
+>>>> Sent: Thursday, March 18, 2021 3:53 PM
+>>>>
+>>>> On 2021/2/4 14:52, Tian, Kevin wrote:>>> In reality, many
+>>>>>>> devices allow I/O faulting only in selective contexts. However, there
+>>>>>>> is no standard way (e.g. PCISIG) for the device to report whether
+>>>>>>> arbitrary I/O fault is allowed. Then we may have to maintain device
+>>>>>>> specific knowledge in software, e.g. in an opt-in table to list devices
+>>>>>>> which allows arbitrary faults. For devices which only support selective
+>>>>>>> faulting, a mediator (either through vendor extensions on vfio-pci-core
+>>>>>>> or a mdev wrapper) might be necessary to help lock down non-faultable
+>>>>>>> mappings and then enable faulting on the rest mappings.
+>>>>>>
+>>>>>> For devices which only support selective faulting, they could tell it to the
+>>>>>> IOMMU driver and let it filter out non-faultable faults? Do I get it wrong?
+>>>>>
+>>>>> Not exactly to IOMMU driver. There is already a vfio_pin_pages() for
+>>>>> selectively page-pinning. The matter is that 'they' imply some device
+>>>>> specific logic to decide which pages must be pinned and such knowledge
+>>>>> is outside of VFIO.
+>>>>>
+>>>>>  From enabling p.o.v we could possibly do it in phased approach. First
+>>>>> handles devices which tolerate arbitrary DMA faults, and then extends
+>>>>> to devices with selective-faulting. The former is simpler, but with one
+>>>>> main open whether we want to maintain such device IDs in a static
+>>>>> table in VFIO or rely on some hints from other components (e.g. PF
+>>>>> driver in VF assignment case). Let's see how Alex thinks about it.
+>>>>
+>>>> Hi Kevin,
+>>>>
+>>>> You mentioned selective-faulting some time ago. I still have some doubt
+>>>> about it:
+>>>> There is already a vfio_pin_pages() which is used for limiting the IOMMU
+>>>> group dirty scope to pinned pages, could it also be used for indicating
+>>>> the faultable scope is limited to the pinned pages and the rest mappings
+>>>> is non-faultable that should be pinned and mapped immediately? But it
+>>>> seems to be a little weird and not exactly to what you meant... I will
+>>>> be grateful if you can help to explain further. :-)
+>>>>
+>>>
+>>> The opposite, i.e. the vendor driver uses vfio_pin_pages to lock down
+>>> pages that are not faultable (based on its specific knowledge) and then
+>>> the rest memory becomes faultable.
+>>
+>> Ahh...
+>> Thus, from the perspective of VFIO IOMMU, if IOPF enabled for such device,
+>> only the page faults within the pinned range are valid in the registered
+>> iommu fault handler...
+> 
+> Isn't it opposite? The pinned pages will never generate any page faults.
+> I might miss some contexts here.
+It seems that vfio_pin_pages() just pin some pages and record the pinned scope to pfn_list of vfio_dma.
+No mapping is established, so we still has page faults.
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index e65e007..84e3906 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -1,27 +1,8 @@
--/*
-- * Machine driver for AMD ACP Audio engine using DA7219 & MAX98357 codec
-- *
-- * Copyright 2017 Advanced Micro Devices, Inc.
-- *
-- * Permission is hereby granted, free of charge, to any person obtaining a
-- * copy of this software and associated documentation files (the "Software"),
-- * to deal in the Software without restriction, including without limitation
-- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-- * and/or sell copies of the Software, and to permit persons to whom the
-- * Software is furnished to do so, subject to the following conditions:
-- *
-- * The above copyright notice and this permission notice shall be included in
-- * all copies or substantial portions of the Software.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-- * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
-- * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-- * OTHER DEALINGS IN THE SOFTWARE.
-- *
-- */
-+// SPDX-License-Identifier: MIT
-+//
-+// Machine driver for AMD ACP Audio engine using DA7219, RT5682 & MAX98357 codec
-+//
-+//Copyright 2017-2021 Advanced Micro Devices, Inc.
- 
- #include <sound/core.h>
- #include <sound/soc.h>
--- 
-2.7.4
+IIUC, vfio_pin_pages() is used to
+1. pin pages for non-iommu backed devices.
+2. mark dirty scope for non-iommu backed devices and iommu backed devices.
 
+Thanks,
+Keqian
+
+> 
+>> I have another question here, for the IOMMU backed devices, they are already
+>> all pinned and mapped when attaching, is there a need to call vfio_pin_pages()
+>> to lock down pages for them? Did I miss something?...
+> 
+> Best regards,
+> baolu
+> .
+> 
