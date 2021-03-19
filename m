@@ -2,190 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668423423DA
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6C3423DB
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhCSR5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43638 "EHLO
+        id S230360AbhCSR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhCSR4e (ORCPT
+        with ESMTP id S229960AbhCSR44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:56:34 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CE6C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:56:34 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m3so4190453pga.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+q/3pbtU4KRBeCiClf1jVde3rqJff5tAE3G/yUO/twY=;
-        b=Px46bBJ7mvrljx8ek9g5SOvd1jKb2iflgcqeVZiVe5xUV+ssBoFXrkhepVOQKvAu0W
-         wc544ZAyTrYKxp4eU7wneG31VhgV2pG4OO8vR/OUGy+eT4tlva1ClajEyl5BGBpqNmzG
-         hunNRfv4R9KjhPsKcrcyZbynh9VC1EqLCPhJk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+q/3pbtU4KRBeCiClf1jVde3rqJff5tAE3G/yUO/twY=;
-        b=XlBeQqEK6JSN+qzacM7ehtLaL6bLU5hcxCzFkkjorY0z2S5gETMnxYDIYEVhaA4BK1
-         l0mS8+LmAdnV9ImXDZVITdUA47f8o4QY2uQ/vt8fwgU5xno/cvWSQ/YaCR+fHjTbYTlz
-         n+Rnc88m8SjrU00ckCGp/30s8DFLQHBRF+/0/NMfyj7qSAJyFQbgzGWAem9lGbqd43GZ
-         0zGYgo7bEAdG5lr2QAgvYw8t1lh4GcJyD8k7z/nMGq0m1ebFceMLBOLF5b6WVy6vAcOI
-         r9GFeDVgZ/cY/R/IAsdJfOmydINLctE3DEHuRknjd36JTN6ULuDnsrsL2eZK+Xnj365m
-         xNsg==
-X-Gm-Message-State: AOAM531cBozNdBK16W2fG6YDysTSQMddBu5OkWQf3XQrAL+dv0pq9+VH
-        nzystXlSjPF2qzqztoyMjAv62g==
-X-Google-Smtp-Source: ABdhPJx6hzgtsuXfb3wb8ZxJRkArVpobtGIGuejpGbWx0f2z95FZcMrh5SMDfiqjnPliwFHzGPG83w==
-X-Received: by 2002:aa7:8493:0:b029:1ee:75b2:2865 with SMTP id u19-20020aa784930000b02901ee75b22865mr10002946pfn.61.1616176594196;
-        Fri, 19 Mar 2021 10:56:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t1sm6114696pfc.173.2021.03.19.10.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:56:33 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:56:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v30 10/12] selftests/landlock: Add user space tests
-Message-ID: <202103191026.D936362B@keescook>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-11-mic@digikod.net>
+        Fri, 19 Mar 2021 13:56:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C4BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/2Y1OwGEzXvD6PhFI0NTCqzSzvDFFKVPWIaku64VVVM=; b=j0CTxvkifpqB5TRCg01v+fZzlG
+        Zk6yrZrhmn/7H5t7ziv4hhJKXtUULuQrk9Hr/u0X+9/chRR8Bu7Bpqe3/zsq/oyIw/MAecqVlopxI
+        RUPjxDTOFQ3L3TkRt1wsJKSj6h49GFkInZ+RPvmO6UizXiilHflW+6+j9rDtf3qRC88cZ6fHRMHDG
+        8CtQrhP/TJWdWfed7Fc7Yoz4DErgvoHSUz4FlWXdF3Vjh5FnQN8YUObAH0L/NGQUGVp6lHXV2ldOm
+        mUFYQqoj9C8TIKwOj4DVQa6wgnIfvWUdexrpfkST3U6Ys1sRxWp0B7kfhac1/DT5S+IP9T9L6kMs7
+        1mz2FHIg==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNJMe-001RDI-Bs; Fri, 19 Mar 2021 17:56:49 +0000
+Date:   Fri, 19 Mar 2021 10:56:48 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dm: ebs: Several typo fixes
+In-Reply-To: <20210319011750.23468-1-unixbhaskar@gmail.com>
+Message-ID: <d639d14b-39cd-6a11-5536-4b8fcc9f3a7@bombadil.infradead.org>
+References: <20210319011750.23468-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210316204252.427806-11-mic@digikod.net>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210319_105648_424076_8AC441EE 
+X-CRM114-Status: GOOD (  14.41  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/retrievd/retrieved/
+    > s/misalignement/misalignment/ > s/funtion/function/ > > Signed-off-by:
+   Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 09:42:50PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> Test all Landlock system calls, ptrace hooks semantic and filesystem
-> access-control with multiple layouts.
-> 
-> Test coverage for security/landlock/ is 93.6% of lines.  The code not
-> covered only deals with internal kernel errors (e.g. memory allocation)
-> and race conditions.
-> 
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> Reviewed-by: Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>
-> Link: https://lore.kernel.org/r/20210316204252.427806-11-mic@digikod.net
 
-This is terrific. I love the coverage. How did you measure this, BTW?
-To increase it into memory allocation failures, have you tried
-allocation fault injection:
-https://www.kernel.org/doc/html/latest/fault-injection/fault-injection.html
 
-> [...]
-> +TEST(inconsistent_attr) {
-> +	const long page_size = sysconf(_SC_PAGESIZE);
-> +	char *const buf = malloc(page_size + 1);
-> +	struct landlock_ruleset_attr *const ruleset_attr = (void *)buf;
-> +
-> +	ASSERT_NE(NULL, buf);
-> +
-> +	/* Checks copy_from_user(). */
-> +	ASSERT_EQ(-1, landlock_create_ruleset(ruleset_attr, 0, 0));
-> +	/* The size if less than sizeof(struct landlock_attr_enforce). */
-> +	ASSERT_EQ(EINVAL, errno);
-> +	ASSERT_EQ(-1, landlock_create_ruleset(ruleset_attr, 1, 0));
-> +	ASSERT_EQ(EINVAL, errno);
+On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
 
-Almost everywhere you're using ASSERT instead of EXPECT. Is this correct
-(in the sense than as soon as an ASSERT fails the rest of the test is
-skipped)? I do see you using EXPECT is some places, but I figured I'd
-ask about the intention here.
+>
+> s/retrievd/retrieved/
+> s/misalignement/misalignment/
+> s/funtion/function/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-> +/*
-> + * TEST_F_FORK() is useful when a test drop privileges but the corresponding
-> + * FIXTURE_TEARDOWN() requires them (e.g. to remove files from a directory
-> + * where write actions are denied).  For convenience, FIXTURE_TEARDOWN() is
-> + * also called when the test failed, but not when FIXTURE_SETUP() failed.  For
-> + * this to be possible, we must not call abort() but instead exit smoothly
-> + * (hence the step print).
-> + */
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Hm, interesting. I think this should be extracted into a separate patch
-and added to the test harness proper.
-
-Could this be solved with TEARDOWN being called on SETUP failure?
-
-> +#define TEST_F_FORK(fixture_name, test_name) \
-> +	static void fixture_name##_##test_name##_child( \
-> +		struct __test_metadata *_metadata, \
-> +		FIXTURE_DATA(fixture_name) *self, \
-> +		const FIXTURE_VARIANT(fixture_name) *variant); \
-> +	TEST_F(fixture_name, test_name) \
-> +	{ \
-> +		int status; \
-> +		const pid_t child = fork(); \
-> +		if (child < 0) \
-> +			abort(); \
-> +		if (child == 0) { \
-> +			_metadata->no_print = 1; \
-> +			fixture_name##_##test_name##_child(_metadata, self, variant); \
-> +			if (_metadata->skip) \
-> +				_exit(255); \
-> +			if (_metadata->passed) \
-> +				_exit(0); \
-> +			_exit(_metadata->step); \
-> +		} \
-> +		if (child != waitpid(child, &status, 0)) \
-> +			abort(); \
-> +		if (WIFSIGNALED(status) || !WIFEXITED(status)) { \
-> +			_metadata->passed = 0; \
-> +			_metadata->step = 1; \
-> +			return; \
-> +		} \
-> +		switch (WEXITSTATUS(status)) { \
-> +		case 0: \
-> +			_metadata->passed = 1; \
-> +			break; \
-> +		case 255: \
-> +			_metadata->passed = 1; \
-> +			_metadata->skip = 1; \
-> +			break; \
-> +		default: \
-> +			_metadata->passed = 0; \
-> +			_metadata->step = WEXITSTATUS(status); \
-> +			break; \
-> +		} \
-> +	} \
-
-This looks like a subset of __wait_for_test()? Could __TEST_F_IMPL() be
-updated instead to do this? (Though the fork overhead might not be great
-for everyone.)
-
--- 
-Kees Cook
+> ---
+> drivers/md/dm-ebs-target.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/md/dm-ebs-target.c b/drivers/md/dm-ebs-target.c
+> index 55bcfb74f51f..71475a2410be 100644
+> --- a/drivers/md/dm-ebs-target.c
+> +++ b/drivers/md/dm-ebs-target.c
+> @@ -28,7 +28,7 @@ struct ebs_c {
+> 	spinlock_t lock;		/* Guard bios input list above. */
+> 	sector_t start;			/* <start> table line argument, see ebs_ctr below. */
+> 	unsigned int e_bs;		/* Emulated block size in sectors exposed to upper layer. */
+> -	unsigned int u_bs;		/* Underlying block size in sectors retrievd from/set on lower layer device. */
+> +	unsigned int u_bs;		/* Underlying block size in sectors retrieved from/set on lower layer device. */
+> 	unsigned char block_shift;	/* bitshift sectors -> blocks used in dm-bufio API. */
+> 	bool u_bs_set:1;		/* Flag to indicate underlying block size is set on table line. */
+> };
+> @@ -43,7 +43,7 @@ static inline sector_t __block_mod(sector_t sector, unsigned int bs)
+> 	return sector & (bs - 1);
+> }
+>
+> -/* Return number of blocks for a bio, accounting for misalignement of start and end sectors. */
+> +/* Return number of blocks for a bio, accounting for misalignment of start and end sectors. */
+> static inline unsigned int __nr_blocks(struct ebs_c *ec, struct bio *bio)
+> {
+> 	sector_t end_sector = __block_mod(bio->bi_iter.bi_sector, ec->u_bs) + bio_sectors(bio);
+> @@ -171,7 +171,7 @@ static void __ebs_forget_bio(struct ebs_c *ec, struct bio *bio)
+> 	dm_bufio_forget_buffers(ec->bufio, __sector_to_block(ec, sector), blocks);
+> }
+>
+> -/* Worker funtion to process incoming bios. */
+> +/* Worker function to process incoming bios. */
+> static void __ebs_process_bios(struct work_struct *ws)
+> {
+> 	int r;
+> --
+> 2.26.2
+>
+>
