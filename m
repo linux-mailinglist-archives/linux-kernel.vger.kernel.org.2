@@ -2,201 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791D434254F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AB734256F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhCSSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhCSSxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 468CD6191F;
-        Fri, 19 Mar 2021 18:53:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616180024;
-        bh=NwrtCO6JNbhykgaZnJI5HFj68c9ePk8Pf1xRIwTiWys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iNpInxvuzmJYjrSuGnFKJUchQYHAX33qIUU75+sTbxSRGGfrkazg472r9REvA4yzk
-         2IRuJGLN0iVIKMqwoK/vEP+/0YE+Ad3sJe6dyA74/SzRv3elKepID9Oj/Kn4yHzTfX
-         iAoD7C7cT8ddnD7Y4Rnht+vWTT7Ni9WKYKodpga/jEkbzSI1n0OaIHwxFjybCbZmXp
-         GjTXmszGDFo/bf2LOVEu5ac79qxsexjYpxmm8V48CKVQwAdFRTGUzLf+Lr8M7kAXS4
-         xAuujS8A4i5WiRool75oNI6FFiBF9P7mXgd2xtubLBSs/PlHas0bzNRYRWNvA6OjB8
-         S1DHtLjMIhGRg==
-Received: by pali.im (Postfix)
-        id 596916FE; Fri, 19 Mar 2021 19:53:41 +0100 (CET)
-Date:   Fri, 19 Mar 2021 19:53:41 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
-Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
-Message-ID: <20210319185341.nyxmo7nwii5fzsxc@pali>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
- <20210224061132.26526-4-jianjun.wang@mediatek.com>
- <20210311123844.qzl264ungtk7b6xz@pali>
- <1615621394.25662.70.camel@mhfsdcap03>
- <20210318000211.ykjsfavfc7suu2sb@pali>
- <1616046487.31760.16.camel@mhfsdcap03>
+        id S230063AbhCSSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:55:32 -0400
+Received: from smtp-bc0b.mail.infomaniak.ch ([45.157.188.11]:52505 "EHLO
+        smtp-bc0b.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230219AbhCSSyb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:54:31 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F2Cjq0h8fzMqSGc;
+        Fri, 19 Mar 2021 19:54:23 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F2Cjk3K5rzlh8TH;
+        Fri, 19 Mar 2021 19:54:18 +0100 (CET)
+Subject: Re: [PATCH v30 12/12] landlock: Add user and kernel documentation
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-13-mic@digikod.net> <202103191056.71AB0515A@keescook>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <81c76347-9e92-244f-6f32-600984a6c5cb@digikod.net>
+Date:   Fri, 19 Mar 2021 19:54:34 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <202103191056.71AB0515A@keescook>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1616046487.31760.16.camel@mhfsdcap03>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 18 March 2021 13:48:07 Jianjun Wang wrote:
-> On Thu, 2021-03-18 at 01:02 +0100, Pali RohÃ¡r wrote:
-> > On Saturday 13 March 2021 15:43:14 Jianjun Wang wrote:
-> > > On Thu, 2021-03-11 at 13:38 +0100, Pali RohÃ¡r wrote:
-> > > > On Wednesday 24 February 2021 14:11:28 Jianjun Wang wrote:
-> > > > > +static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
-> > > > > +{
-> > > > ...
-> > > > > +
-> > > > > +	/* Delay 100ms to wait the reference clocks become stable */
-> > > > > +	msleep(100);
-> > > > > +
-> > > > > +	/* De-assert PERST# signal */
-> > > > > +	val &= ~PCIE_PE_RSTB;
-> > > > > +	writel_relaxed(val, port->base + PCIE_RST_CTRL_REG);
-> > > > 
-> > > > Hello! This is a new driver which introduce yet another custom timeout
-> > > > prior PERST# signal for PCIe card is de-asserted. Timeouts for other
-> > > > drivers I collected in older email [2].
-> > > > 
-> > > > Please look at my email [1] about PCIe Warm Reset if you have any clue
-> > > > about it. Lorenzo and Rob already expressed that this timeout should not
-> > > > be driver specific. But nobody was able to "decode" and "understand"
-> > > > PCIe spec yet about these timeouts.
-> > > 
-> > > Hi Pali,
-> > > 
-> > > I think this is more like a platform specific timeout, which is used to
-> > > wait for the reference clocks to become stable and finish the reset flow
-> > > of HW blocks.
-> > > 
-> > > Here is the steps to start a link training in this HW:
-> > > 
-> > > 1. Assert all reset signals which including the transaction layer, PIPE
-> > > interface and internal bus interface;
-> > > 
-> > > 2. De-assert reset signals except the PERST#, this will make the
-> > > physical layer active and start to output the reference clock, but the
-> > > EP device remains in the reset state.
-> > >    Before releasing the PERST# signal, the HW blocks needs at least 10ms
-> > > to finish the reset flow, and ref-clk needs about 30us to become stable.
-> > > 
-> > > 3. De-assert PERST# signal, wait LTSSM enter L0 state.
-> > > 
-> > > This 100ms timeout is reference to TPVPERL in the PCIe CEM spec. Since
-> > > we are in the kernel stage, the power supply has already stabled, this
-> > > timeout may not take that long.
-> > 
-> > I think that this is not platform specific timeout or platform specific
-> > steps. This matches generic steps as defined in PCIe CEM spec, section
-> > 2.2.1. Initial Power-Up (G3 to S0).
-> > 
-> > What is platform specific is just how to achieve these steps.
-> > 
-> > Am I right?
-> > 
-> > ...
-> > 
-> > TPVPERL is one of my timeout candidates as minimal required timeout for
-> > Warm Reset. I have wrote it in email:
-> > 
-> > https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
-> > 
-> > But I'm not sure as specially in none diagram is described just warm
-> > reset as defined in mPCIe CEM (3.2.4.3. PERST# Signal).
-> > 
-> > ...
-> > 
-> > Anyway, I would suggest to define constants for those timeouts. I guess
-> > that in future we could be able to define "generic" timeout constants
-> > which would not be in private driver section, but in some common header
-> > file.
+
+On 19/03/2021 19:03, Kees Cook wrote:
+> On Tue, Mar 16, 2021 at 09:42:52PM +0100, Mickaël Salaün wrote:
+>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>
+>> This documentation can be built with the Sphinx framework.
 > 
-> I agree with this, but I'm not sure if we really need that long time in
-> the kernel stage, because the power supply has already stable and it's
-> really impact the boot time, especially when the platform have multi
-> ports and not connect any EP device, we need to wait 200ms for each port
-> when system bootup.
+> Well, yes. :) Maybe describe what the documentation covers instead here.
+> Regardless: yay docs! This is great.
 
-Ports are independent. So you can initialize them in parallel, right?
+Well, I don't know what to describe other than the subject, the rest is
+in the patch. :)
 
-If you initialize each port in separate worker then during msleep calls
-kernel can schedule other kernel thread to run and so it does not
-increase boot time. While pcie is sleeping kernel can do other things.
-So the result is that whole boot time is not increased, just reordered.
-
-> For this PCIe controller driver, I would like to change the timeout
-> value to 10ms to comply with the HW design, and save some boot time.
-
-In case you can connect _any_ PCIe card to your HW then you cannot
-decrease or change timeouts required by PCIe specs. Otherwise there can
-be a card which would not be initialized correctly.
-
-I'm debugging driver for aardvark PCIe controller and I see that Compex
-cards really needs these timeouts, otherwise link is down and card
-cannot be detected.
-
-So I guess that there can be also other cards which requires other
-timeouts as specified in PCIe specs.
-
-> > 
-> > > > > +
-> > > > > +	/* Check if the link is up or not */
-> > > > > +	err = readl_poll_timeout(port->base + PCIE_LINK_STATUS_REG, val,
-> > > > > +				 !!(val & PCIE_PORT_LINKUP), 20,
-> > > > > +				 50 * USEC_PER_MSEC);
-> > > > 
-> > > > IIRC, you need to wait at least 100ms after de-asserting PERST# signal
-> > > > as it is required by PCIe specs and also because experiments proved that
-> > > > some Compex wifi cards (e.g. WLE900VX) are not detected if you do not
-> > > > wait this minimal time.
-> > > 
-> > > Yes, this should be 100ms, I will fix it at next version, thanks for
-> > > your review.
-> > 
-> > In past Bjorn suggested to use msleep(PCI_PM_D3COLD_WAIT); macro for
-> > this step during reviewing aardvark driver.
-> > 
-> > https://lore.kernel.org/linux-pci/20190426161050.GA189964@google.com/
-> > 
-> > And next iteration used this PCI_PM_D3COLD_WAIT macro instead of 100:
-> > 
-> > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/
 > 
-> Sure, I will use PCI_PM_D3COLD_WAIT macro instead in the next version.
+>> [...]
+>> +Bind mounts and OverlayFS
+>> +-------------------------
+>> +
+>> +Landlock enables to restrict access to file hierarchies, which means that these
+>> +access rights can be propagated with bind mounts (cf.
+>> +:doc:`/filesystems/sharedsubtree`) but not with :doc:`/filesystems/overlayfs`.
+>> +
+>> +A bind mount mirrors a source file hierarchy to a destination.  The destination
+>> +hierarchy is then composed of the exact same files, on which Landlock rules can
+>> +be tied, either via the source or the destination path.  These rules restrict
+>> +access when they are encountered on a path, which means that they can restrict
+>> +access to multiple file hierarchies at the same time, whether these hierarchies
+>> +are the result of bind mounts or not.
+>> +
+>> +An OverlayFS mount point consists of upper and lower layers.  These layers are
+>> +combined in a merge directory, result of the mount point.  This merge hierarchy
+>> +may include files from the upper and lower layers, but modifications performed
+>> +on the merge hierarchy only reflects on the upper layer.  From a Landlock
+>> +policy point of view, each OverlayFS layers and merge hierarchies are
+>> +standalone and contains their own set of files and directories, which is
+>> +different from bind mounts.  A policy restricting an OverlayFS layer will not
+>> +restrict the resulted merged hierarchy, and vice versa.
 > 
-> Thanks.
+> Can you include some examples about what a user of landlock should do?
+> i.e. what are some examples of unexpected results when trying to write
+> policy that runs on top of overlayfs, etc?
+
+Landlock works well with overlayfs, at least from my point of view. It
+may be a bit disturbing with bind mount though, but it is the same with
+other access-controls (e.g. DAC). Landlock users should just think about
+file hierarchies and create their policies accordingly. A user should
+not try to adapt a policy according to his/her understanding of
+overlayfs, but just think about file hierarchies.
+
 > 
-> > 
-> > > Thanks.
-> > > > 
-> > > > > +	if (err) {
-> > > > > +		val = readl_relaxed(port->base + PCIE_LTSSM_STATUS_REG);
-> > > > > +		dev_err(port->dev, "PCIe link down, ltssm reg val: %#x\n", val);
-> > > > > +		return err;
-> > > > > +	}
-> > > > 
-> > > > [1] - https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
-> > > > [2] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
-> > > 
+>> [...]
+>> +File renaming and linking
+>> +-------------------------
+>> +
+>> +Because Landlock targets unprivileged access controls, it is needed to properly
+>> +handle composition of rules.  Such property also implies rules nesting.
+>> +Properly handling multiple layers of ruleset, each one of them able to restrict
+>> +access to files, also implies to inherit the ruleset restrictions from a parent
+>> +to its hierarchy.  Because files are identified and restricted by their
+>> +hierarchy, moving or linking a file from one directory to another implies to
+>> +propagate the hierarchy constraints.  To protect against privilege escalations
+>> +through renaming or linking, and for the sack of simplicity, Landlock currently
 > 
+> typo: sack -> sake
+
+Indeed
+
+> 
+>> [...]
+>> +Special filesystems
+>> +-------------------
+>> +
+>> +Access to regular files and directories can be restricted by Landlock,
+>> +according to the handled accesses of a ruleset.  However, files that do not
+>> +come from a user-visible filesystem (e.g. pipe, socket), but can still be
+>> +accessed through /proc/self/fd/, cannot currently be restricted.  Likewise,
+>> +some special kernel filesystems such as nsfs, which can be accessed through
+>> +/proc/self/ns/, cannot currently be restricted.  For now, these kind of special
+>> +paths are then always allowed.  Future Landlock evolutions will enable to
+>> +restrict such paths with dedicated ruleset flags.
+> 
+> With this series, can /proc (at the top level) be blocked? (i.e. can a
+> landlock user avoid the weirdness by making /proc/$pid/ unavailable?)
+
+/proc can be blocked, but not /proc/*/ns/* because of disconnected
+roots. I plan to address this.
+
+> 
+>> +Ruleset layers
+>> +--------------
+>> +
+>> +There is a limit of 64 layers of stacked rulesets.  This can be an issue for a
+>> +task willing to enforce a new ruleset in complement to its 64 inherited
+>> +rulesets.  Once this limit is reached, sys_landlock_restrict_self() returns
+>> +E2BIG.  It is then strongly suggested to carefully build rulesets once in the
+>> +life of a thread, especially for applications able to launch other applications
+>> +that may also want to sandbox themselves (e.g. shells, container managers,
+>> +etc.).
+> 
+> How was this value (64) chosen?
+> 
+
+It was first an implementation constraint to limit the memory allocated
+for each rule, but it could now be increased if needed. The
+implementation still uses u64 for the sake of simplicity, but we could
+switch to a bitmap type.
