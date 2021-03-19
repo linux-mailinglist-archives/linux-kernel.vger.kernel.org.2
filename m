@@ -2,280 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD4E3424E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68343424F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhCSSj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:39:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30148 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231234AbhCSSjC (ORCPT
+        id S230365AbhCSSke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhCSSkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:39:02 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JIYkJT161697;
-        Fri, 19 Mar 2021 14:39:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=BOH7TQv1wsE3dEoU3qqN+5EXplktNRzzQe64eQZnSAI=;
- b=IE2eoWRnSER3c8+QDiVzMG3AkcCLhJ0JDAX4AWDS4l00a/1BdiFmXtKM/U9lGBpKP1Kd
- W/Ikne0mEKSJnngrkxWiiyB0aG/4VlQtI+BrCMahfckzgd9Hlzs5MyleFy1Jnyy8l9it
- NQptlVFLCLYbaIknm6LaCNYJv9lY+xTLO/MUoPfoPPiEKcmGH8oBO6IWjwGoq7sBEDMi
- Bc+UT+S5nKSOQhl3AfW25Fd4dBoeC51p/Q4nW5Zw2T437FSMa5JO8NFNFoRkeqXv9YZP
- rGWcr1RkhXDMNl7Ai1zwpdQ+nEZIO8YRG4nyBrP6UZ/mDV6XllrMZxuWFUuewL7D26JP 7Q== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37c6tgaadk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 14:39:00 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JIa16O030010;
-        Fri, 19 Mar 2021 18:38:59 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 37brpfrygt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 18:38:58 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JIccPI34734536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 18:38:38 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D42FE4204C;
-        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 982F442052;
-        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
-Received: from osiris (unknown [9.171.9.107])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 19 Mar 2021 18:38:55 +0000 (GMT)
-Date:   Fri, 19 Mar 2021 19:38:54 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.12-rc4
-Message-ID: <YFTvvrxm7BxAPIP5@osiris>
+        Fri, 19 Mar 2021 14:40:22 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAE2C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:40:21 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v23so3359067ple.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3u9mAxNEw9z6za6KFcOo+uHqgiwiwZM5DCTyyspgn/o=;
+        b=Yg6m4KOAXpRmtJyRDoH2yl2CHKC+3drp9u+T3OirmqRro1Mir6CpDUGmJiH6P/z7Kv
+         6KqrLz2fDgze6egHZS4RwPVSKmftmVpcaI/zzQassSY0Au1qSOniGyFwnlpaKbGukS1B
+         5ia9D9yVB+s3iHhoKPejUMLE1dxUY8uW3AgWA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3u9mAxNEw9z6za6KFcOo+uHqgiwiwZM5DCTyyspgn/o=;
+        b=AFiHzmWtQFYx6tY0CpeK/IzY4suuuMbEmzSzDNMFZs3FahCShEnY2ZZ4gxYIobss9L
+         Gw/H/wy5fX9XvfiYMiJKFk2jJoB9F/FGK2+fcy44ell+FgnGVQLyKGOAT4h6dpRDapRW
+         wFVx8Nui48IFIqMNviqB+l8gInBmODcpDLhNCJlQLcHggjpJr5jTbfBKCe69y17VPOG+
+         PilIr6LCS1x2ClC6Qc2k/BarpDzLH5V3kMYFR2seJdZI7QOYKboou+xhuMA+XnqbCRT3
+         Rd/Al2sZKI1S3xPC4x1qheXEc5uG75E3YKXFqmf3bRiYdnVgAOmhgXSgtQPbaCjBnr66
+         lsYA==
+X-Gm-Message-State: AOAM5333s7rOb+euqAKnENGVgKDc0CwzLYvAAxAvgUvGdwQtQ89j2gj9
+        NSnXZ5ZLlsDzqKlhPVs6ESAjGw==
+X-Google-Smtp-Source: ABdhPJw6vg1JHhR2dRDHudF/k8t7iI2PJ2EYrpqaNdHYFuKnjDOkJMrYPpYmCpqtqBVqRL+QAvirUw==
+X-Received: by 2002:a17:902:ea0e:b029:e4:81d4:ddae with SMTP id s14-20020a170902ea0eb02900e481d4ddaemr15830817plg.12.1616179221292;
+        Fri, 19 Mar 2021 11:40:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i62sm6034208pgc.11.2021.03.19.11.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 11:40:20 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 11:40:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v30 02/12] landlock: Add ruleset and domain management
+Message-ID: <202103191114.C87C5E2B69@keescook>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-3-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-19_10:2021-03-19,2021-03-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 bulkscore=0 clxscore=1011 adultscore=0 impostorscore=0
- malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103190125
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316204252.427806-3-mic@digikod.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Mar 16, 2021 at 09:42:42PM +0100, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> A Landlock ruleset is mainly a red-black tree with Landlock rules as
+> nodes.  This enables quick update and lookup to match a requested
+> access, e.g. to a file.  A ruleset is usable through a dedicated file
+> descriptor (cf. following commit implementing syscalls) which enables a
+> process to create and populate a ruleset with new rules.
+> 
+> A domain is a ruleset tied to a set of processes.  This group of rules
+> defines the security policy enforced on these processes and their future
+> children.  A domain can transition to a new domain which is the
+> intersection of all its constraints and those of a ruleset provided by
+> the current process.  This modification only impact the current process.
+> This means that a process can only gain more constraints (i.e. lose
+> accesses) over time.
+> 
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Acked-by: Serge Hallyn <serge@hallyn.com>
+> Link: https://lore.kernel.org/r/20210316204252.427806-3-mic@digikod.net
 
-please pull three s390 specific bug fixes for 5.12-rc4.
+(Aside: you appear to be self-adding your Link: tags -- AIUI, this is
+normally done by whoever pulls your series. I've only seen Link: tags
+added when needing to refer to something else not included in the
+series.)
 
-Thanks,
-Heiko
+> [...]
+> +static void put_rule(struct landlock_rule *const rule)
+> +{
+> +	might_sleep();
+> +	if (!rule)
+> +		return;
+> +	landlock_put_object(rule->object);
+> +	kfree(rule);
+> +}
 
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
+I'd expect this to be named "release" rather than "put" since it doesn't
+do any lifetime reference counting.
 
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
+> +static void build_check_ruleset(void)
+> +{
+> +	const struct landlock_ruleset ruleset = {
+> +		.num_rules = ~0,
+> +		.num_layers = ~0,
+> +	};
+> +
+> +	BUILD_BUG_ON(ruleset.num_rules < LANDLOCK_MAX_NUM_RULES);
+> +	BUILD_BUG_ON(ruleset.num_layers < LANDLOCK_MAX_NUM_LAYERS);
+> +}
 
-are available in the Git repository at:
+This is checking that the largest possible stored value is correctly
+within the LANDLOCK_MAX_* macro value?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-4
+> [...]
 
-for you to fetch changes up to 0b13525c20febcfecccf6fc1db5969727401317d:
+The locking all looks right, and given your test coverage and syzkaller
+work, it's hard for me to think of ways to prove it out any better. :)
 
-  s390/pci: fix leak of PCI device structure (2021-03-15 19:10:56 +0100)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-----------------------------------------------------------------
-s390 updates for 5.12-rc4
 
-- disable preemption when accessing local per-cpu variables in the new
-  counter set driver
-
-- fix by a factor of four increased steal time due to missing
-  cputime_to_nsecs() conversion
-
-- fix PCI device structure leak
-
-----------------------------------------------------------------
-Gerald Schaefer (1):
-      s390/vtime: fix increased steal time accounting
-
-Niklas Schnelle (1):
-      s390/pci: fix leak of PCI device structure
-
-Thomas Richter (1):
-      s390/cpumf: disable preemption when accessing per-cpu variable
-
- arch/s390/include/asm/pci.h          |  2 +-
- arch/s390/kernel/perf_cpum_cf_diag.c |  3 ++-
- arch/s390/kernel/vtime.c             |  2 +-
- arch/s390/pci/pci.c                  | 28 ++++++++++++++++++++++++----
- arch/s390/pci/pci_event.c            | 18 ++++++------------
- drivers/pci/hotplug/s390_pci_hpc.c   |  3 ++-
- 6 files changed, 36 insertions(+), 20 deletions(-)
-
-diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-index 053fe8b8dec7..a75d94a9bcb2 100644
---- a/arch/s390/include/asm/pci.h
-+++ b/arch/s390/include/asm/pci.h
-@@ -202,7 +202,7 @@ extern unsigned int s390_pci_no_rid;
- ----------------------------------------------------------------------------- */
- /* Base stuff */
- int zpci_create_device(u32 fid, u32 fh, enum zpci_state state);
--void zpci_remove_device(struct zpci_dev *zdev);
-+void zpci_remove_device(struct zpci_dev *zdev, bool set_error);
- int zpci_enable_device(struct zpci_dev *);
- int zpci_disable_device(struct zpci_dev *);
- int zpci_register_ioat(struct zpci_dev *, u8, u64, u64, u64);
-diff --git a/arch/s390/kernel/perf_cpum_cf_diag.c b/arch/s390/kernel/perf_cpum_cf_diag.c
-index bc302b86ce28..2e3e7edbe3a0 100644
---- a/arch/s390/kernel/perf_cpum_cf_diag.c
-+++ b/arch/s390/kernel/perf_cpum_cf_diag.c
-@@ -968,7 +968,7 @@ static int cf_diag_all_start(void)
-  */
- static size_t cf_diag_needspace(unsigned int sets)
- {
--	struct cpu_cf_events *cpuhw = this_cpu_ptr(&cpu_cf_events);
-+	struct cpu_cf_events *cpuhw = get_cpu_ptr(&cpu_cf_events);
- 	size_t bytes = 0;
- 	int i;
- 
-@@ -984,6 +984,7 @@ static size_t cf_diag_needspace(unsigned int sets)
- 		     sizeof(((struct s390_ctrset_cpudata *)0)->no_sets));
- 	debug_sprintf_event(cf_diag_dbg, 5, "%s bytes %ld\n", __func__,
- 			    bytes);
-+	put_cpu_ptr(&cpu_cf_events);
- 	return bytes;
- }
- 
-diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
-index 73c7afcc0527..f216a1b2f825 100644
---- a/arch/s390/kernel/vtime.c
-+++ b/arch/s390/kernel/vtime.c
-@@ -214,7 +214,7 @@ void vtime_flush(struct task_struct *tsk)
- 	avg_steal = S390_lowcore.avg_steal_timer / 2;
- 	if ((s64) steal > 0) {
- 		S390_lowcore.steal_timer = 0;
--		account_steal_time(steal);
-+		account_steal_time(cputime_to_nsecs(steal));
- 		avg_steal += steal;
- 	}
- 	S390_lowcore.avg_steal_timer = avg_steal;
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index 600881d894dd..91064077526d 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -682,16 +682,36 @@ int zpci_disable_device(struct zpci_dev *zdev)
- }
- EXPORT_SYMBOL_GPL(zpci_disable_device);
- 
--void zpci_remove_device(struct zpci_dev *zdev)
-+/* zpci_remove_device - Removes the given zdev from the PCI core
-+ * @zdev: the zdev to be removed from the PCI core
-+ * @set_error: if true the device's error state is set to permanent failure
-+ *
-+ * Sets a zPCI device to a configured but offline state; the zPCI
-+ * device is still accessible through its hotplug slot and the zPCI
-+ * API but is removed from the common code PCI bus, making it
-+ * no longer available to drivers.
-+ */
-+void zpci_remove_device(struct zpci_dev *zdev, bool set_error)
- {
- 	struct zpci_bus *zbus = zdev->zbus;
- 	struct pci_dev *pdev;
- 
-+	if (!zdev->zbus->bus)
-+		return;
-+
- 	pdev = pci_get_slot(zbus->bus, zdev->devfn);
- 	if (pdev) {
--		if (pdev->is_virtfn)
--			return zpci_iov_remove_virtfn(pdev, zdev->vfn);
-+		if (set_error)
-+			pdev->error_state = pci_channel_io_perm_failure;
-+		if (pdev->is_virtfn) {
-+			zpci_iov_remove_virtfn(pdev, zdev->vfn);
-+			/* balance pci_get_slot */
-+			pci_dev_put(pdev);
-+			return;
-+		}
- 		pci_stop_and_remove_bus_device_locked(pdev);
-+		/* balance pci_get_slot */
-+		pci_dev_put(pdev);
- 	}
- }
- 
-@@ -765,7 +785,7 @@ void zpci_release_device(struct kref *kref)
- 	struct zpci_dev *zdev = container_of(kref, struct zpci_dev, kref);
- 
- 	if (zdev->zbus->bus)
--		zpci_remove_device(zdev);
-+		zpci_remove_device(zdev, false);
- 
- 	switch (zdev->state) {
- 	case ZPCI_FN_STATE_ONLINE:
-diff --git a/arch/s390/pci/pci_event.c b/arch/s390/pci/pci_event.c
-index b4162da4e8a2..ac0c65cdd69d 100644
---- a/arch/s390/pci/pci_event.c
-+++ b/arch/s390/pci/pci_event.c
-@@ -76,13 +76,10 @@ void zpci_event_error(void *data)
- static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- {
- 	struct zpci_dev *zdev = get_zdev_by_fid(ccdf->fid);
--	struct pci_dev *pdev = NULL;
- 	enum zpci_state state;
-+	struct pci_dev *pdev;
- 	int ret;
- 
--	if (zdev && zdev->zbus->bus)
--		pdev = pci_get_slot(zdev->zbus->bus, zdev->devfn);
--
- 	zpci_err("avail CCDF:\n");
- 	zpci_err_hex(ccdf, sizeof(*ccdf));
- 
-@@ -124,8 +121,7 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- 	case 0x0303: /* Deconfiguration requested */
- 		if (!zdev)
- 			break;
--		if (pdev)
--			zpci_remove_device(zdev);
-+		zpci_remove_device(zdev, false);
- 
- 		ret = zpci_disable_device(zdev);
- 		if (ret)
-@@ -140,12 +136,10 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- 	case 0x0304: /* Configured -> Standby|Reserved */
- 		if (!zdev)
- 			break;
--		if (pdev) {
--			/* Give the driver a hint that the function is
--			 * already unusable. */
--			pdev->error_state = pci_channel_io_perm_failure;
--			zpci_remove_device(zdev);
--		}
-+		/* Give the driver a hint that the function is
-+		 * already unusable.
-+		 */
-+		zpci_remove_device(zdev, true);
- 
- 		zdev->fh = ccdf->fh;
- 		zpci_disable_device(zdev);
-diff --git a/drivers/pci/hotplug/s390_pci_hpc.c b/drivers/pci/hotplug/s390_pci_hpc.c
-index c9e790c74051..a047c421debe 100644
---- a/drivers/pci/hotplug/s390_pci_hpc.c
-+++ b/drivers/pci/hotplug/s390_pci_hpc.c
-@@ -93,8 +93,9 @@ static int disable_slot(struct hotplug_slot *hotplug_slot)
- 		pci_dev_put(pdev);
- 		return -EBUSY;
- 	}
-+	pci_dev_put(pdev);
- 
--	zpci_remove_device(zdev);
-+	zpci_remove_device(zdev, false);
- 
- 	rc = zpci_disable_device(zdev);
- 	if (rc)
+-- 
+Kees Cook
