@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBE53424D8
+	by mail.lfdr.de (Postfix) with ESMTP id 811EF3424D7
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCSSid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:38:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59268 "EHLO mail.kernel.org"
+        id S230511AbhCSSi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:38:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhCSSiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230285AbhCSSiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 14:38:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7EAA6198D;
+        by mail.kernel.org (Postfix) with ESMTPSA id DB4BD6198E;
         Fri, 19 Mar 2021 18:38:01 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lNK0W-0017jJ-PL; Fri, 19 Mar 2021 14:38:00 -0400
-Message-ID: <20210319183800.667632557@goodmis.org>
+        id 1lNK0W-0017jn-Tn; Fri, 19 Mar 2021 14:38:00 -0400
+Message-ID: <20210319183800.810665594@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 19 Mar 2021 14:34:30 -0400
+Date:   Fri, 19 Mar 2021 14:34:31 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Tom Zanussi <zanussi@kernel.org>
-Subject: [for-next][PATCH 04/13] ring-buffer: Allow ring_buffer_event_time_stamp() to return time
- stamp of all events
+Subject: [for-next][PATCH 05/13] tracing: Use a no_filter_buffering_ref to stop using the filter
+ buffer
 References: <20210319183426.840228082@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,130 +39,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Currently, ring_buffer_event_time_stamp() only returns an accurate time
-stamp of the event if it has an absolute extended time stamp attached to
-it. To make it more robust, use the event_stamp() in case the event does
-not have an absolute value attached to it.
+Currently, the trace histograms relies on it using absolute time stamps to
+trigger the tracing to not use the temp buffer if filters are set. That's
+because the histograms need the full timestamp that is saved in the ring
+buffer. That is no longer the case, as the ring_buffer_event_time_stamp()
+can now return the time stamp for all events without all triggering a full
+absolute time stamp.
 
-This will allow ring_buffer_event_time_stamp() to be used in more cases
-than just histograms, and it will also allow histograms to not require
-including absolute values all the time.
+Now that the absolute time stamp is an unrelated dependency to not using
+the filters. There's nothing about having absolute timestamps to keep from
+using the filter buffer. Instead, change the interface to explicitly state
+to disable filter buffering that the histogram logic can use.
 
-Link: https://lkml.kernel.org/r/20210316164113.704830885@goodmis.org
+Link: https://lkml.kernel.org/r/20210316164113.847886563@goodmis.org
 
 Reviewed-by: Tom Zanussi <zanussi@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/ring_buffer.h      |  3 +-
- kernel/trace/ring_buffer.c       | 60 ++++++++++++++++++++++++--------
- kernel/trace/trace_events_hist.c |  2 +-
- 3 files changed, 48 insertions(+), 17 deletions(-)
+ kernel/trace/trace.c             | 28 ++++++++++++----------------
+ kernel/trace/trace.h             |  4 ++--
+ kernel/trace/trace_events_hist.c |  6 +++---
+ 3 files changed, 17 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 136ea0997e6d..057b7ed4fe24 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -61,7 +61,8 @@ enum ring_buffer_type {
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index f979220238a5..b15436ff85e8 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2737,12 +2737,13 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
+ 			  unsigned int trace_ctx)
+ {
+ 	struct ring_buffer_event *entry;
++	struct trace_array *tr = trace_file->tr;
+ 	int val;
  
- unsigned ring_buffer_event_length(struct ring_buffer_event *event);
- void *ring_buffer_event_data(struct ring_buffer_event *event);
--u64 ring_buffer_event_time_stamp(struct ring_buffer_event *event);
-+u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
-+				 struct ring_buffer_event *event);
+-	*current_rb = trace_file->tr->array_buffer.buffer;
++	*current_rb = tr->array_buffer.buffer;
  
- /*
-  * ring_buffer_discard_commit will remove an event that has not
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 470d97169081..8fa2a84f714f 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -298,21 +298,6 @@ static u64 rb_event_time_stamp(struct ring_buffer_event *event)
- 	return ts;
+-	if (!ring_buffer_time_stamp_abs(*current_rb) && (trace_file->flags &
+-	     (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
++	if (!tr->no_filter_buffering_ref &&
++	    (trace_file->flags & (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
+ 	    (entry = this_cpu_read(trace_buffered_event))) {
+ 		/* Try to use the per cpu buffer first */
+ 		val = this_cpu_inc_return(trace_buffered_event_cnt);
+@@ -6971,31 +6972,26 @@ static int tracing_time_stamp_mode_open(struct inode *inode, struct file *file)
+ 	return ret;
  }
  
--/**
-- * ring_buffer_event_time_stamp - return the event's extended timestamp
-- * @event: the event to get the timestamp of
-- *
-- * Returns the extended timestamp associated with a data event.
-- * An extended time_stamp is a 64-bit timestamp represented
-- * internally in a special way that makes the best use of space
-- * contained within a ring buffer event.  This function decodes
-- * it and maps it to a straight u64 value.
-- */
--u64 ring_buffer_event_time_stamp(struct ring_buffer_event *event)
--{
--	return rb_event_time_stamp(event);
--}
--
- /* Flag when events were overwritten */
- #define RB_MISSED_EVENTS	(1 << 31)
- /* Missed count stored at end */
-@@ -757,6 +742,51 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
- }
- #endif
- 
-+static inline u64 rb_time_stamp(struct trace_buffer *buffer);
-+
-+/**
-+ * ring_buffer_event_time_stamp - return the event's current time stamp
-+ * @buffer: The buffer that the event is on
-+ * @event: the event to get the time stamp of
-+ *
-+ * Note, this must be called after @event is reserved, and before it is
-+ * committed to the ring buffer. And must be called from the same
-+ * context where the event was reserved (normal, softirq, irq, etc).
-+ *
-+ * Returns the time stamp associated with the current event.
-+ * If the event has an extended time stamp, then that is used as
-+ * the time stamp to return.
-+ * In the highly unlikely case that the event was nested more than
-+ * the max nesting, then the write_stamp of the buffer is returned,
-+ * otherwise  current time is returned, but that really neither of
-+ * the last two cases should ever happen.
+-int tracing_set_time_stamp_abs(struct trace_array *tr, bool abs)
++/*
++ * Set or disable using the per CPU trace_buffer_event when possible.
 + */
-+u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
-+				 struct ring_buffer_event *event)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer = buffer->buffers[smp_processor_id()];
-+	unsigned int nest;
-+	u64 ts;
-+
-+	/* If the event includes an absolute time, then just use that */
-+	if (event->type_len == RINGBUF_TYPE_TIME_STAMP)
-+		return rb_event_time_stamp(event);
-+
-+	/* Read the current saved nesting level time stamp */
-+	nest = local_read(&cpu_buffer->committing) - 1;
-+	if (likely(nest < MAX_NEST))
-+		return cpu_buffer->event_stamp[nest];
-+
-+	WARN_ON_ONCE(1);
-+
-+	/* Can only fail on 32 bit */
-+	if (!rb_time_read(&cpu_buffer->write_stamp, &ts))
-+		/* Screw it, just read the current time */
-+		ts = rb_time_stamp(cpu_buffer->buffer);
-+
-+	return ts;
-+}
-+
- /**
-  * ring_buffer_nr_pages - get the number of buffer pages in the ring buffer
-  * @buffer: The ring_buffer to get the number of pages from
++int tracing_set_filter_buffering(struct trace_array *tr, bool set)
+ {
+ 	int ret = 0;
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	if (abs && tr->time_stamp_abs_ref++)
++	if (set && tr->no_filter_buffering_ref++)
+ 		goto out;
+ 
+-	if (!abs) {
+-		if (WARN_ON_ONCE(!tr->time_stamp_abs_ref)) {
++	if (!set) {
++		if (WARN_ON_ONCE(!tr->no_filter_buffering_ref)) {
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+-		if (--tr->time_stamp_abs_ref)
+-			goto out;
++		--tr->no_filter_buffering_ref;
+ 	}
+-
+-	ring_buffer_set_time_stamp_abs(tr->array_buffer.buffer, abs);
+-
+-#ifdef CONFIG_TRACER_MAX_TRACE
+-	if (tr->max_buffer.buffer)
+-		ring_buffer_set_time_stamp_abs(tr->max_buffer.buffer, abs);
+-#endif
+  out:
+ 	mutex_unlock(&trace_types_lock);
+ 
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 798773178d7e..f2a7a72825c7 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -352,7 +352,7 @@ struct trace_array {
+ 	/* function tracing enabled */
+ 	int			function_enabled;
+ #endif
+-	int			time_stamp_abs_ref;
++	int			no_filter_buffering_ref;
+ 	struct list_head	hist_vars;
+ #ifdef CONFIG_TRACER_SNAPSHOT
+ 	struct cond_snapshot	*cond_snapshot;
+@@ -372,7 +372,7 @@ extern int tracing_check_open_get_tr(struct trace_array *tr);
+ extern struct trace_array *trace_array_find(const char *instance);
+ extern struct trace_array *trace_array_find_get(const char *instance);
+ 
+-extern int tracing_set_time_stamp_abs(struct trace_array *tr, bool abs);
++extern int tracing_set_filter_buffering(struct trace_array *tr, bool set);
+ extern int tracing_set_clock(struct trace_array *tr, const char *clockstr);
+ 
+ extern bool trace_clock_in_ns(struct trace_array *tr);
 diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 6978aa3ee4c5..45986cb4637e 100644
+index 45986cb4637e..c1abd63f1d6c 100644
 --- a/kernel/trace/trace_events_hist.c
 +++ b/kernel/trace/trace_events_hist.c
-@@ -644,7 +644,7 @@ static u64 hist_field_timestamp(struct hist_field *hist_field,
- 	struct hist_trigger_data *hist_data = hist_field->hist_data;
- 	struct trace_array *tr = hist_data->event_file->tr;
+@@ -5484,7 +5484,7 @@ static int hist_register_trigger(char *glob, struct event_trigger_ops *ops,
+ 			goto out;
+ 		}
  
--	u64 ts = ring_buffer_event_time_stamp(rbe);
-+	u64 ts = ring_buffer_event_time_stamp(buffer, rbe);
+-		tracing_set_time_stamp_abs(file->tr, true);
++		tracing_set_filter_buffering(file->tr, true);
+ 	}
  
- 	if (hist_data->attrs->ts_in_usecs && trace_clock_in_ns(tr))
- 		ts = ns2usecs(ts);
+ 	if (named_data)
+@@ -5592,7 +5592,7 @@ static void hist_unregister_trigger(char *glob, struct event_trigger_ops *ops,
+ 
+ 	if (hist_data->enable_timestamps) {
+ 		if (!hist_data->remove || unregistered)
+-			tracing_set_time_stamp_abs(file->tr, false);
++			tracing_set_filter_buffering(file->tr, false);
+ 	}
+ }
+ 
+@@ -5639,7 +5639,7 @@ static void hist_unreg_all(struct trace_event_file *file)
+ 
+ 			update_cond_flag(file);
+ 			if (hist_data->enable_timestamps)
+-				tracing_set_time_stamp_abs(file->tr, false);
++				tracing_set_filter_buffering(file->tr, false);
+ 			if (test->ops->free)
+ 				test->ops->free(test->ops, test);
+ 		}
 -- 
 2.30.1
 
