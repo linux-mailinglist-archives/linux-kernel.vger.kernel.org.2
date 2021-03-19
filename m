@@ -2,105 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAEC3414FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12F9341503
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhCSFna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47784 "EHLO mail.kernel.org"
+        id S233906AbhCSFnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:43:32 -0400
+Received: from verein.lst.de ([213.95.11.211]:44427 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230337AbhCSFm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:42:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9AA164DCC;
-        Fri, 19 Mar 2021 05:42:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616132578;
-        bh=eUscbhRfkwQ3BScJNzBWpmoaoPTaH2/CrSy667cXmSo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tgqo1fiAkRoibCXJIE+kRXm9B7zHFlQ3ZjkYujbyCmY/dDEE0Jy62q6f9XXHt4iIO
-         /p23bnuLpXB29+L+t3a70FztoobrfKvnmT0Bs1saabnWd5AfaTGDAlt8Xo70I0G34/
-         d0ZZJZRz+N53xxtXUF/HDClQdzyjJVEmAxDJHb5NYlSFrlPOW0yjOFNNxSi4KpHyz+
-         ibM33xZZQNJIerRMOx6TVMCPKGq2OwKzZv63v542d1a1I3cOGUP2Uf2gx+phrVEzcv
-         lkgm2gw/7bksxlh3HS+1ofIrAfbfBnso20XPGttISS7t0j3moc6w016C1YOxuSHJZg
-         LuaAb2k8uy4Rw==
-Date:   Fri, 19 Mar 2021 07:42:31 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, dave.hansen@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
-Message-ID: <YFQ5x8cTPIlywDtW@kernel.org>
-References: <20210319040602.178558-1-kai.huang@intel.com>
+        id S233870AbhCSFnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 01:43:24 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EFE6A68BEB; Fri, 19 Mar 2021 06:43:19 +0100 (CET)
+Date:   Fri, 19 Mar 2021 06:43:19 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: remove the legacy ide driver
+Message-ID: <20210319054319.GA9880@lst.de>
+References: <20210318045706.200458-1-hch@lst.de> <c1fa8e6-a05d-9ea1-f47e-9e85ea6ea65e@telegraphics.com.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319040602.178558-1-kai.huang@intel.com>
+In-Reply-To: <c1fa8e6-a05d-9ea1-f47e-9e85ea6ea65e@telegraphics.com.au>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:06:02PM +1300, Kai Huang wrote:
-> Below kernel bug happened when running simple SGX application when EPC
-> is under pressure.  The root cause is with commit 5b8719504e3a
-> ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()"),
-> __sgx_alloc_epc_page() returns NULL when there's no free EPC page can be
-> allocated, while old behavior was it always returned ERR_PTR(-ENOMEM) in
-> such case.
-> 
-> Fix by directly returning the page if __sgx_alloc_epc_page_from_node()
-> allocates a valid page in fallback to non-local allocation, and always
-> returning ERR_PTR(-ENOMEM) if no EPC page can be allocated.
-> 
-> [  253.474764] BUG: kernel NULL pointer dereference, address: 0000000000000008
-> [  253.500101] #PF: supervisor write access in kernel mode
-> [  253.525462] #PF: error_code(0x0002) - not-present page
-> ...
-> [  254.102041] Call Trace:
-> [  254.126699]  sgx_ioc_enclave_add_pages+0x241/0x770
-> [  254.151305]  sgx_ioctl+0x194/0x4b0
-> [  254.174976]  ? handle_mm_fault+0xd0/0x260
-> [  254.198470]  ? do_user_addr_fault+0x1ef/0x570
-> [  254.221827]  __x64_sys_ioctl+0x91/0xc0
-> [  254.244546]  do_syscall_64+0x38/0x90
-> [  254.266728]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  254.289232] RIP: 0033:0x7fdc4cf4031b
-> ...
-> [  254.711480] CR2: 0000000000000008
-> [  254.735494] ---[ end trace 970dce6d4cdf7f64 ]---
-> [  254.759915] RIP: 0010:sgx_alloc_epc_page+0x46/0x152
-> ...
-> 
-> Fixes: 5b8719504e3a("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+On Fri, Mar 19, 2021 at 12:43:48PM +1100, Finn Thain wrote:
+> A few months ago I wrote another patch to move some more platforms away 
+> from macide but it has not been tested yet. That is not to say you should 
+> wait. However, my patch does have some changes that are missing from your 
+> patch series, relating to ide platform devices in arch/m68k/mac/config.c. 
+> I hope to be able to test this patch before the 5.13 merge window closes.
 
-
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index fe26e7e91c25..7105e34da530 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -508,10 +508,10 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
->  
->  		page = __sgx_alloc_epc_page_from_node(nid);
->  		if (page)
-> -			break;
-> +			return page;
->  	}
->  
-> -	return page;
-> +	return ERR_PTR(-ENOMEM);
->  }
->  
->  /**
-> -- 
-> 2.30.2
-> 
-> 
-
-/Jarkko
+Normally we do not remove drivers for hardware that is still used.  So
+at leat for macide my plan was not to take it away unless the users 
+are sufficiently happy.  Or in other words:  I think waiting it the
+right choice, but hopefully we can make that wait as short as possible.
