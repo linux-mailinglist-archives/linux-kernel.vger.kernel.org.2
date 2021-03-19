@@ -2,161 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954503427DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BE23427E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhCSVbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
+        id S229942AbhCSVcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhCSVbV (ORCPT
+        with ESMTP id S230511AbhCSVb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:31:21 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFD6C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:31:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5485543pjv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:31:21 -0700 (PDT)
+        Fri, 19 Mar 2021 17:31:59 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5C9C06175F;
+        Fri, 19 Mar 2021 14:31:59 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id q127-20020a4a33850000b02901b646aa81b1so2650551ooq.8;
+        Fri, 19 Mar 2021 14:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mnFDnOo5yMcbPHmmE8oPg7EbW76+eTt1IMrohfUZyIU=;
-        b=CJ3MnOxIBAsmOakTHx0+zvI0rXduBbhZ7YLV8Ktwu73XjOqRzmIUURiCNYJh6EWFJG
-         Ih11/v3vXng0DqFy+jj4A8CeRxxNsW2UiTDSeMk+jnC4p7CBnhcKL5VlArkkD/1qLDU+
-         X+61sa7x9SnHpn1bngpKkN1qYeb7QdNZn1503IAOpNGSIG70tZzjD52NFdNf/2Jda3FU
-         69N9fZcbO8/f6tipHQpg1yaq5YgkKLXCyTsyyOFVsQeJ0RskOByPW92cIfpPWHpfdDW1
-         w+JFPMQ//OdGDOiIrgsCg14rmvXhL1v6MJV0+ZafQoIzusbK8CSzCt4d9Xc5Qtg9xuyp
-         BUjw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WbwokAg1Y0JpITILeBwOOIJo/WV7PBaUARw4/x1pYIQ=;
+        b=YLjumjeMbsQG6QuGIQl2H6yK7tVfpcSYfeirPJPLQM2jKkmBzSWr95aO6qKzK9MDfA
+         g+50JFJq0USETaUM0uZfzswpU/u+rRgwOBYu4fha/ijVZCqWcZpFXw9G8YcEqLxLC48m
+         E4Br0d7tPtIYO1twHZoN98f43POhuT7+Yt093jvEGHug4Sffav+50G5Fkadd0D4SGFvN
+         Vep+eEoZUfoTOAuSh6ZoUUvsr8iUyX7joogc1g3vuGfDCloPPgQ+VpGhn7uzgVQrunhF
+         5/5vHzNDW7urZkRJl60397pqMxqIaD2boqlOmuPehNiTScMeKMDJf1oE5J7O0v6heN0Z
+         02jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mnFDnOo5yMcbPHmmE8oPg7EbW76+eTt1IMrohfUZyIU=;
-        b=d0Z2I6HKE6JCVx4Ww/h9nrhmoyVr8jZu53r/ou4dYD6aS2QqpflyEufD70JUS3M2ZW
-         OG+3F3RTYlfbLTSATi3rxorQ7gzGhVBxUz3wUAvxH0H+GuaO0Xce2s4soX1x0mzTY1Vm
-         VUwluVYDGzaC1li+Mp5GtzJSxFmHs9n2mFOJsTh4cjn6joaHNAnfVALppzxb2u4C9b0i
-         YC7T5+o2oEjMYrsWEY20bhY4EuvSMsJ2EoJYLyUlSgAIKWz08c2D1t0lXlC8xS1yLXUd
-         01vG6leSlItR6khC4umPqKjt0jcnoawlUTGK6JMtm0t80bje9myExG2ZLTPpls4Ak/Ev
-         +4Wg==
-X-Gm-Message-State: AOAM530RnSW7UTQZ9/3Tvv+CJ4kJZLuJlU95H654PwjJUf0DKwPTIOEu
-        g0Fzr/wy2h5Arcm67duhsrBrWyKnfG9LSBbAoRI=
-X-Google-Smtp-Source: ABdhPJwySHB77Q/khXyIKMIzIn7+emBzb5cl5ocYqucU8diX9waIP0/B0/P/fhwCRpsAIsNDoOs+9ubSmUjjfR2f99M=
-X-Received: by 2002:a17:902:c154:b029:e5:e7cf:9627 with SMTP id
- 20-20020a170902c154b02900e5e7cf9627mr15689833plj.68.1616189480887; Fri, 19
- Mar 2021 14:31:20 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WbwokAg1Y0JpITILeBwOOIJo/WV7PBaUARw4/x1pYIQ=;
+        b=NMr6NoUYnphpfbwo8QL1xEciP9aL70qKmrGEHRCM0OcWNfI5/ascN/oP6BWbHF6v7h
+         YtSKJElYOdasJAwa6qtzpNhXEqqn0TqB2Kzo5etWdqVbMMcLJA4T5ASsdWnrXrt/2L8P
+         qnxJT9SwFWhbfOM6yR+2g8K5mGq8IrusmHKt2iNED2JIqVQod+VhfKAEFA6HRZ2ULhqE
+         ujsi2tV6ncpSH6Dp3aQ7eZ3bzh3uAf/Pv8Am1DGoRfzyexniBJHGhRq8UNO7F9lNoxji
+         ErDPWo9cqnjHq+qQJcYn7hYtEnth7rV1txeOIeNXQHB+8SbmvTmKldXH1FTvvRHxmfUZ
+         LKdw==
+X-Gm-Message-State: AOAM533W/fzqQIUK/OAGGRipbd3PkOOT3hlKgYtsi3WdRFqHQAWB7BHf
+        N7mY/jDBlBkoaiHQCE0VaPc9DDhYcfs=
+X-Google-Smtp-Source: ABdhPJx6DCDr0B5DoEJjXEJrRBcADfFUFphlv2uchEhJzF4ffgKAU2aueuxxLPnJ5UtdGCWnA5bn3w==
+X-Received: by 2002:a4a:e8d1:: with SMTP id h17mr2999477ooe.20.1616189518735;
+        Fri, 19 Mar 2021 14:31:58 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f129sm1522644oia.9.2021.03.19.14.31.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Mar 2021 14:31:57 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 19 Mar 2021 14:31:56 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     robh+dt@kernel.org, jdelvare@suse.com, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] hwmon: (pmbus): Add driver for BluTek BPA-RS600
+Message-ID: <20210319213156.GA24420@roeck-us.net>
+References: <20210317040231.21490-1-chris.packham@alliedtelesis.co.nz>
+ <20210317040231.21490-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20210319164418.1.I5d51cc12776ee8993a1a54089b548952f75ada41@changeid>
- <CADnq5_OguuMsqT7MVC=ieNZm9mqyVUsGpQDHr59BWtBJJUvFoA@mail.gmail.com> <54fc883a-c149-3f43-fb79-3cbff13e7b6a@amd.com>
-In-Reply-To: <54fc883a-c149-3f43-fb79-3cbff13e7b6a@amd.com>
-From:   Evan Benn <evanbenn@gmail.com>
-Date:   Sat, 20 Mar 2021 08:31:09 +1100
-Message-ID: <CAP8nV8rL6eYSDyQ1jyv267ER8_E+rMBQkza2ZYZvwvdE+=sd3Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Set AMDGPU_DM_DEFAULT_MIN_BACKLIGHT to 0
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Evan Benn <evanbenn@chromium.org>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>, David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Anand <amistry@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317040231.21490-3-chris.packham@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 at 02:10, Harry Wentland <harry.wentland@amd.com> wrote:
-> On 2021-03-19 10:22 a.m., Alex Deucher wrote:
-> > On Fri, Mar 19, 2021 at 3:23 AM Evan Benn <evanbenn@chromium.org> wrote:
-> >>
-> >> AMDGPU_DM_DEFAULT_MIN_BACKLIGHT was set to the value of 12
-> >> to ensure no display backlight will flicker at low user brightness
-> >> settings. However this value is quite bright, so for devices that do not
-> >> implement the ACPI ATIF
-> >> ATIF_FUNCTION_QUERY_BRIGHTNESS_TRANSFER_CHARACTERISTICS
-> >> functionality the user cannot set the brightness to a low level even if
-> >> the display would support such a low PWM.
-> >>
-> >> This ATIF feature is not implemented on for example AMD grunt chromebooks.
-> >>
-> >> Signed-off-by: Evan Benn <evanbenn@chromium.org>
-> >>
-> >> ---
-> >> I could not find a justification for the reason for the value. It has
-> >> caused some noticable regression for users: https://bugzilla.kernel.org/show_bug.cgi?id=203439>>>
-> >> Maybe this can be either user controlled or userspace configured, but
-> >> preventing users from turning their backlight dim seems wrong.
-> >
-> > My understanding is that some panels flicker if you set the min to a
-> > value too low.  This was a safe minimum if the platform didn't specify
-> > it's own safe minimum.  I think we'd just be trading one bug for
-> > another (flickering vs not dim enough).  Maybe a whitelist or
-> > blacklist would be a better solution?
-> >
->
-> Yeah, this is a NACK from me as-is for the reasons Alex described.
+On Wed, Mar 17, 2021 at 05:02:31PM +1300, Chris Packham wrote:
+> The BPA-RS600 is a compact 600W AC to DC removable power supply module.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Thanks Harry + Alex,
+For my reference (aiting for bindings approval):
 
-I agree this solution is not the best.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
->
-> I agree a whitelist approach might be best.
+Guenter
 
-Do you have any idea what an allowlist could be keyed on?
-Is the flickering you observed here a function of the panel or the gpu
-or some other component?
-Maybe we could move the minimum level into the logic for that hardware.
-
->
-> Is this fix perhaps for OLED panels? If so we could use a different
-> min-value for OLED panels that don't do PWM, but use 12 for everything else.
-
-All the chromebooks I have worked with LCD + LED backlight have been
-fine with a backlight set to 0.
-We do have OLED panels too, but I'm not aware of what they do.
-
-> Harry
->
-> > Alex
-> >
-> >
-> >>
-> >> Also reviewed here: https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2748377>>>
-> >>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> index 573cf17262da..0129bd69b94e 100644
-> >> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> @@ -3151,7 +3151,7 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
-> >>          return 0;
-> >>   }
-> >>
-> >> -#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 12
-> >> +#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 0
-> >>   #define AMDGPU_DM_DEFAULT_MAX_BACKLIGHT 255
-> >>   #define AUX_BL_DEFAULT_TRANSITION_TIME_MS 50
-> >>
-> >> --
-> >> 2.31.0.291.g576ba9dcdaf-goog
-> >>
-> >> _______________________________________________
-> >> dri-devel mailing list
-> >> dri-devel@lists.freedesktop.org
-> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel>> _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel>>
->
+> ---
+> 
+> Notes:
+>     Changes in v3:
+>     - Fix typo BPD -> BPA
+>     - Allow for NUL terminator in buf
+>     Changes in v2:
+>     - Whitespace and line length cleanup
+>     - Add comments about commands that return data but shouldn't be used
+> 
+>  Documentation/hwmon/bpa-rs600.rst |  74 +++++++++++++
+>  drivers/hwmon/pmbus/Kconfig       |   9 ++
+>  drivers/hwmon/pmbus/Makefile      |   1 +
+>  drivers/hwmon/pmbus/bpa-rs600.c   | 172 ++++++++++++++++++++++++++++++
+>  4 files changed, 256 insertions(+)
+>  create mode 100644 Documentation/hwmon/bpa-rs600.rst
+>  create mode 100644 drivers/hwmon/pmbus/bpa-rs600.c
+> 
+> diff --git a/Documentation/hwmon/bpa-rs600.rst b/Documentation/hwmon/bpa-rs600.rst
+> new file mode 100644
+> index 000000000000..28313995d4ae
+> --- /dev/null
+> +++ b/Documentation/hwmon/bpa-rs600.rst
+> @@ -0,0 +1,74 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Kernel driver bpa-rs600
+> +=======================
+> +
+> +Supported chips:
+> +
+> +  * BPA-RS600-120
+> +
+> +    Datasheet: Publicly available at the BluTek website
+> +       http://blutekpower.com/wp-content/uploads/2019/01/BPA-RS600-120-07-19-2018.pdf
+> +
+> +Authors:
+> +      - Chris Packham <chris.packham@alliedtelesis.co.nz>
+> +
+> +Description
+> +-----------
+> +
+> +The BPA-RS600 is a compact 600W removable power supply module.
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not probe for PMBus devices. You will have to instantiate
+> +devices explicitly.
+> +
+> +Sysfs attributes
+> +----------------
+> +
+> +======================= ============================================
+> +curr1_label             "iin"
+> +curr1_input		Measured input current
+> +curr1_max		Maximum input current
+> +curr1_max_alarm		Input current high alarm
+> +
+> +curr2_label		"iout1"
+> +curr2_input		Measured output current
+> +curr2_max		Maximum output current
+> +curr2_max_alarm		Output current high alarm
+> +
+> +fan1_input		Measured fan speed
+> +fan1_alarm		Fan warning
+> +fan1_fault		Fan fault
+> +
+> +in1_label		"vin"
+> +in1_input		Measured input voltage
+> +in1_max			Maximum input voltage
+> +in1_max_alarm		Input voltage high alarm
+> +in1_min			Minimum input voltage
+> +in1_min_alarm		Input voltage low alarm
+> +
+> +in2_label		"vout1"
+> +in2_input		Measured output voltage
+> +in2_max			Maximum output voltage
+> +in2_max_alarm		Output voltage high alarm
+> +in2_min			Maximum output voltage
+> +in2_min_alarm		Output voltage low alarm
+> +
+> +power1_label		"pin"
+> +power1_input		Measured input power
+> +power1_alarm		Input power alarm
+> +power1_max		Maximum input power
+> +
+> +power2_label		"pout1"
+> +power2_input		Measured output power
+> +power2_max		Maximum output power
+> +power2_max_alarm	Output power high alarm
+> +
+> +temp1_input		Measured temperature around input connector
+> +temp1_alarm		Temperature alarm
+> +
+> +temp2_input		Measured temperature around output connector
+> +temp2_alarm		Temperature alarm
+> +======================= ============================================
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index 32d2fc850621..512d6f656dca 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -56,6 +56,15 @@ config SENSORS_BEL_PFE
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called bel-pfe.
+>  
+> +config SENSORS_BPA_RS600
+> +	tristate "BluTek BPA-RS600 Power Supplies"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for BluTek
+> +	  BPA-RS600 Power Supplies.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called bpa-rs600.
+> +
+>  config SENSORS_IBM_CFFPS
+>  	tristate "IBM Common Form Factor Power Supply"
+>  	depends on LEDS_CLASS
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 6a4ba0fdc1db..80a437060dc4 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
+>  obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
+>  obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+>  obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+> +obj-$(CONFIG_SENSORS_BPA_RS600)	+= bpa-rs600.o
+>  obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
+>  obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+>  obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+> diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
+> new file mode 100644
+> index 000000000000..c4ede68b3e26
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/bpa-rs600.c
+> @@ -0,0 +1,172 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Hardware monitoring driver for BluTek BPA-RS600 Power Supplies
+> + *
+> + * Copyright 2021 Allied Telesis Labs
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pmbus.h>
+> +#include "pmbus.h"
+> +
+> +#define BPARS600_MFR_VIN_MIN	0xa0
+> +#define BPARS600_MFR_VIN_MAX	0xa1
+> +#define BPARS600_MFR_IIN_MAX	0xa2
+> +#define BPARS600_MFR_PIN_MAX	0xa3
+> +#define BPARS600_MFR_VOUT_MIN	0xa4
+> +#define BPARS600_MFR_VOUT_MAX	0xa5
+> +#define BPARS600_MFR_IOUT_MAX	0xa6
+> +#define BPARS600_MFR_POUT_MAX	0xa7
+> +
+> +static int bpa_rs600_read_byte_data(struct i2c_client *client, int page, int reg)
+> +{
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	switch (reg) {
+> +	case PMBUS_FAN_CONFIG_12:
+> +		/*
+> +		 * Two fans are reported in PMBUS_FAN_CONFIG_12 but there is
+> +		 * only one fan in the module. Mask out the FAN2 bits.
+> +		 */
+> +		ret = pmbus_read_byte_data(client, 0, PMBUS_FAN_CONFIG_12);
+> +		if (ret >= 0)
+> +			ret &= ~(PB_FAN_2_INSTALLED | PB_FAN_2_PULSE_MASK);
+> +		break;
+> +	default:
+> +		ret = -ENODATA;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int phase, int reg)
+> +{
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	switch (reg) {
+> +	case PMBUS_VIN_UV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MIN);
+> +		break;
+> +	case PMBUS_VIN_OV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VIN_MAX);
+> +		break;
+> +	case PMBUS_VOUT_UV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MIN);
+> +		break;
+> +	case PMBUS_VOUT_OV_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_VOUT_MAX);
+> +		break;
+> +	case PMBUS_IIN_OC_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IIN_MAX);
+> +		break;
+> +	case PMBUS_IOUT_OC_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_IOUT_MAX);
+> +		break;
+> +	case PMBUS_PIN_OP_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_PIN_MAX);
+> +		break;
+> +	case PMBUS_POUT_OP_WARN_LIMIT:
+> +		ret = pmbus_read_word_data(client, 0, 0xff, BPARS600_MFR_POUT_MAX);
+> +		break;
+> +	case PMBUS_VIN_UV_FAULT_LIMIT:
+> +	case PMBUS_VIN_OV_FAULT_LIMIT:
+> +	case PMBUS_VOUT_UV_FAULT_LIMIT:
+> +	case PMBUS_VOUT_OV_FAULT_LIMIT:
+> +		/* These commands return data but it is invalid/un-documented */
+> +		ret = -ENXIO;
+> +		break;
+> +	default:
+> +		if (reg >= PMBUS_VIRT_BASE)
+> +			ret = -ENXIO;
+> +		else
+> +			ret = -ENODATA;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static struct pmbus_driver_info bpa_rs600_info = {
+> +	.pages = 1,
+> +	.format[PSC_VOLTAGE_IN] = linear,
+> +	.format[PSC_VOLTAGE_OUT] = linear,
+> +	.format[PSC_CURRENT_IN] = linear,
+> +	.format[PSC_CURRENT_OUT] = linear,
+> +	.format[PSC_POWER] = linear,
+> +	.format[PSC_TEMPERATURE] = linear,
+> +	.format[PSC_FAN] = linear,
+> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT |
+> +		PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT |
+> +		PMBUS_HAVE_PIN | PMBUS_HAVE_POUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2 |
+> +		PMBUS_HAVE_FAN12 |
+> +		PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
+> +		PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP |
+> +		PMBUS_HAVE_STATUS_FAN12,
+> +	.read_byte_data = bpa_rs600_read_byte_data,
+> +	.read_word_data = bpa_rs600_read_word_data,
+> +};
+> +
+> +static int bpa_rs600_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+> +	int ret;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
+> +				     | I2C_FUNC_SMBUS_READ_WORD_DATA
+> +				     | I2C_FUNC_SMBUS_READ_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Model\n");
+> +		return ret;
+> +	}
+> +
+> +	if (strncmp(buf, "BPA-RS600", 8)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return pmbus_do_probe(client, &bpa_rs600_info);
+> +}
+> +
+> +static const struct i2c_device_id bpa_rs600_id[] = {
+> +	{ "bpars600", 0 },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
+> +
+> +static const struct of_device_id __maybe_unused bpa_rs600_of_match[] = {
+> +	{ .compatible = "blutek,bpa-rs600" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, bpa_rs600_of_match);
+> +
+> +static struct i2c_driver bpa_rs600_driver = {
+> +	.driver = {
+> +		.name = "bpa-rs600",
+> +		.of_match_table = of_match_ptr(bpa_rs600_of_match),
+> +	},
+> +	.probe_new = bpa_rs600_probe,
+> +	.id_table = bpa_rs600_id,
+> +};
+> +
+> +module_i2c_driver(bpa_rs600_driver);
+> +
+> +MODULE_AUTHOR("Chris Packham");
+> +MODULE_DESCRIPTION("PMBus driver for BluTek BPA-RS600");
+> +MODULE_LICENSE("GPL");
