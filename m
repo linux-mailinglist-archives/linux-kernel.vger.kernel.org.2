@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2EE341787
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1D234178A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhCSIb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhCSIa6 (ORCPT
+        id S234333AbhCSIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:34:12 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:39229 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234076AbhCSIdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:30:58 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E0EC06174A;
-        Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so7788000oto.2;
-        Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aOBAOoUYVUuaQ/ANg0jzaMHaepXG3KDq4pE4MIvdG8o=;
-        b=ehKcIFpqcFvs6rmBGhhYLOmTa156yRI+RgCEmgIEkZfjrNkBsB7Su31mJPBIbzGPVA
-         iroPBc8wT7bt0wZcHbLRDyK4q6LtniOz0X3MB0C6sAiW4xQ06OTTyPgzfWFTcHurActw
-         rtAncV4a5KU1YpT5hEVwxgiFF0F4KmnMO/MNv5aUvkZu7YTrd8Q293NxvSlLyVN4rSEA
-         Zo+qsNIBemsj8hOvm/OAu38NzxqQ+5uOzcKSfG5nvB5DQMHBOidYiS9CK9g8uW25CyLw
-         trLjhuXGM9dGCkiDZmNhzOgsOicmkrsPXS6M0hHa38odvX4EqT0xcDVgylz6mT/TjgmD
-         HFZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aOBAOoUYVUuaQ/ANg0jzaMHaepXG3KDq4pE4MIvdG8o=;
-        b=LZ+CPysagYdivnAOXHdJGJyFy0WtoZ+k9UQnMNu4wBh5VMQo9fQh8nqV/jgM/MFscL
-         Mg5+y/z8Chzu8bvITH0zE8iNUavRd9tX15pFtJUNwWizj6m6vxmxxD1v28e1xqaTY14I
-         +XIdSZVGNAnKt3x34CGFPzScsmquWBO2iRV019TZiqzkpgZbNBc7f5uwaSBjd6MrN8tr
-         /LaM/wJ33MFzdKhFaTvDr9umgbv2nQyy560taVGVuoDLtoVNiMrhIG2u6S27liWE6PtX
-         d71G5284HKwcsBcMjzoH6tbnUkqdOT4Zb63XZDqVE3R+gyOMpS/dy8uaR9XRyFi2f4Ya
-         /CGQ==
-X-Gm-Message-State: AOAM531akDnfeUJXXvtfCZHfIoxxfgpSLsRSox5eM69rRE1xx3i6ocRG
-        a7hbc+Fa0GBb3ohZfOcZSW70tID9Y/ND3dFNTUA=
-X-Google-Smtp-Source: ABdhPJxk8oR3tZuE0wVizpmB2OZnYufj91eZnehno59lNg/ie7ktVZyajwutrf5ekj5wc59CR8jJZnhWvSE50F+P5cA=
-X-Received: by 2002:a9d:12a7:: with SMTP id g36mr190938otg.304.1616142657379;
- Fri, 19 Mar 2021 01:30:57 -0700 (PDT)
+        Fri, 19 Mar 2021 04:33:41 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id NAZalKpEOGEYcNAZdlR2Ia; Fri, 19 Mar 2021 09:33:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616142818; bh=xrFX+gOu7fwg+Xp0ozjcVh1n7ueqHwsaz9fCyG90Now=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=MWZbGMbs6KbSUTnf2BRmSdVdebwJlMHLNqnSZloeZHJKWszfkJs4jWM3vrhbVdu5z
+         WhnqWjLbXDfJuTKv7WW6bBh4HqOrYeiIjcTwxSCsKPVoWuSkcA2zD0uuK9+fNE5h/4
+         FXHd2y+lzgV8v1TjclRw63ecVuaTQEZfWH1+pebUSboHQ1vuTcdwU50gi/1g6VfYr0
+         spNfOqQpQTxQCe+1IbZXnb8SbMP2Rn1rTrSZaPamb35O5devSzeFW2rT9VHfPF1j6S
+         gKpwE3Za6qhF4VHX8Ltj/1lv5rs9tnGfBP/g/in7T2YqJiRJb0CQTZdM/07lYSXwEo
+         dMsdP47+WZtrg==
+Subject: Re: [PATCH v7 15/17] media: uvcvideo: Refactor __uvc_ctrl_commit
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+References: <20210318202928.166955-1-ribalda@chromium.org>
+ <20210318202928.166955-16-ribalda@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <0aa1e1cb-063e-73d8-1fca-ca089029f1f9@xs4all.nl>
+Date:   Fri, 19 Mar 2021 09:33:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <87tupl30kl.fsf@igel.home> <04a7e801-9a55-c926-34ad-3a7665077a4e@microchip.com>
- <87o8fhoieu.fsf@igel.home>
-In-Reply-To: <87o8fhoieu.fsf@igel.home>
-From:   Yixun Lan <yixun.lan@gmail.com>
-Date:   Fri, 19 Mar 2021 08:28:06 +0000
-Message-ID: <CALecT5gY1GK774TXyM+zA3J9Q8O90UKMs3bvRk13yg9_+cFO3Q@mail.gmail.com>
-Subject: Re: macb broken on HiFive Unleashed
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Claudiu.Beznea@microchip.com, linux-riscv@lists.infradead.org,
-        ckeepax@opensource.cirrus.com, andrew@lunn.ch, w@1wt.eu,
-        Nicolas.Ferre@microchip.com, daniel@0x0f.com,
-        alexandre.belloni@bootlin.com, pthombar@cadence.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210318202928.166955-16-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFD59upNXiLXzKMbwO6D6AD/usBKuvKSzlu6p92JiSiXNEWqdI6vDn0hfC2FJUyVj0oRCF/NCy1abDpqTFUN3M9ZUvxdpJjYJIf6BEpVYrQ33L5kt+Rt
+ Hr538y1pHRz2Swl92x5NAcJ0Xb1elxG+Fpilj/+P27FL/he/An6CWtUhBBHkCVAoWBiAey5KdPegw4fWHy+8jhG4ePX6mcwsqqpXciRIRlgC6xJWpxioQCrb
+ 8BoU4uESZcCf5zortYCkrZjnvgKQg5GjgqNTfsjgTw5lkVA5YM8eh2rns6YIunK8OqOw/QkdvgT0ma8CCdnhBPGsgahzXeiXdfXRfgY/mkV5WOzBAZEfpd9U
+ vb+SbID8+lHJwEiSSRcra1q8I1Gvb3hogtuZg/7YDT2sNsPC6v/BdTgAGrT530hL7wfXhdCl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Andreas:
+On 18/03/2021 21:29, Ricardo Ribalda wrote:
+> Take a v4l2_ext_controls instead of an array of controls, this way we
+> can access the error_idx in future changes.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c |  5 ++---
+>  drivers/media/usb/uvc/uvc_v4l2.c |  8 ++++++--
+>  drivers/media/usb/uvc/uvcvideo.h | 10 ++++------
+>  3 files changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 1ec8333811bc..fb8155ca0c0d 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1664,8 +1664,7 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
+>  }
+>  
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> -		      const struct v4l2_ext_control *xctrls,
+> -		      unsigned int xctrls_count)
+> +		      struct v4l2_ext_controls *ctrls)
+>  {
+>  	struct uvc_video_chain *chain = handle->chain;
+>  	struct uvc_entity *entity;
+> @@ -1679,7 +1678,7 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+>  	}
+>  
+>  	if (!rollback)
+> -		uvc_ctrl_send_events(handle, xctrls, xctrls_count);
+> +		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+>  done:
+>  	mutex_unlock(&chain->ctrl_mutex);
+>  	return ret;
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index ddebdeb5a81b..ea2c41b04664 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1025,6 +1025,10 @@ static int uvc_ioctl_s_ctrl(struct file *file, void *fh,
+>  	struct uvc_fh *handle = fh;
+>  	struct uvc_video_chain *chain = handle->chain;
+>  	struct v4l2_ext_control xctrl;
+> +	struct v4l2_ext_controls ctrls = {
+> +		.count = 1,
+> +		.controls = &xctrl,
+> +	};
 
-On Wed, Mar 17, 2021 at 4:27 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
->
-> It turned out to be a broken clock driver.
->
+Rather than creating this extra ctrls struct, I think this can be simplified by just
+removing uvc_ioctl_s_ctrl and uvc_ioctl_g_ctrl altogether. The v4l2-ioctl.c source
+will call vidioc_g/s_ext_ctrls if the driver doesn't provide vidioc_g/s_ctrl ops.
 
-what's the exact root cause? and any solution?
-seems I face the same issue, upgrade kernel to 5.11, then eth0 fail to bring up
+Let's just simplify this by adding another patch before this one that just removes
+uvc_ioctl_s_ctrl and uvc_ioctl_g_ctrl.
 
-Yixun Lan
+Otherwise this patch looks good.
+
+Regards,
+
+	Hans
+
+>  	int ret;
+>  
+>  	ret = uvc_ctrl_is_accessible(chain, ctrl->id, VIDIOC_S_CTRL);
+> @@ -1045,7 +1049,7 @@ static int uvc_ioctl_s_ctrl(struct file *file, void *fh,
+>  		return ret;
+>  	}
+>  
+> -	ret = uvc_ctrl_commit(handle, &xctrl, 1);
+> +	ret = uvc_ctrl_commit(handle, &ctrls);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -1149,7 +1153,7 @@ static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
+>  	ctrls->error_idx = 0;
+>  
+>  	if (ioctl == VIDIOC_S_EXT_CTRLS)
+> -		return uvc_ctrl_commit(handle, ctrls->controls, ctrls->count);
+> +		return uvc_ctrl_commit(handle, ctrls);
+>  	else
+>  		return uvc_ctrl_rollback(handle);
+>  }
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index a93aeedb5499..4e7b6da3c6d2 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -887,17 +887,15 @@ void uvc_ctrl_status_event(struct uvc_video_chain *chain,
+>  
+>  int uvc_ctrl_begin(struct uvc_video_chain *chain);
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+> -		      const struct v4l2_ext_control *xctrls,
+> -		      unsigned int xctrls_count);
+> +		      struct v4l2_ext_controls *ctrls);
+>  static inline int uvc_ctrl_commit(struct uvc_fh *handle,
+> -				  const struct v4l2_ext_control *xctrls,
+> -				  unsigned int xctrls_count)
+> +				  struct v4l2_ext_controls *ctrls)
+>  {
+> -	return __uvc_ctrl_commit(handle, 0, xctrls, xctrls_count);
+> +	return __uvc_ctrl_commit(handle, 0, ctrls);
+>  }
+>  static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
+>  {
+> -	return __uvc_ctrl_commit(handle, 1, NULL, 0);
+> +	return __uvc_ctrl_commit(handle, 1, NULL);
+>  }
+>  
+>  int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
+> 
+
