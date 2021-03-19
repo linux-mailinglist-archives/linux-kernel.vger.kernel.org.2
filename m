@@ -2,141 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC853428D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A493428E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhCSWnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
+        id S230438AbhCSWtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhCSWnC (ORCPT
+        with ESMTP id S230281AbhCSWsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:43:02 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBD6C061760;
-        Fri, 19 Mar 2021 15:43:01 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 16so13792093ljc.11;
-        Fri, 19 Mar 2021 15:43:01 -0700 (PDT)
+        Fri, 19 Mar 2021 18:48:54 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B87C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 15:48:53 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id l13so4326436vst.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 15:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=F2Te/S8IQN8II87+ruJB6/OZWiTMllLjsdgUQ032A7E=;
-        b=iYXj549E1TSXlKplraY6a7uriF3jJn340mEeSfahFmXK2DIwCKLLNAgXEBIiSVkdAl
-         zB0tQV4s8N4o/AQJLXCbZSjZlbCWI64Ak2QzRXZVLmNg4VduOFCvh0BfANlonz1raaY6
-         y5xo+5mFR0uc5XlfHV5+e06GJuIH997vcwgFkEwgbxylsITLzkRno8RBXinuQK2tYlAT
-         wbf5oWuKuC41lkBgWlC4M6MKH5BqzSp+DpGP2oaWVdlEP0iu2cfYi0jeguz5dLYrs1Hy
-         Cv7fr6DfrlDDqyRbV/UXRvdSR0uPU6WY2SeldO6kkgTtaDaXi6+gpCX2X/c/FvDL2bjl
-         liaA==
+        bh=0Ja0Bm0pbGPbVCQFMQ5kja3rpS5JFuQnqh3OEFTkD4Q=;
+        b=PoDC/F7a+9JZAGRETtRCTuh/CByXpenl8koD2/6Hh5xX7JZwYLzkYFLgq5yj4vnUUe
+         Wj40+WfDascmSBDQLbtwgrrHUgKOS2DLakB95E0WOZRlG7PoOqcGWoIt00uy7pLQB8C+
+         jqKXsgXWkQYjCoc8G54zX5rvXpYIPZ5us1Fk4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F2Te/S8IQN8II87+ruJB6/OZWiTMllLjsdgUQ032A7E=;
-        b=tNjQN35TBiejgPWe21wYCjWriG0G1zfrIvMMcV6EKdTYz2Pd2dij+TUobcIjwRP5CC
-         FUfXst8Vy9M+wLr1RWweaBqnPFGtihpJsyvRtzUbEH1OSfP+lW1eaxrcoLmhXztWr5ZI
-         G7JFNYcnhdBMBVN5xR2UfShaclQz1nM7TZ2Lx+W6joWGnBE+a9Jd8LOvRHJdfpcnbNTC
-         j2qDa3Wn3HD7yyVRGCq8dQcT5Y5JBoBTb6OyJ5jHOHIVDpAgYaLvsN9NAEUo95Nr8Iub
-         BBe0ea3NKrg60BAFvyZJUbcHnkNaD8v7X6V7rPqwoPslDGgNnhjhh4z2+k6W54S+LONb
-         B2RA==
-X-Gm-Message-State: AOAM532OzTHY8kM6RHs57O5cRCCW+MteIeepd3Y0CiZaQi27w/afcLfz
-        O1k+vsv6L1KZyXaaTQIiP1SOz249jQYsrLYpYiY=
-X-Google-Smtp-Source: ABdhPJzTykB9ymD3JXav+qnnbIuhHI0y9S0Tfm6c9DRTtjszViqz9nlVNzh5sp+4p5+REYVAymKar/bVjzXtCUpFY1o=
-X-Received: by 2002:a2e:8e37:: with SMTP id r23mr2247160ljk.269.1616193779968;
- Fri, 19 Mar 2021 15:42:59 -0700 (PDT)
+        bh=0Ja0Bm0pbGPbVCQFMQ5kja3rpS5JFuQnqh3OEFTkD4Q=;
+        b=FgTCQii1oE+1vfchXXfJk++udcmMRL0JFCe1EiXUc9y3Vtno6Jv50zqxFJ/qsZuefa
+         9lAQy2OCjcpCnZCs6nzvXRri3L1BrWdWzsaJlfqnFB2COSgtUKCaS3KCiliw14KUBING
+         nBFFl0w6ZPo5TlLmCMO3xTPYtjOcsOB8zVdhwCc+R85OBj+RvMMJzVurXBHQqOCBwWGy
+         jTLpNuojvngUjRdRQgWiORcMNGsXrCyPBzm++I+nuzPgk8RH3psGTQRvGysk20zMbJz4
+         0fwaJW9ZWRoqbL+eC51xwYu/HKbZGG7tlKN5nxKFk0t5arbtbTlCRZGxSD5/3i0ffbT1
+         x5mw==
+X-Gm-Message-State: AOAM533wV14nLckzptQJCJ/bdGWuwqioW2z1E0q/XyAzoKOVYuTEqYjT
+        YKpy4de/AqAMMlfn9hl/9yrrvdZM90V9QXGeMJUtfw==
+X-Google-Smtp-Source: ABdhPJwrdL2VXaXsq6x7epbNTCHh5OO4DtFmNZjruWS6qG820mnUPtqOUwuccQbJt2TUaJCT/6tgUVX0Of+NZpT68HY=
+X-Received: by 2002:a05:6102:3a06:: with SMTP id b6mr4437876vsu.21.1616194132651;
+ Fri, 19 Mar 2021 15:48:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319195547.427371-1-vgoyal@redhat.com> <20210319195547.427371-2-vgoyal@redhat.com>
-In-Reply-To: <20210319195547.427371-2-vgoyal@redhat.com>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Fri, 19 Mar 2021 23:42:48 +0100
-Message-ID: <CAHpGcMKhFxotKDxPryfKdhNMMDWO4Ws33s6fEm2NP0u_4vffnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] posic_acl: Add a helper determine if SGID should be cleared
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        lhenriques@suse.de, dgilbert@redhat.com,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20210318235416.794798-1-drinkcat@chromium.org>
+ <20210319075410.for-stable-4.19.1.I222f801866f71be9f7d85e5b10665cd4506d78ec@changeid>
+ <YFR/fQIePjDQcO5W@kroah.com> <b5d3d0ed-953e-083d-15f6-4a1e3ed95428@oracle.com>
+ <YFSRRux3FHJVgWXt@kroah.com>
+In-Reply-To: <YFSRRux3FHJVgWXt@kroah.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Sat, 20 Mar 2021 06:48:41 +0800
+Message-ID: <CANMq1KDsqsF2AOeY033rUj_Sit57a7O77kZ9Ob=56veGLK_H+Q@mail.gmail.com>
+Subject: Re: [for-stable-4.19 PATCH 1/2] vmlinux.lds.h: Create section for
+ protection against instrumentation
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+        stable <stable@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christopher Li <sparse@chrisli.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Sasha Levin <sashal@kernel.org>, linux-arch@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Guenter Roeck <groeck@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Mar 19, 2021 at 7:55 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Mar 19, 2021 at 12:20:22PM +0100, Alexandre Chartre wrote:
+> >
+> > On 3/19/21 11:39 AM, Greg Kroah-Hartman wrote:
+> > > On Fri, Mar 19, 2021 at 07:54:15AM +0800, Nicolas Boichat wrote:
+> > > > From: Thomas Gleixner <tglx@linutronix.de>
+> > > >
+> > > > commit 6553896666433e7efec589838b400a2a652b3ffa upstream.
+> > > >
+> > > > Some code pathes, especially the low level entry code, must be prot=
+ected
+> > > > against instrumentation for various reasons:
+> > > >
+> > > >   - Low level entry code can be a fragile beast, especially on x86.
+> > > >
+> > > >   - With NO_HZ_FULL RCU state needs to be established before using =
+it.
+> > > >
+> > > > Having a dedicated section for such code allows to validate with to=
+oling
+> > > > that no unsafe functions are invoked.
+> > > >
+> > > > Add the .noinstr.text section and the noinstr attribute to mark
+> > > > functions. noinstr implies notrace. Kprobes will gain a section che=
+ck
+> > > > later.
+> > > >
+> > > > Provide also a set of markers: instrumentation_begin()/end()
+> > > >
+> > > > These are used to mark code inside a noinstr function which calls
+> > > > into regular instrumentable text section as safe.
+> > > >
+> > > > The instrumentation markers are only active when CONFIG_DEBUG_ENTRY=
+ is
+> > > > enabled as the end marker emits a NOP to prevent the compiler from =
+merging
+> > > > the annotation points. This means the objtool verification requires=
+ a
+> > > > kernel compiled with this option.
+> > > >
+> > > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > > > Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+> > > > Acked-by: Peter Zijlstra <peterz@infradead.org>
+> > > > Link: https://lkml.kernel.org/r/20200505134100.075416272@linutronix=
+.de
+> > > >
+> > > > [Nicolas: context conflicts in:
+> > > >   arch/powerpc/kernel/vmlinux.lds.S
+> > > >   include/asm-generic/vmlinux.lds.h
+> > > >   include/linux/compiler.h
+> > > >   include/linux/compiler_types.h]
+> > > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> > >
+> > > Did you build this on x86?
+> > >
+> > > I get the following build error:
+> > >
+> > > ld:./arch/x86/kernel/vmlinux.lds:20: syntax error
+> > >
+> > > And that line looks like:
+> > >
+> > >   . =3D ALIGN(8); *(.text.hot .text.hot.*) *(.text .text.fixup) *(.te=
+xt.unlikely .text.unlikely.*) *(.text.unknown .text.unknown.*) . =3D ALIGN(=
+8); __noinstr_text_start =3D .; *(.__attribute__((noinline)) __attribute__(=
+(no_instrument_function)) __attribute((__section__(".noinstr.text"))).text)=
+ __noinstr_text_end =3D .; *(.text..refcount) *(.ref.text) *(.meminit.text*=
+) *(.memexit.text*)
+> > >
+> >
+> > In the NOINSTR_TEXT macro, noinstr is expanded with the value of the no=
+instr
+> > macro from linux/compiler_types.h while it shouldn't.
+> >
+> > The problem is possibly that the noinstr macro is defined for assembly.=
+ Make
+> > sure that the macro is not defined for assembly e.g.:
+> >
+> > #ifndef __ASSEMBLY__
+> >
+> > /* Section for code which can't be instrumented at all */
+> > #define noinstr                                                        =
+       \
+> >       noinline notrace __attribute((__section__(".noinstr.text")))
+> >
+> > #endif
+>
+> This implies that the backport is incorrect, so I'll wait for an updated
+> version...
 
-Am Fr., 19. M=C3=A4rz 2021 um 20:58 Uhr schrieb Vivek Goyal <vgoyal@redhat.=
-com>:
-> posix_acl_update_mode() determines what's the equivalent mode and if SGID
-> needs to be cleared or not. I need to make use of this code in fuse
-> as well. Fuse will send this information to virtiofs file server and
-> file server will take care of clearing SGID if it needs to be done.
->
-> Hence move this code in a separate helper so that more than one place
-> can call into it.
->
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/posix_acl.c            |  3 +--
->  include/linux/posix_acl.h | 11 +++++++++++
->  2 files changed, 12 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-> index f3309a7edb49..2d62494c4a5b 100644
-> --- a/fs/posix_acl.c
-> +++ b/fs/posix_acl.c
-> @@ -684,8 +684,7 @@ int posix_acl_update_mode(struct user_namespace *mnt_=
-userns,
->                 return error;
->         if (error =3D=3D 0)
->                 *acl =3D NULL;
-> -       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> -           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> +       if (posix_acl_mode_clear_sgid(mnt_userns, inode))
->                 mode &=3D ~S_ISGID;
->         *mode_p =3D mode;
->         return 0;
-> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-> index 307094ebb88c..073c5e546de3 100644
-> --- a/include/linux/posix_acl.h
-> +++ b/include/linux/posix_acl.h
-> @@ -59,6 +59,17 @@ posix_acl_release(struct posix_acl *acl)
->  }
->
->
-> +static inline bool
-> +posix_acl_mode_clear_sgid(struct user_namespace *mnt_userns,
-> +                         struct inode *inode)
-> +{
-> +       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> +           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> +               return true;
-> +
-> +       return false;
+Yep, sorry about that. I did test on ARM64 only and these patches
+happily went through our Chrome OS CQ (we don't have gcc coverage
+though).
 
-That's just
-
-return !in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-    !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID);
-
-The same pattern we have in posix_acl_update_mode also exists in
-setattr_copy and inode_init_owner, and almost the same pattern exists
-in setattr_prepare, so can this be cleaned up as well? The function
-also isn't POSIX ACL specific, so the function name is misleading.
-
-> +}
-> +
->  /* posix_acl.c */
->
->  extern void posix_acl_init(struct posix_acl *, int);
-> --
-> 2.25.4
+Guenter has a fixup here with explanation:
+https://crrev.com/c/2776332, I'll look carefully and resubmit.
 
 Thanks,
-Andreas
+
+> thanks,
+>
+> greg k-h
