@@ -2,180 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96AA3426A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193AA3426A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhCSUE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 16:04:59 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3928 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229990AbhCSUE0 (ORCPT
+        id S230229AbhCSUHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 16:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhCSUGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:04:26 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JK2m6r039592;
-        Fri, 19 Mar 2021 16:04:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VQUD4EeWcha/VtA8fn0+ri1PGYKy2heQhdvdPogGXPs=;
- b=DuHzJ42nzB+NwvpciVqEMdx5apDB7EY82K0TUxJ+VuDOKAdVFnxPkeCQj2XlhgUAKcWp
- DN8BUQB2PKbKWL3Wy0NPqtVtca/K+g2ZE35g8TvMtrWvkImUiFjuG2P3zl1x2N+N78K1
- mkHbW7M+iA78Z3FnNuvzvu3MdEWYcaNR+utjsaED6ZKJgYH1gzOWPaJu2Fewrb2H8uDp
- 2C1Tb/GOxDfyEzIHdikqw+OrZ8CnSPt4XDmXehk/P9Dh5EfBXB7yM1Gq2N7/FjbgCXOx
- 7hQOtmBFrQWrDbrd83NukKTuNQ4bpqgh3DnnKKXo/n1d1kvJI2m5tYIN5GDdI5WyTiB0 qA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37cw5asmnv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 16:04:16 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12JK3FUQ041020;
-        Fri, 19 Mar 2021 16:04:16 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37cw5asmn1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 16:04:15 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12JJxIYB016949;
-        Fri, 19 Mar 2021 20:04:13 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 378n18b6gk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Mar 2021 20:04:13 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12JK3rqo22938016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 20:03:54 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 110D552052;
-        Fri, 19 Mar 2021 20:04:11 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.ibmuc.com (unknown [9.211.66.110])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id ACDE852050;
-        Fri, 19 Mar 2021 20:04:08 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     linux-integrity@vger.kernel.org, Test <test@localhost.localdomain>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [RFC PATCH 2/2] integrity: double check iint_cache was initialized
-Date:   Fri, 19 Mar 2021 16:03:58 -0400
-Message-Id: <20210319200358.22816-2-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210319200358.22816-1-zohar@linux.ibm.com>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
+        Fri, 19 Mar 2021 16:06:42 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A562C06175F;
+        Fri, 19 Mar 2021 13:06:42 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id h20so3464185plr.4;
+        Fri, 19 Mar 2021 13:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JXGKh4T+yc6l+Z0BHrIiKoDAlXQtyCpXhoY0lCCmLOI=;
+        b=Kojq/eREMsKMDTPqwXZDbNdoxYVgFH77gF2v9wfPU4yvp5h/Nz1reEZR4cKFpGAwR9
+         o8IP8ucEkSeuk9vrRoq0azn/6prGqHGBIDKyz4elAt1CoQwBMK3RCF3ZZbGdjaPH51Yw
+         YQdoyqIyaF+piUjMI1lYxnOIcuwofUGwALiuySgyRQjEhRlNr4R/337oN9SPqTbryAGE
+         1MMyjQFOT2QHOhJsaC7bMAbDBiIJBJUKEeuodkAaUcmfeodXDVm+XbgAmNnpMKZiOItM
+         6DD0muJe1hUB/YLE23aDJwqlRypTlz5zQyxXNW+7pQeYzpKlyi4+qbdMhd+Gs4Zz2Jxa
+         3IOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JXGKh4T+yc6l+Z0BHrIiKoDAlXQtyCpXhoY0lCCmLOI=;
+        b=IW55rdKoOXXHUT+Rv4viawVHX9jVa2cT8sFbqOMF4zlKDCUOiduoLluJVMs7KcSq8S
+         XavSMHZFkMJkt+UR/BiPJM5nwQflQGkUreVFR9WxDCj7/DEOdU14jcW0XJRw3v7dIOWs
+         5RuN3Jz1UAaOYUbTfD4xaL50mov23nIa8wK6An5pxJawLOoRg/O7SWB+eL3TUIxDHZ24
+         c2BNuWNQORWLp2DoXMsDJ/8r7fYYol1iQTmguzNrssV9vARVO/nz7/dtx9ygMHC7cXDP
+         MwPVlOCSvXcqmzdNDPsLau9tdn+IlQyn1X78OJvnZCJtbFyNk6wV2jRu4vEeq5ZubCo2
+         M2uw==
+X-Gm-Message-State: AOAM530fYgiplFUdyN1YSX6Z4HU3pNFD9HKvaYw+smQaC+CzxIdH7QBc
+        Ao1HeQOFgTL8c+3f+z7XyX78q2/Zuxw=
+X-Google-Smtp-Source: ABdhPJzFvvJIm8DFM46X24tkaP+vda9rsiFnL9/2SoekE9F2YSTCgSwtrLhbI88NzrleLwV1U1wBOg==
+X-Received: by 2002:a17:90b:ecf:: with SMTP id gz15mr182694pjb.85.1616184401258;
+        Fri, 19 Mar 2021 13:06:41 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y20sm6423666pfo.210.2021.03.19.13.06.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 13:06:40 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/13] 5.10.25-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210319121745.112612545@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7761fa50-3964-1d96-c478-9c65fc4aca11@gmail.com>
+Date:   Fri, 19 Mar 2021 13:06:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-19_10:2021-03-19,2021-03-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 impostorscore=0
- clxscore=1015 suspectscore=0 phishscore=0 mlxlogscore=907
- priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103190135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Test <test@localhost.localdomain>
 
-The integrity's "iint_cache" is initialized at security_init().  Only
-after an IMA policy is loaded, which is initialized at late_initcall,
-is a file's integrity status stored in the "iint_cache".
 
-All integrity_inode_get() callers first verify that the IMA policy has
-been loaded, before calling it.  Yet for some reason, it is still being
-called, causing a NULL pointer dereference.
+On 3/19/2021 5:18 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.25 release.
+> There are 13 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.25-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-As reported by Dmitry Vyukov:
-in qemu:
-qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
-max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
-wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
- -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
-   -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
-nic,model=virtio-net-pci   -object
-memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
-  -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
-root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
-panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
-vm_pid -m 2G -cpu host
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-But it crashes on NULL deref in integrity_inode_get during boot:
-
-Run /sbin/init as init process
-BUG: kernel NULL pointer dereference, address: 000000000000001c
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
-Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
-3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
-1c 4cf
-RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
-RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
-R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
-R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
-FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
- process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
- ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
- security_bprm_check+0x7d/0xa0 security/security.c:845
- search_binary_handler fs/exec.c:1708 [inline]
- exec_binprm fs/exec.c:1761 [inline]
- bprm_execve fs/exec.c:1830 [inline]
- bprm_execve+0x764/0x19a0 fs/exec.c:1792
- kernel_execve+0x370/0x460 fs/exec.c:1973
- try_to_run_init_process+0x14/0x4e init/main.c:1366
- kernel_init+0x11d/0x1b8 init/main.c:1477
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
-CR2: 000000000000001c
----[ end trace 22d601a500de7d79 ]---
-
-Before calling kmem_cache_alloc(), check that the iint_cache has
-been initialized.
-
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/iint.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-index 1d20003243c3..80b5ae7bb712 100644
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -97,6 +97,15 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
- 	struct rb_node **p;
- 	struct rb_node *node, *parent = NULL;
- 	struct integrity_iint_cache *iint, *test_iint;
-+	static int once = 0;
-+
-+	if (!iint_cache) { /* shouldn't get here */
-+		if (!once) {
-+			dump_stack();
-+			once = 1;
-+		}
-+		return NULL;
-+	}
- 
- 	iint = integrity_iint_find(inode);
- 	if (iint)
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.27.0
-
+Florian
