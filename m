@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E4341198
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5D73411B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhCSAso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S233485AbhCSAxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbhCSAsU (ORCPT
+        with ESMTP id S233291AbhCSAwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:48:20 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC889C06174A;
-        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id f17so2144236plr.0;
-        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
+        Thu, 18 Mar 2021 20:52:47 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAEAC06174A;
+        Thu, 18 Mar 2021 17:52:44 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j3so8838596edp.11;
+        Thu, 18 Mar 2021 17:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eG1QzwIi3xEaakEPyWiwcIUMucRPcW0kIWxB+VdX0Ok=;
-        b=RAJG3mFP99nhvmv/KZWxUCdFpGEmKA3rijSW/KwwIvPUb9UZQ6Jg0EyQveb7G4h9fU
-         pkKdfJGMdcIm4HI8uAVUa5Nzv5Zg4BsnDy2d+JmuFQzST8gNpib1b6rpiGNtvsMPhPOC
-         LuJikCi/pTxL5zf9qwXIeLEFzpgbaTtIx5lksikP75lA4DjNhVOHDtGblLuffgfQNSmG
-         iftKfGmNegPkTPItGtRXgUJVFUVTSrMS/FWSdPOvaAyUNDzyCrYvqQgRk1G/AUC4p7UC
-         x53i7x8hpHXAlhD+e1Wa/QaFLzV3EUGQP9EqVnhWX4iPJvyM6NevwDVaL7Kw5/iotfQp
-         ujjQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vSbdzBp7qOJIsf9v7dF7qtnitXojs7RoT+m6oFwc0qg=;
+        b=NmXYQDiol55pb8/xBBoCGdenFhEPmJHEGf1MSUeSS3YdbHtZCkyAVNvX2pzGcRgmSw
+         CzUvu//Zz2cBLEz1tB3hksGgqy5VInvszgtMksh592ZWcnHJuc3CcGjuL7BX5jWx2IL5
+         SOc9VhmeFa/94oRUs0nLHKolQjW+P4Y0hzPpTxiD49TY0xU4OiTBOFX3buMftqxSwJDI
+         Xwo9VLz8U+v9KhppFT+O6D02bFmuHOSQA/Q2jyOxkZ/203bIvOZhdjJ230Kd+Lf15kc4
+         FQFr1YLWXCAAx9ynSkSfqZGht2CAxL1KgQ2iaQ/W886Px5dCjxz6BgAB931N2vsewGJn
+         zErg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eG1QzwIi3xEaakEPyWiwcIUMucRPcW0kIWxB+VdX0Ok=;
-        b=BhJ732lROpyQxDoBghK/D82NDhtqDRrXRLXxQSGR4PwDMdvEEIJCspVpYA4yiRKvwG
-         RLWst+8RxItwIybhs5f9X3/sfm+ujcrQcCpZdties2QhWbnWlVYHSndA+beCaBd+FY+L
-         andrKEjOerN33OxiLfGPsGZT8MFHbRd8Sxo3ok6nuYJoKutelQuc4bb0jaejlVxeyQYp
-         z8zYEsv4+8F9VMfyqoZBELocXr4MON6xB4qPFaGq1uOK2KACIqu8Qeix1cQ3qCSDN0OE
-         ziceKYCrJ2xgq06MUnrOyh58Hgu580/D7fSSbRRDCYlA9QUgD3fHQjXTGvua6aoI79M4
-         7YGA==
-X-Gm-Message-State: AOAM530ooVV2YCKoSJWJjoMwK6nEXqbSn78euKr0PzLpd965NEMYMOrQ
-        /mHsBXmK/Xv7wulY8uSC16w=
-X-Google-Smtp-Source: ABdhPJytY1xkTdXpw1JPFJu5Rw5Dhn60wo+Djui6kIuuXt0aDtxR6iyqkWGn1AA/gx0cUCg8L8D8GA==
-X-Received: by 2002:a17:902:bf92:b029:e6:bc0:25ac with SMTP id v18-20020a170902bf92b02900e60bc025acmr12452727pls.49.1616114898109;
-        Thu, 18 Mar 2021 17:48:18 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g2sm3388274pfi.28.2021.03.18.17.48.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 17:48:17 -0700 (PDT)
-Subject: Re: [PATCH] swiotlb: Add swiotlb=off to disable SWIOTLB
-To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, opendmb@gmail.com,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210318191816.4185226-1-f.fainelli@gmail.com>
- <bbd44c42-cedc-7bd6-a443-c991fd080298@gmail.com>
- <e7850feb-b7cd-e279-e3fc-a9bdba162423@arm.com>
- <f0940ea7-79f6-af57-aa7d-d121abb99012@gmail.com>
- <16d1c66f-5451-2515-af73-a6b44d996e92@arm.com>
- <a8a05321-3fd0-d1c4-9d76-ec2e79e310ec@gmail.com>
- <3dd81519-4a73-efb8-abf0-0b766f993a8b@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a7a858e9-d6e6-cd06-85fc-8826e45d460e@gmail.com>
-Date:   Thu, 18 Mar 2021 17:48:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        bh=vSbdzBp7qOJIsf9v7dF7qtnitXojs7RoT+m6oFwc0qg=;
+        b=XG+qgqBI7sz7QmLzEkyKQG5veUsvHka05OLJmBgnjC+f5wXTKk7qmEXRfsi0InnZLZ
+         IHQxgWAjje3vajYzId6O4xsqDKh4/vwW2i/Fuv1Si9ZWMfWlpJ25eqQpAHm8Y6ejAhYH
+         kVUP7xOyHluRYxQN6n9U5F+FmfokNw3Bkw5jsYh3M0OJj8XPUa0MvpabZVrS8sURCquW
+         UU3ownu1gP97+WoBso71Unyd+IK9wJQXhGOlpLEIL/h1E9Oih/pKn5Mz7te9oiPvETvK
+         r5U6X821Z5o7QEftHsSeJYaPn4xPghPWzciYq15tZ0MtChg3K5sLmEFti6vkD34ZDcAG
+         ADVg==
+X-Gm-Message-State: AOAM531FD4LS3Z3NAi8XY1OjlmHYFYRZx7x1lQb77xFy2Tt148U7FDf2
+        JMMGqHXBMTIlIfjKLY68Q3s=
+X-Google-Smtp-Source: ABdhPJzArXZJP1cj+GNfpR7aCTEj/VrLxGO10ck8oCCRJNYY7Q75fv7kXS47NPwWlk1UfT8c53cmKA==
+X-Received: by 2002:aa7:c398:: with SMTP id k24mr6815686edq.61.1616115163091;
+        Thu, 18 Mar 2021 17:52:43 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (host-95-233-52-6.retail.telecomitalia.it. [95.233.52.6])
+        by smtp.googlemail.com with ESMTPSA id q25sm3186976edt.51.2021.03.18.17.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 17:52:42 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v11 0/9] Add support for ipq8064 tsens
+Date:   Fri, 19 Mar 2021 01:52:18 +0100
+Message-Id: <20210319005228.1250-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <3dd81519-4a73-efb8-abf0-0b766f993a8b@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset convert msm8960 to reg_filed, use int_common instead 
+of a custom function and fix wrong tsens get_temp function for msm8960.
+Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+to be registered as a gcc child as the tsens regs on this platform are
+shared with the controller.
+This is based on work and code here
+https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
 
+v11:
+* Address comments from Thara (thx)
+v10:
+* Fix wrong tsens init for ver_0 (crit_trips needs to be set in tsens_register)
+v9:
+* Fix warning from Documentation bot
+v8:
+* Drop MIN and MAX THRESH and use CRIT_THRESH instead
+* Fix broken documentation patch
+v7:
+* Rework calibrate function to use get_temp_common
+* Fix wrong required in the Documentation for ipq8064
+* Fix hardware bug in sensor enable function
+v6:
+* Fix spelling error (can't find the problem with variable misallignment)
+* Rework big if-else
+* Remove extra comments
+* Add description about different interrupts
+v5:
+* Conver driver to use reg_fiedl
+* Use init_common 
+* Drop custom set_trip and set_interrupt
+* Use common set_trip and set_interrupt
+* Fix bad get_temp function
+* Add missing hardcoded slope
+v4:
+* Fix compilation error and warning reported by the bot
+v3:
+* Change driver to register as child instead of use phandle
+v2:
+* Fix dt-bindings problems
 
-On 3/18/2021 4:35 PM, Robin Murphy wrote:
-> On 2021-03-18 21:31, Florian Fainelli wrote:
->>
->>
->> On 3/18/2021 12:53 PM, Robin Murphy wrote:
->>> On 2021-03-18 19:43, Florian Fainelli wrote:
->>>>
->>>>
->>>> On 3/18/2021 12:34 PM, Robin Murphy wrote:
->>>>> On 2021-03-18 19:22, Florian Fainelli wrote:
->>>>>>
->>>>>>
->>>>>> On 3/18/2021 12:18 PM, Florian Fainelli wrote:
->>>>>>> It may be useful to disable the SWIOTLB completely for testing or
->>>>>>> when a
->>>>>>> platform is known not to have any DRAM addressing limitations
->>>>>>> what so
->>>>>>> ever.
->>>>>
->>>>> Isn't that what "swiotlb=noforce" is for? If you're confident that
->>>>> we've
->>>>> really ironed out *all* the awkward corners that used to blow up if
->>>>> various internal bits were left uninitialised, then it would make
->>>>> sense
->>>>> to just tweak the implementation of what we already have.
->>>>
->>>> swiotlb=noforce does prevent dma_direct_map_page() from resorting to
->>>> the
->>>> swiotlb, however what I am also after is reclaiming these 64MB of
->>>> default SWIOTLB bounce buffering memory because my systems run with
->>>> large amounts of reserved memory into ZONE_MOVABLE and everything in
->>>> ZONE_NORMAL is precious at that point.
->>>
->>> It also forces io_tlb_nslabs to the minimum, so it should be claiming
->>> considerably less than 64MB. IIRC the original proposal *did* skip
->>> initialisation completely, but that turned up the aforementioned issues.
->>
->> AFAICT in that case we will have iotlb_n_slabs will set to 1, which will
->> still make us allocate io_tlb_n_slabs << IO_TLB_SHIFT bytes in
->> swiotlb_init(), which still gives us 64MB.
-> 
-> Eh? When did 2KB become 64MB? IO_TLB_SHIFT is 11, so that's at most one
-> page in anyone's money...
+Ansuel Smith (9):
+  drivers: thermal: tsens: Add VER_0 tsens version
+  drivers: thermal: tsens: Don't hardcode sensor slope
+  drivers: thermal: tsens: Convert msm8960 to reg_field
+  drivers: thermal: tsens: Use init_common for msm8960
+  drivers: thermal: tsens: Fix bug in sensor enable for msm8960
+  drivers: thermal: tsens: Replace custom 8960 apis with generic apis
+  drivers: thermal: tsens: Drop unused define for msm8960
+  drivers: thermal: tsens: Add support for ipq8064-tsens
+  dt-bindings: thermal: tsens: Document ipq8064 bindings
 
-Yes, sorry incorrect shift applied here. Still, and I believe this is
-what you mean below, architecture code setting swiotlb_force =
-SWIOTLB_NO_FORCE does not result in not allocating the SWIOTLB, because
-io_tlb_nslabs is still left set to 0 so swiotlb_init() will proceed with
-allocating the default size.
+ .../bindings/thermal/qcom-tsens.yaml          |  56 ++++-
+ drivers/thermal/qcom/tsens-8960.c             | 234 +++++++++---------
+ drivers/thermal/qcom/tsens.c                  | 147 ++++++++---
+ drivers/thermal/qcom/tsens.h                  |   4 +-
+ 4 files changed, 285 insertions(+), 156 deletions(-)
 
-> 
->>>>> I wouldn't necessarily disagree with adding "off" as an additional
->>>>> alias
->>>>> for "noforce", though, since it does come across as a bit wacky for
->>>>> general use.
->>>>>
->>>>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->>>>>>
->>>>>> Christoph, in addition to this change, how would you feel if we
->>>>>> qualified the swiotlb_init() in arch/arm/mm/init.c with a:
->>>>>>
->>>>>>
->>>>>> if (memblock_end_of_DRAM() >= SZ_4G)
->>>>>>       swiotlb_init(1)
->>>>>
->>>>> Modulo "swiotlb=force", of course ;)
->>>>
->>>> Indeed, we would need to handle that case as well. Does it sound
->>>> reasonable to do that to you as well?
->>>
->>> I wouldn't like it done to me personally, but for arm64, observe what
->>> mem_init() in arch/arm64/mm/init.c already does.
-> 
-> In fact I should have looked more closely at that myself - checking
-> debugfs on my 4GB arm64 board actually shows io_tlb_nslabs = 0, and
-> indeed we are bypassing initialisation completely and (ab)using
-> SWIOTLB_NO_FORCE to cover it up, so I guess it probably *is* safe now
-> for the noforce option to do the same for itself and save even that one
-> page.
-
-OK, I can submit a patch that does that. 5.12-rc3 works correctly for me
-here as well and only allocates SWIOTLB when needed which in our case is
-either:
-
-- we have DRAM at PA >= 4GB
-- we have limited peripherals (Raspberry Pi 4 derivative) that can only
-address the lower 1GB
-
-Now let's see if we can get ARM 32-bit to match :)
 -- 
-Florian
+2.30.2
+
