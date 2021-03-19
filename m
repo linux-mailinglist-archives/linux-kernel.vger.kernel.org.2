@@ -2,232 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35ADF342096
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D033420A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhCSPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:09:48 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24966 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhCSPJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:09:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616166556; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=er9VP5xtbj1RcZoesk+6RSiuR+svOzZFsLimRNPx0Ig=; b=FDxQ0mcGPKdLOrpGXBykFWUG4/Iy7+S75bPXJEtkuwr/INlLOEVbs8ZC3D/jvw6JyijKTqkc
- sCnvJbqKhvwKlbHxlNjUqsyHfxazPxqpp5j5MplkkAHIYLMRlNZgsOFkI2JXSKV2EqyBxf44
- T0qCsOt/XDjMfRSVVOUTRtOMyUA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6054be78c32ceb3a91998f7c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 15:08:40
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 564C2C4346A; Fri, 19 Mar 2021 15:08:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A7E5C433C6;
-        Fri, 19 Mar 2021 15:08:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A7E5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v12 1/2] scsi: ufs: Enable power management for wlun
-To:     Bart Van Assche <bvanassche@acm.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, adrian.hunter@intel.com,
-        linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1616113283.git.asutoshd@codeaurora.org>
- <56662082b6a17b448f40d87df7e52b45a5998c2a.1616113283.git.asutoshd@codeaurora.org>
- <e9dc046d-3a88-9802-df58-60209ea8484f@acm.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <45101050-83de-6488-7b17-271e0acea87b@codeaurora.org>
-Date:   Fri, 19 Mar 2021 08:08:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230129AbhCSPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhCSPMz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:12:55 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E55C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:12:54 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id y18so3181144qky.11
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:12:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2BQUhut8Gp1VWHsHKJM7zsud7F4iDdjVoej9IXbRRJM=;
+        b=XJJWdJBS8J4vHFHbMM7M75TyFvEdbVC5kovBU53t0sfFbzyrtgCXNUzBHgFRaRrXsS
+         ECY7LRG05zK+uZp3Cdlwwzvjpyx/4cLV45amfGsWdQhDiWMUzus+tU9OVadpNqabmpo4
+         gzgxKOlDw1BPjL51o7a85ogpr7f0v/d3lmyMg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2BQUhut8Gp1VWHsHKJM7zsud7F4iDdjVoej9IXbRRJM=;
+        b=uJ+xdD2nG9zcZbf0HxMrAuGvtxND/IKlio3vMGgDEfSFdV8gBRyD8vkGgqkucJ+S57
+         hJA+BwQKFaZXFRYhkS0MeamXpamLERy3RrotSiG2BvM0X/zun0QVWnt0nhBLw/8O1Ftz
+         pTJkQbI12lBuhmHEsbCAy02ckpu7V2MTybsyc9zwB+CZ3VOdR9I2CsYqum8h34NKGF6K
+         DDubXqWfEZSnwJzqbWj55aRi6/fUU9Yek0OdIrXt8UTOXdKN73NrVhYEjzZDm78JEqwB
+         WWJ44QJeUvQO+WfZYsAN/TD+g+WHPhauO4aYuoKKubnSS6M6iEj5TJIbqskHvk4KkSQz
+         goMA==
+X-Gm-Message-State: AOAM5312Q25VubhU6CylM70KsdFQuf3oi9NYG1bPr7rajFGSAj23uWyV
+        bU1g57dFYEbbLU6LfpoX60pE8j0uAAYJUQ==
+X-Google-Smtp-Source: ABdhPJxfbHmGNupISM3tFOoxcr98YlYi2auJiQafwrfSN4XSwFedN9V+sOfO7QtwLXGl+Gk1oMCemg==
+X-Received: by 2002:a37:5943:: with SMTP id n64mr9988106qkb.127.1616166773775;
+        Fri, 19 Mar 2021 08:12:53 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id z89sm3891539qtd.5.2021.03.19.08.12.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 08:12:53 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id o83so6641036ybg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:12:52 -0700 (PDT)
+X-Received: by 2002:a25:2654:: with SMTP id m81mr6982485ybm.405.1616166772505;
+ Fri, 19 Mar 2021 08:12:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e9dc046d-3a88-9802-df58-60209ea8484f@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210316011516.1314686-1-mka@chromium.org> <20210315181509.v3.2.I4138c3edee23d1efa637eef51e841d9d2e266659@changeid>
+In-Reply-To: <20210315181509.v3.2.I4138c3edee23d1efa637eef51e841d9d2e266659@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 19 Mar 2021 08:12:40 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XxTuFSosYFcpvbTUMfrAkaLbg3QvqBwhrt4niVzDRN9w@mail.gmail.com>
+Message-ID: <CAD=FV=XxTuFSosYFcpvbTUMfrAkaLbg3QvqBwhrt4niVzDRN9w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] arm64: dts: qcom: sc7180: Add pompom rev3
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/18/2021 8:12 PM, Bart Van Assche wrote:
-> On 3/18/21 5:35 PM, Asutosh Das wrote:
->> During runtime-suspend of ufs host, the scsi devices are
->> already suspended and so are the queues associated with them.
->> But the ufs host sends SSU to wlun during its runtime-suspend.
->> During the process blk_queue_enter checks if the queue is not in
->> suspended state. If so, it waits for the queue to resume, and never
->> comes out of it.
->> The commit
->> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->> adds the check if the queue is in suspended state in blk_queue_enter().
-> 
-Hi Bart,
-Thanks for the review comments.
+Hi,
 
-> What is the role of the WLUN during runtime suspend and why does a
-> command need to be sent to the WLUN during runtime suspend? Although it
-> is possible to derive this from the source code, please explain this in
-> the patch description.
-> 
-Ok. Will explain it in the next version.
-
-> What does the acronym SSU stand for? This doesn't seem like a commonly
-> used kernel acronym to me so please expand that acronym.
+On Mon, Mar 15, 2021 at 6:15 PM Matthias Kaehlcke <mka@chromium.org> wrote:
 >
-START STOP UNIT.
-Anyway, I'll expand it in the next version.
-
->> Fix this by registering ufs device wlun as a scsi driver and
->> registering it for block runtime-pm. Also make this as a
->> supplier for all other luns. That way, this device wlun
->> suspends after all the consumers and resumes after
->> hba resumes.
-> 
-> That's an interesting solution.
-> 
->> -void __exit ufs_debugfs_exit(void)
->> +void ufs_debugfs_exit(void)
-> 
-> Is the above change related to the rest of this patch?
-> 
-Yes, it's used to handle an error in ufshcd_core_init() function.
-
->>   static struct platform_driver ufs_qcom_pltform = {
->> diff --git a/drivers/scsi/ufs/ufs_bsg.c b/drivers/scsi/ufs/ufs_bsg.c
->> index 5b2bc1a..cbb5a90 100644
->> --- a/drivers/scsi/ufs/ufs_bsg.c
->> +++ b/drivers/scsi/ufs/ufs_bsg.c
->> @@ -97,7 +97,7 @@ static int ufs_bsg_request(struct bsg_job *job)
->>   
->>   	bsg_reply->reply_payload_rcv_len = 0;
->>   
->> -	pm_runtime_get_sync(hba->dev);
->> +	scsi_autopm_get_device(hba->sdev_ufs_device);
-> 
-> Can the pm_runtime_get_sync() to scsi_autopm_get_device() changes be
-> moved into a separate patch?
+> The only kernel visible change with respect to rev2 is that pompom
+> rev3 changed the charger thermistor from a 47k to a 100k NTC to use
+> a thermistor which is supported by the PM6150 ADC driver.
 >
-I guess so. But then this patch would have issues when used independently.
+> Disable the charger thermal zone for pompom rev1 and rev2 to avoid
+> the use of bogus temperature values from the unsupported thermistor.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+> Changes in v3:
+> - don't add LOCK key
+>
+> Changes in v2:
+> - moved keyboard definition to sc7180-trogdor-pompom.dtsi instead
+>   of duplicating it, use cros-ec keyboard for rev1
+> - squashed with 'arm64: dts: qcom: sc7180: pompom: Disable charger
+>   thermal zone for rev1 and rev2'
+>
+>  arch/arm64/boot/dts/qcom/Makefile             |  2 +
+>  .../dts/qcom/sc7180-trogdor-pompom-r1.dts     | 12 ++++++
+>  .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
+>  .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 38 +++++--------------
+>  .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 +++++++
+>  .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 15 ++++++++
+>  .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 29 ++++++++++++++
+>  7 files changed, 83 insertions(+), 31 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+>
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index a81966d59cf7..11aa83ca798f 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -49,6 +49,8 @@ dtb-$(CONFIG_ARCH_QCOM)       += sc7180-trogdor-pompom-r1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r1-lte.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r2-lte.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r3.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r3-lte.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-r1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-r1-lte.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)        += sdm630-sony-xperia-ganges-kirin.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> index e720e7bd0d70..7f87877408c5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> @@ -9,11 +9,23 @@
+>
+>  #include "sc7180-trogdor-pompom.dtsi"
+>
+> +/delete-node/ keyboard_controller;
 
->> +static inline bool is_rpmb_wlun(struct scsi_device *sdev)
->> +{
->> +	return (sdev->lun == ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN));
->> +}
-> 
-> Has this patch been verified with checkpatch? Checkpatch should have
-> reported the following for the above code:
-> 
-> 	return is not a function, parentheses are not required
-> 
-Yes, it has been verified. But I didn't see any error reports.
-Below is the o/p of checkpatch:
+So I just tried to compile your patch and I found that it doesn't
+compile. :( The above needs to be:
 
-$ ./scripts/checkpatch.pl /tmp/up/ufs-pm-v12/*
-------------------------------------------
-/tmp/up/ufs-pm-v12/0000-cover-letter.patch
-------------------------------------------
-WARNING: Possible unwrapped commit description (prefer a maximum 75 
-chars per line)
-#107:
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
-Linux Foundation Collaborative Project.
+/delete-node/ &keyboard_controller;
 
-total: 0 errors, 1 warnings, 0 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-       mechanically convert to the typical style using --fix or 
---fix-inplace.
-
-/tmp/up/ufs-pm-v12/0000-cover-letter.patch has style problems, please 
-review.
------------------------------------------------------------------------
-/tmp/up/ufs-pm-v12/0001-scsi-ufs-Enable-power-management-for-wlun.patch
------------------------------------------------------------------------
-total: 0 errors, 0 warnings, 1180 lines checked
-
-/tmp/up/ufs-pm-v12/0001-scsi-ufs-Enable-power-management-for-wlun.patch 
-has no obvious style problems and is ready for submission.
----------------------------------------------------------------------
-/tmp/up/ufs-pm-v12/0002-ufs-sysfs-Resume-the-proper-scsi-device.patch
----------------------------------------------------------------------
-total: 0 errors, 0 warnings, 91 lines checked
-
-/tmp/up/ufs-pm-v12/0002-ufs-sysfs-Resume-the-proper-scsi-device.patch 
-has no obvious style problems and is ready for submission.
-
-NOTE: If any of the errors are false positives, please report
-       them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-
->> +static inline bool is_device_wlun(struct scsi_device *sdev)
->> +{
->> +	return (sdev->lun ==
->> +		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_UFS_DEVICE_WLUN));
->> +}
-> 
-> Same comment here.
-> 
->>   		/*
->> -		 * Don't assume anything of pm_runtime_get_sync(), if
->> +		 * Don't assume anything of resume, if
->>   		 * resume fails, irq and clocks can be OFF, and powers
->>   		 * can be OFF or in LPM.
->>   		 */
-> 
-> Please make better use of the horizontal space in the above comment by
-> making comment lines longer.
-> 
-Ok Sure.
-
-> Thanks,
-> 
-> Bart.
-> 
-
--asd
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+-Doug
