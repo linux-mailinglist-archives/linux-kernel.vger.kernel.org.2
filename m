@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5884E3424FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6D73424FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhCSSli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:41:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:60894 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230226AbhCSSlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:41:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67D5A31B;
-        Fri, 19 Mar 2021 11:41:21 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4BEFE3F792;
-        Fri, 19 Mar 2021 11:41:20 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Jun <chenjun102@huawei.com>,
-        Marco Elver <elver@google.com>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
-Subject: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
-Date:   Fri, 19 Mar 2021 18:41:06 +0000
-Message-Id: <20210319184106.5688-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S230239AbhCSSmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230453AbhCSSlv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:41:51 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8B6C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:41:51 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f3so3149522lfu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cXH+dcJq1Qlcq3WMXI8ATU9OtVilMFQ65bMjs0UMHDg=;
+        b=TNj0S4RC7TT5fCBMitvVKqaFLnlJcsF4VguNB2RglBNykJKE60t/iViTRdbuGJSTdW
+         Jom/CweL61c9Awm1E7Vni+jExZ6YjT0S8087YMEicMdkwhqLtAfuNv04zroDU/nWW0p2
+         Qg+nT/q1zls7iPv8jQD4WpC1Ms55Sx/gL1l1BiK32+aZPZSoe/n3dADP754AUvRSU5Gg
+         XQvWAzp6B+V3hTMZ+OO7HleYi/IG3wS3/5YA1fiPCBnh9PyTjS1e/J1+/1wxiG2/axn2
+         gEFIdQTLmR02h7X5lHRtGj0jlQdVljlzUm0Z/hMLWRGyXDDhyr89qEuMsqxvc0o42D82
+         qwMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cXH+dcJq1Qlcq3WMXI8ATU9OtVilMFQ65bMjs0UMHDg=;
+        b=fNoSDvqTkEl0oQPMAn0UZxatx3cyP62lEmEElYdnqXweW9x5h3Cnoi0rQuHbag2+sP
+         it8fAZTB6bZCC6t3IneABY8kIQBptZZOYZjr1Va234mtMmfVPV/G2gwgVUSOSfrOdpgK
+         nHsdRskgZQfwIc1laEZJL6WoUqLw0fQnTykiYHo/jutJuA7VwIG8k5K01BPca+gwPbRF
+         uAFCCuVkFzfU4Z4U0l6p4mbUvlVhcAOavKpudyHp0yYbKXuvYmNQ8RLQaxTIzsJcYhzr
+         jnoGPrWcpSzGf2xPHMFJztI0RZtJ0LhRalaTzXIbpfa7nVhgOFnhxw9iphr87UvwQgZx
+         OHHQ==
+X-Gm-Message-State: AOAM531GwYO+pq24TsZhB6coLviRNYh+3YBun50Q+kRCxjBCjRgHghjq
+        70CSIY9Toh6ik11Gfwmw7dD2DQITDIaMlv0HdK9nbQ==
+X-Google-Smtp-Source: ABdhPJyrAfzmjkQYw4/g8LnPrVLlVrXyj52MFJSwFtLn0VxSQB/GR7s/IV7p/Dh+hfLKc9FbdEOXyeebzZQzD5wrKmo=
+X-Received: by 2002:a05:6512:b93:: with SMTP id b19mr1519816lfv.432.1616179309422;
+ Fri, 19 Mar 2021 11:41:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210319163821.20704-1-songmuchun@bytedance.com> <20210319163821.20704-7-songmuchun@bytedance.com>
+In-Reply-To: <20210319163821.20704-7-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 19 Mar 2021 11:41:37 -0700
+Message-ID: <CALvZod4aUu--86T7t5CMs1Z+o5Kpts9b+BHPug2JTUiddgTtZQ@mail.gmail.com>
+Subject: Re: [PATCH v5 6/7] mm: memcontrol: inline __memcg_kmem_{un}charge()
+ into obj_cgroup_{un}charge_pages()
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We recently converted arm64 to use arch_stack_walk() in commit:
+On Fri, Mar 19, 2021 at 9:39 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> There is only one user of __memcg_kmem_charge(), so manually inline
+> __memcg_kmem_charge() to obj_cgroup_charge_pages(). Similarly manually
+> inline __memcg_kmem_uncharge() into obj_cgroup_uncharge_pages() and
+> call obj_cgroup_uncharge_pages() in obj_cgroup_release().
+>
+> This is just code cleanup without any functionality changes.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-  5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-
-The core stacktrace code expects that (when tracing the current task)
-arch_stack_walk() starts a trace at its caller, and does not include
-itself in the trace. However, arm64's arch_stack_walk() includes itself,
-and so traces include one more entry than callers expect. The core
-stacktrace code which calls arch_stack_walk() tries to skip a number of
-entries to prevent itself appearing in a trace, and the additional entry
-prevents skipping one of the core stacktrace functions, leaving this in
-the trace unexpectedly.
-
-We can fix this by having arm64's arch_stack_walk() begin the trace with
-its caller. The first value returned by the trace will be
-__builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
-first frame record to be unwound will be __builtin_frame_address(1),
-i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
-is also marked noinline.
-
-While __builtin_frame_address(1) is not safe in portable code, local GCC
-developers have confirmed that it is safe on arm64. To find the caller's
-frame record, the builtin can safely dereference the current function's
-frame record or (in theory) could stash the original FP into another GPR
-at function entry time, neither of which are problematic.
-
-Prior to this patch, the tracing code would unexpectedly show up in
-traces of the current task, e.g.
-
-| # cat /proc/self/stack
-| [<0>] stack_trace_save_tsk+0x98/0x100
-| [<0>] proc_pid_stack+0xb4/0x130
-| [<0>] proc_single_show+0x60/0x110
-| [<0>] seq_read_iter+0x230/0x4d0
-| [<0>] seq_read+0xdc/0x130
-| [<0>] vfs_read+0xac/0x1e0
-| [<0>] ksys_read+0x6c/0xfc
-| [<0>] __arm64_sys_read+0x20/0x30
-| [<0>] el0_svc_common.constprop.0+0x60/0x120
-| [<0>] do_el0_svc+0x24/0x90
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0_sync_handler+0x1a4/0x1b0
-| [<0>] el0_sync+0x170/0x180
-
-After this patch, the tracing code will not show up in such traces:
-
-| # cat /proc/self/stack
-| [<0>] proc_pid_stack+0xb4/0x130
-| [<0>] proc_single_show+0x60/0x110
-| [<0>] seq_read_iter+0x230/0x4d0
-| [<0>] seq_read+0xdc/0x130
-| [<0>] vfs_read+0xac/0x1e0
-| [<0>] ksys_read+0x6c/0xfc
-| [<0>] __arm64_sys_read+0x20/0x30
-| [<0>] el0_svc_common.constprop.0+0x60/0x120
-| [<0>] do_el0_svc+0x24/0x90
-| [<0>] el0_svc+0x2c/0x54
-| [<0>] el0_sync_handler+0x1a4/0x1b0
-| [<0>] el0_sync+0x170/0x180
-
-Erring on the side of caution, I've given this a spin with a bunch of
-toolchains, verifying the output of /proc/self/stack and checking that
-the assembly looked sound. For GCC (where we require version 5.1.0 or
-later) I tested with the kernel.org crosstool binares for versions
-5.5.0, 6.4.0, 6.5.0, 7.3.0, 7.5.0, 8.1.0, 8.3.0, 8.4.0, 9.2.0, and
-10.1.0. For clang (where we require version 10.0.1 or later) I tested
-with the llvm.org binary releases of 11.0.0, and 11.0.1.
-
-Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Chen Jun <chenjun102@huawei.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/stacktrace.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..d55bdfb7789c 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -194,8 +194,9 @@ void show_stack(struct task_struct *tsk, unsigned long *sp, const char *loglvl)
- 
- #ifdef CONFIG_STACKTRACE
- 
--void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
--		     struct task_struct *task, struct pt_regs *regs)
-+noinline void arch_stack_walk(stack_trace_consume_fn consume_entry,
-+			      void *cookie, struct task_struct *task,
-+			      struct pt_regs *regs)
- {
- 	struct stackframe frame;
- 
-@@ -203,8 +204,8 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 		start_backtrace(&frame, regs->regs[29], regs->pc);
- 	else if (task == current)
- 		start_backtrace(&frame,
--				(unsigned long)__builtin_frame_address(0),
--				(unsigned long)arch_stack_walk);
-+				(unsigned long)__builtin_frame_address(1),
-+				(unsigned long)__builtin_return_address(0));
- 	else
- 		start_backtrace(&frame, thread_saved_fp(task),
- 				thread_saved_pc(task));
--- 
-2.11.0
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
