@@ -2,446 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94E9342588
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10A334258C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhCSS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:57:54 -0400
-Received: from smtp-8fa8.mail.infomaniak.ch ([83.166.143.168]:34089 "EHLO
-        smtp-8fa8.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230206AbhCSS5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:57:33 -0400
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F2CnM377GzMqRXC;
-        Fri, 19 Mar 2021 19:57:27 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F2CnK5GPMzlppyf;
-        Fri, 19 Mar 2021 19:57:25 +0100 (CET)
-Subject: Re: [PATCH v30 01/12] landlock: Add object management
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-2-mic@digikod.net> <202103191110.E30F88C7C@keescook>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <ec5e6c0c-2979-7334-6f40-b46b8ec319ce@digikod.net>
-Date:   Fri, 19 Mar 2021 19:57:41 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <202103191110.E30F88C7C@keescook>
-Content-Type: text/plain; charset=iso-8859-15
+        id S230521AbhCSS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:58:26 -0400
+Received: from mail-mw2nam10on2105.outbound.protection.outlook.com ([40.107.94.105]:9824
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230324AbhCSS6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:58:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qjfn+sQPZVWHJ8OTUmLpMwhT9n7Q0LuUyTClma7u4Zt5aAvnzM4CkN387arqFgqL3NnzVI9I1ZAnLqotYhM+FpBnybtxfHiPqG6NmbtMUS+abWyKODc0GedCLozNaIMCDBIPVXsD3l5hk8gPTDopwdAdgUjEWxOepvIF71Mr+seJnSHz9kvGY9gRUQ6vzio94TxqMLoYKXPXK21Zusw8xWxt2AyIxwyiqlGxEnYZHeH4b68XzLTUeAWr0AHWafLAAQWu+I0d1RWf3KEbFEcnP+K+sAk7DeZGCoIRreGE6G7246VussBsUPuD1HoDIwTzRvgF5NVZsB++2w8oP1XIlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iZwMEm4AdgB3mSWINEAQwpDuTCEi7Vp4AMDffJh1g9Q=;
+ b=cja1oaGLV9P7YuDtHQs9jyTs/SucjJYjl25VHJljHKowO29+wt5cddIoVu5ZhLwAFTPA77AXw+ltnmqNqBq6G6jjdVfqOgbhKnELjEL+yJNTAj2NtLaNvFd41TsSvyY4ykKzcgp1f29a817GMyB5H/vn1Nu2waYA0VgEftYAgR0/ijmR83YQo2XDvybxhZ0eFhORULnKP0J8HyRoCnu+R+4wamK9nCZ3BvxKjTnIYxFqoHXNygGagFUrayQD5VyJr+kIX1kSR9P9EHFdy0X00gAbEN5FW613p9zKns1UgPMQrBaJxO82SghIuEFZJ9xt132NDp0Vl+BcPobz7pKXaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iZwMEm4AdgB3mSWINEAQwpDuTCEi7Vp4AMDffJh1g9Q=;
+ b=hQbLNZdMLiMcNVSTNi1g19KD4MlbgT+Q4KXCyPRJbarH5Q/rWqiVihzlpxTr47jK/gwmXlbWINqdfdJq6MUVobtX+Xv45IfKWXfzRVzjjC7T0jJCAF2KKtCHlTht5IOnNx9qNxOoZ0AaHunwYXrGD0vvaD52GQwI7gjUqIIjWT4=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB1921.namprd21.prod.outlook.com (2603:10b6:303:65::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.2; Fri, 19 Mar
+ 2021 18:58:09 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::cbc:735e:a6a5:8b9c%8]) with mapi id 15.20.3977.016; Fri, 19 Mar 2021
+ 18:58:09 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Ingo Molnar <mingo@kernel.org>, Xu Yihang <xuyihang@huawei.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH -next] x86: Fix unused variable 'hi'
+Thread-Topic: [PATCH -next] x86: Fix unused variable 'hi'
+Thread-Index: AQHXG8rtRbbwh+IncEeyWrDupji5AaqJmt6AgAIPfSA=
+Date:   Fri, 19 Mar 2021 18:58:09 +0000
+Message-ID: <MWHPR21MB1593B76BB230F7905328DFE4D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210318074607.124663-1-xuyihang@huawei.com>
+ <20210318112415.GA301630@gmail.com>
+In-Reply-To: <20210318112415.GA301630@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-19T18:58:07Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2cfd5f07-0544-43b5-bee4-72e02212a9ba;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 42d9d5c2-cc9a-4056-f301-08d8eb08f050
+x-ms-traffictypediagnostic: MW4PR21MB1921:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB1921E5C7572FDA43439CB9B6D7689@MW4PR21MB1921.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2958;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: r4HJ3N3AUX7usGuCCSXALNZv/Fsua0IKrsTgumFvydPVJQ1+hHJGyalZkUX1lQv5DfUJXGzdRLCUfe8ciJjLiOPVu3Q8EbTr8P0uqUqRhQib6L/qiOa9oMlXf/t/ahPmZnDcjIiDB0ASjANHJEOCJlA1wSpf+78Mw0r3tgyg+JhtZIOmfqxBJEC/MJp0wV+hgCZab3I/M2z/o4eiOO5lKOledD7KiCrrYNPOZ4XBEhyqhzUxRE5qqfp6S9oLUln1PWn/fMAtmnVi8oftzCd4f+fxtVEUWGyxngyWNn5bNgLK5mYQrF93dbYtVCau7DIIpI/yE8xgecfg5WXkkVnvyEEe6TKtH+FvlZ3TZqvUYGVnyZBx/NkIiiTiPjf/XJT8ykrwYd3HSr+trqWAisXiTJTg3eE3kJkb7wMUC0/b2+LSuaU0jVdRnUjnmqjLvIcvUHuBot+wisueLpbmP9NVZrNGQ8kqo0QV6vb88DFpyb0nDcp6Kx4uJ+05XlGNmdZ/F2HB87nXVSBGtdiw1vew/dd5V+9xifoRC5XbEyxLN9B/mDEhP1aFkab43Jmc3o1qlLXTIAFM5V/D6DUBr7cquh2hb4K/YmGFgxCTZwIBe4mDgdhmYGufukxjUztW/8I0n/UDsesq04UxVkFzNAOmLyGWPyVTY6Gb9SlbXkOw56Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(346002)(396003)(66476007)(52536014)(86362001)(76116006)(7696005)(10290500003)(478600001)(2906002)(26005)(66556008)(82950400001)(83380400001)(6506007)(5660300002)(66946007)(64756008)(66446008)(8936002)(316002)(54906003)(8990500004)(55016002)(9686003)(8676002)(71200400001)(4326008)(38100700001)(82960400001)(186003)(33656002)(7416002)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?dGhRMy9vMGlaMzY2Mm9FbUFGZ3puWW9PUVZVN1hsZzFwZkxlTS9mOUZOcGtR?=
+ =?utf-8?B?QjhYL29vdWdiZ083OXRUbkxkU1N2ZHBaUnlYY2pHVTZvTzBKQVJxRUdVSW9H?=
+ =?utf-8?B?Y1RRWkdsQ3NoQXVvWHNRRjVPVXg2OUNUeUExMUUxWEdqUy9CcVJnU3BoVmdU?=
+ =?utf-8?B?QVpnYlhBOEtNY1JtVklzcXpmSnVsQ3ArU2dvbXVVcXhUVzE5YmhIUmsySTAz?=
+ =?utf-8?B?aXUzNjNNa28xSmZRcDNGQ05HTnVaWXlieTllVFdGZElvakhmdlY1c2NDd1pD?=
+ =?utf-8?B?S3REKzRZQWtpSzRKakxybWRVU1FVM3JySW5ISTFYaGxTWmtZaisyR3R3N1Vu?=
+ =?utf-8?B?aHMwbHIvcndKdG5PWWdkTHRyUE4vUDdmOENpTC9yeUp4NmlodW43L2NWL0Nk?=
+ =?utf-8?B?Nm9wSjZUM3Y3U3NXWVR6T2ZkYTREaTlLb3ZlL3FYQkRNMFIydWRZQ01rcU9p?=
+ =?utf-8?B?NUg3RmFwaTFhU2ZlaHFTZXZhMzVDOHljWko2S2NzbjVqMk5naGx3cjdRcll4?=
+ =?utf-8?B?NEJ5U045akY1enFFT0VVRlplajZib1g3NWFEMmxMdkVTMUl5blE3WWcvTGw5?=
+ =?utf-8?B?QXoyRDBxbzVlTW43QVRlMkFJd09mYm10eDBkeFBxbVBCWE9TNXRadmpBUlU0?=
+ =?utf-8?B?c2FtWmVuYjNtdkltWlhNTjdvaWE2NjkvRGdXbGZvRzVMc3RHWHd3L2lxWjhW?=
+ =?utf-8?B?L29pR25obTN0L0RaMjJqVTBicG1JVU5aZVVZWlJ2a3JTdGFwSTNNR3N0NmZE?=
+ =?utf-8?B?RGFhWGlNbElYTjlHdUNHTDhKbFRHTHc4K1hEWSs1ejhJaElxTGl3TGsxRjVu?=
+ =?utf-8?B?Yy9JYkxvbGcwWFUyMGdSZE95cGlGSDRkeFpRdXpSSlA2R1lITjI5RHBRL2Fa?=
+ =?utf-8?B?dU9oVmkyTWE4VWN5Y2FLY3BlalU0QnhBSDA2c2IwZXNCYUVWUnRsQzFZRm5r?=
+ =?utf-8?B?MCtCb3hJWVkwSDk0bDB3MnZoTjA0SHRDR1pIZ0dXYmIyRkJTK1V6WkFrSGlI?=
+ =?utf-8?B?V3NGZHNqNFEyWWdNcWRuc2J4R3FkL0FnNFRQY1pnYTB4R3BDdDJtRHpTYVo2?=
+ =?utf-8?B?MkNIc3lVTXVobWJSNFlKbFBRMjhUUEcyM1hPRWNrbVptdWtuR2pzaTNWNkhw?=
+ =?utf-8?B?WERESkhsbUl2YWNpdzMvYUFoUktQT3hwbkExMnJMTVhweHBoaXlkOS81SDdV?=
+ =?utf-8?B?SU0vTXVIZk9KZDhucm11U2RwcktlTzd5Z2NmVVAwV20ycG9QYkdyN0E5cXRJ?=
+ =?utf-8?B?WlFGV3BvSUZBMk1PQnFtSk4vVVJmK05uS1JHYjVwZnNkc0ZjRWVNLzgxK01o?=
+ =?utf-8?B?emJuN1dUZWpxSkJZT05JQWZFS3MzNVlVSFhqR0RIYnZLVVlWdldoOXZzT1hP?=
+ =?utf-8?B?bFBCQ2NiV2YzeXpkWjFGNWEvdnhzRE44d3J3S2cxK2dCOW5xVjBWQk1QSDVE?=
+ =?utf-8?B?WXpwVmJ1Mmp0eDc4QitoelMxSllQY09ja3RSYThZZTkwSXVoOUFveW5VR01U?=
+ =?utf-8?B?bVcyMVN1SVNqMy83am9uYzhiMUM4eUxDSGhheHdEajA2Zmx6aUpIQlFPL1JU?=
+ =?utf-8?B?dkVpRmJlY08ySEl6dkdhaDF6d3QrM0hndFdjVnhYRThUM3Z2ZHdwRURJR2E1?=
+ =?utf-8?B?SG5NZUVGb0NDOGVzNUFGSVMyOVdzVXU1RWJHbWhlajJqbVVwenI4WkI2WDhQ?=
+ =?utf-8?B?cHhmQldPMHRGNDlxUGd6UGRSWmoyZFVJbzNMNG9ReS9BNTJhUU1GeTBKMDJR?=
+ =?utf-8?Q?JL/PjJtFkZk8jTEke/fDxabxCbxu0Il/c6LbEcO?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42d9d5c2-cc9a-4056-f301-08d8eb08f050
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2021 18:58:09.5778
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Goy8vj+FAtWOxJUyQG0oCEU4XgOcul3Rxv6emAC76r2tp+qo+pNGXY7gs3kgPWw0t8hrs6wwK3LgfMARvFr+9xDOQMxaWjIaIXqyrcaxnvI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1921
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 19/03/2021 19:13, Kees Cook wrote:
-> On Tue, Mar 16, 2021 at 09:42:41PM +0100, Mickaël Salaün wrote:
->> From: Mickaël Salaün <mic@linux.microsoft.com>
->>
->> A Landlock object enables to identify a kernel object (e.g. an inode).
->> A Landlock rule is a set of access rights allowed on an object.  Rules
->> are grouped in rulesets that may be tied to a set of processes (i.e.
->> subjects) to enforce a scoped access-control (i.e. a domain).
->>
->> Because Landlock's goal is to empower any process (especially
->> unprivileged ones) to sandbox themselves, we cannot rely on a
->> system-wide object identification such as file extended attributes.
->> Indeed, we need innocuous, composable and modular access-controls.
->>
->> The main challenge with these constraints is to identify kernel objects
->> while this identification is useful (i.e. when a security policy makes
->> use of this object).  But this identification data should be freed once
->> no policy is using it.  This ephemeral tagging should not and may not be
->> written in the filesystem.  We then need to manage the lifetime of a
->> rule according to the lifetime of its objects.  To avoid a global lock,
->> this implementation make use of RCU and counters to safely reference
->> objects.
->>
->> A following commit uses this generic object management for inodes.
->>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->> Reviewed-by: Jann Horn <jannh@google.com>
->> Acked-by: Serge Hallyn <serge@hallyn.com>
->> Link: https://lore.kernel.org/r/20210316204252.427806-2-mic@digikod.net
->> ---
->>
->> Changes since v28:
->> * Improve Kconfig description (suggested by Serge Hallyn).
->> * Add Acked-by Serge Hallyn.
->> * Clean up comment.
->>
->> Changes since v27:
->> * Update Kconfig for landlock_restrict_self(2).
->> * Cosmetic fixes: use 80 columns in Kconfig and align Makefile
->>   declarations.
->>
->> Changes since v26:
->> * Update Kconfig for landlock_enforce_ruleset_self(2).
->> * Fix spelling.
->>
->> Changes since v24:
->> * Fix typo in comment (spotted by Jann Horn).
->> * Add Reviewed-by: Jann Horn <jannh@google.com>
->>
->> Changes since v23:
->> * Update landlock_create_object() to return error codes instead of NULL.
->>   This help error handling in callers.
->> * When using make oldconfig with a previous configuration already
->>   including the CONFIG_LSM variable, no question is asked to update its
->>   content.  Update the Kconfig help to warn about LSM stacking
->>   configuration.
->> * Constify variable (spotted by Vincent Dagonneau).
->>
->> Changes since v22:
->> * Fix spelling (spotted by Jann Horn).
->>
->> Changes since v21:
->> * Update Kconfig help.
->> * Clean up comments.
->>
->> Changes since v18:
->> * Account objects to kmemcg.
->>
->> Changes since v14:
->> * Simplify the object, rule and ruleset management at the expense of a
->>   less aggressive memory freeing (contributed by Jann Horn, with
->>   additional modifications):
->>   - Remove object->list aggregating the rules tied to an object.
->>   - Remove landlock_get_object(), landlock_drop_object(),
->>     {get,put}_object_cleaner() and landlock_rule_is_disabled().
->>   - Rewrite landlock_put_object() to use a more simple mechanism
->>     (no tricky RCU).
->>   - Replace enum landlock_object_type and landlock_release_object() with
->>     landlock_object_underops->release()
->>   - Adjust unions and Sparse annotations.
->>   Cf. https://lore.kernel.org/lkml/CAG48ez21bEn0wL1bbmTiiu8j9jP5iEWtHOwz4tURUJ+ki0ydYw@mail.gmail.com/
->> * Merge struct landlock_rule into landlock_ruleset_elem to simplify the
->>   rule management.
->> * Constify variables.
->> * Improve kernel documentation.
->> * Cosmetic variable renames.
->> * Remove the "default" in the Kconfig (suggested by Jann Horn).
->> * Only use refcount_inc() through getter helpers.
->> * Update Kconfig description.
->>
->> Changes since v13:
->> * New dedicated implementation, removing the need for eBPF.
->>
->> Previous changes:
->> https://lore.kernel.org/lkml/20190721213116.23476-6-mic@digikod.net/
->> ---
->>  MAINTAINERS                | 10 +++++
->>  security/Kconfig           |  1 +
->>  security/Makefile          |  2 +
->>  security/landlock/Kconfig  | 21 +++++++++
->>  security/landlock/Makefile |  3 ++
->>  security/landlock/object.c | 67 ++++++++++++++++++++++++++++
->>  security/landlock/object.h | 91 ++++++++++++++++++++++++++++++++++++++
->>  7 files changed, 195 insertions(+)
->>  create mode 100644 security/landlock/Kconfig
->>  create mode 100644 security/landlock/Makefile
->>  create mode 100644 security/landlock/object.c
->>  create mode 100644 security/landlock/object.h
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index aa84121c5611..87a2738dfdec 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -9997,6 +9997,16 @@ F:	net/core/sock_map.c
->>  F:	net/ipv4/tcp_bpf.c
->>  F:	net/ipv4/udp_bpf.c
->>  
->> +LANDLOCK SECURITY MODULE
->> +M:	Mickaël Salaün <mic@digikod.net>
->> +L:	linux-security-module@vger.kernel.org
->> +S:	Supported
->> +W:	https://landlock.io
->> +T:	git https://github.com/landlock-lsm/linux.git
->> +F:	security/landlock/
->> +K:	landlock
->> +K:	LANDLOCK
->> +
->>  LANTIQ / INTEL Ethernet drivers
->>  M:	Hauke Mehrtens <hauke@hauke-m.de>
->>  L:	netdev@vger.kernel.org
->> diff --git a/security/Kconfig b/security/Kconfig
->> index 7561f6f99f1d..15a4342b5d01 100644
->> --- a/security/Kconfig
->> +++ b/security/Kconfig
->> @@ -238,6 +238,7 @@ source "security/loadpin/Kconfig"
->>  source "security/yama/Kconfig"
->>  source "security/safesetid/Kconfig"
->>  source "security/lockdown/Kconfig"
->> +source "security/landlock/Kconfig"
->>  
->>  source "security/integrity/Kconfig"
->>  
->> diff --git a/security/Makefile b/security/Makefile
->> index 3baf435de541..47e432900e24 100644
->> --- a/security/Makefile
->> +++ b/security/Makefile
->> @@ -13,6 +13,7 @@ subdir-$(CONFIG_SECURITY_LOADPIN)	+= loadpin
->>  subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
->>  subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown
->>  subdir-$(CONFIG_BPF_LSM)		+= bpf
->> +subdir-$(CONFIG_SECURITY_LANDLOCK)	+= landlock
->>  
->>  # always enable default capabilities
->>  obj-y					+= commoncap.o
->> @@ -32,6 +33,7 @@ obj-$(CONFIG_SECURITY_SAFESETID)       += safesetid/
->>  obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
->>  obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
->>  obj-$(CONFIG_BPF_LSM)			+= bpf/
->> +obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
->>  
->>  # Object integrity file lists
->>  subdir-$(CONFIG_INTEGRITY)		+= integrity
->> diff --git a/security/landlock/Kconfig b/security/landlock/Kconfig
->> new file mode 100644
->> index 000000000000..c1e862a38410
->> --- /dev/null
->> +++ b/security/landlock/Kconfig
->> @@ -0,0 +1,21 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +
->> +config SECURITY_LANDLOCK
->> +	bool "Landlock support"
->> +	depends on SECURITY
->> +	select SECURITY_PATH
->> +	help
->> +	  Landlock is a sandboxing mechanism that enables processes to restrict
->> +	  themselves (and their future children) by gradually enforcing
->> +	  tailored access control policies.  A Landlock security policy is a
->> +	  set of access rights (e.g. open a file in read-only, make a
->> +	  directory, etc.) tied to a file hierarchy.  Such policy can be
->> +	  configured and enforced by any processes for themselves using the
->> +	  dedicated system calls: landlock_create_ruleset(),
->> +	  landlock_add_rule(), and landlock_restrict_self().
->> +
->> +	  See Documentation/userspace-api/landlock.rst for further information.
->> +
->> +	  If you are unsure how to answer this question, answer N.  Otherwise,
->> +	  you should also prepend "landlock," to the content of CONFIG_LSM to
->> +	  enable Landlock at boot time.
->> diff --git a/security/landlock/Makefile b/security/landlock/Makefile
->> new file mode 100644
->> index 000000000000..cb6deefbf4c0
->> --- /dev/null
->> +++ b/security/landlock/Makefile
->> @@ -0,0 +1,3 @@
->> +obj-$(CONFIG_SECURITY_LANDLOCK) := landlock.o
->> +
->> +landlock-y := object.o
->> diff --git a/security/landlock/object.c b/security/landlock/object.c
->> new file mode 100644
->> index 000000000000..d674fdf9ff04
->> --- /dev/null
->> +++ b/security/landlock/object.c
->> @@ -0,0 +1,67 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Landlock LSM - Object management
->> + *
->> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
->> + * Copyright © 2018-2020 ANSSI
->> + */
->> +
->> +#include <linux/bug.h>
->> +#include <linux/compiler_types.h>
->> +#include <linux/err.h>
->> +#include <linux/kernel.h>
->> +#include <linux/rcupdate.h>
->> +#include <linux/refcount.h>
->> +#include <linux/slab.h>
->> +#include <linux/spinlock.h>
->> +
->> +#include "object.h"
->> +
->> +struct landlock_object *landlock_create_object(
->> +		const struct landlock_object_underops *const underops,
->> +		void *const underobj)
->> +{
->> +	struct landlock_object *new_object;
->> +
->> +	if (WARN_ON_ONCE(!underops || !underobj))
->> +		return ERR_PTR(-ENOENT);
->> +	new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
-> 
-> Is there any benefit to using a dedicated kmem_cache instead of kmalloc?
-> I see later that you end up with variable-sized allocations, so this
-> might be fine as-is.
-
-I though about that, but for the sake of simplicity I choose to not use
-that in this series. It may comes with a future update if there is a
-visible performance improvement though.
-
-> 
->> +	if (!new_object)
->> +		return ERR_PTR(-ENOMEM);
->> +	refcount_set(&new_object->usage, 1);
->> +	spin_lock_init(&new_object->lock);
->> +	new_object->underops = underops;
->> +	new_object->underobj = underobj;
->> +	return new_object;
->> +}
->> +
->> +/*
->> + * The caller must own the object (i.e. thanks to object->usage) to safely put
->> + * it.
->> + */
->> +void landlock_put_object(struct landlock_object *const object)
->> +{
->> +	/*
->> +	 * The call to @object->underops->release(object) might sleep, e.g.
->> +	 * because of iput().
->> +	 */
->> +	might_sleep();
->> +	if (!object)
->> +		return;
->> +
->> +	/*
->> +	 * If the @object's refcount cannot drop to zero, we can just decrement
->> +	 * the refcount without holding a lock. Otherwise, the decrement must
->> +	 * happen under @object->lock for synchronization with things like
->> +	 * get_inode_object().
->> +	 */
->> +	if (refcount_dec_and_lock(&object->usage, &object->lock)) {
->> +		__acquire(&object->lock);
->> +		/*
->> +		 * With @object->lock initially held, remove the reference from
->> +		 * @object->underobj to @object (if it still exists).
->> +		 */
->> +		object->underops->release(object);
->> +		kfree_rcu(object, rcu_free);
->> +	}
->> +}
->> diff --git a/security/landlock/object.h b/security/landlock/object.h
->> new file mode 100644
->> index 000000000000..3e5d5b6941c3
->> --- /dev/null
->> +++ b/security/landlock/object.h
->> @@ -0,0 +1,91 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Landlock LSM - Object management
->> + *
->> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
->> + * Copyright © 2018-2020 ANSSI
->> + */
->> +
->> +#ifndef _SECURITY_LANDLOCK_OBJECT_H
->> +#define _SECURITY_LANDLOCK_OBJECT_H
->> +
->> +#include <linux/compiler_types.h>
->> +#include <linux/refcount.h>
->> +#include <linux/spinlock.h>
->> +
->> +struct landlock_object;
->> +
->> +/**
->> + * struct landlock_object_underops - Operations on an underlying object
->> + */
->> +struct landlock_object_underops {
->> +	/**
->> +	 * @release: Releases the underlying object (e.g. iput() for an inode).
->> +	 */
->> +	void (*release)(struct landlock_object *const object)
->> +		__releases(object->lock);
->> +};
->> +
->> +/**
->> + * struct landlock_object - Security blob tied to a kernel object
->> + *
->> + * The goal of this structure is to enable to tie a set of ephemeral access
->> + * rights (pertaining to different domains) to a kernel object (e.g an inode)
->> + * in a safe way.  This implies to handle concurrent use and modification.
->> + *
->> + * The lifetime of a &struct landlock_object depends of the rules referring to
->> + * it.
->> + */
->> +struct landlock_object {
->> +	/**
->> +	 * @usage: This counter is used to tie an object to the rules matching
->> +	 * it or to keep it alive while adding a new rule.  If this counter
->> +	 * reaches zero, this struct must not be modified, but this counter can
->> +	 * still be read from within an RCU read-side critical section.  When
->> +	 * adding a new rule to an object with a usage counter of zero, we must
->> +	 * wait until the pointer to this object is set to NULL (or recycled).
->> +	 */
->> +	refcount_t usage;
->> +	/**
->> +	 * @lock: Protects against concurrent modifications.  This lock must be
->> +	 * held from the time @usage drops to zero until any weak references
->> +	 * from @underobj to this object have been cleaned up.
->> +	 *
->> +	 * Lock ordering: inode->i_lock nests inside this.
->> +	 */
->> +	spinlock_t lock;
->> +	/**
->> +	 * @underobj: Used when cleaning up an object and to mark an object as
->> +	 * tied to its underlying kernel structure.  This pointer is protected
->> +	 * by @lock.  Cf. landlock_release_inodes() and release_inode().
->> +	 */
->> +	void *underobj;
->> +	union {
->> +		/**
->> +		 * @rcu_free: Enables lockless use of @usage, @lock and
->> +		 * @underobj from within an RCU read-side critical section.
->> +		 * @rcu_free and @underops are only used by
->> +		 * landlock_put_object().
->> +		 */
->> +		struct rcu_head rcu_free;
->> +		/**
->> +		 * @underops: Enables landlock_put_object() to release the
->> +		 * underlying object (e.g. inode).
->> +		 */
->> +		const struct landlock_object_underops *underops;
->> +	};
->> +};
->> +
->> +struct landlock_object *landlock_create_object(
->> +		const struct landlock_object_underops *const underops,
->> +		void *const underobj);
->> +
->> +void landlock_put_object(struct landlock_object *const object);
->> +
->> +static inline void landlock_get_object(struct landlock_object *const object)
->> +{
->> +	if (object)
->> +		refcount_inc(&object->usage);
->> +}
->> +
->> +#endif /* _SECURITY_LANDLOCK_OBJECT_H */
->> -- 
->> 2.30.2
->>
-> 
-> Either way, this object lifetime management looks okay to me:
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+RnJvbTogSW5nbyBNb2xuYXIgPG1pbmdvLmtlcm5lbC5vcmdAZ21haWwuY29tPiAgU2VudDogVGh1
+cnNkYXksIE1hcmNoIDE4LCAyMDIxIDQ6MjQgQU0NCj4gDQo+ICogWHUgWWloYW5nIDx4dXlpaGFu
+Z0BodWF3ZWkuY29tPiB3cm90ZToNCj4gDQo+ID4gRml4ZXMgdGhlIGZvbGxvd2luZyBXPTEga2Vy
+bmVsIGJ1aWxkIHdhcm5pbmcocyk6DQo+ID4gYXJjaC94ODYvaHlwZXJ2L2h2X2FwaWMuYzo1ODox
+NTogd2FybmluZzogdmFyaWFibGUg4oCYaGnigJkgc2V0IGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQt
+YnV0LQ0KPiBzZXQtdmFyaWFibGVdDQo+ID4NCj4gPiBSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8
+aHVsa2NpQGh1YXdlaS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogWHUgWWloYW5nIDx4dXlpaGFu
+Z0BodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICBhcmNoL3g4Ni9oeXBlcnYvaHZfYXBpYy5jIHwg
+MyArKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2h5cGVydi9odl9hcGljLmMgYi9hcmNo
+L3g4Ni9oeXBlcnYvaHZfYXBpYy5jDQo+ID4gaW5kZXggMjg0ZTczNjYxYTE4Li5jMGIwYTU3NzRm
+MzEgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC94ODYvaHlwZXJ2L2h2X2FwaWMuYw0KPiA+ICsrKyBi
+L2FyY2gveDg2L2h5cGVydi9odl9hcGljLmMNCj4gPiBAQCAtNTUsNyArNTUsOCBAQCBzdGF0aWMg
+dm9pZCBodl9hcGljX2ljcl93cml0ZSh1MzIgbG93LCB1MzIgaWQpDQo+ID4NCj4gPiAgc3RhdGlj
+IHUzMiBodl9hcGljX3JlYWQodTMyIHJlZykNCj4gPiAgew0KPiA+IC0JdTMyIHJlZ192YWwsIGhp
+Ow0KPiA+ICsJdTMyIGhpIF9fbWF5YmVfdW51c2VkOw0KPiA+ICsJdTMyIHJlZ192YWw7DQo+ID4N
+Cj4gPiAgCXN3aXRjaCAocmVnKSB7DQo+ID4gIAljYXNlIEFQSUNfRU9JOg0KPiANCj4gV2h5IGFu
+ZCB1bmRlciB3aGF0IGNvbmZpZyBkb2VzIHRoaXMgZnVuY3Rpb24gdHJpZ2dlciB0aGUgd2Fybmlu
+Zz8NCj4gDQo+IFRoYW5rcywNCj4gDQo+IAlJbmdvDQoNClRoZSB3YXJuaW5nIHNob3VsZCB0cmln
+Z2VyIGlmIENPTkZJR19IWVBFUlYgaXMgIm0iIG9yICJ5IiwgYW5kIFc9MQ0KaXMgc2VsZWN0ZWQu
+ICBUaGUgdmFyaWFibGUgaXMgaW5kZWVkIHNldCBidXQgbm90IHVzZWQgYmVjYXVzZSBvbmx5IHRo
+ZQ0KbG93IG9yZGVyIDMyIGJpdHMgb2YgdGhlIHN5bnRoZXRpYyBNU1IgYXJlIHJlbGV2YW50LCBi
+dXQgcmRtc3IoKSByZXR1cm5zDQpib3RoIHRoZSBsb3cgMzIgYW5kIHRoZSBoaWdoIDMyIGJpdHMu
+DQoNCk1pY2hhZWwNCg==
