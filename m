@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F89341999
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D01A34199B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhCSKLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:11:06 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18024 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230140AbhCSKKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:10:46 -0400
-IronPort-SDR: puZjaoEQ0GvJ2RtvjSENOgk574lRNN7J0Plk+SO40+CnRBg6wG0GYtXi4Je42NCH7fgH2v4Qjx
- ejiqPSLi200g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186516765"
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="186516765"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 03:10:46 -0700
-IronPort-SDR: BP2x8eNN1duoqgsKcaQCBQEhSMeMBqP1S4Wlb+4Ha0LXvx0vzz62ouEWA9Axsm/nDMrHTeOYo1
- EP9QC4iBNurg==
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="413453437"
-Received: from koehlcla-mobl.ger.corp.intel.com (HELO localhost) ([10.252.50.135])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 03:10:40 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, imre.deak@intel.com,
-        ville.syrjala@linux.intel.com, lucas.demarchi@intel.com,
-        matthew.d.roper@intel.com,
-        tejaskumarx.surendrakumar.upadhyay@intel.com,
-        aditya.swarup@intel.com, anusha.srivatsa@intel.com,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: Re: [PATCH] drm: i915: Fix a typo
-In-Reply-To: <20210319043701.14105-1-unixbhaskar@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210319043701.14105-1-unixbhaskar@gmail.com>
-Date:   Fri, 19 Mar 2021 12:10:37 +0200
-Message-ID: <87mtuz78te.fsf@intel.com>
+        id S230096AbhCSKLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhCSKLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:11:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE4AC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KdBbV8/OXWtTCcyd1IKKVkbLO4A09JYxnlTNuWCStG4=; b=VeLnxRR/h1WJz4HSq3i94YtI2
+        nFJG+kq846qcwC1V/Gz8Z+p4etwrafqoDtXTjLCWhtRvtRSGCh3yD9kpPsJl91OJy7w8C6kPI6xCr
+        P8b3urGPiSgOWfFiu49lol13VD1pM4U/k2p8ZIdrWacwpJEKEz7WfHl+Xu8NR/r6QQhTiOu4hJmc0
+        eL4j3TIzjt7+mb8jInW7ezhTWyQHKn3iSo88D7EU7PEhddtYwl9CL42hYUZ388YOf3ivV0NFQ0CQO
+        24fzhwUEk4pvsI/sDC7gA/0mFuL6FT6HnDCjgmRzxC12XPGseZcf9jprql1PZn53VZCICRkDRqMGc
+        n9m0R2IOA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51474)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lNC5e-0004HU-S1; Fri, 19 Mar 2021 10:10:46 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lNC5b-0000Ue-8W; Fri, 19 Mar 2021 10:10:43 +0000
+Date:   Fri, 19 Mar 2021 10:10:43 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [syzbot] upstream boot error: WARNING in __context_tracking_enter
+Message-ID: <20210319101043.GU1463@shell.armlinux.org.uk>
+References: <0000000000004f14c105bde08f75@google.com>
+ <CACT4Y+bLkFSc8manYrCukj-_nzwVsV9y6xYWXmGyYFS-PoBRPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bLkFSc8manYrCukj-_nzwVsV9y6xYWXmGyYFS-PoBRPQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
-> s/nothign/nothing/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Fri, Mar 19, 2021 at 10:54:48AM +0100, Dmitry Vyukov wrote:
+> .On Fri, Mar 19, 2021 at 10:44 AM syzbot
+> <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com> wrote:
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    8b12a62a Merge tag 'drm-fixes-2021-03-19' of git://anongit..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17e815aed00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=cfeed364fc353c32
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=f09a12b2c77bfbbf51bd
+> > userspace arch: arm
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com
+> 
+> 
+> +Mark, arm
+> It did not get far with CONFIG_CONTEXT_TRACKING_FORCE (kernel doesn't boot).
 
-Thanks, pushed.
+It seems that the path:
 
-BR,
-Jani.
+context_tracking_user_enter()
+user_enter()
+context_tracking_enter()
+__context_tracking_enter()
+vtime_user_enter()
 
-> ---
->  drivers/gpu/drm/i915/display/intel_dpll_mgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> index f6ad257a260e..14d784a6fae5 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> @@ -4185,7 +4185,7 @@ static void icl_pll_disable(struct drm_i915_private *dev_priv,
->  	/*
->  	 * DVFS pre sequence would be here, but in our driver the cdclk code
->  	 * paths should already be setting the appropriate voltage, hence we do
-> -	 * nothign here.
-> +	 * nothing here.
->  	 */
->
->  	val = intel_de_read(dev_priv, enable_reg);
-> --
-> 2.26.2
->
+expects preemption to be disabled. It effectively is, because local
+interrupts are disabled by context_tracking_enter().
+
+However, the requirement for preemption to be disabled is not
+documented... so shrug. Maybe someone can say what the real requirements
+are here.
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
