@@ -2,200 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83064342090
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ADF342096
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhCSPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:08:14 -0400
-Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:59361
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231186AbhCSPHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:07:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nC12EdWLfO0tWFqroa5HfccNbnISvMUMRXfYA17vRqii57x3nHn8U6hb17TyofoRb4kO774YqC50cJ7q+AlSGRVwK9LCM2FJNbxW1FPa2uF3n0xdGXVW0xb5K7+18hMqiqNNjNy9jJl4aDpXkQgG82gpVPWbi6HqAEDUHLM9Pn1CfxDy0jdpzib630Jv1LBAoHB+e2WeZSYMfTjanJPNQCTCxK6KZqK69iv+bhpRhsHWwXW405ZLcPDcPqHYdpsdcLa0Sm+MDNPEh6lUfRWe3yG/oZi7D3jM3Egctuv491hLKCvL+qT6NfaQD15J9O7uLVyQ2HpQhUYj7cDJlFcAew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VxZoTS8ucEz+k8MYLFafz2eWzWycmkVvN25QVVgiV+U=;
- b=g8hBncikt4tB2ywGEwTjOy36SoNHJ50SdvuzalUqHACyXhzRgYsrG1RLckdNSNSkJwluuJMBHbWiMJJwXG7MfZjyHD66czcMaaz+ocwVXt15R5RSDciJ4raWk+cfaTrH8uTqLsXcL+a4UUToMT3FTRDiSAtqji6TBRT/oh+te5yfGGjNun8smAJd4fAV3H5nX1NIx4q5yoW1VZqQ+eYaBzRWUMmA4JeKVJyPXfkwPSiQlksEDWxS6E6n1MC/sTq4AVrVrlJ7MQCD28+lR/LHTabSLzitF7UJX6UiCGy/4znY+K2WgLspRJiE2Xof/sZIaZvBhb5lDygeXpix+KEs3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VxZoTS8ucEz+k8MYLFafz2eWzWycmkVvN25QVVgiV+U=;
- b=QymuUyKJKzKMjYbV+95vwr8bxooCEv1qy1bayANoW+DdC9D6wL4WKUqzwhlhSLh/sBpL7OOOxYTV99gCJWP2Cs4VppHnUWboyVyfp65qz/klTJT0TbMNGA/IRNuVZE5ujEXJNI6nJnydCrNVopg8leqYPImkcw6ybZDCDCttpIY=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
- by MW3PR12MB4523.namprd12.prod.outlook.com (2603:10b6:303:5b::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 15:07:37 +0000
-Received: from MW3PR12MB4379.namprd12.prod.outlook.com
- ([fe80::4987:8b2f:78ca:deb8]) by MW3PR12MB4379.namprd12.prod.outlook.com
- ([fe80::4987:8b2f:78ca:deb8%7]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 15:07:37 +0000
-Subject: Re: [PATCH] drm/amd/display: Set AMDGPU_DM_DEFAULT_MIN_BACKLIGHT to 0
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Evan Benn <evanbenn@chromium.org>
-Cc:     Stylon Wang <stylon.wang@amd.com>, Eryk Brol <eryk.brol@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Anand <amistry@chromium.org>
-References: <20210319164418.1.I5d51cc12776ee8993a1a54089b548952f75ada41@changeid>
- <CADnq5_OguuMsqT7MVC=ieNZm9mqyVUsGpQDHr59BWtBJJUvFoA@mail.gmail.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-Message-ID: <54fc883a-c149-3f43-fb79-3cbff13e7b6a@amd.com>
-Date:   Fri, 19 Mar 2021 11:07:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <CADnq5_OguuMsqT7MVC=ieNZm9mqyVUsGpQDHr59BWtBJJUvFoA@mail.gmail.com>
+        id S230483AbhCSPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:09:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24966 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231154AbhCSPJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:09:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616166556; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=er9VP5xtbj1RcZoesk+6RSiuR+svOzZFsLimRNPx0Ig=; b=FDxQ0mcGPKdLOrpGXBykFWUG4/Iy7+S75bPXJEtkuwr/INlLOEVbs8ZC3D/jvw6JyijKTqkc
+ sCnvJbqKhvwKlbHxlNjUqsyHfxazPxqpp5j5MplkkAHIYLMRlNZgsOFkI2JXSKV2EqyBxf44
+ T0qCsOt/XDjMfRSVVOUTRtOMyUA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6054be78c32ceb3a91998f7c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 15:08:40
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 564C2C4346A; Fri, 19 Mar 2021 15:08:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A7E5C433C6;
+        Fri, 19 Mar 2021 15:08:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A7E5C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v12 1/2] scsi: ufs: Enable power management for wlun
+To:     Bart Van Assche <bvanassche@acm.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, adrian.hunter@intel.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1616113283.git.asutoshd@codeaurora.org>
+ <56662082b6a17b448f40d87df7e52b45a5998c2a.1616113283.git.asutoshd@codeaurora.org>
+ <e9dc046d-3a88-9802-df58-60209ea8484f@acm.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <45101050-83de-6488-7b17-271e0acea87b@codeaurora.org>
+Date:   Fri, 19 Mar 2021 08:08:35 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <e9dc046d-3a88-9802-df58-60209ea8484f@acm.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [198.200.67.155]
-X-ClientProxiedBy: YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:38::7) To MW3PR12MB4379.namprd12.prod.outlook.com
- (2603:10b6:303:5e::11)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.193] (198.200.67.155) by YT2PR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:38::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend Transport; Fri, 19 Mar 2021 15:07:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 360a7870-941e-461c-09fb-08d8eae8bb80
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4523:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB45235800FCA7DE61B0470F688C689@MW3PR12MB4523.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lQX2vDAof3cRzdDIfwLWB8amTlzBcpwGGGeE+eO5hzxfBuBRxiMdEN3Dkx+bxOhLhqu2Eis1irFgOsy0NfSrFeVqENakXgvi9gupmXDTTHcxZ5WORKKzFoQlozStqI/py2QzCaIL/Y01Uw7wlTmgayFBbEXMTUZ6515rJmtxUzltgqkVRw74GnSr3Va8gwGBPzFmwGccENxstMUij4FGqA2vL+6DtyJrOgTwBpbymMTPwwNPFQ07dozVBr9Rr8XqHqVX9xP6T29Ou4a3zM3T9lumGRz/anZPEEQVDnoLjgikIU+1huI6Y1mIvC4mTb4tx79sOdniyzkzrfj8JQ03LwN7dbcT5GQgoRVLduw6NiX5bQLk+GBxrYnzE8153/IUM8ssKqjeT4Bl64x4xdul8wBxdeViVawlJARTdpwT0IJnkeFJYAzHRPkrRz4vg2whFg3Ex/HOmxmCvJyqCj5Eb9PPzkzm09S2JNwdFKnOrv5qAphYGmsOMIQGCcM4j1YC5JkKt+ji1KBMsCFMUyh2wDuLB59J7MNM5GqzvnfNzrVqP63RvxxJS3gzIZLNIp+UPaSbLeFkx1JQLJv9VTX9XDYBIKlbOu1ahz3MlAjWx9BoZFb9F+nPG79A92oSXdtiLq/L2QmLAszKd1YlyEi4eHB76WAghEPQ+1zcl7NbnGJXDwv9tAX2YKa4Fey52cnbtl5sCq1UFwH4baQp/zSQ/Jpau45t/KwRE5AO8LeLuBG2UxEyTkPI3E9ZsebG2MadKeWFh6U+shx6AMKsBH1WPUaQJ5oMRNZJIJy7eFIiX2A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(16576012)(478600001)(316002)(66556008)(54906003)(2906002)(83380400001)(66476007)(38100700001)(31696002)(31686004)(8676002)(53546011)(110136005)(66946007)(966005)(26005)(8936002)(5660300002)(4326008)(6486002)(956004)(2616005)(44832011)(36756003)(86362001)(186003)(16526019)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z1RTVXRMdmViOXZDRkxEQ2ZXRFhIZ1E0ZHM3R0NmRlkyV3gyREdoWEdCZytE?=
- =?utf-8?B?WkhRUkRSZGZOTVFpR3lMR0tOcHF1QkVGdlk2dFJJckFBR1UzZG1YN0g1SVRu?=
- =?utf-8?B?TmF3WE9mVThnMG9ITXc1ampZZmRiQnZJaUlqR2NDUE9PZU9pU3NIK0ZQQ21q?=
- =?utf-8?B?R3RqOHFadUtacDZBNk91Mmt0UmRZckg2TDYrL3VZeEZNSEtHRUVIWkU4aFh1?=
- =?utf-8?B?bzdtTnBpa1M3NFFGNTVvV1ZFenYrTnF3enI2cmttb3BuZ1QyK1pYTXRqUjFx?=
- =?utf-8?B?SWVuUmwwaW1aZXAzTHNYdnFseDFkWWFUZVZaZVgvcTFSeFNYQ1RYOXRoVEds?=
- =?utf-8?B?L1VqcFY5OE05cXVKaWhwaWhlYzF3TTJNQkh0YlJiVmpHMDhhK1NXeEtHYWdu?=
- =?utf-8?B?M0hLTFM5MkpDSnJ2clMzUlRaaHcwUUtSK1dxMWpkemFLVDI5azcxT3ROTHJp?=
- =?utf-8?B?ekQ5YWZIRklWYUZxZ1pQdTdvMDloTkNzR0NjRGRJV3hCbkFGemFQTzJuVjJO?=
- =?utf-8?B?ZSsvdTBRaThQUmVCRjhCU0VTdVdzMHUxWTdxYjRaT0VUU0E5cElYUFhxQWUv?=
- =?utf-8?B?cy9kbTI0WW41OTU2Mkl1ejBDenRQbXVxczBNcDJUaDQ3eFRpWmhzdG8vYmtq?=
- =?utf-8?B?RC9VUDA2aFp1T01pTnZaRlJoYWJZM0VSdDBpdW5QdmF2QnErSlRKRWF2MUtT?=
- =?utf-8?B?WkVMKzdRZi9IdWhra1ppay9DdWNJdzBLbE51UTF5c1NTMkdVeEVEbndFVlov?=
- =?utf-8?B?TkYwVmZSS3N4UXFvbFVzUUF3aFRiVEZ5Lzk5UnhWZE8xN1F5QUhDMlNua2l2?=
- =?utf-8?B?TzdsYWV1QVIxeHN1SkpLQ0gycWpYQ0lraG9LdHFaSjJzVXpwS0ZIUUtSU0Jv?=
- =?utf-8?B?dE8zM3J4MmJ4Um5VbFhqRmhBVFFUOWFPOGNtM3dzRXVKV2lJSi9NeUxkdmZm?=
- =?utf-8?B?YUxiOGEzWlNMajhoVnhUeFp3dUV4bHFVM2tJWHNPWVUxeUpyN3phVTcrM0xZ?=
- =?utf-8?B?RmpzMy9IUzRWZmtoWi9lNk5vNTdsMXhKWW5oNVJzL0RoNFlJelBCUjVjRUhx?=
- =?utf-8?B?UDRESWxwTU4xcGNEbWwyS2RrVkprSm9vSy9obGVOclkrMm1NbGtpZXVBbHJZ?=
- =?utf-8?B?cDhoL2dyaXVrTzNmNGJmUjJnRjlnVEhEdHE0SEdiSUxmczFYUkFDZ1o4c1Zy?=
- =?utf-8?B?aVFtbDNRbVJCSWVwZlQwM3lEYmtUZnYvNnJCQlZaRVM1OGt6RklKbFNQenRa?=
- =?utf-8?B?Y2pkQ1JwRGQ2RGNmMU81RkF0dUFGSzNMbDZLSkpxWGpKQm5xRDhMcmxuY1hk?=
- =?utf-8?B?U042THp2WU9ZN2p4ZytXYmNseTZ1MWdVKzYyVXRwRHVmTThqdkhybEs1M1BD?=
- =?utf-8?B?Q2xraDlNSXltWkJYbjRQbktHQWhTSmE2QjJoczhlSHlIbHRUM1h6RjZ3RzZX?=
- =?utf-8?B?WkZ5REJ0eW13bTdVeGxjZzJhSkVmSVB0T2Rldnl1d0dubEdNQlEySjRXZ2Js?=
- =?utf-8?B?Z2ZlRmY3a21KUC96VDM3WjUxWkpCRW5RZlFHZ2dlUk04UWFuK2NQZHpaM1Vv?=
- =?utf-8?B?T0lMVXFEZE1TV3NXSHVuUmpBdmY3RmhLNndFcnpJdUtHRmRBQVBaUmNrTFpu?=
- =?utf-8?B?MTFBdFMxa29uZE5PR2xKYXA0UmRHbWE1YkJpVXV1QnRKWUpFN3g5Zm81VHVl?=
- =?utf-8?B?eHUxejJWQVFJUHdMWDloL1dYNGtlQ1lxdTRCWkJta1hlUUxrZjQzeTNCZVIw?=
- =?utf-8?Q?fwkhvB/bbXkLB46+MZ7H1zsBRoAzNZdrRnDegQF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 360a7870-941e-461c-09fb-08d8eae8bb80
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 15:07:37.5741
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mIkXROogONITs5UMtD1Xi8r86ESKRi/AfVufIRgl/emauLk6SRQw8UXBBU/KdhdLqjBt/iPaWfbX2GaLkKeIOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4523
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-03-19 10:22 a.m., Alex Deucher wrote:
-> On Fri, Mar 19, 2021 at 3:23 AM Evan Benn <evanbenn@chromium.org> wrote:
->>
->> AMDGPU_DM_DEFAULT_MIN_BACKLIGHT was set to the value of 12
->> to ensure no display backlight will flicker at low user brightness
->> settings. However this value is quite bright, so for devices that do not
->> implement the ACPI ATIF
->> ATIF_FUNCTION_QUERY_BRIGHTNESS_TRANSFER_CHARACTERISTICS
->> functionality the user cannot set the brightness to a low level even if
->> the display would support such a low PWM.
->>
->> This ATIF feature is not implemented on for example AMD grunt chromebooks.
->>
->> Signed-off-by: Evan Benn <evanbenn@chromium.org>
->>
->> ---
->> I could not find a justification for the reason for the value. It has
->> caused some noticable regression for users: https://bugzilla.kernel.org/show_bug.cgi?id=203439>>>
->> Maybe this can be either user controlled or userspace configured, but
->> preventing users from turning their backlight dim seems wrong.
+On 3/18/2021 8:12 PM, Bart Van Assche wrote:
+> On 3/18/21 5:35 PM, Asutosh Das wrote:
+>> During runtime-suspend of ufs host, the scsi devices are
+>> already suspended and so are the queues associated with them.
+>> But the ufs host sends SSU to wlun during its runtime-suspend.
+>> During the process blk_queue_enter checks if the queue is not in
+>> suspended state. If so, it waits for the queue to resume, and never
+>> comes out of it.
+>> The commit
+>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+>> adds the check if the queue is in suspended state in blk_queue_enter().
 > 
-> My understanding is that some panels flicker if you set the min to a
-> value too low.  This was a safe minimum if the platform didn't specify
-> it's own safe minimum.  I think we'd just be trading one bug for
-> another (flickering vs not dim enough).  Maybe a whitelist or
-> blacklist would be a better solution?
+Hi Bart,
+Thanks for the review comments.
+
+> What is the role of the WLUN during runtime suspend and why does a
+> command need to be sent to the WLUN during runtime suspend? Although it
+> is possible to derive this from the source code, please explain this in
+> the patch description.
+> 
+Ok. Will explain it in the next version.
+
+> What does the acronym SSU stand for? This doesn't seem like a commonly
+> used kernel acronym to me so please expand that acronym.
+>
+START STOP UNIT.
+Anyway, I'll expand it in the next version.
+
+>> Fix this by registering ufs device wlun as a scsi driver and
+>> registering it for block runtime-pm. Also make this as a
+>> supplier for all other luns. That way, this device wlun
+>> suspends after all the consumers and resumes after
+>> hba resumes.
+> 
+> That's an interesting solution.
+> 
+>> -void __exit ufs_debugfs_exit(void)
+>> +void ufs_debugfs_exit(void)
+> 
+> Is the above change related to the rest of this patch?
+> 
+Yes, it's used to handle an error in ufshcd_core_init() function.
+
+>>   static struct platform_driver ufs_qcom_pltform = {
+>> diff --git a/drivers/scsi/ufs/ufs_bsg.c b/drivers/scsi/ufs/ufs_bsg.c
+>> index 5b2bc1a..cbb5a90 100644
+>> --- a/drivers/scsi/ufs/ufs_bsg.c
+>> +++ b/drivers/scsi/ufs/ufs_bsg.c
+>> @@ -97,7 +97,7 @@ static int ufs_bsg_request(struct bsg_job *job)
+>>   
+>>   	bsg_reply->reply_payload_rcv_len = 0;
+>>   
+>> -	pm_runtime_get_sync(hba->dev);
+>> +	scsi_autopm_get_device(hba->sdev_ufs_device);
+> 
+> Can the pm_runtime_get_sync() to scsi_autopm_get_device() changes be
+> moved into a separate patch?
+>
+I guess so. But then this patch would have issues when used independently.
+
+>> +static inline bool is_rpmb_wlun(struct scsi_device *sdev)
+>> +{
+>> +	return (sdev->lun == ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN));
+>> +}
+> 
+> Has this patch been verified with checkpatch? Checkpatch should have
+> reported the following for the above code:
+> 
+> 	return is not a function, parentheses are not required
+> 
+Yes, it has been verified. But I didn't see any error reports.
+Below is the o/p of checkpatch:
+
+$ ./scripts/checkpatch.pl /tmp/up/ufs-pm-v12/*
+------------------------------------------
+/tmp/up/ufs-pm-v12/0000-cover-letter.patch
+------------------------------------------
+WARNING: Possible unwrapped commit description (prefer a maximum 75 
+chars per line)
+#107:
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+Linux Foundation Collaborative Project.
+
+total: 0 errors, 1 warnings, 0 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+       mechanically convert to the typical style using --fix or 
+--fix-inplace.
+
+/tmp/up/ufs-pm-v12/0000-cover-letter.patch has style problems, please 
+review.
+-----------------------------------------------------------------------
+/tmp/up/ufs-pm-v12/0001-scsi-ufs-Enable-power-management-for-wlun.patch
+-----------------------------------------------------------------------
+total: 0 errors, 0 warnings, 1180 lines checked
+
+/tmp/up/ufs-pm-v12/0001-scsi-ufs-Enable-power-management-for-wlun.patch 
+has no obvious style problems and is ready for submission.
+---------------------------------------------------------------------
+/tmp/up/ufs-pm-v12/0002-ufs-sysfs-Resume-the-proper-scsi-device.patch
+---------------------------------------------------------------------
+total: 0 errors, 0 warnings, 91 lines checked
+
+/tmp/up/ufs-pm-v12/0002-ufs-sysfs-Resume-the-proper-scsi-device.patch 
+has no obvious style problems and is ready for submission.
+
+NOTE: If any of the errors are false positives, please report
+       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+
+>> +static inline bool is_device_wlun(struct scsi_device *sdev)
+>> +{
+>> +	return (sdev->lun ==
+>> +		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_UFS_DEVICE_WLUN));
+>> +}
+> 
+> Same comment here.
+> 
+>>   		/*
+>> -		 * Don't assume anything of pm_runtime_get_sync(), if
+>> +		 * Don't assume anything of resume, if
+>>   		 * resume fails, irq and clocks can be OFF, and powers
+>>   		 * can be OFF or in LPM.
+>>   		 */
+> 
+> Please make better use of the horizontal space in the above comment by
+> making comment lines longer.
+> 
+Ok Sure.
+
+> Thanks,
+> 
+> Bart.
 > 
 
-Yeah, this is a NACK from me as-is for the reasons Alex described.
+-asd
 
-I agree a whitelist approach might be best.
-
-Is this fix perhaps for OLED panels? If so we could use a different 
-min-value for OLED panels that don't do PWM, but use 12 for everything else.
-
-Harry
-
-> Alex
-> 
-> 
->>
->> Also reviewed here: https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2748377>>>
->>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index 573cf17262da..0129bd69b94e 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -3151,7 +3151,7 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
->>          return 0;
->>   }
->>
->> -#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 12
->> +#define AMDGPU_DM_DEFAULT_MIN_BACKLIGHT 0
->>   #define AMDGPU_DM_DEFAULT_MAX_BACKLIGHT 255
->>   #define AUX_BL_DEFAULT_TRANSITION_TIME_MS 50
->>
->> --
->> 2.31.0.291.g576ba9dcdaf-goog
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel>> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel>> 
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
