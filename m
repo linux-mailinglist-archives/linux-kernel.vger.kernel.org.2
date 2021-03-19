@@ -2,63 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F6A341E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF93341E85
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhCSNjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
+        id S229949AbhCSNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhCSNjp (ORCPT
+        with ESMTP id S229736AbhCSNjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:39:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C31C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zz9OTExqWnVyVHLTeY/MLahbbs3q6nG+4sXDvkfDjns=; b=vvEhNtibtwpUxVKyUI6OVRz4/A
-        Qp6liY6gXAiGZ6RXI8w1adnCO4ehL0uPGPiOXmM2YUIwtBkQ0b9MTUTWpRCWH0uwIAm9EXq7cvy4r
-        mFxMEk2c6slQ6OMzVB+MXjnNVRGSMn6BFkKrYGsV0SDAZ2lL5rV3jETakxml9M8sqsuAjVdmA3Ti8
-        c+h7yJWkjqvnSIPcXt4ImJBOY2tfwjKcwDzX5EACj7kul3zkyWG1CAleFGisTx6qiAyY1DtRSTRfl
-        RZV0Egowij7o0BeE27Gc938O0GEDrtNZ7g5MpXzWHdbeRQKSF51FK0pUD1xK5R1KzSQDrcIpM2ybr
-        GSwGrIgw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNFLM-004ShW-67; Fri, 19 Mar 2021 13:39:16 +0000
-Date:   Fri, 19 Mar 2021 13:39:12 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, iommu@lists.linux-foundation.org, will@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iommu: Statically set module owner
-Message-ID: <20210319133912.GA1063154@infradead.org>
-References: <f4de29d8330981301c1935e667b507254a2691ae.1616157612.git.robin.murphy@arm.com>
+        Fri, 19 Mar 2021 09:39:44 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB52C06174A;
+        Fri, 19 Mar 2021 06:39:44 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id q29so9968518lfb.4;
+        Fri, 19 Mar 2021 06:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fyvAl1ud31RwhXT5skBunJKZtf9rGtmbohQtkuhaBSk=;
+        b=FNzLDRJF5VVqujMp6CjY9HXNBHu0oM96hG2vqMHk4LjXWYoy9gq2VMV60K0S/u24dQ
+         oOMN0u/GgBP3DjIT/Gxe6A1f3VcfmYkTcEE31YjwCzy/7uZV197fqAlwMY8sB473bkki
+         0iMkfzI6kArfHIJk3JckcSG5cG3sYRPSAJw2M+r6FU5McBNCdvWmeDsdfrPZYIyRjawD
+         fIKjiSRUGxUlrxkVoGfoq2afnC5bnIkSRlNf0oD2qWoAT9n89gPa4vR4TdZNVsYWIejJ
+         XZVDDCu0HBTMSB6tPEFCojFMppPix/9RR1seUQQTfL9LoBuH3QH5royapmSAAWhcppxa
+         EwOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fyvAl1ud31RwhXT5skBunJKZtf9rGtmbohQtkuhaBSk=;
+        b=fezhaCVB9pm1/JlIeIm7xcFZm4h/uk1WXhlrkCV2rhAFDPI/OhmejPWP0a1nF/hkwI
+         lgi6AGq+mG+GUzW5pEFae8gvJTeTqsJ8rOFFI2lERx5eM8ObhBV7j88Ck03mDTrtk/6f
+         QOWabbp80IKauXiaFxmIoB3isIG5cwezM+eA0kkVCIHY5eg+zrtsug5euh3SlDxjpKVc
+         aKmye6wZUeq+Muq3pGH+9GsBq+dQTFOCttugpIdsx2caG5Ww+iCS3yl6BigT+AL3Vkob
+         HH845bFryK3APbQfgk32RWG9Hggvfo7mCLmFcTKPq3MEkB8eK7Y+tazklolBFZjn2HHt
+         aR8A==
+X-Gm-Message-State: AOAM531jyWnW07TCF9yy76dsTXcyFijCzlEQVdGBLLnPG7QbCPZXo4N+
+        f/L45pCCoKX+z0j7RX3O19qfml/EPTo=
+X-Google-Smtp-Source: ABdhPJw5r8e8Ba4MBNEaR25BIUuum9HlCO5bvR7piOmAQCu+7ZIgvB+NuZZ8beSknWBvUVmPxfqthw==
+X-Received: by 2002:a19:7504:: with SMTP id y4mr858841lfe.616.1616161182717;
+        Fri, 19 Mar 2021 06:39:42 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id d4sm638197lfq.270.2021.03.19.06.39.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 06:39:42 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, willy@infradead.org, david@redhat.com,
+        surenb@google.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20210309062333.3216138-1-minchan@kernel.org>
+ <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
+Message-ID: <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+Date:   Fri, 19 Mar 2021 16:39:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4de29d8330981301c1935e667b507254a2691ae.1616157612.git.robin.murphy@arm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 12:52:01PM +0000, Robin Murphy wrote:
-> It happens that the 3 drivers which first supported being modular are
-> also ones which play games with their pgsize_bitmap, so have non-const
-> iommu_ops where dynamically setting the owner manages to work out OK.
-> However, it's less than ideal to force that upon all drivers which want
-> to be modular - like the new sprd-iommu driver which now has a potential
-> bug in that regard - so let's just statically set the module owner and
-> let ops remain const wherever possible.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
-> 
-> This is something I hadn't got round to sending earlier, so now rebased
-> onto iommu/next to accommodate the new driver :)
+19.03.2021 15:44, Dmitry Osipenko пишет:
+...
+>>  #include <linux/debugfs.h>
+>> +#include <linux/kobject.h>
+>> +
+>> +struct cma_stat {
+>> +	spinlock_t lock;
+>> +	/* the number of CMA page successful allocations */
+>> +	unsigned long nr_pages_succeeded;
+>> +	/* the number of CMA page allocation failures */
+>> +	unsigned long nr_pages_failed;
+>> +	struct kobject kobj;
+>> +};
+>>  
+>>  struct cma {
+>>  	unsigned long   base_pfn;
+>> @@ -16,6 +26,9 @@ struct cma {
+>>  	struct debugfs_u32_array dfs_bitmap;
+>>  #endif
+>>  	char name[CMA_MAX_NAME];
+>> +#ifdef CONFIG_CMA_SYSFS
+>> +	struct cma_stat	*stat;
+>> +#endif
 
-Ah, nice.  That __iommu_device_set_ops dance always confused me.
+What is the point of allocating stat dynamically?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+...
+>> +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
+>> +{
+>> +	spin_lock(&cma->stat->lock);
+>> +	cma->stat->nr_pages_succeeded += count;
+>> +	spin_unlock(&cma->stat->lock);
+>> +}
+>> +
+>> +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
+>> +{
+>> +	spin_lock(&cma->stat->lock);
+>> +	cma->stat->nr_pages_failed += count;
+>> +	spin_unlock(&cma->stat->lock);
+>> +}
+
+You could use atomic increment and then locking isn't needed.
