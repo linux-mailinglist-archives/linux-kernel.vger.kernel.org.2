@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A1F3428FE
+	by mail.lfdr.de (Postfix) with ESMTP id 66A6E3428FF
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhCSXB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 19:01:59 -0400
+        id S229780AbhCSXCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 19:02:03 -0400
 Received: from esa5.hgst.iphmx.com ([216.71.153.144]:9606 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhCSXBa (ORCPT
+        with ESMTP id S229634AbhCSXBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 19:01:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1616194890; x=1647730890;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=0Qf9TjLEkAqG4lRDNO3udtS6r3hubcbTqxRFi+Zi17s=;
-  b=NACbrIjIU8KEKvF9OQzywLjnG9iUahb2cC0tQtp7B70OF1yyxu6+UXEz
-   to51wCoViBHGx7j8cMEpbijXtrbU5DUI8ziVKmCREKQqd13NdIj7En2rA
-   xljGBDhPFQ5P51dBcdYOBZlK9XBAqXyYORjW0IyYUtDvnbdDS0f80oDY1
-   tGejuBx8Fx1NOdMwRdw5KUdlDVhiXvuVGPisu+UxWkcX+IAH+WMXZXBNI
-   hPXMxxh9rmIGT/isfGpNGEebtrS5vAqrPr3S2WUTCEU7jRgN0JqxuJtNC
-   KQnCy1IhEpC4qDaXykYCQuLSDrd9oJKvQB/IzPEVaDxUNXjllKYNZwvBk
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=I27F+iUVnKqOMsuMJCcX8xkzk7/aFMoMG/XvpKNj1BE=;
+  b=bcD2HpJpHGNySBZPB3SJK1vn42nE/sAjoibzHS4BwFon7n5grQ/fcDNL
+   Nz5XUJ57K2Ce7XvnqU303DH36o5OP0EPAkajXF6SHoV/vPOt7Dkvyjuu7
+   ECcyuNGDE4JqyiYaMq86bK6nliFzwqXdsKTXXaYsdry/OCtJPN1Vi+jOw
+   VNpBT1xqOC+Mis0+GwDP6DDdzEP7cmQzf7C1GItHXtM8XqLn4axbIKQqa
+   +sEL8s9g0dkpsPdBn68hHfd0Ix7HyJALWMXegb7Qf7w2PFotMojSUcKej
+   2giF6JrpO2rQLOFDSCIsSirF5ZepZKmwN43GDwVZBIQeX65TlH6zSrSsO
    g==;
-IronPort-SDR: FGmmBp/cNX3Msdhnibsf1j25xY1rTDAecLNBih5y7OKo8kJ5SeuRiK2CsRIEIzHELblZ5tCXTu
- il5/nZsz780c9+y0lKsPkCo5uBRJXXspJJNhwMeBPsAXjharCK+0OMPu+XYO6B/E8lagKfa6Pu
- 3ejO9ZQQiYOHtD4qp2P9aPKVNJ7m5sTro3WpJwyH4sNeM+UKZl1ZpeT9Ey7xJN3AnahJlDlRLb
- nrbi6lU3R0np7syq9ZMXgFidISuzUNDRYS6SKonGkZmVVx8+i53PTTVgsz0Ng11TQyuIe7itE7
- Bic=
+IronPort-SDR: c8B9d3c+PBBJdjbCUd83hpKd9TcG2vLPVYEpQ9JrijmYJtizKTxsmsY++9BBL+1VjYp4kceoMl
+ BTu04LKuzlnBQdNaCZHCjVwcPRFnlc7r5vdxMH4qgzSXO2flIDqzwpwHoeCHdHqGFB3YctkcT/
+ ucnzNOXpV07BAX79IoGqS3u2f1q7XTqwaH4V33ZZoHeFn5aNF0ZAWqCrpfJVmqmWvlwZ9cGba4
+ KJTaUyOpr6dFZoxj7SHYx+bwCFAjwSUydpGHnKY3cBUmXjziNRCJbuipbOJZmgCaT/mPcHC3XU
+ IwA=
 X-IronPort-AV: E=Sophos;i="5.81,263,1610380800"; 
-   d="scan'208";a="162584053"
+   d="scan'208";a="162584054"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
   by ob1.hgst.iphmx.com with ESMTP; 20 Mar 2021 07:01:30 +0800
-IronPort-SDR: nFo00SuFaCLLERylqeZfcCaUv0qZm/tfgvKExoC6wFR9iB/TjTW4KCVIUltNxdz3CYJhIsFUWW
- VcmAAtBOCfSNU+bUJ/J18rOuKJTUurx9yymrqmCSjnlQZkC+IV2hoidnYSp4nejdzecsL9624x
- 65D8Fz1y3csnzApEDfuxhKkMcT7ZRWWEFq7+kxRadzNRFd9U8/Fcmf12gsa/3LRIspf2xWD3sE
- +D7UJFEHGsDCas9N/b9knPDJXz5SHoQupATdrl8NV2m9Sh42CimRK9AjyPz5P5jYoKaIRF0r0M
- 267IEdVBnM4Rw+hCDmaPaeGg
+IronPort-SDR: aHH6oajYJuWWFTa2Not0xlzrxftVmcONMCs5Lg+pwocfkh44G5u6Drnv20a/caBkZSeXjREB8Z
+ jdRR7p5iJP+AGMCErZ0OjsE3SW11dGcnUxaP+8ioy+BMxQHD30+bUPLE5VBdZvPSBW7QYv1tyS
+ xcZcMEuMextpmT6S+gn303zDKIspHWtsxKuLu2BuI1HrYkBhxt7C6sdjca7armTAVIa8rfFocg
+ AcNFruPs/raUcWVc3hGUXOm41vIFR29OitLGxwh6r2QleIyrdfw53WMjdwMko67nwGBCz8pFOH
+ 0+bhcb4TGHpTcbmiNHW0K5B3
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 15:43:42 -0700
-IronPort-SDR: WtbzaVxxfmKWmKaOXP5pznJullm99yE0eUrF+pcc3X67ZA2teNqDg/5mqnH/pqLQ8p5bDiZJ7Y
- BKlWPB4SQvzjLVYenj3iT1eQSp0NJicFWRa7O3+kedm05yHtuGFl1jtrHJIoX2XyOHR/zDP3/l
- YLl7zXgwedkr5FFawG/emmG5xrR92bfhr6KKCOgLIEcUMuEEX5hLKCyazVIlqoAunaiPwYvmro
- 2ugrHrYOV3phGH2iUpRBfBcdB+ENC8X2zA0PC64n+TgiG7O1/VQfn9kgQYeDpSl/6j93PX4itp
- gm0=
+IronPort-SDR: wDvwfm7QwIA+a9VOxTikk1MWTIR009JdrjNGmunUU0iDLTTbpA9NkmGU2YggSRmt3/NOUbvhYf
+ syzk8s6P2u6VPXw5F4wKxf3sgWsSHH8wj/U5ijxVX9h2xq8Z8GlNNXeEOYTIHjQg2vzOLauNtd
+ qOgv6BkFNmb3kq614DU9CatAhHfd9mHZO+oYGCz2Who2mHc4EilEYnLWwKxv2fVIFu7qujBRaX
+ SJhiPvawX+b7ybKwV/ncGQSuVflHEf8LArVHWM77xca9+AwI4Z/EN3hAt2ucNRwscOXe+g0gN+
+ G7A=
 WDCIronportException: Internal
 Received: from ind002560.ad.shared (HELO jedi-01.hgst.com) ([10.86.48.105])
   by uls-op-cesaip02.wdc.com with ESMTP; 19 Mar 2021 16:01:30 -0700
@@ -64,105 +64,643 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Will Deacon <will@kernel.org>
-Subject: [RFC 0/6] Improve RISC-V Perf support using SBI PMU extension
-Date:   Fri, 19 Mar 2021 16:01:00 -0700
-Message-Id: <20210319230106.2186694-1-atish.patra@wdc.com>
+Subject: [RFC 1/6] RISC-V: Remove the current perf implementation
+Date:   Fri, 19 Mar 2021 16:01:01 -0700
+Message-Id: <20210319230106.2186694-2-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210319230106.2186694-1-atish.patra@wdc.com>
+References: <20210319230106.2186694-1-atish.patra@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds improved perf support for RISC-V based system using
-SBI PMU extension[1]. It is based on a platform driver instead of a existing
-arch specific implementation. The core platform driver is implemented in
-such a way that most of the generic event handling is done in the core driver
-while individual PMUs need to only implement necessary features specific to
-the PMU. This is easily extensible and any future RISC-V PMU implementation
-can leverage this. Currently, SBI PMU driver & legacy PMU driver are implemented
-as a part of this series.
+The current perf implementation in RISC-V is not very useful as it can not
+count any events other than cycle/instructions. Moreover, perf record
+can not be used or the events can not be started or stopped.
 
-The SBI based driver provides more advanced features such as event configure
-start/stop. This version does not implement counter overflow
-& filtering yet. That will implemented in the future on top of this series
-using "Sscof" extension. The RISC-V perf documentation will also be updated
-at that time with all the bits.
+Remove the implementation now for a better platform driver in future
+that will implement most of the missing functionality.
 
-The legacy driver tries to reimplement the existing minimal perf under a new
-config to maintain backward compatibility. This implementation only allows
-monitoring of always running cycle/instruction counters. Moreover, they can
-not be started or stopped. In general, this is very limited and not very useful.
-That's why, I am not very keen to carry the support into the new driver.
-However, I don't want to break perf for any existing hardware platforms.
-If nobody really uses perf currently, I will be happy to drop PATCH 4.
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/Kconfig                  |  13 -
+ arch/riscv/include/asm/perf_event.h |  72 -----
+ arch/riscv/kernel/Makefile          |   1 -
+ arch/riscv/kernel/perf_event.c      | 485 ----------------------------
+ 4 files changed, 571 deletions(-)
+ delete mode 100644 arch/riscv/kernel/perf_event.c
 
-This series has been tested in Qemu on RV64 only. Qemu[2] & OpenSBI [3] patches
-are required to test it. Qemu changes are not backward compatible. That means,
-you can not use perf anymore on older Qemu versions with latest OpenSBI
-and/or Kernel. However, newer kernel will just use legacy pmu driver if
-old OpenSBI is detected or hardware doesn't implement mcountinhibit.
-
-Here is an output of perf stat while running hackbench.
-
-[root@fedora-riscv riscv]# perf stat -e r8000000000000007 -e r8000000000000006 \
--e r0000000000000002 -e r0000000000000004 -e branch-misses -e cache-misses \
--e cycles -e instructions ./hackbench -pipe 15 process 15
-
-Running with 15*40 (== 600) tasks.
-Time: 1.548
-
- Performance counter stats for './hackbench -pipe 15 process 15':
-
-             7,103      r8000000000000007     (62.56%) --> SBI_PMU_FW_IPI_RECVD
-             7,767      r8000000000000006     (12.19%) --> SBI_PMU_FW_IPI_SENT
-                 0      r0000000000000002     (24.79%) --> a custom raw event described in DT
-     <not counted>      r0000000000000004     (0.00%)  --> non-supported raw event described in DT
-                 0      branch-misses         (12.65%) 
-                 0      cache-misses          (25.36%)
-    27,978,868,702      cycles                (38.12%)
-    27,849,527,556      instructions          # 1.00  insn per cycle  (50.46%)
-
-       2.431195184 seconds time elapsed
-
-       1.553153000 seconds user
-      13.615924000 seconds sys
-
-The patches can also be found in the github[4].
-
-[1] https://lists.riscv.org/g/tech-unixplatformspec/message/598
-[2] https://github.com/atishp04/qemu/tree/riscv_pmu_v1
-[3] https://github.com/atishp04/opensbi/tree/riscv_pmu_v1
-[4] https://github.com/atishp04/linux/tree/riscv_pmu_v1
-
-Atish Patra (6):
-RISC-V: Remove the current perf implementation
-RISC-V: Add CSR encodings for all HPMCOUNTERS
-RISC-V: Add a perf core platform driver
-RISC-V: Add a simple platform driver for RISC-V legacy perf
-RISC-V: Add RISC-V SBI PMU extension definitions
-RISC-V: Add perf platform driver based on SBI PMU extension
-
-arch/riscv/Kconfig                  |  13 -
-arch/riscv/include/asm/csr.h        |  58 ++++
-arch/riscv/include/asm/perf_event.h |  72 -----
-arch/riscv/include/asm/sbi.h        |  80 +++++
-arch/riscv/kernel/Makefile          |   1 -
-arch/riscv/kernel/perf_event.c      | 485 ----------------------------
-drivers/perf/Kconfig                |  25 ++
-drivers/perf/Makefile               |   5 +
-drivers/perf/riscv_pmu.c            | 397 +++++++++++++++++++++++
-drivers/perf/riscv_pmu_legacy.c     |  88 +++++
-drivers/perf/riscv_pmu_sbi.c        | 464 ++++++++++++++++++++++++++
-include/linux/cpuhotplug.h          |   1 +
-include/linux/perf/riscv_pmu.h      |  61 ++++
-13 files changed, 1179 insertions(+), 571 deletions(-)
-delete mode 100644 arch/riscv/kernel/perf_event.c
-create mode 100644 drivers/perf/riscv_pmu.c
-create mode 100644 drivers/perf/riscv_pmu_legacy.c
-create mode 100644 drivers/perf/riscv_pmu_sbi.c
-create mode 100644 include/linux/perf/riscv_pmu.h
-
---
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 85d626b8ce5e..fdbdba852137 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -351,19 +351,6 @@ config RISCV_ISA_C
+ 
+ 	   If you don't know what to do here, say Y.
+ 
+-menu "supported PMU type"
+-	depends on PERF_EVENTS
+-
+-config RISCV_BASE_PMU
+-	bool "Base Performance Monitoring Unit"
+-	def_bool y
+-	help
+-	  A base PMU that serves as a reference implementation and has limited
+-	  feature of perf.  It can run on any RISC-V machines so serves as the
+-	  fallback, but this option can also be disable to reduce kernel size.
+-
+-endmenu
+-
+ config FPU
+ 	bool "FPU support"
+ 	default y
+diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
+index 062efd3a1d5d..dc6d5803c0e2 100644
+--- a/arch/riscv/include/asm/perf_event.h
++++ b/arch/riscv/include/asm/perf_event.h
+@@ -9,77 +9,5 @@
+ #define _ASM_RISCV_PERF_EVENT_H
+ 
+ #include <linux/perf_event.h>
+-#include <linux/ptrace.h>
+-#include <linux/interrupt.h>
+-
+-#ifdef CONFIG_RISCV_BASE_PMU
+-#define RISCV_BASE_COUNTERS	2
+-
+-/*
+- * The RISCV_MAX_COUNTERS parameter should be specified.
+- */
+-
+-#define RISCV_MAX_COUNTERS	2
+-
+-/*
+- * These are the indexes of bits in counteren register *minus* 1,
+- * except for cycle.  It would be coherent if it can directly mapped
+- * to counteren bit definition, but there is a *time* register at
+- * counteren[1].  Per-cpu structure is scarce resource here.
+- *
+- * According to the spec, an implementation can support counter up to
+- * mhpmcounter31, but many high-end processors has at most 6 general
+- * PMCs, we give the definition to MHPMCOUNTER8 here.
+- */
+-#define RISCV_PMU_CYCLE		0
+-#define RISCV_PMU_INSTRET	1
+-#define RISCV_PMU_MHPMCOUNTER3	2
+-#define RISCV_PMU_MHPMCOUNTER4	3
+-#define RISCV_PMU_MHPMCOUNTER5	4
+-#define RISCV_PMU_MHPMCOUNTER6	5
+-#define RISCV_PMU_MHPMCOUNTER7	6
+-#define RISCV_PMU_MHPMCOUNTER8	7
+-
+-#define RISCV_OP_UNSUPP		(-EOPNOTSUPP)
+-
+-struct cpu_hw_events {
+-	/* # currently enabled events*/
+-	int			n_events;
+-	/* currently enabled events */
+-	struct perf_event	*events[RISCV_MAX_COUNTERS];
+-	/* vendor-defined PMU data */
+-	void			*platform;
+-};
+-
+-struct riscv_pmu {
+-	struct pmu	*pmu;
+-
+-	/* generic hw/cache events table */
+-	const int	*hw_events;
+-	const int	(*cache_events)[PERF_COUNT_HW_CACHE_MAX]
+-				       [PERF_COUNT_HW_CACHE_OP_MAX]
+-				       [PERF_COUNT_HW_CACHE_RESULT_MAX];
+-	/* method used to map hw/cache events */
+-	int		(*map_hw_event)(u64 config);
+-	int		(*map_cache_event)(u64 config);
+-
+-	/* max generic hw events in map */
+-	int		max_events;
+-	/* number total counters, 2(base) + x(general) */
+-	int		num_counters;
+-	/* the width of the counter */
+-	int		counter_width;
+-
+-	/* vendor-defined PMU features */
+-	void		*platform;
+-
+-	irqreturn_t	(*handle_irq)(int irq_num, void *dev);
+-	int		irq;
+-};
+-
+-#endif
+-#ifdef CONFIG_PERF_EVENTS
+-#define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
+-#endif
+ 
+ #endif /* _ASM_RISCV_PERF_EVENT_H */
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 3dc0abde988a..5f8f6290a0e1 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -45,7 +45,6 @@ obj-$(CONFIG_MODULE_SECTIONS)	+= module-sections.o
+ obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+ obj-$(CONFIG_DYNAMIC_FTRACE)	+= mcount-dyn.o
+ 
+-obj-$(CONFIG_RISCV_BASE_PMU)	+= perf_event.o
+ obj-$(CONFIG_PERF_EVENTS)	+= perf_callchain.o
+ obj-$(CONFIG_HAVE_PERF_REGS)	+= perf_regs.o
+ obj-$(CONFIG_RISCV_SBI)		+= sbi.o
+diff --git a/arch/riscv/kernel/perf_event.c b/arch/riscv/kernel/perf_event.c
+deleted file mode 100644
+index c835f0362d94..000000000000
+--- a/arch/riscv/kernel/perf_event.c
++++ /dev/null
+@@ -1,485 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Copyright (C) 2008 Thomas Gleixner <tglx@linutronix.de>
+- * Copyright (C) 2008-2009 Red Hat, Inc., Ingo Molnar
+- * Copyright (C) 2009 Jaswinder Singh Rajput
+- * Copyright (C) 2009 Advanced Micro Devices, Inc., Robert Richter
+- * Copyright (C) 2008-2009 Red Hat, Inc., Peter Zijlstra
+- * Copyright (C) 2009 Intel Corporation, <markus.t.metzger@intel.com>
+- * Copyright (C) 2009 Google, Inc., Stephane Eranian
+- * Copyright 2014 Tilera Corporation. All Rights Reserved.
+- * Copyright (C) 2018 Andes Technology Corporation
+- *
+- * Perf_events support for RISC-V platforms.
+- *
+- * Since the spec. (as of now, Priv-Spec 1.10) does not provide enough
+- * functionality for perf event to fully work, this file provides
+- * the very basic framework only.
+- *
+- * For platform portings, please check Documentations/riscv/pmu.txt.
+- *
+- * The Copyright line includes x86 and tile ones.
+- */
+-
+-#include <linux/kprobes.h>
+-#include <linux/kernel.h>
+-#include <linux/kdebug.h>
+-#include <linux/mutex.h>
+-#include <linux/bitmap.h>
+-#include <linux/irq.h>
+-#include <linux/perf_event.h>
+-#include <linux/atomic.h>
+-#include <linux/of.h>
+-#include <asm/perf_event.h>
+-
+-static const struct riscv_pmu *riscv_pmu __read_mostly;
+-static DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events);
+-
+-/*
+- * Hardware & cache maps and their methods
+- */
+-
+-static const int riscv_hw_event_map[] = {
+-	[PERF_COUNT_HW_CPU_CYCLES]		= RISCV_PMU_CYCLE,
+-	[PERF_COUNT_HW_INSTRUCTIONS]		= RISCV_PMU_INSTRET,
+-	[PERF_COUNT_HW_CACHE_REFERENCES]	= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_CACHE_MISSES]		= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BRANCH_MISSES]		= RISCV_OP_UNSUPP,
+-	[PERF_COUNT_HW_BUS_CYCLES]		= RISCV_OP_UNSUPP,
+-};
+-
+-#define C(x) PERF_COUNT_HW_CACHE_##x
+-static const int riscv_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
+-[PERF_COUNT_HW_CACHE_OP_MAX]
+-[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
+-	[C(L1D)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(L1I)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(LL)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(DTLB)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] =  RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] =  RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(ITLB)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-	[C(BPU)] = {
+-		[C(OP_READ)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_WRITE)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-		[C(OP_PREFETCH)] = {
+-			[C(RESULT_ACCESS)] = RISCV_OP_UNSUPP,
+-			[C(RESULT_MISS)] = RISCV_OP_UNSUPP,
+-		},
+-	},
+-};
+-
+-static int riscv_map_hw_event(u64 config)
+-{
+-	if (config >= riscv_pmu->max_events)
+-		return -EINVAL;
+-
+-	return riscv_pmu->hw_events[config];
+-}
+-
+-static int riscv_map_cache_decode(u64 config, unsigned int *type,
+-			   unsigned int *op, unsigned int *result)
+-{
+-	return -ENOENT;
+-}
+-
+-static int riscv_map_cache_event(u64 config)
+-{
+-	unsigned int type, op, result;
+-	int err = -ENOENT;
+-		int code;
+-
+-	err = riscv_map_cache_decode(config, &type, &op, &result);
+-	if (!riscv_pmu->cache_events || err)
+-		return err;
+-
+-	if (type >= PERF_COUNT_HW_CACHE_MAX ||
+-	    op >= PERF_COUNT_HW_CACHE_OP_MAX ||
+-	    result >= PERF_COUNT_HW_CACHE_RESULT_MAX)
+-		return -EINVAL;
+-
+-	code = (*riscv_pmu->cache_events)[type][op][result];
+-	if (code == RISCV_OP_UNSUPP)
+-		return -EINVAL;
+-
+-	return code;
+-}
+-
+-/*
+- * Low-level functions: reading/writing counters
+- */
+-
+-static inline u64 read_counter(int idx)
+-{
+-	u64 val = 0;
+-
+-	switch (idx) {
+-	case RISCV_PMU_CYCLE:
+-		val = csr_read(CSR_CYCLE);
+-		break;
+-	case RISCV_PMU_INSTRET:
+-		val = csr_read(CSR_INSTRET);
+-		break;
+-	default:
+-		WARN_ON_ONCE(idx < 0 ||	idx > RISCV_MAX_COUNTERS);
+-		return -EINVAL;
+-	}
+-
+-	return val;
+-}
+-
+-static inline void write_counter(int idx, u64 value)
+-{
+-	/* currently not supported */
+-	WARN_ON_ONCE(1);
+-}
+-
+-/*
+- * pmu->read: read and update the counter
+- *
+- * Other architectures' implementation often have a xxx_perf_event_update
+- * routine, which can return counter values when called in the IRQ, but
+- * return void when being called by the pmu->read method.
+- */
+-static void riscv_pmu_read(struct perf_event *event)
+-{
+-	struct hw_perf_event *hwc = &event->hw;
+-	u64 prev_raw_count, new_raw_count;
+-	u64 oldval;
+-	int idx = hwc->idx;
+-	u64 delta;
+-
+-	do {
+-		prev_raw_count = local64_read(&hwc->prev_count);
+-		new_raw_count = read_counter(idx);
+-
+-		oldval = local64_cmpxchg(&hwc->prev_count, prev_raw_count,
+-					 new_raw_count);
+-	} while (oldval != prev_raw_count);
+-
+-	/*
+-	 * delta is the value to update the counter we maintain in the kernel.
+-	 */
+-	delta = (new_raw_count - prev_raw_count) &
+-		((1ULL << riscv_pmu->counter_width) - 1);
+-	local64_add(delta, &event->count);
+-	/*
+-	 * Something like local64_sub(delta, &hwc->period_left) here is
+-	 * needed if there is an interrupt for perf.
+-	 */
+-}
+-
+-/*
+- * State transition functions:
+- *
+- * stop()/start() & add()/del()
+- */
+-
+-/*
+- * pmu->stop: stop the counter
+- */
+-static void riscv_pmu_stop(struct perf_event *event, int flags)
+-{
+-	struct hw_perf_event *hwc = &event->hw;
+-
+-	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+-	hwc->state |= PERF_HES_STOPPED;
+-
+-	if ((flags & PERF_EF_UPDATE) && !(hwc->state & PERF_HES_UPTODATE)) {
+-		riscv_pmu->pmu->read(event);
+-		hwc->state |= PERF_HES_UPTODATE;
+-	}
+-}
+-
+-/*
+- * pmu->start: start the event.
+- */
+-static void riscv_pmu_start(struct perf_event *event, int flags)
+-{
+-	struct hw_perf_event *hwc = &event->hw;
+-
+-	if (WARN_ON_ONCE(!(event->hw.state & PERF_HES_STOPPED)))
+-		return;
+-
+-	if (flags & PERF_EF_RELOAD) {
+-		WARN_ON_ONCE(!(event->hw.state & PERF_HES_UPTODATE));
+-
+-		/*
+-		 * Set the counter to the period to the next interrupt here,
+-		 * if you have any.
+-		 */
+-	}
+-
+-	hwc->state = 0;
+-	perf_event_update_userpage(event);
+-
+-	/*
+-	 * Since we cannot write to counters, this serves as an initialization
+-	 * to the delta-mechanism in pmu->read(); otherwise, the delta would be
+-	 * wrong when pmu->read is called for the first time.
+-	 */
+-	local64_set(&hwc->prev_count, read_counter(hwc->idx));
+-}
+-
+-/*
+- * pmu->add: add the event to PMU.
+- */
+-static int riscv_pmu_add(struct perf_event *event, int flags)
+-{
+-	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	struct hw_perf_event *hwc = &event->hw;
+-
+-	if (cpuc->n_events == riscv_pmu->num_counters)
+-		return -ENOSPC;
+-
+-	/*
+-	 * We don't have general conunters, so no binding-event-to-counter
+-	 * process here.
+-	 *
+-	 * Indexing using hwc->config generally not works, since config may
+-	 * contain extra information, but here the only info we have in
+-	 * hwc->config is the event index.
+-	 */
+-	hwc->idx = hwc->config;
+-	cpuc->events[hwc->idx] = event;
+-	cpuc->n_events++;
+-
+-	hwc->state = PERF_HES_UPTODATE | PERF_HES_STOPPED;
+-
+-	if (flags & PERF_EF_START)
+-		riscv_pmu->pmu->start(event, PERF_EF_RELOAD);
+-
+-	return 0;
+-}
+-
+-/*
+- * pmu->del: delete the event from PMU.
+- */
+-static void riscv_pmu_del(struct perf_event *event, int flags)
+-{
+-	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	struct hw_perf_event *hwc = &event->hw;
+-
+-	cpuc->events[hwc->idx] = NULL;
+-	cpuc->n_events--;
+-	riscv_pmu->pmu->stop(event, PERF_EF_UPDATE);
+-	perf_event_update_userpage(event);
+-}
+-
+-/*
+- * Interrupt: a skeletion for reference.
+- */
+-
+-static DEFINE_MUTEX(pmc_reserve_mutex);
+-
+-static irqreturn_t riscv_base_pmu_handle_irq(int irq_num, void *dev)
+-{
+-	return IRQ_NONE;
+-}
+-
+-static int reserve_pmc_hardware(void)
+-{
+-	int err = 0;
+-
+-	mutex_lock(&pmc_reserve_mutex);
+-	if (riscv_pmu->irq >= 0 && riscv_pmu->handle_irq) {
+-		err = request_irq(riscv_pmu->irq, riscv_pmu->handle_irq,
+-				  IRQF_PERCPU, "riscv-base-perf", NULL);
+-	}
+-	mutex_unlock(&pmc_reserve_mutex);
+-
+-	return err;
+-}
+-
+-static void release_pmc_hardware(void)
+-{
+-	mutex_lock(&pmc_reserve_mutex);
+-	if (riscv_pmu->irq >= 0)
+-		free_irq(riscv_pmu->irq, NULL);
+-	mutex_unlock(&pmc_reserve_mutex);
+-}
+-
+-/*
+- * Event Initialization/Finalization
+- */
+-
+-static atomic_t riscv_active_events = ATOMIC_INIT(0);
+-
+-static void riscv_event_destroy(struct perf_event *event)
+-{
+-	if (atomic_dec_return(&riscv_active_events) == 0)
+-		release_pmc_hardware();
+-}
+-
+-static int riscv_event_init(struct perf_event *event)
+-{
+-	struct perf_event_attr *attr = &event->attr;
+-	struct hw_perf_event *hwc = &event->hw;
+-	int err;
+-	int code;
+-
+-	if (atomic_inc_return(&riscv_active_events) == 1) {
+-		err = reserve_pmc_hardware();
+-
+-		if (err) {
+-			pr_warn("PMC hardware not available\n");
+-			atomic_dec(&riscv_active_events);
+-			return -EBUSY;
+-		}
+-	}
+-
+-	switch (event->attr.type) {
+-	case PERF_TYPE_HARDWARE:
+-		code = riscv_pmu->map_hw_event(attr->config);
+-		break;
+-	case PERF_TYPE_HW_CACHE:
+-		code = riscv_pmu->map_cache_event(attr->config);
+-		break;
+-	case PERF_TYPE_RAW:
+-		return -EOPNOTSUPP;
+-	default:
+-		return -ENOENT;
+-	}
+-
+-	event->destroy = riscv_event_destroy;
+-	if (code < 0) {
+-		event->destroy(event);
+-		return code;
+-	}
+-
+-	/*
+-	 * idx is set to -1 because the index of a general event should not be
+-	 * decided until binding to some counter in pmu->add().
+-	 *
+-	 * But since we don't have such support, later in pmu->add(), we just
+-	 * use hwc->config as the index instead.
+-	 */
+-	hwc->config = code;
+-	hwc->idx = -1;
+-
+-	return 0;
+-}
+-
+-/*
+- * Initialization
+- */
+-
+-static struct pmu min_pmu = {
+-	.name		= "riscv-base",
+-	.event_init	= riscv_event_init,
+-	.add		= riscv_pmu_add,
+-	.del		= riscv_pmu_del,
+-	.start		= riscv_pmu_start,
+-	.stop		= riscv_pmu_stop,
+-	.read		= riscv_pmu_read,
+-};
+-
+-static const struct riscv_pmu riscv_base_pmu = {
+-	.pmu = &min_pmu,
+-	.max_events = ARRAY_SIZE(riscv_hw_event_map),
+-	.map_hw_event = riscv_map_hw_event,
+-	.hw_events = riscv_hw_event_map,
+-	.map_cache_event = riscv_map_cache_event,
+-	.cache_events = &riscv_cache_event_map,
+-	.counter_width = 63,
+-	.num_counters = RISCV_BASE_COUNTERS + 0,
+-	.handle_irq = &riscv_base_pmu_handle_irq,
+-
+-	/* This means this PMU has no IRQ. */
+-	.irq = -1,
+-};
+-
+-static const struct of_device_id riscv_pmu_of_ids[] = {
+-	{.compatible = "riscv,base-pmu",	.data = &riscv_base_pmu},
+-	{ /* sentinel value */ }
+-};
+-
+-static int __init init_hw_perf_events(void)
+-{
+-	struct device_node *node = of_find_node_by_type(NULL, "pmu");
+-	const struct of_device_id *of_id;
+-
+-	riscv_pmu = &riscv_base_pmu;
+-
+-	if (node) {
+-		of_id = of_match_node(riscv_pmu_of_ids, node);
+-
+-		if (of_id)
+-			riscv_pmu = of_id->data;
+-		of_node_put(node);
+-	}
+-
+-	perf_pmu_register(riscv_pmu->pmu, "cpu", PERF_TYPE_RAW);
+-	return 0;
+-}
+-arch_initcall(init_hw_perf_events);
+-- 
 2.25.1
 
