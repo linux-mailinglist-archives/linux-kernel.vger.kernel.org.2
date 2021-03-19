@@ -2,211 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC6D34188A
+	by mail.lfdr.de (Postfix) with ESMTP id F293634188C
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhCSJjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:39:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33598 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhCSJi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:38:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EA494AC2E;
-        Fri, 19 Mar 2021 09:38:26 +0000 (UTC)
-Subject: Re: [PATCH] perf annotate: improve --stdio mode
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
- <YDVb4KS/ARbtfoAw@kernel.org> <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
-Message-ID: <bac6b366-c324-dea8-1cc2-5977fb6e0af5@suse.cz>
-Date:   Fri, 19 Mar 2021 10:38:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229821AbhCSJjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:39:02 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:16144 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhCSJiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 05:38:50 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12J9bChQ016003;
+        Fri, 19 Mar 2021 02:38:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=proofpoint;
+ bh=blFYxzAaVG/WvFUYQD+oClhdcJpPP4/RUk1ThAPsHDk=;
+ b=VMJ4z4D+4/2MalMe7fdwCK7RU85GXvDpzSBhgslX01GFJwdaD0628+0toDINaf/stSMv
+ q974bItJrKztQBf4edlrQZogspe1xXWhfx6D2vC2SgvNOR/MzHnitdfYGU2X68JzOP9d
+ Smm59SSpSoDze95wjdl+esVJ8uzWdyNC3X+EwB2iv8y8c8ZG+8jBgSR6SLkUo1BZAECR
+ /aCZtNwd3ALi3H/+RF18FnZj11/Hf4lDV+sfdZ5kn/NOdSjtsR2KSTouBBgEmpSXIXiC
+ LdrvpgiE2tHrqb4+6Q+tD3ijiquwNSoKMqLDdvCsoorGgFlsiY8DP3VP+eM12/kq+4iS Mw== 
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2058.outbound.protection.outlook.com [104.47.36.58])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 378tu2cjth-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 02:38:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aHVkHykOJDzyykvOM9Ao3631Hy4PmdXQ+Th7KOvGZCiAtPrap4fa4IInyQaKnNxWOYj6QCw7S3IozvLoVvfqZdN9Cvj4hy8YF2z3LUboMSp8v6BNhU0tHW619R5MwRjPoGkmo2/pC6nNCKs/8cakwtn3/Lj1yarowF8Npyzl3fSR7mb/9yhg/x6D6CE0heIlJok3wOZ6wsvIExDMECrzoMfFbNr62UOYNriEwZ9FXniLySJbFVdSb30BkFUuj4YQjR41XdCzI7f9cbbq3HRq7AI3ceSpLsdX9zknVso7fgrsS+FDNvoXd6R6x67mlg3OLDXqsEnKqiDmfqqUsbN3sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=blFYxzAaVG/WvFUYQD+oClhdcJpPP4/RUk1ThAPsHDk=;
+ b=fN8GCbwiDjKSRp0WMjPbZ6VGD+vE2Sg7gGm/MciLtn0ce/4ERU372tTeA8xisjlv4+mM+uQXDVfhvShSUYsBmbLR2yRl34M9kfxEIG51pDJnfjxGujdVV6sd6m3CkGcVlvYSqraAdeAdrDM9+RNrCnIsb4Ka8HZoGl+oxuCq7brCwawMhNWiUoXr05D3fxG8tr/wWMNPaFW1fIXQDv+0iDLGQulerXMO4PrDfO2vYQdyGUXjZaZmhH1qnr3jOc9Cga07K4a6Z211+oLtF50cDKxcuRiwnJxCY5gPLzeN+jFcAQZpJ0Ng0TfUjRTOqQH2BxhG+LP08Ed8GYgmbbFWfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 64.207.220.244) smtp.rcpttodomain=linux.ie smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=blFYxzAaVG/WvFUYQD+oClhdcJpPP4/RUk1ThAPsHDk=;
+ b=0PGPQ/AI0KkqNvzpsdUkuXEwsLOaPEL77eVwEG+TN7RYoa5kp5rV7KOADC3zToMxH/TbBYe+/FLGVNMycZL+K8Z9tZdbF2ARSa+40bgBX+IP98/+Xp/gfzyLtxZ5jNLxuK+v2gKplQkam99tpVWR92ld9IcQxEJwcv4VQCmphKM=
+Received: from MW4PR04CA0100.namprd04.prod.outlook.com (2603:10b6:303:83::15)
+ by PH0PR07MB8656.namprd07.prod.outlook.com (2603:10b6:510:86::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
+ 2021 09:38:36 +0000
+Received: from MW2NAM12FT063.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:303:83:cafe::5b) by MW4PR04CA0100.outlook.office365.com
+ (2603:10b6:303:83::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Fri, 19 Mar 2021 09:38:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
+ smtp.mailfrom=cadence.com; linux.ie; dkim=none (message not signed)
+ header.d=none;linux.ie; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
+ client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com;
+Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
+ MW2NAM12FT063.mail.protection.outlook.com (10.13.181.102) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.9 via Frontend Transport; Fri, 19 Mar 2021 09:38:35 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 12J9cWJc041606
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 02:38:33 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 19 Mar 2021 10:38:31 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 19 Mar 2021 10:38:31 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 12J9cVIH007280;
+        Fri, 19 Mar 2021 10:38:31 +0100
+Received: (from pthombar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 12J9cVSQ007279;
+        Fri, 19 Mar 2021 10:38:31 +0100
+From:   Parshuram Thombare <pthombar@cadence.com>
+To:     <robert.foss@linaro.org>, <robh+dt@kernel.org>,
+        <laurent.pinchart@ideasonboard.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <a.hajda@samsung.com>,
+        <narmstrong@baylibre.com>, <nikhil.nd@ti.com>, <kishon@ti.com>,
+        <sjakhade@cadence.com>, <mparab@cadence.com>,
+        Parshuram Thombare <pthombar@cadence.com>
+Subject: [PATCH v5 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding changes for HDCP
+Date:   Fri, 19 Mar 2021 10:38:29 +0100
+Message-ID: <1616146709-7227-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
+In-Reply-To: <1616146664-6941-1-git-send-email-pthombar@cadence.com>
+References: <1616146664-6941-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-In-Reply-To: <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cb45a4f1-aa7b-43d8-bbee-08d8eabac46e
+X-MS-TrafficTypeDiagnostic: PH0PR07MB8656:
+X-Microsoft-Antispam-PRVS: <PH0PR07MB8656E363F6314CAF37CC771EC1689@PH0PR07MB8656.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /jPJc9CX1Uhs+Y3jSB1uBugi9WdTN+pDfMsQ0+9SpHaU1GjNjxUI0eSG/TawingfhKCtzroePKYRmnNKG3d0Aa6Nm6xeh+mWM92mqFug9H6QeFgsCfExWjVhI4BBGCYKXVxKKS3SdRYHeXBXLIXqNNVS8ufD6xFuNuM5sDsrTAlB+ZvTwBsaYovM6GXtuGwFKN1XlCSS7+w2QKOYUmWB1I+JIYwgsmrmzAlitSihO/mzlubVAHNZFzmn4jOEwnSL6Y4j6VTKjHwUhJ6Cwx8u/4YjQE1YwpDvwuy8tStQq7lz0vznJAhz78d/OniYTEkDC6Ear+zMuthQ/0i/I/Tht4DiWXV6Gu6+7Nk74WkNtE24g8eLCYMXnC5fIWmHrxgK4tUdOv3JYgT1IrMGcEjiuLq3qYXQbWcDAxJ619bV86Y+3sa/wcTQxK+se7J8vdnJoNFM0GaiuaynC+FG7bstmYxI+U2fHMXdkMJwbTNNgYDGeU+7MVp0xxSqkb8R3IG2UFxz5a72oIr5BeXebBPLTrIFwGx4181JdoDGnf/127v1fTTny67L1hQZODspbyBVx9o343h4ZQDIxt/oYB4n7wms9DZW2lEueJabd/3MlhnsPY64lrODq57MvGWIkpmaI/ViZScpZxtg7N8PInMFTF6Xhh5vWejbx09SpiROXteDqMgPNU/q72UqJb8arOhynQEdnjOyw8LWcLQ17+r8HWMAY2GFwV1iZq6nAlbQ370=
+X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(39860400002)(36092001)(36840700001)(46966006)(478600001)(4326008)(83380400001)(5660300002)(107886003)(42186006)(8936002)(110136005)(81166007)(426003)(36906005)(2906002)(7416002)(36756003)(54906003)(26005)(186003)(70206006)(47076005)(336012)(86362001)(82310400003)(70586007)(2616005)(82740400003)(8676002)(356005)(36860700001)(316002)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 09:38:35.2773
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb45a4f1-aa7b-43d8-bbee-08d8eabac46e
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT063.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR07MB8656
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_03:2021-03-17,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103190068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PING
+Add binding changes for HDCP in the MHDP8546 DPI/DP bridge binding.
 
-On 2/26/21 10:24 AM, Martin Liška wrote:
-> On 2/23/21 8:47 PM, Arnaldo Carvalho de Melo wrote:
->> Em Sun, Feb 21, 2021 at 01:46:36PM +0100, Martin Liška escreveu:
->>> The patch changes the output format in 2 ways:
->>> - line number is displayed for all source lines (matching TUI mode)
->>
->> Are you aware of 'perf annotate --stdio2' ? If the goal is to make the
->> stdio mode better, doing it in that mode would be best, as it was done
->> to share as much code as possible, not just the looks, with the TUI
->> mode.
-> 
-> Yes, I'm aware of it. My motivation is to generate a HTML perf annotate report
-> and I see the following parts of --stdio2 not ideal:
-> 
-> - coloring is not available (--stdio-color=always does not work)
-> - 'Sorted summary for file ' is missing so one can't easily search for
->    hot spots in browser
-> - source line number are displayed, but not the source files
-> - there's a missing option for 'Toggle disassembler output/simplified view' which
->    is available in TUI mode
-> 
-> That said, the stdio2 annotation report is quite different and so handy for my use case.
-> 
->>
->> I kept --stdio around because changing the output in that way could
->> annoy people used to that format.
-> 
-> Sure. But I think the current format provides quite broken visual layout:
-> 
->        0.00 :   405ef1: inc    %r15
->        0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->     eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
->            :            TA + tmpsd * (TB +
-> 
-> vs.
-> 
->        0.00 :   405ef1: inc    %r15
->        0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->        0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
->             : 1810   TA + tmpsd * (TB +
-> 
-> I bet also the current users of --stdio mode would benefit from it.
-> What do you think?
-> 
-> Thanks,
-> Martin
-> 
->>
->> Please take a look at 'man perf-config' and see what can be configured
->> for both 'perf annotate --tui' and 'perf annotate --stdio2'.
->>
->> Perhaps we can do something like:
->>
->> perf config annotate.stdio=tui_like
->>
->> And, for completeness have:
->>
->> perf config annotate.stdio=classical
->>
->> wdyt?
->>
->> Looking at the other patches now.
->>
->> - Arnaldo
->>
->>> - source locations for the hottest lines are printed
->>>    at the line end in order to preserve layout
->>>
->>> Before:
->>>
->>>      0.00 :   405ef1: inc    %r15
->>>           :            tmpsd * (TD + tmpsd * TDD)));
->>>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->>>           :            tmpsd * (TC +
->>>   eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
->>>           :            TA + tmpsd * (TB +
->>>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
->>>           :            dumbo =
->>>   eff.c:1809    1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8>
->>>           :            sumi -= sj * tmpsd * dij2i * dumbo;
->>>   eff.c:1813    2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0
->>>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
->>>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
->>>           :            for (k = 0; k < lpears[i] + upears[i]; k++) {
->>>   eff.c:1761    0.90 :   405f29: cmp    %r15d,%r12d
->>>
->>> After:
->>>
->>>      0.00 :   405ef1: inc    %r15
->>>           : 1812   tmpsd * (TD + tmpsd * TDD)));
->>>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->>>           : 1811   tmpsd * (TC +
->>>      0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
->>>           : 1810   TA + tmpsd * (TB +
->>>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
->>>           : 1809   dumbo =
->>>      1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8> // eff.c:1809
->>>           : 1813   sumi -= sj * tmpsd * dij2i * dumbo;
->>>      2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0 // eff.c:1813
->>>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
->>>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
->>>           : 1761   for (k = 0; k < lpears[i] + upears[i]; k++) {
->>>
->>> Where e.g. '// eff.c:1811' shares the same color as the percentantage
->>> at the line beginning.
->>>
->>> Signed-off-by: Martin Liška <mliska@suse.cz>
->>> ---
->>>   tools/perf/util/annotate.c | 30 ++++++++++++++----------------
->>>   1 file changed, 14 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
->>> index e60841b86d27..80542012ec1b 100644
->>> --- a/tools/perf/util/annotate.c
->>> +++ b/tools/perf/util/annotate.c
->>> @@ -1366,7 +1366,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>>   {
->>>       struct disasm_line *dl = container_of(al, struct disasm_line, al);
->>>       static const char *prev_line;
->>> -    static const char *prev_color;
->>>       if (al->offset != -1) {
->>>           double max_percent = 0.0;
->>> @@ -1405,20 +1404,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>>           color = get_percent_color(max_percent);
->>> -        /*
->>> -         * Also color the filename and line if needed, with
->>> -         * the same color than the percentage. Don't print it
->>> -         * twice for close colored addr with the same filename:line
->>> -         */
->>> -        if (al->path) {
->>> -            if (!prev_line || strcmp(prev_line, al->path)
->>> -                       || color != prev_color) {
->>> -                color_fprintf(stdout, color, " %s", al->path);
->>> -                prev_line = al->path;
->>> -                prev_color = color;
->>> -            }
->>> -        }
->>> -
->>>           for (i = 0; i < nr_percent; i++) {
->>>               struct annotation_data *data = &al->data[i];
->>>               double percent;
->>> @@ -1439,6 +1424,19 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>>           printf(" : ");
->>>           disasm_line__print(dl, start, addr_fmt_width);
->>> +
->>> +        /*
->>> +         * Also color the filename and line if needed, with
->>> +         * the same color than the percentage. Don't print it
->>> +         * twice for close colored addr with the same filename:line
->>> +         */
->>> +        if (al->path) {
->>> +            if (!prev_line || strcmp(prev_line, al->path)) {
->>> +                color_fprintf(stdout, color, " // %s", al->path);
->>> +                prev_line = al->path;
->>> +            }
->>> +        }
->>> +
->>>           printf("\n");
->>>       } else if (max_lines && printed >= max_lines)
->>>           return 1;
->>> @@ -1454,7 +1452,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>>           if (!*al->line)
->>>               printf(" %*s:\n", width, " ");
->>>           else
->>> -            printf(" %*s:     %*s %s\n", width, " ", addr_fmt_width, " ", al->line);
->>> +            printf(" %*s: %-*d %s\n", width, " ", addr_fmt_width, al->line_nr, al->line);
->>>       }
->>>       return 0;
->>> -- 
->>> 2.30.1
->>>
->>
-> 
+Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+---
+ .../display/bridge/cdns,mhdp8546.yaml         | 34 ++++++++++++-------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+index 63427878715e..d571f4bb6b16 100644
+--- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+@@ -17,8 +17,8 @@ properties:
+       - ti,j721e-mhdp8546
+ 
+   reg:
+-    minItems: 1
+-    maxItems: 2
++    minItems: 2
++    maxItems: 3
+     items:
+       - description:
+           Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
+@@ -26,13 +26,20 @@ properties:
+           included in the associated PHY.
+       - description:
+           Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
++      - description:
++          Register block of mhdptx sapb registers.
+ 
+   reg-names:
+-    minItems: 1
+-    maxItems: 2
+-    items:
+-      - const: mhdptx
+-      - const: j721e-intg
++    minItems: 2
++    maxItems: 3
++    oneOf:
++      - items:
++          - const: mhdptx
++          - const: j721e-intg
++          - const: mhdptx-sapb
++      - items:
++          - const: mhdptx
++          - const: mhdptx-sapb
+ 
+   clocks:
+     maxItems: 1
+@@ -98,15 +105,15 @@ allOf:
+     then:
+       properties:
+         reg:
+-          minItems: 2
++          minItems: 3
+         reg-names:
+-          minItems: 2
++          minItems: 3
+     else:
+       properties:
+         reg:
+-          maxItems: 1
++          maxItems: 2
+         reg-names:
+-          maxItems: 1
++          maxItems: 2
+ 
+ required:
+   - compatible
+@@ -129,8 +136,9 @@ examples:
+ 
+         mhdp: dp-bridge@f0fb000000 {
+             compatible = "cdns,mhdp8546";
+-            reg = <0xf0 0xfb000000 0x0 0x1000000>;
+-            reg-names = "mhdptx";
++            reg = <0xf0 0xfb000000 0x0 0x1000000>,
++                  <0x0 0x4f48000 0x0 0x74>;
++            reg-names = "mhdptx", "mhdptx-sapb";
+             clocks = <&mhdp_clock>;
+             phys = <&dp_phy>;
+             phy-names = "dpphy";
+-- 
+2.25.1
 
