@@ -2,89 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8313A3421FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008493421FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCSQfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:35:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42090 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230176AbhCSQew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:34:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616171692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1WsyL+gZ2Mx6w9qJVMZxIs1oTsKccRsNWKVpGyE4x8w=;
-        b=GaSI+RzssEilR/0x177INhgikL24mywrp4hzNHEO6O5i2GEfE0xFsPp7tuSvjMrbPuPEpv
-        0GKpYAdvGabb80JyXj36zSRqAl0PVWC64Nlu1CH8SV+HhTNYmBaTaPfpZ9Yr0nJKGHaEiy
-        DVKZ4MOC9ivV9CpKZX2PUceupf9atjE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-G9mjFXpIOySEKH75kk162Q-1; Fri, 19 Mar 2021 12:34:48 -0400
-X-MC-Unique: G9mjFXpIOySEKH75kk162Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97B8C107ACCA;
-        Fri, 19 Mar 2021 16:34:46 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.172])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6CDDA5C1BB;
-        Fri, 19 Mar 2021 16:34:44 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 19 Mar 2021 17:34:46 +0100 (CET)
-Date:   Fri, 19 Mar 2021 17:34:43 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     qianli zhao <zhaoqianligood@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>, christian@brauner.io,
-        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-Message-ID: <20210319163442.GC19971@redhat.com>
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com>
- <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com>
- <m1pmzwb7pd.fsf@fess.ebiederm.org>
- <CAPx_LQHahNDvUkv08RZgUvbKZtdHNaSNRA1XqVDkNiwv5D=fXg@mail.gmail.com>
+        id S230193AbhCSQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:35:18 -0400
+Received: from verein.lst.de ([213.95.11.211]:46929 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhCSQey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:34:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3ED7B68C65; Fri, 19 Mar 2021 17:34:50 +0100 (CET)
+Date:   Fri, 19 Mar 2021 17:34:49 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        mjrosato@linux.ibm.com
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210319163449.GA19186@lst.de>
+References: <20210309083357.65467-1-mgurtovoy@nvidia.com> <20210309083357.65467-9-mgurtovoy@nvidia.com> <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru> <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com> <20210319092341.14bb179a@omen.home.shazbot.org> <20210319161722.GY2356281@nvidia.com> <20210319162033.GA18218@lst.de> <20210319162848.GZ2356281@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPx_LQHahNDvUkv08RZgUvbKZtdHNaSNRA1XqVDkNiwv5D=fXg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210319162848.GZ2356281@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/19, qianli zhao wrote:
->
-> I will think about the risks of movement of the decrement of
-> signal->live before exit_signal().
-> If is difficult to judge movement of the decrement of signal->live is
-> safe,how about only test 'signal->live==1' not use group_dead?
->
-> Such as:
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 04029e3..87f3595 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -767,6 +767,17 @@ void __noreturn do_exit(long code)
->         validate_creds_for_do_exit(tsk);
->
->         /*
-> +        * If global init has exited,
-> +        * panic immediately to get a useable coredump.
-> +        */
-> +       if (unlikely(is_global_init(tsk) &&
-> +           ((atomic_read(&tsk->signal->live) == 1) ||    /*current is
-> last init thread*/
+On Fri, Mar 19, 2021 at 01:28:48PM -0300, Jason Gunthorpe wrote:
+> The wrinkle I don't yet have an easy answer to is how to load vfio_pci
+> as a universal "default" within the driver core lazy bind scheme and
+> still have working module autoloading... I'm hoping to get some
+> research into this..
 
-Just suppose signal->live == 2 and both init's sub-threads exit at the
-same time. They both can see signal->live == 2, panic() won't be called.
-
-Oleg.
-
+Should we even load it by default?  One answer would be that the sysfs
+file to switch to vfio mode goes into the core PCI layer, and that core
+PCI code would contain a hack^H^H^H^Hhook to first load and bind vfio_pci
+for that device.
