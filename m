@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254E83423E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5678B3423EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhCSSAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhCSSAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:00:47 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC5CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:00:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LSQXGOox+uWbTS3r6xWtG4JVC4Hz7vay5Ab5pG8xqOU=; b=zvxadFyayw6l2oXHmu4p3HXkmV
-        2wFsSJ4g9o0TXw1xpXnOAq/4wnCm5hxuKaNpKKAogvCvZCUQogvEK9OWy5Of/BboO4nzbbljs3Jai
-        OpJZNZKjvQd4L/YDKeGxvszIBYLGpJCAVE3VD9zUqD6iVO6Vi2LkPPOjKUSzg+dMjssowTQUiWbhM
-        D2x6mzx4Cg7W++kDb6K+DhPTPsiKk+HD/SV2W46nTpu6i2gQYkKyuYBnXgLNzHiwSGIIK4qXeyd+a
-        YwKg+dXgpgCTQ8trZDBajTwpphJqEzGvQyydgL+AcDJsIIbjRdrpwe2os+FIL43IAHNqr0BO/SaRA
-        m4Y11RAA==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJQ9-001RKl-Dh; Fri, 19 Mar 2021 18:00:26 +0000
-Date:   Fri, 19 Mar 2021 11:00:25 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, insafonov@gmail.com,
-        dinghao.liu@zju.edu.cn, dan.carpenter@oracle.com,
-        yepeilin.cs@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: Fix a typo
-In-Reply-To: <20210319014120.6474-1-unixbhaskar@gmail.com>
-Message-ID: <27d89fb-d14-df64-eeb2-f5b788ff294@bombadil.infradead.org>
-References: <20210319014120.6474-1-unixbhaskar@gmail.com>
+        id S230250AbhCSSB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:01:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38428 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhCSSBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 14:01:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1DE9FAC2E;
+        Fri, 19 Mar 2021 18:01:29 +0000 (UTC)
+Subject: Re: arm64: compiler_types.h:320:38: error: call to
+ __compiletime_assert_417
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, glittao@gmail.com,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <53cc267d-aa0a-071a-f9f8-0b47ec4b2b9d@suse.cz>
+Date:   Fri, 19 Mar 2021 19:01:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_110025_480629_988CFBCC 
-X-CRM114-Status: GOOD (  11.63  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/pasive/passive/
-    Also need to s/varable/variable/ 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/19/21 4:19 PM, Naresh Kamboju wrote:
+> [This email landed to Spam for some reason, sending it again with modified
+> subject]
+> 
+> While building arm64 kernel modules the following kernel warnings /
+> errors noticed on linux next 20210318 tag the gcc version is 7.3.0.
+> Build PASS with gcc-8, gcc-9 and gcc-10.
+> 
+>  In file included from <command-line>:0:0:
+>  In function 'resiliency_test',
+>      inlined from 'test_slub_init' at   lib/test_slub.c:120:2:
+>    include/linux/compiler_types.h:320:38: error: call to
+> '__compiletime_assert_417' declared with attribute error: BUILD_BUG_ON
+> failed: KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10
+>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                        ^
+>    include/linux/compiler_types.h:301:4: note: in definition of macro
+> '__compiletime_assert'
+>      prefix ## suffix();    \
+>      ^~~~~~
+>    include/linux/compiler_types.h:320:2: note: in expansion of macro
+> '_compiletime_assert'
+>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>    ^~~~~~~~~~~~~~~~~~~
+>    include/linux/build_bug.h:39:37: note: in expansion of macro
+> 'compiletime_assert'
+>   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                       ^~~~~~~~~~~~~~~~~~
+>    include/linux/build_bug.h:50:2: note: in expansion of macro
+> 'BUILD_BUG_ON_MSG'
+>    BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>    ^~~~~~~~~~~~~~~~
+>    lib/test_slub.c:101:2: note: in expansion of macro 'BUILD_BUG_ON'
+>    BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 | KMALLOC_SHIFT_HIGH < 10);
+>    ^~~~~~~~~~~~
+>  make[2]: *** [  scripts/Makefile.build:273: lib/test_slub.o] Error 1
+>  make[1]: *** [  Makefile:1980: lib] Error 2
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/984/consoleFull
+> 
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/984/consoleFull
+> 
 
+Andrew, please add this -fix
+Thanks.
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+----8<----
+From f97312224278839321a5ff9be2b8487553a97c63 Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 19 Mar 2021 18:56:50 +0100
+Subject: [PATCH] selftests: add a kselftest for SLUB debugging
+ functionality-fix
 
->
-> s/pasive/passive/
+Remove a BUILD_BUG_ON left over from original resiliency_test() that breaks
+builds.
 
-Also need to s/varable/variable/
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ lib/test_slub.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
+diff --git a/lib/test_slub.c b/lib/test_slub.c
+index 0075d9b44251..b7ad6c0b07a6 100644
+--- a/lib/test_slub.c
++++ b/lib/test_slub.c
+@@ -97,9 +97,6 @@ static void __init test_clobber_redzone_free(void)
+ 
+ static void __init resiliency_test(void)
+ {
+-
+-	BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 || KMALLOC_SHIFT_HIGH < 10);
+-
+ 	pr_err("SLUB resiliency testing\n");
+ 	pr_err("-----------------------\n");
+ 	pr_err("A. Corruption after allocation\n");
+-- 
+2.30.2
 
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
-> drivers/staging/rtl8188eu/core/rtw_mlme.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/core/rtw_mlme.c
-> index f87dd71934c3..96d15fca48b0 100644
-> --- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
-> +++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
-> @@ -37,7 +37,7 @@ int rtw_init_mlme_priv(struct adapter *padapter)
-> 	pmlmepriv->pscanned = NULL;
-> 	pmlmepriv->fw_state = 0;
-> 	pmlmepriv->cur_network.network.InfrastructureMode = Ndis802_11AutoUnknown;
-> -	pmlmepriv->scan_mode = SCAN_ACTIVE;/*  1: active, 0: pasive. Maybe someday we should rename this varable to "active_mode" (Jeff) */
-> +	pmlmepriv->scan_mode = SCAN_ACTIVE;/*  1: active, 0: passive. Maybe someday we should rename this varable to "active_mode" (Jeff) */
->
-> 	spin_lock_init(&pmlmepriv->lock);
-> 	_rtw_init_queue(&pmlmepriv->free_bss_pool);
-> --
-> 2.26.2
->
->
