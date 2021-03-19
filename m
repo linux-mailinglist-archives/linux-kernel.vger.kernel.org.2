@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52E83427B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7573C3427AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhCSV0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhCSV0m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:26:42 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902B0C06175F;
-        Fri, 19 Mar 2021 14:26:42 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso9849655oti.11;
-        Fri, 19 Mar 2021 14:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+xQzhNdlIsMDN0TgH12gHLm/2elzRzpsgY5YOadiWhg=;
-        b=QV7YbxSmNMi5vVpXHDBmh6U36Nf5E9+U1ZMCqEsnd6p2JCESDBXqIPIQBFyY2hZrHQ
-         2n5bTEt2JbKYb5Bpev5cTyzyYEbz88bVhvsrYJ5sE5fu541EyXqB3w5jhZn21zK/lHFk
-         AXEa0dWOT/fOGxsz4b5pMiuOwt5N3FmnX3GUjrc6vo1w+juk5BVefbwCP0AGpQG3fbOv
-         xJgmc6UeqLgWSlgVOzCYYbsyDWcvs/CdKIJZR/JvWkJdOQl5QKawAeHCoONmPjuw+DLm
-         qpwCaUj1mb0TVGtG6Vt7NJmc3PISBJR95KpY1/rkyZ0bEEdjK/HWuEhdPkpVHQWg3TiN
-         DsSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+xQzhNdlIsMDN0TgH12gHLm/2elzRzpsgY5YOadiWhg=;
-        b=rIb+VXkeR8EZzMK6RmvsanwImX/9r3KapXkTpN0+ayhU3hpMsq4KSps7O8K4QuzOA/
-         mzh/ZK3Q8YfThG64aRTfYcjystN0Nx2Jm75tkgN0cKQ0Yd8AiAo2WUUi2pQ9b6Lc53UH
-         LGpOBkhvvLy18PZKKLVmYjjiJnvGGzOyc2yTXg/cnj45G2rEHOp6kl9eEzUaf7PAHbCs
-         ZXAF4WgIKXtYg/4kUku04wCPZ0Nh5LbZXNXmnpLOAQmiBpiBDGTQ0dFW23AICpwNAVVv
-         N+aQ92glPbyWyzin06bfQ5hinO4q1D4zZceian5yxBvSChl7Fvo9440wGg6cuKT+wLHK
-         7l4w==
-X-Gm-Message-State: AOAM532z1eYOcOE47OrFbqr6tVgUqAiNfCwpa7io0wPqJLL7K0VCEgBc
-        mwXLR/zfOJlH5lcGsUwkY+8=
-X-Google-Smtp-Source: ABdhPJx99MlGz0XkiS/XyUc3k/BGrOAXXu5A8chtqoLenKnuIL0j5vdqgMbxr+qAVwyIdHjPyu5+dA==
-X-Received: by 2002:a9d:6545:: with SMTP id q5mr2593915otl.179.1616189202036;
-        Fri, 19 Mar 2021 14:26:42 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 53sm1426781oti.77.2021.03.19.14.26.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 19 Mar 2021 14:26:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 19 Mar 2021 14:26:40 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jonas Malaco <jonas@protocubo.io>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: add driver for NZXT Kraken X42/X52/X62/X72
-Message-ID: <20210319212640.GA23767@roeck-us.net>
-References: <20210319045544.416138-1-jonas@protocubo.io>
+        id S230511AbhCSVZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:25:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:11303 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230391AbhCSVZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:25:37 -0400
+IronPort-SDR: sqeCoVUt9kqxZ7JLx0S40s7xcYaY3kztw9W+BJVQuAdqBfaweH4O2aN3kn9mgSvVvbQd1kxdbJ
+ xqV72hDiRpvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="169905272"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="169905272"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:25:37 -0700
+IronPort-SDR: Z+1iCkBSV/Zr3fu8bmAt+yHfly0Mpl/R4mXVrn4UyBtYx6nxw3ANHL60CqhidTEfGCdas6xCg1
+ eYOxXYfBn++w==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="389774044"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:25:37 -0700
+Date:   Fri, 19 Mar 2021 14:28:01 -0700
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <20210319142801.7dcce403@jacob-builder>
+In-Reply-To: <20210304231946.2766648-2-vipinsh@google.com>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+        <20210304231946.2766648-2-vipinsh@google.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319045544.416138-1-jonas@protocubo.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:55:44AM -0300, Jonas Malaco wrote:
-> These are "all-in-one" CPU liquid coolers that can be monitored and
-> controlled through a proprietary USB HID protocol.
-> 
-> While the models have differently sized radiators and come with varying
-> numbers of fans, they are all indistinguishable at the software level.
-> 
-> The driver exposes fan/pump speeds and coolant temperature through the
-> standard hwmon sysfs interface.
-> 
-> Fan and pump control, while supported by the devices, are not currently
-> exposed.  The firmware accepts up to 61 trip points per channel
-> (fan/pump), but the same set of trip temperatures has to be maintained
-> for both; with pwmX_auto_point_Y_temp attributes, users would need to
-> maintain this invariant themselves.
-> 
-> Instead, fan and pump control, as well as LED control (which the device
-> also supports for 9 addressable RGB LEDs on the CPU water block) are
-> left for existing and already mature user-space tools, which can still
-> be used alongside the driver, thanks to hidraw.  A link to one, which I
-> also maintain, is provided in the documentation.
-> 
-> The implementation is based on USB traffic analysis.  It has been
-> runtime tested on x86_64, both as a built-in driver and as a module.
-> 
-> Signed-off-by: Jonas Malaco <jonas@protocubo.io>
+Hi Vipin,
 
-Applied (after removing the now unnecessary spinlock.h include).
+On Thu,  4 Mar 2021 15:19:45 -0800, Vipin Sharma <vipinsh@google.com> wrote:
+
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Miscellaneous cgroup controller.
+> + *
+> + * Copyright 2020 Google LLC
+> + * Author: Vipin Sharma <vipinsh@google.com>
+> + */
+> +#ifndef _MISC_CGROUP_H_
+> +#define _MISC_CGROUP_H_
+> +
+nit: should you do #include <linux/cgroup.h>?
+Otherwise, css may be undefined.
+
+> +/**
+> + * Types of misc cgroup entries supported by the host.
+> + */
 
 Thanks,
-Guenter
+
+Jacob
