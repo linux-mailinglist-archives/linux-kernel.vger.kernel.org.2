@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E30342920
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2064342923
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhCSXXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 19:23:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhCSXXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 19:23:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C1726198A;
-        Fri, 19 Mar 2021 23:23:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616196222;
-        bh=No8jxwVXbt0baLG77yLL4xAfkyo5ppTWSVF534G6q1k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eIyGGnJc4XJKPHeFjat/7fj7brhRbrtq0gpJ1TfDglry0iHT+Bbd7kmQorMQvS4Hi
-         KXMP1149WBbMiDs1dAlPNEKui7W7zKuZtRl7uWDZaKl296kMbSUC512xSLVfNVkhWQ
-         yPufj9DSM3REcfQ5vJ6CXI45YQD5F1miYjd3ir2ggDT0wrrC8EaF9j0u4RkippFvw6
-         pUPXgBOZPCqMk+zfvWhOfpiH+axE1r1OJWVLcpsdu7nYz3kECazvJhfcLChMcNogwa
-         85WSvmUR2cdhy2eN2pW8CnvXKBSwFesd7XRilGMGe0YGchDX10PpTgHgMfI2msOWGy
-         rU4y9s8MOHIKA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D56DB35239E5; Fri, 19 Mar 2021 16:23:41 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 16:23:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Maninder Singh <maninder1.s@samsung.com>, linux@armlinux.org.uk,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        0x7f454c46@gmail.com, viro@zeniv.linux.org.uk,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, a.sahrawat@samsung.com,
-        Vaneet Narang <v.narang@samsung.com>
-Subject: Re: [PATCH 2/3] mm/slub: Add Support for free path information of an
- object.
-Message-ID: <20210319232341.GS2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1615891032-29160-1-git-send-email-maninder1.s@samsung.com>
- <CGME20210316103736epcas5p3758de57b57c732074acc0989e563cc2e@epcas5p3.samsung.com>
- <1615891032-29160-2-git-send-email-maninder1.s@samsung.com>
- <cd57a6e5-ce82-3cc5-4bc8-850ddc0c2b94@suse.cz>
+        id S229618AbhCSXb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 19:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhCSXbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 19:31:32 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F8CC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:31:32 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id j7so8125221qtx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 16:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4MwivssdDeTOOf4NlUgU3u4clY3jrfk9rBV7iONoIkQ=;
+        b=apJwdLJhcOeNIy+OY5T8d3HyFP7l5M4bxAqZdyf2JyUGQ5RKVMERPg5QpOScfORwig
+         2Mcs4MFi9Z3OYFnQr3eJKJGO2Zba6LFJ8A/bm5xGSqgxAjr9qsnmBkm9UzQnue6h0suo
+         wZ1wHMk2ODXr9p6JFTvdjW6KzBJBTskm/IhLyG3F2vGXL4Tn8sV4VRtJ0wuvXrJzxN2M
+         wDqBu6L1+zTKlJRC3ToDMKjwANk5LMPdej5LTL5ss/CufplrjWtmPb2/hZp/EaetqARY
+         JMLbQ4Bn2IHxSQ8toC7d6HC+R6Y7fWPinYI/fI/+5KyBOV1hKvykAikggd68cSPRcsK9
+         Uj0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4MwivssdDeTOOf4NlUgU3u4clY3jrfk9rBV7iONoIkQ=;
+        b=N+bfOX568NjCC2whpAsm+4s6kAhfRh4KmXrnYXc0Q3226iHm9LwK7BwP6VmVJRHWdF
+         ygFdJ1XncwfjMELxhw7JlCIpif5dgK2ApGEHt8c8ztGJSrbPARBeW5IGSl7m78gW7PZD
+         4J8GXNmQ5NL63Ow+5fWOHya8gsP8HzAjW+KrIgJucB1W+ZFFJMd7NlmmLD6jx72kju9t
+         9cyPUYilWo1MC4x6zfdpJAb24WBXi1BMTNODPtvmIBMC/jTh2L+Pr7GXCxxJdLM6d+fM
+         1+4Xzef6qNx5shF9hmvVTd2TvoZuYWck3yMY+YK5UGtZXZ99NGKeCJcyCtpTJh5D5jPd
+         +tYQ==
+X-Gm-Message-State: AOAM530i8Gng2vhZEWQgUD5lT6AHsOPIhOOs4Wd6DCEJ3zQ6iDC7kpte
+        GOOVy3z1X6N3sRjKYDWBxSo=
+X-Google-Smtp-Source: ABdhPJx5LYbLxlRoXBnR2W9dM+oKdsbLr9TT0AzxWCnt+v8DYmI5kcfn8x2lU/d20Qjep3Gf1Kt8NQ==
+X-Received: by 2002:aed:2c22:: with SMTP id f31mr1002161qtd.219.1616196691319;
+        Fri, 19 Mar 2021 16:31:31 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.27])
+        by smtp.gmail.com with ESMTPSA id i9sm5679414qko.69.2021.03.19.16.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 16:31:30 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] perf/builtin-c2c.c: Fix a punctuation
+Date:   Sat, 20 Mar 2021 04:58:24 +0530
+Message-Id: <20210319232824.742-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd57a6e5-ce82-3cc5-4bc8-850ddc0c2b94@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 01:35:37PM +0100, Vlastimil Babka wrote:
-> On 3/16/21 11:37 AM, Maninder Singh wrote:
-> > Adding support for inforamtion of free path along with allocation
-> > path of an object:
-> > 
-> > slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 0 size 64 allocated at meminfo_proc_show+0x40/0x4fc
-> > [   20.192078]     meminfo_proc_show+0x40/0x4fc
-> > [   20.192263]     seq_read_iter+0x18c/0x4c4
-> > [   20.192430]     proc_reg_read_iter+0x84/0xac
-> > [   20.192617]     generic_file_splice_read+0xe8/0x17c
-> > [   20.192816]     splice_direct_to_actor+0xb8/0x290
-> > [   20.193008]     do_splice_direct+0xa0/0xe0
-> > [   20.193185]     do_sendfile+0x2d0/0x438
-> > [   20.193345]     sys_sendfile64+0x12c/0x140
-> > [   20.193523]     ret_fast_syscall+0x0/0x58
-> > [   20.193695]     0xbeeacde4
-> > [   20.193822]  Free path:
-> > [   20.193935]     meminfo_proc_show+0x5c/0x4fc
-> > [   20.194115]     seq_read_iter+0x18c/0x4c4
-> > [   20.194285]     proc_reg_read_iter+0x84/0xac
-> > [   20.194475]     generic_file_splice_read+0xe8/0x17c
-> > [   20.194685]     splice_direct_to_actor+0xb8/0x290
-> > [   20.194870]     do_splice_direct+0xa0/0xe0
-> > [   20.195014]     do_sendfile+0x2d0/0x438
-> > [   20.195174]     sys_sendfile64+0x12c/0x140
-> > [   20.195336]     ret_fast_syscall+0x0/0x58
-> > [   20.195491]     0xbeeacde4
-> > 
-> > Co-developed-by: Vaneet Narang <v.narang@samsung.com>
-> > Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-> > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-I have queued 1/3 and 2/3, thank you both!
+s/dont/don\'t/
 
-Would any of the ARM folks be willing to ack 3/3?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ tools/perf/builtin-c2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index e3b9d63077ef..af1c1b89e769 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -1813,7 +1813,7 @@ static int hpp_list__parse(struct perf_hpp_list *hpp_list,
+ 	perf_hpp__setup_output_field(hpp_list);
+
+ 	/*
+-	 * We dont need other sorting keys other than those
++	 * We don't need other sorting keys other than those
+ 	 * we already specified. It also really slows down
+ 	 * the processing a lot with big number of output
+ 	 * fields, so switching this off for c2c.
+--
+2.26.2
+
