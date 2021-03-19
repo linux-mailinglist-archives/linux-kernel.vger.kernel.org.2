@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D25D3421BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3EC3421C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCSQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:22:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42742 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229960AbhCSQWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:22:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CD551AC17;
-        Fri, 19 Mar 2021 16:22:34 +0000 (UTC)
-Subject: Re: [PATCH 2/7] mm/page_alloc: Rename alloced to allocated
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
- <20210312154331.32229-3-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <327c53ee-dcdd-f8a0-b822-208fe6483a96@suse.cz>
-Date:   Fri, 19 Mar 2021 17:22:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230057AbhCSQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:23:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39118 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230015AbhCSQXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:23:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616170999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4yMSSQE+266qMvhoobx6hI2uloJNeAdSSRsEhmgkNvM=;
+        b=TVvg1RA/NkAxFxUMzwNUll9glBFOvE73ZTw6JH4fbBy2af3/0GAiw9kUDIKvZkWgLpTSMX
+        zAyvQhLUCr10he4oUR0kroh5gLrWG3xeHHm36rIDRMlYqokVPTgjJ1CvykWRfjx3ev/o/9
+        ptXlxQ9BXMiLAbkLrFdYTKMa5PNyCPs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-ND2CEfwjMq-no1d6SPdBxw-1; Fri, 19 Mar 2021 12:23:16 -0400
+X-MC-Unique: ND2CEfwjMq-no1d6SPdBxw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B6E81044804;
+        Fri, 19 Mar 2021 16:23:14 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF0DA1A86F;
+        Fri, 19 Mar 2021 16:23:13 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 10:23:13 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210319102313.179e9969@omen.home.shazbot.org>
+In-Reply-To: <YFSgQ2RWqt4YyIV4@unreal>
+References: <YFHh3bopQo/CRepV@unreal>
+        <20210317112309.nborigwfd26px2mj@archlinux>
+        <YFHsW/1MF6ZSm8I2@unreal>
+        <20210317131718.3uz7zxnvoofpunng@archlinux>
+        <YFILEOQBOLgOy3cy@unreal>
+        <20210317113140.3de56d6c@omen.home.shazbot.org>
+        <YFMYzkg101isRXIM@unreal>
+        <20210318103935.2ec32302@omen.home.shazbot.org>
+        <YFOMShJAm4j/3vRl@unreal>
+        <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
+        <YFSgQ2RWqt4YyIV4@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20210312154331.32229-3-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 4:43 PM, Mel Gorman wrote:
-> Review feedback of the bulk allocator twice found problems with "alloced"
-> being a counter for pages allocated. The naming was based on the API name
-> "alloc" and was based on the idea that verbal communication about malloc
-> tends to use the fake word "malloced" instead of the fake word mallocated.
-> To be consistent, this preparation patch renames alloced to allocated
-> in rmqueue_bulk so the bulk allocator and per-cpu allocator use similar
-> names when the bulk allocator is introduced.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+On Fri, 19 Mar 2021 14:59:47 +0200
+Leon Romanovsky <leon@kernel.org> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
+> > On 18.03.21 18:22, Leon Romanovsky wrote:
+> >   
+> > > Which email client do you use?
+> > > Your responses are grouped as one huge block without any chance to respond
+> > > to you on specific point or answer to your question.  
+> > 
+> > I'm reading this thread in Tbird, and threading / quoting all looks
+> > nice.  
+> 
+> I'm not talking about threading or quoting but about response itself.
+> See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
+> Alex's response is one big chunk without any separations to paragraphs.
 
-> ---
->  mm/page_alloc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index f0c1d74ead6f..880b1d6368bd 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2904,7 +2904,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
->  			unsigned long count, struct list_head *list,
->  			int migratetype, unsigned int alloc_flags)
->  {
-> -	int i, alloced = 0;
-> +	int i, allocated = 0;
->  
->  	spin_lock(&zone->lock);
->  	for (i = 0; i < count; ++i) {
-> @@ -2927,7 +2927,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
->  		 * pages are ordered properly.
->  		 */
->  		list_add_tail(&page->lru, list);
-> -		alloced++;
-> +		allocated++;
->  		if (is_migrate_cma(get_pcppage_migratetype(page)))
->  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
->  					      -(1 << order));
-> @@ -2936,12 +2936,12 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
->  	/*
->  	 * i pages were removed from the buddy list even if some leak due
->  	 * to check_pcp_refill failing so adjust NR_FREE_PAGES based
-> -	 * on i. Do not confuse with 'alloced' which is the number of
-> +	 * on i. Do not confuse with 'allocated' which is the number of
->  	 * pages added to the pcp list.
->  	 */
->  	__mod_zone_page_state(zone, NR_FREE_PAGES, -(i << order));
->  	spin_unlock(&zone->lock);
-> -	return alloced;
-> +	return allocated;
->  }
->  
->  #ifdef CONFIG_NUMA
-> 
+I've never known paragraph breaks to be required to interject a reply.
+
+Back on topic...
+
+> >   
+> > > I see your flow and understand your position, but will repeat my
+> > > position. We need to make sure that vendors will have incentive to
+> > > supply quirks.  
+
+What if we taint the kernel or pci_warn() for cases where either all
+the reset methods are disabled, ie. 'echo none > reset_method', or any
+time a device specific method is disabled?
+
+I'd almost go so far as to prevent disabling a device specific reset
+altogether, but for example should a device specific reset that fixes
+an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
+case if direct FLR were disabled via a device flag introduced with the
+quirk and the remaining resets can still be selected by preference.
+
+Theoretically all the other reset methods work and are available, it's
+only a policy decision which to use, right?
+
+If a device probes for a reset that's broken and distros start
+including systemd scripts to apply a preference to avoid it, (a) that
+enables them to work with existing kernels, and (b) indicates to us to
+add the trivial quirk to flag that reset as broken.
+
+The other side of the argument that this discourages quirks is that
+this interface actually makes it significantly easier to report specific
+reset methods as broken for a given device.
+
+Thanks,
+Alex
 
