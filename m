@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BCC34124E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9089341260
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCSBvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:51:49 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13198 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhCSBvQ (ORCPT
+        id S231256AbhCSBw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:52:58 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:41437 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230389AbhCSBws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:51:16 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1myT3X6ZzmZSG;
-        Fri, 19 Mar 2021 09:48:49 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Mar 2021 09:51:10 +0800
-Subject: Re: [PATCH 5.10 000/290] 5.10.24-rc1 review
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210315135541.921894249@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <65ab11ad-4996-cf0c-3c14-7b0208207b76@huawei.com>
-Date:   Fri, 19 Mar 2021 09:51:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 18 Mar 2021 21:52:48 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AARB8MK8Ih9lumEGjpUVuk+A4I+orLtY04lQ7?=
+ =?us-ascii?q?vn1ZYxpTb8CeioSSjO0WvCWE7Ao5dVMBvZS7OKeGSW7B7pId2+QsFJqrQQWOgg?=
+ =?us-ascii?q?WVBa5v4YboyzfjXw3Sn9Q26Y5OaK57YeeQMXFfreLXpDa1CMwhxt7vytHMuc77?=
+ =?us-ascii?q?w212RQ9nL4FMhj0JaTqzKUF9SAlYCZdRLvP1ifZvnSaqengcc62Adxs4dtXEzu?=
+ =?us-ascii?q?eqqLvWJTYCBzMCrDKFlC6U7tfBeCSw71MzVCxuzN4ZnVT4rw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,259,1610380800"; 
+   d="scan'208";a="105876646"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 19 Mar 2021 09:52:46 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 122074CEB2A3;
+        Fri, 19 Mar 2021 09:52:46 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 19 Mar 2021 09:52:46 +0800
+Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 19 Mar 2021 09:52:42 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Fri, 19 Mar 2021 09:52:41 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>,
+        Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+Date:   Fri, 19 Mar 2021 09:52:27 +0800
+Message-ID: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210315135541.921894249@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 122074CEB2A3.A4D15
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+
+This patchset is attempt to add CoW support for fsdax, and take XFS,
+which has both reflink and fsdax feature, as an example.
+
+Changes from V2:
+ - Fix the mistake in iomap_apply2() and dax_dedupe_file_range_compare()
+ - Add CoW judgement in dax_iomap_zero()
+ - Fix other code style problems and mistakes
+
+Changes from V1:
+ - Factor some helper functions to simplify dax fault code
+ - Introduce iomap_apply2() for dax_dedupe_file_range_compare()
+ - Fix mistakes and other problems
+ - Rebased on v5.11
+
+One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+the data from srcmap before we actually write data to the destance
+iomap.  And we just copy range in which data won't be changed.
+
+Another mechanism is range comparison.  In page cache case, readpage()
+is used to load data on disk to page cache in order to be able to
+compare data.  In fsdax case, readpage() does not work.  So, we need
+another compare data with direct access support.
+
+With the two mechanism implemented in fsdax, we are able to make reflink
+and fsdax work together in XFS.
 
 
-On 2021/3/15 21:51, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 5.10.24 release.
-> There are 290 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 17 Mar 2021 13:55:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.24-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Some of the patches are picked up from Goldwyn's patchset.  I made some
+changes to adapt to this patchset.
 
-Tested on arm64 and x86 for 5.10.24,
+(Rebased on v5.11)
+==
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.24
-Commit: 05d125f7524e9ad200375c52799575184755d340
-Compiler: gcc version 7.3.0 (GCC)
+Shiyang Ruan (10):
+  fsdax: Factor helpers to simplify dax fault code
+  fsdax: Factor helper: dax_fault_actor()
+  fsdax: Output address in dax_iomap_pfn() and rename it
+  fsdax: Introduce dax_iomap_cow_copy()
+  fsdax: Replace mmap entry in case of CoW
+  fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+  iomap: Introduce iomap_apply2() for operations on two files
+  fsdax: Dedup file range to use a compare function
+  fs/xfs: Handle CoW for fsdax write() path
+  fs/xfs: Add dedupe support for fsdax
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4721
-passed: 4720
-failed: 0
-timeout: 1
---------------------------------------------------------------------
-Timeout cases :
-ltp dio29
+ fs/dax.c               | 596 ++++++++++++++++++++++++++---------------
+ fs/iomap/apply.c       |  56 ++++
+ fs/iomap/buffered-io.c |   2 +-
+ fs/remap_range.c       |  45 +++-
+ fs/xfs/xfs_bmap_util.c |   3 +-
+ fs/xfs/xfs_file.c      |  29 +-
+ fs/xfs/xfs_inode.c     |   8 +-
+ fs/xfs/xfs_inode.h     |   1 +
+ fs/xfs/xfs_iomap.c     |  58 +++-
+ fs/xfs/xfs_iomap.h     |   4 +
+ fs/xfs/xfs_iops.c      |   7 +-
+ fs/xfs/xfs_reflink.c   |  17 +-
+ include/linux/dax.h    |   7 +-
+ include/linux/fs.h     |  15 +-
+ include/linux/iomap.h  |   7 +-
+ 15 files changed, 602 insertions(+), 253 deletions(-)
 
-The only one timeout case is caused by the test machine was very busy 
-and timed out, no kernel failures
---------------------------------------------------------------------
+--
+2.30.1
 
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4721
-passed: 4721
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
 
