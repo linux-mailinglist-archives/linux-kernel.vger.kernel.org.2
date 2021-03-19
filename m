@@ -2,96 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6558C3427BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB3D3427C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhCSV20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhCSV2M (ORCPT
+        id S231160AbhCSV3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:29:03 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.24]:16022 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230461AbhCSV2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:28:12 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E64C06175F;
-        Fri, 19 Mar 2021 14:28:12 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id n140so6245827oig.9;
-        Fri, 19 Mar 2021 14:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ilcSk8VycjIw9PpYr/RlJKjxl+yFh+ALRPCRLrC3KD4=;
-        b=t37/PSzAFqFe0VfH5iLTfUWXBBIcWzy2W1c0iXyjSkl6GHHLWsFF+MuCs+rj/sCuth
-         BXUkR5EIDuqsnSPOYU6b/Yf23dyM+NCdZ7cb7x+dDhUtO+MRmWFd7FRAHfKFPsPK0JSe
-         u4flGkAgV3ItTRUX5uOUa09wEzM+zKuIVpXR+/lh1IcP0gA+oqjVmH2qe/WeM5WsVtQ0
-         EN4l0ZAutX14zNjjsn5ktDHMiccZ9X+Y9AsoXg4EV78B4ZKSJ14XVP/Ha7LCyZhlii23
-         5EpeoahcWjbCLbZiLJUI/UgljIZvP+aHiI2CwrMfsxL0gPiSxC+EOqM93izw7ImYx8+w
-         9NBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ilcSk8VycjIw9PpYr/RlJKjxl+yFh+ALRPCRLrC3KD4=;
-        b=IzP39VhZstG9hvf1pQl8BsBDGMYgfHZprgXlWl4oUM7KBwAEv0n18tcxYPU8STr5jE
-         W+d1fKJGXjNGs7hZhRJKyFozpuHm5TwVSni4nKw4Z5sxl7DPabn7RnLOsOmGFDj5nxrs
-         pkbfvZRlIbTpqoNhiVlO9p7pzwJYys7mJ85BZKnv49iBqfB3mBpMs+ZTKvoWYuk5hRsF
-         JiWm+18V/8Y6r7zKWVrk5OLeeqwARh9Xxn7C94XBkoDUnlwNc7nJZ0HEIvgH5FPZki2/
-         o0TRM9c+yFD1NIkWB4SOLJTXginfRAC739IQuMTEEt0Hx5ildP3Jsn5FMlehnTI62atK
-         XQ9A==
-X-Gm-Message-State: AOAM533DJGH8hOISpBobi0pJwgZjAYw2beUbqrzITw8TnnJIsXc6e50M
-        dJosB0sie2zSSY/kFMq7Yec=
-X-Google-Smtp-Source: ABdhPJyJnGs39V72ai5EC8itdQv3Lux6+l61DgJh5h65b6BkcfGWsg6zCGJ8IUoG7CjmItc52Y9NZg==
-X-Received: by 2002:aca:d884:: with SMTP id p126mr2456643oig.118.1616189291677;
-        Fri, 19 Mar 2021 14:28:11 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s191sm1462660oie.0.2021.03.19.14.28.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 19 Mar 2021 14:28:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 19 Mar 2021 14:28:09 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Erik Rosen <erik.rosen@metormote.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: Add trivial device entry for TPS53676
-Message-ID: <20210319212809.GA24020@roeck-us.net>
-References: <20210318212441.69050-1-erik.rosen@metormote.com>
- <20210318212441.69050-2-erik.rosen@metormote.com>
+        Fri, 19 Mar 2021 17:28:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1616189308; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=V4DohGqkLH+ThnxbbHP85pcztAz/L6jPjmdDX4Xlh5CY24N0sIrbVBITnr8XL/Yv9A
+    43A/it2bwcp6Zk+mKQAA4ZJBwAsKQViIW3uzUTIAU26vkNPT3dTAofCCHfaSWLlwCJiT
+    FPT/88PG6Woj5pzo8OxmIi8NbCYXpFr8dyi0AEn+a/zkEwMDF4CDXz8yew57HXFJ4vrm
+    6wZjKQ7o6caKVaNQetoWDR9SA+sp/owyp714NTJ1+WXA3efnG7D2KEF1XYEUdEbNyqcG
+    /o7pzhedCy+jqnzpM/yyqMNtreOYuwMrLnM9hRiw98a+9b+1rsx1uuuah17bUilPEz3W
+    7w1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616189308;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=16Drd7t8u40zth4HwRr2NXt1vIZ0aDm0OZJNVB+5Blo=;
+    b=pf+2iFngNRq+CG66a4Gz2Kr+BO4ws+i902zzN+k+tjSwKpJjD/Ibv4nH4j7j9QQtRo
+    ZGaQZaY8LQ/9LPJkFcu15IlQ5nd5NeU+120/uZhMbV6orZtJsR35PdlOJnuD6vBUiOzp
+    z4NgRZerP65K1X9C4uPWu2zYM0h6FqgvM6yaAlUjj5HuKXTXwDBDS5bIhIMDvpmg1lHu
+    attcGjztqdBEH5s+TfaiDBeoPeCAWMKhTCJxhp9r1SnP88wlD9vn4e8UCv67Z5oSvDXS
+    4RdY8K0tzbMNrfs+W45m0rSUD/myyDQ8XL5Fsd0VJWQCUSEAYVUumC/Vt+NVi7BQ9e/p
+    pwUA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616189308;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=16Drd7t8u40zth4HwRr2NXt1vIZ0aDm0OZJNVB+5Blo=;
+    b=Ubj2XSzkXqEEgC7riEtIwDCmKvC4xTxMdieFyFXZyU+qv2W/p01DQke+9pJEvB/sC3
+    t20Fv0geSuiWIragSd03/RtiuBtQtX4PV98anAcl7831LEvzazC2QWxMEu9sR4+59AOr
+    HBYja/KjsI1OY8vIz4pETcMlHEkRPCo4pSu7NaYpI83Oyv5zHJhK3uK7b8ZU8hOmAIf2
+    kDpXJijklJ3OWbKUbnehjMnZHvHh6PKGsjsviphGWHUV10wZbjRO6hC0yHuH1qEN1bTk
+    3RqlNBYONy5rGLxJIpUjteuBdDM7CXnkJhdhj7lDVgAGnEfsILEGW+4AdpdAemS2fibe
+    wbiQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGX8h8mSA="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
+    with ESMTPSA id R01debx2JLSS76N
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 19 Mar 2021 22:28:28 +0100 (CET)
+Subject: Re: include/linux/compiler_types.h:315:38: error: call to
+ '__compiletime_assert_511' declared with attribute error: BUILD_BUG_ON
+ failed: offsetof(struct can_frame, len) != offsetof(struct canfd_frame, len)
+ || offsetof(struct can_frame, data) != offsetof(struc...
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+References: <202103191620.D0ngZ5BO-lkp@intel.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <afffeb73-ba4c-ca2c-75d0-9e7899e5cbe1@hartkopp.net>
+Date:   Fri, 19 Mar 2021 22:28:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318212441.69050-2-erik.rosen@metormote.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202103191620.D0ngZ5BO-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:24:40PM +0100, Erik Rosen wrote:
-> Add trivial device entry for TPS53676
+
+
+On 19.03.21 09:06, kernel test robot wrote:
+> Hi Oliver,
 > 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+> FYI, the error/warning still remains.
+> 
 
-For my reference (waiting for dt maintainer acceptance):
+Hm - I have no clue either.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   8b12a62a4e3ed4ae99c715034f557eb391d6b196
+> commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace can_dlc as variable/element for payload length
 
+The patch which introduced the union I suspected to be the problem is 
+some commits earlier ...
+
+>     net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
+>       891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
+>           |  ^~~~~~~~~~~~
+
+The only idea which does not change the functionality but may help the 
+macro expansion is to revert the change from "can_dlc" -> "len" in 
+af_can.c :
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/diff/net/can/af_can.c?id=c7b74967799b1af52b3045d69d4c26836b2d41de
+
+Is it possible for you to revert that single line for a test?
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index cce2af10eb3e..1c95ede2c9a6 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -865,11 +865,11 @@ static struct pernet_operations can_pernet_ops 
+__read_mostly = {
+  static __init int can_init(void)
+  {
+         int err;
+
+         /* check for correct padding to be able to use the structs 
+similarly */
+-       BUILD_BUG_ON(offsetof(struct can_frame, len) !=
++       BUILD_BUG_ON(offsetof(struct can_frame, can_dlc) !=
+                      offsetof(struct canfd_frame, len) ||
+                      offsetof(struct can_frame, data) !=
+                      offsetof(struct canfd_frame, data));
+
+         pr_info("can: controller area network core\n");
+
+Unfortunately I was not able to reproduce the issue here.
+
+Best regards,
+Oliver
+
+
+
+> 
+> 
+> vim +/__compiletime_assert_511 +315 include/linux/compiler_types.h
+> 
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  301
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define _compiletime_assert(condition, msg, prefix, suffix) \
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  303  	__compiletime_assert(condition, msg, prefix, suffix)
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  304
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert - break build and emit msg if condition is false
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a compile-time constant condition to check
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a message to emit if condition is false
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of POSIX assert, this macro will break the build if the
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition is *false*, emitting the supplied error message if the
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support to do so.
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define compiletime_assert(condition, msg) \
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316
+> 
+> :::::: The code at line 315 was first introduced by commit
+> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+> 
+> :::::: TO: Will Deacon <will@kernel.org>
+> :::::: CC: Will Deacon <will@kernel.org>
+> 
 > ---
->  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 > 
-> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-> index a327130d1faa..2e29c2a91966 100644
-> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> @@ -288,6 +288,8 @@ properties:
->            - ti,tmp103
->              # Digital Temperature Sensor
->            - ti,tmp275
-> +            # TI Dual channel DCAP+ multiphase controller TPS53676 with AVSBus
-> +          - ti,tps53676
->              # TI Dual channel DCAP+ multiphase controller TPS53679
->            - ti,tps53679
->              # TI Dual channel DCAP+ multiphase controller TPS53688
