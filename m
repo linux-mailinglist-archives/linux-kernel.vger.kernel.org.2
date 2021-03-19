@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7700A341E2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46439341E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhCSN3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhCSN2e (ORCPT
+        id S230154AbhCSN3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:29:44 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:29461 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhCSN3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:28:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E99C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B5strBRQyFzpOM3Wfz4RudrNE2GXbdGvk/1wSsxmA+s=; b=b93A2ByPQOVshceyHxloFkx4Fn
-        myphYVP9asJ7bPrcHfOj5Pbps1lRjSTIc/VcRbG2Nzh8WpttpFPL+mNs8sfWenyUMuAsm24hiF0II
-        wu0RTWRMnhiUcSD5no9ssuEqnGh10YpnJzL4rOFuNhcJ1x4+KS+M1Z90ML4+rSWfCuSimF9o36GqL
-        bJ35Bsj9dyUmCz4767pGkgB+wozDy/5MP3ydadngAb/klBVjrB9J6qK8lGwqMVgZzgWZAu66h8qFq
-        LMEqa80ZBVG5RLGVDakNar5C4jlRf0xRPqR/GsPeW1hwx57DDJxBlBm0xiZK6EQLlgaaJEXOSeWdw
-        0uGoEUeg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNFAf-004Rwr-Dr; Fri, 19 Mar 2021 13:28:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DF4033003E1;
-        Fri, 19 Mar 2021 14:28:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C93E82846DE2D; Fri, 19 Mar 2021 14:28:07 +0100 (CET)
-Date:   Fri, 19 Mar 2021 14:28:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/14] objtool: Allow archs to rewrite retpolines
-Message-ID: <YFSm55W64AcBki+1@hirez.programming.kicks-ass.net>
-References: <20210318171103.577093939@infradead.org>
- <20210318171920.131630843@infradead.org>
- <20210319025440.ah5kr7aztz4jbzer@treble>
- <YFSJH0/wiHLkteLw@hirez.programming.kicks-ass.net>
+        Fri, 19 Mar 2021 09:29:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1616160563; x=1647696563;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=+zHv1gzwLorPkoDPPvt3dNEZsfjgJVs7BawU9Py445g=;
+  b=ZigNP/Gi2WdnEXYas0KeMsRV1dlV9mDWqmx8v/7tZf/2RjEPF2PJCD2z
+   udTJHFXD+VhkfAFRj4f2KNZ+uMpvp7L05Zuah4Vbnat5LQGhaoKHh8euv
+   4RWfIWlTukMBbcvk05LkJC+ARd7dyzfGdUEGVgJmQq8qyxjE3avY5dAFj
+   mbgRUSI1iNmVJGRJcL9pPdmio0xFQnInE4eVXTWGR0PmiAAfK7pl0lATC
+   ppvHgLE/vuRCJAsBKRwKeE0qLXc3dPVp5mxoEhvrUIaOPmZFwvuA3bXoM
+   8wLmmeT0MtTpk8ES49tQIBZ6QS3HMiL1vJ9W/TbVT0KHC/CZB0SQoOm7L
+   w==;
+IronPort-SDR: 0Q+AeAthdPW4RYlD2gAKQK2273rLWFkZfuBwyN2tGPff5KAFfJb29VslTcSExX2ZR5Qe6WAFzS
+ b8sDIKRWpVjoyplI03tCRUTnJwR3PdNAmebnXIw054wrHqOn/oSeq/tkVprujts5pk21QJ7FOt
+ urZgyHz6cH6z5nPB0Ml4a3iuZ6jzFEMK1fPo3RTqLaeuuka/LIhmi0x27mN10jS7jdbwtxCXG8
+ EXYoOb1JIDsehy+l6j7iCMrVlXrXMDwUcEnu0nXWNVMaRsVuCqsTtQ2z2dXCBJdVrWxVNI/xSg
+ 5qA=
+X-IronPort-AV: E=Sophos;i="5.81,261,1610434800"; 
+   d="scan'208";a="110624518"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Mar 2021 06:29:23 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 19 Mar 2021 06:29:16 -0700
+Received: from soft-dev2.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 19 Mar 2021 06:29:13 -0700
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Michael Walle <michael@walle.cc>
+CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net-next v2 0/3] Fixes applied to VCS8584 family
+Date:   Fri, 19 Mar 2021 14:29:02 +0100
+Message-ID: <20210319132905.9846-1-bjarni.jonasson@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFSJH0/wiHLkteLw@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 12:21:03PM +0100, Peter Zijlstra wrote:
-> Let me see if I can come up with something better.
+Three different fixes applied to VSC8584 family:
+1. LCPLL reset
+2. Serdes calibration
+3. Coma mode disabled
 
-Duh, we can put the instructions on a list and process them later, just
-like static_call, can even use the same insn list_head since a retpoline
-cannot be a static call.
+The same fixes has already been applied to VSC8514
+and most of the functionality can be reused for the VSC8584.
 
-Lemme go make that happen.
+v1 -> v2:
+  Preserved reversed christmas tree
+
+Bjarni Jonasson (3):
+  net: phy: mscc: Applying LCPLL reset to VSC8584
+  net: phy: mscc: improved serdes calibration applied to VSC8584
+  net: phy: mscc: coma mode disabled for VSC8584
+
+ drivers/net/phy/mscc/mscc_main.c | 217 +++++++++++++++++++++++--------
+ 1 file changed, 161 insertions(+), 56 deletions(-)
+
+-- 
+2.17.1
+
