@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5164434207B
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5D434207C
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhCSPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhCSPE2 (ORCPT
+        id S230188AbhCSPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:04:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230232AbhCSPEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:04:28 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2BBC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:04:27 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 184so12356814ljf.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H7UBFkI1CX111uLLNeagBjcZUDj7ZLwK/yKKbbrE7F4=;
-        b=C0YjKyPTMBZyq22wQR2Ycbof9lyp6kIEFLRu6UYQ26FWP6VkAJ6/JQBmjBKV7EWBLz
-         BjhEpOYdLpOCiKvWbuMlY5LnupwEyWz7qN62FzhoAFcnZvZlPW2H6oei1qkdrS261jTe
-         cTHosaAiMVD2DTGxgfntMAwuKVRCxXruO/HV1d3UJlwRw1dhtmODI/VZVebt44eoVHKr
-         EHdA9BGmXBh+Yh7DNRBNpPT+mBcVTSDrrHSbnYeawGFpfI+hVGmjURrSUyP+AJJB3FNJ
-         ma1mfG8gPcVpjYL8ar0A97sJPbL0hYyASgAySErAa+xcVCGPXg8f0HQpRuThvNgC3aWm
-         RSbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H7UBFkI1CX111uLLNeagBjcZUDj7ZLwK/yKKbbrE7F4=;
-        b=jAC2dszrgbPL5CpGkanycgSecP7dQpeTjcNew6+MZXFashGcRtpWXSUCcLe8pR+2GY
-         mKT4H4CTPugT3E0qhCbhLPplfqejz4zWmFMJE+wImdNBNPnar/5zv9crhwcuBaQlBPzH
-         eX2SZJt52bru2I0WCax/y3jC9lNF9IUNzhVMNC0swk/IMqBMQA+kbCp83S217agsbkUm
-         eZFj2jX3rjXxllYcmlmErQDRAYtOIVQDRFFP1x+aWVCaFk8YVSu9H8bNVMKJKYHoNR1K
-         Hsro/GZEthN+K8mjcFuSIUrKtq8xOpBRhocaNDCoEs/xXLXMzUe3l2oDQa7xJHq2SuiA
-         Uh/g==
-X-Gm-Message-State: AOAM530oV6hrzKztslBzGUlxEjpDOhTIi57SnaNSUVsGlId9CLZTA8Fe
-        w+4fZgUsY8mamII2CyvpFCRYvXGUUw9W1qQRho66mst+
-X-Google-Smtp-Source: ABdhPJwiVOIxhG/0M7C/3BZhB7apooldQHeENwszsMQq5DkPOjXNNJoqtYweesGkTbY0Y1sukcc+mai7Ig7xojmKim8=
-X-Received: by 2002:a2e:b5cd:: with SMTP id g13mr1222346ljn.372.1616166265911;
- Fri, 19 Mar 2021 08:04:25 -0700 (PDT)
+        Fri, 19 Mar 2021 11:04:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616166290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zLqdQIzS2QxcA5cy/lN81+jC3rlHpWNz6jKvsOXt1B8=;
+        b=YPYzyUMEoLr5Ry7a4BoGIRXHFHHBelB+Bn8Ml4sT+JnB+s7OvggqdyynyUAx8bsGywAmvp
+        5mDmes5Qj2EO+fhkb3nKhKOyjDubZMLECZYtezpNaQncDlWRoPPX9Tpmve1D2S+MFTOynm
+        z1Y/QOg7ivzckgMGMenUTvyowZ8ItAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-D_5mqc-WMh618AQxYqt4lQ-1; Fri, 19 Mar 2021 11:04:46 -0400
+X-MC-Unique: D_5mqc-WMh618AQxYqt4lQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61F2E911E4;
+        Fri, 19 Mar 2021 15:04:45 +0000 (UTC)
+Received: from treble (ovpn-119-18.rdu2.redhat.com [10.10.119.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E4AC360CD7;
+        Fri, 19 Mar 2021 15:04:43 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 10:04:41 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/14] objtool: Extract elf_symbol_add()
+Message-ID: <20210319150441.3sbxb33v2onbndib@treble>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171920.007925810@infradead.org>
+ <20210319021403.idfcvrzuj3ywbxhx@treble>
+ <YFR0vesRq5DDFCSE@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1615969652-80225-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1615969652-80225-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Date:   Fri, 19 Mar 2021 16:04:14 +0100
-Message-ID: <CAMeQTsbRo4_KfS5vpAjSUiOeL6Qn-yMfYPsWTEpmZTmgV7bfOQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/gma500: use NULL instead of using plain integer as pointer
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YFR0vesRq5DDFCSE@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 9:27 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> This fixes the following sparse warnings:
-> drivers/gpu/drm/gma500/psb_drv.c:303:56: warning: Using plain integer as
-> NULL pointer
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+On Fri, Mar 19, 2021 at 10:54:05AM +0100, Peter Zijlstra wrote:
+> On Thu, Mar 18, 2021 at 09:14:03PM -0500, Josh Poimboeuf wrote:
+> > On Thu, Mar 18, 2021 at 06:11:13PM +0100, Peter Zijlstra wrote:
+> > > Create a common helper to add symbols.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  tools/objtool/elf.c |   57 ++++++++++++++++++++++++++++++----------------------
+> > >  1 file changed, 33 insertions(+), 24 deletions(-)
+> > > 
+> > > --- a/tools/objtool/elf.c
+> > > +++ b/tools/objtool/elf.c
+> > > @@ -290,12 +290,41 @@ static int read_sections(struct elf *elf
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static bool elf_symbol_add(struct elf *elf, struct symbol *sym)
+> > 
+> > How about "elf_add_symbol()" for consistency with my other suggestions
+> > (elf_add_reloc() and elf_add_string()).  And return an int.
+> 
+> Changed the nane, how about void? This latest incarnation doesn't
+> actually have an error path. Still doesn't hurt to have one and not use
+> it I suppose...
 
-Applied to drm-misc-next
+void would be my preference, just to avoid unnecessary error handling
+boilerplate in the caller.
 
-Thanks
-Patrik
+-- 
+Josh
 
-> ---
->  drivers/gpu/drm/gma500/psb_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
-> index 0bcab06..c2aab62 100644
-> --- a/drivers/gpu/drm/gma500/psb_drv.c
-> +++ b/drivers/gpu/drm/gma500/psb_drv.c
-> @@ -303,7 +303,7 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
->
->         ret = -ENOMEM;
->
-> -       dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
-> +       dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, NULL);
->         if (!dev_priv->mmu)
->                 goto out_err;
->
-> --
-> 1.8.3.1
->
