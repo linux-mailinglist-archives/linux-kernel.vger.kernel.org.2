@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7333427CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A807B3427D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhCSV3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S230370AbhCSVaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhCSV2n (ORCPT
+        with ESMTP id S229942AbhCSVaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:28:43 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6244C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:28:42 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so5481749pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:28:42 -0700 (PDT)
+        Fri, 19 Mar 2021 17:30:08 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F216BC06175F;
+        Fri, 19 Mar 2021 14:30:07 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so9583772otb.7;
+        Fri, 19 Mar 2021 14:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uk0/1LocoDticB91SF6FsgWpOKPsEr1Pb6N+E6L28KI=;
-        b=ejy6cWiCTJfmWKQMk10p5UZeWDqZFvT4CND7HoHywBT5DNVyVD3UOAa8Hrycw/ps6+
-         05vKXy4nxWv8bg0fVn+U3gkIt4cS3ofZ2TNfd6JbdV1F91DCWJ71jwYLEQtMn9HAXozO
-         Mmrjz0kenbtMJXw5cpxlGpbaVeCZwXEnCNpMU=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NUIbYpy0NLmrRRI+l4LHw4l+eurqUrE6wLZTOGdF6Vc=;
+        b=oROCNLp0vn05j+k+RsiM8BxgWDHgyvspy0SuK3wHvnU7ZeUX8qbb+ECFaKtZZEq9WP
+         Xk6bz1YH4dfnK2Q8qtM1T4GM2Ca0mlvxrJ4y89ruceV4mjwUCq2uo6eUFeUleiwsDoC1
+         IHo1b49dsOHbCasQkD9bnAbB5uJ6wAhtuIAB7XCj9Fswt3vJeXZWdgC2AUJqtVph7iN0
+         mST2DIAGYFYQD/+uDWyeQszRUkIsqY9gUCJ0OihK1pOExM4ImILFKx8ZatL+3zLP37z0
+         u1GI7PTDFdGlYIZzBiXVK7WgUTpHOjioBmksLopzk8e3WFkKwXRww9NPUggOJgfvhO85
+         xdTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uk0/1LocoDticB91SF6FsgWpOKPsEr1Pb6N+E6L28KI=;
-        b=D+eYYpntQKKgwb69gaM1GJphzQYbwM04SxywCkGcCaqxxEzVDR4UPUT87X/TtmwA90
-         TxRCUZH7s8+Q1m/pKMaZINkHzuFLZf4IHxjTObbscY7oDVmYkq25mPB1IqvF5foHgVrg
-         hYQyfgD4jI5cQP71goIplhPCh8iJaPsgbpgJs6fGnRZiFyhH89zTjGyVNj3dCfXYLj4P
-         h1XDqXqCkyqjW6Uqdz++n0UixUB+YNFa7ZVd1HqnK21EZCvgncqUl0VQ4PfFvLSwowDj
-         HeIy4fPIrrQfIzUIpld7S3vwN7DBIy+3u3QY6VaiIEM56det8ERbNyY2KF3xo5/n4hew
-         VG2g==
-X-Gm-Message-State: AOAM533g3ZY4PExCm6UbHrhCx1sXO4nGVqzefRPBDj4KiK3zUOU4tFOr
-        pblcY7H6VTG5cUPE86CEEFJfMw==
-X-Google-Smtp-Source: ABdhPJzFbnTfmwXyUjVzk+FU45Te/V6SoFc0L6xXU2lvrEGD0zL0nHl9H9x2B3ZLK0nvFsxdZyfnYA==
-X-Received: by 2002:a17:90b:681:: with SMTP id m1mr476466pjz.168.1616189322441;
-        Fri, 19 Mar 2021 14:28:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y24sm6148989pfn.213.2021.03.19.14.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 14:28:41 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 6/6] lkdtm: Add REPORT_STACK for checking stack offsets
-Date:   Fri, 19 Mar 2021 14:28:35 -0700
-Message-Id: <20210319212835.3928492-7-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210319212835.3928492-1-keescook@chromium.org>
-References: <20210319212835.3928492-1-keescook@chromium.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NUIbYpy0NLmrRRI+l4LHw4l+eurqUrE6wLZTOGdF6Vc=;
+        b=Vf7KCtf1+KqvQxvbX5CenYBIFaDrSYnfTH2N7wutVuHh2STdS9Fvyv4Rvpd2FCqpGp
+         ieV1flwO+4RO3mmIjCMAl0a21Bli+wy7/X+nlRp3qsIwTC5HfPH/905rV2uqxuf8d/+E
+         a2Besi+I36+xFw+9QuQv32Nb7IOz18nohrBatMaFUk+O8sf9oapdNGxJ0q+edqoax7D+
+         8bCg47vCC7BI5Pud1gr5Pr5WdqzVGQMYWxFZrwjg1nfJz4D6sIH6taEjcQVay+vQhWj0
+         5k8ZJ2mAD8HTERak/EgJKTZaZ4Qo03VkC1M0X+quF05lXexIVCXQXqfuWX7YmgZKTS0c
+         cMjA==
+X-Gm-Message-State: AOAM533+6aedIMUpd35gMXwD/l2IZAzyJFs9PKLEi8xKhTb5XtBR8IJ9
+        veaUhwJcf1iX5lKx1tGnT7Y=
+X-Google-Smtp-Source: ABdhPJxNZb84yxHU6RXhE9I4olIKiyJQxPqsyyy6zTDMfjIiloERlr2AGeUsKhFUh8QDoDv+xLof6g==
+X-Received: by 2002:a05:6830:225b:: with SMTP id t27mr2598419otd.73.1616189407440;
+        Fri, 19 Mar 2021 14:30:07 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w199sm1507532oif.41.2021.03.19.14.30.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Mar 2021 14:30:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 19 Mar 2021 14:30:05 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     robh+dt@kernel.org, jdelvare@suse.com, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] hwmon: (pmbus): Replace - with _ in device names
+ before registration
+Message-ID: <20210319213005.GA24260@roeck-us.net>
+References: <20210317040231.21490-1-chris.packham@alliedtelesis.co.nz>
+ <20210317040231.21490-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=fb815901a1ccc1d9c4ca5c3e3cd3729b7f382fe2; i=b69wRsxT78r/3tM1mGa7N6ME6+rlXyFg15giRWRwPAQ=; m=aFqgiEE+nAZdug79A1F+fVTg9ZceUb0WPE8cbHqssVg=; p=ZQ32/kILkW5AD3nBZHO0VMTp4prIPkm7+DdhCHX8KdA=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmBVF4IACgkQiXL039xtwCY3XA/9Hc7 uCdnb6IBdks8FZIXBvGn8iqxkiI9jjjTCKozGcJ39SUBhTi98eLk12QE8/L8iuMzlY7nSS93HTrGV T+BS6LWgoYdWZ1vzeRqKj2ovp8AESLtcLZoWFhX/oM7kbXFpWiChKtvW8u8occfMmeCPD0fjX9OXc 9VwR2F51qP9IA+X7ihTmMfEwT7YurTNg/POD9NMFjhkktXwKJVnxKq7yqnpI9eouW3EMIU26EH2pm b6tihBnsotHNjZJ89gD8aM1o5mg2JgcpQ/lJY3jX3YuNKdjsG2Vg8DUB+04NrbdLysjqZQ0DIHamy UVXKM0B6ZPLPz5nOimx/D5TYpWDY7Yj5lTS7gYnjJzt0UFCECHHocfss+/eC5EnJwETz/JpUcRpuS CsswP/CZZ9Hf1HqvEy3F+aIuT5uP8PgGSNRztkK76YJ6Xrj9Mln6u7bPBCn0+EYsmlsL2/oCGVc4M /nfQmQ9sjPsm1hGhs4Xdoh4HX2OpPln6fqCYaV/yWfgQysuaGi083LU3OVDKvw6HWc8ZzqF48EU42 sisXTwgZJadagLzYDaJurWB+bqV52QnkLr6/Hb0Mp0Yu1tW+0pp5IMVxP3Fo575mLgTyeWbmv/kCs TDzCPCOMxiG4lsvlDqgluKkVTdZ1PD/AylEtmoS2tOihVR0k2loLyrEXi//t+jKk=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317040231.21490-2-chris.packham@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For validating the stack offset behavior, report the offset from a given
-process's first seen stack address. A quick way to measure the entropy:
+On Wed, Mar 17, 2021 at 05:02:30PM +1300, Chris Packham wrote:
+> The hwmon sysfs ABI requires that the `name` property doesn't include
+> any dashes. But when the pmbus code picks the name up from the device
+> tree it quite often does. Replace '-' with '_' before registering the
+> device.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-for i in $(seq 1 1000); do
-	echo "REPORT_STACK" >/sys/kernel/debug/provoke-crash/DIRECT
-done
-offsets=$(dmesg | grep 'Stack offset' | cut -d: -f3 | sort | uniq -c | sort -n | wc -l)
-echo "$(uname -m) bits of stack entropy: $(echo "obase=2; $offsets" | bc | wc -L)"
+Applied.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/bugs.c  | 17 +++++++++++++++++
- drivers/misc/lkdtm/core.c  |  1 +
- drivers/misc/lkdtm/lkdtm.h |  1 +
- 3 files changed, 19 insertions(+)
+Thanks,
+Guenter
 
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 110f5a8538e9..0e8254d0cf0b 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -134,6 +134,23 @@ noinline void lkdtm_CORRUPT_STACK_STRONG(void)
- 	__lkdtm_CORRUPT_STACK((void *)&data);
- }
- 
-+static pid_t stack_pid;
-+static unsigned long stack_addr;
-+
-+void lkdtm_REPORT_STACK(void)
-+{
-+	volatile uintptr_t magic;
-+	pid_t pid = task_pid_nr(current);
-+
-+	if (pid != stack_pid) {
-+		pr_info("Starting stack offset tracking for pid %d\n", pid);
-+		stack_pid = pid;
-+		stack_addr = (uintptr_t)&magic;
-+	}
-+
-+	pr_info("Stack offset: %d\n", (int)(stack_addr - (uintptr_t)&magic));
-+}
-+
- void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void)
- {
- 	static u8 data[5] __attribute__((aligned(4))) = {1, 2, 3, 4, 5};
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index b2aff4d87c01..8024b6a5cc7f 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -110,6 +110,7 @@ static const struct crashtype crashtypes[] = {
- 	CRASHTYPE(EXHAUST_STACK),
- 	CRASHTYPE(CORRUPT_STACK),
- 	CRASHTYPE(CORRUPT_STACK_STRONG),
-+	CRASHTYPE(REPORT_STACK),
- 	CRASHTYPE(CORRUPT_LIST_ADD),
- 	CRASHTYPE(CORRUPT_LIST_DEL),
- 	CRASHTYPE(STACK_GUARD_PAGE_LEADING),
-diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-index 5ae48c64df24..99f90d3e5e9c 100644
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@ -17,6 +17,7 @@ void lkdtm_LOOP(void);
- void lkdtm_EXHAUST_STACK(void);
- void lkdtm_CORRUPT_STACK(void);
- void lkdtm_CORRUPT_STACK_STRONG(void);
-+void lkdtm_REPORT_STACK(void);
- void lkdtm_UNALIGNED_LOAD_STORE_WRITE(void);
- void lkdtm_SOFTLOCKUP(void);
- void lkdtm_HARDLOCKUP(void);
--- 
-2.25.1
-
+> ---
+> 
+> Notes:
+>     Changes in v3:
+>     - None
+>     Changes in v2:
+>     - New
+> 
+>  drivers/hwmon/pmbus/pmbus_core.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index aadea85fe630..7d2f8f032314 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -2557,6 +2557,7 @@ int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info)
+>  	struct pmbus_data *data;
+>  	size_t groups_num = 0;
+>  	int ret;
+> +	char *name;
+>  
+>  	if (!info)
+>  		return -ENODEV;
+> @@ -2606,10 +2607,15 @@ int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info)
+>  		return -ENODEV;
+>  	}
+>  
+> +	name = devm_kstrdup(dev, client->name, GFP_KERNEL);
+> +	if (!name)
+> +		return -ENOMEM;
+> +	strreplace(name, '-', '_');
+> +
+>  	data->groups[0] = &data->group;
+>  	memcpy(data->groups + 1, info->groups, sizeof(void *) * groups_num);
+>  	data->hwmon_dev = devm_hwmon_device_register_with_groups(dev,
+> -					client->name, data, data->groups);
+> +					name, data, data->groups);
+>  	if (IS_ERR(data->hwmon_dev)) {
+>  		dev_err(dev, "Failed to register hwmon device\n");
+>  		return PTR_ERR(data->hwmon_dev);
