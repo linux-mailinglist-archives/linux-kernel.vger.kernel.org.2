@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDC7342177
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99824342179
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhCSQJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
+        id S230361AbhCSQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhCSQJX (ORCPT
+        with ESMTP id S229875AbhCSQJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:09:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E63C06174A;
-        Fri, 19 Mar 2021 09:09:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f091e0083683e716a2b863f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1e00:8368:3e71:6a2b:863f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D11201EC0324;
-        Fri, 19 Mar 2021 17:09:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616170161;
+        Fri, 19 Mar 2021 12:09:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7259DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:09:55 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616170193;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5dAgGWK+Y2LcvFsD3i6PPcacA8q1iTV8fKgdu0ksepQ=;
-        b=Ls2iZgbYCtZyuqFiQX2w6Io6wfCjVuJguLEy5lgYGv8NBZDs8kj0M1M6x0ATzQHB98voAQ
-        6ujOLF5A2u6OsXb0Vg2zHnHMNUvOwG6dmcswbbZsoONdUr33j5N00ggmSXn6DWqSMg1HXt
-        RnB5pH7yJrRdIEBmFkyCNLLvuXkr+bs=
-Date:   Fri, 19 Mar 2021 17:09:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
-Message-ID: <20210319160920.GM6251@zn.tnic>
-References: <20210319040602.178558-1-kai.huang@intel.com>
- <20210319084523.GA6251@zn.tnic>
- <20210319220141.8bf20c54fdb06c6f93cde448@intel.com>
- <YFS6Of4nnDJR+ZFk@kernel.org>
- <20210319145931.GH6251@zn.tnic>
- <YFTB0HD/4Hc0KvT3@kernel.org>
- <20210319155249.GK6251@zn.tnic>
- <eea239f3-720d-0f53-6c8a-85050f44be53@intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=jZQyZ/QFefmWJKshcvvXqnJfLZpWdC89uxHxfKKtAhI=;
+        b=ofxxqTfqqS8aQhrw/Lp3lLeOskwOqoNd5m6+FnxJxtbXW7wCPDJI2CENj0Omf6Q9Sw8ySi
+        h1EjiOSAC6RRoPjkaNpudKDXPI9TQ73d3eJkPm9Jf8KPyEW6KrZZC5dsuRAbu9Ml8l6q5U
+        KhI9sUxcZ25OwfL2ucDr+n40AzjoEbpTKe9I+m2ze69A/MnURC/fYdaYnDkL8PvFHZPd5h
+        /0C7rVyagZ9AK2cgGm/O45am5NIAiALfB3gywV9X6yVsf9gWdKiEk0kHyIryvRy4+eX10v
+        nFyMcYyLuMnEEwSqdXUgqiZs5xfSdaSbdp88NnYJzvAWG3kaCwMHs/XaOxvrkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616170193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jZQyZ/QFefmWJKshcvvXqnJfLZpWdC89uxHxfKKtAhI=;
+        b=wPrLU2HWlVloD7nkxwl9L5lARm+ziOX5y9u7N5es+iTVp6oQWHQGbfxzRW7TzyFsVm8f1O
+        RvLOuNrhqdYwXcAA==
+To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH v4 4/9] kentry: Simplify the common syscall API
+In-Reply-To: <0e04f8d34cb52320110057021184d8facec7e1a6.1616004689.git.luto@kernel.org>
+References: <cover.1616004689.git.luto@kernel.org> <0e04f8d34cb52320110057021184d8facec7e1a6.1616004689.git.luto@kernel.org>
+Date:   Fri, 19 Mar 2021 17:09:53 +0100
+Message-ID: <87sg4r5dm6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <eea239f3-720d-0f53-6c8a-85050f44be53@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:59:46AM -0700, Dave Hansen wrote:
-> It's probably best to squash my patch in.  The uninitialized value could
-> *theoretically* cause the search to start at the wrong node and then end
-> before every node has been visited.  That could cause premature
-> allocation failures.
-> 
-> But, I seriously doubt anyone will notice either way.
+On Wed, Mar 17 2021 at 11:12, Andy Lutomirski wrote:
+> The new common syscall API had a large and confusing API surface.  Simplify
+> it.  Now there is exactly one way to use it.  It's a bit more verbose than
+> the old way for the simple x86_64 native case, but it's much easier to use
+> right,
 
-Yeah, I think too that we should be on the safe side, just in case.
-Lemme redo the branch with the new changes and test.
+and therefore much easier to get wrong...
 
-Thx.
+>  __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+>  {
+> -	nr = syscall_enter_from_user_mode(regs, nr);
+> -
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
 
--- 
-Regards/Gruss,
-    Boris.
+... That needs to be _after_ instrumentation_begin(). If you fiddle
+with this then please make sure that objtool validates noinstr...
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
+
+Ditto
+
+> +	instrumentation_begin();
+>  static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
+>  {
+>  	unsigned int nr = syscall_32_enter(regs);
+> +	bool ret;
+>  	int res;
+>  
+> -	/*
+> -	 * This cannot use syscall_enter_from_user_mode() as it has to
+> -	 * fetch EBP before invoking any of the syscall entry work
+> -	 * functions.
+> -	 */
+> -	syscall_enter_from_user_mode_prepare(regs);
+> -
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
+
+...
+
+>  	instrumentation_begin();
+
+Thanks,
+
+        tglx
