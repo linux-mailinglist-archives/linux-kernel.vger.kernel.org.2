@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5782D3418FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A180D341900
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhCSJ6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:58:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229791AbhCSJ5p (ORCPT
+        id S230026AbhCSJ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhCSJ57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:57:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616147864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UsREr7KDpE+wzs5UrnU5bq27soizKgijk7jOaTMCif8=;
-        b=V6Iqbxz2n64U1zJiA+9pWxx/O9XKThGpYU1nL0vMh0o73DI3C6KVY7Yq3J+riehiyRew1j
-        RPaKb+nKRWE5kV/lJDhbEHuKLbmBmcXU/t4380hYiv9z39PiQxQgrEzOlr8FZsdnPpM066
-        tsQSUnKMrVhrqa2iv3o/NTLL1oYX+pw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-GlZkE8ejObm02w0ksU8xvQ-1; Fri, 19 Mar 2021 05:57:42 -0400
-X-MC-Unique: GlZkE8ejObm02w0ksU8xvQ-1
-Received: by mail-wr1-f71.google.com with SMTP id y5so21561227wrp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:57:42 -0700 (PDT)
+        Fri, 19 Mar 2021 05:57:59 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D6FC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:57:59 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id w11so2711350ply.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ASJMW6scRGdDPaxrraLcWwaKe31/1z+RKDFUJFFWtbE=;
+        b=UG2HGyH7w2FE5tAZv1zqGqlEcDPQJAB1Ch9dDuXgL4MVWZREHEoils1+2zs8Rzp3x8
+         A/GApl1OPPqP4Q9cDMw0sy48UMWzIzopSHj6qDkEJWjiJW3Og/mojXuYK02NtmiTuX+i
+         iIde2KPIz6VorgdIvYb9K4dAsM36QgwqTNnJicWnvDIXUef89NnK+SaiAHDu1WnKpgL1
+         b52EGc22XTjbYm94HyQ6JGz7a2VWTYqQFwRtEwGP32rY9TnDyoV2Z5uTcP3nyMxA4w40
+         xHKN8L0aPY8HYsoXZakJcQNCESmLzZ4EcL/VOCuvw3/cOUCb6FsQJ5zc3rNU0fB5/WVc
+         csWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UsREr7KDpE+wzs5UrnU5bq27soizKgijk7jOaTMCif8=;
-        b=UTJZsenQfpuNZfNUcQM9zmIzaLiqJLD7fLAlbMOeUtsRpbQM0Fj1QPIkhITGuppVsz
-         QCOEWt87lW13PLj5IkV8lTm1khUUIfxLqH2try+Ja8wCmZPPbSuj7osg8V3lPtwvpU71
-         9IXSQgEnmYlqXVXHx/yiJFwhdodMa98pW+gK8041YrrsVRuw3JH0+TS18LSCn3Z8sfUS
-         rwWaH8t/PJAtk//nec34kaB/yCFLM4C2rcSPKFh/A3r7HeuF9F6hTGc4I011a2IrZOGD
-         ns+p6C/mHxY8rMOTUjIHxNOuk56KnBWZfBt0A/f0lBZrXyH5lqn6/ZX/Tbk+1nAiOrcu
-         WHVg==
-X-Gm-Message-State: AOAM531E18DNRhLR7mtISGc+i1N/qF/YYn9guQ9RiRL8t6ODwokPIaoi
-        /CPTel1FI7fX1OjHwktZBTjLXyGkZWnRIm2pCjQCZmZ59e7xDs9OsgKtcbEZiUT4suysg99HIg0
-        bW46K3bb/D/xeRzD/xtYh3UwjEt1r/eIAy0eoBVPW
-X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr3005064wmg.171.1616147861271;
-        Fri, 19 Mar 2021 02:57:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsfPewyX1Blixhz1/TwL1Ho9nuqLqhf9NMZtw3nWuN8DcHlGRHQ08GhxRWzE7D+tyku9OEoToJb5cXiQ8FNE8=
-X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr3005053wmg.171.1616147861146;
- Fri, 19 Mar 2021 02:57:41 -0700 (PDT)
+        bh=ASJMW6scRGdDPaxrraLcWwaKe31/1z+RKDFUJFFWtbE=;
+        b=cVJxqoZZ/Hu9RpYN9deCKv5ZYW2jStpft9uaLrFUmwaUtWTbA/4jZdoANhalDLXQK7
+         85Z2Teb9B7bGRBtznYdIU0cjFlJgemQJtaEkJcCas7Xyzl8n8NJT7C+GK9P/U7aQei5U
+         lauzO/u8a6vqksQZ88O9e++D+0hnsAIyjyO+8S2qsyetv1u2xgP6ffAeis7zOjp+DSWp
+         U+TvtELuR/teLlWpX17cJdVpFZsUCpHHDU/bRyCQfMBSgEJwe6Y9uziBk0pat12JJCFf
+         JmXkXwvCUahZNAq49Wwpb426v0ecOPXbyj0OS4AzfhrQvrPCV9at5mESF90XIeRb2//t
+         bUaw==
+X-Gm-Message-State: AOAM5317ldhvjgpNYylvrKqkCqfqbVViuB09L8pbMO92K/A2IE+EMQGd
+        FG/CB0hK41cUYM1Gm73AdvoJgfnSd+3A8ARiXPM=
+X-Google-Smtp-Source: ABdhPJx9byxFnl5x8/MIuCMAipr1QMVdKi/S2blW5N+g6+8VclWkCkttaH8wH3Rdn84kWtmn1OPnX6sKEYsBNoNYAM0=
+X-Received: by 2002:a17:902:c808:b029:e6:4204:f62f with SMTP id
+ u8-20020a170902c808b02900e64204f62fmr14044687plx.0.1616147878694; Fri, 19 Mar
+ 2021 02:57:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319082428.3294591-1-lee.jones@linaro.org> <20210319082428.3294591-13-lee.jones@linaro.org>
-In-Reply-To: <20210319082428.3294591-13-lee.jones@linaro.org>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Fri, 19 Mar 2021 10:57:30 +0100
-Message-ID: <CACO55tvitU6wHR1DVNAx1rGVEYRCs_PKQpdgrARPTMZgg3K_Tg@mail.gmail.com>
-Subject: Re: [PATCH 12/19] drm/nouveau/dispnv04/crtc: Demote non-conforming
- kernel-doc headers
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
+References: <202103191536.9cD1TuQQ-lkp@intel.com>
+In-Reply-To: <202103191536.9cD1TuQQ-lkp@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 11:57:42 +0200
+Message-ID: <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
+Subject: Re: include/linux/unaligned/be_byteshift.h:46:19: error: redefinition
+ of 'get_unaligned_be32'
+To:     kernel test robot <lkp@intel.com>, Takashi Iwai <tiwai@suse.com>,
+        Mark Brown <broonie@kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 9:25 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Mar 19, 2021 at 9:05 AM kernel test robot <lkp@intel.com> wrote:
 >
-> Fixes the following W=1 kernel build warning(s):
+> Hi Linus,
 >
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set_regs'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set_regs'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'adjusted_mode' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'x' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'y' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'old_fb' not described in 'nv_crtc_mode_set'
+> FYI, the error/warning still remains.
 >
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   8b12a62a4e3ed4ae99c715034f557eb391d6b196
+> commit: de8860b1ed4701ea7e6f760f02d79ca6a3b656a1 iio: magnetometer: Add driver for Yamaha YAS530
+> date:   10 weeks ago
+> config: m68k-randconfig-s032-20210318 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-277-gc089cd2d-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=de8860b1ed4701ea7e6f760f02d79ca6a3b656a1
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout de8860b1ed4701ea7e6f760f02d79ca6a3b656a1
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=m68k
 >
-> diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> index f9e962fd94d0d..f9a276ea5a9e0 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> @@ -449,7 +449,7 @@ nv_crtc_mode_set_vga(struct drm_crtc *crtc, struct drm_display_mode *mode)
->         regp->Attribute[NV_CIO_AR_CSEL_INDEX] = 0x00;
->  }
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
-> -/**
-> +/*
->   * Sets up registers for the given mode/adjusted_mode pair.
->   *
->   * The clocks, CRTCs and outputs attached to this CRTC must be off.
-> @@ -625,7 +625,7 @@ nv_crtc_swap_fbs(struct drm_crtc *crtc, struct drm_framebuffer *old_fb)
->         return ret;
->  }
+> All errors (new ones prefixed by >>):
 >
-> -/**
-> +/*
->   * Sets up registers for the given mode/adjusted_mode pair.
->   *
->   * The clocks, CRTCs and outputs attached to this CRTC must be off.
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
+>    In file included from include/linux/build_bug.h:5,
+>                     from include/linux/bitfield.h:10,
+>                     from drivers/iio/magnetometer/yamaha-yas530.c:22:
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+Isn't it fixed already somewhere?
 
+...
+
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+>    Selected by
+>    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+>    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
+
+This one though is interesting.
+Cc Takashi and Mark.
+
+-- 
+With Best Regards,
+Andy Shevchenko
