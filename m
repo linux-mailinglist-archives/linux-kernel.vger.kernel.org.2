@@ -2,98 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F48341F2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F9C341F31
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhCSOQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:16:14 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:55378 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhCSOPs (ORCPT
+        id S230084AbhCSOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:16:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229821AbhCSOQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:15:48 -0400
-Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12JEFlYg085436;
-        Fri, 19 Mar 2021 23:15:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
- Fri, 19 Mar 2021 23:15:47 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12JEFkPv085433
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 19 Mar 2021 23:15:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] KCSAN: data-race in start_this_handle /
- start_this_handle
-To:     Marco Elver <elver@google.com>, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+30774a6acf6a2cf6d535@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, Jan Kara <jack@suse.cz>
-References: <0000000000008de88005bd40ac36@google.com>
- <20210311142503.GA31816@quack2.suse.cz>
- <CACT4Y+ZtBwv1aXUumTXnWzAi7LEpJ6CZemGyVR2FC6_YO2E4EQ@mail.gmail.com>
- <YEoybjJpCQzNx15r@elver.google.com> <YEo3gYOU/VnmHCeV@mit.edu>
- <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <9dd08907-654c-bc38-fd9f-4324304152af@i-love.sakura.ne.jp>
-Date:   Fri, 19 Mar 2021 23:15:42 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 19 Mar 2021 10:16:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616163379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G9zw8CBtfbLr4B7lOytRKxO98oyOVaQpoL0ZeKO0tUA=;
+        b=SC1tlFBc190+t50F8g6ELVLYCp8m848W6UscSogoGu+umSh0tgiotVxxjC/oJotuJI4p3m
+        Ic5aMWVf+YiGAGSPhAfzz/W3P0hMtY86WKLN56cLXbK11oy6ilYZnm9w77yyFDYbuOAXgz
+        JTVXDjeS+nckfc1bjz+3BYGI4Ji2SGo=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-s8h9grWiNxSnTlHP30Hx0A-1; Fri, 19 Mar 2021 10:16:18 -0400
+X-MC-Unique: s8h9grWiNxSnTlHP30Hx0A-1
+Received: by mail-oi1-f198.google.com with SMTP id t186so4027559oih.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:16:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G9zw8CBtfbLr4B7lOytRKxO98oyOVaQpoL0ZeKO0tUA=;
+        b=rO1LumITJDiPkspI/ZLrRcFnUlEWzSBgRJ75KMwJakIACPrw0ATNOSDT7q5wc9TneJ
+         Bju051OrsggfBiEeC7/HU9n9bDyWRiPPl5iZ50RLlsu8APcfWtBdUbxScPDz3CisMswQ
+         d/Oy0tb0U4SdzKIqtyHAzSm9Zp5mnBKrjj2rY7bZs6ZMqvQjiJs7/vX6Ft16Cji55pve
+         4bUjsIDl2bReeqinWl40/SiylN6KnEOA+WCv7i2A8fg549D8NnIc4PySckkxyxAA0pZE
+         UeYd+FCKpbGm4QQ/EYSPuh4ZFRMziL/m17jlvK73p/Svup+TwchUcib1vIpdbJRoi5yr
+         6jbA==
+X-Gm-Message-State: AOAM532xR9xp+qtKyPsDuaUh93GU6esKvtbWffoWyVoM07rtPn6N8qtC
+        OF5lVQP/a/QD82ApKyzivK+cyiOWKbYwfo1Hhq6THQm2VOXtGjJLajJ3Fsl3KDGopo0V0YJ40oV
+        YhCedqxOyDrtPAKFlYx6mlwQQ
+X-Received: by 2002:a4a:9843:: with SMTP id z3mr1589792ooi.51.1616163377365;
+        Fri, 19 Mar 2021 07:16:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzx2MNWNkKfrw15p1iOgcE1WNwGab8mOM64AvISX48wKkP2zrsJ388mw1npd31B6KpqhIwamA==
+X-Received: by 2002:a4a:9843:: with SMTP id z3mr1589778ooi.51.1616163377153;
+        Fri, 19 Mar 2021 07:16:17 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id v6sm1253529ook.40.2021.03.19.07.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 07:16:16 -0700 (PDT)
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        miklos@szeredi.hu, jasowang@redhat.com, mst@redhat.com
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-3-ckuehl@redhat.com>
+ <20210319134948.GA402287@redhat.com>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <6a44908d-7e2d-d239-c56a-68730c5357cd@redhat.com>
+Date:   Fri, 19 Mar 2021 09:16:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNNwvDDcDnfDtwCKKpGVnHEuwhn5tP+eK0CH7R_FgQgCtA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210319134948.GA402287@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/12 0:54, Marco Elver wrote:
->> But the more we could have the compiler automatically figure out
->> things without needing an explicit tag, it would seem to me that this
->> would be better, since manual tagging is going to be more error-prone.
+On 3/19/21 8:49 AM, Vivek Goyal wrote:
+> On Thu, Mar 18, 2021 at 08:52:22AM -0500, Connor Kuehl wrote:
+>> If an incoming FUSE request can't fit on the virtqueue, the request is
+>> placed onto a workqueue so a worker can try to resubmit it later where
+>> there will (hopefully) be space for it next time.
+>>
+>> This is fine for requests that aren't larger than a virtqueue's maximum
+>> capacity. However, if a request's size exceeds the maximum capacity of
+>> the virtqueue (even if the virtqueue is empty), it will be doomed to a
+>> life of being placed on the workqueue, removed, discovered it won't fit,
+>> and placed on the workqueue yet again.
+>>
+>> Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
+>> Descriptors) of the virtio spec:
+>>
+>>    "A driver MUST NOT create a descriptor chain longer than the Queue
+>>    Size of the device."
+>>
+>> To fix this, limit the number of pages FUSE will use for an overall
+>> request. This way, each request can realistically fit on the virtqueue
+>> when it is decomposed into a scattergather list and avoid violating
+>> section 2.6.5.3.1 of the virtio spec.
 > 
-> What you're alluding to here would go much further than a data race
-> detector ("data race" is still just defined by the memory model). The
-> wish that there was a static analysis tool that would automatically
-> understand the "concurrency semantics as intended by the developer" is
-> something that'd be nice to have, but just doesn't seem realistic.
-> Because how can a tool tell what the developer intended, without input
-> from that developer?
+> Hi Connor,
+> 
+> So as of now if a request is bigger than what virtqueue can support,
+> it never gets dispatched and caller waits infinitely? So this patch
+> will fix it by forcing fuse to split the request. That sounds good.
 
-Input from developers is very important for not only compilers and tools
-but also allowing bug-explorers to understand what is happening.
-ext4 currently has
+Right, in theory. Certain configurations make it easier to avoid this 
+from happening, such as using indirect descriptors; however, in that 
+case, the virtio spec says even if indirect descriptors are used, the 
+descriptor chain length shouldn't exceed the length of the queue's size 
+anyways. So having FUSE split the request also helps to uphold that 
+property.
 
-  possible deadlock in start_this_handle (2)
-  https://syzkaller.appspot.com/bug?id=38c060d5757cbc13fdffd46e80557c645fbe79ba
+This is my reading of the potential looping problem:
 
-which even maintainers cannot understand what is happening.
-How can bug-explorers know implicit logic which maintainers believe safe and correct?
-It is possible that some oversight in implicit logic is the cause of
-"possible deadlock in start_this_handle (2)".
-Making implicit assumptions clear helps understanding.
+virtio_fs_wake_pending_and_unlock
+   calls
+     virtio_fs_enqueue_req
+       calls
+         virtqueue_add_sgs
 
-Will "KCSAN: data-race in start_this_handle / start_this_handle" be addressed by marking?
-syzbot is already waiting for
-"KCSAN: data-race in jbd2_journal_dirty_metadata / jbd2_journal_dirty_metadata" at
-https://syzkaller.appspot.com/bug?id=5eb10023f53097f003e72c6a7c1a6f14b7c22929 .
+virtqueue_add_sgs can return -ENOSPC if there aren't enough descriptors 
+available.
+
+This error gets propagated back down to 
+virtio_fs_wake_pending_and_unlock which checks for this exact issue and 
+places the request on a workqueue to retry submission later.
+
+Resubmission occurs in virtio_fs_request_dispatch_work, which does a 
+similar dance, where if the request fails with -ENOSPC it just puts it 
+back in the queue. However, for a sufficiently large request that would 
+exceed the capacity of the virtqueue (even when empty), no amount of 
+retrying will ever make it fit.
 
 > 
-> If there's worry marking accesses is error-prone, then that might be a
-> signal that the concurrency design is too complex (or the developer
-> hasn't considered all cases).
 > 
-> For that reason, we need to mark accesses to tell the compiler and
-> tooling where to expect concurrency, so that 1) the compiler generates
-> correct code, and 2) tooling such as KCSAN can double-check what the
-> developer intended is actually what's happening.
+> [..]
+>> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+>> index 8868ac31a3c0..a6ffba85d59a 100644
+>> --- a/fs/fuse/virtio_fs.c
+>> +++ b/fs/fuse/virtio_fs.c
+>> @@ -18,6 +18,12 @@
+>>   #include <linux/uio.h>
+>>   #include "fuse_i.h"
+>>   
+>> +/* Used to help calculate the FUSE connection's max_pages limit for a request's
+>> + * size. Parts of the struct fuse_req are sliced into scattergather lists in
+>> + * addition to the pages used, so this can help account for that overhead.
+>> + */
+>> +#define FUSE_HEADER_OVERHEAD    4
+> 
+> How did yo arrive at this overhead. Is it following.
+> 
+> - One sg element for fuse_in_header.
+> - One sg element for input arguments.
+> - One sg element for fuse_out_header.
+> - One sg element for output args.
 
-and 3) bug-explorers can understand what the developers are assuming/missing.
+Yes, that's exactly how I got to that number.
+
+Connor
+
 
