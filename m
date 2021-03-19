@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E4234149C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B7A34149D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhCSFQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S233839AbhCSFQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhCSFQe (ORCPT
+        with ESMTP id S233806AbhCSFQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:16:34 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907BFC06174A;
-        Thu, 18 Mar 2021 22:16:34 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r193so4821111ior.9;
-        Thu, 18 Mar 2021 22:16:34 -0700 (PDT)
+        Fri, 19 Mar 2021 01:16:38 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621FCC06174A;
+        Thu, 18 Mar 2021 22:16:38 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id d10so202760ils.5;
+        Thu, 18 Mar 2021 22:16:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I3edckeWkehetFViH35S0XzqXThEXQbqg2BOwoSeuug=;
-        b=NdTIoOuijUwsaYj4Dw09BSI28gcF1EL2e/Vpt7mPh9jNdxH7Q3xmCZIaiBUIHYbJHj
-         bvItglCPOpacJTZuMqWdcSRQ4NUcH06UNLbT1SbZDLkmRu3o6ihzK5JqArIQ4iKLTp/m
-         NJZ8b0zEDgGRlL4cozg+XR4Zxp5mWxt1PDC++9k2kPfHUufLPWNwzaXez/4ytPTM/utE
-         /R3a7LHIlj8XIHhHbWMcQfxPzuta6knzzuZVKwH05JisO2DASMzs6S8ij9Wqqo9K530t
-         UIs6QtB4tuV7W840GBnFz2mR1WehRk89BCwhfF7dAcmWFV7iqun+0HEhJfXq/FCnXN3M
-         3oHA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=feqvIIX1TyTgejukNexbzWLQI+ZY/SioJBhvwi9VmOc=;
+        b=j731lBK8+E1sW462zd2Do7Vcb90OfF2lm7mk0QFy4w2GzwBdECF+BNXHWYRSZs4kIw
+         c0waax9P8T/XvbPMspHf8Pz6L5qnqVtXI82iYAsmN4qziou4/lEyYn9Bo3h/E3jh7NRM
+         6masbUpakyFV5NSxX0A1TxdsF6aLUuhG5bsdv5HgwOIbbds7NWVpSyTfq3d7HeqBd3uB
+         JcmYaziX1X451mWbQLtDXM51wHZaWa8/yQ6Nwcd5KAYIWpilkdg8w7SMNtFxrfaWsquD
+         XSRZKKBvvPN47Wk1aKMuLJeURd9kQI2+98eu3pLWDxoU/D3n4+Lkg8c9ntGqu+XV575S
+         5MIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I3edckeWkehetFViH35S0XzqXThEXQbqg2BOwoSeuug=;
-        b=d1bAum8vYvj7MwnD+3N4orAxXquQc1tu4rQXeADWEyNqemsPtBCGxo/ADgrtH1JD4z
-         Ldg2Sdma8V+m1ftyvYonRJX5kt/28tTTn0gJ8lf5mVVvaxH5wF1J7pyPk3zQayRunxET
-         Kag+M3Byj1fa98dXCvBq2Z1bkZ0aP6OLdeizyhVD0V7XLMZXQ0wBFcBdyUDnM2b6xUf4
-         7PY4bNrFS0pswcCILXQdg8uiCkEBkGEffdRBiODCTNAwJvIDtr5Ch6qWoueeHBZAHUxa
-         BdvD4gje9pSHq92bn1Ibcb2fcuMXVHBnpHqpwBzY8+BVqxU3bKU+e2Fw/gcIsOeYGDlK
-         +2CA==
-X-Gm-Message-State: AOAM530B167dsuRJH4w0Mm0DVRRbs+z4uoh7yqJeLX6diu4fPpLotlcu
-        Lp6uTVEIXoS6iz/VAyG/GQc=
-X-Google-Smtp-Source: ABdhPJy+q1ldqLqLY9PELr2pNvQ0eMU68AWpl4HHIRnWGcm+8b1ND5wFhjwL4j6fptQM86NuyOgveA==
-X-Received: by 2002:a6b:630b:: with SMTP id p11mr1551516iog.140.1616130994089;
-        Thu, 18 Mar 2021 22:16:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=feqvIIX1TyTgejukNexbzWLQI+ZY/SioJBhvwi9VmOc=;
+        b=PYqIwPRZOlwysyKMjnNF54WOnG2ejkNeMBKPbeB5jhbrd1Pvkmsl4G12jz+VUH1hbv
+         mhD+oZ98wLl/JIJm4ncCiyx4Gg5ZCYHfUzAIzHTGYbFwfPUnraD2wWxnLZgFh3NgkX65
+         OL+Hl78E8AwKMMcmSpozI/zVSNw1Wt8JDYoztYgGRFaY1vWFrVOcq4S0wjBxAIa+59UU
+         MA0XOBA6B3TaOVfPUMkoo5+FnFpCRneMI3C/5feYzDFxWED1Hbkaeio0z0gXIdbIw2z0
+         s/cIuiGvj+4PmWYQcud9RpdZmxkjVkxnCB3g/7Y8TkrjKke4VaDeiHEr8+qA6bD5Vuqm
+         PExQ==
+X-Gm-Message-State: AOAM5336jJgrFkoHSvh8pZ8tvjSoXYUBEfTiUpUsMaQT7zyBzWIAMHAh
+        9ohMjQA6y+yy/uWzrD2EWpI=
+X-Google-Smtp-Source: ABdhPJySz2XJNdtoXQp352xVCg4bHdiq9G832iqxzRtph3xUdA32+zbgXAnzkNGO9JZpDmuFvp2W/Q==
+X-Received: by 2002:a92:dc03:: with SMTP id t3mr1510646iln.76.1616130997899;
+        Thu, 18 Mar 2021 22:16:37 -0700 (PDT)
 Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id s16sm2013154ioe.44.2021.03.18.22.16.30
+        by smtp.googlemail.com with ESMTPSA id s16sm2013154ioe.44.2021.03.18.22.16.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 22:16:33 -0700 (PDT)
+        Thu, 18 Mar 2021 22:16:37 -0700 (PDT)
 From:   Tianling Shen <cnsztl@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
         Jagan Teki <jagan@amarulasolutions.com>,
@@ -62,57 +62,194 @@ To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
         Tianling Shen <cnsztl@gmail.com>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
-Date:   Fri, 19 Mar 2021 13:16:26 +0800
-Message-Id: <20210319051627.814-1-cnsztl@gmail.com>
+Subject: [PATCH v6 2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
+Date:   Fri, 19 Mar 2021 13:16:27 +0800
+Message-Id: <20210319051627.814-2-cnsztl@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210319051627.814-1-cnsztl@gmail.com>
+References: <20210319051627.814-1-cnsztl@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
+This adds support for the NanoPi R4S from FriendlyArm.
 
-Changes in v6:
-- Fixed format of LED nodes
+Rockchip RK3399 SoC
+1GB DDR3 or 4GB LPDDR4 RAM
+Gigabit Ethernet (WAN)
+Gigabit Ethernet (PCIe) (LAN)
+USB 3.0 Port x 2
+MicroSD slot
+Reset button
+WAN - LAN - SYS LED
 
-Changes in v5:
-- Dropped the empty PCIe node
-- Dropped useless `/delete-property/`
-- Renamed LED nodes
-
-Changes in v4:
-- Correctly dropped `display-subsystem` node
-- Dropped meaningless `pwm-fan` node
-- Dropped wrong `sdmmc` node
-- Disabled `i2c4` and `uart0` as they don't exist in the design
-- Format fixes
-
-Changes in v3:
-- Dropped non-existent node `display_subsystem`
-
-Changes in v2:
-- Disable display for NanoPi R4S (reference commit: 74532de460ec)
-- Light "sys" LED on NanoPi R4S (reference commit: 833821eeab91)
-
+[initial DTS file]
+Co-developed-by: Jensen Huang <jensenhuang@friendlyarm.com>
+Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
+[minor adjustments]
+Co-developed-by: Marty Jones <mj8263788@gmail.com>
+Signed-off-by: Marty Jones <mj8263788@gmail.com>
+[further adjustments, fixed format issues]
 Signed-off-by: Tianling Shen <cnsztl@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/rk3399-nanopi-r4s.dts   | 133 ++++++++++++++++++
+ 2 files changed, 134 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index c3036f95c7bc..4a6f772c1043 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -134,6 +134,7 @@ properties:
-               - friendlyarm,nanopi-m4
-               - friendlyarm,nanopi-m4b
-               - friendlyarm,nanopi-neo4
-+              - friendlyarm,nanopi-r4s
-           - const: rockchip,rk3399
- 
-       - description: GeekBuying GeekBox
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index 62d3abc17a24..c3e00c0e2db7 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -36,6 +36,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4b.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-r4s.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-orangepi.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+new file mode 100644
+index 000000000000..fa5809887643
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * FriendlyElec NanoPC-T4 board device tree source
++ *
++ * Copyright (c) 2020 FriendlyElec Computer Tech. Co., Ltd.
++ * (http://www.friendlyarm.com)
++ *
++ * Copyright (c) 2018 Collabora Ltd.
++ *
++ * Copyright (c) 2020 Jensen Huang <jensenhuang@friendlyarm.com>
++ * Copyright (c) 2020 Marty Jones <mj8263788@gmail.com>
++ * Copyright (c) 2021 Tianling Shen <cnsztl@gmail.com>
++ */
++
++/dts-v1/;
++#include "rk3399-nanopi4.dtsi"
++
++/ {
++	model = "FriendlyElec NanoPi R4S";
++	compatible = "friendlyarm,nanopi-r4s", "rockchip,rk3399";
++
++	/delete-node/ display-subsystem;
++
++	gpio-leds {
++		pinctrl-0 = <&lan_led_pin>, <&sys_led_pin>, <&wan_led_pin>;
++
++		/delete-node/ led-0;
++
++		lan_led: led-lan {
++			gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
++			label = "green:lan";
++		};
++
++		sys_led: led-sys {
++			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
++			label = "red:sys";
++			default-state = "on";
++		};
++
++		wan_led: led-wan {
++			gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
++			label = "green:wan";
++		};
++	};
++
++	gpio-keys {
++		pinctrl-0 = <&reset_button_pin>;
++
++		/delete-node/ power;
++
++		reset {
++			debounce-interval = <50>;
++			gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++		};
++	};
++
++	vdd_5v: vdd-5v {
++		compatible = "regulator-fixed";
++		regulator-name = "vdd_5v";
++		regulator-always-on;
++		regulator-boot-on;
++	};
++};
++
++&emmc_phy {
++	status = "disabled";
++};
++
++&i2c4 {
++	status = "disabled";
++};
++
++&pcie0 {
++	max-link-speed = <1>;
++	num-lanes = <1>;
++	vpcie3v3-supply = <&vcc3v3_sys>;
++};
++
++&pinctrl {
++	gpio-leds {
++		/delete-node/ status-led-pin;
++
++		lan_led_pin: lan-led-pin {
++			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		sys_led_pin: sys-led-pin {
++			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		wan_led_pin: wan-led-pin {
++			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	rockchip-key {
++		/delete-node/ power-key;
++
++		reset_button_pin: reset-button-pin {
++			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++};
++
++&sdhci {
++	status = "disabled";
++};
++
++&sdio0 {
++	status = "disabled";
++};
++
++&u2phy0_host {
++	phy-supply = <&vdd_5v>;
++};
++
++&u2phy1_host {
++	status = "disabled";
++};
++
++&uart0 {
++	status = "disabled";
++};
++
++&usbdrd_dwc3_0 {
++	dr_mode = "host";
++};
++
++&vcc3v3_sys {
++	vin-supply = <&vcc5v0_sys>;
++};
 -- 
 2.17.1
 
