@@ -2,258 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CA434196C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C280341934
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhCSKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhCSKDN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:03:13 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3886CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:13 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id l16so8114574wmc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=wcv4vREKnArTuR36LJ4s5XYbQOambx51fL/UYTrLPw8=;
-        b=ZlpIZX+EzTuUNUCtgoUWPmG+bspeyGyRB0iNHGELTKyRSuIE88j3AtHAvQqGA2GL0K
-         gDyCBwMDqdFgY2lQwbDIb0l4soFgilpvNr3ANJw1unBDhPqhTtRyK5xIIoym3M0rKoUs
-         4JNemtx4mZwpdPWi5jp/4fJsNU/CSkpOu4T38HhuC86U/n5c4y3wnAZochAsOpWYPT9z
-         aVtjkpk79a/JpA97r4W8+zGjIQt8rR/2G1AlcUqnEG/qpvJwRwrvXoGBA3JmpEEg3KWB
-         PW9WGsgujq48fEGSg9ZgOH/4gbdYH15MLKJL4BTnJphwvQboNVO0NxGPwF6yph209lq2
-         toww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wcv4vREKnArTuR36LJ4s5XYbQOambx51fL/UYTrLPw8=;
-        b=tgO8dRKZK4/UwmB/OivazQb7i24TzgryCsBAr1sHfbb4ce2IBgnGhrt0+S9OLALM42
-         HAH3D0P3jrrkSr3zOPYlVG/XlXo9V2E913bEzAC7xUE3eAkLyOK2mWYEluXU9K+vTJ0C
-         L+GbpagG/xC12cwEdvQvPSN+9Oxqi4XFLJ6+u5ruxtuBAQCo/eeq/YHX7Dvm/Lwtho0O
-         lJtEU+VH5Nlqz1ILA/FHZu3bnp69sYKKWYQPctAoXuHwBEl6gZEEXvz26vwhB+tnTG8o
-         +eZnxeNrrpQhOd8hied7VbFaa3hZw5FAiH4HMyeA+IxHKXvVzs2fy4EkDxHjZUlTppov
-         9qPA==
-X-Gm-Message-State: AOAM5334MDbpLkZLfvOrflouLcB5TlPLs/xj6Vg5HotgZ2ROUGQ556rD
-        tWqy1ME+HK/lfZTA/xXnEyPi/5ZsuMRc
-X-Google-Smtp-Source: ABdhPJybx+Qdo727CriACvxjI8elDWIha3UJClfeaiUYbbbhNjfpa3HDhor+yghx9MsgdbSVYO+a+wFy0ogS
-X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:adf:ba87:: with SMTP id
- p7mr3723317wrg.298.1616148191951; Fri, 19 Mar 2021 03:03:11 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:01:46 +0000
-In-Reply-To: <20210319100146.1149909-1-qperret@google.com>
-Message-Id: <20210319100146.1149909-39-qperret@google.com>
-Mime-Version: 1.0
-References: <20210319100146.1149909-1-qperret@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v6 38/38] KVM: arm64: Protect the .hyp sections from the host
-From:   Quentin Perret <qperret@google.com>
-To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com
-Cc:     android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com, qperret@google.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230129AbhCSKCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229955AbhCSKB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:01:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B60D364F1F;
+        Fri, 19 Mar 2021 10:01:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616148118;
+        bh=XLFDw8khS5R5XbbGs996WELjZyr175WNcs5UdIpfIRA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ueZ4Ty00UOKcVmirgOXqQUSiDvralM+0rUWatVk2a6TKRdWzI4NWLPla+quPZlVim
+         lQ1GojFfcyLcAO/7y63S1W6u7dCVAF2nbLg/lKBhpD5t6qYDjXAQAiK3JS3CZd2TKO
+         aCuNII3U/lwcqrgmkX8rp/MfjEcEs58CNzI97jdU=
+Date:   Fri, 19 Mar 2021 11:01:55 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
+ die
+Message-ID: <YFR2kwakbcGiI37w@kroah.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-2-song.bao.hua@hisilicon.com>
+ <YFRGIedW1fUlnmi+@kroah.com>
+ <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
+ <20210319093616.00001879@Huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319093616.00001879@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When KVM runs in nVHE protected mode, use the host stage 2 to unmap the
-hypervisor sections by marking them as owned by the hypervisor itself.
-The long-term goal is to ensure the EL2 code can remain robust
-regardless of the host's state, so this starts by making sure the host
-cannot e.g. write to the .hyp sections directly.
+On Fri, Mar 19, 2021 at 09:36:16AM +0000, Jonathan Cameron wrote:
+> On Fri, 19 Mar 2021 06:57:08 +0000
+> "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+> 
+> > > -----Original Message-----
+> > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > > Sent: Friday, March 19, 2021 7:35 PM
+> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
+> > > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> > > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
+> > > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> > > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com; Jonathan
+> > > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
+> > > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
+> > > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O) <xuwei5@huawei.com>;
+> > > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org; yangyicong
+> > > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> > > linuxarm@openeuler.org; hpa@zytor.com
+> > > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
+> > > a die
+> > > 
+> > > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:  
+> > > > diff --git a/Documentation/admin-guide/cputopology.rst  
+> > > b/Documentation/admin-guide/cputopology.rst  
+> > > > index b90dafc..f9d3745 100644
+> > > > --- a/Documentation/admin-guide/cputopology.rst
+> > > > +++ b/Documentation/admin-guide/cputopology.rst
+> > > > @@ -24,6 +24,12 @@ core_id:
+> > > >  	identifier (rather than the kernel's).  The actual value is
+> > > >  	architecture and platform dependent.
+> > > >
+> > > > +cluster_id:
+> > > > +
+> > > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
+> > > > +	identifier (rather than the kernel's).  The actual value is
+> > > > +	architecture and platform dependent.
+> > > > +
+> > > >  book_id:
+> > > >
+> > > >  	the book ID of cpuX. Typically it is the hardware platform's
+> > > > @@ -56,6 +62,14 @@ package_cpus_list:
+> > > >  	human-readable list of CPUs sharing the same physical_package_id.
+> > > >  	(deprecated name: "core_siblings_list")
+> > > >
+> > > > +cluster_cpus:
+> > > > +
+> > > > +	internal kernel map of CPUs within the same cluster.
+> > > > +
+> > > > +cluster_cpus_list:
+> > > > +
+> > > > +	human-readable list of CPUs within the same cluster.
+> > > > +
+> > > >  die_cpus:
+> > > >
+> > > >  	internal kernel map of CPUs within the same die.  
+> > > 
+> > > Why are these sysfs files in this file, and not in a Documentation/ABI/
+> > > file which can be correctly parsed and shown to userspace?  
+> > 
+> > Well. Those ABIs have been there for much a long time. It is like:
+> > 
+> > [root@ceph1 topology]# ls
+> > core_id  core_siblings  core_siblings_list  physical_package_id thread_siblings  thread_siblings_list
+> > [root@ceph1 topology]# pwd
+> > /sys/devices/system/cpu/cpu100/topology
+> > [root@ceph1 topology]# cat core_siblings_list
+> > 64-127
+> > [root@ceph1 topology]#
+> > 
+> > > 
+> > > Any chance you can fix that up here as well?  
+> > 
+> > Yes. we will send a separate patch to address this, which won't
+> > be in this patchset. This patchset will base on that one.
+> > 
+> > > 
+> > > Also note that "list" is not something that goes in sysfs, sysfs is "one
+> > > value per file", and a list is not "one value".  How do you prevent
+> > > overflowing the buffer of the sysfs file if you have a "list"?
+> > >   
+> > 
+> > At a glance, the list is using "-" rather than a real list
+> > [root@ceph1 topology]# cat core_siblings_list
+> > 64-127
+> > 
+> > Anyway, I will take a look if it has any chance to overflow.
+> 
+> It could in theory be alternate CPUs as comma separated list.
+> So it's would get interesting around 500-1000 cpus (guessing).
+> 
+> Hopefully no one has that crazy a cpu numbering scheme but it's possible
+> (note that cluster is fine for this, but I guess it might eventually
+> happen for core-siblings list (cpus within a package).
+> 
+> Shouldn't crash or anything like that but might terminate early.
 
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/include/asm/kvm_asm.h              |  1 +
- arch/arm64/kvm/arm.c                          | 46 +++++++++++++++++++
- arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 +
- arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  9 ++++
- arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 33 +++++++++++++
- 5 files changed, 91 insertions(+)
+We have a broken sysfs api already for listing LED numbers that has had
+to be worked around in the past, please do not create a new one with
+that same problem, we should learn from them :)
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 4149283b4cd1..cf8df032b9c3 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -62,6 +62,7 @@
- #define __KVM_HOST_SMCCC_FUNC___pkvm_create_private_mapping	17
- #define __KVM_HOST_SMCCC_FUNC___pkvm_cpu_set_vector		18
- #define __KVM_HOST_SMCCC_FUNC___pkvm_prot_finalize		19
-+#define __KVM_HOST_SMCCC_FUNC___pkvm_mark_hyp			20
- 
- #ifndef __ASSEMBLY__
- 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index d237c378e6fb..368159021dee 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1899,11 +1899,57 @@ void _kvm_host_prot_finalize(void *discard)
- 	WARN_ON(kvm_call_hyp_nvhe(__pkvm_prot_finalize));
- }
- 
-+static inline int pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
-+{
-+	return kvm_call_hyp_nvhe(__pkvm_mark_hyp, start, end);
-+}
-+
-+#define pkvm_mark_hyp_section(__section)		\
-+	pkvm_mark_hyp(__pa_symbol(__section##_start),	\
-+			__pa_symbol(__section##_end))
-+
- static int finalize_hyp_mode(void)
- {
-+	int cpu, ret;
-+
- 	if (!is_protected_kvm_enabled())
- 		return 0;
- 
-+	ret = pkvm_mark_hyp_section(__hyp_idmap_text);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_mark_hyp_section(__hyp_text);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_mark_hyp_section(__hyp_rodata);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_mark_hyp_section(__hyp_bss);
-+	if (ret)
-+		return ret;
-+
-+	ret = pkvm_mark_hyp(hyp_mem_base, hyp_mem_base + hyp_mem_size);
-+	if (ret)
-+		return ret;
-+
-+	for_each_possible_cpu(cpu) {
-+		phys_addr_t start = virt_to_phys((void *)kvm_arm_hyp_percpu_base[cpu]);
-+		phys_addr_t end = start + (PAGE_SIZE << nvhe_percpu_order());
-+
-+		ret = pkvm_mark_hyp(start, end);
-+		if (ret)
-+			return ret;
-+
-+		start = virt_to_phys((void *)per_cpu(kvm_arm_hyp_stack_page, cpu));
-+		end = start + PAGE_SIZE;
-+		ret = pkvm_mark_hyp(start, end);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Flip the static key upfront as that may no longer be possible
- 	 * once the host stage 2 is installed.
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-index d293cb328cc4..42d81ec739fa 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
-@@ -21,6 +21,8 @@ struct host_kvm {
- extern struct host_kvm host_kvm;
- 
- int __pkvm_prot_finalize(void);
-+int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
-+
- int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool);
- void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-index 69163f2cbb63..b4eaa7ef13e0 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-@@ -156,6 +156,14 @@ static void handle___pkvm_prot_finalize(struct kvm_cpu_context *host_ctxt)
- {
- 	cpu_reg(host_ctxt, 1) = __pkvm_prot_finalize();
- }
-+
-+static void handle___pkvm_mark_hyp(struct kvm_cpu_context *host_ctxt)
-+{
-+	DECLARE_REG(phys_addr_t, start, host_ctxt, 1);
-+	DECLARE_REG(phys_addr_t, end, host_ctxt, 2);
-+
-+	cpu_reg(host_ctxt, 1) = __pkvm_mark_hyp(start, end);
-+}
- typedef void (*hcall_t)(struct kvm_cpu_context *);
- 
- #define HANDLE_FUNC(x)	[__KVM_HOST_SMCCC_FUNC_##x] = (hcall_t)handle_##x
-@@ -180,6 +188,7 @@ static const hcall_t host_hcall[] = {
- 	HANDLE_FUNC(__pkvm_create_mappings),
- 	HANDLE_FUNC(__pkvm_create_private_mapping),
- 	HANDLE_FUNC(__pkvm_prot_finalize),
-+	HANDLE_FUNC(__pkvm_mark_hyp),
- };
- 
- static void handle_host_hcall(struct kvm_cpu_context *host_ctxt)
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index 77b48c47344d..808e2471091b 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -27,6 +27,8 @@ struct host_kvm host_kvm;
- struct hyp_pool host_s2_mem;
- struct hyp_pool host_s2_dev;
- 
-+static const u8 pkvm_hyp_id = 1;
-+
- static void *host_s2_zalloc_pages_exact(size_t size)
- {
- 	return hyp_alloc_pages(&host_s2_mem, get_order(size));
-@@ -182,6 +184,18 @@ static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
- 	return false;
- }
- 
-+static bool range_is_memory(u64 start, u64 end)
-+{
-+	struct kvm_mem_range r1, r2;
-+
-+	if (!find_mem_range(start, &r1) || !find_mem_range(end, &r2))
-+		return false;
-+	if (r1.start != r2.start)
-+		return false;
-+
-+	return true;
-+}
-+
- static inline int __host_stage2_idmap(u64 start, u64 end,
- 				      enum kvm_pgtable_prot prot,
- 				      struct hyp_pool *pool)
-@@ -229,6 +243,25 @@ static int host_stage2_idmap(u64 addr)
- 	return ret;
- }
- 
-+int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
-+{
-+	int ret;
-+
-+	/*
-+	 * host_stage2_unmap_dev_all() currently relies on MMIO mappings being
-+	 * non-persistent, so don't allow changing page ownership in MMIO range.
-+	 */
-+	if (!range_is_memory(start, end))
-+		return -EINVAL;
-+
-+	hyp_spin_lock(&host_kvm.lock);
-+	ret = kvm_pgtable_stage2_set_owner(&host_kvm.pgt, start, end - start,
-+					   &host_s2_mem, pkvm_hyp_id);
-+	hyp_spin_unlock(&host_kvm.lock);
-+
-+	return ret != -EAGAIN ? ret : 0;
-+}
-+
- void handle_host_mem_abort(struct kvm_cpu_context *host_ctxt)
- {
- 	struct kvm_vcpu_fault_info fault;
--- 
-2.31.0.rc2.261.g7f71774620-goog
+thanks,
 
+greg k-h
