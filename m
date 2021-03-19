@@ -2,161 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA9D34153B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0348C34153E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhCSGBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S230337AbhCSGGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbhCSGBe (ORCPT
+        with ESMTP id S233009AbhCSGGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:01:34 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF48C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:01:34 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a63so51261604yba.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=3iSzzHG13xS4oKLdccr35cH9OM0PQUa1NRme/bdDtFo=;
-        b=Jv7BlRnI0FkFfy+IF/zxIjNpYuo0gMFUcshd8KYyyq7PHNEANZQxVFjfFaXxqzv/DQ
-         y76WhTGXRrjvKsLubMuuDlHpz2PzzqbUF0WlM6QlQ4sPMTrOLZjDjO3yeqRZwVyBYa8i
-         hfhe/Z8HK/jBPVjqDj/ug5u25DPKnXHA9F5E688ftjYg08H7aeBe06IGtWl3yI1/I6s3
-         oSOCt4HMsLKk4gYKAWad1K1s3mdJystNkevskKfiLB9lWj6zAHOoZm6xrNrCDpZPEov4
-         y8Xaaw4k89RcxiY30Ihlmx3RyOsEyuTnpBVObn1j6KvPhg36YRcjYtBrYc94SFDikCzQ
-         80Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=3iSzzHG13xS4oKLdccr35cH9OM0PQUa1NRme/bdDtFo=;
-        b=KQxaJsy+YfR1t6AvyLrru3O80BPbLqQ7R5AVFudExYMx6jogvsDKOVvaFWTXHlTjTz
-         MW9yUtzHhs2SW6psBqPnz+t6KgJbmPnH3c3BN404y5xzlPq6H/y3pxtbwo7SZdLJCkWk
-         FSDa3BJ8HkD5y8+pvl0/u9uj3CdKVteU8GDk7HmH7vw31SYIDFoR7IVbDnlBqDzMCF1x
-         Os4I7oCBPQi0jf9ybm0jva76sioaqVV/MZINRALSsWnWw1xSP1S7DgdX7BaJgISnxVeq
-         1NsmciA8m6hV9gUxIUXoPdeEzLVqEsyZajGHjTdIdWCg7kCau7FrIcLHsPyvvu7PQd5o
-         q5sA==
-X-Gm-Message-State: AOAM5302qRWdfEKLaQDi75W4QpfDA8JKnUCkBg11ZOrsRm/XwrnslZSx
-        RgfAgVlEXE73YUy48QmT30hxSw5Qccw=
-X-Google-Smtp-Source: ABdhPJytXaewBGnVauF20NUpM9+6Ztyyfj26Hc/5sgVy7wzk7j/QiNmOH0aMUaWEjFnKFyiw39dcj1Hz+XE=
-X-Received: from khazhy-linux.svl.corp.google.com ([2620:15c:2cd:202:9e0:5db9:bd51:afa7])
- (user=khazhy job=sendgmr) by 2002:a25:6e02:: with SMTP id j2mr4211117ybc.247.1616133693523;
- Thu, 18 Mar 2021 23:01:33 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 23:00:15 -0700
-Message-Id: <20210319060015.3979352-1-khazhy@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] bfq: silence lockdep for bfqd/ioc lock inversion
-From:   Khazhismel Kumykov <khazhy@google.com>
-To:     Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Khazhismel Kumykov <khazhy@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 19 Mar 2021 02:06:53 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268CCC06174A;
+        Thu, 18 Mar 2021 23:06:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F1th551p5z9sRR;
+        Fri, 19 Mar 2021 17:06:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616134009;
+        bh=eiVMt2M3R6q7YinzTkvUK/ofoiVrSkJARODUGtcdwEE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d5mZNoV/+X6afN8Gehi4MUW3YYv0eXoDrnyGn4iNQZS+zijbi31IkoOPotbxjAVxk
+         +/HuqZ3iu4Vf80mXq30W00L1EL9yzi+xg7eDZI933+pkX5EOgi8ogsfrszZ2xueSqA
+         Gt58LycHFlguWcgAwGYEuKk9iSlbCeNzPjAZg/kB5TFUcEo5dYV8Lre+O7ZijKQhDO
+         zn3LLTFrqBhqtmbqUGEtKTV6N3iml26VNmPET2cYmmYV0hT2BQk7NSqs6JjiBLq/hU
+         liWuYPr5vtNXWXyvbdj/6/qwVBPdwOVI4n3NX2DXhT9HhTQqCfFLCr89BrZdYwx2Z1
+         OJ5uOR/pOCDYQ==
+Date:   Fri, 19 Mar 2021 17:06:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        James Morris <jmorris@namei.org>
+Cc:     James Morris <jamorris@linux.microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: linux-next: manual merge of the akpm tree with the security tree
+Message-ID: <20210319170643.3dac3446@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/iBe.hE=bXl5Uz2dlh4SkLpM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lockdep warns of circular locking due to inversion between
-bfq_insert_requests and bfq_exit_icq. If we end freeing a request when
-merging, we *may* grab an ioc->lock if that request is the last refcount
-to that ioc. bfq_bio_merge also potentially could have this ordering.
-bfq_exit_icq, conversely, grabs bfqd but is always called with ioc->lock
-held.
+--Sig_/iBe.hE=bXl5Uz2dlh4SkLpM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-bfq_exit_icq may either be called from put_io_context_active with ioc
-refcount raised, ioc_release_fn after the last refcount was already
-dropped, or ioc_clear_queue, which is only called while queue is
-quiesced or exiting, so the inverted orderings should never conflict.
+Hi all,
 
-Fixes: aee69d78dec0 ("block, bfq: introduce the BFQ-v0 I/O scheduler as
-an extra scheduler")
+FIXME: Add owner of second tree to To:
+       Add author(s)/SOB of conflicting commits.
 
-Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
----
- block/bfq-iosched.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Today's linux-next merge of the akpm tree got conflicts in:
 
-Noticed this lockdep running xfstests (generic/464) on top of a bfq
-block device. I was also able to tease it out w/ binary trying to issue
-requests that would end up merging while rapidly swapping the active
-scheduler. As far as I could see, the deadlock would not actually occur,
-so this patch opts to change lock class for the inverted case.
+  arch/x86/entry/syscalls/syscall_32.tbl
+  arch/x86/entry/syscalls/syscall_64.tbl
+  include/linux/syscalls.h
+  include/uapi/asm-generic/unistd.h
 
-bfqd -> ioc :
-[ 2995.524557] __lock_acquire+0x18f5/0x2660
-[ 2995.524562] lock_acquire+0xb4/0x3a0
-[ 2995.524565] _raw_spin_lock_irqsave+0x3f/0x60
-[ 2995.524569] put_io_context+0x33/0x90. =C2=A0-> ioc->lock grabbed
-[ 2995.524573] blk_mq_free_request+0x51/0x140
-[ 2995.524577] blk_put_request+0xe/0x10
-[ 2995.524580] blk_attempt_req_merge+0x1d/0x30
-[ 2995.524585] elv_attempt_insert_merge+0x56/0xa0
-[ 2995.524590] blk_mq_sched_try_insert_merge+0x4b/0x60
-[ 2995.524595] bfq_insert_requests+0x9e/0x18c0. =C2=A0 =C2=A0-> bfqd->lock =
-grabbed
-[ 2995.524598] blk_mq_sched_insert_requests+0xd6/0x2b0
-[ 2995.524602] blk_mq_flush_plug_list+0x154/0x280
-[ 2995.524606] blk_finish_plug+0x40/0x60
-[ 2995.524609] ext4_writepages+0x696/0x1320
-[ 2995.524614] do_writepages+0x1c/0x80
-[ 2995.524621] __filemap_fdatawrite_range+0xd7/0x120
-[ 2995.524625] sync_file_range+0xac/0xf0
-[ 2995.524642] __x64_sys_sync_file_range+0x44/0x70
-[ 2995.524646] do_syscall_64+0x31/0x40
-[ 2995.524649] entry_SYSCALL_64_after_hwframe+0x44/0xae
+between commit:
 
-ioc -> bfqd
-[ 2995.524490] _raw_spin_lock_irqsave+0x3f/0x60
-[ 2995.524498] bfq_exit_icq+0xa3/0xe0 -> bfqd->lock grabbed
-[ 2995.524512] put_io_context_active+0x78/0xb0 -> ioc->lock grabbed
-[ 2995.524516] exit_io_context+0x48/0x50
-[ 2995.524519] do_exit+0x7e9/0xdd0
-[ 2995.524526] do_group_exit+0x54/0xc0
-[ 2995.524530] __x64_sys_exit_group+0x18/0x20
-[ 2995.524534] do_syscall_64+0x31/0x40
-[ 2995.524537] entry_SYSCALL_64_after_hwframe+0x44/0xae
+  c5eafae25eb5 ("landlock: Add syscall implementations")
 
-Another trace where we grab ioc -> bfqd through bfq_exit_icq is when
-changing elevator
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0-> #1 (&(&bfqd->lock=
-)->rlock){-.-.}:
-[ =C2=A0646.890820] =C2=A0 =C2=A0 =C2=A0 =C2=A0lock_acquire+0x9b/0x140
-[ =C2=A0646.894868] =C2=A0 =C2=A0 =C2=A0 =C2=A0_raw_spin_lock_irqsave+0x3b/=
-0x50
-[ =C2=A0646.899707] =C2=A0 =C2=A0 =C2=A0 =C2=A0bfq_exit_icq_bfqq+0x47/0x1f0
-[ =C2=A0646.904196] =C2=A0 =C2=A0 =C2=A0 =C2=A0bfq_exit_icq+0x21/0x30
-[ =C2=A0646.908160] =C2=A0 =C2=A0 =C2=A0 =C2=A0ioc_destroy_icq+0xf3/0x130
-[ =C2=A0646.912466] =C2=A0 =C2=A0 =C2=A0 =C2=A0ioc_clear_queue+0xb8/0x140
-[ =C2=A0646.916771] =C2=A0 =C2=A0 =C2=A0 =C2=A0elevator_switch_mq+0xa4/0x3c=
-0
-[ =C2=A0646.921333] =C2=A0 =C2=A0 =C2=A0 =C2=A0elevator_switch+0x5f/0x340
+from the security tree and patch:
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 95586137194e..cb50ac0ffe80 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -5027,7 +5027,14 @@ static void bfq_exit_icq_bfqq(struct bfq_io_cq *bic,=
- bool is_sync)
- 	if (bfqq && bfqd) {
- 		unsigned long flags;
-=20
--		spin_lock_irqsave(&bfqd->lock, flags);
-+		/* bfq_exit_icq is usually called with ioc->lock held, which is
-+		 * inverse order from elsewhere, which may grab ioc->lock
-+		 * under bfqd->lock if we merge requests and drop the last ioc
-+		 * refcount. Since exit_icq is either called with a refcount,
-+		 * or with queue quiesced, use a differnet lock class to
-+		 * silence lockdep
-+		 */
-+		spin_lock_irqsave_nested(&bfqd->lock, flags, 1);
- 		bfqq->bic =3D NULL;
- 		bfq_exit_bfqq(bfqd, bfqq);
- 		bic_set_bfqq(bic, NULL, is_sync);
+  "arch, mm: wire up memfd_secret system call where relevant"
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
 --=20
-2.31.0.rc2.261.g7f71774620-goog
+Cheers,
+Stephen Rothwell
 
+diff --cc arch/x86/entry/syscalls/syscall_32.tbl
+index 28a1423ce32e,524a076e79ca..000000000000
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@@ -448,6 -448,4 +448,7 @@@
+  441	i386	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	i386	mount_setattr		sys_mount_setattr
+  443	i386	quotactl_path		sys_quotactl_path
+ -444	i386	memfd_secret		sys_memfd_secret
+ +444	i386	landlock_create_ruleset	sys_landlock_create_ruleset
+ +445	i386	landlock_add_rule	sys_landlock_add_rule
+ +446	i386	landlock_restrict_self	sys_landlock_restrict_self
+++447	i386	memfd_secret		sys_memfd_secret
+diff --cc arch/x86/entry/syscalls/syscall_64.tbl
+index ecd551b08d05,440467ca352d..000000000000
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@@ -365,9 -365,7 +365,10 @@@
+  441	common	epoll_pwait2		sys_epoll_pwait2
+  442	common	mount_setattr		sys_mount_setattr
+  443	common	quotactl_path		sys_quotactl_path
+ -444	common	memfd_secret		sys_memfd_secret
+ +444	common	landlock_create_ruleset	sys_landlock_create_ruleset
+ +445	common	landlock_add_rule	sys_landlock_add_rule
+ +446	common	landlock_restrict_self	sys_landlock_restrict_self
+++447	common	memfd_secret		sys_memfd_secret
+ =20
+  #
+  # Due to a historical design error, certain syscalls are numbered differe=
+ntly
+diff --cc include/linux/syscalls.h
+index 050511e8f1f8,019a1d876eb1..000000000000
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@@ -1045,11 -1043,7 +1045,12 @@@ asmlinkage long sys_pidfd_send_signal(i
+  				       siginfo_t __user *info,
+  				       unsigned int flags);
+  asmlinkage long sys_pidfd_getfd(int pidfd, int fd, unsigned int flags);
+ +asmlinkage long sys_landlock_create_ruleset(const struct landlock_ruleset=
+_attr __user *attr,
+ +		size_t size, __u32 flags);
+ +asmlinkage long sys_landlock_add_rule(int ruleset_fd, enum landlock_rule_=
+type rule_type,
+ +		const void __user *rule_attr, __u32 flags);
+ +asmlinkage long sys_landlock_restrict_self(int ruleset_fd, __u32 flags);
++ asmlinkage long sys_memfd_secret(unsigned long flags);
+ =20
+  /*
+   * Architecture-specific system calls
+diff --cc include/uapi/asm-generic/unistd.h
+index 67093382a4e6,77d89b24341f..000000000000
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@@ -865,15 -865,13 +865,19 @@@ __SC_COMP(__NR_epoll_pwait2, sys_epoll_
+  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+  #define __NR_quotactl_path 443
+  __SYSCALL(__NR_quotactl_path, sys_quotactl_path)
+ +#define __NR_landlock_create_ruleset 444
+ +__SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
+ +#define __NR_landlock_add_rule 445
+ +__SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
+ +#define __NR_landlock_restrict_self 446
+ +__SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
++ #ifdef __ARCH_WANT_MEMFD_SECRET
+ -#define __NR_memfd_secret 444
+++#define __NR_memfd_secret 447
++ __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
++ #endif
+ =20
+  #undef __NR_syscalls
+- #define __NR_syscalls 447
+ -#define __NR_syscalls 445
+++#define __NR_syscalls 448
+ =20
+  /*
+   * 32 bit systems traditionally used different
+
+--Sig_/iBe.hE=bXl5Uz2dlh4SkLpM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBUP3MACgkQAVBC80lX
+0GzQmwgApQOQLN4AC8PMlh11JAzm1DQrO9RmT+kWIc2oAm74EWzvHsKoM+tRm1+F
+MfOMYIhUYTWeWcs8ow9YOPQ6tWlqInaIBS2uukfT8kysgu0M3lQx/ga2JmpLOR8X
+Y6TNgjiYir3HG3Wo1tE3MxuABHu8G0IxyvAsxkAVGjgx5oNT0Syz3aCkdwkHZkXc
++8nJNmwjp1di+nmueVGcr3He0LlsJqm7X1RQvHm3c5NJ6xrZXrPPsLLoZNYE/e8P
+he0+sLD0ICn3CihzrjR1x72W4mse6LisXg8L5tni8hF1IoAN3k2Y2dz5MvdtpUyO
+2bx/qIf8rPzVZXS8HJxqx8dqwLPESA==
+=e+to
+-----END PGP SIGNATURE-----
+
+--Sig_/iBe.hE=bXl5Uz2dlh4SkLpM--
