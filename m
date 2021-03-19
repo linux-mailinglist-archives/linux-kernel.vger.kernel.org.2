@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5702934273F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABF4342750
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhCSU6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 16:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34962 "EHLO mail.kernel.org"
+        id S230483AbhCSVA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhCSU5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:57:52 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 945CA61919;
-        Fri, 19 Mar 2021 20:57:51 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 16:57:49 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org,
-        jeyu@kernel.org
-Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-Message-ID: <20210319165749.0f3c8281@gandalf.local.home>
-In-Reply-To: <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
-References: <20210318113156.407406787@infradead.org>
-        <20210318113610.739542434@infradead.org>
-        <20210318161308.vu3dhezp2lczch6f@treble>
-        <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
-        <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
-        <20210319140005.7ececb11@gandalf.local.home>
-        <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230468AbhCSVAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 293FB61985;
+        Fri, 19 Mar 2021 21:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616187609;
+        bh=51n7YqRNqtrHEAhT7dY3yOWsbSFEncOCiAugh/aBHv4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DTt5nmkCdLw1vFCF1mM58mAc/YYVnrdH0dTAP3Ta/eRBwyjnDkZYk/xpd5pm6IN1L
+         YMG5XIdu5gZpOCTuB3lRNyP8Cf185krpkajiEH07DtnlRIX583BZdmI40HLjKKb0Ol
+         xWEB9881UZGvtP5z9zaMM3Hiz4n66jT6Nuh7lNeO9jKfkhn4JFlEA4WemxYmgZAqwP
+         18FkKLpwfmjxkFyxuXd7TspMvTrjLGW38B2cSDMpIT6aBxQoXmQwKbLesce9n++7Oy
+         3lCABg+jG138J5Iypx9Gs2Fxw9MXKkgaR4LlmhxDPfQcvjhxH2k9KwlW2j72bm7ClG
+         VWQEpjzxRKVrQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1E796626EF;
+        Fri, 19 Mar 2021 21:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] selinux: vsock: Set SID for socket returned by accept()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161618760912.12397.14174236493108534163.git-patchwork-notify@kernel.org>
+Date:   Fri, 19 Mar 2021 21:00:09 +0000
+References: <20210319130541.2188184-1-dbrazdil@google.com>
+In-Reply-To: <20210319130541.2188184-1-dbrazdil@google.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        jeffv@google.com, adelva@google.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 20:34:24 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+Hello:
 
-> On Fri, Mar 19, 2021 at 02:00:05PM -0400, Steven Rostedt wrote:
-> > Would making __exit code the same as init code work? That is, load it just
-> > like module init code is loaded, and free it when the init code is freed  
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri, 19 Mar 2021 13:05:41 +0000 you wrote:
+> For AF_VSOCK, accept() currently returns sockets that are unlabelled.
+> Other socket families derive the child's SID from the SID of the parent
+> and the SID of the incoming packet. This is typically done as the
+> connected socket is placed in the queue that accept() removes from.
 > 
-> As stated, yes. But it must then also identify as init through
-> within_module_init().
+> Reuse the existing 'security_sk_clone' hook to copy the SID from the
+> parent (server) socket to the child. There is no packet SID in this
+> case.
+> 
+> [...]
 
-I think that's doable. Since the usecases for that appear to be mostly
-about "think code may no longer exist after it is used". Thus, having exit
-code act just like init code when UNLOAD is not set, appears appropriate.
+Here is the summary with links:
+  - [v2] selinux: vsock: Set SID for socket returned by accept()
+    https://git.kernel.org/netdev/net/c/1f935e8e72ec
 
-Jessica, please correct me if I'm wrong.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks,
 
--- Steve
