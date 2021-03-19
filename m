@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75366342753
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05760342764
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhCSVBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:01:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9529 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231136AbhCSVAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:00:46 -0400
-IronPort-SDR: aHzW9bhQipc9hNzzeInWZlqPynN1vHuixz4OVeZAGsXK6qf9JRdPUMoGnPR0Q4Ziy59Rc17RLC
- IBTfb49+05oA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="169902284"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="169902284"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:00:45 -0700
-IronPort-SDR: gxmIQULOVcqooQHk7e0b9w0C/LmhVNefk/UJ4QKlXOHDTwzcV1PkQ2nHwNxTpV+mqqDYujWCZJ
- jSDrupOGAv4w==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="413657275"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 14:00:45 -0700
-Date:   Fri, 19 Mar 2021 21:00:37 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH v5 1/3] x86/cpufeatures: Enumerate #DB for bus lock
- detection
-Message-ID: <YFUQ9fNQc1IPZd5z@otcwcpicx3.sc.intel.com>
-References: <20210313054910.2503968-1-fenghua.yu@intel.com>
- <20210313054910.2503968-2-fenghua.yu@intel.com>
- <877dm26fvo.fsf@nanos.tec.linutronix.de>
+        id S230142AbhCSVEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhCSVEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:04:25 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5185C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:04:14 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 30so5717230qva.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y/nktInARZ9hXpgu975gOKxpjGnLE59YkaWuoK4EiJg=;
+        b=IWB65NV/0TVHXWZlbFoIcFqEyWSU9uty0Pga1bF9DbCnhG47C98RH1PgNs8LukWHaP
+         pSitF5bVqt/9MXnTFHZZD/kXJ2E7o7U8s5cm4d3nF7Gz3OW+jM/45sXGXIWpT8nKRpiI
+         2dXwoLfBwq6IV9uPSGTwLvKlexZehvivmNDKuLk1JMkkOre1EPZ1pGchw+ox9ePrDkUI
+         WiIo74rnSwW0Ei0bEYbqs/mN+sKjYX3aYpV+BH3pBoiprqXgVIKwyZfCcjc9h9zQXQeR
+         dO7QgkMmjoH2rxQniI28l3xqM6Bj751+F+hT2+AmVla2uk04tgLRi+9w20sbDi14Znt8
+         BtxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y/nktInARZ9hXpgu975gOKxpjGnLE59YkaWuoK4EiJg=;
+        b=sjf5i5ZZGWd4j6oS+GJNX5blNFSOvzMWDzBefOyULrBarbQbABpND3KYpKilwQOTm4
+         OeFM7gU20C/6ev/EwzYl6z/3VfDZG2naO66Oi85HlZNHxt0WaNR0KIZ9cCOnUmeMVbr1
+         lkTcyAVFqf1hLGcQVdBPi7DfbX+DrVxY6rPXMfGUOuEWU6KdJjQk73DxmT2r4Vn+gOQo
+         Oyl8YAQ/BobyzWms5bgnaa+VbJTmMKR1FEn9XQcAA2gK1qqhbaGCg/353HSCoh1FlxXO
+         GJ8FCtYHZwGHDbcHGZmcPoI9xyAvoKj8v1YFBK9melZXvSozQlcKT/F5NtbVcGuwWc9I
+         EOTg==
+X-Gm-Message-State: AOAM532wuMYZtaf+p21srxqylHWKEyTv6uMtRzaEoofdb6D2pWhWXYJk
+        kHQ9P29TE7ib1mmwu44ccWM=
+X-Google-Smtp-Source: ABdhPJxTFrrldOnI2XcSJh1QtcrvLUsfFeBy7k+X2gNuf700iTYmfI1H+DP53YY4rKawgGE681kwVQ==
+X-Received: by 2002:a05:6214:262a:: with SMTP id gv10mr11350351qvb.50.1616187853526;
+        Fri, 19 Mar 2021 14:04:13 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.27])
+        by smtp.gmail.com with ESMTPSA id v5sm4540713qtq.26.2021.03.19.14.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 14:04:12 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     unixbhaskar@gmail.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] lib: Fix a typo
+Date:   Sat, 20 Mar 2021 02:31:55 +0530
+Message-Id: <20210319210155.6793-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dm26fvo.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 09:35:39PM +0100, Thomas Gleixner wrote:
-> On Sat, Mar 13 2021 at 05:49, Fenghua Yu wrote:
-> > A bus lock is acquired though either split locked access to
-> 
-> s/though/through/
-> either a 
-> > Some CPUs have ability to notify the kernel by an #DB trap after a user
-> 
-> the ability
 
-Thank you for your review, Thomas! Will fix the issues.
+s/funtion/function/
 
--Fenghua
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ lib/list_sort.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/list_sort.c b/lib/list_sort.c
+index 52f0c258c895..282fe269f16a 100644
+--- a/lib/list_sort.c
++++ b/lib/list_sort.c
+@@ -107,7 +107,7 @@ static void merge_final(void *priv, cmp_func cmp, struct list_head *head,
+  * @head: the list to sort
+  * @cmp: the elements comparison function
+  *
+- * The comparison funtion @cmp must return > 0 if @a should sort after
++ * The comparison function @cmp must return > 0 if @a should sort after
+  * @b ("@a > @b" if you want an ascending sort), and <= 0 if @a should
+  * sort before @b *or* their original order should be preserved.  It is
+  * always called with the element that came first in the input in @a,
+--
+2.26.2
+
