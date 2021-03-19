@@ -2,63 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA253418A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2594F3418AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhCSJmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229772AbhCSJmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1818864F6A;
-        Fri, 19 Mar 2021 09:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616146956;
-        bh=jCtEid/z5ZgFFSrjZaWsDGBnuHOdSOCLQc/DANzNHY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X0TFF/tdPUt1IKK1XMMhpxkDblQrU7ZhkR73+maugvcD2vJYsDzJ7g3RuvdNyIqBu
-         tUm8rlK6zeurbnk6wD+DocIpPmYR7p3iWEOf3ZRRYUix0qKNplkp3/0xZFlezAInz+
-         E7uY7mrVEqCKeRdj/t3f/qjvI0wIGAN1P2G79FxE=
-Date:   Fri, 19 Mar 2021 10:42:34 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/306] 5.11.7-rc1 review
-Message-ID: <YFRyCn+tZ4rdz43H@kroah.com>
-References: <20210315135507.611436477@linuxfoundation.org>
- <20210316211443.GD60156@roeck-us.net>
+        id S229745AbhCSJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:44:21 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:37628 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhCSJoS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 05:44:18 -0400
+Received: by mail-il1-f197.google.com with SMTP id a14so15877865ilj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 02:44:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=uknfhiMqksBM9hkMatz/l2UoJF3sQR2ymLAiLiFEZSU=;
+        b=YZRJNUy28oxZLvg9sqlozSyKd8dX3QSsE7ooLh86GDtfSs5n+ok9gYuu2Iox3yXOzl
+         HZ86Xa06PQwbQ0YPfjEZk0xItJOIZgwjIOYYwIhmZnDRjU1BeXFugEOnXSklTpU5Sxwf
+         bdNHRpFjcnXnNUVp2PNyC9MkK2KlHRwAzavyf07Ef5MAu+kWttgWzoSRIYkIDKM2seda
+         ykZGVXHL/qnO2oT5EpSFA88m96v3sFmb2FZryneqUcYbOdDmO1/liEp02+U8OSlbdGVP
+         DXaGCLvE1r+oYbJdx1Wq/2QDSmKBdhUD4tuxKWKQ058ZMOj5dBh8lQm2FS8OLZzcuQpf
+         z39Q==
+X-Gm-Message-State: AOAM532QVbaqPs3zxM5W+TGzZQHTY3GpR+mjVrcA9zW3q2PMTa4IXOkD
+        GZBLZV+M/q9ztlXx4frSXnWtaAoh3P9IkYeDwOhyP1sru3gk
+X-Google-Smtp-Source: ABdhPJz0qb78/BiPZ5MGBbbRVgHLoQX32MjXzVtLbWpjDQap5yfVbHfZJdEl/s9gXJtxZTpwArL/dIMb2egc9mZv0jVVqCrFbdRj
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316211443.GD60156@roeck-us.net>
+X-Received: by 2002:a05:6e02:1baf:: with SMTP id n15mr2101812ili.190.1616147058200;
+ Fri, 19 Mar 2021 02:44:18 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 02:44:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004f14c105bde08f75@google.com>
+Subject: [syzbot] upstream boot error: WARNING in __context_tracking_enter
+From:   syzbot <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, linux-kernel@vger.kernel.org,
+        mhiramat@kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 02:14:43PM -0700, Guenter Roeck wrote:
-> On Mon, Mar 15, 2021 at 02:51:03PM +0100, gregkh@linuxfoundation.org wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > 
-> > This is the start of the stable review cycle for the 5.11.7 release.
-> > There are 306 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 17 Mar 2021 13:54:26 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 436 pass: 436 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+Hello,
 
-Thanks for testing them all and letting me know.
+syzbot found the following issue on:
 
-greg k-h
+HEAD commit:    8b12a62a Merge tag 'drm-fixes-2021-03-19' of git://anongit..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17e815aed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cfeed364fc353c32
+dashboard link: https://syzkaller.appspot.com/bug?extid=f09a12b2c77bfbbf51bd
+userspace arch: arm
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com
+
+l2tp_core: L2TP core driver, V2.0
+l2tp_ip: L2TP IP encapsulation support (L2TPv3)
+l2tp_netlink: L2TP netlink interface
+l2tp_eth: L2TP ethernet pseudowire support (L2TPv3)
+l2tp_ip6: L2TP IP encapsulation support for IPv6 (L2TPv3)
+8021q: 802.1Q VLAN Support v1.8
+sctp: Hash tables configured (bind 64/102)
+NET: Registered protocol family 21
+Registered RDS/infiniband transport
+Registered RDS/tcp transport
+NET: Registered protocol family 43
+9pnet: Installing 9P2000 support
+Key type dns_resolver registered
+Key type ceph registered
+libceph: loaded (mon/osd proto 15/24)
+NET: Registered protocol family 40
+Registering SWP/SWPB emulation handler
+registered taskstats version 1
+Loading compiled-in X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+zswap: loaded using pool lzo/zbud
+Key type ._fscrypt registered
+Key type .fscrypt registered
+Key type fscrypt-provisioning registered
+Key type big_key registered
+Key type encrypted registered
+ima: No TPM chip found, activating TPM-bypass!
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 64 bytes)
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+  #3: ARM AC'97 Interface PL041 rev0 at 0x1c040000, irq 36
+uart-pl011 1c090000.serial: no DMA platform data
+md: Skipping autodetection of RAID arrays. (raid=autodetect will force)
+EXT4-fs (vda): mounted filesystem without journal. Opts: (null). Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 253:0.
+devtmpfs: mounted
+Freeing unused kernel memory: 2048K
+Run /sbin/init as init process
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
+WARNING: CPU: 0 PID: 1 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
+Modules linked in:
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc3-syzkaller #0
+Hardware name: ARM-Versatile Express
+Backtrace: 
+[<81804310>] (dump_backtrace) from [<81804584>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
+ r7:00000080 r6:60000193 r5:00000000 r4:82b58444
+[<8180456c>] (show_stack) from [<8180bc58>] (__dump_stack lib/dump_stack.c:79 [inline])
+[<8180456c>] (show_stack) from [<8180bc58>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
+[<8180bba0>] (dump_stack) from [<81805118>] (panic+0x130/0x378 kernel/panic.c:231)
+ r7:81f487d4 r6:82a390e4 r5:00000000 r4:82c6b0d8
+[<81804fe8>] (panic) from [<802447b4>] (__warn+0xb0/0x164 kernel/panic.c:605)
+ r3:82a2248c r2:00000000 r1:5b71e000 r0:81f487d4
+ r7:0000010f
+[<80244704>] (__warn) from [<818053c8>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
+ r7:8028c4b4 r6:0000010f r5:81f40c30 r4:00000000
+[<81805364>] (warn_slowpath_fmt) from [<8028c4b4>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
+[<81805364>] (warn_slowpath_fmt) from [<8028c4b4>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
+ r8:00000000 r7:82a22498 r6:828ac940 r5:8181fbb0 r4:00000001
+[<8028c3c4>] (__seqprop_assert.constprop.0) from [<8028ea54>] (vtime_user_enter+0x1c/0x90 kernel/sched/cputime.c:709)
+ r5:8181fbb0 r4:834f0000
+[<8028ea38>] (vtime_user_enter) from [<8181fbb0>] (__context_tracking_enter+0x148/0x334 kernel/context_tracking.c:82)
+ r7:82a22498 r6:828ac940 r5:ffffe000 r4:00000001
+[<8181fa68>] (__context_tracking_enter) from [<80417170>] (context_tracking_enter kernel/context_tracking.c:122 [inline])
+[<8181fa68>] (__context_tracking_enter) from [<80417170>] (context_tracking_enter+0x54/0x84 kernel/context_tracking.c:106)
+ r7:00000000 r6:00000000 r5:60000193 r4:00000001
+[<8041711c>] (context_tracking_enter) from [<804171bc>] (user_enter include/linux/context_tracking.h:28 [inline])
+[<8041711c>] (context_tracking_enter) from [<804171bc>] (context_tracking_user_enter+0x1c/0x20 kernel/context_tracking.c:130)
+ r5:81820218 r4:00000000
+[<804171a0>] (context_tracking_user_enter) from [<802000d4>] (no_work_pending+0x8/0x38)
+Exception stack(0x834dffb0 to 0x834dfff8)
+ffa0:                                     00000000 00000000 00000000 00000000
+ffc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+ffe0: 00000000 7ec68ef0 00000000 76ee5a00 00000010 00000000
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
