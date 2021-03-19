@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDCA341C7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D97C341C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhCSMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58568 "EHLO mail.kernel.org"
+        id S230510AbhCSMU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231246AbhCSMUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B27FB6146D;
-        Fri, 19 Mar 2021 12:20:26 +0000 (UTC)
+        id S230419AbhCSMT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:19:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 817336146D;
+        Fri, 19 Mar 2021 12:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156427;
-        bh=ZcEPbgVJdj6iNRdNVfImzjCi0acB2vTyFwj9mjIKps0=;
+        s=korg; t=1616156387;
+        bh=gGn674vj9wlOaIzve2iJMfJkDkxEk8z8fFXS1GdD+do=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X5dXOuwxuCxW6VIkBd2fwHKjvZDpV3TdcQAmJhmzYxZ7TwMjKs0vztRYt37tvl1P7
-         JO1j8Bu2NmqeLBmfqBFK+gMEXmMV+mXhn+uFrysY+92L1Y8vDBKCjsuDDIV04U0+dz
-         kgzj6c05nUwY5gawhmUBGdS7tLWwQy3LTfacRdsE=
+        b=guOmwLniliPa5TVccn5TM7cCUnuJGhsWpXOR7BcPZVvXFva2i6HyAu9ygc/BVDbCB
+         4xQPs/LlgH1ls5thnWiAFclr6b0wOs5tNvQVt10F/MdPC8ovrH3G+PUj3rMs4o9M25
+         IP3IsbdaOqHRYWviFHAO9QmZ/aHaNdh8qDYnVnSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 01/31] io_uring: dont attempt IO reissue from the ring exit path
-Date:   Fri, 19 Mar 2021 13:18:55 +0100
-Message-Id: <20210319121747.252708051@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 18/18] net: dsa: b53: Support setting learning on port
+Date:   Fri, 19 Mar 2021 13:18:56 +0100
+Message-Id: <20210319121746.074136279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
-References: <20210319121747.203523570@linuxfoundation.org>
+In-Reply-To: <20210319121745.449875976@linuxfoundation.org>
+References: <20210319121745.449875976@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,40 +40,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 7c977a58dc83366e488c217fd88b1469d242bee5 ]
+commit f9b3827ee66cfcf297d0acd6ecf33653a5f297ef upstream.
 
-If we're exiting the ring, just let the IO fail with -EAGAIN as nobody
-will care anyway. It's not the right context to reissue from.
+Add support for being able to set the learning attribute on port, and
+make sure that the standalone ports start up with learning disabled.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+We can remove the code in bcm_sf2 that configured the ports learning
+attribute because we want the standalone ports to have learning disabled
+by default and port 7 cannot be bridged, so its learning attribute will
+not change past its initial configuration.
+
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/io_uring.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/dsa/b53/b53_common.c |   18 ++++++++++++++++++
+ drivers/net/dsa/b53/b53_regs.h   |    1 +
+ drivers/net/dsa/bcm_sf2.c        |    5 -----
+ 3 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 00ef0b90d149..68508f010b90 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2717,6 +2717,13 @@ static bool io_rw_reissue(struct io_kiocb *req, long res)
- 		return false;
- 	if ((res != -EAGAIN && res != -EOPNOTSUPP) || io_wq_current_is_worker())
- 		return false;
-+	/*
-+	 * If ref is dying, we might be running poll reap from the exit work.
-+	 * Don't attempt to reissue from that path, just let it fail with
-+	 * -EAGAIN.
-+	 */
-+	if (percpu_ref_is_dying(&req->ctx->refs))
-+		return false;
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -514,6 +514,19 @@ void b53_imp_vlan_setup(struct dsa_switc
+ }
+ EXPORT_SYMBOL(b53_imp_vlan_setup);
  
- 	lockdep_assert_held(&req->ctx->uring_lock);
++static void b53_port_set_learning(struct b53_device *dev, int port,
++				  bool learning)
++{
++	u16 reg;
++
++	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
++	if (learning)
++		reg &= ~BIT(port);
++	else
++		reg |= BIT(port);
++	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
++}
++
+ int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
+ {
+ 	struct b53_device *dev = ds->priv;
+@@ -527,6 +540,7 @@ int b53_enable_port(struct dsa_switch *d
+ 	cpu_port = ds->ports[port].cpu_dp->index;
  
--- 
-2.30.1
-
+ 	b53_br_egress_floods(ds, port, true, true);
++	b53_port_set_learning(dev, port, false);
+ 
+ 	if (dev->ops->irq_enable)
+ 		ret = dev->ops->irq_enable(dev, port);
+@@ -645,6 +659,7 @@ static void b53_enable_cpu_port(struct b
+ 	b53_brcm_hdr_setup(dev->ds, port);
+ 
+ 	b53_br_egress_floods(dev->ds, port, true, true);
++	b53_port_set_learning(dev, port, false);
+ }
+ 
+ static void b53_enable_mib(struct b53_device *dev)
+@@ -1704,6 +1719,8 @@ int b53_br_join(struct dsa_switch *ds, i
+ 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
+ 	dev->ports[port].vlan_ctl_mask = pvlan;
+ 
++	b53_port_set_learning(dev, port, true);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(b53_br_join);
+@@ -1751,6 +1768,7 @@ void b53_br_leave(struct dsa_switch *ds,
+ 		vl->untag |= BIT(port) | BIT(cpu_port);
+ 		b53_set_vlan_entry(dev, pvid, vl);
+ 	}
++	b53_port_set_learning(dev, port, false);
+ }
+ EXPORT_SYMBOL(b53_br_leave);
+ 
+--- a/drivers/net/dsa/b53/b53_regs.h
++++ b/drivers/net/dsa/b53/b53_regs.h
+@@ -115,6 +115,7 @@
+ #define B53_UC_FLOOD_MASK		0x32
+ #define B53_MC_FLOOD_MASK		0x34
+ #define B53_IPMC_FLOOD_MASK		0x36
++#define B53_DIS_LEARNING		0x3c
+ 
+ /*
+  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -172,11 +172,6 @@ static int bcm_sf2_port_setup(struct dsa
+ 	reg &= ~P_TXQ_PSM_VDD(port);
+ 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+ 
+-	/* Enable learning */
+-	reg = core_readl(priv, CORE_DIS_LEARN);
+-	reg &= ~BIT(port);
+-	core_writel(priv, reg, CORE_DIS_LEARN);
+-
+ 	/* Enable Broadcom tags for that port if requested */
+ 	if (priv->brcm_tag_mask & BIT(port))
+ 		b53_brcm_hdr_setup(ds, port);
 
 
