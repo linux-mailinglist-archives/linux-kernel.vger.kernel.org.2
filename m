@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92468342693
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D0134268D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhCST5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhCST5L (ORCPT
+        id S230379AbhCST4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:56:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58032 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230264AbhCST4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:57:11 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C91C06175F;
-        Fri, 19 Mar 2021 12:57:10 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id 94so7753489qtc.0;
-        Fri, 19 Mar 2021 12:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mq4RLtzbMNYYLSOlP1OIlaJAP6JC9t4vaA4+WzcZxbs=;
-        b=o5PmwzfOFbrI+UkXMquda5EBJsCLIhdIa/jPrgB3UdzIZ0MtU6PZxWkerbqiQby1JQ
-         +cOxIfvvWOfMXI2DB+r841cGj2NnEgde/O0wepXDeCYYph8mYhKDUzQK3+g20RxrMUfm
-         Jm6jk6L4z9bdNC8xuKnIBrg2iTElT1odEDFDFeIyaeKJBw/x1WtT98QYqPnNV6IVPK/b
-         79FrdYH76TfhzL63DWcHZnUFqok6lGgsAjn4T7/2OSWHcQOuz5XetDc+LT8HhTArpdMa
-         ng7j4Jvk7bYP+nmm6qZ0VJ9SfU7jhxM73oQN9zCtnBBuw64ATHhM4zJMPLWtqq49hysN
-         YU8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mq4RLtzbMNYYLSOlP1OIlaJAP6JC9t4vaA4+WzcZxbs=;
-        b=Hs6ggk8S8awiwGx7Z9Zmxmvz4a57Bo/8VPukCxl9Ip7ftXFwSmOXMPJ4i5Cd/SPR0P
-         INS97UV31YcZXaqMO8PRXqeJ337aF+W3oxFyQjltCY/6pVd1tNO07LpqCUKra7l39LSS
-         adUx6pXOd2QH6Db6xoAP872C8pU/P07VLiD9AiPAIAbqRDFVsWQ4haDP3Y54pKsaowdx
-         of847g1DOrnZ9UYCkQp3o+uVfWzIDsjxhXC2By1SBQoFyaBkbszezeDWz5qPalsbVZKd
-         aJvnr//y5eZZUND15uXEn88HhAxt9RlGxDMMOIpO/8NAACtK2YBD0wnIxIKSUCuJqah5
-         8stg==
-X-Gm-Message-State: AOAM533k1+YQXQjJJXgJ9EKbqlD3Qb5JZ30yKh5PlnrIHSMUQPKbfvzs
-        6TLC3+fIoVO1FSoB1dl2pFc=
-X-Google-Smtp-Source: ABdhPJzbPOwfzs6bCo5xs9rkVEFoD9tXan5rfabnghVZUDfyensGaL4rk4W9SqOKdkAbWpqI7Y9jrw==
-X-Received: by 2002:ac8:5313:: with SMTP id t19mr315700qtn.148.1616183829697;
-        Fri, 19 Mar 2021 12:57:09 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.27])
-        by smtp.gmail.com with ESMTPSA id i9sm5311076qko.69.2021.03.19.12.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 12:57:09 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] Trivial typo fix and sentence construction for better readability
-Date:   Sat, 20 Mar 2021 01:24:51 +0530
-Message-Id: <20210319195451.32456-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 19 Mar 2021 15:56:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616183772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dWYozCwlu1FczO30gGHipO2kB8X8eyCR6cAqemLMC8E=;
+        b=PaXR5WV5qd78CInNsqT4Urj7vm6NvgFg9B+ZQ6fvzrRktdA2vNh9j8S9oBAr6/C1oPaZ6W
+        Z6tXkeIYcQrQIMG1wKGtKCsOYvrvY7/6TQu5DzLY5y4QYvkX4apfqtB2b5cMiAgQ5QbXNR
+        +tdZwUn7BIEMLdDmCyue7aPs/jakK0w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-CKBav8n4O_C7CKrR0QsitA-1; Fri, 19 Mar 2021 15:56:08 -0400
+X-MC-Unique: CKBav8n4O_C7CKrR0QsitA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BABC11084D69;
+        Fri, 19 Mar 2021 19:56:06 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-114.rdu2.redhat.com [10.10.114.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3F1C60C04;
+        Fri, 19 Mar 2021 19:56:02 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 380D3220BCF; Fri, 19 Mar 2021 15:56:02 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu
+Cc:     vgoyal@redhat.com, lhenriques@suse.de, dgilbert@redhat.com,
+        seth.forshee@canonical.com
+Subject: [PATCH 0/3] fuse: Fix clearing SGID when access ACL is set
+Date:   Fri, 19 Mar 2021 15:55:44 -0400
+Message-Id: <20210319195547.427371-1-vgoyal@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
- s/funtion/functions/
+Luis reported that xfstests generic/375 fails with virtiofs. Little
+debugging showed that when posix access acl is set that in some
+cases SGID needs to be cleared and that does not happen with virtiofs.
 
- Plus the sentence reconstructed for better readability.
+Setting posix access acl can lead to mode change and it can also lead
+to clear of SGID. fuse relies on file server taking care of all
+the mode changes. But file server does not have enough information to
+determine whether SGID should be cleared or not.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Changes from V1:
-  Randy's suggestions incorporated.
+Hence this patch series add support to send a flag in SETXATTR message
+to tell server to clear SGID.
 
- block/blk-mq-tag.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I have staged corresponding virtiofsd patches here.
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 9c92053e704d..c2bef283db63 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -373,8 +373,8 @@ static bool blk_mq_tagset_count_completed_rqs(struct request *rq,
- }
+https://github.com/rhvgoyal/qemu/commits/acl-sgid-setxattr-flag
 
- /**
-- * blk_mq_tagset_wait_completed_request - wait until all completed req's
-- * complete funtion is run
-+ * blk_mq_tagset_wait_completed_request - wait until all the  req's
-+ *  functions completed their run
-  * @tagset:	Tag set to drain completed request
-  *
-  * Note: This function has to be run after all IO queues are shutdown
---
-2.26.2
+With these patches applied "./check -g acl" passes now on virtiofs.
+
+Vivek Goyal (3):
+  posic_acl: Add a helper determine if SGID should be cleared
+  fuse: Add support for FUSE_SETXATTR_V2
+  fuse: Add a flag FUSE_SETXATTR_ACL_KILL_SGID to kill SGID
+
+ fs/fuse/acl.c             |  7 ++++++-
+ fs/fuse/fuse_i.h          |  5 ++++-
+ fs/fuse/inode.c           |  4 +++-
+ fs/fuse/xattr.c           | 21 +++++++++++++++------
+ fs/posix_acl.c            |  3 +--
+ include/linux/posix_acl.h | 11 +++++++++++
+ include/uapi/linux/fuse.h | 17 +++++++++++++++++
+ 7 files changed, 57 insertions(+), 11 deletions(-)
+
+-- 
+2.25.4
 
