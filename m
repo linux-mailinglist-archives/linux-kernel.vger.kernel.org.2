@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0AC342906
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E30342920
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 00:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhCSXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 19:02:31 -0400
-Received: from mga03.intel.com ([134.134.136.65]:16264 "EHLO mga03.intel.com"
+        id S229787AbhCSXXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 19:23:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhCSXCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 19:02:09 -0400
-IronPort-SDR: oK4UqgX8nC47hxPv7nJh4IIdjma3Hd+NJwS8ZbJyZHvbRtQTMRfRGOxHZCDZ9jVQODaGRiSRsp
- X0l0hnB6MtjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="190017060"
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="190017060"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 16:02:08 -0700
-IronPort-SDR: WbKmoz4sUiiKsZfFCtm4prI2NIZY4twXdNZidjUx4LJOEAF5uEbhqkDf7cqil1QvjdV1BsnhEm
- 9UzkuZFfTOdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="451030855"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 16:02:07 -0700
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-To:     "Gong, Richard" <richard.gong@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <21a8817a-e63e-6029-69a6-6bae5398439a@linux.intel.com>
-Date:   Fri, 19 Mar 2021 18:22:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229646AbhCSXXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 19:23:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C1726198A;
+        Fri, 19 Mar 2021 23:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616196222;
+        bh=No8jxwVXbt0baLG77yLL4xAfkyo5ppTWSVF534G6q1k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eIyGGnJc4XJKPHeFjat/7fj7brhRbrtq0gpJ1TfDglry0iHT+Bbd7kmQorMQvS4Hi
+         KXMP1149WBbMiDs1dAlPNEKui7W7zKuZtRl7uWDZaKl296kMbSUC512xSLVfNVkhWQ
+         yPufj9DSM3REcfQ5vJ6CXI45YQD5F1miYjd3ir2ggDT0wrrC8EaF9j0u4RkippFvw6
+         pUPXgBOZPCqMk+zfvWhOfpiH+axE1r1OJWVLcpsdu7nYz3kECazvJhfcLChMcNogwa
+         85WSvmUR2cdhy2eN2pW8CnvXKBSwFesd7XRilGMGe0YGchDX10PpTgHgMfI2msOWGy
+         rU4y9s8MOHIKA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D56DB35239E5; Fri, 19 Mar 2021 16:23:41 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 16:23:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Maninder Singh <maninder1.s@samsung.com>, linux@armlinux.org.uk,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        0x7f454c46@gmail.com, viro@zeniv.linux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, a.sahrawat@samsung.com,
+        Vaneet Narang <v.narang@samsung.com>
+Subject: Re: [PATCH 2/3] mm/slub: Add Support for free path information of an
+ object.
+Message-ID: <20210319232341.GS2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1615891032-29160-1-git-send-email-maninder1.s@samsung.com>
+ <CGME20210316103736epcas5p3758de57b57c732074acc0989e563cc2e@epcas5p3.samsung.com>
+ <1615891032-29160-2-git-send-email-maninder1.s@samsung.com>
+ <cd57a6e5-ce82-3cc5-4bc8-850ddc0c2b94@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd57a6e5-ce82-3cc5-4bc8-850ddc0c2b94@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 01:35:37PM +0100, Vlastimil Babka wrote:
+> On 3/16/21 11:37 AM, Maninder Singh wrote:
+> > Adding support for inforamtion of free path along with allocation
+> > path of an object:
+> > 
+> > slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 0 size 64 allocated at meminfo_proc_show+0x40/0x4fc
+> > [   20.192078]     meminfo_proc_show+0x40/0x4fc
+> > [   20.192263]     seq_read_iter+0x18c/0x4c4
+> > [   20.192430]     proc_reg_read_iter+0x84/0xac
+> > [   20.192617]     generic_file_splice_read+0xe8/0x17c
+> > [   20.192816]     splice_direct_to_actor+0xb8/0x290
+> > [   20.193008]     do_splice_direct+0xa0/0xe0
+> > [   20.193185]     do_sendfile+0x2d0/0x438
+> > [   20.193345]     sys_sendfile64+0x12c/0x140
+> > [   20.193523]     ret_fast_syscall+0x0/0x58
+> > [   20.193695]     0xbeeacde4
+> > [   20.193822]  Free path:
+> > [   20.193935]     meminfo_proc_show+0x5c/0x4fc
+> > [   20.194115]     seq_read_iter+0x18c/0x4c4
+> > [   20.194285]     proc_reg_read_iter+0x84/0xac
+> > [   20.194475]     generic_file_splice_read+0xe8/0x17c
+> > [   20.194685]     splice_direct_to_actor+0xb8/0x290
+> > [   20.194870]     do_splice_direct+0xa0/0xe0
+> > [   20.195014]     do_sendfile+0x2d0/0x438
+> > [   20.195174]     sys_sendfile64+0x12c/0x140
+> > [   20.195336]     ret_fast_syscall+0x0/0x58
+> > [   20.195491]     0xbeeacde4
+> > 
+> > Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+> > Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Hi Moritz,
+I have queued 1/3 and 2/3, thank you both!
 
-Thanks for approving the 1st patch of my version 5 patchest, which 
-submitted on 02/09/21.
+Would any of the ARM folks be willing to ack 3/3?
 
-Can you help review the remaining 6 patches from the same version 5 
-patchset? I need your ACKs to move forward, or please let me know if 
-additional work is need.
-
-Many thanks for your time again!
-
-Regards,
-Richard
-
-
-On 2/25/21 7:07 AM, Gong, Richard wrote:
-> Hi Moritz,
-> 
-> Sorry for asking.
-> 
-> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
-> 
-> Regards,
-> Richard
-> 
-> -----Original Message-----
-> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
-> Sent: Tuesday, February 9, 2021 4:20 PM
-> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
-> Cc: Gong, Richard <richard.gong@intel.com>
-> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-> 
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
-> 
-> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
-> 
-> Bitstream authentication makes sure a signed bitstream has valid signatures.
-> 
-> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
-> 
-> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
-> 
-> Richard Gong (7):
->    firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
->    firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
->    firmware: stratix10-svc: extend SVC driver to get the firmware version
->    fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
->    fpga: of-fpga-region: add authenticate-fpga-config property
->    dt-bindings: fpga: add authenticate-fpga-config property
->    fpga: stratix10-soc: extend driver for bitstream authentication
-> 
->   .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
->   drivers/firmware/stratix10-svc.c                   | 12 ++++-
->   drivers/fpga/of-fpga-region.c                      | 24 ++++++---
->   drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
->   include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
->   .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
->   include/linux/fpga/fpga-mgr.h                      |  3 ++
->   7 files changed, 125 insertions(+), 18 deletions(-)
-> 
-> --
-> 2.7.4
-> 
+							Thanx, Paul
