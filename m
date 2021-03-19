@@ -2,107 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B63334217E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C275342182
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhCSQMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:12:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34622 "EHLO mx2.suse.de"
+        id S230305AbhCSQNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:13:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:55706 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229987AbhCSQLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:11:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DF226AC75;
-        Fri, 19 Mar 2021 16:11:39 +0000 (UTC)
-Subject: Re: [PATCH 1/7] mm/page_alloc: Move gfp_allowed_mask enforcement to
- prepare_alloc_pages
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
- <20210312154331.32229-2-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <2b5b3bea-c247-0564-f2d4-1dad28f176ed@suse.cz>
-Date:   Fri, 19 Mar 2021 17:11:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230063AbhCSQN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:13:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9435231B;
+        Fri, 19 Mar 2021 09:13:25 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBEB73F718;
+        Fri, 19 Mar 2021 09:13:22 -0700 (PDT)
+Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        hch@lst.de, m.szyprowski@samsung.com
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxarm@huawei.com
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <1616160348-29451-2-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
+Date:   Fri, 19 Mar 2021 16:13:17 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210312154331.32229-2-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1616160348-29451-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/12/21 4:43 PM, Mel Gorman wrote:
-> __alloc_pages updates GFP flags to enforce what flags are allowed
-> during a global context such as booting or suspend. This patch moves the
-> enforcement from __alloc_pages to prepare_alloc_pages so the code can be
-> shared between the single page allocator and a new bulk page allocator.
+On 2021-03-19 13:25, John Garry wrote:
+> Move the IOVA size power-of-2 rcache roundup into the IOVA allocator.
 > 
-> When moving, it is obvious that __alloc_pages() and __alloc_pages
-> use different names for the same variable. This is an unnecessary
-> complication so rename gfp_mask to gfp in prepare_alloc_pages() so the
-> name is consistent.
+> This is to eventually make it possible to be able to configure the upper
+> limit of the IOVA rcache range.
 > 
-> No functional change.
-
-Hm, I have some doubts.
-
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 > ---
->  mm/page_alloc.c | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
+>   drivers/iommu/dma-iommu.c |  8 ------
+>   drivers/iommu/iova.c      | 51 ++++++++++++++++++++++++++-------------
+>   2 files changed, 34 insertions(+), 25 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 00b67c47ad87..f0c1d74ead6f 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4914,15 +4914,18 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->  	return page;
->  }
->  
-> -static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> +static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
->  		int preferred_nid, nodemask_t *nodemask,
->  		struct alloc_context *ac, gfp_t *alloc_gfp,
->  		unsigned int *alloc_flags)
->  {
-> -	ac->highest_zoneidx = gfp_zone(gfp_mask);
-> -	ac->zonelist = node_zonelist(preferred_nid, gfp_mask);
-> +	gfp &= gfp_allowed_mask;
-> +	*alloc_gfp = gfp;
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index af765c813cc8..15b7270a5c2a 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -429,14 +429,6 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
+>   
+>   	shift = iova_shift(iovad);
+>   	iova_len = size >> shift;
+> -	/*
+> -	 * Freeing non-power-of-two-sized allocations back into the IOVA caches
+> -	 * will come back to bite us badly, so we have to waste a bit of space
+> -	 * rounding up anything cacheable to make sure that can't happen. The
+> -	 * order of the unadjusted size will still match upon freeing.
+> -	 */
+> -	if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> -		iova_len = roundup_pow_of_two(iova_len);
+>   
+>   	dma_limit = min_not_zero(dma_limit, dev->bus_dma_limit);
+>   
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index e6e2fa85271c..e62e9e30b30c 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -179,7 +179,7 @@ iova_insert_rbtree(struct rb_root *root, struct iova *iova,
+>   
+>   static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
+>   		unsigned long size, unsigned long limit_pfn,
+> -			struct iova *new, bool size_aligned)
+> +			struct iova *new, bool size_aligned, bool fast)
+>   {
+>   	struct rb_node *curr, *prev;
+>   	struct iova *curr_iova;
+> @@ -188,6 +188,15 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
+>   	unsigned long align_mask = ~0UL;
+>   	unsigned long high_pfn = limit_pfn, low_pfn = iovad->start_pfn;
+>   
+> +	/*
+> +	 * Freeing non-power-of-two-sized allocations back into the IOVA caches
+> +	 * will come back to bite us badly, so we have to waste a bit of space
+> +	 * rounding up anything cacheable to make sure that can't happen. The
+> +	 * order of the unadjusted size will still match upon freeing.
+> +	 */
+> +	if (fast && size < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> +		size = roundup_pow_of_two(size);
+
+If this transformation is only relevant to alloc_iova_fast(), and we 
+have to add a special parameter here to tell whether we were called from 
+alloc_iova_fast(), doesn't it seem more sensible to just do it in 
+alloc_iova_fast() rather than here?
+
+But then the API itself has no strict requirement that a pfn passed to 
+free_iova_fast() wasn't originally allocated with alloc_iova(), so 
+arguably hiding the adjustment away makes it less clear that the 
+responsibility is really on any caller of free_iova_fast() to make sure 
+they don't get things wrong.
+
+Robin.
+
 > +
-
-...
-
-> @@ -4980,8 +4983,6 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
->  		return NULL;
->  	}
->  
-> -	gfp &= gfp_allowed_mask;
-> -	alloc_gfp = gfp;
->  	if (!prepare_alloc_pages(gfp, order, preferred_nid, nodemask, &ac,
->  			&alloc_gfp, &alloc_flags))
->  		return NULL;
-
-As a result, "gfp" doesn't have the restrictions by gfp_allowed_mask applied,
-only alloc_gfp does. But in case we go to slowpath, before
-going there we throw away the current alloc_gfp:
-
-    alloc_gfp = current_gfp_context(gfp);
-    ...
-    page = __alloc_pages_slowpath(alloc_gfp, ...);
-
-So we lost the gfp_allowed_mask restrictions here?
-
+>   	if (size_aligned)
+>   		align_mask <<= fls_long(size - 1);
+>   
+> @@ -288,21 +297,10 @@ void iova_cache_put(void)
+>   }
+>   EXPORT_SYMBOL_GPL(iova_cache_put);
+>   
+> -/**
+> - * alloc_iova - allocates an iova
+> - * @iovad: - iova domain in question
+> - * @size: - size of page frames to allocate
+> - * @limit_pfn: - max limit address
+> - * @size_aligned: - set if size_aligned address range is required
+> - * This function allocates an iova in the range iovad->start_pfn to limit_pfn,
+> - * searching top-down from limit_pfn to iovad->start_pfn. If the size_aligned
+> - * flag is set then the allocated address iova->pfn_lo will be naturally
+> - * aligned on roundup_power_of_two(size).
+> - */
+> -struct iova *
+> -alloc_iova(struct iova_domain *iovad, unsigned long size,
+> +static struct iova *
+> +__alloc_iova(struct iova_domain *iovad, unsigned long size,
+>   	unsigned long limit_pfn,
+> -	bool size_aligned)
+> +	bool size_aligned, bool fast)
+>   {
+>   	struct iova *new_iova;
+>   	int ret;
+> @@ -312,7 +310,7 @@ alloc_iova(struct iova_domain *iovad, unsigned long size,
+>   		return NULL;
+>   
+>   	ret = __alloc_and_insert_iova_range(iovad, size, limit_pfn + 1,
+> -			new_iova, size_aligned);
+> +			new_iova, size_aligned, fast);
+>   
+>   	if (ret) {
+>   		free_iova_mem(new_iova);
+> @@ -321,6 +319,25 @@ alloc_iova(struct iova_domain *iovad, unsigned long size,
+>   
+>   	return new_iova;
+>   }
+> +
+> +/**
+> + * alloc_iova - allocates an iova
+> + * @iovad: - iova domain in question
+> + * @size: - size of page frames to allocate
+> + * @limit_pfn: - max limit address
+> + * @size_aligned: - set if size_aligned address range is required
+> + * This function allocates an iova in the range iovad->start_pfn to limit_pfn,
+> + * searching top-down from limit_pfn to iovad->start_pfn. If the size_aligned
+> + * flag is set then the allocated address iova->pfn_lo will be naturally
+> + * aligned on roundup_power_of_two(size).
+> + */
+> +struct iova *
+> +alloc_iova(struct iova_domain *iovad, unsigned long size,
+> +	unsigned long limit_pfn,
+> +	bool size_aligned)
+> +{
+> +	return __alloc_iova(iovad, size, limit_pfn, size_aligned, false);
+> +}
+>   EXPORT_SYMBOL_GPL(alloc_iova);
+>   
+>   static struct iova *
+> @@ -433,7 +450,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
+>   		return iova_pfn;
+>   
+>   retry:
+> -	new_iova = alloc_iova(iovad, size, limit_pfn, true);
+> +	new_iova = __alloc_iova(iovad, size, limit_pfn, true, true);
+>   	if (!new_iova) {
+>   		unsigned int cpu;
+>   
+> 
