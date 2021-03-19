@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8456341D5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A446341D4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhCSMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:50:52 -0400
-Received: from mout.gmx.net ([212.227.17.20]:42783 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230131AbhCSMuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:50:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616158048;
-        bh=ot4zJ0YuFv09BC6CagdPaeT+OYONcIZl47TymXx88oU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=f2qapYJzSWlVnyvJLaAEjGu/FV4sjedoiWHftbP1ZK7Gk+ZUs8z8bM8PryEAa2t91
-         RqC617lRde/Mx/5xQ1AKL7fIewqxAd1AerVJiZaMNiZww69TJYDMSzT8yfhLnF1l49
-         K61lNQomEGcuP7B61+1TmanY8gFp6JVCWz14WRl4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [80.245.73.76] ([80.245.73.76]) by web-mail.gmx.net
- (3c-app-gmx-bs45.server.lan [172.19.170.97]) (via HTTP); Fri, 19 Mar 2021
- 13:47:28 +0100
+        id S229944AbhCSMsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhCSMsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:48:07 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E28CC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:48:06 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id 61so8970392wrm.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 05:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lLM567jy++V5tj0JbTzI0pIXAnLeH2flx+y9MhQyRIc=;
+        b=ZSDgmVBlygnWez8XhQnS2IGPakLEpKjAS592kRCM71MM4Foxb5sfZXQsG9FYTMiX/q
+         JtSms6yGHYk/QGWHaftDnv24X9TZrOOuF6Y5SwfuL5hfKqWhk5iW4C/2ZkOxAbsRrZgY
+         Ln4nwaCXlgl8MbnCEIY1/t1B32DNUmh6eLjJ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lLM567jy++V5tj0JbTzI0pIXAnLeH2flx+y9MhQyRIc=;
+        b=mxGmDHwRkqU8oMGOA/3Xox8SRkGrQpLwg6fXoD+wlAeZM882VU+rO0kiEKUkxIe2L+
+         qRpupHxbY8A803YkyiI0i0vdDIddcmWiif4VJW+XosFYiiBGO4tmviF1/IBfzxtL1dKa
+         JhLUpVVUpxdYpVxa760ncDsCnqZofEMiaMjHGSs0REPFCJP3Vc0gMyqaJhIF7vklz1r2
+         qO33iVAx8zzNkdRDA1cVBbyNkySMWkShqIVxzcRJaPqqc+VUeq8iJbekUs1598aTX8ds
+         aIorc+GTSuCNSyKXM4rr3S2X8Ip7M5zrxE8yhqiWXNwSgKtvskPukhmKh17ncP06rhdQ
+         ispg==
+X-Gm-Message-State: AOAM531ygyKTL4ngH5opg8FT7qpoVWv7ffD/CW9wFGgMOfHQb4+ZMno2
+        +dG3mQkEZnY4Ba2S2AVzfS4qFTAk6hj5i111U1c=
+X-Google-Smtp-Source: ABdhPJxdGJ+3oolwhSHgdJHaTFCj0frBhJX8jzAl/USYvyaFK971/SYPNmsV+Fd0x6EcBVkotbN2hA==
+X-Received: by 2002:adf:90c2:: with SMTP id i60mr4406446wri.75.1616158085063;
+        Fri, 19 Mar 2021 05:48:05 -0700 (PDT)
+Received: from vpa2.c.googlers.com.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id t8sm7970599wrr.10.2021.03.19.05.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 05:48:04 -0700 (PDT)
+From:   Vincent Palatin <vpalatin@chromium.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Vincent Palatin <vpalatin@chromium.org>
+Subject: [PATCHi v2] USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem
+Date:   Fri, 19 Mar 2021 13:48:02 +0100
+Message-Id: <20210319124802.2315195-1-vpalatin@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Message-ID: <trinity-9ff2d2c2-6be1-415f-bf29-a04849cb74dc-1616158048677@3c-app-gmx-bs45>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sander@svanheule.net, tsbogend@alpha.franken.de, john@phrozen.org
-Subject: Aw: Re: [PATCH net,v2] net: dsa: mt7530: setup core clock even in
- TRGMII mode
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 19 Mar 2021 13:47:28 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210319102555.Horde.jeA-oYm4tfkVqKj-gnqxRoo@www.vdorst.com>
-References: <20210311012108.7190-1-ilya.lipnitskiy@gmail.com>
- <20210312080703.63281-1-ilya.lipnitskiy@gmail.com>
- <20210319102555.Horde.jeA-oYm4tfkVqKj-gnqxRoo@www.vdorst.com>
-Content-Transfer-Encoding: quoted-printable
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:/JAMS70hSO9E7auBQoy+PTUBMdwWO0tyCT8wAfsetNDbfDHgPvU7tbc0r0PIuEcowSMgT
- xTdjSvHjU16y6W89NE74x/aTprgLupH69qoBxMeFaV3fxUz6dPgECWZIcSwrYEqaGVQjhUIGgen2
- yZoxPW6KanP0jFrsJLWk94/LB83i9oL+xiqbnHmQYvsypCj3IQQsSf5QC2NU6iwACnAsqG2e8wVI
- p+RgMx9cCprlXwfE25xKX5WMS0jqdqbZC6yO6g2ixNbmmFMxWFGT0YLl4n0j0p9jwObtc5FwJHID
- dE=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jOGlQcFy+kU=:0RPXl9xNbwbLzaRkWYWvlA
- iHmSaOHaEx/n24sZPVQK+3za81nbBWRMt8bL4GfZWl0fTSpbdwap1u15g4enG+fDzOwZL+2im
- JndOB1gK5wOCV96G5RbNjJfkxwtmfuTRJWpOBt9Ry2hLQzvsH5HwdnssvCwXHN44skvdAtfkT
- urZf+luh5EpSOYjDoub+pYUvWgB3fZq130rHtN2zdBjYEJpZfmsP5MOAWo0H+XKS/7ZGxbU4t
- DH9mcwqE1O00ZiKFhCSRsfpOOAAEm5h74nv1d9GA8wi8oLVgz5wAvExSGeIY7rWUq3RKQIKkR
- gX7RvqY1U7ieBtl4f5KAnUyfvqNv8im/zWMHCM3ZkXn4LPyyVv06gYBfwBy5Y7sGvUEqT7AIB
- QrMKBHQyzV8OOVLSk+9ox7TbwODwajKYf1xg3XdTLTxnYTTiGkruLkCli4vOZoi1J4CqCVWyd
- M5Mtp8U4NSI/nLTwPOcvXs0HPQidXhU9O+iC5TonQUTQdVQcKKQyJwfATy7Ia+gPU9HfdkWeq
- 95VZ6WhTnMAFoeCF7MjIBsRhLihKFzRusKsL/5xcpRhpv0rwXPnIJoa6ya7pgiYfJ6RJiTPVx
- sfvJUiNdRLfVWJ0UwuiFA2o1qaoTpzRzjKyXaHWN9wNM9NlU24UUCxbJrA4RuXO31dpyr7JI7
- 6uEr0ZfyG+5f+1iyMGL3PXWcRPj9uwRDFuewZf4Kxgf/7GGNsHNXGmzB5IbMz4u+YMPMZoVjl
- dN+XI5nrO9T7PJ8zK7OpDDQ6e3VzBN52hAIeB+tcyYsJ0zsXUqrdhzOe09EOd+hYTIi75XHJQ
- WIp6lUDrdtvDUUkwOcHK4nrzpUsXFb0r9lsO/YY63KrNiKf9m5ILXKZ7G/tQwbFEqkYg3/exk
- p6agWNQx4yb8Nt6WbZ5ZJVYPy1Z3r3HACdF4c+Dul+s7mp3nosQ+9pCthjXjHPIm4aOdVDeFf
- JbYlzXRD9tw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ren=C3=A9,Ilya
+This LTE modem (M.2 card) has a bug in its power management:
+there is some kind of race condition for U3 wake-up between the host and
+the device. The modem firmware sometimes crashes/locks when both events
+happen at the same time and the modem fully drops off the USB bus (and
+sometimes re-enumerates, sometimes just gets stuck until the next
+reboot).
 
-> Gesendet: Freitag, 19=2E M=C3=A4rz 2021 um 11:25 Uhr
-> Von: "Ren=C3=A9 van Dorst" <opensource@vdorst=2Ecom>
-> Hi Ilya,
->=20
-> Thanks for fixing this issue=2E
->=20
-> I remember that Frank also had an issue with TRGMII on his MT7623 ARM bo=
-ard=2E
-> I never found why it did not work but this may be also fix his issue =20
-> on the MT7623 devices=2E
->=20
-> Added Frank to CC=2E
+Tested with the modem wired to the XHCI controller on an AMD 3015Ce
+platform. Without the patch, the modem dropped of the USB bus 5 times in
+3 days. With the quirk, it stayed connected for a week while the
+'runtime_suspended_time' counter incremented as excepted.
 
-thanks for pointing me here=2E my issue was after getting trgmii working w=
-ith phylink-patches (5=2E3) that i only got only 940Mbit over the switch/gm=
-ac0 (using multiple clients to one iperf3-server), trgmii afair supports ~2=
-=2E1 Gbit/s, so nearly twice bandwidth possible in theory=2E this maybe can=
- clock-related
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+---
+ drivers/usb/core/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I'm not sure if it is the same issue ilya fixes here, but i try to test th=
-is on my bananapi-r2
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 6ade3daf7858..76ac5d6555ae 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -498,6 +498,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
+ 
++	/* Fibocom L850-GL LTE Modem */
++	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
++
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
-regards Frank
