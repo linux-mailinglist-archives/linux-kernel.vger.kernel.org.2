@@ -2,122 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AE43425C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F753425D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCSTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:08:11 -0400
-Received: from smtp-42af.mail.infomaniak.ch ([84.16.66.175]:32835 "EHLO
-        smtp-42af.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229925AbhCSTHm (ORCPT
+        id S230367AbhCSTKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:10:01 -0400
+Received: from mail-pg1-f180.google.com ([209.85.215.180]:36537 "EHLO
+        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCSTJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:07:42 -0400
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F2D190pMTzMqkmM;
-        Fri, 19 Mar 2021 20:07:41 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F2D173KCrzlh8TB;
-        Fri, 19 Mar 2021 20:07:39 +0100 (CET)
-Subject: Re: [PATCH v30 03/12] landlock: Set up the security framework and
- manage credentials
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-4-mic@digikod.net> <202103191140.7D1F10CBFD@keescook>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <3a8a9744-20fe-a3e7-24bb-aeac2c4b74f8@digikod.net>
-Date:   Fri, 19 Mar 2021 20:07:55 +0100
-User-Agent: 
+        Fri, 19 Mar 2021 15:09:27 -0400
+Received: by mail-pg1-f180.google.com with SMTP id h25so4329328pgm.3;
+        Fri, 19 Mar 2021 12:09:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JXPICND++2jMUjaEuhFzfUn+kFVTMzS2+F5KwMeIch4=;
+        b=Vwa87L7Vn2lg39AjbKzkxFRIABnQeNBvQC04rZ/4bQqD9o7Zm3ewpDsCiV4F5dpVzi
+         e2zDvwzm8FRsecmlTCxVCHP7taWs+LY6nQIRCxoScE54aSAq4mQ/11Bwpa+DRBoo435m
+         1RisAL4ESBbrwsLFJNJdPyQSOp1H7DrCbziQmIf63vNv9pg9fHn2hLNAlOAdMw1WQSMV
+         4AqCzq2Rw2lmk4Z4rJURjDRDWmXiVFH7iJ595Kh3coUxRG6KgfM9n3T0Itajkjs/4inD
+         e9Fy5sh2oxvPxWgUBaHa71TyDqG7AzO9JjxbNfeYUhOqiAHzKRMGyMus1XDo+W2k9Fwm
+         xFWw==
+X-Gm-Message-State: AOAM530dKbEVMCkifk0wRAWF0cbZhWCLYvfsu3Y3cy/iu478TVwmrvcM
+        IXyNK1UH8BSjvoo96qwamZwqjOwyEbZwLw==
+X-Google-Smtp-Source: ABdhPJwNHKg6QWcunKdi0zgdTovA8MicxSd1tryba29Ahp7Opw3KTv5cVTQ04PzdrqnWU6t2rPs1Dw==
+X-Received: by 2002:aa7:94ad:0:b029:1ef:2392:4ee8 with SMTP id a13-20020aa794ad0000b02901ef23924ee8mr10654937pfl.75.1616180966625;
+        Fri, 19 Mar 2021 12:09:26 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id t16sm6386840pfc.204.2021.03.19.12.09.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 12:09:25 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 87B5740317; Fri, 19 Mar 2021 19:09:24 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 19:09:24 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210319190924.GK4332@42.do-not-panic.com>
+References: <20210306022035.11266-1-mcgrof@kernel.org>
+ <20210306022035.11266-2-mcgrof@kernel.org>
+ <YEbjom8FIclEgRYv@google.com>
+ <20210310212128.GR4332@42.do-not-panic.com>
+ <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
 MIME-Version: 1.0
-In-Reply-To: <202103191140.7D1F10CBFD@keescook>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEvA1dzDsFOuKdZ/@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 12, 2021 at 11:28:21AM -0800, Minchan Kim wrote:
+> On Fri, Mar 12, 2021 at 06:32:38PM +0000, Luis Chamberlain wrote:
+> > On Thu, Mar 11, 2021 at 06:14:40PM -0800, Minchan Kim wrote:
+> > > On Wed, Mar 10, 2021 at 09:21:28PM +0000, Luis Chamberlain wrote:
+> > > > On Mon, Mar 08, 2021 at 06:55:30PM -0800, Minchan Kim wrote:
+> > > > > If I understand correctly, bugs you found were related to module
+> > > > > unloading race while the zram are still working.
+> > > > 
+> > > > No, that is a simplifcation of the issue. The issue consists of
+> > > > two separate issues:
+> > > > 
+> > > >  a) race against module unloading in light of incorrect racty use of
+> > > >     cpu hotplug multistate support
+> > > 
+> > > 
+> > > Could you add some pusedo code sequence to show the race cleary?
+> > 
+> > Let us deal with each issue one at time. First, let's address
+> > understanding the kernel warning can be reproduced easily by
+> > triggering zram02.sh from LTP twice:
+> > 
+> > kernel: ------------[ cut here ]------------
+> > kernel: Error: Removing state 63 which has instances left.
+> > kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
+> > kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
+> > 
+> > The first patch prevents this race. This race is possible because on
+> > module init we associate callbacks for CPU hotplug add / remove:
+> > 
+> > static int __init zram_init(void)                                               
+> > {
+> > 	...
+> > 	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
+> > 	                              zcomp_cpu_up_prepare, zcomp_cpu_dead); 
+> > 	...
+> > }
+> > 
+> > The zcomp_cpu_dead() accesses the zcom->comp, and if zcomp->comp is
+> > removed and this function is called, clearly we'll be accessing some
+> > random data here and can easily crash afterwards:
+> 
+> I am trying to understand this crash. You mentioned the warning
+> above but here mention crash(I understand sysfs race but this is
+> different topic). What's the relation with above warning and
+> crash here? You are talking the warning could change to the
+> crash sometimes? 
 
-On 19/03/2021 19:45, Kees Cook wrote:
-> On Tue, Mar 16, 2021 at 09:42:43PM +0100, Mickaël Salaün wrote:
->>  config LSM
->>  	string "Ordered list of enabled LSMs"
->> -	default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
->> -	default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
->> -	default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
->> -	default "lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
->> -	default "lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
->> +	default "landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
->> +	default "landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
->> +	default "landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
->> +	default "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
->> +	default "landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
->>  	help
->>  	  A comma-separated list of LSMs, in initialization order.
->>  	  Any LSMs left off this list will be ignored. This can be
-> 
-> There was some discussion long ago about landlock needing to be last
-> in the list because it was unprivileged. Is that no longer true? (And
-> what is the justification for its position in the list?)
+Indeed one issue is a consequence of the other but a bit better
+description can be put together for both separately.
 
-Indeed, I wanted to put Landlock last because it was an unprivileged
-programmable access-control, which could lead to side-channel attacks
-against other access-controls (e.g. to infer enforced policies). This is
-not valid anymore because Landlock is not using eBPF, only the BPF LSM
-does that (which is not the only reason why it is the last stacked).
+The warning comes up when cpu hotplug detects that the callback
+is being removed, but yet "instances" for multistate are left behind,
+ie, not removed. CPU hotplug multistate allows us to dedicate a callback
+for zram so that it gets called every time a CPU hot plugs or unplugs.
+In the zram driver's case we want to trigger the callback per each
+struct zcomp, one is used per supported and used supported compression
+algorithm. The zram driver allocates a struct zcomp for an compression
+algorithm on a need basis. The default compressor is CONFIG_ZRAM_DEF_COMP
+which today is CONFIG_ZRAM_DEF_COMP_LZORLE ("lzo-rle"). Although we may
+have different zram devices, zram devices which use the same compression
+algorithm share the same struct zcomp. The "multi" in CPU hotplug multstate
+refers to these different struct zcomp instances, each of these will
+have the callback routine registered run for it. The kernel's CPU
+hotplug multistate keeps a linked list of these different structures
+so that it will iterate over them on CPU transitions. By default at
+driver initialization we will create just one zram device (num_devices=1)
+and a zcomp structure then set for the lzo-rle comrpession algorithm.
+At driver removal we first remove each zram device, and so we destroy
+the struct zcomp. But since we expose sysfs attributes to create new
+devices or reset / initialize existing ones, we can easily end up
+re-initializing a struct zcomp before the exit routine of the module
+removes the cpu hotplug callback. When this happens the kernel's
+CPU hotplug will detect that at least one instance (struct zcomp for
+us) exists.
 
-> 
->> diff --git a/security/landlock/common.h b/security/landlock/common.h
->> new file mode 100644
->> index 000000000000..5dc0fe15707d
->> --- /dev/null
->> +++ b/security/landlock/common.h
->> @@ -0,0 +1,20 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Landlock LSM - Common constants and helpers
->> + *
->> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
->> + * Copyright © 2018-2020 ANSSI
->> + */
->> +
->> +#ifndef _SECURITY_LANDLOCK_COMMON_H
->> +#define _SECURITY_LANDLOCK_COMMON_H
->> +
->> +#define LANDLOCK_NAME "landlock"
->> +
->> +#ifdef pr_fmt
->> +#undef pr_fmt
->> +#endif
-> 
-> When I see "#undef pr_fmt" I think there is a header ordering problem.
+And so we can have:
 
-Not is this case, it's a "namespace" definition. :)
+static void destroy_devices(void)
+{
+	class_unregister(&zram_control_class);
+	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+	zram_debugfs_destroy();
+	idr_destroy(&zram_index_idr);
+	unregister_blkdev(zram_major, "zram");
+	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
+}
 
-> 
->> [...]
-> 
-> Everything else looks like regular boilerplate for an LSM. :)
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+While destroy_devices() runs we can have this race:
+
+
+CPU 1                            CPU 2
+
+class_unregister(...);
+idr_for_each(...);
+zram_debugfs_destroy();
+                                disksize_store(...)
+idr_destroy(...);
+unregister_blkdev(...);
+cpuhp_remove_multi_state(...);
+
+
+The warning comes up on cpuhp_remove_multi_state() when it sees
+that the state for CPUHP_ZCOMP_PREPARE does not have an empty
+instance linked list.
+
+After the idr_destory() its also easy to run into a crash. The
+above predicament also leads to memory leaks.
+
+And so we need to have a state machine for when we're up and when
+we're going down generically.
+
+Let me know if it makes sense now, if so I can amend the commit log
+accordingly.
+
+  Luis
