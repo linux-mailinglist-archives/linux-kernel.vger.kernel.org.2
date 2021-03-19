@@ -2,174 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD74342615
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B9E342618
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhCSTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:20:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:33766 "EHLO foss.arm.com"
+        id S230419AbhCSTVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:21:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:2873 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230297AbhCSTUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:20:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73E0831B;
-        Fri, 19 Mar 2021 12:20:24 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B57573F718;
-        Fri, 19 Mar 2021 12:20:22 -0700 (PDT)
-Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        hch@lst.de, m.szyprowski@samsung.com
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxarm@huawei.com
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-2-git-send-email-john.garry@huawei.com>
- <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
- <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
-Date:   Fri, 19 Mar 2021 19:20:16 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231186AbhCSTVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 15:21:01 -0400
+IronPort-SDR: ibulpKb3GIABbS7Bi7KocR95cMsk4LCL3GlUvOZCIhowqciLSOHe/my0bMVV3BiCv/zO8gi7DP
+ 4WRQBdWL8NrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="169890025"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="169890025"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 12:21:01 -0700
+IronPort-SDR: C2yXUxqRIaOrkHdD4Y2mAMHnvSS/IdeN7r49FsurlKHTTqYAV11IgHbNZhpOne485s2bsoAufW
+ ivkncICxRgCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="523742703"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 19 Mar 2021 12:20:58 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 6082B78; Fri, 19 Mar 2021 21:21:11 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@acpica.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 1/1] ACPI: scan: Use unique number for instance_no
+Date:   Fri, 19 Mar 2021 21:21:09 +0200
+Message-Id: <20210319192109.40041-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-19 16:58, John Garry wrote:
-> On 19/03/2021 16:13, Robin Murphy wrote:
->> On 2021-03-19 13:25, John Garry wrote:
->>> Move the IOVA size power-of-2 rcache roundup into the IOVA allocator.
->>>
->>> This is to eventually make it possible to be able to configure the upper
->>> limit of the IOVA rcache range.
->>>
->>> Signed-off-by: John Garry <john.garry@huawei.com>
->>> ---
->>>   drivers/iommu/dma-iommu.c |  8 ------
->>>   drivers/iommu/iova.c      | 51 ++++++++++++++++++++++++++-------------
->>>   2 files changed, 34 insertions(+), 25 deletions(-)
->>>
->>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->>> index af765c813cc8..15b7270a5c2a 100644
->>> --- a/drivers/iommu/dma-iommu.c
->>> +++ b/drivers/iommu/dma-iommu.c
->>> @@ -429,14 +429,6 @@ static dma_addr_t iommu_dma_alloc_iova(struct 
->>> iommu_domain *domain,
->>>       shift = iova_shift(iovad);
->>>       iova_len = size >> shift;
->>> -    /*
->>> -     * Freeing non-power-of-two-sized allocations back into the IOVA 
->>> caches
->>> -     * will come back to bite us badly, so we have to waste a bit of 
->>> space
->>> -     * rounding up anything cacheable to make sure that can't 
->>> happen. The
->>> -     * order of the unadjusted size will still match upon freeing.
->>> -     */
->>> -    if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
->>> -        iova_len = roundup_pow_of_two(iova_len);
->>>       dma_limit = min_not_zero(dma_limit, dev->bus_dma_limit);
->>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->>> index e6e2fa85271c..e62e9e30b30c 100644
->>> --- a/drivers/iommu/iova.c
->>> +++ b/drivers/iommu/iova.c
->>> @@ -179,7 +179,7 @@ iova_insert_rbtree(struct rb_root *root, struct 
->>> iova *iova,
->>>   static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
->>>           unsigned long size, unsigned long limit_pfn,
->>> -            struct iova *new, bool size_aligned)
->>> +            struct iova *new, bool size_aligned, bool fast)
->>>   {
->>>       struct rb_node *curr, *prev;
->>>       struct iova *curr_iova;
->>> @@ -188,6 +188,15 @@ static int __alloc_and_insert_iova_range(struct 
->>> iova_domain *iovad,
->>>       unsigned long align_mask = ~0UL;
->>>       unsigned long high_pfn = limit_pfn, low_pfn = iovad->start_pfn;
->>> +    /*
->>> +     * Freeing non-power-of-two-sized allocations back into the IOVA 
->>> caches
->>> +     * will come back to bite us badly, so we have to waste a bit of 
->>> space
->>> +     * rounding up anything cacheable to make sure that can't 
->>> happen. The
->>> +     * order of the unadjusted size will still match upon freeing.
->>> +     */
->>> +    if (fast && size < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
->>> +        size = roundup_pow_of_two(size);
->>
->> If this transformation is only relevant to alloc_iova_fast(), and we 
->> have to add a special parameter here to tell whether we were called 
->> from alloc_iova_fast(), doesn't it seem more sensible to just do it in 
->> alloc_iova_fast() rather than here?
-> 
-> We have the restriction that anything we put in the rcache needs be a 
-> power-of-2.
+The decrementation of acpi_device_bus_id->instance_no
+in acpi_device_del() is incorrect, because it may cause
+a duplicate instance number to be allocated next time
+a device with the same acpi_device_bus_id is added.
 
-I was really only talking about the apparently silly structure of:
+Replace above mentioned approach by using IDA framework.
 
-void foo(bool in_bar) {
-	if (in_bar)
-		//do thing
-	...
-}
-void bar() {
-	foo(true);
-}
+Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
+Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v3: rewrote commit message once again as proposed by Rafael in v1
+ drivers/acpi/internal.h |  4 +++-
+ drivers/acpi/scan.c     | 32 +++++++++++++++++++++++++++-----
+ include/acpi/acpi_bus.h |  1 +
+ 3 files changed, 31 insertions(+), 6 deletions(-)
 
-vs.:
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index e6a5d997241c..417eb768d710 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -9,6 +9,8 @@
+ #ifndef _ACPI_INTERNAL_H_
+ #define _ACPI_INTERNAL_H_
+ 
++#include <linux/idr.h>
++
+ #define PREFIX "ACPI: "
+ 
+ int early_acpi_osi_init(void);
+@@ -98,7 +100,7 @@ extern struct list_head acpi_bus_id_list;
+ 
+ struct acpi_device_bus_id {
+ 	const char *bus_id;
+-	unsigned int instance_no;
++	struct ida instance_ida;
+ 	struct list_head node;
+ };
+ 
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index a184529d8fa4..4b445b169ad4 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -479,9 +479,8 @@ static void acpi_device_del(struct acpi_device *device)
+ 	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
+ 		if (!strcmp(acpi_device_bus_id->bus_id,
+ 			    acpi_device_hid(device))) {
+-			if (acpi_device_bus_id->instance_no > 0)
+-				acpi_device_bus_id->instance_no--;
+-			else {
++			ida_simple_remove(&acpi_device_bus_id->instance_ida, device->pnp.instance_no);
++			if (ida_is_empty(&acpi_device_bus_id->instance_ida)) {
+ 				list_del(&acpi_device_bus_id->node);
+ 				kfree_const(acpi_device_bus_id->bus_id);
+ 				kfree(acpi_device_bus_id);
+@@ -631,6 +630,20 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+ 	return NULL;
+ }
+ 
++static int acpi_device_set_name(struct acpi_device *device,
++				struct acpi_device_bus_id *acpi_device_bus_id)
++{
++	int result;
++
++	result = ida_simple_get(&acpi_device_bus_id->instance_ida, 0, 255, GFP_KERNEL);
++	if (result < 0)
++		return result;
++
++	device->pnp.instance_no = result;
++	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
++	return 0;
++}
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
+@@ -665,7 +678,9 @@ int acpi_device_add(struct acpi_device *device,
+ 
+ 	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+ 	if (acpi_device_bus_id) {
+-		acpi_device_bus_id->instance_no++;
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result)
++			goto err_unlock;
+ 	} else {
+ 		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+ 					     GFP_KERNEL);
+@@ -681,9 +696,16 @@ int acpi_device_add(struct acpi_device *device,
+ 			goto err_unlock;
+ 		}
+ 
++		ida_init(&acpi_device_bus_id->instance_ida);
++
++		result = acpi_device_set_name(device, acpi_device_bus_id);
++		if (result) {
++			kfree(acpi_device_bus_id);
++			goto err_unlock;
++		}
++
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+-	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+ 
+ 	if (device->parent)
+ 		list_add_tail(&device->node, &device->parent->children);
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 02a716a0af5d..f28b097c658f 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -233,6 +233,7 @@ struct acpi_pnp_type {
+ 
+ struct acpi_device_pnp {
+ 	acpi_bus_id bus_id;		/* Object name */
++	int instance_no;		/* Instance number of this object */
+ 	struct acpi_pnp_type type;	/* ID type */
+ 	acpi_bus_address bus_address;	/* _ADR */
+ 	char *unique_id;		/* _UID */
+-- 
+2.30.2
 
-void foo() {
-	...
-}
-void bar() {
-	//do thing
-	foo();
-}
-
-> So then we have the issue of how to dynamically increase this rcache 
-> threshold. The problem is that we may have many devices associated with 
-> the same domain. So, in theory, we can't assume that when we increase 
-> the threshold that some other device will try to fast free an IOVA which 
-> was allocated prior to the increase and was not rounded up.
-> 
-> I'm very open to better (or less bad) suggestions on how to do this ...
-
-...but yes, regardless of exactly where it happens, rounding up or not 
-is the problem for rcaches in general. I've said several times that my 
-preferred approach is to not change it that dynamically at all, but 
-instead treat it more like we treat the default domain type.
-
-> I could say that we only allow this for a group with a single device, so 
-> these sort of things don't have to be worried about, but even then the 
-> iommu_group internals are not readily accessible here.
-> 
->>
->> But then the API itself has no strict requirement that a pfn passed to 
->> free_iova_fast() wasn't originally allocated with alloc_iova(), so 
->> arguably hiding the adjustment away makes it less clear that the 
->> responsibility is really on any caller of free_iova_fast() to make 
->> sure they don't get things wrong.
->>
-> 
-> alloc_iova() doesn't roundup to pow-of-2, so wouldn't it be broken to do 
-> that?
-
-Well, right now neither call rounds up, which is why iommu-dma takes 
-care to avoid any issues by explicitly rounding up for itself 
-beforehand. I'm just concerned that giving the impression that the API 
-takes care of everything for itself will make it easier to write broken 
-code in future, if that impression is in fact not entirely true.
-
-I don't even think it's very likely that someone would manage to hit 
-that rather wacky alloc/free pattern either way, I just know that 
-getting wrong-sized things into the rcaches is an absolute sod to debug, 
-so...
-
-Robin.
