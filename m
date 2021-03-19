@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C994534209E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DB934209F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhCSPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
+        id S230055AbhCSPMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhCSPMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:12:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5CB461920;
-        Fri, 19 Mar 2021 15:12:11 +0000 (UTC)
+        id S230051AbhCSPMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:12:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BEB961921;
+        Fri, 19 Mar 2021 15:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616166732;
-        bh=uHqXLPYIm+oaU9HFxAoPyIBK42c9sp7ydb4Y3G+Jt1s=;
+        s=korg; t=1616166734;
+        bh=fjGi/QHNJfzDVR0Ld64w4sEfBS2lOPpHYD5KhaG3EYA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KILv1fOLj5Cfx38p4iiKW+7gU2e/vf9Ez0srm1r7Hhok6kyR4FRmrxji3i/+8nBee
-         BNASI2T1YacQ4GbAYiTelsH4+bpEUpf6zEibX9Dhxqd6kFvntbqmk8mtVGYunxZYj1
-         Yez6iemcqjUQ4pDcNmNDTTjf6rvxNL/8oezo2XLw=
-Date:   Fri, 19 Mar 2021 15:27:52 +0100
+        b=bpef4Uw3Lr477fj/ZHc9ZxRVQTAKxQpGi8l04SLfiZZhy/Xh6V0X1NxG6OHYuhq6P
+         gvEzwmWKnGqNGx1ko0Wal4Zfd6OcsYK32k8UNjs7LGCxTr3Zh0UTP/zFpdxHbPGBG2
+         fA3U9I8+TDrwFxSD2fNXJp/gmdXLWBTl8XMCgfb0=
+Date:   Fri, 19 Mar 2021 15:29:25 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        willy@infradead.org, david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-Message-ID: <YFS06OLp70nWWLFi@kroah.com>
-References: <20210309062333.3216138-1-minchan@kernel.org>
- <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
- <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
- <YFSqYUfaxMajR/aq@kroah.com>
- <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
- <YFSrgfAyp+dYWi7k@kroah.com>
- <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
- <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, Jiri Kosina <jikos@jikos.cz>
+Subject: Re: [PATCH 5.11 13/31] net: bonding: fix error return code of
+ bond_neigh_init()
+Message-ID: <YFS1RZl3u80zy4pH@kroah.com>
+References: <20210319121747.203523570@linuxfoundation.org>
+ <20210319121747.622717971@linuxfoundation.org>
+ <alpine.LRH.2.00.2103191511500.19651@gjva.wvxbf.pm>
+ <nycvar.YFH.7.76.2103191524160.12405@cbobk.fhfr.pm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
+In-Reply-To: <nycvar.YFH.7.76.2103191524160.12405@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:19:47PM +0300, Dmitry Osipenko wrote:
-> 19.03.2021 16:51, Dmitry Osipenko пишет:
-> > 19.03.2021 16:47, Greg Kroah-Hartman пишет:
-> >> On Fri, Mar 19, 2021 at 04:45:21PM +0300, Dmitry Osipenko wrote:
-> >>> 19.03.2021 16:42, Greg Kroah-Hartman пишет:
-> >>>> On Fri, Mar 19, 2021 at 04:39:41PM +0300, Dmitry Osipenko wrote:
-> >>>>> 19.03.2021 15:44, Dmitry Osipenko пишет:
-> >>>>> ...
-> >>>>>>>  #include <linux/debugfs.h>
-> >>>>>>> +#include <linux/kobject.h>
-> >>>>>>> +
-> >>>>>>> +struct cma_stat {
-> >>>>>>> +	spinlock_t lock;
-> >>>>>>> +	/* the number of CMA page successful allocations */
-> >>>>>>> +	unsigned long nr_pages_succeeded;
-> >>>>>>> +	/* the number of CMA page allocation failures */
-> >>>>>>> +	unsigned long nr_pages_failed;
-> >>>>>>> +	struct kobject kobj;
-> >>>>>>> +};
-> >>>>>>>  
-> >>>>>>>  struct cma {
-> >>>>>>>  	unsigned long   base_pfn;
-> >>>>>>> @@ -16,6 +26,9 @@ struct cma {
-> >>>>>>>  	struct debugfs_u32_array dfs_bitmap;
-> >>>>>>>  #endif
-> >>>>>>>  	char name[CMA_MAX_NAME];
-> >>>>>>> +#ifdef CONFIG_CMA_SYSFS
-> >>>>>>> +	struct cma_stat	*stat;
-> >>>>>>> +#endif
-> >>>>>
-> >>>>> What is the point of allocating stat dynamically?
-> >>>>
-> >>>> Because static kobjects make me cry.
-> >>>>
-> >>>
-> >>> I meant that it's already a part of struct cma, it looks like the stat
-> >>> could be embedded into struct cma and then kobj could be initialized
-> >>> separately.
-> >>
-> >> But that structure is statically allocated, so it can not be.  This has
-> >> been discussed in the past threads for when this was reviewed if you are
-> >> curious :)
-> > 
-> > Indeed, I missed that cma_areas[] is static, thank you.
-> > 
+On Fri, Mar 19, 2021 at 03:24:38PM +0100, Jiri Kosina wrote:
+> On Fri, 19 Mar 2021, Jiri Kosina wrote:
 > 
-> And in this case should be better to make only the kobj allocated
-> dynamically instead of the whole cma_stat.
+> > > [ Upstream commit 2055a99da8a253a357bdfd359b3338ef3375a26c ]
+> > > 
+> > > When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
+> > > return code of bond_neigh_init() is assigned.
+> > > To fix this bug, ret is assigned with -EINVAL in these cases.
+> > > 
+> > > Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
+> > > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> > > Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> > > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  drivers/net/bonding/bond_main.c | 8 ++++++--
+> > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> > > index 5fe5232cc3f3..fba6b6d1b430 100644
+> > > --- a/drivers/net/bonding/bond_main.c
+> > > +++ b/drivers/net/bonding/bond_main.c
+> > > @@ -3917,11 +3917,15 @@ static int bond_neigh_init(struct neighbour *n)
+> > >  
+> > >  	rcu_read_lock();
+> > >  	slave = bond_first_slave_rcu(bond);
+> > > -	if (!slave)
+> > > +	if (!slave) {
+> > > +		ret = -EINVAL;
+> > >  		goto out;
+> > > +	}
+> > >  	slave_ops = slave->dev->netdev_ops;
+> > > -	if (!slave_ops->ndo_neigh_setup)
+> > > +	if (!slave_ops->ndo_neigh_setup) {
+> > > +		ret = -EINVAL;
+> > >  		goto out;
+> > > +	}
+> > 
+> > This patch is completely broken and breaks bonding functionality 
+> > altogether for me.
+> 
+> ... and I just found out that revert is already queued in netdev.git. So 
+> please drop it from stable queue as well.
 
-Why does it matter?
+Ah, missed that, will go drop this now, thanks for letting me know.
+
+greg k-h
