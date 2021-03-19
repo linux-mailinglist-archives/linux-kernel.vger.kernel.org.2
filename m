@@ -2,143 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB574341FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C44DF341FF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhCSOkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
+        id S230296AbhCSOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhCSOj4 (ORCPT
+        with ESMTP id S230267AbhCSOou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:39:56 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63102C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:39:56 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id e9so9357962wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZoqWXP/V3WLtx6b82eSZ18zEGdu+ELeHI92zYjQlVlw=;
-        b=hpoQFBQ/jhs/9wnYQgMd66znVviny9jd/FIw3gd79H2mp5bd77fm50waCtVzeDG7WQ
-         vUxVVWOXLJ0dmww0TAaDOo03QIQKMQs5CuTN0iVrXwrjTStdHJicBwojTt4xbljFIs9M
-         CFeyOy11oom0pOfMHcDGeNpCmgyzgEjYzuoUi/gtHlsb9sYLwG7KbgAQC8luqnnx6oG4
-         kBosQ3NpH2s2BUoVuCiG/FAz/ihpmBfha6bqeZer0RYZoa4pGbylA5LoHtRlz1kw+Yfw
-         XDTd8XhPNtnrIFMeojGFlZxW3AdzTijR3brK4M0gTTJruxSb7Jam0hAb4nuE+W/OWaip
-         /gqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZoqWXP/V3WLtx6b82eSZ18zEGdu+ELeHI92zYjQlVlw=;
-        b=kf8nIDvTU2KR0MvFKaEM8LXeHgAQa9HUmhgR4isDM2RL1VYAgtZcTMtsLl3C3bHMRt
-         rzTyFIfhimcHwJrgHRJp10cV6C59PxFR9kPBgKOsSOSOdEZH9T6zyiY6Mh8yJFgsMreC
-         Fihv41FQDoS88zIi9kzAA8ZJ6qIOcbCK01LACLPQJBcFXhEWPkIb7li+sDBaeHlENGIi
-         cm/Lp+YqlFdQ8OfpELWXUmh1HY6uIK5+XI44tcUIRsIcXI1C4zxoICAzEQwukzXmwOSx
-         jBiyjDWKPBtaZ9xSyBrvj5Uv3zf6MvebR5Lm26YKV4EE8FJIrP4uLkHzatVeLIGAoT09
-         owzQ==
-X-Gm-Message-State: AOAM530AJHcQZ2Qasm6ZvhS+tvrkbt0pgYLtUnyUgce25QWlo3njokqb
-        dzBDol6utCATHneUXURjco0gvQ==
-X-Google-Smtp-Source: ABdhPJxHGCGcyu/t3eP25M8WuesResjre6x95sD6wnidHPAvYNpJEoTYYoJAqDtcI8DAOV2z4OtbOg==
-X-Received: by 2002:adf:b609:: with SMTP id f9mr4705658wre.223.1616164794956;
-        Fri, 19 Mar 2021 07:39:54 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id n6sm7700611wmd.27.2021.03.19.07.39.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 07:39:54 -0700 (PDT)
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: msm8916: Enable modem and WiFi
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
- <20210312003318.3273536-6-bjorn.andersson@linaro.org>
- <f03b639f-f95a-a31a-6615-23cd6154182d@linaro.org>
- <YFNozCCa4fdR5kSb@builder.lan>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Message-ID: <2da2ee91-f3f9-bab7-1d38-e01300fcdbc5@linaro.org>
-Date:   Fri, 19 Mar 2021 14:41:25 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Mar 2021 10:44:50 -0400
+X-Greylist: delayed 171 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Mar 2021 07:44:49 PDT
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:400:200::c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE254C06175F;
+        Fri, 19 Mar 2021 07:44:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1616164909; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=XLJSCMYbXCEQfOU0MChUvvHsgAw00nWPzH8o9JZ3rfTsg5hOsZMyhjmjZI2WbaitWD
+    4PKXU2Kii6jc3XT3pGYaUQEBIOtDr8mzqYZkSR2XSSkdnTe4G+xjuC4URor92qFVGXJc
+    vx245Ro+iWNOfnjzg4KW8CSHWjrgTXt0aOurKyDuDASEOw4NvjPeqV9jeePvNNZ/USoj
+    JIapptVSr2rNGAS1bZ1jqc49YWX3b3G3Ru+0DTiVC4wWy7jFCpTh5LuR0dGtY74PjgCm
+    mOV4+vo9FiU9BN1NWkpMGBv+D2Osr99EZ8yG7awTLC6tm8TptECe1FafIOdnzy6mFDvu
+    aBVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616164909;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=dg+zQ0cEU08MZtHY4Nwodi8+yW4jqmw2enJsKeahBTQ=;
+    b=cHCHoOIf8E04mngdLv+8VlXjGruKtcvCGvnYW8DbCjF7r4ckg4/lJOC2k6Yg7SgBAw
+    eseVhBKyA6O5Lu/TDfa49czlGJ5YA9TNuPLWhaQDx2933pMaDV4LUqg1Dd9vD6bbz3lo
+    WpPlgmVOULKfEYd0UybQvkb5WxwN7uVMWbUH+iLw693+09aynzy3ZmSAKCZOeniqFGiF
+    K3XHHvZXgF8EFQ8nAXOWwohDIqFfZpSUwnMjWItRLosZ8cO9qSH56HQ2f6KzA/7oz8cS
+    nCoSAQtJh1xK8B3c3aPGsFjTLfZ9Hhce/Xr9n1LzAu3M6X3qZemr6ZsdFRIG3yKOgFgo
+    lbAA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616164909;
+    s=strato-dkim-0002; d=aepfle.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=dg+zQ0cEU08MZtHY4Nwodi8+yW4jqmw2enJsKeahBTQ=;
+    b=eSg46fl3fixlukH4mJdGpDr3oWh81RJ8jtfOPGppAvb62a9SdffgHr9+B2LHTINvJ4
+    cWMtHDDcvgjXMhkGu23DF6W7+YgZlrUv+F3dD/W3KkRJ/PiaXucVzgee783uK8S3xM7M
+    CHanf/TFT24AYvhSGAMTD3sY7akfgu+2zWOb9Cu4EM2cHaFkuCe+0Mp1v5tSopX0DnTd
+    vowoJdzAH8zn/Mgukb7U+Q3ritDRKJ4mTTmqLQIoq5xNoUoKKIkjCdfpb0cIAXJSfsBb
+    n8/TFVRj2wYrPbVJX9dMNo86LlqGrT6bUd/4xMXhSpbbKuYHCFNzboNf+uOtui0G6Ca9
+    xS6g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS325Pjw=="
+X-RZG-CLASS-ID: mo00
+Received: from sender
+    by smtp.strato.de (RZmta 47.21.0 SBL|AUTH)
+    with ESMTPSA id k0a44fx2JEfmBAX
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 19 Mar 2021 15:41:48 +0100 (CET)
+From:   Olaf Hering <olaf@aepfle.de>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olaf Hering <olaf@aepfle.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH v2] tools/hv: async name resolution in kvp_daemon
+Date:   Fri, 19 Mar 2021 15:41:44 +0100
+Message-Id: <20210319144145.4064-1-olaf@aepfle.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YFNozCCa4fdR5kSb@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/2021 14:50, Bjorn Andersson wrote:
-> On Mon 15 Mar 07:01 CDT 2021, Bryan O'Donoghue wrote:
-> 
->> On 12/03/2021 00:33, Bjorn Andersson wrote:
->>> Enable the modem and WiFi subsystems and specify msm8916 specific
->>> firmware path for these and the WCNSS control service.
->>>
->>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>> ---
->>>    arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 12 ++++++++++++
->>>    arch/arm64/boot/dts/qcom/msm8916.dtsi     |  2 +-
->>>    2 files changed, 13 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
->>> index 6aef0c2e4f0a..448e3561ef63 100644
->>> --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
->>> @@ -305,6 +305,12 @@ &mdss {
->>>    	status = "okay";
->>>    };
->>> +&mpss {
->>> +	status = "okay";
->>> +
->>> +	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mbn";
->>> +};
->>> +
->>>    &pm8916_resin {
->>>    	status = "okay";
->>>    	linux,code = <KEY_VOLUMEDOWN>;
->>> @@ -312,6 +318,8 @@ &pm8916_resin {
->>>    &pronto {
->>>    	status = "okay";
->>> +
->>> +	firmware-name = "qcom/msm8916/wcnss.mbn";
->>>    };
->>
->> On Debian I have to do this
->>
->>
->> index 2a6a23cb14ca..597cdc8f51cc 100644
->> --- a/drivers/remoteproc/qcom_wcnss.c
->> +++ b/drivers/remoteproc/qcom_wcnss.c
->> @@ -33,7 +33,7 @@
->>   #include "qcom_wcnss.h"
->>
->>   #define WCNSS_CRASH_REASON_SMEM                422
->> -#define WCNSS_FIRMWARE_NAME            "wcnss.mdt"
->> +#define WCNSS_FIRMWARE_NAME            "qcom/msm8916/wcnss.mdt"
->>
->> so I guess wcnss_probe() -> rproc_alloc() wants this fix too.
->>
-> 
-> Can you confirm that you're saying that you want below patch, which I
-> just merged?
-> 
-> https://lore.kernel.org/linux-remoteproc/20210312002441.3273183-1-bjorn.andersson@linaro.org/
-> 
-> (Which makes it possible to specify firmware name per platform/board)
-> 
-> Regards,
-> Bjorn
-> 
+The hostname is resolved just once since commit 58125210ab3b ("Tools:
+hv: cache FQDN in kvp_daemon to avoid timeouts") to make sure the VM
+responds within the timeout limits to requests from the host.
 
-yep
+If for some reason getaddrinfo fails, the string returned by the
+"FullyQualifiedDomainName" request contains some error string, which is
+then used by tools on the host side.
 
-Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Adjust the code to resolve the current hostname in a separate thread.
+This thread loops until getaddrinfo returns success. During this time
+all "FullyQualifiedDomainName" requests will be answered with an empty
+string.
+
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+v2:
+ resend, the thread aims for success.
+
+ tools/hv/Makefile        |  2 ++
+ tools/hv/hv_kvp_daemon.c | 69 ++++++++++++++++++++++++++--------------
+ 2 files changed, 48 insertions(+), 23 deletions(-)
+
+diff --git a/tools/hv/Makefile b/tools/hv/Makefile
+index b57143d9459c..3b5481015a84 100644
+--- a/tools/hv/Makefile
++++ b/tools/hv/Makefile
+@@ -22,6 +22,8 @@ ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
+ 
+ ALL_SCRIPTS := hv_get_dhcp_info.sh hv_get_dns_info.sh hv_set_ifconfig.sh
+ 
++$(OUTPUT)hv_kvp_daemon: LDFLAGS += -lpthread
++
+ all: $(ALL_PROGRAMS)
+ 
+ export srctree OUTPUT CC LD CFLAGS
+diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+index 1e6fd6ca513b..3951b927aa3d 100644
+--- a/tools/hv/hv_kvp_daemon.c
++++ b/tools/hv/hv_kvp_daemon.c
+@@ -41,6 +41,7 @@
+ #include <net/if.h>
+ #include <limits.h>
+ #include <getopt.h>
++#include <pthread.h>
+ 
+ /*
+  * KVP protocol: The user mode component first registers with the
+@@ -85,7 +86,7 @@ static char *processor_arch;
+ static char *os_build;
+ static char *os_version;
+ static char *lic_version = "Unknown version";
+-static char full_domain_name[HV_KVP_EXCHANGE_MAX_VALUE_SIZE];
++static char *full_domain_name;
+ static struct utsname uts_buf;
+ 
+ /*
+@@ -1327,27 +1328,53 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	return error;
+ }
+ 
+-
+-static void
+-kvp_get_domain_name(char *buffer, int length)
++/*
++ * Async retrival of Fully Qualified Domain Name because getaddrinfo takes an
++ * unpredictable amount of time to finish.
++ */
++static void *kvp_getaddrinfo(void *p)
+ {
+-	struct addrinfo	hints, *info ;
+-	int error = 0;
++	char *tmp, **str_ptr = (char **)p;
++	char hostname[HOST_NAME_MAX + 1];
++	struct addrinfo	*info, hints = {
++		.ai_family = AF_INET, /* Get only ipv4 addrinfo. */
++		.ai_socktype = SOCK_STREAM,
++		.ai_flags = AI_CANONNAME,
++	};
++	int ret;
++
++	if (gethostname(hostname, sizeof(hostname) - 1) < 0)
++		goto out;
+ 
+-	gethostname(buffer, length);
+-	memset(&hints, 0, sizeof(hints));
+-	hints.ai_family = AF_INET; /*Get only ipv4 addrinfo. */
+-	hints.ai_socktype = SOCK_STREAM;
+-	hints.ai_flags = AI_CANONNAME;
++	do {
++		ret = getaddrinfo(hostname, NULL, &hints, &info);
++		if (ret)
++			sleep(1);
++	} while (ret);
++
++	ret = asprintf(&tmp, "%s", info->ai_canonname);
++	freeaddrinfo(info);
++	if (ret <= 0)
++		goto out;
+ 
+-	error = getaddrinfo(buffer, NULL, &hints, &info);
+-	if (error != 0) {
+-		snprintf(buffer, length, "getaddrinfo failed: 0x%x %s",
+-			error, gai_strerror(error));
++	if (ret > HV_KVP_EXCHANGE_MAX_VALUE_SIZE)
++		tmp[HV_KVP_EXCHANGE_MAX_VALUE_SIZE - 1] = '\0';
++	*str_ptr = tmp;
++
++out:
++	pthread_exit(NULL);
++}
++
++static void kvp_obtain_domain_name(char **str_ptr)
++{
++	pthread_t t;
++
++	if (pthread_create(&t, NULL, kvp_getaddrinfo, str_ptr)) {
++		syslog(LOG_ERR, "pthread_create failed; error: %d %s",
++			errno, strerror(errno));
+ 		return;
+ 	}
+-	snprintf(buffer, length, "%s", info->ai_canonname);
+-	freeaddrinfo(info);
++	pthread_detach(t);
+ }
+ 
+ void print_usage(char *argv[])
+@@ -1404,11 +1431,7 @@ int main(int argc, char *argv[])
+ 	 * Retrieve OS release information.
+ 	 */
+ 	kvp_get_os_info();
+-	/*
+-	 * Cache Fully Qualified Domain Name because getaddrinfo takes an
+-	 * unpredictable amount of time to finish.
+-	 */
+-	kvp_get_domain_name(full_domain_name, sizeof(full_domain_name));
++	kvp_obtain_domain_name(&full_domain_name);
+ 
+ 	if (kvp_file_init()) {
+ 		syslog(LOG_ERR, "Failed to initialize the pools");
+@@ -1573,7 +1596,7 @@ int main(int argc, char *argv[])
+ 
+ 		switch (hv_msg->body.kvp_enum_data.index) {
+ 		case FullyQualifiedDomainName:
+-			strcpy(key_value, full_domain_name);
++			strcpy(key_value, full_domain_name ? : "");
+ 			strcpy(key_name, "FullyQualifiedDomainName");
+ 			break;
+ 		case IntegrationServicesVersion:
