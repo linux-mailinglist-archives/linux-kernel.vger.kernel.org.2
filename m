@@ -2,123 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01D434164C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B80A34164D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhCSHLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 03:11:09 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43728 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbhCSHKj (ORCPT
+        id S233986AbhCSHP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 03:15:29 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58053 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233832AbhCSHPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:10:39 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210319071037epoutp02d8e5584655dcfa7c081c8f59e03595ad~trMzeB1GR1863618636epoutp02g
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 07:10:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210319071037epoutp02d8e5584655dcfa7c081c8f59e03595ad~trMzeB1GR1863618636epoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616137837;
-        bh=tQmqXyJw5q9RHUfRqUbLjHC+qLc4pYZJCn12SQGg5Ww=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=NDKBdCTVZkrPon21WPjnNdeZ2D36+/4UVfmNOgrYN3DCNSPBP/JAzTGzPnCAXNW5X
-         mic8CjbKBrcfXAamz+xElgtCaB17H5yRlGEQlSZa8nMNoegfeO/CeZPfrh4DItCAul
-         NSYA4m9r/zqUnHcuFEx+tmGf9cKNyliQ+qW8ySkY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210319071036epcas1p3243b89c5fd0e127923a52922154d80d3~trMzAUKAu2018620186epcas1p3W;
-        Fri, 19 Mar 2021 07:10:36 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4F1w5l57c4z4x9Pq; Fri, 19 Mar
-        2021 07:10:35 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.2F.50768.B6E44506; Fri, 19 Mar 2021 16:10:35 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210319071035epcas1p29f8766cca280391ad210a58a3f631e91~trMxjoKtN2281322813epcas1p2J;
-        Fri, 19 Mar 2021 07:10:35 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210319071035epsmtrp21f76c80bc0699409c649474d36e64766~trMxi6JkE2263122631epsmtrp2n;
-        Fri, 19 Mar 2021 07:10:35 +0000 (GMT)
-X-AuditID: b6c32a37-56c76a800000c650-0f-60544e6bd8cd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CA.52.13470.B6E44506; Fri, 19 Mar 2021 16:10:35 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210319071034epsmtip13f83a1d06c230c4a45b007616322cf88~trMxWXwKN0204802048epsmtip1W;
-        Fri, 19 Mar 2021 07:10:34 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Hyeongseok Kim'" <hyeongseok@gmail.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <9a7c01d71af5$51d17470$f5745d50$@samsung.com>
-Subject: RE: [PATCH] exfat: improve write performance when dirsync enabled
-Date:   Fri, 19 Mar 2021 16:10:35 +0900
-Message-ID: <002601d71c8e$f512e930$df38bb90$@samsung.com>
+        Fri, 19 Mar 2021 03:15:08 -0400
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id D05B71BF208;
+        Fri, 19 Mar 2021 07:14:58 +0000 (UTC)
+Subject: Re: [PATCH] Insert SFENCE.VMA in function set_pte_at for RISCV
+To:     Jiuyang Liu <liu@jiuyang.me>,
+        Andrew Waterman <waterman@eecs.berkeley.edu>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zong Li <zong.li@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <20210316015328.13516-1-liu@jiuyang.me>
+ <20210316034638.16276-1-liu@jiuyang.me>
+ <CAAhSdy3eEXtba_ebUnPW_OUHRMKsg+O9sBx_DHAmrkTUCfHXNg@mail.gmail.com>
+ <CAPM7DZc+Ysd=VQdzc4_4Np8VAMESBrzD3mhk0ueh92x11bFFNg@mail.gmail.com>
+ <CAAhSdy1HYJJDig3Mg1eWaO=zok9G6+hQM1LLbDKMzH-=Fi2dKw@mail.gmail.com>
+ <CA++6G0AnGVLbM+1j9K7UU_0p6NfwVAxNkcFr8s1=h+wW4G0z_w@mail.gmail.com>
+ <CAAhSdy0nAUW-Y9gFONVLUPZCG-zT2MXKacu+StKKmSro+58k8w@mail.gmail.com>
+ <d4f3f2af-345d-b9a9-6ac5-f4262d0b46c5@ghiti.fr>
+ <CA++6G0AysZ3eZ+F1jMxx59aKbj3CyiOSMTkr1RVKuocqmZ6maQ@mail.gmail.com>
+ <CAPM7DZffiY7gAW738fc1Dm_qfebPL9=yYjNbvazn_8wmBMbMhA@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <0241f543-98f8-4736-8c4e-7814ad87a51a@ghiti.fr>
+Date:   Fri, 19 Mar 2021 03:14:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHrkVYthcVH6BAyEbje7ZFeNRCC9QIEdcHjAxV+Pj+qOSuBIA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmvm62X0iCwc0+BYu/Ez8xWezZe5LF
-        4vKuOWwWW/4dYXVg8dg56y67R9+WVYwenzfJBTBH5dhkpCampBYppOYl56dk5qXbKnkHxzvH
-        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
-        pRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZDz92M5asJO5ou3uD6YGxidMXYycHBIC
-        JhK/Ztxh62Lk4hAS2MEosaZ1MSuE84lR4va3e4wQzjdGic1TpwJlOMBaJh+tAukWEtjLKDGj
-        zRKi5iWjxJRzvawgCTYBXYl/f/azgdgiAlESe5e9A1vHLOAs0XnxNFgNp4CVxKtbj8BsYQEv
-        iXsPp4PVsAioSrz/fwcszitgKdF69CcbhC0ocXLmExaIOfIS29/OYYZ4QUHi59NlrBC7nCSm
-        PO2C2iUiMbuzjRnkOAmBj+wS1yecZINocJE4en0x1P/CEq+Ob2GHsKUkPr/bywbxZLXEx/1Q
-        8zsYJV58t4WwjSVurt8ADgdmAU2J9bv0IcKKEjt/z2WEWMsn8e5rDzSoeCU62oQgSlQl+i4d
-        hloqLdHV/oF9AqPSLCSPzULy2CwkD8xCWLaAkWUVo1hqQXFuemqxYYExclRvYgSnQy3zHYzT
-        3n7QO8TIxMF4iFGCg1lJhNc0LyBBiDclsbIqtSg/vqg0J7X4EKMpMKgnMkuJJucDE3JeSbyh
-        qZGxsbGFiZm5mamxkjhvksGDeCGB9MSS1OzU1ILUIpg+Jg5OqQYm23iR1O0+yzir+xa5xDdm
-        7FwlpL4nWHa2wUyXVl7BrdvMF851OWmg+m7d77VOeYbLCl57Xn/p7ixh07W7g6fwvbpRt6aE
-        s1T5l+yiFSy9tvLXjvxZEFjFXB/2oC1b8mTLTxnD9ZdV2Ln7P26v265+auO7druWXYWaJQs5
-        p2e2pKinNU2++m8j0y7hGyXsS37u2Xf5DuekyYcF/5w6c+Xyl8rFVhfldGc7lMjzRK3YpJRQ
-        55YmYjlf1Wd2pej/o63P3zT9T6stKJ3bulJR+2hxR+Tb7zucLy05sF9hf/fWbDXDnINrNiab
-        Sy41+mizv8sl7m9cTM42g9XqFu+3mQfaH3yje4ZLp69OcfXcpapKLMUZiYZazEXFiQB/xms4
-        EAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsWy7bCSnG62X0iCwYbfLBZ/J35istiz9ySL
-        xeVdc9gstvw7wurA4rFz1l12j74tqxg9Pm+SC2CO4rJJSc3JLEst0rdL4Mp4+rGdtWAnc0Xb
-        3R9MDYxPmLoYOTgkBEwkJh+t6mLk4hAS2M0o8WPTccYuRk6guLTEsRNnmCFqhCUOHy6GqHnO
-        KPHzxytmkBo2AV2Jf3/2s4HYIgJREueOnwGzmQVcJdpeHGGFaNjFKDH72z5WkASngJXEq1uP
-        wGxhAS+Jew+nM4HYLAKqEu//3wGL8wpYSrQe/ckGYQtKnJz5hAViqLbE05tPoWx5ie1v5zBD
-        HKog8fPpMlaII5wkpjztYoKoEZGY3dnGPIFReBaSUbOQjJqFZNQsJC0LGFlWMUqmFhTnpucW
-        GxYY5qWW6xUn5haX5qXrJefnbmIEx4aW5g7G7as+6B1iZOJgPMQowcGsJMJrmheQIMSbklhZ
-        lVqUH19UmpNafIhRmoNFSZz3QtfJeCGB9MSS1OzU1ILUIpgsEwenVANT1USJdcfZJaavmZkx
-        rzelreP0xIUBChovD84RZ5hQnjeXo+DchF7fmjWbVaamvW9KW7B97bVjncrM913SQ6Zv1Mtd
-        e1f81O/GKz4fjTPu879WLkl9pVfSKxjql7hMvny1yS9Zm+9O0QfOf3ixRcPzqsZvTQYTo8YC
-        44P3/qR6rzuid/Qc55LubxNMSotvnvk+xTJr/s7Hk4/7f7FX2fBylqRtpuaL5aV2TcfnG9sq
-        B054tum8QYB21CUVtyc7jkkr+rtq3C3J4Og+4OHwgenC1Ae/xRxSJ9R0hy/M6uLoibqxS299
-        87zz+hL7g9aI6ayZ8niSeuj59afUjsjk392l1Oi0++pO10d6c1xWfvulqcRSnJFoqMVcVJwI
-        ACzEOtH8AgAA
-X-CMS-MailID: 20210319071035epcas1p29f8766cca280391ad210a58a3f631e91
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210315041325epcas1p11488673d4f146350dedded4b3b20fd6f
-References: <CGME20210315041325epcas1p11488673d4f146350dedded4b3b20fd6f@epcas1p1.samsung.com>
-        <20210315041255.174167-1-hyeongseok@gmail.com>
-        <9a7c01d71af5$51d17470$f5745d50$@samsung.com>
+In-Reply-To: <CAPM7DZffiY7gAW738fc1Dm_qfebPL9=yYjNbvazn_8wmBMbMhA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Degradation of write speed caused by frequent disk access for cluster
-> > bitmap update on every cluster allocation could be improved by
-> > selective syncing bitmap buffer. Change to flush bitmap buffer only
-> > for the directory related operations.
-> >
-> > Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+Le 3/17/21 à 10:10 PM, Jiuyang Liu a écrit :
+> Thanks for the review!
 > 
-> Looks good.
-> Thanks for your work.
+> I see, after skimming related codes, and implementation of other architecture,
+> I also agree this method is too heavy to implement. And there is a potential
+> bug, that my patch may introduce two SFENCE.VMA in the related codes:
+> flush at set_pte_at and also flush in the upper level of the calling stack.
 > 
-> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied. Thanks!
+> My two cents is that the original description in spec is a little
+> misleading to the
+> software side, spec requires each set_pte inserting SFENCE.VMA together,
+> while the kernel chooses to maintain set_pte and flush_tlb separately.
+> 
+> So I think I should add a patch to fix my bug specifically, and
+> provide this trunk
+> as an inline function to flush tlb after modification to a pte.
+> 
+>> if (pte_present(pteval)) {
+>>          if (pte_leaf(pteval)) {
+>>                  local_flush_tlb_page(addr);
+>>          } else {
+>>                  if (pte_global(pteval))
+>>                          local_flush_tlb_all();
+>>                  else
+>>                          local_flush_tlb_asid();
+>>
+>>         }
+>> }
+> 
+> My next patch will become two patches:
+> 1. add flush_tlb related codes according to spec(also flush global tlb
+> via sbi call if G bit is on)
+> 2. add a bug fix for my stack by adding flush in the flush_cache_vmap.
+> 
+> Does this approach sound reasonable?
 
+Ok for me, please take a look at flush_cache_vunmap too as I think we 
+need to do the same thing here.
+
+Thanks,
+
+Alex
+
+> 
+> Regards,
+> Jiuyang
+> 
+> On Tue, 16 Mar 2021 at 09:17 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>> We're trying to avoid this sort of thing, instead relying on the generic kernel
+>> functionality to batch up page table modifications before we issue the fences.
+>> If you're seeing some specific issue then I'd be happy to try and sort out a
+>> fix for it, but this is a bit heavy-handed to use as anything but a last
+>> resort.
+> On Tue, Mar 16, 2021 at 10:03 PM Andrew Waterman
+> <waterman@eecs.berkeley.edu> wrote:
+>>
+>> On Tue, Mar 16, 2021 at 5:05 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>
+>>> Le 3/16/21 à 4:40 AM, Anup Patel a écrit :
+>>>> On Tue, Mar 16, 2021 at 1:59 PM Andrew Waterman
+>>>> <waterman@eecs.berkeley.edu> wrote:
+>>>>>
+>>>>> On Tue, Mar 16, 2021 at 12:32 AM Anup Patel <anup@brainfault.org> wrote:
+>>>>>>
+>>>>>> On Tue, Mar 16, 2021 at 12:27 PM Jiuyang Liu <liu@jiuyang.me> wrote:
+>>>>>>>
+>>>>>>>> As per my understanding, we don't need to explicitly invalidate local TLB
+>>>>>>>> in set_pte() or set_pet_at() because generic Linux page table management
+>>>>>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+>>>>>>>> table updates.
+>>>>>>>
+>>>>>>> I witnessed this bug in our micro-architecture: set_pte instruction is
+>>>>>>> still in the store buffer, no functions are inserting SFENCE.VMA in
+>>>>>>> the stack below, so TLB cannot witness this modification.
+>>>>>>> Here is my call stack:
+>>>>>>> set_pte
+>>>>>>> set_pte_at
+>>>>>>> map_vm_area
+>>>>>>> __vmalloc_area_node
+>>>>>>> __vmalloc_node_range
+>>>>>>> __vmalloc_node
+>>>>>>> __vmalloc_node_flags
+>>>>>>> vzalloc
+>>>>>>> n_tty_open
+>>>>>>>
+>>>
+>>> I don't find this call stack, what I find is (the other way around):
+>>>
+>>> n_tty_open
+>>> vzalloc
+>>> __vmalloc_node
+>>> __vmalloc_node_range
+>>> __vmalloc_area_node
+>>> map_kernel_range
+>>> -> map_kernel_range_noflush
+>>>      flush_cache_vmap
+>>>
+>>> Which leads to the fact that we don't have flush_cache_vmap callback
+>>> implemented: shouldn't we add the sfence.vma here ? Powerpc does
+>>> something similar with "ptesync" (see below) instruction that seems to
+>>> do the same as sfence.vma.
+>>
+>> I was thinking the same thing, but I hadn't yet wrapped my head around
+>> the fact that most architectures don't have something similar.  I'm OK
+>> with following PPC's lead if it appears to be a correct bug fix :)
+>>
+>>>
+>>>
+>>> ptesync: "The ptesync instruction after the Store instruction ensures
+>>> that all searches of the Page Table that are performed after the ptesync
+>>> instruction completes will use the value stored"
+>>>
+>>>>>>> I think this is an architecture specific code, so <linux>/mm/* should
+>>>>>>> not be modified.
+>>>>>>> And spec requires SFENCE.VMA to be inserted on each modification to
+>>>>>>> TLB. So I added code here.
+>>>>>>
+>>>>>> The generic linux/mm/* already calls the appropriate tlb_flush_xyz()
+>>>>>> function defined in arch/riscv/include/asm/tlbflush.h
+>>>>>>
+>>>>>> Better to have a write-barrier in set_pte().
+>>>>>>
+>>>>>>>
+>>>>>>>> Also, just local TLB flush is generally not sufficient because
+>>>>>>>> a lot of page tables will be used across on multiple HARTs.
+>>>>>>>
+>>>>>>> Yes, this is the biggest issue, in RISC-V Volume 2, Privileged Spec v.
+>>>>>>> 20190608 page 67 gave a solution:
+>>>>>>
+>>>>>> This is not an issue with RISC-V privilege spec rather it is more about
+>>>>>> placing RISC-V fences at right locations.
+>>>>>>
+>>>>>>> Consequently, other harts must be notified separately when the
+>>>>>>> memory-management data structures have been modified. One approach is
+>>>>>>> to use
+>>>>>>> 1) a local data fence to ensure local writes are visible globally,
+>>>>>>> then 2) an interprocessor interrupt to the other thread,
+>>>>>>> then 3) a local SFENCE.VMA in the interrupt handler of the remote thread,
+>>>>>>> and finally 4) signal back to originating thread that operation is
+>>>>>>> complete. This is, of course, the RISC-V analog to a TLB shootdown.
+>>>>>>
+>>>>>> I would suggest trying approach#1.
+>>>>>>
+>>>>>> You can include "asm/barrier.h" here and use wmb() or __smp_wmb()
+>>>>>> in-place of local TLB flush.
+>>>>>
+>>>>> wmb() doesn't suffice to order older stores before younger page-table
+>>>>> walks, so that might hide the problem without actually fixing it.
+>>>>
+>>>> If we assume page-table walks as reads then mb() might be more
+>>>> suitable in this case ??
+>>>>
+>>>> ARM64 also has an explicit barrier in set_pte() implementation. They are
+>>>> doing "dsb(ishst); isb()" which is an inner-shareable store barrier followed
+>>>> by an instruction barrier.
+>>>>
+>>>>>
+>>>>> Based upon Jiuyang's description, it does sound plausible that we are
+>>>>> missing an SFENCE.VMA (or TLB shootdown) somewhere.  But I don't
+>>>>> understand the situation well enough to know where that might be, or
+>>>>> what the best fix is.
+>>>>
+>>>> Yes, I agree but set_pte() doesn't seem to be the right place for TLB
+>>>> shootdown based on set_pte() implementations of other architectures.
+>>>
+>>> I agree as "flushing" the TLB after every set_pte() would be very
+>>> costly, it's better to do it once at the end of the all the updates:
+>>> like in flush_cache_vmap :)
+>>>
+>>> Alex
+>>>
+>>>>
+>>>> Regards,
+>>>> Anup
+>>>>
+>>>>>
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> In general, this patch didn't handle the G bit in PTE, kernel trap it
+>>>>>>> to sbi_remote_sfence_vma. do you think I should use flush_tlb_all?
+>>>>>>>
+>>>>>>> Jiuyang
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> arch/arm/mm/mmu.c
+>>>>>>> void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>>>>>>                                 pte_t *ptep, pte_t pteval)
+>>>>>>> {
+>>>>>>>           unsigned long ext = 0;
+>>>>>>>
+>>>>>>>           if (addr < TASK_SIZE && pte_valid_user(pteval)) {
+>>>>>>>                   if (!pte_special(pteval))
+>>>>>>>                           __sync_icache_dcache(pteval);
+>>>>>>>                   ext |= PTE_EXT_NG;
+>>>>>>>           }
+>>>>>>>
+>>>>>>>           set_pte_ext(ptep, pteval, ext);
+>>>>>>> }
+>>>>>>>
+>>>>>>> arch/mips/include/asm/pgtable.h
+>>>>>>> static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>>>>>>                                 pte_t *ptep, pte_t pteval)
+>>>>>>> {
+>>>>>>>
+>>>>>>>           if (!pte_present(pteval))
+>>>>>>>                   goto cache_sync_done;
+>>>>>>>
+>>>>>>>           if (pte_present(*ptep) && (pte_pfn(*ptep) == pte_pfn(pteval)))
+>>>>>>>                   goto cache_sync_done;
+>>>>>>>
+>>>>>>>           __update_cache(addr, pteval);
+>>>>>>> cache_sync_done:
+>>>>>>>           set_pte(ptep, pteval);
+>>>>>>> }
+>>>>>>>
+>>>>>>>
+>>>>>>> Also, just local TLB flush is generally not sufficient because
+>>>>>>>> a lot of page tables will be used accross on multiple HARTs.
+>>>>>>>
+>>>>>>>
+>>>>>>> On Tue, Mar 16, 2021 at 5:05 AM Anup Patel <anup@brainfault.org> wrote:
+>>>>>>>>
+>>>>>>>> +Alex
+>>>>>>>>
+>>>>>>>> On Tue, Mar 16, 2021 at 9:20 AM Jiuyang Liu <liu@jiuyang.me> wrote:
+>>>>>>>>>
+>>>>>>>>> This patch inserts SFENCE.VMA after modifying PTE based on RISC-V
+>>>>>>>>> specification.
+>>>>>>>>>
+>>>>>>>>> arch/riscv/include/asm/pgtable.h:
+>>>>>>>>> 1. implement pte_user, pte_global and pte_leaf to check correspond
+>>>>>>>>> attribute of a pte_t.
+>>>>>>>>
+>>>>>>>> Adding pte_user(), pte_global(), and pte_leaf() is fine.
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> 2. insert SFENCE.VMA in set_pte_at based on RISC-V Volume 2, Privileged
+>>>>>>>>> Spec v. 20190608 page 66 and 67:
+>>>>>>>>> If software modifies a non-leaf PTE, it should execute SFENCE.VMA with
+>>>>>>>>> rs1=x0. If any PTE along the traversal path had its G bit set, rs2 must
+>>>>>>>>> be x0; otherwise, rs2 should be set to the ASID for which the
+>>>>>>>>> translation is being modified.
+>>>>>>>>> If software modifies a leaf PTE, it should execute SFENCE.VMA with rs1
+>>>>>>>>> set to a virtual address within the page. If any PTE along the traversal
+>>>>>>>>> path had its G bit set, rs2 must be x0; otherwise, rs2 should be set to
+>>>>>>>>> the ASID for which the translation is being modified.
+>>>>>>>>>
+>>>>>>>>> arch/riscv/include/asm/tlbflush.h:
+>>>>>>>>> 1. implement get_current_asid to get current program asid.
+>>>>>>>>> 2. implement local_flush_tlb_asid to flush tlb with asid.
+>>>>>>>>
+>>>>>>>> As per my understanding, we don't need to explicitly invalidate local TLB
+>>>>>>>> in set_pte() or set_pet_at() because generic Linux page table management
+>>>>>>>> (<linux>/mm/*) will call the appropriate flush_tlb_xyz() function after page
+>>>>>>>> table updates. Also, just local TLB flush is generally not sufficient because
+>>>>>>>> a lot of page tables will be used accross on multiple HARTs.
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+>>>>>>>>> ---
+>>>>>>>>>    arch/riscv/include/asm/pgtable.h  | 27 +++++++++++++++++++++++++++
+>>>>>>>>>    arch/riscv/include/asm/tlbflush.h | 12 ++++++++++++
+>>>>>>>>>    2 files changed, 39 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>>>>>>>>> index ebf817c1bdf4..5a47c60372c1 100644
+>>>>>>>>> --- a/arch/riscv/include/asm/pgtable.h
+>>>>>>>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>>>>>>>> @@ -222,6 +222,16 @@ static inline int pte_write(pte_t pte)
+>>>>>>>>>           return pte_val(pte) & _PAGE_WRITE;
+>>>>>>>>>    }
+>>>>>>>>>
+>>>>>>>>> +static inline int pte_user(pte_t pte)
+>>>>>>>>> +{
+>>>>>>>>> +       return pte_val(pte) & _PAGE_USER;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline int pte_global(pte_t pte)
+>>>>>>>>> +{
+>>>>>>>>> +       return pte_val(pte) & _PAGE_GLOBAL;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>>    static inline int pte_exec(pte_t pte)
+>>>>>>>>>    {
+>>>>>>>>>           return pte_val(pte) & _PAGE_EXEC;
+>>>>>>>>> @@ -248,6 +258,11 @@ static inline int pte_special(pte_t pte)
+>>>>>>>>>           return pte_val(pte) & _PAGE_SPECIAL;
+>>>>>>>>>    }
+>>>>>>>>>
+>>>>>>>>> +static inline int pte_leaf(pte_t pte)
+>>>>>>>>> +{
+>>>>>>>>> +       return pte_val(pte) & (_PAGE_READ | _PAGE_WRITE | _PAGE_EXEC);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>>    /* static inline pte_t pte_rdprotect(pte_t pte) */
+>>>>>>>>>
+>>>>>>>>>    static inline pte_t pte_wrprotect(pte_t pte)
+>>>>>>>>> @@ -358,6 +373,18 @@ static inline void set_pte_at(struct mm_struct *mm,
+>>>>>>>>>                   flush_icache_pte(pteval);
+>>>>>>>>>
+>>>>>>>>>           set_pte(ptep, pteval);
+>>>>>>>>> +
+>>>>>>>>> +       if (pte_present(pteval)) {
+>>>>>>>>> +               if (pte_leaf(pteval)) {
+>>>>>>>>> +                       local_flush_tlb_page(addr);
+>>>>>>>>> +               } else {
+>>>>>>>>> +                       if (pte_global(pteval))
+>>>>>>>>> +                               local_flush_tlb_all();
+>>>>>>>>> +                       else
+>>>>>>>>> +                               local_flush_tlb_asid();
+>>>>>>>>> +
+>>>>>>>>> +               }
+>>>>>>>>> +       }
+>>>>>>>>>    }
+>>>>>>>>>
+>>>>>>>>>    static inline void pte_clear(struct mm_struct *mm,
+>>>>>>>>> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+>>>>>>>>> index 394cfbccdcd9..1f9b62b3670b 100644
+>>>>>>>>> --- a/arch/riscv/include/asm/tlbflush.h
+>>>>>>>>> +++ b/arch/riscv/include/asm/tlbflush.h
+>>>>>>>>> @@ -21,6 +21,18 @@ static inline void local_flush_tlb_page(unsigned long addr)
+>>>>>>>>>    {
+>>>>>>>>>           __asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory");
+>>>>>>>>>    }
+>>>>>>>>> +
+>>>>>>>>> +static inline unsigned long get_current_asid(void)
+>>>>>>>>> +{
+>>>>>>>>> +       return (csr_read(CSR_SATP) >> SATP_ASID_SHIFT) & SATP_ASID_MASK;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline void local_flush_tlb_asid(void)
+>>>>>>>>> +{
+>>>>>>>>> +       unsigned long asid = get_current_asid();
+>>>>>>>>> +       __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>>    #else /* CONFIG_MMU */
+>>>>>>>>>    #define local_flush_tlb_all()                  do { } while (0)
+>>>>>>>>>    #define local_flush_tlb_page(addr)             do { } while (0)
+>>>>>>>>> --
+>>>>>>>>> 2.30.2
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> _______________________________________________
+>>>>>>>>> linux-riscv mailing list
+>>>>>>>>> linux-riscv@lists.infradead.org
+>>>>>>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>>>>>
+>>>>>>>> Regards,
+>>>>>>>> Anup
+>>>>>>
+>>>>>> Regards,
+>>>>>> Anup
+>>>>
+>>>> _______________________________________________
+>>>> linux-riscv mailing list
+>>>> linux-riscv@lists.infradead.org
+>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
