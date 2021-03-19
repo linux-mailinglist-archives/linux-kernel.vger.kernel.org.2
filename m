@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DEE3422AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44A43421F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhCSQ7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:59:00 -0400
-Received: from mga02.intel.com ([134.134.136.20]:37207 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhCSQ63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:58:29 -0400
-IronPort-SDR: L+mPZLhgCOU2eGeARA54KFcPvJ/JCnnL6MlZDu8HMCXqHtnk09JSxM1GhFtbczIEeQxwku4g3a
- 8x9Ez+qaCTDQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177060429"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="177060429"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:58:29 -0700
-IronPort-SDR: K8CaVHAuhQq6PMoKxpssvj+a68B72QDjgalp//VNWxiXUqHsWBYYNf3hd21+P4iE7ytjWu45mL
- ASQnpwOGN4ug==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="406867512"
-Received: from dgerstma-mobl.amr.corp.intel.com (HELO [10.212.157.39]) ([10.212.157.39])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:58:28 -0700
-Subject: Re: [PATCH v3 0/7] ASoC: codecs: add wcd938x support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-References: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <27e19637-b9ea-1adb-46e5-252480a9a353@linux.intel.com>
-Date:   Fri, 19 Mar 2021 11:09:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230057AbhCSQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:32:05 -0400
+Received: from depni-mx.sinp.msu.ru ([213.131.7.21]:25 "EHLO
+        depni-mx.sinp.msu.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhCSQcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:32:03 -0400
+X-Greylist: delayed 523 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Mar 2021 12:32:02 EDT
+Received: from spider (ip-95-220-117-58.bb.netbynet.ru [95.220.117.58])
+        by depni-mx.sinp.msu.ru (Postfix) with ESMTPSA id 16F391BF496;
+        Fri, 19 Mar 2021 19:24:04 +0300 (MSK)
+From:   Serge Belyshev <belyshev@depni.sinp.msu.ru>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 01/10] alpha: use libata instead of the legacy ide driver
+In-Reply-To: <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Thu, 18 Mar 2021 05:54:55 +0000")
+References: <20210318045706.200458-1-hch@lst.de>
+        <20210318045706.200458-2-hch@lst.de>
+        <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Date:   Fri, 19 Mar 2021 19:23:17 +0300
+Message-ID: <87lfajun7u.fsf@depni.sinp.msu.ru>
 MIME-Version: 1.0
-In-Reply-To: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
+> ...
+>
+> Do you have reports of libata variants of drivers actually tested on
+> those?
 
-On 3/19/21 4:29 AM, Srinivas Kandagatla wrote:
-> This patchset adds support for Qualcomm WCD938X codec.
-> 
-> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
-> connected over SoundWire. This device has two SoundWire devices, RX and
-> TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
-> 7 x TX diff inputs, 8 DMICs and MBHC.
-> 
-> Even though this device has two SoundWire devices, only tx device has
-> access to main codec Control/Status Registers!
+PATA_CMD64X works fine on my 164LX for many years, last tested with 5.12-rc3.
 
-That part is a new concept we haven't seen so far with SoundWire 
-support, and I added a number of comments in the patches.
-
-It would really help if you could add more explanations on how 
-regmap/pm_runtime/gpios/regulators/interrupts are supposed to work with 
-such a functional split. Thanks!
-
-> This patchset along with other SoundWire patches on the list
-> have been tested on SM8250 MTP device.
-> 
-> Am planning to send support for MBHC once this driver gets accepted!
-> 
-> Thanks,
-> srini
-> 
-> Many thanks for reviewing v2.
-> 
-> 
-> Changes since v2:
-> 	- fixed dt_binding_check error
-> 
-> 
-> Srinivas Kandagatla (7):
->    ASoC: dt-bindings: wcd938x: add bindings for wcd938x
->    ASoC: codecs: wcd-clsh: add new version support
->    ASoC: codecs: wcd938x: add basic driver
->    ASoC: codecs: wcd938x: add basic controls
->    ASoC: codecs: wcd938x: add playback dapm widgets
->    ASoC: codecs: wcd938x: add capture dapm widgets
->    ASoC: codecs: wcd938x: add audio routing
-> 
->   .../bindings/sound/qcom,wcd938x.yaml          |  165 +
->   sound/soc/codecs/Kconfig                      |    9 +
->   sound/soc/codecs/Makefile                     |    2 +
->   sound/soc/codecs/wcd-clsh-v2.c                |  350 +-
->   sound/soc/codecs/wcd-clsh-v2.h                |   16 +
->   sound/soc/codecs/wcd938x-sdw.c                |  291 ++
->   sound/soc/codecs/wcd938x.c                    | 3623 +++++++++++++++++
->   sound/soc/codecs/wcd938x.h                    |  676 +++
->   8 files changed, 5122 insertions(+), 10 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
->   create mode 100644 sound/soc/codecs/wcd938x-sdw.c
->   create mode 100644 sound/soc/codecs/wcd938x.c
->   create mode 100644 sound/soc/codecs/wcd938x.h
-> 
+(with a caveat: in my setup with CF card DMA is broken, but it is broken
+with BLK_DEV_CMD64X as well).
