@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3EC3421C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEF33421C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCSQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:23:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230015AbhCSQXU (ORCPT
+        id S230154AbhCSQYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:24:04 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52658 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhCSQXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:23:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616170999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4yMSSQE+266qMvhoobx6hI2uloJNeAdSSRsEhmgkNvM=;
-        b=TVvg1RA/NkAxFxUMzwNUll9glBFOvE73ZTw6JH4fbBy2af3/0GAiw9kUDIKvZkWgLpTSMX
-        zAyvQhLUCr10he4oUR0kroh5gLrWG3xeHHm36rIDRMlYqokVPTgjJ1CvykWRfjx3ev/o/9
-        ptXlxQ9BXMiLAbkLrFdYTKMa5PNyCPs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-ND2CEfwjMq-no1d6SPdBxw-1; Fri, 19 Mar 2021 12:23:16 -0400
-X-MC-Unique: ND2CEfwjMq-no1d6SPdBxw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B6E81044804;
-        Fri, 19 Mar 2021 16:23:14 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF0DA1A86F;
-        Fri, 19 Mar 2021 16:23:13 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 10:23:13 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210319102313.179e9969@omen.home.shazbot.org>
-In-Reply-To: <YFSgQ2RWqt4YyIV4@unreal>
-References: <YFHh3bopQo/CRepV@unreal>
-        <20210317112309.nborigwfd26px2mj@archlinux>
-        <YFHsW/1MF6ZSm8I2@unreal>
-        <20210317131718.3uz7zxnvoofpunng@archlinux>
-        <YFILEOQBOLgOy3cy@unreal>
-        <20210317113140.3de56d6c@omen.home.shazbot.org>
-        <YFMYzkg101isRXIM@unreal>
-        <20210318103935.2ec32302@omen.home.shazbot.org>
-        <YFOMShJAm4j/3vRl@unreal>
-        <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
-        <YFSgQ2RWqt4YyIV4@unreal>
+        Fri, 19 Mar 2021 12:23:34 -0400
+Received: from mail-lf1-f70.google.com ([209.85.167.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lNHuP-0004tH-2A
+        for linux-kernel@vger.kernel.org; Fri, 19 Mar 2021 16:23:33 +0000
+Received: by mail-lf1-f70.google.com with SMTP id b1so14766801lft.11
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 09:23:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xz8TPdVB4EDtcxBy3GtWMpWf4qC96vtgCeVPrtt93cQ=;
+        b=henKctoWgHXD0SKw81Veyl1HvEBSTQntVToyyZDAdfZamaUC4zxhZ760rwKY7Z1uZu
+         N1yV10eTXjdSyB7Hr2qcZkpipoK2XoBLQsf1DIe69Gh6fZpSbfMRaessRSRM+axCFwF5
+         iSsaMTftH0oB7xK/+nnQCx45tLIYqdN5ezsfGeIsJIW4WwoffRpn4NYNd8YncRJmIsd1
+         8r8f+KzOKz12c3TNQ7vYCiUmdpFhpX0zqNQttbWDAl+l1WXjg1/q0o+kloaiN2ldagL2
+         EfsKlEjZpt745pWIpM1YNGPMBfJw7y33rNjepcYdWS6AdNekzGirEi7BBTjzjeKc7wDW
+         Di1A==
+X-Gm-Message-State: AOAM532e7z+OQqIZrj26bT6H4Zm39jj0zLGcoVr1HzSr6sEFGWgEcmyd
+        /tuvjeh6WVSz550AaKYiQjjNK0rtbS33rM+rw3oxKqloLO1aMiMgr9l1SCZk3n+39hNmQ/sKGTi
+        uKt7yunDF15X5HMugCZ5gmwmnAVRJTClNa/5r4eYGEIOYjJWfCSRKQn+IKw==
+X-Received: by 2002:a2e:5753:: with SMTP id r19mr1407874ljd.126.1616171012549;
+        Fri, 19 Mar 2021 09:23:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy43J4Kpgq9mCSyPqEDKkmC9OjFRPAWnnjYVr1Ua8xgvMhBlEaYmA1VYcuSnmuiK0gH4Jzq3HrwayDwGRYvLnQ=
+X-Received: by 2002:a2e:5753:: with SMTP id r19mr1407861ljd.126.1616171012302;
+ Fri, 19 Mar 2021 09:23:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <b8db79e6857c41dab4ef08bdf826ea7c47e3bafc.1615947283.git.josef@toxicpanda.com>
+ <CAAd53p5Vh_+tUeEQx3xf_aLiCiKP1u5Y3VgYCUzZ82Kgtr-iYw@mail.gmail.com>
+ <bebcaffc-d485-912d-0c42-c0781f9c7603@toxicpanda.com> <CAAd53p7eJk9EtMTLjB5i7RdoKA3WS1W4TRjQs08adi7iAux_jQ@mail.gmail.com>
+ <78dfcd55-442d-dcc0-c37f-5576f65f91b5@toxicpanda.com> <CAAd53p6Lp8+S0yjWi=MikQJ_zywiWamUS5p19oKoqB6uYW8jzg@mail.gmail.com>
+ <0cd8b39e-3feb-87b8-e172-70b07692b82a@toxicpanda.com>
+In-Reply-To: <0cd8b39e-3feb-87b8-e172-70b07692b82a@toxicpanda.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Sat, 20 Mar 2021 00:23:20 +0800
+Message-ID: <CAAd53p6=dGwtTVBcQuO+Rvt0nZ2Ck_OXtR=um=S2p=OjNXnH8w@mail.gmail.com>
+Subject: Re: [PATCH][RESEND] Revert "PM: ACPI: reboot: Use S5 for reboot"
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 14:59:47 +0200
-Leon Romanovsky <leon@kernel.org> wrote:
+On Fri, Mar 19, 2021 at 3:02 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On 3/18/21 1:42 AM, Kai-Heng Feng wrote:
+> > On Thu, Mar 18, 2021 at 1:25 AM Josef Bacik <josef@toxicpanda.com> wrote:
+> > [snipped]
+> >> "shutdown now" works fine with and without your patch.  Thanks,
+> >
+> > Rafael,
+> > Please revert the patch while we are working on it.
+> >
+> > Josef,
+> > Can you please test the following patch:
+> >
+>
+> That made it work fine.  Thanks,
 
-> On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > On 18.03.21 18:22, Leon Romanovsky wrote:
-> >   
-> > > Which email client do you use?
-> > > Your responses are grouped as one huge block without any chance to respond
-> > > to you on specific point or answer to your question.  
-> > 
-> > I'm reading this thread in Tbird, and threading / quoting all looks
-> > nice.  
-> 
-> I'm not talking about threading or quoting but about response itself.
-> See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
-> Alex's response is one big chunk without any separations to paragraphs.
+So there are things depend on reboot or shutdown to carry out
+different behaviors.
+Can you please find whether there is any code path uses SYSTEM_RESTART
+or SYSTEM_POWER_OFF that leads to different behavior? Most likely
+happen in a driver's .shutdown callback.
 
-I've never known paragraph breaks to be required to interject a reply.
+Kai-Heng
 
-Back on topic...
-
-> >   
-> > > I see your flow and understand your position, but will repeat my
-> > > position. We need to make sure that vendors will have incentive to
-> > > supply quirks.  
-
-What if we taint the kernel or pci_warn() for cases where either all
-the reset methods are disabled, ie. 'echo none > reset_method', or any
-time a device specific method is disabled?
-
-I'd almost go so far as to prevent disabling a device specific reset
-altogether, but for example should a device specific reset that fixes
-an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
-case if direct FLR were disabled via a device flag introduced with the
-quirk and the remaining resets can still be selected by preference.
-
-Theoretically all the other reset methods work and are available, it's
-only a policy decision which to use, right?
-
-If a device probes for a reset that's broken and distros start
-including systemd scripts to apply a preference to avoid it, (a) that
-enables them to work with existing kernels, and (b) indicates to us to
-add the trivial quirk to flag that reset as broken.
-
-The other side of the argument that this discourages quirks is that
-this interface actually makes it significantly easier to report specific
-reset methods as broken for a given device.
-
-Thanks,
-Alex
-
+>
+> Josef
