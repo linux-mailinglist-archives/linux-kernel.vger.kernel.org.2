@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A5734192D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ACA34195D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhCSKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        id S230454AbhCSKD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhCSKBt (ORCPT
+        with ESMTP id S230166AbhCSKCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:01:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA217C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:01:48 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id q5so5531815pfh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:01:48 -0700 (PDT)
+        Fri, 19 Mar 2021 06:02:45 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6DEC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:02:44 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id a63so4395567wmd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=B9LufqdUnFpJuSHq7VG+1cDzdDjsh6C7NF9D7mHBSgE=;
-        b=g6shrotdYjJwb555YNp4B7fES2GhlOJy0e8xbWUiB4lv97yIBTg1glm+2zR4M08ZtX
-         w+07s5RPj0Q26PrdbbQuos8lGr442EIE9yIz7g2+JvnGc14ks0n5a5RwQVO1yn3udj4T
-         AYrQxniHTV0WhCYxHS4RuFAr7DyLbf7Yp1EOMII78Gt8TxxWAjKmF7Pd00+nQxG9ubsD
-         wifHKH/elFO57l9i76I8cAHFKWyo8PhcIBV4YkmMNYSaslmz1v3P6FyKtk46+/8Vmery
-         GxUFT8V5AekKeExnJ7KGMmj9NtN/1eWpGIVc1gp+FD0oUQ6qF+bRmvkj8rylMgcI30Mr
-         hG4A==
+        bh=GoB0Yt2mReKBbMoIr+lrsMAUtacP9flbLvax4BQ0cpo=;
+        b=mN+FVC37//OEHQaXZ4xc2thLgYxUYcwEXaW5TBfO3XlbhCuyXV8jvTNRJLii5RLIj0
+         xmKkGauvXEi0qyjP0Kcp8OK66FoyG8uJe7Q6GNxfmPmV/oSHgYoO6GSkxdZm7du+bwhl
+         8V2Fz7Q7VbHRBBEgX+9Q2JzGBbVYLb+nSh+WoVGi6HtrU1vY3OCpXTt6SzkMpifbf1xs
+         RNOGHY5XdRY09XTS/UcNCjZcWMpii07Z8v375fHeOTd3nS/z/i2DthjHr5hibcvG6s5v
+         pMF0THMZMLV9n48Pn91vMViDEYTJ0ZRN7zRVf3rPR2wVJi3CbJPDNxDmioYHC948CiXF
+         A5KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B9LufqdUnFpJuSHq7VG+1cDzdDjsh6C7NF9D7mHBSgE=;
-        b=R1pC2jQ+DOgAWmLUeB0nE/l25i/ICCvIP1V5Le5+G6ArViLm7ammyWrtHxu9ckgXHV
-         oG+s2ZgJQrWVvQrINl+5YBG8u0ESNjMtpPz+A2yccgvs9mt5cIVPW7qx9RohieRrIP4f
-         lw3m0th4IgjCfTE+exPUM0oVnLAJkfghOmQkV2yOwjg+q/ciymQIiTTe7yvKIbKFSypV
-         mKNADX6g5D1YwCCPrbJrnQv3v93eQ8tKqobXoPSqKV25z/bSORaVHnynxPPrYo3oFB51
-         VKYKmEHjL9dmkMDclCQ6JReVzy9886qpAom2UCzxhGodojAZ0rnUi5/X0r6Uxrq1D32c
-         fYQg==
-X-Gm-Message-State: AOAM533icB2OBY0XNw6TpOBEItg/XOKmyluweXuzhhXAoyOnVPpnzHva
-        oxAw3M7b0o6wtEBNmRYF4edfKgk4+E1EVWqoNDA=
-X-Google-Smtp-Source: ABdhPJxbDPG8NljK+tr4M/GEgg/TBah6wYjT89ZRqQIGWrdHtGVIPdXZYQvPnOmMytwBlslG0IYoYkUoEPVUtJyzai8=
-X-Received: by 2002:a05:6a00:1596:b029:200:c2c9:95e7 with SMTP id
- u22-20020a056a001596b0290200c2c995e7mr8460683pfk.73.1616148108258; Fri, 19
- Mar 2021 03:01:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
- <YD6nF1oJVMeCzn6R@rikard> <YFNNVHZeKIMHco+a@smile.fi.intel.com> <20210319083937.GH2916463@dell>
-In-Reply-To: <20210319083937.GH2916463@dell>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 19 Mar 2021 12:01:32 +0200
-Message-ID: <CAHp75Ve3qgFOJxsDouL+ku4t7zxC8e7X1ta8wiL-eRCCpe51hA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify static
- struct resources"
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=GoB0Yt2mReKBbMoIr+lrsMAUtacP9flbLvax4BQ0cpo=;
+        b=Yz0zTfYLJViW81GG0S7/ISt3laBilrIdDWEv/XH3sJTUBTHpx0uVLgwgF8vdTgXGC4
+         WWBLamqR36O018/11WJI4YCU1wvtITJRxv/OFd74p1TriDB8wnTU+QPvDxK1PRUTLajJ
+         OYMFlH0TI65Hvv0s95nAxXTE8C8rzCAQkrEQYfGaBvx2tUgdwMm7yKUH1SwZ/YYxwlWb
+         SHtATAOOOgyVQLiIY30jSpco5pYv4JJ/SDM2v0dczwkulfc6ZKKwQRxXjjW0E+QJMOc6
+         n5i1Ky9JhJ3hfkvqZp4OKUIGh7COh5DusuoCx//f2v/uWuPSsMwPLJ4SmBeyu2hsTVK1
+         8hQw==
+X-Gm-Message-State: AOAM530PeuhOkUFOTI6rWL5RKqJh33sSYgcKtRx0uo6vVql6UwsA8kLw
+        jnuLvFsTgnDeLzzfPEi0dx6Q3Ep5H6v8
+X-Google-Smtp-Source: ABdhPJwANOYdeS5v07RyJarildN3aDLb2D0RRdsdS4nj5tblGB/ls84kq0dI4zckrcY6q898orz04xgstkQm
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a7b:c18e:: with SMTP id
+ y14mr1312452wmi.1.1616148162823; Fri, 19 Mar 2021 03:02:42 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 10:01:33 +0000
+In-Reply-To: <20210319100146.1149909-1-qperret@google.com>
+Message-Id: <20210319100146.1149909-26-qperret@google.com>
+Mime-Version: 1.0
+References: <20210319100146.1149909-1-qperret@google.com>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v6 25/38] KVM: arm64: Make memcache anonymous in pgtable allocator
+From:   Quentin Perret <qperret@google.com>
+To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com
+Cc:     android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com, qperret@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:41 AM Lee Jones <lee.jones@linaro.org> wrote:
-> On Thu, 18 Mar 2021, Andy Shevchenko wrote:
-> > On Tue, Mar 02, 2021 at 09:59:03PM +0100, Rikard Falkeborn wrote:
-> > > On Tue, Mar 02, 2021 at 03:56:16PM +0200, Andy Shevchenko wrote:
+The current stage2 page-table allocator uses a memcache to get
+pre-allocated pages when it needs any. To allow re-using this code at
+EL2 which uses a concept of memory pools, make the memcache argument of
+kvm_pgtable_stage2_map() anonymous, and let the mm_ops zalloc_page()
+callbacks use it the way they need to.
 
-...
+Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ arch/arm64/include/asm/kvm_pgtable.h | 6 +++---
+ arch/arm64/kvm/hyp/pgtable.c         | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-> > > Sorry about that :(
-> > >
-> > > Reviewed-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> >
-> > Thanks for review!
-> >
-> > Lee, this series has a critical bug fix, should I do something or you is going
-> > to apply this soon?
->
-> It's on my to-review list.
->
-> I can prioritise bug fixes though - can it be applied by itself?
-
-Sire, that's why it's at the beginning of the series.
-
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index 9cdc198ea6b4..4ae19247837b 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -213,8 +213,8 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
+  * @size:	Size of the mapping.
+  * @phys:	Physical address of the memory to map.
+  * @prot:	Permissions and attributes for the mapping.
+- * @mc:		Cache of pre-allocated GFP_PGTABLE_USER memory from which to
+- *		allocate page-table pages.
++ * @mc:		Cache of pre-allocated and zeroed memory from which to allocate
++ *		page-table pages.
+  *
+  * The offset of @addr within a page is ignored, @size is rounded-up to
+  * the next page boundary and @phys is rounded-down to the previous page
+@@ -236,7 +236,7 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt);
+  */
+ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 			   u64 phys, enum kvm_pgtable_prot prot,
+-			   struct kvm_mmu_memory_cache *mc);
++			   void *mc);
+ 
+ /**
+  * kvm_pgtable_stage2_unmap() - Remove a mapping from a guest stage-2 page-table.
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 4e15ccafd640..15de1708cfcd 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -446,7 +446,7 @@ struct stage2_map_data {
+ 	kvm_pte_t			*anchor;
+ 
+ 	struct kvm_s2_mmu		*mmu;
+-	struct kvm_mmu_memory_cache	*memcache;
++	void				*memcache;
+ 
+ 	struct kvm_pgtable_mm_ops	*mm_ops;
+ };
+@@ -670,7 +670,7 @@ static int stage2_map_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+ 
+ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 			   u64 phys, enum kvm_pgtable_prot prot,
+-			   struct kvm_mmu_memory_cache *mc)
++			   void *mc)
+ {
+ 	int ret;
+ 	struct stage2_map_data map_data = {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.0.rc2.261.g7f71774620-goog
+
