@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD66B341722
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834EE341727
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhCSIKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:10:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234084AbhCSIJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:09:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 390DC64F68;
-        Fri, 19 Mar 2021 08:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616141389;
-        bh=8yyL1lc9w1zEvs02giHe/AkhySpLaZuLjBUihev2WZ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Og2XGq/C9jDWrFpkn7jIMmJ42fTa76imA6COYLkGsphWC8N7QNr0CGZXcBkNn5hec
-         FsxHbz4caYtDKM9wsahMmOLDIGuNhvPqIYWUvn7rj5TCM4+MpAWWMS+31omZS6tZHn
-         7Mu77FSS7n1U/61aoUqnS9/1Wfaqh2F7DaKCm9CY40cD+92yxaX7iZjp1J8wuQHCK+
-         XqRk4V0Qa+TomLDA9SXtKcTPKXMjZJrZhDO86Zia5TTv1vk9G+stk7fogSpQpISehZ
-         uKgm+vhAevfpaX+HtrEfpCx9jzkB7yLVl+6NTkYm3Ciaz7Cl0vFlcAMV2IbtJePVXQ
-         nNOnd9DXYhk3Q==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lNACu-0001jF-Ft; Fri, 19 Mar 2021 09:10:09 +0100
-Date:   Fri, 19 Mar 2021 09:10:08 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
- interrupt handlers
-Message-ID: <YFRcYCMQrPXUG6ZU@hovoldconsulting.com>
-References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
- <YFB0OcBg3Vj555eA@hovoldconsulting.com>
- <CAHp75VfcbC63t_eZeBOA0NY28BtGBD0YyLR6nSNuKAnKhXTSzA@mail.gmail.com>
- <4771468d968a44789518bc547acf5f93@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4771468d968a44789518bc547acf5f93@hisilicon.com>
+        id S234314AbhCSIL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:11:57 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:48930 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234215AbhCSILn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:11:43 -0400
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-01 (Coremail) with SMTP id qwCowABnqI2jXFRgdxUYAA--.9656S2;
+        Fri, 19 Mar 2021 16:11:16 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] dm thin: remove needless request_queue NULL pointer check
+Date:   Fri, 19 Mar 2021 08:11:13 +0000
+Message-Id: <20210319081113.16916-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowABnqI2jXFRgdxUYAA--.9656S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFy5XF18Xr1furykGrW7Jwb_yoW3AwcEgw
+        15ZF9Fqrn5Gr13uw15JF45Z3sYyFn5WF1IqFyIga9Iv348ua13AryUurn5Wr45u3y8CrZr
+        Ar1Uuw13Ar4xAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ec7CjxVAajcxG14v26r1j6r
+        4UMcIj6I8E87Iv67AKxVW8Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0E
+        wIxGrwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7IU0rnY5UUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkFA1z4jcmc6QAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:36:39AM +0000, Song Bao Hua (Barry Song) wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
-> > Sent: Tuesday, March 16, 2021 10:41 PM
-> > To: Johan Hovold <johan@kernel.org>; Finn Thain <fthain@telegraphics.com.au>;
-> > Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>; Greg
-> > Kroah-Hartman <gregkh@linuxfoundation.org>; Jiri Slaby <jirislaby@kernel.org>;
-> > linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>; Linux Samsung
-> > SOC <linux-samsung-soc@vger.kernel.org>; open list:SERIAL DRIVERS
-> > <linux-serial@vger.kernel.org>; Linux Kernel Mailing List
-> > <linux-kernel@vger.kernel.org>; Hector Martin <marcan@marcan.st>; Arnd
-> > Bergmann <arnd@kernel.org>
-> > Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
-> > interrupt handlers
-> > 
-> > On Tue, Mar 16, 2021 at 11:02 AM Johan Hovold <johan@kernel.org> wrote:
-> > >
-> > > On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
-> > > > Since interrupt handler is called with disabled local interrupts, there
-> > > > is no need to use the spinlock primitives disabling interrupts as well.
-> > >
-> > > This isn't generally true due to "threadirqs" and that can lead to
-> > > deadlocks if the console code is called from hard irq context.
-> > >
-> > > Now, this is *not* the case for this particular driver since it doesn't
-> > > even bother to take the port lock in console_write(). That should
-> > > probably be fixed instead.
-> > >
-> > > See https://lore.kernel.org/r/X7kviiRwuxvPxC8O@localhost.
-> > 
-> > Finn, Barry, something to check I think?
-> 
-> My understanding is that spin_lock_irqsave can't protect the context
-> the console_write() is called in hardirq for threaded_irq case mainly
-> for preempt-rt scenarios as spin_lock_irqsave doesn't disable irq in
-> that case at all.
+Since commit ff9ea323816d ("block, bdi: an active gendisk always has a
+request_queue associated with it") the request_queue pointer returned
+from bdev_get_queue() shall never be NULL.
 
-Forced threaded interrupts have so far run with interrupts enabled and
-spin_lock_irqsave() would suffice on non-RT. This is about to change
-though so that drivers don't need to worry about "threadirqs":
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/md/dm-thin.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
+diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
+index fff4c50df74d..985baee3a678 100644
+--- a/drivers/md/dm-thin.c
++++ b/drivers/md/dm-thin.c
+@@ -2816,7 +2816,7 @@ static bool data_dev_supports_discard(struct pool_c *pt)
+ {
+ 	struct request_queue *q = bdev_get_queue(pt->data_dev->bdev);
+ 
+-	return q && blk_queue_discard(q);
++	return blk_queue_discard(q);
+ }
+ 
+ static bool is_factor(sector_t block_size, uint32_t n)
+-- 
+2.17.1
 
-> See:
-> https://www.kernel.org/doc/html/latest/locking/locktypes.html
-> spinlock_t and PREEMPT_RT
-> On a PREEMPT_RT kernel spinlock_t is mapped to a separate implementation
-> based on rt_mutex which changes the semantics:
-> Preemption is not disabled.
-> The hard interrupt related suffixes for spin_lock / spin_unlock operations
-> (_irq, _irqsave / _irqrestore) do not affect the CPU’s interrupt disabled
-> state.
-> 
-> So if console_write() can interrupt our code in hardirq, we should
-> move to raw_spin_lock_irqsave for this driver.
-
-No, no. RT handles this by deferring console writes apparently.
-
-> I think it is almost always wrong to call spin_lock_irqsave in hardirq.
-
-Again, no. It's even been a requirement due to "threadirqs" in some
-cases (e.g. hrtimers) up until now (or rather until the above patch is
-in mainline).
-
-Johan
