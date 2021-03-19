@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5451342711
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FE2342728
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhCSUkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 16:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59676 "EHLO mail.kernel.org"
+        id S230229AbhCSUui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 16:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhCSUkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:40:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EA9C56197B;
-        Fri, 19 Mar 2021 20:40:08 +0000 (UTC)
+        id S229912AbhCSUuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 16:50:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8078D6197D;
+        Fri, 19 Mar 2021 20:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616186409;
-        bh=IiSQAzcCUqMk4YPQ7dcHQq1y5f7pFB0xQx3HrhWwu6s=;
+        s=k20201202; t=1616187008;
+        bh=HaHU326JkpnmnGbW4GI7gh2gmyPkzMzgQxkUizJNxzQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RfAoxhueuWFuvvKO6taOucNajEzEI2WQjb50BBJiHltvdpk/M1+oCJ+zPWg06Y8Vp
-         l5HrLO9OSHnNrC2QikONO5hwWHmoWVpAh92YKBSLsptvXwXQPum1NcM89GdLGGa7Sy
-         6LT89k4xY040/80MGwwbzWTaRlNijT9uUxzGDMsVmKCcz+U1rI2hXPti7Oh8W80gW2
-         FEqlwDIyO62bsooYEBgFf3yoXLBWTWuLjHWgRGJGI3nNU1QVLrxD7CH7tex23XYZrN
-         eVe8RJOO7jvVb5w/+t95OqQt1M1zkLkjExC9ImwbwqyN8EpsgTZziE5Fy2xYqRzqPk
-         /8FRtM42p9lxw==
+        b=e95suqjNeEuUCTPYagSpCmG2ejbrSEJh1A5GPIrd8pI+hI979k9tLAYUSCPF27xAe
+         gmFIYwlYMr8GywoMUtocbtbGxraduk7kOrG/YEnaOCV4sFDZO+1LeAUUGXR2AkHedt
+         FWP99g9kbtHAaYNhaNCnxc8wq7oq43+Iral9av2HMINHJEwcq+BsDZSkM0KZjTllqW
+         jqNpylMzJpRuSG29nZFiUSpxKj4DkDovPiH2+q8pQ7AYY1wXi/moHrcRs6IZK+ibIf
+         9PAKQ/QQRjUreR2EF1+8eewcfrhUNgAGntQipF77aLFwi0AmfRgzq7HRO7ArDRFt61
+         QDNXlungNHF1w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E1588626EC;
-        Fri, 19 Mar 2021 20:40:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6FC8C609DB;
+        Fri, 19 Mar 2021 20:50:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/5] net: ipa: update configuration data
+Subject: Re: [PATCH] net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161618640891.3803.15579900708987919124.git-patchwork-notify@kernel.org>
-Date:   Fri, 19 Mar 2021 20:40:08 +0000
-References: <20210319152422.1803714-1-elder@linaro.org>
-In-Reply-To: <20210319152422.1803714-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <161618700844.7421.17310950197436009326.git-patchwork-notify@kernel.org>
+Date:   Fri, 19 Mar 2021 20:50:08 +0000
+References: <20210319134422.9351-1-clabbe@baylibre.com>
+In-Reply-To: <20210319134422.9351-1-clabbe@baylibre.com>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     alexandre.torgue@st.com, davem@davemloft.net,
+        jernej.skrabec@siol.net, joabreu@synopsys.com,
+        marek.belisko@gmail.com, mripard@kernel.org,
+        peppe.cavallaro@st.com, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri, 19 Mar 2021 10:24:17 -0500 you wrote:
-> Each IPA version has a "data" file defining how various things are
-> configured.  This series gathers a few updates to this information:
->   - The first patch makes all configuration data constant
->   - The second fixes an incorrect (but seemingly harmless) value
->   - The third simplifies things a bit by using implicit zero
->     initialization for memory regions that are empty
->   - The fourth adds definitions for memory regions that exist but
->     are not yet used
->   - The fifth use configuration data rather than conditional code to
->     set some bus parameters
+On Fri, 19 Mar 2021 13:44:22 +0000 you wrote:
+> MTU cannot be changed on dwmac-sun8i. (ip link set eth0 mtu xxx returning EINVAL)
+> This is due to tx_fifo_size being 0, since this value is used to compute valid
+> MTU range.
+> Like dwmac-sunxi (with commit 806fd188ce2a ("net: stmmac: dwmac-sunxi: Provide TX and RX fifo sizes"))
+> dwmac-sun8i need to have tx and rx fifo sizes set.
+> I have used values from datasheets.
+> After this patch, setting a non-default MTU (like 1000) value works and network is still useable.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/5] net: ipa: make all configuration data constant
-    https://git.kernel.org/netdev/net-next/c/e4a9f45b0be5
-  - [net-next,2/5] net: ipa: fix canary count for SC7180 UC_INFO region
-    https://git.kernel.org/netdev/net-next/c/22e3b314302c
-  - [net-next,3/5] net: ipa: don't define empty memory regions
-    https://git.kernel.org/netdev/net-next/c/8f692169b138
-  - [net-next,4/5] net: ipa: define some new memory regions
-    https://git.kernel.org/netdev/net-next/c/2ef88644e5d4
-  - [net-next,5/5] net: ipa: define QSB limits in configuration data
-    https://git.kernel.org/netdev/net-next/c/37537fa8e973
+  - net: stmmac: dwmac-sun8i: Provide TX and RX fifo sizes
+    https://git.kernel.org/netdev/net/c/014dfa26ce1c
 
 You are awesome, thank you!
 --
