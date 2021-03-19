@@ -2,137 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245AF3415B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEA13415CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbhCSGa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:30:28 -0400
-Received: from mga18.intel.com ([134.134.136.126]:53277 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234204AbhCSG35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:29:57 -0400
-IronPort-SDR: Trhw8bq3cHXVsrDYu9+YUHl0cpJaHV+5zIpoarC93WSfmShgV72ef97JYdvRHOZb+JGcxDrHAv
- 7Q/SbMWATwMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="177425814"
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="177425814"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 23:29:57 -0700
-IronPort-SDR: Z+iU2LMcXO03I1DkvriMCElufQFjcq3JHzhwAtDue0CFb74BoeLOj/mXV8+dztJsWfySujgFT2
- YdDwv2g0MmxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="591759461"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga005.jf.intel.com with ESMTP; 18 Mar 2021 23:29:51 -0700
-Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
- <20210316074409.2afwsaeqxuwvj7bd@vireshk-i7>
- <0dfff1ac-50bb-b5bc-72ea-880fd52ed60d@metux.net>
- <CAK8P3a3f9bKdOOMgrA9TfeObyEd+eeg8JcTVT8AyS1+s=X2AjQ@mail.gmail.com>
- <20210319035435.a4reve77hnvjdzwk@vireshk-i7>
- <b135b474-b167-67ad-588c-b0cfe8dc2998@intel.com>
- <20210319054035.47tn747lkagpip6v@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <834186be-71b1-a67c-8dee-b90527b459c8@intel.com>
-Date:   Fri, 19 Mar 2021 14:29:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S233924AbhCSGcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:32:23 -0400
+Received: from mail-dm6nam12on2106.outbound.protection.outlook.com ([40.107.243.106]:32276
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233937AbhCSGcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 02:32:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dL4AhKT03W50D13msST2GZQGO2X0ahyDUc2i2WXGrcsjNBBUv1FOn4P0LhRN5lJRUZ1yhwc8wrZD4U6DWjqY+CfAXhouTwbIkLz9ZREo7PrHuNq9pbHHb2d37fjEbi/3VIjRB1HC8NKsfNTQT/XyM/vgSStzurg5YV7OU/66Uz2MnxTrqC2nZz5kM3RQQicXWNQCWULbYOtwkE0E6+tdXuVM1d7NZMWFmWB2KaOzEr9b1nvxILWcqZXMd16t3FmlTzBDFQN0stalyD4S4cKpV86EwZdxIDreI67j7o12IDjCw2304BB0JZXjnUG8t/r2etP8t+uEXpU6Y6bfWQZGqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qRvf2Fhmo9JuEWZKEzOLEwJTnNxHMPkGimOehUmxUlI=;
+ b=GSbyIBLYmVW3QfNSkHJ+T5jksOOZjDd6JJj1VAPvdTAI5Wgbqv9hWo2I+VPD48RPGr50KCstUrxPazLTf4NsYCp5ErM3B0o3eljAcAdOwRQO6LGYxNDtEhYnmnjI0ggbWXZ9C78dWLsKrTi02uPuRD3+t+SwU06yxlTgsCoeP5Wg2g6uJGvHrW2ibF83FHNRCGhx/eYoTsPeZrixyobxYCCzzMt4i7hD/T3S+Aerk1INm1hPrfiGGZKd2FqzeQHxsbS84eqN6d0/OSlpj8Qrc+B1y7syk5rIbxLRFH4Bc5w6ElBnqvB1SqcKn3wxfwzfUv2rshkLeswnDXTOtUL+dQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qRvf2Fhmo9JuEWZKEzOLEwJTnNxHMPkGimOehUmxUlI=;
+ b=QJDVPo+bkzNNfiv2rEetDQsewijnPmuWNM5E4uycmQPe58LqnDu3y33kUWaw5O6mfr8WKdhWfPuk4ZH5LHnQM2KW/rYmsnokA0ZyRdsiSBYCSoCjPCSfxavooYUcJW7TkSP1pK7cyYrBsghCQAtLXqYvWFwGbxRVxFlbpMcRJqM=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6962.namprd04.prod.outlook.com (2603:10b6:a03:221::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
+ 2021 06:31:55 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
+ 06:31:55 +0000
+Date:   Fri, 19 Mar 2021 14:31:49 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Robert Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH v6 0/5] Add MIPI rx DPI support
+Message-ID: <cover.1616135353.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Originating-IP: [60.251.58.79]
+X-ClientProxiedBy: HK0PR01CA0060.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::24) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-In-Reply-To: <20210319054035.47tn747lkagpip6v@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK0PR01CA0060.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 06:31:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 928185af-0971-4ff9-03ee-08d8eaa0b044
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6962:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB696256B003CDEB42234CC115C7689@BY5PR04MB6962.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3pwSkr12yKNy9X/XmFhkDUgygvuJl00qzWnDPy3UNV42hJ04CqhPKDB3h95nMiSlpI7hin6NXG1R1VsjmrML1q+NZUhJdJ/whT55itjl92Y4Xqb0WxTl1OhAf+3FgxYkqybuq15Omv3MpyK4eX2qoOBvgwsqcptrgtXzKqmHpyPoDlsQzbApN/N0YqWYLtpnxQi0XOzkp0MC7OacoL3noaekHR5By3QbygTKY/k/NxBxiArlzJFKoBhVNT47yV+bdMREn9D54JyZkmoqs4s4P2rWyKCBmJV9zwIV/4dpQZmh2nEC67Fgs8Nm43MVyzrr1DfXlE2MngSjCo9TGWKew63WBGzbfjdoqygusk4t+amHf18o4cpQB01ZcJEmEBhceojdd/vVOrhXR3NQsn5Fa8mlYlXURCaW1a+J7kH1D6MNLu6X2BWzP0r4+nQlZOGT+7nKFJDoEtdjD+ZlLn9QGs4qpUY7FVyqYiHj4aDvnZQ4AAifKafIpYsDZ0+EUmd9hJ3uEC8AbaUMO99O55CdrR9iEgMyZo9fhte++b8F1VXE14MV+OW8nBJcGxlLpg5qoqDBPi+rYUsLNaVmcyC7JuXHmiGzhs9+RQie4YaLX+vhmfYP/F/zqfV0kfzrybm8mvfo5GklLfmdz5aWRFTk+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39840400004)(376002)(136003)(346002)(396003)(54906003)(186003)(16526019)(8936002)(2906002)(26005)(8676002)(86362001)(55236004)(66946007)(66476007)(6486002)(478600001)(36756003)(5660300002)(316002)(52116002)(83380400001)(6496006)(4326008)(2616005)(6666004)(110136005)(66556008)(956004)(38100700001)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vDHvEB0cT7I03r18G6OFQ5E3JL8lkULOX0LMsHYQPlxZgCwaVwJBe0YeMWri?=
+ =?us-ascii?Q?RUE9TRbT0+y0pGcOmTXApKgAgjbnLSdqxV0q0FZeom3FoOTbGLyPCG2drEqa?=
+ =?us-ascii?Q?ZrqaBjJnIxUzRHFDCSyEylBiqqQm5b9+tloBzK3MB5wzJNo1rXEFcstSM22H?=
+ =?us-ascii?Q?HDwQVhirzOQuPuCA7gYq1dZj4Tk3GX5AjeHxxLkfYBlfcoNALolW/vQKhroG?=
+ =?us-ascii?Q?vvsXFtP++ORDUpFaBYo3pVYrEzkAS2vtfBu8+afC4ZnwZEZYLMGAG2iWkZ1b?=
+ =?us-ascii?Q?vyWFoeYhAybv91kJzHqLBUb7GB9lo1/03nGA47aeeP0X/sJ0mW+iO0wLiTT2?=
+ =?us-ascii?Q?FCPJq/wyLA+VkT3r553jvv17lIEZT56suiz49tHMFBTzKffHR9ytPUhTTnI/?=
+ =?us-ascii?Q?yOLx6O+X1HGBxNrS1cN2nxcQUEI5Ozoe1jxZcauykB0GlJhh+x/a+9+dF4QG?=
+ =?us-ascii?Q?+SQYoAyKM4NcW09jSEK0WCaxsa1n/PPij0ZO6C9dl5y9AuEO9SOiDq7bOIGK?=
+ =?us-ascii?Q?DEhkIVIIY5VEtMsePHMDX/0KiFBhwcg63L+wkpt/BzbDHUzrmZMNyWBMKQXo?=
+ =?us-ascii?Q?0zC4G2JdoA2N+hKieLT23ljIhbg6aUP7o8ng0Q4ZRi1Owz0WUhs6SqWV1KWM?=
+ =?us-ascii?Q?NeaXC9WMU3LRNRQyLyFbQ1bcOKAQE2tfW2CXIoHsfAhou6Xg/v/GVnWzMPVh?=
+ =?us-ascii?Q?wug2slPifMfeK6DtpD9/2COTojm4LCgVg44OeKcPHzJ3t0B091MZqp0nVEnq?=
+ =?us-ascii?Q?te8ZP9vm9k7GJTwQMfnT2BINVDPVHp5fGCx7V8i9l4N5/6+KqSjJz/kqUSbV?=
+ =?us-ascii?Q?hfH0+ErA1oyR6GYBv934tpPHEZXsMKK4VpCal/PtsuHLaByyH2yOxtIDiASP?=
+ =?us-ascii?Q?n3SAnBQq2qwSNyKtINQ3HDVprzaA/FQ9DjJnbaoQHni6ahoBFLlPtGgL/IQc?=
+ =?us-ascii?Q?R8JNwKeEhCJBZ3vELvD+uQoOV65ULLq0qN5YC7ZvMsl6w0Vw/wTru4HkG43v?=
+ =?us-ascii?Q?4BB0k/YczYsshu0sWM3E+FahPUlpxpaLOREbGlypxs2yulRpHIXnKZMuKBf6?=
+ =?us-ascii?Q?hPBSG4BEz2gt8eKWK48VedxsnwMl1Xj8kF97f14kp8fXnC4gxG352l7tpp/Y?=
+ =?us-ascii?Q?+U8qPt5EWfbuGPEZGoj9jUmQMrH7J4ANoPncFl0m0D5f5kF7qJ1IseLceRIA?=
+ =?us-ascii?Q?pOcrLxUJnHBNLICZr1kvKJ5UZjasHsMxbnIEAVi+vBTko5KQvsgW0ozhukau?=
+ =?us-ascii?Q?hE9YXtHPjcT+bih2kt7hII8eS4b18Wg7snkiSKZ5pZZ1gR5YbVCjyxZFcIBU?=
+ =?us-ascii?Q?4fj8UNSCeMsaCDMek0zLlSoE?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 928185af-0971-4ff9-03ee-08d8eaa0b044
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 06:31:54.8418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J6ifFNTNQdlzJd2VkjyxKe9IvEX8dZlsQoDdBwHiWGbH8/y2dWoj3xc2OCxwcJS/bjarluOlZrzlocGGIj3Cag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6962
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all, this patch series implement MIPI rx DPI feature. Please help to review.
 
-On 2021/3/19 13:40, Viresh Kumar wrote:
-> On 19-03-21, 13:31, Jie Deng wrote:
->> On 2021/3/19 11:54, Viresh Kumar wrote:
->>> On 18-03-21, 15:52, Arnd Bergmann wrote:
->>>> Allowing multiple virtio-i2c controllers in one system, and multiple i2c
->>>> devices attached to each controller is clearly something that has to work.
->>> Good.
->>>
->>>> I don't actually see a limitation though. Viresh, what is the problem
->>>> you see for having multiple controllers?
->>> I thought this would be a problem in that case as we are using the global
->>> virtio_adapter here.
->>>
->>> +       vi->adap = &virtio_adapter;
->>> +       i2c_set_adapdata(vi->adap, vi);
->>>
->>> Multiple calls to probe() will end up updating the same pointer inside adap.
->>>
->>> +       vi->adap->dev.parent = &vdev->dev;
->>>
->>> Same here, overwrite.
->>>
->>> +       /* Setup ACPI node for controlled devices which will be probed through ACPI */
->>> +       ACPI_COMPANION_SET(&vi->adap->dev, ACPI_COMPANION(pdev));
->>> +       vi->adap->timeout = HZ / 10;
->>>
->>> These may be fine, but still not ideal I believe.
->>>
->>> +       ret = i2c_add_adapter(vi->adap);
->>> i
->>> This should be a problem as well, we must be adding this to some sort of list,
->>> doing some RPM stuff, etc ?
->>>
->>> Jie, the solution is to allocate memory for adap at runtime in probe and remove
->>> the virtio_adapter structure completely.
->>
->> If you want to support that. Then I think we don't need to change the
->> following at all.
->>
->>> +    .algo = &virtio_algorithm,
->>> +
->>> +        return ret;
->>> +
->>> +    vi->adap = virtio_adapter;
->> This is strange, why are you allocating memory for adapter twice ?
->> Once for virtio_adapter and once for vi->adap ? Either fill the fields
->> directly for v->adap here and remove virtio_adapter or make vi->adap a
->> pointer.
-> Yes, your previous version was partly okay but you don't need the
-> virtio_algorithm structure to be allocated. There are only 4 fields you are
-> updating here, just fill them directly in vi->adap.
->
-> (FWIW, I also suggested the same when I said
-> "Either fill the fields directly for v->adap here and remove virtio_adapter".
-> )
->
-> See how drivers/i2c/busses/i2c-versatile.c and most of the other drivers have
-> done it.
-I also see example drivers/i2c/busses/i2c-xiic.c. Some people might 
-think this way is more clearer than
+This is the v6 version, any mistakes, please let me know,
+I'll fix it in the next series.
 
-updating each member in probe. Basically, I think it's just a matter of 
-personal preference which doesn't
+Change history:
+v6: Fix kernel robot compile warning
 
-solve any problems.
+v5: Fix Rob Herring, Hsin-Yi, Robert Foss comments
+ - Rebase code on the branch 'drm-misc-next', refer video-interfaces.yaml
+ - Seprate HDCP function to a new patch
+ - Fix driver not correctly get 'bus-type' 'data-lanes'
+ - Add audio HDMI codec function support
 
+v4: Fix Rob Herring comment
+ - Rebase code on the branch 'drm-misc-next'
+ - Change 'analogix,hdcp-support' type to boolean
+
+v3: Fix Rob Herring, Dan Carpenter, Nicolas comment
+ - Split the patch, fix not correct return data
+ - Fix several coding format
+ - Split DP tx swing register setting to two property
+ - Add HDCP support vender flag
+ - remove 'analogix,swing-setting' and 'analogix,mipi-dpi-in' property
+
+v2: Fix Rob Herring comment
+ - Fix yamllint warnings/errors in analogix,anx7625.yaml
+ - Fix kernel robot compile warning
+
+v1: initial MIPI rx DPI feature support
+
+
+Xin Ji (5):
+  dt-bindings:drm/bridge:anx7625:add vendor define flags
+  drm/bridge: anx7625: fix not correct return value
+  drm/bridge: anx7625: add MIPI DPI input feature support
+  drm/bridge: anx7625: add HDCP support
+  drm/bridge: anx7625: add HDMI audio function
+
+ .../display/bridge/analogix,anx7625.yaml      |  58 +-
+ drivers/gpu/drm/bridge/analogix/anx7625.c     | 603 ++++++++++++++++--
+ drivers/gpu/drm/bridge/analogix/anx7625.h     |  59 +-
+ 3 files changed, 667 insertions(+), 53 deletions(-)
+
+-- 
+2.25.1
 
