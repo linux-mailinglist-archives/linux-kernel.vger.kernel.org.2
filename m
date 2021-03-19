@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D153416FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 08:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EB634170C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhCSH7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 03:59:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18913 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234270AbhCSH6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 03:58:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616140716; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kD7K9DxiFtQmfNrBA8zK6PDJ0b7lDWc1ajG5OkI+uAE=;
- b=cLeHF4hYXGmRHdgrDETnFs2uscvS/S9xQmI86Io8wtl0o65Mjgq+UePMMt9xeEIkE063XKVA
- NZeqFQzdfI64D3tZs3T8z9csLZ9hHKnKIhUuaZwZ9L/3li0g+/fTSb2EEzGjTP61hlJORWJH
- SI2pBVoC7DduVlzr8AWBaP54L/Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6054599dc32ceb3a913d2c70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Mar 2021 07:58:21
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 771ACC43462; Fri, 19 Mar 2021 07:58:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1135FC433CA;
-        Fri, 19 Mar 2021 07:58:21 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 19 Mar 2021 13:28:21 +0530
-From:   skakit@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, rnayak@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org,
-        David Collins <collinsd@codeaurora.org>
-Subject: Re: [PATCH V2 4/5] dt-bindings: regulator: Convert regulator bindings
- to YAML format
-In-Reply-To: <YFD9T3fvPPBVj3pc@google.com>
-References: <1615816454-1733-1-git-send-email-skakit@codeaurora.org>
- <1615816454-1733-5-git-send-email-skakit@codeaurora.org>
- <YFD9T3fvPPBVj3pc@google.com>
-Message-ID: <ac23f0a5d125e599b7b586cbf0d940dc@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S234316AbhCSIBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:01:42 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:44750 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234246AbhCSIBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:01:09 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id A6E20E034C;
+        Fri, 19 Mar 2021 16:01:05 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Wang Qing <wangqing@vivo.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] workqueue: watchdog: update wq_watchdog_touched for unbound lockup checking
+Date:   Fri, 19 Mar 2021 16:00:36 +0800
+Message-Id: <1616140838-24222-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHR9DSRodH00aGU4dVkpNSk1KT0tDTU1KSkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hOSFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nyo6MCo*KD8SVk00LRM2IzUv
+        EB0aCz5VSlVKTUpNSk9LQ01NT0pIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFITkxMNwY+
+X-HM-Tid: 0a78498091ee2c17kusna6e20e034c
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-17 00:17, Matthias Kaehlcke wrote:
-> Subject: dt-bindings: regulator: Convert regulator bindings to YAML 
-> format
-> 
-> Make sure to mention that this is about the RPMh regulators, not the
-> general regulator binding which was already converted.
-> 
+When touch_softlockup_watchdog() is called, only wq_watchdog_touched_cpu 
+updated, while the unbound worker_pool running on its core uses 
+wq_watchdog_touched to determine whether locked up. This may be mischecked.
 
-Okay, will change the commit message.
+My suggestion is to update both when touch_softlockup_watchdog() is called, 
+use wq_watchdog_touched_cpu to check bound, and use wq_watchdog_touched 
+to check unbound worker_pool.
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ kernel/watchdog.c  |  5 +++--
+ kernel/workqueue.c | 17 ++++++-----------
+ 2 files changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 7110906..107bc38
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -278,9 +278,10 @@ void touch_all_softlockup_watchdogs(void)
+ 	 * update as well, the only side effect might be a cycle delay for
+ 	 * the softlockup check.
+ 	 */
+-	for_each_cpu(cpu, &watchdog_allowed_mask)
++	for_each_cpu(cpu, &watchdog_allowed_mask) {
+ 		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
+-	wq_watchdog_touch(-1);
++		wq_watchdog_touch(cpu);
++	}
+ }
+ 
+ void touch_softlockup_watchdog_sync(void)
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 0d150da..be08295
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5787,22 +5787,17 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ 			continue;
+ 
+ 		/* get the latest of pool and touched timestamps */
++		if (pool->cpu >= 0)
++			touched = READ_ONCE(per_cpu(wq_watchdog_touched_cpu, pool->cpu));
++		else
++			touched = READ_ONCE(wq_watchdog_touched);
+ 		pool_ts = READ_ONCE(pool->watchdog_ts);
+-		touched = READ_ONCE(wq_watchdog_touched);
+ 
+ 		if (time_after(pool_ts, touched))
+ 			ts = pool_ts;
+ 		else
+ 			ts = touched;
+ 
+-		if (pool->cpu >= 0) {
+-			unsigned long cpu_touched =
+-				READ_ONCE(per_cpu(wq_watchdog_touched_cpu,
+-						  pool->cpu));
+-			if (time_after(cpu_touched, ts))
+-				ts = cpu_touched;
+-		}
+-
+ 		/* did we stall? */
+ 		if (time_after(jiffies, ts + thresh)) {
+ 			lockup_detected = true;
+@@ -5826,8 +5821,8 @@ notrace void wq_watchdog_touch(int cpu)
+ {
+ 	if (cpu >= 0)
+ 		per_cpu(wq_watchdog_touched_cpu, cpu) = jiffies;
+-	else
+-		wq_watchdog_touched = jiffies;
++
++	wq_watchdog_touched = jiffies;
+ }
+ 
+ static void wq_watchdog_set_thresh(unsigned long thresh)
+-- 
+2.7.4
+
