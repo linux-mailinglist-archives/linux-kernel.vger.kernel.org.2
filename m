@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464E33421CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2B73421CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCSQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:24:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36034 "EHLO mail.kernel.org"
+        id S230259AbhCSQYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:24:37 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1251 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230176AbhCSQYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:24:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 564B96197D;
-        Fri, 19 Mar 2021 16:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616171049;
-        bh=/yXF3uPIsmHLvUVU1g7tNdmmY4GPVtBysBVdEqlnvVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R0LZg0L5arQh06MS7ClFuuhhelQKVgjW64soP35KJAKi2mUfINOa3CHT5LJwOVehh
-         5p65lmtzmnK1PePJ55fSfsGjxkeOKXH9/njq1+4u5wmDAVvBQgTNLfOEOOT8e3YCEe
-         Xq7ZZ+QMN/Zl8yGvqXdRjqnblnaIo5OIk6hIdIZETrru2TVJ/6hF+qPUkrfMBjwr+z
-         sakj4olwel5uAWcQluWGwCzfj/tUROqEFkxnyk2TfmCKDzMDM1EVl5MTzjnHaIUgDe
-         SkhxcPbxt1hZAdMN+K5kp7aNA8LRSUPpfcboQfDxAwvPZrerHWzZc3r505ZzAKKuys
-         rPohqic2hjJOg==
-Date:   Fri, 19 Mar 2021 18:24:05 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFTQJc4AAlVz2+9x@unreal>
-References: <YFSgQ2RWqt4YyIV4@unreal>
- <20210319155711.GA234744@bjorn-Precision-5520>
+        id S230177AbhCSQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:24:12 -0400
+IronPort-SDR: By9IQQ4GaUfFcSoTvRrzC60BVrkzdJGkOhTeFRFdYC/ezkXqaQVnKtdyYqXawwOadw4exin6CX
+ Lvwj5WELPkYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="189302577"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="189302577"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:24:12 -0700
+IronPort-SDR: o3DGciW8KGoQICX8T/gkyV99iraCaufszZ2fID2FohW8nHAIPwzfPXYALNpFGfDLzwX7vKhd+J
+ eiKXa2vfuyug==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
+   d="scan'208";a="603189058"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.100.40]) ([10.212.100.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:24:11 -0700
+Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316211552.GU4746@worktop.programming.kicks-ass.net>
+ <90e453ee-377b-0342-55f9-9412940262f2@intel.com>
+ <20210317091800.GA1461644@gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a7c64629-16f4-69db-07f8-ad22d8602034@intel.com>
+Date:   Fri, 19 Mar 2021 09:24:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319155711.GA234744@bjorn-Precision-5520>
+In-Reply-To: <20210317091800.GA1461644@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:57:11AM -0500, Bjorn Helgaas wrote:
-> On Fri, Mar 19, 2021 at 02:59:47PM +0200, Leon Romanovsky wrote:
-> > On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > > On 18.03.21 18:22, Leon Romanovsky wrote:
-> > > 
-> > > > Which email client do you use?  Your responses are grouped as
-> > > > one huge block without any chance to respond to you on specific
-> > > > point or answer to your question.
-> > > 
-> > > I'm reading this thread in Tbird, and threading / quoting all
-> > > looks nice.
-> > 
-> > I'm not talking about threading or quoting but about response
-> > itself.  See it here
-> > https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
-> > Alex's response is one big chunk without any separations to
-> > paragraphs.
+On 3/17/2021 2:18 AM, Ingo Molnar wrote:
 > 
-> Don't make this harder than it needs to be.  I think it's totally
-> acceptable to just split Alex's text where you need to respond.  For
-> example, Alex wrote this:
+> * Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
 > 
->   vfio-pci uses the internal kernel API, ie. the variants of
->   pci_reset_function(), which is the same interface used by the existing
->   sysfs reset mechanism.  This proposed configuration of the reset method
->   would affect any driver using that same core infrastructure and from my
->   perspective that's really the goal.  ...
+>> On 3/16/2021 2:15 PM, Peter Zijlstra wrote:
+>>> On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
+>>>> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+>>>> return/jump-oriented programming attacks.  Details are in "Intel 64 and
+>>>> IA-32 Architectures Software Developer's Manual" [1].
+>>>>
+>>>> CET can protect applications and the kernel.  This series enables only
+>>>> application-level protection, and has three parts:
+>>>>
+>>>>     - Shadow stack [2],
+>>>>     - Indirect branch tracking [3], and
+>>>>     - Selftests [4].
+>>>
+>>> CET is marketing; afaict SS and IBT are 100% independent and there's no
+>>> reason what so ever to have them share any code, let alone a Kconfig
+>>> knob.
+>>
+>> We used to have shadow stack and ibt under separate Kconfig options, but in
+>> a few places they actually share same code path, such as the XSAVES
+>> supervisor states and ELF header for example.  Anyways I will be happy to
+>> make changes again if there is agreement.
 > 
-> If I wanted to respond to the first sentence, I would just do this:
+> I was look at:
 > 
-> aw> vfio-pci uses the internal kernel API, ie. the variants of
-> aw> pci_reset_function(), which is the same interface used by the existing
-> aw> sysfs reset mechanism.  
+>    x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
 > 
-> I would write my response to the above here.  The rest of the quote
-> continues on below.  If the rest of Alex's message isn't relevant to
-> my response, I would remove it completely.
+> didn't see any IBT logic - it's essentially all shadow stack state.
 > 
-> aw> This proposed configuration of the reset method
-> aw> would affect any driver using that same core infrastructure and from my
-> aw> perspective that's really the goal.  ...
+> Which is not surprising, forward call edge integrity protection (IBT)
+> requires very little state, does it?
 > 
-> Bjorn
+> With IBT there's no nesting, no stack - the IBT state machine
+> basically requires the next instruction to be and ENDBR instruction,
+> and that's essentially it, right?
+> 
+> Thanks,
+> 
+> 	Ingo
+> 
 
-Thanks Bjorn, you presented me how to respond on such messages, however
-I was more afraid if my setup needs some adjustments and it is only me
-who sees it as one chunk.
+Yes, that is it.  The CET_WAIT_ENDBR bit is the status of IBT state 
+machine.  There are a few bits in MSR_IA32_U_CET controlling how IBT 
+works, but those are not status.
 
-Thanks
-
+Yu-cheng
