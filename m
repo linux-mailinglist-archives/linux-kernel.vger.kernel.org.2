@@ -2,392 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E40342477
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A27B34247A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhCSSTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhCSSSo (ORCPT
+        id S230365AbhCSSTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:19:41 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43320 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhCSSTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:18:44 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A93C06174A;
-        Fri, 19 Mar 2021 11:18:41 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j25so6463930pfe.2;
-        Fri, 19 Mar 2021 11:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+Y8V4e2Y/cYVNFx5v7FpeMFjnoVxeZfsqiFDE1cJkBk=;
-        b=omXpfZjgBPzRaxnThzF9S5v1tuFuBcmJpvWvxAvWeZQ6BxYedBfwkPETfJx7Y2w+XS
-         q3bOaFwozAySgDTa1AhINYXGyXBbR8gmBPFBL74Rfy2rwQvANTJLjDMYVVx9zqSgtJiy
-         XZGdoqy8yu2ryDQENFhro2JkxCjBLt65/+tye4Q0B6u+vJ5bI2hsIn0YjUOMAdTlOA/p
-         xHrpt1tW0HBNYblhaE4590a6A9r9lad2r/vVzwasXR4/5eYGLv0BpUnKc1rgl8V/6QRk
-         6nrs+LfBDmTJuyCqrRqQijA+jLGp936WfPuMKCRXZwSgwRS3jVhrEqvO0HwS86wBtD5D
-         L3fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=+Y8V4e2Y/cYVNFx5v7FpeMFjnoVxeZfsqiFDE1cJkBk=;
-        b=H+mNLJ/m5lQAqzJXES6nEkTSpDWhEpfnT/ld8MIXlakActjxGl5T7PpxeHhR56UQQe
-         9nQ59V+0s84gi0+HZ/br1S3XymiK8KZZ5l/aB7LH2bo48G8bCWSYperZoh79pQLHe0ve
-         fB9UMhHDWON69zOrCUQ9mKvp26KstSoeq5lG22xmvgAhAcPeb2TOenWeufNST9mWHyeA
-         9XoXqpqS/0SY8cZulN5sko2/23X1r8vhOuQ5ITL8RcZQrQ6OkRUWfCUVXYJ2J6iC91FG
-         XoH2xvxeymdz7PiRWEnuG72BRQJ5XdaYyN++w0wOQtAwR4cj4CVcljom2BLpObROIxQH
-         40ZA==
-X-Gm-Message-State: AOAM532AD+G5+dVf9dHXhOW8XAD9h2sXqH3gmqtQ3iD3fxxt7wMcldO4
-        J1AuZDi9FwDLMi75UsqB+L8=
-X-Google-Smtp-Source: ABdhPJyQ4Sj9vhle02FpRqhf+PuS5VfGiY3pki6jzvPPaoYf0aLTiimedrdkhbtV3Uf9M4CFktQqLQ==
-X-Received: by 2002:a65:5c42:: with SMTP id v2mr12802624pgr.339.1616177921284;
-        Fri, 19 Mar 2021 11:18:41 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:2033:9813:e1ed:7060])
-        by smtp.gmail.com with ESMTPSA id w189sm5988654pfw.86.2021.03.19.11.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 11:18:40 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 19 Mar 2021 11:18:38 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        willy@infradead.org, david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-Message-ID: <YFTq/nhQaeNSWPWs@google.com>
-References: <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
- <YFSrgfAyp+dYWi7k@kroah.com>
- <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
- <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
- <YFS06OLp70nWWLFi@kroah.com>
- <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com>
- <YFTITw73Wga0/F0V@kroah.com>
- <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
- <YFTRkBEr5T37NFpV@google.com>
- <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+        Fri, 19 Mar 2021 14:19:21 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 75D3620B26C5;
+        Fri, 19 Mar 2021 11:19:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 75D3620B26C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616177961;
+        bh=WDYU6ZhrKgLliZHemxVPNPl+rNx2Em1vUa+9FaS7KBQ=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=C335yTms/oqeyQRT5BCOLOmXEBTyPp/dy1Kktwq2AhGviuNrk727nbSLLC9MVUNR5
+         3VS2jcZJglSxAanvaUndMgfENdZYEcmBYVaF5X27ME/2eDoPEvcL3AESAEYbHT45g0
+         ulu4J2TDTm9fjDTa7yHXM+rxFAJEjgxcBHPRAwKg=
+Subject: Re: [RFC PATCH v2 1/8] arm64: Implement stack trace termination
+ record
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-2-madvenka@linux.microsoft.com>
+ <20210318150905.GL5469@sirena.org.uk>
+ <8591e34a-c181-f3ff-e691-a6350225e5b4@linux.microsoft.com>
+ <20210319123023.GC5619@sirena.org.uk>
+ <5dbaf34f-b2fc-b9b8-3918-83356f2f752a@linux.microsoft.com>
+Message-ID: <6e3ac22b-99b8-7d99-59bd-6a2d1158b3c9@linux.microsoft.com>
+Date:   Fri, 19 Mar 2021 13:19:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <82bde114-60c0-3fde-43f4-844522b80673@gmail.com>
+In-Reply-To: <5dbaf34f-b2fc-b9b8-3918-83356f2f752a@linux.microsoft.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:29:29PM +0300, Dmitry Osipenko wrote:
-> 19.03.2021 19:30, Minchan Kim пишет:
-> > On Fri, Mar 19, 2021 at 07:24:05PM +0300, Dmitry Osipenko wrote:
-> >> 19.03.2021 18:50, Greg Kroah-Hartman пишет:
-> >>>> Then initialization order won't be a problem.
-> >>> I don't understand the problem here, what is wrong with the patch as-is?
-> >>
-> >> The cma->stat is NULL at the time when CMA is used on ARM because
-> >> cma->stat is initialized at the subsys level. This is the problem,
-> >> apparently.
-> > 
-> > That's true.
-> > 
-> >>
-> >>> Also, watch out, if you only make the kobject dynamic, how are you going
-> >>> to get backwards from the kobject to the values you want to send to
-> >>> userspace in the show functions?
-> >>
-> >> Still there should be a wrapper around the kobj with a back reference to
-> >> the cma entry. If you're suggesting that I should write a patch, then I
-> >> may take a look at it later on. Although, I assume that Minchan could
-> >> just correct this patch and re-push it to -next.
-> > 
-> > This is ateempt to address it. Unless any objection, let me send it to
-> > akpm.
-> > 
-> > From 29a9fb4f300b754ebf55e6182ba84127658ef504 Mon Sep 17 00:00:00 2001
-> > From: Minchan Kim <minchan@kernel.org>
-> > Date: Fri, 22 Jan 2021 12:31:56 -0800
-> > Subject: [PATCH] mm: cma: support sysfs
-> > 
-> > Since CMA is getting used more widely, it's more important to
-> > keep monitoring CMA statistics for system health since it's
-> > directly related to user experience.
-> > 
-> > This patch introduces sysfs statistics for CMA, in order to provide
-> > some basic monitoring of the CMA allocator.
-> > 
-> >  * the number of CMA page successful allocations
-> >  * the number of CMA page allocation failures
-> > 
-> > These two values allow the user to calcuate the allocation
-> > failure rate for each CMA area.
-> > 
-> > e.g.)
-> >   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
-> >   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
-> >   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
-> > 
-> > The cma_stat was intentionally allocated by dynamic allocation
-> > to harmonize with kobject lifetime management.
-> > https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
-> > 
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> >  Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
-> >  mm/Kconfig                                    |   7 ++
-> >  mm/Makefile                                   |   1 +
-> >  mm/cma.c                                      |   7 +-
-> >  mm/cma.h                                      |  20 ++++
-> >  mm/cma_sysfs.c                                | 107 ++++++++++++++++++
-> >  6 files changed, 165 insertions(+), 2 deletions(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
-> >  create mode 100644 mm/cma_sysfs.c
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> > new file mode 100644
-> > index 000000000000..02b2bb60c296
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> > @@ -0,0 +1,25 @@
-> > +What:		/sys/kernel/mm/cma/
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
-> > +		heap name (also sometimes called CMA areas).
-> > +
-> > +		Each CMA heap subdirectory (that is, each
-> > +		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-> > +		following items:
-> > +
-> > +			alloc_pages_success
-> > +			alloc_pages_fail
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of pages CMA API succeeded to allocate
-> > +
-> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
-> > +Date:		Feb 2021
-> > +Contact:	Minchan Kim <minchan@kernel.org>
-> > +Description:
-> > +		the number of pages CMA API failed to allocate
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index 24c045b24b95..febb7e8e24de 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -513,6 +513,13 @@ config CMA_DEBUGFS
-> >  	help
-> >  	  Turns on the DebugFS interface for CMA.
-> >  
-> > +config CMA_SYSFS
-> > +	bool "CMA information through sysfs interface"
-> > +	depends on CMA && SYSFS
-> > +	help
-> > +	  This option exposes some sysfs attributes to get information
-> > +	  from CMA.
-> > +
-> >  config CMA_AREAS
-> >  	int "Maximum count of the CMA areas"
-> >  	depends on CMA
-> > diff --git a/mm/Makefile b/mm/Makefile
-> > index 72227b24a616..56968b23ed7a 100644
-> > --- a/mm/Makefile
-> > +++ b/mm/Makefile
-> > @@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
-> >  obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
-> >  obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
-> >  obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
-> > +obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
-> >  obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
-> >  obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
-> >  obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
-> > diff --git a/mm/cma.c b/mm/cma.c
-> > index 908f04775686..ac050359faae 100644
-> > --- a/mm/cma.c
-> > +++ b/mm/cma.c
-> > @@ -507,10 +507,13 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> >  
-> >  	pr_debug("%s(): returned %p\n", __func__, page);
-> >  out:
-> > -	if (page)
-> > +	if (page) {
-> >  		count_vm_event(CMA_ALLOC_SUCCESS);
-> > -	else
-> > +		cma_sysfs_alloc_pages_count(cma, count);
-> > +	} else {
-> >  		count_vm_event(CMA_ALLOC_FAIL);
-> > +		cma_sysfs_fail_pages_count(cma, count);
-> > +	}
-> >  
-> >  	return page;
-> >  }
-> > diff --git a/mm/cma.h b/mm/cma.h
-> > index 42ae082cb067..70fd7633fe01 100644
-> > --- a/mm/cma.h
-> > +++ b/mm/cma.h
-> > @@ -3,6 +3,12 @@
-> >  #define __MM_CMA_H__
-> >  
-> >  #include <linux/debugfs.h>
-> > +#include <linux/kobject.h>
-> > +
-> > +struct cma_kobject {
-> > +	struct cma *cma;
-> > +	struct kobject kobj;
-> > +};
-> >  
-> >  struct cma {
-> >  	unsigned long   base_pfn;
-> > @@ -16,6 +22,13 @@ struct cma {
-> >  	struct debugfs_u32_array dfs_bitmap;
-> >  #endif
-> >  	char name[CMA_MAX_NAME];
-> > +#ifdef CONFIG_CMA_SYSFS
-> > +	/* the number of CMA page successful allocations */
-> > +	atomic64_t nr_pages_succeeded;
-> > +	/* the number of CMA page allocation failures */
-> > +	atomic64_t nr_pages_failed;
-> > +	struct cma_kobject *kobj;
-> > +#endif
-> >  };
-> >  
-> >  extern struct cma cma_areas[MAX_CMA_AREAS];
-> > @@ -26,4 +39,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
-> >  	return cma->count >> cma->order_per_bit;
-> >  }
-> >  
-> > +#ifdef CONFIG_CMA_SYSFS
-> > +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count);
-> > +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count);
-> > +#else
-> > +static inline void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count) {};
-> > +static inline void cma_sysfs_fail_pages_count(struct cma *cma, size_t count) {};
-> > +#endif
-> >  #endif
-> > diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-> > new file mode 100644
-> > index 000000000000..ca093e9e9f64
-> > --- /dev/null
-> > +++ b/mm/cma_sysfs.c
-> > @@ -0,0 +1,107 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * CMA SysFS Interface
-> > + *
-> > + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
-> > + */
-> > +
-> > +#include <linux/cma.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#include "cma.h"
-> > +
-> > +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
-> > +{
-> > +	atomic64_add(count, &cma->nr_pages_succeeded);
-> > +}
-> > +
-> > +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
-> > +{
-> > +	atomic64_add(count, &cma->nr_pages_failed);
-> > +}
-> > +
-> > +#define CMA_ATTR_RO(_name) \
-> > +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-> > +
-> > +static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> > +			struct kobj_attribute *attr, char *buf)
+
+
+On 3/19/21 9:29 AM, Madhavan T. Venkataraman wrote:
 > 
-> The indentations are still wrong.
 > 
-> CHECK: Alignment should match open parenthesis
-
-Hmm, I didn't know that we have that kinds of rule.
-Maybe, my broken checkpatch couldn't catch it up.
-Thanks.
-
-$ ./scripts/checkpatch.pl 0001-mm-cma-support-sysfs.patch
-Traceback (most recent call last):
-  File "scripts/spdxcheck.py", line 6, in <module>
-    from ply import lex, yacc
-
-
-< snip >
-
+> On 3/19/21 7:30 AM, Mark Brown wrote:
+>> On Thu, Mar 18, 2021 at 03:26:13PM -0500, Madhavan T. Venkataraman wrote:
+>>> On 3/18/21 10:09 AM, Mark Brown wrote:
+>>
+>>>> If we are going to add the extra record there would probably be less
+>>>> potential for confusion if we pointed it at some sensibly named dummy
+>>>> function so anything or anyone that does see it on the stack doesn't get
+>>>> confused by a NULL.
+>>
+>>> I agree. I will think about this some more. If no other solution presents
+>>> itself, I will add the dummy function.
+>>
+>> After discussing this with Mark Rutland offlist he convinced me that so
+>> long as we ensure the kernel doesn't print the NULL record we're
+>> probably OK here, the effort setting the function pointer up correctly
+>> in all circumstances (especially when we're not in the normal memory
+>> map) is probably not worth it for the limited impact it's likely to have
+>> to see the NULL pointer (probably mainly a person working with some
+>> external debugger).  It should be noted in the changelog though, and/or
+>> merged in with the relevant change to the unwinder.
+>>
 > 
-> > +	if (ZERO_OR_NULL_PTR(cma_kobjs))
-> > +		goto out;
-> > +
-> > +	do {
-> > +		cma = &cma_areas[i];
-> > +		cma->kobj = &cma_kobjs[i];
+> OK. I will add a comment as well as note it in the changelog.
 > 
-> Does cma really need are pointer to cma_kobj?
-
-Do you mean something like this?
-
-struct cma {
-	..
-	..
-	struct kobject *kobj;
-};
-
-Then, how could we we make kobject dynamic model?
-
-We need to get struct cma from kboj like below.
-
-static ssize_t alloc_pages_success_show(struct kobject *kobj,
-                                        struct kobj_attribute *attr, char *buf)
-{
-        struct cma_kobject *cma_kobj = container_of(kobj,
-                                                    struct cma_kobject, kobj);
-        struct cma *cma = cma_kobj->cma;
-
-        return sysfs_emit(buf, "%llu\n",
-                          atomic64_read(&cma->nr_pages_succeeded));
-}
-
-So kobj should be not a pointer in the container struct.
-Am I missing your point? Otherwise, it would be great if you suggest
-better idea.
-
-
-< snip>
-
-> > +			kobject_put(&cma->kobj->kobj);
-> > +			goto out;
-> > +		}
-> > +	} while (++i < cma_area_count);
-> > +
-> > +	return 0;
-> > +out:
-> > +	while (--i >= 0) {
-> > +		cma = &cma_areas[i];
-> > +		kobject_put(&cma->kobj->kobj);
+> Thanks to both of you.
 > 
-> Should the cma->kobj be set to NULL by cma_kobj_release() if cma->kobj is really needed?
-
-True. Then, let's fix cma_kobj_release, too.
-
+> Madhavan
 > 
-> > +	}
-> > +
-> > +	kfree(cma_kobjs);
-> > +	kobject_put(cma_kobj_root);
-> > +
-> > +	return -ENOMEM;
-> > +}
-> > +subsys_initcall(cma_sysfs_init);
-> > 
-> 
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Thanks!
+I thought about this some more. I think I have a simple solution. I will
+prepare a patch and send it out. If you and Mark Rutland approve, I will
+include it in the next version of this RFC.
+
+Madhavan
