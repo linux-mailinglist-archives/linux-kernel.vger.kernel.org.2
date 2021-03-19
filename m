@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C695341795
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56603417A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhCSIh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:37:27 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:38344 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234402AbhCSIhF (ORCPT
+        id S234423AbhCSIjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:39:35 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9208 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234399AbhCSIjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:37:05 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AsRbKv6+e9LTmSGQ2IEduk+BWI+orLtY04lQ7?=
- =?us-ascii?q?vn1ZYxpTb8CeioSKlPMUyRf7hF8qKRUdsPqHP7SNRm6ZyIV85pMfMazncA7tvm?=
- =?us-ascii?q?apK48K1/qG/xTLHSri+ulBkZpxaqQWMqyTMXFWhdv3iTPXL/8O29+CmZrFuc7/?=
- =?us-ascii?q?yDNXQRhue+Vc6W5Ce2WmO2lXYCUDOpYjDpqb4aN8xwaIXXgMdMy0Cj0kcoH4yO?=
- =?us-ascii?q?Hjr57tbR4YCxNP0mDnsRqS5LH3CBSe1BsFOgkj/Z4Z7WPHnwblj5/Jj9iHzHbn?=
- =?us-ascii?q?vVP7045bg5/IxNdFGaW36/QoFg=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,261,1610406000"; 
-   d="scan'208";a="498822125"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:36:38 +0100
-Date:   Fri, 19 Mar 2021 09:36:38 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Evan Benn <evanbenn@chromium.org>
-cc:     Gilles Muller <Gilles.Muller@inria.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scripts/coccinelle: Add script to detect sign
- extension
-In-Reply-To: <20210319142952.1.I2c82789dba4e68d61595862188e8bf4d31a05d38@changeid>
-Message-ID: <alpine.DEB.2.22.394.2103190932280.2947@hadrien>
-References: <20210319142952.1.I2c82789dba4e68d61595862188e8bf4d31a05d38@changeid>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 19 Mar 2021 04:39:07 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12J8cEHT002008;
+        Fri, 19 Mar 2021 09:38:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=66Y1jOy+i4E+OEpba8S19bATG0w9+cq/uIbqX4l/N6M=;
+ b=aeI/wqqazvGmB+C7mNgMlMcVOgnyeDhb+lxlbyEuhoWnV1hHYRT2VwnsJgdPpxARATMZ
+ Ip+qHXdUFtFr+HUF7Kw4s+x67amNctvHcmiDJEFqqRm/QLPsETRvxamUv93FlR9IbrLO
+ Z8L3bpjYWeNSw6wyvfQ6N3SyWfr/urmB5Q9K9CaM7AJnBSECssJH6WudiKHamSm7nGKb
+ ZvKbJFmkTUzm9ICbMk802yEzInHIlQe8qd8dQnbKDOd8HX+swe1BacmWHLr3CGOwJuTX
+ li9OKTz9WlT/SNXrCBFOmTJTHv6XhMlyKm5Sg6hLzyT4icc/LgrkfPhbVC7DRTip4mt/ 2g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 378pr6a6u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 09:38:44 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8BD7310002A;
+        Fri, 19 Mar 2021 09:38:40 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 645452257E6;
+        Fri, 19 Mar 2021 09:38:40 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Mar
+ 2021 09:38:39 +0100
+Subject: Re: [PATCH v3 9/9] dt-bindings: serial: stm32: add phandle
+ 'bluetooth' to fix dtbs_check warrning
+To:     dillon min <dillon.minfei@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>, Vladimir Murzin <vladimir.murzin@arm.com>,
+        <afzal.mohd.ma@gmail.com>, <gregkh@linuxfoundation.org>,
+        <erwan.leray@st.com>, <erwan.leray@foss.st.com>,
+        <linux-serial@vger.kernel.org>, <lkp@intel.com>
+References: <1615801436-3016-1-git-send-email-dillon.minfei@gmail.com>
+ <1615801436-3016-10-git-send-email-dillon.minfei@gmail.com>
+ <CAL9mu0Lfj+n4uk2rT8QnDtRveHn2gLx4ut6fLCByt0w9e08vwQ@mail.gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <01c9f635-7b2b-fc9c-3cf9-6d7f425d683e@foss.st.com>
+Date:   Fri, 19 Mar 2021 09:38:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAL9mu0Lfj+n4uk2rT8QnDtRveHn2gLx4ut6fLCByt0w9e08vwQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_02:2021-03-17,2021-03-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dillon
+
+On 3/19/21 5:28 AM, dillon min wrote:
+> No changes, Just loop lkp in.
+> 
+> 
+> Hi lkp,
+> 
+> Sorry for the late reply, thanks for your report.
+> This patch is to fix the build warning message.
+> 
+> Thanks.
+> Regards
+> 
+> On Mon, Mar 15, 2021 at 5:45 PM <dillon.minfei@gmail.com> wrote:
+>>
+>> From: dillon min <dillon.minfei@gmail.com>
+>>
+>> when run make dtbs_check with 'bluetoothi brcm,bcm43438-bt'
+>> dts enabled on stm32h7, there is a warrning popup:
+>>
+>>>> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800: 'bluetooth'
+>>     does not match any of the regexes: 'pinctrl-[0-9]+'
+>>
+>> to make dtbs_check happy, so add a phandle bluetooth
+>>
+>> Fixes: 500cdb23d608 ("ARM: dts: stm32: Add STM32H743 MCU and STM32H743i-EVAL board")
+>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>   Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+>> index 8631678283f9..5e674840e62d 100644
+>> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+>> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+>> @@ -50,6 +50,11 @@ properties:
+>>       minItems: 1
+>>       maxItems: 2
+>>
+>> +  bluetooth:
+>> +    type: object
+>> +    description: |
+>> +      phandles to the usart controller and bluetooth
+>> +
+
+Do we really need to add this "generic" property here ? You could test 
+without the "AditionalProperties:False".
+
+Regards
+Alex
 
 
-On Fri, 19 Mar 2021, Evan Benn wrote:
-
-> Hello,
->
-> I am attempting to create a coccinelle script that will detect possibly buggy
-> usage of the bitwise operators where integer promotion may result in bugs,
-> usually due to sign extension.
->
-> I know this script needs a lot more work, but I am just beginning to learn the
-> syntax of coccinelle. At this stage I am mainly looking for advice if this is
-> even worth continuing, or if I am on the wrong track entirely.
-
-I'm not really an expert in the problem, so I don't know exactly what are
-the kinds of code you want to find.  Coccinelle is good at matching the
-types of things and the structure of things.  If you need to know the
-actual values of things, you may want to try smatch.  Coccinelle probably
-doesn't have complete knowledge of how various operators affect C types.
-For example, it would not have known that BIT results in a long.
-
-The best you can do is try some rules and see what the results are, and
-try to collect some relevant examples and see if you can match them with
-your rules.  Please write back if there is some specific code that is not
-matched as expected.
-
-julia
-
-
->
-> Here is an example of the bug I hope to find:
->
-> https://lore.kernel.org/lkml/20210317013758.GA134033@roeck-us.net/
->
-> Where ints and unsigned are mixed in bitwise operations, and the sizes differ.
->
-> Thanks
->
-> Evan Benn
->
-> Signed-off-by: Evan Benn <evanbenn@chromium.org>
-> ---
->
->  .../coccinelle/tests/int_sign_extend.cocci    | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
->  create mode 100644 scripts/coccinelle/tests/int_sign_extend.cocci
->
-> diff --git a/scripts/coccinelle/tests/int_sign_extend.cocci b/scripts/coccinelle/tests/int_sign_extend.cocci
-> new file mode 100644
-> index 000000000000..bad61e37e4e7
-> --- /dev/null
-> +++ b/scripts/coccinelle/tests/int_sign_extend.cocci
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/// Mixing signed and unsigned types in bitwise operations risks problems when
-> +/// the 'Usual arithmetic conversions' are applied.
-> +/// For example:
-> +/// https://lore.kernel.org/lkml/20210317013758.GA134033@roeck-us.net/
-> +/// When a signed int and an unsigned int are compared there is no problem.
-> +/// But if the unsigned is changed to a unsigned long, for example by using BIT
-> +/// the signed value will be sign-extended and could result in incorrect logic.
-> +// Confidence:
-> +// Copyright: (C) 2021 Evan Benn <evanbenn@chromium.org>
-> +// Comments:
-> +// Options:
-> +
-> +virtual context
-> +virtual org
-> +virtual report
-> +
-> +@r@
-> +position p;
-> +{int} s;
-> +{unsigned long} u;
-> +@@
-> +    s@p & u
-> +
-> +@script:python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +cocci.print_main("sign extension when comparing bits of signed and unsigned values", p)
-> +
-> +@script:python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0],"sign extension when comparing bits of signed and unsigned values")
-> --
-> 2.31.0.291.g576ba9dcdaf-goog
->
->
+>>   # cts-gpios and rts-gpios properties can be used instead of 'uart-has-rtscts'
+>>   # or 'st,hw-flow-ctrl' (deprecated) for making use of any gpio pins for flow
+>>   # control instead of dedicated pins.
+>> --
+>> 1.9.1
+>>
