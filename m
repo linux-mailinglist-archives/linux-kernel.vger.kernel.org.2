@@ -2,184 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70BD34173F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D77341713
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhCSIUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:20:38 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:55680 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234293AbhCSIUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:20:17 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 196401A27C4;
-        Fri, 19 Mar 2021 09:20:16 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2787B1A27CD;
-        Fri, 19 Mar 2021 09:20:10 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EDDF94024E;
-        Fri, 19 Mar 2021 09:20:02 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_sai: Don't use devm_regmap_init_mmio_clk
-Date:   Fri, 19 Mar 2021 16:06:43 +0800
-Message-Id: <1616141203-13344-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S233993AbhCSIHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234178AbhCSIGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 04:06:51 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A787C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KkHBYHfoCsDHRy+l3G4x3jQeUIpsZUBDXt4bxONprtE=; b=M5OuWWtY5YElEdzEV3icSTsKN4
+        RBqjuGOohreB/5OCbBiLDaPfcxuBx1mnwTgJrcN0CHrJvk39PAgH4K+LV2UQknJBBoYngXcW1W8aZ
+        t75Cke9TDp1X5kShy/7A+bNpsCfC7TL2i2hwt4QCWl7f+yKlO+ESb5rwaX0Dk6k7tWKUOrL53Rycr
+        kbvUY1+gN2yBs0mL2rtAEeRyhDg2Mg1ZXJ3VdqtA8njAYBLUN4gmlp9xH6alBI97lvUJuyWwzukUd
+        ZUXEg/wWIWz9nlTgCQDVEEvgAOfsrwsQPLKljsciOkfDCN7yC3v9+UJWv+mrMTsYckd4XTS4RrNpc
+        NEmO6yZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNA9d-006qyk-8B; Fri, 19 Mar 2021 08:06:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D66F73006E0;
+        Fri, 19 Mar 2021 09:06:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C9CF7213C0F22; Fri, 19 Mar 2021 09:06:44 +0100 (CET)
+Date:   Fri, 19 Mar 2021 09:06:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, jgross@suse.com, mbenes@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/14] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <YFRblERAnQu2KtZG@hirez.programming.kicks-ass.net>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171920.253147364@infradead.org>
+ <20210319032955.zdx6ihhprem5owbc@treble>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319032955.zdx6ihhprem5owbc@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there is power domain bind with bus clock,
+On Thu, Mar 18, 2021 at 10:29:55PM -0500, Josh Poimboeuf wrote:
+> On Thu, Mar 18, 2021 at 06:11:17PM +0100, Peter Zijlstra wrote:
+> > When the compiler emits: "CALL __x86_indirect_thunk_\reg" for an
+> > indirect call, have objtool rewrite it to:
+> > 
+> > 	ALTERNATIVE "call __x86_indirect_thunk_\reg",
+> > 		    "call *%reg", ALT_NOT(X86_FEATURE_RETPOLINE)
+> > 
+> > Additionally, in order to not emit endless identical
+> > .altinst_replacement chunks, use a global symbol for them, see
+> > __x86_indirect_alt_*.
+> > 
+> > This also avoids objtool from having to do code generation.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> This is better than I expected.  Nice workaround for not generating
+> code.
 
-The call flow:
-devm_regmap_init_mmio_clk
-   - clk_prepare()
-      - clk_pm_runtime_get()
+Thanks :-)
 
-cause the power domain of clock always be enabled after
-regmap_init(). which impact the power consumption.
+> > +.macro ALT_THUNK reg
+> > +
+> > +	.align 1
+> > +
+> > +SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
+> > +	ANNOTATE_RETPOLINE_SAFE
+> > +1:	call	*%\reg
+> > +2:	.skip	5-(2b-1b), 0x90
+> > +SYM_FUNC_END(__x86_indirect_alt_call_\reg)
+> > +
+> > +SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
+> > +	ANNOTATE_RETPOLINE_SAFE
+> > +1:	jmp	*%\reg
+> > +2:	.skip	5-(2b-1b), 0x90
+> > +SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
+> 
+> This mysterious code needs a comment.  Shouldn't it be in
+> .altinstr_replacement or something?
 
-So use devm_regmap_init_mmio instead of
-devm_regmap_init_mmio_clk, then explicitly enable clock when
-using by pm_runtime_get(), if CONFIG_PM=n, then
-fsl_sai_runtime_resume will be explicitly called.
+Comment, yes, I suppose so. And no, if we stick it in
+.altinstr_replacement we'll throw them away with initmem and module
+alternative patching (which will also refer to these symbols) will go
+side-ways.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 48 +++++++++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+> Also doesn't the alternative code already insert nops?
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 9e7893f91882..f2c70a31c7bb 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -987,6 +987,9 @@ static int fsl_sai_check_version(struct device *dev)
- 	return 0;
- }
- 
-+static int fsl_sai_runtime_suspend(struct device *dev);
-+static int fsl_sai_runtime_resume(struct device *dev);
-+
- static int fsl_sai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -1019,24 +1022,21 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 			ARRAY_SIZE(fsl_sai_reg_defaults_ofs8);
- 	}
- 
--	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
--			"bus", base, &fsl_sai_regmap_config);
--
--	/* Compatible with old DTB cases */
--	if (IS_ERR(sai->regmap) && PTR_ERR(sai->regmap) != -EPROBE_DEFER)
--		sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
--				"sai", base, &fsl_sai_regmap_config);
-+	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base, &fsl_sai_regmap_config);
- 	if (IS_ERR(sai->regmap)) {
- 		dev_err(&pdev->dev, "regmap init failed\n");
- 		return PTR_ERR(sai->regmap);
- 	}
- 
--	/* No error out for old DTB cases but only mark the clock NULL */
- 	sai->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	/* Compatible with old DTB cases */
-+	if (IS_ERR(sai->bus_clk) && PTR_ERR(sai->bus_clk) != -EPROBE_DEFER)
-+		sai->bus_clk = devm_clk_get(&pdev->dev, "sai");
- 	if (IS_ERR(sai->bus_clk)) {
- 		dev_err(&pdev->dev, "failed to get bus clock: %ld\n",
- 				PTR_ERR(sai->bus_clk));
--		sai->bus_clk = NULL;
-+		/* -EPROBE_DEFER */
-+		return PTR_ERR(sai->bus_clk);
- 	}
- 
- 	for (i = 1; i < FSL_SAI_MCLK_MAX; i++) {
-@@ -1117,6 +1117,18 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
- 	platform_set_drvdata(pdev, sai);
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = fsl_sai_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		goto err_pm_get_sync;
-+	}
- 
- 	/* Get sai version */
- 	ret = fsl_sai_check_version(&pdev->dev);
-@@ -1130,26 +1142,30 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
- 	}
- 
--	pm_runtime_enable(&pdev->dev);
--	regcache_cache_only(sai->regmap, true);
-+	ret = pm_runtime_put_sync(&pdev->dev);
-+	if (ret < 0)
-+		goto err_pm_get_sync;
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
- 					      &sai->cpu_dai_drv, 1);
- 	if (ret)
--		goto err_pm_disable;
-+		goto err_pm_get_sync;
- 
- 	if (sai->soc_data->use_imx_pcm) {
- 		ret = imx_pcm_dma_init(pdev, IMX_SAI_DMABUF_SIZE);
- 		if (ret)
--			goto err_pm_disable;
-+			goto err_pm_get_sync;
- 	} else {
- 		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- 		if (ret)
--			goto err_pm_disable;
-+			goto err_pm_get_sync;
- 	}
- 
- 	return ret;
- 
-+err_pm_get_sync:
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		fsl_sai_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- 
-@@ -1159,6 +1175,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
- static int fsl_sai_remove(struct platform_device *pdev)
- {
- 	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		fsl_sai_runtime_suspend(&pdev->dev);
- 
- 	return 0;
- }
-@@ -1219,7 +1237,6 @@ static const struct of_device_id fsl_sai_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, fsl_sai_ids);
- 
--#ifdef CONFIG_PM
- static int fsl_sai_runtime_suspend(struct device *dev)
- {
- 	struct fsl_sai *sai = dev_get_drvdata(dev);
-@@ -1292,7 +1309,6 @@ static int fsl_sai_runtime_resume(struct device *dev)
- 
- 	return ret;
- }
--#endif /* CONFIG_PM */
- 
- static const struct dev_pm_ops fsl_sai_pm_ops = {
- 	SET_RUNTIME_PM_OPS(fsl_sai_runtime_suspend,
--- 
-2.27.0
+Problem is that the {call,jmp} *%\reg thing is not fixed length. They're
+2 or 3 bytes depending on which register is picked.
 
+We could make them all 3 long and insert 0,1 nop I suppose.
+
+Initially alternatives wouldn't re-optimize nops on patched things, it
+would simply add nops on. And I had the above be:
+
+1:	INSN	*%\reg
+2:	.nops	5-(2b-1b)
+
+and we'd get a single right sized nop. But the .nops directive it too
+new, we support binutils that don't have it :/
+
+Hence, it now reads:
+
+2:	.skip	5-(2b-1b), 0x90
+
+End result is that alternative NOP optimizer patch at the start of the
+series that now also optimizes a bunch of cases that are unrelated and
+were previously missed -- but crucially, it covers this case too :-)
+
+Anyway, yes I could make it 3 long.
+
+> > +int arch_rewrite_retpoline(struct objtool_file *file,
+> > +			   struct instruction *insn,
+> > +			   struct reloc *reloc)
+> > +{
+> > +	struct symbol *sym;
+> > +	char name[32] = "";
+> > +
+> > +	if (!strcmp(insn->sec->name, ".text.__x86.indirect_thunk"))
+> > +		return 0;
+> > +
+> > +	sprintf(name, "__x86_indirect_alt_%s_%s",
+> > +		insn->type == INSN_JUMP_DYNAMIC ? "jmp" : "call",
+> > +		reloc->sym->name + 21);
+> > +
+> > +	sym = find_symbol_by_name(file->elf, name);
+> > +	if (!sym) {
+> > +		sym = elf_create_undef_symbol(file->elf, name);
+> > +		if (!sym) {
+> > +			WARN("elf_create_undef_symbol");
+> > +			return -1;
+> > +		}
+> > +	}
+> > +
+> > +	elf_add_alternative(file->elf, insn, sym,
+> > +			    ALT_NOT(X86_FEATURE_RETPOLINE), 5, 5);
+> > +
+> > +	return 0;
+> > +}
+> 
+> Need to propagate the error.
+
+Oh, indeed so.
