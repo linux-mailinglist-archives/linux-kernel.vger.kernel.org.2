@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305FD342145
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF894342148
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhCSPwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S230367AbhCSPxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhCSPvw (ORCPT
+        with ESMTP id S230469AbhCSPwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:51:52 -0400
-Received: from smtp-bc09.mail.infomaniak.ch (smtp-bc09.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc09])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2752C06175F;
-        Fri, 19 Mar 2021 08:51:52 -0700 (PDT)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F27g962FxzMqCNw;
-        Fri, 19 Mar 2021 16:51:49 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F27g65j8Qzlh8TH;
-        Fri, 19 Mar 2021 16:51:46 +0100 (CET)
-Subject: Re: [PATCH v30 00/12] Landlock LSM
-To:     James Morris <jmorris@namei.org>
-Cc:     Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <651a1034-c59f-1085-d3f6-c5a41f6fbbb@namei.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <39a58eb2-7cd8-9cc9-cbf1-829b6ee59f6b@digikod.net>
-Date:   Fri, 19 Mar 2021 16:52:02 +0100
-User-Agent: 
+        Fri, 19 Mar 2021 11:52:51 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87805C06174A;
+        Fri, 19 Mar 2021 08:52:51 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f091e0083683e716a2b863f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1e00:8368:3e71:6a2b:863f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1307D1EC05B8;
+        Fri, 19 Mar 2021 16:52:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616169170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=juRg9xU8839Azxv9DV6H8rSQ2lQMOUOh+EHWiWmR7AA=;
+        b=OH9W9F/p/92PP+z6bxT6Gd0PJ8POb3RXVxZjleExLePgAwua/X2PHOPw3MbvcHHzi8RFLh
+        pUhgtLNS0CbFmDBwvSdcl6Ihntoy37EnXIFoa+BM2EkmYQkJdOzsCCSjpIM3udLk5cEgZZ
+        GeIJGzTYSMhMXx+qTlrC4Q5VLg9cxbs=
+Date:   Fri, 19 Mar 2021 16:52:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com,
+        dave.hansen@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Avoid returning NULL in __sgx_alloc_epc_page()
+Message-ID: <20210319155249.GK6251@zn.tnic>
+References: <20210319040602.178558-1-kai.huang@intel.com>
+ <20210319084523.GA6251@zn.tnic>
+ <20210319220141.8bf20c54fdb06c6f93cde448@intel.com>
+ <YFS6Of4nnDJR+ZFk@kernel.org>
+ <20210319145931.GH6251@zn.tnic>
+ <YFTB0HD/4Hc0KvT3@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <651a1034-c59f-1085-d3f6-c5a41f6fbbb@namei.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YFTB0HD/4Hc0KvT3@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 05:22:56PM +0200, Jarkko Sakkinen wrote:
+> I did misread it for the first time.
+> 
+> So let's sanity: you *are* going to squash the patches together because
+> that way it's factors easier to backport the whole thing?
+> 
+> Is this the correct understanding?
 
-On 19/03/2021 00:26, James Morris wrote:
-> I've queued this patchset here:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git landlock_lsm
-> 
-> and pulled it into next-testing, which will get it coverage in linux-next.
-> 
-> All going well, I'll aim to push this to Linus in the next merge window. 
-> More review and testing during that time will be helpful.
+I squashed Kai's fix because I don't want to break people's bisection if
+they land between your patch and his fix. They're already troubled enough
+chasing an issue, don't want to have them get a NULL ptr in sgx land.
 
-Good, thanks! The syzkaller changes are now merged and up-to-date with
-linux-next:
-https://github.com/google/syzkaller/commits/3d01c4de549b4e4bddba6102715c212bbcff2fbb
+Now, looking at dhansen's fix: what can happen if nid is uninitialized?
+AFAICT, we'll end up in
+
+static inline int __next_node(int n, const nodemask_t *srcp)
+{
+        return min_t(int,MAX_NUMNODES,find_next_bit(srcp->bits, MAX_NUMNODES, n+1));
+}
+
+with n uninitialized and depending on its value it'll either return
+MAX_NUMNODES so we'll try to allocate on the first node or try to
+allocate on some other node.
+
+Now, if you think that that is still problematic enough for enclave
+creation, then I'll fold his patch too.
+
+So yes, the main reason is usability and not breaking bisection.
+
+So, what would you prefer?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
