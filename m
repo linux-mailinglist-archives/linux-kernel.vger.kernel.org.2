@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA3334282D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4813342829
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhCSVtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:49:51 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:35788 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbhCSVtZ (ORCPT
+        id S231231AbhCSVtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:49:49 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:34622 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhCSVtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:49:25 -0400
-Received: by mail-io1-f45.google.com with SMTP id v3so7625971ioq.2;
-        Fri, 19 Mar 2021 14:49:24 -0700 (PDT)
+        Fri, 19 Mar 2021 17:49:23 -0400
+Received: by mail-il1-f182.google.com with SMTP id h1so9351983ilr.1;
+        Fri, 19 Mar 2021 14:49:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=DdFpA8RCuNet19LbBIUzBDaOeIQrmYimvT3B6l6LMdM=;
-        b=f0+/HWtjgNISsUDyZbHMSHDi2llsVsCkLqbsGk64u1bfCAtQvojuCXl4sDoZ4nZvQd
-         bSJ+fbtMpIbzcLgkVik5jdD1rVzsJesfKQMq1ARo/TlPn3TbvjxXLF50bJitgORGN2Xj
-         INLKdRrv74cuBjlJ0ImkcItdaMDKeUo8jyd7dUZ7W/0J7rwewKqLfccIvvshDrP5cDhb
-         We15qtbOPjKtlgTIhgVAac2ncipaPSHzhkIutP9+SilDthD0jv+HPWz/+Td06Y3SIMgg
-         jctcpBz0YAvh55WJAaDiiUOuDk/ODnQtu8c9Jqv82JEB8zSBCBZtbdZsHyh6XR6uK7pv
-         YpMQ==
-X-Gm-Message-State: AOAM530zQnSDLHHYmtlBI8Bua95pwI4mu0aBMvCTenzvMnH63RjiNwz6
-        UhqEHjvLJerz2RJQuPJVcegRSEswXw==
-X-Google-Smtp-Source: ABdhPJz8Qcg5u41fjcWJKrDLCvbUbZw/JCtRUZ8UWObSJSHQ7Pmnal/cQAkn0JIQ6hNFqKiFD056Zg==
-X-Received: by 2002:a05:6602:2d95:: with SMTP id k21mr4205797iow.123.1616190564451;
-        Fri, 19 Mar 2021 14:49:24 -0700 (PDT)
+        bh=TSxYsh/4QZo74CdzAGCwJNDM12S7BjJC925sJJZcFS4=;
+        b=W1ZEPSBe59GA6KhO+MofCUE6zvL7b4kE7l1uXPNVZxhu0BGGXe+laXEMcuQFGv2v4q
+         8eGbFMNpO3DqsNn4zLiqQcwH/y0xYF6TV483qzn+V2DkVMfbxl6EE6Ts1TJEOWqwgvjQ
+         R72sQQgpaevknL12lQOgQm+aB2DlD42J9j1TCfuMng4ybXJs66T69bvbHYBWMw1DXKln
+         BAHYyphSqlYTtt8DWk2NUpXXCCusCTetcwQpFu3PsIqFi2mmOnSpW46LnS736smleYPB
+         Kvh/Vy9fc8WU7flt8mTdlzUAc29mBxbB4tWzS16JXhpgWKsgO0vFDOS2RLT9RbPaoLea
+         PsVg==
+X-Gm-Message-State: AOAM532a3DtiFpweEYSyqqaBNyPRSb5XqEpQ5AmY/Z9dZlamAoWT6m68
+        18YTB57PtyhBzD6avXmxXg==
+X-Google-Smtp-Source: ABdhPJxZEwHBaki7JZj8S9Wfx9Q661XX+EpH7c18EJM7O2uuvyzAg5xLz15/qRWghrDG07cN0A7Ovg==
+X-Received: by 2002:a05:6e02:174b:: with SMTP id y11mr4340361ill.152.1616190562286;
+        Fri, 19 Mar 2021 14:49:22 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j3sm3048432ila.58.2021.03.19.14.49.22
+        by smtp.gmail.com with ESMTPSA id j14sm3031599ilu.3.2021.03.19.14.49.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 14:49:23 -0700 (PDT)
-Received: (nullmailer pid 1647636 invoked by uid 1000);
+        Fri, 19 Mar 2021 14:49:21 -0700 (PDT)
+Received: (nullmailer pid 1647634 invoked by uid 1000);
         Fri, 19 Mar 2021 21:49:12 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     linux-remoteproc@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>
-In-Reply-To: <20210318145923.31936-2-arnaud.pouliquen@foss.st.com>
-References: <20210318145923.31936-1-arnaud.pouliquen@foss.st.com> <20210318145923.31936-2-arnaud.pouliquen@foss.st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: stm32-rproc: add new mailbox channel for detach
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, zong.li@sifive.com,
+        robh+dt@kernel.org, linux-clk@vger.kernel.org, hes@sifive.com,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        jh80.chung@samsung.com, vidyas@nvidia.com,
+        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        mturquette@baylibre.com, p.zabel@pengutronix.de,
+        lorenzo.pieralisi@arm.com, sboyd@kernel.org, bhelgaas@google.com,
+        alex.dewar90@gmail.com, erik.danie@sifive.com, helgaas@kernel.org,
+        palmer@dabbelt.com, khilman@baylibre.com, paul.walmsley@sifive.com,
+        hayashi.kunihiko@socionext.com
+In-Reply-To: <8008af6d86737b74020d7d8f9c3fbc9b500e9993.1615954046.git.greentime.hu@sifive.com>
+References: <cover.1615954045.git.greentime.hu@sifive.com> <8008af6d86737b74020d7d8f9c3fbc9b500e9993.1615954046.git.greentime.hu@sifive.com>
+Subject: Re: [PATCH v2 4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
 Date:   Fri, 19 Mar 2021 15:49:12 -0600
-Message-Id: <1616190552.569417.1647635.nullmailer@robh.at.kernel.org>
+Message-Id: <1616190552.561606.1647633.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021 15:59:22 +0100, Arnaud Pouliquen wrote:
-> Add the "detach" mailbox item, that allows to define a mailbox to
-> send a IPCC signal to the remote processor on remoteproc detach action.
+On Thu, 18 Mar 2021 14:08:11 +0800, Greentime Hu wrote:
+> Add PCIe host controller DT bindings of SiFive FU740.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 > ---
->  .../bindings/remoteproc/st,stm32-rproc.yaml           | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
+>  .../bindings/pci/sifive,fu740-pcie.yaml       | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml:68:8: [error] syntax error: expected <block end>, but found '<block sequence start>' (syntax)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 852, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.parser.ParserError: while parsing a block collection
-  in "<unicode string>", line 54, column 7
-did not find expected '-' indicator
-  in "<unicode string>", line 68, column 8
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.example.dts] Error 1
+Error: Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dts:45.29-30 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/pci/sifive,fu740-pcie.example.dt.yaml] Error 1
 make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml:  while parsing a block collection
-  in "<unicode string>", line 54, column 7
-did not find expected '-' indicator
-  in "<unicode string>", line 68, column 8
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
 make: *** [Makefile:1380: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1455311
+See https://patchwork.ozlabs.org/patch/1455121
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
