@@ -2,182 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A163D3411CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6443411CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbhCSAxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        id S233594AbhCSAyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbhCSAxE (ORCPT
+        with ESMTP id S233472AbhCSAxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:53:04 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F56C06174A;
-        Thu, 18 Mar 2021 17:53:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id k10so6912282ejg.0;
-        Thu, 18 Mar 2021 17:53:04 -0700 (PDT)
+        Thu, 18 Mar 2021 20:53:42 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A75C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:53:42 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id u9so6907913ejj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=21TRq5T7n/YlJzaiHd/rYW7/ONn9U06XAcWKZPDtNYI=;
-        b=HfVgopGoETyq/qL91s46wIh+DPOYwlenzABf9SnprD/fPcZDwBJr/erbz2wJCHxPjf
-         B2NuP6K1rNjWefJkzymM/3V6aEGeL15usMaiuNowsbuY99umQf6jw7hXi4OcBm8bCHki
-         He0VBb7uPgnsWKmC1OLidSVRYzkT6IAy2V4sSeqk8agWhCsU43BybkyonRJ9Vd2R2Spy
-         EEcczaCaGD7nnQRin07ma5REaxrUZ/EkSinRgaDTbocCQ9nVM2ywRvAZ9qQ+rirPbaeq
-         Ijjrd4zQ7wmA1XcpIuJPee9bsy5earsCgM2aTiFoxJ+AI1BOM+hGh+j76aRmq4uYZGKP
-         BP+w==
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=S62dHTtCQlIfJI/mhZhC3VouKv424+X6c3HcczHvRZo=;
+        b=Q7dgNseLCIoNGFW0I3O8d7KFa3aLYBgV2gYyeeEjCgsKbbF6rMRVWz8I5k5GslEeVB
+         inDohtaIg/fLnL7S27y3qmY34k2zhTItF2p1zpLQFVLbUcRP4pWcs5CcMZUBkHadqi/d
+         xLiB3Hzxi1o37sLqULtUSPAK+BznD12u81Urb0otDSakwrdzcdzQT3I8Grtf0TL/q/Uk
+         8zu56lub+rcZk+8xbnIyWYInO6AYstjcVTYgPi9QAUK9qIUqtWY/GjGL4TvJZfQ86Nnw
+         QmCYr1x7nLCMIvh+9s41Iob+LRkR7d1+N0ItUc8d+J3pDNSBOZVHDVJ22ymeooI5gEWH
+         6UCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=21TRq5T7n/YlJzaiHd/rYW7/ONn9U06XAcWKZPDtNYI=;
-        b=ID174VNhRKncsMfqXMN3OlFxFkTpLmdE8yZVo2h1wsWX+EJ4hBQZnFxkg36Dkpsu3Y
-         msJziWnNx25qNKgIDnD3ioOkeVoYkWF/XxHZuzZGs/IenQo6HYDZNe1IvaTBbuo2slmI
-         PNfblCy6Sw+Zx8ewqy/am1VbUK5mHiDdPhrwNjUEDCyQU17KtMQZ6t7WoEFN5RFyT+Zn
-         9snra+PVLl8TEXNGsWsa/+PZXkfuLLMcdTU7PjuTdvnaEOhYU5oa8ytHyJblrzqw837/
-         JaJ4KDt7gmi97p1ol14aZsS0REtrFn8Itr0uHL2cFyhTbwOTHUgQBdPHBlok2o57c01S
-         j+2Q==
-X-Gm-Message-State: AOAM532BfPVrVJAbuF/TO5qTr3WGB59VBpS7QbHnrtvBdRazUHokvk9r
-        n94po+oMMtRLnwTWg/0os4A=
-X-Google-Smtp-Source: ABdhPJyRp77kRe/bUrg00EgV0RbYbBbnjm25fQkgj9cvvya1zbaw+FdG0oFO5Xc+VlmduMkyytZLLQ==
-X-Received: by 2002:a17:907:77d4:: with SMTP id kz20mr1455770ejc.93.1616115183180;
-        Thu, 18 Mar 2021 17:53:03 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (host-95-233-52-6.retail.telecomitalia.it. [95.233.52.6])
-        by smtp.googlemail.com with ESMTPSA id q25sm3186976edt.51.2021.03.18.17.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 17:53:02 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rob Herring <robh@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 9/9] dt-bindings: thermal: tsens: Document ipq8064 bindings
-Date:   Fri, 19 Mar 2021 01:52:27 +0100
-Message-Id: <20210319005228.1250-10-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210319005228.1250-1-ansuelsmth@gmail.com>
-References: <20210319005228.1250-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=S62dHTtCQlIfJI/mhZhC3VouKv424+X6c3HcczHvRZo=;
+        b=KUfnGGkS/0mKKZUE8jpon7/lAn5gyQhDk1E/rEg8zdMLXgXgK3lUfk1Tuha8EBq4xI
+         3CNn1uFHctpZNjCymnWavy2X91BefaVn9no4QTMeGNCSVsaKDSvCPXbGt5pxgLXPE3G/
+         C6w0vUIZECRxP9xKpQMl0/EFvE7P2YE7e+yfw817A+J7Egbf5Eh13FVbiENHsU7RgmR7
+         yBeowvAVTisfGKFk1ZxpDd1CBtb0mPiLfg4JsaNXkqgJwSGwoVAKlWtoYMKG8Lpei7Af
+         WzZ8900q7s5mZFL/sQyxaykRCo9CebfbKVE4kk6bv0vq97SV/ZJVkZ5LGGKfORW5MWUI
+         EfvA==
+X-Gm-Message-State: AOAM532I26lhr9H7rTmeXHohN7u5kKouET4+J6cbU2ZfUMKWSrdUTk85
+        CnXIo+2A9Pr/fTRlbRyTvvd3zwfeR9Myqb3Cjjwrgkao2a4=
+X-Google-Smtp-Source: ABdhPJxFaCT2uu2jYhd7se0srF/T16JC5LCzYNImCWKMWewHYgy9AjWy4bOzb1le4RcDwfqg2dGNoZFMU4BItTJXAAA=
+X-Received: by 2002:a17:907:7249:: with SMTP id ds9mr1481050ejc.9.1616115221138;
+ Thu, 18 Mar 2021 17:53:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 19 Mar 2021 10:53:29 +1000
+Message-ID: <CAPM=9tzyh8Qeo4Sc_VHApCKRt8pBT4nW_20VYOv1TJkKmwm8ew@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.12-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of bindings used for msm8960 tsens based devices.
-msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+Hi Linus,
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
- 1 file changed, 48 insertions(+), 8 deletions(-)
+Regular fixes pull, pretty small set of fixes, a couple of i915 and
+amdgpu, one ttm, one nouveau and one omap. Probably smaller than usual
+for this time, so we'll see if something pops up next week or if this
+will continue to stay small.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 95462e071ab4..1785b1c75a3c 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -19,6 +19,11 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: msm9860 TSENS based
-+        items:
-+          - enum:
-+              - qcom,ipq8064-tsens
-+
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-@@ -73,7 +78,9 @@ properties:
-     maxItems: 2
-     items:
-       - const: calib
--      - const: calib_sel
-+      - enum:
-+          - calib_backup
-+          - calib_sel
- 
-   "#qcom,sensors":
-     description:
-@@ -88,12 +95,20 @@ properties:
-       Number of cells required to uniquely identify the thermal sensors. Since
-       we have multiple sensors this is set to 1
- 
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - "#thermal-sensor-cells"
-+  - "#qcom,sensors"
-+
- allOf:
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq8064-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-@@ -114,17 +129,42 @@ allOf:
-         interrupt-names:
-           minItems: 2
- 
--required:
--  - compatible
--  - reg
--  - "#qcom,sensors"
--  - interrupts
--  - interrupt-names
--  - "#thermal-sensor-cells"
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,tsens-v0_1
-+              - qcom,tsens-v1
-+              - qcom,tsens-v2
-+
-+    then:
-+      required:
-+        - reg
- 
- additionalProperties: false
- 
- examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    // Example msm9860 based SoC (ipq8064):
-+    gcc: clock-controller {
-+
-+           /* ... */
-+
-+           tsens: thermal-sensor {
-+                compatible = "qcom,ipq8064-tsens";
-+
-+                 nvmem-cells = <&tsens_calib>, <&tsens_calib_backup>;
-+                 nvmem-cell-names = "calib", "calib_backup";
-+                 interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+                 interrupt-names = "uplow";
-+
-+                 #qcom,sensors = <11>;
-+                 #thermal-sensor-cells = <1>;
-+          };
-+    };
-+
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     // Example 1 (legacy: for pre v1 IP):
--- 
-2.30.2
+Dave.
 
+drm-fixes-2021-03-19:
+drm fixes for 5.12-rc4
+
+ttm:
+- Make ttm_bo_unpin() not wraparound on too many unpins.
+
+omap:
+- Fix coccicheck warning in omap.
+
+amdgpu:
+- DCN 3.0 gamma fixes
+- DCN 2.1 corrupt screen fix
+
+i915:
+- Workaround async flip + VT-d frame corruption on HSW/BDW
+- Fix NMI watchdog crash due to uninitialized OA buffer use on gen12+
+
+nouveau:
+- workaround oops with bo syncing
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0=
+:
+
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-03-19
+
+for you to fetch changes up to e94c55b8e0a0bbe9a026250cf31e2fa45957d776:
+
+  nouveau: Skip unvailable ttm page entries (2021-03-19 10:38:31 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.12-rc4
+
+ttm:
+- Make ttm_bo_unpin() not wraparound on too many unpins.
+
+omap:
+- Fix coccicheck warning in omap.
+
+amdgpu:
+- DCN 3.0 gamma fixes
+- DCN 2.1 corrupt screen fix
+
+i915:
+- Workaround async flip + VT-d frame corruption on HSW/BDW
+- Fix NMI watchdog crash due to uninitialized OA buffer use on gen12+
+
+nouveau:
+- workaround oops with bo syncing
+
+----------------------------------------------------------------
+Calvin Hou (1):
+      drm/amd/display: Correct algorithm for reversed gamma
+
+Christian K=C3=B6nig (1):
+      drm/ttm: make ttm_bo_unpin more defensive
+
+Dave Airlie (3):
+      Merge tag 'drm-misc-fixes-2021-03-18' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'amd-drm-fixes-5.12-2021-03-18' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-03-18' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Dillon Varone (1):
+      drm/amd/display: Remove MPC gamut remap logic for DCN30
+
+Junlin Yang (1):
+      drm/omap: dsi: fix unsigned expression compared with zero
+
+Sung Lee (1):
+      drm/amd/display: Copy over soc values before bounding box creation
+
+Tobias Klausmann (1):
+      nouveau: Skip unvailable ttm page entries
+
+Umesh Nerlige Ramappa (1):
+      i915/perf: Start hrtimer only if sampling the OA buffer
+
+Ville Syrj=C3=A4l=C3=A4 (1):
+      drm/i915: Workaround async flip + VT-d corruption on HSW/BDW
+
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 34 ++----------------=
+----
+ .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |  5 ++++
+ .../gpu/drm/amd/display/dc/dcn30/dcn30_cm_common.c | 26 ++++++++++++-----
+ drivers/gpu/drm/i915/i915_perf.c                   | 13 ++++-----
+ drivers/gpu/drm/i915/i915_reg.h                    | 23 ++++++++++++++-
+ drivers/gpu/drm/i915/intel_pm.c                    | 16 +++++++++-
+ drivers/gpu/drm/nouveau/nouveau_bo.c               |  8 +++++
+ drivers/gpu/drm/omapdrm/dss/dsi.c                  |  7 +++--
+ include/drm/ttm/ttm_bo_api.h                       |  6 ++--
+ 9 files changed, 83 insertions(+), 55 deletions(-)
