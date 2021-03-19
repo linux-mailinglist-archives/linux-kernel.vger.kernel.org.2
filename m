@@ -2,110 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63713425FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCD4342601
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhCSTPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhCSTPj (ORCPT
+        id S230335AbhCSTSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:18:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58308 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhCSTR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:15:39 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58191C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:15:38 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id k24so4340590pgl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 12:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UhVshRutOq0lszJbq/YX4dDlC5l4aOjl7AUjxQMu52w=;
-        b=bBKx+9uN8xnCc5sshFh2/XhWXlYamoIzo+jRJ+PEm23+wwPHDN30u21VYQIXFuEQpD
-         w+w4KIEC/rk6vS+80NpNCv+5zSBGLevW+p8ahQVPa2S2k9ZqiIfInhQI3nIlyFhnIbyL
-         FS7xcu7RdHUC6pgg3s5aV9vLgE7MofLySVDYY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UhVshRutOq0lszJbq/YX4dDlC5l4aOjl7AUjxQMu52w=;
-        b=CXV7+8PMaLuJ5dUg1UUlHi8ZtgWCpxESlGhLshMAc/wVWiJJNRH+SIUspKdEVe5PsA
-         WoqjXzeRTJkL3bECAyGKKBmntNS7Z0T2Bc3I3wtdgCrMOsAvgsOI4Q0YayXNtHUd/ftn
-         7X8zwy+KjRGv63i45NmmijiFWHrWOeCJc3CNxsICQL2MN1yy+Mtth/Phl4Yzkab2reX9
-         3mQPvHd8pR2ylVsoAMNKUqmQNt3DGm83qo0y4N9dH7NmUe1D1F+YkP2ziXEmHe2HjCxA
-         1WaVC/Iup/d/SJIfJaEwUiMkjauRvIKAuvfBj1mjzOmcVkxrIkxAAaxT5iJQLsrXLUaB
-         CDqA==
-X-Gm-Message-State: AOAM533QLpaejx43fHbvfvmNv0otqlBa/RbsNlJ9DTKHG9XorLC0aLuo
-        jBFQEzMLlDmfus4SvJUlVfwYJQ==
-X-Google-Smtp-Source: ABdhPJyocwGZ+YCdp+AEKehahWsjJ+Q+SCbixvse5NoSiTvSwxOgE6bO6/4QIhmDO4axWxnOK6O7hQ==
-X-Received: by 2002:a63:4761:: with SMTP id w33mr12829462pgk.118.1616181337860;
-        Fri, 19 Mar 2021 12:15:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e65sm6741175pfe.9.2021.03.19.12.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 12:15:37 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 12:15:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v30 02/12] landlock: Add ruleset and domain management
-Message-ID: <202103191213.D6B1B27423@keescook>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-3-mic@digikod.net>
- <202103191114.C87C5E2B69@keescook>
- <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
+        Fri, 19 Mar 2021 15:17:27 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C37EC1C0B7C; Fri, 19 Mar 2021 20:17:23 +0100 (CET)
+Date:   Fri, 19 Mar 2021 20:17:22 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 0/8] 4.19.182-rc1 review
+Message-ID: <20210319191722.GA6701@amd>
+References: <20210319121744.114946147@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
+In-Reply-To: <20210319121744.114946147@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:03:22PM +0100, Mickaël Salaün wrote:
-> On 19/03/2021 19:40, Kees Cook wrote:
-> > On Tue, Mar 16, 2021 at 09:42:42PM +0100, Mickaël Salaün wrote:
-> >> [...]
-> >> +static void put_rule(struct landlock_rule *const rule)
-> >> +{
-> >> +	might_sleep();
-> >> +	if (!rule)
-> >> +		return;
-> >> +	landlock_put_object(rule->object);
-> >> +	kfree(rule);
-> >> +}
-> > 
-> > I'd expect this to be named "release" rather than "put" since it doesn't
-> > do any lifetime reference counting.
-> 
-> It does decrement rule->object->usage .
 
-Well, landlock_put_object() decrements rule->object's lifetime. It seems
-"rule" doesn't have a lifetime. (There is no refcounter on rule.) I just
-find it strange to see "put" without a matching "get". Not a big deal.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Kees Cook
+Hi!
+
+> This is the start of the stable review cycle for the 4.19.182 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBU+MIACgkQMOfwapXb+vJldQCePdrVK3v4CSp9HV4cByoC3iid
+xmoAoI6ShfsIURkwVz8IpvXIlpPOAGU/
+=1Hy7
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
