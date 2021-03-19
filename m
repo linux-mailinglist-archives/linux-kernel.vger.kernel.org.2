@@ -2,201 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9C6342034
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A190B342031
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhCSOyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:54:08 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57932 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhCSOxz (ORCPT
+        id S230360AbhCSOxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:53:37 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:46807 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230231AbhCSOxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:53:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JEZZt3123864;
-        Fri, 19 Mar 2021 14:53:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=BWXto+UUvr3DdgDjFvv39n0TvZFBcOJ4PNd9Bj9/zpE=;
- b=M32wRX1Ri44Oq4GFGs5mLOhdc4FNIoeHR3pDXA/QazweGOvoJWAR1N1Qd6FA4R6ggNRu
- 7XODqNG8BeBK+rPi8qSVOGsoOGnwBs9JcRBI5HyHs9nTPpFUREiYAp9r7c5C9hngeixK
- 4hiqSBiejWREwG7Tir8vFSWBg24gR94sGtkKjS59RTULhVWIPKq3aLfDLL5R3qL0L8dY
- DxjM4w3ASOIZB3s1PiInXd41tB8vgUWBUuuVgMLd14FFXnSy6i8Y5oiE6zhaRrpX64lo
- D4vQQdixup3hrWuQ0gCAVj6fNeHZ/vXzriYcezOM9jk7qvofNf68kQVMF/EaGsHBZYXR 5w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 378nbmka4b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 14:53:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12JEZhLP174294;
-        Fri, 19 Mar 2021 14:53:41 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 37cf2bv6qg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Mar 2021 14:53:41 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12JErde7014309;
-        Fri, 19 Mar 2021 14:53:39 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Mar 2021 14:53:38 +0000
-Date:   Fri, 19 Mar 2021 17:53:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     Hyunchul Lee <hyc.lee@gmail.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Fredrik Ternerot <fredrikt@axis.com>,
-        Marios Makassikis <mmakassikis@freebox.fr>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] cifsd: fix error handling in ksmbd_server_init()
-Message-ID: <YFS66J9CjCQYR0xi@mwanda>
+        Fri, 19 Mar 2021 10:53:17 -0400
+X-Originating-IP: 5.92.35.220
+Received: from uno.localdomain (mob-5-92-35-220.net.vodafone.it [5.92.35.220])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E589FC0002;
+        Fri, 19 Mar 2021 14:53:12 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 15:53:44 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/18] media: i2c: rdacm21: Give more time to OV490 to
+ boot
+Message-ID: <20210319145344.ffhrxakrczxzzchp@uno.localdomain>
+References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
+ <20210315131512.133720-13-jacopo+renesas@jmondi.org>
+ <0826484e-8ae7-677e-6de2-8f019e9733fc@ideasonboard.com>
+ <20210317100445.h3yqmrrnghq76mjb@uno.localdomain>
+ <YFPwaoJUSxpPnbBM@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103190106
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9928 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103190106
+In-Reply-To: <YFPwaoJUSxpPnbBM@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling in ksmbd_server_init() uses "one function to free
-everything style" which is impossible to audit and leads to several
-canonical bugs.  When we free something that wasn't allocated it may be
-uninitialized, an error pointer, freed in a different function or we
-try freeing "foo->bar" when "foo" is a NULL pointer.  And since the
-code is impossible to audit then it leads to memory leaks.
+Hi Laurent,
 
-In the ksmbd_server_init() function, every goto will lead to a crash
-because we have not allocated the work queue but we call
-ksmbd_workqueue_destroy() which tries to flush a NULL work queue.
-Another bug is if ksmbd_init_buffer_pools() fails then it leads to a
-double free because we free "work_cache" twice.  A third type of bug is
-that we forgot to call ksmbd_release_inode_hash() so that is a resource
-leak.
+On Fri, Mar 19, 2021 at 02:29:30AM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> On Wed, Mar 17, 2021 at 11:04:45AM +0100, Jacopo Mondi wrote:
+> > On Mon, Mar 15, 2021 at 05:22:37PM +0000, Kieran Bingham wrote:
+> > > On 15/03/2021 13:15, Jacopo Mondi wrote:
+> > > > It has been observed through repeated testing (250 boots) that in the
+> > > > 10% of the cases the RDACM21 initialization sequence errors out due a
+> > > > timeout waiting for the OV490 firmware to complete its boot phase.
+> > > >
+> > > > Albeit being the current timeout relatively large (300-600 milliseconds),
+> > > > doubling it reduces the sporadic error rate down to 1 over an 80 boot
+> > > > sequences test run.
+> > > >
+> > > > The firmware boot delay is unfortunately not characterized in the camera
+> > > > module manual.
+> > >
+> > > I wonder if we could characterize this alone by pulling this down until
+> > > we see failures increase, with all the other fixes in place...
+> > >
+> > > I don't think that's required, but it might be something to check later
+> > > if we don't get rid of that 1/80 failure.
+> >
+> > This is actually driving me crazy :/
+> >
+> > I had another test run with a surprising 10% failures.
+> > All the failures were due to the ov490 firmware boot I'm trying to
+> > mitigate here.
+> >
+> > I went up to give it -6 seconds- and I still get failures in the same
+> > percentage. Another run of 20 boots gave 30% failures with the delay I
+> > have here in this patch. Just to make sure I was not going crazy I
+> > reduced the delay to 1msec and I get an 80% failure rate.
+> >
+> > Still, I've seen the 1 on 80 failures (I swear! I have logs! :)
+> >
+> > I've checked what the BSP does, and if after some 300 attempts the
+> > ov490 doesn't boot, they simply go an reset it.
+> > https://github.com/renesas-rcar/linux-bsp/commit/0cf6e36f5bf49e1c2aab87139ec5b588623c56f8#diff-d770cad7d6f04923d9e89dfe7da369bb3006776d6e4fb8ef79353d5fab3cd25aR827
+> > (sorry, I don't seem to be able to point you to the ov490.c#827 with
+> > an URL)
+>
+> It resets both the sensor and the OV490. It could be interested to try
+> the latter selectively to see what happens.
+>
 
-A better way to write error handling is for every function to clean up
-after itself and never leave things partially allocated.  Then we can
-use "free the last successfully allocated resource" style.  That way
-when someone is reading the code they can just track the last resource
-in their head and verify that the goto matches what they expect.
+They do not make any difference :)
 
-In this patch I modified ksmbd_ipc_init() to clean up after itself and
-then I converted ksmbd_server_init() to use gotos to clean up.
+But..
 
-Fixes: cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/cifsd/server.c        | 33 +++++++++++++++++++++++----------
- fs/cifsd/transport_ipc.c | 14 +++++++++++---
- 2 files changed, 34 insertions(+), 13 deletions(-)
+> I also suspect that the OV490 has debugging features (possibly including
+> a RAM log buffer that we could read over I2C), but we're probably
+> getting out of scope here.
+>
+> > I assume we don't want anything like this in an upstream driver, but
+> > I'm really running out of any plausible explanation :(
+>
+> As discussed, let's try the reset workaround, to see if it helps.
+>
+> I wonder if opening the camera and probing signals would be a useful
+> option :-)
 
-diff --git a/fs/cifsd/server.c b/fs/cifsd/server.c
-index b9e114f8a5d2..aea7b6788cac 100644
---- a/fs/cifsd/server.c
-+++ b/fs/cifsd/server.c
-@@ -569,39 +569,52 @@ static int __init ksmbd_server_init(void)
- 
- 	ret = server_conf_init();
- 	if (ret)
--		return ret;
-+		goto err_unregister;
- 
- 	ret = ksmbd_init_buffer_pools();
- 	if (ret)
--		return ret;
-+		goto err_unregister;
- 
- 	ret = ksmbd_init_session_table();
- 	if (ret)
--		goto error;
-+		goto err_destroy_pools;
- 
- 	ret = ksmbd_ipc_init();
- 	if (ret)
--		goto error;
-+		goto err_free_session_table;
- 
- 	ret = ksmbd_init_global_file_table();
- 	if (ret)
--		goto error;
-+		goto err_ipc_release;
- 
- 	ret = ksmbd_inode_hash_init();
- 	if (ret)
--		goto error;
-+		goto err_destroy_file_table;
- 
- 	ret = ksmbd_crypto_create();
- 	if (ret)
--		goto error;
-+		goto err_release_inode_hash;
- 
- 	ret = ksmbd_workqueue_init();
- 	if (ret)
--		goto error;
-+		goto err_crypto_destroy;
- 	return 0;
- 
--error:
--	ksmbd_server_shutdown();
-+err_crypto_destroy:
-+	ksmbd_crypto_destroy();
-+err_release_inode_hash:
-+	ksmbd_release_inode_hash();
-+err_destroy_file_table:
-+	ksmbd_free_global_file_table();
-+err_ipc_release:
-+	ksmbd_ipc_release();
-+err_free_session_table:
-+	ksmbd_free_session_table();
-+err_destroy_pools:
-+	ksmbd_destroy_buffer_pools();
-+err_unregister:
-+	class_unregister(&ksmbd_control_class);
-+
- 	return ret;
- }
- 
-diff --git a/fs/cifsd/transport_ipc.c b/fs/cifsd/transport_ipc.c
-index b91fa265f85d..d2432f656635 100644
---- a/fs/cifsd/transport_ipc.c
-+++ b/fs/cifsd/transport_ipc.c
-@@ -890,11 +890,19 @@ int ksmbd_ipc_init(void)
- 	if (ret) {
- 		ksmbd_err("Failed to register KSMBD netlink interface %d\n",
- 				ret);
--		return ret;
-+		goto cancel_work;
- 	}
- 
- 	ida = ksmbd_ida_alloc();
--	if (!ida)
--		return -ENOMEM;
-+	if (!ida) {
-+		ret = -ENOMEM;
-+		goto unregister;
-+	}
- 	return 0;
-+
-+unregister:
-+	genl_unregister_family(&ksmbd_genl_family);
-+cancel_work:
-+	cancel_delayed_work_sync(&ipc_timer_work);
-+	return ret;
- }
--- 
-2.30.2
+... I really think I've got something working (for real this time :)
 
+Basically, as patch "media: i2c: rdacm21: Fix OV10640 powerdown" of
+this series describes, the OV10640 power-up was broken before you
+spotted the usage of the wrong gpio pad and it was working because of
+an internal pull-up on the SPWDN line, which was erroneously left
+floating. Once that was fixed, the OV10640 was always identified
+correctly, leaving us with this puzzling "ov490 boot timeout error"
+that manifested with more or less the same frequency of the ov10640
+identification issue.
+
+In the current implementation we power up the OV490 and wait for its
+firmware to boot -before- powering up the ov10640 sensor. Most
+probably (or looking at the results I get noaw, most certainly) the
+OV490 firmware checks for the sensor to be available and probably
+tries to program it. So we're back to the issue we originally had when
+the sensor was powered because of the pull up resistor, failing to
+boot in case the sensor didn't startup correctly which happened in the
+20% of the cases.
+
+If I do power up the OV10640 -before- the OV490 all the firmware boot
+errors are now gone. I need to tune a bit the timeouts as after the
+OV490 boot the OV10640 requires some time before being accessible.
+Once I nail down the right timeouts I'll send v3. So far I got 0
+errors on 50 boot attempts, finally \o/
+
+Thanks for keep pushing, I would have swear this was an issue with the
+HW design and was very close to give up like a month ago!
+
+V3 out soon!
+
+Thanks
+   j
+
+
+>
+> > > > Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > >
+> > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > >
+> > > > ---
+> > > >  drivers/media/i2c/rdacm21.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> > > > index 50a9b0d8255d..07cf077d8efd 100644
+> > > > --- a/drivers/media/i2c/rdacm21.c
+> > > > +++ b/drivers/media/i2c/rdacm21.c
+> > > > @@ -53,7 +53,7 @@
+> > > >  #define OV490_PID			0x8080300a
+> > > >  #define OV490_VER			0x8080300b
+> > > >  #define OV490_PID_TIMEOUT		20
+> > > > -#define OV490_OUTPUT_EN_TIMEOUT		300
+> > > > +#define OV490_OUTPUT_EN_TIMEOUT		600
+> > > >
+> > > >  #define OV490_GPIO0			BIT(0)
+> > > >  #define OV490_SPWDN0			BIT(0)
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
