@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588A4341C5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FA4341C91
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCSMUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        id S231552AbhCSMVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230453AbhCSMT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:19:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1880764F75;
-        Fri, 19 Mar 2021 12:19:58 +0000 (UTC)
+        id S231348AbhCSMVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:21:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0B464F6A;
+        Fri, 19 Mar 2021 12:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616156399;
-        bh=KYDgQbS3tlwEfUBobQ6Qwxw3RMAUnDVO4mu0lFbu1VQ=;
+        s=korg; t=1616156463;
+        bh=28dp9rm7vSOtIsRgIySR9/oKeFt137EmnXYVuUNsplc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LduzkEVkQeo5H6flYB/cReRYWHlGGXg2RoL02BM+uNVcAOuKF8Ao5INo+KWcqd1sq
-         0I/WCuJ+pLT7WoMMVvxWIs82xOWXSpRuJBZR3V5u/Cd539+rlOzhtMBi4hzUxNLzvS
-         r9HjuSb3U2nA9378bTV23X5gY9xWdhEky+ruVJa8=
+        b=hH7EN3lGUcSchIRSsX2LwlJljGCpFrGkY2w38cItvrOe564mCF43Td0yCmxufe08T
+         wvEX3QMvPuzdY0qYI37SvqNtPpR0aVyAG7t97avXEfwwtqzddLUmSuwQwqD6DaMKTk
+         bMnsZij4S1gtBruV7URaNgSO7OBJ1WOSuYB25qms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.10 12/13] ALSA: usb-audio: Dont avoid stopping the stream at disconnection
-Date:   Fri, 19 Mar 2021 13:19:09 +0100
-Message-Id: <20210319121745.503824062@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 16/31] regulator: pca9450: Clear PRESET_EN bit to fix BUCK1/2/3 voltage setting
+Date:   Fri, 19 Mar 2021 13:19:10 +0100
+Message-Id: <20210319121747.726323662@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
-References: <20210319121745.112612545@linuxfoundation.org>
+In-Reply-To: <20210319121747.203523570@linuxfoundation.org>
+References: <20210319121747.203523570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-commit 257d2d7e9e798305d65825cb82b0a7d1c0511e89 upstream
+[ Upstream commit 98b94b6e38ca0c4eeb29949c656f6a315000c23e ]
 
-In the later patch, we're going to issue the PCM sync_stop calls at
-disconnection.  But currently the USB-audio driver can't handle it
-because it has a check of shutdown flag for stopping the URBs.  This
-is basically superfluous (the stopping URBs are safe at disconnection
-state), so let's drop the check.
+The driver uses the DVS registers PCA9450_REG_BUCKxOUT_DVS0 to set the
+voltage for the buck regulators 1, 2 and 3. This has no effect as the
+PRESET_EN bit is set by default and therefore the preset values are used
+instead, which are set to 850 mV.
 
-Fixes: dc5eafe7787c ("ALSA: usb-audio: Support PCM sync_stop")
+To fix this we clear the PRESET_EN bit at time of initialization.
+
+Fixes: 0935ff5f1f0a ("regulator: pca9450: add pca9450 pmic driver")
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210206203052.15606-4-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Link: https://lore.kernel.org/r/20210222115229.166620-1-frieder.schrempf@kontron.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c |    3 ---
- sound/usb/pcm.c      |    5 +----
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ drivers/regulator/pca9450-regulator.c | 8 ++++++++
+ include/linux/regulator/pca9450.h     | 3 +++
+ 2 files changed, 11 insertions(+)
 
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -576,9 +576,6 @@ static int deactivate_urbs(struct snd_us
- {
- 	unsigned int i;
+diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
+index 833d398c6aa2..d38109cc3a01 100644
+--- a/drivers/regulator/pca9450-regulator.c
++++ b/drivers/regulator/pca9450-regulator.c
+@@ -797,6 +797,14 @@ static int pca9450_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
--	if (!force && atomic_read(&ep->chip->shutdown)) /* to be sure... */
--		return -EBADFD;
--
- 	clear_bit(EP_FLAG_RUNNING, &ep->flags);
++	/* Clear PRESET_EN bit in BUCK123_DVS to use DVS registers */
++	ret = regmap_clear_bits(pca9450->regmap, PCA9450_REG_BUCK123_DVS,
++				BUCK123_PRESET_EN);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to clear PRESET_EN bit: %d\n", ret);
++		return ret;
++	}
++
+ 	/* Set reset behavior on assertion of WDOG_B signal */
+ 	ret = regmap_update_bits(pca9450->regmap, PCA9450_REG_RESET_CTRL,
+ 				WDOG_B_CFG_MASK, WDOG_B_CFG_COLD_LDO12);
+diff --git a/include/linux/regulator/pca9450.h b/include/linux/regulator/pca9450.h
+index ccdb5320a240..71902f41c919 100644
+--- a/include/linux/regulator/pca9450.h
++++ b/include/linux/regulator/pca9450.h
+@@ -147,6 +147,9 @@ enum {
+ #define BUCK6_FPWM			0x04
+ #define BUCK6_ENMODE_MASK		0x03
  
- 	INIT_LIST_HEAD(&ep->ready_playback_urbs);
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -280,10 +280,7 @@ static int snd_usb_pcm_sync_stop(struct
- {
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
- 
--	if (!snd_usb_lock_shutdown(subs->stream->chip)) {
--		sync_pending_stops(subs);
--		snd_usb_unlock_shutdown(subs->stream->chip);
--	}
-+	sync_pending_stops(subs);
- 	return 0;
- }
- 
++/* PCA9450_REG_BUCK123_PRESET_EN bit */
++#define BUCK123_PRESET_EN		0x80
++
+ /* PCA9450_BUCK1OUT_DVS0 bits */
+ #define BUCK1OUT_DVS0_MASK		0x7F
+ #define BUCK1OUT_DVS0_DEFAULT		0x14
+-- 
+2.30.1
+
 
 
