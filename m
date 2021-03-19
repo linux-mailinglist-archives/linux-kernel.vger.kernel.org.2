@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6968341A11
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94C3341A14
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhCSKbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:31:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48944 "EHLO mail.kernel.org"
+        id S229904AbhCSKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:31:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhCSKa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:30:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C39BD64F6A;
-        Fri, 19 Mar 2021 10:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616149856;
-        bh=Z8G9b0YhKmHAC/dsDd8uBtltIE2j/sLVWNIpgG6WJJs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xujaYl2UO4yAhjivMeasc/K7AMKAZYukltlPK9eUV2Hk6vPFir8C5ZUKniVfiMWFY
-         5s5N24LbdQ/U8UWyJD7Jx77v72RE1V1dtZuM1f7GiBsvXxApyzhPEJ3JVLwsyoCpDi
-         Ecf4p8l2BM3aylZmvJyOPMEwpFmHHLKtCysblAPw=
-Date:   Fri, 19 Mar 2021 11:30:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     stable@vger.kernel.org,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christopher Li <sparse@chrisli.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [for-stable-4.19 PATCH 0/2] Backport patches to fix KASAN+LKDTM
- with recent clang on ARM64
-Message-ID: <YFR9XavlXEL6Z/7l@kroah.com>
-References: <20210318235416.794798-1-drinkcat@chromium.org>
+        id S229826AbhCSKbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 06:31:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 88490AE05;
+        Fri, 19 Mar 2021 10:31:23 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 11:31:21 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <20210319103120.GB6868@linux>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de>
+ <c41ea8ac-e99d-6d23-c7b9-5ca25ffb72bb@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318235416.794798-1-drinkcat@chromium.org>
+In-Reply-To: <c41ea8ac-e99d-6d23-c7b9-5ca25ffb72bb@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 07:54:14AM +0800, Nicolas Boichat wrote:
+On Fri, Mar 19, 2021 at 11:20:19AM +0100, David Hildenbrand wrote:
+> > +bool mhp_supports_memmap_on_memory(unsigned long size)
+> > +{
+> > +	unsigned long nr_vmemmap_pages = size / PAGE_SIZE;
+> > +	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
+> > +	unsigned long remaining_size = size - vmemmap_size;
+> > +
+> > +	/*
+> > +	 * Besides having arch support and the feature enabled at runtime, we
+> > +	 * need a few more assumptions to hold true:
+> > +	 *
+> > +	 * a) We span a single memory block: memory onlining/offlinin;g happens
 > 
-> Backport 2 patches that are required to make KASAN+LKDTM work
-> with recent clang (patch 2/2 has a complete description).
-> Tested on our chromeos-4.19 branch.
-> 
-> Patch 1/2 is context conflict only, and 2/2 is a clean backport.
-> 
-> These patches have been merged to 5.4 stable already. We might
-> need to backport to older stable branches, but this is what I
-> could test for now.
+> s/offlinin;g/offlining;/
 
-Both now queued up, thanks.
+Bleh, terrible :-(
 
-greg k-h
+> IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
+
+Yaiks
+
+Hopefully Andrew can amend these two nits? 
+
+> (another pair of eyes certainly wouldn't hurt :) )
+
+definitely, but those are pricy as you may know :-D
+
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+
+Thanks a lot for the throughout review David, highly appreciated!
+ 
+
+-- 
+Oscar Salvador
+SUSE L3
