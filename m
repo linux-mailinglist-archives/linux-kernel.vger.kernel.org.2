@@ -2,67 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D73341DBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBC7341DC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 14:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCSNIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 09:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229880AbhCSNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 09:07:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB68564EA4;
-        Fri, 19 Mar 2021 13:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616159272;
-        bh=qvPp79Q3b23nxOhc316hNTgHA1mcm3ZJl+V47DC0UPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UcgankqMXpoJDn7uaqsmTAiSmbZRLByqJNXCUUrt8Y8/Yfw1SXo/QjjGyvZUPhhjZ
-         HP4G1cUIrI7YTQidlTd49VPefGUn26JoTO+e8RxFcnnKP9ygvkGf1rO3gGY7IAauPb
-         mhkrPz6C+C/QZqp6yTILpQcDOfg6o2bvVsuYB55xyjWG0mKnSHiTnyN43PMHa3JZXS
-         JEonEY8ZS4qJla0NORnuXFTDgHv5A11KlOLF1glkdA9/Mi5dCYvpt8fl9lnMQu+Jvs
-         Ih9zbEccwqSQjd9Az8RM9J9GCM2awnP4AHJTBniN4fc+hfVj8rdMwGOYiODxnPsmNH
-         9DAVqAcx71cFw==
-Date:   Fri, 19 Mar 2021 15:07:48 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
-        linux-pci@vger.kernel.org, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, alay.shah@nutanix.com,
-        suresh.gumpula@nutanix.com, shyam.rajendran@nutanix.com,
-        felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFSiJB+w+5oqNZkm@unreal>
-References: <YFHsW/1MF6ZSm8I2@unreal>
- <20210317131718.3uz7zxnvoofpunng@archlinux>
- <YFILEOQBOLgOy3cy@unreal>
- <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318142252.fqi3das3mtct4yje@archlinux>
- <YFNqbJZo3wqhMc1S@unreal>
- <20210318170143.ustrbjaqdl644ozj@archlinux>
- <YFOPYs3IGaemTLMj@unreal>
- <5dfcdfae-2b80-d6dd-89fe-2980faf26502@metux.net>
+        id S229893AbhCSNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 09:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhCSNIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:08:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD9BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:08:44 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v8so2938581plz.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 06:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=buVMjeowUZo4dJC/b5sO1Z53VSSYUsgdAPOTplKlLjU=;
+        b=WeooCjwbubv21qemCWFYxN/uHYGqCmxgpVU3ayZi7No0pgF27UOW5/wOlr7cszp+ZD
+         LJ09rpbwE05voXI3g6IT2D//P1gPnIF+DINFYmjt/BwuL92IgColu/7govdxNcdtgwVM
+         EO9gn0sham0Mn+lrnDtckzYiVRov9qbAD9Nt/EMcH44QsKEOrP1KP0SWicHWEpz9nydA
+         CoejOEa8john0Gu4rKgzlh5WuymBtS+LqfQ7wM/BuwjkPr0kVeyrVVCUQ7BPceHeiiKe
+         Mun2GKq82T62ogkmaywJql4PDMeS2LelI6Osm4Ems8Zn6yw7GayZ2LxK66k4cox/OvTD
+         TfoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=buVMjeowUZo4dJC/b5sO1Z53VSSYUsgdAPOTplKlLjU=;
+        b=GupEfRvCTO+5cjyoLn064dvMMQPfgn00C3FQw7pI7W5So8N1kY74BoD37Cyf33Mbg6
+         sapaaXEdLA/hEyCgyWk7j+I0OEaBahu6LOYeKsU6hCiNvpUHw0A0ASk9klmCLnnEYYH5
+         YpB1Ag2V2ChA6eNvvRwi2kOYdQKSQK7LJtE1iwBN9xqg/UsDHELaTzp56QtW2VPssLuN
+         +xEv5Bp8hoiVHfPW0cXBoSKxeEGB2ebQ8Ox6vkrZr6YGtUDcPv8jgo97IjHY/lL9qRxD
+         guryc3qhfDs7dTuLLC5dt+ZyZnNPDUlpeASsKzgbEJA6ZXn3vKv/FUvyow2hHjez7S59
+         PP8Q==
+X-Gm-Message-State: AOAM530oQoh6aOUcGtkQCqGFEqz5pdF0/3BUS8jsUAqGp0djgzDa+a5M
+        qD9k+DUwv6g/Yv3s8V8xek3rsc+da9ZW0A==
+X-Google-Smtp-Source: ABdhPJwzcNPtvJ+SamvAt64muZGkRUY2CRdkt4CJhOdUfG/jM3W7rQs6pbnYStQmXfSCnb/n3ySO0w==
+X-Received: by 2002:a17:90a:c096:: with SMTP id o22mr9734144pjs.119.1616159323694;
+        Fri, 19 Mar 2021 06:08:43 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id u17sm4978547pgl.80.2021.03.19.06.08.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 06:08:43 -0700 (PDT)
+Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
+To:     Stefan Metzmacher <metze@samba.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210319101654.638e8e95@canb.auug.org.au>
+ <7ced6739-4458-2b5b-af5a-d3aa9d37656d@kernel.dk>
+ <14e60889-156e-7682-71c1-7b86c9b019a5@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6fc61af0-e113-15d3-dd71-a0415b0f546f@kernel.dk>
+Date:   Fri, 19 Mar 2021 07:08:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5dfcdfae-2b80-d6dd-89fe-2980faf26502@metux.net>
+In-Reply-To: <14e60889-156e-7682-71c1-7b86c9b019a5@samba.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 06:58:25PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 18.03.21 18:35, Leon Romanovsky wrote:
+On 3/19/21 2:02 AM, Stefan Metzmacher wrote:
 > 
-> > I see it as a good example of cheap solution. Vendor won't fix your
-> > touchpad because distros provide workaround. The same will be with reset.
+> Am 19.03.21 um 00:25 schrieb Jens Axboe:
+>> On 3/18/21 5:16 PM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Commit
+>>>
+>>>   c2c6c067c050 ("io_uring: remove structures from include/linux/io_uring.h")
+>>>
+>>> is missing a Signed-off-by from its author.
+>>
+>> Stefan, let me know if you're OK with me adding that, not sure how I missed
+>> that.
 > 
-> Usually, vendor won't fix it, anyways, regardless of any kernel
-> workarounds.
+> Yes, sure :-)
+> I guess you removed it while adding 'Link:'
 
-It is not only vendors, but enthusiasts won't fix too, because their
-distro works.
+That was b4, I don't add those manually. But maybe it stripped those too,
+annoying...
 
-Thanks
+> You may want to remove cc: stable from 3aab52c9a708f7183460d368700181ef0c2a09e6
+> ("io_uring: imply MSG_NOSIGNAL for send[msg]()/recv[msg]() calls")
+> for now.
+> 
+> I'll want to do some more test with it on 5.12,
+> I guess we'd then have to backport it to stable as part of the
+> io_thread worker backport. I'll post some more details later
+> to the io-uring list.
+
+Sure, let's do that. I also dropped the short link sever as well for now.
+I do like it on principle, but it does have a risk of breaking valid
+use cases.
+
+-- 
+Jens Axboe
+
