@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F4B341D5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE1D341D69
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhCSMuX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Mar 2021 08:50:23 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48699 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229847AbhCSMuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:50:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0USc56Kw_1616158190;
-Received: from 30.240.100.153(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0USc56Kw_1616158190)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Mar 2021 20:49:51 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
- burst
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <YFNNWumXTSa3Bssl@lorien.usersys.redhat.com>
-Date:   Fri, 19 Mar 2021 20:51:59 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
-        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
-        Odin Ugedal <odin@ugedal.com>, Paul Turner <pjt@google.com>,
-        rostedt@goodmis.org, Shanpei Chen <shanpeic@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <CECB0471-7D8E-4FE0-9144-795553A3700B@linux.alibaba.com>
-References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
- <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
- <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
- <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
- <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
- <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
- <YFNNWumXTSa3Bssl@lorien.usersys.redhat.com>
-To:     Phil Auld <pauld@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S229973AbhCSMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:52:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:49238 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230262AbhCSMwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:52:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BBCD31B;
+        Fri, 19 Mar 2021 05:52:06 -0700 (PDT)
+Received: from e110467-lin.cambridge.arm.com (e110467-lin.cambridge.arm.com [10.1.196.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E3D323F718;
+        Fri, 19 Mar 2021 05:52:05 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] iommu: Statically set module owner
+Date:   Fri, 19 Mar 2021 12:52:01 +0000
+Message-Id: <f4de29d8330981301c1935e667b507254a2691ae.1616157612.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.21.0.dirty
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It happens that the 3 drivers which first supported being modular are
+also ones which play games with their pgsize_bitmap, so have non-const
+iommu_ops where dynamically setting the owner manages to work out OK.
+However, it's less than ideal to force that upon all drivers which want
+to be modular - like the new sprd-iommu driver which now has a potential
+bug in that regard - so let's just statically set the module owner and
+let ops remain const wherever possible.
 
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
 
-> On Mar 18, 2021, at 8:59 PM, Phil Auld <pauld@redhat.com> wrote:
-> 
-> On Thu, Mar 18, 2021 at 09:26:58AM +0800 changhuaixin wrote:
->> 
->> 
->>> On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
->>> 
->>> On Wed, Mar 17, 2021 at 03:16:18PM +0800, changhuaixin wrote:
->>> 
->>>>> Why do you allow such a large burst? I would expect something like:
->>>>> 
->>>>> 	if (burst > quote)
->>>>> 		return -EINVAL;
->>>>> 
->>>>> That limits the variance in the system. Allowing super long bursts seems
->>>>> to defeat the entire purpose of bandwidth control.
->>>> 
->>>> I understand your concern. Surely large burst value might allow super
->>>> long bursts thus preventing bandwidth control entirely for a long
->>>> time.
->>>> 
->>>> However, I am afraid it is hard to decide what the maximum burst
->>>> should be from the bandwidth control mechanism itself. Allowing some
->>>> burst to the maximum of quota is helpful, but not enough. There are
->>>> cases where workloads are bursty that they need many times more than
->>>> quota in a single period. In such cases, limiting burst to the maximum
->>>> of quota fails to meet the needs.
->>>> 
->>>> Thus, I wonder whether is it acceptable to leave the maximum burst to
->>>> users. If the desired behavior is to allow some burst, configure burst
->>>> accordingly. If that is causing variance, use share or other fairness
->>>> mechanism. And if fairness mechanism still fails to coordinate, do not
->>>> use burst maybe.
->>> 
->>> It's not fairness, bandwidth control is about isolation, and burst
->>> introduces interference.
->>> 
->>>> In this way, cfs_b->buffer can be removed while cfs_b->max_overrun is
->>>> still needed maybe.
->>> 
->>> So what is the typical avg,stdev,max and mode for the workloads where you find
->>> you need this?
->>> 
->>> I would really like to put a limit on the burst. IMO a workload that has
->>> a burst many times longer than the quota is plain broken.
->> 
->> I see. Then the problem comes down to how large the limit on burst shall be.
->> 
->> I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
->> average	: 42.2%
->> stddev	: 81.5%
->> max		: 844.5%
->> P95		: 183.3%
->> P99		: 437.0%
->> 
->> If quota is 100000ms, burst buffer needs to be 8 times more in order for this workload not to be throttled.
->> I can't say this is typical, but these workloads exist. On a machine running Kubernetes containers,
->> where there is often room for such burst and the interference is hard to notice, users would prefer
->> allowing such burst to being throttled occasionally.
->> 
-> 
-> I admit to not having followed all the history of this patch set. That said, when I see the above I just
-> think your quota is too low for your workload.
-> 
+This is something I hadn't got round to sending earlier, so now rebased
+onto iommu/next to accommodate the new driver :)
 
-Yeah, more quota is helpful for this workload. But that usually prevents us from improving the total CPU
-usage by putting more work onto a single machine.
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 1 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c       | 1 +
+ drivers/iommu/sprd-iommu.c                  | 1 +
+ drivers/iommu/virtio-iommu.c                | 1 +
+ include/linux/iommu.h                       | 9 +--------
+ 5 files changed, 5 insertions(+), 8 deletions(-)
 
-> The burst (mis?)feature seems to be a way to bypass the quota.  And it sort of assumes cooperative
-> containers that will only burst when they need it and then go back to normal. 
-> 
->> In this sense, I suggest limit burst buffer to 16 times of quota or around. That should be enough for users to
->> improve tail latency caused by throttling. And users might choose a smaller one or even none, if the interference
->> is unacceptable. What do you think?
->> 
-> 
-> Having quotas that can regularly be exceeded by 16 times seems to make the concept of a quota
-> meaningless.  I'd have thought a burst would be some small percentage.
-> 
-> What if several such containers burst at the same time? Can't that lead to overcommit that can effect
-> other well-behaved containers?
-> 
-
-I see. Maybe there should be some calculation on the probabilities of that, as Peter has replied.
-
-> 
-> Cheers,
-> Phil
-> 
-> -- 
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 8594b4a83043..b82000519af6 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2632,6 +2632,7 @@ static struct iommu_ops arm_smmu_ops = {
+ 	.sva_unbind		= arm_smmu_sva_unbind,
+ 	.sva_get_pasid		= arm_smmu_sva_get_pasid,
+ 	.pgsize_bitmap		= -1UL, /* Restricted during device attach */
++	.owner			= THIS_MODULE,
+ };
+ 
+ /* Probing and initialisation functions */
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index d8c6bfde6a61..11ca963c4b93 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -1638,6 +1638,7 @@ static struct iommu_ops arm_smmu_ops = {
+ 	.put_resv_regions	= generic_iommu_put_resv_regions,
+ 	.def_domain_type	= arm_smmu_def_domain_type,
+ 	.pgsize_bitmap		= -1UL, /* Restricted during device attach */
++	.owner			= THIS_MODULE,
+ };
+ 
+ static void arm_smmu_device_reset(struct arm_smmu_device *smmu)
+diff --git a/drivers/iommu/sprd-iommu.c b/drivers/iommu/sprd-iommu.c
+index 7100ed17dcce..024a0cdd26a6 100644
+--- a/drivers/iommu/sprd-iommu.c
++++ b/drivers/iommu/sprd-iommu.c
+@@ -436,6 +436,7 @@ static const struct iommu_ops sprd_iommu_ops = {
+ 	.device_group	= sprd_iommu_device_group,
+ 	.of_xlate	= sprd_iommu_of_xlate,
+ 	.pgsize_bitmap	= ~0UL << SPRD_IOMMU_PAGE_SHIFT,
++	.owner		= THIS_MODULE,
+ };
+ 
+ static const struct of_device_id sprd_iommu_of_match[] = {
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 2bfdd5734844..594ed827e944 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -945,6 +945,7 @@ static struct iommu_ops viommu_ops = {
+ 	.get_resv_regions	= viommu_get_resv_regions,
+ 	.put_resv_regions	= generic_iommu_put_resv_regions,
+ 	.of_xlate		= viommu_of_xlate,
++	.owner			= THIS_MODULE,
+ };
+ 
+ static int viommu_init_vqs(struct viommu_dev *viommu)
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 5e7fe519430a..dce8c5e12ea0 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -379,19 +379,12 @@ int  iommu_device_link(struct iommu_device   *iommu, struct device *link);
+ void iommu_device_unlink(struct iommu_device *iommu, struct device *link);
+ int iommu_deferred_attach(struct device *dev, struct iommu_domain *domain);
+ 
+-static inline void __iommu_device_set_ops(struct iommu_device *iommu,
++static inline void iommu_device_set_ops(struct iommu_device *iommu,
+ 					  const struct iommu_ops *ops)
+ {
+ 	iommu->ops = ops;
+ }
+ 
+-#define iommu_device_set_ops(iommu, ops)				\
+-do {									\
+-	struct iommu_ops *__ops = (struct iommu_ops *)(ops);		\
+-	__ops->owner = THIS_MODULE;					\
+-	__iommu_device_set_ops(iommu, __ops);				\
+-} while (0)
+-
+ static inline void iommu_device_set_fwnode(struct iommu_device *iommu,
+ 					   struct fwnode_handle *fwnode)
+ {
+-- 
+2.21.0.dirty
 
