@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E20341968
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37F3341975
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhCSKDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:03:49 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:37561 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhCSKDG (ORCPT
+        id S229877AbhCSKEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhCSKE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:03:06 -0400
-Received: by mail-ej1-f47.google.com with SMTP id w3so8709191ejc.4;
-        Fri, 19 Mar 2021 03:03:06 -0700 (PDT)
+        Fri, 19 Mar 2021 06:04:27 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1F3C06174A;
+        Fri, 19 Mar 2021 03:04:24 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r17so3338628pgi.0;
+        Fri, 19 Mar 2021 03:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cIF840WHHbMimxYNljpuxfKSY2LGH6W0yrfdQOXK+HY=;
+        b=W4sLJB0lgpMy0BvORgwtEupsCMdBI157b42/+emInFb3Bc09VDbS+fWcmDegZgSXVe
+         NQJ1sgjjophd9NNS2QUpwoHEOe8YeyFFS4BO02XtbO5TRvrjAg/85AsK0HZOf1yf2YSv
+         SCXFxZUyI2H7KgdD6jy+AeaP5GlW2S2Q/KyCdwQ9evvWzoZgEGMYdFE4jIDNbBImWJ4b
+         8qmV28c5xQpm0XcpSXGvCFlqCPe72L0nd9yTg5R7N/EAAwb6yGg9QO15MgdecBNArorE
+         lmY1FqVrhOBvr6rgNrcUvLTZXzXYgc6zWJitE9bn8xaeyUdi6N9wa4OPfVxwvJ5RYFwA
+         CCZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tf1bp42piR/kgUjUmb5eb/xY/TcOtjsqhzIfj9tnWTc=;
-        b=Fg+wiogf8F9ZkULQm4zPBt+n2RybYGPqKEsnuiHnXD4NPMiWjwsWiYLQuhe1udjRyu
-         HEFp5t6sQET2Aykcg8B7Oi1aApQjCah50MVF/IsLrdYwzadoX+ejPfMdA3p3bNYf38WP
-         +MgLjAWNA3wKx8MX7MEGZ9T1EnsaDi0U6NgqIqi1qmbs37BZR4Ge4KtAOkHhknrljasH
-         aA3f59iDXViLcMXBcZOoGXq5Z58XVx5nY2gEjWqVtnhH9slXCtP4MpdK20LEqGiVOXfD
-         yfmN8SM1f11dh2Tu+99VvAAA1bHE+A6HCL3DwllEnu//kz59OKXEWI+OEmRAmJZeXzjb
-         t9DA==
-X-Gm-Message-State: AOAM530ReIei6T5iN4fC18wEDRjEUeGGXED+MnVFBrh+kwLR+AmcXc71
-        1W7/rX1OG2GD8/DagWk01igz4liMwXU=
-X-Google-Smtp-Source: ABdhPJwkLluKt/Z5PWzK3oJAPrsRuwafX8TnbWne6McKFz3d3Je782fjlCE6GIgfyRCJvSl/CWnJmA==
-X-Received: by 2002:a17:906:35cf:: with SMTP id p15mr3349669ejb.379.1616148184358;
-        Fri, 19 Mar 2021 03:03:04 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id si3sm3577875ejb.90.2021.03.19.03.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 03:03:03 -0700 (PDT)
-Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
- alloc_workqueue call
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        linux-block@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210318151626.17442-1-colin.king@canonical.com>
- <13a1d187-4d6d-9e06-b94a-553d872de756@kernel.dk>
- <62cd71bc-86e1-412d-b2b9-716c0f8021be@canonical.com>
- <d32641ca-e34a-2bfd-9b86-28c95546f434@kernel.dk>
- <20210319094759.GH2087@kadam>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <36888c20-48b7-373e-260a-6e8719c0ed60@kernel.org>
-Date:   Fri, 19 Mar 2021 11:03:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cIF840WHHbMimxYNljpuxfKSY2LGH6W0yrfdQOXK+HY=;
+        b=PnR07ZIX2jW26l73UWwsNqny1iRjZIrdUs+U4+xkSKLvbzhwq7yIWcGbwRaDOrR+qF
+         RUZSheILYJMsiY3VF/0J7scL27NJ2f8N+AsfrNnfsxiFO3OOa9iGaUanWpHOxHnI6JJc
+         5JjfsYJ0rReSoY+SoQvOfh76sRXkhjP2/qDlY+NbYfwUQKMGH30d+ARTJWzSXivhkJ98
+         W3CjzlDS6+NvIxfTreHEzWQ3gi4GOmLo3VY/WdTBC5wIpguLoqkKzBCpFyB9p4hXP7ie
+         oRNIiEs0y4RPiWHEldhgak4IVdXb+jLEOnKQhX+qvxfcPlhVMBYlgEBeynH12xZv6B5+
+         GQTQ==
+X-Gm-Message-State: AOAM532sswmVdzYFTaXbnMI+LEBPDPIQZM+LdVVRj1LjGQHlgA/QP/4a
+        H2HW15Xjg/5BFpban5DGR5Gu75UsuKUz8yGDTUO40c8jEtsj0g==
+X-Google-Smtp-Source: ABdhPJyDF4yPgnd7NSChPy3uWStR7M7wOgJ4TrxefxNZK4ex35+euO+4Ypr8whrISkbSiTrIiJnM7s7yO5WP8Ddas0A=
+X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
+ x64-20020a627c430000b02901ef20ceba36mr8556469pfc.40.1616148264353; Fri, 19
+ Mar 2021 03:04:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319094759.GH2087@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210317214149.20833-1-hhhawa@amazon.com> <20210317214149.20833-4-hhhawa@amazon.com>
+ <CAHp75VdYeVOHu5T37EBEjL5xfgjevzb-ErZb2QMy7defXDS5fg@mail.gmail.com> <cd589749-7f37-9f7f-9d36-42032c724506@amazon.com>
+In-Reply-To: <cd589749-7f37-9f7f-9d36-42032c724506@amazon.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 12:04:08 +0200
+Message-ID: <CAHp75Vc-5DxJC41+ATVjuczGgdHkDkukvpFzi0bWH5GD7uMfHg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] pinctrl: pinctrl-single: fix pcs_pin_dbg_show()
+ when bits_per_mux is not zero
+To:     "Hawa, Hanna" <hhhawa@amazon.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        David Woodhouse <dwmw@amazon.co.uk>, benh@amazon.com,
+        ronenk@amazon.com, talel@amazon.com, jonnyc@amazon.com,
+        hanochu@amazon.com, tgershi@amazon.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 10:47, Dan Carpenter wrote:
-> On Thu, Mar 18, 2021 at 02:42:33PM -0600, Jens Axboe wrote:
->> On 3/18/21 2:24 PM, Colin Ian King wrote:
->>> On 18/03/2021 20:12, Jens Axboe wrote:
->>>> On 3/18/21 9:16 AM, Colin King wrote:
->>>>> From: Colin Ian King <colin.king@canonical.com>
->>>>>
->>>>> The 3rd argument to alloc_workqueue should be the max_active count,
->>>>> however currently it is the lo->lo_number that is intended for the
->>>>> loop%d number. Fix this by adding in the missing max_active count.
->>>>
->>>> Dan, please fold this (or something similar) in when you're redoing the
->>>> series.
->>>>
->>> Appreciate this fix being picked up. Are we going to lose the SoB?
->>
->> If it's being redone, would be silly to have that error in there. Do
->> we have a tag that's appropriate for this? I often wonder when I'm
->> folding in a fix. Ala Fixes-by: or something like that.
-> 
-> I've always lobied for a Fixes-from: tag, but the kbuild-bot tells
-> everyone to add a Reported-by: tag.  But then a lot of people are like
-> Reported-by doesn't make sense.  And other people are like Reported-by
-> is fine, what's wrong with it?
+On Fri, Mar 19, 2021 at 9:53 AM Hawa, Hanna <hhhawa@amazon.com> wrote:
+> On 3/18/2021 2:15 PM, Andy Shevchenko wrote:
+> > On Wed, Mar 17, 2021 at 11:42 PM Hanna Hawa<hhhawa@amazon.com>  wrote:
+> >> An SError was detected when trying to print the supported pins in a
+> > What is SError? Yes, I have read a discussion, but here is the hint:
+> > if a person sees this as a first text due to, for example, bisecting
+> > an issue, what she/he can get from this cryptic name?
+>
+> What you suggest?
+> s/An SError/A kernel-panic/?
 
-If the original commit is a fix and the fix for it is being squashed,
-then Reported-by might mislead.
+Not below, but something which makes clear what SError is.
 
-kbuild-bot tests also patches from list directly, so in such case the
-patch can be re-done with a risk of loosing kbuild's credits. But when
-the patch is already in the maintainer tree - just create a fixup. You
-preserve the development history and the kbuild's credits.
+Like "A System Error (SError, followed by kernel panic) ..."
 
+> Or remove the sentence and keep the below:
+> "
+> This change fixes the pcs_pin_dbg_show() in pinctrl-single driver when
+> bits_per_mux is not zero. In addition move offset calculation and pin
+> offset in register to common function.
+> "
 
-Best regards,
-Krzysztof
+-- 
+With Best Regards,
+Andy Shevchenko
