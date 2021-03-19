@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB73342121
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD19634211E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhCSPoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:44:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2716 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhCSPoR (ORCPT
+        id S230064AbhCSPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhCSPmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:44:17 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F27Jb6CZpz67vY9;
-        Fri, 19 Mar 2021 23:35:43 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 19 Mar 2021 16:44:15 +0100
-Received: from [10.47.10.104] (10.47.10.104) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 19 Mar
- 2021 15:44:14 +0000
-Subject: Re: [PATCH 0/6] dma mapping/iommu: Allow IOMMU IOVA rcache range to
- be configured
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <m.szyprowski@samsung.com>,
-        <robin.murphy@arm.com>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <20210319134047.GA5729@lst.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <ff8e54fb-db3f-cf47-f4f7-95b1619bdbf6@huawei.com>
-Date:   Fri, 19 Mar 2021 15:42:03 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 19 Mar 2021 11:42:46 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95107C06174A;
+        Fri, 19 Mar 2021 08:42:45 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id b9so10456097ejc.11;
+        Fri, 19 Mar 2021 08:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=AosAsdPYu9Ufpf4Wk/dfAmNbL8dSXdLyf4cxfVtJsJs=;
+        b=lyiABF6FyD5T6JqaesOU6h9kIR+cKrn1Sh7bTfLrms514h0BC0oBI8qKQ5kFm8M212
+         UH2rhod/YmnMU1/eLyFO1c2a+E+vdnNN1kPXazbx1W+g0MpCjxaFCzmHJlXQmAIrwaPU
+         U2ReVax7N3j2SopCQcveKL9Yi83d2Xyn888ybrDJdvbFcCVPGLa8edUQ5RVIyzAsvL1a
+         mfR4ba5Hss1Ze48Z/zR1LQ2HUTG5JqoZ9IDxfjoCTY7fQo7/UglYIhJUv5mnDkpGRO44
+         zPrxTmF8BixYWaA/YUdRu80+XpSHYlvrzqAhSPI399dUn5hUksURO5SnvohjEALl0ZBf
+         iosg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=AosAsdPYu9Ufpf4Wk/dfAmNbL8dSXdLyf4cxfVtJsJs=;
+        b=EAGmXnK8SMk2wIYa80RVs1pu0iQpTn7wiNbhx8KcqF9JggHBYP60FsJZPqdyinQLte
+         HNSGezeiw610qZRanP+AnURa81BkmmCuPENNPufYV0kqKxAfGDxHaUkd4/MtQvrRhcTf
+         up2AJg4IlEja4lF5f5uNVHsSRK92P/K/h8K4RcRgCoqD85dH6bg8z122MmOGaMbh8Cb1
+         ao4jxZPDkjGBvH5EP5u9upG666zjNeKKStV1BvXWYPOkeISXnuenKipD8cDUdJg0bjFn
+         qBixz2dLG/xMzGfVbMLaka7zfHKXcc1HKENz7xRD8AS918JS0oa2gezd8oyzkN2mWHLZ
+         ZrAw==
+X-Gm-Message-State: AOAM533WMiKY3e1B2uYIQ7YtXZG3O2Ai0llmlE1fZsFWsCoWuBZYWbHP
+        /vVO37lp8Iax1xE+0jr08Rs=
+X-Google-Smtp-Source: ABdhPJzXUYXeQXqLVlM1MCjV0Leex/cYqKuZRVk8YjMdykP6fA1NLo4fwo9IQpog+vz9sgkmkV03cQ==
+X-Received: by 2002:a17:907:2d24:: with SMTP id gs36mr5152295ejc.344.1616168558515;
+        Fri, 19 Mar 2021 08:42:38 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id r17sm4203287edt.70.2021.03.19.08.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:42:38 -0700 (PDT)
+Message-ID: <79ec60974875d4ac17589ea4575e36ec1204f881.camel@gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: cavium: Remove redundant if-statement
+ checkup
+From:   Bean Huo <huobean@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     rric@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+        "# 4.0+" <stable@vger.kernel.org>
+Date:   Fri, 19 Mar 2021 16:42:37 +0100
+In-Reply-To: <CAPDyKFrU591aeH5GyuuQW8tPeNc9wav=t8wqF1EdTBbCc9xheg@mail.gmail.com>
+References: <20210319121357.255176-1-huobean@gmail.com>
+         <20210319121357.255176-3-huobean@gmail.com>
+         <CAPDyKFrU591aeH5GyuuQW8tPeNc9wav=t8wqF1EdTBbCc9xheg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20210319134047.GA5729@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.10.104]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/03/2021 13:40, Christoph Hellwig wrote:
-> On Fri, Mar 19, 2021 at 09:25:42PM +0800, John Garry wrote:
->> For streaming DMA mappings involving an IOMMU and whose IOVA len regularly
->> exceeds the IOVA rcache upper limit (meaning that they are not cached),
->> performance can be reduced.
->>
->> This is much more pronounced from commit 4e89dce72521 ("iommu/iova: Retry
->> from last rb tree node if iova search fails"), as discussed at [0].
->>
->> IOVAs which cannot be cached are highly involved in the IOVA aging issue,
->> as discussed at [1].
+On Fri, 2021-03-19 at 15:09 +0100, Ulf Hansson wrote:
+> On Fri, 19 Mar 2021 at 13:14, Bean Huo <huobean@gmail.com> wrote:
 > 
-> I'm confused.  If this a limit in the IOVA allocator, dma-iommu should
-> be able to just not grow the allocation so larger without help from
-> the driver.
+> > From: Bean Huo <beanhuo@micron.com>
+> > Currently, we have two ways to issue multiple-block read/write the
+> > command to the eMMC. One is by normal IO request path fs->block-
+> > >mmc.
+> > Another one is that we can issue multiple-block read/write through
+> > MMC ioctl interface. For the first path, mrq->stop, and mrq->stop-
+> > >opcode
+> > will be initialized in mmc_blk_data_prep(). However, for the second
+> > IO
+> > path, mrq->stop is not initialized since it is a pre-defined
+> > multiple
+> > blocks read/write.
+> 
+> 
+> As a matter of fact this way is also supported for the regular block
+> 
+> I/O path. To make the mmc block driver to use it, mmc host drivers
+> 
+> need to announce that it's supported by setting MMC_CAP_CMD23.
+> 
+> 
+> 
+> It looks like that is what your patch should be targeted towards, can
+> 
+> you have a look at this instead?
+> 
+> 
 
-This is not an issue with the IOVA allocator.
+Hi Ulf,
+Thanks for your comments. I will look at that as your suggestion.
+The patch [1/2] is accepted, so I will just update this patch to
+the next version.
 
-The issue is with how the IOVA code handles caching of IOVAs. 
-Specifically, when we DMA unmap, for an IOVA whose length is above a 
-fixed threshold, the IOVA is freed, rather than being cached. See 
-free_iova_fast().
+Kind regards,
+Bean
 
-For performance reasons, I want that threshold increased for my driver 
-to avail of the caching of all lengths of IOVA which we may see - 
-currently we see IOVAs whose length exceeds that threshold. But it may 
-not be good to increase that threshold for everyone.
-
- > If contrary to the above description it is device-specific, the driver
- > could simply use dma_get_max_seg_size().
- > .
- >
-
-But that is for a single segment, right? Is there something equivalent 
-to tell how many scatter-gather elements which we may generate, like 
-scsi_host_template.sg_tablesize?
-
-Thanks,
-John
-
+> 
+> Kind regards
+> 
+> Uffe
 
