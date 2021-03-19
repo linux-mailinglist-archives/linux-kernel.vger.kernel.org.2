@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585ED34214E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C3E342151
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhCSPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
+        id S230341AbhCSPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCSPxo (ORCPT
+        with ESMTP id S230177AbhCSPyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:53:44 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B91C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:53:44 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v186so3961246pgv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:53:44 -0700 (PDT)
+        Fri, 19 Mar 2021 11:54:37 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFF0C06174A;
+        Fri, 19 Mar 2021 08:54:37 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id m7so3960958pgj.8;
+        Fri, 19 Mar 2021 08:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p9e3JvlVImVqovnPE5o8T2aAk9m+EOrR0HqRpW5NiBo=;
-        b=vb+NnwFLp3brgZEgYGmuei6Z77uEhzOwdKxFI+PxtoSMuUA/vDs2i7dluCb9hOjL4h
-         0v3wSe/bOKViqmXVjcUEa2swJl0MdWk5DSbq0BThoQBCZFVQk6Fc3ysvij/IXZO7/8Xh
-         XyqMqzXdAz9Luuzov63lSHAiV5E+R+kScBU43CCh6ASys7aDZYSTtZhFej/wZWB/0v/I
-         zvbJsOnZNwWkHffOX4TM8JhKC0T5LxGSc+wT+p5V4/ugsHzYy87E1DMOJer+/5t69bvb
-         fPNHN48IU4hnBzjx9uf0hUDorQPe5ZE+8M7S4Vo/bx7YtksKQ2j9MhP7u2C9PEaJMlXE
-         5/5Q==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XORtYAHbG9JOQiFezkjwFrACKw99bbCHdzV5HKtNWRE=;
+        b=SQ1qh19RY1G4ZdM26EVGR603nMlSNM5luT6l8whbU40uPYbKhuTZt4gWFcEG2sg+Rj
+         S+JArkF/u2r2Q4DT+0qIQ/W9xHQhjqcJ6QKxUgK4zMd0byFcqoU1f7jfGziohBPmGAxa
+         6OY8L9VxFFZc/CsIVGjSws7JfxQoifA6r45MPN5j9216kIk5gD87dQWLQ3BG6YpBsl0i
+         iIna5TxEGKGryHwf0+qI6uxJ/aoB3pGmqOTZfjNeVMwVdbKdDKNUJWLyyEQhl+jBfYpp
+         0d6AWpJmZACejAtqW1Ci2yTSXz6ZkEFOU6WLVFoVLmqj3pZ88ogJYc3S+1vsByiC2r+Q
+         VUYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p9e3JvlVImVqovnPE5o8T2aAk9m+EOrR0HqRpW5NiBo=;
-        b=kEvoWQZpCQU0nKOfL+8oTwJNgLlI9eDGdJg9wKdrxpNwXqWWTKdFLD9o5VAITMfAMk
-         fANmJGldy67LKG9CMrmIL35Q6vRHBYjVeOrK85/8ohZySbGWnbZ/uYoi+3L3Y6wDqp0g
-         ChUuepqARV/u5iWHci/QzSan04/OC6kjqiit4dFQ9ymxdFmMtMEBTwGShFlfmMA3Suw2
-         FkGDZ2bS2ECw+lKy17iQ6bKEmjdx1gI/RGAkifhUsdzPCZyya+2knD+u6X63iWeazTcW
-         hVr28entwg8UJ2Op4f5K169q3PWAFn2pyqyeLfbvI07DZjXNZtA8rtu89VhYnOmlwk6m
-         sseA==
-X-Gm-Message-State: AOAM531ueJmVtO1eZKOea9A+T8Zn+ReTric9brjsu5P0n/iPldNJlACQ
-        CJrOZ0+e595MTAu+ZVCrCCQr9kHU2kLvMZGVx+VUxrK/my06AIY4
-X-Google-Smtp-Source: ABdhPJzXZOjanMlGVi/fCuO0+YZk/KVHvw5XGQK/9qGjL7GsnwaNBiM1MEUhdEiOxgZeMQhrIwA8irhlhzKXdOaxFYw=
-X-Received: by 2002:a05:6a00:b54:b029:207:2a04:7b05 with SMTP id
- p20-20020a056a000b54b02902072a047b05mr9864816pfo.12.1616169223661; Fri, 19
- Mar 2021 08:53:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XORtYAHbG9JOQiFezkjwFrACKw99bbCHdzV5HKtNWRE=;
+        b=FB8Vi+ZJlf6Al6MKsVO47LuBzRLmFTiGxrXB5GD/o+rJ+swUNBoot8Ta8gNZBV6K0g
+         uEikg/F+BKM0LiWGTQi4LyZMfXNm6FECwf02u89xZEZ+6SZRz6IAV2/3U5bS6NhlWa78
+         +8RBt3Dwr/3RfDQ/asBKPsauPu9EX23S7XB+fviAfnDqYhOZYGZY4Jd/FU+UVkCl1evp
+         /hgwVqBMxusNsD6pcYevIGVDR00XQ3RfhEXF3CkR0QbzN6E0qJO6l7U5U6rzzx3aBwoK
+         n7kNYj5K9+suRXc0LjdazAQvHfu8I1DfTad/LJnXzDClbdQKFjjrdihs/SvaMwkDg8dB
+         Ru5w==
+X-Gm-Message-State: AOAM533EXyJKa4XRFqcHjBfaeteqJDO2WL2qS8d3gS2KbFa71g7e97yY
+        ilmwHvT6O8+0od2EG//mMHI=
+X-Google-Smtp-Source: ABdhPJzYLBlBKndimmvTRLl+X03Ij0bxB4NCXhesL4NTlngd1Cdz7jp2iPZRPsAPDFlBYrD7VYGhQA==
+X-Received: by 2002:a62:8c45:0:b029:207:d29b:b160 with SMTP id m66-20020a628c450000b0290207d29bb160mr9481387pfd.80.1616169276577;
+        Fri, 19 Mar 2021 08:54:36 -0700 (PDT)
+Received: from localhost ([103.248.31.158])
+        by smtp.gmail.com with ESMTPSA id y20sm6096888pfo.210.2021.03.19.08.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 08:54:36 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 21:23:52 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com,
+        alex.williamson@redhat.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210319155352.b2r6b4apjrmuebbx@archlinux>
+References: <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318142252.fqi3das3mtct4yje@archlinux>
+ <YFNqbJZo3wqhMc1S@unreal>
+ <20210318170143.ustrbjaqdl644ozj@archlinux>
+ <YFOPYs3IGaemTLMj@unreal>
+ <20210318174344.yslqpfyct6ziwypd@archlinux>
+ <YFShlUgePr1BNnRI@unreal>
+ <20210319152317.babevldyslat2gqa@archlinux>
+ <YFTFNAeAyovUmQ/W@unreal>
 MIME-Version: 1.0
-References: <20210312085203.13556-1-jee.heng.sia@intel.com>
-In-Reply-To: <20210312085203.13556-1-jee.heng.sia@intel.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 19 Mar 2021 16:53:32 +0100
-Message-ID: <CAG3jFyuvTadeP-CLZ77k32vQvYVjrEakcXXr5U22Zgom=H34kg@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: adv7511: Support I2S IEC958 encoded PCM format
-To:     Sia Jee Heng <jee.heng.sia@intel.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        pierre-louis.bossart@linux.intel.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFTFNAeAyovUmQ/W@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Sia,
+On 21/03/19 05:37PM, Leon Romanovsky wrote:
+> On Fri, Mar 19, 2021 at 08:53:17PM +0530, Amey Narkhede wrote:
+> > On 21/03/19 03:05PM, Leon Romanovsky wrote:
+>
+> <...>
+>
+> > > > > It was exactly the reason why I think that VM usecase presented by
+> > > > > you is not viable.
+> > > > >
+> > > > Well I didn't present it as new use case. I just gave existing
+> > > > usecase based on existing reset attribute. Nothing new here.
+> > > > Nothing really changes wrt that use case.
+> > >
+> > > Of course it is new, please see Alex's response, he said that vfio uses
+> > > in-kernel API and not sysfs.
+> > >
+> > Still it doesn't change in-kernel API either.
+>
+> Right, but the issue is with user space part of this proposal and not
+> in-kernel API.
+Userspace part just inhances existing reset attribute still no
+significant changes there.
+>
+>
+> <...>
+>
+> > > > As mentioned earlier not all vendors care about Linux and not
+> > > > all of the population can afford to buy new HW just to run Linux.
+> > >
+> > > Sorry, but you are not consistent. At the beginning, we talked about new HW
+> > > that has bugs but don't have quirks yet. Here we are talking about old HW
+> > > that still doesn't have quirks.
+> > >
+> > > Thanks
+> > >
+> > Does it really matter whether HW is old or new?
+> > If old HW doesn't have quirks yet how can we expect
+> > new one to have quirks? What if new HW is made by same vendors
+> > who don't have any interest in Linux?
+>
+> It is pretty clear that this sysfs won't improve quirks situation but
+> has all potential to reduce their amount even more.
+>
+> Let's stop this discussion here.
+>
+> Thanks
+>
+IMO it does improve usability of devices which I consider to be more
+important than developing quirks which are just bandages in the end
+not HW fix. There's no point in using Linux if
+I can't use the device in the first place and expecting to wait
+for some community member to develop quirk without vendor support
+is simply unrealistic.
+So let's stop this discussion here.
 
-Thanks for the patch, it looks good to me.
-
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-
-On Fri, 12 Mar 2021 at 10:09, Sia Jee Heng <jee.heng.sia@intel.com> wrote:
->
-> Support IEC958 encoded PCM format for ADV7511 so that ADV7511 HDMI
-> audio driver can accept the IEC958 data from the I2S input.
->
-> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> ---
->  drivers/gpu/drm/bridge/adv7511/adv7511.h       | 1 +
->  drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 6 ++++++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511.h b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> index a9bb734366ae..05e3abb5a0c9 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511.h
-> @@ -191,6 +191,7 @@
->  #define ADV7511_I2S_FORMAT_I2S                 0
->  #define ADV7511_I2S_FORMAT_RIGHT_J             1
->  #define ADV7511_I2S_FORMAT_LEFT_J              2
-> +#define ADV7511_I2S_IEC958_DIRECT              3
->
->  #define ADV7511_PACKET(p, x)       ((p) * 0x20 + (x))
->  #define ADV7511_PACKET_SDP(x)      ADV7511_PACKET(0, x)
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> index 45838bd08d37..61f4a38e7d2b 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-> @@ -101,6 +101,10 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
->         case 20:
->                 len = ADV7511_I2S_SAMPLE_LEN_20;
->                 break;
-> +       case 32:
-> +               if (fmt->bit_fmt != SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
-> +                       return -EINVAL;
-> +               fallthrough;
->         case 24:
->                 len = ADV7511_I2S_SAMPLE_LEN_24;
->                 break;
-> @@ -112,6 +116,8 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
->         case HDMI_I2S:
->                 audio_source = ADV7511_AUDIO_SOURCE_I2S;
->                 i2s_format = ADV7511_I2S_FORMAT_I2S;
-> +               if (fmt->bit_fmt == SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
-> +                       i2s_format = ADV7511_I2S_IEC958_DIRECT;
->                 break;
->         case HDMI_RIGHT_J:
->                 audio_source = ADV7511_AUDIO_SOURCE_I2S;
->
-> base-commit: de066e116306baf3a6a62691ac63cfc0b1dabddb
-> --
-> 2.18.0
->
+Thanks,
+Amey
