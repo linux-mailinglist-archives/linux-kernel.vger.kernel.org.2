@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD4434115C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4A1341173
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhCSAOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhCSAO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:14:27 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFC9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:14:26 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id v186so2505742pgv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 17:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=nImVFX0jHIhN0AQMf7mlChRUcX4c7OdbdSzNaG+1joo=;
-        b=VYobYUYJBVLE4rY0oHs1cir/oZDQmgFpjTaTcE3ahMAv32RQwzlVhkZcQnxuqxMboD
-         syx0rhp7cMU/fUAOeJM2D5nAvjyenAJNzX0Usz1g3ouBPyILDHCkWJml8p0iWdGCjNVV
-         N21QOjNwZhDxd2ACdbHLO1muRmYHI0DuotKO28t0JDy+v0pfpBXCriWKDOQE9++1E0u2
-         QweK0vXWsdYWx3KmvCioFJvcWqg1HGk180OJQz5ifgTNIw+phU7LoxjCtECaozXKsVHs
-         omwOA7Y/T5qq+uJ6MB5UBVfJDIR4RLAlVluOms8v/1BuNNoumG58cR/zJak172oRhSwH
-         C0NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=nImVFX0jHIhN0AQMf7mlChRUcX4c7OdbdSzNaG+1joo=;
-        b=Y29vBN0hUfPtAg+iKHI6es76S3UCxtJXMPY05EVFWP8P4HKh7PhAyW7WbGYDV1hrCH
-         /q0h4vfrWp2V0mMy2tyrdCD3br+ZkwNzp2uLMR+IIip1wahmJ2SQdM3r4ha0bQhx4/dw
-         4DE7Jk73XV2q/lu2zRbIkk6AZI3uuH4brnHvF+jjtp4ux59zryTS8o0GInMXgOXPH+Qq
-         uLlKLfX6ld1472SIEYQ1sO/nsZp1ahXbK6BD/xDa30IEht3EGt555c0r+srgbQWQs3KY
-         ry2AK6Jx5rL3HplvFbN6XYXec3ETL2Nf/RNrEqr79pvst6aT4MFO9HH+Ch8JQqwKph0x
-         qCQA==
-X-Gm-Message-State: AOAM5315xGa49wR2hV/Llw3YzwhdvOvgMuiUwatR1+BuO06gfxtU1gJh
-        SOfuqIxrvrwNg9JLfeJv7/U=
-X-Google-Smtp-Source: ABdhPJxBCzt3FsDvyqPu+9m5bBHlP2Yiq9Ljx9UohFWa0OMfI9X8NNmtIqfsmysSmgezIvwryHjhdw==
-X-Received: by 2002:a63:7e51:: with SMTP id o17mr20231pgn.281.1616112866206;
-        Thu, 18 Mar 2021 17:14:26 -0700 (PDT)
-Received: from localhost.localdomain ([121.160.199.16])
-        by smtp.gmail.com with ESMTPSA id r9sm3136344pgg.12.2021.03.18.17.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 17:14:25 -0700 (PDT)
-From:   hyunji-Hong <onlygod0807@gmail.com>
-X-Google-Original-From: hyunji-Hong <hyunji_hong@korea.ac.kr>
-To:     acme@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Tools: lib: string: Fix isspace() parameter to avoid undefined behavior
-Date:   Fri, 19 Mar 2021 09:14:15 +0900
-Message-Id: <20210319001415.8928-1-hyunji_hong@korea.ac.kr>
-X-Mailer: git-send-email 2.17.1
+        id S230510AbhCSAZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:25:10 -0400
+Received: from mga04.intel.com ([192.55.52.120]:21205 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233372AbhCSAYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 20:24:50 -0400
+IronPort-SDR: aKHZSF2tFhYZSLFiZdc8jxASu21WXcGRfiQQpdO5HWlM/B9t1PWLhXweJg06H8fhty4CyapaFJ
+ izAO3PCYBnFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="187438966"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="187438966"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 17:24:50 -0700
+IronPort-SDR: hIfyJd7NfvDTTF3A6e+o+p8zQyLtBTT4BdwNItraxk8PSUnAQQhxJLUXsdljRCukjriW1W6az0
+ 5x0Yw9TM75tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="434067658"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 18 Mar 2021 17:24:47 -0700
+Cc:     baolu.lu@linux.intel.com, chenjiashang <chenjiashang@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: =?UTF-8?Q?Re=3a_A_problem_of_Intel_IOMMU_hardware_=ef=bc=9f?=
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Nadav Amit <nadav.amit@gmail.com>
+References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
+ <FB4E11A5-84D4-4DAF-889E-FAA1BCD2E66F@gmail.com>
+ <6a218e7fe42d41489d02f0b4e3ad2756@huawei.com>
+ <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
+ <4d1c3bc0418e48b1b9d44799d65ea375@huawei.com>
+ <MWHPR11MB18860801196A9319EBD96AF68C699@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <d7bb4ab26b8542c698926b7a0a3fc12c@huawei.com>
+ <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <aa8b989d-458b-92a3-627b-0a88e430934d@linux.intel.com>
+Date:   Fri, 19 Mar 2021 08:15:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-isspace() could be vulnerable in terms of unpredictable results. So, the parameter of the isspace() should be cast with 'unsigned int'. We found out that information through these sites. (Microsoft, Stack Overflow)
-url: [https://docs.microsoft.com/en-us/cpp/code-quality/c6328?view=msvc-160]
-url: [https://stackoverflow.com/questions/122721]
+On 3/18/21 4:56 PM, Tian, Kevin wrote:
+>> From: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+>> <longpeng2@huawei.com>
+>>
+>>> -----Original Message-----
+>>> From: Tian, Kevin [mailto:kevin.tian@intel.com]
+>>> Sent: Thursday, March 18, 2021 4:27 PM
+>>> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+>>> <longpeng2@huawei.com>; Nadav Amit <nadav.amit@gmail.com>
+>>> Cc: chenjiashang <chenjiashang@huawei.com>; David Woodhouse
+>>> <dwmw2@infradead.org>; iommu@lists.linux-foundation.org; LKML
+>>> <linux-kernel@vger.kernel.org>; alex.williamson@redhat.com; Gonglei
+>> (Arei)
+>>> <arei.gonglei@huawei.com>; will@kernel.org
+>>> Subject: RE: A problem of Intel IOMMU hardware ？
+>>>
+>>>> From: iommu <iommu-bounces@lists.linux-foundation.org> On Behalf Of
+>>>> Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+>>>>
+>>>>> 2. Consider ensuring that the problem is not somehow related to
+>>>>> queued invalidations. Try to use __iommu_flush_iotlb() instead of
+>>> qi_flush_iotlb().
+>>>>>
+>>>>
+>>>> I tried to force to use __iommu_flush_iotlb(), but maybe something
+>>>> wrong, the system crashed, so I prefer to lower the priority of this
+>> operation.
+>>>>
+>>>
+>>> The VT-d spec clearly says that register-based invalidation can be used only
+>> when
+>>> queued-invalidations are not enabled. Intel-IOMMU driver doesn't provide
+>> an
+>>> option to disable queued-invalidation though, when the hardware is
+>> capable. If you
+>>> really want to try, tweak the code in intel_iommu_init_qi.
+>>>
+>>
+>> Hi Kevin,
+>>
+>> Thanks to point out this. Do you have any ideas about this problem ? I tried
+>> to descript the problem much clear in my reply to Alex, hope you could have
+>> a look if you're interested.
+>>
+> 
+> btw I saw you used 4.18 kernel in this test. What about latest kernel?
+> 
+> Also one way to separate sw/hw bug is to trace the low level interface (e.g.,
+> qi_flush_iotlb) which actually sends invalidation descriptors to the IOMMU
+> hardware. Check the window between b) and c) and see whether the
+> software does the right thing as expected there.
 
-Signed-off-by: SeungHoon Woo, Hyunji Hong, Kyeongseok Yang <hyunji_hong@korea.ac.kr>
----
- tools/lib/string.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes. It's better if we can reproduce this with the latest kernel which
+has debugfs files to expose page tables and the invalidation queues etc.
 
-diff --git a/tools/lib/string.c b/tools/lib/string.c
-index 8b6892f959ab..7d01be5cdcf8 100644
---- a/tools/lib/string.c
-+++ b/tools/lib/string.c
-@@ -123,7 +123,7 @@ size_t __weak strlcpy(char *dest, const char *src, size_t size)
-  */
- char *skip_spaces(const char *str)
- {
--	while (isspace(*str))
-+	while (isspace((unsigned char)*str))
- 		++str;
- 	return (char *)str;
- }
-@@ -146,7 +146,7 @@ char *strim(char *s)
- 		return s;
- 
- 	end = s + size - 1;
--	while (end >= s && isspace(*end))
-+	while (end >= s && isspace((unsigned char)*end))
- 		end--;
- 	*(end + 1) = '\0';
- 
--- 
-2.17.1
-
+Best regards,
+baolu
