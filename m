@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4E1342579
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8AA342578
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhCSS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:56:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56742 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhCSSzp (ORCPT
+        id S231241AbhCSS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:56:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230473AbhCSSzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:55:45 -0400
-Received: from 1.is.james.uk.vpn ([10.172.254.24] helo=malefic)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <james.troup@canonical.com>)
-        id 1lNKHU-0000QK-Mt; Fri, 19 Mar 2021 18:55:32 +0000
-Received: from james by malefic with local (Exim 4.94 #2 (Debian))
-        id 1lNKHT-00CrFO-NC; Fri, 19 Mar 2021 18:55:31 +0000
-From:   James Troup <james.troup@canonical.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kairui Song <kasong@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Pavel Machek \(CIP\)" <pavel@denx.de>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Rich Felker <dalias@libc.org>,
-        Robert Richter <rric@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Theodore Dubois <tblodt@icloud.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        William Cohen <wcohen@redhat.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH RFC 0/3] drivers/char: remove /dev/kmem for good
-References: <20210319143452.25948-1-david@redhat.com>
-        <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
-Mail-Copies-To: never
-Date:   Fri, 19 Mar 2021 18:55:31 +0000
-In-Reply-To: <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
-        (Linus Torvalds's message of "Fri, 19 Mar 2021 10:14:02 -0700")
-Message-ID: <875z1n55y4.fsf@canonical.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Fri, 19 Mar 2021 14:55:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616180142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8xhqBj1C2kdr5sJYwc/42X0mlsjXH69Z0Bc0cRPniHE=;
+        b=f6Ndekpty7CKF/gGvgCH1qE+xDYdLaepG/xts7QxXcWvJ61iGZ96Y3Uv9OqCUf94kxdEuM
+        f4CnAdsQ7lfFIZZb6hi00ZSFxImUnuXmYZyZ02PcQ/balHH5KxYuTcNESRIUvjUSTQ2DV1
+        MZv/p2K+9/+QM/XXx2Aar8GrcQvbQ6M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-wgDJ3bvsNqumYSfWz2EF5A-1; Fri, 19 Mar 2021 14:55:39 -0400
+X-MC-Unique: wgDJ3bvsNqumYSfWz2EF5A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9086981746A;
+        Fri, 19 Mar 2021 18:55:37 +0000 (UTC)
+Received: from krava (unknown [10.40.195.94])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0A9A4610F3;
+        Fri, 19 Mar 2021 18:55:35 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 19:55:35 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, acme@redhat.com, namhyung@kernel.org,
+        jolsa@kernel.org
+Subject: Re: [PATCH v2 1/3] perf-stat: introduce bperf, share hardware PMCs
+ with BPF
+Message-ID: <YFTzp9CA2/il8p77@krava>
+References: <20210316211837.910506-1-songliubraving@fb.com>
+ <20210316211837.910506-2-songliubraving@fb.com>
+ <YFPC4UbLWzTuzyER@krava>
+ <YFTwdWxUvqHDNe1x@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFTwdWxUvqHDNe1x@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Fri, Mar 19, 2021 at 03:41:57PM -0300, Arnaldo Carvalho de Melo wrote:
 
-> On Fri, Mar 19, 2021 at 7:35 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> Let's start a discussion if /dev/kmem is worth keeping around and
->> fixing/maintaining or if we should just remove it now for good.
->
-> I'll happily do this for the next merge window, but would really want
-> distros to confirm that they don't enable it.
+SNIP
 
-FWIW, it's been disabled in Ubuntu for over 10 years now:
+>   LD       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf-in.o
+>   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
+>   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/bpftool
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bpf_prog_profiler.skel.h
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h
+> libbpf: map 'prev_readings': unexpected def kind var.
+> Error: failed to open BPF object file: Invalid argument
+> libbpf: map 'diff_readings': unexpected def kind var.
+> Error: failed to open BPF object file: Invalid argument
 
- https://wiki.ubuntu.com/Security/Features#A.2Fdev.2Fkmem_disabled
+I'm getting clean build for the same options,
+could you please send the same output also with 'JOBS=1 V=1'
 
--- 
-James
+
+> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h] Error 255
+> make[2]: *** Waiting for unfinished jobs....
+> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h] Error 255
+> make[1]: *** [Makefile.perf:236: sub-make] Error 2
+> make: *** [Makefile:110: install-bin] Error 2
+> make: Leaving directory '/home/acme/git/perf/tools/perf'
+> [acme@quaco perf]$ clang -v
+> clang version 11.0.0 (https://github.com/llvm/llvm-project 67420f1b0e9c673ee638f2680fa83f468019004f)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /usr/local/bin
+> Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> Candidate multilib: .;@m64
+> Candidate multilib: 32;@m32
+> Selected multilib: .;@m64
+> [acme@quaco perf]$
+> 
+
+I have:
+
+[jolsa@dell-r440-01 linux-perf]$ clang --version
+clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+
+
+jirka
+
