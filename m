@@ -2,103 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9F2341516
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF5B341518
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 06:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhCSFxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 01:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        id S233927AbhCSFxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 01:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbhCSFxH (ORCPT
+        with ESMTP id S233920AbhCSFx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 01:53:07 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85563C06174A;
-        Thu, 18 Mar 2021 22:53:06 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f26so10481203ljp.8;
-        Thu, 18 Mar 2021 22:53:06 -0700 (PDT)
+        Fri, 19 Mar 2021 01:53:26 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4419DC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:26 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id v3so2967871pgq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 22:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ieKEg/I8DWyrNnzM2/enM81rs852gdyY9A7m+JJ808U=;
-        b=iquAE73D+G5vtFjan5O+JlTPfC66rcUGH/5thoAYHxPmC24aRf/jy+PA3N8+BpHx3u
-         g2KmGfunQ6z4ink3IHSgAg1+a+VbCxC5nivZehVhVfMDUa5V0lcH9eHLBAcfktr8HB8c
-         JXd/YLFYA/QBhunWB86TPz8WYOP2qb90C5psmvcS/0gnMmftlZJ6VOwD3mMBLpo+g75Y
-         9/o+y+Lke2U7b2OXIvaj9v29YDqNG4rRkFWPwNSgCPKmsNJj8FW4AcdIfAvLn89O/ldy
-         UlccC/CAB3UN3X1dzXG79XeZn3AByb9CGsFRvnx7RebEg1BJ/cbnVbk/xcJYqH2n8LIF
-         4jRw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HrcS5DvDvEhZWOL4skNMel1B6oLPKZtu3foGo7w1mPI=;
+        b=G3MdP2vdCP3PgfU40CFhK8NZgNnVhfnpT/r7NV68fxNUslrDB5iwcQQ645gMs8itXD
+         XgizU0hLKBRpz9JpJ6LzfA2kAhJIi1WHSRTdbx4sDFXUCjnDAlwNw3oYEWz9oGcksrtq
+         3BvSzOLh0tP/b9IQRij69/d0ggjjPWNUEligdRGAz8pp6n2SQM6FhMgBNNcPgY38b1zn
+         rWNMrTvSsIO5G7ZvaGzuZp5Emf2+GvhN4uhpPJZEfdBWJ0P1IzktMbB1q1pS+qIyDgGy
+         wfS1gG4NukLqEDdnDybBLcTc9GnL8xs20vieIXPf7YcbqBS1WBky5LObje3kyGq5y8/V
+         wTng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ieKEg/I8DWyrNnzM2/enM81rs852gdyY9A7m+JJ808U=;
-        b=WqpnTYz9k2syMObDxb92llGYJPr2Bxo4sYM2EIMXZMbKDDMVps3bcnkIDO/mgyYEZL
-         pZ5A+XDb52T5B4Q6d8liyrRQsnprT1wh9V6N4GJsCCGAHiBN45gqkbVFGFM6muHb+dTy
-         bVJWa9iYYVLVpil6LbhS1Tn3Wt0aThAW+ke1QwgE+SLhA5G0CCN3JQma3VKvXybXJbQ6
-         X59qPqnhqVyF158A5bVJH2DZKLlfQaOHEp11vsziKvhCh1yR/uAlw7PCV9bpqb4I+6Yj
-         Af8sg7nGBHUc1MDaM9LSOeH+Bv+2H5jDND6rvrm7/odVley8Jji3zE11ALPcwIxUpiI5
-         p8+w==
-X-Gm-Message-State: AOAM533/zsnMVPNxvY+sOn2AvBjssJCxScKtomI+un3xrAfFpuZOpnxw
-        PwfnNdnM+hqxn4wxaUkQ5KXmjlEEHTo0bgLGMFw=
-X-Google-Smtp-Source: ABdhPJydyF85xrIO4j2aR2Wm5nIVy2epWPKLP+h7WXhkpS3H1B7/f3GVCd/4EXVHM/UTaYywdG+DosSaWPia01x72gk=
-X-Received: by 2002:a2e:9907:: with SMTP id v7mr3584997lji.256.1616133185055;
- Thu, 18 Mar 2021 22:53:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HrcS5DvDvEhZWOL4skNMel1B6oLPKZtu3foGo7w1mPI=;
+        b=r1LcTFi9qlnqICY8lCYKROkdvQRza6gjwKdBo/AAk14AVpPe57mvdhK90EUDULHXy9
+         4cfeAHQNNwLN7nnJiGBI5ltFZqooXDJP0+61e6G0tbtlPnclIOKXaBUh20wQmx48sc+w
+         iWzJCy/3EWsfaIj/vkw/+yBy9u+ilK6thCgSUecwy/58ldkzmx06unEvG21mP3GckvKg
+         jPgkX84kQQhwVaiTAmtw8OvIlyqi7rShFp1w2ueDbq6o/dUUHZuKmipTPKDAq9LkccTA
+         zJ711FCbLq1R9HTkGZMWj5UtG6otH1XBHEIQ85oHm8JXGuoGsSz+Gjd4PfEsFQSDuzEj
+         VrRg==
+X-Gm-Message-State: AOAM532fy0qpX6rHVa/4wwhc+DikvVUNrhugOPWa2nOBtaM6IuW8aW67
+        xVitogUdjUbURa2kAC/+0M8kzw==
+X-Google-Smtp-Source: ABdhPJzWV5QBTvNNGyMvz7LJzHPqexfsBdnh6BJUOdlWlkojgUHIxQYG7Wx1gosQVIzTl71y+AHHiQ==
+X-Received: by 2002:a62:1ad0:0:b029:1f2:c7b3:3039 with SMTP id a199-20020a621ad00000b02901f2c7b33039mr7958230pfa.30.1616133205650;
+        Thu, 18 Mar 2021 22:53:25 -0700 (PDT)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id b19sm3974164pfo.7.2021.03.18.22.53.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Mar 2021 22:53:25 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 11:23:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v8] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210319055322.lw4dhb2kwtrtd3qu@vireshk-i7>
+References: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210319004657.485503-1-liu.xuzhi@zte.com.cn>
-In-Reply-To: <20210319004657.485503-1-liu.xuzhi@zte.com.cn>
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 19 Mar 2021 00:52:54 -0500
-Message-ID: <CAH2r5mvXw8mdY1b56O6802NoemXMh70P4MJY0E-dr-rZ6=Cu-A@mail.gmail.com>
-Subject: Re: [PATCH] fs/cifs/: fix misspellings using codespell tool
-To:     menglong8.dong@gmail.com
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Steve French <sfrench@samba.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Liu xuzhi <liu.xuzhi@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c193b92d8d22ba439bb1b260d26d4b76f57d4840.1615889867.git.jie.deng@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged into cifs-2.6.git for-next
+On 16-03-21, 18:35, Jie Deng wrote:
+> +++ b/drivers/i2c/busses/i2c-virtio.c
+> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+> +				struct virtio_i2c_req *reqs,
+> +				struct i2c_msg *msgs, int nr)
+> +{
+> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> +	int i, outcnt, incnt, err = 0;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		if (!msgs[i].len)
+> +			break;
+> +
+> +		/*
+> +		 * Only 7-bit mode supported for this moment. For the address format,
+> +		 * Please check the Virtio I2C Specification.
+> +		 */
+> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> +
+> +		if (i != nr - 1)
+> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+> +
+> +		outcnt = incnt = 0;
+> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+> +		sgs[outcnt++] = &out_hdr;
+> +
+> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
 
-On Thu, Mar 18, 2021 at 7:50 PM <menglong8.dong@gmail.com> wrote:
->
-> From: Liu xuzhi <liu.xuzhi@zte.com.cn>
->
-> A typo is found out by codespell tool in 251th lines of cifs_swn.c:
->
-> $ codespell ./fs/cifs/
-> ./cifs_swn.c:251: funciton  ==> function
->
-> Fix a typo found by codespell.
->
-> Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
-> ---
->  fs/cifs/cifs_swn.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
-> index f2d730fffccb..d829b8bf833e 100644
-> --- a/fs/cifs/cifs_swn.c
-> +++ b/fs/cifs/cifs_swn.c
-> @@ -248,7 +248,7 @@ static int cifs_swn_send_unregister_message(struct cifs_swn_reg *swnreg)
->
->  /*
->   * Try to find a matching registration for the tcon's server name and share name.
-> - * Calls to this funciton must be protected by cifs_swnreg_idr_mutex.
-> + * Calls to this function must be protected by cifs_swnreg_idr_mutex.
->   * TODO Try to avoid memory allocations
->   */
->  static struct cifs_swn_reg *cifs_find_swn_reg(struct cifs_tcon *tcon)
-> --
-> 2.25.1
->
+You allocate a buffer here, lets see if they are freeing properly or not (I
+remember that I gave same feedback earlier as well, but anyway).
 
+> +		if (!reqs[i].buf)
+> +			break;
+> +
+> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+> +
+> +		if (msgs[i].flags & I2C_M_RD)
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		else
+> +			sgs[outcnt++] = &msg_buf;
+> +
+> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+> +		sgs[outcnt + incnt++] = &in_hdr;
+> +
+> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
+> +		if (err < 0) {
+> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
+> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
 
+On failure here, you freed the buffers for request "i" but not others..
+
+> +			break;
+> +		}
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
+> +					struct virtio_i2c_req *reqs,
+> +					struct i2c_msg *msgs, int nr)
+> +{
+> +	struct virtio_i2c_req *req;
+> +	unsigned int len;
+> +	int i, j;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		req = virtqueue_get_buf(vq, &len);
+> +		if (!(req && req == &reqs[i])) {
+> +			pr_err("msg[%d]: addr=0x%x is out of order.\n", i, msgs[i].addr);
+> +			break;
+
+Since you break here, what will happen to the buffer ? I thought
+virtqueue_get_buf() will return a req only once and then you can't access it ?
+
+> +		}
+> +
+> +		if (req->in_hdr.status != VIRTIO_I2C_MSG_OK) {
+> +			pr_err("msg[%d]: addr=0x%x backend error.\n", i, msgs[i].addr);
+> +			break;
+> +		}
+> +
+> +		i2c_put_dma_safe_msg_buf(req->buf, &msgs[i], true);
+> +	}
+> +
+> +	/*
+> +	 * Detach all the used buffers from the vq and
+> +	 * Release unused DMA safe buffer if any.
+> +	 */
+> +	for (j = i; j < nr; j++) {
+> +		req = virtqueue_get_buf(vq, &len);
+> +		if (req)
+> +			i2c_put_dma_safe_msg_buf(req->buf, &msgs[j], false);
+
+This will come in play only if something failed in the earlier loop ? Or my
+understanding incorrect ? Also this should be merged with the above for loop
+itself, it is just doing part of it.
+
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> +{
+> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> +	struct virtqueue *vq = vi->vq;
+> +	struct virtio_i2c_req *reqs;
+> +	unsigned long time_left;
+> +	int ret, nr;
+> +
+> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> +	if (!reqs)
+> +		return -ENOMEM;
+> +
+> +	mutex_lock(&vi->lock);
+> +
+> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+> +	if (ret == 0)
+> +		goto err_unlock_free;
+> +
+> +	nr = ret;
+> +	reinit_completion(&vi->completion);
+> +	virtqueue_kick(vq);
+> +
+> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> +	if (!time_left) {
+
+On error here, we will surely not free the buffers, isn't it ?
+
+> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+> +		ret = -ETIMEDOUT;
+> +		goto err_unlock_free;
+> +	}
+> +
+> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr);
+> +
+> +err_unlock_free:
+> +	mutex_unlock(&vi->lock);
+> +	kfree(reqs);
+> +	return ret;
+> +}
 -- 
-Thanks,
-
-Steve
+viresh
