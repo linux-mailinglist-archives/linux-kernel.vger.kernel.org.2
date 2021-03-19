@@ -2,125 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043C43426B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B960E3426B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 21:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhCSUIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 16:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        id S229990AbhCSURF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 16:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhCSUIl (ORCPT
+        with ESMTP id S230090AbhCSUQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:08:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DFFC06175F;
-        Fri, 19 Mar 2021 13:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rGRzrwVTpnyRBED0N4I/y0vzVWMQ7Nn4oxmzxiU470A=; b=0j4GyJ61WeMO+Kn6dI/Vo6OXQi
-        aaMv3a28fFrSfkAVJS8QvrxiqWuC2OA65TL48mBim8g7f8r22yF2QifudXLmgAPv7GBmkRSkxwNyJ
-        HQezgK6UWJ1Urciv0hoLfqHrKweeN66NdurcgsFhTj0GcxYKyEXrDv1m9ZW9cSxyz7M0vcE0fvzZS
-        OOkYBTCJV/9YHng3nNsHPOeBqPo0LtUGBnfeftXu+L6fQN8H2Unup978jVJM58H9IrO4qCb4W40E6
-        LkqkBlkDnwxkerv/0d2P8K260pCwaN9tfdXf2aHBEJ21eRdb3eXB5S0O0fLDzXmpPOnw5XyNo9Ana
-        Xe0lVWbQ==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNLQC-001VY9-I1; Fri, 19 Mar 2021 20:08:37 +0000
-Date:   Fri, 19 Mar 2021 13:08:36 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Tom Saeger <tom.saeger@oracle.com>
-cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] Trivial typo fix and sentence construction for better
- readability
-In-Reply-To: <20210319200706.2dlq33ii33gyakyf@brm-x62-17.us.oracle.com>
-Message-ID: <cbda62a9-16bc-6ea7-6070-95918b9154c7@bombadil.infradead.org>
-References: <20210319195451.32456-1-unixbhaskar@gmail.com> <5ac591a4-2ed-311a-fcc2-3cc8443d71ef@bombadil.infradead.org> <20210319200706.2dlq33ii33gyakyf@brm-x62-17.us.oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_130836_615162_F12974D4 
-X-CRM114-Status: GOOD (  12.66  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Tom Saeger wrote: > On Fri, Mar 19, 2021
-    at 01:03:02PM -0700, Randy Dunlap wrote: >> >> Hm, needs some spacing fixes
-    IMO. See below. >> >> >> On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote: >>
-    >>> >>> s/funtion/functions [...] 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+        Fri, 19 Mar 2021 16:16:30 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB8EC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:16:30 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id md1so13999700pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 13:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=FUzDMOWW+Puyz+SzWC3asQVTMfryGObB0RiZstJMIBU=;
+        b=sgWArQyN8QTzOSH9Gn+mPcH7CA0wlJw0WRwg9RtaZL0CGmB6vEB9B2qBK8dOqOBLrE
+         3skODy2P8GXExoLvB11OLR8A9a9eFvmvUgfIWgqOGkbPRcOq6aSrF7bZIfbZffKqVe8X
+         MV4r8sCleN+ffkVmElatTuxHqSKkCUVAChZjtZsZZPXL3GCY9/tvXL48MpImdKC2Rr8F
+         fX7klLvLWWY2wpI6/HQj7ic0UPyHbIl3YWo9eZkxmyAdXeE9wAE8Mi2Ob/b3DF8bWm+A
+         4+ByZfFIYh5/mdGmcierXQVxk+lJB640s3qszj3uMFrNqG+5AKak7AwLddg7rIY5JaJv
+         vVFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=FUzDMOWW+Puyz+SzWC3asQVTMfryGObB0RiZstJMIBU=;
+        b=WAdF3rnPQ5QafmAVapmEPJ2KfPYU8BYv0wPi3nhey7nw0DqHHwNm58PwFHvSRe5lHi
+         5yPlUMdGONZkvSaz6TRG+UmyLvORXp2SP61tUtFoVjlk290L6aer79H06v1r7d3YCUHQ
+         CWmUjBnhWe1nBuClKG7SudcXcXw+gB44mPAg1BLxRomRFUKkFKQP+aXLdEGHyzIeuaLJ
+         V7VJGALAp+3t3ostRRlQncjbZ/NFuXLsZExDe6OdyFSOijkh13CNJld/fBPOrrCwYlG+
+         swJ3sDIST4ogHoRyiVZZ3khShAsudOeAVnhhBOb7vh3eyKcPQjPbiPIvnJiRzfias+ba
+         krcg==
+X-Gm-Message-State: AOAM531Q+SDjZqkj9cHFNuRyCw0tTw6aadLeeL/gyCpe1eGdCcem2lei
+        N6QenzbDbuCY8QpQxVOqa+TBtI1sFjqAaQ==
+X-Google-Smtp-Source: ABdhPJykgo0zi/4qXykDAAUNOjL3usMtXpHDx4UnroLaxR58IPx0WFL9INya2Ev6KCQndsb9j63LruS1nXJlbg==
+X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:fc1f:aed6:24c0:a9b0])
+ (user=mmandlik job=sendgmr) by 2002:a17:902:c589:b029:e6:3a39:d4a0 with SMTP
+ id p9-20020a170902c589b02900e63a39d4a0mr16153501plx.76.1616184989509; Fri, 19
+ Mar 2021 13:16:29 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 13:16:05 -0700
+Message-Id: <20210319131533.v1.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH v1] Bluetooth: Add ncmd=0 recovery handling
+From:   Manish Mandlik <mmandlik@google.com>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     Alain Michaud <alainm@chromium.org>,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Manish Mandlik <mmandlik@google.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+During command status or command complete event, the controller may set
+ncmd=3D0 indicating that it is not accepting any more commands. In such a
+case, host holds off sending any more commands to the controller. If the
+controller doesn't recover from such condition, host will wait forever.
 
+This patch adds a timer when controller gets into such condition and
+resets the controller if controller doesn't recover within the timeout
+period.
 
-On Fri, 19 Mar 2021, Tom Saeger wrote:
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Manish Mandlik <mmandlik@google.com>
+---
+Hello Maintainers,
 
-> On Fri, Mar 19, 2021 at 01:03:02PM -0700, Randy Dunlap wrote:
->>
->> Hm, needs some spacing fixes IMO. See below.
->>
->>
->> On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote:
->>
->>>
->>> s/funtion/functions/
->>>
->>> Plus the sentence reconstructed for better readability.
->>>
->>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>> ---
->>> Changes from V1:
->>>  Randy's suggestions incorporated.
->>>
->>> block/blk-mq-tag.c | 4 ++--
->>> 1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->>> index 9c92053e704d..c2bef283db63 100644
->>> --- a/block/blk-mq-tag.c
->>> +++ b/block/blk-mq-tag.c
->>> @@ -373,8 +373,8 @@ static bool blk_mq_tagset_count_completed_rqs(struct request *rq,
->>> }
->>>
->>> /**
->>> - * blk_mq_tagset_wait_completed_request - wait until all completed req's
->>> - * complete funtion is run
->
-> completion function
->
-> That's my read of it.
+We noticed that during suspend, sometimes the controller firmware gets
+into a state where it is not accepting any more commands (it returns
+ncmd=3D0 in Command Status):
 
-Sounds good. Thanks.
+< HCI Command: Disconnect (0x01|0x0006) plen 3 =C2=A0#398 [hci0] 83.760502
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 Handle: 1
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 Reason: Remote Device Terminated due to Power O=
+ff (0x15)
+> HCI Event: Command Status (0x0f) plen 4 =C2=A0 =C2=A0 =C2=A0 #399 [hci0] =
+83.761694
+=C2=A0 =C2=A0 =C2=A0 Disconnect (0x01|0x0006) ncmd 0
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 Status: Success (0x00)
 
-Bhaskar, please use this wording.
+In such a case, the host holds off sending any more packets to the
+controller until it is ready to accept more commands.=C2=A0If the controlle=
+r
+doesn't recover from such a condition, Command Timeout does not get
+triggered as Command Timeout is queued only once the packet is sent to
+the controller; hence,=C2=A0the host will wait forever.=C2=A0
 
+This patch adds a timer to recover from this condition. Since the
+suspend timeout is 2 seconds, I'm using 4 seconds timeout to recover
+from ncmd=3D0. This should give ample amount of time for recovery and
+should not create any race conditions with the suspend. Once we resume
+from the suspend normally, the timer would expire and reset the
+controller. I have verified this patch locally and able to connect to
+peer device after resume from suspend. Please let me know your thoughts
+on this.
 
-> --Tom
->
->>> + * blk_mq_tagset_wait_completed_request - wait until all the  req's
->>
->>                                                             the req's
->>
->>> + *  functions completed their run
->>
->> and more indentation + wording on that line above:
->>  *        functions have completed their run
->>
->>>  * @tagset:	Tag set to drain completed request
->>>  *
->>>  * Note: This function has to be run after all IO queues are shutdown
->>> --
->>
->> Thanks.
->
+Thanks,
+Manish.
+
+ include/net/bluetooth/hci.h      |  1 +
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/hci_core.c         | 15 +++++++++++++++
+ net/bluetooth/hci_event.c        | 10 ++++++++++
+ 4 files changed, 27 insertions(+)
+
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index ea4ae551c426..c4b0650fb9ae 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -339,6 +339,7 @@ enum {
+ #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
+ #define HCI_INIT_TIMEOUT	msecs_to_jiffies(10000)	/* 10 seconds */
+ #define HCI_CMD_TIMEOUT		msecs_to_jiffies(2000)	/* 2 seconds */
++#define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
+ #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
+ #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
+ #define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_c=
+ore.h
+index ebdd4afe30d2..f14692b39fd5 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -470,6 +470,7 @@ struct hci_dev {
+ 	struct delayed_work	service_cache;
+=20
+ 	struct delayed_work	cmd_timer;
++	struct delayed_work	ncmd_timer;
+=20
+ 	struct work_struct	rx_work;
+ 	struct work_struct	cmd_work;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index b0d9c36acc03..5ee1609456bd 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -2769,6 +2769,20 @@ static void hci_cmd_timeout(struct work_struct *work=
+)
+ 	queue_work(hdev->workqueue, &hdev->cmd_work);
+ }
+=20
++/* HCI ncmd timer function */
++static void hci_ncmd_timeout(struct work_struct *work)
++{
++	struct hci_dev *hdev =3D container_of(work, struct hci_dev,
++					    ncmd_timer.work);
++
++	bt_dev_err(hdev, "ncmd timeout");
++
++	if (hci_dev_do_close(hdev))
++		return;
++
++	hci_dev_do_open(hdev);
++}
++
+ struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
+ 					  bdaddr_t *bdaddr, u8 bdaddr_type)
+ {
+@@ -3831,6 +3845,7 @@ struct hci_dev *hci_alloc_dev(void)
+ 	init_waitqueue_head(&hdev->suspend_wait_q);
+=20
+ 	INIT_DELAYED_WORK(&hdev->cmd_timer, hci_cmd_timeout);
++	INIT_DELAYED_WORK(&hdev->ncmd_timer, hci_ncmd_timeout);
+=20
+ 	hci_request_setup(hdev);
+=20
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index cf2f4a0abdbd..114a9170d809 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3635,6 +3635,11 @@ static void hci_cmd_complete_evt(struct hci_dev *hde=
+v, struct sk_buff *skb,
+ 	if (*opcode !=3D HCI_OP_NOP)
+ 		cancel_delayed_work(&hdev->cmd_timer);
+=20
++	if (!ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
++		schedule_delayed_work(&hdev->ncmd_timer, HCI_NCMD_TIMEOUT);
++	else
++		cancel_delayed_work(&hdev->ncmd_timer);
++
+ 	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
+ 		atomic_set(&hdev->cmd_cnt, 1);
+=20
+@@ -3740,6 +3745,11 @@ static void hci_cmd_status_evt(struct hci_dev *hdev,=
+ struct sk_buff *skb,
+ 	if (*opcode !=3D HCI_OP_NOP)
+ 		cancel_delayed_work(&hdev->cmd_timer);
+=20
++	if (!ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
++		schedule_delayed_work(&hdev->ncmd_timer, HCI_NCMD_TIMEOUT);
++	else
++		cancel_delayed_work(&hdev->ncmd_timer);
++
+ 	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
+ 		atomic_set(&hdev->cmd_cnt, 1);
+=20
+--=20
+2.31.0.rc2.261.g7f71774620-goog
+
