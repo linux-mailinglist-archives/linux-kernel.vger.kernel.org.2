@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7796C342150
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51974342157
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhCSPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCSPyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:54:09 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D345DC06174A;
-        Fri, 19 Mar 2021 08:54:08 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id h7so7047298qtx.3;
-        Fri, 19 Mar 2021 08:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0wTT4qv7QZfT/ekLjj+h5aDeBVAVnGNSzJpRlOxQ/w4=;
-        b=Ox6QMurZ5IZAN/TtoTqMbrLf3ONKGl/ZJsf4fzZoPIzqWfwodhb/OZc01khel0XyjF
-         ACP6ml5yTvw+KEGKQNvgxkrnE60meuRPR/Vgj8e1D7Mdq1YuhlPiOsdWlemwjKb/1X3C
-         Bn9NZ3KXAO6QWbPzHgQrt9EjXwJnwHMd+Ke7Qv5J5FjLUsH/pL8/Zo+JmcZK189YVk34
-         e+1S2Sx+rgwLvRn+xQ6YngqOhNL3R+e3mKAU1p/b3Ov/DSqAOiFSJnuaiTRNKkci902Z
-         X+QgLBAqfUTvRsLQo31NJ2QewfXdOBxDqB6GUudmQXErQlYj7n7WA+BX3/IRwNc8qjxZ
-         btSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0wTT4qv7QZfT/ekLjj+h5aDeBVAVnGNSzJpRlOxQ/w4=;
-        b=nY0DSeg8W/WdF5zcVHKXB9o1YZwpyNj7wI+XCFLMghMBwawJvVUmPAyln3T+WUMH++
-         S/lQjdc4TTzHdBGjjqLiBrl02lRr5/ssjrkI5zl6FdqmOl97pVlk8+H+GtbLU4PSG0Rb
-         maI7LWQv5L64q7yz9GoyTCbSCJFzJDGE1CccvGNVFAGmF1ZFN0Rbv07SbEQ2UItRmZqj
-         hI3tiDKuIyqWvHNcRwMy4O2r4/Yca0p0f77AdXkV0asMuqSIiITrs/o6K96lNuKte3kn
-         WeI3ThxNssjX5/d2lmWfjK+C+cn3POyzIJBRs/hbt+PsV6Im4iHmeGr3RU22BVENnNbE
-         4/Sw==
-X-Gm-Message-State: AOAM532XJKma9HvOcncKvrFrpvu+x85VMKYeEssQwc/b0DraJ37HrOsi
-        2qWylP0qUgXx7Aty3DgxhFc=
-X-Google-Smtp-Source: ABdhPJzqjqVK/mIAog/m4xLDgq27X5QRgBw2VSHRyOGPKGOJ/VHmX/cgWd5MglVy75BMcEnJ623F6g==
-X-Received: by 2002:aed:2a82:: with SMTP id t2mr8657586qtd.217.1616169248159;
-        Fri, 19 Mar 2021 08:54:08 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:41da])
-        by smtp.gmail.com with ESMTPSA id h75sm4723533qke.80.2021.03.19.08.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 08:54:07 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 11:54:05 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] loop: Fix missing max_active argument in
- alloc_workqueue call
-Message-ID: <YFTJHRfNANFIUgOD@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20210318151626.17442-1-colin.king@canonical.com>
+        id S230389AbhCSPzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:55:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230377AbhCSPzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:55:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64F376195B;
+        Fri, 19 Mar 2021 15:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616169336;
+        bh=+h2PVOl4z0hCd+XkNnkdPmhhicy6FuQnHON44EZsQPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sDtAshkPcs8TfBv7THIsu4OlvFB1vz+W1ENIiHnaTbIGWvsj/37wBzwBMPRSpzFrp
+         jdqDf5DwhkDVHlUM/0MTagyoZVibbpGiKzqcIubL23ET4IL9I5Bqc3VtigRSsmHsr9
+         y+PvAzNOvtg3CqYAXZRtZEjJ8FcioSySTrdEKkSUswnXakOnBhDcSmRcXY/ezQNYCu
+         4UYHw2Kmez4S2lnchhsEo4mWZc1n+ZHKLaXpXYfdyBd4vOZlLJmbA1yBPimXInCyOD
+         IxF2dTL0IGSov5oGSawB7W/Ld5BhFB71jUmgOk5N2YmrGpZJnfA8kAK0ZXIJ0y55hF
+         IImoNxO8uC10w==
+Date:   Fri, 19 Mar 2021 17:55:32 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Stephane Grosjean <s.grosjean@peak-system.com>
+Subject: Re: linux-next: manual merge of the net tree with Linus' tree
+Message-ID: <YFTJdL1yDId+iae4@unreal>
+References: <20210319082939.77495e55@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318151626.17442-1-colin.king@canonical.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210319082939.77495e55@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:16:26PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The 3rd argument to alloc_workqueue should be the max_active count,
-> however currently it is the lo->lo_number that is intended for the
-> loop%d number. Fix this by adding in the missing max_active count.
-> 
+On Fri, Mar 19, 2021 at 08:29:39AM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the net tree got a conflict in:
+>=20
+>   drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+>=20
+> between commit:
+>=20
+>   6417f03132a6 ("module: remove never implemented MODULE_SUPPORTED_DEVICE=
+")
+>=20
+> from Linus' tree and commit:
+>=20
+>   59ec7b89ed3e ("can: peak_usb: add forgotten supported devices")
+>=20
+> from the net tree.
+>=20
+> I fixed it up (I just removed the new MODULE_SUPPORTED_DEVICE() lines)
+> and can carry the fix as necessary. This is now fixed as far as linux-next
+> is concerned, but any non trivial conflicts should be mentioned to your
+> upstream maintainer when your tree is submitted for merging.  You may
+> also want to consider cooperating with the maintainer of the conflicting
+> tree to minimise any particularly complex conflicts.
 
-Thanks for catching this Colin. I'm fairly new to kernel development.
-Is there some tool I could have run locally to catch this?
+Thanks Stephen, the code should be deleted and commit 59ec7b89ed3e needs
+to be reverted.
+
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+
+
