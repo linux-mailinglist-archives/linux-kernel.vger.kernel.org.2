@@ -2,99 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1D5341740
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF90341757
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 09:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234355AbhCSIUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 04:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S234286AbhCSIYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 04:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234330AbhCSIUV (ORCPT
+        with ESMTP id S234076AbhCSIYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:20:21 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A701C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:20:21 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so7776532otn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:20:21 -0700 (PDT)
+        Fri, 19 Mar 2021 04:24:12 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC0EC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:24:11 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id l18so1536871edc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 01:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K+XmUzuuF5UUkq0/fWT+bp+a3y84PMfii9z5k2/AsMQ=;
-        b=HI99Vkz2H61CHC62uwSpju6mRKoYJTVnBttZZmzk4fZPmgg51AQDYFr5YfPKWXZ1cd
-         9SYnGnVKPJBDVUtZyxB6QxxDR3cjrpsfz5Fc9SWNVJsSS9oeamHuqzAkaIzB7az+oLLP
-         wiOghMMO1xkn3x3a0CRjveSPmjtmaGbIT+2mSf5SnVN7T7JoTog1lxo5iZSmFccTCcxr
-         yqIHmcpCPXeTGqqgt+qc0092O+OkAlxD+oreaR93FKH7u6LgEM0339J2copTybxXf+IR
-         6A53xAkEUsOG38qtztsU6yF2i89c6U8OGMkU4FlZHcXMizOsC2DNcNfKCdfkHQuz3HYN
-         OBeg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=i3ME3RZycqfcfKl/INYO3mj0pc2g5bpS8vxgj1H2Zho=;
+        b=P+5LihIKwLgCsx10OfJIAw04qzyiTgtZ+9mVR3WckS2IOAidGoGZL3ddGFqeTyiWrx
+         HFNLGJkkIgVaAyVKZXa3FE1/nuP6JHJbyOdedNBMMzQp/iT+6gDLy1aJtYevlvk92o+g
+         FOiw14Uq3K23+15kZQxvtt3z0iFriNPPHzkntAqWaThhUj0y5bOV/LkWWvM5vboi3NL6
+         nruXC6lGYs+ze7MJBrOuFwiI1j/aNoW14FE/UHwTmaxsYLtiY6iwiT8Nknb+edBW42sw
+         /gW2YDfE/zZkyFLp5hFpuBA/KGScPE/fy3K2x45r7r5KCQ161p+ccfRVEUZjHFsRSn6F
+         rnRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K+XmUzuuF5UUkq0/fWT+bp+a3y84PMfii9z5k2/AsMQ=;
-        b=QOdLCGCObEoNgorvu7bezdR0/hcxGttn15JI2Wv3KXTdFlMVk5pWgvcoirB4fPJIgq
-         QmD3rpNzQmLieaw/gYyxcEOnkMYqWlXtsrPDx65ev/3lBXJVNN+Rj6eFSbFsUqzjFIgS
-         thnRbjOW6/cW6oI3tE00CayHNTouoDbuKz4WmI84pWHlS+i56ORixbzjVhXSoRmJTjCy
-         XHYWaOZzaa3fosL/l8gKvCRf3o1ePEQ8S7QB3bBc8wrfLptPgszMAiTgwqFoiTFZGtuE
-         8LEA8r9PZ+Z0aPvJrMIwOSmwkYcSEGEqv8zGAxHFPlFA5OMb6zqlym+KgqQTTpJ8yCk/
-         wrmQ==
-X-Gm-Message-State: AOAM533rwCqh3/I5hl7sCFbkduzPmMRo10zfYEhf3m3wLMNa3gOu47YN
-        k/Fr6LMc2o8bkBLqLWGGmCtRhhLv9GwJD7PCf1WGHg==
-X-Google-Smtp-Source: ABdhPJzHEmcxr7p0F8RTp2/xkLrbEofBVwtdlcTZdeZkLT6okQ8KKnmDtTYXOdyd/5uiHu7QPjpfJmyYZ894FTfbhAQ=
-X-Received: by 2002:a9d:6ad6:: with SMTP id m22mr166502otq.160.1616142019973;
- Fri, 19 Mar 2021 01:20:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=i3ME3RZycqfcfKl/INYO3mj0pc2g5bpS8vxgj1H2Zho=;
+        b=piz8nu7rmgerAAQ5z/R3hA+VOFZttaMTQuBcxPN8eEX+JkW/jXpucvYLM4LLBlUyka
+         eFS8PG8gehJggc/rqkxw6uLqW5V2l1zmXEEUWIt63DgIuymUIuuu9rRj4IoTCop34hGM
+         a7iEvXNe5k0DeOurhZKv7KzvAkOfyR19dnnN5jcsfrTpp924IOBzw1oiYVCKIt5Ct+03
+         ixzlFespSnWpvm1lb785G/oNZeq8V0lV9RaiaGT5aHhMtx+cA6VqLrV6LH+rcSmnimSU
+         1g+zmvU0u18sJsLj9TfCdDTLZM63oz2hZnaWiPeT2CDwpjvoYaS6cgwBaAA6DOjUEEHo
+         RBOg==
+X-Gm-Message-State: AOAM530+9DHd2ce1Cwwjn4r3RvSaRyXk76oGxYjtQgsKMeXeFRO3DICu
+        M5KUHlV+T62963ocO0TRVGbjYQ==
+X-Google-Smtp-Source: ABdhPJwvsynmGTO200msXpOq0tH3ulqN/PugQIqOCYp1LVOxM4bgeagMgSBC0AYVkGV7Fb9kcROngA==
+X-Received: by 2002:a05:6402:17af:: with SMTP id j15mr8214688edy.50.1616142250503;
+        Fri, 19 Mar 2021 01:24:10 -0700 (PDT)
+Received: from dell ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id gb4sm3185084ejc.122.2021.03.19.01.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 01:24:10 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 08:24:07 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Roland Scheidegger <sroland@vmware.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>
+Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
+Message-ID: <20210319082407.GG2916463@dell>
+References: <20210303134319.3160762-1-lee.jones@linaro.org>
+ <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
+ <20210308091932.GB4931@dell>
+ <YEobySvG0zPs9xhc@phenom.ffwll.local>
+ <20210311135152.GT701493@dell>
+ <20210317081729.GH701493@dell>
+ <CAKMK7uEibsgXXTEM1d2CGSswp-koouPSouseP_rwLHTdpxfRpw@mail.gmail.com>
+ <CAKMK7uHkJGDL8k3FfAqAM78honZR0euMcacW8UpdPZfS1J-7cA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
- <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
-In-Reply-To: <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Fri, 19 Mar 2021 16:20:08 +0800
-Message-ID: <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uHkJGDL8k3FfAqAM78honZR0euMcacW8UpdPZfS1J-7cA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:07 AM Zong Li <zong.li@sifive.com> wrote:
->
-> On Wed, Mar 17, 2021 at 3:45 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> >
-> > On Dez 09 2020, Zong Li wrote:
-> >
-> > > Add a driver for the SiFive FU740 PRCI IP block, which handles more
-> > > clocks than FU540. These patches also refactor the original
-> > > implementation by spliting the dependent-code of fu540 and fu740
-> > > respectively.
-> >
-> > That breaks ethernet on the fu540.
-> >
->
-> I would check that, thanks for the report.
->
+On Thu, 18 Mar 2021, Daniel Vetter wrote:
 
-Hi Andreas,
-
-Could you please point me out how to test the ethernet from your side?
-I had tried to quick test by using iperf and wget, the ethernet seems
-to work fine to me.
-
-Thanks.
-
-> > Andreas.
+> On Wed, Mar 17, 2021 at 9:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 > >
-> > --
-> > Andreas Schwab, schwab@linux-m68k.org
-> > GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> > "And now for something completely different."
+> > On Wed, Mar 17, 2021 at 9:17 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Thu, 11 Mar 2021, Lee Jones wrote:
+> > >
+> > > > On Thu, 11 Mar 2021, Daniel Vetter wrote:
+> > > >
+> > > > > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
+> > > > > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
+> > > > > >
+> > > > > > > The vmwgfx ones look all good to me, so for
+> > > > > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
+> > > > > > > That said, they were already signed off by Zack, so not sure what
+> > > > > > > happened here.
+> > > > > >
+> > > > > > Yes, they were accepted at one point, then dropped without a reason.
+> > > > > >
+> > > > > > Since I rebased onto the latest -next, I had to pluck them back out of
+> > > > > > a previous one.
+> > > > >
+> > > > > They should show up in linux-next again. We merge patches for next merge
+> > > > > window even during the current merge window, but need to make sure they
+> > > > > don't pollute linux-next. Occasionally the cut off is wrong so patches
+> > > > > show up, and then get pulled again.
+> > > > >
+> > > > > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
+> > > > > confusion here. But your patches should all be in linux-next again (they
+> > > > > are queued up for 5.13 in drm-misc-next, I checked that).
+> > > > >
+> > > > > Sorry for the confusion here.
+> > > >
+> > > > Oh, I see.  Well so long as they don't get dropped, I'll be happy.
+> > > >
+> > > > Thanks for the explanation Daniel
+> > >
+> > > After rebasing today, all of my GPU patches have remained.  Would
+> > > someone be kind enough to check that everything is still in order
+> > > please?
+> >
+> > It's still broken somehow. I've kiced Maxime and Maarten again,
+> > they're also on this thread.
+> 
+> You're patches have made it into drm-next meanwhile, so they should
+> show up in linux-next through that tree at least. Except if that one
+> also has some trouble.
+
+Thanks for letting me know.
+
+I see some patches made it back in, others didn't.
+
+I'll resend the stragglers - bear with.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
