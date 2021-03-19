@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79A43423ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DBB3423FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 19:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCSSB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 14:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbhCSSBk (ORCPT
+        id S230267AbhCSSEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 14:04:42 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2719 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhCSSEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 14:01:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7F5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 11:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uTbl6guFGQdbk49aLzrQbkLTdEFuonclJgyelza8jbk=; b=d3OkbniiKP81FNhFe250Q1Xy/w
-        a0ncQuxQh8iqQ+mczYZmDh6TYKd9WSPWTJ9AyE1rOJ3TeCtQ9vDGoc2T724Fe0bO+s+7fjTL7Bu+U
-        T3YksTt8b941mtSXCKFIqHSCEXrjbY10TH3mSlg/QqPl7GuKWDOtz8oYZJxA6uexrOnfwPXq69h9V
-        myOOeq9ki410yQLr0kNOkIE0oQehxsnv7Mg6JQMW/3P/krEiIrW+1GXBuI09ymLdp1XulLoejOh6w
-        phyZ29twDr1qQ3yhIpSwHJ7uXQtmOE/bjDZQnApKFPmciXTTQCOdi16JLNDT+oRRiseZLcvnbCaXz
-        e8MmVMAA==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJRI-001RNk-BN; Fri, 19 Mar 2021 18:01:37 +0000
-Date:   Fri, 19 Mar 2021 11:01:36 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     hirofumi@mail.parknet.co.jp, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: filesystems: Fix a mundane typo
-In-Reply-To: <20210319015848.19515-1-unixbhaskar@gmail.com>
-Message-ID: <74a983-38ae-b769-7bdf-421bea4f2fc9@bombadil.infradead.org>
-References: <20210319015848.19515-1-unixbhaskar@gmail.com>
+        Fri, 19 Mar 2021 14:04:16 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F2BVc5JBFz681CR;
+        Sat, 20 Mar 2021 01:59:36 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 19 Mar 2021 19:04:14 +0100
+Received: from [10.47.10.104] (10.47.10.104) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 19 Mar
+ 2021 18:04:13 +0000
+Subject: Re: [PATCH 5/6] dma-mapping/iommu: Add dma_set_max_opt_size()
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <hch@lst.de>,
+        <m.szyprowski@samsung.com>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <1616160348-29451-6-git-send-email-john.garry@huawei.com>
+ <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e45a649f-f133-1f80-554a-3c5e955148e3@huawei.com>
+Date:   Fri, 19 Mar 2021 18:02:02 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_110136_413264_B5229686 
-X-CRM114-Status: GOOD (  12.53  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > > s/provisoned/provisioned/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <9ecb6980-7f40-0333-572f-f9d4b8238353@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.10.104]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 19/03/2021 17:00, Robin Murphy wrote:
+> On 2021-03-19 13:25, John Garry wrote:
+>> Add a function to allow the max size which we want to optimise DMA 
+>> mappings
+>> for.
+> 
+> It seems neat in theory - particularly for packet-based interfaces that 
+> might have a known fixed size of data unit that they're working on at 
+> any given time - but aren't there going to be many cases where the 
+> driver has no idea because it depends on whatever size(s) of request 
+> userspace happens to throw at it? Even if it does know the absolute 
+> maximum size of thing it could ever transfer, that could be 
+> impractically large in areas like video/AI/etc., so it could still be 
+> hard to make a reasonable decision.
 
+So if you consider the SCSI stack, which is my interest, we know the max 
+segment size and we know the max number of segments per request, so we 
+should know the theoretical upper limit of the actual IOVA length we can 
+get.
 
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+Indeed, from my experiment on my SCSI host, max IOVA len is found to be 
+507904, which is PAGE_SIZE * 124 (that is max sg ents there). 
+Incidentally that means that we want RCACHE RANGE MAX of 8, not 6.
 
->
-> s/provisoned/provisioned/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> 
+> Being largely workload-dependent is why I still think this should be a 
+> command-line or sysfs tuneable - we could set the default based on how 
+> much total memory is available, but ultimately it's the end user who 
+> knows what the workload is going to be and what they care about 
+> optimising for.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+If that hardware is only found in a server, then the extra memory cost 
+would be trivial, so setting to max is standard approach.
 
+> 
+> Another thought (which I'm almost reluctant to share) is that I would 
+> *love* to try implementing a self-tuning strategy that can detect high 
+> contention on particular allocation sizes and adjust the caches on the 
+> fly, but I can easily imagine that having enough inherent overhead to 
+> end up being an impractical (but fun) waste of time.
+> 
 
-> ---
-> Documentation/filesystems/vfat.rst | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/filesystems/vfat.rst b/Documentation/filesystems/vfat.rst
-> index e85d74e91295..760a4d83fdf9 100644
-> --- a/Documentation/filesystems/vfat.rst
-> +++ b/Documentation/filesystems/vfat.rst
-> @@ -189,7 +189,7 @@ VFAT MOUNT OPTIONS
-> **discard**
-> 	If set, issues discard/TRIM commands to the block
-> 	device when blocks are freed. This is useful for SSD devices
-> -	and sparse/thinly-provisoned LUNs.
-> +	and sparse/thinly-provisioned LUNs.
->
-> **nfs=stale_rw|nostale_ro**
-> 	Enable this only if you want to export the FAT filesystem
-> --
-> 2.26.2
->
->
+For now, I just want to recover the performance lost recently :)
+
+Thanks,
+John
