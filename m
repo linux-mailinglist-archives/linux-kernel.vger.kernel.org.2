@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D823342302
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05668342304
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhCSRKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
+        id S231195AbhCSRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhCSRJX (ORCPT
+        with ESMTP id S230285AbhCSRJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:09:23 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421C8C06175F
+        Fri, 19 Mar 2021 13:09:24 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8394C06174A
         for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:09:23 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id t18so10865804ejc.13
+Received: by mail-ej1-x635.google.com with SMTP id b7so10899754ejv.1
         for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:09:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Gn0hnJYZfg4Iz6ZCMPIjQveIDYMZQxxJBvj+S3RwuvQ=;
-        b=AF85BynYuNVUnF9MJlnfAVGYHQOTUQBkJIDmLPsahcRBZHItdSfh9K0j1uW0KYf73C
-         uffN38MXLMTFNyqvLS4Dyq9/ZvtV26AklHf86HN8rmHIkioGveiZN2qwLBKNocX8R4tw
-         muvj0I3XF5rhFTRPZv9JjuBujnz2Fuv4pAiF8=
+        bh=Ry4sUp7RLr2eYbkWRJyCjF01wLZEGEypv/sCp3NmiFo=;
+        b=EJUAKM8/I8QSOEL/w5pyhJvhnsf3xxfa3jpMzXV1WRLIFAsAUl/+w78hU1GeDxrvyx
+         +YbbC7Tp6C9xGHgWtbcQpy6IecpSNqBPa+d2qkBhbZ3nyZ8qD5mplZaLwqUqUgq9flJI
+         99AAeI/vD0Wp3J4PQoF/YOJ30++HYioc7C7u0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Gn0hnJYZfg4Iz6ZCMPIjQveIDYMZQxxJBvj+S3RwuvQ=;
-        b=JQ3uNnU9w7EWluCEaRucC50+fwMilexBxMz/g7aOi+RGsC8jXO+zbV9ZFYAqdc6jm7
-         /XxfVMRc6TGd9Maji0ooCieC11bvHDp2o4iqtHGUl+DDxabqXPd9NS8Mv9vbSpLdwROS
-         2W81ZCg4n9Q6ongqEZ4NsDJHyYFdZ52h1/exzFUJfzDduJP9p3cQyeUz/RGMmq31G1d9
-         wBu63DYCzj2Nfrg++Um7IQ2UevVVL6Q02NCvpy0S/VO0NfDPQWOOiSdOVW2wIBweOXj8
-         /pCCWg+kv6qvFKFbHii0F35GhxM8ECJnoaLhqzcmA7u0RMHgfLcCAXWpSPJMbb2EX56M
-         829A==
-X-Gm-Message-State: AOAM533RchTu4cul0cL8tFdLIswJvRLOJgo2+63pqZatp4BcOns781uE
-        OVhi21nMDDu8uVvTCsSQty22kA==
-X-Google-Smtp-Source: ABdhPJyHT9EGJP5se2NeRD0WbjuLarcYBJpBVmRtv0XHsb0BFe/jz3YBtR+I++nOYLmjktZc/Ik9wg==
-X-Received: by 2002:a17:906:260a:: with SMTP id h10mr5631325ejc.392.1616173761995;
-        Fri, 19 Mar 2021 10:09:21 -0700 (PDT)
+        bh=Ry4sUp7RLr2eYbkWRJyCjF01wLZEGEypv/sCp3NmiFo=;
+        b=a9VJuHD3gPjL2y35jpKSK2//YD0FL2lP1viOFOEZzH/X09AnYKJl6JgSCpkoThcCpz
+         NA/HolxtnyGG1SPOEXWqP4wOTw+JC4ZAwp1mLmKTR0+wZp29T3KbFhaRCoO77tclUv4v
+         6VtixbdWOb5x9FeULYn8SpuXTS8FNq2JiQW76FDJKiydLfi9kfzQv34Q8UtsmI7XgmZW
+         S9jy2779Hhtx9ybK34bO2WoaXxjRhd6p+6uha2Wk9OLNv9HFglcTiMawqpyLiqxsMZQA
+         mylq3HxYnc6/T98nSgvdZi0DP24quyY91UG7OtMGa+6Qwsi2xsvxclfahe5vty822aRb
+         jPJA==
+X-Gm-Message-State: AOAM533A6YkJfcR/sBky4ePZT3R4tHBySX0F55ajYYyenw+y5aJuycjs
+        MW8ssR+PFXxvkFtowow7vEyyCsUpNbVFryFSiMg=
+X-Google-Smtp-Source: ABdhPJwaQeIysz97UmqiDYALoDHmRJjaZToX+D7yVDoeyNOQUFrGWCnM8eTAxPbeh2rLqVSm0ADNOA==
+X-Received: by 2002:a17:906:12db:: with SMTP id l27mr5464203ejb.500.1616173762762;
+        Fri, 19 Mar 2021 10:09:22 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id be27sm4506050edb.47.2021.03.19.10.09.21
+        by smtp.gmail.com with ESMTPSA id be27sm4506050edb.47.2021.03.19.10.09.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 10:09:21 -0700 (PDT)
+        Fri, 19 Mar 2021 10:09:22 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -53,9 +53,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v8 17/19] media: docs: Document the behaviour of uvcdriver
-Date:   Fri, 19 Mar 2021 18:09:04 +0100
-Message-Id: <20210319170906.278238-18-ribalda@chromium.org>
+Subject: [PATCH v8 18/19] media: uvcvideo: Downgrade control error messages
+Date:   Fri, 19 Mar 2021 18:09:05 +0100
+Message-Id: <20210319170906.278238-19-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210319170906.278238-1-ribalda@chromium.org>
 References: <20210319170906.278238-1-ribalda@chromium.org>
@@ -65,43 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The uvc driver relies on the camera firmware to keep the control states
-and therefore is not capable of changing an inactive control.
-
-Allow returning -EACESS in those cases.
+Convert the error into a debug message, so they are still valid for
+debugging but do not fill dmesg.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst      | 5 +++++
- Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst | 5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/media/usb/uvc/uvc_video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-index 4f1bed53fad5..8c0a203385c2 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-@@ -95,3 +95,8 @@ EBUSY
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index ea2903dc3252..b63c073ec30e 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -76,7 +76,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+ 	if (likely(ret == size))
+ 		return 0;
  
- EACCES
-     Attempt to set a read-only control or to get a write-only control.
-+
-+    Or if there is an attempt to set an inactive control and the driver is
-+    not capable of keeping the new value until the control is active again.
-+    This is the case for drivers that do not use the standard control
-+    framework and rely purely on the hardware to keep the controls' state.
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-index b9c62affbb5a..bb7de7a25241 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-@@ -438,3 +438,8 @@ EACCES
+-	dev_err(&dev->udev->dev,
++	dev_dbg(&dev->udev->dev,
+ 		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
+ 		uvc_query_name(query), cs, unit, ret, size);
  
-     Or the ``which`` field was set to ``V4L2_CTRL_WHICH_REQUEST_VAL`` but the
-     device does not support requests.
-+
-+    Or if there is an attempt to set an inactive control and the driver is
-+    not capable of keeping the new value until the control is active again.
-+    This is the case for drivers that do not use the standard control
-+    framework and rely purely on the hardware to keep the controls' state.
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
