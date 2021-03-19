@@ -2,193 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE0E341882
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D8A341885
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 10:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCSJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 05:37:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2715 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCSJhl (ORCPT
+        id S229769AbhCSJi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 05:38:28 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:30764 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229648AbhCSJiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 05:37:41 -0400
-Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F1zG14Flrz681ZH;
-        Fri, 19 Mar 2021 17:32:57 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 19 Mar 2021 10:37:34 +0100
-Received: from localhost (10.47.25.23) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 19 Mar
- 2021 09:37:33 +0000
-Date:   Fri, 19 Mar 2021 09:36:16 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
- a die
-Message-ID: <20210319093616.00001879@Huawei.com>
-In-Reply-To: <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
-References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
-        <20210319041618.14316-2-song.bao.hua@hisilicon.com>
-        <YFRGIedW1fUlnmi+@kroah.com>
-        <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Fri, 19 Mar 2021 05:38:15 -0400
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12J9JPtS002901;
+        Fri, 19 Mar 2021 02:38:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=X9HC1yx1AbWNJUzgY/1t9JwsjmX+NEV5bnaibedYPzY=;
+ b=eZBoEVas8TyzU2AFJfrquf2hFRzyOX6h78Bk9XSJkYDt66eADm/6SumxAX+AR8FhtCUT
+ 3TI9MiI77PT5tUdpUHEuu0qkrEMcM3SGZPrgUqLjzL5ui9IWX3SzwVfjr0dCSJjCggrw
+ 9D2YYA++WZw+MwSoCpgLjD9TTN1GLcPiFWbepzS4Hdyc1Ezfg3v7uuCCeOpdLIlsQYcc
+ q9mRenwafvhw0GlHoI/hmXnCd2+/8uzSM/ncijg1hwP5ps2dvE1wR/cSViCOp+0ElV9b
+ POwqGK6RvRlC5IpR48ajgFWgv4wdf5v1XIPerfN2BbgV2Nnj5YlJzsJmAMHdR//yHpvF ew== 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 37ccg12383-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Mar 2021 02:38:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SNw4F+8lyUZ6yC2rzed+eDfqucnZ/pIE8gaHtv2rVtQvTqEAypjWV0PFAcBnlcqvukc7chOwVFudoTyHGoqyp8WuY0YxG+TZf95KxpuZjeUswFtbejY81E3SbPxxhMnC6FMhvGZJ9ZOAmsBsN9pgh1WSINw0/4+ZSZyygfPjMFhlK7PnYSiidCuOMF7+RPcq97lyt94mnlUI1vsqG6FSvvNQc++ThWIyL9GFGaNfcSOU1NK3SF9qNuV8MxVU/a7aQlIUCpZUYj/5lrkKno3ssorDnRTTcGkgATFDo7kBGU5opXFL1vOUluGizLQUTUUlXVsZ8P12sww1eHnMQTLrBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X9HC1yx1AbWNJUzgY/1t9JwsjmX+NEV5bnaibedYPzY=;
+ b=g7uRwS9hLchS0UJJfhrEoSVX9EN6z6hEV9xLfz9whtdlHv50yGjTJVoFUb8grH8hMK/Ts8E+EcGssPETA20HLaU6gsLmo1uJFEpfLWrKD6azI5LuLym26BuzVLrhEJmaq4JvMU+AuVEH/2IpvykDZyFSR4HU9/17AZ7deS0LRq63MD0eGJPtYTxnCjhbW+WDv6YSUPUac+AKVF9u8HSG0VGxHw2h5JjJy/UODldw9QCW99N3Y90ixTHz3vYEWZNCMkXy4uG+ceq/O2mmcYA/rJIhVJ9zSMNclIojHQBDTEnLPHXJsfBzW3tYI/fyZSHl3Z5di/tjkL7SpJvbUfQlMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=linux.ie smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X9HC1yx1AbWNJUzgY/1t9JwsjmX+NEV5bnaibedYPzY=;
+ b=2Jrh4SBX1jBAxrbP7gc0aViOwsvIN5Au4Pfsb1Jvk6MokR7AlZCQeno1w6JF70kSOFBzQMAz+1RRhdymV9nbdXp0ivBtwJe5U5vdXKLXAceWe7YzXTrYwg7ybpgS/aoLY7mXd9QEM1nBGJfZnsQlqZi8MpsHcvsqJnJnBlXyIrY=
+Received: from DM5PR13CA0064.namprd13.prod.outlook.com (2603:10b6:3:117::26)
+ by PH0PR07MB8558.namprd07.prod.outlook.com (2603:10b6:510:9f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
+ 2021 09:37:58 +0000
+Received: from DM6NAM12FT043.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:3:117:cafe::19) by DM5PR13CA0064.outlook.office365.com
+ (2603:10b6:3:117::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.10 via Frontend
+ Transport; Fri, 19 Mar 2021 09:37:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; linux.ie; dkim=none (message not signed)
+ header.d=none;linux.ie; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ DM6NAM12FT043.mail.protection.outlook.com (10.13.179.162) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.9 via Frontend Transport; Fri, 19 Mar 2021 09:37:57 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 12J9bp7x004354
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Mar 2021 02:37:53 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 19 Mar 2021 10:37:50 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 19 Mar 2021 10:37:50 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 12J9boWB007023;
+        Fri, 19 Mar 2021 10:37:50 +0100
+Received: (from pthombar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 12J9blek007000;
+        Fri, 19 Mar 2021 10:37:47 +0100
+From:   Parshuram Thombare <pthombar@cadence.com>
+To:     <robert.foss@linaro.org>, <robh+dt@kernel.org>,
+        <laurent.pinchart@ideasonboard.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <a.hajda@samsung.com>,
+        <narmstrong@baylibre.com>, <nikhil.nd@ti.com>, <kishon@ti.com>,
+        <sjakhade@cadence.com>, <mparab@cadence.com>,
+        Parshuram Thombare <pthombar@cadence.com>
+Subject: [PATCH v5 0/2] enable HDCP in Cadence MHDP bridge driver
+Date:   Fri, 19 Mar 2021 10:37:44 +0100
+Message-ID: <1616146664-6941-1-git-send-email-pthombar@cadence.com>
+X-Mailer: git-send-email 2.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.25.23]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f0cc9c54-7927-4e13-3283-08d8eabaadf7
+X-MS-TrafficTypeDiagnostic: PH0PR07MB8558:
+X-Microsoft-Antispam-PRVS: <PH0PR07MB855835702A05F377C0AA0278C1689@PH0PR07MB8558.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WuG/vF68DU8/Zr7vw8fCo2hIjm7+8wPYIZn08dWsdCy/hGGlEVS3mJKUlTJ1HcKzzYFs05aqi15EKtBnow+H4ujmSTg4sgwnFY5Qgk5ok3fIPZdaCbjpYBP22jXocpJfXhvAvQGcgeT+QkepksFwYJqESbL5dihPH9d0XUEtCaFuigtUNzxKHRXN0O5GIYbstpGMXJFvlz9lL5i7TIwoZad7bUGdeyHGiskmJ5uFA3BKgdOmLlqxm28daOYJFFhtrxYCUl3BJP0GgCirRbgv4+QOEsKjpAahuqRM+zRAV8tlbq/fDZ7o0W+6LA5FgHsfulLza9HljvnmoQ1DXESuBttkltyQfk2u7Atj0J02Lu4XZ1jXQvm/OOmbCEDvWEfHNhZAtHFduUyglayYqmHPHTFVi2sGmO0GI3Bqo7R1ldOB4wcfxHaCrvErzCYy5Eyqu9/v+YqRIHy3SZrLA99L2rFQBw6i6kZaeI9Md+caWfcW1O8WIdQaQjjX8wbvfd2K6HfBFi8XxX/czwxGe28FdfCSXcHHZn4JZTrFMwK67ZP3zi/1K8WPCEKSi4CkOpYihA65q6lpY/049cbmcdKv4xFW7u4E/qMooW1DfGZ7QQ34rEPQY5zumiMLQN+NRt+3xKNpbs8KdoQ1ftErqnTDmFRx5udB0ru1OAeT+pz2amXXE/ZtxNlVTD9s7c3f8f//QbGHjMXVzYL8z9x0KcOFlQ==
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(136003)(376002)(36092001)(46966006)(36840700001)(70586007)(2906002)(36756003)(7416002)(70206006)(82740400003)(54906003)(8936002)(426003)(478600001)(8676002)(36860700001)(2616005)(316002)(4326008)(82310400003)(356005)(6666004)(26005)(5660300002)(186003)(336012)(47076005)(83380400001)(86362001)(7636003)(107886003)(36906005)(42186006)(110136005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 09:37:57.5311
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0cc9c54-7927-4e13-3283-08d8eabaadf7
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT043.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR07MB8558
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_03:2021-03-17,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxlogscore=878
+ mlxscore=0 spamscore=0 priorityscore=1501 adultscore=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 06:57:08 +0000
-"Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+This patch series enables HDCP in Cadence MHDP DPI/DP bridge driver.
 
-> > -----Original Message-----
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Friday, March 19, 2021 7:35 PM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
-> > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
-> > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
-> > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com; Jonathan
-> > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
-> > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O) <xuwei5@huawei.com>;
-> > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org; yangyicong
-> > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
-> > linuxarm@openeuler.org; hpa@zytor.com
-> > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
-> > a die
-> > 
-> > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:  
-> > > diff --git a/Documentation/admin-guide/cputopology.rst  
-> > b/Documentation/admin-guide/cputopology.rst  
-> > > index b90dafc..f9d3745 100644
-> > > --- a/Documentation/admin-guide/cputopology.rst
-> > > +++ b/Documentation/admin-guide/cputopology.rst
-> > > @@ -24,6 +24,12 @@ core_id:
-> > >  	identifier (rather than the kernel's).  The actual value is
-> > >  	architecture and platform dependent.
-> > >
-> > > +cluster_id:
-> > > +
-> > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
-> > > +	identifier (rather than the kernel's).  The actual value is
-> > > +	architecture and platform dependent.
-> > > +
-> > >  book_id:
-> > >
-> > >  	the book ID of cpuX. Typically it is the hardware platform's
-> > > @@ -56,6 +62,14 @@ package_cpus_list:
-> > >  	human-readable list of CPUs sharing the same physical_package_id.
-> > >  	(deprecated name: "core_siblings_list")
-> > >
-> > > +cluster_cpus:
-> > > +
-> > > +	internal kernel map of CPUs within the same cluster.
-> > > +
-> > > +cluster_cpus_list:
-> > > +
-> > > +	human-readable list of CPUs within the same cluster.
-> > > +
-> > >  die_cpus:
-> > >
-> > >  	internal kernel map of CPUs within the same die.  
-> > 
-> > Why are these sysfs files in this file, and not in a Documentation/ABI/
-> > file which can be correctly parsed and shown to userspace?  
-> 
-> Well. Those ABIs have been there for much a long time. It is like:
-> 
-> [root@ceph1 topology]# ls
-> core_id  core_siblings  core_siblings_list  physical_package_id thread_siblings  thread_siblings_list
-> [root@ceph1 topology]# pwd
-> /sys/devices/system/cpu/cpu100/topology
-> [root@ceph1 topology]# cat core_siblings_list
-> 64-127
-> [root@ceph1 topology]#
-> 
-> > 
-> > Any chance you can fix that up here as well?  
-> 
-> Yes. we will send a separate patch to address this, which won't
-> be in this patchset. This patchset will base on that one.
-> 
-> > 
-> > Also note that "list" is not something that goes in sysfs, sysfs is "one
-> > value per file", and a list is not "one value".  How do you prevent
-> > overflowing the buffer of the sysfs file if you have a "list"?
-> >   
-> 
-> At a glance, the list is using "-" rather than a real list
-> [root@ceph1 topology]# cat core_siblings_list
-> 64-127
-> 
-> Anyway, I will take a look if it has any chance to overflow.
+Changes since v1:
+- Move sapb reg block right after apb reg block
+- Corresponding changes in binding and example
 
-It could in theory be alternate CPUs as comma separated list.
-So it's would get interesting around 500-1000 cpus (guessing).
+Changes since v2:
+- Revert reg resource sequence in binding and 
+  use resource mapping by name
+- Remove hdcp_config from binding and use
+  DRM HDCP Content Type property to select
+  HDCP version
 
-Hopefully no one has that crazy a cpu numbering scheme but it's possible
-(note that cluster is fine for this, but I guess it might eventually
-happen for core-siblings list (cpus within a package).
+Changes since v3:
+- Fix kernel test robot warning
 
-Shouldn't crash or anything like that but might terminate early.
+Changes since v4:
+- Fix binding issue
 
-On sysfs file conversion, that got mentioned earlier but I forgot
-to remind Barry about it when he took this patch into his series.
-Sorry about that!
+Parshuram Thombare (2):
+  dt-bindings: drm/bridge: MHDP8546 bridge binding changes for HDCP
+  drm: bridge: cdns-mhdp8546: Enable HDCP
 
-Jonathan
+ .../display/bridge/cdns,mhdp8546.yaml         |  34 +-
+ drivers/gpu/drm/bridge/cadence/Makefile       |   2 +-
+ .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 113 +++-
+ .../drm/bridge/cadence/cdns-mhdp8546-core.h   |  21 +
+ .../drm/bridge/cadence/cdns-mhdp8546-hdcp.c   | 570 ++++++++++++++++++
+ .../drm/bridge/cadence/cdns-mhdp8546-hdcp.h   |  92 +++
+ 6 files changed, 806 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-hdcp.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-hdcp.h
 
-
-> 
-> > thanks,
-> > 
-> > greg k-h  
-> 
-> Thanks
-> Barry
-> 
+-- 
+2.25.1
 
