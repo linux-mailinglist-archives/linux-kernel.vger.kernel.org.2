@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965843423CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AB73423D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhCSRza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S230273AbhCSR4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhCSRzZ (ORCPT
+        with ESMTP id S229956AbhCSR4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:55:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE3EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 10:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rUwGdU8Yedk4kRCKzbyc5m3bgGUr+REyzJApW/WqH2k=; b=tPPzkGgGH0ENXaQU2hnZoDDaEG
-        kZX09R4jXMCO1CV9teSr1VJpC/Qd0OrxiA0cjdUgyJo7TVF6+XulHM9yYtTUvgs1QD9xfMvOH9o4w
-        g4OzNPDnxcOQzC+E+0GbYdsrRbFRnkeWdDwMBy4v+G22UC0bt3EiWECuM9c+ZZ063lgKmxNtxGWzG
-        VGa+RPHLUS+HEepy8C8hHeLXBIUX7ClyYaYaCW9Sp/P7cgrvqpJCJ08thSXz1LbkHU9dI9Wh7xep3
-        8KNfPdn4XD5Y4EMqoCLjjkMysNdMR0PpfLUAh6X+eACgih80n6m27g7ANKhGVl79TPjNqHeWIdEoS
-        h1NRNhBQ==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNJLH-001R9U-SO; Fri, 19 Mar 2021 17:55:24 +0000
-Date:   Fri, 19 Mar 2021 10:55:23 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] average: Mundane typo fix
-In-Reply-To: <20210319010126.9537-1-unixbhaskar@gmail.com>
-Message-ID: <88ccf363-c6c4-3aab-9f1-8da3ef23650@bombadil.infradead.org>
-References: <20210319010126.9537-1-unixbhaskar@gmail.com>
+        Fri, 19 Mar 2021 13:56:09 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3D6C06174A;
+        Fri, 19 Mar 2021 10:56:08 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 184so13016621ljf.9;
+        Fri, 19 Mar 2021 10:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EN3uRBxUV6eO1T+kGUJLe9TYovHE3LSSTvhishvZdAI=;
+        b=c+1GxprWueFENyi5K/CZts1MNjoFWJg8eQS3tOBmbBISXM0M/JelqTmfQUv8lPyCUW
+         XiswpSTRG6ELr/fdzcZ424IoINC0GuPR6SfL3Moby6GVLSXPvNdJzQk1Oob3tjzjTg2L
+         HDT3gqB7gupOd0yaZtsMP+0wxcE1xpHGmS7ya7hhpI3s3Sj3NBIKgjjpkADq10BWruzv
+         OaC+UV/CHIBV2GFJA8QQaKUG4JUiy1geLpHIVDYe9mWWtS8q8Doj6vwhZDKb4v2UTxt/
+         9enabFoP27vZEiILngtyCXA4nK52I6+oAhW2tHBNk/tzR205zZanwCHolFibW14G7wNR
+         Oq7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EN3uRBxUV6eO1T+kGUJLe9TYovHE3LSSTvhishvZdAI=;
+        b=QvrE5tlEYNTJ06olR9Rem2vTOkTdUlLYNjtptAVZT9MeITJngBEHhT5siv+1JMxuzo
+         baJmO43YaQzOJYxBSkVLsGiE2xlEZYLZTD0BCz9zZgY1pnp6kv+5uVrYVNazqe2VvdEI
+         2K7MNSYfT0u3X6LYtNMnTXA8BVnPtp+iLuCAghif+dLGSUBlsHJUBcI06Y4zR72I7KAC
+         J4mXvLhQD3fS8spfAREZpd4ETy0UL+Bs2J0Wgx0gd03oHndbwzpJMy/IiUlgXrjxM5hV
+         P0EUahCcvdUzcgq80T60a+MoGEudtzd7UV7bBubEWzHRYgSSBF6JQWXL/ABnd16XFKez
+         y+rA==
+X-Gm-Message-State: AOAM530BFjU0pkYLGwdSABsfHSKs+mfnVC0QQOSdxcqEqVpsxp0HL+vv
+        3v4TXl5P9EpMCMt0Y21+LLWTigjP6Y0=
+X-Google-Smtp-Source: ABdhPJxq1u9oT6lgD+hfhtI3hv0grR3ARQY1SAwmD6LDpEXcJ/1QOK0n2WfApV/cYW4FNb5WkiE5sA==
+X-Received: by 2002:a2e:a0d0:: with SMTP id f16mr1679862ljm.215.1616176567012;
+        Fri, 19 Mar 2021 10:56:07 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id e8sm855367ljg.22.2021.03.19.10.56.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 10:56:06 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+ <YFSqYUfaxMajR/aq@kroah.com> <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
+ <YFSrgfAyp+dYWi7k@kroah.com> <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
+ <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com> <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com> <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
+ <YFTRkBEr5T37NFpV@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <071c6681-f492-2c94-5686-30c30778f39d@gmail.com>
+Date:   Fri, 19 Mar 2021 20:56:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_105523_937787_31BF17FF 
-X-CRM114-Status: GOOD (  13.19  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > s/funtions/functions/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <YFTRkBEr5T37NFpV@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+19.03.2021 19:30, Minchan Kim пишет:
+> +static void cma_kobj_release(struct kobject *kobj)
+> +{
+> +	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
+> +
+> +	kfree(cma_kobj);
+> +}
 
-
-On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
-
-> s/funtions/functions/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
-> include/linux/average.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/average.h b/include/linux/average.h
-> index a1a8f09631ce..0cb77b3e483c 100644
-> --- a/include/linux/average.h
-> +++ b/include/linux/average.h
-> @@ -11,7 +11,7 @@
->  *
->  * This implements a fixed-precision EWMA algorithm, with both the
->  * precision and fall-off coefficient determined at compile-time
-> - * and built into the generated helper funtions.
-> + * and built into the generated helper functions.
->  *
->  * The first argument to the macro is the name that will be used
->  * for the struct and helper functions.
-> --
-> 2.26.2
->
->
+Oh, wait.. I think this kfree wrong since cma_kobj belongs to the array.
