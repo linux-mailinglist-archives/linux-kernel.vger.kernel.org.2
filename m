@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A2334145A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8BC341460
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhCSEqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 00:46:21 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:45838 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhCSEqB (ORCPT
+        id S233489AbhCSEtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 00:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhCSEsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:46:01 -0400
-Received: by mail-wm1-f47.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo4525113wmq.4;
-        Thu, 18 Mar 2021 21:46:01 -0700 (PDT)
+        Fri, 19 Mar 2021 00:48:40 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F045C06174A;
+        Thu, 18 Mar 2021 21:48:40 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id cx5so4414289qvb.10;
+        Thu, 18 Mar 2021 21:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uWTbNHoJ2SWjyCkOqghCnERP3wInwC93RX0JLjnyB3k=;
+        b=dyEqCt7ofHAuAsvWaC9GmS/Tz13XCHw7soVOYZKcUsPQZ4IWKpxS2UzEpCHyyWX0VU
+         d5SjcPzMEkXPW8vNya+JYtXNBH1tEhITZafhFZFsHDlqGZ/XR4CHzXqB+S/E/ppYwc/M
+         U47M1n6jCQ3ZXI/RgFVbxWFIGXzZKoBUYuT1uNU1pUfbgYo93L6p9LNaGhEGQkmuRimq
+         t/8bx7vuVlaj1JLN5G/dMYhgP3cg57Gn61NkQIbeL7DZvptEz57h+MaBd+oG9o7P2xta
+         xyXmHeMkU7GG+YLRo40avlwlmgGLgFANCnv5WBVHQk3yOEYxfiSyP6b2BeaV/a7y1jht
+         8myw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=scHpeEvXZJxUtO28cL3xBc5mW0T6oSgAncD6re2VLx0=;
-        b=Hg8lYD3M6pJKAkqTSccHg3MO8rm+y+f4YA63bMvfYRufVLcqPVZX2OCJ++UJ5Eui9O
-         f1fU0x0mhtAARSdbGD1xVYJ/SYPvL4hr+t+17QYLSuyerviOOkdj0LxGdgB9XixN2c2Q
-         RZ7fH7lkcxy3xL4T47ZlW0RfLxKOmQXgMLslomsUkfpGuulk33I7wJhx57VBgauI79hJ
-         1rd2Gb7EyrVKuqOfGAef5MmOUafBWdEAD+OjSSqzu/Thzq2/8xYw+MXG/VTopXKq5D2Z
-         muFVHnyvqrkYZQvs6puI2q/wd7p7E4Senl1dPC1T4RpkuUDm76mFxvjP9tqn1N0j06Vc
-         WwDw==
-X-Gm-Message-State: AOAM532NeBIVPe2RQXwmpw9YSsz/I33QKcNwyZvYDy74ebH8xgmnb1/I
-        68ttDyDK6K3nGpWa9xizUsE=
-X-Google-Smtp-Source: ABdhPJzQItZ7vJfQkjljBfAh+t+TcfDCRltPaw207Oi/uCSM/4wNPdhhzq/bK3DCLBxz5QYVG0j5nw==
-X-Received: by 2002:a1c:6707:: with SMTP id b7mr1932695wmc.185.1616129160554;
-        Thu, 18 Mar 2021 21:46:00 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c8sm6211170wrd.55.2021.03.18.21.45.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uWTbNHoJ2SWjyCkOqghCnERP3wInwC93RX0JLjnyB3k=;
+        b=UBl6ffzD2tCtI+pZQSRDUFKIg0r0YoEq3uLIfcFhhdtRStoFSnc94c4QKFY2CgAA0I
+         m5VRdHslS4HOpxpsSXbTC7aH84FnqXmGDaaOCwp423jN6UI78uplLMkgNKWkWyn3Ns+O
+         GukjeE27jazFO3j7+4XV1nJ43MzfP7f3BsAHQDIrwWMatNDBwvmiNtXSLpvlUSuonBzF
+         NeWm3XtAskWKKulGF7O6GxpIAql03Uci7vnPUN27BiOdTeQB2NVbh/NuEh2EZkvVQgKP
+         oOwO0E+bbAjnpW6e/oWuP6h9jFFctkolaWLmlijM4PY1TEaxX9Ks9opo4jOgXR1xmS1r
+         BWzg==
+X-Gm-Message-State: AOAM532xj1n8RnL2VBGrBw/PwJX1K+b43pQNF2MnDXU/BybEhmomOSKb
+        Ye8MGtSLqJuZocus9Y/BXHA=
+X-Google-Smtp-Source: ABdhPJzBeYYamAvgWDrqvEeXXE97+IoFF94b/GN77JgnCqbWSj7MxGYYNIQcC+RtQxqhq4843R+XqQ==
+X-Received: by 2002:a0c:f702:: with SMTP id w2mr7908272qvn.0.1616129319648;
+        Thu, 18 Mar 2021 21:48:39 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.87])
+        by smtp.gmail.com with ESMTPSA id l186sm3492018qke.92.2021.03.18.21.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 21:45:59 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 05:45:58 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] PCI: keystone: Let AM65 use the pci_ops defined in
- pcie-designware-host.c
-Message-ID: <YFQshiQIORaF7tr0@rocinante>
-References: <20210317131518.11040-1-kishon@ti.com>
+        Thu, 18 Mar 2021 21:48:38 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] sch_red: Fix a typo
+Date:   Fri, 19 Mar 2021 10:16:23 +0530
+Message-Id: <20210319044623.20396-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210317131518.11040-1-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
 
-Thank you for the fix!
+s/recalcultion/recalculation/
 
-[...]
-> @@ -798,7 +798,8 @@ static int __init ks_pcie_host_init(struct pcie_port *pp)
->  	int ret;
->  
->  	pp->bridge->ops = &ks_pcie_ops;
-> -	pp->bridge->child_ops = &ks_child_pcie_ops;
-> +	if (!ks_pcie->is_am6)
-> +		pp->bridge->child_ops = &ks_child_pcie_ops;
->  
->  	ret = ks_pcie_config_legacy_irq(ks_pcie);
->  	if (ret)
-[...]
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/net/red.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+diff --git a/include/net/red.h b/include/net/red.h
+index 932f0d79d60c..6b418b69dc48 100644
+--- a/include/net/red.h
++++ b/include/net/red.h
+@@ -287,7 +287,7 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms
+ 	int  shift;
 
-Krzysztof
+ 	/*
+-	 * The problem: ideally, average length queue recalcultion should
++	 * The problem: ideally, average length queue recalculation should
+ 	 * be done over constant clock intervals. This is too expensive, so
+ 	 * that the calculation is driven by outgoing packets.
+ 	 * When the queue is idle we have to model this clock by hand.
+--
+2.26.2
+
