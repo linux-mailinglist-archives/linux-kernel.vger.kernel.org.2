@@ -2,170 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A190B342031
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E38F342047
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 15:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhCSOxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 10:53:37 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:46807 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhCSOxR (ORCPT
+        id S230334AbhCSOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 10:55:16 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:43532 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhCSOym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 10:53:17 -0400
-X-Originating-IP: 5.92.35.220
-Received: from uno.localdomain (mob-5-92-35-220.net.vodafone.it [5.92.35.220])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E589FC0002;
-        Fri, 19 Mar 2021 14:53:12 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 15:53:44 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/18] media: i2c: rdacm21: Give more time to OV490 to
- boot
-Message-ID: <20210319145344.ffhrxakrczxzzchp@uno.localdomain>
-References: <20210315131512.133720-1-jacopo+renesas@jmondi.org>
- <20210315131512.133720-13-jacopo+renesas@jmondi.org>
- <0826484e-8ae7-677e-6de2-8f019e9733fc@ideasonboard.com>
- <20210317100445.h3yqmrrnghq76mjb@uno.localdomain>
- <YFPwaoJUSxpPnbBM@pendragon.ideasonboard.com>
+        Fri, 19 Mar 2021 10:54:42 -0400
+Received: by mail-ua1-f54.google.com with SMTP id c13so3103297uao.10;
+        Fri, 19 Mar 2021 07:54:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t7iwM5Al+GjmpcCXrO+/PoTF1eT3fOyyCJF+hEmDRuY=;
+        b=m8K/vL4OYcPQNn1dHIlpSuz7xVfJ3sA6vuXpFu1YodJjgA9VanpL8m2yABAGlfv3gZ
+         w/bfN+o2HWE3pAH1COnRxNMiRLAlUqs4Dhl881LsPziftGAqBsCQprCqHtErzG/jDJB2
+         i2Jaqw/y0f+wNjfP5mAlEHhnDTQa4+Tu2+06o7JnsZbD4TgBJvsSu4sDFubV+5VScaRH
+         V+iAFgK/lZ6WqKuq57ZjJtCi8d5TI0xGm3LKGy3b2mAroFf1BlANqVOM/GlH7Nm25s6h
+         r+qFbR8FvarbFWiFrZhsdWPRZdYf1+RLiPk0quOa5OacozonYu6FlkAKJD1O09Rbr264
+         ithg==
+X-Gm-Message-State: AOAM530hzg1CSJJoB9I/M1IOQHDwFSdyfmh+bYHqNMiYY4wgVVMVYJTa
+        H2rhz+oKYFAF1BXf32zz5xuLZH8App7ez5b8ueKNUXPT
+X-Google-Smtp-Source: ABdhPJws2Ktj9BbIiCJ2GEgAVHw5Jy7feW23SDXRGODsXxsWn+4cet7pHOPZfquztis6cg4P7dw2c+QmSRw/42z1U4s=
+X-Received: by 2002:a9f:35a1:: with SMTP id t30mr5801449uad.106.1616165680697;
+ Fri, 19 Mar 2021 07:54:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFPwaoJUSxpPnbBM@pendragon.ideasonboard.com>
+References: <20210319143452.25948-1-david@redhat.com> <20210319143452.25948-3-david@redhat.com>
+In-Reply-To: <20210319143452.25948-3-david@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Mar 2021 15:54:29 +0100
+Message-ID: <CAMuHMdVP433iVhyaweDd8G6p3ZCgSDq6M_ACko_BTgm+5m0qnA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/3] mm: remove xlate_dev_kmem_ptr()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Brian Cain <bcain@codeaurora.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Fri, Mar 19, 2021 at 3:36 PM David Hildenbrand <david@redhat.com> wrote:
+> Since /dev/kmem has been removed, let's remove the xlate_dev_kmem_ptr()
+> leftovers.
 
-On Fri, Mar 19, 2021 at 02:29:30AM +0200, Laurent Pinchart wrote:
-> Hi Jacopo,
->
-> On Wed, Mar 17, 2021 at 11:04:45AM +0100, Jacopo Mondi wrote:
-> > On Mon, Mar 15, 2021 at 05:22:37PM +0000, Kieran Bingham wrote:
-> > > On 15/03/2021 13:15, Jacopo Mondi wrote:
-> > > > It has been observed through repeated testing (250 boots) that in the
-> > > > 10% of the cases the RDACM21 initialization sequence errors out due a
-> > > > timeout waiting for the OV490 firmware to complete its boot phase.
-> > > >
-> > > > Albeit being the current timeout relatively large (300-600 milliseconds),
-> > > > doubling it reduces the sporadic error rate down to 1 over an 80 boot
-> > > > sequences test run.
-> > > >
-> > > > The firmware boot delay is unfortunately not characterized in the camera
-> > > > module manual.
-> > >
-> > > I wonder if we could characterize this alone by pulling this down until
-> > > we see failures increase, with all the other fixes in place...
-> > >
-> > > I don't think that's required, but it might be something to check later
-> > > if we don't get rid of that 1/80 failure.
-> >
-> > This is actually driving me crazy :/
-> >
-> > I had another test run with a surprising 10% failures.
-> > All the failures were due to the ov490 firmware boot I'm trying to
-> > mitigate here.
-> >
-> > I went up to give it -6 seconds- and I still get failures in the same
-> > percentage. Another run of 20 boots gave 30% failures with the delay I
-> > have here in this patch. Just to make sure I was not going crazy I
-> > reduced the delay to 1msec and I get an 80% failure rate.
-> >
-> > Still, I've seen the 1 on 80 failures (I swear! I have logs! :)
-> >
-> > I've checked what the BSP does, and if after some 300 attempts the
-> > ov490 doesn't boot, they simply go an reset it.
-> > https://github.com/renesas-rcar/linux-bsp/commit/0cf6e36f5bf49e1c2aab87139ec5b588623c56f8#diff-d770cad7d6f04923d9e89dfe7da369bb3006776d6e4fb8ef79353d5fab3cd25aR827
-> > (sorry, I don't seem to be able to point you to the ov490.c#827 with
-> > an URL)
->
-> It resets both the sensor and the OV490. It could be interested to try
-> the latter selectively to see what happens.
->
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-They do not make any difference :)
+>  arch/m68k/include/asm/io_mm.h   |  5 -----
 
-But..
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> I also suspect that the OV490 has debugging features (possibly including
-> a RAM log buffer that we could read over I2C), but we're probably
-> getting out of scope here.
->
-> > I assume we don't want anything like this in an upstream driver, but
-> > I'm really running out of any plausible explanation :(
->
-> As discussed, let's try the reset workaround, to see if it helps.
->
-> I wonder if opening the camera and probing signals would be a useful
-> option :-)
+Gr{oetje,eeting}s,
 
-... I really think I've got something working (for real this time :)
+                        Geert
 
-Basically, as patch "media: i2c: rdacm21: Fix OV10640 powerdown" of
-this series describes, the OV10640 power-up was broken before you
-spotted the usage of the wrong gpio pad and it was working because of
-an internal pull-up on the SPWDN line, which was erroneously left
-floating. Once that was fixed, the OV10640 was always identified
-correctly, leaving us with this puzzling "ov490 boot timeout error"
-that manifested with more or less the same frequency of the ov10640
-identification issue.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In the current implementation we power up the OV490 and wait for its
-firmware to boot -before- powering up the ov10640 sensor. Most
-probably (or looking at the results I get noaw, most certainly) the
-OV490 firmware checks for the sensor to be available and probably
-tries to program it. So we're back to the issue we originally had when
-the sensor was powered because of the pull up resistor, failing to
-boot in case the sensor didn't startup correctly which happened in the
-20% of the cases.
-
-If I do power up the OV10640 -before- the OV490 all the firmware boot
-errors are now gone. I need to tune a bit the timeouts as after the
-OV490 boot the OV10640 requires some time before being accessible.
-Once I nail down the right timeouts I'll send v3. So far I got 0
-errors on 50 boot attempts, finally \o/
-
-Thanks for keep pushing, I would have swear this was an issue with the
-HW design and was very close to give up like a month ago!
-
-V3 out soon!
-
-Thanks
-   j
-
-
->
-> > > > Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
-> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > >
-> > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > >
-> > > > ---
-> > > >  drivers/media/i2c/rdacm21.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> > > > index 50a9b0d8255d..07cf077d8efd 100644
-> > > > --- a/drivers/media/i2c/rdacm21.c
-> > > > +++ b/drivers/media/i2c/rdacm21.c
-> > > > @@ -53,7 +53,7 @@
-> > > >  #define OV490_PID			0x8080300a
-> > > >  #define OV490_VER			0x8080300b
-> > > >  #define OV490_PID_TIMEOUT		20
-> > > > -#define OV490_OUTPUT_EN_TIMEOUT		300
-> > > > +#define OV490_OUTPUT_EN_TIMEOUT		600
-> > > >
-> > > >  #define OV490_GPIO0			BIT(0)
-> > > >  #define OV490_SPWDN0			BIT(0)
->
-> --
-> Regards,
->
-> Laurent Pinchart
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
