@@ -2,215 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7816134276B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB72B34276D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCSVIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:08:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52928 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230229AbhCSVIR (ORCPT
+        id S230310AbhCSVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhCSVJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:08:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616188096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=opCZHstDLqPqXMm8qZqBgIaQQd928Py+8MG6q5CxZuI=;
-        b=hB4JV+uMNue5clAYUvB6W9Nji94mKH8PcTor6DDHXrTWGarVgoYZW3G13A/2EX63e5GDdv
-        9TiWecpik3oh0Ct7JIsZVt84G39Lulc4usvVfCMF5m6/68zE3PRvo8Aj0u42toaaY/9HON
-        2qiSd2OfRF6jUS6KdWefboflKabvO2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-uyssPhfJMiaaRxyfSRFD_w-1; Fri, 19 Mar 2021 17:08:14 -0400
-X-MC-Unique: uyssPhfJMiaaRxyfSRFD_w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29311190D341;
-        Fri, 19 Mar 2021 21:08:12 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 65E1D5D9C6;
-        Fri, 19 Mar 2021 21:08:10 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 15:08:09 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
- vfio_pci drivers
-Message-ID: <20210319150809.31bcd292@omen.home.shazbot.org>
-In-Reply-To: <20210319200749.GB2356281@nvidia.com>
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
-        <20210309083357.65467-9-mgurtovoy@nvidia.com>
-        <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
-        <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
-        <20210319092341.14bb179a@omen.home.shazbot.org>
-        <20210319161722.GY2356281@nvidia.com>
-        <20210319162033.GA18218@lst.de>
-        <20210319162848.GZ2356281@nvidia.com>
-        <20210319163449.GA19186@lst.de>
-        <20210319113642.4a9b0be1@omen.home.shazbot.org>
-        <20210319200749.GB2356281@nvidia.com>
+        Fri, 19 Mar 2021 17:09:33 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA47C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:09:33 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id c6so7906725qtc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 14:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition;
+        bh=Zpz99ti9s3TrhMmoMNGsJo2F5GcF/oxCrc7dtqrT7gk=;
+        b=jp8NhXi7vGRwxUX3qLSXSsW94zPi0vfYCTdPsBEvkFOrerJmKSyvNHvO0ZfULuRc5+
+         4/uRVMZzhze92lTAO2taLdPhLfWrSqRWmIizWFuICMLSh2CyBQarruxCa6n4YpmyEfM7
+         ECvsxrKAnXDaAe/m1sfyXlMyasxAiyCmev4ffyj/uHGUTzAiOkDftUdrHimxnvfFkXH1
+         d/OdRFnOcKCkVeJ/MqgnFT1VfQdZk02rZbX2ao8aLdBN4PCvXCjovB4sXhjR6HMBme16
+         zfKAZDOFiI2FQvG/NM2ZRaLbe1w2lbGpU9OaZYMJvJJaWwRLpBKmJCyKA/oGii0E0l1X
+         enrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition;
+        bh=Zpz99ti9s3TrhMmoMNGsJo2F5GcF/oxCrc7dtqrT7gk=;
+        b=d/CSem2jZ28WFRbdya3AHo5KOo4KWvmwxTorXTgg1/VLWCs9Ja9poIQlyY6xZpTz8B
+         HvxHTAyz1Ffi8+V3sEHu+XXSgHiivxzA9/x6p4Tq3NnzCxWxehHz2GVGk4lReZgQ+Mc/
+         1f4Y6/p783TpoEmPDmxTWSvxN9FmGjZfSEIKW+javldRMLga8ceb4zD81lCy4U9u5f/8
+         Pzd0WqQrEqvLbTWPzUrQ3HGgxHTT9e0cRRcvBi7CAlVUjosA6lPj9ZjuWC5VDqKhWMlh
+         CfYqZnaQa7mhv5tu6jTE5hU15+PwD5whtyRJ3d7jp++67ONVHV95O2xulZKLDF6E61jI
+         1ZeQ==
+X-Gm-Message-State: AOAM533uXlFBtZDUFtzTKaMYRjnb+WUQezbPppnTfw5/WQifEONQxBb6
+        kjsyBT23Bki6NlzT25dU554M78rGUxKFeJLd
+X-Google-Smtp-Source: ABdhPJwvC9GV9xX5KBIYzo+sG4dmnJqGk+An0A4oXjDXsX3y4FEBOC9oZc9ICDX0iGE9sekW45V7Pg==
+X-Received: by 2002:aed:34c7:: with SMTP id x65mr547284qtd.229.1616188172374;
+        Fri, 19 Mar 2021 14:09:32 -0700 (PDT)
+Received: from Gentoo ([37.19.198.27])
+        by smtp.gmail.com with ESMTPSA id w9sm4776002qti.27.2021.03.19.14.09.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 14:09:31 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 02:39:21 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     david@fromorbit.com
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [unixbhaskar@gmail.com: [PATCH] lib: Fix a typo]
+Message-ID: <YFUTASslkS14RsXf@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        david@fromorbit.com, Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6bq9FZlzaaIdgDcQ"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 17:07:49 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> On Fri, Mar 19, 2021 at 11:36:42AM -0600, Alex Williamson wrote:
-> > On Fri, 19 Mar 2021 17:34:49 +0100
-> > Christoph Hellwig <hch@lst.de> wrote:
-> >   
-> > > On Fri, Mar 19, 2021 at 01:28:48PM -0300, Jason Gunthorpe wrote:  
-> > > > The wrinkle I don't yet have an easy answer to is how to load vfio_pci
-> > > > as a universal "default" within the driver core lazy bind scheme and
-> > > > still have working module autoloading... I'm hoping to get some
-> > > > research into this..    
-> > 
-> > What about using MODULE_SOFTDEP("pre: ...") in the vfio-pci base
-> > driver, which would load all the known variants in order to influence
-> > the match, and therefore probe ordering?  
-> 
-> The way the driver core works is to first match against the already
-> loaded driver list, then trigger an event for module loading and when
-> new drivers are registered they bind to unbound devices.
+--6bq9FZlzaaIdgDcQ
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The former is based on id_tables, the latter on MODULE_DEVICE_TABLE, we
-don't have either of those.  As noted to Christoph, the cases where we
-want a vfio driver to bind to anything automatically is the exception.
- 
-> So, the trouble is the event through userspace because the kernel
-> can't just go on to use vfio_pci until it knows userspace has failed
-> to satisfy the load request.
+----- Forwarded message from Bhaskar Chowdhury <unixbhaskar@gmail.com> -----
 
-Given that we don't use MODULE_DEVICE_TABLE, vfio-pci doesn't autoload.
-AFAIK, all tools like libvirt and driverctl that typically bind devices
-to vfio-pci will manually load vfio-pci.  I think we can take advantage
-of that.
+Hi Dave,
 
-> One answer is to have userspace udev have the "hook" here and when a
-> vfio flavour mod alias is requested on a PCI device it swaps in
-> vfio_pci if it can't find an alternative.
-> 
-> The dream would be a system with no vfio modules loaded could do some
-> 
->  echo "vfio" > /sys/bus/pci/xxx/driver_flavour
-> 
-> And a module would be loaded and a struct vfio_device is created for
-> that device. Very easy for the user.
+Can you please take it, as I haven't found anybody attached with this file,=
+but
+found you made some entry(I am trying to take advantage of you!! :)  ) ..
 
-This is like switching a device to a parallel universe where we do
-want vfio drivers to bind automatically to devices.
- 
-> > If we coupled that with wildcard support in driver_override, ex.
-> > "vfio_pci*", and used consistent module naming, I think we'd only need
-> > to teach userspace about this wildcard and binding to a specific module
-> > would come for free.  
-> 
-> What would the wildcard do?
+Thanks,
+Bhaskar
+Date: Sat, 20 Mar 2021 02:31:55 +0530
+=46rom: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To: unixbhaskar@gmail.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] lib: Fix a typo
+X-Mailer: git-send-email 2.26.2
 
-It allows a driver_override to match more than one driver, not too
-dissimilar to your driver_flavor above.  In this case it would match
-all driver names starting with "vfio_pci".  For example if we had:
 
-softdep vfio-pci pre: vfio-pci-foo vfio-pci-bar
+s/funtion/function/
 
-Then we'd pre-seed the condition that drivers foo and bar precede the
-base vfio-pci driver, each will match the device to the driver and have
-an opportunity in their probe function to either claim or skip the
-device.  Userspace could also set and exact driver_override, for
-example if they want to force using the base vfio-pci driver or go
-directly to a specific variant.
- 
-> > This assumes we drop the per-variant id_table and use the probe
-> > function to skip devices without the necessary requirements, either
-> > wrong device or missing the tables we expect to expose.  
-> 
-> Without a module table how do we know which driver is which? 
-> 
-> Open coding a match table in probe() and returning failure feels hacky
-> to me.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+  lib/list_sort.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-How's it any different than Max's get_foo_vfio_pci_driver() that calls
-pci_match_id() with an internal match table?  It seems a better fit for
-the existing use cases, for example the IGD variant can use a single
-line table to exclude all except Intel VGA class devices in its probe
-callback, then test availability of the extra regions we'd expose,
-otherwise return -ENODEV.  The NVLink variant can use pci_match_id() in
-the probe callback to filter out anything other than NVIDIA VGA or 3D
-accelerator class devices, then check for associated FDT table, or
-return -ENODEV.  We already use the vfio_pci probe function to exclude
-devices in the deny-list and non-endpoint devices.  Many drivers
-clearly place implicit trust in their id_table, others don't.  In the
-case of meta drivers, I think it's fair to make use of the latter
-approach.
+diff --git a/lib/list_sort.c b/lib/list_sort.c
+index 52f0c258c895..282fe269f16a 100644
+--- a/lib/list_sort.c
++++ b/lib/list_sort.c
+@@ -107,7 +107,7 @@ static void merge_final(void *priv, cmp_func cmp, struc=
+t list_head *head,
+   * @head: the list to sort
+   * @cmp: the elements comparison function
+   *
+- * The comparison funtion @cmp must return > 0 if @a should sort after
++ * The comparison function @cmp must return > 0 if @a should sort after
+   * @b ("@a > @b" if you want an ascending sort), and <=3D 0 if @a should
+   * sort before @b *or* their original order should be preserved.  It is
+   * always called with the element that came first in the input in @a,
+--
+2.26.2
 
-> > > Should we even load it by default?  One answer would be that the sysfs
-> > > file to switch to vfio mode goes into the core PCI layer, and that core
-> > > PCI code would contain a hack^H^H^H^Hhook to first load and bind vfio_pci
-> > > for that device.  
-> > 
-> > Generally we don't want to be the default driver for anything (I think
-> > mdev devices are the exception).  Assignment to userspace or VM is a
-> > niche use case.  Thanks,  
-> 
-> By "default" I mean if the user says device A is in "vfio" mode then
-> the kernel should
->  - Search for a specific driver for this device and autoload it
->  - If no specific driver is found then attach a default "universal"
->    driver for it. vfio_pci is a universal driver.
-> 
-> vfio_platform is also a "universal" driver when in ACPI mode, in some
-> cases.
-> 
-> For OF cases platform it builts its own little subsystem complete with
-> autoloading:
-> 
->                 request_module("vfio-reset:%s", vdev->compat);
->                 vdev->of_reset = vfio_platform_lookup_reset(vdev->compat,
->                                                         &vdev->reset_module);
-> 
-> And it is a good example of why I don't like this subsystem design
-> because vfio_platform doesn't do the driver loading for OF entirely
-> right, vdev->compat is a single string derived from the compatible
-> property:
-> 
->         ret = device_property_read_string(dev, "compatible",
->                                           &vdev->compat);
->         if (ret)
->                 dev_err(dev, "Cannot retrieve compat for %s\n", vdev->name);
-> 
-> Unfortunately OF requires that compatible is a *list* of strings and a
-> correct driver is supposed to evaluate all of them. The driver core
-> does this all correctly, and this was lost when it was open coded
-> here.
-> 
-> We should NOT be avoiding the standard infrastructure for matching
-> drivers to devices by re-implementing it poorly.
 
-I take some blame for the request_module() behavior of vfio-platform,
-but I think we're on the same page that we don't want to turn vfio-pci
-into a nexus for loading variant drivers.  Whatever solution we use for
-vfio-pci might translate to replacing that vfio-platform behavior.  As
-above, I think it's possible to create that alternate universe of
-driver matching with a simple wildcard and load ordering approach,
-performing the more specific filtering in the probe callback with fall
-through to the next matching driver.  Thanks,
+----- End forwarded message -----
 
-Alex
+--6bq9FZlzaaIdgDcQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBVEvkACgkQsjqdtxFL
+KRW5SAf/WhsCUV0YIE6q0yTihVsbhxIVj9yYf/TWC/xuf+aBcBRddjhQif1c4ZVd
+VPNeCLJVPhKbyPrAJ/ed2J+tM1Wq12SN79+uiz7jUwz/GrxH/ill4ndzCACLVA29
+/KrjhSrKSHryR1TOWKdTENAyTSPPicF1dLqSHwOKKqloW9ca+p6tdX7a0VIXgbaB
+6jTyvRQA2Fx334K4uNgepe8oMVJvEU4r6WdBqS+NLm1C0lAoZksGE6VMYg3S9n5a
+nbRz+Qh3z8BjoVUSJTC4kdxGdA90LkBVC8esbRv7C/rN9eLmPVz+M7dk2hy1H6lI
+q1GiVwQy93vHWV03St5fgz/BPiJ++A==
+=qKBD
+-----END PGP SIGNATURE-----
+
+--6bq9FZlzaaIdgDcQ--
