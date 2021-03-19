@@ -2,204 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DDD342874
+	by mail.lfdr.de (Postfix) with ESMTP id B84EB342876
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 23:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCSWIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 18:08:31 -0400
-Received: from relay04.th.seeweb.it ([5.144.164.165]:34793 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhCSWIL (ORCPT
+        id S231160AbhCSWId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 18:08:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38801 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230409AbhCSWIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:08:11 -0400
-Received: from localhost.localdomain (abac242.neoplus.adsl.tpnet.pl [83.6.166.242])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id B75B21F928;
-        Fri, 19 Mar 2021 23:08:08 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v4 2/2] thermal: qcom: tsens-v0_1: Add support for MDM9607
-Date:   Fri, 19 Mar 2021 23:08:02 +0100
-Message-Id: <20210319220802.198215-2-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210319220802.198215-1-konrad.dybcio@somainline.org>
-References: <20210319220802.198215-1-konrad.dybcio@somainline.org>
+        Fri, 19 Mar 2021 18:08:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616191692;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tpb6lNNIMtiqOobkkz7pgbvgA0UyB0HXjyiq4zy5RJI=;
+        b=JuKJDelwV7x3D+Nky7u9xJGu3M9n9PYXQuoZWnf+K40XI5IZgDJY0eUpF2Hu4ILv6Otyd6
+        E18tw+63gY0AMlSt/hYirbK+R6+iAd5FdGXKdb7KSO/3dK7AU2x7t9ika5Gq33eBoSeIbY
+        RLesJF0PN9zGAa69o0v7EEoUb31Y5g8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-1i-LpwZ-PzyJX1vF6tfYUA-1; Fri, 19 Mar 2021 18:08:09 -0400
+X-MC-Unique: 1i-LpwZ-PzyJX1vF6tfYUA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3346A9113F;
+        Fri, 19 Mar 2021 22:08:07 +0000 (UTC)
+Received: from pick.fieldses.org (ovpn-115-237.rdu2.redhat.com [10.10.115.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C17745D72F;
+        Fri, 19 Mar 2021 22:08:06 +0000 (UTC)
+Received: by pick.fieldses.org (Postfix, from userid 2815)
+        id 4EBF4121007; Fri, 19 Mar 2021 18:08:05 -0400 (EDT)
+Date:   Fri, 19 Mar 2021 18:08:05 -0400
+From:   "J. Bruce Fields" <bfields@redhat.com>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] SUNRPC: Output oversized frag reclen as ASCII if
+ printable
+Message-ID: <YFUgxdSXu34SvFsd@pick.fieldses.org>
+References: <YFS7L4FIQBDtIY9d@chrisdown.name>
+ <3844BF67-8820-4D6C-95BA-8BA0B0956BD0@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3844BF67-8820-4D6C-95BA-8BA0B0956BD0@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MDM9607 TSENS IP is very similar to the one of MSM8916, with
-minor adjustments to various tuning values.
+On Fri, Mar 19, 2021 at 02:58:14PM +0000, Chuck Lever III wrote:
+> Hi Chris-
+> 
+> > On Mar 19, 2021, at 10:54 AM, Chris Down <chris@chrisdown.name> wrote:
+> > 
+> > The reclen is taken directly from the first four bytes of the message
+> > with the highest bit stripped, which makes it ripe for protocol mixups.
+> > For example, if someone tries to send a HTTP GET request to us, we'll
+> > interpret it as a 1195725856-sized fragment (ie. (u32)'GET '), and print
+> > a ratelimited KERN_NOTICE with that number verbatim.
+> > 
+> > This can be confusing for downstream users, who don't know what messages
+> > like "fragment too large: 1195725856" actually mean, or that they
+> > indicate some misconfigured infrastructure elsewhere.
+> 
+> One wonders whether that error message is actually useful at all.
+> We could, for example, turn this into a tracepoint, or just get
+> rid of it.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
-v4: Remove unneeded braces and newline
+Just going on vague memories here, but: I think we've seen both spurious
+and real bugs reported based on this.
 
- drivers/thermal/qcom/tsens-v0_1.c | 98 ++++++++++++++++++++++++++++++-
- drivers/thermal/qcom/tsens.c      |  3 +
- drivers/thermal/qcom/tsens.h      |  2 +-
- 3 files changed, 101 insertions(+), 2 deletions(-)
+I'm inclined to go with a dprintk or tracepoint but not removing it
+entirely.
 
-diff --git a/drivers/thermal/qcom/tsens-v0_1.c b/drivers/thermal/qcom/tsens-v0_1.c
-index 4ffa2e2c0145..f136cb350238 100644
---- a/drivers/thermal/qcom/tsens-v0_1.c
-+++ b/drivers/thermal/qcom/tsens-v0_1.c
-@@ -190,6 +190,39 @@
- 
- #define BIT_APPEND		0x3
- 
-+/* eeprom layout data for mdm9607 */
-+#define MDM9607_BASE0_MASK	0x000000ff
-+#define MDM9607_BASE1_MASK	0x000ff000
-+#define MDM9607_BASE0_SHIFT	0
-+#define MDM9607_BASE1_SHIFT	12
-+
-+#define MDM9607_S0_P1_MASK	0x00003f00
-+#define MDM9607_S1_P1_MASK	0x03f00000
-+#define MDM9607_S2_P1_MASK	0x0000003f
-+#define MDM9607_S3_P1_MASK	0x0003f000
-+#define MDM9607_S4_P1_MASK	0x0000003f
-+
-+#define MDM9607_S0_P2_MASK	0x000fc000
-+#define MDM9607_S1_P2_MASK	0xfc000000
-+#define MDM9607_S2_P2_MASK	0x00000fc0
-+#define MDM9607_S3_P2_MASK	0x00fc0000
-+#define MDM9607_S4_P2_MASK	0x00000fc0
-+
-+#define MDM9607_S0_P1_SHIFT	8
-+#define MDM9607_S1_P1_SHIFT	20
-+#define MDM9607_S2_P1_SHIFT	0
-+#define MDM9607_S3_P1_SHIFT	12
-+#define MDM9607_S4_P1_SHIFT	0
-+
-+#define MDM9607_S0_P2_SHIFT	14
-+#define MDM9607_S1_P2_SHIFT	26
-+#define MDM9607_S2_P2_SHIFT	6
-+#define MDM9607_S3_P2_SHIFT	18
-+#define MDM9607_S4_P2_SHIFT	6
-+
-+#define MDM9607_CAL_SEL_MASK	0x00700000
-+#define MDM9607_CAL_SEL_SHIFT	20
-+
- static int calibrate_8916(struct tsens_priv *priv)
- {
- 	int base0 = 0, base1 = 0, i;
-@@ -452,7 +485,56 @@ static int calibrate_8974(struct tsens_priv *priv)
- 	return 0;
- }
- 
--/* v0.1: 8916, 8939, 8974 */
-+static int calibrate_9607(struct tsens_priv *priv)
-+{
-+	int base, i;
-+	u32 p1[5], p2[5];
-+	int mode = 0;
-+	u32 *qfprom_cdata;
-+
-+	qfprom_cdata = (u32 *)qfprom_read(priv->dev, "calib");
-+	if (IS_ERR(qfprom_cdata))
-+		return PTR_ERR(qfprom_cdata);
-+
-+	mode = (qfprom_cdata[2] & MDM9607_CAL_SEL_MASK) >> MDM9607_CAL_SEL_SHIFT;
-+	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
-+
-+	switch (mode) {
-+	case TWO_PT_CALIB:
-+		base = (qfprom_cdata[2] & MDM9607_BASE1_MASK) >> MDM9607_BASE1_SHIFT;
-+		p2[0] = (qfprom_cdata[0] & MDM9607_S0_P2_MASK) >> MDM9607_S0_P2_SHIFT;
-+		p2[1] = (qfprom_cdata[0] & MDM9607_S1_P2_MASK) >> MDM9607_S1_P2_SHIFT;
-+		p2[2] = (qfprom_cdata[1] & MDM9607_S2_P2_MASK) >> MDM9607_S2_P2_SHIFT;
-+		p2[3] = (qfprom_cdata[1] & MDM9607_S3_P2_MASK) >> MDM9607_S3_P2_SHIFT;
-+		p2[4] = (qfprom_cdata[2] & MDM9607_S4_P2_MASK) >> MDM9607_S4_P2_SHIFT;
-+		for (i = 0; i < priv->num_sensors; i++)
-+			p2[i] = ((base + p2[i]) << 2);
-+		fallthrough;
-+	case ONE_PT_CALIB2:
-+		base = (qfprom_cdata[0] & MDM9607_BASE0_MASK);
-+		p1[0] = (qfprom_cdata[0] & MDM9607_S0_P1_MASK) >> MDM9607_S0_P1_SHIFT;
-+		p1[1] = (qfprom_cdata[0] & MDM9607_S1_P1_MASK) >> MDM9607_S1_P1_SHIFT;
-+		p1[2] = (qfprom_cdata[1] & MDM9607_S2_P1_MASK) >> MDM9607_S2_P1_SHIFT;
-+		p1[3] = (qfprom_cdata[1] & MDM9607_S3_P1_MASK) >> MDM9607_S3_P1_SHIFT;
-+		p1[4] = (qfprom_cdata[2] & MDM9607_S4_P1_MASK) >> MDM9607_S4_P1_SHIFT;
-+		for (i = 0; i < priv->num_sensors; i++)
-+			p1[i] = ((base + p1[i]) << 2);
-+		break;
-+	default:
-+		for (i = 0; i < priv->num_sensors; i++) {
-+			p1[i] = 500;
-+			p2[i] = 780;
-+		}
-+		break;
-+	}
-+
-+	compute_intercept_slope(priv, p1, p2, mode);
-+	kfree(qfprom_cdata);
-+
-+	return 0;
-+}
-+
-+/* v0.1: 8916, 8939, 8974, 9607 */
- 
- static struct tsens_features tsens_v0_1_feat = {
- 	.ver_major	= VER_0_1,
-@@ -540,3 +622,17 @@ struct tsens_plat_data data_8974 = {
- 	.feat		= &tsens_v0_1_feat,
- 	.fields	= tsens_v0_1_regfields,
- };
-+
-+static const struct tsens_ops ops_9607 = {
-+	.init		= init_common,
-+	.calibrate	= calibrate_9607,
-+	.get_temp	= get_temp_common,
-+};
-+
-+struct tsens_plat_data data_9607 = {
-+	.num_sensors	= 5,
-+	.ops		= &ops_9607,
-+	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4 },
-+	.feat		= &tsens_v0_1_feat,
-+	.fields	= tsens_v0_1_regfields,
-+};
-diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index d8ce3a687b80..51c36b9e8e69 100644
---- a/drivers/thermal/qcom/tsens.c
-+++ b/drivers/thermal/qcom/tsens.c
-@@ -895,6 +895,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
- 
- static const struct of_device_id tsens_table[] = {
- 	{
-+		.compatible = "qcom,mdm9607-tsens",
-+		.data = &data_9607,
-+	}, {
- 		.compatible = "qcom,msm8916-tsens",
- 		.data = &data_8916,
- 	}, {
-diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-index f40b625f897e..cba64c33b4f9 100644
---- a/drivers/thermal/qcom/tsens.h
-+++ b/drivers/thermal/qcom/tsens.h
-@@ -585,7 +585,7 @@ int get_temp_common(const struct tsens_sensor *s, int *temp);
- extern struct tsens_plat_data data_8960;
- 
- /* TSENS v0.1 targets */
--extern struct tsens_plat_data data_8916, data_8939, data_8974;
-+extern struct tsens_plat_data data_8916, data_8939, data_8974, data_9607;
- 
- /* TSENS v1 targets */
- extern struct tsens_plat_data data_tsens_v1, data_8976;
--- 
-2.31.0
+--b.
+
+> 
+> 
+> > To allow users to more easily understand and debug these cases, add the
+> > number interpreted as ASCII if all characters are printable:
+> > 
+> >    RPC: fragment too large: 1195725856 (ASCII "GET ")
+> > 
+> > If demand grows elsewhere, a new printk format that takes a number and
+> > outputs it in various formats is also a possible solution. For now, it
+> > seems reasonable to put this here since this particular code path is the
+> > one that has repeatedly come up in production.
+> > 
+> > Signed-off-by: Chris Down <chris@chrisdown.name>
+> > Cc: Chuck Lever <chuck.lever@oracle.com>
+> > Cc: J. Bruce Fields <bfields@redhat.com>
+> > Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > ---
+> > net/sunrpc/svcsock.c | 39 +++++++++++++++++++++++++++++++++++++--
+> > 1 file changed, 37 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+> > index 2e2f007dfc9f..046b1d104340 100644
+> > --- a/net/sunrpc/svcsock.c
+> > +++ b/net/sunrpc/svcsock.c
+> > @@ -46,6 +46,7 @@
+> > #include <linux/uaccess.h>
+> > #include <linux/highmem.h>
+> > #include <asm/ioctls.h>
+> > +#include <linux/ctype.h>
+> > 
+> > #include <linux/sunrpc/types.h>
+> > #include <linux/sunrpc/clnt.h>
+> > @@ -863,6 +864,34 @@ static void svc_tcp_clear_pages(struct svc_sock *svsk)
+> > 	svsk->sk_datalen = 0;
+> > }
+> > 
+> > +/* The reclen is taken directly from the first four bytes of the message with
+> > + * the highest bit stripped, which makes it ripe for protocol mixups. For
+> > + * example, if someone tries to send a HTTP GET request to us, we'll interpret
+> > + * it as a 1195725856-sized fragment (ie. (u32)'GET '), and print a ratelimited
+> > + * KERN_NOTICE with that number verbatim.
+> > + *
+> > + * To allow users to more easily understand and debug these cases, this
+> > + * function decodes the purported length as ASCII, and returns it if all
+> > + * characters were printable. Otherwise, we return NULL.
+> > + *
+> > + * WARNING: Since we reuse the u32 directly, the return value is not null
+> > + * terminated, and must be printed using %.*s with
+> > + * sizeof(svc_sock_reclen(svsk)).
+> > + */
+> > +static char *svc_sock_reclen_ascii(struct svc_sock *svsk)
+> > +{
+> > +	u32 len_be = cpu_to_be32(svc_sock_reclen(svsk));
+> > +	char *len_be_ascii = (char *)&len_be;
+> > +	size_t i;
+> > +
+> > +	for (i = 0; i < sizeof(len_be); i++) {
+> > +		if (!isprint(len_be_ascii[i]))
+> > +			return NULL;
+> > +	}
+> > +
+> > +	return len_be_ascii;
+> > +}
+> > +
+> > /*
+> >  * Receive fragment record header into sk_marker.
+> >  */
+> > @@ -870,6 +899,7 @@ static ssize_t svc_tcp_read_marker(struct svc_sock *svsk,
+> > 				   struct svc_rqst *rqstp)
+> > {
+> > 	ssize_t want, len;
+> > +	char *reclen_ascii;
+> > 
+> > 	/* If we haven't gotten the record length yet,
+> > 	 * get the next four bytes.
+> > @@ -898,9 +928,14 @@ static ssize_t svc_tcp_read_marker(struct svc_sock *svsk,
+> > 	return svc_sock_reclen(svsk);
+> > 
+> > err_too_large:
+> > -	net_notice_ratelimited("svc: %s %s RPC fragment too large: %d\n",
+> > +	reclen_ascii = svc_sock_reclen_ascii(svsk);
+> > +	net_notice_ratelimited("svc: %s %s RPC fragment too large: %d%s%.*s%s\n",
+> > 			       __func__, svsk->sk_xprt.xpt_server->sv_name,
+> > -			       svc_sock_reclen(svsk));
+> > +			       svc_sock_reclen(svsk),
+> > +			       reclen_ascii ? " (ASCII \"" : "",
+> > +			       (int)sizeof(u32),
+> > +			       reclen_ascii ?: "",
+> > +			       reclen_ascii ? "\")" : "");
+> > 	set_bit(XPT_CLOSE, &svsk->sk_xprt.xpt_flags);
+> > err_short:
+> > 	return -EAGAIN;
+> > -- 
+> > 2.30.2
+> > 
+> 
+> --
+> Chuck Lever
+> 
+> 
+> 
 
