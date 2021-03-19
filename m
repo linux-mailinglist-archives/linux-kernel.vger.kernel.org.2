@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F9C342161
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA6342166
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhCSP5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhCSP5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:57:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 707726195F;
-        Fri, 19 Mar 2021 15:57:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616169432;
-        bh=B5EKdJdy44dikwwP4V0T3aMuGft8nFhye4jvFnctszU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ooI6ryJvWBJHvlBAYaqPZwmSJm6eQzuhpSMgn3YsYQFYjHhmBm6GW8nb9q6x7fM8P
-         WMWHiZypoelXgeKP+AADBVVSDohdED9F0lTuvsamZmATGQcafStX/mDdJcClNfTwge
-         GUYfHAYgvFt7Zm4qfY8HvABhs8BupN8TK7lbjomvyi0GNHDvVqKjRRRg5OgSbjAkVD
-         z/6KHEsSGtP2PYHSY6gDpZ+USfOP8NKzAGj35Ta+nPGyG3E9O7e50VciUpAKBLbi7Z
-         ffRsLmDBSPblq2Tnd5YbFoAbUo5moay0/933cysisOSa5g5Ta3gqtvz+D7lmzli3B0
-         +Z6YQ6zbxruPg==
-Date:   Fri, 19 Mar 2021 10:57:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210319155711.GA234744@bjorn-Precision-5520>
+        id S230009AbhCSP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:58:33 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38502 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhCSP6L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 11:58:11 -0400
+Received: by mail-ot1-f50.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so8981504otk.5;
+        Fri, 19 Mar 2021 08:58:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=k+llNw5yUHajR0BEXiemzUiZNaPM872V8FseEszkL08=;
+        b=JYbZQGg7xDMVn2WQzc24nV0ulOy8baCGun8T1Se+9RSs/B7ISV/BphcQDsi6UOQKs3
+         8VSGHfREer1UTh/+9D41zM0qGYaUuaTBypR47nfQcKCx/HxYbCk2ApSKwytHKF/rQNzR
+         F5cua7avddbisWZHzHHoW2dlhwzuwhlZEQnMQPA0Q7hrw3nPMOcqy8owKzgSqFTEY4bV
+         b5trpJiGCR+uAQUezK+ETDdzJ2XA6zYj0pmTTFmNdAb0kXwPxy5trVaiGSaB3KY3BpOC
+         c0unQfgauHU5qeREbLMsWr/Dz8h2XVk3mT1sLbXngve1T1DCiLW58UoetZ/Wq+XuBEUj
+         Sheg==
+X-Gm-Message-State: AOAM533o0y4ipg0q3p8n6eAzke4cmZnry7qRJFcoGU/OlzJwrUhtMwou
+        0/HrjS7fUz9o+5oaLeZN0K3zUqfFQi4vuO3BhxZxTu83HP0=
+X-Google-Smtp-Source: ABdhPJwZAkOzqUL2IyC85Hu3eceffM1EgT/46r4CqPkrBY/L4zg2hNOSEDptGMR0aT/nckoVPnsp3rVY+y/eilK3tmc=
+X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr1639444otq.260.1616169491165;
+ Fri, 19 Mar 2021 08:58:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFSgQ2RWqt4YyIV4@unreal>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 19 Mar 2021 16:58:00 +0100
+Message-ID: <CAJZ5v0hES51MM9J5nM+An_ON-rxRJ5s_9KCa9n7Fe9nWFziLeA@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v5.12-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 02:59:47PM +0200, Leon Romanovsky wrote:
-> On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > On 18.03.21 18:22, Leon Romanovsky wrote:
-> > 
-> > > Which email client do you use?  Your responses are grouped as
-> > > one huge block without any chance to respond to you on specific
-> > > point or answer to your question.
-> > 
-> > I'm reading this thread in Tbird, and threading / quoting all
-> > looks nice.
-> 
-> I'm not talking about threading or quoting but about response
-> itself.  See it here
-> https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
-> Alex's response is one big chunk without any separations to
-> paragraphs.
+Hi Linus,
 
-Don't make this harder than it needs to be.  I think it's totally
-acceptable to just split Alex's text where you need to respond.  For
-example, Alex wrote this:
+Please pull from the tag
 
-  vfio-pci uses the internal kernel API, ie. the variants of
-  pci_reset_function(), which is the same interface used by the existing
-  sysfs reset mechanism.  This proposed configuration of the reset method
-  would affect any driver using that same core infrastructure and from my
-  perspective that's really the goal.  ...
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.12-rc4
 
-If I wanted to respond to the first sentence, I would just do this:
+with top-most commit 49cb71a77ce760f20487c38f891aa3132bef782e
 
-aw> vfio-pci uses the internal kernel API, ie. the variants of
-aw> pci_reset_function(), which is the same interface used by the existing
-aw> sysfs reset mechanism.  
+ Merge branch 'pm-core'
 
-I would write my response to the above here.  The rest of the quote
-continues on below.  If the rest of Alex's message isn't relevant to
-my response, I would remove it completely.
+on top of commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
 
-aw> This proposed configuration of the reset method
-aw> would affect any driver using that same core infrastructure and from my
-aw> perspective that's really the goal.  ...
+ Linux 5.12-rc3
 
-Bjorn
+to receive power management fixes for 5.12-rc4.
+
+These revert two problematic commits.
+
+Specifics:
+
+ - Revert ACPI PM commit that attempted to improve reboot handling
+   on some systems, but it caused other systems to panic() during
+   reboot (Josef Bacik).
+
+ - Revert PM-runtime commit that attempted to improve the handling
+   of suppliers during PM-runtime suspend of a consumer device, but
+   it introduced a race condition potentially leading to unexpected
+   behavior (Rafael Wysocki).
+
+Thanks!
+
+
+---------------
+
+Josef Bacik (1):
+      Revert "PM: ACPI: reboot: Use S5 for reboot"
+
+Rafael J. Wysocki (1):
+      Revert "PM: runtime: Update device status before letting
+suppliers suspend"
+
+---------------
+
+ drivers/base/power/runtime.c | 62 ++++++++++++++++++--------------------------
+ kernel/reboot.c              |  2 --
+ 2 files changed, 25 insertions(+), 39 deletions(-)
