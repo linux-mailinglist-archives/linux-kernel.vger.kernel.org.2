@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3483934259A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398C03425AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 20:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhCSTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 15:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40264 "EHLO mail.kernel.org"
+        id S230489AbhCSTD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 15:03:58 -0400
+Received: from mail.zx2c4.com ([104.131.123.232]:56506 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhCSTCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 15:02:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B762361931;
-        Fri, 19 Mar 2021 19:02:08 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 19:02:06 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chen Jun <chenjun102@huawei.com>,
-        Marco Elver <elver@google.com>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
-Message-ID: <20210319190205.GI6832@arm.com>
-References: <20210319184106.5688-1-mark.rutland@arm.com>
+        id S230285AbhCSTD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 15:03:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1616180598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IN+ydESw6o8X7Wr71+3xLjavHCnYCjO5YtnEjXc2xqc=;
+        b=ANsFEebuT8UujDMuec9I0+F4pS5K8XVJzeccGIydKKQh8IDTI8NowQpzfMvTMfDpYaaWMG
+        JOeUL2LE4xtQk7fxfcBmggIA+Y650zht+YZzj8+afJeJ8WHs06lbSqV28OyLOwaHqgDlN+
+        Te0EniVtdpkMaeqhCxqckzmW8mOSyV0=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d9c0995b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 19 Mar 2021 19:03:18 +0000 (UTC)
+Received: by mail-yb1-f171.google.com with SMTP id c131so7339479ybf.7;
+        Fri, 19 Mar 2021 12:03:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531u4ELDgeTKUfOEhYajbput+cxCXYnnTIkO8zZQdOcYh3ZMv8tV
+        LU2iIcWLCeOoJzP00+QyAm6aPurpLN0DipdKdlI=
+X-Google-Smtp-Source: ABdhPJyVtqiB1Ie45L3iLGrKcIwbe2e4TLDHlPmROylBQSw3Eog83JKjNPeCDeaQa5hvIoxSGuhCfJ9QgpnWl5tITiE=
+X-Received: by 2002:a25:38c5:: with SMTP id f188mr8383964yba.178.1616180597073;
+ Fri, 19 Mar 2021 12:03:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319184106.5688-1-mark.rutland@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
+ <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+ <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAM_iQpXvVZxBRHF6PBDOYSOSCj08nPyfcY0adKuuTg=cqffV+w@mail.gmail.com>
+ <87eegddhsj.fsf@toke.dk> <CAHmME9qDU7VRmBV+v0tzLiUpMJykjswSDwqc9P43ZwG1UD7mzw@mail.gmail.com>
+ <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com>
+In-Reply-To: <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 19 Mar 2021 13:03:06 -0600
+X-Gmail-Original-Message-ID: <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
+Message-ID: <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
+Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
+ for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org, Thomas Gschwantner <tharre3@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:41:06PM +0000, Mark Rutland wrote:
-> We recently converted arm64 to use arch_stack_walk() in commit:
-> 
->   5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> 
-> The core stacktrace code expects that (when tracing the current task)
-> arch_stack_walk() starts a trace at its caller, and does not include
-> itself in the trace. However, arm64's arch_stack_walk() includes itself,
-> and so traces include one more entry than callers expect. The core
-> stacktrace code which calls arch_stack_walk() tries to skip a number of
-> entries to prevent itself appearing in a trace, and the additional entry
-> prevents skipping one of the core stacktrace functions, leaving this in
-> the trace unexpectedly.
-> 
-> We can fix this by having arm64's arch_stack_walk() begin the trace with
-> its caller. The first value returned by the trace will be
-> __builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
-> first frame record to be unwound will be __builtin_frame_address(1),
-> i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
-> is also marked noinline.
-> 
-> While __builtin_frame_address(1) is not safe in portable code, local GCC
-> developers have confirmed that it is safe on arm64. To find the caller's
-> frame record, the builtin can safely dereference the current function's
-> frame record or (in theory) could stash the original FP into another GPR
-> at function entry time, neither of which are problematic.
-> 
-> Prior to this patch, the tracing code would unexpectedly show up in
-> traces of the current task, e.g.
-> 
-> | # cat /proc/self/stack
-> | [<0>] stack_trace_save_tsk+0x98/0x100
-> | [<0>] proc_pid_stack+0xb4/0x130
-> | [<0>] proc_single_show+0x60/0x110
-> | [<0>] seq_read_iter+0x230/0x4d0
-> | [<0>] seq_read+0xdc/0x130
-> | [<0>] vfs_read+0xac/0x1e0
-> | [<0>] ksys_read+0x6c/0xfc
-> | [<0>] __arm64_sys_read+0x20/0x30
-> | [<0>] el0_svc_common.constprop.0+0x60/0x120
-> | [<0>] do_el0_svc+0x24/0x90
-> | [<0>] el0_svc+0x2c/0x54
-> | [<0>] el0_sync_handler+0x1a4/0x1b0
-> | [<0>] el0_sync+0x170/0x180
-> 
-> After this patch, the tracing code will not show up in such traces:
-> 
-> | # cat /proc/self/stack
-> | [<0>] proc_pid_stack+0xb4/0x130
-> | [<0>] proc_single_show+0x60/0x110
-> | [<0>] seq_read_iter+0x230/0x4d0
-> | [<0>] seq_read+0xdc/0x130
-> | [<0>] vfs_read+0xac/0x1e0
-> | [<0>] ksys_read+0x6c/0xfc
-> | [<0>] __arm64_sys_read+0x20/0x30
-> | [<0>] el0_svc_common.constprop.0+0x60/0x120
-> | [<0>] do_el0_svc+0x24/0x90
-> | [<0>] el0_svc+0x2c/0x54
-> | [<0>] el0_sync_handler+0x1a4/0x1b0
-> | [<0>] el0_sync+0x170/0x180
-> 
-> Erring on the side of caution, I've given this a spin with a bunch of
-> toolchains, verifying the output of /proc/self/stack and checking that
-> the assembly looked sound. For GCC (where we require version 5.1.0 or
-> later) I tested with the kernel.org crosstool binares for versions
-> 5.5.0, 6.4.0, 6.5.0, 7.3.0, 7.5.0, 8.1.0, 8.3.0, 8.4.0, 9.2.0, and
-> 10.1.0. For clang (where we require version 10.0.1 or later) I tested
-> with the llvm.org binary releases of 11.0.0, and 11.0.1.
-> 
-> Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Chen Jun <chenjun102@huawei.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Will Deacon <will@kernel.org>
+On Thu, Mar 18, 2021 at 1:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> > That offer definitely still stands. Generalization sounds like a lot of fun.
+> >
+> > Keep in mind though that it's an eventually consistent queue, not an
+> > immediately consistent one, so that might not match all use cases. It
+> > works with wg because we always trigger the reader thread anew when it
+> > finishes, but that doesn't apply to everyone's queueing setup.
+>
+> Thanks for mentioning this.
+>
+> "multi-producer, single-consumer" seems to match the lockless qdisc's
+> paradigm too, for now concurrent enqueuing/dequeuing to the pfifo_fast's
+> queues() is not allowed, it is protected by producer_lock or consumer_lock.
 
-Thanks Mark. I think we should add a cc stable, just with Fixes doesn't
-always seem to end up in a stable kernel:
-
-Cc: <stable@vger.kernel.org> # 5.10.x
-
-With that:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+The other thing is that if you've got memory for a ring buffer rather
+than a list queue, we worked on an MPMC ring structure for WireGuard a
+few years ago that we didn't wind up using in the end, but it lives
+here:
+https://git.zx2c4.com/wireguard-monolithic-historical/tree/src/mpmc_ptr_ring.h?h=tg/mpmc-benchmark
