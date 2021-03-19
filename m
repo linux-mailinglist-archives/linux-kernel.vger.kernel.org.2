@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D40341459
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A2334145A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhCSEpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 00:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhCSEok (ORCPT
+        id S233795AbhCSEqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 00:46:21 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:45838 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233786AbhCSEqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:44:40 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B76C06174A;
-        Thu, 18 Mar 2021 21:44:40 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4231140pjb.4;
-        Thu, 18 Mar 2021 21:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CzYMrkedvRYKjm01yoSToiKKWU0Vae22GM3ZPKsL+ww=;
-        b=Gw6bg8n6rBtkN82XX4temekjqWvy0OEGZGBzaB1Zl/BIG6QaiUgpDGZlWpi34RnrLG
-         SesyE4hKDWX/+YeU+YYUEkfdwkEZkm+kwgaeg0Fg8ya4nHZntHdBAmnFkBqqcMveqjF3
-         YLlHFPQ60S5XXB6Gux9Kv/o+2OHaC/G4cHBNCQMf1itgV6yq/i1YpNy+GySBAjgP0n+l
-         5B33PYAUQiNoFXYy9GDSuIpPDHeBjwZXWxqUI1sV5NegBc8gS+cXAUG30vAjl1UqwnJ1
-         ZuCo23P8JoDErW4tRcGeZ8n9v5q8+YYm38egAzVMyTitJ+igt5sXLEQ0VPtn+U+QVVbS
-         HEAA==
+        Fri, 19 Mar 2021 00:46:01 -0400
+Received: by mail-wm1-f47.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo4525113wmq.4;
+        Thu, 18 Mar 2021 21:46:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CzYMrkedvRYKjm01yoSToiKKWU0Vae22GM3ZPKsL+ww=;
-        b=dQiBAbyfhK02/cqCjOueNwDsngujxYdzg5lYoUOu3FpTISaEm2M8MbDF3pqW3lr/Y1
-         fvjd/4ORaN9U35GwJ0xkGtm5mWa2tmtxQY8Z1m4wJCHXeIxTb129equmNRVGYj3aK9qn
-         /aup/MW0JT260n4d6iOOMWSodXn3tRVNOC2SECUYsGDpkoutkXCLMxVFV+iPw4o4MViu
-         bhVWujpa8cmNUWnLhoZJ00OWDP6xu6uCZhf8uwVaVTrk0W4tFB55byJSZFfs247dbSlr
-         qVAjVSRDPS8rHl30ka1K4rRyj6V5N/rzmpKPAleze6GWczjuDEpTkrIQIXbLEH2hkXYZ
-         6m4Q==
-X-Gm-Message-State: AOAM5305sjtfRkTF2wbtjGrpiokASah75ueuqI7WAqj6ZY9EGWSz7VR5
-        rPuHP7FUpl7gN0ydOxme0GE=
-X-Google-Smtp-Source: ABdhPJyzib0mgu6hQDEymrwlUaX78/a0EgfEwdb7aR4oqaVvBriyFZaU/c1Oz4D0xe86refNIKg2gg==
-X-Received: by 2002:a17:90a:1049:: with SMTP id y9mr7782237pjd.173.1616129080316;
-        Thu, 18 Mar 2021 21:44:40 -0700 (PDT)
-Received: from jagdpanzerIV.localdomain ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id 27sm3663116pgq.51.2021.03.18.21.44.37
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=scHpeEvXZJxUtO28cL3xBc5mW0T6oSgAncD6re2VLx0=;
+        b=Hg8lYD3M6pJKAkqTSccHg3MO8rm+y+f4YA63bMvfYRufVLcqPVZX2OCJ++UJ5Eui9O
+         f1fU0x0mhtAARSdbGD1xVYJ/SYPvL4hr+t+17QYLSuyerviOOkdj0LxGdgB9XixN2c2Q
+         RZ7fH7lkcxy3xL4T47ZlW0RfLxKOmQXgMLslomsUkfpGuulk33I7wJhx57VBgauI79hJ
+         1rd2Gb7EyrVKuqOfGAef5MmOUafBWdEAD+OjSSqzu/Thzq2/8xYw+MXG/VTopXKq5D2Z
+         muFVHnyvqrkYZQvs6puI2q/wd7p7E4Senl1dPC1T4RpkuUDm76mFxvjP9tqn1N0j06Vc
+         WwDw==
+X-Gm-Message-State: AOAM532NeBIVPe2RQXwmpw9YSsz/I33QKcNwyZvYDy74ebH8xgmnb1/I
+        68ttDyDK6K3nGpWa9xizUsE=
+X-Google-Smtp-Source: ABdhPJzQItZ7vJfQkjljBfAh+t+TcfDCRltPaw207Oi/uCSM/4wNPdhhzq/bK3DCLBxz5QYVG0j5nw==
+X-Received: by 2002:a1c:6707:: with SMTP id b7mr1932695wmc.185.1616129160554;
+        Thu, 18 Mar 2021 21:46:00 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id c8sm6211170wrd.55.2021.03.18.21.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Mar 2021 21:44:39 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 13:44:34 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] cifsd: fix a precedence bug in parse_dacl()
-Message-ID: <YFQsMmq9rI/eKJtZ@jagdpanzerIV.localdomain>
-References: <YFNRPcVUXZ3EiEXN@mwanda>
+        Thu, 18 Mar 2021 21:45:59 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 05:45:58 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] PCI: keystone: Let AM65 use the pci_ops defined in
+ pcie-designware-host.c
+Message-ID: <YFQshiQIORaF7tr0@rocinante>
+References: <20210317131518.11040-1-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YFNRPcVUXZ3EiEXN@mwanda>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317131518.11040-1-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/18 16:10), Dan Carpenter wrote:
-> 
-> The shift has higher precedence than mask so this doesn't work as
-> intended.
-> 
-> Fixes: ef24dca82789 ("cifsd: add support for ACLs")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Hi Kishon,
 
-Thanks.
+Thank you for the fix!
 
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+[...]
+> @@ -798,7 +798,8 @@ static int __init ks_pcie_host_init(struct pcie_port *pp)
+>  	int ret;
+>  
+>  	pp->bridge->ops = &ks_pcie_ops;
+> -	pp->bridge->child_ops = &ks_child_pcie_ops;
+> +	if (!ks_pcie->is_am6)
+> +		pp->bridge->child_ops = &ks_child_pcie_ops;
+>  
+>  	ret = ks_pcie_config_legacy_irq(ks_pcie);
+>  	if (ret)
+[...]
 
-	-ss
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+
+Krzysztof
