@@ -2,157 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6E13421E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B00A3421EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhCSQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:29:23 -0400
-Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:60705
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229785AbhCSQ2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:28:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mui8RGXizF0itMt1C5kmmzJ7RSemWTYqG7dLe/nhv6aPazP4wJX6EdSuy85Fpm5GKDWxiGrnVHEJhkMJ/NvMAjeRGp0L7SJabAlHWvMetBAIjUQ/YNDRDQzv0yjEHGZmXCyF0GBjG3ZA0RCwTwEAIzwcOuf5NG8yAUPTzo7X9jAUDux6l7rjfxy+HqmWP3pEDYp8WaENPHzSb0Ve1DsMw5oCZFZNZ7YRE0h7p7qpww4oxv4alrKjxz5EOQMxvtGIB9A5kAJ/YYcPdGjljMzaEsJdlB8yGi5RSRpXLSZzQKgSaRM9uHojAJN0TS7c4jkGjW184iRE5HbUN95mMpOAag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6LlR/Zxn+0Iz7PjYIpXQ/aTHPeOZ0cRBJNugiIOGY8w=;
- b=nvsKvtqvtfIUmuDSVnipRoJ2tDHZL1UjbVj/lnDMc9Ywn4p8e1zQ/fqkAWA9D/K/PsBb6c0pr94frLF2oNqMiDKJI8N6KcCzDwX+OpGeRYAB7h3OTklZJKVcxJ3uOexo2xj6CLmOuljijJ69hpkPGiooAqYc+raIpVaddmAlNeGwpNeW/WASWc8Qd4HuehimDVakSFGNwo435mOMixnDZvGpQo29i6A8Xs+4FBTIlaKj80Qpyvjhyo539zJen1MYXlo0++PpnWAG+bpS7lLF4aMhUdtYJrL1nHhAIw4dDzltk0XW9cqH7eATS1jzrgejd/CwL45jznu4KIfsAN9Ujw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6LlR/Zxn+0Iz7PjYIpXQ/aTHPeOZ0cRBJNugiIOGY8w=;
- b=lx+9nhqHVN4l2W43zA1k1510UXjBOhWH0zjDgVFCd4Rl00YZN1Mi+S+xlchm37PkgouVQ5GIJI3iEeev8A8Zk7u4X64VJwBlg8sQTEsBbwX9w+774M2TfBeAxGLaoY8tSIz5hPQ7qCwmaNQotz8xZOp+mjhZhiwuxQBFzlCkycIPfvLB+v+biBOx1xufOudL+GyWcK653x2MAncX7UM9pEh5yeTPmOyy9NJPXvGiQvgpLSLrRwof+I+cBVl9LGAapnZi29yoZDDYwbYi7F/7+dq8Brzk1/KQKjQh6A2cHJrsFyUnLKS6imVwz42FhHHlO89jNNuZ1JM8v8IQYWPYyw==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1545.namprd12.prod.outlook.com (2603:10b6:4:7::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.18; Fri, 19 Mar 2021 16:28:51 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 16:28:51 +0000
-Date:   Fri, 19 Mar 2021 13:28:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
- vfio_pci drivers
-Message-ID: <20210319162848.GZ2356281@nvidia.com>
-References: <20210309083357.65467-1-mgurtovoy@nvidia.com>
- <20210309083357.65467-9-mgurtovoy@nvidia.com>
- <19e73e58-c7a9-03ce-65a7-50f37d52ca15@ozlabs.ru>
- <8941cf42-0c40-776e-6c02-9227146d3d66@nvidia.com>
- <20210319092341.14bb179a@omen.home.shazbot.org>
- <20210319161722.GY2356281@nvidia.com>
- <20210319162033.GA18218@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319162033.GA18218@lst.de>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR05CA0051.namprd05.prod.outlook.com
- (2603:10b6:208:236::20) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S230125AbhCSQa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhCSQaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:30:12 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F61FC06174A;
+        Fri, 19 Mar 2021 09:30:12 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id n11so4028438pgm.12;
+        Fri, 19 Mar 2021 09:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KskjzBV3rfk7FRDeNN3GQyij+s9GzuOuc0wnxa5sFs8=;
+        b=mwaVtrri9sSp4u8EuvxDMgpiekB565gp/WBhxMaUSg4Li8tlW+Azr5sDlrqBB7pPg4
+         oukDDoCNyhEqp1Hyc7gTrlNNMqTDbuuO5Dlzdwt0k4SxIcq0fIzDRZVfvaasIr9A23Ni
+         pRHsg6j4B0NTYTggP3Nh0zP8goqjLQJzAsRK4CurYNMSSrf0/utqzsYp6mPjutpgWDy2
+         EWjOWsNy/m4b4hqQyBHjQdoTXsHoGk2RJVaEq4CJIukNj+GSG3ccc3kSHDR3iWDvwTkD
+         /pK7QuDiyp0vkOlGb5rYJaIF2ikf3x4LgMUGxFwbKvfvh9jtTCch/dxbbu20ogJcnvJ1
+         4mPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=KskjzBV3rfk7FRDeNN3GQyij+s9GzuOuc0wnxa5sFs8=;
+        b=GZLbfFoGZ1T+7Incx67pirCFTqll7jNepXqXyRHtD1Q6IzaggecMOju0xbZdDYxQgH
+         qkwgRE/uVP3ORCknW2pLc9krIUnWRi4pnnGLDdx1SISsJSReFUQgOBkFpos0bb1XioxA
+         0vNI1NNA0euFBtForPUsnxiLGXmrblgpcFHCPrgVfcGvt8n+LkgwYR+BnJibkLsY4bwx
+         QjoSXx1HPvF24GsatpnUoGrHuUHMPwk+dMIsty0L3V/Nk7ra1BGevX+UyOQRy4DtQor1
+         b68hB0d30o9DpWupW1qeABS7J1802gnS875TKSYdlMG1wB7bk/k/elCxg8zrHNrPcYNz
+         aiPQ==
+X-Gm-Message-State: AOAM531ID0i9kGh4eYmCFdCC4WhSM3dKPMmxkV5AKttFRsPJ5yjoKU+p
+        I5sKx3Sv+TkSDXI2PF0E2po=
+X-Google-Smtp-Source: ABdhPJx4VM/chj81IjkDipzXeSPGAl6XMFOZ6R3X7EJOeEW7WZOyvrf+KOH6gEfnopTTSOHzD0KhjA==
+X-Received: by 2002:aa7:8702:0:b029:200:50a8:2354 with SMTP id b2-20020aa787020000b029020050a82354mr10088573pfo.72.1616171411787;
+        Fri, 19 Mar 2021 09:30:11 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:913d:5573:c956:f033])
+        by smtp.gmail.com with ESMTPSA id c6sm6640842pfj.99.2021.03.19.09.30.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 09:30:10 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 19 Mar 2021 09:30:08 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+Message-ID: <YFTRkBEr5T37NFpV@google.com>
+References: <e8ae901d-9521-8de4-ee45-18cb55b8f29c@gmail.com>
+ <YFSqYUfaxMajR/aq@kroah.com>
+ <b3cfe38f-bfd0-043a-6063-f5178d4a9b09@gmail.com>
+ <YFSrgfAyp+dYWi7k@kroah.com>
+ <33ec18ef-8652-643a-1a53-ff7c3caf4399@gmail.com>
+ <c61e58ca-6495-fd47-0138-5bbfe0b3dd20@gmail.com>
+ <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com>
+ <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR05CA0051.namprd05.prod.outlook.com (2603:10b6:208:236::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend Transport; Fri, 19 Mar 2021 16:28:50 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lNHzV-00HMIP-0H; Fri, 19 Mar 2021 13:28:49 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3c4580e4-b5fc-489b-8a6b-08d8eaf4141a
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1545:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB154526E98BC103EB07DC607EC2689@DM5PR12MB1545.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VPDb9EAUTn4iCqyIXY2f9//jovYl4HJZRQWw5wYJ3+Rfmf5KsSvgctzttxCFVg/wV5CkQir+EqhQbPkSnDV6csMkeNLkHFmpENT52A2oUfgxC5Ct0dV7uuRCOmOSH5G/742eQN7ZPgl07VGI5XhhXQhT4In1qygYDDBZypulyTfqlXRUUsY1i1naz1mCWoWkLxXorlvN2yBPTHnmQ9BhAScHZ2RBN9OiGbso5u4HEmpBF3Ht7f0EDLxuRJb6B0VsDiD8oNVjwVClw40Kt4TAflrfOBxgkt+SL5xrdhtOi5kp+ES39u3i94btkKPiQzbxG5Q/fta4U5Ed/dOSDEv3CZqvq0c/9z2itn79rftjupXZZ9bAISEhKMsQerDk5/MwDnB4n8chbJ/E9iR/zn5nIKLCrX7X8tdcHlkpPyLkMCPQPUb8uRywxfdcMED5oLWulJl+WhijMO4t28u5Ts+YJ/7fhtgk6wMWlFBAOwGDSvM1AAsCbNXsuHjNxtnXL0PhQqYeUeyv/XmHql/IFihlu/G7WdSgjbS/KLFuX1NEAc6BHsTp3s3K3ew7Wh0rsX/8jSyyBV0Donwt/rU1aY20OUkkVX1QDZOy/eo4VPzoxWf68ortla46eMVuGSMDH6LUNB/ZMqdOEUC+RzZH208qMyF6CAlTcOWsGdZh4oHLbhE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39860400002)(366004)(346002)(478600001)(9746002)(4326008)(66946007)(8676002)(6916009)(66476007)(5660300002)(83380400001)(1076003)(86362001)(9786002)(26005)(38100700001)(36756003)(186003)(316002)(426003)(8936002)(2616005)(66556008)(54906003)(2906002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?o8bykUjXFHcYmrdGNFPXHgrz/Y8i+diffvKxgQF262GakJTrh5gcAcGSCDcv?=
- =?us-ascii?Q?tQxFdC7MLv+Zla+wwTbU2c1c/CaEEhNQUCW+ZJ3eYQsutHnZ5St1wt/r1+jS?=
- =?us-ascii?Q?0gIM5dvnfSSMEtAqpdtctfXztoJzj9YTHSFhBh39iW16N38uTRB4YmtJxt1N?=
- =?us-ascii?Q?ytZgFqdkbtDWy6SBxNQqr4w1W48lPtrDR6i2N/CN9Fz+NdptzjphV7ivrJ+C?=
- =?us-ascii?Q?x1rcUquB8k2fymaBgqBba+q2xwpVtbkGfQoLNXdXdnPbFXhCNdRGVj/pgUH7?=
- =?us-ascii?Q?10PvRcndl67BRpusSku4F3mxMCxrD+O+o29banEjP31MagLahhE1VFpo/N17?=
- =?us-ascii?Q?im4aOCI49pEHoPmThZerH9O9QuW5WbAdF4pOz0Y/MTff78B7gd2oCSNTSiPW?=
- =?us-ascii?Q?ObQXyJi5y36mbJ+FwXjNS/IoEg9e2rHf/kF73iOJ8LOei/NmQUAC1w/G/T40?=
- =?us-ascii?Q?dni/x8e15c8EkHjk+kS+uTCcHb2UlCDZRKx9WiNbSAC7zNBTualbN1IAOPFU?=
- =?us-ascii?Q?IfhMSaO1/ccmGGHF4Q+5WJYrjsILSmylzSJr49z7TFWMQjPB5kDeCXxbjN/2?=
- =?us-ascii?Q?VvVebVeXSluZ4A1VtsAsr841R+MO91mrKoWBwCFaqdwLa2VnNqLsz1h50xak?=
- =?us-ascii?Q?JftdM3MOuAAiXOwT4VFA0hKkVbK01GvVuzbU+VSatyF8PIgQ8YDEC0iMzj6l?=
- =?us-ascii?Q?suy4+uIvF8Jcb/JJCgufC6s0Bxmi342cRJUE6YDg3Ri5tHbb8A6EQ5+AF0Zn?=
- =?us-ascii?Q?bHkz7hbwEUTPRaDYKRbmX3n1D4gD8BQc15d09YzpRZ0w8vJBbO9ni5MLaWtP?=
- =?us-ascii?Q?KzTWoQPB1q0R+9YLbENDW63Ge5imWN/g/oWxw5EvgmB9eqkS7l/sHcE2m4I8?=
- =?us-ascii?Q?iFPHoML3b/RXS3jgW+p0/bR9C3xlJED5ct2s2Er8wtmu92ydjAU+PAS6/ExK?=
- =?us-ascii?Q?Cny6iZbvCVzmE3rjr6IEkI57He9Xmy3nL5/MVVcvDnabmj8qCzgQei8Kv5Zm?=
- =?us-ascii?Q?bh1OF62R3jxhW9+UaOE3SzFK15ApTBIkxOYI4a8GeXuazeUGhaOYI0MpwZpA?=
- =?us-ascii?Q?DB7z+Ou64ib6flwo0b41csDRTVeP+u9EPLohyN72cXuGC75Cg0Gjp18mp7ED?=
- =?us-ascii?Q?fJq79ws309wGAH8xQsxQSbH9ttGEUupULGLno8eUvo96sClD/8uCd6OYXxIK?=
- =?us-ascii?Q?IRZoFKHy3ALKdCHK2gfuLph4xnLOfAGoc8ztxdPuhlZzDSWavwh3TnBwm6BS?=
- =?us-ascii?Q?3ih7uEYLG6vVWn8HEnqjv0a7xdCSXz6oqK1cm+zK8LOO78hzXEsPuCu+XMSk?=
- =?us-ascii?Q?D+34uzEaUyDHUsLXOxvlf63Eh3gyFtmIJdY4QPfZzIGsxQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c4580e4-b5fc-489b-8a6b-08d8eaf4141a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 16:28:50.8845
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UxllXnyvJaBpgWERniLVIM34ATr8IOxShwlptXECcJUe0uLFmJgcV54Yn9fWnjSC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1545
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:20:33PM +0100, Christoph Hellwig wrote:
-> On Fri, Mar 19, 2021 at 01:17:22PM -0300, Jason Gunthorpe wrote:
-> > I think we talked about this.. We still need a better way to control
-> > binding of VFIO modules - now that we have device-specific modules we
-> > must have these match tables to control what devices they connect
-> > to.
-> > 
-> > Previously things used the binding of vfio_pci as the "switch" and
-> > hardcoded all the matches inside it.
-> > 
-> > I'm still keen to try the "driver flavour" idea I outlined earlier,
-> > but it is hard to say what will resonate with Greg.
+On Fri, Mar 19, 2021 at 07:24:05PM +0300, Dmitry Osipenko wrote:
+> 19.03.2021 18:50, Greg Kroah-Hartman пишет:
+> >> Then initialization order won't be a problem.
+> > I don't understand the problem here, what is wrong with the patch as-is?
 > 
-> IMHO the only model that really works and makes sense is to turn the
-> whole model around and make vfio a library called by the actual driver
-> for the device.  That is any device that needs device specific
-> funtionality simply needs a proper in-kernel driver, which then can be
-> switched to a vfio mode where all the normal subsystems are unbound
-> from the device, and VFIO functionality is found to it all while _the_
-> driver that controls the PCI ID is still in charge of it.
+> The cma->stat is NULL at the time when CMA is used on ARM because
+> cma->stat is initialized at the subsys level. This is the problem,
+> apparently.
 
-Yes, this is what I want to strive for with Greg.
+That's true.
 
-It would also resolve alot of the uncomfortable code I see in VFIO
-using the driver core. For instance, when a device is moved to 'vfio
-mode' it can go through and *lock* the entire group of devices to
-'vfio mode' or completely fail.
+> 
+> > Also, watch out, if you only make the kobject dynamic, how are you going
+> > to get backwards from the kobject to the values you want to send to
+> > userspace in the show functions?
+> 
+> Still there should be a wrapper around the kobj with a back reference to
+> the cma entry. If you're suggesting that I should write a patch, then I
+> may take a look at it later on. Although, I assume that Minchan could
+> just correct this patch and re-push it to -next.
 
-This would replace all the protective code that is all about ensuring
-the admin doesn't improperly mix & match in-kernel and vfio drivers
-within a security domain.
+This is ateempt to address it. Unless any objection, let me send it to
+akpm.
 
-The wrinkle I don't yet have an easy answer to is how to load vfio_pci
-as a universal "default" within the driver core lazy bind scheme and
-still have working module autoloading... I'm hoping to get some
-research into this..
+From 29a9fb4f300b754ebf55e6182ba84127658ef504 Mon Sep 17 00:00:00 2001
+From: Minchan Kim <minchan@kernel.org>
+Date: Fri, 22 Jan 2021 12:31:56 -0800
+Subject: [PATCH] mm: cma: support sysfs
 
-Jason
+Since CMA is getting used more widely, it's more important to
+keep monitoring CMA statistics for system health since it's
+directly related to user experience.
+
+This patch introduces sysfs statistics for CMA, in order to provide
+some basic monitoring of the CMA allocator.
+
+ * the number of CMA page successful allocations
+ * the number of CMA page allocation failures
+
+These two values allow the user to calcuate the allocation
+failure rate for each CMA area.
+
+e.g.)
+  /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
+  /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
+  /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
+
+The cma_stat was intentionally allocated by dynamic allocation
+to harmonize with kobject lifetime management.
+https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+ mm/Kconfig                                    |   7 ++
+ mm/Makefile                                   |   1 +
+ mm/cma.c                                      |   7 +-
+ mm/cma.h                                      |  20 ++++
+ mm/cma_sysfs.c                                | 107 ++++++++++++++++++
+ 6 files changed, 165 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+ create mode 100644 mm/cma_sysfs.c
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+new file mode 100644
+index 000000000000..02b2bb60c296
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+@@ -0,0 +1,25 @@
++What:		/sys/kernel/mm/cma/
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
++		heap name (also sometimes called CMA areas).
++
++		Each CMA heap subdirectory (that is, each
++		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
++		following items:
++
++			alloc_pages_success
++			alloc_pages_fail
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API succeeded to allocate
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API failed to allocate
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 24c045b24b95..febb7e8e24de 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -513,6 +513,13 @@ config CMA_DEBUGFS
+ 	help
+ 	  Turns on the DebugFS interface for CMA.
+ 
++config CMA_SYSFS
++	bool "CMA information through sysfs interface"
++	depends on CMA && SYSFS
++	help
++	  This option exposes some sysfs attributes to get information
++	  from CMA.
++
+ config CMA_AREAS
+ 	int "Maximum count of the CMA areas"
+ 	depends on CMA
+diff --git a/mm/Makefile b/mm/Makefile
+index 72227b24a616..56968b23ed7a 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
+ obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+ obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+ obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
++obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
+ obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+ obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
+ obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
+diff --git a/mm/cma.c b/mm/cma.c
+index 908f04775686..ac050359faae 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -507,10 +507,13 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 
+ 	pr_debug("%s(): returned %p\n", __func__, page);
+ out:
+-	if (page)
++	if (page) {
+ 		count_vm_event(CMA_ALLOC_SUCCESS);
+-	else
++		cma_sysfs_alloc_pages_count(cma, count);
++	} else {
+ 		count_vm_event(CMA_ALLOC_FAIL);
++		cma_sysfs_fail_pages_count(cma, count);
++	}
+ 
+ 	return page;
+ }
+diff --git a/mm/cma.h b/mm/cma.h
+index 42ae082cb067..70fd7633fe01 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -3,6 +3,12 @@
+ #define __MM_CMA_H__
+ 
+ #include <linux/debugfs.h>
++#include <linux/kobject.h>
++
++struct cma_kobject {
++	struct cma *cma;
++	struct kobject kobj;
++};
+ 
+ struct cma {
+ 	unsigned long   base_pfn;
+@@ -16,6 +22,13 @@ struct cma {
+ 	struct debugfs_u32_array dfs_bitmap;
+ #endif
+ 	char name[CMA_MAX_NAME];
++#ifdef CONFIG_CMA_SYSFS
++	/* the number of CMA page successful allocations */
++	atomic64_t nr_pages_succeeded;
++	/* the number of CMA page allocation failures */
++	atomic64_t nr_pages_failed;
++	struct cma_kobject *kobj;
++#endif
+ };
+ 
+ extern struct cma cma_areas[MAX_CMA_AREAS];
+@@ -26,4 +39,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+ 	return cma->count >> cma->order_per_bit;
+ }
+ 
++#ifdef CONFIG_CMA_SYSFS
++void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count);
++void cma_sysfs_fail_pages_count(struct cma *cma, size_t count);
++#else
++static inline void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count) {};
++static inline void cma_sysfs_fail_pages_count(struct cma *cma, size_t count) {};
++#endif
+ #endif
+diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+new file mode 100644
+index 000000000000..ca093e9e9f64
+--- /dev/null
++++ b/mm/cma_sysfs.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * CMA SysFS Interface
++ *
++ * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
++ */
++
++#include <linux/cma.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++
++#include "cma.h"
++
++void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
++{
++	atomic64_add(count, &cma->nr_pages_succeeded);
++}
++
++void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
++{
++	atomic64_add(count, &cma->nr_pages_failed);
++}
++
++#define CMA_ATTR_RO(_name) \
++	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
++
++static ssize_t alloc_pages_success_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
++	struct cma *cma = cma_kobj->cma;
++
++	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_succeeded));
++}
++CMA_ATTR_RO(alloc_pages_success);
++
++static ssize_t alloc_pages_fail_show(struct kobject *kobj,
++			struct kobj_attribute *attr, char *buf)
++{
++	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
++	struct cma *cma = cma_kobj->cma;
++
++	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
++}
++CMA_ATTR_RO(alloc_pages_fail);
++
++static void cma_kobj_release(struct kobject *kobj)
++{
++	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
++
++	kfree(cma_kobj);
++}
++
++static struct attribute *cma_attrs[] = {
++	&alloc_pages_success_attr.attr,
++	&alloc_pages_fail_attr.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(cma);
++
++static struct cma_kobject *cma_kobjs;
++static struct kobject *cma_kobj_root;
++
++static struct kobj_type cma_ktype = {
++	.release = cma_kobj_release,
++	.sysfs_ops = &kobj_sysfs_ops,
++	.default_groups = cma_groups
++};
++
++static int __init cma_sysfs_init(void)
++{
++	int i = 0;
++	struct cma *cma;
++
++	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
++	if (!cma_kobj_root)
++		return -ENOMEM;
++
++	cma_kobjs = kcalloc(cma_area_count, sizeof(struct cma_kobject),
++				GFP_KERNEL);
++	if (ZERO_OR_NULL_PTR(cma_kobjs))
++		goto out;
++
++	do {
++		cma = &cma_areas[i];
++		cma->kobj = &cma_kobjs[i];
++		cma->kobj->cma = cma;
++		if (kobject_init_and_add(&cma->kobj->kobj, &cma_ktype,
++					cma_kobj_root, "%s", cma->name)) {
++			kobject_put(&cma->kobj->kobj);
++			goto out;
++		}
++	} while (++i < cma_area_count);
++
++	return 0;
++out:
++	while (--i >= 0) {
++		cma = &cma_areas[i];
++		kobject_put(&cma->kobj->kobj);
++	}
++
++	kfree(cma_kobjs);
++	kobject_put(cma_kobj_root);
++
++	return -ENOMEM;
++}
++subsys_initcall(cma_sysfs_init);
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
+
+
