@@ -2,94 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F59342124
+	by mail.lfdr.de (Postfix) with ESMTP id CD060342125
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 16:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhCSPpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 11:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
+        id S230335AbhCSPpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 11:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhCSPoh (ORCPT
+        with ESMTP id S230159AbhCSPok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 11:44:37 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2ACC06174A;
-        Fri, 19 Mar 2021 08:44:37 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so6923355pjh.1;
-        Fri, 19 Mar 2021 08:44:37 -0700 (PDT)
+        Fri, 19 Mar 2021 11:44:40 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9983DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:44:39 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ce10so10443693ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 08:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GCZHlMVbKbX32874y5u+F3c4bj2Tk2XhYaf8cu3E8HE=;
-        b=l+O0jQxlTczTV3nNthVLdfWmQXIB3gKHaG4yeFD4Ch3O5eEVQ2ZT5M+KgYfraDLYN8
-         c5NLJVa3eEsVNUjCwBPswPDo6cFwecwIQWZ2Vx4oWuUCx98qX+lu5wG7GKzi42Xhm1j7
-         Uq2VMC/o4X0JZeFMW9w4qdT9l2KJqas7nixIERCSLSmzAVBEhesVNQr4CWi1eRZS2tRE
-         kEzNr5EW2nGKbcBQBUb3g+JVLVhdqO6uySnrRoaRmif99WN8Y49tW6meh3OYsSHHbqAE
-         kuUNCT5qng+A0irhlEvZFPzD9OoHfIJx6ekguEsGNRLofLuwBJN5wOjnRabxcHWRE2l4
-         z/1A==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ls4UbC3zQvMulNVQ/pzUqFMVRoVv8OmcfnU28m1vLHo=;
+        b=Evz7dwHZb+efp4Pq4AqV8Nb7VV9VCNabDdCret5McBxPBFpY7i9yQ7mheYOI/Sdja+
+         ZwfIzFO3BKiaRLW+QahodyXhcExLCWvHXT34D7aknOgE2+zA9vUXDVRxabENC9UB+bnX
+         dLP9BZwcy/mvKsKDBLgDbJONJYlEneD22DVdQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GCZHlMVbKbX32874y5u+F3c4bj2Tk2XhYaf8cu3E8HE=;
-        b=mBza0SSgLHj/UA+dfy1rL92WHp5VvLdshAW/Vi2nhGXv4Y2A740RZz5N3JVN+1jfn8
-         k7MtTgxyH5hAPnyqwKH2+AKYU2IY9SDpUp18nT/Nwj6k3NToiuUW7qkTPpfU58jvAqhv
-         /PZ2dkGcqCEvKiQGKBIelcg6ga+njQ1/ePzW9yg/Sgl1T3ICByoqLAsTeInULTm0zVLr
-         OV+7OAcKE8FNA/ZyuXSTQCeBZDZ6FcanrlXZERE02iwtwU0J/OhwjOO/ntO/XkGBkCaP
-         +OL0CrmTv1d2Bj/tuPN226uTJWW/EFAT8ilZiIn78dHBmE2GJVv9epnbVJref8YtkAiy
-         +1nA==
-X-Gm-Message-State: AOAM533wp0lurqYlbMju7xmcbniumGag++CtxUwyBxcFCpItQbt+xhjv
-        e6PnqOsdJMoDPhOBbHyetxAS79XeosHp9PB/JtI=
-X-Google-Smtp-Source: ABdhPJx/Lc6VFUnAZ5NXQDKS/FWEF+xKnRUgsjH1fwb9DAfFXqtKB4lG4veFgsiRirwW7QNWRapG3lWVPPF1ZmmQJDM=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr10586290pjr.228.1616168676916;
- Fri, 19 Mar 2021 08:44:36 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ls4UbC3zQvMulNVQ/pzUqFMVRoVv8OmcfnU28m1vLHo=;
+        b=RLXp5IDU/i3KviArMc7EFFakSjvCMvenuRVWInpwuLgRD4mFzRHO3Q1PWOG+1114jr
+         +IcrXLyGl99gGEJH4tztUt+2+ir1M0VY9xi28dUhgiqveXaAvv58SuiY+/p9V5xbHPEC
+         bcCFqsYlm/wDynok1QeuBSq4prDUVYVKVDp3w9FwtCD+1d0/0bEPBw9CPKcLr/IPPsNy
+         ke6PTJ8XJ0y1M9iMugECeNHhcrsUi4GMfMOSehJ4LDjn0HaH4NSD1IRuvkka3W24YtEQ
+         7S7gU/KZ+58qQOp2LGOTf4CwVxd+1EqH8Tvg/Za18WReE3AI4zAdHXCysnmboP/NRvwW
+         uzYg==
+X-Gm-Message-State: AOAM532Iux5FiGp/rpOmuGLbAdxOLwGL/xrwdGnI+8bNTRQOhvq+clfr
+        OdG2a6cLz0Wsdy9lobpL+Tdbzg==
+X-Google-Smtp-Source: ABdhPJyoLiI3eFgfRhDN6nf9CkE/M7C3LDMykb7J9jakIo5L+2EvQB38hBWgbDaLrLtpNUojaljVCw==
+X-Received: by 2002:a17:906:3f88:: with SMTP id b8mr5244412ejj.36.1616168678354;
+        Fri, 19 Mar 2021 08:44:38 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id a22sm4282725edu.14.2021.03.19.08.44.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 08:44:37 -0700 (PDT)
+Subject: Re: [PATCH 2/3] static_call: Align static_call_is_init() patching
+ condition
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
+        rostedt@goodmis.org, ardb@kernel.org, linux-kernel@vger.kernel.org,
+        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
+References: <20210318113156.407406787@infradead.org>
+ <20210318113610.636651340@infradead.org>
+ <f5ce3975-bda6-0e83-3a59-2fac25cc4f08@rasmusvillemoes.dk>
+ <YFSxorIVeuA2zCXt@hirez.programming.kicks-ass.net>
+ <c4e9dfdf-c83a-3314-8c55-5b2371a56ec8@rasmusvillemoes.dk>
+Message-ID: <34ceee59-4276-90b5-871b-cda303901ce3@rasmusvillemoes.dk>
+Date:   Fri, 19 Mar 2021 16:44:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1614120685-7452-1-git-send-email-Asmaa@mellanox.com>
- <1614120685-7452-2-git-send-email-Asmaa@mellanox.com> <CH2PR12MB38958655696585998CFDF67BD7919@CH2PR12MB3895.namprd12.prod.outlook.com>
- <CH2PR12MB3895A0BC2910997D8B64896BD7689@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YFSl0Vrh04etK28J@lunn.ch>
-In-Reply-To: <YFSl0Vrh04etK28J@lunn.ch>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 19 Mar 2021 17:44:20 +0200
-Message-ID: <CAHp75VePjNR8NcvHiDPuryzmxvntenUDa3OgHchoxu_4k+Nc=g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: Support interrupts in gpio-mlxbf2.c
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Asmaa Mnebhi <asmaa@nvidia.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        David Thompson <davthompson@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c4e9dfdf-c83a-3314-8c55-5b2371a56ec8@rasmusvillemoes.dk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 3:24 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > We cannot really pass it through the ACPI table because the ACPI
-> > table is common to all BlueField-2 boards.  And each board may have
-> > a different GPIO pin associated with a particular function. This is
-> > why we use ACPI properties instead of GpioInt(). So that the
-> > bootloader can change the GPIO pin value based on the board id
-> > detected at boot time.
->
-> That sounds very broken.
->
-> ACPI describes the hardware. If the hardware is different, you need
-> different ACPI. And i assume the ACPI spec says GpioInt() is the
-> correct way to do this, and does not say you can hack around
-> limitations of your bootloader using properties?
+On 19/03/2021 15.40, Rasmus Villemoes wrote:
+> On 19/03/2021 15.13, Peter Zijlstra wrote:
+> 
+>>> Dunno, probably overkill, but perhaps we could have an atomic_t (or
+>>> refcount, whatever) init_ref inited to 1, with init_ref_get() doing an
+>>> inc_unless_zero, and iff you get a ref, you're free to call (/patch)
+>>> __init functions and access __initdata, but must do init_ref_put(), with
+>>> PID1 dropping its initial ref and waiting for it to drop to 0 before
+>>> doing the *free_initmem() calls.
+>>
+>> I'd as soon simply add another SYSTEM state. That way we don't have to
+>> worry about who else looks at RUNNING for what etc..
+> 
+> I don't understand. How would that solve the
+> 
+> PID1                           PIDX
+>                                ok = system_state < INIT_MEM_GONE;
+> system_state = INIT_MEM_GONE;
+> free_initmem();
+> system_state = RUNNING;
+>                                if (ok)
+>                                    poke init mem
+> 
+> race? I really don't see any way arbitrary threads can reliably check
+> how far PID1 has progressed at one point in time and use that
+> information (a few lines) later to access init memory without
+> synchronizing with PID1.
+> 
+> AFAICT, having an atomic_t object representing the init memory 
 
-It seems my reply didn't make the mailing list, but I'm on the same
-page with you.
+something like
 
-On x86 boards the difference is usually provided by firmware via NVS
-and corresponding macro(s).
-One may google for any DSDT for x86 and check for, for instance,
-GNUM() macro and Co.
+--- a/init/main.c
++++ b/init/main.c
+@@ -1417,6 +1417,18 @@ void __weak free_initmem(void)
+        free_initmem_default(POISON_FREE_INITMEM);
+ }
 
--- 
-With Best Regards,
-Andy Shevchenko
++static atomic_t init_mem_ref = ATOMIC_INIT(1);
++static DECLARE_COMPLETION(init_mem_may_go);
++bool init_mem_get(void)
++{
++       return atomic_inc_not_zero(&init_mem_ref);
++}
++void init_mem_put(void)
++{
++       if (atomic_dec_and_test(&init_mem_ref))
++               complete(&init_mem_may_go);
++}
++
+ static int __ref kernel_init(void *unused)
+ {
+        int ret;
+@@ -1424,6 +1436,8 @@ static int __ref kernel_init(void *unused)
+        kernel_init_freeable();
+        /* need to finish all async __init code before freeing the memory */
+        async_synchronize_full();
++       init_mem_put();
++       wait_for_completion(&init_mem_may_go);
+        kprobe_free_init_mem();
+        ftrace_free_init_mem();
+        kgdb_free_init_mem();
+
