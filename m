@@ -2,91 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B3E341404
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68A4341408
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 05:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhCSEL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 00:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhCSELA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:11:00 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DB4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 21:11:00 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id y5so91124qkl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 21:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aaqZ5Xka3NFx+U71V6vC4ru0MXh/qF63OiW6ltUtrL4=;
-        b=NI0jLE++PD268TEUsgTuwXAQEtQ0DqWORhgI3TDVqilngZgb2T7BzCI67g1UWdZe/7
-         OzmvhEbfa+AfFzDtEx0knv8QT1ESOaaPMc/cYIoaSy34gTlFrT8Qv852alxW3Q+lcXJx
-         LQDa9dJlw1iqfBK2+zWUq/5cLb30A+nOlfkFhnl0sqXC7v7sU+MumB803mAy9VRrFCDI
-         kvWOnjTBj4CeFsPP3BiBGNq1KEHly/IeS8Yjhj+SPwjyPXuAAG8LsZl16S/v53lL0TEN
-         9plCewyCIZcBR6i0iazU6D3yd8uYE0mFaZpjsx5l6TMFTy9ztlZf6DxouOTPzldIhzx7
-         LyAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aaqZ5Xka3NFx+U71V6vC4ru0MXh/qF63OiW6ltUtrL4=;
-        b=kYuRSN5I+WdsK9t1z8ruKt8GSEiqlMHTZ1gNkRN0w1VBQ1RodujkHnyO9EU3ruv0uO
-         SmDvOXysrumU9bUNTAuOqJstN9cpTuqJ2iQiSJyLAJdl7mgvvj2Du6nLJ9mq6LNk4zEy
-         TNcRu7Or/5TlDiijJwHbM8zx720xut/QwK59v9yXosIalXC6j8deBXDx5sTFDFLNeQvC
-         SqDX+quG3qayI7DCD609b7GK81dHrlDr0dwXGIfotBkb3exEn/N8JOFOJhakKx7sQ8Ax
-         W21b1utNcyjTPQ7+QKWaRf6bWaK1j/j7O+Xm0gk4FOTZ7moFHYIJeC/DArBpzhRN039X
-         zi2A==
-X-Gm-Message-State: AOAM530yl/kEeRonbjQJd2jkJubowwOf29J/RVReFQDj5XM3u0nSLlAA
-        0AQFC3SiFSxmCdD3hn4waJA3pown8TvZNRvTyXc=
-X-Google-Smtp-Source: ABdhPJzSglnF+PloSPSyO4A9pea+8tGafdjSrifWXMts+rIqOZ1H55BiTRHYe1r1wfNKoEJ/HxJR8YAxSIn9uipM6Ms=
-X-Received: by 2002:a05:620a:102c:: with SMTP id a12mr7643841qkk.450.1616127059424;
- Thu, 18 Mar 2021 21:10:59 -0700 (PDT)
+        id S233508AbhCSEMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 00:12:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:46764 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhCSEMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 00:12:33 -0400
+IronPort-SDR: F6l1nLz741Z3AEC1YyfcDsdEe+2RkOfPJQp04RX6HUeLHX0t7d41LU2VfAVsZyVNgeCNAq6Mlj
+ cn59ikpsKSSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="189914065"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="189914065"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 21:12:33 -0700
+IronPort-SDR: DbxeYJWDo8PaIc0g5bSFRA2ISTE+Ee2UrlNJRpC9K0qH6ddKmbgnd4tf7jT/XOubLFQ2Rj1asl
+ EV6CjELPFhjQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
+   d="scan'208";a="591725210"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by orsmga005.jf.intel.com with ESMTP; 18 Mar 2021 21:12:32 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id DC04B3023AF; Thu, 18 Mar 2021 21:12:32 -0700 (PDT)
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Jim Cromie <jim.cromie@gmail.com>
+Cc:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 00/18] dynamic debug diet plan
+References: <20210316050801.2446401-1-jim.cromie@gmail.com>
+Date:   Thu, 18 Mar 2021 21:12:32 -0700
+In-Reply-To: <20210316050801.2446401-1-jim.cromie@gmail.com> (Jim Cromie's
+        message of "Mon, 15 Mar 2021 23:07:43 -0600")
+Message-ID: <87ft0rvl1r.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <1615886826-30844-1-git-send-email-shengjiu.wang@nxp.com>
- <20210316125839.GA4309@sirena.org.uk> <VI1PR0401MB22721D0D266207472B3C7829926B9@VI1PR0401MB2272.eurprd04.prod.outlook.com>
- <20210316134915.GB4309@sirena.org.uk>
-In-Reply-To: <20210316134915.GB4309@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 19 Mar 2021 12:10:48 +0800
-Message-ID: <CAA+D8ANuUWne1nzGH6=V4nj7YMRczuZ+pH--eJ+ghiGWfo_0sQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: remove reset code from dai_probe
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Viorel Suman <viorel.suman@nxp.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "timur@kernel.org" <timur@kernel.org>,
-        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
+Jim Cromie <jim.cromie@gmail.com> writes:
 
-On Tue, Mar 16, 2021 at 9:51 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Mar 16, 2021 at 01:42:40PM +0000, Viorel Suman wrote:
->
-> > To me it makes sense to manage the clocks and reset from the same place.
-> > Currently we have the clocks management moved completely into runtime PM
-> > fsl_sai_runtime_resume and fsl_sai_runtime_suspend callbacks.
->
-> Usually the pattern is to have probe() leave everything powered up then
-> let runtime PM power things down if it's enabled, you can often do the
-> power up by having an open coded call to the resume callback in probe().
+> CONFIG_DYNAMIC_DEBUG creates a struct _ddebug (56 bytes) for each
+> callsite, which includes 3 pointers to: module, filename, function.
+> These are repetetive, and compressible, this patch series goes about
+> doing that, it:
 
-It seems some drivers very depend on runtime PM, if the CONFIG_PM=n,
-the drivers should not work.  What's the strategy for this?
-Do we need to support both cases, or only one case is also acceptable?
-
-Best regards
-Wang Shengjiu
+So how much memory does it actually save?
+-Andi
