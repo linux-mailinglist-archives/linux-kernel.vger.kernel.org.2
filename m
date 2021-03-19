@@ -2,144 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1648C342797
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FCA34279A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 22:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhCSVU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 17:20:56 -0400
-Received: from mail-dm6nam08on2093.outbound.protection.outlook.com ([40.107.102.93]:19329
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229912AbhCSVUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 17:20:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jvSkdeJByKoTDGpwPhfdhY0ofUbY+ItUmxrTlPypC31T8ZIJI9Hfxdw43YcDC2Pz/fP07oTAABhX3YI+po/uvmeBsmlwkUuZV83qYBWgWVvRP9CKBPV2pta5v/NNVEd2xztNU+tM4CZzPCULh5yylD35F1z6wRCOxPeG8EmBF64FUiNP7/JNKQ55iLfdYMRAes15wEMyvw4792gVXV1KR9cqWhILTXDfm+0IhsHVvSIrZySPz228WxfO8oVEurfiUffgrsZsq1I+mzWVQkwZLFy2Mp3jn4nIFccswwGW8YeeKTkJCbRsz6TmwYHcMGKTtCSp/lkrUNsrHAwhDVrkEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+/+O8EPaJV43lb8kRZ/ja17i0ecHkHhSR1hfkmVv6V4=;
- b=ldAZD0d6F9Cs9+l8u0lzrdM36tHoCIinru2elSl/XtG2Xw9GdHP/N/Mo3lPLDDVa+vgSlp7yx2g+v/eiFZibNilPLhWY9+1pWaZliTOO+c34mXrzlKRV0n18Ffw0S5gCNs0tpSNhXNx4cSdNfY7Fx5gckkS4KIRPYyNeHbVSMxf9USO0rkSmeB0xpnl8GblsQ03L+3DBeX9tG8nW2sam1BBZLEY7+y9caY810BoRyv1taTlM1pNN3zHuNVsqTvIkcOL00C1+6lXMzJlyBizqkbT5w18Cfm07KCmXNH14IOvJTGQEYr5EVkr7QUEpgyIDjUhsqGxO/BmuavRtxjOQsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+/+O8EPaJV43lb8kRZ/ja17i0ecHkHhSR1hfkmVv6V4=;
- b=dhZvhf1ncJO72X5tfTnT8m5loB6X/plkc1LlzihBKqMLob28zcupeKmCSaSToVSSui/UqfFlyd31SLNVlzbYGGKxBvMEz3jA5m3LjL5Hio3hsLcBQx9zQ/nHo40a3itKA3eOgdvI39WwflGO06EDfFdwDGOnoM8W4qcGehHPW7I=
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- (2603:10b6:803:51::33) by SN6PR2101MB1614.namprd21.prod.outlook.com
- (2603:10b6:805:54::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.2; Fri, 19 Mar
- 2021 21:20:50 +0000
-Received: from SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::9c4:80e2:3dca:bbeb]) by SN4PR2101MB0880.namprd21.prod.outlook.com
- ([fe80::9c4:80e2:3dca:bbeb%3]) with mapi id 15.20.3977.016; Fri, 19 Mar 2021
- 21:20:50 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] x86/Hyper-V: Support for free page reporting
-Thread-Topic: [PATCH v4] x86/Hyper-V: Support for free page reporting
-Thread-Index: AdccMlTLMSKb9zjfQ5ekuWl72W2QRgAwfZZQAARAtUA=
-Date:   Fri, 19 Mar 2021 21:20:49 +0000
-Message-ID: <SN4PR2101MB088036B8892891C5408067BEC0689@SN4PR2101MB0880.namprd21.prod.outlook.com>
-References: <SN4PR2101MB088069A91BC5DB6B16C8950BC0699@SN4PR2101MB0880.namprd21.prod.outlook.com>
- <MWHPR21MB1593BF61E959AC8F056CDFF5D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
-In-Reply-To: <MWHPR21MB1593BF61E959AC8F056CDFF5D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-03-19T19:21:10Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=37bbcf07-6dff-414f-9af4-6f29abdf034d;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:602:9400:570:95e8:400:6cb0:9c5b]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 82a064c1-1b50-46a5-379b-08d8eb1cdeb6
-x-ms-traffictypediagnostic: SN6PR2101MB1614:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <SN6PR2101MB16143269B8622790784D876AC0689@SN6PR2101MB1614.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L9feN+gsvS1vn3P9hUHiT4m3vMnksiPqGKTp6EFTVnfsUXxGL8AL1Ec+cQl1FVqHrS+Bm7HZrtJrFfi11J/M/4ldHcH7PXWLxbCAcHNJkQOM3YTPMhwy1l+F2cYvr8botdZeEX5EM1xZZgAvR2fakquKp9yW2IKRmNfUMg+Rw5GsSbj9tmIcVaWnYJ2nQuCVavpOnEG93aH1eylhzQsQpw9XqDhhQmgd852SRnTQLgzWIJVKYorIpd0OhwZzy6gcUAedJWMrCyU3RBELbjMmg2Whaz/hr+dTu1K+e6oGSOA6IEcL3+YSDXjynoGP86ynHNI5Ygo6UFiV8qd0RcvLScfsVj7VUCw+xaHGBF+IZkEeZ3dCD/5iCxPIrlc9DI2vEX4w2s4osck/C+9wTvvF7Jr+MV9Nsxl6qr9yVTuv/eHhE5LIlZEshKT4cjoSUMfjsAl7ydoY/Woij70kh9BvmswTYPw8QYCyJq1KStucHCDGLU8U5qVOaZ8pyDp32GifrZfABdTbFqqXBxQRoWlrbDpE2mhYdocU3Nn94gECzMeDbrFS2R/mvp6eKUw2TBQxdomckMyAJoEMdKLY6gUU5/toit9SiE7dfwZ9U2qJerV2foqP007dyvqrf551ubnirAx5znKVvEQ6pAVrFa460gIo8W9FcSAUDNixNiNcgItAnCIZdHsokkmNAM7tepxE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR2101MB0880.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(478600001)(66446008)(86362001)(52536014)(66476007)(4326008)(110136005)(33656002)(64756008)(76116006)(82950400001)(66946007)(316002)(66556008)(71200400001)(8990500004)(10290500003)(7696005)(5660300002)(6506007)(2906002)(4744005)(8936002)(38100700001)(8676002)(9686003)(83380400001)(55016002)(186003)(54906003)(82960400001)(4533004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?L8VUO6IlxGAl3S07XLasjX/YCu6bpxNN11GJrdRLDH66sws4zG59Klwyd3Ha?=
- =?us-ascii?Q?zhJtq6k+jiKGu1pVNGMKXtUWGti1RYTVbb7lR4TtK83qkJ1jCrIvomcN1qhL?=
- =?us-ascii?Q?sqjsNUTcDmdlXNqKVZieJW4DP3D96HWDNT+nBmuVdAoevEp2obPljZKOmeWA?=
- =?us-ascii?Q?srBz70SeM46uVQhEcTpSwnmyMD1pElyUVSjM5YVZIyXXXYZg/JDK+lI1fb8Q?=
- =?us-ascii?Q?H4AJNNSTcNxvIkY9hUahbFWomdTx2HDZzXy3KalwcjaC/hGopygjgWH9dWQP?=
- =?us-ascii?Q?HrMrMg4RtODjg5wGeqgW1m5emuR90a+FkYtppOjuPZ/4QLMvGiCDZA0WFv0N?=
- =?us-ascii?Q?PQV0y7Why+19HWgRT+LvPrS8bRbY9Ft6V9TmC/bpA7NB2YpkvxpWQK3H5RYb?=
- =?us-ascii?Q?bVX4kEuJRXW1aOTeQryGy4eDpexgiPfzs1zpKXIbgTTX3Jg84TNyeoT3V4Az?=
- =?us-ascii?Q?HCR3rnfQKJX8fXqAcpfDLxyE5fnx+DuS+mbX3p36bFMagx64pYx2868dbHuP?=
- =?us-ascii?Q?Y9wuq1ZuBbYibcv8NbMWAslVPOa0DqOJMkPgngfV5jJIJIKtCtymm5pVYDxl?=
- =?us-ascii?Q?yxw1lvZmKJ5zk7cnB0MWOgi6EVME5T/8KhOdRKBjdvR5uaOSXOFNSVnC3M9e?=
- =?us-ascii?Q?cxObnyPCFERq9ontqiGygFYPRGlNkCqIrkkpK6JMlMac9RHUceHsUGTGd2tG?=
- =?us-ascii?Q?w/bho9k/IEf2c7TFGkuz8zAHjBexC03pb1VElcnkV03eMeJtW8Y9JOfYvzLE?=
- =?us-ascii?Q?DEuoBCt3uLHw22/9whkOk85xv4YgqJ+rp8nrhAwyC1fxXs6AEff9MQxIrO67?=
- =?us-ascii?Q?GbT12sHorDs/UseRueWdypL4tJcI7ogV0ewqXIfyM5ZK7xnrM80Fvl2Qvw8W?=
- =?us-ascii?Q?q3NV8poQqPm1k2eoNWhBGCQVMJEFA/Yu3GbKWURWb7ifjh5FJv3ery/shyfE?=
- =?us-ascii?Q?ZrhnkW8zL92Sc7EV9i8ujuahN6xU+c+lkQ9coGuAz1JCj+2stlS7396Gg46Z?=
- =?us-ascii?Q?wyqbGUwj7U44OAPCTrKLGtdZeX8AG0l+m+dsZbwO0YpHhdSvn8F6wwVxcKIh?=
- =?us-ascii?Q?WwWj7Vi1xlhaQu9Rvvd2lxhoFyfW4VVsIEUGU8HDioXu6nVdFE5/ANr8Zy5z?=
- =?us-ascii?Q?/OoN32GXzQ1qSuM5PhUJIvWFsVKOWPaVuoeVevLwslmg6kPTlyk9Yx7wET/O?=
- =?us-ascii?Q?m3fgL52BjRSa9JauEcKrftomgni1BRPgB6T8UMTP+JJJMSlEZ2FjqRT984W2?=
- =?us-ascii?Q?nx/gPTfauImO+QGN17G6yNW4Tqvn4bKW6lDTyFoVzkwYt26JvcM0G0uchwoC?=
- =?us-ascii?Q?kWsb6t+IKuj2al+en1daDSQJDGdaRGAXcJLGJDpdjEbEVCo1X9BisdXTSQVg?=
- =?us-ascii?Q?Dz447PhUrcbUbFrFdhmMzdwTHgzQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229942AbhCSVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 17:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhCSVVu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:21:50 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E1EC06175F;
+        Fri, 19 Mar 2021 14:21:49 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id z15so6226662oic.8;
+        Fri, 19 Mar 2021 14:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=TuQ+Qa5Ogrp9ZaqUxqTsJAS6+bv57zVaQ5SqGjIqvOw=;
+        b=plR/X/jT6mRo0dB9I66ea+WJ2iqAL+XP7RYtOV3148XUXNzrdTdeganQXzEzYLMdT0
+         /PVsFKS2x63l24DUkFmUlMLCWo7EUAsbc5kgUOngVuIRhMQa5oU3DWrOxQqhPGAS+8Yo
+         HFeUZruJsF8uAGCvLmbGzlXt4o1Aigkvj8CxzPFSYNyqqFQHwhKuQbxBaR1twenvy+I2
+         J1qFQx3awfT8zKBKuXJPCrTV10MayFGuFZEu2iwvJoIX1FEaxOmWGzex7TDpXPJ0PdPA
+         2Twfdvh43EGDool3I+kvsfvcxfu0BgRp8lkXN5boMoXVSRkxKgD98EO5d84g+EtyNImI
+         vQIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=TuQ+Qa5Ogrp9ZaqUxqTsJAS6+bv57zVaQ5SqGjIqvOw=;
+        b=mdYgB2aVCjKS3V/99eEzFbqyDXAZSDQnyf2bKTIP97zZ9VTEXYaBICCqIUXtLgdCna
+         148nnVeTHMICvIUWv9oNKK726cI93p0q94scbRqU+2+NFh9zmf0iFXzBYJShQk+f8X8j
+         qU4gou+6EwRYvOjYVLW8FwrDCW93ZqacQ3MkfZJ/h0eBV5VjPB5hRr/JcSh+a6cgMrA5
+         TvY19Km6Xo6MXtKr1j8phc2MYuTGIo6Xg/UqFQNQOG8N/Vj0XFCwGup+cU9qJSngrIJf
+         +XPKUIKsxwMmv680r+2aTGiKsaUNQfgwqf1rTTQuNU2LmrzIE+8JSU/U96VEIrX6nUzY
+         H9fQ==
+X-Gm-Message-State: AOAM533MuDvvR6xIoXDIvWRsTy+8MiYv/OncGmZtDv0ajxzRATHUJf+q
+        qIaCZTJSrgGgX3tTJ0v51dD4KfD8C3U=
+X-Google-Smtp-Source: ABdhPJx64CL4e2hzY+WbfiUW0+kJvP1YcCNZ0FJ/aoJgL6h1rIxI8BMPtYnPQ6rW3ew1vVMYhYSFmQ==
+X-Received: by 2002:a05:6808:3dc:: with SMTP id o28mr2497164oie.120.1616188909386;
+        Fri, 19 Mar 2021 14:21:49 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b22sm1402482ots.59.2021.03.19.14.21.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Mar 2021 14:21:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 19 Mar 2021 14:21:46 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 0/8] 4.19.182-rc1 review
+Message-ID: <20210319212146.GA23228@roeck-us.net>
+References: <20210319121744.114946147@linuxfoundation.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR2101MB0880.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82a064c1-1b50-46a5-379b-08d8eb1cdeb6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2021 21:20:49.9831
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Cu+xiAwQeu1714DY4VSjOdAa7IFblefxXjULo3waqVR4yk5GFJqWlRRQ2+o7EgFsbeGtDhtdxQ67i0jahVsa3/+8o5vzTfvR1A5y3l8MBoA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1614
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319121744.114946147@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> What's the strategy for this flag in the unlikely event that the hypercal=
-l fails?
-> It doesn't seem right to have hv_query_ext_cap() fail, but leave the
-> static flag set to true.  Just move that line down to after the status ch=
-eck
-> has succeeded?
+On Fri, Mar 19, 2021 at 01:18:19PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.182 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
+> Anything received after that time might be too late.
+> 
 
-That call should not fail in any normal circumstances. The current idea was=
- to
-avoid repeating the same call on persistent failure. But, since we don't ex=
-pect
-the query capability to be called in any kind of hot path, I am ok moving t=
-his
-down.
+Build results:
+	total: 155 pass: 154 fail: 1
+Failed builds:
+	x86_64:tools/perf
+Qemu test results:
+	total: 420 pass: 420 fail: 0
 
->=20
-> Other than the above about the flag when the hypercall fails,
-> everything else looks good.
-Thanks for the review.
+jvmti/jvmti_agent.c:48:21: error: static declaration of ‘gettid’ follows non-static declaration
+   48 | static inline pid_t gettid(void)
+      |                     ^~~~~~
+In file included from /usr/include/unistd.h:1170,
+                 from jvmti/jvmti_agent.c:33:
+/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note: previous declaration of ‘gettid’ was here
+
+The tools/perf error is not new. It is seen because I started updating
+my servers to Ubuntu 20.0. The following patches would be needed to fix the
+problem in v4.19.y.
+
+8feb8efef97a tools build feature: Check if get_current_dir_name() is available
+11c6cbe706f2 tools build feature: Check if eventfd() is available
+4541a8bb13a8 tools build: Check if gettid() is available before providing helper
+fc8c0a992233 perf tools: Use %define api.pure full instead of %pure-parser
+
+The first two patches prevent a conflict with the third patch, and the
+last patch fixes an unrelated build warning.
+
+Older kernels are also affected. The list of patches needed for v4.14.y is:
+
+0ada120c883d perf: Make perf able to build with latest libbfd
+        (this patch is in v4.9.y but not in v4.14.y)
+25ab5abf5b14 tools build feature: Check if pthread_barrier_t is available
+8feb8efef97a tools build feature: Check if get_current_dir_name() is available
+11c6cbe706f2 tools build feature: Check if eventfd() is available
+4541a8bb13a8 tools build: Check if gettid() is available before providing helper
+fc8c0a992233 perf tools: Use %define api.pure full instead of %pure-parser
+
+I tried to fix the problem in v4.9.y and v4.4.y as well, but that is pretty
+much hopeless. I'll have to stop testing perf builds for those kernels.
+
+Anyway,
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
