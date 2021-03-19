@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E813234117E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C1A34117C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 01:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhCSAeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 20:34:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65155 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230136AbhCSAdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 20:33:33 -0400
-IronPort-SDR: /Py/9i2QxlYnHItM3PhYCXMiflGFHoevFIgIRRGgKOXzNh4BAeMUE7Z4p7vE3y3b2N4ExahHZ8
- EmAsLpuYEowg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="169720430"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="169720430"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 17:33:33 -0700
-IronPort-SDR: 0/JsqJBylArNAIBpJ7LxsLsII1vjAYkOSgqtkQiYZdmGuvV1QVD3qNPKYKvEm5OlYlLcVAsghg
- iuULiUPWziCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="434069868"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Mar 2021 17:33:30 -0700
-Cc:     baolu.lu@linux.intel.com, Will Deacon <will@kernel.org>,
-        kevin.tian@intel.com, jacob.jun.pan@intel.com, yi.l.liu@intel.com,
-        sanjay.k.kumar@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iommu/vt-d: Remove WO permissions on second-level
- paging entries
-To:     Joerg Roedel <joro@8bytes.org>, "Raj, Ashok" <ashok.raj@intel.com>
-References: <20210225062654.2864322-1-baolu.lu@linux.intel.com>
- <20210225062654.2864322-3-baolu.lu@linux.intel.com>
- <20210304122623.GD26414@8bytes.org>
- <c7bffaee-6c3c-3254-a71a-d66d023d1e58@linux.intel.com>
- <20210308194746.GA15436@otc-nc-03> <YFMZjiGT13S2TZ6H@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <9b7d09e6-9295-df7c-9197-5e22f6ad2c39@linux.intel.com>
-Date:   Fri, 19 Mar 2021 08:24:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231753AbhCSAbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 20:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231394AbhCSAbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Mar 2021 20:31:40 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6D0C06174A;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o11so2527855pgs.4;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oCj2ToX9GCCPyWC+y9XAU0OjtPq0vsBVNVC+AP3EALc=;
+        b=thmxeNzhpah1sIKJugQmjoohSX75Om4Md4HFMt+IgN/eJuuf0rA8HyBoZNbOCeUPuf
+         /2QmxDdxV3Ion/xMstzvYJut7Uu4MZqWDwWUzDg1OT6bCoqBlMwIHonnHrTUoRa1ThRg
+         RwzoMmP9xz25eGqRCBg7MT6AzrTsnociSz7FMnmuiQCN+3lceBJqAmftOO73H2jEDsNE
+         IMhnmkiooQAcWFxpY+fVLeqbSJj7DhbysMXKedbymhs/e1xlvBWoE09u/YZm+5o7qLEf
+         xUSt3tQvW5467tZFHksXs9Whnxu2fwCUoUpx29Z4U+yK1iesPJ/O+nWfqk5q/p4A7gYb
+         VNkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oCj2ToX9GCCPyWC+y9XAU0OjtPq0vsBVNVC+AP3EALc=;
+        b=f1oZ7KC2J4gCjg690RJTVYT9EE2lG66XxBtMQTUhrwag6dNbXYpuUNUTXSmI/cCX1d
+         act2IovW58AbKE9bFXpmiiph4Z5FFNiqXxy3SvCjmMRrhN25/rrc21vBnstIpR7zkkT2
+         0nzgX4aE/oywgCmC4xM7hgb5eIK+bIvbvRb8g2AlyrsVw5LPlCC1OkbFkUwlc9dDC4Rk
+         ZTMt9tNclhtB7GVJGNTaWQwmzhKPINpUpEUuPbM6/8nXxsRsFzAble8OISXVlUcO2uEV
+         kPAmLLzJ6pceX+tyf8Qby3C/CKoUdMqcUNGuNfedoXwY3D1zZL3iFNJHkDH6Uawp6GU0
+         7Jww==
+X-Gm-Message-State: AOAM5323vEGqm74fFq3E8+xPHUd9BK8mJg5QJgBbML9rRYWxadZeu5N9
+        uNOcxMjB7pQ1e8y1js6kIAc=
+X-Google-Smtp-Source: ABdhPJyDu/1zw03Dk3iyEisrSR2rKyeb+nrgxAEHyM2f1QzIYX+azNTqEtzsSpYZ37SPUtQjrh1aLw==
+X-Received: by 2002:aa7:952c:0:b029:1f1:533c:40d7 with SMTP id c12-20020aa7952c0000b02901f1533c40d7mr6573459pfp.81.1616113899410;
+        Thu, 18 Mar 2021 17:31:39 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id q14sm3549718pff.94.2021.03.18.17.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 17:31:38 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: liu.xuzhi@zte.com.cn
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liu xuzhi <liu.xuzhi@zte.com.cn>
+Subject: [PATCH] fs/ext2/: fix misspellings using codespell tool
+Date:   Thu, 18 Mar 2021 17:31:31 -0700
+Message-Id: <20210319003131.484738-1-liu.xuzhi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YFMZjiGT13S2TZ6H@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+From: Liu xuzhi <liu.xuzhi@zte.com.cn>
 
-On 3/18/21 5:12 PM, Joerg Roedel wrote:
-> Hi,
-> 
-> On Mon, Mar 08, 2021 at 11:47:46AM -0800, Raj, Ashok wrote:
->> That is the primary motivation, given that we have moved to 1st level for
->> general IOVA, first level doesn't have a WO mapping. I didn't know enough
->> about the history to determine if a WO without a READ is very useful. I
->> guess the ZLR was invented to support those cases without a READ in PCIe. I
-> 
-> Okay, please update the commit message and re-send. I guess these
-> patches are 5.13 stuff. In that case, Baolu can include them into his
-> pull request later this cycle.
+A typo is found out by codespell tool in 1107th lines of super.c:
 
-Okay! It works for me.
+$ codespell ./fs/ext2/
+./super.c:1107: fileystem  ==> filesystem
 
-Best regards,
-baolu
+Fix a typo found by codespell.
+
+Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
+---
+ fs/ext2/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 6c4753277916..d2fd9707e953 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1104,7 +1104,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 	get_random_bytes(&sbi->s_next_generation, sizeof(u32));
+ 	spin_lock_init(&sbi->s_next_gen_lock);
+ 
+-	/* per fileystem reservation list head & lock */
++	/* per filesystem reservation list head & lock */
+ 	spin_lock_init(&sbi->s_rsv_window_lock);
+ 	sbi->s_rsv_window_root = RB_ROOT;
+ 	/*
+-- 
+2.25.1
+
