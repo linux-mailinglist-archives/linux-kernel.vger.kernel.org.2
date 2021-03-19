@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDB6342383
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005C6342389
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 18:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhCSRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 13:39:46 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40612 "EHLO mga05.intel.com"
+        id S230055AbhCSRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 13:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhCSRj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 13:39:27 -0400
-IronPort-SDR: 7aw3PzRcP2kwkQIr6DvW4SByNHXYJSnVFhIRxyDKEPu8Qn7wBoBrTYIKm4meuSLs5s3IRdBsX3
- qdCEO3qdAcGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="275008168"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="275008168"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:39:27 -0700
-IronPort-SDR: EvtgJxGvNbluqvdbF21U3NVtz7TDnT6Z+F+XSYgQ0or8H8oTuy9MHfP/xHRWSbFPNx8vjBCMpm
- Ug1x2uS4mCVg==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="512561188"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 10:39:27 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH] x86/mce: Add Xeon Sapphire Rapids to list of CPUs that support PPIN
-Date:   Fri, 19 Mar 2021 10:39:19 -0700
-Message-Id: <20210319173919.291428-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S229960AbhCSRlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 13:41:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E2661925;
+        Fri, 19 Mar 2021 17:41:10 +0000 (UTC)
+Date:   Fri, 19 Mar 2021 17:41:08 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        will@kernel.org, dan.j.williams@intel.com, aryabinin@virtuozzo.com,
+        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        ardb@kernel.org, andreyknvl@google.com, broonie@kernel.org,
+        linux@roeck-us.net, rppt@kernel.org, tyhicks@linux.microsoft.com,
+        robin.murphy@arm.com, vincenzo.frascino@arm.com,
+        gustavoars@kernel.org, lecopzer@gmail.com
+Subject: Re: [PATCH v3 0/5] arm64: kasan: support CONFIG_KASAN_VMALLOC
+Message-ID: <20210319174108.GD6832@arm.com>
+References: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New CPU model, same MSRs to control and read the inventory number.
+Hi Lecopzer,
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/intel.c | 1 +
- 1 file changed, 1 insertion(+)
+On Sat, Feb 06, 2021 at 04:35:47PM +0800, Lecopzer Chen wrote:
+> Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> ("kasan: support backing vmalloc space with real shadow memory")
+> 
+> Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> by not to populate the vmalloc area except for kimg address.
 
-diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-index e309476743b7..acfd5d9f93c6 100644
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -486,6 +486,7 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
- 	case INTEL_FAM6_BROADWELL_X:
- 	case INTEL_FAM6_SKYLAKE_X:
- 	case INTEL_FAM6_ICELAKE_X:
-+	case INTEL_FAM6_SAPPHIRERAPIDS_X:
- 	case INTEL_FAM6_XEON_PHI_KNL:
- 	case INTEL_FAM6_XEON_PHI_KNM:
- 
+Do you plan an update to a newer kernel like 5.12-rc3?
+
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Acked-by: Andrey Konovalov <andreyknvl@google.com>
+> Tested-by: Andrey Konovalov <andreyknvl@google.com>
+> Tested-by: Ard Biesheuvel <ardb@kernel.org>
+
+You could move these to individual patches rather than the cover letter,
+assuming that they still stand after the changes you've made. Also note
+that Andrey K no longer has the @google.com email address if you cc him
+on future patches (replace it with @gmail.com).
+
+Thanks.
+
 -- 
-2.29.2
-
+Catalin
