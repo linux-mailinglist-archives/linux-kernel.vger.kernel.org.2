@@ -2,121 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2B73421CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288E83421D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 17:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhCSQYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 12:24:37 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1251 "EHLO mga14.intel.com"
+        id S229965AbhCSQ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 12:26:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:56178 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhCSQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:24:12 -0400
-IronPort-SDR: By9IQQ4GaUfFcSoTvRrzC60BVrkzdJGkOhTeFRFdYC/ezkXqaQVnKtdyYqXawwOadw4exin6CX
- Lvwj5WELPkYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="189302577"
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="189302577"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:24:12 -0700
-IronPort-SDR: o3DGciW8KGoQICX8T/gkyV99iraCaufszZ2fID2FohW8nHAIPwzfPXYALNpFGfDLzwX7vKhd+J
- eiKXa2vfuyug==
-X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; 
-   d="scan'208";a="603189058"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.100.40]) ([10.212.100.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 09:24:11 -0700
-Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316211552.GU4746@worktop.programming.kicks-ass.net>
- <90e453ee-377b-0342-55f9-9412940262f2@intel.com>
- <20210317091800.GA1461644@gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <a7c64629-16f4-69db-07f8-ad22d8602034@intel.com>
-Date:   Fri, 19 Mar 2021 09:24:10 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229926AbhCSQZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:25:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFF2931B;
+        Fri, 19 Mar 2021 09:25:46 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CA283F718;
+        Fri, 19 Mar 2021 09:25:44 -0700 (PDT)
+Subject: Re: [PATCH 3/6] iova: Allow rcache range upper limit to be
+ configurable
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        hch@lst.de, m.szyprowski@samsung.com
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxarm@huawei.com
+References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
+ <1616160348-29451-4-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <26fb1b79-2e46-09f6-1814-48fec4205f32@arm.com>
+Date:   Fri, 19 Mar 2021 16:25:39 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210317091800.GA1461644@gmail.com>
+In-Reply-To: <1616160348-29451-4-git-send-email-john.garry@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/17/2021 2:18 AM, Ingo Molnar wrote:
+On 2021-03-19 13:25, John Garry wrote:
+> Some LLDs may request DMA mappings whose IOVA length exceeds that of the
+> current rcache upper limit.
 > 
-> * Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> This means that allocations for those IOVAs will never be cached, and
+> always must be allocated and freed from the RB tree per DMA mapping cycle.
+> This has a significant effect on performance, more so since commit
+> 4e89dce72521 ("iommu/iova: Retry from last rb tree node if iova search
+> fails"), as discussed at [0].
 > 
->> On 3/16/2021 2:15 PM, Peter Zijlstra wrote:
->>> On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
->>>> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
->>>> return/jump-oriented programming attacks.  Details are in "Intel 64 and
->>>> IA-32 Architectures Software Developer's Manual" [1].
->>>>
->>>> CET can protect applications and the kernel.  This series enables only
->>>> application-level protection, and has three parts:
->>>>
->>>>     - Shadow stack [2],
->>>>     - Indirect branch tracking [3], and
->>>>     - Selftests [4].
->>>
->>> CET is marketing; afaict SS and IBT are 100% independent and there's no
->>> reason what so ever to have them share any code, let alone a Kconfig
->>> knob.
->>
->> We used to have shadow stack and ibt under separate Kconfig options, but in
->> a few places they actually share same code path, such as the XSAVES
->> supervisor states and ELF header for example.  Anyways I will be happy to
->> make changes again if there is agreement.
+> Allow the range of cached IOVAs to be increased, by providing an API to set
+> the upper limit, which is capped at IOVA_RANGE_CACHE_MAX_SIZE.
 > 
-> I was look at:
+> For simplicity, the full range of IOVA rcaches is allocated and initialized
+> at IOVA domain init time.
 > 
->    x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+> Setting the range upper limit will fail if the domain is already live
+> (before the tree contains IOVA nodes). This must be done to ensure any
+> IOVAs cached comply with rule of size being a power-of-2.
 > 
-> didn't see any IBT logic - it's essentially all shadow stack state.
+> [0] https://lore.kernel.org/linux-iommu/20210129092120.1482-1-thunder.leizhen@huawei.com/
 > 
-> Which is not surprising, forward call edge integrity protection (IBT)
-> requires very little state, does it?
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   drivers/iommu/iova.c | 37 +++++++++++++++++++++++++++++++++++--
+>   include/linux/iova.h | 11 ++++++++++-
+>   2 files changed, 45 insertions(+), 3 deletions(-)
 > 
-> With IBT there's no nesting, no stack - the IBT state machine
-> basically requires the next instruction to be and ENDBR instruction,
-> and that's essentially it, right?
-> 
-> Thanks,
-> 
-> 	Ingo
-> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index cecc74fb8663..d4f2f7fbbd84 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -49,6 +49,7 @@ init_iova_domain(struct iova_domain *iovad, unsigned long granule,
+>   	iovad->flush_cb = NULL;
+>   	iovad->fq = NULL;
+>   	iovad->anchor.pfn_lo = iovad->anchor.pfn_hi = IOVA_ANCHOR;
+> +	iovad->rcache_max_size = IOVA_RANGE_CACHE_DEFAULT_SIZE;
+>   	rb_link_node(&iovad->anchor.node, NULL, &iovad->rbroot.rb_node);
+>   	rb_insert_color(&iovad->anchor.node, &iovad->rbroot);
+>   	init_iova_rcaches(iovad);
+> @@ -194,7 +195,7 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
+>   	 * rounding up anything cacheable to make sure that can't happen. The
+>   	 * order of the unadjusted size will still match upon freeing.
+>   	 */
+> -	if (fast && size < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> +	if (fast && size < (1 << (iovad->rcache_max_size - 1)))
+>   		size = roundup_pow_of_two(size);
+>   
+>   	if (size_aligned)
+> @@ -901,7 +902,7 @@ static bool iova_rcache_insert(struct iova_domain *iovad, unsigned long pfn,
+>   {
+>   	unsigned int log_size = order_base_2(size);
+>   
+> -	if (log_size >= IOVA_RANGE_CACHE_MAX_SIZE)
+> +	if (log_size >= iovad->rcache_max_size)
+>   		return false;
+>   
+>   	return __iova_rcache_insert(iovad, &iovad->rcaches[log_size], pfn);
+> @@ -946,6 +947,38 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
+>   	return iova_pfn;
+>   }
+>   
+> +void iova_rcache_set_upper_limit(struct iova_domain *iovad,
+> +				 unsigned long iova_len)
+> +{
+> +	unsigned int rcache_index = order_base_2(iova_len) + 1;
+> +	struct rb_node *rb_node = &iovad->anchor.node;
+> +	unsigned long flags;
+> +	int count = 0;
+> +
+> +	spin_lock_irqsave(&iovad->iova_rbtree_lock, flags);
+> +	if (rcache_index <= iovad->rcache_max_size)
+> +		goto out;
+> +
+> +	while (1) {
+> +		rb_node = rb_prev(rb_node);
+> +		if (!rb_node)
+> +			break;
+> +		count++;
+> +	}
+> +
+> +	/*
+> +	 * If there are already IOVA nodes present in the tree, then don't
+> +	 * allow range upper limit to be set.
+> +	 */
+> +	if (count != iovad->reserved_node_count)
+> +		goto out;
+> +
+> +	iovad->rcache_max_size = min_t(unsigned long, rcache_index,
+> +				       IOVA_RANGE_CACHE_MAX_SIZE);
+> +out:
+> +	spin_unlock_irqrestore(&iovad->iova_rbtree_lock, flags);
+> +}
+> +
+>   /*
+>    * Try to satisfy IOVA allocation range from rcache.  Fail if requested
+>    * size is too big or the DMA limit we are given isn't satisfied by the
+> diff --git a/include/linux/iova.h b/include/linux/iova.h
+> index fd3217a605b2..952b81b54ef7 100644
+> --- a/include/linux/iova.h
+> +++ b/include/linux/iova.h
+> @@ -25,7 +25,8 @@ struct iova {
+>   struct iova_magazine;
+>   struct iova_cpu_rcache;
+>   
+> -#define IOVA_RANGE_CACHE_MAX_SIZE 6	/* log of max cached IOVA range size (in pages) */
+> +#define IOVA_RANGE_CACHE_DEFAULT_SIZE 6
+> +#define IOVA_RANGE_CACHE_MAX_SIZE 10 /* log of max cached IOVA range size (in pages) */
 
-Yes, that is it.  The CET_WAIT_ENDBR bit is the status of IBT state 
-machine.  There are a few bits in MSR_IA32_U_CET controlling how IBT 
-works, but those are not status.
+No.
 
-Yu-cheng
+And why? If we're going to allocate massive caches anyway, whatever is 
+the point of *not* using all of them?
+
+It only makes sense for a configuration knob to affect the actual rcache 
+and depot allocations - that way, big high-throughput systems with 
+plenty of memory can spend it on better performance, while small systems 
+- that often need IOMMU scatter-gather precisely *because* memory is 
+tight and thus easily fragmented - don't have to pay the (not 
+insignificant) cost for caches they don't need.
+
+Robin.
+
+>   #define MAX_GLOBAL_MAGS 32	/* magazines per bin */
+>   
+>   struct iova_rcache {
+> @@ -74,6 +75,7 @@ struct iova_domain {
+>   	unsigned long	start_pfn;	/* Lower limit for this domain */
+>   	unsigned long	dma_32bit_pfn;
+>   	unsigned long	max32_alloc_size; /* Size of last failed allocation */
+> +	unsigned long	rcache_max_size; /* Upper limit of cached IOVA RANGE */
+>   	struct iova_fq __percpu *fq;	/* Flush Queue */
+>   
+>   	atomic64_t	fq_flush_start_cnt;	/* Number of TLB flushes that
+> @@ -158,6 +160,8 @@ int init_iova_flush_queue(struct iova_domain *iovad,
+>   struct iova *find_iova(struct iova_domain *iovad, unsigned long pfn);
+>   void put_iova_domain(struct iova_domain *iovad);
+>   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
+> +void iova_rcache_set_upper_limit(struct iova_domain *iovad,
+> +				 unsigned long iova_len);
+>   #else
+>   static inline int iova_cache_get(void)
+>   {
+> @@ -238,6 +242,11 @@ static inline void free_cpu_cached_iovas(unsigned int cpu,
+>   					 struct iova_domain *iovad)
+>   {
+>   }
+> +
+> +static inline void iova_rcache_set_upper_limit(struct iova_domain *iovad,
+> +					       unsigned long iova_len)
+> +{
+> +}
+>   #endif
+>   
+>   #endif
+> 
