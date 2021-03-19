@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D43434195B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A5734192D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 11:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhCSKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 06:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
+        id S229769AbhCSKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 06:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhCSKCm (ORCPT
+        with ESMTP id S229793AbhCSKBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 06:02:42 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8881C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:02:41 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id a63so4395535wmd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:02:41 -0700 (PDT)
+        Fri, 19 Mar 2021 06:01:49 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA217C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:01:48 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id q5so5531815pfh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 03:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MQQAWJNa/5+Ws/h1+nY46N9BdXPhpiMcbi0Tji1hFEY=;
-        b=D4UmlRHS0y4x+R9rKJqUcRUzfcgDZJEm3qtCzw6xhI0q7wC9Z7ZlLB/qrYqG4YjQbj
-         LLjGnLuPstfxeC5mRqOGKbiOWj6KSx8M5AIAW4uZNi+KmEBgwUJxk653Rrlyazc/ZVee
-         THBUJw7yM949Cz+/CTmypmYNwcJyh2H3r0ybsBVkS8JDAb2SeKfUpmXnpwXiYahix9Vp
-         FdC7sa4/Hj5scSqO6gQpP6uEQmlYad8Z8v/C3BC2ya6MgXmN64ZZy48jeQ9uR/6qEnAH
-         gQ508Zw9N04VeMwuwyWc1shMDrLmKNe35wUDeQ9AFfFQK/SYBDaXjX2U7OsnlI6lU3VD
-         TQzQ==
+        bh=B9LufqdUnFpJuSHq7VG+1cDzdDjsh6C7NF9D7mHBSgE=;
+        b=g6shrotdYjJwb555YNp4B7fES2GhlOJy0e8xbWUiB4lv97yIBTg1glm+2zR4M08ZtX
+         w+07s5RPj0Q26PrdbbQuos8lGr442EIE9yIz7g2+JvnGc14ks0n5a5RwQVO1yn3udj4T
+         AYrQxniHTV0WhCYxHS4RuFAr7DyLbf7Yp1EOMII78Gt8TxxWAjKmF7Pd00+nQxG9ubsD
+         wifHKH/elFO57l9i76I8cAHFKWyo8PhcIBV4YkmMNYSaslmz1v3P6FyKtk46+/8Vmery
+         GxUFT8V5AekKeExnJ7KGMmj9NtN/1eWpGIVc1gp+FD0oUQ6qF+bRmvkj8rylMgcI30Mr
+         hG4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=MQQAWJNa/5+Ws/h1+nY46N9BdXPhpiMcbi0Tji1hFEY=;
-        b=jr2DMevBVRlSyvzpukGnTFHSokaU54brVYy3hIKENqRNynbDK5LUqUQYLqxjagF4sP
-         5R45KbI/W6ye2Cf0xQmF1raMnR56q1biBXRyuH/nCpwOhAMThOGq3IHOMCPJYgfwjThm
-         FFT287V75oLcvMIjOEDO70y2Ph5TNZoohTumIlPl/RcfdM4q59eOk8O1ipTnDPgpgi/4
-         VKI76hnwZ8i4fNLWcVzc9E7qs2RiudJUYjBesnfcIr5nVyZZkvcO4kPu/dgUQjuiHeVd
-         LBZIXQlDg+ByIyflsAL4b3GsJZHt58zJL5pYtb+9wMaxecbQX7rjCi4NGH96z7h9SnZQ
-         V/MA==
-X-Gm-Message-State: AOAM5339pKSCGxq6Bu7DERML2AT8n92zHBARjXjX9U/cG8e2Mhh0NYNn
-        ArINTET53vHI+spwXweiN256MUvDEfyq
-X-Google-Smtp-Source: ABdhPJxs8VE2EFnokM//O4a9DsMPKRIdgL2WWK/gF84Ol6Mqq3fJTR7ia0eRJFFqL9NbHweQLLfrGvevkHwP
-X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:400b:: with SMTP id
- n11mr2883266wma.167.1616148160645; Fri, 19 Mar 2021 03:02:40 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 10:01:32 +0000
-In-Reply-To: <20210319100146.1149909-1-qperret@google.com>
-Message-Id: <20210319100146.1149909-25-qperret@google.com>
-Mime-Version: 1.0
-References: <20210319100146.1149909-1-qperret@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v6 24/38] KVM: arm64: Refactor __populate_fault_info()
-From:   Quentin Perret <qperret@google.com>
-To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com
-Cc:     android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com, qperret@google.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B9LufqdUnFpJuSHq7VG+1cDzdDjsh6C7NF9D7mHBSgE=;
+        b=R1pC2jQ+DOgAWmLUeB0nE/l25i/ICCvIP1V5Le5+G6ArViLm7ammyWrtHxu9ckgXHV
+         oG+s2ZgJQrWVvQrINl+5YBG8u0ESNjMtpPz+A2yccgvs9mt5cIVPW7qx9RohieRrIP4f
+         lw3m0th4IgjCfTE+exPUM0oVnLAJkfghOmQkV2yOwjg+q/ciymQIiTTe7yvKIbKFSypV
+         mKNADX6g5D1YwCCPrbJrnQv3v93eQ8tKqobXoPSqKV25z/bSORaVHnynxPPrYo3oFB51
+         VKYKmEHjL9dmkMDclCQ6JReVzy9886qpAom2UCzxhGodojAZ0rnUi5/X0r6Uxrq1D32c
+         fYQg==
+X-Gm-Message-State: AOAM533icB2OBY0XNw6TpOBEItg/XOKmyluweXuzhhXAoyOnVPpnzHva
+        oxAw3M7b0o6wtEBNmRYF4edfKgk4+E1EVWqoNDA=
+X-Google-Smtp-Source: ABdhPJxbDPG8NljK+tr4M/GEgg/TBah6wYjT89ZRqQIGWrdHtGVIPdXZYQvPnOmMytwBlslG0IYoYkUoEPVUtJyzai8=
+X-Received: by 2002:a05:6a00:1596:b029:200:c2c9:95e7 with SMTP id
+ u22-20020a056a001596b0290200c2c995e7mr8460683pfk.73.1616148108258; Fri, 19
+ Mar 2021 03:01:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
+ <YD6nF1oJVMeCzn6R@rikard> <YFNNVHZeKIMHco+a@smile.fi.intel.com> <20210319083937.GH2916463@dell>
+In-Reply-To: <20210319083937.GH2916463@dell>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Mar 2021 12:01:32 +0200
+Message-ID: <CAHp75Ve3qgFOJxsDouL+ku4t7zxC8e7X1ta8wiL-eRCCpe51hA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify static
+ struct resources"
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor __populate_fault_info() to introduce __get_fault_info() which
-will be used once the host is wrapped in a stage 2.
+On Fri, Mar 19, 2021 at 10:41 AM Lee Jones <lee.jones@linaro.org> wrote:
+> On Thu, 18 Mar 2021, Andy Shevchenko wrote:
+> > On Tue, Mar 02, 2021 at 09:59:03PM +0100, Rikard Falkeborn wrote:
+> > > On Tue, Mar 02, 2021 at 03:56:16PM +0200, Andy Shevchenko wrote:
 
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/include/hyp/switch.h | 28 +++++++++++++++----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+...
 
-diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
-index 1073f176e92c..cdf42e347d3f 100644
---- a/arch/arm64/kvm/hyp/include/hyp/switch.h
-+++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
-@@ -160,18 +160,10 @@ static inline bool __translate_far_to_hpfar(u64 far, u64 *hpfar)
- 	return true;
- }
- 
--static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
-+static inline bool __get_fault_info(u64 esr, struct kvm_vcpu_fault_info *fault)
- {
--	u8 ec;
--	u64 esr;
- 	u64 hpfar, far;
- 
--	esr = vcpu->arch.fault.esr_el2;
--	ec = ESR_ELx_EC(esr);
--
--	if (ec != ESR_ELx_EC_DABT_LOW && ec != ESR_ELx_EC_IABT_LOW)
--		return true;
--
- 	far = read_sysreg_el2(SYS_FAR);
- 
- 	/*
-@@ -194,11 +186,25 @@ static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
- 		hpfar = read_sysreg(hpfar_el2);
- 	}
- 
--	vcpu->arch.fault.far_el2 = far;
--	vcpu->arch.fault.hpfar_el2 = hpfar;
-+	fault->far_el2 = far;
-+	fault->hpfar_el2 = hpfar;
- 	return true;
- }
- 
-+static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
-+{
-+	u8 ec;
-+	u64 esr;
-+
-+	esr = vcpu->arch.fault.esr_el2;
-+	ec = ESR_ELx_EC(esr);
-+
-+	if (ec != ESR_ELx_EC_DABT_LOW && ec != ESR_ELx_EC_IABT_LOW)
-+		return true;
-+
-+	return __get_fault_info(esr, &vcpu->arch.fault);
-+}
-+
- static inline void __hyp_sve_save_host(struct kvm_vcpu *vcpu)
- {
- 	struct thread_struct *thread;
+> > > Sorry about that :(
+> > >
+> > > Reviewed-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> >
+> > Thanks for review!
+> >
+> > Lee, this series has a critical bug fix, should I do something or you is going
+> > to apply this soon?
+>
+> It's on my to-review list.
+>
+> I can prioritise bug fixes though - can it be applied by itself?
+
+Sire, that's why it's at the beginning of the series.
+
 -- 
-2.31.0.rc2.261.g7f71774620-goog
-
+With Best Regards,
+Andy Shevchenko
