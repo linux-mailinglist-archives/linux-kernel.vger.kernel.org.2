@@ -2,222 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0BB3415D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E7C3415DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 07:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhCSGcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 02:32:55 -0400
-Received: from mail-dm6nam11on2136.outbound.protection.outlook.com ([40.107.223.136]:61408
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233909AbhCSGcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 02:32:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eU4LEENeRNvcIALV9Qe1/sASA1v7Y6GR6omVZNlO/SL6jZFoRDhpPSM7HQvrq8Bjetg52gLMFvsOip+9w1K4kcy2Zxtlr4XeGlhGv37C2/e5IOGy+IJcu4YF5/s3gC9+wM6oo0h75masB/dIHrqmXoo7BSAyWvCzOGguToTvrK2yVAZebtHc7DTH9Ms69mEJ0EOMRrl3LS3BtwgknvkUA5ubjK6OV7M/+7K1XzSzf/rEzTIMs3l/iUTBAkS0gKMrkpG0yPy+BllQUw+uKGee2zUmJkVeU5HjLpEO7e6hfpUHFElMcaPZ9Da0MBFh5t28hAx3gLBO2w9tT4VsCbnUfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sAtwGnwSPFchf/xK46R+lyXD+Lj9/kehGreqjV+V8qI=;
- b=Gea2J+E2ucJnS6dymef8mjiDKMI7hAwK0/J18ObUgcaRZHfLaesPOSmZdR4idWyvcE9cjX2KX5N7C/HtV2YZZCKwXutcJXFVKAGIQt29Q6mpJBnTtnuIYjy+XxTdiHas+9LMAcuwo9a0xvBQstQscpG2T47R1LPsalJLGgCH4aGjEvaDAw0lBApqyokIfetUeo9+SsLS/+jT9xUMYEiswAIKmK/ZCFQ+fWCdwVnHwhstjnFm6J761mFhLbMVJZpjg8nAeNIFxoVb8qDGhkUvQMaZFD6Bge4+MdARLyPZwMaflHJrNI/gDt29xCifvL7c6GoX3LxcMedMpJl/lCYPtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+        id S233009AbhCSGd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 02:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233985AbhCSGdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 02:33:35 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58478C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:33:35 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z136so4966391iof.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 23:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sAtwGnwSPFchf/xK46R+lyXD+Lj9/kehGreqjV+V8qI=;
- b=4HuySeYsmzWWyLWSTJQe/iAcehsAtpXBPcLaJJKFo+az4IY4yM3SnszHACuEZgZPnbBjdnU3ZT+Nq9wMZ376M6FWxIa8KC5/CeRNJ1KqB2zKj96JL/O6HJ17ThBAEZTd8P2pZPsVaQc2rI0DjnMCZ513TjBotg7zZ9bGqC261LY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4581.namprd04.prod.outlook.com (2603:10b6:a03:15::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 19 Mar
- 2021 06:32:45 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 06:32:45 +0000
-Date:   Fri, 19 Mar 2021 14:32:39 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/5] dt-bindings:drm/bridge:anx7625:add vendor define flags
-Message-ID: <4b09b40ce53c5b5fe7d2ba65a3c7a1b23f6eec04.1616135353.git.xji@analogixsemi.com>
-References: <cover.1616135353.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1616135353.git.xji@analogixsemi.com>
-X-Originating-IP: [60.251.58.79]
-X-ClientProxiedBy: HK2PR02CA0148.apcprd02.prod.outlook.com
- (2603:1096:202:16::32) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8JMFDnlbiquBJQkcZ6h8oNyX/u+0OOMYSlAiqQdHt08=;
+        b=pYiz6NEg6Z0fSu5Ki/lR+PH5sdV7XtjAylrQEhan2ILZCxm1vNpsjrDWcHfTY8FLIc
+         /gdBlm+1DsXJbVP4WL9Fw7tQaEgznATxuw/C8SSpOF5AgLHexKQWJi2L04bVPtq4mUjt
+         qYs9JnZRfdKC5VmNHkuMgg1tq9q0quJqy0Q/OXS7ngIUYHx0V4Hj7bXoz1g0jzd1nHDQ
+         dsjNXvTAL5GRqFRKx4gfgYjXcEAHy2PjpRIv0RT8Ji+K7qO9jQsFPNeL1zqktnmkfSmM
+         //VAiJK2XsaCO4l7SaJOCoBdW6N4Nzz+BMdRisWqgQE0YISutRfX1JXo5I07izRQzCsV
+         5Clg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8JMFDnlbiquBJQkcZ6h8oNyX/u+0OOMYSlAiqQdHt08=;
+        b=Y/Gm8BhhlKx6WxpAZAy9KW4Zz9aIBeT+dzNYS/MmziNPAOJIiB/28F+xYJ3T7Np9t0
+         FC927DxLnP1TzACyLs1xpc/A4RPzzzjShyVI5AT+hcMU5rSInxXeAce8fRjZ6iKynfgG
+         eLbpKFcMzA8rLLhLHqJGgMYMKO47MBbwZAvzctV+4dqIdEpCpHPp3Z/DjY9AX7RT2q4L
+         edIIo2l0uqnC++u2mhn1CroPA9NDm+iq8mVTQFilAT95b0AANGPS+epnMqEjp/3jC3YQ
+         KIB9M0Gr2L2gYt/hvLc5XTK6uYq1/QzA2zNE82TAfXJDs1znJ4IXqGmxBieOduTi0L2B
+         yA0g==
+X-Gm-Message-State: AOAM530FXwuB1SqKVMplKKVAcqGALOEDBsrc2TZIyorV/lifWjsby5Tr
+        dfrDKHzJ76lNTCr61RY6F7OTBMhDb4hSdiIPaps=
+X-Google-Smtp-Source: ABdhPJxlD9ePR573gboSQuP4pVF+ng+tUDrShxsfNOD95SpC+4SlYehsqqwvaGLGyMaUy0EI8SKATk9/ngH5WPB8sk4=
+X-Received: by 2002:a5d:87d5:: with SMTP id q21mr1612851ios.105.1616135614826;
+ Thu, 18 Mar 2021 23:33:34 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0148.apcprd02.prod.outlook.com (2603:1096:202:16::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 06:32:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ddac081b-1d1c-497d-4da6-08d8eaa0ce6c
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4581:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB4581F2470635411D5FAA9065C7689@BYAPR04MB4581.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q2tC/LFDhshTqAqjglpXZuz2tMcJqt/+nWKgpysRMwieWDuyjxY9+tvLKiVm2hT6oRzmzFy7JuqDXvyg2Jq+07aL6NMwJBmG5cKW1irf14S0K8ba4cipadGc1OnwFxv7K2Ic2rByAv0fQ/0+YanFyS3fj0xUq7ZirZkYojFKfphILlPdoA1QW2wHneponw1h0lZu638N5OvyW8AEXKbiKMim4dqPiViUCqu7RYyCLmlCRGjoJe0ZGMbMQm/0lD2Dl/jMMIIxGV9js2IR3pBJOeyYaiF5P1jyTNy3MN6RWTT206rvRV5Sqxmy+d5GpKZRrxhGNse8Mic3xJyw3gqPI0lGo6HESwK+d2NNTmjfAsFrIDTuJ953K623kiQ0KcBGd3gfH4fyqh24Lq5tOH2da2kTkYYgix/FfLb+KctlBuHfCulHQhx3sp1OXABKUYw2zf6S9CnOzkaTmQyXa51PHSg54RVHqcSZLGDD0HKoDDj4nS7voxgi5RXvDgKaxAzXEKJB6JbvJXVMbRsQu2Dq3PL0QVd1Jf7q6h3K1ca03N2iIjt9I6x3LRjp3u+AeA0jf4Fmy80fc0gOoIojU5/R2XufqCOJBt8asJ8lQer05X2cU9BDOisZ3JJM7WE1CdI9CpjuC2KsL4Ug0NXKJXO0Ig==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39840400004)(136003)(396003)(26005)(54906003)(7416002)(186003)(36756003)(2616005)(6486002)(86362001)(6496006)(956004)(38100700001)(16526019)(2906002)(52116002)(8676002)(5660300002)(4326008)(110136005)(66476007)(316002)(478600001)(55236004)(66946007)(6666004)(83380400001)(66556008)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9objvXZ6EqQtc/6med8y5/kJZzshdwTFwwCxBVfgyJ4Oxo41LQHEpDu7Ivw8?=
- =?us-ascii?Q?EBpAmioX8VJ4mRMrjzzZBelG+vp6sy+iday2WNGsJXzXQVH5dk2cfGwUDpP/?=
- =?us-ascii?Q?46w0CGfwO17Tznkd+LQeMo1/viXBg/jx/vaxJcqKeE8G12RflfNVp2s+rMh0?=
- =?us-ascii?Q?oTRG7FG8PCkbIKQHRjU0ZuxTOKPpfim9Wa0nTtbmUqMsGLt2EUJTLtA3bqoV?=
- =?us-ascii?Q?ihRzYQZEC9PAW82aEmCdw2Amr5OrPIvN4TwFYTNHBmD0aoVCkysawSvTcgOo?=
- =?us-ascii?Q?quq1r8JegrJr5xds3Et9gRzY0Uecr0a07GF+PSGUPEF6wTidi8t1YWKjU00E?=
- =?us-ascii?Q?gKTzOKNU2FBiP3NFFgZxf2jFyosVPj9T4h6B68RSfyss71IC1W9+QpF5eIOX?=
- =?us-ascii?Q?/V0KRQVrxD+pyfHBgQSQrT9ZpuUrEG1EMfDXrAFtytAt68njwtc2hSWRW66C?=
- =?us-ascii?Q?4N6Z68rNjbpug5xbFH6bJ+6sBYIUBSpIK7FHYzKJiB3LDVLf4W8rM0dFPtuh?=
- =?us-ascii?Q?eaOZVezk1l3vl3uxhS+YJnKE5UTtR17pq9nanQHNLFKFAXRUYn79OdbMyus1?=
- =?us-ascii?Q?mnbXK71Bv478xcHAjE4Su8z0TcTGTRl1rgDboIYy4RsOfbvKzOiY6QUJTUPa?=
- =?us-ascii?Q?AFsBHA9rGo/t7E3cuAyXx4h144H/xsGXtuQOOJb0IipBHcs+58UOWrpcEuaN?=
- =?us-ascii?Q?CjeEkIIEf8YHTRG10AG89nuSImCjF2TXvjw6oYRQ6plKy5jQ5IzZm7Qp54tX?=
- =?us-ascii?Q?c6HrNvbGKAfY7mZYGODRCToHqZW/a3dlQnWLeQwT0Q/KHYLChGRjCHrjZMAh?=
- =?us-ascii?Q?1vX9TadKV8Wq0614oPYOO8LIiNo2dcJ0FOiu1Rtlphb6bcA4oUk75ELspD4d?=
- =?us-ascii?Q?0TmKzbIQjR57m/MbbzaKymmLu/aVXefqIrRLOkNfvSqRdiSDsDliCzP3hi+N?=
- =?us-ascii?Q?NV1sUuESDCgxxqw3CxpJlWfuvetnIA2SBNh3x5yLZu4TKxs2dSfYsxzF1dDR?=
- =?us-ascii?Q?aaNBBCLx0JIBKPDd6ofcztloxoBntjRUg6Tq9p4I+DTbWTN+9Bc9wLYY9TpC?=
- =?us-ascii?Q?0sVG0PAFbA8GCSlpjoDi8WfHBUbQnVjrNDlzea1rpwFL1vopUg54L4bw9o7g?=
- =?us-ascii?Q?gE1EmEYQhJjOhrPNuIC2O1trnBteBVZI9rYDcJvVHqqoPF3FRRFStKJDu6eu?=
- =?us-ascii?Q?KWvejr6I24mvrUaz0YhV+kr4phps4+eXO6Rya3eq0375TRStnJtu0VhF+Uy0?=
- =?us-ascii?Q?vUlUJMvFNNScuZkVwjd87hgK/5QiX9OdE4dC/oP1rQh+fUir6zULzyM2W7vw?=
- =?us-ascii?Q?0NtmxlOV+Irsu8q7IFVaF+f1?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddac081b-1d1c-497d-4da6-08d8eaa0ce6c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 06:32:45.4852
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aZ1B2aO/nTzmbyH8ShU6FxiSZUM1i5bMM00BT1L1RTclabDlcyROEpRNIYqU35w9e8QhVQgs3KjjTp0KmcOUaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4581
+References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
+ <20210317143805.GA5610@redhat.com> <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+ <20210318180450.GA9977@redhat.com> <m1pmzwb7pd.fsf@fess.ebiederm.org>
+In-Reply-To: <m1pmzwb7pd.fsf@fess.ebiederm.org>
+From:   qianli zhao <zhaoqianligood@gmail.com>
+Date:   Fri, 19 Mar 2021 14:33:23 +0800
+Message-ID: <CAPx_LQHahNDvUkv08RZgUvbKZtdHNaSNRA1XqVDkNiwv5D=fXg@mail.gmail.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>, christian@brauner.io,
+        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
-lane1 swing register array define, and audio enable flag.
+Hi,Eric
 
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- .../display/bridge/analogix,anx7625.yaml      | 58 ++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+> As I understand it this patch has two purposes:
+> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
+> 2. panic as early as possible so exiting threads don't removing
+>   interesting debugging state.
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-index c789784efe30..3f54d5876982 100644
---- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-@@ -34,6 +34,26 @@ properties:
-     description: used for reset chip control, RESET_N pin B7.
-     maxItems: 1
- 
-+  analogix,lane0-swing:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 20
-+    description:
-+      an array of swing register setting for DP tx lane0 PHY, please don't
-+      add this property, or contact vendor.
-+
-+  analogix,lane1-swing:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 20
-+    description:
-+      an array of swing register setting for DP tx lane1 PHY, please don't
-+      add this property, or contact vendor.
-+
-+  analogix,audio-enable:
-+    type: boolean
-+    description: let the driver enable audio HDMI codec function or not.
-+
-   ports:
-     $ref: /schemas/graph.yaml#/properties/ports
- 
-@@ -41,13 +61,43 @@ properties:
-       port@0:
-         $ref: /schemas/graph.yaml#/properties/port
-         description:
--          Video port for MIPI DSI input.
-+          MIPI DSI/DPI input.
-+
-+        properties:
-+          endpoint:
-+            $ref: /schemas/media/video-interfaces.yaml#
-+            type: object
-+            additionalProperties: false
-+
-+            properties:
-+              remote-endpoint: true
-+              bus-type: true
-+              data-lanes: true
-+
-+            required:
-+              - remote-endpoint
-+
-+        required:
-+          - endpoint
-+
- 
-       port@1:
-         $ref: /schemas/graph.yaml#/properties/port
-         description:
-           Video port for panel or connector.
- 
-+        properties:
-+          endpoint:
-+            $ref: /schemas/media/video-interfaces.yaml#
-+            type: object
-+            additionalProperties: false
-+
-+            properties:
-+              remote-endpoint: true
-+
-+            required:
-+              - remote-endpoint
-+
-     required:
-       - port@0
-       - port@1
-@@ -73,6 +123,10 @@ examples:
-             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
- 
-+            analogix,audio-enable;
-+            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-+            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-+
-             ports {
-                 #address-cells = <1>;
-                 #size-cells = <0>;
-@@ -81,6 +135,8 @@ examples:
-                     reg = <0>;
-                     anx7625_in: endpoint {
-                         remote-endpoint = <&mipi_dsi>;
-+                        bus-type = <5>;
-+                        data-lanes = <0 1 2 3>;
-                     };
-                 };
- 
--- 
-2.25.1
+Your understanding is very correct,this is what my patch wants to do
 
+> I think if we are going to move the decrement of signal->live that
+> should be it's own patch and be accompanied with a good description of
+> why it is safe instead of having the decrement of signal->live be there
+> as a side effect of another change.
+
+I will think about the risks of movement of the decrement of
+signal->live before exit_signal().
+If is difficult to judge movement of the decrement of signal->live is
+safe,how about only test 'signal->live=3D=3D1' not use group_dead?
+
+Such as:
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 04029e3..87f3595 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -767,6 +767,17 @@ void __noreturn do_exit(long code)
+        validate_creds_for_do_exit(tsk);
+
+        /*
++        * If global init has exited,
++        * panic immediately to get a useable coredump.
++        */
++       if (unlikely(is_global_init(tsk) &&
++           ((atomic_read(&tsk->signal->live) =3D=3D 1) ||    /*current is
+last init thread*/
++            (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
++                       panic("Attempted to kill init! exitcode=3D0x%08x\n"=
+,
++                               tsk->signal->group_exit_code ?: (int)code);
++       }
++
++       /*
+         * We're taking recursive faults here in do_exit. Safest is to just
+         * leave this task alone and wait for reboot.
+         */
+@@ -784,16 +795,9 @@ void __noreturn do_exit(long code)
+        if (tsk->mm)
+                sync_mm_rss(tsk->mm);
+        acct_update_integrals(tsk);
++
+        group_dead =3D atomic_dec_and_test(&tsk->signal->live);
+        if (group_dead) {
+-               /*
+-                * If the last thread of global init has exited, panic
+-                * immediately to get a useable coredump.
+-                */
+-               if (unlikely(is_global_init(tsk)))
+-                       panic("Attempted to kill init! exitcode=3D0x%08x\n"=
+,
+-                               tsk->signal->group_exit_code ?: (int)code);
+-
+
+Eric W. Biederman <ebiederm@xmission.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=881=
+9=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=883:09=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+> > On 03/18, qianli zhao wrote:
+> >>
+> >> Hi,Oleg
+> >>
+> >> Thank you for your reply.
+> >>
+> >> >> When init sub-threads running on different CPUs exit at the same ti=
+me,
+> >> >> zap_pid_ns_processe()->BUG() may be happened.
+> >>
+> >> > and why do you think your patch can't prevent this?
+> >>
+> >> > Sorry, I must have missed something. But it seems to me that you are=
+ trying
+> >> > to fix the wrong problem. Yes, zap_pid_ns_processes() must not be ca=
+lled in
+> >> > the root namespace, and this has nothing to do with CONFIG_PID_NS.
+> >>
+> >> Yes, i try to fix this exception by test SIGNAL_GROUP_EXIT and call
+> >> panic before setting PF_EXITING to prevent zap_pid_ns_processes()
+> >> being called when init do_exit().
+> >
+> > Ah, I didn't notice your patch does atomic_dec_and_test(signal->live)
+> > before exit_signals() which sets PF_EXITING. Thanks for correcting me.
+> >
+> > So yes, I was wrong, your patch can prevent this. Although I'd like to
+> > recheck if every do-something-if-group-dead action is correct in the
+> > case we have a non-PF_EXITING thread...
+> >
+> > But then I don't understand the SIGNAL_GROUP_EXIT check added by your
+> > patch. Do we really need it if we want to avoid zap_pid_ns_processes()
+> > when the global init exits?
+> >
+> >> In addition, the patch also protects the init process state to
+> >> successfully get usable init coredump.
+> >
+> > Could you spell please?
+> >
+> > Does this connect to SIGNAL_GROUP_EXIT check? Do you mean that you want
+> > to panic earlier, before other init's sub-threads exit?
+>
+> That is my understanding.
+>
+> As I understand it this patch has two purposes:
+> 1. Avoid the BUG_ON in zap_pid_ns_processes when !CONFIG_PID_NS
+> 2. panic as early as possible so exiting threads don't removing
+>    interesting debugging state.
+>
+>
+> It is a bit tricky to tell if the movement of the decrement of
+> signal->live is safe.  That affects current_is_single threaded
+> which is used by unshare, setns of the time namespace, and setting
+> the selinux part of creds.
+>
+> The usage in kernel/cgroup/cgroup.c:css_task_iter_advance seems safe.
+> Hmm, Maybe not.  Today cgroup_thread_change_begin is held around
+> setting PF_EXITING before signal->live is decremented.  So there seem to
+> be some subtle cgroup dependencies.
+>
+> The usages of group_dead in do_exit seem safe, as except for the new
+> one everything is the same.
+>
+> We could definitely take advantage of knowing group_dead in exit_signals
+> to simplify it's optimization to not rerouting signals to living
+> threads.
+>
+>
+> I think if we are going to move the decrement of signal->live that
+> should be it's own patch and be accompanied with a good description of
+> why it is safe instead of having the decrement of signal->live be there
+> as a side effect of another change.
+>
+> Eric
