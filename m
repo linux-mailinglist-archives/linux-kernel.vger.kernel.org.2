@@ -2,175 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC23341D23
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85346341D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 13:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCSMmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 08:42:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230081AbhCSMmg (ORCPT
+        id S230293AbhCSMoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 08:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhCSMoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:42:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616157755;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X1A2nlYk/zcxSb3qRfJ2ouUpfSyTArKTBOgD3tcQTiQ=;
-        b=CxdRBkiQV6ED5S+DpvgdfapI1XNElqJ0cbJnPnJs6kTiugmkUmvhaUGmMUbNdUkdTxODhk
-        XMlEggLFT8CjE0qr6nu5dXDkV48l2K5TOz4ekJk9sTvDvXYteNt3dIBro74SO+ZfePg5eY
-        vBmjfmgpm3XuzmONjLafDaC5NN7Y0jw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-Hvgrkq-UPAuV3NLn5RUFVw-1; Fri, 19 Mar 2021 08:42:32 -0400
-X-MC-Unique: Hvgrkq-UPAuV3NLn5RUFVw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A32A7108BD07;
-        Fri, 19 Mar 2021 12:42:27 +0000 (UTC)
-Received: from [10.36.112.11] (ovpn-112-11.ams2.redhat.com [10.36.112.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DB2319CB1;
-        Fri, 19 Mar 2021 12:42:20 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v19 7/8] mm: hugetlb: add a kernel
- parameter hugetlb_free_vmemmap
-From:   David Hildenbrand <david@redhat.com>
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-References: <20210315092015.35396-1-songmuchun@bytedance.com>
- <20210315092015.35396-8-songmuchun@bytedance.com>
- <20210319085948.GA5695@linux>
- <CAMZfGtXAgcJQp59AVuieqLT+1Qb3RGQmFK-SGNZH-T6K83Y=HQ@mail.gmail.com>
- <e9af16bb-2296-c9fb-976f-f99472490940@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9403717f-e6c4-3932-eaa7-71a8b02e4f69@redhat.com>
-Date:   Fri, 19 Mar 2021 13:42:19 +0100
+        Fri, 19 Mar 2021 08:44:06 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A53C06174A;
+        Fri, 19 Mar 2021 05:44:05 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id u4so11795155ljo.6;
+        Fri, 19 Mar 2021 05:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pE9UTROWsh3/pPLe+cr073qMj1X+IQp0oFmUiWqch/8=;
+        b=MFHThy89oJc+dHthFkFMr+lYlYyUobH7v3iQwNWw2XFxe2ml3Q3AjBzhH3eVp3eQvf
+         THEkRTSt/vkypRQNw1Ua4udKIMHBFCx1tNePa3vHyx+dYt9PGhYcwJfZ9qh/EKzDrnuu
+         IyvnhHPcjWt2NCflmyl9rOuIg5G9etAIx2AdVNeXxLrBpH+6c5fnX4QkHAmkm00QufN5
+         aumN8Zj12BJgq3/AmS7Rz+VOZzq1vfz+fKS8ef4jok1QUhbxSYiHW6c5K2OGEsOyFJUk
+         CaMEJipR8UgnvdjkAoJa8kw22WH6v4GHIX7AEuANIw37eQHBHeHT0PDxkKlsCqf2VYVD
+         pwOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pE9UTROWsh3/pPLe+cr073qMj1X+IQp0oFmUiWqch/8=;
+        b=Go5IVz/CG00py+D/2QKwBFPvBGIDbEFEO8UeMm7m6IIX5lpWsqT+vzipq7Kh7ITir+
+         1t0CZC9yOKqF11COJPE9R2PK623rxDe74bdx9JktbbPTbrOAwXTgx3EmCPBM8uJ+UUkI
+         Kc8TEnSxuCBkye8Ev+FPpD3k74vCq8CZvxXXjZPBbkTT8yWjtV+GwafqS7TpQo1uppqa
+         nP3A6YFcOhJDYUhSbMeQkhFP0O176mht0VHvCn04RAMSoR75aiXyeK8ymX6lgGVAD/Pw
+         yLUxBN7arJIR5TGV0nLHGSa76TQ79M+6bxUg32uUWMp6rX2ZaYOKdmjHUEKfhq7cONgg
+         1Jjg==
+X-Gm-Message-State: AOAM530eRz5JydcimDoTEnQ5xUdjJfPQiSnXrD/34l5fK3NWtptsskcj
+        F9W/H+m4o/Y5AXVDVwoZHpC6pYqE8Gk=
+X-Google-Smtp-Source: ABdhPJwoCPtn9KGPuEZhQakE51bBvBf2VLF4yHt3RcvpYXwuXr6z/HqAyaNEZohhsA0CCkQGFPceUA==
+X-Received: by 2002:a05:651c:387:: with SMTP id e7mr798035ljp.425.1616157843736;
+        Fri, 19 Mar 2021 05:44:03 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id k5sm752189ljb.78.2021.03.19.05.44.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 05:44:03 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, willy@infradead.org, david@redhat.com,
+        surenb@google.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20210309062333.3216138-1-minchan@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com>
+Date:   Fri, 19 Mar 2021 15:44:02 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <e9af16bb-2296-c9fb-976f-f99472490940@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210309062333.3216138-1-minchan@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.03.21 13:36, David Hildenbrand wrote:
-> On 19.03.21 13:15, Muchun Song wrote:
->> On Fri, Mar 19, 2021 at 4:59 PM Oscar Salvador <osalvador@suse.de> wrote:
->>>
->>> On Mon, Mar 15, 2021 at 05:20:14PM +0800, Muchun Song wrote:
->>>> --- a/arch/x86/mm/init_64.c
->>>> +++ b/arch/x86/mm/init_64.c
->>>> @@ -34,6 +34,7 @@
->>>>    #include <linux/gfp.h>
->>>>    #include <linux/kcore.h>
->>>>    #include <linux/bootmem_info.h>
->>>> +#include <linux/hugetlb.h>
->>>>
->>>>    #include <asm/processor.h>
->>>>    #include <asm/bios_ebda.h>
->>>> @@ -1557,7 +1558,8 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
->>>>    {
->>>>         int err;
->>>>
->>>> -     if (end - start < PAGES_PER_SECTION * sizeof(struct page))
->>>> +     if ((is_hugetlb_free_vmemmap_enabled()  && !altmap) ||
->>>> +         end - start < PAGES_PER_SECTION * sizeof(struct page))
->>>>                 err = vmemmap_populate_basepages(start, end, node, NULL);
->>>>         else if (boot_cpu_has(X86_FEATURE_PSE))
->>>>                 err = vmemmap_populate_hugepages(start, end, node, altmap);
->>>
->>> I've been thinking about this some more.
->>>
->>> Assume you opt-in the hugetlb-vmemmap feature, and assume you pass a valid altmap
->>> to vmemmap_populate.
->>> This will lead to use populating the vmemmap array with hugepages.
->>
->> Right.
->>
->>>
->>> What if then, a HugeTLB gets allocated and falls within that memory range (backed
->>> by hugetpages)?
->>
->> I am not sure whether we can allocate the HugeTLB pages from there.
->> Will only device memory pass a valid altmap parameter to
->> vmemmap_populate()? If yes, can we allocate HugeTLB pages from
->> device memory? Sorry, I am not an expert on this.
+09.03.2021 09:23, Minchan Kim пишет:
+> Since CMA is getting used more widely, it's more important to
+> keep monitoring CMA statistics for system health since it's
+> directly related to user experience.
 > 
-> I think, right now, yes. System RAM that's applicable for HugePages
-> never uses an altmap. But Oscar's patch will change that, maybe before
-> your series might get included from what I've been reading. [1]
+> This patch introduces sysfs statistics for CMA, in order to provide
+> some basic monitoring of the CMA allocator.
 > 
-> [1] https://lkml.kernel.org/r/20210319092635.6214-1-osalvador@suse.de
+>  * the number of CMA page successful allocations
+>  * the number of CMA page allocation failures
 > 
->>
->>
->>> AFAIK, this will get us in trouble as currently the code can only operate on memory
->>> backed by PAGE_SIZE pages, right?
->>>
->>> I cannot remember, but I do not think nothing prevents that from happening?
->>> Am I missing anything?
->>
->> Maybe David H is more familiar with this.
->>
->> Hi David,
->>
->> Do you have some suggestions on this?
+> These two values allow the user to calcuate the allocation
+> failure rate for each CMA area.
 > 
-> There has to be some way to identify whether we can optimize specific
-> vmemmap pages or should just leave them alone. altmap vs. !altmap.
+> e.g.)
+>   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
+>   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
+>   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
 > 
-> Unfortunately, there is no easy way to detect that - e.g.,
-> PageReserved() applies also to boot memory.
+> The cma_stat was intentionally allocated by dynamic allocation
+> to harmonize with kobject lifetime management.
+> https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
 > 
-> We could go back to setting a special PageType for these vmemmap pages,
-> indicating "this is a page allocated from an altmap, don't touch it".
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+> From v3 - https://lore.kernel.org/linux-mm/20210303205053.2906924-1-minchan@kernel.org/
+>  * fix ZERO_OR_NULL_PTR - kernel test robot
+>  * remove prefix cma - david@
+>  * resolve conflict with vmstat cma in mmotm - akpm@
+>  * rename stat name with success|fail
+> 
+> From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
+>  * sysfs doc and description modification - jhubbard
+> 
+> From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
+>  * fix sysfs build and refactoring - willy
+>  * rename and drop some attributes - jhubbard
+> 
+>  Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+>  mm/Kconfig                                    |   7 ++
+>  mm/Makefile                                   |   1 +
+>  mm/cma.c                                      |   7 +-
+>  mm/cma.h                                      |  20 ++++
+>  mm/cma_sysfs.c                                | 110 ++++++++++++++++++
+>  6 files changed, 168 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+>  create mode 100644 mm/cma_sysfs.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> new file mode 100644
+> index 000000000000..02b2bb60c296
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> @@ -0,0 +1,25 @@
+> +What:		/sys/kernel/mm/cma/
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
+> +		heap name (also sometimes called CMA areas).
+> +
+> +		Each CMA heap subdirectory (that is, each
+> +		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
+> +		following items:
+> +
+> +			alloc_pages_success
+> +			alloc_pages_fail
+> +
+> +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		the number of pages CMA API succeeded to allocate
+> +
+> +What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		the number of pages CMA API failed to allocate
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 24c045b24b95..febb7e8e24de 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -513,6 +513,13 @@ config CMA_DEBUGFS
+>  	help
+>  	  Turns on the DebugFS interface for CMA.
+>  
+> +config CMA_SYSFS
+> +	bool "CMA information through sysfs interface"
+> +	depends on CMA && SYSFS
+> +	help
+> +	  This option exposes some sysfs attributes to get information
+> +	  from CMA.
+> +
+>  config CMA_AREAS
+>  	int "Maximum count of the CMA areas"
+>  	depends on CMA
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 72227b24a616..56968b23ed7a 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
+>  obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+>  obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+>  obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
+> +obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
+>  obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+>  obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
+>  obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 908f04775686..ac050359faae 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -507,10 +507,13 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>  
+>  	pr_debug("%s(): returned %p\n", __func__, page);
+>  out:
+> -	if (page)
+> +	if (page) {
+>  		count_vm_event(CMA_ALLOC_SUCCESS);
+> -	else
+> +		cma_sysfs_alloc_pages_count(cma, count);
+> +	} else {
+>  		count_vm_event(CMA_ALLOC_FAIL);
+> +		cma_sysfs_fail_pages_count(cma, count);
+> +	}
+>  
+>  	return page;
+>  }
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 42ae082cb067..95d1aa2d808a 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -3,6 +3,16 @@
+>  #define __MM_CMA_H__
+>  
+>  #include <linux/debugfs.h>
+> +#include <linux/kobject.h>
+> +
+> +struct cma_stat {
+> +	spinlock_t lock;
+> +	/* the number of CMA page successful allocations */
+> +	unsigned long nr_pages_succeeded;
+> +	/* the number of CMA page allocation failures */
+> +	unsigned long nr_pages_failed;
+> +	struct kobject kobj;
+> +};
+>  
+>  struct cma {
+>  	unsigned long   base_pfn;
+> @@ -16,6 +26,9 @@ struct cma {
+>  	struct debugfs_u32_array dfs_bitmap;
+>  #endif
+>  	char name[CMA_MAX_NAME];
+> +#ifdef CONFIG_CMA_SYSFS
+> +	struct cma_stat	*stat;
+> +#endif
+>  };
+>  
+>  extern struct cma cma_areas[MAX_CMA_AREAS];
+> @@ -26,4 +39,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+>  	return cma->count >> cma->order_per_bit;
+>  }
+>  
+> +#ifdef CONFIG_CMA_SYSFS
+> +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count);
+> +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count);
+> +#else
+> +static inline void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count) {};
+> +static inline void cma_sysfs_fail_pages_count(struct cma *cma, size_t count) {};
+> +#endif
+>  #endif
+> diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+> new file mode 100644
+> index 000000000000..3134b2b3a96d
+> --- /dev/null
+> +++ b/mm/cma_sysfs.c
+> @@ -0,0 +1,110 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * CMA SysFS Interface
+> + *
+> + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
+> + */
+> +
+> +#include <linux/cma.h>
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +
+> +#include "cma.h"
+> +
+> +static struct cma_stat *cma_stats;
+> +
+> +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
+> +{
+> +	spin_lock(&cma->stat->lock);
+> +	cma->stat->nr_pages_succeeded += count;
+> +	spin_unlock(&cma->stat->lock);
+> +}
+> +
+> +void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
+> +{
+> +	spin_lock(&cma->stat->lock);
+> +	cma->stat->nr_pages_failed += count;
+> +	spin_unlock(&cma->stat->lock);
+> +}
+> +
+> +#define CMA_ATTR_RO(_name) \
+> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+> +
+> +static struct kobject *cma_kobj;
+> +
+> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
+> +			struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	return sysfs_emit(buf, "%lu\n", stat->nr_pages_succeeded);
+> +}
+> +CMA_ATTR_RO(alloc_pages_success);
+> +
+> +static ssize_t alloc_pages_fail_show(struct kobject *kobj,
+> +			struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	return sysfs_emit(buf, "%lu\n", stat->nr_pages_failed);
+> +}
+> +CMA_ATTR_RO(alloc_pages_fail);
+> +
+> +static void cma_kobj_release(struct kobject *kobj)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	kfree(stat);
+> +}
+> +
+> +static struct attribute *cma_attrs[] = {
+> +	&alloc_pages_success_attr.attr,
+> +	&alloc_pages_fail_attr.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(cma);
+> +
+> +static struct kobj_type cma_ktype = {
+> +	.release = cma_kobj_release,
+> +	.sysfs_ops = &kobj_sysfs_ops,
+> +	.default_groups = cma_groups
+> +};
+> +
+> +static int __init cma_sysfs_init(void)
+> +{
+> +	int i = 0;
+> +	struct cma *cma;
+> +
+> +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
+> +	if (!cma_kobj)
+> +		return -ENOMEM;
+> +
+> +	cma_stats = kmalloc_array(cma_area_count, sizeof(struct cma_stat),
+> +				GFP_KERNEL|__GFP_ZERO);
+
+Use kcalloc().
+
+Code identation is wrong, please use checkpatch.
+
+> +	if (ZERO_OR_NULL_PTR(cma_stats))
+> +		goto out;
+> +
+> +	do {
+> +		cma = &cma_areas[i];
+> +		cma->stat = &cma_stats[i];
+> +		spin_lock_init(&cma->stat->lock);
+> +		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
+> +					cma_kobj, "%s", cma->name)) {
+> +			kobject_put(&cma->stat->kobj);
+> +			goto out;
+> +		}
+> +	} while (++i < cma_area_count);
+> +
+> +	return 0;
+> +out:
+> +	while (--i >= 0) {
+> +		cma = &cma_areas[i];
+> +		kobject_put(&cma->stat->kobj);
+> +	}
+> +
+> +	kfree(cma_stats);
+> +	kobject_put(cma_kobj);
+> +
+> +	return -ENOMEM;
+> +}
+> +subsys_initcall(cma_sysfs_init);
 > 
 
-With SPARSEMEM we can use
+Hi,
 
-PageReserved(page) && early_section(): vmemmap from bootmem
+There is a NULL derence on ARM32 NVIDIA Tegra SoCs with CONFIG_CMA_SYSFS=y using today's next-20210319, please take a look.
 
-PageReserved(page) && !early_section(): vmemmap from altmap
-
-!PageReserved(page): vmemmap from buddy
-
-But it's a bit shaky :)
-
--- 
-Thanks,
-
-David / dhildenb
-
+[    1.185423] 8<--- cut here ---
+[    1.186081] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+[    1.186705] pgd = (ptrval)
+[    1.188130] [00000000] *pgd=00000000
+[    1.190554] Internal error: Oops: 5 [#1] PREEMPT SMP THUMB2
+[    1.191545] Modules linked in:
+[    1.192629] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         5.12.0-rc3-next-20210319-00174-g89b3b421dd2b #7142
+[    1.193540] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[    1.194613] PC is at _raw_spin_lock+0x1a/0x48
+[    1.200352] LR is at cma_sysfs_alloc_pages_count+0x13/0x24
+[    1.200821] pc : [<c0a2d832>]    lr : [<c027762f>]    psr: 00000033
+[    1.201269] sp : c1547e48  ip : f0000080  fp : 0000c800
+[    1.201580] r10: c13bd178  r9 : 00000040  r8 : 00000040
+[    1.201972] r7 : 00000000  r6 : c13bd168  r5 : 00000040  r4 : c13bd168
+[    1.202418] r3 : c1546000  r2 : 00000001  r1 : 00000040  r0 : 00000000
+[    1.203014] Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA Thumb  Segment none
+[    1.203488] Control: 50c5387d  Table: 0000406a  DAC: 00000051
+[    1.203988] Register r0 information: NULL pointer
+[    1.204868] Register r1 information: non-paged memory
+[    1.205233] Register r2 information: non-paged memory
+[    1.205563] Register r3 information: non-slab/vmalloc memory
+[    1.206213] Register r4 information: non-slab/vmalloc memory
+[    1.206578] Register r5 information: non-paged memory
+[    1.206929] Register r6 information: non-slab/vmalloc memory
+[    1.207278] Register r7 information: NULL pointer
+[    1.207594] Register r8 information: non-paged memory
+[    1.207968] Register r9 information: non-paged memory
+[    1.208291] Register r10 information: non-slab/vmalloc memory
+[    1.208648] Register r11 information: non-paged memory
+[    1.209002] Register r12 information: non-paged memory
+[    1.209407] Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+[    1.209956] Stack: (0xc1547e48 to 0xc1548000)
+[    1.211102] 7e40:                   c1199e24 00033800 efe35000 c027706f 0000003f 00000000
+[    1.211999] 7e60: 00000040 0000003f 00000000 00000040 00000cc0 00000000 00000006 00000000
+[    1.212855] 7e80: c1547ed8 00040000 c1141780 00000001 00000000 c1547ed8 00000647 00000040
+[    1.213768] 7ea0: c138c000 c01112ab c0fed0d8 c1141780 c1546000 00000001 c1140d24 00000000
+[    1.214648] 7ec0: c1140d44 c1104af9 c1104a7f 00000001 00000000 00000cc0 00000000 e29968ad
+[    1.215578] 7ee0: c161a077 c1546000 c136d940 c1104a7f ffffe000 c0101d69 c161a077 c161a098
+[    1.216564] 7f00: c1058490 c0138345 c10566cc c0ef58b8 c11003d1 c1546000 00000000 00000002
+[    1.217357] 7f20: 00000002 c0f10280 c0efe3e4 c0efe398 c11003d1 c161a074 c161a077 e29968ad
+[    1.218212] 7f40: c1140d40 e29968ad c161a000 c118d304 00000003 c11003d1 c161a000 c1140d24
+[    1.219164] 7f60: 0000017e c1101141 00000002 00000002 00000000 c11003d1 c0a27fc5 c10566cc
+[    1.220015] 7f80: c1547f98 00000000 c0a27fc5 00000000 00000000 00000000 00000000 00000000
+[    1.220863] 7fa0: 00000000 c0a27fd1 00000000 c0100155 00000000 00000000 00000000 00000000
+[    1.221713] 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    1.222584] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+[    1.225038] [<c0a2d832>] (_raw_spin_lock) from [<c027762f>] (cma_sysfs_alloc_pages_count+0x13/0x24)
+[    1.226190] [<c027762f>] (cma_sysfs_alloc_pages_count) from [<c027706f>] (cma_alloc+0x153/0x274)
+[    1.226720] [<c027706f>] (cma_alloc) from [<c01112ab>] (__alloc_from_contiguous+0x37/0x8c)
+[    1.227272] [<c01112ab>] (__alloc_from_contiguous) from [<c1104af9>] (atomic_pool_init+0x7b/0x126)
+[    1.233596] [<c1104af9>] (atomic_pool_init) from [<c0101d69>] (do_one_initcall+0x45/0x1e4)
+[    1.234188] [<c0101d69>] (do_one_initcall) from [<c1101141>] (kernel_init_freeable+0x157/0x1a6)
+[    1.234741] [<c1101141>] (kernel_init_freeable) from [<c0a27fd1>] (kernel_init+0xd/0xe0)
+[    1.235289] [<c0a27fd1>] (kernel_init) from [<c0100155>] (ret_from_fork+0x11/0x1c)
