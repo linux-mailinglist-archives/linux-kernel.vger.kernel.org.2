@@ -2,156 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA0134120A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884FF34120D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Mar 2021 02:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhCSBVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Mar 2021 21:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S232774AbhCSBV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Mar 2021 21:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhCSBVM (ORCPT
+        with ESMTP id S232441AbhCSBVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:21:12 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C14DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:21:12 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id g20so1346720qkk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Mar 2021 18:21:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=suObc3/+Vf1EytucrxjvYtf/CBrpHkGZ5JxHoK4z38E=;
-        b=bhJcjepUfXuLEoJOGLGkpyQu0P6brTjnnbhvfmYXw7eHdG3fIGA3Hbh/OsxZBdzFmu
-         gFVLug0cMvQ10NA++5eqgG1dgoYJKY0i/krruCcE9nM7PVn488/q6l5TwekudWhDsQr8
-         qaImdyjuzs7hb2Qzru8Wp3MP1ufLaCJIzFkWA0XlMXhzidZgAbJ7n6MNkQ5VbgPyiUcx
-         efNpSwQArhHoDqxp5S2D0nTNxPqbBpRx2gmtZZzO8QCxAbqpOK0XGEteJZBBp5yOCp/e
-         5QsmD7NLKR1zC+4g2CFnDL/mPwurAUQHgvGmAeQmzQd7I6o2faJZC5UvLuaB+rlVYPQp
-         dEjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=suObc3/+Vf1EytucrxjvYtf/CBrpHkGZ5JxHoK4z38E=;
-        b=L21GtGOySi042d0XOcDPHeMIdqEFmkNAZwq6tBooUF9cEUQIf518RT05w7VlEmBVOi
-         3E5Kk8mZrwd4S0FyQCI6u4jezLMag00EGqd9cigFDecSfuvioxLUkKCv81wkp9f2zDNs
-         bqQ36FB58SHOSRNdepCyTWffep6YAZJV4pYbUBGKCIvVglIo3B+9tWp62cOrhcjOGe8U
-         eWl1i62BT+7thkktFZemX9zcDgdA8hK4E0Mf+O5nwfdnjXMF7/zFYgOwMnvBzKnD2jLk
-         HHzG+0IBFoAlEOj5m5tLeAypTaw0kbSTtsK6ZuU48YQIhkN9FtSEjC4pjjGt9MHZD6aJ
-         xwfg==
-X-Gm-Message-State: AOAM531QfZhL/eWUBImZo4zF+LCBhvGSmXv+uFUxieOmoa9QHBIFuDEw
-        jK7J+TGLvr/53uO3DIv1W7qkLQ==
-X-Google-Smtp-Source: ABdhPJzxaTzfnuMMfHVnGVJvkXMVIR6OJ9/8nydBOwNcHky3r1Qs+nKNrDbEYoVcwP2Pp6h8IPKEYw==
-X-Received: by 2002:a05:620a:122c:: with SMTP id v12mr7154881qkj.344.1616116871126;
-        Thu, 18 Mar 2021 18:21:11 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id v35sm2807770qtd.56.2021.03.18.18.21.09
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 18 Mar 2021 18:21:10 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 18:20:56 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Brian Geffon <bgeffon@google.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>
-Subject: Re: [PATCH v3 1/2] mm: Allow non-VM_DONTEXPAND and VM_PFNMAP mappings
- with MREMAP_DONTUNMAP
-In-Reply-To: <20210317214147.682687-1-bgeffon@google.com>
-Message-ID: <alpine.LSU.2.11.2103181803280.3440@eggly.anvils>
-References: <20210303175235.3308220-1-bgeffon@google.com> <20210317214147.682687-1-bgeffon@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Thu, 18 Mar 2021 21:21:22 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25851C06174A;
+        Thu, 18 Mar 2021 18:21:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F1mLk2wLgz9sS8;
+        Fri, 19 Mar 2021 12:21:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616116878;
+        bh=MSKNZ1kC8T2iJgAgGCtWH+4uhSR1nvIZZMaad6Ml+wA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=npUyXz0ayQkf+FcFAFwp78LbF9EIl7LBPSyn+214gfU+t9qiKQttI9bXgfgvbE1rg
+         SQ19xDBTQbtuv6GTEXbPqVYr2GEeRnY19aPLNSQZUkcIXLRHH+EzIy/n7Q/9oZKdX1
+         oE/EwpgQrpumap05S7XoqcqAFx+lIwpuW4rXVmTGND8+GrsZd5subivIjFAZVYuWbi
+         D3qS73iqCkhmHiDsUFg470i7i1Ao3HrILYk4cQFiuiNl9a4IyRAFIhTqWIfPpynfZl
+         r3vHOmpA/cdfi3Kqo3Wrg9Zc8f4ECht6RmwWbsBGwZUBjV/+7mC1LJio2LcOaIE3Wr
+         YGRWkMvCSNLpg==
+Date:   Fri, 19 Mar 2021 12:21:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Dillon Varone <dillon.varone@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210319122116.6c703583@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/LkXALco0NdIPjGu2j9rsfUr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Andrew is happy with such a long patch name, okay;
-but personally I'd prefer brevity to all that detail:
+--Sig_/LkXALco0NdIPjGu2j9rsfUr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-mm: Extend MREMAP_DONTUNMAP to non-anonymous mappings
+Hi all,
 
-On Wed, 17 Mar 2021, Brian Geffon wrote:
+After merging the amdgpu tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-> Currently MREMAP_DONTUNMAP only accepts private anonymous mappings. This
-> change will widen the support to include any mappings which are not
-> VM_DONTEXPAND or VM_PFNMAP. The primary use case is to support
-> MREMAP_DONTUNMAP on mappings which may have been created from a memfd.
-> 
-> This change will result in mremap(MREMAP_DONTUNMAP) returning -EINVAL
-> if VM_DONTEXPAND or VM_PFNMAP mappings are specified.
-> 
-> Lokesh Gidra who works on the Android JVM, provided an explanation of how
-> such a feature will improve Android JVM garbage collection:
-> "Android is developing a new garbage collector (GC), based on userfaultfd.
-> The garbage collector will use userfaultfd (uffd) on the java heap during
-> compaction. On accessing any uncompacted page, the application threads will
-> find it missing, at which point the thread will create the compacted page
-> and then use UFFDIO_COPY ioctl to get it mapped and then resume execution.
-> Before starting this compaction, in a stop-the-world pause the heap will be
-> mremap(MREMAP_DONTUNMAP) so that the java heap is ready to receive
-> UFFD_EVENT_PAGEFAULT events after resuming execution.
-> 
-> To speedup mremap operations, pagetable movement was optimized by moving
-> PUD entries instead of PTE entries [1]. It was necessary as mremap of even
-> modest sized memory ranges also took several milliseconds, and stopping the
-> application for that long isn't acceptable in response-time sensitive
-> cases.
-> 
-> With UFFDIO_CONTINUE feature [2], it will be even more efficient to
-> implement this GC, particularly the 'non-moveable' portions of the heap.
-> It will also help in reducing the need to copy (UFFDIO_COPY) the pages.
-> However, for this to work, the java heap has to be on a 'shared' vma.
-> Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this
-> patch will enable using UFFDIO_CONTINUE for the new userfaultfd-based heap
-> compaction."
-> 
-> [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
-> [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
-> 
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
+ERROR: modpost: "dc_dsc_stream_bandwidth_in_kbps" [drivers/gpu/drm/amd/amdg=
+pu/amdgpu.ko] undefined!
 
-Acked-by: Hugh Dickins <hughd@google.com>
+Caused by commit
 
-Thanks Brian, just what I wanted :)
+  a03f6c0e26b2 ("drm/amd/display: Add changes for dsc bpp in 16ths and unif=
+y bw calculations")
 
-You wondered in another mail about this returning -EINVAL whereas
-the VM_DONTEXPAND size error returns -EFAULT: I've pondered, and I've
-read the manpage, and I'm sure it would be wrong to change the old
--EFAULT to -EINVAL now; and I don't see good reason to change your
--EINVAL to -EFAULT either.  Let them differ, that's okay (and it's
-only in special corner cases that either of these fail anyway).
+I have used the amdgpu tree from next-20210318 fot today.
 
-> ---
->  mm/mremap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index ec8f840399ed..db5b8b28c2dd 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -653,8 +653,8 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
->  		return ERR_PTR(-EINVAL);
->  	}
->  
-> -	if (flags & MREMAP_DONTUNMAP && (!vma_is_anonymous(vma) ||
-> -			vma->vm_flags & VM_SHARED))
-> +	if ((flags & MREMAP_DONTUNMAP) &&
-> +			(vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
->  		return ERR_PTR(-EINVAL);
->  
->  	if (is_vm_hugetlb_page(vma))
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LkXALco0NdIPjGu2j9rsfUr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBT/IwACgkQAVBC80lX
+0Gx7vgf/YbKHa9bzIizcoZsCshbmfmZ93bOeK9xr4dPfaOiCMFM96H4E4Z2XZmCN
+d1Nsrdk/BrWJkDiKYdnL0Gp3gYIzxmDc4AK8LOWv19NtEqZBb/A3eUTg6sq1mdJb
+dQfAUxtPnCng88/goUr2KA8mIZkZCa8/IWeAU68WmB5IMkLq77ji5jpqznXV1ELc
+nqJdIW0uw0z6v3sVYSeCsTpqoeJ/MOJXPQX0mqfErGya3RFMpW6VNC52+wIey3Kf
+6BCL93axIChbPjKCLxp0WJDuxTSeo2zrMPaDkC20/3S1h/hxzMNBF6K3WqTGOxLk
+wse8/JMNur/ITf4zLAX3+Iinhs0/4w==
+=m0Dv
+-----END PGP SIGNATURE-----
+
+--Sig_/LkXALco0NdIPjGu2j9rsfUr--
