@@ -2,330 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC32B342C0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75E9342BC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhCTLXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCTLX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:23:29 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E2C0613E7;
-        Sat, 20 Mar 2021 04:23:28 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id e7so4913691vsq.3;
-        Sat, 20 Mar 2021 04:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4vy1aMcR3fimLYV9+ZsVOuid4FN44Gd0gT+R621B+Uw=;
-        b=ssJSnoWCzd8gD9ybCXBjYNfc82DVY/10RRlXc7xizp6QgSrwLzX/d021O6qwO37IFz
-         eY9IvYEUM49QCtqJds1ZqnybZiHX/wTH69uqskAZJh5l3oE7UVwztXy+oLQ8hSZCfpZ1
-         b4ta1OEiBsINgi/Dk3+7DFZlMbDXHvJjX8tOUpoPPQ1oYI/gKD+EkEceOn/jEJedaO1T
-         Hfg8PakIc+vPhdEGUQA48GUiqKav2CmeqKCDeFD40q/lArfXNviJc8mlxot4Nd8+mUzc
-         pxo+E+lpBKH3jKh1qo2opusHaOTFU8s7vFoTSE41OKot/2pBpVVmTldlFSfYqGoVCi0n
-         0NrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4vy1aMcR3fimLYV9+ZsVOuid4FN44Gd0gT+R621B+Uw=;
-        b=FSZXvArUUmf1CEy1JqtIxEhTdxJyPs7TmplJk5khOLTWgxkKFZWS/crJI8pA5TkINV
-         pYXZJiizcpgDHPNIrx2+tZvZWKly5n1cA/RSWztIT4WZ2+/ICzgwlfGvP23zVr0y0vyC
-         iNuULuHTzglNGLCE62uBdaczrEh8Xwp+hrHaP+zCDSyxr3/4okwJgfcaR72K2Kl2d5/k
-         NLGEf3hulDb15fCaNrNtv/WTscbtMKrakKW0QXUksoEvheBwAuZf5tJ6Csgr5zRYhX0j
-         EJd8Qn3uSGrmo5Hk84JTejBjqvLwHwISX1kwoxV+vxtdwp8rc6ko/e7eVAmI2keeDU/C
-         C6UQ==
-X-Gm-Message-State: AOAM531lwfxc+ioZXYb6DuPG687pj8IT7NrJ2phK74+s0bqA/bjg6GSO
-        5a1jsHLioIYUTaRI7Nz6ePqL3n51nZ6qLA==
-X-Google-Smtp-Source: ABdhPJw3GR8zVb+vu6tHKI2Wkarip5L+OUxGtfyITidfvhyOEKOB5US/4pNBzdmC6ygSj4v/DNz34Q==
-X-Received: by 2002:a17:902:9786:b029:e6:508a:7b8c with SMTP id q6-20020a1709029786b02900e6508a7b8cmr17705676plp.44.1616228161099;
-        Sat, 20 Mar 2021 01:16:01 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
-        by smtp.googlemail.com with ESMTPSA id 4sm7422117pjl.51.2021.03.20.01.15.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 01:16:00 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     code@tyhicks.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, corbet@lwn.net,
-        ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, christian.brauner@ubuntu.com
-Subject: [PATCH] ecryptfs: fix incorrect kernel-doc comment syntax in files
-Date:   Sat, 20 Mar 2021 13:45:51 +0530
-Message-Id: <20210320081551.13954-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S230002AbhCTLMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:12:40 -0400
+Received: from mout.gmx.net ([212.227.15.18]:47235 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229873AbhCTLMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:12:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616238490;
+        bh=bBjLCX1FN81wI6n/nGI3EtQ3GBM0eiF3V1gwzHLvOQo=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=cBLp26TAuaU7zY+10Obec10h23eevJSfHlASXQa1NPRn/fW84ROnYgr+eGGNrHacK
+         rwn2xJ1E9HCiR643UP+u79KqewQ/Eog8sSM+VFkS3JMI2gJwSt8Bp4xAv+Zr61C/Xs
+         ei061BQzUtDOppcOV+DSvcwzURrIg/F3Ef61P6DA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.49.112]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mel3n-1lvCwO11Eb-00akE8; Sat, 20
+ Mar 2021 09:18:33 +0100
+Message-ID: <1f63f1fcea10fc179881384cd838b1c9e5207b82.camel@gmx.de>
+Subject: Re: [ANNOUNCE] v5.12-rc3-rt3
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Sat, 20 Mar 2021 09:18:32 +0100
+In-Reply-To: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
+References: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pKPXk35DjmhrgB/0o7wprTJ/KgyaPTIBVJr3avcvi84T03QRcBI
+ eFjpChtPckYgusyBh+Lz4GaY5lpQtJZgUGp/wGY9LeZ6ksB7J8mcKuVdU1DaKqxwfmtAz8e
+ mgI7zg95NOjg+lkMsFVoWcZtzU1u9oN99MiBanOemvVHxl+fRd/5ortL29Zq6ayI/CFQKyg
+ 9Qw1Wrh8ATCb0BNAED1tA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C7yYCAd/UXs=:pe9Be+/oB+JfEw0Ra7nITD
+ AHkruhOwK4bLdWWLjpluLe0qM8zGKHT2i6c2UK/c7tpaNmShgac3rEXFK3o4ByaVlQAH5Z/C/
+ tGCBZ7Dr3ygDqbCK0kHBThU+WvcK9p6aOHQqY4rtOCb4VAv6K3mx+AfcT1nw7oGaFbxilsvb/
+ +POK48DYl+lQfKwRCTTAxtJc+7PvLsR1/kS2+EQobMIdcvR4ZGHtZ6SKJ3DwAOHwwe/LG36/l
+ pc5/+Iexc18TrTcXu1MPBj8qp60LMubGoqC4BaaziDzaxTZGiD0EocFOL+cEUnNCsJjEwK071
+ nA4/Our3a0M5EALfRGhwa4EdcVJ6p/N7IWxGJ41mLyzeaurAM8rtafXS6hASUoapOoeoUo8Bw
+ RMqGMyXzhlE50r/ivS/PrV0pWOFkBlmR17gd6y/fSRW5DXPshAidj1D15lJwBS7i92SaSy4P/
+ wwt7SrKbQclOtTsXyePzemc24p2ltpEkF59rBUEuoW22/Zkctw8DH2B+exFUqemRGbHK72YKz
+ CvuKcWuXHczldQ69gHI36o4qGV+EevVcYdnMnux0myyHyaJJP3c1No/l65H/rcm/tXmQyazOf
+ S8ywYjxdLu2PrAIeqdFA5usewMCagx/J3tp38zF9oFq1l57JxZKbcZcTxMZ/cYjdXt2AEppg3
+ 0XghBrgpqSK24eCcXJwLKjR/Rxv3e4CrYO9isQkimbbLNBFvf/TO5GmVJnN7W0EFVD7lG4ZIf
+ VFOC33dtxGzTnhIZNBcZ6nBo4x9lavxtiDg7/mGAnGZsdYCYqRCvYEQO6Q0IbPFyP94ziKPCi
+ Gks6lps5bmlsEdRoXud4VZt8P7u4IepBPJE2Pd2/7oQ4uexvvLVdfRtFfC3E3xLEX68LncQG1
+ //xMKzXFBE9fiRi7sJU20xxk3sSk+0XmAFk+MnZVb+s8Zpno+vllOy5MK8my0xoze7FulnNty
+ d1lDGVzewHT97CI2vXjhDoUNzSFMg8eLLJupKOj5csxUzJHNCkksQ7Xx5bj60svI4aAox/GZ5
+ j1Gb5w0G9ZA+5z2HVlB9Epr2kT/1ozHdXJIIUqYc5NN+ZJUw/DX3uPZgKwvnkZr6mAZ6lEPc5
+ TbD+quU6po5Sde5PAGmLZxWXuxt8pneTcXp8KqN8/E68++ta2WgqPv4h5BKyKV8JRoPUH9NxG
+ r/thwmEfwy9/xs3yknOqYOT1rp0787K5AkiFWIZdHcRH7pzGm+oSiILFR+s3UneHRC3Us=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for kernel-doc comments.
-There are files in fs/encrypts which follows this syntax, but the content
-inside does not comply with kernel-doc.
-This causes unexpected warnings from kernel-doc.
+On Fri, 2021-03-19 at 23:33 +0100, Sebastian Andrzej Siewior wrote:
+> Dear RT folks!
+>
+> I'm pleased to announce the v5.12-rc3-rt3 patch set.
 
-E.g., header comment for fs/ecryptfs/dentry.c follows kernel-doc syntax
-for comments(i.e., '/**'), but the content inside does not.
+My little rpi4b is fairly unhappy with 5.12-rt, whereas 5.11-rt works
+fine on it.  The below spew is endless, making boot endless.  I turned
+it into a WARN_ON_ONCE to see if the thing would finish boot, and
+surprisingly, it seems perfectly fine with that bad idea. Having not
+the foggiest clue what I'm doing down in arm arch-land, bug is in no
+immediate danger :)
 
-Running kernel-doc -none on fs/ecryptfs/dentry.c causes these
-unexpected warnings:
-"warning: Incorrect use of kernel-doc format:  * ecryptfs_d_revalidate - revalidate an ecryptfs dentry"
-"warning: Function parameter or member 'dentry' not described in 'ecryptfs_d_revalidate'"
-"warning: Function parameter or member 'flags' not described in 'ecryptfs_d_revalidate'"
-"warning: expecting prototype for eCryptfs(). Prototype was for ecryptfs_d_revalidate() instead"
-
-Similarly for other files too.
-
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-* Applies perfectly on next-20210312
-
- fs/ecryptfs/crypto.c          |  2 +-
- fs/ecryptfs/debug.c           |  2 +-
- fs/ecryptfs/dentry.c          |  2 +-
- fs/ecryptfs/ecryptfs_kernel.h |  2 +-
- fs/ecryptfs/file.c            |  2 +-
- fs/ecryptfs/inode.c           |  2 +-
- fs/ecryptfs/keystore.c        |  6 +++---
- fs/ecryptfs/kthread.c         |  2 +-
- fs/ecryptfs/main.c            | 10 +++++-----
- fs/ecryptfs/messaging.c       |  2 +-
- fs/ecryptfs/miscdev.c         |  2 +-
- fs/ecryptfs/mmap.c            |  6 +++---
- fs/ecryptfs/read_write.c      |  2 +-
- fs/ecryptfs/super.c           |  2 +-
- 14 files changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-index 7671412b8f0b..48184ff65f90 100644
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2004 Erez Zadok
-diff --git a/fs/ecryptfs/debug.c b/fs/ecryptfs/debug.c
-index 1f65e99f9a41..65702d7fc4b9 100644
---- a/fs/ecryptfs/debug.c
-+++ b/fs/ecryptfs/debug.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  * Functions only useful for debugging.
-  *
-diff --git a/fs/ecryptfs/dentry.c b/fs/ecryptfs/dentry.c
-index 44606f079efb..acaa0825e9bb 100644
---- a/fs/ecryptfs/dentry.c
-+++ b/fs/ecryptfs/dentry.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2003 Erez Zadok
-diff --git a/fs/ecryptfs/ecryptfs_kernel.h b/fs/ecryptfs/ecryptfs_kernel.h
-index 4a62a7dcc4f5..f8aa99e41c48 100644
---- a/fs/ecryptfs/ecryptfs_kernel.h
-+++ b/fs/ecryptfs/ecryptfs_kernel.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  * Kernel declarations.
-  *
-diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
-index 5fb45d865ce5..2d8344774885 100644
---- a/fs/ecryptfs/file.c
-+++ b/fs/ecryptfs/file.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2004 Erez Zadok
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 18e9285fbb4c..541b46d76f89 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2004 Erez Zadok
-diff --git a/fs/ecryptfs/keystore.c b/fs/ecryptfs/keystore.c
-index 2abd219cfeec..475d939ff695 100644
---- a/fs/ecryptfs/keystore.c
-+++ b/fs/ecryptfs/keystore.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  * In-kernel key management code.  Includes functions to parse and
-  * write authentication token-related packets with the underlying
-@@ -21,7 +21,7 @@
- #include <linux/slab.h>
- #include "ecryptfs_kernel.h"
- 
--/**
-+/*
-  * request_key returned an error instead of a valid key address;
-  * determine the type of error, make appropriate log entries, and
-  * return an error code.
-@@ -576,7 +576,7 @@ ecryptfs_find_auth_tok_for_sig(
- 	return rc;
- }
- 
--/**
-+/*
-  * write_tag_70_packet can gobble a lot of stack space. We stuff most
-  * of the function's parameters in a kmalloc'd struct to help reduce
-  * eCryptfs' overall stack usage.
-diff --git a/fs/ecryptfs/kthread.c b/fs/ecryptfs/kthread.c
-index a7c903cb01a0..d1b1c3546972 100644
---- a/fs/ecryptfs/kthread.c
-+++ b/fs/ecryptfs/kthread.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 2008 International Business Machines Corp.
-diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
-index cdf40a54a35d..9bc19a092917 100644
---- a/fs/ecryptfs/main.c
-+++ b/fs/ecryptfs/main.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2003 Erez Zadok
-@@ -24,7 +24,7 @@
- #include <linux/magic.h>
- #include "ecryptfs_kernel.h"
- 
--/**
-+/*
-  * Module parameter that defines the ecryptfs_verbosity level.
-  */
- int ecryptfs_verbosity = 0;
-@@ -34,7 +34,7 @@ MODULE_PARM_DESC(ecryptfs_verbosity,
- 		 "Initial verbosity level (0 or 1; defaults to "
- 		 "0, which is Quiet)");
- 
--/**
-+/*
-  * Module parameter that defines the number of message buffer elements
-  */
- unsigned int ecryptfs_message_buf_len = ECRYPTFS_DEFAULT_MSG_CTX_ELEMS;
-@@ -43,7 +43,7 @@ module_param(ecryptfs_message_buf_len, uint, 0);
- MODULE_PARM_DESC(ecryptfs_message_buf_len,
- 		 "Number of message buffer elements");
- 
--/**
-+/*
-  * Module parameter that defines the maximum guaranteed amount of time to wait
-  * for a response from ecryptfsd.  The actual sleep time will be, more than
-  * likely, a small amount greater than this specified value, but only less if
-@@ -57,7 +57,7 @@ MODULE_PARM_DESC(ecryptfs_message_wait_timeout,
- 		 "sleep while waiting for a message response from "
- 		 "userspace");
- 
--/**
-+/*
-  * Module parameter that is an estimate of the maximum number of users
-  * that will be concurrently using eCryptfs. Set this to the right
-  * value to balance performance and memory use.
-diff --git a/fs/ecryptfs/messaging.c b/fs/ecryptfs/messaging.c
-index c0dfd9647627..9f42fca7fc36 100644
---- a/fs/ecryptfs/messaging.c
-+++ b/fs/ecryptfs/messaging.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 2004-2008 International Business Machines Corp.
-diff --git a/fs/ecryptfs/miscdev.c b/fs/ecryptfs/miscdev.c
-index 742ece22c1d4..7e741e36dfe7 100644
---- a/fs/ecryptfs/miscdev.c
-+++ b/fs/ecryptfs/miscdev.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 2008 International Business Machines Corp.
-diff --git a/fs/ecryptfs/mmap.c b/fs/ecryptfs/mmap.c
-index 2f333a40ff4d..485f6c1e19b5 100644
---- a/fs/ecryptfs/mmap.c
-+++ b/fs/ecryptfs/mmap.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  * This is where eCryptfs coordinates the symmetric encryption and
-  * decryption of the file data as it passes between the lower
-@@ -78,7 +78,7 @@ static void strip_xattr_flag(char *page_virt,
- 	}
- }
- 
--/**
-+/*
-  *   Header Extent:
-  *     Octets 0-7:        Unencrypted file size (big-endian)
-  *     Octets 8-15:       eCryptfs special marker
-@@ -229,7 +229,7 @@ static int ecryptfs_readpage(struct file *file, struct page *page)
- 	return rc;
- }
- 
--/**
-+/*
-  * Called with lower inode mutex held.
-  */
- static int fill_zeros_to_end_of_page(struct page *page, unsigned int to)
-diff --git a/fs/ecryptfs/read_write.c b/fs/ecryptfs/read_write.c
-index 0438997ac9d8..384b383b4a48 100644
---- a/fs/ecryptfs/read_write.c
-+++ b/fs/ecryptfs/read_write.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 2007 International Business Machines Corp.
-diff --git a/fs/ecryptfs/super.c b/fs/ecryptfs/super.c
-index 6b1853f1c06a..cc16d044165d 100644
---- a/fs/ecryptfs/super.c
-+++ b/fs/ecryptfs/super.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * eCryptfs: Linux filesystem encryption layer
-  *
-  * Copyright (C) 1997-2003 Erez Zadok
--- 
-2.17.1
+[    2.216913] WARNING: CPU: 0 PID: 1 at arch/arm64/include/asm/pgtable.h:=
+982 do_set_pte+0x1cc/0x1d4
+[    2.216949] Modules linked in:
+[    2.216961] CPU: 0 PID: 1 Comm: init Not tainted 5.12.0.g425ed5a-v8-rt =
+#33
+[    2.216973] Hardware name: Raspberry Pi 4 Model B Rev 1.4 (DT)
+[    2.216979] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=3D--)
+[    2.216990] pc : do_set_pte+0x1cc/0x1d4
+[    2.217004] lr : filemap_map_pages+0x178/0x380
+[    2.217016] sp : ffffffc01153bbb0
+[    2.217020] x29: ffffffc01153bbb0 x28: fffffffe07d93080
+[    2.217033] x27: 0000000000000000 x26: ffffff8101c9e000
+[    2.217044] x25: ffffff8101b40fd8 x24: 0000000000000000
+[    2.217054] x23: ffffff8101674170 x22: 0000007fb1b4b000
+[    2.217064] x21: fffffffe07d93080 x20: ffffffc01153bcf0
+[    2.217073] x19: 00200001f64c2fc3 x18: 0000000000000000
+[    2.217082] x17: 0000000000000000 x16: 0000000000000000
+[    2.217091] x15: 0000000000000000 x14: 0000000000000000
+[    2.217100] x13: 0000000000000000 x12: 0000000000000000
+[    2.217108] x11: 0000000000000000 x10: 0000000000000000
+[    2.217117] x9 : ffffffc010209068 x8 : 000000000000000f
+[    2.217126] x7 : ffffff8101e87c68 x6 : fffffffe00000000
+[    2.217135] x5 : 0000000000101e8b x4 : ffffff8101e880a8
+[    2.217144] x3 : 0020000000000fc3 x2 : 0000000000000000
+[    2.217153] x1 : 0000000000000000 x0 : 0000000000000000
+[    2.217162] Call trace:
+[    2.217166]  do_set_pte+0x1cc/0x1d4
+[    2.217181]  filemap_map_pages+0x178/0x380
+[    2.217189]  __handle_mm_fault+0x75c/0x930
+[    2.217202]  handle_mm_fault+0x178/0x25c
+[    2.217214]  do_page_fault+0x16c/0x470
+[    2.217233]  do_translation_fault+0xbc/0xd8
+[    2.217244]  do_mem_abort+0x4c/0xbc
+[    2.217259]  el0_ia+0x68/0xcc
+[    2.217272]  el0_sync_handler+0x180/0x1b0
+[    2.217284]  el0_sync+0x170/0x180
 
