@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30534342FD3
+	by mail.lfdr.de (Postfix) with ESMTP id 7C18A342FD4
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCTWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229979AbhCTWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 20 Mar 2021 18:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40036 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhCTWQg (ORCPT
+        with ESMTP id S229920AbhCTWQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:16:36 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A754FC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:16:36 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id c4so6811018qkg.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:16:36 -0700 (PDT)
+        Sat, 20 Mar 2021 18:16:39 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3515BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:16:39 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c4so6811079qkg.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=Hd04KDAsAoVDrVE+uWlazOzKpC3XA/RFKS+Mgm3wpmw=;
-        b=izv0gFXZvAk9Q6CSBkzd0kTxnkTa76rhfqectkbkVjOrXbA9Ara4WSg2dyjA2/cXmt
-         jbqLKnobebnskosV166Uvt/y4Io4Sobxj7MCKwsueEeiDWHteennFOFwj/JzdYX7d0Bu
-         o6djyWLHDD6Y73bHe+vhutUJIZCuycVDMNC6mkElDTsWEMTkll0NmhNlXqtGFiVGrR0T
-         SsV/uZr7OVAzzyz4fB35n0yrMmjfOVQlMCQ6FjgWlcxGOmHv2hGX+1prjAcnBkDPA1Uv
-         Z8l3Ut7Yk6m3WVWOLRamvfzurPcvCdLWpBi22g9R1Bf3QAc4uHDKdu3p8bSuS78xOgX5
-         C3Xw==
+        bh=vdUN2b328BItSMlcqgEcX36NLs9U//nc/tlpRzp+rh4=;
+        b=d3r95KZAzaVWFbba5YX0MGiTNEyC0n05yuQccHmL/hnIcLcnmvavwoc2hchkpuogQm
+         brHBrUoRXahj9bM2Jb9XjD+7dv1CfcE3uxRgEgWssYdrQsDYHcGEGso3nmKPmNxKaAko
+         C56YvNOjdcpK3xHRZTHlRA6Zi33osXFU1I8RzMFi++HcWvt3cZM65TLcAYJNDAO0MDNk
+         y5PuYVjZ3Mti7MAmK4nb5XRvB+LxQlGXvwMhq3cgwN93ThoJ8Wfnw1sgH7FdFAhZJ6ar
+         e07+LyvghaPo3KhufVvsThyxJvu+wDiWcLhhTffcbFYLF6S9EcpcbnnVNlB1xzEb92s5
+         /NWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Hd04KDAsAoVDrVE+uWlazOzKpC3XA/RFKS+Mgm3wpmw=;
-        b=EKtepPjojx/WEPVtRlBiruEROaE2ean/uWmCqTZLS4QYDlJ14aV1g57oPXAovD5Ql+
-         67UlqA+Omina9ah1oqcuaN7eh5EUM2w64SevyL9OAYht0ZLe19feIqK9repBRsUoOiwl
-         5L+h5OdHlwQENCyn/juNypC8NRkkv/9S3mCIRU6xD90OHdMxPlQIIYWwV9NqKmxCkgHd
-         NrkTRu6bioSFzLwiQtvUNnyVhpCzrD3OsojFKrmTmj5+ZMp43SiEhg9CXb4s0wH5tC65
-         UEXdr7G7AIZvLqDxN1REKSpmsTlk8IXrb2OqBgJiiOayRgrrAmcRoJLFLGKYKKP+Hus7
-         cs/g==
-X-Gm-Message-State: AOAM531rQd2wAkDHCWJ2gmfYPKbMFRxDaZdQFbNaDAd78+6neyUG5M3j
-        WBi3wsviFFoXb3h4jpEcTtI=
-X-Google-Smtp-Source: ABdhPJzNmsPAw5Npetn7lsEU78C2q/sjYkDviZYWTzSSfpksjjzxKC/WtEssLP+SHsRTJWlAbkkpNQ==
-X-Received: by 2002:a37:ef14:: with SMTP id j20mr4740946qkk.471.1616278595941;
-        Sat, 20 Mar 2021 15:16:35 -0700 (PDT)
+        bh=vdUN2b328BItSMlcqgEcX36NLs9U//nc/tlpRzp+rh4=;
+        b=JzGeuOcGm09s5k8jhcg9mOsxkSy2voSYGqCEu8up5JfQLROGnYJdWJmQA/pI0PMggx
+         eTqeqnAzy4oKTvfM8g7F3zWudlZC4jTmCd0wiqZV9GQH0VTFkNkKBvI2KDvQcs/i3clK
+         LEgXkHVC0QKmLYx2bQi86mi4jmqj3G+KGgxDlbJqFWNcnLZrhFLPwwcfDlCyKYKRoLl2
+         ShZH93eHBvqnZztnZoHVhfPFjZuRCMJF5OMl4Sjr71ifk7nCcHxtKzl479mVPwC5ONa/
+         C5X6tyWykJx5aVJt09XzmqucsHQYubma1wl0qGCjV2KiLx+Uv6IV0SZxW9IK9H9Vl7pq
+         AJ0g==
+X-Gm-Message-State: AOAM531gIvg45UpCe+T3nqc9tWtOYIdiLoy9FiYSm2Dkv5p1UGbnqyCW
+        pOfLiUq8/O00ay7WCQ5ebLs=
+X-Google-Smtp-Source: ABdhPJzEBHPUBFlSCzmzBacmrjskEKddtuMTXZl8H3WzpgYvK24Bs6DTijvYjSFvvXWMHVipd6hWqw==
+X-Received: by 2002:a05:620a:218e:: with SMTP id g14mr4614016qka.111.1616278598478;
+        Sat, 20 Mar 2021 15:16:38 -0700 (PDT)
 Received: from tong-desktop.local ([2601:5c0:c200:27c6:f925:bb4b:54d2:533])
-        by smtp.googlemail.com with ESMTPSA id x1sm6223973qtr.97.2021.03.20.15.16.35
+        by smtp.googlemail.com with ESMTPSA id x1sm6223973qtr.97.2021.03.20.15.16.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 15:16:35 -0700 (PDT)
+        Sat, 20 Mar 2021 15:16:38 -0700 (PDT)
 From:   Tong Zhang <ztong0001@gmail.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         Jasmin Fazlic <superfassl@gmail.com>,
@@ -62,9 +62,9 @@ To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org,
         Romain Perier <romain.perier@gmail.com>
-Subject: [PATCH 1/2] ALSA: hdsp: don't disable if not enabled
-Date:   Sat, 20 Mar 2021 18:16:19 -0400
-Message-Id: <20210320221620.226155-2-ztong0001@gmail.com>
+Subject: [PATCH 2/2] ALSA: hdspm: don't disable if not enabled
+Date:   Sat, 20 Mar 2021 18:16:20 -0400
+Message-Id: <20210320221620.226155-3-ztong0001@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210320221620.226155-1-ztong0001@gmail.com>
 References: <20210320221620.226155-1-ztong0001@gmail.com>
@@ -74,51 +74,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hdsp wants to disable a not enabled pci device, which makes kernel
+hdspm wants to disable a not enabled pci device, which makes kernel
 throw a warning. Make sure the device is enabled before calling disable.
 
-[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
-[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.766985] Call Trace:
-[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
-[    1.767388]  release_card_device+0x4b/0x80 [snd]
-[    1.767639]  device_release+0x3b/0xa0
-[    1.767838]  kobject_put+0x94/0x1b0
-[    1.768027]  put_device+0x13/0x20
-[    1.768207]  snd_card_free+0x61/0x90 [snd]
-[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
+[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
+[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.795181] Call Trace:
+[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
+[    1.795595]  release_card_device+0x4b/0x80 [snd]
+[    1.795860]  device_release+0x3b/0xa0
+[    1.796072]  kobject_put+0x94/0x1b0
+[    1.796260]  put_device+0x13/0x20
+[    1.796438]  snd_card_free+0x61/0x90 [snd]
+[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
 
 Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- sound/pci/rme9652/hdsp.c | 10 ++++++----
+ sound/pci/rme9652/hdspm.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 4cf879c42dc4..d9879a5bd60e 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5285,8 +5285,10 @@ static int snd_hdsp_create(struct snd_card *card,
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 8d900c132f0f..af3898c88bba 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -6582,8 +6582,10 @@ static int snd_hdspm_create(struct snd_card *card,
+ 	pci_set_master(hdspm->pci);
  
- 	pci_set_master(hdsp->pci);
- 
--	if ((err = pci_request_regions(pci, "hdsp")) < 0)
-+	if ((err = pci_request_regions(pci, "hdsp")) < 0) {
+ 	err = pci_request_regions(pci, "hdspm");
+-	if (err < 0)
++	if (err < 0) {
 +		pci_disable_device(pci);
  		return err;
 +	}
- 	hdsp->port = pci_resource_start(pci, 0);
- 	if ((hdsp->iobase = ioremap(hdsp->port, HDSP_IO_EXTENT)) == NULL) {
- 		dev_err(hdsp->card->dev, "unable to remap region 0x%lx-0x%lx\n",
-@@ -5387,10 +5389,10 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 	vfree(hdsp->fw_uploaded);
- 	iounmap(hdsp->iobase);
  
--	if (hdsp->port)
-+	if (hdsp->port) {
- 		pci_release_regions(hdsp->pci);
+ 	hdspm->port = pci_resource_start(pci, 0);
+ 	io_extent = pci_resource_len(pci, 0);
+@@ -6880,10 +6882,10 @@ static int snd_hdspm_free(struct hdspm * hdspm)
+ 	kfree(hdspm->mixer);
+ 	iounmap(hdspm->iobase);
+ 
+-	if (hdspm->port)
++	if (hdspm->port) {
+ 		pci_release_regions(hdspm->pci);
 -
--	pci_disable_device(hdsp->pci);
-+		pci_disable_device(hdsp->pci);
+-	pci_disable_device(hdspm->pci);
++		pci_disable_device(hdspm->pci);
 +	}
  	return 0;
  }
