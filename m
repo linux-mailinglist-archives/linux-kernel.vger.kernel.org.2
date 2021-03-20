@@ -2,207 +2,568 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E19342CA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FCC342CB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 13:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhCTL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+        id S229903AbhCTMMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 08:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhCTL6Z (ORCPT
+        with ESMTP id S229618AbhCTMMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:58:25 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3FAC061762;
-        Sat, 20 Mar 2021 04:58:25 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b16so13849782eds.7;
-        Sat, 20 Mar 2021 04:58:24 -0700 (PDT)
+        Sat, 20 Mar 2021 08:12:35 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF07EC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 05:12:34 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id l3so7756907pfc.7
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 05:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Q1S6sOzSSmWv0cJIdKqH5aeKc+ejDOx1KDCFb2YbT3o=;
-        b=qpR1PFuQAsHD9BxFuRDr2UgI0M5ZKr1wg73JNKyVGRXQp2STpCUHbOFNXVKc3pYUeU
-         BxVh59NlVsKCuKzhWO++s1zTkKdomHSNUUlCTX2S6UNS+I4zg9FgCbRBjeDon1CzZMNK
-         ur3VHRNpkiiDHnKnp+3igIpPWc+bJCJEMLRPquJjXjV/NVB5kRpDRjHyVgxKyBNVkxaM
-         szDTmEKbH2A2igQ48viQewT3/nFUv2C46SmRvV+HtgcKhuQGm//YLfEhAZGzUWI7sXJu
-         XA01inHcYSFdTpjw32pVWcVLYJ6/kHa+a5sLi2kWXCDv4RyMLF/88AOxAZK42GpMgrIp
-         gOwg==
+        bh=BHDvicwkcPrvwPJWtJk9Ca1Ip7tyS2mRegd1kcbSvDU=;
+        b=BFImvKFoIJqeGCx8AHckUhD8IC+87MPIhsFyS7ZmSSwSRzMJw2GzGl/EB9dQBHN/7M
+         tMOldSS2qnuBn5X96hujDwHYS/KojvpYZedJ/DZxxJMbFpTc4fy7StXB5MH5cnKpei6M
+         +dbZTPbtonryVgAx1a0BKLcMcBFn/CElOXcFv52tSE7unbvlfaGTm64z02ZKVh2+ghjm
+         rbtdGdyQDZsa7tSiO54ydj9JSebRYTxHmG4fKR7+kihjoEkHo6Ih8mo8vQdU/0/HjtgH
+         xyLyer6pyofh837Lfh5pnj6Y3UrMdjkK4rK9x9pXaQovekAPcy8Jh4s8Ca/QoO/8IQhr
+         +NQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Q1S6sOzSSmWv0cJIdKqH5aeKc+ejDOx1KDCFb2YbT3o=;
-        b=VRGo9m9GoknL2eWj/t9g4Vy07+j9/P5u1au5WzFlpFt+afws81hwJJSwG4BPkYEEx1
-         NWIm2lNP3cCSEl9CNm5FJhJtm45yhgfMp2MSwu2/Pmxp5ah6CFX1udJcgvALzMDw1UVR
-         JmeRiOXVtE0JcD0PrDoiMLsiEvdzPhkt3r6B97cUoM7iwwBMftcxVm/wKvLeUIv/01xt
-         Dbv5rDhE9j0hcZNrv2Oignf0miR+1wGAIvnWFvg0q/oqklCMmww3YXqQrNtml18trE8Q
-         PRK2oyZidhnlJon/HEYEsi09fcSqV37IKYbtOwFL5LYkOmoFNderyKvOfzVmmUdL2RiI
-         bJpA==
-X-Gm-Message-State: AOAM531rjgiCGdQO2SvosMBMa62DkFH1YfmElhu5F2Ej7QGCGTspwltx
-        D4oeivT1m+Znzlr3Z1qEt5c=
-X-Google-Smtp-Source: ABdhPJz01rctCHm86yiIpmHhRp51yZPtxnmqPKRg7nHGuJhzGfxbKyzoIQQxZVmBUirAIENLH5CbDA==
-X-Received: by 2002:a05:6402:d4:: with SMTP id i20mr15225084edu.147.1616241503810;
-        Sat, 20 Mar 2021 04:58:23 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id w18sm5273350ejn.23.2021.03.20.04.58.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BHDvicwkcPrvwPJWtJk9Ca1Ip7tyS2mRegd1kcbSvDU=;
+        b=kZumRs7XV3vYUk3mOaDRypPEBjQqc3gN4r2rOd9dIeGSorxLu/0lB2D8HAy+Kpp5C7
+         s7KSKtDLm8UxFOXBoTeuqirKIC836LgetCUEQCiyKwiJNZvfm2ZaxWpDVZVhclnMkCp+
+         pseE3c5nzE70IU1j0yOONphLwuk3H6e0KrQLcLoQfrI2YGUtU1Yi8339qdUw97V6qAwK
+         w2fqI49/M1AXo6+RnhIrWI6QMNw16xWWBmUMD1pPW6yxblzXEvm4KXbJshusVDCbJzPB
+         OZpFMzE70PO3Ay5ViCdIpBIs1jXyN2Q3azpTHuyNIV0rxAwxA8nTwJYtBe+/V38rElPu
+         ydQg==
+X-Gm-Message-State: AOAM533gdAVG85CZkE8apOKA2MP3Cs+2NMd1A/c0SaiRahqUieux53uC
+        6nqxnpiGCrxtnWV+frkq6QwkfPU82+6dAiXs
+X-Google-Smtp-Source: ABdhPJxbDyrtu/cLXtw5PFkByRyyNo2yU/eFzJucO07cpXYyxZh1oFLKLIYXonGi/kl9ZnEymOH5sg==
+X-Received: by 2002:a63:f70f:: with SMTP id x15mr14176918pgh.109.1616220185818;
+        Fri, 19 Mar 2021 23:03:05 -0700 (PDT)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id b10sm6593698pgm.76.2021.03.19.23.03.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 04:58:23 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 20 Mar 2021 12:58:20 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v7 4/6] x86/entry: Enable random_kstack_offset support
-Message-ID: <20210320115820.GA4151166@gmail.com>
-References: <20210319212835.3928492-1-keescook@chromium.org>
- <20210319212835.3928492-5-keescook@chromium.org>
+        Fri, 19 Mar 2021 23:03:03 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 17:02:59 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH v11 6/6] powerpc: Book3S 64-bit outline-only KASAN support
+Message-ID: <20210320060259.GF77072@balbir-desktop>
+References: <20210319144058.772525-1-dja@axtens.net>
+ <20210319144058.772525-7-dja@axtens.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319212835.3928492-5-keescook@chromium.org>
+In-Reply-To: <20210319144058.772525-7-dja@axtens.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 20, 2021 at 01:40:58AM +1100, Daniel Axtens wrote:
+> Implement a limited form of KASAN for Book3S 64-bit machines running under
+> the Radix MMU, supporting only outline mode.
+>
 
-* Kees Cook <keescook@chromium.org> wrote:
+Could you highlight the changes from
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20170729140901.5887-1-bsingharora@gmail.com/?
 
-> Allow for a randomized stack offset on a per-syscall basis, with roughly
-> 5-6 bits of entropy, depending on compiler and word size. Since the
-> method of offsetting uses macros, this cannot live in the common entry
-> code (the stack offset needs to be retained for the life of the syscall,
-> which means it needs to happen at the actual entry point).
-
->  __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
->  {
-> +	add_random_kstack_offset();
->  	nr = syscall_enter_from_user_mode(regs, nr);
-
-> @@ -83,6 +84,7 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
->  {
->  	unsigned int nr = syscall_32_enter(regs);
+Feel free to use my signed-off-by if you need to and add/update copyright
+headers if appropriate.
+ 
+>  - Enable the compiler instrumentation to check addresses and maintain the
+>    shadow region. (This is the guts of KASAN which we can easily reuse.)
+> 
+>  - Require kasan-vmalloc support to handle modules and anything else in
+>    vmalloc space.
+> 
+>  - KASAN needs to be able to validate all pointer accesses, but we can't
+>    instrument all kernel addresses - only linear map and vmalloc. On boot,
+>    set up a single page of read-only shadow that marks all iomap and
+>    vmemmap accesses as valid.
+> 
+>  - Make our stack-walking code KASAN-safe by using READ_ONCE_NOCHECK -
+>    generic code, arm64, s390 and x86 all do this for similar sorts of
+>    reasons: when unwinding a stack, we might touch memory that KASAN has
+>    marked as being out-of-bounds. In our case we often get this when
+>    checking for an exception frame because we're checking an arbitrary
+>    offset into the stack frame.
+> 
+>    See commit 20955746320e ("s390/kasan: avoid false positives during stack
+>    unwind"), commit bcaf669b4bdb ("arm64: disable kasan when accessing
+>    frame->fp in unwind_frame"), commit 91e08ab0c851 ("x86/dumpstack:
+>    Prevent KASAN false positive warnings") and commit 6e22c8366416
+>    ("tracing, kasan: Silence Kasan warning in check_stack of stack_tracer")
+> 
+>  - Document KASAN in both generic and powerpc docs.
+> 
+> Background
+> ----------
+> 
+> KASAN support on Book3S is a bit tricky to get right:
+> 
+>  - It would be good to support inline instrumentation so as to be able to
+>    catch stack issues that cannot be caught with outline mode.
+> 
+>  - Inline instrumentation requires a fixed offset.
+> 
+>  - Book3S runs code with translations off ("real mode") during boot,
+>    including a lot of generic device-tree parsing code which is used to
+>    determine MMU features.
+> 
+>     [ppc64 mm note: The kernel installs a linear mapping at effective
+>     address c000...-c008.... This is a one-to-one mapping with physical
+>     memory from 0000... onward. Because of how memory accesses work on
+>     powerpc 64-bit Book3S, a kernel pointer in the linear map accesses the
+>     same memory both with translations on (accessing as an 'effective
+>     address'), and with translations off (accessing as a 'real
+>     address'). This works in both guests and the hypervisor. For more
+>     details, see s5.7 of Book III of version 3 of the ISA, in particular
+>     the Storage Control Overview, s5.7.3, and s5.7.5 - noting that this
+>     KASAN implementation currently only supports Radix.]
+> 
+>  - Some code - most notably a lot of KVM code - also runs with translations
+>    off after boot.
+> 
+>  - Therefore any offset has to point to memory that is valid with
+>    translations on or off.
+> 
+> One approach is just to give up on inline instrumentation. This way
+> boot-time checks can be delayed until after the MMU is set is up, and we
+> can just not instrument any code that runs with translations off after
+> booting. Take this approach for now and require outline instrumentation.
+> 
+> Previous attempts allowed inline instrumentation. However, they came with
+> some unfortunate restrictions: only physically contiguous memory could be
+> used and it had to be specified at compile time. Maybe we can do better in
+> the future.
+> 
+> Cc: Balbir Singh <bsingharora@gmail.com> # ppc64 out-of-line radix version
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com> # ppc64 hash version
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu> # ppc32 version
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+> ---
+>  Documentation/dev-tools/kasan.rst            | 11 +--
+>  Documentation/powerpc/kasan.txt              | 48 +++++++++-
+>  arch/powerpc/Kconfig                         |  4 +-
+>  arch/powerpc/Kconfig.debug                   |  3 +-
+>  arch/powerpc/include/asm/book3s/64/hash.h    |  4 +
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  4 +
+>  arch/powerpc/include/asm/book3s/64/radix.h   | 13 ++-
+>  arch/powerpc/include/asm/kasan.h             | 22 +++++
+>  arch/powerpc/kernel/Makefile                 | 11 +++
+>  arch/powerpc/kernel/process.c                | 16 ++--
+>  arch/powerpc/kvm/Makefile                    |  5 ++
+>  arch/powerpc/mm/book3s64/Makefile            |  9 ++
+>  arch/powerpc/mm/kasan/Makefile               |  1 +
+>  arch/powerpc/mm/kasan/init_book3s_64.c       | 95 ++++++++++++++++++++
+>  arch/powerpc/mm/ptdump/ptdump.c              | 20 ++++-
+>  arch/powerpc/platforms/Kconfig.cputype       |  1 +
+>  arch/powerpc/platforms/powernv/Makefile      |  6 ++
+>  arch/powerpc/platforms/pseries/Makefile      |  3 +
+>  18 files changed, 257 insertions(+), 19 deletions(-)
+>  create mode 100644 arch/powerpc/mm/kasan/init_book3s_64.c
+> 
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index 2cfd5d9068c0..8024b55c7aa8 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -36,8 +36,9 @@ Both software KASAN modes work with SLUB and SLAB memory allocators,
+>  while the hardware tag-based KASAN currently only supports SLUB.
 >  
-> +	add_random_kstack_offset();
-
->  	unsigned int nr = syscall_32_enter(regs);
->  	int res;
+>  Currently, generic KASAN is supported for the x86_64, arm, arm64, xtensa, s390,
+> -and riscv architectures. It is also supported on 32-bit powerpc kernels.
+> -Tag-based KASAN modes are supported only for arm64.
+> +and riscv architectures. It is also supported on powerpc for 32-bit kernels and
+> +for 64-bit kernels running under the Radix MMU. Tag-based KASAN modes are
+> +supported only for arm64.
 >  
-> +	add_random_kstack_offset();
-
-> @@ -70,6 +71,13 @@ static inline void arch_exit_to_user_mode_prepare(struct pt_regs *regs,
->  	 */
->  	current_thread_info()->status &= ~(TS_COMPAT | TS_I386_REGS_POKED);
->  #endif
+>  Usage
+>  -----
+> @@ -335,10 +336,10 @@ CONFIG_KASAN_VMALLOC
+>  
+>  With ``CONFIG_KASAN_VMALLOC``, KASAN can cover vmalloc space at the
+>  cost of greater memory usage. Currently, this is supported on x86,
+> -riscv, s390, and 32-bit powerpc.
+> +riscv, s390, and powerpc.
+>  
+> -It is optional, except on 32-bit powerpc kernels with module support,
+> -where it is required.
+> +It is optional, except on 64-bit powerpc kernels, and on 32-bit
+> +powerpc kernels with module support, where it is required.
+>  
+>  This works by hooking into vmalloc and vmap and dynamically
+>  allocating real shadow memory to back the mappings.
+> diff --git a/Documentation/powerpc/kasan.txt b/Documentation/powerpc/kasan.txt
+> index 26bb0e8bb18c..f032b4eaf205 100644
+> --- a/Documentation/powerpc/kasan.txt
+> +++ b/Documentation/powerpc/kasan.txt
+> @@ -1,4 +1,4 @@
+> -KASAN is supported on powerpc on 32-bit only.
+> +KASAN is supported on powerpc on 32-bit and Radix 64-bit only.
+>  
+>  32 bit support
+>  ==============
+> @@ -10,3 +10,49 @@ fixmap area and occupies one eighth of the total kernel virtual memory space.
+>  
+>  Instrumentation of the vmalloc area is optional, unless built with modules,
+>  in which case it is required.
 > +
+> +64 bit support
+> +==============
+> +
+> +Currently, only the radix MMU is supported. There have been versions for hash
+> +and Book3E processors floating around on the mailing list, but nothing has been
+> +merged.
+> +
+> +KASAN support on Book3S is a bit tricky to get right:
+> +
+> + - It would be good to support inline instrumentation so as to be able to catch
+> +   stack issues that cannot be caught with outline mode.
+> +
+> + - Inline instrumentation requires a fixed offset.
+> +
+> + - Book3S runs code with translations off ("real mode") during boot, including a
+> +   lot of generic device-tree parsing code which is used to determine MMU
+> +   features.
+> +
+> + - Some code - most notably a lot of KVM code - also runs with translations off
+> +   after boot.
+> +
+> + - Therefore any offset has to point to memory that is valid with
+> +   translations on or off.
+> +
+> +One approach is just to give up on inline instrumentation. This way boot-time
+> +checks can be delayed until after the MMU is set is up, and we can just not
+> +instrument any code that runs with translations off after booting. This is the
+> +current approach.
+> +
+> +To avoid this limitiation, the KASAN shadow would have to be placed inside the
+> +linear mapping, using the same high-bits trick we use for the rest of the linear
+> +mapping. This is tricky:
+> +
+> + - We'd like to place it near the start of physical memory. In theory we can do
+> +   this at run-time based on how much physical memory we have, but this requires
+> +   being able to arbitrarily relocate the kernel, which is basically the tricky
+> +   part of KASLR. Not being game to implement both tricky things at once, this
+> +   is hopefully something we can revisit once we get KASLR for Book3S.
+> +
+> + - Alternatively, we can place the shadow at the _end_ of memory, but this
+> +   requires knowing how much contiguous physical memory a system has _at compile
+> +   time_. This is a big hammer, and has some unfortunate consequences: inablity
+> +   to handle discontiguous physical memory, total failure to boot on machines
+> +   with less memory than specified, and that machines with more memory than
+> +   specified can't use it. This was deemed unacceptable.
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 4232d3f539c8..04aa817d1c5a 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -118,6 +118,7 @@ config PPC
+>  	# Please keep this list sorted alphabetically.
+>  	#
+>  	select ARCH_32BIT_OFF_T if PPC32
+> +	select ARCH_DISABLE_KASAN_INLINE	if PPC_RADIX_MMU
+>  	select ARCH_HAS_DEBUG_VIRTUAL
+>  	select ARCH_HAS_DEVMEM_IS_ALLOWED
+>  	select ARCH_HAS_ELF_RANDOMIZE
+> @@ -183,7 +184,8 @@ config PPC
+>  	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+>  	select HAVE_ARCH_JUMP_LABEL
+>  	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+> -	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+> +	select HAVE_ARCH_KASAN			if PPC_RADIX_MMU
+> +	select HAVE_ARCH_KASAN_VMALLOC		if HAVE_ARCH_KASAN
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_MMAP_RND_BITS
+>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+> diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
+> index ae084357994e..195f7845f41a 100644
+> --- a/arch/powerpc/Kconfig.debug
+> +++ b/arch/powerpc/Kconfig.debug
+> @@ -398,4 +398,5 @@ config PPC_FAST_ENDIAN_SWITCH
+>  config KASAN_SHADOW_OFFSET
+>  	hex
+>  	depends on KASAN
+> -	default 0xe0000000
+> +	default 0xe0000000 if PPC32
+> +	default 0xa80e000000000000 if PPC64
+> diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
+> index d959b0195ad9..222669864ff6 100644
+> --- a/arch/powerpc/include/asm/book3s/64/hash.h
+> +++ b/arch/powerpc/include/asm/book3s/64/hash.h
+> @@ -18,6 +18,10 @@
+>  #include <asm/book3s/64/hash-4k.h>
+>  #endif
+>  
+> +#define H_PTRS_PER_PTE		(1 << H_PTE_INDEX_SIZE)
+> +#define H_PTRS_PER_PMD		(1 << H_PMD_INDEX_SIZE)
+> +#define H_PTRS_PER_PUD		(1 << H_PUD_INDEX_SIZE)
+> +
+>  /* Bits to set in a PMD/PUD/PGD entry valid bit*/
+>  #define HASH_PMD_VAL_BITS		(0x8000000000000000UL)
+>  #define HASH_PUD_VAL_BITS		(0x8000000000000000UL)
+> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> index 058601efbc8a..7598a5b055bd 100644
+> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> @@ -230,6 +230,10 @@ extern unsigned long __pmd_frag_size_shift;
+>  #define PTRS_PER_PUD	(1 << PUD_INDEX_SIZE)
+>  #define PTRS_PER_PGD	(1 << PGD_INDEX_SIZE)
+>  
+> +#define MAX_PTRS_PER_PTE ((H_PTRS_PER_PTE > R_PTRS_PER_PTE) ? H_PTRS_PER_PTE : R_PTRS_PER_PTE)
+> +#define MAX_PTRS_PER_PMD ((H_PTRS_PER_PMD > R_PTRS_PER_PMD) ? H_PTRS_PER_PMD : R_PTRS_PER_PMD)
+> +#define MAX_PTRS_PER_PUD ((H_PTRS_PER_PUD > R_PTRS_PER_PUD) ? H_PTRS_PER_PUD : R_PTRS_PER_PUD)
+> +
+>  /* PMD_SHIFT determines what a second-level page table entry can map */
+>  #define PMD_SHIFT	(PAGE_SHIFT + PTE_INDEX_SIZE)
+>  #define PMD_SIZE	(1UL << PMD_SHIFT)
+> diff --git a/arch/powerpc/include/asm/book3s/64/radix.h b/arch/powerpc/include/asm/book3s/64/radix.h
+> index c7813dc628fc..b3492b80f858 100644
+> --- a/arch/powerpc/include/asm/book3s/64/radix.h
+> +++ b/arch/powerpc/include/asm/book3s/64/radix.h
+> @@ -35,6 +35,11 @@
+>  #define RADIX_PMD_SHIFT		(PAGE_SHIFT + RADIX_PTE_INDEX_SIZE)
+>  #define RADIX_PUD_SHIFT		(RADIX_PMD_SHIFT + RADIX_PMD_INDEX_SIZE)
+>  #define RADIX_PGD_SHIFT		(RADIX_PUD_SHIFT + RADIX_PUD_INDEX_SIZE)
+> +
+> +#define R_PTRS_PER_PTE		(1 << RADIX_PTE_INDEX_SIZE)
+> +#define R_PTRS_PER_PMD		(1 << RADIX_PMD_INDEX_SIZE)
+> +#define R_PTRS_PER_PUD		(1 << RADIX_PUD_INDEX_SIZE)
+> +
+>  /*
+>   * Size of EA range mapped by our pagetables.
+>   */
+> @@ -68,11 +73,11 @@
+>   *
+>   *
+>   * 3rd quadrant expanded:
+> - * +------------------------------+
+> + * +------------------------------+  Highest address (0xc010000000000000)
+> + * +------------------------------+  KASAN shadow end (0xc00fc00000000000)
+>   * |                              |
+>   * |                              |
+> - * |                              |
+> - * +------------------------------+  Kernel vmemmap end (0xc010000000000000)
+> + * +------------------------------+  Kernel vmemmap end/shadow start (0xc00e000000000000)
+>   * |                              |
+>   * |           512TB		  |
+>   * |                              |
+> @@ -126,6 +131,8 @@
+>  #define RADIX_VMEMMAP_SIZE	RADIX_KERN_MAP_SIZE
+>  #define RADIX_VMEMMAP_END	(RADIX_VMEMMAP_START + RADIX_VMEMMAP_SIZE)
+>  
+> +/* For the sizes of the shadow area, see kasan.h */
+> +
+>  #ifndef __ASSEMBLY__
+>  #define RADIX_PTE_TABLE_SIZE	(sizeof(pte_t) << RADIX_PTE_INDEX_SIZE)
+>  #define RADIX_PMD_TABLE_SIZE	(sizeof(pmd_t) << RADIX_PMD_INDEX_SIZE)
+> diff --git a/arch/powerpc/include/asm/kasan.h b/arch/powerpc/include/asm/kasan.h
+> index 7355ed05e65e..df946165812d 100644
+> --- a/arch/powerpc/include/asm/kasan.h
+> +++ b/arch/powerpc/include/asm/kasan.h
+> @@ -30,9 +30,31 @@
+>  
+>  #define KASAN_SHADOW_OFFSET	ASM_CONST(CONFIG_KASAN_SHADOW_OFFSET)
+>  
+> +#ifdef CONFIG_PPC32
+>  #define KASAN_SHADOW_END	(-(-KASAN_SHADOW_START >> KASAN_SHADOW_SCALE_SHIFT))
+> +#endif
+>  
+>  #ifdef CONFIG_KASAN
+> +#ifdef CONFIG_PPC_BOOK3S_64
+> +/*
+> + * The shadow ends before the highest accessible address
+> + * because we don't need a shadow for the shadow. Instead:
+> + * c00e000000000000 << 3 + a80e000000000000000 = c00fc00000000000
+
+The comment has one extra 0 in a80e.., I did the math and had to use
+the data from the defines :)
+
+> + */
+> +#define KASAN_SHADOW_END 0xc00fc00000000000UL
+> +
+> +DECLARE_STATIC_KEY_FALSE(powerpc_kasan_enabled_key);
+> +
+> +static __always_inline bool kasan_arch_is_ready(void)
+> +{
+> +	if (static_branch_likely(&powerpc_kasan_enabled_key))
+> +		return true;
+> +	return false;
+> +}
+> +
+> +#define kasan_arch_is_ready kasan_arch_is_ready
+> +#endif
+> +
+>  void kasan_early_init(void);
+>  void kasan_mmu_init(void);
+>  void kasan_init(void);
+> diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+> index 6084fa499aa3..163755b1cef4 100644
+> --- a/arch/powerpc/kernel/Makefile
+> +++ b/arch/powerpc/kernel/Makefile
+> @@ -32,6 +32,17 @@ KASAN_SANITIZE_early_32.o := n
+>  KASAN_SANITIZE_cputable.o := n
+>  KASAN_SANITIZE_prom_init.o := n
+>  KASAN_SANITIZE_btext.o := n
+> +KASAN_SANITIZE_paca.o := n
+> +KASAN_SANITIZE_setup_64.o := n
+> +KASAN_SANITIZE_mce.o := n
+> +KASAN_SANITIZE_mce_power.o := n
+> +
+> +# we have to be particularly careful in ppc64 to exclude code that
+> +# runs with translations off, as we cannot access the shadow with
+> +# translations off. However, ppc32 can sanitize this.
+> +ifdef CONFIG_PPC64
+> +KASAN_SANITIZE_traps.o := n
+> +endif
+>  
+>  ifdef CONFIG_KASAN
+>  CFLAGS_early_32.o += -DDISABLE_BRANCH_PROFILING
+> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+> index 3231c2df9e26..d4ae21b9e9b7 100644
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -2160,8 +2160,8 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+>  			break;
+>  
+>  		stack = (unsigned long *) sp;
+> -		newsp = stack[0];
+> -		ip = stack[STACK_FRAME_LR_SAVE];
+> +		newsp = READ_ONCE_NOCHECK(stack[0]);
+> +		ip = READ_ONCE_NOCHECK(stack[STACK_FRAME_LR_SAVE]);
+>  		if (!firstframe || ip != lr) {
+>  			printk("%s["REG"] ["REG"] %pS",
+>  				loglvl, sp, ip, (void *)ip);
+> @@ -2179,17 +2179,19 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+>  		 * See if this is an exception frame.
+>  		 * We look for the "regshere" marker in the current frame.
+>  		 */
+> -		if (validate_sp(sp, tsk, STACK_FRAME_WITH_PT_REGS)
+> -		    && stack[STACK_FRAME_MARKER] == STACK_FRAME_REGS_MARKER) {
+> +		if (validate_sp(sp, tsk, STACK_FRAME_WITH_PT_REGS) &&
+> +		    (READ_ONCE_NOCHECK(stack[STACK_FRAME_MARKER]) ==
+> +		     STACK_FRAME_REGS_MARKER)) {
+>  			struct pt_regs *regs = (struct pt_regs *)
+>  				(sp + STACK_FRAME_OVERHEAD);
+>  
+> -			lr = regs->link;
+> +			lr = READ_ONCE_NOCHECK(regs->link);
+>  			printk("%s--- interrupt: %lx at %pS\n",
+> -			       loglvl, regs->trap, (void *)regs->nip);
+> +			       loglvl, READ_ONCE_NOCHECK(regs->trap),
+> +			       (void *)READ_ONCE_NOCHECK(regs->nip));
+>  			__show_regs(regs);
+>  			printk("%s--- interrupt: %lx\n",
+> -			       loglvl, regs->trap);
+> +			       loglvl, READ_ONCE_NOCHECK(regs->trap));
+>  
+>  			firstframe = 1;
+>  		}
+> diff --git a/arch/powerpc/kvm/Makefile b/arch/powerpc/kvm/Makefile
+> index 2bfeaa13befb..7f1592dacbeb 100644
+> --- a/arch/powerpc/kvm/Makefile
+> +++ b/arch/powerpc/kvm/Makefile
+> @@ -136,3 +136,8 @@ obj-$(CONFIG_KVM_BOOK3S_64_PR) += kvm-pr.o
+>  obj-$(CONFIG_KVM_BOOK3S_64_HV) += kvm-hv.o
+>  
+>  obj-y += $(kvm-book3s_64-builtin-objs-y)
+> +
+> +# KVM does a lot in real-mode, and 64-bit Book3S KASAN doesn't support that
+> +ifdef CONFIG_PPC_BOOK3S_64
+> +KASAN_SANITIZE := n
+> +endif
+> diff --git a/arch/powerpc/mm/book3s64/Makefile b/arch/powerpc/mm/book3s64/Makefile
+> index 1b56d3af47d4..a7d8a68bd2c5 100644
+> --- a/arch/powerpc/mm/book3s64/Makefile
+> +++ b/arch/powerpc/mm/book3s64/Makefile
+> @@ -21,3 +21,12 @@ obj-$(CONFIG_PPC_PKEY)	+= pkeys.o
+>  
+>  # Instrumenting the SLB fault path can lead to duplicate SLB entries
+>  KCOV_INSTRUMENT_slb.o := n
+> +
+> +# Parts of these can run in real mode and therefore are
+> +# not safe with the current outline KASAN implementation
+> +KASAN_SANITIZE_mmu_context.o := n
+> +KASAN_SANITIZE_pgtable.o := n
+> +KASAN_SANITIZE_radix_pgtable.o := n
+> +KASAN_SANITIZE_radix_tlb.o := n
+> +KASAN_SANITIZE_slb.o := n
+> +KASAN_SANITIZE_pkeys.o := n
+> diff --git a/arch/powerpc/mm/kasan/Makefile b/arch/powerpc/mm/kasan/Makefile
+> index 42fb628a44fd..07eef87abd6c 100644
+> --- a/arch/powerpc/mm/kasan/Makefile
+> +++ b/arch/powerpc/mm/kasan/Makefile
+> @@ -5,3 +5,4 @@ KASAN_SANITIZE := n
+>  obj-$(CONFIG_PPC32)           += init_32.o
+>  obj-$(CONFIG_PPC_8xx)		+= 8xx.o
+>  obj-$(CONFIG_PPC_BOOK3S_32)	+= book3s_32.o
+> +obj-$(CONFIG_PPC_BOOK3S_64)   += init_book3s_64.o
+> diff --git a/arch/powerpc/mm/kasan/init_book3s_64.c b/arch/powerpc/mm/kasan/init_book3s_64.c
+> new file mode 100644
+> index 000000000000..ca913ed951a2
+> --- /dev/null
+> +++ b/arch/powerpc/mm/kasan/init_book3s_64.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KASAN for 64-bit Book3S powerpc
+> + *
+> + * Copyright (C) 2019-2020 IBM Corporation
+> + * Author: Daniel Axtens <dja@axtens.net>
+> + */
+> +
+> +#define DISABLE_BRANCH_PROFILING
+> +
+> +#include <linux/kasan.h>
+> +#include <linux/printk.h>
+> +#include <linux/sched/task.h>
+> +#include <linux/memblock.h>
+> +#include <asm/pgalloc.h>
+> +
+> +DEFINE_STATIC_KEY_FALSE(powerpc_kasan_enabled_key);
+> +
+> +static void __init kasan_init_phys_region(void *start, void *end)
+> +{
+> +	unsigned long k_start, k_end, k_cur;
+> +	void *va;
+> +
+> +	if (start >= end)
+> +		return;
+> +
+> +	k_start = ALIGN_DOWN((unsigned long)kasan_mem_to_shadow(start), PAGE_SIZE);
+> +	k_end = ALIGN((unsigned long)kasan_mem_to_shadow(end), PAGE_SIZE);
+> +
+> +	va = memblock_alloc(k_end - k_start, PAGE_SIZE);
+> +	for (k_cur = k_start; k_cur < k_end; k_cur += PAGE_SIZE, va += PAGE_SIZE)
+> +		map_kernel_page(k_cur, __pa(va), PAGE_KERNEL);
+> +}
+> +
+> +void __init kasan_init(void)
+> +{
 > +	/*
-> +	 * x86_64 stack alignment means 3 bits are ignored, so keep
-> +	 * the top 5 bits. x86_32 needs only 2 bits of alignment, so
-> +	 * the top 6 bits will be used.
+> +	 * We want to do the following things:
+> +	 *  1) Map real memory into the shadow for all physical memblocks
+> +	 *     This takes us from c000... to c008...
+> +	 *  2) Leave a hole over the shadow of vmalloc space. KASAN_VMALLOC
+> +	 *     will manage this for us.
+> +	 *     This takes us from c008... to c00a...
+> +	 *  3) Map the 'early shadow'/zero page over iomap and vmemmap space.
+> +	 *     This takes us up to where we start at c00e...
 > +	 */
-> +	choose_random_kstack_offset(rdtsc() & 0xFF);
->  }
+> +
 
-1)
+assuming we have
+#define VMEMMAP_END R_VMEMMAP_END
+and ditto for hash we probably need
 
-Wondering why the calculation of the kstack offset (which happens in 
-every syscall) is separated from the entry-time logic and happens 
-during return to user-space?
+	BUILD_BUG_ON(VMEMMAP_END + KASAN_SHADOW_OFFSET != KASAN_SHADOW_END);
 
-The two methods:
+Looks good otherwise, I've not been able to test it yet
 
-+#define add_random_kstack_offset() do {                                        \
-+       if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT, \
-+                               &randomize_kstack_offset)) {            \
-+               u32 offset = this_cpu_read(kstack_offset);              \
-+               u8 *ptr = __builtin_alloca(offset & 0x3FF);             \
-+               asm volatile("" : "=m"(*ptr) :: "memory");              \
-+       }                                                               \
-+} while (0)
-+
-+#define choose_random_kstack_offset(rand) do {                         \
-+       if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT, \
-+                               &randomize_kstack_offset)) {            \
-+               u32 offset = this_cpu_read(kstack_offset);              \
-+               offset ^= (rand);                                       \
-+               this_cpu_write(kstack_offset, offset);                  \
-+       }                                                               \
-+} while (0)
-
-choose_random_kstack_offset() basically calculates the offset and 
-stores it in a percpu variable (mixing it with the previous offset 
-value), add_random_kstack_offset() uses it in an alloca() dynamic 
-stack allocation.
-
-Wouldn't it be (slightly) lower combined overhead to just do it in a 
-single step? There would be duplication along the 3 syscall entry 
-points, but this should be marginal as this looks small, and the entry 
-points would probably be cache-hot.
-
-2)
-
-Another detail I noticed: add_random_kstack_offset() limits the offset 
-to 0x3ff, or 1k - 10 bits.
-
-But the RDTSC mask is 0xff, 8 bits:
-
-+       /*
-+        * x86_64 stack alignment means 3 bits are ignored, so keep
-+        * the top 5 bits. x86_32 needs only 2 bits of alignment, so
-+        * the top 6 bits will be used.
-+        */
-+       choose_random_kstack_offset(rdtsc() & 0xFF);
-
-alloca() itself works in byte units and will round the allocation to 8 
-bytes on x86-64, to 4 bytes on x86-32, this is what the 'ignored bits' 
-reference in the comment is to, right?
-
-Why is there a 0x3ff mask for the alloca() call and a 0xff mask to the 
-RDTSC randomizing value? Shouldn't the two be synced up? Or was the 
-intention to shift the RDTSC value to the left by 3 bits?
-
-3)
-
-Finally, kstack_offset is a percpu variable:
-
-  #ifdef CONFIG_HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
-  ...
-  DEFINE_PER_CPU(u32, kstack_offset);
-
-This is inherited across tasks on scheduling, and new syscalls will 
-mix in new RDTSC values to continue to randomize the offset.
-
-Wouldn't it make sense to further mix values into this across context 
-switching boundaries? A really inexpensive way would be to take the 
-kernel stack value and mix it into the offset, and maybe even the 
-randomized t->stack_canary value?
-
-This would further isolate the syscall kernel stack offsets of 
-separate execution contexts from each other, should an attacker find a 
-way to estimate or influence likely RDTSC values.
-
-Thanks,
-
-	Ingo
+Balbir Singh.
