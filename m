@@ -2,191 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526DB342EA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F39342EA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhCTRcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 13:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCTRcJ (ORCPT
+        id S229894AbhCTRdd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Mar 2021 13:33:33 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:35919 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTRd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 13:32:09 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7EBC061574;
-        Sat, 20 Mar 2021 10:32:04 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id o19so14488556edc.3;
-        Sat, 20 Mar 2021 10:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bFNu1Uz51KMfEW+ABnORMauFzs3e2ZaieyRLl3pCKvU=;
-        b=QLEA1yh+KCAEYOOkPrpkm+SLlIPC5X02+U8st72y6fRRtiO5YF1lsPGA9gKHuVCc+S
-         JeE+d8dy8xbFQkk6kYDug8s2j8rC8l4OE74223Q4NXPi879WjayWOvq7EtD4AzRL2Hbt
-         fbQU1Rj2JHDwk1XxIIZnAPHI1PX7KBXQmZPWC0uFlwcpcyianWrpXcuVXccOJPqhGp15
-         oCuZBRFEbJSdxvKXeM/KsSwTND95bhQ79jVoocZlmtgsg0YHkogJ8TYDyzAmM0xJ0haA
-         7RDFnSyM3pD/mSj0l/+ID5lk7lPld/FEWCXJlc4LlQKt/WEDi3PdQQnl5p/+ntuWCHRe
-         42fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=bFNu1Uz51KMfEW+ABnORMauFzs3e2ZaieyRLl3pCKvU=;
-        b=kV95/wvjBPQ9f9azuE3ZQuu+8WG3U6JVNqGEluHn5LuoLlkMjU0dKqM67JR9k+xcg0
-         ouK9s22f+z0Bq7qoM1Rpi99/pm1cJonCa5DkIRRiKsH2g6XBNrejJjJG3HCgpqntcmuE
-         bBGSj76jffwUS1wSHvN/tngDpgqXJ1ZArXQAU2iTmocpkirdiUT7buuXasE/y1gSban/
-         secyTOEesROySmlCxtSRBu75uaQTSTpcVayoP9HsLKwQbe2u3UrlI1FD0SXew4t6G+Uz
-         XTb0Lre5/AcF1DEk2W52aMsBRbD5o/6K+8RnkIWb7/OtigUeVmpIPvOIl5FDgmnlnEq4
-         wbSw==
-X-Gm-Message-State: AOAM530s8s8b61kjeCB6z/f4EX1AopgmQ6JCG4+lmWmL56w2RWegTt9X
-        lRtbsJj/Atm5qBlpGvakIBs=
-X-Google-Smtp-Source: ABdhPJzZpJENUP1BZIuAr/xSdl0PHrsU+bxCkZMDAjp/pvukOx+ljoJLGVaN5lMqGFsN1zqnFZ/nLw==
-X-Received: by 2002:a05:6402:3596:: with SMTP id y22mr16635671edc.207.1616261523285;
-        Sat, 20 Mar 2021 10:32:03 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id n2sm5707795ejl.1.2021.03.20.10.32.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 10:32:02 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 20 Mar 2021 18:32:00 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Len Brown <lenb@kernel.org>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, hjl.tools@gmail.com,
-        Dave Martin <Dave.Martin@arm.com>, jannh@google.com,
-        mpe@ellerman.id.au, carlos@redhat.com,
-        "bothersome-borer for tony.luck@intel.com" <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 0/6] x86: Improve Minimum Alternate Stack Size
-Message-ID: <20210320173200.GA4153106@gmail.com>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
- <20210317100640.GC1724119@gmail.com>
- <20210317104415.GA692070@gmail.com>
- <CAJvTdKnpWL8y4N_BrCiK7fU0UXERwuuM8o84LUpp7Watxd8STw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJvTdKnpWL8y4N_BrCiK7fU0UXERwuuM8o84LUpp7Watxd8STw@mail.gmail.com>
+        Sat, 20 Mar 2021 13:33:29 -0400
+Received: from mac-pro.holtmann.net (p4fefce19.dip0.t-ipconnect.de [79.239.206.25])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 33FD2CECF7;
+        Sat, 20 Mar 2021 18:41:05 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v1] Bluetooth: Add ncmd=0 recovery handling
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210319131533.v1.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
+Date:   Sat, 20 Mar 2021 18:33:26 +0100
+Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Alain Michaud <alainm@chromium.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <DC038B82-5539-48D5-84BE-4575F2E794AD@holtmann.org>
+References: <20210319131533.v1.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
+To:     Manish Mandlik <mmandlik@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Manish,
 
-* Len Brown <lenb@kernel.org> wrote:
-
-> On Wed, Mar 17, 2021 at 6:45 AM Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> >
-> > * Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > >
-> > > * Chang S. Bae <chang.seok.bae@intel.com> wrote:
-> > >
-> > > > During signal entry, the kernel pushes data onto the normal userspace
-> > > > stack. On x86, the data pushed onto the user stack includes XSAVE state,
-> > > > which has grown over time as new features and larger registers have been
-> > > > added to the architecture.
-> > > >
-> > > > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
-> > > > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
-> > > > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
-> > > > constant indicates to userspace how much data the kernel expects to push on
-> > > > the user stack, [2][3].
-> > > >
-> > > > However, this constant is much too small and does not reflect recent
-> > > > additions to the architecture. For instance, when AVX-512 states are in
-> > > > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
-> > > >
-> > > > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
-> > > > cause user stack overflow when delivering a signal.
-> > >
-> > > >   uapi: Define the aux vector AT_MINSIGSTKSZ
-> > > >   x86/signal: Introduce helpers to get the maximum signal frame size
-> > > >   x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
-> > > >   selftest/sigaltstack: Use the AT_MINSIGSTKSZ aux vector if available
-> > > >   x86/signal: Detect and prevent an alternate signal stack overflow
-> > > >   selftest/x86/signal: Include test cases for validating sigaltstack
-> > >
-> > > So this looks really complicated, is this justified?
-> > >
-> > > Why not just internally round up sigaltstack size if it's too small?
-> > > This would be more robust, as it would fix applications that use
-> > > MINSIGSTKSZ but don't use the new AT_MINSIGSTKSZ facility.
-> > >
-> > > I.e. does AT_MINSIGSTKSZ have any other uses than avoiding the
-> > > segfault if MINSIGSTKSZ is used to create a small signal stack?
-> >
-> > I.e. if the kernel sees a too small ->ss_size in sigaltstack() it
-> > would ignore ->ss_sp and mmap() a new sigaltstack instead and use that
-> > for the signal handler stack.
-> >
-> > This would automatically make MINSIGSTKSZ - and other too small sizes
-> > work today, and in the future.
-> >
-> > But the question is, is there user-space usage of sigaltstacks that
-> > relies on controlling or reading the contents of the stack?
-> >
-> > longjmp using programs perhaps?
+> During command status or command complete event, the controller may set
+> ncmd=0 indicating that it is not accepting any more commands. In such a
+> case, host holds off sending any more commands to the controller. If the
+> controller doesn't recover from such condition, host will wait forever.
 > 
-> For the legacy binary that requests a too-small sigaltstack, there are
-> several choices:
+> This patch adds a timer when controller gets into such condition and
+> resets the controller if controller doesn't recover within the timeout
+> period.
 > 
-> We could detect the too-small stack at sigaltstack(2) invocation and
-> return an error.
-> This results in two deal-killing problems:
-> First, some applications don't check the return value, so the check
-> would be fruitless.
-> Second, those that check and error-out may be programs that never
-> actually take the signal, and so we'd be causing a dusty binary to
-> exit, when it didn't exit on another system, or another kernel.
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Signed-off-by: Manish Mandlik <mmandlik@google.com>
+> ---
+> Hello Maintainers,
 > 
-> Or we could detect the too small stack at signal registration time.
-> This has the same two deal-killers as above.
+> We noticed that during suspend, sometimes the controller firmware gets
+> into a state where it is not accepting any more commands (it returns
+> ncmd=0 in Command Status):
 > 
-> Then there is the approach in this patch-set, which detects an
-> imminent stack overflow at run time.
-> It has neither of the two problems above, and the benefit that we now
-> prevent data corruption
-> that could have been happening on some systems already today.  The
-> down side is that the dusty binary
-> that does request the too-small stack can now die at run time.
+> < HCI Command: Disconnect (0x01|0x0006) plen 3  #398 [hci0] 83.760502
+>         Handle: 1
+>         Reason: Remote Device Terminated due to Power Off (0x15)
+>> HCI Event: Command Status (0x0f) plen 4       #399 [hci0] 83.761694
+>       Disconnect (0x01|0x0006) ncmd 0
+>         Status: Success (0x00)
 > 
-> So your idea of recognizing the problem and conjuring up a 
-> sufficient stack is compelling, since it would likely "just work", 
-> no matter how dumb the program. But where would the the sufficient 
-> stack come from -- is this a new kernel buffer, or is there a way to 
-> abscond some user memory?  I would expect a signal handler to look 
-> at the data on its stack and nobody else will look at that stack.  
-> But this is already an unreasonable program for allocating a special 
-> signal stack in the first place :-/ So yes, one could imagine the 
-> signal handler could longjump instead of gracefully completing, and 
-> if this specially allocated signal stack isn't where the user 
-> planned, that could be trouble.
+> In such a case, the host holds off sending any more packets to the
+> controller until it is ready to accept more commands. If the controller
+> doesn't recover from such a condition, Command Timeout does not get
+> triggered as Command Timeout is queued only once the packet is sent to
+> the controller; hence, the host will wait forever. 
+> 
+> This patch adds a timer to recover from this condition. Since the
+> suspend timeout is 2 seconds, I'm using 4 seconds timeout to recover
+> from ncmd=0. This should give ample amount of time for recovery and
+> should not create any race conditions with the suspend. Once we resume
+> from the suspend normally, the timer would expire and reset the
+> controller. I have verified this patch locally and able to connect to
+> peer device after resume from suspend. Please let me know your thoughts
+> on this.
+> 
+> Thanks,
+> Manish.
+> 
+> include/net/bluetooth/hci.h      |  1 +
+> include/net/bluetooth/hci_core.h |  1 +
+> net/bluetooth/hci_core.c         | 15 +++++++++++++++
+> net/bluetooth/hci_event.c        | 10 ++++++++++
+> 4 files changed, 27 insertions(+)
+> 
+> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+> index ea4ae551c426..c4b0650fb9ae 100644
+> --- a/include/net/bluetooth/hci.h
+> +++ b/include/net/bluetooth/hci.h
+> @@ -339,6 +339,7 @@ enum {
+> #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
+> #define HCI_INIT_TIMEOUT	msecs_to_jiffies(10000)	/* 10 seconds */
+> #define HCI_CMD_TIMEOUT		msecs_to_jiffies(2000)	/* 2 seconds */
+> +#define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
+> #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
+> #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
+> #define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index ebdd4afe30d2..f14692b39fd5 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -470,6 +470,7 @@ struct hci_dev {
+> 	struct delayed_work	service_cache;
+> 
+> 	struct delayed_work	cmd_timer;
+> +	struct delayed_work	ncmd_timer;
+> 
+> 	struct work_struct	rx_work;
+> 	struct work_struct	cmd_work;
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index b0d9c36acc03..5ee1609456bd 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -2769,6 +2769,20 @@ static void hci_cmd_timeout(struct work_struct *work)
+> 	queue_work(hdev->workqueue, &hdev->cmd_work);
+> }
+> 
+> +/* HCI ncmd timer function */
+> +static void hci_ncmd_timeout(struct work_struct *work)
+> +{
+> +	struct hci_dev *hdev = container_of(work, struct hci_dev,
+> +					    ncmd_timer.work);
+> +
+> +	bt_dev_err(hdev, "ncmd timeout");
+> +
+> +	if (hci_dev_do_close(hdev))
+> +		return;
+> +
+> +	hci_dev_do_open(hdev);
+> +}
+> +
 
-We could mmap() (implicitly) new anonymous memory - but I can see why 
-this is probably more trouble than worth...
+I am pretty certain this can dead-lock if ncmd=0 happens inside hci_dev_do_open,do_close itself.
 
-> Another idea we discussed was to detect the potential overflow at 
-> run-time, and instead of killing the process, just push the signal 
-> onto the regular user stack. this might actually work, but it is 
-> sort of devious; and it would not work in the case where the user 
-> overflowed their regular stack already, which may be the most 
-> (only?) compelling reason that they allocated and declared a special 
-> sigaltstack in the first place...
+The second thing is that do_close+do_open is heavy hammer you are swinging here. It will also result in mgmt powered down/up. Is this something you really want since bluetoothd will notice this and has to re-init everything.
 
-Yeah, this doesn't sound deterministic enough.
+Regards
 
-Ok, thanks for the detailed answers - I withdraw my objections, let's 
-proceed with the approach you are proposing?
+Marcel
 
-Thanks,
-
-	Ingo
