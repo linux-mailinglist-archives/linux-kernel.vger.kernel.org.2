@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084D8342C74
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B26342C8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhCTLpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:45:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14833 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhCTLpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:45:11 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F2bH71zxzz919q;
-        Sat, 20 Mar 2021 17:36:03 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Sat, 20 Mar 2021
- 17:37:51 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <jglisse@redhat.com>, <shy828301@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH 5/5] mm/migrate.c: fix potential deadlock in NUMA balancing shared exec THP case
-Date:   Sat, 20 Mar 2021 05:37:01 -0400
-Message-ID: <20210320093701.12829-6-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20210320093701.12829-1-linmiaohe@huawei.com>
-References: <20210320093701.12829-1-linmiaohe@huawei.com>
+        id S230118AbhCTLx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:53:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhCTLxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:53:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41A361938;
+        Sat, 20 Mar 2021 09:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616233923;
+        bh=EeVHD219Vu3BLdFwAjIJBYjx7SLJ+5LQkRHLmmay2cc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e4cLWZ8md+MLxd+dMXXjEm0xj9nGSicLyNU04RNKdT3013drAncXT6aznEdcD7mhB
+         aJpuSVJnxmXoNv3KZBXKqF24Zp9e6cT8KRb9pRy2dXGPCWOYXOZPfIXA/lzpTo5dPZ
+         Y4G7m8s/ojKHWZvlVxBTse9hRkAP1zcoXf/Fud38=
+Date:   Sat, 20 Mar 2021 10:52:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.11 00/31] 5.11.8-rc1 review
+Message-ID: <YFXFwbZMfToTDL8Z@kroah.com>
+References: <20210319121747.203523570@linuxfoundation.org>
+ <CA+G9fYs6BxWn=Myx=RvjTqpR9cwAnJ5qfgC2xdEhg-3sfYf2EA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYs6BxWn=Myx=RvjTqpR9cwAnJ5qfgC2xdEhg-3sfYf2EA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
-balancing"), the NUMA balancing would skip shared exec transhuge page.
-But this enhancement is not suitable for transhuge page. Because it's
-required that page_mapcount() must be 1 due to no migration pte dance
-is done here. On the other hand, the shared exec transhuge page will
-leave the migrate_misplaced_page() with pte entry untouched and page
-locked. Thus pagefault for NUMA will be triggered again and deadlock
-occurs when we start waiting for the page lock held by ourselves.
+On Sat, Mar 20, 2021 at 01:08:52AM +0530, Naresh Kamboju wrote:
+> On Fri, 19 Mar 2021 at 17:51, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.11.8 release.
+> > There are 31 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.8-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
+> 
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Fixes: c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA balancing")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/migrate.c | 4 ----
- 1 file changed, 4 deletions(-)
+thanks for testing them all.
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 3e169b72d7b2..67a941c52b6d 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2192,9 +2192,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
- 	int page_lru = page_is_file_lru(page);
- 	unsigned long start = address & HPAGE_PMD_MASK;
- 
--	if (is_shared_exec_page(vma, page))
--		goto out;
--
- 	new_page = alloc_pages_node(node,
- 		(GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
- 		HPAGE_PMD_ORDER);
-@@ -2306,7 +2303,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
- 
- out_unlock:
- 	unlock_page(page);
--out:
- 	put_page(page);
- 	return 0;
- }
--- 
-2.19.1
-
+greg k-h
