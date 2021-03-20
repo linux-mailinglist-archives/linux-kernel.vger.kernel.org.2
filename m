@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66BB342DEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB41342DF3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhCTPq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S229941AbhCTPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhCTPqM (ORCPT
+        with ESMTP id S229880AbhCTPsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:46:12 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA033C061574;
-        Sat, 20 Mar 2021 08:46:11 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u5so14393041ejn.8;
-        Sat, 20 Mar 2021 08:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=stA9eMTsiClMTTVbDXG9ikJ8gl/7VEUDLTDJT6ZFsMs=;
-        b=RACW76s6YnIVeZwc7956uumK/HRcBwuVNnT5bq2UupIGQkV4SynucRbhXHBnn4ZSih
-         k65pa4hYTnkNvCQ9+WtIJB8+mpZ8SKP3Wfo1yq5ncSEf7yC+eV6T4WSzwhj/Yvggj45a
-         HDaskvoZg5lVWzepFqoDr9P/DBunNoOnj8UJgkNFVFehOC3gRVCDrmf+2tDBODMPQdBJ
-         qNwOQyCLzCwXOWMHgW1fAe7Au/ScP4x9gXBP6Z8tdEtQOmb/Sy2O7EJjI3y7CgvqOR4x
-         t+Zp9C+SIXvzCxygCnEakdXB1AAMgVLauuavgzMNXvguuSfuGegSS7aOFqm9Ku8x9t7a
-         snVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=stA9eMTsiClMTTVbDXG9ikJ8gl/7VEUDLTDJT6ZFsMs=;
-        b=FMRTpsbxqR51SHV/x0s4kS8piRU7lMSWzEOvQiJyNE4A8XkAqpHJXHH4Ly5ih9ielP
-         o/DjuoeJC0WwAG9gpN/nPSImfGTEW4evZ089XP6dFrRpZT4IQ9hODK7AbCs/jrE9lZT6
-         qGUMTHiILpU2xsvbEM+7eTMHBOufEQeIKUTKOrT7gRiiIlX+cI3RMpMkVW2gMd+5kmeY
-         cungSDO9gFQKr9xWkYFYz4BYNajcYTlJwbvwF0vHrod3KypKxexBR5UohvNChtSpzKs9
-         ZO/FBxqNZyWTXWeI71AnIMIWQZjgSn7JD6kSyHMeFvly3hM9x8T99qbWIM7cKnqMdNSv
-         JGpg==
-X-Gm-Message-State: AOAM5327rtdz4MDIbKI3aAe4noOMMXWlqRdoxjxm7I6G4j8e8mM153vW
-        wuHFJTvjWfASCALY4BDwsG/MNEAaXg==
-X-Google-Smtp-Source: ABdhPJwirMMG06CCssedXvaSNJHOhQEyCH9q732f0z8ipH87lvWgLjzq0Gxn/KL1IQ1VHPMysJwhhw==
-X-Received: by 2002:a17:907:20e4:: with SMTP id rh4mr10368501ejb.369.1616255170315;
-        Sat, 20 Mar 2021 08:46:10 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.248.213])
-        by smtp.gmail.com with ESMTPSA id t14sm5410736ejc.121.2021.03.20.08.46.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 08:46:10 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 18:46:08 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gladkov.alexey@gmail.com
-Subject: [PATCH] proc: delete redundant subset=pid check
-Message-ID: <YFYYwIBIkytqnkxP@localhost.localdomain>
+        Sat, 20 Mar 2021 11:48:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12680C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zbIftbE/u+M6OpaoufTPcNdH56Tj34uXrx7w5JT/Y1E=; b=LyhUjltMocKGlYzFZaWpwVKKMv
+        ySLz6nUd3mia5MaCshd5GXoP4WBQA2w4mlmIuVtLlFlWTZvfzKQvnAl9xNTBgDaQMBpS2QtIcxMq0
+        uPq/1bPD6S/FXoav9lnU460MRrj7InICCK7W91FJPFzS7BHKdD2kSfW1EBybv0M7Uie4ZbDW4NcKw
+        KrGjD19/Hoz4fvTOttiiLKvHVsa6YzsS2Ta/Ap188h7ACCJyMVIYznPid8Kgm5dj8cnJfS6mn0oUJ
+        JZJKtWEzt9TLW/Q+cSRbBrRJANhc936jeq5g/y+P0PrOBASdavEQsH1Rfg3JaqqcyXNRsbYyfZV0D
+        ShwF5NnQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNdo9-005zlT-1B; Sat, 20 Mar 2021 15:46:33 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 350839864FF; Sat, 20 Mar 2021 16:46:32 +0100 (CET)
+Date:   Sat, 20 Mar 2021 16:46:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH 2/6] sched: tagging interface for core scheduling
+Message-ID: <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
+References: <20210319203253.3352417-1-joel@joelfernandes.org>
+ <20210319203253.3352417-3-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210319203253.3352417-3-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two checks in lookup and readdir code should be enough to not have
-third check in open code.
+On Fri, Mar 19, 2021 at 04:32:49PM -0400, Joel Fernandes (Google) wrote:
+> From: Josh Don <joshdon@google.com>
+> 
+> Adds per-task and per-cgroup interfaces for specifying which tasks can
+> co-execute on adjacent SMT hyperthreads via core scheduling.
+> 
+> The per-task interface hooks are implemented here, but are not currently
+> used. The following patch adds a prctl interface which then takes
+> advantage of these.
+> 
+> The cgroup interface can be used to toggle a unique cookie value for all
+> descendent tasks, preventing these tasks from sharing with any others.
+> See Documentation/admin-guide/hw-vuln/core-scheduling.rst for a full
+> rundown.
+> 
+> One important property of this interface is that neither the per-task
+> nor the per-cgroup setting overrides the other. For example, if two
+> tasks are in different cgroups, and one or both of the cgroups is tagged
+> using the per-cgroup interface, then these tasks cannot share, even if
+> they use the per-task interface to attempt to share with one another.
+> 
+> The above is implemented by making the overall core scheduling cookie a
+> compound structure, containing both a task-level cookie and a
+> group-level cookie. Two tasks will only be allowed to share if all
+> fields of their respective cookies match.
+> 
+> Core scheduler has extra overhead.  Enable it only for machines with
+> more than one SMT hardware thread.
 
-Can't open what can't be looked up?
+Oh man.. I'd soooo hoped to first see the simple task interface and then
+see the cgroup patch on top of that... I'll see if I can flip them
+myself (on monday).
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+> +#ifdef CONFIG_SCHED_CORE
+> +struct sched_core_cookie {
+> +	unsigned long task_cookie;
+> +	unsigned long group_cookie;
+> +
+> +	/* A u64 representation of the cookie used only for display to
+> +	 * userspace. We avoid exposing the actual cookie contents, which
+> +	 * are kernel pointers.
+> +	 */
 
- fs/proc/inode.c |    4 ----
- 1 file changed, 4 deletions(-)
+Tssk, invalid comment style that..
 
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -483,7 +483,6 @@ proc_reg_get_unmapped_area(struct file *file, unsigned long orig_addr,
- 
- static int proc_reg_open(struct inode *inode, struct file *file)
- {
--	struct proc_fs_info *fs_info = proc_sb_info(inode->i_sb);
- 	struct proc_dir_entry *pde = PDE(inode);
- 	int rv = 0;
- 	typeof_member(struct proc_ops, proc_open) open;
-@@ -497,9 +496,6 @@ static int proc_reg_open(struct inode *inode, struct file *file)
- 		return rv;
- 	}
- 
--	if (fs_info->pidonly == PROC_PIDONLY_ON)
--		return -ENOENT;
--
- 	/*
- 	 * Ensure that
- 	 * 1) PDE's ->release hook will be called no matter what
+> +	u64 userspace_id;
+> +};
+
+> +static unsigned long sched_core_alloc_task_cookie(void)
+> +{
+> +	struct sched_core_task_cookie *ck =
+> +		kmalloc(sizeof(struct sched_core_task_cookie), GFP_KERNEL);
+
+	struct sched_core_task_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
+
+Also, those type names are unfortunately long..
+
+> +static void sched_core_get_task_cookie(unsigned long cookie)
+> +{
+> +	struct sched_core_task_cookie *ptr =
+> +		(struct sched_core_task_cookie *)cookie;
+
+	struct sched_core_task_cookie *ptr = (void *)cookie;
+
+Know your language and use it to avoid typing excessively long names :-)
+
