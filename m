@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05064342957
+	by mail.lfdr.de (Postfix) with ESMTP id 518C3342958
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhCTAJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:09:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49954 "EHLO mail.kernel.org"
+        id S229712AbhCTAKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhCTAJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229637AbhCTAJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Mar 2021 20:09:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1B21A6198A;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2FAD761987;
         Sat, 20 Mar 2021 00:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616198961;
-        bh=vFb1htbZIlY99xmhL1KPK6KxeSzKftfGkeBxTxy3Smk=;
+        bh=52Oxk7pD0F9HhMNX4sbSTYc3zbeGdV2dEoP3OKi3N1w=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YjNFzjR3E3Fo7Jrm3T0KsgwL61HgM9QKauaBYiFIAQaGQv3wwImeR3f81KgfKWf3i
-         1/9ak8N4j5RlpOHIS7fv7XogL7vOWZzgi5ji/ZLMvavhmvNjTFkcTt+8z4cx/GjApj
-         UByHuSbML2jsG+R+HsZQHAzNskcqOARtAK0NoXAliN7SM5GOoGjMy56ahTFH5K+orC
-         RtfytReTiL+uoDmsREweCc0sQ6PwQKY50OYpx04fFUpm1EByqCShzUNWIuqxeceO82
-         b9vO00RY27j3LezIdgbjboDCUWfhzfgwllc1DUphw6SWmyryz8DdRw//Z0VkVWFnWJ
-         jveGTSLxZ1g7Q==
+        b=YehSIjmqCABWlvsDAxPm8wh60Txg000hk8PR+HQxoAgfjqwu1LYhFvD+N3nBmSDSQ
+         xxfbsNBDcG8nw2B1HPq4mYQape9It7X5W2xNV2orS2qW0Sl5XOuSlAoXPNeNGEViYJ
+         +bKVs1XgWWOaFJCzhI5KaTMvJeYkDUCDkkEZvLOAUZ9hAjTcDcVyZWnvyXMd/rpSUc
+         unPZ/pbftcaQpJmrKBXlrVIiTyrLZXaSyzir/K2U1fOdMsn6oaW0ZshP4TGccHpOLJ
+         +v22s1sT+Tzz9ehe6Wl3Ed4Ik2smKFMxYbmS2RuHrOTaFKfFnzUP6zxdQOm3CpZphl
+         UgvP3ypboHahA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 154B060A0B;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 279A8626EB;
         Sat, 20 Mar 2021 00:09:21 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: fixes for v5.12-rc4
+Subject: Re: [GIT PULL] KVM changes for Linux 5.12-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210319202226.24590-1-brgl@bgdev.pl>
-References: <20210319202226.24590-1-brgl@bgdev.pl>
+In-Reply-To: <20210319202516.2235406-1-pbonzini@redhat.com>
+References: <20210319202516.2235406-1-pbonzini@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210319202226.24590-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc4
-X-PR-Tracked-Commit-Id: 6cb59afe9e5b45a035bd6b97da6593743feefc72
+X-PR-Tracked-Message-Id: <20210319202516.2235406-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 9ce3746d64132a561bceab6421715e7c04e85074
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3149860dc717e8dd339d89d17ebe615cb09e158b
-Message-Id: <161619896108.24257.18161299935008017206.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: ecd8ee7f9c1af253738ca4321509ddee727d468d
+Message-Id: <161619896115.24257.10607580677188682781.pr-tracker-bot@kernel.org>
 Date:   Sat, 20 Mar 2021 00:09:21 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Mar 2021 21:22:26 +0100:
+The pull request you sent on Fri, 19 Mar 2021 16:25:16 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc4
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3149860dc717e8dd339d89d17ebe615cb09e158b
+https://git.kernel.org/torvalds/c/ecd8ee7f9c1af253738ca4321509ddee727d468d
 
 Thank you!
 
