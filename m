@@ -2,94 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819083429E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925453429EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhCTCJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 22:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhCTCJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 22:09:37 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C009C061760;
-        Fri, 19 Mar 2021 19:09:26 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso5692848pjb.4;
-        Fri, 19 Mar 2021 19:09:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t+Sd5TkDkbYjDcW9c09ppjohkzoeSBsR3J/XEf8zomc=;
-        b=V3n6jkfcvEkoHpTVHHc2tsWXuinWGyHZTGyhBSxnADEwW7fdQ0GnRCSIzxDcrMUqE1
-         MXBuRsJoNO9SIrYDBalKJpfL1w1cW7Lm23UPOWHdh/bYVgVJIqQdjmrygX1hbPZAdeOd
-         k03u64ZAh8tJ10tFn1Oi24srF1M3jrBPtXDm7eN3l5n1eKtYR1awFWPnql15fwOwDK9H
-         qQnqiqR0aLkoOyJW2xydHWpYHfmqIdPPq3ypQUPEd3PJlj+L3YoS9aeyDOVRXYYzPD+/
-         NFIumgHxSHpa+vgRyvYqBx4DM0CNSdjKY/AQtmYIGdMhObqXDFVIfSYuPKzeh8aI02r6
-         lv3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t+Sd5TkDkbYjDcW9c09ppjohkzoeSBsR3J/XEf8zomc=;
-        b=nXy2XMmxH9wI22y8HUoSqOX8X1j3zcAezUWThGfFYzaZsM2/Mebs3zVX/XCpKJ8BIi
-         rs2IaxJinwWBrytq8uGPDVPOafpv2vA7ClXzqy7GSFWk5yF25cGptAyCr6hRhnJPenU/
-         iWdVvzodVaI462OQaidw5fm6NU+cwaEoVdf1f9ysAdSh4JF+YMSUQ8tmoZEHweZ+qzQM
-         rIiZPOBWD+swaFBi+oKW/1aXAIPyYM1xtg+vj9qj4A5oV5u3AEMMIquN9cIuNdyaywIf
-         qL7Bf9S/WkGsVgTkPKbbeG6IP6uxn7N7K/eS+O8NIDJAKhPKbEeKzr0nTylH3ZeQknt+
-         eV2A==
-X-Gm-Message-State: AOAM533wBVz/d/0q58vFpHhAwlQ4mtSEQlnH20uDKewgi/uwvkTqqIUG
-        v3NW91gelOo5bG9KGdMLzIw=
-X-Google-Smtp-Source: ABdhPJx5mqZ3b2Tdd/JDeRtXn/WwG7dih3Ww8eM9H065TK7jFCpTnOg+ljp0WgS1SfQ142iuVpX4ZA==
-X-Received: by 2002:a17:90a:bf15:: with SMTP id c21mr1417714pjs.160.1616206165399;
-        Fri, 19 Mar 2021 19:09:25 -0700 (PDT)
-Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
-        by smtp.gmail.com with ESMTPSA id v13sm6018780pfu.54.2021.03.19.19.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 19:09:23 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 13:09:20 +1100
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 01/25] mm: Introduce struct folio
-Message-ID: <20210320020920.GD77072@balbir-desktop>
-References: <20210305041901.2396498-1-willy@infradead.org>
- <20210305041901.2396498-2-willy@infradead.org>
- <20210318235645.GB3346@balbir-desktop>
- <20210319012527.GX3420@casper.infradead.org>
+        id S229766AbhCTCMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 22:12:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:57791 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229648AbhCTCLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 22:11:53 -0400
+IronPort-SDR: jz7u7hO1Vy5+yNyJ6mHpRHZVWoc/89AeyLAcX8c4h4jArQHy8qmt0kLlEvtrpGemeeNfpmu98F
+ +cPhwPbqXlYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="210035925"
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="210035925"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 19:11:53 -0700
+IronPort-SDR: i71sSCqKmfspuNjcUsCuyvW57olFRvFgyPkLNJ5ZeabRx7o2ezu3szhqljRZypBKuVSJDphHif
+ PIqXhCkrOwjA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="380365145"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 19 Mar 2021 19:11:51 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lNR5j-0002Ff-Aa; Sat, 20 Mar 2021 02:11:51 +0000
+Date:   Sat, 20 Mar 2021 10:11:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/seves] BUILD SUCCESS
+ 799de1baaf3509a54ff713efb768020f8defd709
+Message-ID: <605559d7.QHpuebD7ozhs0P73%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319012527.GX3420@casper.infradead.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:25:27AM +0000, Matthew Wilcox wrote:
-> On Fri, Mar 19, 2021 at 10:56:45AM +1100, Balbir Singh wrote:
-> > On Fri, Mar 05, 2021 at 04:18:37AM +0000, Matthew Wilcox (Oracle) wrote:
-> > > A struct folio refers to an entire (possibly compound) page.  A function
-> > > which takes a struct folio argument declares that it will operate on the
-> > > entire compound page, not just PAGE_SIZE bytes.  In return, the caller
-> > > guarantees that the pointer it is passing does not point to a tail page.
-> > >
-> > 
-> > Is this a part of a larger use case or general cleanup/refactor where
-> > the split between page and folio simplify programming?
-> 
-> The goal here is to manage memory in larger chunks.  Pages are now too
-> small for just about every workload.  Even compiling the kernel sees a 7%
-> performance improvement just by doing readahead using relatively small
-> THPs (16k-256k).  You can see that work here:
-> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/master
-> 
-> I think Kirill, Hugh and others have done a fantastic job stretching
-> the page struct to work in shmem, but we really need a different type
-> to avoid people writing code that _looks_ right but is actually buggy.
-> So I'm starting again, this time with the folio metaphor.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/seves
+branch HEAD: 799de1baaf3509a54ff713efb768020f8defd709  x86/sev-es: Optimize __sev_es_ist_enter() for better readability
 
-Thanks, makes sense, I'll take a look.
+elapsed time: 720m
 
-Balbir Singh.
+configs tested: 152
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                         tb0287_defconfig
+powerpc                     tqm8541_defconfig
+arm                         socfpga_defconfig
+arc                              alldefconfig
+powerpc                  iss476-smp_defconfig
+sh                          lboxre2_defconfig
+sh                          rsk7203_defconfig
+sh                          kfr2r09_defconfig
+arc                            hsdk_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                     stx_gp3_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                   bluestone_defconfig
+arm                         at91_dt_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                      pmac32_defconfig
+powerpc                     skiroot_defconfig
+arm                           sunxi_defconfig
+arm                  colibri_pxa300_defconfig
+arm                            qcom_defconfig
+powerpc                     redwood_defconfig
+nds32                             allnoconfig
+powerpc                   lite5200b_defconfig
+powerpc                 canyonlands_defconfig
+m68k                            q40_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                        neponset_defconfig
+arm                        multi_v7_defconfig
+sh                        edosk7705_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         cm_x300_defconfig
+powerpc                     pq2fads_defconfig
+mips                     loongson1c_defconfig
+m68k                           sun3_defconfig
+mips                        bcm63xx_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                           u8500_defconfig
+arm                          imote2_defconfig
+s390                       zfcpdump_defconfig
+powerpc                       eiger_defconfig
+powerpc                     tqm8548_defconfig
+mips                      pistachio_defconfig
+sh                      rts7751r2d1_defconfig
+nios2                         3c120_defconfig
+sh                          polaris_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                     taishan_defconfig
+powerpc                        warp_defconfig
+arm                        mvebu_v7_defconfig
+xtensa                  audio_kc705_defconfig
+m68k                        stmark2_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                       maple_defconfig
+arm                       mainstone_defconfig
+sparc64                             defconfig
+powerpc                      acadia_defconfig
+sh                           se7750_defconfig
+mips                     decstation_defconfig
+mips                        qi_lb60_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                          landisk_defconfig
+parisc                           alldefconfig
+arc                      axs103_smp_defconfig
+mips                          ath25_defconfig
+powerpc                        cell_defconfig
+powerpc                     tqm8560_defconfig
+ia64                            zx1_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                         ps3_defconfig
+powerpc                    sam440ep_defconfig
+m68k                          atari_defconfig
+mips                           xway_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                     mpc512x_defconfig
+arm                        clps711x_defconfig
+powerpc               mpc834x_itxgp_defconfig
+parisc                generic-64bit_defconfig
+mips                        maltaup_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210318
+i386                 randconfig-a005-20210318
+i386                 randconfig-a003-20210318
+i386                 randconfig-a002-20210318
+i386                 randconfig-a006-20210318
+i386                 randconfig-a004-20210318
+x86_64               randconfig-a011-20210318
+x86_64               randconfig-a016-20210318
+x86_64               randconfig-a013-20210318
+x86_64               randconfig-a015-20210318
+x86_64               randconfig-a014-20210318
+x86_64               randconfig-a012-20210318
+i386                 randconfig-a013-20210318
+i386                 randconfig-a016-20210318
+i386                 randconfig-a011-20210318
+i386                 randconfig-a014-20210318
+i386                 randconfig-a015-20210318
+i386                 randconfig-a012-20210318
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210318
+x86_64               randconfig-a001-20210318
+x86_64               randconfig-a005-20210318
+x86_64               randconfig-a002-20210318
+x86_64               randconfig-a003-20210318
+x86_64               randconfig-a004-20210318
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
