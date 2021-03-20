@@ -2,107 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD65342970
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935CF342977
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhCTA1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTA1U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 20:27:20 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB34C061760;
-        Fri, 19 Mar 2021 17:27:20 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id v8so3694122plz.10;
-        Fri, 19 Mar 2021 17:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=LIfAiKMbasGNOasGZfkQ+a3+Kv8U74AyNPwiY1+xi0I=;
-        b=uEw4w2iLVHPG0fJofmmmmoqifikNfP+/AoJmablcbwQQiZxfrVffvjdz7RqdQTKyDi
-         SRWQOctMGUsHlcn4fKTLg59aqndu+19g6rwEYXeAcsL3jj5Iyo6s/h+d7MJqnoywNMEv
-         M9rWyglmUmI4jFnphek2qzC7BSjP0viUMctT1tBq6GHjMP2lqmy18B9kJnYN/m0cz3ZL
-         lpz+0C7KIIjKIjQEQJ854MBos+nrGUDtEX1qDjHhvtqGQYFT2eCoKXpLcFMap43lP4XQ
-         A/IpONaQM6rZVXw2u0T89deqtMgYyAp38W9SHF9RKGjWOA9HEq36RSyQ7kG+I5FydC/N
-         1VYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=LIfAiKMbasGNOasGZfkQ+a3+Kv8U74AyNPwiY1+xi0I=;
-        b=eOLDpxcuro7+2+PoW01y0YTER92m6t8fyJoqVRuWHFZcw0YEEs5AEOOUp68BrBt8AI
-         2K3W5bt0OWDt9FpBW/lCNpm9GXAd0VFGT+vZLp+yCmeZkJC/hbYvV2vnlyvQJijnC6F0
-         euMoWEtYcgJnnyunOZVHIyKN24PfN0bhssMvNPoDCdqAi6ymK2japptpMRk55aZH1BIW
-         zWqF3r4ImoH0OCFoxk4FPXpvSrSZjjJb2aMYgYUQL4MzYeLTcfLXsz3l25f4qCohfxi0
-         vVOCGHaXcFSnfNg9j1nE+LD7QIaQF3Ytf3lQ8xBxGKlPDBOk7fb0e3/GxYcqYtVSqw6f
-         yduw==
-X-Gm-Message-State: AOAM530wK3bQOQ3aP5sgOx2t6/Dm6zrDSC8xLdzr7n1lk800WW3JiQow
-        lNA/DxPdXH/NiAr6c3p5aYVKAQtDOww=
-X-Google-Smtp-Source: ABdhPJycP1Ktn0eveHth0/NXrwCXqUOVjsbqcd/PxG8fwDidOOKmw6sCLgTgJzcAAXXTnpS1dp110A==
-X-Received: by 2002:a17:903:2301:b029:e4:9026:4c7b with SMTP id d1-20020a1709032301b02900e490264c7bmr16442674plh.76.1616200039685;
-        Fri, 19 Mar 2021 17:27:19 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a468:a574:c1f5:b1a1])
-        by smtp.gmail.com with ESMTPSA id s3sm6819678pfs.185.2021.03.19.17.27.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 17:27:18 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 17:27:16 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: do not use down_interruptible() when unbinding devices
-Message-ID: <YFVBZCrmzvNJQstT@google.com>
+        id S229723AbhCTAcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:32:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50381 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhCTAbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 20:31:50 -0400
+IronPort-SDR: 5wcfNQ5gXQPSR3XOUPBkZcBOLjrAlWQE0tqchxuV3P8pfZ1LmNoWtIj/urFCDRdDxl6min6Gk1
+ m6rl8/y4yOpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177123803"
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="177123803"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 17:31:45 -0700
+IronPort-SDR: TfKu/TAa0ndWDvddLToAmAkChy10pPaiK7pfK/CagxirAbUlpPenPJmWny6x7TVL8kUIpxJehr
+ QUJWrdQFwrQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="603301554"
+Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 19 Mar 2021 17:31:43 -0700
+Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lNPWp-0002Bn-38; Sat, 20 Mar 2021 00:31:43 +0000
+Date:   Sat, 20 Mar 2021 08:30:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 38c93587375053c5b9ef093f4a5ea754538cba32
+Message-ID: <6055423b.kFS5HeLmGHUpuK95%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Action of unbinding driver from a device is not cancellable and should not
-fail, and driver core does not pay attention to the result of "remove"
-method, therefore using down_interruptible() in hid_device_remove() does
-not make sense.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: 38c93587375053c5b9ef093f4a5ea754538cba32  static_call: Fix static_call_update() sanity check
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+elapsed time: 724m
+
+configs tested: 163
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                      walnut_defconfig
+sh                             sh03_defconfig
+sh                           se7343_defconfig
+mips                      pistachio_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                          rsk7203_defconfig
+sh                          kfr2r09_defconfig
+arc                            hsdk_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                     stx_gp3_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                                  defconfig
+mips                     loongson1b_defconfig
+m68k                        m5407c3_defconfig
+sh                           se7712_defconfig
+m68k                       m5275evb_defconfig
+arm                           sunxi_defconfig
+powerpc                   bluestone_defconfig
+arm                         at91_dt_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                      pmac32_defconfig
+powerpc                     skiroot_defconfig
+arm                            qcom_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     pseries_defconfig
+powerpc                      ppc64e_defconfig
+arm                          badge4_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                     redwood_defconfig
+nds32                             allnoconfig
+powerpc                   lite5200b_defconfig
+powerpc                 canyonlands_defconfig
+xtensa                generic_kc705_defconfig
+arm                          exynos_defconfig
+arm                          lpd270_defconfig
+m68k                             allyesconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                     tqm8548_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                         tb0287_defconfig
+arm                           u8500_defconfig
+arm                          imote2_defconfig
+sh                          r7780mp_defconfig
+powerpc                      ppc6xx_defconfig
+mips                          rb532_defconfig
+openrisc                 simple_smp_defconfig
+riscv                          rv32_defconfig
+sh                      rts7751r2d1_defconfig
+nios2                         3c120_defconfig
+sh                          polaris_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                       maple_defconfig
+powerpc                    adder875_defconfig
+arm                         lpc32xx_defconfig
+s390                             alldefconfig
+powerpc                     taishan_defconfig
+powerpc                        warp_defconfig
+arm                        mvebu_v7_defconfig
+xtensa                  audio_kc705_defconfig
+m68k                        stmark2_defconfig
+arm                       aspeed_g4_defconfig
+arm                       mainstone_defconfig
+sparc64                             defconfig
+powerpc                      acadia_defconfig
+sh                           se7750_defconfig
+mips                     decstation_defconfig
+mips                        qi_lb60_defconfig
+sh                          landisk_defconfig
+parisc                           alldefconfig
+arc                      axs103_smp_defconfig
+mips                          ath25_defconfig
+powerpc                        cell_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                     tqm5200_defconfig
+parisc                              defconfig
+powerpc                 linkstation_defconfig
+s390                             allmodconfig
+arm                       versatile_defconfig
+sh                   sh7724_generic_defconfig
+sparc                       sparc64_defconfig
+sh                     sh7710voipgw_defconfig
+arm                         nhk8815_defconfig
+ia64                      gensparse_defconfig
+arm                        clps711x_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                               allmodconfig
+parisc                generic-64bit_defconfig
+mips                        maltaup_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+h8300                            allyesconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210318
+i386                 randconfig-a005-20210318
+i386                 randconfig-a003-20210318
+i386                 randconfig-a002-20210318
+i386                 randconfig-a006-20210318
+i386                 randconfig-a004-20210318
+i386                 randconfig-a001-20210319
+i386                 randconfig-a005-20210319
+i386                 randconfig-a003-20210319
+i386                 randconfig-a002-20210319
+i386                 randconfig-a006-20210319
+i386                 randconfig-a004-20210319
+x86_64               randconfig-a011-20210318
+x86_64               randconfig-a016-20210318
+x86_64               randconfig-a013-20210318
+x86_64               randconfig-a015-20210318
+x86_64               randconfig-a014-20210318
+x86_64               randconfig-a012-20210318
+i386                 randconfig-a013-20210318
+i386                 randconfig-a016-20210318
+i386                 randconfig-a011-20210318
+i386                 randconfig-a014-20210318
+i386                 randconfig-a015-20210318
+i386                 randconfig-a012-20210318
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210318
+x86_64               randconfig-a001-20210318
+x86_64               randconfig-a005-20210318
+x86_64               randconfig-a002-20210318
+x86_64               randconfig-a003-20210318
+x86_64               randconfig-a004-20210318
+
 ---
- drivers/hid/hid-core.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 56172fe6995c..ec63a9ff40dc 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2300,12 +2300,8 @@ static int hid_device_remove(struct device *dev)
- {
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct hid_driver *hdrv;
--	int ret = 0;
- 
--	if (down_interruptible(&hdev->driver_input_lock)) {
--		ret = -EINTR;
--		goto end;
--	}
-+	down(&hdev->driver_input_lock);
- 	hdev->io_started = false;
- 
- 	hdrv = hdev->driver;
-@@ -2320,8 +2316,8 @@ static int hid_device_remove(struct device *dev)
- 
- 	if (!hdev->io_started)
- 		up(&hdev->driver_input_lock);
--end:
--	return ret;
-+
-+	return 0;
- }
- 
- static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
-
--- 
-Dmitry
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
