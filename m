@@ -2,123 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AAB342E5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EA2342E5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCTQZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:25:48 -0400
-Received: from mout.gmx.net ([212.227.17.21]:40719 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229821AbhCTQZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:25:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616257522;
-        bh=ZpkTsQVJAs0NmjcD3kPzM+Qqlv9LHiEPdh8aPjoXU6w=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=TKFg4pfGRP4tnVOXItunWvOkHGvYjwSoE0129cCYJgIS0Jk1yAG3E2746msZq0n54
-         4e8mqrcaiBHNFnmsJhL7ivB0w2ADgjAS8IiGQqkemTajDVQ4UiLl6bSpAdvTuiDHH5
-         L/6Ri1SJLxSs1y+Bxgrqn3ZygH0Y3xWKnchIJQKQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgNh1-1ltRSY3f4R-00hyOH; Sat, 20
- Mar 2021 17:25:21 +0100
-Date:   Sat, 20 Mar 2021 17:25:19 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Rob Herring <robh@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] dt-bindings: arm: Convert nuvoton,npcm750 binding to
- YAML
-Message-ID: <YFYh79cydgukgTSv@latitude>
-References: <20210313175321.2515675-1-j.neuschaefer@gmx.net>
- <20210315162338.GA973222@robh.at.kernel.org>
- <YE+dmdBBk0BZ7BIO@latitude>
- <CAP6Zq1hsmTQfA+EvRmJsK2UosV3YAeRqNxA+jRaeYUx5T-wE1A@mail.gmail.com>
+        id S229821AbhCTQ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:27:55 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:36330 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTQ1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 12:27:38 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNeRs-00FKYa-PS; Sat, 20 Mar 2021 10:27:37 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNeRs-00036F-1S; Sat, 20 Mar 2021 10:27:36 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+Date:   Sat, 20 Mar 2021 11:26:32 -0500
+In-Reply-To: <20210320153832.1033687-1-axboe@kernel.dk> (Jens Axboe's message
+        of "Sat, 20 Mar 2021 09:38:30 -0600")
+Message-ID: <m14kh5aj0n.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OByzjVDcIkp4YBkT"
-Content-Disposition: inline
-In-Reply-To: <CAP6Zq1hsmTQfA+EvRmJsK2UosV3YAeRqNxA+jRaeYUx5T-wE1A@mail.gmail.com>
-X-Provags-ID: V03:K1:5gJjv8CuTmoyg4ZYdvDNUl7h45WoDH2ALmkuUuiOumF3NA9yGzj
- k/LKmhSLnK0V0J56db+X7EpdYlj6F2yYt5WqHSHylG5AtBa/2Ami/8ZnoFycfXV9RW5woQE
- QZyfsqEtmFwa8im7O0+r4kz+ecHSR9DMco3DBfkxEe/+rWtMbx5NwH8nHCiCm+51Hj741Hw
- 8q31mPXxMcfoU2yjnFnig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h3bbpHIxfWU=:9Fwy92oSnTi9znW9izPVaT
- dxpolH6gYH7XXKvbx+O8Mk97e/UqQPqLj9hpfLEy8Ww19b2Pa0JrOkeFbZXW5Zy9071HyabBH
- G76vTjEF6JzjhP4EvA3tRFU9jrQaclid6h/VyEgzECyWGkp44eYKJO9bzRN1vbfkXizAqPl1z
- +JhA2Q+J2HSJe1D+Kzsaag3oUc0ED1Bg2i1rLBS0911GdLhSk+oLvr16RQ73DzCPcALn7imtJ
- H42me/ZjGCRvkAUpAv+TkT5lzsOWB5xmrD01Tomk1HJZt4Z/T2Kg+OiCSs5FJvVdDOsBuWn/G
- tomrly+S0t551AY56p760ALloBqsoQzNMCYfDo44lk1Joo6Q0JA33jzCSUq7qFRFq7i9UBPk3
- g315lIiFD9xzz6c8VS9KuLJ0BAQmBTbVAtz41RAuWQubMiNxhgma3RI/OmUsrDw8Pfzw4zu4c
- WXu3S+HLyMFHOOL2WuwVXN/EBM/+NIBbQpgIjEezvaXuP7avs79kz61QP9dHgVtv0W42vnT6r
- ERa9tYjacXJZ86Tfn/Nkr2WHtUe3J0SbTfBk97I1qsBsRYZ75lJGl7X4jT8eglsZBsyHHqd+C
- ddLp1FyR5lkT2j2WmQwckwmEZkQu/EKws2JVPGAIsdZ8BkxkzEXvq4Vr8L2q+9RW0b1QJESkS
- 6GdviuJx2JcNDvQLqGYka6UhUzHGP92BhewAXKwY5ufQUdhpHrityl1PSbYA0d16wem85E4Gs
- 7HoLu77IpUyBS+ypiP/OjUHLa2dVKgj6lT8gIPm43LDf5cHoKFmYP1X230Xw85wManq2mTGeO
- +7UKdWyhXNcv08AyAOPdrBi6aQE1N7kuc9TlBBNmWa6q5+pa81GY6TzZU+3psZze0Z1CTtUJL
- n0uzPkGjhqCrM7fRWrRg==
+Content-Type: text/plain
+X-XM-SPF: eid=1lNeRs-00036F-1S;;;mid=<m14kh5aj0n.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19zror9kzthLCxE3e77LWrSLBp4IIqBOdU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4872]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Jens Axboe <axboe@kernel.dk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 469 ms - load_scoreonly_sql: 0.10 (0.0%),
+        signal_user_changed: 12 (2.7%), b_tie_ro: 11 (2.3%), parse: 1.24
+        (0.3%), extract_message_metadata: 16 (3.3%), get_uri_detail_list: 2.5
+        (0.5%), tests_pri_-1000: 15 (3.2%), tests_pri_-950: 1.33 (0.3%),
+        tests_pri_-900: 1.14 (0.2%), tests_pri_-90: 90 (19.1%), check_bayes:
+        88 (18.8%), b_tokenize: 9 (1.9%), b_tok_get_all: 9 (2.0%),
+        b_comp_prob: 3.1 (0.7%), b_tok_touch_all: 62 (13.2%), b_finish: 1.15
+        (0.2%), tests_pri_0: 309 (65.9%), check_dkim_signature: 0.88 (0.2%),
+        check_dkim_adsp: 3.5 (0.8%), poll_dns_idle: 1.07 (0.2%), tests_pri_10:
+        4.1 (0.9%), tests_pri_500: 16 (3.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jens Axboe <axboe@kernel.dk> writes:
 
---OByzjVDcIkp4YBkT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 16, 2021 at 01:03:38PM +0200, Tomer Maimon wrote:
 > Hi,
->=20
-> Appreciate your help Jonathan and Rob,
->=20
-> Just seeing the following EVB device tree
-> https://github.com/torvalds/linux/blob/master/arch/arm/boot/dts/aspeed-as=
-t2500-evb.dts#L8
->=20
-> And not a EVB board.
-> https://github.com/torvalds/linux/blob/master/arch/arm/boot/dts/aspeed-bm=
-c-facebook-cmm.dts#L9
+>
+> Been trying to ensure that we do the right thing wrt signals and
+> PF_IO_WORKER threads, and I think there are two cases we need to handle
+> explicitly:
+>
+> 1) Just don't allow signals to them in general. We do mask everything
+>    as blocked, outside of SIGKILL, so things like wants_signal() will
+>    never return true for them. But it's still possible to send them a
+>    signal via (ultimately) group_send_sig_info(). This will then deliver
+>    the signal to the original io_uring owning task, and that seems a bit
+>    unexpected. So just don't allow them in general.
+>
+> 2) STOP is done a bit differently, and we should not allow that either.
+>
+> Outside of that, I've been looking at same_thread_group(). This will
+> currently return true for an io_uring task and it's IO workers, since
+> they do share ->signal. From looking at the kernel users of this, that
+> actually seems OK for the cases I checked. One is accounting related,
+> which we obviously want, and others are related to permissions between
+> tasks. FWIW, I ran with the below and didn't observe any ill effects,
+> but I'd like someone to actually think about and verify that PF_IO_WORKER
+> same_thread_group() usage is sane.
 
-I see.
+They are helper threads running in kernel space.  Allowing the ordinary
+threads not to block.  Why would same_thread_group be a problem?
 
->=20
-> but still also option V2 is good for us.
+I don't hate this set of patches.   But I also don't see much
+explanation why the changes are the right thing semantically.
 
-That's good to know.
+That makes me uneasy.  Because especially the SIGSTOP changes feels like
+it is the wrong thing semantically.  The group_send_sig_info change
+simply feels like it is unnecessary.
 
+Like we are maybe playing whak-a-mole with symptoms rather than make
+certain these are the right fixes for the symptoms.
 
+Eric
 
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---OByzjVDcIkp4YBkT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBWIegACgkQCDBEmo7z
-X9u3SBAAi7yF8y7prcMxeGu6T/oC2LpqRpmxMKOL9+ltzU3sjL7us8m8fwabaXSU
-dnrzNCEBzOrbhJxG5N23t4dttdjeH8dGU3bOUGkKwsedxltrTIHaOuJCoJZeKzn9
-zYM53pYfarMiNYSPQNWhF5OPl71CyABQfeqdVK29hpVRxdAE8V8Ts9nQ1jPR+ete
-SzmvZM3tDHCDQWPDVGCIWY5UZr2BYGOFGDOEyuH0XPsTODM6yXnRLw2RvFjPRtnX
-4LGoso8IpWDoUBZEvaTXyprQZ4X5C2lcAb1FCxZ+mEjBPPhtgkcK1JVy99E6/y7A
-BhkB2Vbv7bhkCrC6GVbPx4j7a45wegkEomDANGVKvTIw3CkrxCAfpVOGQY5Tv91K
-emnFaNkRziV3/erQN52FuyYQNWJ4K58Ec7zt9GO5DZTRBXdg3GCPNf0e3mOFXLo5
-8emly5xbSqA/Rh/lwBZcHlqx2ZIUFjRdyUdwawtKL9MMyGAGxe1kECKgKxwbtY0I
-k25TpiBvJOIbJIeUkZtlO2QkbpUKwNeIEq1m/43OVtBzAT7SISu0ObakT6q4m44y
-YDpjtUo258DbO+lVrB/WpIZzE6M/nW6aCvku9ahOMXAh4i6EYzILYieb0SZi/T7D
-k/7J4twe1H9nXmeX3QkCMEMxKYG4wTbjhns1/PwdMKz0xUiMXCI=
-=s8+L
------END PGP SIGNATURE-----
-
---OByzjVDcIkp4YBkT--
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index 3f6a0fcaa10c..a580bc0f8aa3 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -667,10 +667,17 @@ static inline bool thread_group_leader(struct task_struct *p)
+>  	return p->exit_signal >= 0;
+>  }
+>  
+> +static inline
+> +bool same_thread_group_account(struct task_struct *p1, struct task_struct *p2)
+> +{
+> +	return p1->signal == p2->signal
+> +}
+> +
+>  static inline
+>  bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
+>  {
+> -	return p1->signal == p2->signal;
+> +	return same_thread_group_account(p1, p2) &&
+> +			!((p1->flags | p2->flags) & PF_IO_WORKER);
+>  }
+>  
+>  static inline struct task_struct *next_thread(const struct task_struct *p)
+> diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+> index 5f611658eeab..625110cacc2a 100644
+> --- a/kernel/sched/cputime.c
+> +++ b/kernel/sched/cputime.c
+> @@ -307,7 +307,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+>  	 * those pending times and rely only on values updated on tick or
+>  	 * other scheduler action.
+>  	 */
+> -	if (same_thread_group(current, tsk))
+> +	if (same_thread_group_account(current, tsk))
+>  		(void) task_sched_runtime(current);
+>  
+>  	rcu_read_lock();
