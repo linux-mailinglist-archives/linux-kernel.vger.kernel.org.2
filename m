@@ -2,48 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C9C342F3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B5A342F38
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhCTT0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:26:13 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:46276 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhCTTZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:25:37 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Mar 2021 15:25:36 EDT
-Received: from [172.17.203.2] (port=58237 helo=deneb.enyo.de)
-        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lNh9B-0007LV-FW; Sat, 20 Mar 2021 19:20:29 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1lNh9B-00035B-Aa; Sat, 20 Mar 2021 20:20:29 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] Document that PF_KTHREAD _is_ ABI
-References: <YFYjOB1jpbqyNPAp@localhost.localdomain>
-        <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
-        <YFYzPcHKWm3U04pN@localhost.localdomain>
-Date:   Sat, 20 Mar 2021 20:20:29 +0100
-In-Reply-To: <YFYzPcHKWm3U04pN@localhost.localdomain> (Alexey Dobriyan's
-        message of "Sat, 20 Mar 2021 20:39:09 +0300")
-Message-ID: <87pmztzl6q.fsf@mid.deneb.enyo.de>
+        id S229834AbhCTTWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:22:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56474 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTTWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 15:22:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DB92F1C0B78; Sat, 20 Mar 2021 20:22:18 +0100 (CET)
+Date:   Sat, 20 Mar 2021 20:22:18 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Hermann Ruckerbauer <Hermann.Ruckerbauer@EyeKnowHow.de>
+Cc:     He Zhe <zhe.he@windriver.com>, tony.luck@intel.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Trojan horses on various lists was Re: EDAC list as Trojan Horse
+ distribution ??
+Message-ID: <20210320192217.GA4077@amd>
+References: <1583303947-49858-1-git-send-email-zhe.he@windriver.com>
+ <1f449e01-3207-b699-b91f-d1c04626a447@windriver.com>
+ <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
+ <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+In-Reply-To: <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Alexey Dobriyan:
 
-> Some aren't -- PF_FORKNOEXEC. However it is silly for userspace to query it
-> because programs knows if it forked but didn't exec without external help.
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Libraries typically lack that knowledge, and may have reasons to
-detect forks.  But there are probably better ways than this flag, like
-a MADV_WIPEONFORK mapping, or comparing counters in MAP_PRIVATE and
-MAP_SHARED mappings.
+Hi!
+
+> > I assume this is just to install a trojan horse when opening the
+> > attached zip (also I assume most of you will work on linux and it
+> > might not be a Problem for you anyhow=A0=A0 ;-) .
+> >
+> > =A0Virus total reports a Trojan horse, but only for with 2 out of 61
+> > virus scan engines (and I have to admit, I did not knew K7AntiVirus
+> > and Qihoo-360 before, all other engines reported the file as
+> > clean!!!!!!! ).
+> >
+> > So be careful when you get some feedback to old requests from this
+> > list
+
+Happened to me, too, on different list on two different email
+addresses. Did not reoccur.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBWS2kACgkQMOfwapXb+vKxJwCgvcuUwxIS6KX8syscr9QxrqcO
+TwgAniZ9rBo5cl9rILhj+BHR4qQFyYxm
+=vIuH
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
