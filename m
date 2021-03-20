@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE97D342C8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEAE342C9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCTLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S229585AbhCTL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhCTLxs (ORCPT
+        with ESMTP id S229510AbhCTL4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:53:48 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFC2C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:53:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id 61so11745588wrm.12
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:53:47 -0700 (PDT)
+        Sat, 20 Mar 2021 07:56:49 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E792C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:56:48 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id y1so15105028ljm.10
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HpQiKE3viHQSmvStiXLE6V0egAkgaoLKibEIaY1h13E=;
-        b=okHpkw/X0VJ4lMjNB9cAJGz2PjVaXC+MPbUkivZ9fGCWs3nY9LQL5Lz26wz2cNZpZz
-         cuOH/uSjyh+kd8Ha2Gw7sgM5jCe8ubar6oVmHwg96pZ22FeulDANrmjC1kD5IXKjecE9
-         7Q11bCt/vZCj52UV/MP9P5UyGZU4dlwf/gfSkf78MBWiWOVnyA7HithvIsny4f53ZkzT
-         92uO8YtfZ70InSes/RPS3HectFyRJuEvDGg+MW/qQkrvg6tr4dg6lQ8BNmibtvhqgt7n
-         /cROngbJMfkr5bNjNT2NfPrrXgEYbc0rYh/oyN1VbYDJuzPxsJXRxiQXJAI4bjzPDWet
-         OEkg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iW6uEND/ee4z9nsY45Ct1nMMtCxhIAfu1tQ3+1cotts=;
+        b=wLwkmsu6NNP9mQmkjv7ejqH3OpzE5jvfSZulXF8H1sT0nER01jIDIk0grBkN7izpfg
+         MHgQQW7XPoLPZBFD8vBlF7SW1DvimWMx1aX66Md7W2VStJr4obJPegLzrZw6lX/nP6Kq
+         cdCoYEUXKjzGSLe9DEtRGU+k2Iu8PlwWEJa7KbXCzi4hl1IhIk44mWa0CalP++vSFhY+
+         /tUpBFYE9GQfcGcGtVkj+zxeJxGNcNn6VyaQJL7ShZ6o+ch1zrbkAoAsmjU4UXLpW16L
+         KL8YI0PwwwdOMV7OwMtMLsgr2F7RgXpuGAXFQ/xT4jXCpvn/zdJwyqyGe21LaZ5c7b7x
+         x4sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HpQiKE3viHQSmvStiXLE6V0egAkgaoLKibEIaY1h13E=;
-        b=sc7ZY5y31/l/UQFsNpsVg0eLferTi+QtzvbSehpjhSxeeZE+3jPEnOwcuv96rfyzoD
-         Ave+M+8qJfwzdYhlQrm8h2cACqSMf5jDqm7+AGNJecD+wMdCnDt8gcgtkyyq3gKJkBwc
-         AIHQ5Z5AJzJeR5kHeg33r2OwgV9AXm1jNTBrV5AFrVhKhRu2jehi5gTXQnzRgjHDfmMT
-         GZEMpmofI4KzBLzynZ/MV7zYtuRkSWts+fktJCIEn2WHBquwfQj2xVDAuNBYt0s+S+eY
-         RujhOpoCrl1FFO37IoALH3oU1si8hm6xj2WDdZqBch9ioe9o1Tt4fwTNodnLvNm0DmvX
-         ne9Q==
-X-Gm-Message-State: AOAM5338VLPrkUk9X9yQDgNP2kD45zuvnVblgc4HoL/Y3UmGvb9tlrux
-        fruwjRj6h81PegeF/EKW6WalFA==
-X-Google-Smtp-Source: ABdhPJwJ+Nxbe35r4gLdYKYJiqjTHuD0dox6anBfnURf73Y/XDFwRC/J09HLdInfhvtmhFBWwDq79g==
-X-Received: by 2002:a5d:518c:: with SMTP id k12mr9134434wrv.15.1616241226623;
-        Sat, 20 Mar 2021 04:53:46 -0700 (PDT)
-Received: from [192.168.1.9] (hst-208-211.medicom.bg. [84.238.208.211])
-        by smtp.googlemail.com with ESMTPSA id m14sm8907193wmi.27.2021.03.20.04.53.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 04:53:46 -0700 (PDT)
-Subject: Re: [PATCH] v4l2-ctrls: Fix h264 hierarchical coding type menu ctrl
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20210302224206.3680649-1-stanimir.varbanov@linaro.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <c8d448f1-bbe2-eb21-987a-877251d7aead@linaro.org>
-Date:   Sat, 20 Mar 2021 13:53:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iW6uEND/ee4z9nsY45Ct1nMMtCxhIAfu1tQ3+1cotts=;
+        b=WquTjcuwf9CI7IjWaZgjHthA865gP5co77aAsaEbOM2K/bbahNEaotzIwoxsRTvfFh
+         6OM5cxGe52Bp6eSdCiKQJm3vvQ1uGwDh0twIMgrwzIxCesUNlyS9T22NH3fDezfW1uKK
+         09OSdPySpalpPIFH8lMrrQvqfbTwmXnnica4NLbUgEBq8bWU0AH6fz3FLOrBJ5x8P0/3
+         P8M2k6yt7W2TgT/LtD9+9malfVsdlQz/NokJBLLV7yNIXOT3tkBl6qJ9/bBFIT8MS8Jl
+         IpzF5tXYc0th5r0WWJV723W9NoTNxPSg0YzaAOZgDUOqJAjdeQCyWAtZF3KVSnmKpt9j
+         2MdA==
+X-Gm-Message-State: AOAM533Wnzk7akuW8oCPZsl1R0zB3MGetGQ0IGKQHVbCEw0NJe63uIk8
+        R2w0H7pzm8SU4V7avN7/JgJ4+GkCbZDD41ya0nhE5g==
+X-Google-Smtp-Source: ABdhPJwdjVzdoOUIJtObxXpHfomqNMu4Yq3LhqEj2HbyPDWAppADtpsaQ5K2UAmEFo0J18YzoWQIissduevPOMwXjSM=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr3444104ljj.467.1616241407174;
+ Sat, 20 Mar 2021 04:56:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210302224206.3680649-1-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
+In-Reply-To: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 20 Mar 2021 12:56:36 +0100
+Message-ID: <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
+Subject: Re: GTE - The hardware timestamping engine
+To:     Dipen Patel <dipenp@nvidia.com>, Kent Gibson <warthog618@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kindly ping for review.
+Hi Dipen,
 
-On 3/3/21 12:42 AM, Stanimir Varbanov wrote:
-> Add a name of the menu and fill control type.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/media/v4l2-core/v4l2-ctrls.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 016cf6204cbb..5d99e2294335 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -421,6 +421,11 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
->  		"Annex B Start Code",
->  		NULL,
->  	};
-> +	static const char * const h264_hierarchical_coding_type[] = {
-> +		"Hier Coding B",
-> +		"Hier Coding P",
-> +		NULL,
-> +	};
->  	static const char * const mpeg_mpeg2_level[] = {
->  		"Low",
->  		"Main",
-> @@ -697,6 +702,8 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
->  		return h264_decode_mode;
->  	case V4L2_CID_STATELESS_H264_START_CODE:
->  		return h264_start_code;
-> +	case V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_TYPE:
-> +		return h264_hierarchical_coding_type;
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL:
->  		return mpeg_mpeg2_level;
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE:
-> @@ -1326,6 +1333,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_IDC:
->  	case V4L2_CID_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE:
->  	case V4L2_CID_MPEG_VIDEO_H264_FMO_MAP_TYPE:
-> +	case V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_TYPE:
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL:
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE:
->  	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
-> 
+thanks for your mail!
 
--- 
-regards,
-Stan
+I involved some other kernel people to get some discussion.
+I think Kent Gibson can be of great help because he is using
+GPIOs with high precision.
+
+We actually discussed this a bit when adding support for
+realtime timestamps.
+
+On Wed, Mar 17, 2021 at 11:29 PM Dipen Patel <dipenp@nvidia.com> wrote:
+
+> Nvidia Tegra SoCs have generic timestamping engine (GTE) hardware module which
+> can monitor SoC signals like IRQ lines and GPIO lines for state change, upon
+> detecting the change, it can timestamp and store in its internal hardware FIFO.
+> The advantage of the GTE module can be realized in applications like robotics
+> or autonomous vehicle where it can help record events with precise timestamp.
+
+That sounds very useful.
+
+Certainly the kernel shall be able to handle this.
+
+> ============
+> For GPIO:
+> ============
+> 1.  GPIO has to be configured as input and IRQ must be enabled.
+> 2.  Ask GPIO controller driver to set corresponding timestamp bit in the
+>     specified GPIO config register.
+> 3.  Translate GPIO specified by the client to its internal bitmap.
+> 3.a For example, If client specifies GPIO line 31, it could be bit 13 of GTE
+>     register.
+> 4.  Set internal bits to enable monitoring in GTE module
+> 5.  Additionally GTE driver can open up lanes for the user space application
+>     as a client and can send timestamping events directly to the application.
+
+I have some concerns:
+
+1. GPIO should for all professional applications be used with the character
+device /dev/gpiochipN, under no circumstances shall the old sysfs
+ABI be used for this. In this case it is necessary because the
+character device provides events in a FIFO to userspace, which is
+what we need.
+
+The timestamp provided to userspace is an opaque 64bit
+unsigned value. I suppose we assume it is monotonic but
+you can actually augment the semantics for your specific
+stamp, as long as 64 bits is gonna work.
+
+2. The timestamp for the chardev is currently obtained in
+drivers/gpio/gpiolib-cdev.c like this:
+
+static u64 line_event_timestamp(struct line *line)
+{
+        if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
+                return ktime_get_real_ns();
+
+        return ktime_get_ns();
+}
+
+What you want to do is to add a new flag for hardware timestamps
+and use that if available. FLAG_EVENT_CLOCK_HARDWARE?
+FLAG_EVENT_CLOCK_NATIVE?
+
+Then you need to figure out a mechanism so we can obtain
+the right timestamp from the hardware event right here,
+you can hook into the GPIO driver if need be, we can
+figure out the gpio_chip for a certain line for sure.
+
+So you first need to augment the userspace
+ABI and the character device code to add this. See
+commit 26d060e47e25f2c715a1b2c48fea391f67907a30
+"gpiolib: cdev: allow edge event timestamps to be configured as REALTIME"
+by Kent Gibson to see what needs to be done.
+
+3. Also patch tools/gpio/gpio-event-mon.c to support this flag and use that
+for prototyping and proof of concept.
+
+> ============
+> For IRQ:
+> ============
+
+Marc Zyngier and/or Thomas Gleixner know this stuff.
+
+It does make sense to add some infrastructure so that GPIO events
+and IRQs can use the same timestamping hardware.
+
+And certainly you will also want to use this timestamp for
+IIO devices? If it is just GPIOs and IRQs today, it will be
+gyroscopes and accelerometers tomorrow, am I right?
+
+Yours,
+Linus Walleij
