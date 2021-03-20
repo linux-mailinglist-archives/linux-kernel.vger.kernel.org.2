@@ -2,220 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C71342E5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F84342E61
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhCTQaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        id S229854AbhCTQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhCTQ3y (ORCPT
+        with ESMTP id S229780AbhCTQaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:29:54 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB10C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 09:29:53 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id k24so5770202pgl.6
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 09:29:53 -0700 (PDT)
+        Sat, 20 Mar 2021 12:30:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2543C061574;
+        Sat, 20 Mar 2021 09:30:51 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id jy13so14486025ejc.2;
+        Sat, 20 Mar 2021 09:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=adNz31gWLDJnKipBeS3psUT6pbf5Zn26UZ0xNc92lTo=;
-        b=TNpz7CbfJPuFdmN4VA992lMaDYNJykgyhtqf/5uhRP2+eduMul71GumqKkoUNwFjh4
-         SEyiKB1bIn2GbTYdGLLL3knNSZN8HhvAEXlRsTsJDYQEdeNJmb8FhJI6jXLY7SC1yraH
-         NtBeDCVHu38Z1vemyDnE31S7cF+aaUgdYpfFH34+6W7HWkK/HOir6uGtQZCJrW9G8VAu
-         /tG/umOGx8LEzZFIDKvk59axJjk/liW2PW/z0gGSPPiKTC1z0NVXWgv17o0meZNsH0i8
-         T6/VB1yOlk0/5MvAuyqwmcrsztqXpEsKu0v61dGwoIkbrNmuu18AzYsmRgEoVSvGcbvd
-         nBfw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=krowSy1qOb6baq8siG2DkcMBMFG/XPZkvaDkKFj+3Jk=;
+        b=V3dQbMpC5FUnNbOCzKlRG8CeS1LagpymcblrFYVop9Cek9l35jtwY6Wz1maEZ0XPwh
+         ++FZ7BdeNlxVf1oyxiuqiPUL2EtglhsoPo6EXmLXx3DSRWuisf69q72/gubK2deZjYPu
+         awQwAUpqD2t+PdfTL8MLhxLELJFf2Dm4UyNtIWCUENLqdh1EPt7AE61Glh9mp24BF5T/
+         5O6/qAyjcbju8PzGsSCjl8GEQ7hVfVLPY2lYsPr50cvfL1SRhWz2W89bIC0vxFZDqBtz
+         KGKJBxR3cDiOx5OBDJzG1B5d6jEva8BNh/0H7ukiK7B3YCjUenEA+0Un+ZHZ5ugid7hv
+         Dl0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=adNz31gWLDJnKipBeS3psUT6pbf5Zn26UZ0xNc92lTo=;
-        b=QpSPdeBzmyLsEwYFAIvdZ+eajLVQEWYuqzhEjH2Sn2RJJt2YFMk/kQ2+FTi7XBWCJ/
-         GVjP2P7a8ab2XLLNjPLyXdLZ03aE2oWToEhNX5zBQC11YX4TdEmnZOif0uw0v85fz6id
-         cm9+LVQ5DRUYNQd65vz6SFh/u7Jg/YNJ/50sde27xI///Qbko03TxZCsA93L1972PS0q
-         PkudptiCGi6eakrTY/OVzz9pxmhJI2+As7/azKQtU1T5xZYL0bsTfKLAVUiCRHuOfeF9
-         masuaiDhp4nrLRVt/WkvX1vXixsqIrF0WRjQq/pkp1gvaKUXTxmGwXQ62Ufi/FEThEKg
-         4Ntw==
-X-Gm-Message-State: AOAM530lKkTiDJj8s2qIwip9oJPgpVdWqXcMeqVjWd5sC9HoL+Ip5g1t
-        wEJhr5STFND3iqVsNzu+imM=
-X-Google-Smtp-Source: ABdhPJwhFZI6DBOYuVPsCROsir8j232Inr//PlcZIV9IdgideHzoqzYTiofrr6egsD7vPMo8bVQh1Q==
-X-Received: by 2002:a63:356:: with SMTP id 83mr419552pgd.344.1616257792925;
-        Sat, 20 Mar 2021 09:29:52 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
-        by smtp.googlemail.com with ESMTPSA id 2sm8740919pfi.116.2021.03.20.09.29.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=krowSy1qOb6baq8siG2DkcMBMFG/XPZkvaDkKFj+3Jk=;
+        b=soQDYEBu1O/eapTwNxFoex6lit3aQ6ZWsvBWYzx0EnWOItOIdwA2vZXXr4gjgha1I1
+         NO2SAuU3mASQj631iNFZdHY4eTL8WZkbQYrghHey7S3owtlYB07Cy8QwpFYMO1IWgCJN
+         UfjSsNeh3zhnKHQrCDyn4i1p5gQo+y17ZWFRMzXN/JD0HkFxFKJROBja2FlwffvREun9
+         V3A1e7JIr4klFl6SSy9mws3vmSTZbZfoqYQaMwmlksCnldqernH/NQUGJ5NUkBYZ8bZF
+         gbJd2cfGappfv5MgkPCd9qBZa+nwvngyDhdxKoHetZ1hDcdrNXd+fwbVGNiVuTiL4ztw
+         uS8w==
+X-Gm-Message-State: AOAM531viiMLiimfhSjBEUBGyUnG9stwaJIHbdR0GIssHvyEs6kBYVsi
+        jFclSgImGEG+nQfRV91cymZ+ZCn+rw==
+X-Google-Smtp-Source: ABdhPJyJKj0ZeyRftCS1MN7KQhjxbWY8QZs+IuW/htFQlAMXfRbXdkN7aPLXrA6uYCWs6slYVqyOVg==
+X-Received: by 2002:a17:906:e2d4:: with SMTP id gr20mr10683539ejb.432.1616257850724;
+        Sat, 20 Mar 2021 09:30:50 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.248.213])
+        by smtp.gmail.com with ESMTPSA id v24sm5586298ejw.17.2021.03.20.09.30.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 09:29:52 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     anton@tuxera.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, corbet@lwn.net,
-        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: [PATCH] ntfs: fix incorrect kernel-doc comment syntax in files
-Date:   Sat, 20 Mar 2021 21:59:39 +0530
-Message-Id: <20210320162939.32707-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 20 Mar 2021 09:30:50 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 19:30:48 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: [PATCH] Document that PF_KTHREAD _is_ ABI
+Message-ID: <YFYjOB1jpbqyNPAp@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-There are certain files in fs/ntfs which follow this syntax, but the
-content inside does not comply with kernel-doc.
-Such lines were probably not meant for kernel-doc parsing, but are parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warnings from kernel-doc.
+PF_KTHREAD value is visible via field number 9 of /proc/*/stat
 
-E.g., presence of kernel-doc like comment in the header for
-fs/ntfs/attrib.c, causes these unexpected warnings by kernel-doc:
-"warning: Incorrect use of kernel-doc format:  * ntfs_map_runlist_nolock - map (a part of) a runlist of an ntfs inode"
-"warning: Function parameter or member 'ni' not described in 'ntfs_map_runlist_nolock'"
-"warning: Function parameter or member 'vcn' not described in 'ntfs_map_runlist_nolock'"
-"warning: Function parameter or member 'ctx' not described in 'ntfs_map_runlist_nolock'"
-"warning: expecting prototype for c(). Prototype was for ntfs_map_runlist_nolock() instead"
+	$ sudo cat /proc/2/stat
+	2 (kthreadd) S 0 0 0 0 -1 2129984 0 ...
+				  ^^^^^^^
 
-Similarly for other files too.
+It is used by at least systemd to check for kernel-threadness:
+https://github.com/systemd/systemd/blob/main/src/basic/process-util.c#L354
+src/basic/process-util.c:is_kernel_thread()
 
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
+It means that the value can't be changed despite perceived notion that
+task_struct flags are internal to kernel and can be shuffled at whim.
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Formally, _all_ struct task_struct::flags PF_* values are kernel ABI
+which is a disaster.
+
+I hope we can mask everything but few flags and hope for the best :^)
+
+Note for beginner Linux programmers:
+every other way you find on the interwebs and Stack Overflow
+for checking if pid belongs to a kernel thread is broken one way or
+another.
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
-* Applies perfectly on next-20210319
 
- fs/ntfs/aops.c     | 2 +-
- fs/ntfs/aops.h     | 2 +-
- fs/ntfs/attrib.c   | 2 +-
- fs/ntfs/compress.c | 8 ++++----
- fs/ntfs/dir.c      | 4 ++--
- fs/ntfs/inode.c    | 2 +-
- fs/ntfs/mft.c      | 2 +-
- fs/ntfs/runlist.c  | 2 +-
- 8 files changed, 12 insertions(+), 12 deletions(-)
+ include/linux/sched.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/ntfs/aops.c b/fs/ntfs/aops.c
-index bb0a43860ad2..1024cdec136a 100644
---- a/fs/ntfs/aops.c
-+++ b/fs/ntfs/aops.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1566,6 +1566,9 @@ extern struct pid *cad_pid;
+ #define PF_MEMALLOC_NOIO	0x00080000	/* All allocation requests will inherit GFP_NOIO */
+ #define PF_LOCAL_THROTTLE	0x00100000	/* Throttle writes only against the bdi I write to,
+ 						 * I am cleaning dirty pages from some other bdi. */
 +/*
-  * aops.c - NTFS kernel address space operations and page cache handling.
-  *
-  * Copyright (c) 2001-2014 Anton Altaparmakov and Tuxera Inc.
-diff --git a/fs/ntfs/aops.h b/fs/ntfs/aops.h
-index f0962d46bd67..2dcd46befdff 100644
---- a/fs/ntfs/aops.h
-+++ b/fs/ntfs/aops.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
--/**
-+/*
-  * aops.h - Defines for NTFS kernel address space operations and page cache
-  *	    handling.  Part of the Linux-NTFS project.
-  *
-diff --git a/fs/ntfs/attrib.c b/fs/ntfs/attrib.c
-index d563abc3e136..2911c04a33e0 100644
---- a/fs/ntfs/attrib.c
-+++ b/fs/ntfs/attrib.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * attrib.c - NTFS attribute operations.  Part of the Linux-NTFS project.
-  *
-  * Copyright (c) 2001-2012 Anton Altaparmakov and Tuxera Inc.
-diff --git a/fs/ntfs/compress.c b/fs/ntfs/compress.c
-index d2f9d6a0ee32..014dbd079ad5 100644
---- a/fs/ntfs/compress.c
-+++ b/fs/ntfs/compress.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * compress.c - NTFS kernel compressed attributes handling.
-  *		Part of the Linux-NTFS project.
-  *
-@@ -18,7 +18,7 @@
- #include "debug.h"
- #include "ntfs.h"
- 
--/**
-+/*
-  * ntfs_compression_constants - enum of constants used in the compression code
-  */
- typedef enum {
-@@ -41,12 +41,12 @@ typedef enum {
- 	NTFS_MAX_CB_SIZE	= 64 * 1024,
- } ntfs_compression_constants;
- 
--/**
-+/*
-  * ntfs_compression_buffer - one buffer for the decompression engine
-  */
- static u8 *ntfs_compression_buffer;
- 
--/**
-+/*
-  * ntfs_cb_lock - spinlock which protects ntfs_compression_buffer
-  */
- static DEFINE_SPINLOCK(ntfs_cb_lock);
-diff --git a/fs/ntfs/dir.c b/fs/ntfs/dir.c
-index cd96083a12c8..518c3a21a556 100644
---- a/fs/ntfs/dir.c
-+++ b/fs/ntfs/dir.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * dir.c - NTFS kernel directory operations. Part of the Linux-NTFS project.
-  *
-  * Copyright (c) 2001-2007 Anton Altaparmakov
-@@ -17,7 +17,7 @@
- #include "debug.h"
- #include "ntfs.h"
- 
--/**
-+/*
-  * The little endian Unicode string $I30 as a global constant.
-  */
- ntfschar I30[5] = { cpu_to_le16('$'), cpu_to_le16('I'),
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index f5c058b3192c..4277d0fd7d88 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * inode.c - NTFS kernel inode handling.
-  *
-  * Copyright (c) 2001-2014 Anton Altaparmakov and Tuxera Inc.
-diff --git a/fs/ntfs/mft.c b/fs/ntfs/mft.c
-index 0d62cd5bb7f8..d197d402933a 100644
---- a/fs/ntfs/mft.c
-+++ b/fs/ntfs/mft.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * mft.c - NTFS kernel mft record operations. Part of the Linux-NTFS project.
-  *
-  * Copyright (c) 2001-2012 Anton Altaparmakov and Tuxera Inc.
-diff --git a/fs/ntfs/runlist.c b/fs/ntfs/runlist.c
-index 97932fb5179c..0d448e9881f7 100644
---- a/fs/ntfs/runlist.c
-+++ b/fs/ntfs/runlist.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * runlist.c - NTFS runlist handling code.  Part of the Linux-NTFS project.
-  *
-  * Copyright (c) 2001-2007 Anton Altaparmakov
--- 
-2.17.1
-
++ * PF_KTHREAD is part of kernel ABI, visible via value #9 in /proc/$pid/stat
++ */
+ #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
+ #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
+ #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
