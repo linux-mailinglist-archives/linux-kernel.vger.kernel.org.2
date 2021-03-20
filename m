@@ -2,143 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2EB342C19
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215BD342BCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCTLYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S230510AbhCTLMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhCTLYd (ORCPT
+        with ESMTP id S229787AbhCTLMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:24:33 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E81C0613B5
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:46:03 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso6074269pjb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:46:03 -0700 (PDT)
+        Sat, 20 Mar 2021 07:12:10 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB009C0611A3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:54:28 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a7so13625801ejs.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xfzq4riviQTCJmp4u8lCCdEJbdtAEz5ZReI046C37rk=;
-        b=LaqQ7kpJMX3XgAlt5oNlTxStC8bO3jbvHHJVyfVa01S4QRr74PfIrCJyHXYe/dckRp
-         OmNKQXqbOpb5dlFGex0IYCZP/El7LkTEoM+XXW/wrCIMW5QD7kW2VgaapSLGApVHwcoG
-         W5S9UD2LZIk8y+CswIe00xgQy71MRJT6AgY9vH4m+kBeYEeuMKmvNSlryqhVUz4RSuef
-         8bQpMMCs53gSsOA++T77E7rtjshUgxrT5puhSETIXpBtwR/oG0QVqYQNSYbgKbu9pKze
-         x6KUER8J0Rl95/anTvIeqley4d+47fWYjC84YYHFtWFBgIk//0wouIMZjZarvrBScadk
-         /WZw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=gzZBd8f5AR9iFEX57/luDriSVqJ/f6FPOwajCnIusZE=;
+        b=r7sy4/Mezgjzt7NjAuyQO0VGRVSE4S6FoKDFcA9MaoYXVsO0Xsunv71eGWiEiMv3CF
+         CwLcn8gMd7T7uEGlFQf/eYdnSXnr2rbIs05TykrHSqbLETeTD3nGy+yAgVbjZgmON+Z0
+         hDMLmbRzoMsAMIFzWyszMyh3CqWdgH0sImpxhibGZEsGkM4+USUKaeRDJLAIMQitXfxr
+         7Xvd2q0s4su8EVW9k+r9jxXhg4wV8WXZp232/mRokf+JE3yHu+I548YFQEbkClfTGZ1u
+         pNWYjBA6kcqLClLGAjhBZxs3i5o0GgCGAKUOpM4vb37gJUhbjO1Fr3NxqejBoXbFj+HK
+         3s2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xfzq4riviQTCJmp4u8lCCdEJbdtAEz5ZReI046C37rk=;
-        b=aOS7xVZ87HCl/eDJMHivSWxc0JrmSEtyDpjmLG4p6MWl8M8DFXsxqz3WFY3Jqc0Z87
-         CSg7QuTYAfzCtP9/k8hnxhltWncGaUPV15El8sdBdBOgBnpscdRfVph0xdvgu1bF9CmJ
-         HKbICXL+WoRR0KXlb6CIi9EWjAjwcXRwiaSU/ZlEfXrD+qJCRR/AQWW4tL6gE7Z8HUeV
-         eLaFaQKCK6QB2YDEVSgqhXY24alzrW+N+sAkqd4PqYU/hTZE7GOepg292Ei2KYarghW7
-         9YDPdEZ1/DHTw5yFXAdjfC76wX03IbUb2sYYZkAO8ptJsqx7t+FG/AjEvra9PglPLUQA
-         xdXw==
-X-Gm-Message-State: AOAM530CRF79JU4UmhMUBwNDwmyUOEq9yk/zAYDvBs1LvLBQ0Cb9XNHZ
-        aaqVCMXiYZTzN242DlZbKw4Uow==
-X-Google-Smtp-Source: ABdhPJyCzV0j7K0loGv7SPnjWuqP4ylVyBijNgWRRpMs67Ujkyaggj+SXbblJjeARav+l4U95WHCkQ==
-X-Received: by 2002:a17:902:7401:b029:e4:5992:e64a with SMTP id g1-20020a1709027401b02900e45992e64amr18245639pll.75.1616237162657;
-        Sat, 20 Mar 2021 03:46:02 -0700 (PDT)
-Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id m5sm8184700pfd.96.2021.03.20.03.46.01
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=gzZBd8f5AR9iFEX57/luDriSVqJ/f6FPOwajCnIusZE=;
+        b=Dwuj38u+/Ya8FPUgJOv521EOqotsxhoyTQ8EqA3NSBBra9SN14IlGsAa2zIF+SOrJg
+         OZeDWPd3M0IN+2+NY/xkQFSPwid6GFwvXnP3D0apRAE9O3LxJC9lhXMEfXUkN54+fkBV
+         nH9aILONtSZrDcAPkULXvEUk1foLsC96P5I6ydy0oO0hDwVzXqy92asKabWFuaDDE9TZ
+         8KBEK35+hi24+2JkfJvBw8mISM1qcNTDZrnXUrvP3k/4DDXBQegW4fGO2tFu3kIaFuyl
+         iSZW4AqfxCem5RuzbYzKwa5eGQIPh9wfZkQBGs+lujFXXbkCxiMhLE6BphoR1faGyRkQ
+         LDDA==
+X-Gm-Message-State: AOAM533rX3OV6U74IPZW4x8GvvrUHijl0CDhQJXcYE3zx2qjcl4O3Lwn
+        74Y8RERFzmb/eO93lFeiS+G3GjJ+odjFwQ==
+X-Google-Smtp-Source: ABdhPJyS+YR/AkOThPoMdwfeIQ9+b21imIPHWLWTIlgsa1820qe9NeoUd18u9SWa7YfRX3Xm0NZCpg==
+X-Received: by 2002:a17:907:3e12:: with SMTP id hp18mr9144017ejc.366.1616237667582;
+        Sat, 20 Mar 2021 03:54:27 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.229])
+        by smtp.gmail.com with ESMTPSA id hy25sm5109771ejc.119.2021.03.20.03.54.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 03:46:02 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH] perf test: Change to use bash for daemon test
-Date:   Sat, 20 Mar 2021 18:45:54 +0800
-Message-Id: <20210320104554.529213-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Sat, 20 Mar 2021 03:54:27 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 11:54:24 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        apw@canonical.com, joe@perches.com
+Subject: CHECKPATCH: missing a warning soon after include files decl -c
+Message-ID: <20210320105424.GA3698@agape.jhs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When executed the daemon test on Arm64 and x86 with Debian (Buster)
-distro, both skip the test case with the log:
+Hi,
 
-  # ./perf test -v 76
-  76: daemon operations                                               :
-  --- start ---
-  test child forked, pid 11687
-  test daemon list
-  trap: SIGINT: bad trap
-  ./tests/shell/daemon.sh: 173: local: cpu-clock: bad variable name
-  test child finished with -2
-  ---- end ----
-  daemon operations: Skip
+here's an issue in checkpatch.pl
 
-So the error happens for the variable expansion when use local variable
-in the shell script.  Since Debian Buster uses dash but not bash as
-non-interactive shell, when execute the daemon testing, it hits a
-known issue for dash which was reported [1].
+$ perl script/checkpatch.pl -f drivers/staging/rtl8723bs/core/rtw_ap.c
 
-To resolve this issue, one option is to add double quotes for all local
-variables assignment, so need to change the code from:
+I get three warning related to an extern declaration
 
-  local line=`perf daemon --config ${config} -x: | head -2 | tail -1`
+WARNING: externs should be avoided in .c files
+#14: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:14:
++extern unsigned char WMM_OUI[];
+--
+WARNING: externs should be avoided in .c files
+#15: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:15:
++extern unsigned char WPS_OUI[];
+--
+WARNING: externs should be avoided in .c files
+#16: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:16:
++extern unsigned char P2P_OUI[];
+----------------------
 
-  ... to:
+but the file checked has 4 extern declaration:
+-----------------------------
+#define _RTW_AP_C_
 
-  local line="`perf daemon --config ${config} -x: | head -2 | tail -1`"
+#include <drv_types.h>
+#include <rtw_debug.h>
+#include <asm/unaligned.h>
 
-But the testing script has bunch of local variables, this leads to big
-changes for whole script.
+extern unsigned char RTW_WPA_OUI[];
+extern unsigned char WMM_OUI[];
+extern unsigned char WPS_OUI[];
+extern unsigned char P2P_OUI[];
 
-On the other hand, the testing script asks to use the "local" feature
-which is bash-specific, so this patch explicitly uses "#!/bin/bash" to
-ensure running the script with bash.
+void init_mlme_ap_info(struct adapter *padapter)
+-------------------------------
 
-After:
+If I add a ';' this way:
+----------------------------
+#define _RTW_AP_C_
 
-  # ./perf test -v 76
-  76: daemon operations                                               :
-  --- start ---
-  test child forked, pid 11329
-  test daemon list
-  test daemon reconfig
-  test daemon stop
-  test daemon signal
-  signal 12 sent to session 'test [11596]'
-  signal 12 sent to session 'test [11596]'
-  test daemon ping
-  test daemon lock
-  test child finished with 0
-  ---- end ----
-  daemon operations: Ok
+#include <drv_types.h>
+#include <rtw_debug.h>
+#include <asm/unaligned.h>
+;
+extern unsigned char RTW_WPA_OUI[];
+extern unsigned char WMM_OUI[];
+extern unsigned char WPS_OUI[];
+extern unsigned char P2P_OUI[];
 
-[1] https://bugs.launchpad.net/ubuntu/+source/dash/+bug/139097
+void init_mlme_ap_info(struct adapter *padapter)
+--------------------------------
 
-Fixes: 2291bb915b55 ("perf tests: Add daemon 'list' command test")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/tests/shell/daemon.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+the missing warning appears:
+----------------------------------
+WARNING: externs should be avoided in .c files
+#13: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:13:
++extern unsigned char RTW_WPA_OUI[];
+--
+WARNING: externs should be avoided in .c files
+#14: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:14:
++extern unsigned char WMM_OUI[];
+--
+WARNING: externs should be avoided in .c files
+#15: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:15:
++extern unsigned char WPS_OUI[];
+--
+WARNING: externs should be avoided in .c files
+#16: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:16:
++extern unsigned char P2P_OUI[];
+-------------------------------------------
+Applying this ugly patch to debug:
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index ee4a30ca3f57..45fc24af5b07 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- # daemon operations
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index df8b23dc1eb0..ecbbb731361c 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6810,6 +6810,11 @@ sub process {
+ 		{
+ 			WARN("AVOID_EXTERNS",
+ 			     "externs should be avoided in .c files\n" .  $herecurr);
++		} elsif ($realfile =~ /\.c$/ && defined $stat &&
++		    $stat =~ /extern\s+/)
++		{
++			WARN("AVOID_EXTERNS",
++			     "print stat value\n" .  $stat);
+ 		}
  
--- 
-2.25.1
+ # check for function declarations that have arguments without identifier names
 
+--------------
+I get:
+
+WARNING: print stat value
++#include <XXXXXXXXXXX>
+ #include <XXXXXXXXXXX>
+ #include <XXXXXXXXXXXXXXX>
+ 
+ extern unsigned char RTW_WPA_OUI[];
+WARNING: externs should be avoided in .c files
+#14: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:14:
++extern unsigned char WMM_OUI[];
+
+WARNING: externs should be avoided in .c files
+#15: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:15:
++extern unsigned char WPS_OUI[];
+
+WARNING: externs should be avoided in .c files
+#16: FILE: drivers/staging/rtl8723bs/core/rtw_ap.c:16:
++extern unsigned char P2P_OUI[];
+
+I don't know if it's best to fix the regex of the particular "extern in .c files issue"
+or maybe how the statement is computed. Should a statement represent a single line?
+
+Suggestions are welcome,
+
+fabio
