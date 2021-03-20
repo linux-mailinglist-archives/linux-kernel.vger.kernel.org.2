@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0069342EE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FAB342EF3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhCTSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 14:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S229894AbhCTSYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 14:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCTSUt (ORCPT
+        with ESMTP id S229834AbhCTSXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 14:20:49 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A760C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 11:20:48 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id g15so6442617qkl.4
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 11:20:48 -0700 (PDT)
+        Sat, 20 Mar 2021 14:23:33 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2762C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 11:23:32 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id x9so9409202qto.8
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 11:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qjtwcm8fTgfE4yO/PEWWKlgJq9PQJ431uqNdo6ZHTRY=;
-        b=aZGqiNkBU3FtTfzXguJ9fM7L8HsQEHbXBrYDTTOBhAgcYWpmDKpuUDo7cu1Gbqgh7G
-         FcXBdR53mDAQN/h32tYE/Rz+4atVPwNmiQIro/WjSVG+o+3n6IjAYFhUBUaXHy5neHtC
-         y/n6XT5Cpm0m/obhRuZLVuHoYzSTXy6u3Tu6bhwSyKODrrwIApx6sPIMQ4xB9DI8qE+f
-         RACbb/Ktf+M6dj9zT1VwcqY9b4h0cQpzwWRR84BNS814G2P5Khwv/glKsPLUfmd0o/LQ
-         oPPRxm7HCuanYMA0eDvrxSxAYWeM/Le8Iql4GnTBiYj/hOxF5Nd/FUhtBYhnJWeJldLZ
-         B7pQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KflZSVgTpS2+TKlQgrI+ww945lAEKaRYx8nlRL+soGg=;
+        b=tTIq+O4G530xK6ecJauGIXGr/uWGjSUteuw3ZnlDSp8BZ93adlNxjYX1ZMqbu7loqL
+         EaJ65ok2gqStezEWE4//s6gM3QEGhZ8sZLDo603+lLyL9As566T+WVxNiM8PJI06Ljg1
+         OhVsf+cP7klts/C2Zb89v/62Yp6+YiZ8uu0BGzYowZkWMxnvrnS4zJlpAyT4jmE7h4L+
+         OL4t40RLsqyKPqKove+n7TaqcMOaKcXNO8LjkFMwjIXbHp/DvHAUv8zGCWRgS8C/MD5i
+         w57zwWmw+ZKggAVtwaBW7ahQcggxFuUYU07nDvznf9nwJXkiDOQfLuaNM7/UUqSUVkiZ
+         QgEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qjtwcm8fTgfE4yO/PEWWKlgJq9PQJ431uqNdo6ZHTRY=;
-        b=nDW12ftJKid/hJdiTvOb6Lw3sXrO/rP6zctb6iHH0wvgfrRzmVH548AJmf3lZga05z
-         CDlSzuWbwPwlx3PqxdCS8C/EJ+9m90B2XAxWOV3KNqRb5PYNqQ7em/ajp15CmtUqY4CQ
-         eULYOVjEmeXDjpvfTUmXbbcIMUYZNNg5nFnTkj58jujP5MsPI6Npbu2jeUKzgXLFKV0W
-         zkUDEpND/CyfsHdqGRDGtI0MYUZc7sSaNx0Lkp1/ZIUcQVmCGioV3lq+6B8ZzNvalhu6
-         kr+hKhABuU/nxtoj6VcfOY3XFfsF4sVNPP3onNyh8PUybyTsQXpopNozvZ4QEp9U6pCi
-         emIQ==
-X-Gm-Message-State: AOAM531J9lsm3g3TXYtKYOuLJdV0aAozQeEelv3PHnaFojbLumfskcMn
-        +TJMB3n017rl/Uch2WHzKtA=
-X-Google-Smtp-Source: ABdhPJx7mQ6YjoT/7LdEReVD4sPb2YAM1LxG7u47Y/V+0uV3uircrrsB9wj+nC7+a8kuY0RJIpW2pg==
-X-Received: by 2002:a37:408:: with SMTP id 8mr3963942qke.406.1616264447660;
-        Sat, 20 Mar 2021 11:20:47 -0700 (PDT)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=KflZSVgTpS2+TKlQgrI+ww945lAEKaRYx8nlRL+soGg=;
+        b=hEaSrWVtLK06K27p9qW0nVLSXsiytKtnsxXeHcCHZ8FWgeUvnktfT1Gw1u/zSyKKAL
+         ZEEk7NNk7cCJXErY+vWBMcUN6g1fH94m8H/phtYjKVMXli2S1jM6ZaiE2Tg2x0gTgdJf
+         gu4ouNXd4WFF4lVJHEDeoervhZt1p2SQ10Fcpt2Frn5flUIYUyg3bSN9/hHjyMCRLusy
+         V4/NrMhS9L3z7oGeUt/TSIOFNSDflOcqBlMRhkBY/x2Xc5/vdR0f82pItqcdNFvQn8ig
+         p92W/KmTNpZdKeb+Unbc4oyLdbVDFXHrjk5pqonOFLcqlwf+JR/XFeuwNpCiOQzD5bdY
+         szbQ==
+X-Gm-Message-State: AOAM530osGZVnxINuXXlJuzOMoIcKUKOl29uBe4+48Un3yjrRLZATyG4
+        /YAbPbsFfrlOyWBkkFmxDNR7bHnsFfX/pw==
+X-Google-Smtp-Source: ABdhPJxxapBs5KqU6tjjNqkX0ImgvHsHFZVUo4VZ5xtf47YPI44gbYs3hxpQmOQGXHG46uTNagpE5Q==
+X-Received: by 2002:ac8:4783:: with SMTP id k3mr3927830qtq.231.1616264611664;
+        Sat, 20 Mar 2021 11:23:31 -0700 (PDT)
 Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id y8sm6305723qtn.68.2021.03.20.11.20.47
+        by smtp.gmail.com with ESMTPSA id j15sm6076361qtr.34.2021.03.20.11.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 11:20:47 -0700 (PDT)
+        Sat, 20 Mar 2021 11:23:31 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 20 Mar 2021 14:20:46 -0400
+Date:   Sat, 20 Mar 2021 14:23:30 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] workqueue: watchdog: update wq_watchdog_touched for
- unbound lockup checking
-Message-ID: <YFY8/u0Bmf8TpJTS@slm.duckdns.org>
-References: <1616140838-24222-1-git-send-email-wangqing@vivo.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] workqueue: Switch to new kerneldoc syntax for named
+ variable macro argument
+Message-ID: <YFY9ou51WGqA7/Lg@slm.duckdns.org>
+References: <20210303191639.3108237-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1616140838-24222-1-git-send-email-wangqing@vivo.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303191639.3108237-1-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 04:00:36PM +0800, Wang Qing wrote:
-> When touch_softlockup_watchdog() is called, only wq_watchdog_touched_cpu 
-> updated, while the unbound worker_pool running on its core uses 
-> wq_watchdog_touched to determine whether locked up. This may be mischecked.
+On Wed, Mar 03, 2021 at 08:16:38PM +0100, Jonathan Neuschäfer wrote:
+> The syntax without dots is available since commit 43756e347f21
+> ("scripts/kernel-doc: Add support for named variable macro arguments").
+> 
+> The same HTML output is produced with and without this patch.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-Can you please elaborate here, preferably with a concrete scenario where the
-new code is better?
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Can you re-send with trivial@kernel.org cc'd?
 
 Thanks.
 
