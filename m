@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702DB342968
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD65342970
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhCTAWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhCTAWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 20:22:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFCFE61982;
-        Sat, 20 Mar 2021 00:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616199750;
-        bh=yfhC9N4yx6xT3rJ9D4E/XRJxPV8sGJTgzQeYH+mdemI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=TI+APkqWcQfgwonCim+iFmS8c7zEVsrTV2NeAO10POk0eFNuHfwTZ3PS6oUiPfrDE
-         dR2bOmbF0/WMJw33/HII0nnoGcMewvvTYXsp+8aiSY4T3UuM62Jdwyj2hN+X5TFTJ7
-         0FQv0joGMfB56GV8oao8C42zcWOH8+vO3O3dTf9UpM3/bCHi0kiIe6POaRi2Q66nHp
-         hq8n0luM/DiBzMDpdUNsctNmuZHsS97tTwI0jL/an8H/fe4rQmhhn2pBxog4NCQnxt
-         Izik/bGIY4VCG20TbjzJ5z9y34gH3OzZ7UjcoXn6lDksBIGlRWAyXj//jBbnwRb52t
-         8bDOtP4ZxWtEQ==
-Date:   Fri, 19 Mar 2021 17:22:28 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-cc:     Christoph Hellwig <hch@lst.de>, xen-devel@lists.xensource.com,
-        sstabellini@kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, opendmb@gmail.com
-Subject: Re: [PATCH] ARM: Qualify enabling of swiotlb_init()
-In-Reply-To: <20210319195929.GA1346384@konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com>
-Message-ID: <alpine.DEB.2.21.2103191718210.439@sstabellini-ThinkPad-T480s>
-References: <20210319040333.183827-1-f.fainelli@gmail.com> <20210319130731.GB2624@lst.de> <20210319195929.GA1346384@konrad-char-us-oracle-com.allregionaliads.osdevelopmeniad.oraclevcn.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S229751AbhCTA1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTA1U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 20:27:20 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB34C061760;
+        Fri, 19 Mar 2021 17:27:20 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v8so3694122plz.10;
+        Fri, 19 Mar 2021 17:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=LIfAiKMbasGNOasGZfkQ+a3+Kv8U74AyNPwiY1+xi0I=;
+        b=uEw4w2iLVHPG0fJofmmmmoqifikNfP+/AoJmablcbwQQiZxfrVffvjdz7RqdQTKyDi
+         SRWQOctMGUsHlcn4fKTLg59aqndu+19g6rwEYXeAcsL3jj5Iyo6s/h+d7MJqnoywNMEv
+         M9rWyglmUmI4jFnphek2qzC7BSjP0viUMctT1tBq6GHjMP2lqmy18B9kJnYN/m0cz3ZL
+         lpz+0C7KIIjKIjQEQJ854MBos+nrGUDtEX1qDjHhvtqGQYFT2eCoKXpLcFMap43lP4XQ
+         A/IpONaQM6rZVXw2u0T89deqtMgYyAp38W9SHF9RKGjWOA9HEq36RSyQ7kG+I5FydC/N
+         1VYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=LIfAiKMbasGNOasGZfkQ+a3+Kv8U74AyNPwiY1+xi0I=;
+        b=eOLDpxcuro7+2+PoW01y0YTER92m6t8fyJoqVRuWHFZcw0YEEs5AEOOUp68BrBt8AI
+         2K3W5bt0OWDt9FpBW/lCNpm9GXAd0VFGT+vZLp+yCmeZkJC/hbYvV2vnlyvQJijnC6F0
+         euMoWEtYcgJnnyunOZVHIyKN24PfN0bhssMvNPoDCdqAi6ymK2japptpMRk55aZH1BIW
+         zWqF3r4ImoH0OCFoxk4FPXpvSrSZjjJb2aMYgYUQL4MzYeLTcfLXsz3l25f4qCohfxi0
+         vVOCGHaXcFSnfNg9j1nE+LD7QIaQF3Ytf3lQ8xBxGKlPDBOk7fb0e3/GxYcqYtVSqw6f
+         yduw==
+X-Gm-Message-State: AOAM530wK3bQOQ3aP5sgOx2t6/Dm6zrDSC8xLdzr7n1lk800WW3JiQow
+        lNA/DxPdXH/NiAr6c3p5aYVKAQtDOww=
+X-Google-Smtp-Source: ABdhPJycP1Ktn0eveHth0/NXrwCXqUOVjsbqcd/PxG8fwDidOOKmw6sCLgTgJzcAAXXTnpS1dp110A==
+X-Received: by 2002:a17:903:2301:b029:e4:9026:4c7b with SMTP id d1-20020a1709032301b02900e490264c7bmr16442674plh.76.1616200039685;
+        Fri, 19 Mar 2021 17:27:19 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a468:a574:c1f5:b1a1])
+        by smtp.gmail.com with ESMTPSA id s3sm6819678pfs.185.2021.03.19.17.27.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 17:27:18 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 17:27:16 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: do not use down_interruptible() when unbinding devices
+Message-ID: <YFVBZCrmzvNJQstT@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021, Konrad Rzeszutek Wilk wrote:
-> On Fri, Mar 19, 2021 at 02:07:31PM +0100, Christoph Hellwig wrote:
-> > On Thu, Mar 18, 2021 at 09:03:33PM -0700, Florian Fainelli wrote:
-> > >  #ifdef CONFIG_ARM_LPAE
-> > > +	if (swiotlb_force == SWIOTLB_FORCE ||
-> > > +	    max_pfn > arm_dma_pfn_limit)
-> > 
-> > Does arm_dma_pfn_limit do the right thing even with the weirdest
-> > remapping ranges?  Maybe a commen here would be useful.
-> > 
-> > > +		swiotlb_init(1);
-> > > +	else
-> > > +		swiotlb_force = SWIOTLB_NO_FORCE;
-> > 
-> > Konrad: what do you think of setting swiotlb_force to SWIOTLB_NO_FORCE
-> > and only switching it to SWIOTLB_NORMAL when swiotlb_init* is called?
-> > That kind makes more sense than forcing the callers to do it.
-> > 
-> > While we're at it, I think swiotlb_force should probably be renamed to
-> > swiotlb_mode or somethng like that.
-> 
-> swiotlb_mode sounds good.
-> 
-> Also it got me thinking - ARM on Xen at some point was a bit strange, so not sure how
-> the logic works here, Stefano?
+Action of unbinding driver from a device is not cancellable and should not
+fail, and driver core does not pay attention to the result of "remove"
+method, therefore using down_interruptible() in hid_device_remove() does
+not make sense.
 
-There is nothing strange in regards to swiotlb_force. swiotlb_force is only used
-in swiotlb-xen map_page to figure out whether:
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/hid/hid-core.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-- we actually have to use the swiotlb bounce buffer (this is the
-  swiotlb_xen == SWIOTLB_FORCE case)
-- or we can use the provided page directly for dma if other conditions
-  are met (dma_capable, !range_straddles_page_boundary, ...)
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index 56172fe6995c..ec63a9ff40dc 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -2300,12 +2300,8 @@ static int hid_device_remove(struct device *dev)
+ {
+ 	struct hid_device *hdev = to_hid_device(dev);
+ 	struct hid_driver *hdrv;
+-	int ret = 0;
+ 
+-	if (down_interruptible(&hdev->driver_input_lock)) {
+-		ret = -EINTR;
+-		goto end;
+-	}
++	down(&hdev->driver_input_lock);
+ 	hdev->io_started = false;
+ 
+ 	hdrv = hdev->driver;
+@@ -2320,8 +2316,8 @@ static int hid_device_remove(struct device *dev)
+ 
+ 	if (!hdev->io_started)
+ 		up(&hdev->driver_input_lock);
+-end:
+-	return ret;
++
++	return 0;
+ }
+ 
+ static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
 
-I don't think that switching to "swiotlb_mode" would cause any issues.
+-- 
+Dmitry
