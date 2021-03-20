@@ -2,180 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF233429B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F21F3429C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCTBxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 21:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S229756AbhCTB4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 21:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhCTBxD (ORCPT
+        with ESMTP id S229564AbhCTB4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 21:53:03 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18572C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 18:53:03 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id g24so8273814qts.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 18:53:02 -0700 (PDT)
+        Fri, 19 Mar 2021 21:56:32 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916C5C061760;
+        Fri, 19 Mar 2021 18:56:32 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso5683266pjb.4;
+        Fri, 19 Mar 2021 18:56:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=bbqnt/9Bz0dwgnbwz2YuuMVEFJVwyS/lwtSrMVzL3KQ=;
-        b=k3LlzQxQcReO0CIi6WRFB0czD21cyNNYz88NKLNL4trrdRK5/zKFure+Q8GTtYZJF2
-         wFEqKvwzbNIC0IxUXvaK1jGVB14NNssZRUTv4Tncl1yvFTtYxXuUjAeOhGp+k8MAnZcH
-         F8/l9+cOiCI4vpuXIyH+iNtx3elBg7YuThEUEBE1WjjCddczzu/OOGSvpju6tiFZxYVb
-         tqopjrM2cCRs0H2EKjcPCEVMs8YgFxRyzztWcBWOjKkppl7k1zpDiL91mypTRvEPDAmC
-         YC0s7nFCbOfv3icqQPTV3c0D9Jr/TowdgyY0nmwR1mLSgCtyg7iEAMZqUF1xNCh3PnCF
-         Tf1w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3ShiRqmN0JVa7UhRNey/XzmB81pk8gwokmcnEoRtZ68=;
+        b=lnoO8EC47b1zev1YAg9sLSZDt1rQHZQoUIj/W3gCgf+drSwZ+9MYBho+okxDktJsm8
+         hHyDWAZYIvN4i0qlDyd3McRuEw1EolhomoTxxuaIvuLpoaLiowy05aun5VSTcJJKG6r9
+         jBGC/88rD3WhGq3s6f7CpGNGaUAct3Fx1yXFnOgXBsEb8NBuB23OKUdlOc3pD+O4hyPd
+         fuKUztdmDf7QT8agMlCXPH0Z/3raGueZN1nlMAJwmsdCNQMc0/L86nOSLTxl+tODMKU1
+         1cFVomOWc7XCBJI7RKjjaV/ONtrKPrIkbchoh1jeMKKkVj85jSXUwMW7tAiZYe6hCcrB
+         BA5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=bbqnt/9Bz0dwgnbwz2YuuMVEFJVwyS/lwtSrMVzL3KQ=;
-        b=crv+e4Xt3owToS9PjXlEvVi+XFH3xAvm7wdfrx7zF4X1T9xtYSS7h38sD4cp9rrenZ
-         gXtVs5LjJte01H0oOq39aOoP6xFmaP3UAWUsAzzzKdHvvVX3Cm9eXdNWXtjl4LnpOKpO
-         e0Q2BR4cEBz4uQJ3oS9T6GsnzAGtYcToBrpxImauBs3GfjflYBP2KfG5nVbaKfsE25bh
-         JwbeJ+l2yF2PnWS6VVJU584ajR2i4zAVtgA/X6QKSqrdrxlRgkAioBQTHgARGxWrmmLG
-         286MaWcxzY4fQd8gzC0mQtJYE1dMIqNb6JgxHSdN983H3wwDuoqjW0xhcMu92OKfxkpZ
-         1ZoA==
-X-Gm-Message-State: AOAM530tHSCw8U2li91AZ+nLNGj8G5uuB3N4PyRrrr1Zl4iBJz5zghTO
-        2BO6qm8il9I6v45nvN2uQRP6Yg==
-X-Google-Smtp-Source: ABdhPJzzjEbotetWZHFKP7VrKS2ICsxuth1Oh6ejUFZP1EJCs+8xTDk1awsjyQbZEb2AP4oeNdqQsw==
-X-Received: by 2002:ac8:7d52:: with SMTP id h18mr1372267qtb.175.1616205181920;
-        Fri, 19 Mar 2021 18:53:01 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k4sm5877496qke.13.2021.03.19.18.53.00
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 19 Mar 2021 18:53:01 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 18:52:58 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
- cache lookup
-In-Reply-To: <20210319071547.60973-1-hannes@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
-References: <20210319071547.60973-1-hannes@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3ShiRqmN0JVa7UhRNey/XzmB81pk8gwokmcnEoRtZ68=;
+        b=c8oU9QkQWJXhWOo5vyb3RAYNIjLiIel2gZSL0vHE+92X+XgScLPpdI7ZdbKDutvVuN
+         wGkO3/FNG4dlFjUcb763okrjkKPtIWQ/9HwRW0KhPoMiOVnzfLrFHUJDW+etCCO0n+xe
+         yh1wDM8gXrKTbkSYcvvVZumEEdsA1hkfUDNoO3R3oTIgB9NWIdMN2tRkbEwrgJ/7pYTB
+         3jIrI3lKNjgWf+R0RI11VJ8cBlcWotCQb2DR35vUB/4mz18xxIZNQZeHcQQ6fOy7eaPV
+         ptFTPbfFP99hjkEeMfpF90r3xc0FjU8JzGB9z9qLo7zH1JJ7XE+UXsRhYAFrEjpkeYmY
+         gypQ==
+X-Gm-Message-State: AOAM530MFo5qCxmgShEk+y+Qu1ZqoW/UG/GgBnws81xBv9scOIyP0Wre
+        h6Wy3KMWaXjziJ0hTUcioQQ38Tyctpvp2/Mh
+X-Google-Smtp-Source: ABdhPJwdmLZ9tPsAf4H46sMWQthR3e7xLPl69X/OObl2TUeDve+jHfupOIAJ8yGrtV6h3MSoHoleZw==
+X-Received: by 2002:a17:90b:fce:: with SMTP id gd14mr1345409pjb.64.1616205392029;
+        Fri, 19 Mar 2021 18:56:32 -0700 (PDT)
+Received: from localhost.localdomain ([204.44.111.4])
+        by smtp.gmail.com with ESMTPSA id y7sm5755904pgp.23.2021.03.19.18.56.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Mar 2021 18:56:31 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
+        robh+dt@kernel.org, a.fatoum@pengutronix.de,
+        mcoquelin.stm32@gmail.com, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, vladimir.murzin@arm.com,
+        afzal.mohd.ma@gmail.com, gregkh@linuxfoundation.org,
+        erwan.leray@foss.st.com, linux-serial@vger.kernel.org,
+        lkp@intel.com
+Cc:     dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v4 0/9] ARM: STM32: add art-pi(stm32h750xbh6) board support
+Date:   Sat, 20 Mar 2021 09:56:16 +0800
+Message-Id: <1616205383-24114-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021, Johannes Weiner wrote:
+From: dillon min <dillon.minfei@gmail.com>
 
-> When the freeing of a higher-order page block (non-compound) races
-> with a speculative page cache lookup, __free_pages() needs to leave
-> the first order-0 page in the chunk to the lookup but free the buddy
-> pages that the lookup doesn't know about separately.
-> 
-> However, if such a higher-order page is charged to a memcg (e.g. !vmap
-> kernel stack)), only the first page of the block has page->memcg
-> set. That means we'll uncharge only one order-0 page from the entire
-> block, and leak the remainder.
-> 
-> Add a split_page_memcg() to __free_pages() right before it starts
-> taking the higher-order page apart and freeing its individual
-> constituent pages. This ensures all of them will have the memcg
-> linkage set up for correct uncharging. Also update the comments a bit
-> to clarify what exactly is happening to the page during that race.
-> 
-> This bug is old and has its roots in the speculative page cache patch
-> and adding cgroup accounting of kernel pages. There are no known user
-> reports. A backport to stable is therefor not warranted.
-> 
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+This patchset intend to add art-pi board support, this board developed
+by rt-thread(https://www.rt-thread.org/).
 
-Acked-by: Hugh Dickins <hughd@google.com>
+Board resources:
+8MiB QSPI flash
+16MiB SPI flash
+32MiB SDRAM
+AP6212 wifi,bt,fm comb
 
-to the split_page_memcg() addition etc, but a doubt just hit me on the
-original e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages"):
-see comment below.
+sw context:
+- as stm32h750 just has 128k bytes internal flash, so running a fw on
+  internal flash to download u-boot/kernel to qspi flash, boot
+  u-boot/kernel from qspi flash. this fw is based on rt-thread.
+- kernel can be xip on qspi flash or load to sdram
+- root filesystem is jffs2(created by buildroot), stored on spi flash
 
-> ---
->  mm/page_alloc.c | 33 +++++++++++++++++++++++++++------
->  1 file changed, 27 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index c53fe4fa10bf..f4bd56656402 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
->   * the allocation, so it is easy to leak memory.  Freeing more memory
->   * than was allocated will probably emit a warning.
->   *
-> - * If the last reference to this page is speculative, it will be released
-> - * by put_page() which only frees the first page of a non-compound
-> - * allocation.  To prevent the remaining pages from being leaked, we free
-> - * the subsequent pages here.  If you want to use the page's reference
-> + * This function isn't a put_page(). Don't let the put_page_testzero()
-> + * fool you, it's only to deal with speculative cache references. It
-> + * WILL free pages directly. If you want to use the page's reference
->   * count to decide when to free the allocation, you should allocate a
->   * compound page, and use put_page() instead of __free_pages().
->   *
-> @@ -5124,11 +5123,33 @@ static inline void free_the_page(struct page *page, unsigned int order)
->   */
->  void __free_pages(struct page *page, unsigned int order)
->  {
-> -	if (put_page_testzero(page))
-> +	/*
-> +	 * Drop the base reference from __alloc_pages and free. In
-> +	 * case there is an outstanding speculative reference, from
-> +	 * e.g. the page cache, it will put and free the page later.
-> +	 */
-> +	if (likely(put_page_testzero(page))) {
->  		free_the_page(page, order);
-> -	else if (!PageHead(page))
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * The speculative reference will put and free the page.
-> +	 *
-> +	 * However, if the speculation was into a higher-order page
-> +	 * chunk that isn't marked compound, the other side will know
-> +	 * nothing about our buddy pages and only free the order-0
-> +	 * page at the start of our chunk! We must split off and free
-> +	 * the buddy pages here.
-> +	 *
-> +	 * The buddy pages aren't individually refcounted, so they
-> +	 * can't have any pending speculative references themselves.
-> +	 */
-> +	if (!PageHead(page) && order > 0) {
+to support the boad, add following changes.
+- fix r0-r3, r12 register restore failed after svc call,
+- add dts binding
+- update yaml doc
 
-The put_page_testzero() has released our reference to the first
-subpage of page: it's now under the control of the racing speculative
-lookup.  So it seems to me unsafe to be checking PageHead(page) here:
-if it was actually a compound page, PageHead might already be cleared
-by now, and we doubly free its tail pages below?  I think we need to
-use a "bool compound = PageHead(page)" on entry to __free_pages().
+changes in v4:
+- use unevaluatedProperties: false to fix dtbs_check warrnings instead of
+  add 'bluetooth' in st,stm32-uart.yaml
 
-Or alternatively, it's wrong to call __free_pages() on a compound
-page anyway, so we should not check PageHead at all, except in a
-WARN_ON_ONCE(PageCompound(page)) at the start?
+changes in v3:
+- fix dtbs_check warrning: (8002cbd78fd5 and 4bc21d3dd678)
+  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: pin-controller:
+     {'type': 'object'} is not allowed for {'#address-cells': [[1]], '#size-cells':
+     [[1]], 'ranges': [[0,
+  
+  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: 'i2c@40005C00',
+     'i2c@58001C00' do not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$',
+     '^[^@]+$', 'pinctrl-[0-9]+'
+  >> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
+     'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-And would it be wrong to fix that too in this patch?
-Though it ought then to be backported to 5.10 stable.
+changes in v2:
+- reorganize the pinctrl device tree about
+  stm32h7-pinctrl/stm32h743/750-pinctrl
+  stm32h7-pinctrl.dtsi --> stm32h743-pinctrl.dtsi --> stm32h743i-disco.dts
+                         |                          |-> stm32h743i-eval.dts
+                         |-> stm32h750-pinctrl.dtsi --> stm32h750i-art-pi.dts
+  same to the stm32f7/f4's pinctrl style
+- fix author name/copyright mistake
+- add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
+  have same pin alternate functions, update Kconfig description
+- make item in stm32h750i-art-pi.dts sort by letter
 
-> +		split_page_memcg(page, 1 << order);
->  		while (order-- > 0)
->  			free_the_page(page + (1 << order), order);
-> +	}
->  }
->  EXPORT_SYMBOL(__free_pages);
->  
-> -- 
-> 2.30.1
+dillon min (9):
+  Documentation: arm: stm32: Add stm32h750 value line doc
+  dt-bindings: arm: stm32: Add compatible strings for ART-PI board
+  dt-bindings: pinctrl: stm32: Add stm32h750 pinctrl
+  ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to support stm32h750
+  ARM: dts: stm32: add stm32h750-pinctrl.dtsi
+  ARM: dts: stm32: add support for art-pi board based on stm32h750xbh6
+  ARM: stm32: Add a new SOC - STM32H750
+  pinctrl: stm32: Add STM32H750 MCU pinctrl support
+  dt-bindings: serial: stm32: Use 'unevaluatedProperties' instead of
+    'additionalProperties'
+
+ Documentation/arm/index.rst                        |   1 +
+ Documentation/arm/stm32/stm32h750-overview.rst     |  34 +++
+ .../devicetree/bindings/arm/stm32/stm32.yaml       |   4 +
+ .../bindings/pinctrl/st,stm32-pinctrl.yaml         |   1 +
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  |   2 +-
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/stm32h7-pinctrl.dtsi             | 274 ++++++++++++++++++
+ arch/arm/boot/dts/stm32h743-pinctrl.dtsi           | 307 +--------------------
+ arch/arm/boot/dts/stm32h743.dtsi                   | 153 +++++++++-
+ arch/arm/boot/dts/stm32h750-pinctrl.dtsi           |  12 +
+ arch/arm/boot/dts/stm32h750.dtsi                   |   6 +
+ arch/arm/boot/dts/stm32h750i-art-pi.dts            | 229 +++++++++++++++
+ arch/arm/mach-stm32/board-dt.c                     |   1 +
+ drivers/pinctrl/stm32/Kconfig                      |   2 +-
+ drivers/pinctrl/stm32/pinctrl-stm32h743.c          |   3 +
+ 15 files changed, 725 insertions(+), 305 deletions(-)
+ create mode 100644 Documentation/arm/stm32/stm32h750-overview.rst
+ create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32h750-pinctrl.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
+
+-- 
+1.9.1
+
