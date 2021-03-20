@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B41342F6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F4238342F67
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCTT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S229900AbhCTT5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCTT6t (ORCPT
+        with ESMTP id S229886AbhCTT44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:58:49 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A1AC061574;
-        Sat, 20 Mar 2021 12:58:49 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id g15so6603897qkl.4;
-        Sat, 20 Mar 2021 12:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EhWUWWvovcwqppfOFN8l1mqmbbRdJNS1JO4GqxSZrQg=;
-        b=gJPc5bvFAlM+itJgrlrSguPTKjzqhJuHJUZ8GJjf5MXeuUUlKQ99yti+ATPtXpJUIx
-         6NCZmpxcObj1zEAxBB2LFggDhMqMODxzlgDirzxyTsKtm4J/VepJ0vL+qGP0WRh2TjgH
-         3j+GxE3sRmUetxDmwlgcL4flAvxn4czMkeC+b1asiAIAgG6BemG4o4gw5cIr33ATl/J8
-         JFqu5oddpVWyvcAZhT+jFv5iPA7IZDCLutpk4me5U0rd46Bgn0kkRVSQ9dEdgpZ2QqyB
-         hGSiNLILIU3Wbg/MjsPVEIXj30Xhcl8dGXve5v+zr45qpkPsYQsZ77yz8n6rP2wxRcAM
-         +E7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EhWUWWvovcwqppfOFN8l1mqmbbRdJNS1JO4GqxSZrQg=;
-        b=LrPuYxCl0UgeoWz0XrO3BduRJbQbzzZYVQtwk7pQvCZT0tWD5U0yEg6uv85iVQcJXQ
-         J9MTFEo+HsJAZOAq5d6kKk9C+813gX6ztIdKdVYAIqgZeaLuNrKbWNy+UrhAzEimtuDN
-         WHe961/slyoVYsfuK7OVOQQVze1+JGMeh/hqDf14YyiofKFTNizOc5WBGz8OE6XxHnee
-         lnEv8GXhpAYePwv9sclTbikaHuSDc0tAhfhUltU2hhLH2pAUvyiTUKDwko1RAq00xnLm
-         yN0viyhXs79SV6QKzjyjxIpe8sPrPpdaJBuccfRLC9MlXaZ67/TGtUkmzK45IqGBDRN9
-         SWOQ==
-X-Gm-Message-State: AOAM532IhVJAxZB+sKw507p0pi4UL+AqRuO9WP6aUq52sxTyidQq74DX
-        7D2iN87JkjL7rlsQ7J1D6V0=
-X-Google-Smtp-Source: ABdhPJwijJfQAnXHukWWBWqRG86wranIjOOAiVxh5LXdINlls7rrB5LzGQ8BCOdi+nAc+51KP2qJ7g==
-X-Received: by 2002:a37:a404:: with SMTP id n4mr4192009qke.439.1616270328487;
-        Sat, 20 Mar 2021 12:58:48 -0700 (PDT)
-Received: from localhost.localdomain ([138.199.13.205])
-        by smtp.gmail.com with ESMTPSA id z5sm6409711qtc.42.2021.03.20.12.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 12:58:48 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     djwong@kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] xfs: Rudimentary typo fixes
-Date:   Sun, 21 Mar 2021 01:26:26 +0530
-Message-Id: <20210320195626.19400-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 20 Mar 2021 15:56:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED101C061574;
+        Sat, 20 Mar 2021 12:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=unEOJs7g8dhW9JIfGxFXXYni7VdACtVUH0Kopjl/EDs=; b=tPreKU2v7a6RrC/dWNNA1P41i7
+        8P0BNRy0JJR9Fej9w+5FJG9NbdxqQgLifsM/7Y9KsGXZ595vKnwPud791fOUUICxwPjLN0MTzLaLn
+        jSthX+OISLi9L68ZWtYqwFQ2FLmOZl3vHnt1MUOoiiSFM2F/OswVRS4vT2OC/qcf02LOaFYsEF1mj
+        XHm+7YDnlEHdvCMf4ka3V8N5EDdGNdHbqnnSiPJ7LS6ptFBpmGyUrWMwwg56hgR2lEKz56feyGLfH
+        btEMsxD2l/FCqcc7RtXt4lgkB65cG3fZzOgSOktChQ+pNGX7RJv8XG2XI15qWxKNLQiGdKZz2u3ge
+        +zLQdPaw==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNhiK-0020s7-TF; Sat, 20 Mar 2021 19:56:50 +0000
+Date:   Sat, 20 Mar 2021 12:56:48 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtlwifi: Few mundane typo fixes
+In-Reply-To: <20210320194426.21621-1-unixbhaskar@gmail.com>
+Message-ID: <1b2d2cc5-5a6c-2552-65d8-9232240e16c@bombadil.infradead.org>
+References: <20210320194426.21621-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210320_125648_968664_0136FA4B 
+X-CRM114-Status: GOOD (  12.50  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/resovle/resolve/
+    > s/broadcase/broadcast/ > s/sytem/system/ > > Signed-off-by: Bhaskar Chowdhury
+    <unixbhaskar@gmail.com> Acked-by: Randy Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/filesytem/filesystem/
-s/instrumention/instrumentation/
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/xfs/xfs_log_recover.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
 
-diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
-index 97f31308de03..ffa4f6f2f31e 100644
---- a/fs/xfs/xfs_log_recover.c
-+++ b/fs/xfs/xfs_log_recover.c
-@@ -2736,7 +2736,7 @@ xlog_recover_process_one_iunlink(
-  * of log space.
-  *
-  * This behaviour is bad for latency on single CPU and non-preemptible kernels,
-- * and can prevent other filesytem work (such as CIL pushes) from running. This
-+ * and can prevent other filesystem work (such as CIL pushes) from running. This
-  * can lead to deadlocks if the recovery process runs out of log reservation
-  * space. Hence we need to yield the CPU when there is other kernel work
-  * scheduled on this CPU to ensure other scheduled work can run without undue
-@@ -3404,7 +3404,7 @@ xlog_recover(
+>
+> s/resovle/resolve/
+> s/broadcase/broadcast/
+> s/sytem/system/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
- 		/*
- 		 * Delay log recovery if the debug hook is set. This is debug
--		 * instrumention to coordinate simulation of I/O failures with
-+		 * instrumentation to coordinate simulation of I/O failures with
- 		 * log recovery.
- 		 */
- 		if (xfs_globals.log_recovery_delay) {
---
-2.26.2
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
+
+> ---
+> drivers/net/wireless/realtek/rtlwifi/core.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/core.c b/drivers/net/wireless/realtek/rtlwifi/core.c
+> index 965bd9589045..c9b6ee81dcb9 100644
+> --- a/drivers/net/wireless/realtek/rtlwifi/core.c
+> +++ b/drivers/net/wireless/realtek/rtlwifi/core.c
+> @@ -564,7 +564,7 @@ static int rtl_op_resume(struct ieee80211_hw *hw)
+> 	rtlhal->enter_pnp_sleep = false;
+> 	rtlhal->wake_from_pnp_sleep = true;
+>
+> -	/* to resovle s4 can not wake up*/
+> +	/* to resolve s4 can not wake up*/
+> 	now = ktime_get_real_seconds();
+> 	if (now - rtlhal->last_suspend_sec < 5)
+> 		return -1;
+> @@ -806,7 +806,7 @@ static void rtl_op_configure_filter(struct ieee80211_hw *hw,
+> 	if (0 == changed_flags)
+> 		return;
+>
+> -	/*TODO: we disable broadcase now, so enable here */
+> +	/*TODO: we disable broadcast now, so enable here */
+> 	if (changed_flags & FIF_ALLMULTI) {
+> 		if (*new_flags & FIF_ALLMULTI) {
+> 			mac->rx_conf |= rtlpriv->cfg->maps[MAC_RCR_AM] |
+> @@ -1796,7 +1796,7 @@ bool rtl_hal_pwrseqcmdparsing(struct rtl_priv *rtlpriv, u8 cut_version,
+> 				value |= (GET_PWR_CFG_VALUE(cfg_cmd) &
+> 					  GET_PWR_CFG_MASK(cfg_cmd));
+>
+> -				/*Write the value back to sytem register*/
+> +				/*Write the value back to system register*/
+> 				rtl_write_byte(rtlpriv, offset, value);
+> 				break;
+> 			case PWR_CMD_POLLING:
+> --
+> 2.26.2
+>
+>
