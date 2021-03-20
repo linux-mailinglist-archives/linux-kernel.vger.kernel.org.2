@@ -2,224 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5226B342DE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A0A342DEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhCTPq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhCTPqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:46:08 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 296186194A;
-        Sat, 20 Mar 2021 15:46:04 +0000 (UTC)
-Date:   Sat, 20 Mar 2021 15:46:01 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v3 3/3] iio: adc: add ADC driver for the TI TSC2046
- controller
-Message-ID: <20210320154601.0131805d@jic23-huawei>
-In-Reply-To: <20210319144509.7627-4-o.rempel@pengutronix.de>
-References: <20210319144509.7627-1-o.rempel@pengutronix.de>
-        <20210319144509.7627-4-o.rempel@pengutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229913AbhCTPrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:47:06 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:46852 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhCTPqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 11:46:49 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 53E778D3;
+        Sat, 20 Mar 2021 16:46:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616255207;
+        bh=PPRzdWm/7Kwa8FgOCwvrHzkIHdFP9+MTjWQFavxZ/OQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k/yqH6g1E6YRsIAR8z+4mmWnMqaJodnqChTBLqqAJ24gqOL+Bj3vnWDLlQ6/zR8dx
+         K2cuOS2PTbgkWgpXUWmf0lSXxBaM65j6yMGykWLck+BjngQWq+LyzTWGf5VvYdtQLP
+         9U8oJa3gXnUkJLio76rcMbp+yhVC51fvLkYTnDXQ=
+Date:   Sat, 20 Mar 2021 17:46:07 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 06/19] media: gmsl: Reimplement initialization sequence
+Message-ID: <YFYYvwChCsF1rPxv@pendragon.ideasonboard.com>
+References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
+ <20210319164148.199192-7-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210319164148.199192-7-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 15:45:09 +0100
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+Hi Jacopo,
 
-> Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
-> the touchscreen use case. By implementing it as an IIO ADC device, we can
-> make use of resistive-adc-touch and iio-hwmon drivers.
+Thank you for the patch.
+
+On Fri, Mar 19, 2021 at 05:41:35PM +0100, Jacopo Mondi wrote:
+> The current probe() procedure of the RDACM20 and RDACM20 GMSL cameras is
+
+s/RDACM20 and RDACM20/RDACM20 and RDACM21/
+
+> performed with the embedded MAX9271 serializer's noise immunity
+> threshold disabled. Once the camera has been initialized by probing the
+> embedded chips, the threshold is enabled and then compensated on the
+> deserializer's side by increasing the reverse channel signal amplitude
+> once all cameras have bound.
 > 
-> So far, this driver was tested with a custom version of resistive-adc-touch driver,
-> since it needs to be extended to make use of Z1 and Z2 channels. The X/Y
-> are working without additional changes.
+> The probe routine is thus run without noise immunity activated which
+> in noisy environment conditions makes the probe sequence less reliable as
+> the chips configuration requires a relatively high amount of i2c
+> transactions.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Not a lot to add to Andy's review.  A few minor things inline.
-Biggest one is I think we should call out that we expect to add single
-channel polled reading + scales etc in future to enable the iio-hwmon
-usecase.
-
-Jonathan
-
+> Break chip initialization in two:
+> - At probe time only configure the serializer's reverse channel with
+>   noise immunity activated, to reduce the number of transactions
+>   performed without noise immunity protection enabled
+> - Move the chips initialization to the .init() core subdev operation
+>   called by the deserializer after all camera have probed and
+>   have increased their noise immunity threshold
+> 
+> The initialization routine looks like the following:
+> 
+>             MAX9286                  RDACM20/21
+> 
+>             probe()
+>                |
+>                ---------------------> |
+>                                       probe() {
+>                                          enable_threshold()
+>                                       }
+>                |<--------------------|
+>             v4l2 async bound {
+>                 compensate_amplitude()
+>                 call subdev init()
+>                |-------------------->|
+>                                      init() {
+>                                          access camera registers()
+>                                     }
+>                |<-------------------
+>             }
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
->  MAINTAINERS                  |   8 +
->  drivers/iio/adc/Kconfig      |  12 +
->  drivers/iio/adc/Makefile     |   1 +
->  drivers/iio/adc/ti-tsc2046.c | 728 +++++++++++++++++++++++++++++++++++
->  4 files changed, 749 insertions(+)
->  create mode 100644 drivers/iio/adc/ti-tsc2046.c
+>  drivers/media/i2c/max9286.c | 19 +++++++---
+>  drivers/media/i2c/rdacm20.c | 69 +++++++++++++++++++++++--------------
+>  drivers/media/i2c/rdacm21.c | 65 ++++++++++++++++++++--------------
+>  3 files changed, 98 insertions(+), 55 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0455cfd5c76c..2ea85a5bb4dd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18002,6 +18002,14 @@ S:	Supported
->  F:	Documentation/devicetree/bindings/net/nfc/trf7970a.txt
->  F:	drivers/nfc/trf7970a.c
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 9124d5fa6ea3..b6347639901e 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -563,17 +563,28 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	if (priv->bound_sources != priv->source_mask)
+>  		return 0;
 >  
-> +TI TSC2046 ADC DRIVER
-> +M:	Oleksij Rempel <o.rempel@pengutronix.de>
-> +R:	kernel@pengutronix.de
-> +L:	linux-iio@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
-> +F:	drivers/iio/adc/ti-tsc2046.c
-> +
->  TI TWL4030 SERIES SOC CODEC DRIVER
->  M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
->  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-...
-> diff --git a/drivers/iio/adc/ti-tsc2046.c b/drivers/iio/adc/ti-tsc2046.c
-> new file mode 100644
-> index 000000000000..c8c0dd9087c5
-> --- /dev/null
-> +++ b/drivers/iio/adc/ti-tsc2046.c
-> @@ -0,0 +1,728 @@
-> +/*
-> + * The PENIRQ of TSC2046 controller is implemented as level shifter attached to
-> + * the X+ line. If voltage of the X+ line reaches a specific level the IRQ will
-> + * be activated or deactivated.
-> + * To make this kind of IRQ reusable as trigger following additions were
-> + * implemented:
-> + * - rate limiting:
-> + *   For typical touchscreen use case, we need to trigger about each 10ms.
-> + * - hrtimer:
-> + *   Continue triggering at least once after the IRQ was deactivated. Then
-> + *   deactivate this trigger to stop sampling in order to reduce power
-> + *   consumption.
-> + */
-
-Good description :)
-
-...
-
-
-> +
-> +struct tsc2046_adc_scan_buf {
-> +	/* Scan data for each channel */
-> +	u16 data[TI_TSC2046_MAX_CHAN];
-> +	/* Timestamp */
-> +	s64 ts __aligned(8);
-> +};
-
-...
-
-> +struct tsc2046_adc_priv {
-> +	struct spi_device *spi;
-> +	const struct tsc2046_adc_dcfg *dcfg;
-> +
-> +	struct iio_trigger *trig;
-> +	struct hrtimer trig_timer;
-> +	spinlock_t trig_lock;
-> +	atomic_t trig_more_count;
-> +
-> +	struct spi_transfer xfer;
-> +	struct spi_message msg;
-> +
-> +	struct tsc2046_adc_scan_buf scan_buf;
-
-Given the type tsc2046_adc_scan_buf is never used for anything else
-you could make things more compact by using 
-	struct {
-	} scan_buf; 
-
 > +	/*
-> +	 * Lock to protect the layout and the spi transfer buffer.
-> +	 * tsc2046_adc_group_layout can be changed within update_scan_mode(),
-> +	 * in this case the l[] and tx/rx buffer will be out of sync to each
-> +	 * other.
+> +	 * Initialize all the remote camera. Increase the channel amplitude
+> +	 * to compensate for the remote noise immunity threshold.
 > +	 */
-> +	struct mutex slock;
-> +	struct tsc2046_adc_group_layout l[TI_TSC2046_MAX_CHAN];
-> +	struct tsc2046_adc_atom *rx;
-> +	struct tsc2046_adc_atom *tx;
+> +	max9286_reverse_channel_setup(priv, MAX9286_REV_AMP_HIGH);
+> +	for_each_source(priv, source) {
+> +		ret = v4l2_subdev_call(source->sd, core, init, 0);
+> +		if (ret) {
+> +			dev_err(&priv->client->dev,
+> +				"Failed to initialize camera device %u\n",
+> +				index);
+> +			return ret;
+> +		}
+> +	}
 > +
-> +	struct tsc2046_adc_atom *rx_one;
-> +	struct tsc2046_adc_atom *tx_one;
-> +
-> +	unsigned int count;
-> +	unsigned int groups;
-> +	u32 effective_speed_hz;
-> +	u32 scan_interval_us;
-> +	u32 time_per_scan_us;
-> +	u32 time_per_bit_ns;
-> +
-> +	struct tsc2046_adc_ch_cfg ch_cfg[TI_TSC2046_MAX_CHAN];
+>  	/*
+>  	 * All enabled sources have probed and enabled their reverse control
+>  	 * channels:
+> -	 *
+> -	 * - Increase the reverse channel amplitude to compensate for the
+> -	 *   remote ends high threshold
+>  	 * - Verify all configuration links are properly detected
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> -	max9286_reverse_channel_setup(priv, MAX9286_REV_AMP_HIGH);
+>  	max9286_check_config_link(priv, priv->source_mask);
+>  
+>  	/*
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index 90eb73f0e6e9..3cab6af7eba6 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -435,35 +435,12 @@ static int rdacm20_get_fmt(struct v4l2_subdev *sd,
+>  	return 0;
+>  }
+>  
+> -static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
+> -	.s_stream	= rdacm20_s_stream,
+> -};
+> -
+> -static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
+> -	.enum_mbus_code = rdacm20_enum_mbus_code,
+> -	.get_fmt	= rdacm20_get_fmt,
+> -	.set_fmt	= rdacm20_get_fmt,
+> -};
+> -
+> -static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> -	.video		= &rdacm20_video_ops,
+> -	.pad		= &rdacm20_subdev_pad_ops,
+> -};
+> -
+> -static int rdacm20_initialize(struct rdacm20_device *dev)
+> +static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
+>  {
+> +	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+>  	unsigned int retry = 3;
+>  	int ret;
+>  
+> -	/* Verify communication with the MAX9271: ping to wakeup. */
+> -	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer->client);
+> -
+> -	/* Serial link disabled during config as it needs a valid pixel clock. */
+> -	ret = max9271_set_serial_link(dev->serializer, false);
+> -	if (ret)
+> -		return ret;
+> -
+>  	/*
+>  	 *  Ensure that we have a good link configuration before attempting to
+>  	 *  identify the device.
+> @@ -544,6 +521,48 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	return 0;
+>  }
+>  
+> +static const struct v4l2_subdev_core_ops rdacm20_core_ops = {
+> +	.init           = rdacm20_init,
 > +};
 > +
-> +#define TI_TSC2046_V_CHAN(index, bits, name)			\
-> +{								\
-> +	.type = IIO_VOLTAGE,					\
-> +	.indexed = 1,						\
-> +	.channel = index,					\
-> +	.datasheet_name = "#name",				\
-> +	.scan_index = index,					\
-> +	.scan_type = {						\
-> +		.sign = 'u',					\
-> +		.realbits = bits,				\
-> +		.storagebits = 16,				\
-> +		.endianness = IIO_CPU,				\
-> +	},							\
-> +}
-
-I'd not noticed this before but you are exposing nothing to the
-normal IIO interfaces.
-
-That means for usecases like iio-hwmon there is no access
-to polled readings, or information like channel scaling.
-
-I suppose that could be added later, but perhaps you want to call this
-out by mentioning it in the patch description.
-
-
-> +
-> +#define DECLARE_TI_TSC2046_8_CHANNELS(name, bits) \
-> +const struct iio_chan_spec name ## _channels[] = { \
-> +	TI_TSC2046_V_CHAN(0, bits, TEMP0), \
-> +	TI_TSC2046_V_CHAN(1, bits, Y), \
-> +	TI_TSC2046_V_CHAN(2, bits, VBAT), \
-> +	TI_TSC2046_V_CHAN(3, bits, Z1), \
-> +	TI_TSC2046_V_CHAN(4, bits, Z2), \
-> +	TI_TSC2046_V_CHAN(5, bits, X), \
-> +	TI_TSC2046_V_CHAN(6, bits, AUX), \
-> +	TI_TSC2046_V_CHAN(7, bits, TEMP1), \
-> +	IIO_CHAN_SOFT_TIMESTAMP(8), \
-> +}
-> +
-> +static DECLARE_TI_TSC2046_8_CHANNELS(tsc2046_adc, 12);
-> +
-> +static const struct tsc2046_adc_dcfg tsc2046_adc_dcfg_tsc2046e = {
-> +	.channels = tsc2046_adc_channels,
-> +	.num_channels = ARRAY_SIZE(tsc2046_adc_channels),
+> +static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
+> +	.s_stream	= rdacm20_s_stream,
 > +};
 > +
+> +static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
+> +	.enum_mbus_code = rdacm20_enum_mbus_code,
+> +	.get_fmt	= rdacm20_get_fmt,
+> +	.set_fmt	= rdacm20_get_fmt,
+> +};
+> +
+> +static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> +	.core		= &rdacm20_core_ops,
+> +	.video		= &rdacm20_video_ops,
+> +	.pad		= &rdacm20_subdev_pad_ops,
+> +};
+> +
+> +static int rdacm20_initialize(struct rdacm20_device *dev)
+> +{
+> +	int ret;
+> +
+> +	/* Verify communication with the MAX9271: ping to wakeup. */
+> +	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
+> +	i2c_smbus_read_byte(dev->serializer->client);
+> +
+> +	/* Serial link disabled during config as it needs a valid pixel clock. */
+> +	ret = max9271_set_serial_link(dev->serializer, false);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Set reverse channel high threshold to increase noise immunity.
+> +	 *
+> +	 * This should be compensated by increasing the reverse channel
+> +	 * amplitude on the remote deserializer side.
+> +	 */
+> +	return max9271_set_high_threshold(dev->serializer, true);
+> +}
+> +
+>  static int rdacm20_probe(struct i2c_client *client)
+>  {
+>  	struct rdacm20_device *dev;
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index dcc21515e5a4..318a3b40d9e6 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -314,21 +314,6 @@ static int rdacm21_get_fmt(struct v4l2_subdev *sd,
+>  	return 0;
+>  }
+>  
+> -static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
+> -	.s_stream	= rdacm21_s_stream,
+> -};
+> -
+> -static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
+> -	.enum_mbus_code = rdacm21_enum_mbus_code,
+> -	.get_fmt	= rdacm21_get_fmt,
+> -	.set_fmt	= rdacm21_get_fmt,
+> -};
+> -
+> -static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
+> -	.video		= &rdacm21_video_ops,
+> -	.pad		= &rdacm21_subdev_pad_ops,
+> -};
+> -
+>  static int ov10640_initialize(struct rdacm21_device *dev)
+>  {
+>  	u8 val;
+> @@ -446,20 +431,11 @@ static int ov490_initialize(struct rdacm21_device *dev)
+>  	return 0;
+>  }
+>  
+> -static int rdacm21_initialize(struct rdacm21_device *dev)
+> +static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
+>  {
+> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
+>  	int ret;
+>  
+> -	/* Verify communication with the MAX9271: ping to wakeup. */
+> -	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer.client);
+> -	usleep_range(3000, 5000);
+> -
+> -	/* Enable reverse channel and disable the serial link. */
+> -	ret = max9271_set_serial_link(&dev->serializer, false);
+> -	if (ret)
+> -		return ret;
+> -
+>  	/* Configure I2C bus at 105Kbps speed and configure GMSL. */
+>  	ret = max9271_configure_i2c(&dev->serializer,
+>  				    MAX9271_I2CSLVSH_469NS_234NS |
+> @@ -506,6 +482,43 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_core_ops rdacm21_core_ops = {
+> +	.init		= rdacm21_init,
+> +};
+> +
+> +static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
+> +	.s_stream	= rdacm21_s_stream,
+> +};
+> +
+> +static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
+> +	.enum_mbus_code = rdacm21_enum_mbus_code,
+> +	.get_fmt	= rdacm21_get_fmt,
+> +	.set_fmt	= rdacm21_get_fmt,
+> +};
+> +
+> +static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
+> +	.core		= &rdacm21_core_ops,
+> +	.video		= &rdacm21_video_ops,
+> +	.pad		= &rdacm21_subdev_pad_ops,
+> +};
+> +
+> +static int rdacm21_initialize(struct rdacm21_device *dev)
+> +{
+> +	int ret;
+> +
+> +	/* Verify communication with the MAX9271: ping to wakeup. */
+> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> +	i2c_smbus_read_byte(dev->serializer.client);
+> +	usleep_range(3000, 5000);
+> +
+> +	/* Enable reverse channel and disable the serial link. */
+> +	ret = max9271_set_serial_link(&dev->serializer, false);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/*
+>  	 * Set reverse channel high threshold to increase noise immunity.
+>  	 *
 
-Hmm.  Flexibility that isn't yet used.  Normally I'm pretty resistant
-to this going in, unless I'm reassured that there is support for additional
-devices already in the pipeline.  Is that true here?  Otherwise
-this is basically unneeded complexity.
+-- 
+Regards,
 
-...
-
-Jonathan
+Laurent Pinchart
