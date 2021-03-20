@@ -2,176 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259ED342C8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB855342C89
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhCTLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34490 "EHLO mail.kernel.org"
+        id S230173AbhCTLx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230115AbhCTLxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230095AbhCTLxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 20 Mar 2021 07:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C119861923;
-        Sat, 20 Mar 2021 09:09:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6080C61973;
+        Sat, 20 Mar 2021 09:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616231357;
-        bh=6lwMsLbAVQSafHY2R3faKJ0q8xXkIOaYQG7JHAFHknc=;
+        s=k20201202; t=1616231413;
+        bh=jESRaHQQjcAoWFFL1XrKb8MAdftiII5rPd4gYd4p+gM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A5o+i6Thk8j+LuxOCALsgJA8pz7jP2BTTJWofJMegxkFYo2TZ1Md0Jj9ceN8P+ze/
-         bw+FsFbLz4lnKAbrJviA6P3RWo8VMqRSPDslBmvyQmd7DBlnU81GhMOyStqGTGf4PR
-         uBzAwIuUw9HK1z75gaonrLm+gku1llQY0JR+USsbhIHYFnS4yLiPyAxrOSn92Bdmkp
-         Zrao6lm3R9mg3MC20VR5LMU8PiyhMibuOG27bZrZsk3fADUsHN40dY60GNH7+s6KGz
-         MmRMsAnrJKVYPyktXyHEVEm23hDtOBsj0g8eHdtCqyAwip9DcQE2hlMNUhF+wQ51Z2
-         pu+pFGRg6afKA==
-Date:   Sat, 20 Mar 2021 17:08:59 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Sanket Parmar <sparmar@cadence.com>
-Cc:     pawell@cadence.com, a-govindraju@ti.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kurahul@cadence.com,
-        gregkh@linuxfoundation.org, kishon@ti.com, hch@infradead.org
-Subject: Re: [PATCH v2] usb: cdns3: Optimize DMA request buffer allocation
-Message-ID: <20210320090858.GB28364@b29397-desktop>
-References: <1616008439-15494-1-git-send-email-sparmar@cadence.com>
+        b=hITO8Ymn1Mr9SNuYa5khrjZyN0cKc/fwqBtNTjtI1xfKkGCMUXgn5GmJXmpu8ewmq
+         X765KzYSDTCriBH8tWQw8obBnvxTjCgaZyr+/ST3Tv1WPbezc/mPZh8RbsDRQayrf0
+         uxhRLtDuiJM+SNKwJ5RZMhUUdAHBUaAvqvWBY9OuuioA/VJzHRA6P9Mzc0qTvDKOu6
+         pHkGgmzDbWbvbfZZSAtWo6NAPf4sJKDP9XglUkAp6n8uK+9SYz3SpXnzEIxCG4koev
+         1Nu4NLCGkJ8tVk2DCj1VXkHnnfd3j8UFhHI//s3qnQc+FDl8bCScr3O8gqIQGhwQ4f
+         2ywX0cXik6oBw==
+Date:   Sat, 20 Mar 2021 11:10:08 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFW78AfbhYpn16H4@unreal>
+References: <YFHsW/1MF6ZSm8I2@unreal>
+ <20210317131718.3uz7zxnvoofpunng@archlinux>
+ <YFILEOQBOLgOy3cy@unreal>
+ <20210317113140.3de56d6c@omen.home.shazbot.org>
+ <YFMYzkg101isRXIM@unreal>
+ <20210318103935.2ec32302@omen.home.shazbot.org>
+ <YFOMShJAm4j/3vRl@unreal>
+ <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
+ <YFSgQ2RWqt4YyIV4@unreal>
+ <20210319102313.179e9969@omen.home.shazbot.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616008439-15494-1-git-send-email-sparmar@cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210319102313.179e9969@omen.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-17 20:13:59, Sanket Parmar wrote:
-> dma_alloc_coherent() might fail on the platform with a small
-> DMA region.
+On Fri, Mar 19, 2021 at 10:23:13AM -0600, Alex Williamson wrote:
+> On Fri, 19 Mar 2021 14:59:47 +0200
+> Leon Romanovsky <leon@kernel.org> wrote:
 > 
-> To avoid such failure in cdns3_prepare_aligned_request_buf(),
-> dma_alloc_coherent() is replaced with dma_alloc_noncoherent()
-> to allocate aligned request buffer of dynamic length.
+> > On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
+> > > On 18.03.21 18:22, Leon Romanovsky wrote:
+> > >   
+> > > > Which email client do you use?
+> > > > Your responses are grouped as one huge block without any chance to respond
+> > > > to you on specific point or answer to your question.  
+> > > 
+> > > I'm reading this thread in Tbird, and threading / quoting all looks
+> > > nice.  
+> > 
+> > I'm not talking about threading or quoting but about response itself.
+> > See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
+> > Alex's response is one big chunk without any separations to paragraphs.
 > 
-> Reported-by: Aswath Govindraju <a-govindraju@ti.com>
-> Signed-off-by: Sanket Parmar <sparmar@cadence.com>
-> ---
+> I've never known paragraph breaks to be required to interject a reply.
+
+Of course not, but as Bjorn said if you don't do paragraphs, we will
+need manually break your message, fix ">" quotation marks and half
+sentences.
+
+I just wanted to be sure that this is not my mail client.
+
 > 
-> Changelog:
-> v2:
-> - used dma_*_noncoherent() APIs
-> - changed the commit log
+> Back on topic...
 > 
->  drivers/usb/cdns3/cdns3-gadget.c | 30 ++++++++++++++++++++++++------
->  drivers/usb/cdns3/cdns3-gadget.h |  2 ++
->  2 files changed, 26 insertions(+), 6 deletions(-)
+> > >   
+> > > > I see your flow and understand your position, but will repeat my
+> > > > position. We need to make sure that vendors will have incentive to
+> > > > supply quirks.  
 > 
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> index 0b892a2..126087b 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.c
-> +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> @@ -819,9 +819,15 @@ void cdns3_gadget_giveback(struct cdns3_endpoint *priv_ep,
->  					priv_ep->dir);
->  
->  	if ((priv_req->flags & REQUEST_UNALIGNED) &&
-> -	    priv_ep->dir == USB_DIR_OUT && !request->status)
-> +	    priv_ep->dir == USB_DIR_OUT && !request->status) {
-> +		/* Make DMA buffer CPU accessible */
-> +		dma_sync_single_for_cpu(priv_dev->sysdev,
-> +			priv_req->aligned_buf->dma,
-> +			priv_req->aligned_buf->size,
-> +			priv_req->aligned_buf->dir);
->  		memcpy(request->buf, priv_req->aligned_buf->buf,
->  		       request->length);
-> +	}
->  
->  	priv_req->flags &= ~(REQUEST_PENDING | REQUEST_UNALIGNED);
->  	/* All TRBs have finished, clear the counter */
-> @@ -883,8 +889,8 @@ static void cdns3_free_aligned_request_buf(struct work_struct *work)
->  			 * interrupts.
->  			 */
->  			spin_unlock_irqrestore(&priv_dev->lock, flags);
-> -			dma_free_coherent(priv_dev->sysdev, buf->size,
-> -					  buf->buf, buf->dma);
-> +			dma_free_noncoherent(priv_dev->sysdev, buf->size,
-> +					  buf->buf, buf->dma, buf->dir);
->  			kfree(buf);
->  			spin_lock_irqsave(&priv_dev->lock, flags);
->  		}
-> @@ -911,10 +917,13 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  			return -ENOMEM;
->  
->  		buf->size = priv_req->request.length;
-> +		buf->dir = usb_endpoint_dir_in(priv_ep->endpoint.desc) ?
-> +			DMA_TO_DEVICE : DMA_FROM_DEVICE;
->  
-> -		buf->buf = dma_alloc_coherent(priv_dev->sysdev,
-> +		buf->buf = dma_alloc_noncoherent(priv_dev->sysdev,
->  					      buf->size,
->  					      &buf->dma,
-> +					      buf->dir,
->  					      GFP_ATOMIC);
->  		if (!buf->buf) {
->  			kfree(buf);
-> @@ -936,10 +945,18 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  	}
->  
->  	if (priv_ep->dir == USB_DIR_IN) {
-> +		/* Make DMA buffer CPU accessible */
-> +		dma_sync_single_for_cpu(priv_dev->sysdev,
-> +			buf->dma, buf->size, buf->dir);
->  		memcpy(buf->buf, priv_req->request.buf,
->  		       priv_req->request.length);
->  	}
->  
-> +	/* Transfer DMA buffer ownership back to device */
-> +	dma_sync_single_for_device(priv_dev->sysdev,
-> +			buf->dma, buf->size, buf->dir);
-> +
-> +
+> What if we taint the kernel or pci_warn() for cases where either all
+> the reset methods are disabled, ie. 'echo none > reset_method', or any
+> time a device specific method is disabled?
 
-One more blank line.
+What does it mean "none"? Does it mean nothing supported? If yes, I think that
+pci_warn() will be enough. At least for me, taint is usable during debug stages,
+probably if device doesn't crash no one will look to see /proc/sys/kernel/tainted.
 
-Otherwise, it seems OK for me.
-
->  	priv_req->flags |= REQUEST_UNALIGNED;
->  	trace_cdns3_prepare_aligned_request(priv_req);
->  
-> @@ -3088,9 +3105,10 @@ static void cdns3_gadget_exit(struct cdns *cdns)
->  		struct cdns3_aligned_buf *buf;
->  
->  		buf = cdns3_next_align_buf(&priv_dev->aligned_buf_list);
-> -		dma_free_coherent(priv_dev->sysdev, buf->size,
-> +		dma_free_noncoherent(priv_dev->sysdev, buf->size,
->  				  buf->buf,
-> -				  buf->dma);
-> +				  buf->dma,
-> +				  buf->dir);
->  
->  		list_del(&buf->list);
->  		kfree(buf);
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.h b/drivers/usb/cdns3/cdns3-gadget.h
-> index ecf9b91..c5660f2 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.h
-> +++ b/drivers/usb/cdns3/cdns3-gadget.h
-> @@ -12,6 +12,7 @@
->  #ifndef __LINUX_CDNS3_GADGET
->  #define __LINUX_CDNS3_GADGET
->  #include <linux/usb/gadget.h>
-> +#include <linux/dma-direction.h>
->  
->  /*
->   * USBSS-DEV register interface.
-> @@ -1205,6 +1206,7 @@ struct cdns3_aligned_buf {
->  	void			*buf;
->  	dma_addr_t		dma;
->  	u32			size;
-> +	enum dma_data_direction dir;
->  	unsigned		in_use:1;
->  	struct list_head	list;
->  };
-> -- 
-> 2.4.5
 > 
+> I'd almost go so far as to prevent disabling a device specific reset
+> altogether, but for example should a device specific reset that fixes
+> an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
+> case if direct FLR were disabled via a device flag introduced with the
+> quirk and the remaining resets can still be selected by preference.
 
--- 
+I don't know enough to discuss the PCI details, but you raised good point.
+This sysfs is user visible API that is presented as is from device point
+of view. It can be easily run into problems if PCI/core doesn't work with
+user's choice.
 
-Thanks,
-Peter Chen
+> 
+> Theoretically all the other reset methods work and are available, it's
+> only a policy decision which to use, right?
 
+But this patch was presented as a way to overcome situations where
+supported != working and user magically knows which reset type to set.
+
+If you want to take this patch to be policy decision tool,
+it will need to accept "reset_type1,reset_type2,..." sort of input,
+so fallback will work natively.
+
+I think that it will be much more robust and cleaner solution than it is now.
+Something like that:
+cat /sys/..../reset_policy
+reset_type1,reset_type2,...,reset_typeX
+echo "reset_type3,reset_type1" > /sys/..../reset_policy
+cat /sys/..../reset_policy
+reset_type3,reset_type1
+
+Thanks
