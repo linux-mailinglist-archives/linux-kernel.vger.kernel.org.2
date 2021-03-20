@@ -2,85 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AA0342BD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ADF342BE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhCTLNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
+        id S231317AbhCTLOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhCTLMY (ORCPT
+        with ESMTP id S230365AbhCTLOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:24 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCEEC0610D4;
-        Sat, 20 Mar 2021 03:57:52 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so11017183ota.9;
-        Sat, 20 Mar 2021 03:57:52 -0700 (PDT)
+        Sat, 20 Mar 2021 07:14:32 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276DEC05BD09
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:04:45 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id y18so5619538qky.11
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wq+T61KApM0Ouyl3nQpQtU5i7jv09KyVNafls9wYT3E=;
-        b=G6y+aIVp4bkGoqKP9TLsSFfaIqtmBntdjtikoCs4K5ETlkRHrtgZQl26jxWLHmOQfq
-         FwIXt167KW8W4/hBjtD4DvQInNYVB9tq1wKzFr1zJO0I1I0RLZgnTLfhZtStt7c3TMxj
-         vj/UhkejptddWaCyVVFtE/pZgq74ubX/ipW+yLqlpMMuXG3Zr/Bk5VCY8QHU4LGzDzmw
-         ZJysASyxgWiXFgx5TWaWgdG/ANoPI6kecLPCkZNs0IyAlZ8rUu7Gpu46Olk0JfzUVxG8
-         P57WDZelWsWlpwEfYd6tvUY4QtlMqmpRbqpkcbGbKtLf2UVUc8W7YzcPmZawo4RjSUYD
-         lkmA==
+        bh=jzaitIYzt4EYWT0hFyc7GOXcnZDTJ2OyrTKLNlgku54=;
+        b=AslwDNE1y4xOM3m4Uvb6qxiFsb6nKP01uOVfNMemzyKUJzTtkcDhwQO7n6Uv7lFTE0
+         me3ttvzLhIKz6kEm7SXwiM+z+o2s6Dr8159XMIc+zBPOuNTJ83l0rmwt3uC68x58DhIZ
+         Ru1BuFxGAUCTnXtkoNg8DsbvBRF2pQ62pYUCu9C7Ky85gpDV0c0IRh2W3i8sjDIMMA0g
+         h+aIburKhKx7zgvjey7ki+8HspXdX2Hiy+TObti5vDj/fdpL276w7HhBh4ZasX9M1rre
+         Ad4KpGhYcdK1Pzs1E+hx+1yhPm8BLL/+tEJxVaH8u0xnZCXmzDTJq6Lo6UKTDoOXyrWb
+         vkLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wq+T61KApM0Ouyl3nQpQtU5i7jv09KyVNafls9wYT3E=;
-        b=amn+KUXfGpPN9bj/rWnSbhQKL9aQGyKR9/3fqcb2yjSjNadxdgzt4FcEHBCO/Xomzq
-         aW9H/4EDCYHvdE8NdedmYELhoJvUT48SCXfJokV0pLJLSISbAJtw/IIZFL9wD6sJkHRh
-         10Ivb1DWQ0PgfS+/UwymazPaLfM2FW3A/+uOP9UjO3K6p4UoycTm7KKXyqW7WDIKhRxN
-         j3fTFfOTIaYsh065pTbxlQ2PrMt4jO5S8iY4TMwzEh4xy3uVr5FSEbtBwUSW1vxh3uu8
-         mgfDjpKanZe+xVXqkYycq1+BYmqTF6ePrkBEw1xdUesvQePawHx8Z+dcZhAUUGFeVlYu
-         vBRA==
-X-Gm-Message-State: AOAM531QQan8UGf9CiuXrQobwhWs+B4Gut6qEFlWkiP1rcChsVEwQgGz
-        oT/2I+Vg3AGvziNoVRGiE3Rnq59MWWfmDlYu2vHsHl4gbxM=
-X-Google-Smtp-Source: ABdhPJwqES/7JYz78OVBuEc5iqC2Dr3ly8ac5o8k6r0c7V8Y3wPc7U7rJgh3hh6SMALB1iyp9dYqjIldKiiWfUfADSU=
-X-Received: by 2002:a5b:449:: with SMTP id s9mr11474745ybp.115.1616223504876;
- Fri, 19 Mar 2021 23:58:24 -0700 (PDT)
+        bh=jzaitIYzt4EYWT0hFyc7GOXcnZDTJ2OyrTKLNlgku54=;
+        b=gRbp5mckzYJm6hBOCvrLUzE1tuWxyYvJp6PqgT7fdeBuCru2Q/pUesVt0dAyWlhPby
+         rqIbKWgRoZHPqcKP3qpb9cnVaTwb1NLaJNRsv7AiihMuo9pOpw1/wSxdLdA60XwvMp/Q
+         uXcMgurunBqjZVm454Vj9nGbpmQlZm5Mnw9QQMQouPwFJUncR5Tv/JohJoELIx6sEk3f
+         kK3CEf1yPHARc1u6z+uH4oiSoXV8iNH5s24nCOhAppeq2lLh8Ju1FN2GDl62W/y0sUqC
+         WyRiO+fQmEXq3R98H7TifVH/at7dC5ED+KXwDA1isCVs091bY2WrWzesjHTrM4h2wncq
+         eprw==
+X-Gm-Message-State: AOAM5332zY7RuODschCNXBDvpora8OtrUmFluH6KEOF47U8NVLdVx4zy
+        /xThSw5btmot0lixJ+BHIqm/s+X/d2DxBoTuYb90Cwn0rZMOWA==
+X-Google-Smtp-Source: ABdhPJyGU5CsAKvcZ19uEzmr1/FDp60gyDwEKKJjTfa4dbYQxjeMyFeJ/hs9aIQtJGiEltzZve+X6TleTNCBFYcqpIo=
+X-Received: by 2002:ac8:6696:: with SMTP id d22mr1954545qtp.67.1616224405467;
+ Sat, 20 Mar 2021 00:13:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319175950.509fcbd0@canb.auug.org.au> <YFS1h6h+71sRlwFR@osiris>
- <20210320162734.1630cc55@elm.ozlabs.ibm.com> <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
- <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
-In-Reply-To: <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 20 Mar 2021 07:58:14 +0100
-Message-ID: <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
-Subject: Re: linux-next: Tree for Mar 19
-To:     Stephen Rothwell <sfr@rothwell.id.au>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Daniel Axtens <dja@axtens.net>
+References: <CACT4Y+YBXLi=quMEyBHtLO3-Ef6E3CAN7toFUdTFJWeH+5Y7kg@mail.gmail.com>
+ <31c4e1863a561c47d38b8e547ec38a0a713bdadc.camel@linux.ibm.com>
+ <CACT4Y+b8cNr1zv=RFPLXf9vY==BSktM1vb9gOfcWyBEaojZ1-A@mail.gmail.com>
+ <dbf9e31ca38b36b757c71bcc8fa17cb1ae392f1c.camel@linux.ibm.com>
+ <CACT4Y+YCJ3CPR4LHqY8j_g3=vM6-iKoCc96d8OJuZ-N9KKeZkg@mail.gmail.com> <e804b6031eea8c35a71f39c44d409c902a6e2e8b.camel@linux.ibm.com>
+In-Reply-To: <e804b6031eea8c35a71f39c44d409c902a6e2e8b.camel@linux.ibm.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 20 Mar 2021 08:13:14 +0100
+Message-ID: <CACT4Y+b=vui-QJPxy_E0xFaK3S2CPmB+AQFV0MEXdH31Vg0mgw@mail.gmail.com>
+Subject: Re: NULL deref in integrity_inode_get
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, d.kasatkin@samsung.com,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Eric Biggers <ebiggers@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 7:49 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
+On Fri, Mar 19, 2021 at 9:22 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
 >
-> Reproduced on s390. However, under defconfig, one also needs to revert
-> kernel/livepatch/core.c to avoid triggering the assert, i.e.:
+> On Thu, 2021-03-18 at 07:53 +0100, Dmitry Vyukov wrote:
+> > On Thu, Mar 18, 2021 at 3:18 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > >
+> > > Hi Dmitry,
+> > >
+> > > On Mon, 2021-03-15 at 14:07 +0100, Dmitry Vyukov wrote:
+> > > > On Mon, Mar 15, 2021 at 1:41 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > > > >
+> > > > > On Mon, 2021-03-15 at 11:58 +0100, Dmitry Vyukov wrote:
+> > > > > > Hi,
+> > > > > >
+> > > > > > I am trying to boot 5.12-rc3 with this config:
+> > > > > > https://github.com/google/syzkaller/blob/cc1cff8f1e1a585894796d6eae8c51eef98037e6/dashboard/config/linux/upstream-smack-kasan.config
+> > > > > >
+> > > > > > in qemu:
+> > > > > > qemu-system-x86_64       -enable-kvm     -machine q35,nvdimm -cpu
+> > > > > > max,migratable=off -smp 4       -m 4G,slots=4,maxmem=16G        -hda
+> > > > > > wheezy.img      -kernel arch/x86/boot/bzImage   -nographic -vga std
+> > > > > >  -soundhw all     -usb -usbdevice tablet  -bt hci -bt device:keyboard
+> > > > > >    -net user,host=10.0.2.10,hostfwd=tcp::10022-:22 -net
+> > > > > > nic,model=virtio-net-pci   -object
+> > > > > > memory-backend-file,id=pmem1,share=off,mem-path=/dev/zero,size=64M
+> > > > > >   -device nvdimm,id=nvdimm1,memdev=pmem1  -append "console=ttyS0
+> > > > > > root=/dev/sda earlyprintk=serial rodata=n oops=panic panic_on_warn=1
+> > > > > > panic=86400 lsm=smack numa=fake=2 nopcid dummy_hcd.num=8"   -pidfile
+> > > > > > vm_pid -m 2G -cpu host
+> > > > > >
+> > > > > > But it crashes on NULL deref in integrity_inode_get during boot:
+> > > > > >
+> > > > > > Run /sbin/init as init process
+> > > > > > BUG: kernel NULL pointer dereference, address: 000000000000001c
+> > > > > > #PF: supervisor read access in kernel mode
+> > > > > > #PF: error_code(0x0000) - not-present page
+> > > > > > PGD 0 P4D 0
+> > > > > > Oops: 0000 [#1] PREEMPT SMP KASAN
+> > > > > > CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc2+ #97
+> > > > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > > > > > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+> > > > > > RIP: 0010:kmem_cache_alloc+0x2b/0x370 mm/slub.c:2920
+> > > > > > Code: 57 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 48 83 ec 10 44 8b
+> > > > > > 3d d9 1f 90 0b 65 48 8b 04 25 28 00 00 00 48 89 44 24 08 31 c0 <8b> 5f
+> > > > > > 1c 4cf
+> > > > > > RSP: 0000:ffffc9000032f9d8 EFLAGS: 00010246
+> > > > > > RAX: 0000000000000000 RBX: ffff888017fc4f00 RCX: 0000000000000000
+> > > > > > RDX: ffff888040220000 RSI: 0000000000000c40 RDI: 0000000000000000
+> > > > > > RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888019263627
+> > > > > > R10: ffffffff83937cd1 R11: 0000000000000000 R12: 0000000000000c40
+> > > > > > R13: ffff888019263538 R14: 0000000000000000 R15: 0000000000ffffff
+> > > > > > FS:  0000000000000000(0000) GS:ffff88802d180000(0000) knlGS:0000000000000000
+> > > > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > > CR2: 000000000000001c CR3: 000000000b48e000 CR4: 0000000000750ee0
+> > > > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > > PKRU: 55555554
+> > > > > > Call Trace:
+> > > > > >  integrity_inode_get+0x47/0x260 security/integrity/iint.c:105
+> > > > > >  process_measurement+0x33d/0x17e0 security/integrity/ima/ima_main.c:237
+> > > > > >  ima_bprm_check+0xde/0x210 security/integrity/ima/ima_main.c:474
+> > > > > >  security_bprm_check+0x7d/0xa0 security/security.c:845
+> > > > > >  search_binary_handler fs/exec.c:1708 [inline]
+> > > > > >  exec_binprm fs/exec.c:1761 [inline]
+> > > > > >  bprm_execve fs/exec.c:1830 [inline]
+> > > > > >  bprm_execve+0x764/0x19a0 fs/exec.c:1792
+> > > > > >  kernel_execve+0x370/0x460 fs/exec.c:1973
+> > > > > >  try_to_run_init_process+0x14/0x4e init/main.c:1366
+> > > > > >  kernel_init+0x11d/0x1b8 init/main.c:1477
+> > > > > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> > > > > > Modules linked in:
+> > > > > > CR2: 000000000000001c
+> > > > > > ---[ end trace 22d601a500de7d79 ]---
+> > > > >
+> > > > > It looks like integrity_inode_get() fails to alloc memory.   Only on
+> > > > > failure to verify the integrity of a file would an error be returned.
+> > > > > I think that is what you would want to happen.  Without an "appraise"
+> > > > > policy, this shouldn't happen.
+> > > >
+> > > > It happens at the very boot. I think the cache is NULL.
+> > >
+> > > An IMA policy had to have been loaded in order for
+> > > integrity_inode_get() to have been called.   If this is happening on
+> > > boot, it's too early for a custom policy to have been loaded by
+> > > userspace, but I don't see the builtin policy defined on the boot
+> > > command line either.
+> > >
+> > > Any additional information would be much appreciated.
+> >
+> > Hi Mimi,
+> >
+> > I provided kernel config and qemu command line. What other information
+> > are you looking for? Can you reproduce it on your side?
+>
+> Yes, finally I was able to reproduce the NULL deref.  I just posted two
+> patches as an RFC.  As described in the 2/2 patch description, it's
+> unclear why the iint_cache would not be initialized, yet an IMA policy
+> is loaded.  If the kmem_cache_alloc() for the iint_cache failed, it
+> would have panic'ed.  Perhaps you have some insights as to how this
+> might happen.
+>
+> Once reviewed/tested, I'll re-post a proper patch (fixing the patch
+> author).
 
-Stephen: I will put this in rust-next so that others don't see
-problems on their side and test it with a allmodconfig for powerpc and
-s390 -- is it Monday the next round, right?
+Hi Mimi,
 
-Cheers,
-Miguel
+I know almost nothing about the security subsystem in general and
+integrity subsystem in particular. I think you are much better
+equipped to answer these questions.
+You said you can reproduce it, doesn't it allow you to understand what
+happens? E.g. by adding maybe some additional printf's to trace
+execution of some key initialization points.
