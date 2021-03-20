@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFB0342A66
+	by mail.lfdr.de (Postfix) with ESMTP id D77BE342A67
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 05:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhCTERF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 00:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S229946AbhCTERG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 00:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhCTEQj (ORCPT
+        with ESMTP id S229872AbhCTEQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 00:16:39 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF86C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:38 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id q5so7240428pfh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:38 -0700 (PDT)
+        Sat, 20 Mar 2021 00:16:41 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FB3C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id c204so7239958pfc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qx2lJVIGj34u/LPV1tiCGu8rXqy7Kzn5lo/CUtewkUw=;
-        b=GD9zIgA06a/vBNkAi5/ndewe16Ck3704OqX03fjE3ebbyTI6dneA0aJCjaT0FqBOm/
-         V3TERDprfEgWoAwZLnImH15+2vtBGibl+WLehA4P88+EEXTE4izodvBKLLwW8ZKOg96+
-         BLvr3URNhK18no3n/Skh/ZvPW4XtqG1HbP9l0=
+        bh=ouW7w1tJWbMBvkhdIE4FNoeWEk82Uxbfl+Y1tFiGtH8=;
+        b=GaR+AlXSZ33dTxAXj2aQHNsb/sGlsgOLi4SYfJYpDeQ41vo5yOlbpjw4vqeKO6cOg4
+         Jwab7ZTirHmKX0QkEAs6s5nMXaMkHvyvNTDPe9qDsvb6q4qO6bCoL30EUYZeTFe/sDZJ
+         KHCA8IZ67qajMR7PT+Sh5vGYLDEFNJSP27mII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qx2lJVIGj34u/LPV1tiCGu8rXqy7Kzn5lo/CUtewkUw=;
-        b=VyEKdZkF3lJdUJs+uRyMLpUskZAosnsyEiN6GYqaZFBKADBScg5+A1p3JPKEGNOctF
-         TyoBeBJaZVf2aKQjfZaT/VxaD9WqR9SI4LYcxlyP9eAoFJMCCcWVGsTeD46OXWKnhAqT
-         Zh0q0NxGNyfvacjVRzj5HA+M1XDuUjffS0TCMsDRvPKsue3MSzes/kp1GseBoK/E3v3H
-         reUS6gkej8BNz42c2yhUg2YEV+/OWd+BMM7/U18nCd418f/+3GJxXuB1oHFXpc1kK7R0
-         HpcTxa1SOcrPqCY3p6zbQDz1wJdvcM+JQnc3Ovi6ZEnnry1+imnrvsLQ55yUIFuID5lS
-         NAAg==
-X-Gm-Message-State: AOAM532qSvGEhT0Aq1eNmlVIgU9NgR3QG0dSbDk5vFfaz2po23rE23hG
-        V0PeKlSiWxWur2suBMgLIHpvOA==
-X-Google-Smtp-Source: ABdhPJz65K2FqJvKHOdHbGRLhkFUpwR7vB1ByJNbvaKtkJj9l6j0n4RyWzYsoWDlZ8rJlGZgnGZzKw==
-X-Received: by 2002:aa7:86c1:0:b029:203:900:2813 with SMTP id h1-20020aa786c10000b029020309002813mr11787097pfo.35.1616213798429;
-        Fri, 19 Mar 2021 21:16:38 -0700 (PDT)
+        bh=ouW7w1tJWbMBvkhdIE4FNoeWEk82Uxbfl+Y1tFiGtH8=;
+        b=O/TEgs/i5m/lFGYMMxiH1DaRrkryhQ3dD6InQ/c3pzKAGMyapHuumfbBRQa3OqskYM
+         Icgc9UdJND2FMkQWjDvG4f2x7kuWZG7FI4Gh/0vgM5T4nPXjZEe2dIfB/xTJC96YTzsT
+         AuYagu1z+np2jfVsfiE59E/TN/GIL28T8GRyVJo6Dgq7PlUQSmWpFZ7FAkvfbGH/sI4D
+         yr5sNcwuVAxi2rEr+tM+tVViSiqHdfIQmkcoiTpsME7E+l8r6sGJdbibDld6SnJaXQWc
+         xgnJb2L3qfJD2jEhgQTItTM6bUt0Ewfuj1Km7ualx2bNhnRLdN0y7v7zNk3IWHzhCVQf
+         AJdg==
+X-Gm-Message-State: AOAM532aQf6KUfhtA6rsGSsxbFShZttuLbsf77N79FWS/DB5sjb3qyxl
+        FbMada5w1y6hi3JBdIuCMbbHqgJg5mBp6A==
+X-Google-Smtp-Source: ABdhPJyuVJUZTJmCmSbcUFGQVZHQYq/vnOWl4IN/MCtT7KdD0RfsEBPHuUvCBSAo8mGviV9bc7WcPA==
+X-Received: by 2002:a62:7708:0:b029:1ee:f656:51d5 with SMTP id s8-20020a6277080000b02901eef65651d5mr12471549pfc.59.1616213800520;
+        Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
 Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:f0c7:e1f7:948e:d8d5])
-        by smtp.gmail.com with ESMTPSA id s62sm6998869pfb.148.2021.03.19.21.16.35
+        by smtp.gmail.com with ESMTPSA id s62sm6998869pfb.148.2021.03.19.21.16.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 21:16:38 -0700 (PDT)
+        Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
 From:   Nicolas Boichat <drinkcat@chromium.org>
 To:     stable@vger.kernel.org
-Cc:     groeck@chromium.org, Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
+Cc:     groeck@chromium.org, Mark Rutland <mark.rutland@arm.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christopher Li <sparse@chrisli.org>,
-        Daniel Axtens <dja@axtens.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [for-stable-4.19 PATCH v2 1/2] vmlinux.lds.h: Create section for protection against instrumentation
-Date:   Sat, 20 Mar 2021 12:16:25 +0800
-Message-Id: <20210320121614.for-stable-4.19.v2.1.I222f801866f71be9f7d85e5b10665cd4506d78ec@changeid>
+        Kees Cook <keescook@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [for-stable-4.19 PATCH v2 2/2] lkdtm: don't move ctors to .rodata
+Date:   Sat, 20 Mar 2021 12:16:26 +0800
+Message-Id: <20210320121614.for-stable-4.19.v2.2.I0387622b15d84eed675e48a0ba3be9c03b9f9e97@changeid>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 In-Reply-To: <20210320041626.885806-1-drinkcat@chromium.org>
 References: <20210320041626.885806-1-drinkcat@chromium.org>
@@ -76,226 +65,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Mark Rutland <mark.rutland@arm.com>
 
-commit 6553896666433e7efec589838b400a2a652b3ffa upstream.
+commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 upstream.
 
-Some code pathes, especially the low level entry code, must be protected
-against instrumentation for various reasons:
+When building with KASAN and LKDTM, clang may implictly generate an
+asan.module_ctor function in the LKDTM rodata object. The Makefile moves
+the lkdtm_rodata_do_nothing() function into .rodata by renaming the
+file's .text section to .rodata, and consequently also moves the ctor
+function into .rodata, leading to a boot time crash (splat below) when
+the ctor is invoked by do_ctors().
 
- - Low level entry code can be a fragile beast, especially on x86.
+Let's prevent this by marking the function as noinstr rather than
+notrace, and renaming the file's .noinstr.text to .rodata. Marking the
+function as noinstr will prevent tracing and kprobes, and will inhibit
+any undesireable compiler instrumentation.
 
- - With NO_HZ_FULL RCU state needs to be established before using it.
+The ctor function (if any) will be placed in .text and will work
+correctly.
 
-Having a dedicated section for such code allows to validate with tooling
-that no unsafe functions are invoked.
+Example splat before this patch is applied:
 
-Add the .noinstr.text section and the noinstr attribute to mark
-functions. noinstr implies notrace. Kprobes will gain a section check
-later.
+[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
+[    0.922088] Mem abort info:
+[    0.922828]   ESR = 0x8600000e
+[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
+[    0.925036]   SET = 0, FnV = 0
+[    0.925838]   EA = 0, S1PTW = 0
+[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
+[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
+[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
+[    0.932806] Modules linked in:
+[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
+[    0.935620] Hardware name: linux,dummy-virt (DT)
+[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[    0.938609] pc : asan.module_ctor+0x0/0x14
+[    0.939759] lr : do_basic_setup+0x4c/0x70
+[    0.940889] sp : ffff27b600177e30
+[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
+[    0.943306] x27: 0000000000000000 x26: 0000000000000000
+[    0.944803] x25: 0000000000000000 x24: 0000000000000000
+[    0.946289] x23: 0000000000000001 x22: 0000000000000000
+[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
+[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
+[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
+[    0.952246] x15: 0000000000000000 x14: 0000000000000000
+[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
+[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
+[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
+[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
+[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
+[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
+[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
+[    0.964155] Call trace:
+[    0.964844]  asan.module_ctor+0x0/0x14
+[    0.965895]  kernel_init_freeable+0x158/0x198
+[    0.967115]  kernel_init+0x14/0x19c
+[    0.968104]  ret_from_fork+0x10/0x30
+[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
+[    0.970815] ---[ end trace b5339784e20d015c ]---
 
-Provide also a set of markers: instrumentation_begin()/end()
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kees Cook <keescook@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-These are used to mark code inside a noinstr function which calls
-into regular instrumentable text section as safe.
-
-The instrumentation markers are only active when CONFIG_DEBUG_ENTRY is
-enabled as the end marker emits a NOP to prevent the compiler from merging
-the annotation points. This means the objtool verification requires a
-kernel compiled with this option.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200505134100.075416272@linutronix.de
-
-[Nicolas:
-Guard noinstr macro in include/linux/compiler_types.h in __KERNEL__
-&& !__ASSEMBLY__, otherwise noinstr is expanded in the linker
-script construct.
-
-Upstream does not have this problem as many macros were moved by
-commit 71391bdd2e9a ("include/linux/compiler_types.h: don't pollute
-userspace with macro definitions"). We take the minimal approach here
-and just guard the new macro.
-
-Minor context conflicts in:
-	arch/powerpc/kernel/vmlinux.lds.S
-	include/asm-generic/vmlinux.lds.h
-	include/linux/compiler.h]
 Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-
 ---
-Technically guarding with !__ASSEMBLY__ should be enough, but
-there seems to be no reason to expose this new macro when
-!__KERNEL__, so let's just match what upstream does.
 
-Changes in v2:
- - Guard noinstr macro by __KERNEL__ && !__ASSEMBLY__ to prevent
-   expansion in linker script and match upstream.
+(no changes since v1)
 
- arch/powerpc/kernel/vmlinux.lds.S |  1 +
- include/asm-generic/sections.h    |  3 ++
- include/asm-generic/vmlinux.lds.h | 10 ++++++
- include/linux/compiler.h          | 54 +++++++++++++++++++++++++++++++
- include/linux/compiler_types.h    |  6 ++++
- scripts/mod/modpost.c             |  2 +-
- 6 files changed, 75 insertions(+), 1 deletion(-)
+ drivers/misc/lkdtm/Makefile | 2 +-
+ drivers/misc/lkdtm/rodata.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 695432965f20..9b346f3d2814 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -99,6 +99,7 @@ SECTIONS
- #endif
- 		/* careful! __ftr_alt_* sections need to be close to .text */
- 		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely .fixup __ftr_alt_* .ref.text);
-+		NOINSTR_TEXT
- 		SCHED_TEXT
- 		CPUIDLE_TEXT
- 		LOCK_TEXT
-diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-index 849cd8eb5ca0..ea5987bb0b84 100644
---- a/include/asm-generic/sections.h
-+++ b/include/asm-generic/sections.h
-@@ -53,6 +53,9 @@ extern char __ctors_start[], __ctors_end[];
- /* Start and end of .opd section - used for function descriptors. */
- extern char __start_opd[], __end_opd[];
+diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+index cce47a15a79f..aeb960cb096d 100644
+--- a/drivers/misc/lkdtm/Makefile
++++ b/drivers/misc/lkdtm/Makefile
+@@ -13,7 +13,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
  
-+/* Start and end of instrumentation protected text section */
-+extern char __noinstr_text_start[], __noinstr_text_end[];
-+
- extern __visible const void __nosave_begin, __nosave_end;
+ OBJCOPYFLAGS :=
+ OBJCOPYFLAGS_rodata_objcopy.o	:= \
+-			--rename-section .text=.rodata,alloc,readonly,load
++			--rename-section .noinstr.text=.rodata,alloc,readonly,load
+ targets += rodata.o rodata_objcopy.o
+ $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
+ 	$(call if_changed,objcopy)
+diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
+index 58d180af72cf..baacb876d1d9 100644
+--- a/drivers/misc/lkdtm/rodata.c
++++ b/drivers/misc/lkdtm/rodata.c
+@@ -5,7 +5,7 @@
+  */
+ #include "lkdtm.h"
  
- /* Function descriptor handling (if any).  Override in asm/sections.h */
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 2d632a74cc5e..88484ee023ca 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -482,6 +482,15 @@
- 		__security_initcall_end = .;				\
- 	}
- 
-+/*
-+ * Non-instrumentable text section
-+ */
-+#define NOINSTR_TEXT							\
-+		ALIGN_FUNCTION();					\
-+		__noinstr_text_start = .;				\
-+		*(.noinstr.text)					\
-+		__noinstr_text_end = .;
-+
- /*
-  * .text section. Map to function alignment to avoid address changes
-  * during second ld run in second ld pass when generating System.map
-@@ -496,6 +505,7 @@
- 		*(TEXT_MAIN .text.fixup)				\
- 		*(.text.unlikely .text.unlikely.*)			\
- 		*(.text.unknown .text.unknown.*)			\
-+		NOINSTR_TEXT						\
- 		*(.text..refcount)					\
- 		*(.ref.text)						\
- 	MEM_KEEP(init.text*)						\
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 6b6505e3b2c7..6a53300cbd1e 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -129,11 +129,65 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	".pushsection .discard.unreachable\n\t"				\
- 	".long 999b - .\n\t"						\
- 	".popsection\n\t"
-+
-+#ifdef CONFIG_DEBUG_ENTRY
-+/* Begin/end of an instrumentation safe region */
-+#define instrumentation_begin() ({					\
-+	asm volatile("%c0:\n\t"						\
-+		     ".pushsection .discard.instr_begin\n\t"		\
-+		     ".long %c0b - .\n\t"				\
-+		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+})
-+
-+/*
-+ * Because instrumentation_{begin,end}() can nest, objtool validation considers
-+ * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
-+ * When the value is greater than 0, we consider instrumentation allowed.
-+ *
-+ * There is a problem with code like:
-+ *
-+ * noinstr void foo()
-+ * {
-+ *	instrumentation_begin();
-+ *	...
-+ *	if (cond) {
-+ *		instrumentation_begin();
-+ *		...
-+ *		instrumentation_end();
-+ *	}
-+ *	bar();
-+ *	instrumentation_end();
-+ * }
-+ *
-+ * If instrumentation_end() would be an empty label, like all the other
-+ * annotations, the inner _end(), which is at the end of a conditional block,
-+ * would land on the instruction after the block.
-+ *
-+ * If we then consider the sum of the !cond path, we'll see that the call to
-+ * bar() is with a 0-value, even though, we meant it to happen with a positive
-+ * value.
-+ *
-+ * To avoid this, have _end() be a NOP instruction, this ensures it will be
-+ * part of the condition block and does not escape.
-+ */
-+#define instrumentation_end() ({					\
-+	asm volatile("%c0: nop\n\t"					\
-+		     ".pushsection .discard.instr_end\n\t"		\
-+		     ".long %c0b - .\n\t"				\
-+		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+})
-+#endif /* CONFIG_DEBUG_ENTRY */
-+
- #else
- #define annotate_reachable()
- #define annotate_unreachable()
- #endif
- 
-+#ifndef instrumentation_begin
-+#define instrumentation_begin()		do { } while(0)
-+#define instrumentation_end()		do { } while(0)
-+#endif
-+
- #ifndef ASM_UNREACHABLE
- # define ASM_UNREACHABLE
- #endif
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 2b8ed70c4c77..c01100318b25 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -234,6 +234,12 @@ struct ftrace_likely_data {
- #define notrace			__attribute__((no_instrument_function))
- #endif
- 
-+#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
-+/* Section for code which can't be instrumented at all */
-+#define noinstr								\
-+	noinline notrace __attribute((__section__(".noinstr.text")))
-+#endif
-+
- /*
-  * it doesn't make sense on ARM (currently the only user of __naked)
-  * to trace naked functions because then mcount is called without
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 91a80036c05d..7c693bd775c1 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -895,7 +895,7 @@ static void check_section(const char *modname, struct elf_info *elf,
- 
- #define DATA_SECTIONS ".data", ".data.rel"
- #define TEXT_SECTIONS ".text", ".text.unlikely", ".sched.text", \
--		".kprobes.text", ".cpuidle.text"
-+		".kprobes.text", ".cpuidle.text", ".noinstr.text"
- #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
- 		".fixup", ".entry.text", ".exception.text", ".text.*", \
- 		".coldtext"
+-void notrace lkdtm_rodata_do_nothing(void)
++void noinstr lkdtm_rodata_do_nothing(void)
+ {
+ 	/* Does nothing. We just want an architecture agnostic "return". */
+ }
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
