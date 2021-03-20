@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD1C342D34
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE0D342D35
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhCTN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 09:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhCTN6G (ORCPT
+        id S229795AbhCTOLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 10:11:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229732AbhCTOLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 09:58:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB746C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 06:57:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616248673;
+        Sat, 20 Mar 2021 10:11:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616249480;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=x8H1V0k5OhUS+mggqNUK8EoniqcnTOxt5Y0BbnyP9xc=;
-        b=OtC8iVX//o6rJAj66uF5yAMN9C5Y4ukS6APBRhHYx5AbyT1xtY7lNf6KuLlMSF4bf5/mQV
-        rzTn1SiHfZTUkQnP5oI5CM+bQeExJVAq8FJNuTztF0vQAsykHA4c8xSgGZyRFo9S8SZNlk
-        9VQ0+4NTqlMz6f473a3cxhPp3qzEN1D847XCi04ZcIrlb9o1Wa63FdxcRNtvPlq/LXVSnX
-        Hqbh1gpyFnVtbeLVHbyVsxeMFeJgiNQxaiISlIxR5V04dh7uLdyxUb50P89HXZm6Z8xhIF
-        GcXE6EztASwelAVw4SaaZCm5tkTpV+kY5H6pGWZcEObb0GI1Y6W2mn2XmlnkZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616248673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x8H1V0k5OhUS+mggqNUK8EoniqcnTOxt5Y0BbnyP9xc=;
-        b=jRq+MduKkeR6CUHYIJWryCG9VcOKdX+pxWM6eeIdkZwBljiDYWN40LtEfODNAvutVDwl1Z
-        2mEYwnUOWwk/XSBQ==
-To:     "Luck\, Tony" <tony.luck@intel.com>,
-        "Yu\, Fenghua" <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Li\, Xiaoyao" <xiaoyao.li@intel.com>,
-        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        "Yu\, Fenghua" <fenghua.yu@intel.com>
-Subject: RE: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
-In-Reply-To: <87k0q2bpu1.fsf@nanos.tec.linutronix.de>
-References: <20210313054910.2503968-1-fenghua.yu@intel.com> <20210313054910.2503968-3-fenghua.yu@intel.com> <871rca6dbp.fsf@nanos.tec.linutronix.de> <d98d86f9f5824573b2441089e0c2ae91@intel.com> <87k0q2bpu1.fsf@nanos.tec.linutronix.de>
-Date:   Sat, 20 Mar 2021 14:57:52 +0100
-Message-ID: <874kh6apwf.fsf@nanos.tec.linutronix.de>
+        bh=R7j9C2SBGy1O/TXA3ex+LyIY8wv3F76xhWiBT6oqZo8=;
+        b=XdEIR4OYfaM6rydfJBKNSmEXMNEP6KBV9RL6qenIPaVzVAcZcYvIPNTIEKApNQybNdYWs5
+        tGy1LXI7ncmiGAGvcca2Ivhes4lYsscvOjsnSxtstAovDS72ZJ0Y9Lc2Z1t70VHPprf54w
+        RZ/fGWYX/dVwiZMzgTndgAKN8pjLQ6A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-fuedKYqCPCaSZVlEKe8ITg-1; Sat, 20 Mar 2021 10:11:16 -0400
+X-MC-Unique: fuedKYqCPCaSZVlEKe8ITg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35EBF87A83A;
+        Sat, 20 Mar 2021 14:11:15 +0000 (UTC)
+Received: from x1-fbsd (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 98EE960CCD;
+        Sat, 20 Mar 2021 14:11:13 +0000 (UTC)
+Date:   Sat, 20 Mar 2021 10:11:10 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, jglisse@redhat.com, shy828301@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] mm/migrate.c: remove unnecessary VM_BUG_ON_PAGE on
+ putback_movable_page()
+Message-ID: <YFYBIlkM+V0Nsl+5@x1-fbsd>
+References: <20210320093701.12829-1-linmiaohe@huawei.com>
+ <20210320093701.12829-2-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320093701.12829-2-linmiaohe@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20 2021 at 02:01, Thomas Gleixner wrote:
-
-> On Fri, Mar 19 2021 at 21:50, Tony Luck wrote:
->>>  What is the justifucation for making this rate limit per UID and not
->>>  per task, per process or systemwide?
->>
->> The concern is that a malicious user is running a workload that loops
->> obtaining the buslock. This brings the whole system to its knees.
->>
->> Limiting per task doesn't help. The user can just fork(2) a whole bunch
->> of tasks for a distributed buslock attack..
+On Sat, Mar 20, 2021 at 05:36:57AM -0400, Miaohe Lin wrote:
+> The !PageLocked() check is implicitly done in PageMovable(). Remove this
+> explicit one.
 >
-> Fair enough.
->
->> Systemwide might be an interesting alternative. Downside would be accidental
->> rate limit of non-malicious tasks that happen to grab a bus lock periodically
->> but in the same window with other buslocks from other users.
->>
->> Do you think that a risk worth taking to make the code simpler?
->
-> I'd consider it low risk, but I just looked for the usage of the
-> existing ratelimit in struct user and the related commit. Nw it's dawns
-> on me where you are coming from.
 
-So after getting real numbers myself, I have more thoughts on
-this. Setting a reasonable per user limit might be hard when you want to
-protect e.g. against an orchestrated effort by several users
-(containers...). If each of them stays under the limit which is easy
-enough to figure out then you still end up with significant accumulated
-damage.
+I'd just keep the explicit assertion in place, regardless.
+But if you're going to stick with this patch, please fix it because it's 
+removing the wrong assertion.
 
-So systemwide might not be the worst option after all.
 
-The question is how wide spread are bus locks in existing applications?
-I haven't found any on a dozen machines with random variants of
-workloads so far according to perf ... -e sq_misc.split_lock.
-
-What's the actual scenario in the real world where a buslock access
-might be legitimate?
-
-And what's the advice, recommendation for a system administrator how to
-analyze the situation and what kind of parameter to set?
-
-I tried to get answers from Documentation/x86/buslock.rst, but ....
-
-Thanks,
-
-        tglx
-
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/migrate.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 47df0df8f21a..e4ca5ef508ea 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -146,7 +146,6 @@ void putback_movable_page(struct page *page)
+>  	struct address_space *mapping;
+>  
+>  	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> -	VM_BUG_ON_PAGE(!PageMovable(page), page);
+>  	VM_BUG_ON_PAGE(!PageIsolated(page), page);
+>  
+>  	mapping = page_mapping(page);
+> -- 
+> 2.19.1
+> 
+> 
 
