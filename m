@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805DF342D10
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B941F342D13
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhCTNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 09:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCTNWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 09:22:02 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD07C061762;
-        Sat, 20 Mar 2021 06:21:51 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id v17so9081445iot.6;
-        Sat, 20 Mar 2021 06:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cCOjc0tcqOTnDsStbeZc6I4mtJqZyPE6ypRSG5G1MfU=;
-        b=lTm+JHYVhc6j2CCXKqCWkv2eHWJ6IJsP4sIIp871trHteNWSDDuFg2T08gTq5bdthf
-         lR2M/CWir8bvR7r4KLYoRMo6wshYnqSGgxtpESzcPozkMjE6EUwIgZYBfx6hWluLr7fp
-         GqFrZa3oyJ8C1boZC4pSx6hGJoL/sxVzG8/396X1uyWsZgtMRGkvzm3y5Q8GM5RNbjxI
-         jpvd7TSABaC1sW8eRtUFIJGsL5VlZxGRN66J0nW/JTnXu6AEIm25rDKreQfUWfR+XmOL
-         /D1S74ZQ/O9nQliZPF2Xvhvh6ffatdKe1Y4cKA+5n9IqJGD9S9L29DSpJSzxefymIQz1
-         vZHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCOjc0tcqOTnDsStbeZc6I4mtJqZyPE6ypRSG5G1MfU=;
-        b=sXQYOnmdoHoChh4ddBccy9AA6vnK14u1PUv5EoTWg7fjllxMosPtSiKFGCBnswds72
-         H3FHguufRSaJY5QurQUJDXs1aD+nfYENp70LRXKLL0OdeQ1zjBcRG036J3aL4XbtHWyq
-         NG7vGW11Db3r1XCZivZ7HwBqK7Cpx++SByWEctCqMxtf5zDcAwrpOL2jlonH01i7LTrJ
-         HzyWZ085I3fWBr6gunCCEzLWCN9whIt3+vVQG2JHd6pl4FejXQ2itNq6EOF8tlJZqW6H
-         j/csPgJ5ndYNqHvRW6ZV86edanMxe4c/0VpJnsshWdHMvLls8TruEF6kmszzTGLJdrnL
-         FMqA==
-X-Gm-Message-State: AOAM532oQjSOiy8lLsL3sEG/Em5NboUfQD5h8CpebhPBDm4TR16jVTKK
-        nLvmrDWoYjI4d2qsRqc4sF7Ts8GmIdggnjztwCIinX5eE2I=
-X-Google-Smtp-Source: ABdhPJzUtJgxvFkyPVHwFPLYLYWuKCv8cgnqpNG+Q7bRPRwPW9SsoGxHRxMfHlZoCSVXTxZFFYrnnthdSTKjJxXn2Gg=
-X-Received: by 2002:a02:6a14:: with SMTP id l20mr5212666jac.12.1616246510459;
- Sat, 20 Mar 2021 06:21:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210309125324.4456-1-yashsri421@gmail.com> <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com> <871rcg2p8g.fsf@meer.lwn.net>
- <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
- <878s6kto3g.fsf@meer.lwn.net> <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
- <87o8fgpbpx.fsf@meer.lwn.net> <99a21e10-266e-b997-7048-c29a570afe0b@gmail.com>
- <30051ed8-33e4-a303-199c-f4bdcb0e448a@gmail.com>
-In-Reply-To: <30051ed8-33e4-a303-199c-f4bdcb0e448a@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 20 Mar 2021 14:21:39 +0100
-Message-ID: <CAKXUXMyQRY9GC7sUG+_W5hQe3EFdvxKrYTEO7JL3E5LD3cCPKQ@mail.gmail.com>
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Markus Heiser <markus.heiser@darmarit.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        id S229766AbhCTNXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 09:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229686AbhCTNXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 09:23:37 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CDE461970;
+        Sat, 20 Mar 2021 13:23:37 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lNbZn-002mhT-BP; Sat, 20 Mar 2021 13:23:35 +0000
+Date:   Sat, 20 Mar 2021 13:23:34 +0000
+Message-ID: <87sg4qgdrd.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
+In-Reply-To: <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com>
+References: <20210319161956.2838291-2-boqun.feng@gmail.com>
+        <20210319211246.GA250618@bjorn-Precision-5520>
+        <87tup6gf3m.wl-maz@kernel.org>
+        <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: arnd@arndb.de, helgaas@kernel.org, boqun.feng@gmail.com, bhelgaas@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org, csbisa@amazon.com, ardb@kernel.org, sunilmut@microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 1:45 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
->
-> On 20/3/21 12:23 pm, Aditya wrote:
-> > On 18/3/21 11:48 pm, Jonathan Corbet wrote:
-> >> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
-> >>
-> >>> Yeah, and as this line-counting is really just a poor man's
-> >>> heuristics, we might just be better to really turn this heuristics
-> >>> into a dedicated cleanup warning script, then we can check for more
-> >>> indicators, such as "does it contain the word Copyright" somewhere in
-> >>> the kernel-doc comment, which tells us even more that this is not a
-> >>> kernel-doc as we would expect it.
-> >>
-> >> I really don't think we need that kind of heuristic.  The format of
-> >> kerneldoc comments is fairly rigid; it shouldn't be too hard to pick out
-> >> the /** comments that don't fit that format, right?  Am I missing
-> >> something there?
-> >>
-> >> Thanks,
-> >>
-> >> jon
-> >>
->
-> Hi Lukas and Jon!
-> I have a question, should I clean up the files with '/**' like
-> comments in only header lines? Or as we are planning for making it
-> generic, for other lines as well?
->
+On Sat, 20 Mar 2021 13:03:13 +0000,
+Arnd Bergmann <arnd@arndb.de> wrote:
+> 
+> On Sat, Mar 20, 2021 at 1:54 PM Marc Zyngier <maz@kernel.org> wrote:
+> > On Fri, 19 Mar 2021 21:12:46 +0000,
+> 
+> > >
+> > > Ugh.  pci_root_bus_fwnode() is another callback to find the
+> > > irq_domain.  Only one call, from pci_host_bridge_msi_domain(), which
+> > > itself is only called from pci_set_bus_msi_domain().  This feels like
+> > > another case where we could simplify things by having the host bridge
+> > > driver figure out the irq_domain explicitly when it creates the
+> > > pci_host_bridge.  It seems like that's where we have the most
+> > > information about how to find the irq_domain.
+> >
+> > Urgh. This is a perfect copy paste of the x86 horror, warts and all.
+> > I can't say I'm thrilled (another way to say "Gawd, Noes! Never!").
+> >
+> > One thing I am sure of is that I do not want to add more custom
+> > indirection to build the MSI topology. We barely got rid of the
+> > msi_controller structure, and this is the same thing by another
+> > name. Probably worse, actually.
+> >
+> > In this case, I don't see the point in going via a fwnode indirection
+> > given that there is no firmware tables the first place.
+> >
+> > As for finding the irq domain from the host bridge, that's not doable
+> > in most cases on arm64, as it is pretty likely that the host bridge
+> > knows nothing about MSIs when they are implemented in the GIC (see my
+> > recent msi_controller removal series that has a few patches about
+> > that).
+> >
+> > Having an optional callback to host bridges to obtain the MSI domain
+> > may be possible in some cases though (there might be a chicken/egg
+> > problem for some drivers though...).
+> 
+> I would expect that the host bridge driver can find the MSI domain
+> at probe time and just add a pointer into the pci_host_bridge
+> structure.
 
-Aditya, of course, if you can detect and come across some unintended
-'/**' comments in some files, clean them in the same go (as you did
-with ecryptfs).
+In most cases, it doesn't implement it itself, and I'd be reluctant to
+duplicate information that can already be retrieved from somewhere
+else in a generic way (i.e. no PCI specific).
 
-I am just worried that if you extend it to the fully generic case,
-that the list of cases simply explodes: showing many 1,000 cases
-across various 1,000 files that need to be cleaned up, and such
-clean-up work is just too much to get done by yourself.
+	M.
 
-The current list limited to comments in header lines seems to be a set
-of patches that you can probably get done.
-
-Lukas
+-- 
+Without deviation from the norm, progress is not possible.
