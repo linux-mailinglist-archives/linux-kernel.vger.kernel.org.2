@@ -2,99 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7A2342D41
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4B5342D43
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhCTOVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 10:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S229961AbhCTOXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 10:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhCTOVT (ORCPT
+        with ESMTP id S229967AbhCTOXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 10:21:19 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7789FC061574;
-        Sat, 20 Mar 2021 07:21:08 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id z10so5952804qkz.13;
-        Sat, 20 Mar 2021 07:21:08 -0700 (PDT)
+        Sat, 20 Mar 2021 10:23:38 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC1FC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:23:38 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id v26so9197331iox.11
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I2g5ot8UtQ1c4+rslP3syBNHQIBZC4IcIwVJDN5wL/4=;
-        b=GMkBfOwcgOGsbi3qJqSXBiTQ4YMwmQrGxh/EmmOxujK3KQNqk9byQAxTP0hAxB0KTr
-         LtEtMfMrJr/7XhgnlDpJuTYFynHgXwqDdDleVQCOrgHVNAH5BQqa/z56fOCSPh8DIzht
-         JlGxwR0e0BCsYfm/TICquw8gImoCCtQmOGwRtlnasqitoZ3Tjl5YWbP42nPLEghA9fI4
-         j1pkDHSJJBntyf6aSwo9TnX/II7dpcBY7V3lSwBOp3fAJD6ZPQVWhR4QhC2MujQ4CzQn
-         anWaxRuXF7fbgR0CCbG6iwFMZrm3HVE6dtRQvbZ0rD93NaK7iBbDkrzTUzqe+v1fGiSS
-         bSiQ==
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kQcbTGanAzrgBGCF/DKThsZjt/13iN1Rp0nICH3M9pk=;
+        b=olTZRjhoRaI6B/JDy56MsvNTIlwMF27aPC5lL9ePvK033EmT21syW+tJhy4QUKIo+R
+         vGiHj1e9xEGqU9fUhiyCzN5zPFPUzZNFndaEjiSLQhxHSrtEvMEoBGNd1dUWpo8kYhq0
+         F34cThDXnkcumLUcCRgqM+qBIDt/RLg3gQlrVyX7OdCnq8zbnxNsXfi8lSfCq2bmK2IO
+         eq/dxP9egxoyv/cs8gdiXamFKKzT59vLCqIbdlMOMM6Gj9wRi/M+PSKy27CCjfOsiH+X
+         h5HOuEmNbPvg/Rppw5BzXl74pE23jtV2b+JHw+6QLwLOwOYki8PymWXgHBYZosPme19a
+         HD6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I2g5ot8UtQ1c4+rslP3syBNHQIBZC4IcIwVJDN5wL/4=;
-        b=rQzLPhyugwiI29ftspMOE/4xWUD5viBRBn6ugYCaSL1SzgmerVhA8vsXIpc3WBoh3g
-         j2GhTy2BVyjl/Qu2eZfhbemWxFzx363hSTDNVDnYPz4BdnEryK3/62UY+NH4ePRzR95N
-         YzAajnfGPzmxsHnhtcv0xwnfheu93ZTXTnyfv1N93btZoLD/jisLVUHYLvbmJHBR0sIv
-         2D/y9BRFPEKgpx+BP8FaEqGn/zchtAxBuLkeAwBIsKRhFm/+3lv/F+Za+YvyIXTeXUJO
-         uuM0pgXbJvUCt2tZ9IYbj5yr4PHSYMmSDGPXmniqvOPTOaQ2HkZf6mjTH2hEWqXr8Ywo
-         TWRg==
-X-Gm-Message-State: AOAM532uyLwfI0FpMAfU96bzI0oKd0t2h/HAQ3wCbdBNPN3ft0OmL9/N
-        HlIoBpcE8cCYKNf/If9l+mg=
-X-Google-Smtp-Source: ABdhPJxELRLQCSpZ12p7JC96wQrEN1jTX/4aZdyy+PjlcLQLkUsJwjiVAKqdzG5rP4DjGwnILVOZzw==
-X-Received: by 2002:a37:9ccc:: with SMTP id f195mr3046569qke.397.1616250067647;
-        Sat, 20 Mar 2021 07:21:07 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:d57:1705:3400:a073:5a5f:5d7f:f02a])
-        by smtp.gmail.com with ESMTPSA id l5sm5677325qtj.21.2021.03.20.07.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 07:21:06 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 11:21:01 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     Guoqing chi <chi962464zy@163.com>
-Cc:     jic23@kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        Michael.Hennerich@analog.com, pmeerw@pmeerw.net,
-        chiguoqing@yulong.com
-Subject: Re: [PATCH] iio: adc: ad7292: Modify the bool initialization
- assignment
-Message-ID: <YFYEzYmdA7+St3WD@smtp.gmail.com>
-References: <20210319062706.5135-1-chi962464zy@163.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kQcbTGanAzrgBGCF/DKThsZjt/13iN1Rp0nICH3M9pk=;
+        b=h4E9ywk4lbs1L8UN8wL5RPsUhr/F/H7BV3LdVRd3YZD6TbZdlERerS6kr2R7k5yjwj
+         Tq7tETPMHSJsUfYbLdJfJdb7zZC35DhTGXtRReMHvRluUGn8VFVOTro64H6MwwEFeb8m
+         6/TB+80uHbGdHvWW7qlbjs3UNct6HtSNkIfse51ypb0tJUM7G0hr46Sshtv6NvgK5EjJ
+         6PzHboLU5NCbAsXFXGDlsw63drJo/HuQnqi9nUuIBvcr0eY/oy4wEs+36F/RYabuRucO
+         zj1cSyX+Qp8QKoMIx+8svOw8ala9k7oYYVSCQ3mVxyaXu6k54L3+Y+iXliSMei8hdyAk
+         KZ5A==
+X-Gm-Message-State: AOAM532ZKta4uUCHrnLtliaW4qNVQrMFx4txdkBoZmyAyVyQ021FYXq7
+        j0K7wVYbfrVaAmeZLVo8c/gkRKE3odapoCiy
+X-Google-Smtp-Source: ABdhPJwW/D+7SEinGZQ3lVcOqHDEhRusbrR2WJ5tPjiuwwyGi3OG9W169lkEBLln9OG4O7Zvmvirkw==
+X-Received: by 2002:a5d:9250:: with SMTP id e16mr6164893iol.27.1616250217388;
+        Sat, 20 Mar 2021 07:23:37 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v19sm4234117iol.21.2021.03.20.07.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 07:23:36 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/4] net: ipa: fix validation
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210319042923.1584593-1-elder@linaro.org>
+ <5c6fabcf-88c7-29db-431e-01818321e9e7@linaro.org>
+Message-ID: <9ef8e593-d6be-a936-7a02-0a08e0be51be@linaro.org>
+Date:   Sat, 20 Mar 2021 09:23:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319062706.5135-1-chi962464zy@163.com>
+In-Reply-To: <5c6fabcf-88c7-29db-431e-01818321e9e7@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Okay, looks good to me.
+On 3/20/21 8:24 AM, Alex Elder wrote:
+> On 3/18/21 11:29 PM, Alex Elder wrote:
+>> There is sanity checking code in the IPA driver that's meant to be
+>> enabled only during development.  This allows the driver to make
+>> certain assumptions, but not have to verify those assumptions are
+>> true at (operational) runtime.  This code is built conditional on
+>> IPA_VALIDATION, set (if desired) inside the IPA makefile.
+> 
+> Given the pushback on the ipa_assert() patch I will send
+> out version 2 of this series, omitting the two patches
+> that involve assertions.
 
-Reviewed-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+I posted version 2, but I think dropping two patches
+without changing the subject might have messed up
+the robots.  I don't know how to fix that and don't
+want to make any more trouble by trying.
 
-On 03/19, Guoqing chi wrote:
-> From: Guoqing Chi <chiguoqing@yulong.com>
+If there's something I can do, someone please tell me.
+
+					-Alex
+
+> I still think there's a case for my proposal, but I'm
+> going to move on for now and try to find other ways
+> to do what I want.  In some cases BUILD_BUG_ON() or
+> WARN_ON_DEV() could be used.  In other spots, I might
+> be able to use dev_dbg() for checking things only
+> while developing.  But there remain a few cases where
+> none of these options is quite right.
 > 
-> A bool initializer is best assigned to false rather than 0.
+> If I ever want to suggest an assertion again I'll do
+> it as an RFC and will copy Leon and Andrew, to make
+> sure they can provide input.
 > 
-> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
-> ---
->  drivers/iio/adc/ad7292.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Thanks.
 > 
-> diff --git a/drivers/iio/adc/ad7292.c b/drivers/iio/adc/ad7292.c
-> index 70e33dd1c9f7..3271a31afde1 100644
-> --- a/drivers/iio/adc/ad7292.c
-> +++ b/drivers/iio/adc/ad7292.c
-> @@ -260,7 +260,7 @@ static int ad7292_probe(struct spi_device *spi)
->  	struct ad7292_state *st;
->  	struct iio_dev *indio_dev;
->  	struct device_node *child;
-> -	bool diff_channels = 0;
-> +	bool diff_channels = false;
->  	int ret;
->  
->  	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> -- 
-> 2.17.1
+>                      -Alex
 > 
+>> Unfortunately, this validation code has some errors.  First, there
+>> are some mismatched arguments supplied to some dev_err() calls in
+>> ipa_cmd_table_valid() and ipa_cmd_header_valid(), and these are
+>> exposed if validation is enabled.  Second, the tag that enables
+>> this conditional code isn't used consistently (it's IPA_VALIDATE
+>> in some spots and IPA_VALIDATION in others).
+>>
+>> This series fixes those two problems with the conditional validation
+>> code.
+>>
+>> In addition, this series introduces some new assertion macros.  I
+>> have been meaning to add this for a long time.  There are comments
+>> indicating places where assertions could be checked throughout the
+>> code.
+>>
+>> The macros are designed so that any asserted condition will be
+>> checked at compile time if possible.  Otherwise, the condition
+>> will be checked at runtime *only* if IPA_VALIDATION is enabled,
+>> and ignored otherwise.
+>>
+>> NOTE:  The third patch produces two bogus (but understandable)
+>> warnings from checkpatch.pl.  It does not recognize that the "expr"
+>> argument passed to those macros aren't actually evaluated more than
+>> once.  In both cases, all but one reference is consumed by the
+>> preprocessor or compiler.
+>>
+>> A final patch converts a handful of commented assertions into
+>> "real" ones.  Some existing validation code can done more simply
+>> with assertions, so over time such cases will be converted.  For
+>> now though, this series adds this assertion capability.
+>>
+>>                     -Alex
+>>
+>> Alex Elder (4):
+>>    net: ipa: fix init header command validation
+>>    net: ipa: fix IPA validation
+>>    net: ipa: introduce ipa_assert()
+>>    net: ipa: activate some commented assertions
+>>
+>>   drivers/net/ipa/Makefile       |  2 +-
+>>   drivers/net/ipa/gsi_trans.c    |  8 ++---
+>>   drivers/net/ipa/ipa_assert.h   | 50 ++++++++++++++++++++++++++++++++
+>>   drivers/net/ipa/ipa_cmd.c      | 53 ++++++++++++++++++++++------------
+>>   drivers/net/ipa/ipa_cmd.h      |  6 ++--
+>>   drivers/net/ipa/ipa_endpoint.c |  6 ++--
+>>   drivers/net/ipa/ipa_main.c     |  6 ++--
+>>   drivers/net/ipa/ipa_mem.c      |  6 ++--
+>>   drivers/net/ipa/ipa_reg.h      |  7 +++--
+>>   drivers/net/ipa/ipa_table.c    | 11 ++++---
+>>   drivers/net/ipa/ipa_table.h    |  6 ++--
+>>   11 files changed, 115 insertions(+), 46 deletions(-)
+>>   create mode 100644 drivers/net/ipa/ipa_assert.h
+>>
 > 
+
