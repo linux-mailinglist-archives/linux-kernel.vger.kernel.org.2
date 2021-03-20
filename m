@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D5734301A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0069B34301C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhCTWlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 18:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S229961AbhCTWm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 18:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhCTWlA (ORCPT
+        with ESMTP id S230129AbhCTWmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:41:00 -0400
+        Sat, 20 Mar 2021 18:42:01 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09080C061574;
-        Sat, 20 Mar 2021 15:41:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7FCC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:42:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
         References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gdLYIO3yw9/hwydqN88ER3QaHJ97wg2y5d7EIg5XUns=; b=ufUoR30CB9JWB45VXzcCf+s16R
-        Hqi6VdMuRv0UDGzOPYZRqrkOobKgFmBtrknoHV7ve3h6ObpvNaS5CKMp/8GWRryzYav+Aht5QYs7U
-        7+3iqw1YLyYVgslnXUZKycYjJTF7yYNWRDGgGDEme9Hqs79fy9HrM5q5U7yAyjK6fsw9iq6X39UAd
-        XMk4JaAXU45vXnZSNL2ppLP/1JTlTC+iVxIvz+EuNPYF68/KDc4EQn6rBd8jGsmRkOQ1iul5yBVV7
-        X9D4cqW+NHXTmU8xFE7IPrisXmBVuVU2+xVvDx8LrvFbL9MIRQJp6MV4eTm+KxF/tSFr0RdPCcpDA
-        tGaY64SQ==;
+        bh=4mDsL15abTqOqk7vZ4xYCrnDfgqfrdW7pgSkeCPBCaY=; b=ff1dQ5SO1IOX3GCqwxUc2DiqIv
+        92REu42OwWBMdUoGVpqkqy97OZM2t951WjCMi4tcKE1MBkJ8jyfTNGD6lGsR4n4Ww7NKbcjFbTuXz
+        LFg5HlUPeeJ7rareEj9CslUbMzzDNr8gnea2ZrHgqHp3RtCSnGt7ZLoVgF97+cj3dnjwIpydy3jU7
+        GWw3Og9gzmkuFUUI8fBATo0StNYmbGBWjbkBxOLx3X/iMmzbMI48gYHvA1deLGMwP6OKe4mkNeXsc
+        KEslviC+PB/9OkS7uZADatHRsJ6AM7YUsA2MhYUpZ+PRV10aL+iAwxoNtJGMUww0MpKw72yA2/zPh
+        33vgAScQ==;
 Received: from rdunlap (helo=localhost)
         by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNkHA-0024hb-Bg; Sat, 20 Mar 2021 22:40:57 +0000
-Date:   Sat, 20 Mar 2021 15:40:56 -0700 (PDT)
+        id 1lNkHt-0024j2-Jd; Sat, 20 Mar 2021 22:41:42 +0000
+Date:   Sat, 20 Mar 2021 15:41:41 -0700 (PDT)
 From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
 To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     wim@linux-watchdog.org, linux@roeck-us.net,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: Fix a typo
-In-Reply-To: <20210320213301.8513-1-unixbhaskar@gmail.com>
-Message-ID: <bc91920-e757-41d5-6fe6-73a511aa71b@bombadil.infradead.org>
-References: <20210320213301.8513-1-unixbhaskar@gmail.com>
+cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: epapr: A typo fix
+In-Reply-To: <20210320213932.22697-1-unixbhaskar@gmail.com>
+Message-ID: <58285cd-cc1e-3988-2753-a8eaae9e419@bombadil.infradead.org>
+References: <20210320213932.22697-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: Randy Dunlap <rdunlap@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_154056_421489_7BF46DE4 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20210320_154141_669336_4759A38C 
+X-CRM114-Status: GOOD (  12.73  )
 X-Spam-Score: -0.0 (/)
 X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
  has NOT identified this incoming email as spam.  The original
  message has been attached to this so you can view it or label
  similar future email.  If you have any questions, see
  the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > s/parmeter/parameter/
+ Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/parmeters/parameters/
     > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
     Dunlap <rdunlap@infradead.org> 
  Content analysis details:   (-0.0 points, 5.0 required)
@@ -64,7 +64,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
 
-> s/parmeter/parameter/
+>
+> s/parmeters/parameters/
 >
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
@@ -72,22 +73,22 @@ Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
 
 > ---
-> drivers/watchdog/sl28cpld_wdt.c | 2 +-
+> arch/powerpc/include/asm/epapr_hcalls.h | 2 +-
 > 1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/watchdog/sl28cpld_wdt.c b/drivers/watchdog/sl28cpld_wdt.c
-> index a45047d8d9ab..2de93298475f 100644
-> --- a/drivers/watchdog/sl28cpld_wdt.c
-> +++ b/drivers/watchdog/sl28cpld_wdt.c
-> @@ -164,7 +164,7 @@ static int sl28cpld_wdt_probe(struct platform_device *pdev)
->
-> 	/*
-> 	 * Initial timeout value, may be overwritten by device tree or module
-> -	 * parmeter in watchdog_init_timeout().
-> +	 * parameter in watchdog_init_timeout().
-> 	 *
-> 	 * Reading a zero here means that either the hardware has a default
-> 	 * value of zero (which is very unlikely and definitely a hardware
+> diff --git a/arch/powerpc/include/asm/epapr_hcalls.h b/arch/powerpc/include/asm/epapr_hcalls.h
+> index c99ba08a408d..cdf3c6df5123 100644
+> --- a/arch/powerpc/include/asm/epapr_hcalls.h
+> +++ b/arch/powerpc/include/asm/epapr_hcalls.h
+> @@ -65,7 +65,7 @@
+>  * but the gcc inline assembly syntax does not allow us to specify registers
+>  * on the clobber list that are also on the input/output list.  Therefore,
+>  * the lists of clobbered registers depends on the number of register
+> - * parmeters ("+r" and "=r") passed to the hypercall.
+> + * parameters ("+r" and "=r") passed to the hypercall.
+>  *
+>  * Each assembly block should use one of the HCALL_CLOBBERSx macros.  As a
+>  * general rule, 'x' is the number of parameters passed to the assembly
 > --
 > 2.26.2
 >
