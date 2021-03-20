@@ -2,166 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD808342C8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B45342C95
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhCTLyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhCTLxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDA96199E;
-        Sat, 20 Mar 2021 07:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616223988;
-        bh=JN7rk5whuNrffpk2EuJ5Ntk74ce7HEE/syfRYOG7JDE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E+qM1cBo5TU+qCNTg+ue8y5JgFmbtOntPYieo8lo2Ox7YpdbLMwI43vZkEBqQPE+P
-         gtBVyQtst6vhhfOIpErbTEwsTbHcLd2WuAhIg0hY5JTtxGIX53LJqConaJCtoGXIJk
-         IdtTC5BoBnCqeLhTViXHAjrMdHLgVuQXWk2v9oiEobpxb8bvHj/oEONGu2OO901CPi
-         kq7SObpxw/t4WeOnEnHZBQM0iYoh1q2slsBZ+vy3B/SngSgbkFsgH7XXdi/FtHeY4e
-         YTVB/3eQpSS/B6o/kBE+QDYa/EtMHljstiN9yYnyhTAsF3AixPi22TFW8y3vQp8fzT
-         iWqChXcWP+GNw==
-Received: by mail-wr1-f42.google.com with SMTP id e9so11293292wrw.10;
-        Sat, 20 Mar 2021 00:06:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533ULKCzhu4mM2takFmrx4rvTdQNcgQVeFhGPxdsJwt49mBIwhC8
-        i0QMU3CKoMUVg9vMHj+ufU+v+Wa0on/FttldCw==
-X-Google-Smtp-Source: ABdhPJzXUrqVy5h4sptnKXZVkSNgwo3z2RQgkTfp9fR4QtfZMZ8R2akBBZGTFtFYE3KwRyAbN9hhk2+W2QTOaLxW65Q=
-X-Received: by 2002:a5d:664e:: with SMTP id f14mr1233975wrw.382.1616223986312;
- Sat, 20 Mar 2021 00:06:26 -0700 (PDT)
+        id S230140AbhCTLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:55:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14112 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230218AbhCTLzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:55:18 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F2XCS2qQyz16H17;
+        Sat, 20 Mar 2021 15:17:40 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Sat, 20 Mar 2021
+ 15:19:26 +0800
+To:     <agk@redhat.com>, <snitzer@redhat.com>, <dm-devel@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>,
+        lixiaokeng <lixiaokeng@huawei.com>,
+        "wubo (T)" <wubo40@huawei.com>, <liuzhiqiang26@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Subject: [PATCH] md/dm-mpath: check whether all pgpaths have same uuid in
+ multipath_ctr()
+Message-ID: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
+Date:   Sat, 20 Mar 2021 15:19:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <1616046056-29068-1-git-send-email-rex-bc.chen@mediatek.com>
- <1616046056-29068-2-git-send-email-rex-bc.chen@mediatek.com> <CAFqH_51qkjtRRS8yjiRXQhN7Hvn-rG34ieKxKnKmreJrOJVUow@mail.gmail.com>
-In-Reply-To: <CAFqH_51qkjtRRS8yjiRXQhN7Hvn-rG34ieKxKnKmreJrOJVUow@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 20 Mar 2021 15:06:12 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9aXzjgvrafdrGDESNBtpjGGJoefBTSpX_0irP4sXyTLg@mail.gmail.com>
-Message-ID: <CAAOTY_9aXzjgvrafdrGDESNBtpjGGJoefBTSpX_0irP4sXyTLg@mail.gmail.com>
-Subject: Re: [v5, 1/2] drm/mediatek: mtk_dpi: Add check for max clock rate in mode_valid
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
 
-Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=
-=8818=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8810:25=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> Hi Rex-BC Chen,
->
-> Thank you for your patch.
->
-> Missatge de Rex-BC Chen <rex-bc.chen@mediatek.com> del dia dj., 18 de
-> mar=C3=A7 2021 a les 6:42:
-> >
-> > Add per-platform max clock rate check in mtk_dpi_bridge_mode_valid.
-> >
-> > Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> > Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
-> > Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> > ---
-> >  drivers/gpu/drm/mediatek/mtk_dpi.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/media=
-tek/mtk_dpi.c
-> > index b05f900d9322..0b427ad0cd9b 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> > @@ -120,6 +120,7 @@ struct mtk_dpi_yc_limit {
-> >  struct mtk_dpi_conf {
-> >         unsigned int (*cal_factor)(int clock);
-> >         u32 reg_h_fre_con;
-> > +       u32 max_clock_khz;
-> >         bool edge_sel_en;
-> >  };
-> >
-> > @@ -557,9 +558,23 @@ static void mtk_dpi_bridge_enable(struct drm_bridg=
-e *bridge)
-> >         mtk_dpi_set_display_mode(dpi, &dpi->mode);
-> >  }
-> >
-> > +static enum drm_mode_status
-> > +mtk_dpi_bridge_mode_valid(struct drm_bridge *bridge,
-> > +                         const struct drm_display_info *info,
-> > +                         const struct drm_display_mode *mode)
-> > +{
-> > +       struct mtk_dpi *dpi =3D bridge_to_dpi(bridge);
-> > +
-> > +       if (dpi->conf->max_clock_khz && mode->clock > dpi->conf->max_cl=
-ock_khz)
->
-> Maybe I read this patch too fast, but why the &&? Shouldn't be more
-> simple and readable
->
->           if (mode->clock > max_clock)
->
+When we make IO stress test on multipath device, there will
+be a metadata err because of wrong path. In the test, we
+concurrent execute 'iscsi device login|logout' and
+'multipath -r' command with IO stress on multipath device.
+In some case, systemd-udevd may have not time to process
+uevents of iscsi device logout|login, and then 'multipath -r'
+command triggers multipathd daemon calls ioctl to load table
+with incorrect old device info from systemd-udevd.
+Then, one iscsi path may be incorrectly attached to another
+multipath which has different uuid. Finally, the metadata err
+occurs when umounting filesystem to down write metadata on
+the iscsi device which is actually not owned by the multipath
+device.
 
-Agree. So I modify in mediatek-drm-next [1], thanks.
+So we need to check whether all pgpaths of one multipath have
+the same uuid, if not, we should throw a error.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
+Signed-off-by: linfeilong <linfeilong@huawei.com>
+Signed-off-by: Wubo <wubo40@huawei.com>
+---
+ drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/scsi_lib.c |  1 +
+ 2 files changed, 53 insertions(+)
 
-Regards,
-Chun-Kuang.
+diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+index bced42f082b0..f0b995784b53 100644
+--- a/drivers/md/dm-mpath.c
++++ b/drivers/md/dm-mpath.c
+@@ -24,6 +24,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/delay.h>
+ #include <scsi/scsi_dh.h>
++#include <linux/dm-ioctl.h>
+ #include <linux/atomic.h>
+ #include <linux/blk-mq.h>
 
-> Thanks,
->   Enric
->
->
-> > +               return MODE_CLOCK_HIGH;
-> > +
-> > +       return MODE_OK;
-> > +}
-> > +
-> >  static const struct drm_bridge_funcs mtk_dpi_bridge_funcs =3D {
-> >         .attach =3D mtk_dpi_bridge_attach,
-> >         .mode_set =3D mtk_dpi_bridge_mode_set,
-> > +       .mode_valid =3D mtk_dpi_bridge_mode_valid,
-> >         .disable =3D mtk_dpi_bridge_disable,
-> >         .enable =3D mtk_dpi_bridge_enable,
-> >  };
-> > @@ -668,17 +683,20 @@ static unsigned int mt8183_calculate_factor(int c=
-lock)
-> >  static const struct mtk_dpi_conf mt8173_conf =3D {
-> >         .cal_factor =3D mt8173_calculate_factor,
-> >         .reg_h_fre_con =3D 0xe0,
-> > +       .max_clock_khz =3D 300000,
-> >  };
-> >
-> >  static const struct mtk_dpi_conf mt2701_conf =3D {
-> >         .cal_factor =3D mt2701_calculate_factor,
-> >         .reg_h_fre_con =3D 0xb0,
-> >         .edge_sel_en =3D true,
-> > +       .max_clock_khz =3D 150000,
-> >  };
-> >
-> >  static const struct mtk_dpi_conf mt8183_conf =3D {
-> >         .cal_factor =3D mt8183_calculate_factor,
-> >         .reg_h_fre_con =3D 0xe0,
-> > +       .max_clock_khz =3D 100000,
-> >  };
-> >
-> >  static int mtk_dpi_probe(struct platform_device *pdev)
-> > --
-> > 2.18.0
-> > _______________________________________________
-> > Linux-mediatek mailing list
-> > Linux-mediatek@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+@@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
+ 	return r;
+ }
+
++#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
++#define MPATH_UUID_PREFIX_LEN 7
++static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
++{
++	char pgpath_uuid[DM_UUID_LEN] = {0};
++	struct request_queue *q;
++	struct pgpath *pgpath;
++	struct scsi_device *sdev;
++	ssize_t count;
++	int r = 0;
++
++	list_for_each_entry(pgpath, &pg->pgpaths, list) {
++		q = bdev_get_queue(pgpath->path.dev->bdev);
++		sdev = scsi_device_from_queue(q);
++		if (!sdev) {
++			r = -EINVAL;
++			goto out;
++		}
++
++		count = scsi_vpd_lun_id(sdev, pgpath_uuid, DM_UUID_LEN);
++		if (count <= SCSI_VPD_LUN_ID_PREFIX_LEN) {
++			r = -EINVAL;
++			put_device(&sdev->sdev_gendev);
++			goto out;
++		}
++
++		if (strcmp(md_uuid + MPATH_UUID_PREFIX_LEN,
++			   pgpath_uuid + SCSI_VPD_LUN_ID_PREFIX_LEN)) {
++			r = -EINVAL;
++			put_device(&sdev->sdev_gendev);
++			goto out;
++		}
++		put_device(&sdev->sdev_gendev);
++	}
++
++out:
++	return r;
++}
++
+ static int multipath_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ {
+ 	/* target arguments */
+@@ -1183,6 +1223,7 @@ static int multipath_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 	unsigned pg_count = 0;
+ 	unsigned next_pg_num;
+ 	unsigned long flags;
++	char md_uuid[DM_UUID_LEN] = {0};
+
+ 	as.argc = argc;
+ 	as.argv = argv;
+@@ -1220,6 +1261,11 @@ static int multipath_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 		goto bad;
+ 	}
+
++	if (dm_copy_name_and_uuid(dm_table_get_md(ti->table), NULL, md_uuid)) {
++		r = -ENXIO;
++		goto bad;
++	}
++
+ 	/* parse the priority groups */
+ 	while (as.argc) {
+ 		struct priority_group *pg;
+@@ -1231,6 +1277,12 @@ static int multipath_ctr(struct dm_target *ti, unsigned argc, char **argv)
+ 			goto bad;
+ 		}
+
++		if (check_pg_uuid(pg, md_uuid)) {
++			ti->error = "uuid of pgpaths mismatch";
++			r = -EINVAL;
++			goto bad;
++		}
++
+ 		nr_valid_paths += pg->nr_pgpaths;
+ 		atomic_set(&m->nr_valid_paths, nr_valid_paths);
+
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 7d52a11e1b61..fee82262a227 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1953,6 +1953,7 @@ struct scsi_device *scsi_device_from_queue(struct request_queue *q)
+
+ 	return sdev;
+ }
++EXPORT_SYMBOL(scsi_device_from_queue);
+
+ /**
+  * scsi_block_requests - Utility function used by low-level drivers to prevent
+-- 
+2.19.1
+
+
