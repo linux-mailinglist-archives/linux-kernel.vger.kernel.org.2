@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB16A342A33
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0742C342A43
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhCTDhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 23:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S229931AbhCTDox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 23:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTDhM (ORCPT
+        with ESMTP id S229875AbhCTDou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 23:37:12 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE81C061761;
-        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id x126so7200948pfc.13;
-        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F2NpDde5JfVs/08cIpDIKMl9ReyCVFlJWiAxllrxO/o=;
-        b=ojNJR9L79KsnenlcL8sVyKfkANP5c0OQisLGgvYN1Sp7ppi2457mZJCSbRfeF4bhiu
-         w8JJM/ORy+N32von6u5molA0CXO0DI/A+d8tco23CgjSR+l9LmpbQMYjmgWFbjgFATTZ
-         uNO5zDqIFj9+j8MhLpTBzgQDOCKo+39o4Zv9SYJTnZH03fKyCif785iCAafuYYJfvaMF
-         UZnDvG24DGUe21XXIKBQLf/l6mQaBLNEhMeYP9oDjGqYTgCmOkViBCPVWa58fqLaNTEe
-         Zp8aD27T0jtgPFlIWh/17ROyhOsOHbOxhGUmIvQsDB0TwoaXD3CZKksjOtzi2tpn5uYL
-         wtPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F2NpDde5JfVs/08cIpDIKMl9ReyCVFlJWiAxllrxO/o=;
-        b=Boavqk/ONtTqDmZJzj4J/ZiQUichUtEBhtBGTvBcF/I9YpwtR6WpUNQz3ZU7Cd16tD
-         3//o2iW99reTrnGQ4EmD5ZJLsqi+9DNze5u7x1+XXXKOxHU+NBz7jzExO87Tjvw9LFnj
-         Qvwh4Q6OTO3j+/1RHDS6MnLxGlPeDvbRfcZfKGkfCrrLIso0qQGfbLW5Pp/LUh6F9WDT
-         0PMnXmnFQzAsj7oatQic6knZKHcIoVXwZ8DcfuDZ8NtibelQiP74mvKIcD37mIpLBV/u
-         mK1MVSjMo9Uto7bymAneU/PZlwiE09BG337F7vSLxqNy0ZmyPVqHPDjpJGsj9xrigHx9
-         lsQQ==
-X-Gm-Message-State: AOAM53336/zDn5ba12WOWH/QjDfp54YwcKfoUyUecQxRotWc0k9lM6nG
-        oLqa0vRonxkauLcIN0XQlKQ=
-X-Google-Smtp-Source: ABdhPJz/Mzv3lcTWIcJB/eu2sj7N9x6bfZzgkKOYsIHOcNcDxQDAfWM7y+kinqJzkx7zq7dcl8mlNw==
-X-Received: by 2002:a62:160c:0:b029:20a:7b41:f10f with SMTP id 12-20020a62160c0000b029020a7b41f10fmr11899212pfw.67.1616211421008;
-        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a468:a574:c1f5:b1a1])
-        by smtp.gmail.com with ESMTPSA id i22sm6211094pjz.56.2021.03.19.20.36.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 20:36:59 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 20:36:57 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: ims-pcu - drop redundant driver-data assignment
-Message-ID: <YFVt2X3He5OT3+ju@google.com>
-References: <20210318155525.22496-1-johan@kernel.org>
+        Fri, 19 Mar 2021 23:44:50 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 694FCC061761;
+        Fri, 19 Mar 2021 20:44:50 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 26B2092009C; Sat, 20 Mar 2021 04:44:46 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 1F63392009B;
+        Sat, 20 Mar 2021 04:44:46 +0100 (CET)
+Date:   Sat, 20 Mar 2021 04:44:46 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Christoph Hellwig <hch@lst.de>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 10/10] ide: remove the legacy ide driver
+In-Reply-To: <20210318045706.200458-11-hch@lst.de>
+Message-ID: <alpine.DEB.2.21.2103200425360.21463@angie.orcam.me.uk>
+References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-11-hch@lst.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318155525.22496-1-johan@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 04:55:25PM +0100, Johan Hovold wrote:
-> The driver data for the data interface has already been set by
-> usb_driver_claim_interface() so drop the subsequent redundant
-> assignment.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+On Thu, 18 Mar 2021, Christoph Hellwig wrote:
 
-Applied, thank you.
+> The legay ide driver has been replace with libata startin in 2003 and has
 
--- 
-Dmitry
+ s/legay/legacy/;s/replace/replaced/;s/startin/startin/ (though I'd say 
+"back in" instead in the latter case).
+
+> been scheduled for removal for a while.  Finally kill it off so that we
+> can start cleaning up various bits of cruft it forced on the block layer.
+
+ You need to adjust Documentation/admin-guide/kernel-parameters.txt too, 
+i.e. remove all the `ide*' options, possibly more (I haven't checked in 
+detail).
+
+  Maciej
