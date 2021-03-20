@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B660B342E20
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EC7342E2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCTQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
+        id S229791AbhCTQIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCTQCr (ORCPT
+        with ESMTP id S229713AbhCTQIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:02:47 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3BDC061574;
-        Sat, 20 Mar 2021 09:02:47 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f26so15675074ljp.8;
-        Sat, 20 Mar 2021 09:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ckrcEbmff1iIMspLq9lx4bc/o3J3DdXAByPuLZNU9cg=;
-        b=HzwIqhpBTZUgkPY3d5szguL4q6maumEY/kIcJ7ceQ5vMmlEic7jw/quc0RHxOxs0C3
-         uILyid4u/gwzxEeKIPWVykAhGCEHaLPuTfqfgggE0gD694grWgrVFbcuYZ9gsdjBODQH
-         HV2O2PgS9bu2u6FUKXEXyzTOwHRCW7nq9GixeI6HqEFwvT7AFu4BeOHxwivYVOaORCgg
-         NnnOMumwtvUqYi8drtcJVf4Qb/byXz9KTTjaL6qvQ3Ojpif8iLWOlfFmDMHN8yA1nCpY
-         X9LHEp/3LPY/FDMLjDs/HPCIFqMARvcPWpC7xvdxR9zAuWcig2f0t6C7IdNZKdMhUSgC
-         LkKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ckrcEbmff1iIMspLq9lx4bc/o3J3DdXAByPuLZNU9cg=;
-        b=bauKiJpBFcpZEQqSLYChddlTZ+N5Bp8WSIM4PaSYVB9LGBLGNmLR3bkT5GvjNhutNU
-         yT0V98nHoy3T3Da78qJQYKNmxbJU233x1Gi9tME92WdIKs7hMGaSztNQUzhHJCkazT+e
-         uUfLyxcbpphrMxJqLHt0eOeeK/TIIdMDKFwD5I54zDntCDmYZAvqJ7iclURZW4PqsDn5
-         3q4veHqQbRjmGqp1N6xia1E6SX+8TJQ4c6zQLnCFFh+KjPOGq8p2FcE3SF+S/TDmrUqW
-         3aED0AVSOQoTu4BUueJQsy7knpO6hc0h4s/h7CsnaC6D97YwloP9qqN45PagpowqYsVq
-         iIkA==
-X-Gm-Message-State: AOAM533G/yXqZQ9ydpvyLItVDsZTwXJK5GwWdz3IqTnrSa+l7NRQ6OVn
-        PZBUZN6NcWfPNHJAwg6+g81f24OzKi8=
-X-Google-Smtp-Source: ABdhPJwfcJXcIHdsjEO62pMyNeYxKV4L0QkLYIMwtkeP29PwQ3/0ZdkIvd3fBIA8Iz+lgQ5CRgBubA==
-X-Received: by 2002:a2e:9e8e:: with SMTP id f14mr4408333ljk.140.1616256164712;
-        Sat, 20 Mar 2021 09:02:44 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id q14sm964257lfd.214.2021.03.20.09.02.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 09:02:44 -0700 (PDT)
-Subject: Re: [PATCH v6 0/3] Support wakeup methods of Atmel maXTouch
- controllers
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210302102158.10533-1-digetx@gmail.com>
-Message-ID: <8c1280f6-b79f-9c62-a064-68b119d74c49@gmail.com>
-Date:   Sat, 20 Mar 2021 19:02:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 20 Mar 2021 12:08:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C56C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 09:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lLZoxS2jnucsow36f/+/xibANjR777Ge9+Ym0kKbvpc=; b=KllN2K/hkTM3EeUXWft/eHxhZU
+        KwdnPxKrzdC78hBbNskkRUWhFqjvdw8XdCylXMknUiDffnDK0M2/boumqKHhD4bzvSK/v0GeCfl+K
+        wOlEms5d2g+L+Uusz5QPgwzGrQIAlQvu+xzanUZPaqdFwpc2OdFp0v+lnjkek59XpotGtbfQ4dxAy
+        1Ozdsm7A6dwvohusQ+uhN2hcft9FnquuM6L/MMQBBUL4f4h5g8pwnrp4yDj3TeUmJXDrv0GxaZISI
+        QZ9W7x/yRkJRnUBfZmLbQWpUy1qxtJjxGPR3LzXiZ3fqf2vmSM3Br9J2brTy86EYLNF/qmSvAKOeh
+        sXKtWdHw==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNe94-001vTD-A8; Sat, 20 Mar 2021 16:08:11 +0000
+Date:   Sat, 20 Mar 2021 09:08:10 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+cc:     code@tyhicks.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, corbet@lwn.net,
+        ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        christian.brauner@ubuntu.com
+Subject: Re: [PATCH] ecryptfs: fix incorrect kernel-doc comment syntax in
+ files
+In-Reply-To: <20210320081551.13954-1-yashsri421@gmail.com>
+Message-ID: <731fb5fd-b20-c1e-bfe-276845a9a91@bombadil.infradead.org>
+References: <20210320081551.13954-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302102158.10533-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210320_090810_373986_08DFD58B 
+X-CRM114-Status: GOOD (  10.26  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sat, 20 Mar 2021, Aditya Srivastava wrote: > The opening
+    comment mark '/**' is used for kernel-doc comments. > There are files in
+   fs/encrypts which follows this syntax, but the content > inside does not comply
+    with kernel-doc. > This causes un [...] 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.03.2021 13:21, Dmitry Osipenko пишет:
-> Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
-> have a WAKE line that needs to be asserted in order to wake controller
-> from a deep sleep, otherwise it will be unusable. This series implements
-> support for the wakeup methods in accordance to the mXT1386 datasheet [1],
-> see page 29 (chapter "5.8 WAKE Line").
-> 
-> The mXT1386 is a widely used controller found on many older Android tablet
-> devices. Touchscreen on Acer A500 tablet now works properly after this
-> series.
-> 
-> This patchset is a continuation of the work originally started by
-> Jiada Wang [2].
-> 
-> [1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
-> [2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
 
-Hi,
 
-This series is very wanted by Android tablet devices from Acer, Asus and
-other vendors which use Maxtouch 1386 controller. Touchscreens don't
-work without the wakeup support, i.e. without this series. The wakeup
-support is implemented in accordance to the datasheet and touchscreens
-are working excellent using these patches.
+On Sat, 20 Mar 2021, Aditya Srivastava wrote:
 
-Could you please take this series into v5.13?
+> The opening comment mark '/**' is used for kernel-doc comments.
+> There are files in fs/encrypts which follows this syntax, but the content
+> inside does not comply with kernel-doc.
+> This causes unexpected warnings from kernel-doc.
+>
+> E.g., header comment for fs/ecryptfs/dentry.c follows kernel-doc syntax
+> for comments(i.e., '/**'), but the content inside does not.
+>
+> Running kernel-doc -none on fs/ecryptfs/dentry.c causes these
+> unexpected warnings:
+> "warning: Incorrect use of kernel-doc format:  * ecryptfs_d_revalidate - revalidate an ecryptfs dentry"
+> "warning: Function parameter or member 'dentry' not described in 'ecryptfs_d_revalidate'"
+> "warning: Function parameter or member 'flags' not described in 'ecryptfs_d_revalidate'"
+> "warning: expecting prototype for eCryptfs(). Prototype was for ecryptfs_d_revalidate() instead"
+>
+> Similarly for other files too.
+>
+> Provide a simple fix by replacing such occurrences with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+>
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-Or could you please let me know what exactly needs to be improved?
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks in advance.
+Thanks.
+
+> ---
+> * Applies perfectly on next-20210312
+>
+> fs/ecryptfs/crypto.c          |  2 +-
+> fs/ecryptfs/debug.c           |  2 +-
+> fs/ecryptfs/dentry.c          |  2 +-
+> fs/ecryptfs/ecryptfs_kernel.h |  2 +-
+> fs/ecryptfs/file.c            |  2 +-
+> fs/ecryptfs/inode.c           |  2 +-
+> fs/ecryptfs/keystore.c        |  6 +++---
+> fs/ecryptfs/kthread.c         |  2 +-
+> fs/ecryptfs/main.c            | 10 +++++-----
+> fs/ecryptfs/messaging.c       |  2 +-
+> fs/ecryptfs/miscdev.c         |  2 +-
+> fs/ecryptfs/mmap.c            |  6 +++---
+> fs/ecryptfs/read_write.c      |  2 +-
+> fs/ecryptfs/super.c           |  2 +-
+> 14 files changed, 22 insertions(+), 22 deletions(-)
+>
