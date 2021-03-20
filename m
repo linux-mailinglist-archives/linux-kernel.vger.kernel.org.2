@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF108342F60
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4380342F63
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhCTTtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:49:10 -0400
-Received: from relay03.th.seeweb.it ([5.144.164.164]:52489 "EHLO
-        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCTTsg (ORCPT
+        id S229817AbhCTTyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTTyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:48:36 -0400
-Received: from [192.168.1.101] (abac242.neoplus.adsl.tpnet.pl [83.6.166.242])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 743991F53D;
-        Sat, 20 Mar 2021 20:48:31 +0100 (CET)
-Subject: Re: [RESEND PATCH v4 1/2] dt-bindings: tsens: qcom: Document MDM9607
- compatible
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210319220802.198215-1-konrad.dybcio@somainline.org>
- <5733a2bf-8a75-2224-b821-eeb8556c6914@somainline.org>
- <a7018d4d-7c95-370e-9d47-615f63a65a22@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <fafa8304-2445-8413-b98c-8269ee033776@somainline.org>
-Date:   Sat, 20 Mar 2021 20:48:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 20 Mar 2021 15:54:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B79C061574;
+        Sat, 20 Mar 2021 12:54:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=n6sUomGFTdUgXHQKImE6dSIftD7hu8+DvN7lvXNoVOw=; b=lAI97FMVTPnIXvJcwPkDdBkvHZ
+        /nzR6AM1P2MZxOGB+AtsymO/efY+lC1LMICWRdvIFUY/MMehtaMd4orMPIXVRY60YNAP0JZTTkbYR
+        qgoNQszMAAUFOjxlG1sPDVO8V1VS1bRDARdyfvJ9So2Dq+RZtXSCpWJlqtLYdNJPGq2zxBvAZUN3c
+        8Bs66qSimLsZpLkm6sqsRbXno37KaodheP5Che6kisePfZ0dzHgVkjYJAvhnywKdp7jyhCo62kdRz
+        V4xFUM7dSkgc3vDjBGAvIlUR8AHWrkwV07MnTF0hqAjZXGPXu/odYQCD1GSaUHdqKOeQzdB36cZcU
+        1a/5rAJw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNhgF-006Fft-NZ; Sat, 20 Mar 2021 19:54:40 +0000
+Date:   Sat, 20 Mar 2021 19:54:39 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, cgoldswo@codeaurora.org, mhocko@suse.com,
+        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        oliver.sang@intel.com
+Subject: Re: [PATCH v4 3/3] mm: fs: Invalidate BH LRU during page migration
+Message-ID: <20210320195439.GE3420@casper.infradead.org>
+References: <20210319175127.886124-1-minchan@kernel.org>
+ <20210319175127.886124-3-minchan@kernel.org>
+ <20210320093249.2df740cd139449312211c452@linux-foundation.org>
+ <YFYuyS51hpE2gp+f@google.com>
 MIME-Version: 1.0
-In-Reply-To: <a7018d4d-7c95-370e-9d47-615f63a65a22@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFYuyS51hpE2gp+f@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 20, 2021 at 10:20:09AM -0700, Minchan Kim wrote:
+> > > Tested-by: Oliver Sang <oliver.sang@intel.com>
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > 
+> > The signoff chain ordering might mean that Chris was the primary author, but
+> > there is no From:him.  Please clarify?
+> 
+> He tried first version but was diffrent implementation since I
+> changed a lot. That's why I added his SoB even though current
+> implementaion is much different. So, maybe I am primary author?
 
-On 20.03.2021 20:47, Daniel Lezcano wrote:
-> On 20/03/2021 20:01, Konrad Dybcio wrote:
->> Add the compatible for MDM9607.
->>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->>> ---
->>> v4: separate from the main patch
->>>
->>>  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 2 ++
->>>  1 file changed, 2 insertions(+)
->> This change was previously a-b Rob Herring, I forgot to add the ack back in after separating the patch, sorry for that.
-> Can you point it to a lkml@ archive ?
->
-
-Sure, it's been acked here [1].
-
-
-[1] https://lore.kernel.org/patchwork/patch/1372052/
-
-
-Konrad
-
+Maybe Chris is Reported-by: ?  And don't forget Laura Abbott as original
+author of the patch Chris submitted.  I think she should be Reported-by:
+as well, since there is no code from either of them in this version of
+the patch.
