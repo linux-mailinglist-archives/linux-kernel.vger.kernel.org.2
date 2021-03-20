@@ -2,154 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362AF342D2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD1C342D34
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhCTNvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 09:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhCTNvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 09:51:10 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5167C6193F;
-        Sat, 20 Mar 2021 13:51:05 +0000 (UTC)
-Date:   Sat, 20 Mar 2021 13:51:01 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kevin Tsai <ktsai@capellamicro.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: More cleanup of standard unit properties
-Message-ID: <20210320135101.64c5c4e1@jic23-huawei>
-In-Reply-To: <20210316194824.3526913-1-robh@kernel.org>
-References: <20210316194824.3526913-1-robh@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229826AbhCTN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 09:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhCTN6G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 09:58:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB746C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 06:57:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616248673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x8H1V0k5OhUS+mggqNUK8EoniqcnTOxt5Y0BbnyP9xc=;
+        b=OtC8iVX//o6rJAj66uF5yAMN9C5Y4ukS6APBRhHYx5AbyT1xtY7lNf6KuLlMSF4bf5/mQV
+        rzTn1SiHfZTUkQnP5oI5CM+bQeExJVAq8FJNuTztF0vQAsykHA4c8xSgGZyRFo9S8SZNlk
+        9VQ0+4NTqlMz6f473a3cxhPp3qzEN1D847XCi04ZcIrlb9o1Wa63FdxcRNtvPlq/LXVSnX
+        Hqbh1gpyFnVtbeLVHbyVsxeMFeJgiNQxaiISlIxR5V04dh7uLdyxUb50P89HXZm6Z8xhIF
+        GcXE6EztASwelAVw4SaaZCm5tkTpV+kY5H6pGWZcEObb0GI1Y6W2mn2XmlnkZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616248673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x8H1V0k5OhUS+mggqNUK8EoniqcnTOxt5Y0BbnyP9xc=;
+        b=jRq+MduKkeR6CUHYIJWryCG9VcOKdX+pxWM6eeIdkZwBljiDYWN40LtEfODNAvutVDwl1Z
+        2mEYwnUOWwk/XSBQ==
+To:     "Luck\, Tony" <tony.luck@intel.com>,
+        "Yu\, Fenghua" <fenghua.yu@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Li\, Xiaoyao" <xiaoyao.li@intel.com>,
+        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        "Yu\, Fenghua" <fenghua.yu@intel.com>
+Subject: RE: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
+In-Reply-To: <87k0q2bpu1.fsf@nanos.tec.linutronix.de>
+References: <20210313054910.2503968-1-fenghua.yu@intel.com> <20210313054910.2503968-3-fenghua.yu@intel.com> <871rca6dbp.fsf@nanos.tec.linutronix.de> <d98d86f9f5824573b2441089e0c2ae91@intel.com> <87k0q2bpu1.fsf@nanos.tec.linutronix.de>
+Date:   Sat, 20 Mar 2021 14:57:52 +0100
+Message-ID: <874kh6apwf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 13:48:24 -0600
-Rob Herring <robh@kernel.org> wrote:
+On Sat, Mar 20 2021 at 02:01, Thomas Gleixner wrote:
 
-> Properties with standard unit suffixes already have a type and don't need
-> type references. Fix a few more cases which have gotten added.
-> 
-> Cc: Luca Ceresoli <luca@lucaceresoli.net>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Kevin Tsai <ktsai@capellamicro.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> On Fri, Mar 19 2021 at 21:50, Tony Luck wrote:
+>>>  What is the justifucation for making this rate limit per UID and not
+>>>  per task, per process or systemwide?
+>>
+>> The concern is that a malicious user is running a workload that loops
+>> obtaining the buslock. This brings the whole system to its knees.
+>>
+>> Limiting per task doesn't help. The user can just fork(2) a whole bunch
+>> of tasks for a distributed buslock attack..
+>
+> Fair enough.
+>
+>> Systemwide might be an interesting alternative. Downside would be accidental
+>> rate limit of non-malicious tasks that happen to grab a bus lock periodically
+>> but in the same window with other buslocks from other users.
+>>
+>> Do you think that a risk worth taking to make the code simpler?
+>
+> I'd consider it low risk, but I just looked for the usage of the
+> existing ratelimit in struct user and the related commit. Nw it's dawns
+> on me where you are coming from.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+So after getting real numbers myself, I have more thoughts on
+this. Setting a reasonable per user limit might be hard when you want to
+protect e.g. against an orchestrated effort by several users
+(containers...). If each of them stays under the limit which is easy
+enough to figure out then you still end up with significant accumulated
+damage.
 
-> ---
->  Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml | 1 -
->  Documentation/devicetree/bindings/input/input.yaml              | 1 -
->  Documentation/devicetree/bindings/power/supply/bq256xx.yaml     | 1 -
->  Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml   | 2 --
->  .../devicetree/bindings/regulator/qcom-labibb-regulator.yaml    | 1 -
->  .../devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml          | 1 -
->  6 files changed, 7 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml b/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-> index 27972938b60d..c63b79c3351b 100644
-> --- a/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-> +++ b/Documentation/devicetree/bindings/iio/light/capella,cm3605.yaml
-> @@ -48,7 +48,6 @@ properties:
->    vdd-supply: true
->  
->    capella,aset-resistance-ohms:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [50000, 100000, 300000, 600000]
->      description: >
->        Sensitivity calibration resistance. Note that calibration curves
-> diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
-> index ab407f266bef..3fc37478c0c0 100644
-> --- a/Documentation/devicetree/bindings/input/input.yaml
-> +++ b/Documentation/devicetree/bindings/input/input.yaml
-> @@ -32,6 +32,5 @@ properties:
->        Duration in seconds which the key should be kept pressed for device to
->        power off automatically. Device with key pressed shutdown feature can
->        specify this property.
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->  
->  additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-> index 18b54783e11a..92ec7ed25668 100644
-> --- a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-> @@ -39,7 +39,6 @@ properties:
->      maxItems: 1
->  
->    ti,watchdog-timeout-ms:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      default: 0
->      description: |
->        Watchdog timer in ms. 0 (default) disables the watchdog
-> diff --git a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-> index 1f88c9e013f4..6d7aa97a6475 100644
-> --- a/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/ltc4162-l.yaml
-> @@ -29,12 +29,10 @@ properties:
->      description: I2C address of the charger.
->  
->    lltc,rsnsb-micro-ohms:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      description: Battery sense resistor in microohm.
->      minimum: 1000
->  
->    lltc,rsnsi-micro-ohms:
-> -    $ref: /schemas/types.yaml#/definitions/uint32
->      description: Input current sense resistor in microohm.
->      minimum: 1000
->  
-> diff --git a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-> index cf784bd1f5e5..1ddc1efd19e2 100644
-> --- a/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
-> @@ -23,7 +23,6 @@ properties:
->  
->      properties:
->        qcom,soft-start-us:
-> -        $ref: /schemas/types.yaml#/definitions/uint32
->          description: Regulator soft start time in microseconds.
->          enum: [200, 400, 600, 800]
->          default: 200
-> diff --git a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> index 7cd364430573..95a728f4d333 100644
-> --- a/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
-> @@ -78,7 +78,6 @@ patternProperties:
->            also known as absolute calibration.
->  
->        qcom,hw-settle-time-us:
-> -        $ref: /schemas/types.yaml#/definitions/uint32
->          description: Time between AMUX getting configured and the ADC starting conversion.
->          enum: [15, 100, 200, 300, 400, 500, 600, 700, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000]
->  
+So systemwide might not be the worst option after all.
+
+The question is how wide spread are bus locks in existing applications?
+I haven't found any on a dozen machines with random variants of
+workloads so far according to perf ... -e sq_misc.split_lock.
+
+What's the actual scenario in the real world where a buslock access
+might be legitimate?
+
+And what's the advice, recommendation for a system administrator how to
+analyze the situation and what kind of parameter to set?
+
+I tried to get answers from Documentation/x86/buslock.rst, but ....
+
+Thanks,
+
+        tglx
+
 
