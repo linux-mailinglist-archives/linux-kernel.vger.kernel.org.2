@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DDD342E98
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C21342E9B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCTRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 13:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhCTRUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 13:20:13 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0001C061574;
-        Sat, 20 Mar 2021 10:20:12 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x26so8089305pfn.0;
-        Sat, 20 Mar 2021 10:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pn3EpVCjCb+QJM6LLjzL2zV3hlQHkLh8MmLlzXPa6ew=;
-        b=mjElOV/tUoZZfqlxr5PYrlUHtBGYtmEFe3uTjgOEey8Lh6EDt3FV/hnm/l2v9znfl/
-         zN331omIg4XDf8rqu0WDCZ4nwuZS1AFGGTLschgJji3EXekslsB+ZE8AYABAJBILSFAc
-         U8zJxgHEI0GmJKzxWI4PjnaMAZCBShAvkasY39yG/FKTWzzwwIsvUFb79RKpe08YnbZc
-         QapQnBQWV73f3RWsYy73bqmEMMFAh0EjUSo334ii9eU4q1qItRykw1Tf5qHidGZdabh2
-         jFg2dr/dY2bFZXmGNW0lHu8lYZG2NTMOA1XgjMeph+FEejppx8cFn7K+9xHgOocU9PNT
-         TU0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Pn3EpVCjCb+QJM6LLjzL2zV3hlQHkLh8MmLlzXPa6ew=;
-        b=OTBSisE22i3ZlxMVgzhbG6ujFY7E0BB6ZTVFzZW1dUZoyab207J5tDr54W4oTA8EZu
-         VdA5BpZe24WywDHFvSLVtZLXxuAHl05zCQSQ0DVXXieX1TaNzKOvqKtfXiHs2/m8phQS
-         fy/GF56On90anpNq7hUcSUHeg4pTXC+6cQ/7B/kVn0iEJxfVEYM6xNTBI4V++7I1oFH6
-         NhZeqcP6CXyOIHj4AjSxt0aAKkDmZQM+kkAy5n7Ez2/MorYb9TxKLgySQjZrUH65ZU9K
-         0rwV3QTvJD8nLGvnznRJ5v7JVbwrVLNhfqz4e+ExR8d1HwIiUxHMtzzXmVvA3B7A40ie
-         fTwQ==
-X-Gm-Message-State: AOAM533r0BXZ+kOP/NUaebpWC4pNI4ZMjja8fpm9OeVEIiJmpnzebNgL
-        0an1M1myO2vDCASJKVZUrnI=
-X-Google-Smtp-Source: ABdhPJyUUWqoUJc47c0gBiHuNFkAur1+tX3M47krLs4Zje9ipb18DmxknFlh0flPhAISUtcMF3Q3EQ==
-X-Received: by 2002:aa7:9521:0:b029:1f1:b27f:1a43 with SMTP id c1-20020aa795210000b02901f1b27f1a43mr14596473pfp.4.1616260812393;
-        Sat, 20 Mar 2021 10:20:12 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:2033:9813:e1ed:7060])
-        by smtp.gmail.com with ESMTPSA id cv3sm9238575pjb.9.2021.03.20.10.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 10:20:11 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Sat, 20 Mar 2021 10:20:09 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
-        willy@infradead.org, mhocko@suse.com, david@redhat.com,
-        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
-        oliver.sang@intel.com
-Subject: Re: [PATCH v4 3/3] mm: fs: Invalidate BH LRU during page migration
-Message-ID: <YFYuyS51hpE2gp+f@google.com>
-References: <20210319175127.886124-1-minchan@kernel.org>
- <20210319175127.886124-3-minchan@kernel.org>
- <20210320093249.2df740cd139449312211c452@linux-foundation.org>
+        id S229879AbhCTRXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 13:23:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229840AbhCTRX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 13:23:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 878546192D
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 17:23:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616261005;
+        bh=/b25iKJZ9KZluzyNkg+H4bqhRAkDvPRLLwwMd97ZR+0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TPHe98WXNAl7xLc0QDXbr9795qTaPMEbiGwSoIjnmlrkPZZNoe2sAKfep58FWbzwK
+         ghVRTxtNB7Nt0WQ4LYlEfXeFWWpTwlw3foUQnv1Uy9zTMiBcdIihU1EaSFz0f92LD9
+         B+7fAKqalctoc0qQG39d5o2qUiMvBkCji3VqYkWAzx8M50H/L5ZxBMSgcDW1/leTUJ
+         2PweDIHxtFj7hcM494kMCyfDqqbppwRvHAf0k0VdKycmUQwwRF27paNGZkWQn2f4YL
+         qIVXgR5KhQ4LI1FWgxrHfW66b6GFQQi/0eqOlejFUEeDtvQEHboIkcyTNf/W+ea4ip
+         IQ/8n+csOw+5g==
+Received: by mail-ej1-f48.google.com with SMTP id k10so14652778ejg.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 10:23:25 -0700 (PDT)
+X-Gm-Message-State: AOAM532FZOZU1z8uVG3ma7S+J7axnQt8Lfs9HitY+DvEfUedrB1fr6f1
+        XlklMlCpU2MKFekSuHxypb1jiEDBq+iVXf10cy5ElA==
+X-Google-Smtp-Source: ABdhPJwDmIu7WV5vbmp2D+c7QZtUKK60PPm1idT10R4ezumQ6BURijYmhpx1bDsIjG9Nf1v6G4pWqgqMdJiE0y8SqKQ=
+X-Received: by 2002:a17:906:1494:: with SMTP id x20mr10645998ejc.101.1616261004125;
+ Sat, 20 Mar 2021 10:23:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320093249.2df740cd139449312211c452@linux-foundation.org>
+References: <YFYjOB1jpbqyNPAp@localhost.localdomain>
+In-Reply-To: <YFYjOB1jpbqyNPAp@localhost.localdomain>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 20 Mar 2021 10:23:12 -0700
+X-Gmail-Original-Message-ID: <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
+Message-ID: <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
+Subject: Re: [PATCH] Document that PF_KTHREAD _is_ ABI
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 09:32:49AM -0700, Andrew Morton wrote:
-> On Fri, 19 Mar 2021 10:51:27 -0700 Minchan Kim <minchan@kernel.org> wrote:
-> 
-> > Pages containing buffer_heads that are in one of the per-CPU
-> > buffer_head LRU caches will be pinned and thus cannot be migrated.
-> > This can prevent CMA allocations from succeeding, which are often used
-> > on platforms with co-processors (such as a DSP) that can only use
-> > physically contiguous memory. It can also prevent memory
-> > hot-unplugging from succeeding, which involves migrating at least
-> > MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
-> > GiB based on the architecture in use.
-> > 
-> > Correspondingly, invalidate the BH LRU caches before a migration
-> > starts and stop any buffer_head from being cached in the LRU caches,
-> > until migration has finished.
-> > 
-> > Tested-by: Oliver Sang <oliver.sang@intel.com>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> 
-> The signoff chain ordering might mean that Chris was the primary author, but
-> there is no From:him.  Please clarify?
+> On Mar 20, 2021, at 9:31 AM, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> =EF=BB=BFPF_KTHREAD value is visible via field number 9 of /proc/*/stat
+>
+>    $ sudo cat /proc/2/stat
+>    2 (kthreadd) S 0 0 0 0 -1 2129984 0 ...
+>                  ^^^^^^^
+>
+> It is used by at least systemd to check for kernel-threadness:
+> https://github.com/systemd/systemd/blob/main/src/basic/process-util.c#L35=
+4
+> src/basic/process-util.c:is_kernel_thread()
 
-He tried first version but was diffrent implementation since I
-changed a lot. That's why I added his SoB even though current
-implementaion is much different. So, maybe I am primary author?
+Eww.
+
+Could we fix it differently and more permanently by modifying the proc
+code to display the values systemd expects?
 
 
+>
+> It means that the value can't be changed despite perceived notion that
+> task_struct flags are internal to kernel and can be shuffled at whim.
+>
+> Formally, _all_ struct task_struct::flags PF_* values are kernel ABI
+> which is a disaster.
+>
+> I hope we can mask everything but few flags and hope for the best :^)
+>
+> Note for beginner Linux programmers:
+> every other way you find on the interwebs and Stack Overflow
+> for checking if pid belongs to a kernel thread is broken one way or
+> another.
+>
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
+>
+> include/linux/sched.h |    3 +++
+> 1 file changed, 3 insertions(+)
+>
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1566,6 +1566,9 @@ extern struct pid *cad_pid;
+> #define PF_MEMALLOC_NOIO    0x00080000    /* All allocation requests will=
+ inherit GFP_NOIO */
+> #define PF_LOCAL_THROTTLE    0x00100000    /* Throttle writes only agains=
+t the bdi I write to,
+>                         * I am cleaning dirty pages from some other bdi. =
+*/
+> +/*
+> + * PF_KTHREAD is part of kernel ABI, visible via value #9 in /proc/$pid/=
+stat
+> + */
+> #define PF_KTHREAD        0x00200000    /* I am a kernel thread */
+> #define PF_RANDOMIZE        0x00400000    /* Randomize virtual address sp=
+ace */
+> #define PF_SWAPWRITE        0x00800000    /* Allowed to write to swap */
