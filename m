@@ -2,972 +2,784 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EC4342DD0
+	by mail.lfdr.de (Postfix) with ESMTP id 25ED1342DCF
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhCTPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:35:01 -0400
-Received: from mout.gmx.net ([212.227.17.20]:56411 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229835AbhCTPe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:34:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616254451;
-        bh=b+DAkGSEJEYQr1J+vYvC9mKnu1liKEHFHg8AxvtyYMM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=FxOPsH+SEHI5chRlRQQBwAcaQ9m0NG7SjAG8JvR/+wxDB+seC4RbIeRGrCoTG9MMw
-         +wus5/7yXUbmBwPZfaRi676rrQIOTAIful9ygZ4eTQQP4bMwDRuZNpGH7+4xONxhNl
-         /2e63o/gyM3lQDIJgfgzL1LgbrEh6O5iAcroF0nA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KUT-1lmLE21Iyn-016i8W; Sat, 20
- Mar 2021 16:34:11 +0100
-Date:   Sat, 20 Mar 2021 16:34:06 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v6 3/8] securtiy/brute: Detect a brute force attack
-Message-ID: <20210320153406.GB3023@ubuntu>
-References: <20210307113031.11671-1-john.wood@gmx.com>
- <20210307113031.11671-4-john.wood@gmx.com>
- <202103171902.E6F55172@keescook>
+        id S229873AbhCTPfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:35:00 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:64103 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhCTPeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 11:34:50 -0400
+Date:   Sat, 20 Mar 2021 15:34:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+        s=protonmail3; t=1616254486;
+        bh=JTyt7legjbFhec6GFumJoMePKi1InCF9VN17NylsqRE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Nb8kmdt4B3a51am5iZsJpAi7WUIS++kbEc3Orbn+Moy2/MVoFvBQs0QlSzJtNV/+t
+         l1br16fPNrPDXQfIicmG5rjfeVPVxJSIwmj1xLwP56PEmfb/0xeJlrrbNIb2EYeV0w
+         YLfJuziguX5bA1WE4EnOHthTE5Vc5Udx9aVsdGCLQftHjivuryzwgRxxjxJliDIyv2
+         D/GVvFswygnOKcgx1HhJ4uLxMp5mr/+yH7W6dAT405Eo2qdHzLda2n9mGqYW9ACirX
+         jRaqMxCQmpRxA5oDDUWNuxaL9z8cg2N6GKC3H4yiBCR0FcNofYMRByUPhxI84hqTbm
+         K9/zpawux33ow==
+To:     iommu@lists.linux-foundation.org
+From:   Sven Peter <sven@svenpeter.dev>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Sven Peter <sven@svenpeter.dev>
+Reply-To: Sven Peter <sven@svenpeter.dev>
+Subject: [PATCH 3/3] iommu: dart: Add DART iommu driver
+Message-ID: <20210320153419.61311-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103171902.E6F55172@keescook>
-X-Provags-ID: V03:K1:mmvqspBjLAdCfBOq0CTFBPQaDrsx5fEfCvn4pEjMSAqctnxsEKQ
- b9LgXFf4ywOhYtaf9Ql4bsc0B1bTCdwjztQhJbxVATashkWphzRbsuE8ERPy8OL8XhP+Zwo
- dnxoyRfRw6kqOltKAXnZF/z3q5YXFxnAAgC24vJxSFYlYuATaH3UQi5Mttcrwidhhw2xJEy
- vM34g/VMY8CBcZg85bCGA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yG8hg28xvpM=:85blcd041/E2wZo8zxrMWZ
- Fw+uszJBN54N8cdUNYUBbMNetTpXSXQsYqyO8ipsC+fvGBs/FGd4j1igGSZMZ2kA7PpPgLrLh
- I8JLdbQNKQHRa0DrkRU9J0dPCQ8zVs/0QEpmJP5Hj6k6MVeU8ckA8vZxOCNY8jNPPj1WNxY3o
- t2AF27Fy2frrFTc0Y6Eayi6JBJHKDa4/qb5AcAkp7oFwMk+LyG8SIlXWiR3zRjQgNsvTjQdEh
- cFbbazFi4qkelPF6AaC3xb0uBWC7sLXU0J7Z8QuXiEHVTm2mSgAHvqgr5ovf1DW9N1z72JXqA
- e8Eqp3EoPOdM73pgSzTcV4cDrxNoMTi7vED05MnceA8ztSUgVEoKbZFXC+S3q4ClILXmeRckx
- LceaKrSdGe39Lo0LRyHLNRxaM+s170Uo8zVHmltiQoX2DhwJ2rfaX6J9VddSfeiJl63VVDo83
- tEkanxP3Mu0jK5vZfeXgA0o+MSm9+iGjH9+Q4uGJhq4n3AVTl4dzQOT2xFNlQ6JjVyjaGvWD9
- cesgRU2MsEC/MPIuQzxrnIju+oVq9hJFgudya7Cba0F7Ml0fBQmy1dqg7Kye2zw8RRuogIrR5
- MztucIVASszau8G0bTzOKgEkLgus/XBG/ISnfL7AU+AN1I7hX5XhdiKCoiKzFFHe7WaaxgZiY
- v9hlfDR4YpFdcMNMMMlDgNaTqlhKslyse/RnOlp14PUBIOU4nGsMj3DnHEU+16n3x1OIzg0C8
- 1YvCp5yGPAi4VIqIe84gpH7jLkK0LzQPv2+X2gZr+82YAqRFLNjSY3PFs8aCTomkM0EMmPCJV
- Df0YNkKP/3iDGh8EohtPIb2Myh7S9oW0B1xodyhDwPA5EuTHrG8fnT1wR3kqOf5/o/TcNTHus
- 40+GXFuWrFwaShpM4L06ZMmGvkfKpp4GMfdsXVH5urTt8l9tXyy1rYs9QEvyKKiCe9sDjpRsh
- U6IKzSAFUkteolhQ0cyYfN6gXRpNoj9/1k9XFG7Nz9UWmmV4PeDyhPF7Y0y2/zx6fJW4fqQKE
- oPYbWgQbWIVxPEjBOXW3knq8G+pxomv3Qva6tBxgR+xaP9k4OCD6l6WGoniVmka4qnEX/qg4m
- /TjaexSPCTSnwEVUXhEWBfSDmMgsfStG3PfffvKg3nMClUsNWW2YG5eixRAZEMNoLSxM1meNU
- pNGAQ9VrbFiLMt4cBo79sKmmYPilPTJrx/UopA0jTJLtZyLsndA4o1K7NSEy5Q1blEgL4=
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 07:57:10PM -0700, Kees Cook wrote:
-> On Sun, Mar 07, 2021 at 12:30:26PM +0100, John Wood wrote:
-> > @@ -74,7 +84,7 @@ static struct brute_stats *brute_new_stats(void)
-> >  {
-> >  	struct brute_stats *stats;
-> >
-> > -	stats =3D kmalloc(sizeof(struct brute_stats), GFP_KERNEL);
-> > +	stats =3D kmalloc(sizeof(struct brute_stats), GFP_ATOMIC);
->
-> Why change this here? I'd just start with this in the patch that
-> introduces it.
+Apple's new SoCs use iommus for almost all peripherals. These Device
+Address Resolution Tables must be setup before these peripherals can
+act as DMA masters.
 
-To be coherent in the previous patch. In the previous patch the kmalloc
-could use GFP_KERNEL due to the call was made out of an atomic context.
-Now, with the new lock it needs GFP_ATOMIC. So the question:
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+ MAINTAINERS                      |   1 +
+ drivers/iommu/Kconfig            |  13 +
+ drivers/iommu/Makefile           |   1 +
+ drivers/iommu/apple-dart-iommu.c | 653 +++++++++++++++++++++++++++++++
+ 4 files changed, 668 insertions(+)
+ create mode 100644 drivers/iommu/apple-dart-iommu.c
 
-If finally it need to use GFP_ATOMIC, the first patch need to use it even =
-if
-it is not necessary?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1f9a4f2de88b..7dcfce53dd04 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1241,6 +1241,7 @@ M:=09Sven Peter <sven@svenpeter.dev>
+ L:=09iommu@lists.linux-foundation.org
+ S:=09Maintained
+ F:=09Documentation/devicetree/bindings/iommu/apple,t8103-dart.yaml
++F:=09drivers/iommu/apple-dart-iommu.c
 
-> >  	if (!stats)
-> >  		return NULL;
-> >
-> > @@ -99,16 +109,17 @@ static struct brute_stats *brute_new_stats(void)
-> >   * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> >   * since the task_free hook can be called from an IRQ context during =
-the
-> >   * execution of the task_alloc hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and brute_stats_p=
-tr_lock
-> > + *          held.
-> >   */
-> >  static void brute_share_stats(struct brute_stats *src,
-> >  			      struct brute_stats **dst)
-> >  {
-> > -	unsigned long flags;
-> > -
-> > -	spin_lock_irqsave(&src->lock, flags);
-> > +	spin_lock(&src->lock);
-> >  	refcount_inc(&src->refc);
-> >  	*dst =3D src;
-> > -	spin_unlock_irqrestore(&src->lock, flags);
-> > +	spin_unlock(&src->lock);
-> >  }
->
-> I still don't think any locking is needed here; the whole function can
-> go away, IMO.
+ APPLE SMC DRIVER
+ M:=09Henrik Rydberg <rydberg@bitmath.org>
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index 3c95c8524abe..810bcb3ed414 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -262,6 +262,19 @@ config SPAPR_TCE_IOMMU
+ =09  Enables bits of IOMMU API required by VFIO. The iommu_ops
+ =09  is not implemented as it is not necessary for VFIO.
 
-In this case I think this is possible:
++config IOMMU_APPLE_DART
++=09tristate "Apple DART IOMMU Support"
++=09depends on ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
++=09select IOMMU_API
++=09select IOMMU_IO_PGTABLE_APPLE_DART
++=09help
++=09  Support for Apple DART (Device Address Resolution Table) IOMMUs
++=09  found in Apple ARM SoCs like the M1.
++=09  This IOMMU is required for most peripherals using DMA to access
++=09  the main memory.
++
++=09  Say Y here if you are using an Apple SoC with a DART IOMMU.
++
+ # ARM IOMMU support
+ config ARM_SMMU
+ =09tristate "ARM Ltd. System MMU (SMMU) Support"
+diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
+index 61bd30cd8369..5f21f0dfec6a 100644
+--- a/drivers/iommu/Makefile
++++ b/drivers/iommu/Makefile
+@@ -28,3 +28,4 @@ obj-$(CONFIG_S390_IOMMU) +=3D s390-iommu.o
+ obj-$(CONFIG_HYPERV_IOMMU) +=3D hyperv-iommu.o
+ obj-$(CONFIG_VIRTIO_IOMMU) +=3D virtio-iommu.o
+ obj-$(CONFIG_IOMMU_SVA_LIB) +=3D iommu-sva-lib.o
++obj-$(CONFIG_IOMMU_APPLE_DART) +=3D apple-dart-iommu.o
+diff --git a/drivers/iommu/apple-dart-iommu.c b/drivers/iommu/apple-dart-io=
+mmu.c
+new file mode 100644
+index 000000000000..a642dbc22281
+--- /dev/null
++++ b/drivers/iommu/apple-dart-iommu.c
+@@ -0,0 +1,653 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Apple DART (Device Address Resolution Table) IOMMU driver
++ *
++ * Based on arm/arm-smmu/arm-ssmu.c and arm/arm-smmu-v3/arm-smmu-v3.c
++ *  Copyright (C) 2013 ARM Limited
++ *  Copyright (C) 2015 ARM Limited
++ *
++ * Copyright (C) 2021 The Asahi Linux Contributors
++ */
++
++#include <linux/dma-iommu.h>
++#include <linux/ratelimit.h>
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/interrupt.h>
++#include <linux/iopoll.h>
++#include <linux/io-pgtable.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_iommu.h>
++#include <linux/of_platform.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#define DART_MAX_DEVICES 16
++#define DART_MAX_DOMAINS 16
++#define DART_MAX_TTBR 4
++
++#define DART_DOMAINS_ALL 0xffff
++
++#define DART_CONFIG 0x60
++#define DART_CONFIG_LOCK BIT(15)
++
++#define DART_ERROR 0x40
++#define DART_ERROR_DOMAIN_SHIFT 24
++#define DART_ERROR_DOMAIN_MASK 0xf
++#define DART_ERROR_CODE_MASK 0xffffff
++#define DART_ERROR_FLAG BIT(31)
++#define DART_ERROR_READ_FAULT BIT(4)
++#define DART_ERROR_WRITE_FAULT BIT(3)
++#define DART_ERROR_NO_PTE BIT(2)
++#define DART_ERROR_NO_PMD BIT(1)
++#define DART_ERROR_NO_PGD BIT(0)
++
++#define DART_DOMAIN_SELECT 0x34
++
++#define DART_DOMAIN_COMMAND 0x20
++#define DART_DOMAIN_COMMAND_BUSY BIT(2)
++#define DART_DOMAIN_COMMAND_INVALIDATE BIT(20)
++
++#define DART_DOMAIN_COMMAND_BUSY_TIMEOUT 100
++
++#define DART_DEVICE2DOMAIN_MAP 0x80
++
++#define DART_ERROR_ADDR_HI 0x54
++#define DART_ERROR_ADDR_LO 0x50
++
++#define DART_TCR(domain) (0x100 + 4 * (domain))
++#define DART_TCR_TRANSLATE_ENABLE BIT(7)
++#define DART_TCR_BYPASS_ENABLE BIT(8)
++
++#define DART_TTBR(domain, idx) (0x200 + 16 * (domain) + 4 * (idx))
++#define DART_TTBR_VALID BIT(31)
++#define DART_TTBR_SHIFT 12
++
++struct apple_dart_domain;
++
++struct apple_dart {
++=09struct device *dev;
++=09void __iomem *regs;
++
++=09int irq;
++=09struct clk_bulk_data *clks;
++=09int num_clks;
++
++=09struct iommu_device iommu;
++
++=09struct apple_dart_domain *domains[DART_MAX_DOMAINS];
++
++=09spinlock_t command_lock;
++=09struct mutex domain_mutex;
++};
++
++struct apple_dart_domain {
++=09struct apple_dart *dart;
++
++=09int domain_idx;
++
++=09struct io_pgtable_ops *pgtbl_ops;
++
++=09struct iommu_domain domain;
++};
++
++struct apple_dart_master {
++=09struct apple_dart *dart;
++=09u32 sid;
++};
++
++static struct platform_driver apple_dart_driver;
++static const struct iommu_ops apple_dart_iommu_ops;
++
++static struct apple_dart_domain *to_dart_domain(struct iommu_domain *dom)
++{
++=09return container_of(dom, struct apple_dart_domain, domain);
++}
++
++static void apple_dart_hw_enable_translation(struct apple_dart *dart,
++=09=09=09=09=09     u16 domain)
++{
++=09writel(DART_TCR_TRANSLATE_ENABLE, dart->regs + DART_TCR(domain));
++}
++
++static void apple_dart_hw_disable_translation(struct apple_dart *dart,
++=09=09=09=09=09      u16 domain)
++{
++=09writel(0, dart->regs + DART_TCR(domain));
++}
++
++static void apple_dart_hw_set_pgd(struct apple_dart *dart, u16 domain, u16=
+ idx,
++=09=09=09=09  phys_addr_t paddr)
++{
++=09writel(DART_TTBR_VALID | (paddr >> DART_TTBR_SHIFT),
++=09       dart->regs + DART_TTBR(domain, idx));
++}
++
++static void apple_dart_hw_clear_pgd(struct apple_dart *dart, u16 domain,
++=09=09=09=09    u16 idx)
++{
++=09writel(0, dart->regs + DART_TTBR(domain, idx));
++}
++
++static void apple_dart_hw_clear_all_pgds(struct apple_dart *dart, u16 doma=
+in)
++{
++=09int i;
++
++=09for (i =3D 0; i < 4; ++i)
++=09=09apple_dart_hw_clear_pgd(dart, domain, i);
++}
++
++static int apple_dart_hw_domain_command(struct apple_dart *dart,
++=09=09=09=09=09u16 domain_bitmap, u32 command)
++{
++=09unsigned long flags;
++=09int ret;
++=09u32 command_reg;
++
++=09spin_lock_irqsave(&dart->command_lock, flags);
++=09writel(domain_bitmap, dart->regs + DART_DOMAIN_SELECT);
++=09writel(command, dart->regs + DART_DOMAIN_COMMAND);
++
++=09ret =3D readl_poll_timeout(dart->regs + DART_DOMAIN_COMMAND, command_re=
+g,
++=09=09=09=09 !(command_reg & DART_DOMAIN_COMMAND_BUSY), 1,
++=09=09=09=09 DART_DOMAIN_COMMAND_BUSY_TIMEOUT);
++=09spin_unlock_irqrestore(&dart->command_lock, flags);
++
++=09if (ret) {
++=09=09dev_err(dart->dev,
++=09=09=09"Timeout while waiting for busy flag to be cleared after issuing =
+command %08x for domains %x\n",
++=09=09=09command, domain_bitmap);
++=09=09return ret;
++=09}
++
++=09return 0;
++}
++
++static int apple_dart_hw_invalidate_tlb_global(struct apple_dart *dart)
++{
++=09return apple_dart_hw_domain_command(dart, DART_DOMAINS_ALL,
++=09=09=09=09=09    DART_DOMAIN_COMMAND_INVALIDATE);
++}
++
++static int apple_dart_hw_invalidate_tlb_domain(struct apple_dart *dart,
++=09=09=09=09=09       u16 domain)
++{
++=09return apple_dart_hw_domain_command(dart, 1 << domain,
++=09=09=09=09=09    DART_DOMAIN_COMMAND_INVALIDATE);
++}
++
++static void apple_dart_hw_map_device_to_domain(struct apple_dart *dart,
++=09=09=09=09=09       u8 device, u8 domain)
++{
++=09u32 val;
++=09unsigned int reg =3D device / 4;
++=09unsigned int shift =3D 8 * (device % 4);
++=09unsigned int mask =3D 0xff << shift;
++
++=09val =3D readl(dart->regs + DART_DEVICE2DOMAIN_MAP + 4 * reg);
++=09val &=3D ~mask;
++=09val |=3D domain << shift;
++=09writel(val, dart->regs + DART_DEVICE2DOMAIN_MAP + 4 * reg);
++}
++
++static int apple_hw_dart_reset(struct apple_dart *dart)
++{
++=09int domain;
++=09u32 config;
++
++=09config =3D readl(dart->regs + DART_CONFIG);
++=09if (config & DART_CONFIG_LOCK) {
++=09=09dev_err(dart->dev, "DART is locked down until reboot: %08x\n",
++=09=09=09config);
++=09=09return -EINVAL;
++=09}
++
++=09for (domain =3D 0; domain < DART_MAX_DOMAINS; ++domain) {
++=09=09apple_dart_hw_disable_translation(dart, domain);
++=09=09apple_dart_hw_clear_all_pgds(dart, domain);
++=09}
++
++=09/* restore identity device to domain map */
++=09for (domain =3D 0; domain < DART_MAX_DOMAINS; ++domain)
++=09=09apple_dart_hw_map_device_to_domain(dart, domain, domain);
++
++=09return apple_dart_hw_invalidate_tlb_global(dart);
++}
++
++static void apple_dart_tlb_flush_all(void *cookie)
++{
++=09struct apple_dart_domain *domain =3D cookie;
++
++=09apple_dart_hw_invalidate_tlb_domain(domain->dart, domain->domain_idx);
++}
++
++static void apple_dart_tlb_flush_walk(unsigned long iova, size_t size,
++=09=09=09=09      size_t granule, void *cookie)
++{
++=09struct apple_dart_domain *domain =3D cookie;
++
++=09apple_dart_hw_invalidate_tlb_domain(domain->dart, domain->domain_idx);
++}
++
++static const struct iommu_flush_ops apple_dart_tlb_ops =3D {
++=09.tlb_flush_all =3D apple_dart_tlb_flush_all,
++=09.tlb_flush_walk =3D apple_dart_tlb_flush_walk,
++=09.tlb_add_page =3D NULL,
++};
++
++static struct iommu_domain *apple_dart_domain_alloc(unsigned int type)
++{
++=09struct apple_dart_domain *dart_domain;
++
++=09if (type !=3D IOMMU_DOMAIN_DMA && type !=3D IOMMU_DOMAIN_UNMANAGED)
++=09=09return NULL;
++
++=09dart_domain =3D kzalloc(sizeof(*dart_domain), GFP_KERNEL);
++=09if (!dart_domain)
++=09=09return NULL;
++
++=09dart_domain->domain_idx =3D -1;
++=09iommu_get_dma_cookie(&dart_domain->domain);
++
++=09return &dart_domain->domain;
++}
++
++static void apple_dart_domain_free(struct iommu_domain *domain)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct apple_dart *dart =3D dart_domain->dart;
++
++=09if (dart && dart_domain->domain_idx >=3D 0) {
++=09=09mutex_lock(&dart->domain_mutex);
++=09=09apple_dart_hw_clear_all_pgds(dart_domain->dart,
++=09=09=09=09=09     dart_domain->domain_idx);
++=09=09apple_dart_hw_disable_translation(dart_domain->dart,
++=09=09=09=09=09=09  dart_domain->domain_idx);
++
++=09=09apple_dart_hw_invalidate_tlb_domain(dart_domain->dart,
++=09=09=09=09=09=09    dart_domain->domain_idx);
++
++=09=09dart->domains[dart_domain->domain_idx] =3D NULL;
++
++=09=09mutex_unlock(&dart->domain_mutex);
++=09}
++
++=09kfree(dart_domain);
++}
++
++static struct apple_dart *apple_dart_get_by_fwnode(struct fwnode_handle *f=
+wnode)
++{
++=09struct device *dev =3D
++=09=09driver_find_device_by_fwnode(&apple_dart_driver.driver, fwnode);
++=09put_device(dev);
++=09return dev ? dev_get_drvdata(dev) : NULL;
++}
++
++static int apple_dart_finalise_domain(struct iommu_domain *domain,
++=09=09=09=09      struct apple_dart_master *cfg)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct apple_dart *dart =3D dart_domain->dart;
++=09struct io_pgtable_cfg pgtbl_cfg;
++=09int i, ret;
++
++=09mutex_lock(&dart->domain_mutex);
++
++=09/* sanity check to ensure this domain isn't already initialized */
++=09if (WARN_ON(dart_domain->domain_idx >=3D 0)) {
++=09=09ret =3D -EINVAL;
++=09=09goto out;
++=09}
++
++=09dart_domain->domain_idx =3D cfg->sid;
++
++=09/* sanity check to ensure this index isn't already in use */
++=09if (WARN_ON(dart->domains[dart_domain->domain_idx] !=3D NULL)) {
++=09=09ret =3D -EINVAL;
++=09=09goto out;
++=09}
++=09dart->domains[dart_domain->domain_idx] =3D dart_domain;
++
++=09pgtbl_cfg =3D (struct io_pgtable_cfg){
++=09=09.pgsize_bitmap =3D SZ_16K,
++=09=09.ias =3D 32,
++=09=09.oas =3D 36,
++=09=09.coherent_walk =3D 1,
++=09=09.tlb =3D &apple_dart_tlb_ops,
++=09=09.iommu_dev =3D dart->dev,
++=09};
++
++=09dart_domain->pgtbl_ops =3D
++=09=09alloc_io_pgtable_ops(ARM_APPLE_DART, &pgtbl_cfg, domain);
++=09if (!dart_domain->pgtbl_ops) {
++=09=09ret =3D -ENOMEM;
++=09=09goto out_domain;
++=09}
++
++=09for (i =3D 0; i < 4; ++i) {
++=09=09apple_dart_hw_set_pgd(dart, dart_domain->domain_idx, i,
++=09=09=09=09      pgtbl_cfg.apple_dart_cfg.pgd[i]);
++=09}
++
++=09apple_dart_hw_enable_translation(dart, dart_domain->domain_idx);
++=09apple_dart_hw_invalidate_tlb_domain(dart, dart_domain->domain_idx);
++
++=09domain->pgsize_bitmap =3D pgtbl_cfg.pgsize_bitmap;
++=09domain->geometry.aperture_end =3D (1UL << pgtbl_cfg.ias) - 1;
++=09domain->geometry.force_aperture =3D true;
++
++=09ret =3D 0;
++
++out_domain:
++=09if (ret)
++=09=09dart->domains[dart_domain->domain_idx] =3D NULL;
++out:
++=09mutex_unlock(&dart->domain_mutex);
++=09return ret;
++}
++
++static int apple_dart_attach_dev(struct iommu_domain *domain,
++=09=09=09=09 struct device *dev)
++{
++=09int ret;
++=09struct apple_dart_master *cfg =3D dev_iommu_priv_get(dev);
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++
++=09dart_domain->dart =3D cfg->dart;
++
++=09ret =3D apple_dart_finalise_domain(domain, cfg);
++=09if (ret)
++=09=09return ret;
++
++=09return 0;
++}
++
++static struct iommu_device *apple_dart_probe_device(struct device *dev)
++{
++=09struct apple_dart *dart =3D NULL;
++=09struct apple_dart_master *cfg =3D NULL;
++=09struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
++
++=09if (!fwspec || fwspec->ops !=3D &apple_dart_iommu_ops)
++=09=09return ERR_PTR(-ENODEV);
++
++=09dart =3D apple_dart_get_by_fwnode(fwspec->iommu_fwnode);
++=09if (!dart)
++=09=09return ERR_PTR(-ENODEV);
++
++=09cfg =3D kzalloc(offsetof(struct apple_dart_master, sid), GFP_KERNEL);
++=09if (!cfg)
++=09=09return ERR_PTR(-ENOMEM);
++
++=09cfg->dart =3D dart;
++=09cfg->sid =3D fwspec->ids[0];
++=09dev_iommu_priv_set(dev, cfg);
++
++=09device_link_add(dev, dart->dev,
++=09=09=09DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_SUPPLIER);
++=09return &dart->iommu;
++}
++
++static void apple_dart_release_device(struct device *dev)
++{
++=09struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
++
++=09if (!fwspec || fwspec->ops !=3D &apple_dart_iommu_ops)
++=09=09return;
++
++=09iommu_fwspec_free(dev);
++}
++
++static int apple_dart_of_xlate(struct device *dev, struct of_phandle_args =
+*args)
++{
++=09if (args->args_count !=3D 1) {
++=09=09dev_err(dev, "invalid #iommu-cells(%d) property for IOMMU\n",
++=09=09=09args->args_count);
++=09=09return -EINVAL;
++=09}
++
++=09return iommu_fwspec_add_ids(dev, args->args, 1);
++}
++
++static phys_addr_t apple_dart_iova_to_phys(struct iommu_domain *domain,
++=09=09=09=09=09   dma_addr_t iova)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct io_pgtable_ops *ops =3D dart_domain->pgtbl_ops;
++
++=09if (!ops)
++=09=09return -ENODEV;
++
++=09return ops->iova_to_phys(ops, iova);
++}
++
++static int apple_dart_map(struct iommu_domain *domain, unsigned long iova,
++=09=09=09  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct io_pgtable_ops *ops =3D dart_domain->pgtbl_ops;
++
++=09if (!ops)
++=09=09return -ENODEV;
++
++=09return ops->map(ops, iova, paddr, size, prot, gfp);
++}
++
++static size_t apple_dart_unmap(struct iommu_domain *domain, unsigned long =
+iova,
++=09=09=09       size_t size, struct iommu_iotlb_gather *gather)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct io_pgtable_ops *ops =3D dart_domain->pgtbl_ops;
++
++=09if (!ops)
++=09=09return 0;
++
++=09return ops->unmap(ops, iova, size, gather);
++}
++
++static void apple_dart_iotlb_sync(struct iommu_domain *domain,
++=09=09=09=09  struct iommu_iotlb_gather *gather)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct apple_dart *dart =3D dart_domain->dart;
++
++=09if (!dart)
++=09=09return;
++
++=09apple_dart_hw_invalidate_tlb_domain(dart, dart_domain->domain_idx);
++}
++
++static void apple_dart_iotlb_sync_map(struct iommu_domain *domain,
++=09=09=09=09      unsigned long iova, size_t size)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct apple_dart *dart =3D dart_domain->dart;
++
++=09if (!dart)
++=09=09return;
++
++=09apple_dart_hw_invalidate_tlb_domain(dart, dart_domain->domain_idx);
++}
++
++static void apple_dart_flush_iotlb_all(struct iommu_domain *domain)
++{
++=09struct apple_dart_domain *dart_domain =3D to_dart_domain(domain);
++=09struct apple_dart *dart =3D dart_domain->dart;
++
++=09if (!dart)
++=09=09return;
++
++=09apple_dart_hw_invalidate_tlb_domain(dart, dart_domain->domain_idx);
++}
++
++static struct iommu_group *apple_dart_device_group(struct device *dev)
++{
++=09/* once we have PCI support this needs to use pci_device_group conditio=
+nally */
++=09return generic_device_group(dev);
++}
++
++static const struct iommu_ops apple_dart_iommu_ops =3D {
++=09.domain_alloc =3D apple_dart_domain_alloc,
++=09.domain_free =3D apple_dart_domain_free,
++=09.attach_dev =3D apple_dart_attach_dev,
++=09.map =3D apple_dart_map,
++=09.unmap =3D apple_dart_unmap,
++=09.flush_iotlb_all =3D apple_dart_flush_iotlb_all,
++=09.iotlb_sync =3D apple_dart_iotlb_sync,
++=09.iotlb_sync_map =3D apple_dart_iotlb_sync_map,
++=09.iova_to_phys =3D apple_dart_iova_to_phys,
++=09.probe_device =3D apple_dart_probe_device,
++=09.release_device =3D apple_dart_release_device,
++=09.device_group =3D apple_dart_device_group,
++=09.of_xlate =3D apple_dart_of_xlate,
++=09.pgsize_bitmap =3D SZ_16K,
++};
++
++static irqreturn_t apple_dart_irq(int irq, void *dev)
++{
++=09static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
++=09=09=09=09      DEFAULT_RATELIMIT_BURST);
++=09struct apple_dart *dart =3D dev;
++=09const char *fault_name =3D NULL;
++=09u32 error =3D readl(dart->regs + DART_ERROR);
++=09u32 error_code =3D error & DART_ERROR_CODE_MASK;
++=09u32 addr_hi =3D readl(dart->regs + DART_ERROR_ADDR_HI);
++=09u32 addr_lo =3D readl(dart->regs + DART_ERROR_ADDR_LO);
++=09u8 domain_idx =3D
++=09=09(error >> DART_ERROR_DOMAIN_SHIFT) & DART_ERROR_DOMAIN_MASK;
++
++=09if (!(error & DART_ERROR_FLAG))
++=09=09return IRQ_NONE;
++
++=09if (error_code & DART_ERROR_READ_FAULT)
++=09=09fault_name =3D "READ FAULT";
++=09else if (error_code & DART_ERROR_WRITE_FAULT)
++=09=09fault_name =3D "WRITE FAULT";
++=09else if (error_code & DART_ERROR_NO_PTE)
++=09=09fault_name =3D "NO PTE FOR IOVA";
++=09else if (error_code & DART_ERROR_NO_PMD)
++=09=09fault_name =3D "NO PMD FOR IOVA";
++=09else if (error_code & DART_ERROR_NO_PGD)
++=09=09fault_name =3D "NO PGD FOR IOVA";
++
++=09if (WARN_ON(fault_name =3D=3D NULL))
++=09=09fault_name =3D "unknown";
++
++=09if (__ratelimit(&rs)) {
++=09=09dev_err(dart->dev,
++=09=09=09"Apple DART translation fault: error status %08x [domain:%d code:=
+%x (%s)] at address 0x%08x%08x",
++=09=09=09error, domain_idx, error_code, fault_name, addr_hi,
++=09=09=09addr_lo);
++=09}
++
++=09writel(error, dart->regs + DART_ERROR);
++=09return IRQ_HANDLED;
++}
++
++static int apple_dart_probe(struct platform_device *pdev)
++{
++=09int ret;
++=09struct resource *res;
++=09resource_size_t ioaddr;
++=09struct apple_dart *dart;
++=09struct device *dev =3D &pdev->dev;
++
++=09dart =3D devm_kzalloc(dev, sizeof(*dart), GFP_KERNEL);
++=09if (!dart)
++=09=09return -ENOMEM;
++=09dart->dev =3D dev;
++=09spin_lock_init(&dart->command_lock);
++=09mutex_init(&dart->domain_mutex);
++
++=09res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
++=09if (resource_size(res) < 0x4000) {
++=09=09dev_err(dev, "MMIO region too small (%pr)\n", res);
++=09=09return -EINVAL;
++=09}
++=09ioaddr =3D res->start;
++=09dart->regs =3D devm_ioremap_resource(dev, res);
++=09if (IS_ERR(dart->regs))
++=09=09return PTR_ERR(dart->regs);
++
++=09ret =3D devm_clk_bulk_get_all(dev, &dart->clks);
++=09if (ret < 0)
++=09=09return ret;
++=09dart->num_clks =3D ret;
++
++=09ret =3D clk_bulk_prepare_enable(dart->num_clks, dart->clks);
++=09if (ret)
++=09=09return ret;
++
++=09ret =3D apple_hw_dart_reset(dart);
++=09if (ret)
++=09=09return ret;
++
++=09dart->irq =3D platform_get_irq(pdev, 0);
++=09if (dart->irq < 0)
++=09=09return -ENODEV;
++
++=09ret =3D devm_request_irq(dart->dev, dart->irq, apple_dart_irq,
++=09=09=09       IRQF_SHARED, "apple-dart fault", dart);
++=09if (ret)
++=09=09return ret;
++
++=09platform_set_drvdata(pdev, dart);
++
++=09ret =3D iommu_device_sysfs_add(&dart->iommu, dev, NULL, "apple-dart.%s"=
+,
++=09=09=09=09     dev_name(&pdev->dev));
++=09if (ret)
++=09=09return ret;
++
++=09iommu_device_set_ops(&dart->iommu, &apple_dart_iommu_ops);
++=09iommu_device_set_fwnode(&dart->iommu, dev->fwnode);
++
++=09ret =3D iommu_device_register(&dart->iommu);
++=09if (ret)
++=09=09return ret;
++
++=09ret =3D bus_set_iommu(dev->bus, &apple_dart_iommu_ops);
++=09if (ret)
++=09=09return ret;
++
++=09return 0;
++}
++
++static int apple_dart_remove(struct platform_device *pdev)
++{
++=09struct apple_dart *dart =3D platform_get_drvdata(pdev);
++
++=09iommu_device_unregister(&dart->iommu);
++=09iommu_device_sysfs_remove(&dart->iommu);
++
++=09clk_bulk_disable(dart->num_clks, dart->clks);
++=09clk_bulk_unprepare(dart->num_clks, dart->clks);
++
++=09return 0;
++}
++
++static void apple_dart_shutdown(struct platform_device *pdev)
++{
++=09apple_dart_remove(pdev);
++}
++
++static const struct of_device_id apple_dart_of_match[] =3D {
++=09{ .compatible =3D "apple,t8103-dart", .data =3D NULL },
++=09{},
++};
++MODULE_DEVICE_TABLE(of, apple_dart_of_match);
++
++static struct platform_driver apple_dart_driver =3D {
++=09.driver=09=3D {
++=09=09.name=09=09=09=3D "apple-dart",
++=09=09.of_match_table=09=09=3D apple_dart_of_match,
++=09},
++=09.probe=09=3D apple_dart_probe,
++=09.remove=09=3D apple_dart_remove,
++=09.shutdown =3D apple_dart_shutdown,
++};
++module_platform_driver(apple_dart_driver);
++
++MODULE_DESCRIPTION("IOMMU API for Apple's DART");
++MODULE_AUTHOR("Sven Peter <sven@svenpeter.dev>");
++MODULE_LICENSE("GPL v2");
+--
+2.25.1
 
-Scenario 1: cpu 1 writes the stats pointer and cpu 2 is navigating the
-            processes tree reading the same stats pointer.
 
-Scenario 2: cpu 1 is navigating the processes tree reading the stats
-            pointer and in IRQ the same stats pointer is wrote.
-
-So, we need locking. Am I wrong?
-
-> >  /**
-> > @@ -126,26 +137,36 @@ static void brute_share_stats(struct brute_stats=
- *src,
-> >   * this task and the new one being allocated. Otherwise, share the st=
-atistics
-> >   * that the current task already has.
-> >   *
-> > + * It's mandatory to disable interrupts before acquiring brute_stats_=
-ptr_lock
-> > + * and brute_stats::lock since the task_free hook can be called from =
-an IRQ
-> > + * context during the execution of the task_alloc hook.
-> > + *
-> >   * Return: -ENOMEM if the allocation of the new statistics structure =
-fails. Zero
-> >   *         otherwise.
-> >   */
-> >  static int brute_task_alloc(struct task_struct *task, unsigned long c=
-lone_flags)
-> >  {
-> >  	struct brute_stats **stats, **p_stats;
-> > +	unsigned long flags;
-> >
-> >  	stats =3D brute_stats_ptr(task);
-> >  	p_stats =3D brute_stats_ptr(current);
-> > +	write_lock_irqsave(&brute_stats_ptr_lock, flags);
-> >
-> >  	if (likely(*p_stats)) {
-> >  		brute_share_stats(*p_stats, stats);
-> > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  		return 0;
-> >  	}
-> >
-> >  	*stats =3D brute_new_stats();
-> > -	if (!*stats)
-> > +	if (!*stats) {
-> > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  		return -ENOMEM;
-> > +	}
-> >
-> >  	brute_share_stats(*stats, p_stats);
-> > +	write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  	return 0;
-> >  }
->
-> I'd much prefer that whatever locking is needed be introduced in the
-> initial patch: this transformation just double the work to review. :)
-
-So, IIUC I need to introduce all the locks in the initial patch even if
-they are not necessary. Am I right?
-
-> >
-> > @@ -167,9 +188,9 @@ static int brute_task_alloc(struct task_struct *ta=
-sk, unsigned long clone_flags)
-> >   * only one task (the task that calls the execve function) points to =
-the data.
-> >   * In this case, the previous allocation is used but the statistics a=
-re reset.
-> >   *
-> > - * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > - * since the task_free hook can be called from an IRQ context during =
-the
-> > - * execution of the bprm_committing_creds hook.
-> > + * It's mandatory to disable interrupts before acquiring brute_stats_=
-ptr_lock
-> > + * and brute_stats::lock since the task_free hook can be called from =
-an IRQ
-> > + * context during the execution of the bprm_committing_creds hook.
-> >   */
-> >  static void brute_task_execve(struct linux_binprm *bprm)
-> >  {
-> > @@ -177,24 +198,33 @@ static void brute_task_execve(struct linux_binpr=
-m *bprm)
-> >  	unsigned long flags;
-> >
-> >  	stats =3D brute_stats_ptr(current);
-> > -	if (WARN(!*stats, "No statistical data\n"))
-> > +	read_lock_irqsave(&brute_stats_ptr_lock, flags);
-> > +
-> > +	if (WARN(!*stats, "No statistical data\n")) {
-> > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  		return;
-> > +	}
-> >
-> > -	spin_lock_irqsave(&(*stats)->lock, flags);
-> > +	spin_lock(&(*stats)->lock);
-> >
-> >  	if (!refcount_dec_not_one(&(*stats)->refc)) {
-> >  		/* execve call after an execve call */
-> >  		(*stats)->faults =3D 0;
-> >  		(*stats)->jiffies =3D get_jiffies_64();
-> >  		(*stats)->period =3D 0;
-> > -		spin_unlock_irqrestore(&(*stats)->lock, flags);
-> > +		spin_unlock(&(*stats)->lock);
-> > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  		return;
-> >  	}
-> >
-> >  	/* execve call after a fork call */
-> > -	spin_unlock_irqrestore(&(*stats)->lock, flags);
-> > +	spin_unlock(&(*stats)->lock);
-> > +	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> > +
-> > +	write_lock_irqsave(&brute_stats_ptr_lock, flags);
-> >  	*stats =3D brute_new_stats();
-> >  	WARN(!*stats, "Cannot allocate statistical data\n");
-> > +	write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  }
->
-> Again, I don't see a need for locking -- this is just managing the
-> lifetime which is entirely handled by the implicit locking of "current"
-> and the refcount_t.
-
-Here I can see the same two scenarios noted before. So I think the locking
-is needed. Am I right?
-
-> >  /**
-> > @@ -204,9 +234,9 @@ static void brute_task_execve(struct linux_binprm =
-*bprm)
-> >   * The statistical data that is shared between all the fork hierarchy=
- processes
-> >   * needs to be freed when this hierarchy disappears.
-> >   *
-> > - * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > - * since the task_free hook can be called from an IRQ context during =
-the
-> > - * execution of the task_free hook.
-> > + * It's mandatory to disable interrupts before acquiring brute_stats_=
-ptr_lock
-> > + * and brute_stats::lock since the task_free hook can be called from =
-an IRQ
-> > + * context during the execution of the task_free hook.
-> >   */
-> >  static void brute_task_free(struct task_struct *task)
-> >  {
-> > @@ -215,17 +245,446 @@ static void brute_task_free(struct task_struct =
-*task)
-> >  	bool refc_is_zero;
-> >
-> >  	stats =3D brute_stats_ptr(task);
-> > -	if (WARN(!*stats, "No statistical data\n"))
-> > +	read_lock_irqsave(&brute_stats_ptr_lock, flags);
-> > +
-> > +	if (WARN(!*stats, "No statistical data\n")) {
-> > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >  		return;
-> > +	}
-> >
-> > -	spin_lock_irqsave(&(*stats)->lock, flags);
-> > +	spin_lock(&(*stats)->lock);
-> >  	refc_is_zero =3D refcount_dec_and_test(&(*stats)->refc);
-> > -	spin_unlock_irqrestore(&(*stats)->lock, flags);
-> > +	spin_unlock(&(*stats)->lock);
-> > +	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> >
-> >  	if (refc_is_zero) {
-> > +		write_lock_irqsave(&brute_stats_ptr_lock, flags);
-> >  		kfree(*stats);
-> >  		*stats =3D NULL;
-> > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
-> > +	}
-> > +}
->
-> Same; I would expect this to be simply:
-
-No comment. I think I am missing something. I need to clarify the previous
-cases before to work on the next ones. Sorry and thanks for the guidance.
-
-> 	stats =3D brute_stats_ptr(task);
-> 	if (WARN_ON_ONCE(!*stats))
-> 		return;
-> 	if (refcount_dec_and_test(&(*stats)->refc)) {
-> 		kfree(*stats);
-> 		*stats =3D NULL;
-> 	}
->
-> > +
-> > +/*
-> > + * BRUTE_EMA_WEIGHT_NUMERATOR - Weight's numerator of EMA.
-> > + */
-> > +static const u64 BRUTE_EMA_WEIGHT_NUMERATOR =3D 7;
-> > +
-> > +/*
-> > + * BRUTE_EMA_WEIGHT_DENOMINATOR - Weight's denominator of EMA.
-> > + */
-> > +static const u64 BRUTE_EMA_WEIGHT_DENOMINATOR =3D 10;
->
-> Should these be externally configurable (via sysfs)?
-
-No problem. I think this is easier than locking :)
-
->
-> > +
-> > +/**
-> > + * brute_mul_by_ema_weight() - Multiply by EMA weight.
-> > + * @value: Value to multiply by EMA weight.
-> > + *
-> > + * Return: The result of the multiplication operation.
-> > + */
-> > +static inline u64 brute_mul_by_ema_weight(u64 value)
-> > +{
-> > +	return mul_u64_u64_div_u64(value, BRUTE_EMA_WEIGHT_NUMERATOR,
-> > +				   BRUTE_EMA_WEIGHT_DENOMINATOR);
-> > +}
-> > +
-> > +/*
-> > + * BRUTE_MAX_FAULTS - Maximum number of faults.
-> > + *
-> > + * If a brute force attack is running slowly for a long time, the app=
-lication
-> > + * crash period's EMA is not suitable for the detection. This type of=
- attack
-> > + * must be detected using a maximum number of faults.
-> > + */
-> > +static const unsigned char BRUTE_MAX_FAULTS =3D 200;
->
-> Same.
-Ok, understood.
->
-> > +
-> > +/**
-> > + * brute_update_crash_period() - Update the application crash period.
-> > + * @stats: Statistics that hold the application crash period to updat=
-e.
-> > + * @now: The current timestamp in jiffies.
-> > + *
-> > + * The application crash period must be a value that is not prone to =
-change due
-> > + * to spurious data and follows the real crash period. So, to compute=
- it, the
-> > + * exponential moving average (EMA) is used.
-> > + *
-> > + * This kind of average defines a weight (between 0 and 1) for the ne=
-w value to
-> > + * add and applies the remainder of the weight to the current average=
- value.
-> > + * This way, some spurious data will not excessively modify the avera=
-ge and only
-> > + * if the new values are persistent, the moving average will tend tow=
-ards them.
-> > + *
-> > + * Mathematically the application crash period's EMA can be expressed=
- as
-> > + * follows:
-> > + *
-> > + * period_ema =3D period * weight + period_ema * (1 - weight)
-> > + *
-> > + * If the operations are applied:
-> > + *
-> > + * period_ema =3D period * weight + period_ema - period_ema * weight
-> > + *
-> > + * If the operands are ordered:
-> > + *
-> > + * period_ema =3D period_ema - period_ema * weight + period * weight
-> > + *
-> > + * Finally, this formula can be written as follows:
-> > + *
-> > + * period_ema -=3D period_ema * weight;
-> > + * period_ema +=3D period * weight;
-> > + *
-> > + * The statistics that hold the application crash period to update ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and brute_stats_p=
-tr_lock
-> > + *          held.
-> > + * Return: The last crash timestamp before updating it.
-> > + */
-> > +static u64 brute_update_crash_period(struct brute_stats *stats, u64 n=
-ow)
-> > +{
-> > +	u64 current_period;
-> > +	u64 last_crash_timestamp;
-> > +
-> > +	spin_lock(&stats->lock);
-> > +	current_period =3D now - stats->jiffies;
-> > +	last_crash_timestamp =3D stats->jiffies;
-> > +	stats->jiffies =3D now;
-> > +
-> > +	stats->period -=3D brute_mul_by_ema_weight(stats->period);
-> > +	stats->period +=3D brute_mul_by_ema_weight(current_period);
-> > +
-> > +	if (stats->faults < BRUTE_MAX_FAULTS)
-> > +		stats->faults +=3D 1;
-> > +
-> > +	spin_unlock(&stats->lock);
-> > +	return last_crash_timestamp;
-> > +}
->
-> Now *here* locking makes sense, and it only needs to be per-stat, not
-> global, since multiple processes may be operating on the same stat
-> struct. To make this more no-reader-locking-friendly, I'd also update
-> everything at the end, and use WRITE_ONCE():
->
-> 	u64 current_period, period;
-> 	u64 last_crash_timestamp;
-> 	u64 faults;
->
-> 	spin_lock(&stats->lock);
-> 	current_period =3D now - stats->jiffies;
-> 	last_crash_timestamp =3D stats->jiffies;
->
-> 	WRITE_ONCE(stats->period,
-> 		   stats->period - brute_mul_by_ema_weight(stats->period) +
-> 		   brute_mul_by_ema_weight(current_period));
->
-> 	if (stats->faults < BRUTE_MAX_FAULTS)
-> 		WRITE_ONCE(stats->faults, stats->faults + 1);
->
-> 	WRITE_ONCE(stats->jiffies, now);
->
-> 	spin_unlock(&stats->lock);
-> 	return last_crash_timestamp;
->
-> That way readers can (IIUC) safely use READ_ONCE() on jiffies and faults
-> without needing to hold the &stats->lock (unless they need perfectly mat=
-ching
-> jiffies, period, and faults).
-
-Thanks for the refactory. I will work on it (if I can understand locking).=
- :(
-
-> > +
-> > +/*
-> > + * BRUTE_MIN_FAULTS - Minimum number of faults.
-> > + *
-> > + * The application crash period's EMA cannot be used until a minimum =
-number of
-> > + * data has been applied to it. This constraint allows getting a tren=
-d when this
-> > + * moving average is used. Moreover, it avoids the scenario where an =
-application
-> > + * fails quickly from execve system call due to reasons unrelated to =
-a real
-> > + * attack.
-> > + */
-> > +static const unsigned char BRUTE_MIN_FAULTS =3D 5;
-> > +
-> > +/*
-> > + * BRUTE_CRASH_PERIOD_THRESHOLD - Application crash period threshold.
-> > + *
-> > + * The units are expressed in milliseconds.
-> > + *
-> > + * A fast brute force attack is detected when the application crash p=
-eriod falls
-> > + * below this threshold.
-> > + */
-> > +static const u64 BRUTE_CRASH_PERIOD_THRESHOLD =3D 30000;
->
-> These could all be sysctls (see yama's use of sysctl).
-
-Ok
-
-> > +
-> > +/**
-> > + * brute_attack_running() - Test if a brute force attack is happening=
-.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + *
-> > + * The decision if a brute force attack is running is based on the st=
-atistical
-> > + * data shared by all the fork hierarchy processes. This statistics c=
-annot be
-> > + * NULL.
-> > + *
-> > + * There are two types of brute force attacks that can be detected us=
-ing the
-> > + * statistical data. The first one is a slow brute force attack that =
-is detected
-> > + * if the maximum number of faults per fork hierarchy is reached. The=
- second
-> > + * type is a fast brute force attack that is detected if the applicat=
-ion crash
-> > + * period falls below a certain threshold.
-> > + *
-> > + * Moreover, it is important to note that no attacks will be detected=
- until a
-> > + * minimum number of faults have occurred. This allows to have a tren=
-d in the
-> > + * crash period when the EMA is used and also avoids the scenario whe=
-re an
-> > + * application fails quickly from execve system call due to reasons u=
-nrelated to
-> > + * a real attack.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and brute_stats_p=
-tr_lock
-> > + *          held.
-> > + * Return: True if a brute force attack is happening. False otherwise=
-.
-> > + */
-> > +static bool brute_attack_running(struct brute_stats *stats)
-> > +{
-> > +	u64 crash_period;
-> > +
-> > +	spin_lock(&stats->lock);
-> > +	if (stats->faults < BRUTE_MIN_FAULTS) {
-> > +		spin_unlock(&stats->lock);
-> > +		return false;
-> > +	}
->
-> If I'm reading this correctly, you're performing two tests, so there
-> isn't a strict relationship between faults and period for this test,
-> and I think it could be done without locking with READ_ONCE():
->
-> 	u64 faults;
-> 	u64 crash_period;
->
-> 	faults =3D READ_ONCE(stats->faults);
-> 	if (faults < BRUTE_MIN_FAULTS)
-> 		return false;
-> 	if (faults >=3D BRUTE_MAX_FAULTS)
-> 		return true;
->
-> 	crash_period =3D jiffies64_to_msecs(READ_ONCE(stats->period));
-> 	return crash_period < BRUTE_CRASH_PERIOD_THRESHOLD;
-
-Thanks, I will work on it for the next version.
-
-> > +
-> > +	if (stats->faults >=3D BRUTE_MAX_FAULTS) {
-> > +		spin_unlock(&stats->lock);
-> > +		return true;
-> > +	}
-> > +
-> > +	crash_period =3D jiffies64_to_msecs(stats->period);
-> > +	spin_unlock(&stats->lock);
-> > +
-> > +	return crash_period < BRUTE_CRASH_PERIOD_THRESHOLD;
-> > +}
-> > +
-> > +/**
-> > + * print_fork_attack_running() - Warn about a fork brute force attack=
-.
-> > + */
-> > +static inline void print_fork_attack_running(void)
-> > +{
-> > +	pr_warn("Fork brute force attack detected [%s]\n", current->comm);
-> > +}
->
-> I think pid should be part of this...
-
-No problem.
-
-> > +
-> > +/**
-> > + * brute_manage_fork_attack() - Manage a fork brute force attack.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + * @now: The current timestamp in jiffies.
-> > + *
-> > + * For a correct management of a fork brute force attack it is only n=
-ecessary to
-> > + * update the statistics and test if an attack is happening based on =
-these data.
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and brute_stats_p=
-tr_lock
-> > + *          held.
-> > + * Return: The last crash timestamp before updating it.
-> > + */
-> > +static u64 brute_manage_fork_attack(struct brute_stats *stats, u64 no=
-w)
-> > +{
-> > +	u64 last_fork_crash;
-> > +
-> > +	last_fork_crash =3D brute_update_crash_period(stats, now);
-> > +	if (brute_attack_running(stats))
-> > +		print_fork_attack_running();
-> > +
-> > +	return last_fork_crash;
-> > +}
-> > +
-> > +/**
-> > + * brute_get_exec_stats() - Get the exec statistics.
-> > + * @stats: When this function is called, this parameter must point to=
- the
-> > + *         current process' statistical data. When this function retu=
-rns, this
-> > + *         parameter points to the parent process' statistics of the =
-fork
-> > + *         hierarchy that hold the current process' statistics.
-> > + *
-> > + * To manage a brute force attack that happens through the execve sys=
-tem call it
-> > + * is not possible to use the statistical data hold by this process d=
-ue to these
-> > + * statistics disappear when this task is finished. In this scenario =
-this data
-> > + * should be tracked by the statistics of a higher fork hierarchy (th=
-e hierarchy
-> > + * that contains the process that forks before the execve system call=
-).
-> > + *
-> > + * To find these statistics the current fork hierarchy must be traver=
-sed up
-> > + * until new statistics are found.
-> > + *
-> > + * Context: Must be called with tasklist_lock and brute_stats_ptr_loc=
-k held.
-> > + */
-> > +static void brute_get_exec_stats(struct brute_stats **stats)
-> > +{
-> > +	const struct task_struct *task =3D current;
-> > +	struct brute_stats **p_stats;
-> > +
-> > +	do {
-> > +		if (!task->real_parent) {
-> > +			*stats =3D NULL;
-> > +			return;
-> > +		}
-> > +
-> > +		p_stats =3D brute_stats_ptr(task->real_parent);
-> > +		task =3D task->real_parent;
-> > +	} while (*stats =3D=3D *p_stats);
-> > +
-> > +	*stats =3D *p_stats;
-> > +}
->
-> See Yama's task_is_descendant() for how to walk up the process tree
-> (and I think the process group stuff will save some steps too); you
-> don't need tasklist_lock held, just rcu_read_lock held, AIUI:
-> Documentation/RCU/listRCU.rst
->
-> And since you're passing this stats struct back up, and it would be outs=
-ide of rcu read lock, you'd want to do a "get" on it first:
->
-> 	rcu_read_lock();
-> 	loop {
-> 		...
-> 	}
-> 	refcount_inc_not_zero(&(*p_stats)->refc);
-> 	rcu_read_unlock();
->
-> 	*stats =3D *p_stats
-
-Thanks for the suggestions. I will work on it for the next version.
-Anyway, in the first version Kees Cook and Jann Horn noted that some tasks
-could escape the rcu read lock and that alternate locking were needed.
-
-Extract from the RFC:
-
-[Kees Cook]
-Can't newly created processes escape this RCU read lock? I think this
-need alternate locking, or something in the task_alloc hook that will
-block any new process from being created within the stats group.
-
-[Jann Horn]
-Good point; the proper way to deal with this would probably be to take
-the tasklist_lock in read mode around this loop (with
-read_lock(&tasklist_lock) / read_unlock(&tasklist_lock)), which pairs
-with the write_lock_irq(&tasklist_lock) in copy_process(). Thanks to
-the fatal_signal_pending() check while holding the lock in
-copy_process(), that would be race-free - any fork() that has not yet
-inserted the new task into the global task list would wait for us to
-drop the tasklist_lock, then bail out at the fatal_signal_pending()
-check.
-
-I think that this scenario is still possible. So the tasklist_lock is
-necessary. Am I right?
-
-> > +
-> > +/**
-> > + * brute_update_exec_crash_period() - Update the exec crash period.
-> > + * @stats: When this function is called, this parameter must point to=
- the
-> > + *         current process' statistical data. When this function retu=
-rns, this
-> > + *         parameter points to the updated statistics (statistics tha=
-t track the
-> > + *         info to manage a brute force attack that happens through t=
-he execve
-> > + *         system call).
-> > + * @now: The current timestamp in jiffies.
-> > + * @last_fork_crash: The last fork crash timestamp before updating it=
-.
-> > + *
-> > + * If this is the first update of the statistics used to manage a bru=
-te force
-> > + * attack that happens through the execve system call, its last crash=
- timestamp
-> > + * (the timestamp that shows when the execve was called) cannot be us=
-ed to
-> > + * compute the crash period's EMA. Instead, the last fork crash times=
-tamp should
-> > + * be used (the last crash timestamp of the child fork hierarchy befo=
-re updating
-> > + * the crash period). This allows that in a brute force attack that h=
-appens
-> > + * through the fork system call, the exec and fork statistics are the=
- same. In
-> > + * this situation, the mitigation method will act only in the process=
-es that are
-> > + * sharing the fork statistics. This way, the process that forked bef=
-ore the
-> > + * execve system call will not be involved in the mitigation method. =
-In this
-> > + * scenario, the parent is not responsible of the child's behaviour.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and tasklist_lock=
- and
-> > + *          brute_stats_ptr_lock held.
-> > + * Return: -EFAULT if there are no exec statistics. Zero otherwise.
-> > + */
-> > +static int brute_update_exec_crash_period(struct brute_stats **stats,
-> > +					  u64 now, u64 last_fork_crash)
-> > +{
-> > +	brute_get_exec_stats(stats);
-> > +	if (!*stats)
-> > +		return -EFAULT;
->
-> This isn't EFAULT (userspace memory fault), but rather more EINVAL or
-> ESRCH.
-
-Ok.
-
-> > +
-> > +	spin_lock(&(*stats)->lock);
-> > +	if (!(*stats)->faults)
-> > +		(*stats)->jiffies =3D last_fork_crash;
-> > +	spin_unlock(&(*stats)->lock);
-> > +
-> > +	brute_update_crash_period(*stats, now);
->
-> and then you can add:
->
-> 	if (refcount_dec_and_test(&(*stats)->refc))
-> 		kfree(*stats);
->
-> (or better yet, make that a helper) named something like
-> "put_brute_stats".
-
-Sorry, but I don't understand why we need to free the stats here.
-What is the rationale behind this change?
-
-> > +	return 0;
-> > +}
->
-> I find the re-writing of **stats confusing here -- I think you should
-> leave that unmodified, and instead return a pointer (instead of "int"),
-> and for errors, use ERR_PTR(-ESRCH)
-
-Ok, thanks.
-
-> > +
-> > +/**
-> > + * brute_get_crash_period() - Get the application crash period.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and brute_stats_p=
-tr_lock
-> > + *          held.
-> > + * Return: The application crash period.
-> > + */
-> > +static u64 brute_get_crash_period(struct brute_stats *stats)
-> > +{
-> > +	u64 crash_period;
-> > +
-> > +	spin_lock(&stats->lock);
-> > +	crash_period =3D stats->period;
-> > +	spin_unlock(&stats->lock);
-> > +
-> > +	return crash_period;
-> > +}
->
-> return READ_ONCE(stats->period);
-
-Ok, thanks.
-
-> > +
-> > +/**
-> > + * print_exec_attack_running() - Warn about an exec brute force attac=
-k.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * Before showing the process name it is mandatory to find a process =
-that holds
-> > + * a pointer to the exec statistics.
-> > + *
-> > + * Context: Must be called with tasklist_lock and brute_stats_ptr_loc=
-k held.
-> > + */
-> > +static void print_exec_attack_running(const struct brute_stats *stats=
-)
-> > +{
-> > +	struct task_struct *p;
-> > +	struct brute_stats **p_stats;
-> > +	bool found =3D false;
-> > +
-> > +	for_each_process(p) {
-> > +		p_stats =3D brute_stats_ptr(p);
-> > +		if (*p_stats =3D=3D stats) {
-> > +			found =3D true;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	if (WARN(!found, "No exec process\n"))
-> > +		return;
-> > +
-> > +	pr_warn("Exec brute force attack detected [%s]\n", p->comm);
-> > +}
->
-> Same logic to change here as above for talking the process list. (IIUC, =
-since
-> you're only reading, you don't need tasklist_lock, just rcu_read_lock.)
-> But, if I'm reading this right, you only ever call this with "current".
-> It seems like it would be way more efficient to just use "current"
-> instead?
-
-Ok, I will work on it. Thanks.
-
-> > +
-> > +/**
-> > + * brute_manage_exec_attack() - Manage an exec brute force attack.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + * @now: The current timestamp in jiffies.
-> > + * @last_fork_crash: The last fork crash timestamp before updating it=
-.
-> > + *
-> > + * For a correct management of an exec brute force attack it is only =
-necessary
-> > + * to update the exec statistics and test if an attack is happening b=
-ased on
-> > + * these data.
-> > + *
-> > + * It is important to note that if the fork and exec crash periods ar=
-e the same,
-> > + * the attack test is avoided. This allows that in a brute force atta=
-ck that
-> > + * happens through the fork system call, the mitigation method does n=
-ot act on
-> > + * the parent process of the fork hierarchy.
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and tasklist_lock=
- and
-> > + *          brute_stats_ptr_lock held.
-> > + */
-> > +static void brute_manage_exec_attack(struct brute_stats *stats, u64 n=
-ow,
-> > +				     u64 last_fork_crash)
-> > +{
-> > +	int ret;
-> > +	struct brute_stats *exec_stats =3D stats;
-> > +	u64 fork_period;
-> > +	u64 exec_period;
-> > +
-> > +	ret =3D brute_update_exec_crash_period(&exec_stats, now, last_fork_c=
-rash);
-> > +	if (WARN(ret, "No exec statistical data\n"))
-> > +		return;
->
-> I think this should fail closed: if there's a static processing error,
-> treat it as an attack.
-
-Do you mean to trigger the mitigation of a brute force attack over this ta=
-sk?
-So, IIUC you suggest that instead of generate warnings if there isn't
-statistical data, we need to trigger the mitigation? This can be applied t=
-o
-the case where the allocation of a brute_stats structure fails?
-
-> > +
-> > +	fork_period =3D brute_get_crash_period(stats);
-> > +	exec_period =3D brute_get_crash_period(exec_stats);
-> > +	if (fork_period =3D=3D exec_period)
-> > +		return;
-> > +
-> > +	if (brute_attack_running(exec_stats))
-> > +		print_exec_attack_running(exec_stats);
-> > +}
-> > +
->
-> I think this is very close!
-
-Thank you very much for the comments and guidance.
-John Wood
