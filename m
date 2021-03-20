@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFF53429F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A45C3429FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhCTCUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 22:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        id S229748AbhCTCXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 22:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhCTCUS (ORCPT
+        with ESMTP id S229512AbhCTCXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 22:20:18 -0400
+        Fri, 19 Mar 2021 22:23:22 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B763C061760;
-        Fri, 19 Mar 2021 19:20:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E68C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 19:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
         References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8tVUr4Z77XqdpCburPTzUBwUNmrxBPTRD/lmMybR51w=; b=0LNLcMdgj5Cu0nrQ3Fk/ODSTzX
-        nu71IUROAoEOnO1otENeUgEgJ4sn+4S1/DYIKPz2onuTOnPgcatUlQycnCZKRQNjEx1t+PeeFZqk7
-        5JrvYqn0qaSRrgB6Puz3cDIzodHnfZk+mHfT/uuwTAYuG6jfxSKuAEmxKOrlxrFw4stzjukw0usG1
-        hhlQwH9TCw3D2OHWAsIAI2UYgfxqGp24keDFYjP4gxqUX3A09/OEbflxH9sDjsHGLIBrp0iHRjtjg
-        sUa7Z7dumpN4ynLjjyH5dSUGiStzXBO10Di1VKkZwBjVPNm9KpAEOtUJW66ybIx0T7Lp4BZx30LOp
-        u0T1LBuw==;
+        bh=wj/7sjssUgRzClcYqzCH8vi9+9EXBqElQkDuXEG1/54=; b=To7oF426QdWtlGCixGcSEOgMPZ
+        1J7edJACcji0TDK7sKMOE6jodVrpAqDUOrrXRnvbuyNQTd/FwuYEUMRfPbR57+gYmBYfc/5KrE2RP
+        uPt0KjhLirqHxfKw38kLDalENJVmZLR27d0tTMR+djoikDTpqg4faqc/g14ZlXHSUJJoYge+X9ofB
+        803ESoiM533jrmXp9tM85sTDOflRYPGC43DBRXqDalUlXHzM3PazCvaZrSh4vs74eEcgTNLE5CG6H
+        XYPS92RhnhxtJV3Cxgx8ZI3teeqCxiQIwSSPV+wWqAjsRLVkX8JIBTMsjjc020SfUlQa4roLTaw38
+        HSuAWW3Q==;
 Received: from rdunlap (helo=localhost)
         by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNRDh-001em1-Jh; Sat, 20 Mar 2021 02:20:06 +0000
-Date:   Fri, 19 Mar 2021 19:20:05 -0700 (PDT)
+        id 1lNRGl-001epL-1Y; Sat, 20 Mar 2021 02:23:16 +0000
+Date:   Fri, 19 Mar 2021 19:23:15 -0700 (PDT)
 From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
 To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     davem@davemloft.net, kuba@kernel.org, gustavoars@kernel.org,
-        yuehaibing@huawei.com, vaibhavgupta40@gmail.com,
-        christophe.jaillet@wanadoo.fr, netdev@vger.kernel.org,
+cc:     akpm@linux-foundation.org, rppt@kernel.org, peterz@infradead.org,
+        tsbogend@alpha.franken.de, maobibo@loongson.cn,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] ethernet: sun: Fix a typo
-In-Reply-To: <20210318203443.21708-1-unixbhaskar@gmail.com>
-Message-ID: <7724a2e-178c-d010-b13c-f2d41efc2d0@bombadil.infradead.org>
-References: <20210318203443.21708-1-unixbhaskar@gmail.com>
+Subject: Re: [PATCH V2] mm: Few spelling fixes
+In-Reply-To: <20210318201404.6380-1-unixbhaskar@gmail.com>
+Message-ID: <85e47de9-3651-b670-5828-ba863f46574f@bombadil.infradead.org>
+References: <20210318201404.6380-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: Randy Dunlap <rdunlap@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_192005_672153_B2FC5BD9 
-X-CRM114-Status: GOOD (  13.10  )
+X-CRM114-CacheID: sfid-20210319_192315_110247_E824175E 
+X-CRM114-Status: GOOD (  21.66  )
 X-Spam-Score: -0.0 (/)
 X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
  has NOT identified this incoming email as spam.  The original
  message has been attached to this so you can view it or label
  similar future email.  If you have any questions, see
  the administrator of that system for details.
- Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > s/serisouly/seriously/
-    > > ...plus the sentence construction for better readability. > > Signed-off-by:
-    Bhaskar Chowdhury <unixbhaskar@gmail.com> > --- > Changes from V2: > Missed
-    the subject line l [...] 
+ Content preview:  On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote: > Few spelling
+    fixes throughout the file. > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
  Content analysis details:   (-0.0 points, 5.0 required)
   pts rule name              description
  ---- ---------------------- --------------------------------------------------
@@ -67,36 +65,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
 
-> s/serisouly/seriously/
->
-> ...plus the sentence construction for better readability.
+> Few spelling fixes throughout the file.
 >
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
 > ---
->  Changes from V2:
->  Missed the subject line labeling ..so added
+> Changes from V1:
+>  Mentioned suggestion incorporated.
 >
-> drivers/net/ethernet/sun/sungem.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
+> include/linux/pgtable.h | 10 +++++-----
+> 1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/net/ethernet/sun/sungem.c b/drivers/net/ethernet/sun/sungem.c
-> index 58f142ee78a3..9790656cf970 100644
-> --- a/drivers/net/ethernet/sun/sungem.c
-> +++ b/drivers/net/ethernet/sun/sungem.c
-> @@ -1674,8 +1674,8 @@ static void gem_init_phy(struct gem *gp)
-> 	if (gp->pdev->vendor == PCI_VENDOR_ID_APPLE) {
-> 		int i;
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 5e772392a379..b58f20226bb9 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -426,7 +426,7 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
 >
-> -		/* Those delay sucks, the HW seem to love them though, I'll
-> -		 * serisouly consider breaking some locks here to be able
-> +		/* Those delays sucks, the HW seems to love them though, I'll
-
-Nope: needs subject/verb agreement, e.g. "delays suck".
-
-> +		 * seriously consider breaking some locks here to be able
-> 		 * to schedule instead
-> 		 */
-> 		for (i = 0; i < 3; i++) {
+> /*
+>  * On some architectures hardware does not set page access bit when accessing
+> - * memory page, it is responsibilty of software setting this bit. It brings
+> + * memory page, it is responsibility of software setting this bit. It brings
+>  * out extra page fault penalty to track page access bit. For optimization page
+>  * access bit can be set during all page fault flow on these arches.
+>  * To be differentiate with macro pte_mkyoung, this macro is used on platforms
+> @@ -519,7 +519,7 @@ extern pgtable_t pgtable_trans_huge_withdraw(struct mm_struct *mm, pmd_t *pmdp);
+> /*
+>  * This is an implementation of pmdp_establish() that is only suitable for an
+>  * architecture that doesn't have hardware dirty/accessed bits. In this case we
+> - * can't race with CPU which sets these bits and non-atomic aproach is fine.
+> + * can't race with CPU which sets these bits and non-atomic approach is fine.
+>  */
+> static inline pmd_t generic_pmdp_establish(struct vm_area_struct *vma,
+> 		unsigned long address, pmd_t *pmdp, pmd_t pmd)
+> @@ -852,7 +852,7 @@ static inline void __ptep_modify_prot_commit(struct vm_area_struct *vma,
+>  * updates, but to prevent any updates it may make from being lost.
+>  *
+>  * This does not protect against other software modifications of the
+> - * pte; the appropriate pte lock must be held over the transation.
+> + * pte; the appropriate pte lock must be held over the transaction.
+>  *
+>  * Note that this interface is intended to be batchable, meaning that
+>  * ptep_modify_prot_commit may not actually update the pte, but merely
+> @@ -1269,13 +1269,13 @@ static inline int pmd_none_or_trans_huge_or_clear_bad(pmd_t *pmd)
+> 	 *
+> 	 * The complete check uses is_pmd_migration_entry() in linux/swapops.h
+> 	 * But using that requires moving current function and pmd_trans_unstable()
+> -	 * to linux/swapops.h to resovle dependency, which is too much code move.
+> +	 * to linux/swapops.h to resolve dependency, which is too much code move.
+> 	 *
+> 	 * !pmd_present() is equivalent to is_pmd_migration_entry() currently,
+> 	 * because !pmd_present() pages can only be under migration not swapped
+> 	 * out.
+> 	 *
+> -	 * pmd_none() is preseved for future condition checks on pmd migration
+> +	 * pmd_none() is preserved for future condition checks on pmd migration
+> 	 * entries and not confusing with this function name, although it is
+> 	 * redundant with !pmd_present().
+> 	 */
 > --
 > 2.26.2
 >
