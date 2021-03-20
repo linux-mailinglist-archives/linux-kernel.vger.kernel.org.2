@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1CD342C6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4551342CA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 13:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCTLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229570AbhCTLnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:43:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D3C361933;
-        Sat, 20 Mar 2021 07:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616226772;
-        bh=AascX6NXhN/yFeD+IfuRay7JVAU7QFt1V1bttvBXuas=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ieGzFfy35KxYv+fBOV7DC4aJ9w2UdmKWYh+KQ2qkDWA2ABLbgr9Woxq6QamSzVhL0
-         XrO6oudmkZC1cwNJhMul41q+YH5LUYR3oh4Tb/ishEBtiZWveHHdQuoI+x107zdmQJ
-         WIslfOgerBAVjrSS6X7AsvMwQOidOdWjn7W19BeI=
-Date:   Sat, 20 Mar 2021 08:52:49 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        willy@infradead.org, david@redhat.com, surenb@google.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v4] mm: cma: support sysfs
-Message-ID: <YFWp0ZpO+uKC1ziR@kroah.com>
-References: <YFS06OLp70nWWLFi@kroah.com>
- <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com>
- <YFTITw73Wga0/F0V@kroah.com>
- <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
- <YFTRkBEr5T37NFpV@google.com>
- <071c6681-f492-2c94-5686-30c30778f39d@gmail.com>
- <YFTrpN8Qkv6ZY0Ci@google.com>
- <007c0317-8819-a6b8-fdff-c0b5899c4f51@gmail.com>
- <YFT1klxSFMlIXLHb@google.com>
- <d2e24e65-9c9d-6b18-81bf-bc1c46c6e0f3@gmail.com>
+        id S230167AbhCTMA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 08:00:27 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14041 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCTMAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 08:00:17 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F2YV02hFfzPl4K;
+        Sat, 20 Mar 2021 16:15:20 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 20 Mar 2021 16:17:40 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] crypto: atmel-ecc - fix W=1 "cannot understand" warning
+Date:   Sat, 20 Mar 2021 16:15:13 +0800
+Message-ID: <1616228113-15169-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d2e24e65-9c9d-6b18-81bf-bc1c46c6e0f3@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:24:03PM +0300, Dmitry Osipenko wrote:
-> 19.03.2021 22:03, Minchan Kim пишет:
-> > On Fri, Mar 19, 2021 at 09:48:11PM +0300, Dmitry Osipenko wrote:
-> >> 19.03.2021 21:21, Minchan Kim пишет:
-> >>> On Fri, Mar 19, 2021 at 08:56:06PM +0300, Dmitry Osipenko wrote:
-> >>>> 19.03.2021 19:30, Minchan Kim пишет:
-> >>>>> +static void cma_kobj_release(struct kobject *kobj)
-> >>>>> +{
-> >>>>> +	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject, kobj);
-> >>>>> +
-> >>>>> +	kfree(cma_kobj);
-> >>>>> +}
-> >>>>
-> >>>> Oh, wait.. I think this kfree wrong since cma_kobj belongs to the array.
-> >>>
-> >>> Oh, good spot. Let me use kzalloc.
-> >>>
-> >>
-> >> Thinking a bit more about this.. it looks like actually it should be
-> >> better to get back to the older variant of cma_stat, but allocate at the
-> >> time of CMA initialization, rather than at the time of sysfs
-> >> initialization. Then the cma_stat will be decoupled from the cma struct
-> > 
-> > IIRC, the problem was slab was not initiaized at CMA init point.
-> > That's why I liked your suggestion.
-> 
-> Alright, if CMA init time is a problem, then the recent variant should
-> be okay.
-> 
-> >> and cma_stat will be a self-contained object.
-> > 
-> > Yeah, self-contained is better but it's already weird to
-> > have differnt lifetime for one object since CMA object
-> > never die, technically.
-> > 
-> 
-> Indeed.
-> 
-> I found the Greg's original argument and not sure that it's really
-> worthwhile to worry about the copycats since this is not a driver's code..
-> 
-> Maybe we could just add a clarifying comment for the kobj, telling why
-> it's okay for CMA. Greg, doesn't it sound like a good compromise to you?
+Fix kernel-doc warnings due to missing "struct" keyword.
 
-Please no.
+The warning likes:
+drivers/crypto/atmel-ecc.c:40: warning: cannot understand function prototype: 'struct atmel_ecdh_ctx '
+
+Signed-off-by: Meng Yu <yumeng18@huawei.com>
+---
+ drivers/crypto/atmel-ecc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
+index 515946c..333fbef 100644
+--- a/drivers/crypto/atmel-ecc.c
++++ b/drivers/crypto/atmel-ecc.c
+@@ -26,7 +26,7 @@
+ static struct atmel_ecc_driver_data driver_data;
+ 
+ /**
+- * atmel_ecdh_ctx - transformation context
++ * struct atmel_ecdh_ctx - transformation context
+  * @client     : pointer to i2c client device
+  * @fallback   : used for unsupported curves or when user wants to use its own
+  *               private key.
+-- 
+2.8.1
+
