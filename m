@@ -2,114 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98180342C02
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F49342BE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCTLT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S231304AbhCTLOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhCTLTc (ORCPT
+        with ESMTP id S231281AbhCTLOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:19:32 -0400
-Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37BBC0613EE
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:30:04 -0700 (PDT)
-Received: from mxout2.routing.net (unknown [192.168.10.82])
-        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 9ECD02C513;
-        Sat, 20 Mar 2021 08:12:19 +0000 (UTC)
-Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
-        by mxout2.routing.net (Postfix) with ESMTP id 1F3185FC87;
-        Sat, 20 Mar 2021 08:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1616227633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5rx54XOq4cGnoyPqTNXPmFBrLR2RTFNWgo85VwjcYYA=;
-        b=fSq/cy9z1JhQI222WTEyqmkz+WPc4kVwaDBiNLRXQhn97ey2tRbg5VxNT6FiHw8Hzwef5G
-        btKEzXN762UAgMAxR3GTxyrk1n8QNU3xReOn/lzlSsZIXC+BmEQzvgdiaTzIW0QyKNLCIi
-        DHzgCyNJK0KLFXi9MZ7Ss+R6esX6JrA=
-Received: from localhost.localdomain (fttx-pool-217.61.145.178.bambit.de [217.61.145.178])
-        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id 2BB0F80269;
-        Sat, 20 Mar 2021 08:07:12 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: mediatek: add sensors-support
-Date:   Sat, 20 Mar 2021 09:06:46 +0100
-Message-Id: <20210320080646.49615-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
+        Sat, 20 Mar 2021 07:14:32 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15C2C06121F
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:51:09 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 184so14975141ljf.9
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:51:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1O6lTI+J/EyzpIOMw8N5voY20M2dP/M6U6yDczttxis=;
+        b=LnpPoHx3Cn5ygXQoqDfZ7/e2+ym9yHg2/ISTsWsWSt2Mu5CT7EV6QA+p33CeDjC5Ig
+         nCSRqjmLhhd5dTIxTBpILeEtbjf93niaRiMJVIGMlmacq15KXPJ7EuwgfE1Mcfo93ixk
+         pUFCMpozWBhrr4EWqwbwaOicE6pUe9YmuM9sXCCRjLWhKsF4loxOar1VFsMCW8U1180P
+         KEOx+gY/7v9PvO/j0z+YFhrUB9/rC/AuPR0dzScaE2LWsJASOd+RZ6vu3oWcH1kj3lqw
+         zfGJ7pD3uBBd7XxtNEkVLJ5IkKAQM8nCXPS4AaQe8MtkPLr2Ofvd1F4C35QPUttG0LVI
+         n1Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1O6lTI+J/EyzpIOMw8N5voY20M2dP/M6U6yDczttxis=;
+        b=HPUhx0zzUMcfm9PTzYzNui51ZOZ2Y3EZN4lOgwvBrfHAF1gnFTD3NDEMg1NMr5T10Q
+         mYQks1ncLDF6SVzpt3L+kiIjnobV0UAAO0kSqxjtBJI3dNnPiTrskMvDaMptUOCKTzW5
+         LrQfKHpGZjckr13ajVcDoTiePF+D8UPGRNWEmH9loLP1zf8iOg6qJfxrqifwrCjdS+vV
+         yqrLFWGTcpw4n7PqQDhbkE695j3MXVXSkI7quY96TakGc4Lmt1Z1zFZIUVlRfHV6zmio
+         opasnQemnL9D1ctGwLYKFYLwIxPs3/IbGWsaD9CXjCeE0G/tu62uxsH3vouUAh0o9zd2
+         atKA==
+X-Gm-Message-State: AOAM532ijuu2FvcKP/vhZg6ukrU6XZZnOmU6gIfrxv5CwhtivOl3P9UN
+        +go8OvxaQWw38izCfiyox+Sbbc2EE/5q/jG9QgaNyTZqyWfZHoyx
+X-Google-Smtp-Source: ABdhPJz70unVWa/fJkjUFWWa5fln+Y7TLMaWUKFebEX6ZJTOU8oRXVEfn0b/hxSKGuSUCeCFGsmPrrSzIdIZVwpO1KM=
+X-Received: by 2002:aa7:dd99:: with SMTP id g25mr14183996edv.230.1616227769717;
+ Sat, 20 Mar 2021 01:09:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: d03ccc71-1dc6-4253-aa41-7875f90d3cb0
+References: <20210319121745.449875976@linuxfoundation.org>
+In-Reply-To: <20210319121745.449875976@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 20 Mar 2021 13:39:18 +0530
+Message-ID: <CA+G9fYtksFDeohBt8QP-kisxew5niRF3YxYpJ5G-bU=Z5z6kjA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/18] 5.4.107-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Fri, 19 Mar 2021 at 17:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.107 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.107-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-add HWMON-support to mediateks thermanl driver to allow lm-sensors
-userspace tools read soc temperature
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
- drivers/thermal/mtk_thermal.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index 149c6d7fd5a0..e22d77d57458 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -23,6 +23,8 @@
- #include <linux/reset.h>
- #include <linux/types.h>
- 
-+#include "thermal_hwmon.h"
-+
- /* AUXADC Registers */
- #define AUXADC_CON1_SET_V	0x008
- #define AUXADC_CON1_CLR_V	0x00c
-@@ -983,6 +985,13 @@ static void mtk_thermal_release_periodic_ts(struct mtk_thermal *mt,
- 	writel((tmp & (~0x10e)), mt->thermal_base + TEMP_MSRCTL1);
- }
- 
-+static void mtk_thermal_hwmon_action(void *data)
-+{
-+	struct thermal_zone_device *zone = data;
-+
-+	thermal_remove_hwmon_sysfs(zone);
-+}
-+
- static int mtk_thermal_probe(struct platform_device *pdev)
- {
- 	int ret, i, ctrl_id;
-@@ -1087,6 +1096,19 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 		goto err_disable_clk_peri_therm;
- 	}
- 
-+#ifdef CONFIG_THERMAL_HWMON
-+	tzdev->tzp->no_hwmon = false;
-+	ret = thermal_add_hwmon_sysfs(tzdev);
-+	if (ret)
-+		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-+
-+	ret = devm_add_action(&pdev->dev, mtk_thermal_hwmon_action, tzdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "error in devm_add_action");
-+		mtk_thermal_hwmon_action(tzdev);
-+	}
-+#endif
-+
- 	return 0;
- 
- err_disable_clk_peri_therm:
--- 
-2.25.1
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.4.107-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 8a800acdf26f05d289c05e416591b6b18917b044
+git describe: v5.4.106-19-g8a800acdf26f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.106-19-g8a800acdf26f
+
+No regressions (compared to build v5.4.106)
+
+No fixes (compared to build v5.4.106)
+
+
+Ran 62773 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm-debug
+- qemu-arm64-clang
+- qemu-arm64-debug
+- qemu-arm64-kasan
+- qemu-i386-debug
+- qemu-x86_64-clang
+- qemu-x86_64-debug
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* kselftest-lkdtm
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* v4l2-compliance
+* kvm-unit-tests
+* fwts
+* rcutorture
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
