@@ -2,193 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D421342DFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92878342DF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCTPtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:49:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:39845 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhCTPtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:49:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616255332;
-        bh=3039Ka36kQzxCE7OByeZhquPAelPder0B3E3vpB55Ck=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=aE49Md6Iux30mr0x8tGfhY5GmawKL3nCQ0etw2AtfFVoeW7iiEVCbUCillVO2nYWU
-         POpPQmh/yGNCmZjsJZYVP+EFHUcEb0NcNVXFF9rETurvO2v/w1TY8zn8K0EmeclH/K
-         /aCK527xObKL1tw/F+l+wBzRww1IfOgo3w+qmRug=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhlKs-1lsYol2fvk-00dnBe; Sat, 20
- Mar 2021 16:48:51 +0100
-Date:   Sat, 20 Mar 2021 16:48:47 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v6 5/8] security/brute: Mitigate a brute force attack
-Message-ID: <20210320154847.GD3023@ubuntu>
-References: <20210307113031.11671-1-john.wood@gmx.com>
- <20210307113031.11671-6-john.wood@gmx.com>
- <202103172102.03F172613@keescook>
+        id S229843AbhCTPtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhCTPs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 11:48:59 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F45C061574;
+        Sat, 20 Mar 2021 08:48:58 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a7so14392355ejs.3;
+        Sat, 20 Mar 2021 08:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=dTfLHDds3QROg079FJDOkQVVptErbIgmQiK60+WqgI8=;
+        b=ShGzQSRVbYjYJovXE73WrVwYorSw9ZGjEzQJ04rpab0ZRtec2dJxYVnNkMyLbN6I6u
+         39Eg/J5LywScJ+jqOHpYgp90Tnnlj/RJwALMO+T1isqz4N9FJk//qsbvg+xvHlOyzfWR
+         gf5xy/DvHLK903cJLry/AD/HtTgzFFx/tMRfILu/aeu+hSvp4HCTHqG47VJw5PSsMhAd
+         X1k0STq9pHje4wL5bdg8Ws1HdSwb9b98Bxv/0eOG/YRR50HwELI4oGdmASHVKIEPow3m
+         6p/vSAdWMtNAeSzBpE/wRygzJQfyzGYXk5UH150Cxv9wV63aHsMogibJ8QKKjQVmhDGk
+         bUDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dTfLHDds3QROg079FJDOkQVVptErbIgmQiK60+WqgI8=;
+        b=kGz/XMOIoGUyQpFldVgB3SLXbGQQImwF6hvIfpOPLGZdI26lfw/+jou0h+oU1+g1KJ
+         ZSNGw3av8g7iafLrsBA7k0bTMNvLsEds5taz40Iw1VzzpxOHgH7Ni+stXM1XXmcxOIM4
+         DKrr2iUPlvpC1amYOR6B4PWd9RCip/xSvZB6/x1APQi2+CXzOFF0XYcqTlR76Vqowo61
+         5ExeAoGJ7kBmN3z4EOGz8rv5uRBSx0WyWhJ1df/DU8/o32rL2QFTERMkBvdL4SPNfLM4
+         Y6fj5uJFZPxYmwvFHfrbLZ437k8bw6FMlEI+PjBWSgmlbOcvKRrXtUT8aaTVHDjX2/Jd
+         Cycw==
+X-Gm-Message-State: AOAM533/y4YD1NlXz5p3w37EvA0IrFP2+u9bl2wToLL3q+heqHiJmJKs
+        x5oV7nMq8ODn9hhnwo+0pQ==
+X-Google-Smtp-Source: ABdhPJzm2a+FwiwoIS8i2cl03jNYAej/AocRQXJthGp6sQxA1jgfOu7W1bfgANH8/Ez/j0W4g6c1iA==
+X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr10177338ejb.91.1616255337187;
+        Sat, 20 Mar 2021 08:48:57 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.248.213])
+        by smtp.gmail.com with ESMTPSA id k12sm6471815edr.60.2021.03.20.08.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 08:48:56 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 18:48:55 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gladkov.alexey@gmail.com
+Subject: [PATCH] proc: test subset=pid
+Message-ID: <YFYZZ7WGaZlsnChS@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202103172102.03F172613@keescook>
-X-Provags-ID: V03:K1:zhMg8DWoJRCi7o6If91Omz30/GycNUkeI5EMSTZ9GuVgCAvTA8e
- W5UKMpAGryRY1a8a/x/t8wdyTnOWrI14uVCUokBmniOHh9vyyiVGjuEtGWzC2uIxgBk5G3q
- eJBWZwFLTf3n+Zy1srft/RSB9UIl658P6vA3HoGBkPshri44I6fdHySCmcRwqWfrQFN/WLz
- bTwOja+xyGuSYAd9Lih6g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vPku32uMuX4=:ub4o/PyXc68JUwoltAckTD
- K3lhEw2/Q73IRCe0BjqqXe1cTOFKjd0DRuFS6IrUNIWqwwMwRGTYxuOF+c5syN2mX6QuLFwx1
- q4aLR72VbPIt9HrhJtMgB4MDvquukuLdtLxIdf2qBz6v4yI7y4jAmhtVlHnVxCJF/YgFt/Lsz
- sZf81iqp5uZfJM8oLChQd+1jCUV9r0Xc8u3V/NtxN6grltnobBfIgcWl9xyB70oCYFgGYl953
- eii1BMEuFbTR8p0RCWIUmb95WvxT3nKmoZTTLghqtCf6Bbe2uTbWrW90+DPNpTMbh/IPfcTAs
- 1tQM5PF+2/QWADSN6BCTh2nzN+lmXVHJKqE2fIkTjnV5WKpR1bB+I4VphMJqv5i8N964khT8B
- xJTsekVj6EMmGeVHgtd8wdv1gEBZOJzwpC4gVwzrLeSW9Bi2hNe/LgV5hxvB7a+8uoWvQR2q3
- ULZYy/GsAXQOwSyqJ7x24GRU0cKoojPDTbgk1ExiAqrzKutZfWmtMYUcdNtvPb66vIURPrzCT
- liVfQHNGgNWsOuqJVMfnEPgVEm3YRTYQahu8VkCaqqWOtoKGFTrQmVPqwEI4/Lcknk6fDjklN
- 4oBbMmljLpkLN4UP4CVVOTiHHmpsEZvYzh7qnOri5jJrGyHHlii1a0rfkTe9sH6w8lafHeHNJ
- mbS99b0QqO3pCaRv4qLxA3v4vrKQpM7RNNV+h1NKLUD0//lrxOuYO7GU9qmRrr05WHjDtH3/t
- bJ+W8P7dRXZiOs0VAtUng5YDZolz8c7PMPF0L30UXDc3tt7oJ//PaW/jTq5VEO/LJhGfmtAfA
- p93jWdgLVxI10RXEK3UISOSJZD8qEHF6oITnqf7MI3gMDZLYm62C85CdQc55aP2hLQV2UV8kF
- SOmvv2rOy1J4nCw17AdkpBIOvruxvWQ1Zu3US38RgoSAt8PBsEwdd8dvS9+t19PwYRENZRniZ
- 9moM19IUamxTKdhk4uyej5x4aXrGrfbOZBIRT7M3vizW181/S5sb5G1QciejSLWAA3MJF4Zjk
- fDZkuxwgVSyL95B0qKs6xvJzRzK1FeHwht4Rzctxl1O3OOzBcEZ2CM6RsR4LPeICg44Vvc14P
- wxUxt34VdScdUoXM4GbuZeSym4u5fVYlVc/tULN2ExBRiVq8q4vHo/tHbaKxI2DN5mtwxZwpT
- JaLDsxMV5ng5B5mRNblR8DLH+Kusmw+xiiaJRElGeZWGhjt+5FgmGharj8PbTXrwPw00w=
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:04:15PM -0700, Kees Cook wrote:
-> On Sun, Mar 07, 2021 at 12:30:28PM +0100, John Wood wrote:
-> > +/**
-> > + * brute_kill_offending_tasks() - Kill the offending tasks.
-> > + * @attack_type: Brute force attack type.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + *
-> > + * When a brute force attack is detected all the offending tasks invo=
-lved in the
-> > + * attack must be killed. In other words, it is necessary to kill all=
- the tasks
-> > + * that share the same statistical data. Moreover, if the attack happ=
-ens through
-> > + * the fork system call, the processes that have the same group_leade=
-r that the
-> > + * current task must be avoided since they are in the path to be kill=
-ed.
-> > + *
-> > + * When the SIGKILL signal is sent to the offending tasks, this funct=
-ion will be
-> > + * called again from the task_fatal_signal hook due to a small crash =
-period. So,
-> > + * to avoid kill again the same tasks due to a recursive call of this=
- function,
-> > + * it is necessary to disable the attack detection for this fork hier=
-archy.
->
-> Hah. Interesting. I wonder if there is a better way to handle this. Hmm.
+Test that /proc instance mounted with
 
-If your comment is related to disable the detection:
+	mount -t proc -o subset=pid
 
-I think it's no problematic to disable the attack detection for this fork
-hierarchy since all theirs tasks will be removed. Also, I think that the d=
-isable
-mark can help in the path to use the wait*() functions to notify userspace=
- that
-a task has been killed by the brute mitigation. Is a work in progress now.
+contains only ".", "..", "self", "thread-self" and pid directories.
 
-If your comment is related to kill all the tasks:
+Note:
+Currently "subset=pid" doesn't return "." and ".." via readdir.
+This must be a bug.
 
-In the previous version I have a useful discussion with Andi Kleen where a
-proposal to block the fork system call during a time was made. He explains=
- me
-the cons of this method and proposes that if the mitigation works as now w=
-e can
-use the wait*() functions to notify userspace that the tasks has been kill=
-ed
-by the brute mitigation. This way other problems related with the supervis=
-ors
-and respawned processes could be handled.
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-Anyway, new points of view are also welcome.
+ tools/testing/selftests/proc/Makefile          |    1 
+ tools/testing/selftests/proc/proc-subset-pid.c |  121 +++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+)
 
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * It's mandatory to disable interrupts before acquiring the brute_st=
-ats::lock
-> > + * since the task_free hook can be called from an IRQ context during =
-the
-> > + * execution of the task_fatal_signal hook.
-> > + *
-> > + * Context: Must be called with interrupts disabled and tasklist_lock=
- and
-> > + *          brute_stats_ptr_lock held.
-> > + */
-> > +static void brute_kill_offending_tasks(enum brute_attack_type attack_=
-type,
-> > +				       struct brute_stats *stats)
-> > +{
-> > +	struct task_struct *p;
-> > +	struct brute_stats **p_stats;
-> > +
-> > +	spin_lock(&stats->lock);
-> > +
-> > +	if (attack_type =3D=3D BRUTE_ATTACK_TYPE_FORK &&
-> > +	    refcount_read(&stats->refc) =3D=3D 1) {
-> > +		spin_unlock(&stats->lock);
-> > +		return;
-> > +	}
->
-> refcount_read() isn't a safe way to check that there is only 1
-> reference. What's this trying to do?
-
-If a fork brute force attack has been detected is due to a new fatal crash=
-.
-Under this scenario, if there is only one reference of these stats, it is
-not necessary to kill any other tasks since the stats are not shared with
-another process. Moreover, if this task has failed in a fatal way, is in
-the path to be killed. So, no action is required.
-
-How can I make this check in a safe way?
-
-> > +
-> > +	brute_disable(stats);
-> > +	spin_unlock(&stats->lock);
-> > +
-> > +	for_each_process(p) {
-> > +		if (attack_type =3D=3D BRUTE_ATTACK_TYPE_FORK &&
-> > +		    p->group_leader =3D=3D current->group_leader)
-> > +			continue;
-> > +
-> > +		p_stats =3D brute_stats_ptr(p);
-> > +		if (*p_stats !=3D stats)
-> > +			continue;
-> > +
-> > +		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, p, PIDTYPE_PID);
-> > +		pr_warn_ratelimited("Offending process %d [%s] killed\n",
-> > +				    p->pid, p->comm);
-> > +	}
-> > +}
-
-Thanks,
-John Wood
+--- a/tools/testing/selftests/proc/Makefile
++++ b/tools/testing/selftests/proc/Makefile
+@@ -12,6 +12,7 @@ TEST_GEN_PROGS += proc-self-map-files-001
+ TEST_GEN_PROGS += proc-self-map-files-002
+ TEST_GEN_PROGS += proc-self-syscall
+ TEST_GEN_PROGS += proc-self-wchan
++TEST_GEN_PROGS += proc-subset-pid
+ TEST_GEN_PROGS += proc-uptime-001
+ TEST_GEN_PROGS += proc-uptime-002
+ TEST_GEN_PROGS += read
+new file mode 100644
+--- /dev/null
++++ b/tools/testing/selftests/proc/proc-subset-pid.c
+@@ -0,0 +1,121 @@
++/*
++ * Copyright (c) 2021 Alexey Dobriyan <adobriyan@gmail.com>
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++/*
++ * Test that "mount -t proc -o subset=pid" hides everything but pids,
++ * /proc/self and /proc/thread-self.
++ */
++#undef NDEBUG
++#include <assert.h>
++#include <errno.h>
++#include <sched.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mount.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <dirent.h>
++#include <unistd.h>
++#include <stdio.h>
++
++static inline bool streq(const char *a, const char *b)
++{
++	return strcmp(a, b) == 0;
++}
++
++static void make_private_proc(void)
++{
++	if (unshare(CLONE_NEWNS) == -1) {
++		if (errno == ENOSYS || errno == EPERM) {
++			exit(4);
++		}
++		exit(1);
++	}
++	if (mount(NULL, "/", NULL, MS_PRIVATE|MS_REC, NULL) == -1) {
++		exit(1);
++	}
++	if (mount(NULL, "/proc", "proc", 0, "subset=pid") == -1) {
++		exit(1);
++	}
++}
++
++static bool string_is_pid(const char *s)
++{
++	while (1) {
++		switch (*s++) {
++		case '0':case '1':case '2':case '3':case '4':
++		case '5':case '6':case '7':case '8':case '9':
++			continue;
++
++		case '\0':
++			return true;
++
++		default:
++			return false;
++		}
++	}
++}
++
++int main(void)
++{
++	make_private_proc();
++
++	DIR *d = opendir("/proc");
++	assert(d);
++
++	struct dirent *de;
++
++	bool dot = false;
++	bool dot_dot = false;
++	bool self = false;
++	bool thread_self = false;
++
++	while ((de = readdir(d))) {
++		if (streq(de->d_name, ".")) {
++			assert(!dot);
++			dot = true;
++			assert(de->d_type == DT_DIR);
++		} else if (streq(de->d_name, "..")) {
++			assert(!dot_dot);
++			dot_dot = true;
++			assert(de->d_type == DT_DIR);
++		} else if (streq(de->d_name, "self")) {
++			assert(!self);
++			self = true;
++			assert(de->d_type == DT_LNK);
++		} else if (streq(de->d_name, "thread-self")) {
++			assert(!thread_self);
++			thread_self = true;
++			assert(de->d_type == DT_LNK);
++		} else {
++			if (!string_is_pid(de->d_name)) {
++				fprintf(stderr, "d_name '%s'\n", de->d_name);
++				assert(0);
++			}
++			assert(de->d_type == DT_DIR);
++		}
++	}
++
++	char c;
++	int rv = readlink("/proc/cpuinfo", &c, 1);
++	assert(rv == -1 && errno == ENOENT);
++
++	int fd = open("/proc/cpuinfo", O_RDONLY);
++	assert(fd == -1 && errno == ENOENT);
++
++	return 0;
++}
