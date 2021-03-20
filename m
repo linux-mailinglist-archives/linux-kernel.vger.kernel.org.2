@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7F7342A2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB16A342A33
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhCTD0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 23:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S229873AbhCTDhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 23:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTD0c (ORCPT
+        with ESMTP id S229618AbhCTDhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 23:26:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7F8C061761;
-        Fri, 19 Mar 2021 20:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kEfEWIhBq2zE+HxZoC4lm1vNYaQCx2j9hxZ78LM+5kQ=; b=ZupSzN80E4VJvwrYB0bcCXNkhO
-        Gkg0eqfi2txQszZAkHfFSsz1UHnKwTf1fAnSwtwkfpFDXo739+jczEndpqVQNiOeIS2g9F38+8N7E
-        wMc7m4f7H73fzy6hV/cn5HnQ2Ix66O0q238F97ElkNDsvMRNYcpI5JGjruoPPkFE6vOb2qiH5f7/W
-        IWLpUj1RXd9Sw1xbieBKa0cT179ibjAocvig7CKTih/ZVAF9V0FvyEa9r3u01r8Ntq6XbEo/8EIZE
-        EI1VOmjECBLFc8nEyhtomT14d+WppGRt/ynK9qvjuNVdO5OsA6XhzvHCF5w6aIQMD4izMVhX8u7+m
-        H2rpRYOg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNSFQ-005Kxb-QF; Sat, 20 Mar 2021 03:25:58 +0000
-Date:   Sat, 20 Mar 2021 03:25:56 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
- cache lookup
-Message-ID: <20210320032556.GD3420@casper.infradead.org>
-References: <20210319071547.60973-1-hannes@cmpxchg.org>
- <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
+        Fri, 19 Mar 2021 23:37:12 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE81C061761;
+        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x126so7200948pfc.13;
+        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F2NpDde5JfVs/08cIpDIKMl9ReyCVFlJWiAxllrxO/o=;
+        b=ojNJR9L79KsnenlcL8sVyKfkANP5c0OQisLGgvYN1Sp7ppi2457mZJCSbRfeF4bhiu
+         w8JJM/ORy+N32von6u5molA0CXO0DI/A+d8tco23CgjSR+l9LmpbQMYjmgWFbjgFATTZ
+         uNO5zDqIFj9+j8MhLpTBzgQDOCKo+39o4Zv9SYJTnZH03fKyCif785iCAafuYYJfvaMF
+         UZnDvG24DGUe21XXIKBQLf/l6mQaBLNEhMeYP9oDjGqYTgCmOkViBCPVWa58fqLaNTEe
+         Zp8aD27T0jtgPFlIWh/17ROyhOsOHbOxhGUmIvQsDB0TwoaXD3CZKksjOtzi2tpn5uYL
+         wtPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F2NpDde5JfVs/08cIpDIKMl9ReyCVFlJWiAxllrxO/o=;
+        b=Boavqk/ONtTqDmZJzj4J/ZiQUichUtEBhtBGTvBcF/I9YpwtR6WpUNQz3ZU7Cd16tD
+         3//o2iW99reTrnGQ4EmD5ZJLsqi+9DNze5u7x1+XXXKOxHU+NBz7jzExO87Tjvw9LFnj
+         Qvwh4Q6OTO3j+/1RHDS6MnLxGlPeDvbRfcZfKGkfCrrLIso0qQGfbLW5Pp/LUh6F9WDT
+         0PMnXmnFQzAsj7oatQic6knZKHcIoVXwZ8DcfuDZ8NtibelQiP74mvKIcD37mIpLBV/u
+         mK1MVSjMo9Uto7bymAneU/PZlwiE09BG337F7vSLxqNy0ZmyPVqHPDjpJGsj9xrigHx9
+         lsQQ==
+X-Gm-Message-State: AOAM53336/zDn5ba12WOWH/QjDfp54YwcKfoUyUecQxRotWc0k9lM6nG
+        oLqa0vRonxkauLcIN0XQlKQ=
+X-Google-Smtp-Source: ABdhPJz/Mzv3lcTWIcJB/eu2sj7N9x6bfZzgkKOYsIHOcNcDxQDAfWM7y+kinqJzkx7zq7dcl8mlNw==
+X-Received: by 2002:a62:160c:0:b029:20a:7b41:f10f with SMTP id 12-20020a62160c0000b029020a7b41f10fmr11899212pfw.67.1616211421008;
+        Fri, 19 Mar 2021 20:37:01 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a468:a574:c1f5:b1a1])
+        by smtp.gmail.com with ESMTPSA id i22sm6211094pjz.56.2021.03.19.20.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 20:36:59 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 20:36:57 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: ims-pcu - drop redundant driver-data assignment
+Message-ID: <YFVt2X3He5OT3+ju@google.com>
+References: <20210318155525.22496-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
+In-Reply-To: <20210318155525.22496-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:52:58PM -0700, Hugh Dickins wrote:
-> > +	/*
-> > +	 * Drop the base reference from __alloc_pages and free. In
-> > +	 * case there is an outstanding speculative reference, from
-> > +	 * e.g. the page cache, it will put and free the page later.
-> > +	 */
-> > +	if (likely(put_page_testzero(page))) {
-> >  		free_the_page(page, order);
-> > -	else if (!PageHead(page))
-> > +		return;
-> > +	}
-> > +
-> > +	/*
-> > +	 * The speculative reference will put and free the page.
-> > +	 *
-> > +	 * However, if the speculation was into a higher-order page
-> > +	 * chunk that isn't marked compound, the other side will know
-> > +	 * nothing about our buddy pages and only free the order-0
-> > +	 * page at the start of our chunk! We must split off and free
-> > +	 * the buddy pages here.
-> > +	 *
-> > +	 * The buddy pages aren't individually refcounted, so they
-> > +	 * can't have any pending speculative references themselves.
-> > +	 */
-> > +	if (!PageHead(page) && order > 0) {
+On Thu, Mar 18, 2021 at 04:55:25PM +0100, Johan Hovold wrote:
+> The driver data for the data interface has already been set by
+> usb_driver_claim_interface() so drop the subsequent redundant
+> assignment.
 > 
-> The put_page_testzero() has released our reference to the first
-> subpage of page: it's now under the control of the racing speculative
-> lookup.  So it seems to me unsafe to be checking PageHead(page) here:
-> if it was actually a compound page, PageHead might already be cleared
-> by now, and we doubly free its tail pages below?  I think we need to
-> use a "bool compound = PageHead(page)" on entry to __free_pages().
-> 
-> Or alternatively, it's wrong to call __free_pages() on a compound
-> page anyway, so we should not check PageHead at all, except in a
-> WARN_ON_ONCE(PageCompound(page)) at the start?
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Alas ...
+Applied, thank you.
 
-$ git grep '__free_pages\>.*compound'
-drivers/dma-buf/heaps/system_heap.c:            __free_pages(page, compound_order(page));
-drivers/dma-buf/heaps/system_heap.c:            __free_pages(p, compound_order(p));
-drivers/dma-buf/heaps/system_heap.c:            __free_pages(page, compound_order(page));
-mm/huge_memory.c:               __free_pages(zero_page, compound_order(zero_page));
-mm/huge_memory.c:               __free_pages(zero_page, compound_order(zero_page));
-mm/slub.c:                      __free_pages(page, compound_order(page));
-
-Maybe we should disallow it!
-
-There are a few other places to check:
-
-$ grep -l __GFP_COMP $(git grep -lw __free_pages) | wc -l
-24
-
-(assuming the pages are allocated and freed in the same file, which is a
-reasonable approximation, but not guaranteed to catch everything.  Many
-of these 24 will be false positives, of course.)
+-- 
+Dmitry
