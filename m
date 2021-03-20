@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75E9342BC9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA36342C09
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhCTLMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:12:40 -0400
-Received: from mout.gmx.net ([212.227.15.18]:47235 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229873AbhCTLMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616238490;
-        bh=bBjLCX1FN81wI6n/nGI3EtQ3GBM0eiF3V1gwzHLvOQo=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=cBLp26TAuaU7zY+10Obec10h23eevJSfHlASXQa1NPRn/fW84ROnYgr+eGGNrHacK
-         rwn2xJ1E9HCiR643UP+u79KqewQ/Eog8sSM+VFkS3JMI2gJwSt8Bp4xAv+Zr61C/Xs
-         ei061BQzUtDOppcOV+DSvcwzURrIg/F3Ef61P6DA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.49.112]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mel3n-1lvCwO11Eb-00akE8; Sat, 20
- Mar 2021 09:18:33 +0100
-Message-ID: <1f63f1fcea10fc179881384cd838b1c9e5207b82.camel@gmx.de>
-Subject: Re: [ANNOUNCE] v5.12-rc3-rt3
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Sat, 20 Mar 2021 09:18:32 +0100
-In-Reply-To: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
-References: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S230189AbhCTLUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhCTLTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:19:36 -0400
+Received: from mail-il1-x146.google.com (mail-il1-x146.google.com [IPv6:2607:f8b0:4864:20::146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19271C0613AF
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:44:15 -0700 (PDT)
+Received: by mail-il1-x146.google.com with SMTP id f14so8409191ilr.21
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 03:44:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=TY6eWPej2xyMujUIiW14t6MNCP0JG96Bsng7hloAJn4=;
+        b=V8vSRPbujCNXvMstUqMp8BSaAcpBFfB809JXtE8vkvmK7QMxD8GGU2d2WJqJSTaFsd
+         UA02b9Q6V3As9HIGBDmx4N15T+F/bsW1bheIvIuknDGLSXyeY/vd0UV5Iku3kglVhU9e
+         0HZHAhv6AAbTLmyzCiKlu2/Td33SMEvpp+YUxzu2g6Mfj5nAZjzXoOPk6CV+vWJI48jG
+         dKCS43HQkgmg2KAj5OVfXyfBF/CWw7DAzUa80V+n/ujjFaUrZIph/DD3Jfd0R4Sg9aVi
+         s4I5fasazYipboO4Fwgmhg7EMEbIGVJaewxJFUVkpZ7xfC1GCAZhX93Y9IswEBmmHdEB
+         8JOA==
+X-Gm-Message-State: AOAM5339mwzrwAHTtYBccfPMG523jk+F3s2x+LUgQrJDje7wvutTGjYr
+        6nqHkeQF5EeYm7GaJUIswzFzZSaceySE/z5HkmZZ3BOCSu3e
+X-Google-Smtp-Source: ABdhPJzd4Hj0631V/HLa6Uj7/62+FcuBi7Qtrnplas/d5g38qhibrBz0f8jwbnFRIVPYlFVkOb2/5wjN/P0+HfQ/VrrH9dXKJCjr
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pKPXk35DjmhrgB/0o7wprTJ/KgyaPTIBVJr3avcvi84T03QRcBI
- eFjpChtPckYgusyBh+Lz4GaY5lpQtJZgUGp/wGY9LeZ6ksB7J8mcKuVdU1DaKqxwfmtAz8e
- mgI7zg95NOjg+lkMsFVoWcZtzU1u9oN99MiBanOemvVHxl+fRd/5ortL29Zq6ayI/CFQKyg
- 9Qw1Wrh8ATCb0BNAED1tA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C7yYCAd/UXs=:pe9Be+/oB+JfEw0Ra7nITD
- AHkruhOwK4bLdWWLjpluLe0qM8zGKHT2i6c2UK/c7tpaNmShgac3rEXFK3o4ByaVlQAH5Z/C/
- tGCBZ7Dr3ygDqbCK0kHBThU+WvcK9p6aOHQqY4rtOCb4VAv6K3mx+AfcT1nw7oGaFbxilsvb/
- +POK48DYl+lQfKwRCTTAxtJc+7PvLsR1/kS2+EQobMIdcvR4ZGHtZ6SKJ3DwAOHwwe/LG36/l
- pc5/+Iexc18TrTcXu1MPBj8qp60LMubGoqC4BaaziDzaxTZGiD0EocFOL+cEUnNCsJjEwK071
- nA4/Our3a0M5EALfRGhwa4EdcVJ6p/N7IWxGJ41mLyzeaurAM8rtafXS6hASUoapOoeoUo8Bw
- RMqGMyXzhlE50r/ivS/PrV0pWOFkBlmR17gd6y/fSRW5DXPshAidj1D15lJwBS7i92SaSy4P/
- wwt7SrKbQclOtTsXyePzemc24p2ltpEkF59rBUEuoW22/Zkctw8DH2B+exFUqemRGbHK72YKz
- CvuKcWuXHczldQ69gHI36o4qGV+EevVcYdnMnux0myyHyaJJP3c1No/l65H/rcm/tXmQyazOf
- S8ywYjxdLu2PrAIeqdFA5usewMCagx/J3tp38zF9oFq1l57JxZKbcZcTxMZ/cYjdXt2AEppg3
- 0XghBrgpqSK24eCcXJwLKjR/Rxv3e4CrYO9isQkimbbLNBFvf/TO5GmVJnN7W0EFVD7lG4ZIf
- VFOC33dtxGzTnhIZNBcZ6nBo4x9lavxtiDg7/mGAnGZsdYCYqRCvYEQO6Q0IbPFyP94ziKPCi
- Gks6lps5bmlsEdRoXud4VZt8P7u4IepBPJE2Pd2/7oQ4uexvvLVdfRtFfC3E3xLEX68LncQG1
- //xMKzXFBE9fiRi7sJU20xxk3sSk+0XmAFk+MnZVb+s8Zpno+vllOy5MK8my0xoze7FulnNty
- d1lDGVzewHT97CI2vXjhDoUNzSFMg8eLLJupKOj5csxUzJHNCkksQ7Xx5bj60svI4aAox/GZ5
- j1Gb5w0G9ZA+5z2HVlB9Epr2kT/1ozHdXJIIUqYc5NN+ZJUw/DX3uPZgKwvnkZr6mAZ6lEPc5
- TbD+quU6po5Sde5PAGmLZxWXuxt8pneTcXp8KqN8/E68++ta2WgqPv4h5BKyKV8JRoPUH9NxG
- r/thwmEfwy9/xs3yknOqYOT1rp0787K5AkiFWIZdHcRH7pzGm+oSiILFR+s3UneHRC3Us=
+X-Received: by 2002:a05:6e02:2184:: with SMTP id j4mr5426084ila.308.1616228824055;
+ Sat, 20 Mar 2021 01:27:04 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 01:27:04 -0700
+In-Reply-To: <00000000000076ecf305b9f8efb1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef073a05bdf398e0@google.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in add_adv_patterns_monitor
+From:   syzbot <syzbot+3ed6361bf59830ca9138@syzkaller.appspotmail.com>
+To:     apusaka@chromium.org, dan.carpenter@oracle.com,
+        davem@davemloft.net, finanzas1@logisticaenlinea.net,
+        hdanton@sina.com, howardchung@google.com, johan.hedberg@gmail.com,
+        johan.hedberg@intel.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, mcchou@chromium.org,
+        mmandlik@chromium.org, netdev@vger.kernel.org, sashal@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-03-19 at 23:33 +0100, Sebastian Andrzej Siewior wrote:
-> Dear RT folks!
->
-> I'm pleased to announce the v5.12-rc3-rt3 patch set.
+syzbot suspects this issue was fixed by commit:
 
-My little rpi4b is fairly unhappy with 5.12-rt, whereas 5.11-rt works
-fine on it.  The below spew is endless, making boot endless.  I turned
-it into a WARN_ON_ONCE to see if the thing would finish boot, and
-surprisingly, it seems perfectly fine with that bad idea. Having not
-the foggiest clue what I'm doing down in arm arch-land, bug is in no
-immediate danger :)
+commit b4a221ea8a1f890b50838ef389d016c7ff280abc
+Author: Archie Pusaka <apusaka@chromium.org>
+Date:   Fri Jan 22 08:36:11 2021 +0000
 
-[    2.216913] WARNING: CPU: 0 PID: 1 at arch/arm64/include/asm/pgtable.h:=
-982 do_set_pte+0x1cc/0x1d4
-[    2.216949] Modules linked in:
-[    2.216961] CPU: 0 PID: 1 Comm: init Not tainted 5.12.0.g425ed5a-v8-rt =
-#33
-[    2.216973] Hardware name: Raspberry Pi 4 Model B Rev 1.4 (DT)
-[    2.216979] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=3D--)
-[    2.216990] pc : do_set_pte+0x1cc/0x1d4
-[    2.217004] lr : filemap_map_pages+0x178/0x380
-[    2.217016] sp : ffffffc01153bbb0
-[    2.217020] x29: ffffffc01153bbb0 x28: fffffffe07d93080
-[    2.217033] x27: 0000000000000000 x26: ffffff8101c9e000
-[    2.217044] x25: ffffff8101b40fd8 x24: 0000000000000000
-[    2.217054] x23: ffffff8101674170 x22: 0000007fb1b4b000
-[    2.217064] x21: fffffffe07d93080 x20: ffffffc01153bcf0
-[    2.217073] x19: 00200001f64c2fc3 x18: 0000000000000000
-[    2.217082] x17: 0000000000000000 x16: 0000000000000000
-[    2.217091] x15: 0000000000000000 x14: 0000000000000000
-[    2.217100] x13: 0000000000000000 x12: 0000000000000000
-[    2.217108] x11: 0000000000000000 x10: 0000000000000000
-[    2.217117] x9 : ffffffc010209068 x8 : 000000000000000f
-[    2.217126] x7 : ffffff8101e87c68 x6 : fffffffe00000000
-[    2.217135] x5 : 0000000000101e8b x4 : ffffff8101e880a8
-[    2.217144] x3 : 0020000000000fc3 x2 : 0000000000000000
-[    2.217153] x1 : 0000000000000000 x0 : 0000000000000000
-[    2.217162] Call trace:
-[    2.217166]  do_set_pte+0x1cc/0x1d4
-[    2.217181]  filemap_map_pages+0x178/0x380
-[    2.217189]  __handle_mm_fault+0x75c/0x930
-[    2.217202]  handle_mm_fault+0x178/0x25c
-[    2.217214]  do_page_fault+0x16c/0x470
-[    2.217233]  do_translation_fault+0xbc/0xd8
-[    2.217244]  do_mem_abort+0x4c/0xbc
-[    2.217259]  el0_ia+0x68/0xcc
-[    2.217272]  el0_sync_handler+0x180/0x1b0
-[    2.217284]  el0_sync+0x170/0x180
+    Bluetooth: advmon offload MSFT add rssi support
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14ef5ad6d00000
+start commit:   b491e6a7 net: lapb: Add locking to the lapb module
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be33d8015c9de024
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ed6361bf59830ca9138
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10628ae8d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12964b80d00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: Bluetooth: advmon offload MSFT add rssi support
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
