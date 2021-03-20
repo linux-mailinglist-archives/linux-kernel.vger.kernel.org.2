@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1104E342DBF
+	by mail.lfdr.de (Postfix) with ESMTP id D6E28342DC1
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCTP2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S230094AbhCTP2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhCTP2N (ORCPT
+        with ESMTP id S229878AbhCTP2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:28:13 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A77C061574;
-        Sat, 20 Mar 2021 08:28:12 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id n138so14576398lfa.3;
-        Sat, 20 Mar 2021 08:28:12 -0700 (PDT)
+        Sat, 20 Mar 2021 11:28:14 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682B9C061574;
+        Sat, 20 Mar 2021 08:28:13 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x28so14580278lfu.6;
+        Sat, 20 Mar 2021 08:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bGW/+40ApmphwP+PbpLVYGoBEkoT1K7har+B7OfVtFo=;
-        b=kbzYwDRpPzDChPkhUWLD+oyBqHWwQqHbrz/J4NJyBCLiuCpSNMbnsIoCvqtufarxB4
-         T+yxEwWV8bm2E+4eECY/4kHdDfURaxSI/KzYXr2S5ztTu8OCmrAWteew/SOmqstz+UYW
-         ifQvLCKKoXBxowbsZyyDYthuskiWY91ySlsECsvXbSHrn8qrlYt/ND6tk6TwT01YztVO
-         Jbf1aHpCBbIt04vLzSRQW7ejnqreFMwy7gLyc4BbUui33tGrHvU7n6sCbP1gMx6fQWEn
-         cmVHge6qOiuz2MlThQJcNK77E8hL4m8b2MoRTCofYsGK9wy59blJ+mipDonTG1Y/7MoK
-         MW4w==
+        bh=6TF0y5PK4jSr2yBkqO08CTECh4xjTFU4xmlboErGSAg=;
+        b=fWreg+PLoVkprsogYb9aiKYbSot0k03pvfGe2hHPbRyDMzx27pCM/Ey2QOVN1impIJ
+         u5G6zVL9khcPIOFMNaouuv+MJK2owM++hLGG2gc8sl6CIh9/Rk681SJzWGfJgsaf3aWz
+         +mB+IPz+jNKwUMyDentA/MpYRqCFZ5axyV0iIE8bWkiH1VNON4sAF0ulHb+Svdy3e7WH
+         cIlBzbbCBRbCoe9UBjSS65aM/ROQAYr+Z9HP6hehSmms0AIqtaKxnwVcQhSYWf3kT1Fo
+         5zbu00tRzgeEbZCiX3mjBxq3Xx89GAHejZprtKKHhSQD+mcYzPTxOVFr++vN1Snft+mW
+         VP6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bGW/+40ApmphwP+PbpLVYGoBEkoT1K7har+B7OfVtFo=;
-        b=r174fHhdtXM4N6m7A3JNNkxaZnGSVfgg55qeQPcm4gHxDGMFfYsReDz7492c/EmL6f
-         45qliW+MsG6qKxE8gPhCVn1YzyXhfwxUswzDrI8Bq5SWe3vRtxcczxybtRLYKmKL1q8H
-         F2vUq5xrkdgzLxjXaDkfZNvpj3X86W1T+uSmgFm6unj7bGhcudu8+H8UuxpkXrjEJy7g
-         DUEspOMZv9wtv18r/PL2XS4ESZ8hliKw5CTqyamO46J8fVjiBBHsoJU9F6Vifni/Xbh+
-         wdzDBMO1e5URCHWx6Pzwqgort9uKqQRRx1ExzL16ZUmq59Zox5f+S7Y2wKelcILPhmxp
-         ubhQ==
-X-Gm-Message-State: AOAM531Kt97GR11lbApvhnFHaN3dZEWfWRTMbQL0FjH7p0bWRXVDr4p8
-        3+yFBk8RQU/kx10Bund+A1c=
-X-Google-Smtp-Source: ABdhPJzgh7qdX6II53OZE6VfFFQ4hQceuBAZy+tdwTEUc1ENmbpDoK5ymFqKGVWeyb58PIM/HEbbNw==
-X-Received: by 2002:ac2:5c0a:: with SMTP id r10mr3779156lfp.47.1616254091175;
+        bh=6TF0y5PK4jSr2yBkqO08CTECh4xjTFU4xmlboErGSAg=;
+        b=HVmnJJsOLG1IiTQkpUzVqIW+WY1eyAZMR3udO9cD5HP0ytY/yeTfmex07z6RXg46Ak
+         ZmexmR6avoCDR+zmU8V0aQeNn79WBOGOEJGV+KfqebYI2TmZK3klurw0d/foYeJ6B3CV
+         j8TDdlu6qk38rauDdMxq9lKUni8GM9tlCGwTfJcvFqjd+tsn6FT11uUp2dvufAnPWE8K
+         01IZS+gDKkWG1MMZqZb2NmignTwJuP+lfvwWBVc6bfomXq8iF/SZA2Tl3N+pCwWpZk9T
+         HngAn7pYI5f0kxNlezDf2SLOkZpV3cekvOMG90yXAb22/FOJEJqHmyPYMmUMUE0xi6DM
+         PXkQ==
+X-Gm-Message-State: AOAM532KsCDyUZfu3q7I9N33OA9FL4GzeNA8ZKpFiH0ZsVCrmlnYIptn
+        +uODYjh80BJWK+H8PcEJvF8=
+X-Google-Smtp-Source: ABdhPJzYJ1INUayLRn1Ok9JpseS/3K5uAexDQnL3ZeBWUebLTtbN0rNDQtlFtZEHWnhIAPjzPLMU2Q==
+X-Received: by 2002:a05:6512:2389:: with SMTP id c9mr3787131lfv.651.1616254091919;
         Sat, 20 Mar 2021 08:28:11 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id t17sm957024lft.224.2021.03.20.08.28.10
+        by smtp.gmail.com with ESMTPSA id t17sm957024lft.224.2021.03.20.08.28.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 08:28:10 -0700 (PDT)
+        Sat, 20 Mar 2021 08:28:11 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -59,9 +59,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
 Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v6 3/7] clk: tegra: Ensure that PLLU configuration is applied properly
-Date:   Sat, 20 Mar 2021 18:26:44 +0300
-Message-Id: <20210320152648.8389-4-digetx@gmail.com>
+Subject: [PATCH v6 4/7] clk: tegra: Halve SCLK rate on Tegra20
+Date:   Sat, 20 Mar 2021 18:26:45 +0300
+Message-Id: <20210320152648.8389-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210320152648.8389-1-digetx@gmail.com>
 References: <20210320152648.8389-1-digetx@gmail.com>
@@ -71,53 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PLLU (USB) consists of the PLL configuration itself and configuration
-of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
-where T114 immediately bails out if PLLU is enabled and T30 re-enables
-a potentially already enabled PLL (left after bootloader) and then fully
-reprograms it, which could be unsafe to do. The correct way should be to
-skip enabling of the PLL if it's already enabled and then apply
-configuration to the outputs. This patch doesn't fix any known problems,
-it's a minor improvement.
+Higher SCLK rates on Tegra20 require high core voltage. The higher
+clock rate may have a positive performance effect only for AHB DMA
+transfers and AVP CPU, but both aren't used by upstream kernel at all.
+Halve SCLK rate on Tegra20 in order to remove the high core voltage
+requirement.
 
 Acked-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/clk/tegra/clk-pll.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/clk/tegra/clk-tegra20.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
-index c5cc0a2dac6f..d709ecb7d8d7 100644
---- a/drivers/clk/tegra/clk-pll.c
-+++ b/drivers/clk/tegra/clk-pll.c
-@@ -1131,7 +1131,8 @@ static int clk_pllu_enable(struct clk_hw *hw)
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
-@@ -1748,15 +1749,13 @@ static int clk_pllu_tegra114_enable(struct clk_hw *hw)
- 		return -EINVAL;
- 	}
- 
--	if (clk_pll_is_enabled(hw))
--		return 0;
--
- 	input_rate = clk_hw_get_rate(__clk_get_hw(osc));
- 
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
+diff --git a/drivers/clk/tegra/clk-tegra20.c b/drivers/clk/tegra/clk-tegra20.c
+index 3efc651b42e3..3664593a5ba4 100644
+--- a/drivers/clk/tegra/clk-tegra20.c
++++ b/drivers/clk/tegra/clk-tegra20.c
+@@ -1021,9 +1021,9 @@ static struct tegra_clk_init_table init_table[] __initdata = {
+ 	{ TEGRA20_CLK_PLL_P_OUT3, TEGRA20_CLK_CLK_MAX, 72000000, 1 },
+ 	{ TEGRA20_CLK_PLL_P_OUT4, TEGRA20_CLK_CLK_MAX, 24000000, 1 },
+ 	{ TEGRA20_CLK_PLL_C, TEGRA20_CLK_CLK_MAX, 600000000, 0 },
+-	{ TEGRA20_CLK_PLL_C_OUT1, TEGRA20_CLK_CLK_MAX, 240000000, 0 },
+-	{ TEGRA20_CLK_SCLK, TEGRA20_CLK_PLL_C_OUT1, 240000000, 0 },
+-	{ TEGRA20_CLK_HCLK, TEGRA20_CLK_CLK_MAX, 240000000, 0 },
++	{ TEGRA20_CLK_PLL_C_OUT1, TEGRA20_CLK_CLK_MAX, 120000000, 0 },
++	{ TEGRA20_CLK_SCLK, TEGRA20_CLK_PLL_C_OUT1, 120000000, 0 },
++	{ TEGRA20_CLK_HCLK, TEGRA20_CLK_CLK_MAX, 120000000, 0 },
+ 	{ TEGRA20_CLK_PCLK, TEGRA20_CLK_CLK_MAX, 60000000, 0 },
+ 	{ TEGRA20_CLK_CSITE, TEGRA20_CLK_CLK_MAX, 0, 1 },
+ 	{ TEGRA20_CLK_CCLK, TEGRA20_CLK_CLK_MAX, 0, 1 },
 -- 
 2.30.2
 
