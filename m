@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD83C342F65
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B41342F6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhCTT4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S229904AbhCTT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhCTTzw (ORCPT
+        with ESMTP id S229766AbhCTT6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:55:52 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DF9C061574;
-        Sat, 20 Mar 2021 12:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uWrYtpK8ByXXQV902y0PottjEgsHB2TL3qHdy2XZsmg=; b=wHovkshiJTd2XSQv5NN+MRQpZ/
-        MNdf8LAZc/I4pJsoq+VVZbf+Fog9PLkDB+W/DIEmClQsyRGTxK27JG7DYxXJ4vVFYM1GTAb44dm1F
-        OIheJetTyuaXND+896daeS8+NLPg/R7tLQOI4SEhhAVFilB0TM2BziaVGB2TyEZelPgQw5PVUGugG
-        +b1yXODKmZiQIH6wAyz9XMEzbRv65ReWMvZ5eGxnIgDAAkMOWg09naQ+qVO8EqRtumJuCNbR9iqr7
-        X7wWiu0aK0XNuDLLJUo/nyxB6EJ/GpDdCxhi0BKnFzEr/A1Zriwz7ldPxhwcUm9hl42PLoIRQ6dLz
-        ZqBOK3dg==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNhhN-0020qS-9D; Sat, 20 Mar 2021 19:55:50 +0000
-Date:   Sat, 20 Mar 2021 12:55:49 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        Sat, 20 Mar 2021 15:58:49 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A1AC061574;
+        Sat, 20 Mar 2021 12:58:49 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id g15so6603897qkl.4;
+        Sat, 20 Mar 2021 12:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EhWUWWvovcwqppfOFN8l1mqmbbRdJNS1JO4GqxSZrQg=;
+        b=gJPc5bvFAlM+itJgrlrSguPTKjzqhJuHJUZ8GJjf5MXeuUUlKQ99yti+ATPtXpJUIx
+         6NCZmpxcObj1zEAxBB2LFggDhMqMODxzlgDirzxyTsKtm4J/VepJ0vL+qGP0WRh2TjgH
+         3j+GxE3sRmUetxDmwlgcL4flAvxn4czMkeC+b1asiAIAgG6BemG4o4gw5cIr33ATl/J8
+         JFqu5oddpVWyvcAZhT+jFv5iPA7IZDCLutpk4me5U0rd46Bgn0kkRVSQ9dEdgpZ2QqyB
+         hGSiNLILIU3Wbg/MjsPVEIXj30Xhcl8dGXve5v+zr45qpkPsYQsZ77yz8n6rP2wxRcAM
+         +E7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EhWUWWvovcwqppfOFN8l1mqmbbRdJNS1JO4GqxSZrQg=;
+        b=LrPuYxCl0UgeoWz0XrO3BduRJbQbzzZYVQtwk7pQvCZT0tWD5U0yEg6uv85iVQcJXQ
+         J9MTFEo+HsJAZOAq5d6kKk9C+813gX6ztIdKdVYAIqgZeaLuNrKbWNy+UrhAzEimtuDN
+         WHe961/slyoVYsfuK7OVOQQVze1+JGMeh/hqDf14YyiofKFTNizOc5WBGz8OE6XxHnee
+         lnEv8GXhpAYePwv9sclTbikaHuSDc0tAhfhUltU2hhLH2pAUvyiTUKDwko1RAq00xnLm
+         yN0viyhXs79SV6QKzjyjxIpe8sPrPpdaJBuccfRLC9MlXaZ67/TGtUkmzK45IqGBDRN9
+         SWOQ==
+X-Gm-Message-State: AOAM532IhVJAxZB+sKw507p0pi4UL+AqRuO9WP6aUq52sxTyidQq74DX
+        7D2iN87JkjL7rlsQ7J1D6V0=
+X-Google-Smtp-Source: ABdhPJwijJfQAnXHukWWBWqRG86wranIjOOAiVxh5LXdINlls7rrB5LzGQ8BCOdi+nAc+51KP2qJ7g==
+X-Received: by 2002:a37:a404:: with SMTP id n4mr4192009qke.439.1616270328487;
+        Sat, 20 Mar 2021 12:58:48 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.13.205])
+        by smtp.gmail.com with ESMTPSA id z5sm6409711qtc.42.2021.03.20.12.58.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 12:58:48 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     djwong@kernel.org, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/attr.c: Couple of typo fixes
-In-Reply-To: <20210320193353.30059-1-unixbhaskar@gmail.com>
-Message-ID: <f8f9b340-cd4c-6eaf-48c1-854d3d5427fc@bombadil.infradead.org>
-References: <20210320193353.30059-1-unixbhaskar@gmail.com>
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] xfs: Rudimentary typo fixes
+Date:   Sun, 21 Mar 2021 01:26:26 +0530
+Message-Id: <20210320195626.19400-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_125549_346475_16EF23E6 
-X-CRM114-Status: GOOD (  11.73  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/filesytem/filesystem/
-    > s/asssume/assume/ > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+s/filesytem/filesystem/
+s/instrumention/instrumentation/
 
-On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/xfs/xfs_log_recover.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> s/filesytem/filesystem/
-> s/asssume/assume/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
+index 97f31308de03..ffa4f6f2f31e 100644
+--- a/fs/xfs/xfs_log_recover.c
++++ b/fs/xfs/xfs_log_recover.c
+@@ -2736,7 +2736,7 @@ xlog_recover_process_one_iunlink(
+  * of log space.
+  *
+  * This behaviour is bad for latency on single CPU and non-preemptible kernels,
+- * and can prevent other filesytem work (such as CIL pushes) from running. This
++ * and can prevent other filesystem work (such as CIL pushes) from running. This
+  * can lead to deadlocks if the recovery process runs out of log reservation
+  * space. Hence we need to yield the CPU when there is other kernel work
+  * scheduled on this CPU to ensure other scheduled work can run without undue
+@@ -3404,7 +3404,7 @@ xlog_recover(
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+ 		/*
+ 		 * Delay log recovery if the debug hook is set. This is debug
+-		 * instrumention to coordinate simulation of I/O failures with
++		 * instrumentation to coordinate simulation of I/O failures with
+ 		 * log recovery.
+ 		 */
+ 		if (xfs_globals.log_recovery_delay) {
+--
+2.26.2
 
-
-> ---
-> fs/attr.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/attr.c b/fs/attr.c
-> index 87ef39db1c34..e5330853c844 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -250,7 +250,7 @@ void setattr_copy(struct user_namespace *mnt_userns, struct inode *inode,
-> EXPORT_SYMBOL(setattr_copy);
->
-> /**
-> - * notify_change - modify attributes of a filesytem object
-> + * notify_change - modify attributes of a filesystem object
->  * @mnt_userns:	user namespace of the mount the inode was found from
->  * @dentry:	object affected
->  * @attr:	new attributes
-> @@ -265,7 +265,7 @@ EXPORT_SYMBOL(setattr_copy);
->  * caller should drop the i_mutex before doing so.
->  *
->  * If file ownership is changed notify_change() doesn't map ia_uid and
-> - * ia_gid. It will asssume the caller has already provided the intended values.
-> + * ia_gid. It will assume the caller has already provided the intended values.
->  *
->  * Alternatively, a caller may pass NULL for delegated_inode.  This may
->  * be appropriate for callers that expect the underlying filesystem not
-> --
-> 2.26.2
->
->
