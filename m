@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E62D342E63
+	by mail.lfdr.de (Postfix) with ESMTP id 90637342E64
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhCTQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49482 "EHLO mail.kernel.org"
+        id S229894AbhCTQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhCTQcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:32:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5060161944;
-        Sat, 20 Mar 2021 16:32:38 +0000 (UTC)
+        id S229761AbhCTQcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 12:32:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9923961934;
+        Sat, 20 Mar 2021 16:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1616257958;
-        bh=Bl8G1B2SSUB12O7P9gYaeP6Qr+D8nLA7fC0tOMa56nM=;
+        s=korg; t=1616257971;
+        bh=WdUxKSETKcrjBZWfh67ufbdZG8tgIef5zeapBbsXIO4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pdm+IlCZPt2t0IVKks5H0qWalupAigJeOR8ZAdo0+W1DtWi1KPYuepKOOZMfYbDEe
-         N+Bbra1Ll95QtzAX7cTnuh58I/o3wtH6zyx9BIOprHyO+SL+XyKEkncKobqfKESA9v
-         ZPjIFy3HrtIG4XT72bU5ZpWjtx6mNAgbcgAVBa1Q=
-Date:   Sat, 20 Mar 2021 09:32:37 -0700
+        b=BvJy91r/xPJQ8TUhms4zJXAeQ4JjQyRMHpSH+J/t+PshlcnFIyfVVma+n4FauXHNK
+         JJmU1xS8qmmRUXGq8D+66H/D1R3jsEy31C8bUhiu/FPYERlHAiszKng4AExesa6RV8
+         Q/rQPfRcAx6QWZzZT7sEWsp4GBQ+kGqJywmKe0B8=
+Date:   Sat, 20 Mar 2021 09:32:49 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH] userfaultfd: Write protect when virtual memory range
- has no page table entry
-Message-Id: <20210320093237.c369eba59a0e5f452109c4ef@linux-foundation.org>
-In-Reply-To: <20210319152428.52683-1-minhquangbui99@gmail.com>
-References: <20210319152428.52683-1-minhquangbui99@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        joaodias@google.com, surenb@google.com, cgoldswo@codeaurora.org,
+        willy@infradead.org, mhocko@suse.com, david@redhat.com,
+        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
+        oliver.sang@intel.com
+Subject: Re: [PATCH v4 3/3] mm: fs: Invalidate BH LRU during page migration
+Message-Id: <20210320093249.2df740cd139449312211c452@linux-foundation.org>
+In-Reply-To: <20210319175127.886124-3-minchan@kernel.org>
+References: <20210319175127.886124-1-minchan@kernel.org>
+        <20210319175127.886124-3-minchan@kernel.org>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,24 +41,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 22:24:28 +0700 Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+On Fri, 19 Mar 2021 10:51:27 -0700 Minchan Kim <minchan@kernel.org> wrote:
 
-> userfaultfd_writeprotect() use change_protection() to clear write bit in
-> page table entries (pte/pmd). So, later write to this virtual address
-> range causes a page fault, which is then handled by userspace program.
-> However, change_protection() has no effect when there is no page table
-> entries associated with that virtual memory range (a newly mapped memory
-> range). As a result, later access to that memory range causes allocating a
-> page table entry with write bit still set (due to VM_WRITE flag in
-> vma->vm_flags).
+> Pages containing buffer_heads that are in one of the per-CPU
+> buffer_head LRU caches will be pinned and thus cannot be migrated.
+> This can prevent CMA allocations from succeeding, which are often used
+> on platforms with co-processors (such as a DSP) that can only use
+> physically contiguous memory. It can also prevent memory
+> hot-unplugging from succeeding, which involves migrating at least
+> MIN_MEMORY_BLOCK_SIZE bytes of memory, which ranges from 8 MiB to 1
+> GiB based on the architecture in use.
 > 
-> Add checks for VM_UFFD_WP in vma->vm_flags when allocating new page table
-> entry in missing page table entry page fault path.
+> Correspondingly, invalidate the BH LRU caches before a migration
+> starts and stop any buffer_head from being cached in the LRU caches,
+> until migration has finished.
+> 
+> Tested-by: Oliver Sang <oliver.sang@intel.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
 
-This sounds like a pretty significant bug?
-
-Would it be possible to add a test to
-tools/testing/selftests/vm/userfaultfd.c to check for this?  It should
-fail without your patch and succeed with it.
-
-Thanks.
+The signoff chain ordering might mean that Chris was the primary author, but
+there is no From:him.  Please clarify?
