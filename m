@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B5A342F38
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9208B342F40
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhCTTWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:22:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56474 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTTWW (ORCPT
+        id S229854AbhCTT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhCTT2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:22:22 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DB92F1C0B78; Sat, 20 Mar 2021 20:22:18 +0100 (CET)
-Date:   Sat, 20 Mar 2021 20:22:18 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Hermann Ruckerbauer <Hermann.Ruckerbauer@EyeKnowHow.de>
-Cc:     He Zhe <zhe.he@windriver.com>, tony.luck@intel.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Trojan horses on various lists was Re: EDAC list as Trojan Horse
- distribution ??
-Message-ID: <20210320192217.GA4077@amd>
-References: <1583303947-49858-1-git-send-email-zhe.he@windriver.com>
- <1f449e01-3207-b699-b91f-d1c04626a447@windriver.com>
- <59d52031-f4e8-e754-c8b6-ca1130bf0cf1@EyeKnowHow.de>
- <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
+        Sat, 20 Mar 2021 15:28:14 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894DFC061574;
+        Sat, 20 Mar 2021 12:28:14 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id by2so6741837qvb.11;
+        Sat, 20 Mar 2021 12:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=acrEGTvzSD98+ASlS2uMJi7waK+gVXOJD0BsXcBLrs0=;
+        b=UyzkUHpZ/XLDiRsk7RAoZnJwyddY3cPqNRUKFWQ9zSR+h0++euNd9SJvMLPWg8iEsl
+         oD1d07C3mdR8jc5L/rjfiTdof4jQGkkZleqESdmL3XJ+Px+9WqIdtlrby4B9VF7N/Ad2
+         dGYmuvdDKW+cRnPghfUANIdBqH3QUFfRn2zE/1ymbjusQ/CMY10Rua5AMa81ljwz5Zx6
+         NcjFxPqM99yEzCc6i7ONPszGAj/BC9ykbbQ9W8qX1bqoBa0/0uk4XclldByjKwwmCx+F
+         tKAjpaAt/7F2DWROcLudTj5M/7yiLNwxTqeKddEZsxrupBE1XJRwiNXA7gaZsmAVeRb+
+         GRDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=acrEGTvzSD98+ASlS2uMJi7waK+gVXOJD0BsXcBLrs0=;
+        b=ST4pHuufp+YoGN48csv4dBAnVNRE0QdAINGoOTdVJR790hefiF4lqWvp4fjQvJy1Lv
+         HfWvdCbTsaaNw7T55YW6WDce8uUpGv/XOKtpbWJFjqM8SytZ81kG6mGdCgTH1fsdWUuJ
+         t+GvCJ3MUsY2swMA/RgbKfky5LjVUZWsMFLFdUNFxsqm3rm7RWFARarNxpsXjjRCMVgY
+         Ei3gn0ZBnVMfoqIQhORf2+23wi3V5wJEyyy8IghhRrIkC2O7Kdib/YHCTxeUXI+BNS1k
+         QPplR8S3qqvIlj2DPnZyx1zN7RrtwpuPKxJ8bTgMa4RxagXbLNYITlvTh/oGEmy04veC
+         Fo/g==
+X-Gm-Message-State: AOAM533F0JxTbvWc13S9lC64y6WkKQv/CklLfGQu7ckDM8GnTSwFwzOP
+        nxoob1gWfc/lcPTPBL0XoEQ=
+X-Google-Smtp-Source: ABdhPJx1YjYwBBUcUchYxxDprbOY7HkafIbJ8dkq88NDiPrTTQ6xsLVs4yU77GwWLYI8G9aFFkj5HQ==
+X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr4542698qvo.20.1616268493851;
+        Sat, 20 Mar 2021 12:28:13 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.13.205])
+        by smtp.gmail.com with ESMTPSA id p1sm7333733qkj.73.2021.03.20.12.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 12:28:13 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] dt-bindings: msm: Couple of spelling fixes
+Date:   Sun, 21 Mar 2021 00:55:53 +0530
+Message-Id: <20210320192553.29922-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
-In-Reply-To: <c0323578-9db6-74b0-ca6f-1324a2f1e9a1@EyeKnowHow.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s/Subsytem/Subsystem/
+s/contoller/controller/
 
-Hi!
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > I assume this is just to install a trojan horse when opening the
-> > attached zip (also I assume most of you will work on linux and it
-> > might not be a Problem for you anyhow=A0=A0 ;-) .
-> >
-> > =A0Virus total reports a Trojan horse, but only for with 2 out of 61
-> > virus scan engines (and I have to admit, I did not knew K7AntiVirus
-> > and Qihoo-360 before, all other engines reported the file as
-> > clean!!!!!!! ).
-> >
-> > So be careful when you get some feedback to old requests from this
-> > list
+diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
+index 551ae26f60da..586e6eac5b08 100644
+--- a/Documentation/devicetree/bindings/display/msm/dpu.txt
++++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
+@@ -2,14 +2,14 @@ Qualcomm Technologies, Inc. DPU KMS
 
-Happened to me, too, on different list on two different email
-addresses. Did not reoccur.
+ Description:
 
-Best regards,
-								Pavel
+-Device tree bindings for MSM Mobile Display Subsytem(MDSS) that encapsulates
++Device tree bindings for MSM Mobile Display Subsystem(MDSS) that encapsulates
+ sub-blocks like DPU display controller, DSI and DP interfaces etc.
+ The DPU display controller is found in SDM845 SoC.
 
---=20
-http://www.livejournal.com/~pavelmachek
+ MDSS:
+ Required properties:
+ - compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
+-- reg: physical base address and length of contoller's registers.
++- reg: physical base address and length of controller's registers.
+ - reg-names: register region names. The following region is required:
+   * "mdss"
+ - power-domains: a power domain consumer specifier according to
+--
+2.26.2
 
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBWS2kACgkQMOfwapXb+vKxJwCgvcuUwxIS6KX8syscr9QxrqcO
-TwgAniZ9rBo5cl9rILhj+BHR4qQFyYxm
-=vIuH
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
