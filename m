@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4238342F67
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2011A342F70
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCTT5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbhCTT44 (ORCPT
+        id S229854AbhCTUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 16:04:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43197 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229780AbhCTUEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:56:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED101C061574;
-        Sat, 20 Mar 2021 12:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=unEOJs7g8dhW9JIfGxFXXYni7VdACtVUH0Kopjl/EDs=; b=tPreKU2v7a6RrC/dWNNA1P41i7
-        8P0BNRy0JJR9Fej9w+5FJG9NbdxqQgLifsM/7Y9KsGXZ595vKnwPud791fOUUICxwPjLN0MTzLaLn
-        jSthX+OISLi9L68ZWtYqwFQ2FLmOZl3vHnt1MUOoiiSFM2F/OswVRS4vT2OC/qcf02LOaFYsEF1mj
-        XHm+7YDnlEHdvCMf4ka3V8N5EDdGNdHbqnnSiPJ7LS6ptFBpmGyUrWMwwg56hgR2lEKz56feyGLfH
-        btEMsxD2l/FCqcc7RtXt4lgkB65cG3fZzOgSOktChQ+pNGX7RJv8XG2XI15qWxKNLQiGdKZz2u3ge
-        +zLQdPaw==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNhiK-0020s7-TF; Sat, 20 Mar 2021 19:56:50 +0000
-Date:   Sat, 20 Mar 2021 12:56:48 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtlwifi: Few mundane typo fixes
-In-Reply-To: <20210320194426.21621-1-unixbhaskar@gmail.com>
-Message-ID: <1b2d2cc5-5a6c-2552-65d8-9232240e16c@bombadil.infradead.org>
-References: <20210320194426.21621-1-unixbhaskar@gmail.com>
+        Sat, 20 Mar 2021 16:04:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616270691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pnGnuCZZHz4XpqGqAahLmMqXi+ESBvx9VOBJS6yQPvo=;
+        b=EZOzHxGH8HZVAlFBR1R8RwegZXIlxrcBfFMIHGYvS9lNmwkMXc1D1jBrRR4kRTis6jk+Zg
+        /ugwsnV/M29hRh2ia99BFvGFK0vrNEcDer0gCQWcxPHXu0V5yFnhFolEZJtzJa/SA0zKfX
+        wPEOIj0bnySVGydiwyQmWvu3KhXBwH4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-dFZ2k8-1MRuiUzzAptNBrg-1; Sat, 20 Mar 2021 16:04:49 -0400
+X-MC-Unique: dFZ2k8-1MRuiUzzAptNBrg-1
+Received: by mail-wr1-f69.google.com with SMTP id p12so21116362wrn.18
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:04:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pnGnuCZZHz4XpqGqAahLmMqXi+ESBvx9VOBJS6yQPvo=;
+        b=boAMxLFnvQeZtzenp60nvdgBWlP5DZRZu/25X9nQ27bEv0algsROMJJAp05Ra2W18d
+         Un2tk6TREWFDLWKRSbWjjYnq6e0ey7SLnWvQqa+0oAXVclRSpsGJ9sbgNLc0vWGpKmG0
+         7DfDqw70gMDy/6Q3/uyxroaqaPbbD/8PhZGQg0k49/g6gpX3hoH+AnKJhM6V6RkyhT41
+         9nMSOu8xdnwdNTgZg/Dd9e8C+2w1STxCsGOYafpf5XIpAEcS2m32xPlw2jspZB/aEtsI
+         gmrsDi8ywDvXMZ9ZmMHMlpPkeV6JTRhBe0w/dpNW87GCALtUWyY881B5CKBGMwwxfnuT
+         hdWQ==
+X-Gm-Message-State: AOAM533oQiTVg6ddTcOn9MDuR8Bbh/KbDiUttF3W2yKgv8BWR3oPGycH
+        2RBRCnweO7ve5sb3Mn4xLjP3jCKZzu7C5zULOrBEvWhN5CjVLejj+xSMtL6gi61lNcQGBQV2t8C
+        jB9JL/RG9qeg1OmSu0Gygb6D9
+X-Received: by 2002:a05:6000:1363:: with SMTP id q3mr10599185wrz.74.1616270688148;
+        Sat, 20 Mar 2021 13:04:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7L9ySoCVBIPu7d6xQw3Xs2Tj/PnDDoZVrDpnDuMVdcWWj5/Ke+oKKH8pTiLrVtFu6ZdfbPg==
+X-Received: by 2002:a05:6000:1363:: with SMTP id q3mr10599168wrz.74.1616270687954;
+        Sat, 20 Mar 2021 13:04:47 -0700 (PDT)
+Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
+        by smtp.gmail.com with ESMTPSA id l15sm12002303wme.43.2021.03.20.13.04.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 13:04:47 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 16:04:44 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, virtio-fs@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        vgoyal@redhat.com, jasowang@redhat.com
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+Message-ID: <20210320160430-mutt-send-email-mst@kernel.org>
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-3-ckuehl@redhat.com>
+ <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com>
+ <00c5dce8-fc2d-6e68-e3bc-a958ca5d2342@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_125648_968664_0136FA4B 
-X-CRM114-Status: GOOD (  12.50  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/resovle/resolve/
-    > s/broadcase/broadcast/ > s/sytem/system/ > > Signed-off-by: Bhaskar Chowdhury
-    <unixbhaskar@gmail.com> Acked-by: Randy Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00c5dce8-fc2d-6e68-e3bc-a958ca5d2342@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 18, 2021 at 10:52:14AM -0500, Connor Kuehl wrote:
+> On 3/18/21 10:17 AM, Miklos Szeredi wrote:
+> > I removed the conditional compilation and renamed the limit.  Also made
+> > virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
+> 
+> Thanks, Miklos. I think it looks better with those changes.
+> 
+> > The virtio_ring patch in this series should probably go through the respective
+> > subsystem tree.
+> 
+> Makes sense. I've CC'd everyone that ./scripts/get_maintainers.pl suggested
+> for that patch on this entire series as well. Should I resend patch #1
+> through just that subsystem to avoid confusion or wait to see if it gets
+> picked out of this series?
 
+Yes pls post separately. Thanks!
 
-On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+> Thanks again,
+> 
+> Connor
 
->
-> s/resovle/resolve/
-> s/broadcase/broadcast/
-> s/sytem/system/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
-> drivers/net/wireless/realtek/rtlwifi/core.c | 6 +++---
-> 1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/core.c b/drivers/net/wireless/realtek/rtlwifi/core.c
-> index 965bd9589045..c9b6ee81dcb9 100644
-> --- a/drivers/net/wireless/realtek/rtlwifi/core.c
-> +++ b/drivers/net/wireless/realtek/rtlwifi/core.c
-> @@ -564,7 +564,7 @@ static int rtl_op_resume(struct ieee80211_hw *hw)
-> 	rtlhal->enter_pnp_sleep = false;
-> 	rtlhal->wake_from_pnp_sleep = true;
->
-> -	/* to resovle s4 can not wake up*/
-> +	/* to resolve s4 can not wake up*/
-> 	now = ktime_get_real_seconds();
-> 	if (now - rtlhal->last_suspend_sec < 5)
-> 		return -1;
-> @@ -806,7 +806,7 @@ static void rtl_op_configure_filter(struct ieee80211_hw *hw,
-> 	if (0 == changed_flags)
-> 		return;
->
-> -	/*TODO: we disable broadcase now, so enable here */
-> +	/*TODO: we disable broadcast now, so enable here */
-> 	if (changed_flags & FIF_ALLMULTI) {
-> 		if (*new_flags & FIF_ALLMULTI) {
-> 			mac->rx_conf |= rtlpriv->cfg->maps[MAC_RCR_AM] |
-> @@ -1796,7 +1796,7 @@ bool rtl_hal_pwrseqcmdparsing(struct rtl_priv *rtlpriv, u8 cut_version,
-> 				value |= (GET_PWR_CFG_VALUE(cfg_cmd) &
-> 					  GET_PWR_CFG_MASK(cfg_cmd));
->
-> -				/*Write the value back to sytem register*/
-> +				/*Write the value back to system register*/
-> 				rtl_write_byte(rtlpriv, offset, value);
-> 				break;
-> 			case PWR_CMD_POLLING:
-> --
-> 2.26.2
->
->
