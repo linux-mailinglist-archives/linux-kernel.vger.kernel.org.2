@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB855342C89
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C84D342CA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCTLx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:53:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34460 "EHLO mail.kernel.org"
+        id S230087AbhCTL6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhCTLxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6080C61973;
-        Sat, 20 Mar 2021 09:10:12 +0000 (UTC)
+        id S229672AbhCTL6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D545619A4;
+        Sat, 20 Mar 2021 09:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616231413;
-        bh=jESRaHQQjcAoWFFL1XrKb8MAdftiII5rPd4gYd4p+gM=;
+        s=k20201202; t=1616232190;
+        bh=DMICtap81nrcNevqRi6mOgs+0SnC17i8Miyqc73XLEE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hITO8Ymn1Mr9SNuYa5khrjZyN0cKc/fwqBtNTjtI1xfKkGCMUXgn5GmJXmpu8ewmq
-         X765KzYSDTCriBH8tWQw8obBnvxTjCgaZyr+/ST3Tv1WPbezc/mPZh8RbsDRQayrf0
-         uxhRLtDuiJM+SNKwJ5RZMhUUdAHBUaAvqvWBY9OuuioA/VJzHRA6P9Mzc0qTvDKOu6
-         pHkGgmzDbWbvbfZZSAtWo6NAPf4sJKDP9XglUkAp6n8uK+9SYz3SpXnzEIxCG4koev
-         1Nu4NLCGkJ8tVk2DCj1VXkHnnfd3j8UFhHI//s3qnQc+FDl8bCScr3O8gqIQGhwQ4f
-         2ywX0cXik6oBw==
-Date:   Sat, 20 Mar 2021 11:10:08 +0200
+        b=anyNSC41S9k/EEJL7nC3xZD4kvzHe6L3dkBjG90FlKbISz6y5bC/wewYOgNaZxgWx
+         k2GeTApNpYEIR0GOo550TKNcNBdzxpz5K2TncRBCqpE8OszXWOVouEsGVuULXSRdrz
+         XnGQhuyhHm9Siti/jP6TC7VM4+mNph36W7cVGYJrSCrFa41SdYep/ZSj49TnEqvKoN
+         6Amt2mps3Go35txs1gFAxtLyrbTxMGF9slqTkiv5l19QLVgEvKC7NtymhVtYTFCoYM
+         Li05cLplSfmzrcradDW2yHrJChDH9HckUYTtj7SBzwNnKqRZMt+NSmiXZX2gjDiZ5M
+         63hPpNsccZjwA==
+Date:   Sat, 20 Mar 2021 11:23:05 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFW78AfbhYpn16H4@unreal>
-References: <YFHsW/1MF6ZSm8I2@unreal>
- <20210317131718.3uz7zxnvoofpunng@archlinux>
- <YFILEOQBOLgOy3cy@unreal>
- <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318103935.2ec32302@omen.home.shazbot.org>
- <YFOMShJAm4j/3vRl@unreal>
- <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
- <YFSgQ2RWqt4YyIV4@unreal>
- <20210319102313.179e9969@omen.home.shazbot.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH master] module: remove never implemented
+ MODULE_SUPPORTED_DEVICE
+Message-ID: <YFW++S+TTCK/3dfO@unreal>
+References: <20210317104547.442203-1-leon@kernel.org>
+ <CAHk-=wj+Bsc1T41qziHxf9DvrBrYSBWKj27hEL0EbysCGRPzTA@mail.gmail.com>
+ <YFMHYUbPmpS+Kzcj@unreal>
+ <CAHk-=wgdHxuQmhKR9oAS5bhahmo5CFj3x6YdHVPBCGhbSz6rEg@mail.gmail.com>
+ <YFOSpQcrfP1UvqoL@unreal>
+ <CAHk-=wjZoOr4yqAAxricTsachacAUvcKt6HOfxyReCyMN0V=QQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319102313.179e9969@omen.home.shazbot.org>
+In-Reply-To: <CAHk-=wjZoOr4yqAAxricTsachacAUvcKt6HOfxyReCyMN0V=QQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:23:13AM -0600, Alex Williamson wrote:
-> On Fri, 19 Mar 2021 14:59:47 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
+On Thu, Mar 18, 2021 at 10:55:51AM -0700, Linus Torvalds wrote:
+> On Thu, Mar 18, 2021 at 10:49 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > No, I opened patch and added the note manually, so it is definitely my VIM.
+> > Most likely this part of my .vimrc caused it.
 > 
-> > On Thu, Mar 18, 2021 at 07:34:56PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > > On 18.03.21 18:22, Leon Romanovsky wrote:
-> > >   
-> > > > Which email client do you use?
-> > > > Your responses are grouped as one huge block without any chance to respond
-> > > > to you on specific point or answer to your question.  
-> > > 
-> > > I'm reading this thread in Tbird, and threading / quoting all looks
-> > > nice.  
-> > 
-> > I'm not talking about threading or quoting but about response itself.
-> > See it here https://lore.kernel.org/lkml/20210318103935.2ec32302@omen.home.shazbot.org/
-> > Alex's response is one big chunk without any separations to paragraphs.
+> Ok, that would do it.
 > 
-> I've never known paragraph breaks to be required to interject a reply.
-
-Of course not, but as Bjorn said if you don't do paragraphs, we will
-need manually break your message, fix ">" quotation marks and half
-sentences.
-
-I just wanted to be sure that this is not my mail client.
-
+> Yeah, whitespace is easy to "fix" at patch application time, but it
+> really is meaningful and you never should change whitespace for
+> patches.
 > 
-> Back on topic...
+> Maybe you can limit your rules to just particular file types
+> (although, honestly, I think it's bad for headers and C files too when
+> it then causes entirely irrelevant and independent changes - you only
+> want your own _new_ edits to be whitespace-clean, not fix other random
+> issues).
 > 
-> > >   
-> > > > I see your flow and understand your position, but will repeat my
-> > > > position. We need to make sure that vendors will have incentive to
-> > > > supply quirks.  
+> Better yet, maybe not "fix whitespace" at all, but have some code
+> coloring logic that just points out bad whitespace? I use "git diff"
+> myself, with colorization being default for tty operations:
 > 
-> What if we taint the kernel or pci_warn() for cases where either all
-> the reset methods are disabled, ie. 'echo none > reset_method', or any
-> time a device specific method is disabled?
-
-What does it mean "none"? Does it mean nothing supported? If yes, I think that
-pci_warn() will be enough. At least for me, taint is usable during debug stages,
-probably if device doesn't crash no one will look to see /proc/sys/kernel/tainted.
-
+>     [color]
+>         ui=auto
 > 
-> I'd almost go so far as to prevent disabling a device specific reset
-> altogether, but for example should a device specific reset that fixes
-> an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
-> case if direct FLR were disabled via a device flag introduced with the
-> quirk and the remaining resets can still be selected by preference.
+> so that then "git diff" will show you your (new) evil whitespace
+> errors when you review your changes, but won't complain about existing
+> whitespace issues..
 
-I don't know enough to discuss the PCI details, but you raised good point.
-This sysfs is user visible API that is presented as is from device point
-of view. It can be easily run into problems if PCI/core doesn't work with
-user's choice.
-
-> 
-> Theoretically all the other reset methods work and are available, it's
-> only a policy decision which to use, right?
-
-But this patch was presented as a way to overcome situations where
-supported != working and user magically knows which reset type to set.
-
-If you want to take this patch to be policy decision tool,
-it will need to accept "reset_type1,reset_type2,..." sort of input,
-so fallback will work natively.
-
-I think that it will be much more robust and cleaner solution than it is now.
-Something like that:
-cat /sys/..../reset_policy
-reset_type1,reset_type2,...,reset_typeX
-echo "reset_type3,reset_type1" > /sys/..../reset_policy
-cat /sys/..../reset_policy
-reset_type3,reset_type1
+Yeah, my color.ui is "always", so I will simply remove the problematic
+line from VIM and won't change whitespaces at all.
 
 Thanks
+
+> 
+>                       Linus
