@@ -2,187 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02D2342ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 06:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C40342AF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 06:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhCTFaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 01:30:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53757 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhCTFav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 01:30:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616218251; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tVFo5x+lxEseDgWsohpDyCKYL21MNOsMDKQ0tV9WPrU=; b=szdbahO8c4x9XunvlRJmTz7IaUgNogb5ei+x6DJnE69NZKpOpwO/g2SvFAyKrhg2Cu9Ja4qT
- Qcs1t+kKn4z57wpNsvu7YUPemD5pKoAB4lwVpoRDEfy0YCAGkQFf8pgHjZvZnCrUspAPP4XP
- +62xjIzVhC5IyjIXGwnQ8pBS5Bk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6055887ee2200c0a0d48cfd0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 20 Mar 2021 05:30:38
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AE13DC433CA; Sat, 20 Mar 2021 05:30:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.100.126] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4156AC433C6;
-        Sat, 20 Mar 2021 05:30:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4156AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH 2/2] usb: dwc3: gadget: Ignore EP queue requests during
- bus reset
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-References: <1616146285-19149-1-git-send-email-wcheng@codeaurora.org>
- <1616146285-19149-3-git-send-email-wcheng@codeaurora.org>
- <eae3f779-acb0-c685-4323-d97c7c5c6296@synopsys.com>
- <1886f649-3da2-de25-405c-69c66876b0fd@codeaurora.org>
- <debcdb02-1164-df83-1174-440dbe31dcc3@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <d77bbea0-04eb-9426-5b16-50e408b2e787@codeaurora.org>
-Date:   Fri, 19 Mar 2021 22:30:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <debcdb02-1164-df83-1174-440dbe31dcc3@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229606AbhCTFjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 01:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhCTFj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 01:39:28 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8615DC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 22:39:24 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so9304297pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 22:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=L37xP3um01dwHIo65VZFBsa9BPBQ2JNMQtwm2HUTIik=;
+        b=TUFcxdwg2+t6j+XKWHK3UYxpi1TPPa6mcq+x57RJzmUenb8enpq3izvSr0rrqzW4IM
+         Z/Y9u/8OsH0yfTlOL8CVI2qF/zgjc6h9VCxQGv51TyREKU3atRYkfdTEGz0y1sVZIFA+
+         h/3krxJScR07hFJMJ0yzLcrBbOh18KnnqJ3FC4R13yAPNm2voBcKuVI5RGYdXN4WkHSc
+         jaHCF99QImeJueHPNSnONZ6pcXXeoW0ez6jt/gXvIs3Xq0LXWwXsU9lBQFgDLy45nS3Y
+         qQZAjTsiV92BGKjmSICf7PCBgMquwymsX8PXa8tDYuBD2o86fYx0QPwfgifnPN9ljgxr
+         2M7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=L37xP3um01dwHIo65VZFBsa9BPBQ2JNMQtwm2HUTIik=;
+        b=WZavJZqMDJ5vBE0A1ydeNc8bVTw95VvW08TdIHxUx3CorP+AzwWf2jiwlqAaza4mHc
+         tWmQ/nnN/lOqgSLANN7fEO3Ano6oW0UESPBh3IrA1iswlt8aFg6lakqzyBxtu226hPXi
+         BG4+u2717Qm0S1gwDrCmedRHY76rPk5Kz45CRZXjMsJZvsx++iGAqIrOyCrjyg42lRG/
+         81RoED9g9jOOSHiqwjztc6qMIPd1+3u2nqh5HpzGXuY4h2g3fduRzHzIVSRJu9GRfd+U
+         Hv68fBK7lUdX2uHWLYm09V0ZcvzahGLSC1vkNRYrMUathXRwV4fqZ3IjPVA8WMfkFb17
+         xIZQ==
+X-Gm-Message-State: AOAM5300DoV7fjb9r4+qYtlUvGCdQaonCMP61YJq6pRjxr/nmqZKF31t
+        BS1824PzIL2wpZjs7dz5cbqFLE8RclQouQ==
+X-Google-Smtp-Source: ABdhPJx3Ff/bFFZPlfljpGK3Xz2ePwTTmTeJI56jcdGCJGWEGH37XQxVRxyfOJjmUAacRMiXCRNBAA==
+X-Received: by 2002:a17:902:e8d5:b029:e6:cabb:d07 with SMTP id v21-20020a170902e8d5b02900e6cabb0d07mr14687671plg.3.1616218763813;
+        Fri, 19 Mar 2021 22:39:23 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g12sm7145995pfh.153.2021.03.19.22.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 22:39:23 -0700 (PDT)
+Date:   Fri, 19 Mar 2021 22:39:23 -0700 (PDT)
+X-Google-Original-Date: Fri, 19 Mar 2021 22:39:17 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.12-rc4
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-b3197f76-bb8d-4834-810e-3b255c26a5fd@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thinh,
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-On 3/19/2021 7:01 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->>
->>
->> On 3/19/2021 5:40 PM, Thinh Nguyen wrote:
->>> Hi,
->>>
->>> Wesley Cheng wrote:
->>>> The current dwc3_gadget_reset_interrupt() will stop any active
->>>> transfers, but only addresses blocking of EP queuing for while we are
->>>> coming from a disconnected scenario, i.e. after receiving the disconnect
->>>> event.  If the host decides to issue a bus reset on the device, the
->>>> connected parameter will still be set to true, allowing for EP queuing
->>>> to continue while we are disabling the functions.  To avoid this, set the
->>>> connected flag to false until the stop active transfers is complete.
->>>>
->>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->>>> ---
->>>>  drivers/usb/dwc3/gadget.c | 9 +++++++++
->>>>  1 file changed, 9 insertions(+)
->>>>
->>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>>> index 6e14fdc..d5ed0f69 100644
->>>> --- a/drivers/usb/dwc3/gadget.c
->>>> +++ b/drivers/usb/dwc3/gadget.c
->>>> @@ -3327,6 +3327,15 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
->>>>  	u32			reg;
->>>>  
->>>>  	/*
->>>> +	 * Ideally, dwc3_reset_gadget() would trigger the function
->>>> +	 * drivers to stop any active transfers through ep disable.
->>>> +	 * However, for functions which defer ep disable, such as mass
->>>> +	 * storage, we will need to rely on the call to stop active
->>>> +	 * transfers here, and avoid allowing of request queuing.
->>>> +	 */
->>>> +	dwc->connected = false;
->>>> +
->>>> +	/*
->>>>  	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
->>>>  	 * would cause a missing Disconnect Event if there's a
->>>>  	 * pending Setup Packet in the FIFO.
->>>>
->>>
->>> This doesn't look right. Did you have rebase issue with your local
->>> change again?
->>>
->>> BR,
->>> Thinh
->>>
->> Hi Thinh,
->>
->> This was rebased on Greg's usb-linus branch, which has commit
->> f09ddcfcb8c5 ("usb: dwc3: gadget: Prevent EP queuing while stopping
->> transfers") merged.
-> 
-> Ah I see.
-> 
->>
->> commit f09ddcfcb8c5  moved the dwc->connected = true to after we have
->> finished stop active transfers.  However, this change will also ensure
->> that the connected flag is set to false to ensure that when we call stop
->> active transfers, nothing can prepare TRBs.  (previous commit only
->> addresses the case where we get the reset interrupt when coming from a
->> disconnected state)
->>
-> 
-> That still doesn't address this issue.
-> 
-> Because:
-> 1) We're still protected by the spin_lock_irq*(), so this change doesn't
-> make any difference while handling an event.
+are available in the Git repository at:
 
-Thank you for the feedback.  So it is true that we lock dwc->lock while
-handling EP/device events, but what these changes are trying to address
-is that during dwc3_stop_active_transfers() we will eventually call
-dwc3_gadget_giveback() to call the complete() functions registered by
-the function driver.  Before we call the complete() callbacks, we unlock
-dwc->lock, so we are no longer protected, and if there was a pending ep
-queue from a function driver, that would allow it to acquire the lock
-and continue preparing the TRBs.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.12-rc4
 
-> 2) We don't enable the interrupt for END_TRANSFER command completion
-> when doing dwc3_stop_active_transfers(), the
-> DWC3_EP_END_TRANSFER_PENDING flag will not be set to prevent preparing
-> new requests.
-> 
-Agreed.  That is the reason for adding the check to dwc->connected in
-__dwc3_gadget_ep_queue()
+for you to fetch changes up to a5406a7ff56e63376c210b06072aa0ef23473366:
 
-if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
- 		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		return -ESHUTDOWN;
+  riscv: Correct SPARSEMEM configuration (2021-03-16 22:15:21 -0700)
 
-> We should do dwc->connected = true when we handle connection_done
-> interrupt instead. The END_TRANSFER command should complete before this.
-> 
-So how this change will address the issue is:
+----------------------------------------------------------------
+RISC-V Fixes for 5.12-rc4
 
-1.  IRQ handler will acquire dwc->lock
-2.  dwc3_gadget_reset_handler() sets dwc->connected = false
-3.  Call to dwc3_stop_active_transfers()
-	---> dwc3_gadget_giveback() releases dwc->lock
-4.  If there was a pending ep queue (waiting for dwc->lock) it can
-continue here
-5.  __dwc3_gadget_ep_queue() exits early due to dwc->connected = false
-6.  dwc3_gadget_giveback() re-acquires dwc->lock and continues
+I have handful of fixes for 5.12:
 
-Thanks
-Wesley Cheng
+* A fix to the SBI remote fence numbers for hypervisor fences, which had
+  been transcribed in the wrong order in Linux.  These fences are only
+  used with the KVM patches applied.
+* A whole host of build warnings have been fixed, these should have no
+  functional change.
+* A fix to init_resources() that prevents an off-by-one error from
+  causing an out-of-bounds array reference.  This is manifesting during
+  boot on vexriscv.
+* A fix to ensure the KASAN mappings are visible before proceeding to
+  use them.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+----------------------------------------------------------------
+Alexandre Ghiti (1):
+      riscv: Ensure page table writes are flushed when initializing KASAN vmalloc
+
+Colin Ian King (1):
+      ftrace: Fix spelling mistake "disabed" -> "disabled"
+
+Damien Le Moal (1):
+      riscv: Fix compilation error with Canaan SoC
+
+Geert Uytterhoeven (1):
+      RISC-V: Fix out-of-bounds accesses in init_resources()
+
+Heinrich Schuchardt (1):
+      RISC-V: correct enum sbi_ext_rfence_fid
+
+Kefeng Wang (1):
+      riscv: Correct SPARSEMEM configuration
+
+Nanyong Sun (9):
+      riscv: traps: Fix no prototype warnings
+      riscv: irq: Fix no prototype warning
+      riscv: sbi: Fix comment of __sbi_set_timer_v01
+      riscv: ptrace: Fix no prototype warnings
+      riscv: time: Fix no prototype for time_init
+      riscv: syscall_table: Reduce W=1 compilation warnings noise
+      riscv: process: Fix no prototype for show_regs
+      riscv: ftrace: Use ftrace_get_regs helper
+      riscv: process: Fix no prototype for arch_dup_task_struct
+
+Palmer Dabbelt (1):
+      RISC-V: kasan: Declare kasan_shallow_populate() static
+
+kernel test robot (1):
+      riscv: fix bugon.cocci warnings
+
+ arch/csky/kernel/probes/ftrace.c        |  2 +-
+ arch/riscv/Kconfig                      |  4 ++--
+ arch/riscv/Kconfig.socs                 |  2 ++
+ arch/riscv/include/asm/asm-prototypes.h | 16 ++++++++++++++++
+ arch/riscv/include/asm/irq.h            |  2 ++
+ arch/riscv/include/asm/processor.h      |  1 +
+ arch/riscv/include/asm/ptrace.h         |  5 +++++
+ arch/riscv/include/asm/sbi.h            |  4 ++--
+ arch/riscv/include/asm/timex.h          |  2 ++
+ arch/riscv/kernel/Makefile              |  1 +
+ arch/riscv/kernel/probes/ftrace.c       | 18 ++++++++++--------
+ arch/riscv/kernel/probes/kprobes.c      |  3 +--
+ arch/riscv/kernel/process.c             |  1 +
+ arch/riscv/kernel/sbi.c                 |  2 +-
+ arch/riscv/kernel/setup.c               |  3 ++-
+ arch/riscv/kernel/time.c                |  1 +
+ arch/riscv/kernel/traps.c               |  1 +
+ arch/riscv/mm/kasan_init.c              |  4 +++-
+ arch/x86/kernel/kprobes/ftrace.c        |  2 +-
+ 19 files changed, 55 insertions(+), 19 deletions(-)
