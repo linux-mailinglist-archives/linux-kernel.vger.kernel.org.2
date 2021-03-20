@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F9C342E49
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9D9342E48
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhCTQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:17:27 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47058 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCTQRV (ORCPT
+        id S229780AbhCTQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhCTQRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:17:21 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3DC7A8D3;
-        Sat, 20 Mar 2021 17:17:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616257040;
-        bh=6p2jriRZclh8y6rdajV+oCAU7mSMijJBs3p1FWS1S6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jBO5B9ksTc7ZYhYqPaMHT+BNU+mCgEWJjcLJfTRoOO6lhADDAaf1qyCKx0fn9ChCr
-         Iiuve4FHm44zcz12zgDrnsNDsXAm27SqO6Ol6a71demj+E3x7SKFpKAOB6Z82QxXSh
-         eiRfDkUiKKDNYCp85kgFEF1R98i/XC88ekVQRa5I=
-Date:   Sat, 20 Mar 2021 18:16:40 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 14/19] media: i2c: rdacm20: Enable noise immunity
-Message-ID: <YFYf6NHwgJglCHkN@pendragon.ideasonboard.com>
-References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
- <20210319164148.199192-15-jacopo+renesas@jmondi.org>
+        Sat, 20 Mar 2021 12:17:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C9C061574;
+        Sat, 20 Mar 2021 09:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N4NO8hc0+T0jY4h6nLD8bMmPoT+/SJOmyVlAlER7H/M=; b=zWTt5V/nuE1N1/cO26LcMPkjWW
+        rCQ3eqqM30BAmSVdBgDjiqEdFAx1XTe7kcDM1ke7n9ya/Lpo18ya28U7UW2pgZuccslk7ROm7QBN4
+        fp/BKUBAbH3e+PA4LKMchSXSyZ04dMjHXo2gxNE94JXfBkmapjShlBhJEM1bvKY1qgPs4p1pFCBuM
+        aCMlvLJH25oDvMjAEP+CrHo37GehHan/COoNmYHZ8JOGfV8/34EUVOy1eY+TtL3EJQqSYrwDyHyOd
+        HQUoyZyCXgzKoOaQwuBMJ3VqYLJr6KThO+gLal/XkoGGFsZz/SoJi43rIzHwqgYST3CmknEWXFF7V
+        SNpuuY0A==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNeHc-001vg2-3s; Sat, 20 Mar 2021 16:17:01 +0000
+Date:   Sat, 20 Mar 2021 09:17:00 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Meng Yu <yumeng18@huawei.com>
+cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: atmel-ecc - fix W=1 "cannot understand"
+ warning
+In-Reply-To: <1616228113-15169-1-git-send-email-yumeng18@huawei.com>
+Message-ID: <ef7317fa-da8-ec31-c6da-bcda1e8aadc@bombadil.infradead.org>
+References: <1616228113-15169-1-git-send-email-yumeng18@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210319164148.199192-15-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210320_091700_177392_EFE86B4E 
+X-CRM114-Status: GOOD (  12.51  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sat, 20 Mar 2021, Meng Yu wrote: > Fix kernel-doc warnings
+    due to missing "struct" keyword. > > The warning likes: > drivers/crypto/atmel-ecc.c:40:
+    warning: cannot understand function prototype: 'struct atmel_ecdh_ctx ' >
+    > Signed-of [...] 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
 
-Thank you for the patch.
 
-On Fri, Mar 19, 2021 at 05:41:43PM +0100, Jacopo Mondi wrote:
-> Enable the noise immunity threshold at the end of the rdacm20
-> initialization routine.
-> 
-> The rdacm20 camera module has been so far tested with a startup
-> delay that allowed the embedded MCU to program the serializer. If
-> the initialization routine is run before the MCU programs the
-> serializer and the image sensor and their addresses gets changed
-> by the rdacm20 driver it is required to manually enable the noise
-> immunity threshold to make the communication on the control channel
-> more reliable.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+On Sat, 20 Mar 2021, Meng Yu wrote:
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Fix kernel-doc warnings due to missing "struct" keyword.
+>
+> The warning likes:
+> drivers/crypto/atmel-ecc.c:40: warning: cannot understand function prototype: 'struct atmel_ecdh_ctx '
+>
+> Signed-off-by: Meng Yu <yumeng18@huawei.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
 
 > ---
->  drivers/media/i2c/rdacm20.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 2881e752efbe..554fd3b3ec3d 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -518,7 +518,19 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  
->  	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
->  
-> -	return 0;
-> +	/*
-> +	 * Set reverse channel high threshold to increase noise immunity.
-> +	 *
-> +	 * This should be compensated by increasing the reverse channel
-> +	 * amplitude on the remote deserializer side.
-> +	 *
-> +	 * TODO Inspect the embedded MCU programming sequence to make sure
-> +	 * there are no conflicts with the configuration applied here.
-> +	 *
-> +	 * TODO Clarify the embedded MCU startup delay to avoid write
-> +	 * collisions on the I2C bus.
-> +	 */
-> +	return max9271_set_high_threshold(&dev->serializer, true);
->  }
->  
->  static const struct v4l2_subdev_core_ops rdacm20_core_ops = {
-
--- 
-Regards,
-
-Laurent Pinchart
+> drivers/crypto/atmel-ecc.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
+> index 515946c..333fbef 100644
+> --- a/drivers/crypto/atmel-ecc.c
+> +++ b/drivers/crypto/atmel-ecc.c
+> @@ -26,7 +26,7 @@
+> static struct atmel_ecc_driver_data driver_data;
+>
+> /**
+> - * atmel_ecdh_ctx - transformation context
+> + * struct atmel_ecdh_ctx - transformation context
+>  * @client     : pointer to i2c client device
+>  * @fallback   : used for unsupported curves or when user wants to use its own
+>  *               private key.
+> -- 
+> 2.8.1
+>
+>
