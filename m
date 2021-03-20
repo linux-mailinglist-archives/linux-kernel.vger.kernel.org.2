@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC158342A9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 06:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6766C342AA0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 06:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCTE4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 00:56:19 -0400
-Received: from smtprelay0183.hostedemail.com ([216.40.44.183]:44668 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229564AbhCTE4G (ORCPT
+        id S229708AbhCTE6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 00:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCTE5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 00:56:06 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 203A6837F24D;
-        Sat, 20 Mar 2021 04:56:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:2892:2895:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3871:3872:3874:4321:5007:7264:7514:7652:7904:10004:10400:10848:11232:11658:11914:12043:12050:12297:12679:12683:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21067:21080:21627:30045:30054:30070:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: iron37_620244d27755
-X-Filterd-Recvd-Size: 2650
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 20 Mar 2021 04:56:03 +0000 (UTC)
-Message-ID: <03d462504887401ffbcdb58a392ad01923a2be7b.camel@perches.com>
-Subject: Re: [PATCH] clang-format: Update ColumnLimit
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Date:   Fri, 19 Mar 2021 21:56:02 -0700
-In-Reply-To: <CANiq72=sEtv6-uMqY5QqpHSEqZnMj=6VrhgyFE2a=wZy=+_SEQ@mail.gmail.com>
-References: <20210319183714.8463-1-ansuelsmth@gmail.com>
-         <20210319184234.jsudy6solmtrq6vz@archlinux-ax161>
-         <YFTxOcf56lPBi2sb@Ansuel-xps.localdomain>
-         <CANiq72=sEtv6-uMqY5QqpHSEqZnMj=6VrhgyFE2a=wZy=+_SEQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 20 Mar 2021 00:57:40 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD51C061761;
+        Fri, 19 Mar 2021 21:57:40 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id h3so7277289pfr.12;
+        Fri, 19 Mar 2021 21:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pKaorJcxqHmWLsdkc7AjkYdzrCa5R9G29rvcEX/TjMY=;
+        b=eG0CbR4t8qEXoLgI3sqKQcYJOPFabLrwpHioqOGoYpUOwdRR2LPyRi/+YUTtqywDbF
+         6Bi/8RMKQydNG4M7lTmyfayAKkSHYdZe5WiI4nVBxKMgX6V/bbSJVFoZhL1dfz7wAtEq
+         /lFsYm6ShUGU5IwXDuzUQDGBxnK+TJe7OrVcCXWgjbvGdy1p4nSNrEDCv5UbtpWbVzN/
+         l3tLGqg4+6DFSeECGD9V9kK/nw4PbwwsHcbWwSG9CW6yb/NNjGzsGhMgXAAfPNC9XMDY
+         n783kkZDZQv+kd8ZA+/QZpPGuB735vsA+ncT92k9pRgPQwQ9ZIN89DG0p41GrsjuucUx
+         jlng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pKaorJcxqHmWLsdkc7AjkYdzrCa5R9G29rvcEX/TjMY=;
+        b=MR2Vxc/FKZy23dzMthpdugHA5/lNbLYpaZfcD3/PEkV/M7YM/9EqCjcV4yF9ZqvKCc
+         IXd2Ug2xs6PdJ/g3+aXlw5OJst2XPxmzC1RaJU5QgOWXNkJuKLEM5pqXaqdlzi5n4Aag
+         5wtxRmwNTZeYKemU/ItVqGkrUqGw9hfVzMuVv1n1dJAnALYgSs3vQpfUuVXbou3WP2EL
+         mKhuhEd/gtUVcBTMRgUe2DTj4osqrUcUdXBDm2YePDx5bn3ruuoAKV5baPEPIkwfFuCU
+         Kcp8pNuJs1pSWqQZ4ApW7qpDonfF45FN8c6ZhWNKDWTEzLO7xZFGBswMcgExcBh29rsu
+         djwg==
+X-Gm-Message-State: AOAM5314T5YwrB2nUaKq4YfKnoeHfkNytvWgXnu4oeT4OBDcg7jelpcs
+        srUzgof3Hhm6iikeMN+d8sY=
+X-Google-Smtp-Source: ABdhPJxYTjYyI/r0AvdJpfRjWq2J/veKJmRZrPdsAWlKAGKDg+ozYCqiUgzKh1VKtK8yPweGmD96nw==
+X-Received: by 2002:a63:df09:: with SMTP id u9mr14350990pgg.64.1616216259743;
+        Fri, 19 Mar 2021 21:57:39 -0700 (PDT)
+Received: from localhost.localdomain ([223.71.18.62])
+        by smtp.googlemail.com with ESMTPSA id t10sm6789176pjf.30.2021.03.19.21.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 21:57:39 -0700 (PDT)
+From:   kehuanlin <chgokhl@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kehuanlin@fishsemi.com, kehuanlin <chgokhl@gmail.com>
+Subject: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
+Date:   Sat, 20 Mar 2021 12:57:20 +0800
+Message-Id: <20210320045720.11872-1-chgokhl@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-03-19 at 19:48 +0100, Miguel Ojeda wrote:
-> On Fri, Mar 19, 2021 at 7:45 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
-> > 
-> > Sorry, didn't notice that. Considering that checkpatch complains and
-> > some reviewers actually state that 100 is the new limit, I think it's
-> > time to update the file.
-> 
-> IIUC, 80 is still the soft limit, but 100 is now the hard limit.
+The rpm_resume() will call parent's resume callback recursively.
+Since mmc_host has no its own pm_runtime callbacks, the mmc devices
+may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
+device with pm_runtime_no_callbacks can fix the issue.
 
-80 columns is still the strongly preferred limit.
+Signed-off-by: kehuanlin <chgokhl@gmail.com>
+---
+ drivers/mmc/core/host.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-From coding-style.rst:
--------------------------------
-The preferred limit on the length of a single line is 80 columns.
-
-Statements longer than 80 columns should be broken into sensible chunks,
-unless exceeding 80 columns significantly increases readability and does
-not hide information.
--------------------------------
-
-IMO: clang-format is mechanical and, like checkpatch, doesn't have much
-'taste'.
-
-Ideally, 100 columns would only be used when long length identifiers
-exist with some mechanism that determines statement complexity.
-
-Today it's fairly easy to go beyond 80 columns even if a statement
-is similar to
-	a = b + c;
-when identifier lengths are relatively long.
-
-There are many existing 25+ character length identifiers, so the trivial
-statement above if used with all identifiers of 25 characters or more
-exceeds 80 columns.
-
-So for some things, clang-format (and checkpatch) should allow > 80 column
-lines for trivial statements like the above.
-
-It's not a trivial implementation problem though.
+diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+index 9b89a91b6b47..177bebd9a6c4 100644
+--- a/drivers/mmc/core/host.c
++++ b/drivers/mmc/core/host.c
+@@ -15,6 +15,7 @@
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/pagemap.h>
++#include <linux/pm_runtime.h>
+ #include <linux/pm_wakeup.h>
+ #include <linux/export.h>
+ #include <linux/leds.h>
+@@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
+ 	host->class_dev.class = &mmc_host_class;
+ 	device_initialize(&host->class_dev);
+ 	device_enable_async_suspend(&host->class_dev);
++	pm_runtime_no_callbacks(&host->class_dev);
+ 
+ 	if (mmc_gpio_alloc(host)) {
+ 		put_device(&host->class_dev);
+-- 
+2.30.0
 
