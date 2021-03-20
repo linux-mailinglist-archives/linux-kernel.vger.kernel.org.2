@@ -2,152 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AC0342A52
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 05:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865B1342A60
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 05:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCTEFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 00:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        id S229849AbhCTERD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 00:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTEFU (ORCPT
+        with ESMTP id S229708AbhCTEQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 00:05:20 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01BC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:05:20 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id b18so16432877qte.21
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:05:20 -0700 (PDT)
+        Sat, 20 Mar 2021 00:16:35 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B60CC061762
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:35 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5803103pjv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=MEqC6ND18f4uwCsg8PPVWMozf20ktbFfNKIjRayWFO0=;
-        b=NIKXYG/RsuJnMyNHvqF7tnxKhcVoSDiqmPW+ZlhZtZ5jGoQIYxuSs8p2n23MfmIIZA
-         JQ9rolZMIkRv2LOIBB1leKBmazwJgUeqIz4QvsD5vNGDMecfCIh1VHGB9Dw/6ioxByOD
-         N+pReeldiKfNQeWcgLUps/j1vwqNDpkGOhZfIrs+Dp6lC1VGp3QBOHPL4J2TqTM+r/3h
-         4TPZ9u35WukhcIQ6uv0Xsp4+u4Giwu6HygmtcAjgnfHa6LUuVuEqwGyJTVXo0dSaBiGP
-         AZVDpnpyMz63+Mf4QNbtRKhcdVG2jFHfboHxLnoyJo5EcdS11VFfOKmKvm46uiO44LP2
-         B+ew==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AnMg47T8Z7mVw2QYcNj+ca1PflwjFpQ0knP09yHBQe8=;
+        b=PrfZRsmz3UsByLzMgIDUIzCr+LhjgOYA+Nh9/H13Agb9hHJi7ziHDjVe3JuOzAL2FX
+         xUiC3V+PT+eCW5XYT+iDKAAQ0o3CxYXpEdi8GCRjDUw/U5Of+RBSi7tmM31+HWvwZ7Fm
+         XIU5+XedKEFeMg9zmn1ExdTrB4wQMwqm98ODw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=MEqC6ND18f4uwCsg8PPVWMozf20ktbFfNKIjRayWFO0=;
-        b=V/hC19UYgOflCXlmnYnEYKhr40kmFkhA/RpIht0RLhw6sWu/bqqHR6YKy6ZWvD3WuS
-         LeNdDITen0BZ8e4EhuglWQA67hV6WyywuaV2wYh+27vQ3Pj76Twg2CDyAE+aGkEnnFFR
-         MuxNYVYcReDFXjdDU2OpRKZxW2nVGJHSKfLLXZohABsOirH1EBVzv11VyjI/rTGhkSeH
-         MALl3Bf9DjI92XH3f3xjE0tnNUTQiG5LEGZXVRnIXbqvibf44PNzT64eKbzoZf1nqqGz
-         Kev0Y82vFlx5fzqFJGOIeFv93yi6qfyp6r+IuMj0EDgyAtdVddsTP6HjXKmxAtCYcV8U
-         p9YA==
-X-Gm-Message-State: AOAM532iCEvqICs16V5lENt2/dYM/qnNp8lRnpbpmjuIVojl5Fzd83fi
-        CfSLvFGL5l9CeBMksffdOHS5nzt0go8a
-X-Google-Smtp-Source: ABdhPJxHyEYhUNSnHZwiqkOA7JsVxIg3O8auDaAGmgRwFkhTvF83gN65N9zAcBslomWDJ8ZmBvcSOa6eCsBw
-X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:39de:1aa5:57c4:5867])
- (user=gthelen job=sendgmr) by 2002:a0c:bdaf:: with SMTP id
- n47mr12191600qvg.48.1616213119212; Fri, 19 Mar 2021 21:05:19 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 21:05:17 -0700
-In-Reply-To: <20210305000002.D171810D@viggo.jf.intel.com>
-Message-Id: <xr93v99mmpvm.fsf@gthelen2.svl.corp.google.com>
-Mime-Version: 1.0
-References: <20210304235949.7922C1C3@viggo.jf.intel.com> <20210305000002.D171810D@viggo.jf.intel.com>
-Subject: Re: [PATCH 07/10] mm/vmscan: add helper for querying ability to age
- anonymous pages
-From:   Greg Thelen <gthelen@google.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        rientjes@google.com, ying.huang@intel.com,
-        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AnMg47T8Z7mVw2QYcNj+ca1PflwjFpQ0knP09yHBQe8=;
+        b=ZfJSVhCHLz+ygttja5RDqMHrfdMT1gjyOr6Z5beKmd4GrycOKmmdTjiUOWXmXsdQZX
+         2oLdK5D9yyFUdAHdD42diNbhgsOdYiB9CW75PzjkAMKfnDqNBN2FG1mRDx6uJ99FMjAn
+         s5Pxn/8Jf2edJSHB1Nu2bPGda6MGFLuBYHerLziMflDBmRXBFKeCtA5v91JbqLsj3zDB
+         WdODZxVw3fwZNaVAVmwQJa34Fu7DfyrkqNLd+zJuZP4uVPl8Wq3lxeqhKJY2YAB19VP5
+         38y53EZqlIHudB3WsmzoIrueFx1MjYHeaJ+B9R2LfdLeV8uCTUjylsibmGGXLvvxCK5s
+         4plA==
+X-Gm-Message-State: AOAM530edBcSRIXl3ZRBKC5gS9ddQYu3RLOg7SfaDiuvshFA+82XjS/X
+        8kDPaL193PuDaj9xtbk+Q5BPJg==
+X-Google-Smtp-Source: ABdhPJw4hRCPEH2/kfcgtaref9TF8lFo2zdT4xoTpYUa2F76wDEZKZFyP619enk9tKUj0PiS8O5eJg==
+X-Received: by 2002:a17:90a:ab09:: with SMTP id m9mr1910002pjq.122.1616213794673;
+        Fri, 19 Mar 2021 21:16:34 -0700 (PDT)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:f0c7:e1f7:948e:d8d5])
+        by smtp.gmail.com with ESMTPSA id s62sm6998869pfb.148.2021.03.19.21.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 21:16:34 -0700 (PDT)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     stable@vger.kernel.org
+Cc:     groeck@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christopher Li <sparse@chrisli.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sparse@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [for-stable-4.19 PATCH v2 0/2] Backport patches to fix KASAN+LKDTM with recent clang on ARM64
+Date:   Sat, 20 Mar 2021 12:16:24 +0800
+Message-Id: <20210320041626.885806-1-drinkcat@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Hansen <dave.hansen@linux.intel.com> wrote:
+Backport 2 patches that are required to make KASAN+LKDTM work
+with recent clang (patch 2/2 has a complete description).
+Tested on our chromeos-4.19 branch.
+Also compile tested on x86-64 and arm64 with gcc this time
+around.
 
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Anonymous pages are kept on their own LRU(s).  These lists could
-> theoretically always be scanned and maintained.  But, without swap,
-> there is currently nothing the kernel can *do* with the results of a
-> scanned, sorted LRU for anonymous pages.
->
-> A check for '!total_swap_pages' currently serves as a valid check as
-> to whether anonymous LRUs should be maintained.  However, another
-> method will be added shortly: page demotion.
->
-> Abstract out the 'total_swap_pages' checks into a helper, give it a
-> logically significant name, and check for the possibility of page
-> demotion.
+Patch 1/2 adds a guard around noinstr that matches upstream,
+to prevent a build issue, and has some minor context conflicts.
+Patch 2/2 is a clean backport.
 
-Reviewed-by: Greg Thelen <gthelen@google.com>
+These patches have been merged to 5.4 stable already. We might
+need to backport to older stable branches, but this is what I
+could test for now.
 
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
-> ---
->
->  b/mm/vmscan.c |   28 +++++++++++++++++++++++++---
->  1 file changed, 25 insertions(+), 3 deletions(-)
->
-> diff -puN mm/vmscan.c~mm-vmscan-anon-can-be-aged mm/vmscan.c
-> --- a/mm/vmscan.c~mm-vmscan-anon-can-be-aged	2021-03-04 15:35:58.935806422 -0800
-> +++ b/mm/vmscan.c	2021-03-04 15:35:58.942806422 -0800
-> @@ -2517,6 +2517,26 @@ out:
->  	}
->  }
->  
-> +/*
-> + * Anonymous LRU management is a waste if there is
-> + * ultimately no way to reclaim the memory.
-> + */
-> +bool anon_should_be_aged(struct lruvec *lruvec)
+Changes in v2:
+ - Guard noinstr macro by __KERNEL__ && !__ASSEMBLY__ to prevent
+   expansion in linker script and match upstream.
 
-Should this be static?
+Mark Rutland (1):
+  lkdtm: don't move ctors to .rodata
 
-> +{
-> +	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-> +
-> +	/* Aging the anon LRU is valuable if swap is present: */
-> +	if (total_swap_pages > 0)
-> +		return true;
-> +
-> +	/* Also valuable if anon pages can be demoted: */
-> +	if (next_demotion_node(pgdat->node_id) >= 0)
-> +		return true;
-> +
-> +	/* No way to reclaim anon pages.  Should not age anon LRUs: */
-> +	return false;
-> +}
-> +
->  static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
->  {
->  	unsigned long nr[NR_LRU_LISTS];
-> @@ -2626,7 +2646,8 @@ static void shrink_lruvec(struct lruvec
->  	 * Even if we did not try to evict anon pages at all, we want to
->  	 * rebalance the anon lru active/inactive ratio.
->  	 */
-> -	if (total_swap_pages && inactive_is_low(lruvec, LRU_INACTIVE_ANON))
-> +	if (anon_should_be_aged(lruvec) &&
-> +	    inactive_is_low(lruvec, LRU_INACTIVE_ANON))
->  		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
->  				   sc, LRU_ACTIVE_ANON);
->  }
-> @@ -3455,10 +3476,11 @@ static void age_active_anon(struct pglis
->  	struct mem_cgroup *memcg;
->  	struct lruvec *lruvec;
->  
-> -	if (!total_swap_pages)
-> +	lruvec = mem_cgroup_lruvec(NULL, pgdat);
-> +
-> +	if (!anon_should_be_aged(lruvec))
->  		return;
->  
-> -	lruvec = mem_cgroup_lruvec(NULL, pgdat);
->  	if (!inactive_is_low(lruvec, LRU_INACTIVE_ANON))
->  		return;
->  
-> _
+Thomas Gleixner (1):
+  vmlinux.lds.h: Create section for protection against instrumentation
+
+ arch/powerpc/kernel/vmlinux.lds.S |  1 +
+ drivers/misc/lkdtm/Makefile       |  2 +-
+ drivers/misc/lkdtm/rodata.c       |  2 +-
+ include/asm-generic/sections.h    |  3 ++
+ include/asm-generic/vmlinux.lds.h | 10 ++++++
+ include/linux/compiler.h          | 54 +++++++++++++++++++++++++++++++
+ include/linux/compiler_types.h    |  6 ++++
+ scripts/mod/modpost.c             |  2 +-
+ 8 files changed, 77 insertions(+), 3 deletions(-)
+
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
