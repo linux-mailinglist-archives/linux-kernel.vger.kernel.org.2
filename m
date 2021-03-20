@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE634342BD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35B2342C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhCTLNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        id S229640AbhCTLXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbhCTLMO (ORCPT
+        with ESMTP id S229544AbhCTLXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:14 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB4FC05BD10
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:10:45 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 15so15106858ljj.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iQbiRQfCZ1e9PcOV7oUExVLYqSL2jaWl8+kxnb9P4QE=;
-        b=ZmHUXXFnSJBw/zBD2YFCu4GZgYJ7V4O7gYsMma9qnKkxvY0cAGtQj6DxfnNkYG+O6c
-         s+nYJ+bhg1A6R5Op5ZAM6FGRaGwzv4Xm4B+qz7dLUsheLxZdm8h70QBfC7wxa8RWi+CZ
-         ZiXH9iTYI6AO4mdSk8IaiNA5VlcYbX21rxvDbpQFInGATBTPthVprzq0PdMi3A9QLC+L
-         cFBwsxYl+orDrMv3yFhD9EfaDYY7dhqX4ycE+A5AlGzT3++f1HnR5ilMMiIq34lyq862
-         NtrfX8XLLM1q2HrQzKRioG0kZg1UjCExhBEmS4pd+IWSZ+6PwFdtx93NTNJGFMDWaGux
-         nGCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iQbiRQfCZ1e9PcOV7oUExVLYqSL2jaWl8+kxnb9P4QE=;
-        b=AzDdOyoJ5TOG+9OqiYh7L0XVq6lwOfeUSTIqWE/xinZIc/ELO1mShUXLuYDwIDuGMu
-         Huj1yo4DDAk4OSqez6W2wCPywLD9Z5EKtTIp87edaTaRwyPUI+ibC30FP8Gue9GLb+03
-         3Ty2vcpk/IMsJJpaw0+dlIPbvkWA3wFmIWGVTfKtuLdlKQPQMbqLdnn5UlRd2L9a7s8u
-         pVgAX3Nd8mZVJph7FHdZe4sm4Gvd+B5H/cwsvPlfDUzHlhI+xGeFF9J2W6UF3oLMDDb4
-         NNhOOTjSJT1hnfzawnrJ1eF9a+ELHv9TW+tUAqFsGrJr7P2ATc18lQO5oU99f8vqsUR+
-         5m1Q==
-X-Gm-Message-State: AOAM5311POByjVE+eKajEFSRMRRDd+1DA+IMKTSv+No8W2g5cFU6dP/P
-        900R2cn8BcoB/+BMlZ0CMTS6ObsX4K43j5bA+dBPT0aQ3alWgNSghT8=
-X-Google-Smtp-Source: ABdhPJxwA/ZKmpkxJ5nFyoGV7macCEDUfHXcXbVnXpyA1p7LTB8mGbQfpyedDa52MGMt2J15oKLJbjqZgIoc1ipQkuM=
-X-Received: by 2002:a2e:864a:: with SMTP id i10mr3347149ljj.467.1616238644276;
- Sat, 20 Mar 2021 04:10:44 -0700 (PDT)
+        Sat, 20 Mar 2021 07:23:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C82C0613E7;
+        Sat, 20 Mar 2021 04:23:01 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 11:22:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616239377;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rg2r13TeEmFlMZ9mC4lVgssicyek8KfXCl/qsSqTApw=;
+        b=zqXSmsi0Zp+MmlHHutRyVYjz15iSu7JSBTj+9PqiJrDZjdrSsTW3opogkZ94JwTGebbOXT
+        LRSudbBrpx+NgdAvBwSkdlYPxcqvFwJNo2xM7907EPx1mLXt9GSgBpj2YziGnIL6z9KLh8
+        wz93k1lNgmvPhz8q66iXpEYgpVP22F4cwt0D1iAVTDiexQ/9dyyjCmGH79inwHC44dLjnS
+        7ftSGEGK/kAeBmqfJmsMvMHJCw39M/4D1gGNyDCpjKkvNMKNhafBEkRxWnXbbMMOaS6zIa
+        i4a9H3HQ0SMDzzTjIVHJEkLTxKi8MNqLEwqmV32oyj50ngNlf1QQxoRRAKar6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616239377;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rg2r13TeEmFlMZ9mC4lVgssicyek8KfXCl/qsSqTApw=;
+        b=20q2nlMgoq2lE3ovP4zaVi6FVGgU7vYOJJ2TDgi+pFkkJLAaq32Y19Wk3fYbQa9k3HmeBz
+        lecPjtNbW1yOYUBA==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/mce: Add Xeon Sapphire Rapids to list of CPUs that
+ support PPIN
+Cc:     Tony Luck <tony.luck@intel.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210319173919.291428-1-tony.luck@intel.com>
+References: <20210319173919.291428-1-tony.luck@intel.com>
 MIME-Version: 1.0
-References: <20210319131205.62775-1-alexander.sverdlin@nokia.com>
- <CAHp75Vc=HnafsnnJYceBB66k+r9NcZqn7mxjdsc7dsQd_tK=LA@mail.gmail.com> <028a836c-9343-f08a-3f1b-22e45f291d1a@nokia.com>
-In-Reply-To: <028a836c-9343-f08a-3f1b-22e45f291d1a@nokia.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 20 Mar 2021 12:10:33 +0100
-Message-ID: <CACRpkdbqKmKh0+g92LHJYKO2vt=-TkdTFuSrNwChCbQ-siG53g@mail.gmail.com>
-Subject: Re: [PATCH v3] gpio: pl061: Support implementations without GPIOINTR line
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161623937626.398.13415015758248106593.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 4:32 PM Alexander Sverdlin
-<alexander.sverdlin@nokia.com> wrote:
-> [Andy]
+The following commit has been merged into the x86/cpu branch of tip:
 
-> > I'm wondering if the GPIO library support for IRQ hierarchy is what
-> > you are looking for.
+Commit-ID:     a331f5fdd36dba1ffb0239a4dfaaf1df91ff1aab
+Gitweb:        https://git.kernel.org/tip/a331f5fdd36dba1ffb0239a4dfaaf1df91ff1aab
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Fri, 19 Mar 2021 10:39:19 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 20 Mar 2021 12:12:10 +01:00
 
-It is indeed what should be used.
+x86/mce: Add Xeon Sapphire Rapids to list of CPUs that support PPIN
 
-> do you have a better suggestion? That's why I reference the below discussion from 2017, where
-> Linus Walleij suggested to use it. Well, the initial patch was just 11-liner and PL061 is
-> rather counterexample and doesn't fit well into the existing hierarchical infrastructure.
->
-> >> Link: https://lore.kernel.org/linux-gpio/CACRpkdZpYzpMDWqJobSYH=JHgB74HbCQihOtexs+sVyo6SRJdA@mail.gmail.com/
+New CPU model, same MSRs to control and read the inventory number.
 
-Don't trust that guy. He's inexperienced with the new API and talks a lot
-of crap. ;)
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210319173919.291428-1-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-We now have a proper API for hierarchical IRQs on GPIO controllers,
-so we need to somehow detect that this is the case and act accordingly.
-
-1. In Kconfig
-    select IRQ_DOMAIN_HIERARCHY if ARCH_NOKIA_FOO
-
-2. Look at other hierarchical GPIO IRQ drivers such as
-    drivers/gpio/gpio-ixp4xx.c
-
-3. Detect that we have a hierarchical situation. The hierarchical
-  IRQ is determined by the chip integration so I would go and
-  check the SoC compatible in the top-level DT, e.g.:
-  if (of_machine_is_compatible("nokia,rock-n-roll-soc")) {
-     /* Initialize the interrupt as hiearchical */
-     girq->fwnode =...
-     girq->parent_domain = ...
-     girq->child_to_parent_hwirq = pl061_child_to_parent_nokia_rock_n_roll;
-  } else {
-     girq->parent_handler = pl061_irq_handler;
-     girq->num_parents = 1;
-     girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
-                                     GFP_KERNEL);
-     if (!girq->parents)
-            return -ENOMEM;
-      girq->parents[0] = irq;
-  }
-
-  This might need some #ifdef or IS_ENABLED() for systems without
-  hierarchical IRQs.
-
-4. Implement pl061_child_to_parent_nokia_rock_n_roll()
-   Just use hardcoded hardware IRQ offsets like other drivers such as
-   the ixp4xx does. Do not attempt to read any parent IRQs from
-   the device tree, and assign no IRQ in the device tree.
-
-This is a side effect of the essentially per-soc pecularities around
-interrupts. The interrupt is not cascaded so it need special
-handling.
-
-I think it can be done with quite little code.
-
-Yours,
-Linus Walleij
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index e309476..acfd5d9 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -486,6 +486,7 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
+ 	case INTEL_FAM6_BROADWELL_X:
+ 	case INTEL_FAM6_SKYLAKE_X:
+ 	case INTEL_FAM6_ICELAKE_X:
++	case INTEL_FAM6_SAPPHIRERAPIDS_X:
+ 	case INTEL_FAM6_XEON_PHI_KNL:
+ 	case INTEL_FAM6_XEON_PHI_KNM:
+ 
