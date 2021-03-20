@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF10342E04
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D7F342E08
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhCTPux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:50:53 -0400
-Received: from mout.gmx.net ([212.227.17.22]:52525 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhCTPuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:50:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616255422;
-        bh=EtfgOnZg9Z6qjvshAWtu16RZKvn05bQtCzBAK86M/cs=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=EIu7FMt+pSpqy22curLmVkLJJLYqmPcEPQkYmqMW3mZEqiY3WVjdIta9bmy9oQPhE
-         jcLQDiD0Zaul/XVShKlrezCw51Z3+RkFgMCwR5b/1hsLNkNqhKRPIzNHqGTuMwVCW9
-         3He2aNjVq/VrgrqoUWfzoMJrYv3uOQb1KQMXs22E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAONX-1lYOQf1bEx-00BuUH; Sat, 20
- Mar 2021 16:50:22 +0100
-Date:   Sat, 20 Mar 2021 16:50:20 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v6 7/8] Documentation: Add documentation for the Brute LSM
-Message-ID: <20210320155020.GF3023@ubuntu>
-References: <20210307113031.11671-1-john.wood@gmx.com>
- <20210307113031.11671-8-john.wood@gmx.com>
- <202103172108.404F9B6ED2@keescook>
+        id S229713AbhCTPxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhCTPwd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 11:52:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC304C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T6ts3lUqEqANqquwyBrmLYEq2ggW88CY7TmJE3kNSqc=; b=r/UZPiE/RloFVMEZ2GWlauPmDj
+        07214o3v7iVSpRi9+/F2MQ38s4s0be9uVZGBCBFyF19wnwpBG75t1rnmpZB8fGymwEFxLMjddVb0A
+        CFp5RnImpkWdovh0ppCFYQ8hJ9Fsf6x60nL4KrXhQxhreuO+xUx4JWLhpCAo8FgciGLqSzal6MFUc
+        9GohQkBKEcNC3jLUfCdXKfoRUSGhRDOQaZ88CXIgoKvs5sKhuG/jOBHXo/Z6QQwC2O1KA7ksEnQKe
+        6dQiKMDbjQ15QOCFTfbnvu9q5VIyXPn6ey9g2GtU+VGGh3xjM5sn0Z3NoBztynnq1M680a0eLKwNH
+        5mKYhNrA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNdst-00601U-Nn; Sat, 20 Mar 2021 15:51:28 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5B5159864FF; Sat, 20 Mar 2021 16:51:27 +0100 (CET)
+Date:   Sat, 20 Mar 2021 16:51:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH 3/6] sched: prctl() cookie manipulation for core
+ scheduling.
+Message-ID: <20210320155127.GA4746@worktop.programming.kicks-ass.net>
+References: <20210319203253.3352417-1-joel@joelfernandes.org>
+ <20210319203253.3352417-4-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202103172108.404F9B6ED2@keescook>
-X-Provags-ID: V03:K1:+cVZqzHxW0HIoxSZUaT6yj0taOzmdRJFFrdSAXoPnjbRl0Vormm
- s+sRmiFaaGGcCBpylGfyi3hYpESL6IP+SwSgMXyyiyXGY9I2WBcW10YctHupP8j3gwui/+Q
- VIkCO2XPRliMIvbWPiKgieSWA0gQ+ID4hNma3o2y6/vU3S1NFSX+5rMIHaKgjedoqBGLFqk
- nleCr9FFdGIJq4sJdqhpQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:o4EvpcNInyw=:vV7LjhpuTinA6uibauVbLa
- A+D2avKYdBISzZIRWHncWLEwlrDKLak2EwQ90ifW89Cfdk5xzyIiezzMVbJ5La5NWPzFw2y5e
- SnV1o+SsX1TmGI7FXHJ6ZqIpCWLRgBNQXAcTYC4ErkwjW9Av4ALd4sm0LzigkoccIjlOJHVSf
- TC7TIaQUPRofKq/WrpUmWr5vMefC4tyrS2Df5ZEQAcS54zUgaNgchgtljJUSgMS9WeKSHuxl5
- 8cbaLkGa+jlyhCZDczlOUA1VRNozuXDa89Xk2Ow+VN+V1OCyV8BGYPuSCPH7SuZPgMTsEMN9k
- OLNey2QcAdBGkIqvZ/irMOwN5BGuj5ldLG7YgpdzIx5aBknjCAw6b4CNli3euK5nTq9YtM2bI
- V3i12/wLmFQpNRNMJ90E9akw6jfwx/7zSbH7nddOqRE4h14dprueqtpMFRgBUd9oWj6PMUDaX
- iYK+t3c6kvhwobEjqJ4cao28miCnRmD0KlZbxHQGVX+rDWiWVhFN6/6vdj00bx4KQlQn5IW2A
- tLdJ4FXDdl5C+QkpbKkCLnlid/r2I0QbDzTLkbs6/j9KAyNF5QcK70hM0z5xIvhPmHv4oy9L/
- 9qSED51b3YWVtPXVRAac/Lmr1BixtrduuxtsKzIGiKlDFnCE2qVhIAGDamvfjKQ1F9faghpg1
- 1V4AuteS8DxOiJI9RigVn2xBDLFoiAl42hPJJTccoZSNZ2fagF8jJlds4P9plzfjT5EdoKLEW
- I9C8d6Ascsg17LNc+fHHanz0wN7heFDch46rIHvF6khSO1KdvOXWEfvBBpAp82tTpdzcIsrMA
- DUrzIpyPuJ+Jxr7Ujh7JGWPTRoSdzk9F2HUo3kpZIkA0M42SYUlVcmh/dqOG8qIdcGs+E9Pa/
- zZVp707VFu3leUnwZmlQ==
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210319203253.3352417-4-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:10:05PM -0700, Kees Cook wrote:
-> On Sun, Mar 07, 2021 at 12:30:30PM +0100, John Wood wrote:
-> > +These statistics are hold by the brute_stats struct.
-> > +
-> > +struct brute_cred {
-> > +	kuid_t uid;
-> > +	kgid_t gid;
-> > +	kuid_t suid;
-> > +	kgid_t sgid;
-> > +	kuid_t euid;
-> > +	kgid_t egid;
-> > +	kuid_t fsuid;
-> > +	kgid_t fsgid;
-> > +};
-> > +
-> > +struct brute_stats {
-> > +	spinlock_t lock;
-> > +	refcount_t refc;
-> > +	unsigned char faults;
-> > +	u64 jiffies;
-> > +	u64 period;
-> > +	struct brute_cred saved_cred;
-> > +	unsigned char network : 1;
-> > +	unsigned char bounds_crossed : 1;
-> > +};
->
-> Instead of open-coding this, just use the kerndoc references you've
-> already built in the .c files:
->
-> .. kernel-doc:: security/brute/brute.c
->
-Ok, thanks.
+On Fri, Mar 19, 2021 at 04:32:50PM -0400, Joel Fernandes (Google) wrote:
 
-John Wood
+>  include/linux/sched.h            |   7 ++
+>  include/linux/sched/task.h       |   4 +-
+>  include/uapi/linux/prctl.h       |   7 ++
+>  kernel/sched/core.c              |  11 +-
+>  kernel/sched/coretag.c           | 197 +++++++++++++++++++++++++++++--
+>  kernel/sched/sched.h             |   2 +
+>  kernel/sys.c                     |   7 ++
+>  tools/include/uapi/linux/prctl.h |   7 ++
+>  8 files changed, 230 insertions(+), 12 deletions(-)
+> 
+
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 2e3024a6f6e1..a62e8ad5ce58 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4654,11 +4654,17 @@ unsigned long nr_iowait(void)
+>   * sched_exec - execve() is a valuable balancing opportunity, because at
+>   * this point the task has the smallest effective memory and cache footprint.
+>   */
+> -void sched_exec(void)
+> +int sched_exec(void)
+>  {
+>  	struct task_struct *p = current;
+>  	unsigned long flags;
+>  	int dest_cpu;
+> +	int ret;
+> +
+> +	/* this may change what tasks current can share a core with */
+> +	ret = sched_core_exec();
+> +	if (ret)
+> +		return ret;
+
+Did the hunk for fs/exec.c go missing?
