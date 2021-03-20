@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FB83429A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F5E3429B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCTBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 21:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhCTBbx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 21:31:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0B2C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 18:31:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eeczjN9wefOmJj/5y5zYFmY+3fxkK7PM3F6myS4kr+I=; b=zqPpD+fuNMBeUv+5ezl4j4CJ0o
-        brRwxM93ENrTZqcd/DaDgZTpsgsXj4TapMrdDnbPwOkR69yXgIg8gX8XgOQsi+sMvOdT/7xb6nsSs
-        hahamXRLEPCQI7llbYrzrJAIUOW4uVDXEC0w0IPKm6gQ8NPd5SpxTAy+WmheHES0GMUtXIa4buzRV
-        E57XYVv9cyhI36VSoPYq8+P3Zz0XOliSYzoJw0khNyEGKzh+FFqI7FnxYTAhGGvARZMXOPk5lRisD
-        78Vtrih5McljF3m9wdLy4pjOgXvhLQTt1g2cWU/I5yd3MtNaKApn0UyaTL1fkiT1WlspG3ynQDUf0
-        nOf80ujg==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNQSy-001e2T-Q9; Sat, 20 Mar 2021 01:31:49 +0000
-Date:   Fri, 19 Mar 2021 18:31:48 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     catalin.marinas@arm.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: kmemleak: Fix a typo
-In-Reply-To: <20210319214140.23304-1-unixbhaskar@gmail.com>
-Message-ID: <1c7eca5b-c47-8954-b34d-9552d13123ef@bombadil.infradead.org>
-References: <20210319214140.23304-1-unixbhaskar@gmail.com>
+        id S229805AbhCTBpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 21:45:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43732 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhCTBpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 21:45:17 -0400
+IronPort-SDR: Lz/LpxC7e0d1jAPkbWAU2spIsZLvNWRkKUvzn93d+abforymElgq+2XRts5GfQnBPEovh+asVc
+ UrA3ZOQKEt4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="187648941"
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="187648941"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 18:45:16 -0700
+IronPort-SDR: 5lfyrfVrckDT5ZZHgzNpYWp2DkrpJQhnxaL5wEvszF0JgOFLCb+B97qxxsCB5iUoOc3NNW1j4N
+ 6hrC2Z26QGbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
+   d="scan'208";a="434474330"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Mar 2021 18:45:11 -0700
+Cc:     baolu.lu@linux.intel.com, Cornelia Huck <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
+        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>
+Subject: Re: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
+To:     Keqian Zhu <zhukeqian1@huawei.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20210125090402.1429-1-lushenming@huawei.com>
+ <20210129155730.3a1d49c5@omen.home.shazbot.org>
+ <MWHPR11MB188684B42632FD0B9B5CA1C08CB69@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <47bf7612-4fb0-c0bb-fa19-24c4e3d01d3f@huawei.com>
+ <MWHPR11MB1886C71A751B48EF626CAC938CB39@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <4f904b23-e434-d42b-15a9-a410f3b4edb9@huawei.com>
+ <MWHPR11MB188656845973A662A7E96BDA8C699@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <c152f419-acc4-ee33-dab1-ff0f9baf2f24@huawei.com>
+ <a535a91a-3af7-b43d-8399-01255a070f2b@linux.intel.com>
+ <4327b3ac-858d-30d0-9fe4-bd4ccc0fbd40@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <993b34b0-a68e-87eb-854d-ce926db8702b@linux.intel.com>
+Date:   Sat, 20 Mar 2021 09:35:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210319_183148_865981_925125B1 
-X-CRM114-Status: GOOD (  11.93  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote: > > s/interruptable/interruptible/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <4327b3ac-858d-30d0-9fe4-bd4ccc0fbd40@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/19/21 9:30 AM, Keqian Zhu wrote:
+> Hi Baolu,
+> 
+> On 2021/3/19 8:33, Lu Baolu wrote:
+>> On 3/18/21 7:53 PM, Shenming Lu wrote:
+>>> On 2021/3/18 17:07, Tian, Kevin wrote:
+>>>>> From: Shenming Lu<lushenming@huawei.com>
+>>>>> Sent: Thursday, March 18, 2021 3:53 PM
+>>>>>
+>>>>> On 2021/2/4 14:52, Tian, Kevin wrote:>>> In reality, many
+>>>>>>>> devices allow I/O faulting only in selective contexts. However, there
+>>>>>>>> is no standard way (e.g. PCISIG) for the device to report whether
+>>>>>>>> arbitrary I/O fault is allowed. Then we may have to maintain device
+>>>>>>>> specific knowledge in software, e.g. in an opt-in table to list devices
+>>>>>>>> which allows arbitrary faults. For devices which only support selective
+>>>>>>>> faulting, a mediator (either through vendor extensions on vfio-pci-core
+>>>>>>>> or a mdev wrapper) might be necessary to help lock down non-faultable
+>>>>>>>> mappings and then enable faulting on the rest mappings.
+>>>>>>> For devices which only support selective faulting, they could tell it to the
+>>>>>>> IOMMU driver and let it filter out non-faultable faults? Do I get it wrong?
+>>>>>> Not exactly to IOMMU driver. There is already a vfio_pin_pages() for
+>>>>>> selectively page-pinning. The matter is that 'they' imply some device
+>>>>>> specific logic to decide which pages must be pinned and such knowledge
+>>>>>> is outside of VFIO.
+>>>>>>
+>>>>>>   From enabling p.o.v we could possibly do it in phased approach. First
+>>>>>> handles devices which tolerate arbitrary DMA faults, and then extends
+>>>>>> to devices with selective-faulting. The former is simpler, but with one
+>>>>>> main open whether we want to maintain such device IDs in a static
+>>>>>> table in VFIO or rely on some hints from other components (e.g. PF
+>>>>>> driver in VF assignment case). Let's see how Alex thinks about it.
+>>>>> Hi Kevin,
+>>>>>
+>>>>> You mentioned selective-faulting some time ago. I still have some doubt
+>>>>> about it:
+>>>>> There is already a vfio_pin_pages() which is used for limiting the IOMMU
+>>>>> group dirty scope to pinned pages, could it also be used for indicating
+>>>>> the faultable scope is limited to the pinned pages and the rest mappings
+>>>>> is non-faultable that should be pinned and mapped immediately? But it
+>>>>> seems to be a little weird and not exactly to what you meant... I will
+>>>>> be grateful if you can help to explain further.:-)
+>>>>>
+>>>> The opposite, i.e. the vendor driver uses vfio_pin_pages to lock down
+>>>> pages that are not faultable (based on its specific knowledge) and then
+>>>> the rest memory becomes faultable.
+>>> Ahh...
+>>> Thus, from the perspective of VFIO IOMMU, if IOPF enabled for such device,
+>>> only the page faults within the pinned range are valid in the registered
+>>> iommu fault handler...
+>> Isn't it opposite? The pinned pages will never generate any page faults.
+>> I might miss some contexts here.
+> It seems that vfio_pin_pages() just pin some pages and record the pinned scope to pfn_list of vfio_dma.
+> No mapping is established, so we still has page faults.
 
+Make sense. Thanks a lot for the explanation.
 
-On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote:
+> 
+> IIUC, vfio_pin_pages() is used to
+> 1. pin pages for non-iommu backed devices.
+> 2. mark dirty scope for non-iommu backed devices and iommu backed devices.
 
->
-> s/interruptable/interruptible/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> ---
-> mm/kmemleak.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-> index c0014d3b91c1..f09f1a9402a9 100644
-> --- a/mm/kmemleak.c
-> +++ b/mm/kmemleak.c
-> @@ -1202,7 +1202,7 @@ static void update_refs(struct kmemleak_object *object)
-> }
->
-> /*
-> - * Memory scanning is a long process and it needs to be interruptable. This
-> + * Memory scanning is a long process and it needs to be interruptible. This
->  * function checks whether such interrupt condition occurred.
->  */
-> static int scan_should_stop(void)
-> --
-> 2.26.2
->
->
+Best regards,
+baolu
