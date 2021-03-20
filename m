@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0CD342BD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AA0342BD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhCTLND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S231165AbhCTLNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhCTLMM (ORCPT
+        with ESMTP id S229672AbhCTLMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:12 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541A9C06178A;
-        Sat, 20 Mar 2021 03:33:49 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id c17so10356262ilj.7;
-        Sat, 20 Mar 2021 03:33:49 -0700 (PDT)
+        Sat, 20 Mar 2021 07:12:24 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCEEC0610D4;
+        Sat, 20 Mar 2021 03:57:52 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so11017183ota.9;
+        Sat, 20 Mar 2021 03:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xaGlk2i4k4xjrgxv5GCvNM+Vcz1bxTHvvKwGlfw7Mxg=;
-        b=XLrdFwzHA9lCbJzFer+aRn0FKRE/KKbYX4paLFhRsCU2OWn6bg2V7Yt782lecLwIZk
-         3xS9SaJa8ecMvkxrRrr96vjN/5P1nrseX36JbMKoUgG1XoQNf4yILRr08n9P4dEAfVFN
-         ndy4fyuIlVjfPCPb0nTDXTp9/yZ98DMLPTEmc6Tu4u2WC4ydAlu2VyjCOKNGhhXI/W2s
-         GBKYw49T0i/luT3ABpb9oQcw5F/5XFbwNiSbXBknAC+ifddjsWO/UXPe88yJBfBeVWKC
-         xt53hOZwHqc6xDLuhN4pc90scHhqsAZEdskl3yoVoGdd07GWJGYzw1ntC6TizMIDIweT
-         QiMA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wq+T61KApM0Ouyl3nQpQtU5i7jv09KyVNafls9wYT3E=;
+        b=G6y+aIVp4bkGoqKP9TLsSFfaIqtmBntdjtikoCs4K5ETlkRHrtgZQl26jxWLHmOQfq
+         FwIXt167KW8W4/hBjtD4DvQInNYVB9tq1wKzFr1zJO0I1I0RLZgnTLfhZtStt7c3TMxj
+         vj/UhkejptddWaCyVVFtE/pZgq74ubX/ipW+yLqlpMMuXG3Zr/Bk5VCY8QHU4LGzDzmw
+         ZJysASyxgWiXFgx5TWaWgdG/ANoPI6kecLPCkZNs0IyAlZ8rUu7Gpu46Olk0JfzUVxG8
+         P57WDZelWsWlpwEfYd6tvUY4QtlMqmpRbqpkcbGbKtLf2UVUc8W7YzcPmZawo4RjSUYD
+         lkmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xaGlk2i4k4xjrgxv5GCvNM+Vcz1bxTHvvKwGlfw7Mxg=;
-        b=lnw//37UHz+DnQbZD8lQaFYQTtvUwf6wSXiRJaVBFG9/OMO5m9H5UnwT6m86sjJiPe
-         q7DkEYF6xfu3C3iThF0wBdWJeRrj5SJquyg3LPkxENp53y4XzaJxgfo/7/XUevAewPbf
-         Jm7ldOl0ZB2PJQWub1Z8o4EmHoZdzBf9r3ofvL3JZiutxFUlSD9lG1w8nW4ARwZxUYrT
-         jLdfzJ2StO9X9e/BQXBaYKiScCfKNgmlJ978DOj0O9uS72fzirFNT2ULwtmyDabxmWcn
-         rhvz2jaBFGXVemAfkntH8QAVTesl5YVyxNDk0RddiMZsRjcsdRptv7E5YbE+hHtcZm52
-         hnRw==
-X-Gm-Message-State: AOAM5305GlFXow+kdY5w8wp3D6irHr/ejPG3aHW0zTNsjM6qBmrNtfJu
-        QQizhdZGZxN2gfaQvXzaI+3I5+SP7yPfJA==
-X-Google-Smtp-Source: ABdhPJxhsvRW3v+zrvOebXyKVredO5FCmhgmS1lkDZIvenC/aYsSzP3zHXlvcArWWKvhynF18VCdNQ==
-X-Received: by 2002:a63:a547:: with SMTP id r7mr15162795pgu.186.1616223211846;
-        Fri, 19 Mar 2021 23:53:31 -0700 (PDT)
-Received: from ?IPv6:2405:201:600d:a089:1ce8:18d9:6e3d:8c29? ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
-        by smtp.gmail.com with ESMTPSA id i7sm7513423pfq.184.2021.03.19.23.53.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Mar 2021 23:53:31 -0700 (PDT)
-Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
- commented lines in file
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Markus Heiser <markus.heiser@darmarit.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210309125324.4456-1-yashsri421@gmail.com>
- <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
- <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
- <871rcg2p8g.fsf@meer.lwn.net>
- <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
- <878s6kto3g.fsf@meer.lwn.net>
- <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
- <87o8fgpbpx.fsf@meer.lwn.net>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <99a21e10-266e-b997-7048-c29a570afe0b@gmail.com>
-Date:   Sat, 20 Mar 2021 12:23:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wq+T61KApM0Ouyl3nQpQtU5i7jv09KyVNafls9wYT3E=;
+        b=amn+KUXfGpPN9bj/rWnSbhQKL9aQGyKR9/3fqcb2yjSjNadxdgzt4FcEHBCO/Xomzq
+         aW9H/4EDCYHvdE8NdedmYELhoJvUT48SCXfJokV0pLJLSISbAJtw/IIZFL9wD6sJkHRh
+         10Ivb1DWQ0PgfS+/UwymazPaLfM2FW3A/+uOP9UjO3K6p4UoycTm7KKXyqW7WDIKhRxN
+         j3fTFfOTIaYsh065pTbxlQ2PrMt4jO5S8iY4TMwzEh4xy3uVr5FSEbtBwUSW1vxh3uu8
+         mgfDjpKanZe+xVXqkYycq1+BYmqTF6ePrkBEw1xdUesvQePawHx8Z+dcZhAUUGFeVlYu
+         vBRA==
+X-Gm-Message-State: AOAM531QQan8UGf9CiuXrQobwhWs+B4Gut6qEFlWkiP1rcChsVEwQgGz
+        oT/2I+Vg3AGvziNoVRGiE3Rnq59MWWfmDlYu2vHsHl4gbxM=
+X-Google-Smtp-Source: ABdhPJwqES/7JYz78OVBuEc5iqC2Dr3ly8ac5o8k6r0c7V8Y3wPc7U7rJgh3hh6SMALB1iyp9dYqjIldKiiWfUfADSU=
+X-Received: by 2002:a5b:449:: with SMTP id s9mr11474745ybp.115.1616223504876;
+ Fri, 19 Mar 2021 23:58:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87o8fgpbpx.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210319175950.509fcbd0@canb.auug.org.au> <YFS1h6h+71sRlwFR@osiris>
+ <20210320162734.1630cc55@elm.ozlabs.ibm.com> <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
+ <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
+In-Reply-To: <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 20 Mar 2021 07:58:14 +0100
+Message-ID: <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
+Subject: Re: linux-next: Tree for Mar 19
+To:     Stephen Rothwell <sfr@rothwell.id.au>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Axtens <dja@axtens.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/3/21 11:48 pm, Jonathan Corbet wrote:
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
-> 
->> Yeah, and as this line-counting is really just a poor man's
->> heuristics, we might just be better to really turn this heuristics
->> into a dedicated cleanup warning script, then we can check for more
->> indicators, such as "does it contain the word Copyright" somewhere in
->> the kernel-doc comment, which tells us even more that this is not a
->> kernel-doc as we would expect it.
-> 
-> I really don't think we need that kind of heuristic.  The format of
-> kerneldoc comments is fairly rigid; it shouldn't be too hard to pick out
-> the /** comments that don't fit that format, right?  Am I missing
-> something there?
-> 
-> Thanks,
-> 
-> jon
-> 
+On Sat, Mar 20, 2021 at 7:49 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Reproduced on s390. However, under defconfig, one also needs to revert
+> kernel/livepatch/core.c to avoid triggering the assert, i.e.:
 
-Thanks for the inputs Lukas and Jonathan. I shall try to come up with
-something.
+Stephen: I will put this in rust-next so that others don't see
+problems on their side and test it with a allmodconfig for powerpc and
+s390 -- is it Monday the next round, right?
 
-Thanks
-Aditya
+Cheers,
+Miguel
