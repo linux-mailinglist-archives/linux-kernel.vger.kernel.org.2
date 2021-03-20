@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24BE342E09
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DD0342E0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhCTPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:53:08 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46918 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTPw7 (ORCPT
+        id S229913AbhCTP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhCTP5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:52:59 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7C5378D3;
-        Sat, 20 Mar 2021 16:52:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616255577;
-        bh=EiUtEauCYCYABkl/HNQCuW9f4LXK6zPiXwbNfVE/d5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qmAKcm0HGaTvd+xD2xXV8sJsFifeJFfMbNT5H6rNchVPat+UFwicijfS4jrkpmBF0
-         Fj0fZNc+EIW/f3op9PEb1WTmmyEX6MtXdBGsA1URqAlK1oB78yn6946/R/yDr5cpwu
-         XWegTa0nBgumGAdoZaMR5MaR2jZ7qVZduZ+6iSuo=
-Date:   Sat, 20 Mar 2021 17:52:18 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 11/19] media: i2c: rdacm21: Add dealy after OV490 reset
-Message-ID: <YFYaMh832WYlsR9u@pendragon.ideasonboard.com>
-References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
- <20210319164148.199192-12-jacopo+renesas@jmondi.org>
- <99971a13-4d02-2255-6653-569915da181d@ideasonboard.com>
+        Sat, 20 Mar 2021 11:57:11 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ED2C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:57:11 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id z9so10844647ilb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ESDsxRDTaFLNjqDsrRszfzPZy9cZaxe1guwoXNvOfY4=;
+        b=iyu19g25d2qWZhmtZfHy8sJ8fNayzfAr1lKE+VwgrxCn0K8bpTUL3KMYQPGtIaayV/
+         8xirY0uJ7ebUHAQSJgo5LQX/2P7RpUBtcqCGZOwiT29xvWgW9+W5JR50BorIlsksaPS+
+         JdfxFUiBhos/p4zCxdMd4TeoyLQDYWnkLpQ4hLaJafUBFbCIGpMRz4PSXH8nyAVH9mMb
+         3sC9KimgB1lMnkFIIWhJF+iIREeDqwcn31ocf+TcK9veqHO4Xh4hM63BIPpoCVWZSIUE
+         k/QRBhCZCSPfq9GdVeuOFRmjr6sUR/S5+wbGmRde2wbcTDsuzsL0aGqAgeCRQxqbhUqs
+         O8Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ESDsxRDTaFLNjqDsrRszfzPZy9cZaxe1guwoXNvOfY4=;
+        b=nwLtcAKDVUaNe2eKCYuFI3cJ6GNjH1LWeYSZTb37+qgKBH3N6edSloPTOyTtxQCxuO
+         /l+K2O33gClLi1jbalex24WJ9GMcXkaMLizCedOWem9Bq9K0t6qJT0P6dm+7WVSStmrx
+         EPW+toJdyIfDWr2fui0sou0TBS/gXMqA2+msuhxG9pA0IriT30dLv+rCZmhNgt0HyQgO
+         aTVb3zbDD4tyLu7Dg+h8776NU5RjwfW6mr7KO+fc4+4xn9p4RDWRwBoANjokbrTGts9N
+         YKifi+GfLBTJyjSzenJq6rEO+9xWi84O16Gu0V1M2v48JErFaR4G7POxqd2r7dUb+7ZL
+         +JRQ==
+X-Gm-Message-State: AOAM532w01deW1zhHORowPuqj9CESPrUt1fWbo0jTO8W345ayptmCtKT
+        963at4sc/M+Y9RGWSFHnVxIFfw==
+X-Google-Smtp-Source: ABdhPJygpZPb2IEhDwJgNj3LRY354Gjh2xE+bSD1ycmFNu9RyUxhJHBFmbocP8HJqgImAkGIGQYwDA==
+X-Received: by 2002:a92:5214:: with SMTP id g20mr6066444ilb.260.1616255830715;
+        Sat, 20 Mar 2021 08:57:10 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id n16sm4501698ilq.71.2021.03.20.08.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 08:57:10 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/5] net: ipa: more configuration data updates
+Date:   Sat, 20 Mar 2021 10:57:02 -0500
+Message-Id: <20210320155707.2009962-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <99971a13-4d02-2255-6653-569915da181d@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+This series starts with two patches that should have been included
+in an earlier series.  With these in place, QSB settings are
+programmed from information found in the data files rather than
+being embedded in code.  Support is then added for reprenting
+another QSB property (supported for IPA v4.0+).
 
-Thank you for the patch.
+The third patch updates the definition of the sequencer type used
+for an endpoint.  Previously a set of 2-byte symbols with fairly
+long names defined the sequencer type, but now those are broken into
+1-byte halves whose names are a little more informative.
 
-On Fri, Mar 19, 2021 at 04:49:44PM +0000, Kieran Bingham wrote:
-> Hi Jacopo,
-> 
-> s/dealy/delay/ in $SUBJECT
-> 
-> On 19/03/2021 16:41, Jacopo Mondi wrote:
-> > Add a delay after the OV490 chip is put in reset state. The reset
-> > signal shall be held for at least 250 useconds.
-> > 
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  drivers/media/i2c/rdacm21.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> > index babd14b21252..875bec9f7904 100644
-> > --- a/drivers/media/i2c/rdacm21.c
-> > +++ b/drivers/media/i2c/rdacm21.c
-> > @@ -448,7 +448,10 @@ static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > -	/* Enable GPIO1 and hold OV490 in reset during max9271 configuration. */
-> > +	/*
-> > +	 * Enable GPIO1 and hold OV490 in reset during max9271 configuration.
-> > +	 * The reset signal has to be asserted for at least 250 useconds.
-> > +	 */
-> >  	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> >  	if (ret)
-> >  		return ret;
-> > @@ -456,6 +459,7 @@ static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
-> >  	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> >  	if (ret)
-> >  		return ret;
-> > +	usleep_range(250, 500);
-> 
-> Aha, for a second there I thought the comment meant it had to be
-> asserted for 250 uS before clearing it again. But it's 250 uS before
-> using the OV490.
-> 
-> Perhaps possible to update the comment a little, but nothing that matters.
+The fourth patch moves the sequencer type definition so it only
+applies to TX endpoints (they aren't valid for RX endpoints).  And
+the last makes some minor documentation updates.
 
-The commit message and comment should match the code, especially given
-that I'm not sure here which of the two is actually incorrect. I suspect
-the sleep is actually in the wrong location.
+					-Alex
 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> 
-> >  	ret = max9271_configure_gmsl_link(&dev->serializer);
-> >  	if (ret)
-> > 
+Alex Elder (5):
+  net: ipa: use configuration data for QSB settings
+  net: ipa: implement MAX_READS_BEATS QSB data
+  net: ipa: split sequencer type in two
+  net: ipa: sequencer type is for TX endpoints only
+  net: ipa: update some comments in "ipa_data.h"
+
+ drivers/net/ipa/ipa_data-sc7180.c | 11 +++--
+ drivers/net/ipa/ipa_data-sdm845.c |  9 ++--
+ drivers/net/ipa/ipa_data.h        | 36 ++++++++-------
+ drivers/net/ipa/ipa_endpoint.c    | 14 +++---
+ drivers/net/ipa/ipa_endpoint.h    |  1 -
+ drivers/net/ipa/ipa_main.c        | 77 +++++++++++++------------------
+ drivers/net/ipa/ipa_reg.h         | 46 +++++++++++-------
+ 7 files changed, 97 insertions(+), 97 deletions(-)
 
 -- 
-Regards,
+2.27.0
 
-Laurent Pinchart
