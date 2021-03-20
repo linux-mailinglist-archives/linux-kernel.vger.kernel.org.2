@@ -2,136 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB41342DF3
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C4342DF2
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhCTPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhCTPsA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:48:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12680C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zbIftbE/u+M6OpaoufTPcNdH56Tj34uXrx7w5JT/Y1E=; b=LyhUjltMocKGlYzFZaWpwVKKMv
-        ySLz6nUd3mia5MaCshd5GXoP4WBQA2w4mlmIuVtLlFlWTZvfzKQvnAl9xNTBgDaQMBpS2QtIcxMq0
-        uPq/1bPD6S/FXoav9lnU460MRrj7InICCK7W91FJPFzS7BHKdD2kSfW1EBybv0M7Uie4ZbDW4NcKw
-        KrGjD19/Hoz4fvTOttiiLKvHVsa6YzsS2Ta/Ap188h7ACCJyMVIYznPid8Kgm5dj8cnJfS6mn0oUJ
-        JZJKtWEzt9TLW/Q+cSRbBrRJANhc936jeq5g/y+P0PrOBASdavEQsH1Rfg3JaqqcyXNRsbYyfZV0D
-        ShwF5NnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNdo9-005zlT-1B; Sat, 20 Mar 2021 15:46:33 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 350839864FF; Sat, 20 Mar 2021 16:46:32 +0100 (CET)
-Date:   Sat, 20 Mar 2021 16:46:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH 2/6] sched: tagging interface for core scheduling
-Message-ID: <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-3-joel@joelfernandes.org>
+        id S229821AbhCTPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:48:12 -0400
+Received: from mout.gmx.net ([212.227.17.20]:40975 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229756AbhCTPrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 11:47:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616255215;
+        bh=PRkjx4QnvAjhzrwqjXQp7oKX8aVfUdjdL/gFEKNG86s=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=XOV8LU2SD3SLuTONokkoaN1yyM+vcJA2jqO5TQXn0PqshM0yjymagTpTNuSBZQbGM
+         Rbb1s5YRa7Pr+KtPNxw//mtZ/toBhqdkpRWPyZpcDjdZR98sJ41nyPHMunTR3EilZG
+         Fr+lpNvbXAhuk8TBzLCcgSLAnxx3dKolnh2KmHNg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYNJq-1l9yo927gw-00VM8U; Sat, 20
+ Mar 2021 16:46:55 +0100
+Date:   Sat, 20 Mar 2021 16:46:48 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v6 4/8] security/brute: Fine tuning the attack detection
+Message-ID: <20210320154648.GC3023@ubuntu>
+References: <20210307113031.11671-1-john.wood@gmx.com>
+ <20210307113031.11671-5-john.wood@gmx.com>
+ <202103171957.16C0560D@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319203253.3352417-3-joel@joelfernandes.org>
+In-Reply-To: <202103171957.16C0560D@keescook>
+X-Provags-ID: V03:K1:0rKWMfe0fpiE0SwoD4sT7kjU3f7RVSxYmoHpyesGPyv6A7AnC65
+ mNFtDGGUWaZMgpsE8AzrOHdFqZqK6XmkUuAhJYIlaQh1UbDYGE0r5RDhMCW8sE8nDBhd5zk
+ VDoERdb0uNubUNN+a4OQZXResIXJCpWdFO9tw9/KcceyAw2+SMBVgn2ZdHCmcDnzozQSkYM
+ U05S0rdfNdJR23JuzAW0g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+aCHYtmSVSU=:ZFy1WOJD3yf+VyE8hJxr10
+ 7ePrKScOYmGJRz9QY7drHnBLODQfc6X5x/RqHY2rlnOG+DiEw3S1dpO//8R/2OghJNgNaXIqF
+ t7/+Nzij16zXQojGoomRvqKVvniH/eXiz8v04Rp6RdIRgDB2iv+nxzU5/jTCwWGvrbPDy+szG
+ ebLZ6ndQaK27kgvWxKEmnXh0/o+e5eKEGSGMO6RcdRci4t/BQlFShZBisDICw1uohxczpwDKk
+ V8VFVjO0zz9sT/PyzseKVUmr9JeWQ9Ov8BAuG7NX8pyc1p2Qhwj052IDyaq3prw9XD3yPMIlW
+ kUlYzM9MqYiN/x/zizkKVuHwwkDBnzplPO+PYUxF6pfjWrdTwzu5KbmkkMyMYrr2Xl9xMy/5k
+ erY/CxgfKOZNo3qhzkBmb9gs5eGMH2qT8CNtuZvoNAcPB6UhWIf8uQiMsoiKtcyERlJSxmvMK
+ IRMs59Z4KXlQaOXlJ8jhPKFLN5NL/u/bmdljtthWtRgN5bXJumldsSxhAL9lopVEB4yzzAbYZ
+ pAIRSFV2tUbQi6OGreB+sIoFrbjod+IBOagpJdMf/x6eelRUVbhkqRuLlyCEJ1vxGL0n4JEMG
+ 108b/2OhsDL5S5o+E1StBOdDrunU4AWSUeHPWblXePaOknAmDqaQPZrvBqc4OzakPVw0aDBYs
+ PgJ9nLL2RTG/sEd6FDwnP/JL1FjSsWDOVHs76pdV8ZsTsh7jUkwWedOZXxzhy47lpV/q2d/sk
+ tFCCnSyy/pLrVL7XzicN+fzLk/YaNEhyt05JFOSSD5eSFX85jyvPZSx9VkgTRJK+v9hltGqvI
+ 7lj8mJuAz2lVJghppdtW01U7Qy6kKOTgboXpKqeo4S3B+7iVcXlkvXxnYmaxjakdSHkw0Qq/0
+ LjW0y8/7r5k+VeWnMzNvsIUpv1NdJOc8MTedwfOpknJkpXUI7v2rNkvE9gRtGQPAX/Bmz6hgs
+ jhXkMlAttTqCp+ig7hiorlR0MgHEev4YHJ1FXWi8NSCTSLrcXGxhGxHNbRvOTZa5cX+NSCf0D
+ 4bVbacN/rTUFb/8odI1IC7JPPoBXImrVSWdf8KUImF5gLeL1sBK8exr8IC/u/xtsVQVtIZZET
+ 93nyviNH8ZyAh95d5zIjsmv//hVrCM8fmR771WDOVcarVZjvMspcJ2TsipL9R4dJY4rOf68ls
+ e3qOH3zGwWUim4CceE9LFO0e6gdBhKTcwos+XTFAoAQXWs3TRLWOQXEkbl3+rkKAexNgE=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 04:32:49PM -0400, Joel Fernandes (Google) wrote:
-> From: Josh Don <joshdon@google.com>
-> 
-> Adds per-task and per-cgroup interfaces for specifying which tasks can
-> co-execute on adjacent SMT hyperthreads via core scheduling.
-> 
-> The per-task interface hooks are implemented here, but are not currently
-> used. The following patch adds a prctl interface which then takes
-> advantage of these.
-> 
-> The cgroup interface can be used to toggle a unique cookie value for all
-> descendent tasks, preventing these tasks from sharing with any others.
-> See Documentation/admin-guide/hw-vuln/core-scheduling.rst for a full
-> rundown.
-> 
-> One important property of this interface is that neither the per-task
-> nor the per-cgroup setting overrides the other. For example, if two
-> tasks are in different cgroups, and one or both of the cgroups is tagged
-> using the per-cgroup interface, then these tasks cannot share, even if
-> they use the per-task interface to attempt to share with one another.
-> 
-> The above is implemented by making the overall core scheduling cookie a
-> compound structure, containing both a task-level cookie and a
-> group-level cookie. Two tasks will only be allowed to share if all
-> fields of their respective cookies match.
-> 
-> Core scheduler has extra overhead.  Enable it only for machines with
-> more than one SMT hardware thread.
+On Wed, Mar 17, 2021 at 09:00:51PM -0700, Kees Cook wrote:
+> On Sun, Mar 07, 2021 at 12:30:27PM +0100, John Wood wrote:
+> >  #include <asm/current.h>
+> > +#include <asm/rwonce.h>
+> > +#include <asm/siginfo.h>
+> > +#include <asm/signal.h>
+> > +#include <linux/binfmts.h>
+> >  #include <linux/bug.h>
+> >  #include <linux/compiler.h>
+> > +#include <linux/cred.h>
+> > +#include <linux/dcache.h>
+> >  #include <linux/errno.h>
+> > +#include <linux/fs.h>
+> >  #include <linux/gfp.h>
+> > +#include <linux/if.h>
+> >  #include <linux/init.h>
+> >  #include <linux/jiffies.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/lsm_hooks.h>
+> >  #include <linux/math64.h>
+> > +#include <linux/netdevice.h>
+> > +#include <linux/path.h>
+> >  #include <linux/printk.h>
+> >  #include <linux/refcount.h>
+> >  #include <linux/rwlock.h>
+> > @@ -19,9 +29,35 @@
+> >  #include <linux/sched.h>
+> >  #include <linux/sched/signal.h>
+> >  #include <linux/sched/task.h>
+> > +#include <linux/signal.h>
+> > +#include <linux/skbuff.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/spinlock.h>
+> > +#include <linux/stat.h>
+> >  #include <linux/types.h>
+> > +#include <linux/uidgid.h>
+>
+> This is really a LOT of includes. Are you sure all of these are
+> explicitly needed?
 
-Oh man.. I'd soooo hoped to first see the simple task interface and then
-see the cgroup patch on top of that... I'll see if I can flip them
-myself (on monday).
+I try to add the needed header for every macro and function used. If
+there is a better method to do it I will apply it. Thanks.
 
-> +#ifdef CONFIG_SCHED_CORE
-> +struct sched_core_cookie {
-> +	unsigned long task_cookie;
-> +	unsigned long group_cookie;
-> +
-> +	/* A u64 representation of the cookie used only for display to
-> +	 * userspace. We avoid exposing the actual cookie contents, which
-> +	 * are kernel pointers.
-> +	 */
+> >  /**
+> >   * struct brute_stats - Fork brute force attack statistics.
+> > @@ -30,6 +66,9 @@
+> >   * @faults: Number of crashes.
+> >   * @jiffies: Last crash timestamp.
+> >   * @period: Crash period's moving average.
+> > + * @saved_cred: Saved credentials.
+> > + * @network: Network activity flag.
+> > + * @bounds_crossed: Privilege bounds crossed flag.
+> >   *
+> >   * This structure holds the statistical data shared by all the fork h=
+ierarchy
+> >   * processes.
+> > @@ -40,6 +79,9 @@ struct brute_stats {
+> >  	unsigned char faults;
+> >  	u64 jiffies;
+> >  	u64 period;
+> > +	struct brute_cred saved_cred;
+> > +	unsigned char network : 1;
+> > +	unsigned char bounds_crossed : 1;
+>
+> If you really want to keep faults a "char", I would move these bools
+> after "faults" to avoid adding more padding.
 
-Tssk, invalid comment style that..
+Understood. Thanks.
 
-> +	u64 userspace_id;
-> +};
+> > +/**
+> > + * brute_is_setid() - Test if the executable file has the setid flags=
+ set.
+> > + * @bprm: Points to the linux_binprm structure.
+> > + *
+> > + * Return: True if the executable file has the setid flags set. False=
+ otherwise.
+> > + */
+> > +static bool brute_is_setid(const struct linux_binprm *bprm)
+> > +{
+> > +	struct file *file =3D bprm->file;
+> > +	struct inode *inode;
+> > +	umode_t mode;
+> > +
+> > +	if (!file)
+> > +		return false;
+> > +
+> > +	inode =3D file->f_path.dentry->d_inode;
+> > +	mode =3D inode->i_mode;
+> > +
+> > +	return !!(mode & (S_ISUID | S_ISGID));
+> > +}
+>
+> Oh, er, no, this should not reinvent the wheel. You just want to know if
+> creds got elevated, so you want bprm->secureexec; this gets correctly
+> checked in cap_bprm_creds_from_file().
 
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_task_cookie *ck =
-> +		kmalloc(sizeof(struct sched_core_task_cookie), GFP_KERNEL);
+Ok, I will work on it for the next version.
 
-	struct sched_core_task_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
+> > +
+> > +/**
+> > + * brute_reset_stats() - Reset the statistical data.
+> > + * @stats: Statistics to be reset.
+> > + * @is_setid: The executable file has the setid flags set.
+> > + *
+> > + * Reset the faults and period and set the last crash timestamp to no=
+w. This
+> > + * way, it is possible to compute the application crash period at the=
+ next
+> > + * fault. Also, save the credentials of the current task and update t=
+he
+> > + * bounds_crossed flag based on a previous network activity and the i=
+s_setid
+> > + * parameter.
+> > + *
+> > + * The statistics to be reset cannot be NULL.
+> > + *
+> > + * Context: Must be called with interrupts disabled and brute_stats_p=
+tr_lock
+> > + *          and brute_stats::lock held.
+> > + */
+> > +static void brute_reset_stats(struct brute_stats *stats, bool is_seti=
+d)
+> > +{
+> > +	const struct cred *cred =3D current_cred();
+> > +
+> > +	stats->faults =3D 0;
+> > +	stats->jiffies =3D get_jiffies_64();
+> > +	stats->period =3D 0;
+> > +	stats->saved_cred.uid =3D cred->uid;
+> > +	stats->saved_cred.gid =3D cred->gid;
+> > +	stats->saved_cred.suid =3D cred->suid;
+> > +	stats->saved_cred.sgid =3D cred->sgid;
+> > +	stats->saved_cred.euid =3D cred->euid;
+> > +	stats->saved_cred.egid =3D cred->egid;
+> > +	stats->saved_cred.fsuid =3D cred->fsuid;
+> > +	stats->saved_cred.fsgid =3D cred->fsgid;
+> > +	stats->bounds_crossed =3D stats->network || is_setid;
+> > +}
+>
+> I would include brute_reset_stats() in the first patch (and add to it as
+> needed). To that end, it can start with a memset(stats, 0, sizeof(*stats=
+));
 
-Also, those type names are unfortunately long..
+So, need all the struct fields to be introduced in the initial patch?
+Even if they are not needed in the initial patch? I'm confused.
 
-> +static void sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_task_cookie *ptr =
-> +		(struct sched_core_task_cookie *)cookie;
+> > +/**
+> > + * brute_priv_have_changed() - Test if the privileges have changed.
+> > + * @stats: Statistics that hold the saved credentials.
+> > + *
+> > + * The privileges have changed if the credentials of the current task=
+ are
+> > + * different from the credentials saved in the statistics structure.
+> > + *
+> > + * The statistics that hold the saved credentials cannot be NULL.
+> > + *
+> > + * Context: Must be called with interrupts disabled and brute_stats_p=
+tr_lock
+> > + *          and brute_stats::lock held.
+> > + * Return: True if the privileges have changed. False otherwise.
+> > + */
+> > +static bool brute_priv_have_changed(struct brute_stats *stats)
+> > +{
+> > +	const struct cred *cred =3D current_cred();
+> > +	bool priv_have_changed;
+> > +
+> > +	priv_have_changed =3D !uid_eq(stats->saved_cred.uid, cred->uid) ||
+> > +		!gid_eq(stats->saved_cred.gid, cred->gid) ||
+> > +		!uid_eq(stats->saved_cred.suid, cred->suid) ||
+> > +		!gid_eq(stats->saved_cred.sgid, cred->sgid) ||
+> > +		!uid_eq(stats->saved_cred.euid, cred->euid) ||
+> > +		!gid_eq(stats->saved_cred.egid, cred->egid) ||
+> > +		!uid_eq(stats->saved_cred.fsuid, cred->fsuid) ||
+> > +		!gid_eq(stats->saved_cred.fsgid, cred->fsgid);
+> > +
+> > +	return priv_have_changed;
+> > +}
+>
+> This should just be checked from bprm->secureexec, which is valid by the
+> time you get to the bprm_committing_creds hook. You can just save the
+> value to your stats struct instead of re-interrogating current_cred,
+> etc.
 
-	struct sched_core_task_cookie *ptr = (void *)cookie;
+Ok. Thanks.
 
-Know your language and use it to avoid typing excessively long names :-)
+> > +
+> > +/**
+> > + * brute_threat_model_supported() - Test if the threat model is suppo=
+rted.
+> > + * @siginfo: Contains the signal information.
+> > + * @stats: Statistical data shared by all the fork hierarchy processe=
+s.
+> > + *
+> > + * To avoid false positives during the attack detection it is necessa=
+ry to
+> > + * narrow the possible cases. Only the following scenarios are taken =
+into
+> > + * account:
+> > + *
+> > + * 1.- Launching (fork()/exec()) a setuid/setgid process repeatedly u=
+ntil a
+> > + *     desirable memory layout is got (e.g. Stack Clash).
+> > + * 2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeat=
+edly until
+> > + *     a desirable memory layout is got (e.g. what CTFs do for simple=
+ network
+> > + *     service).
+> > + * 3.- Launching processes without exec() (e.g. Android Zygote) and e=
+xposing
+> > + *     state to attack a sibling.
+> > + * 4.- Connecting to a fork()ing network daemon (e.g. apache) repeate=
+dly until
+> > + *     the previously shared memory layout of all the other children =
+is exposed
+> > + *     (e.g. kind of related to HeartBleed).
+> > + *
+> > + * In each case, a privilege boundary has been crossed:
+> > + *
+> > + * Case 1: setuid/setgid process
+> > + * Case 2: network to local
+> > + * Case 3: privilege changes
+> > + * Case 4: network to local
+> > + *
+> > + * Also, only the signals delivered by the kernel are taken into acco=
+unt with
+> > + * the exception of the SIGABRT signal since the latter is used by gl=
+ibc for
+> > + * stack canary, malloc, etc failures, which may indicate that a miti=
+gation has
+> > + * been triggered.
+> > + *
+> > + * The signal information and the statistical data shared by all the =
+fork
+> > + * hierarchy processes cannot be NULL.
+> > + *
+> > + * It's mandatory to disable interrupts before acquiring the brute_st=
+ats::lock
+> > + * since the task_free hook can be called from an IRQ context during =
+the
+> > + * execution of the task_fatal_signal hook.
+> > + *
+> > + * Context: Must be called with interrupts disabled and brute_stats_p=
+tr_lock
+> > + *          held.
+> > + * Return: True if the threat model is supported. False otherwise.
+> > + */
+> > +static bool brute_threat_model_supported(const kernel_siginfo_t *sigi=
+nfo,
+> > +					 struct brute_stats *stats)
+> > +{
+> > +	bool bounds_crossed;
+> > +
+> > +	if (siginfo->si_signo =3D=3D SIGKILL && siginfo->si_code !=3D SIGABR=
+T)
+> > +		return false;
+> > +
+> > +	spin_lock(&stats->lock);
+> > +	bounds_crossed =3D stats->bounds_crossed;
+> > +	bounds_crossed =3D bounds_crossed || brute_priv_have_changed(stats);
+> > +	stats->bounds_crossed =3D bounds_crossed;
+> > +	spin_unlock(&stats->lock);
+> > +
+> > +	return bounds_crossed;
+> > +}
+>
+> I think this logic can be done with READ_ONCE()s and moved directly into
+> brute_task_fatal_signal().
 
+Thanks. I will work on locking.
+
+> >
+> > +/**
+> > + * brute_network() - Target for the socket_sock_rcv_skb hook.
+> > + * @sk: Contains the sock (not socket) associated with the incoming s=
+k_buff.
+> > + * @skb: Contains the incoming network data.
+> > + *
+> > + * A previous step to detect that a network to local boundary has bee=
+n crossed
+> > + * is to detect if there is network activity. To do this, it is only =
+necessary
+> > + * to check if there are data packets received from a network device =
+other than
+> > + * loopback.
+> > + *
+> > + * It's mandatory to disable interrupts before acquiring brute_stats_=
+ptr_lock
+> > + * and brute_stats::lock since the task_free hook can be called from =
+an IRQ
+> > + * context during the execution of the socket_sock_rcv_skb hook.
+> > + *
+> > + * Return: -EFAULT if the current task doesn't have statistical data.=
+ Zero
+> > + *         otherwise.
+> > + */
+> > +static int brute_network(struct sock *sk, struct sk_buff *skb)
+> > +{
+> > +	struct brute_stats **stats;
+> > +	unsigned long flags;
+> > +
+> > +	if (!skb->dev || (skb->dev->flags & IFF_LOOPBACK))
+> > +		return 0;
+> > +
+> > +	stats =3D brute_stats_ptr(current);
+>
+> Uhh, is "current" valid here? I actually don't know this hook very well.
+
+I think so, but I will try to study it. Thanks for noted this.
+
+> > +	read_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > +
+> > +	if (!*stats) {
+> > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > +		return -EFAULT;
+> > +	}
+> > +
+> > +	spin_lock(&(*stats)->lock);
+> > +	(*stats)->network =3D true;
+> > +	spin_unlock(&(*stats)->lock);
+> > +	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > +	return 0;
+> > +}
+
+Thanks,
+John Wood
