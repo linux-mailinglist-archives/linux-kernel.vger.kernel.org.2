@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E63342CF5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA42E342CF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhCTNDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 09:03:44 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:37419 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhCTNDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 09:03:33 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1Ml76o-1m6XOB1yuq-00lUPh; Sat, 20 Mar 2021 14:03:31 +0100
-Received: by mail-ot1-f42.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso11238121otq.3;
-        Sat, 20 Mar 2021 06:03:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533eY9bSmoTrnYCktJEkRqgZS9McvdNKl39zckxoW/ys4RBdNbB+
-        77o51YYwzI+8RjjRfJU29sIR1CoCEEvd+1cSh7U=
-X-Google-Smtp-Source: ABdhPJw4zwmmsaNKkM4+UrHsd7cqgbKPxiSKwfQNVG5CgM2NbMVXP2bS8xIlYgIDSXo8OuDgdznZ0wY5TDkTqICahtg=
-X-Received: by 2002:a9d:316:: with SMTP id 22mr680626otv.210.1616245409946;
- Sat, 20 Mar 2021 06:03:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319161956.2838291-2-boqun.feng@gmail.com>
- <20210319211246.GA250618@bjorn-Precision-5520> <87tup6gf3m.wl-maz@kernel.org>
-In-Reply-To: <87tup6gf3m.wl-maz@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 20 Mar 2021 14:03:13 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com>
-Message-ID: <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com>
-Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:jQkD8EZZiXJG0Ypa2SFEOUJN7IyHtWyLXTAgYl/PzevvEcaicoE
- W1seO2Bmw/9Om+F7WZ2aPBQfHWvY3iJvlJoFh+GbbKunCrmXS9n3LMIKG+2kq1cMxxCyvfz
- KkP4KIyXa2lwrNQQtEm1qkt/WMid2BjUAmw2KS9fgRwS9/KdiokDU+MjiEfP6P1MbqQ0aQy
- 23p+MdVW9CgXBoQ+uSnIw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gPSBLDs7PeQ=:aj/UnjetFVZlShr7BPYNPB
- RtBthhnoz35YAwpa3jg7uxBbQWZDNsybR4Yj+44jQyWHue22275kkmHQ7t7xAC4WHipS5cR14
- jvTkM+FQz2ZjL1y+m8fW6JLooUbEEEf2JOBS6Afhs8255kE1TzTOyVOY2TPaGd/JimL1OTudF
- 8rq2gJN+4wI3/226ug4uKT3oDDqaWNmaAhK2/Z/6iRNxvY5/gVtaz8ea+KUrBjOYkbwx/l2Q/
- 8750UVHJOFzwsK/gRBPaPCnH0FATYLYEfPMkgycvQFCX52qn4lJX6Np29mPRBeZ3Gl9D/taM7
- hCISmUKDGEGuV8B49HLs+Cf5tnPm5arYG3Od3+BkXwpf/PdggvfHp2jiBr0O2RJJ3CymlMd2o
- s7E6LebuUpRjLUZVWSNNERrK4rv37oGin2gCPD731OQ0uzh/Yn+dAfohTN6DyWUdFYqRZInqk
- hb/PzcHZQshkPVOJyFa2UtBxBlBJH8IdHiP9OUGzL1gjLKYsOQKwEr/1emdUCFYnzsiqyV0HR
- s+iCXKX8ZgED+x6SzfIlT/pBZnxm96P/tyoSyIYyKWfc2pVmq31fOkIy6rxT3/MIg==
+        id S229805AbhCTNGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 09:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229583AbhCTNFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 09:05:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FCE561961;
+        Sat, 20 Mar 2021 13:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616245548;
+        bh=QXdaST1hot6+jYq0oDK7muVDY+aF5hPeweOnMuFWDCs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NydJpk1snnUb6dtJ3ZHVlpmHmHA2q14dEvUBuB0jJFMpTdDmqu/qwgRRbY0n6v2Gy
+         Ix/wCW4nQ4qR9WeEborqVTAbWBQgbMSyqOF3qnwwGhryXy5SmB9jrJz0f8WFY2GiH/
+         klxCX3q38Y4Q0gl7kitV6r+mQXBbX9Li9FIWO5x8FfmzCi6yHF4BFsLTs6ku6yg/Kv
+         2+4ED1VkoHQecF2OHyU27+JmTIFl7IKPT3Bsjfudo11Mfb+Iwg8q+jORyMC+URCKmZ
+         7Ta2AeQELSGacKdCasQzz5ethCyiqe6B8z+AIoOdFU+GXEhksadHdGdSRrItVXMO92
+         3PN+YfIR3UVow==
+Date:   Sat, 20 Mar 2021 22:05:43 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org
+Subject: Re: [PATCH -tip v3 05/11] x86/kprobes: Add UNWIND_HINT_FUNC on
+ kretprobe_trampoline code
+Message-Id: <20210320220543.e1558ce3a351554c6be3ea26@kernel.org>
+In-Reply-To: <20210320211616.a976fc66d0c51e13d3121e2f@kernel.org>
+References: <161615650355.306069.17260992641363840330.stgit@devnote2>
+        <161615655969.306069.4545805781593088526.stgit@devnote2>
+        <20210320211616.a976fc66d0c51e13d3121e2f@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 1:54 PM Marc Zyngier <maz@kernel.org> wrote:
-> On Fri, 19 Mar 2021 21:12:46 +0000,
+On Sat, 20 Mar 2021 21:16:16 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> >
-> > Ugh.  pci_root_bus_fwnode() is another callback to find the
-> > irq_domain.  Only one call, from pci_host_bridge_msi_domain(), which
-> > itself is only called from pci_set_bus_msi_domain().  This feels like
-> > another case where we could simplify things by having the host bridge
-> > driver figure out the irq_domain explicitly when it creates the
-> > pci_host_bridge.  It seems like that's where we have the most
-> > information about how to find the irq_domain.
->
-> Urgh. This is a perfect copy paste of the x86 horror, warts and all.
-> I can't say I'm thrilled (another way to say "Gawd, Noes! Never!").
->
-> One thing I am sure of is that I do not want to add more custom
-> indirection to build the MSI topology. We barely got rid of the
-> msi_controller structure, and this is the same thing by another
-> name. Probably worse, actually.
->
-> In this case, I don't see the point in going via a fwnode indirection
-> given that there is no firmware tables the first place.
->
-> As for finding the irq domain from the host bridge, that's not doable
-> in most cases on arm64, as it is pretty likely that the host bridge
-> knows nothing about MSIs when they are implemented in the GIC (see my
-> recent msi_controller removal series that has a few patches about
-> that).
->
-> Having an optional callback to host bridges to obtain the MSI domain
-> may be possible in some cases though (there might be a chicken/egg
-> problem for some drivers though...).
+> On Fri, 19 Mar 2021 21:22:39 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > From: Josh Poimboeuf <jpoimboe@redhat.com>
+> > 
+> > Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
+> > information is generated on the kretprobe_trampoline correctly.
+> > 
+> 
+> Test bot also found a new warning for this.
+> 
+> > >> arch/x86/kernel/kprobes/core.o: warning: objtool: kretprobe_trampoline()+0x25: call without frame pointer save/setup
+> 
+> With CONFIG_FRAME_POINTER=y.
+> 
+> Of course this can be fixed with additional "push %bp; mov %sp, %bp" before calling
+> trampoline_handler. But actually we know that this function has a bit special
+> stack frame too. 
+> 
+> Can I recover STACK_FRAME_NON_STANDARD(kretprobe_trampoline) when CONFIG_FRAME_POINTER=y ?
 
-I would expect that the host bridge driver can find the MSI domain
-at probe time and just add a pointer into the pci_host_bridge
-structure.
+So something like this. Does it work?
 
-        Arnd
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index b31058a152b6..651f337dc880 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -760,6 +760,10 @@ int kprobe_int3_handler(struct pt_regs *regs)
+ }
+ NOKPROBE_SYMBOL(kprobe_int3_handler);
+ 
++#ifdef CONFIG_FRAME_POINTER
++#undef UNWIND_HINT_FUNC
++#define UNWIND_HINT_FUNC
++#endif
+ /*
+  * When a retprobed function returns, this code saves registers and
+  * calls trampoline_handler() runs, which calls the kretprobe's handler.
+@@ -797,7 +801,14 @@ asm(
+ 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
+ );
+ NOKPROBE_SYMBOL(kretprobe_trampoline);
+-
++#ifdef CONFIG_FRAME_POINTER
++/*
++ * kretprobe_trampoline skips updating frame pointer. The frame pointer
++ * saved in trampoline_handler points to the real caller function's
++ * frame pointer.
++ */
++STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
++#endif
+ 
+ /*
+  * Called from kretprobe_trampoline
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
