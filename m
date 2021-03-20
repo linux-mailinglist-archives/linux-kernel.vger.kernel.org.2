@@ -2,154 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C64342FC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B273E342FC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCTWJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 18:09:42 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:33944 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhCTWJH (ORCPT
+        id S229854AbhCTWKs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Mar 2021 18:10:48 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:25860 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229780AbhCTWKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:09:07 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lNjmM-00GVVv-9d; Sat, 20 Mar 2021 16:09:06 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lNjmL-00062O-KY; Sat, 20 Mar 2021 16:09:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, criu@openvz.org
-References: <20210320153832.1033687-1-axboe@kernel.dk>
-        <m14kh5aj0n.fsf@fess.ebiederm.org>
-        <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
-        <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
-Date:   Sat, 20 Mar 2021 17:08:02 -0500
-In-Reply-To: <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
-        (Linus Torvalds's message of "Sat, 20 Mar 2021 12:18:15 -0700")
-Message-ID: <m1im5l5vi5.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sat, 20 Mar 2021 18:10:24 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-moZNvdOQP8azMocmvBXbXg-1; Sat, 20 Mar 2021 18:10:19 -0400
+X-MC-Unique: moZNvdOQP8azMocmvBXbXg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52342180FCA4;
+        Sat, 20 Mar 2021 22:10:17 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.192.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF99A376E;
+        Sat, 20 Mar 2021 22:10:14 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>
+Subject: [PATCH 1/2] perf daemon: Force waipid for all session on SIGCHLD delivery
+Date:   Sat, 20 Mar 2021 23:10:12 +0100
+Message-Id: <20210320221013.1619613-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lNjmL-00062O-KY;;;mid=<m1im5l5vi5.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX185RE4CDnNBooFl4xRNceHuRx8rf7VZFnQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4998]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 358 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 4.4 (1.2%), b_tie_ro: 3.0 (0.8%), parse: 1.12
-        (0.3%), extract_message_metadata: 12 (3.3%), get_uri_detail_list: 2.4
-        (0.7%), tests_pri_-1000: 11 (3.2%), tests_pri_-950: 1.05 (0.3%),
-        tests_pri_-900: 0.78 (0.2%), tests_pri_-90: 52 (14.5%), check_bayes:
-        51 (14.2%), b_tokenize: 6 (1.6%), b_tok_get_all: 8 (2.2%),
-        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 32 (9.0%), b_finish: 0.62
-        (0.2%), tests_pri_0: 262 (73.0%), check_dkim_signature: 0.56 (0.2%),
-        check_dkim_adsp: 2.6 (0.7%), poll_dns_idle: 0.79 (0.2%), tests_pri_10:
-        2.8 (0.8%), tests_pri_500: 8 (2.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If we don't process SIGCHLD before another comes, we will
+see just one SIGCHLD as a result. In this case current code
+will miss exit notification for a session and wait forever.
 
-Added criu because I just realized that io_uring (which can open files
-from an io worker thread) looks to require some special handling for
-stopping and freezing processes.  If not in the SIGSTOP case in the
-related cgroup freezer case.
+Adding extra waitpid check for all sessions when SIGCHLD
+is received, to make sure we don't miss any session exit.
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+Also fix close condition for signal_fd.
 
-> On Sat, Mar 20, 2021 at 10:51 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> Alternatively, make it not use
->> CLONE_SIGHAND|CLONE_THREAD at all, but that would make it
->> unnecessarily allocate its own signal state, so that's "cleaner" but
->> not great either.
->
-> Thinking some more about that, it would be problematic for things like
-> the resource counters too. They'd be much better shared.
->
-> Not adding it to the thread list etc might be clever, but feels a bit too scary.
->
-> So on the whole I think Jens' minor patches to just not have IO helper
-> threads accept signals are probably the right thing to do.
+Reported-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/builtin-daemon.c | 50 +++++++++++++++++++++----------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
 
-The way I see it we have two options:
-
-1) Don't ask PF_IO_WORKERs to stop do_signal_stop and in
-   task_join_group_stop.
-
-   The easiest comprehensive implementation looks like just
-   updating task_set_jobctl_pending to treat PF_IO_WORKER
-   as it treats PF_EXITING.
-
-2) Have the main loop of the kernel thread test for JOBCTL_STOP_PENDING
-   and call into do_signal_stop.
-
-It is a wee bit trickier to modify the io_workers to stop, but it does
-not look prohibitively difficult.
-
-All of the work performed by the io worker is work scheduled via
-io_uring by the process being stopped.
-
-- Is the amount of work performed by the io worker thread sufficiently
-  negligible that we don't care?
-
-- Or is the amount of work performed by the io worker so great that it
-  becomes a way for an errant process to escape SIGSTOP?
-
-As the code is all intermingled with the cgroup_freezer.  I am also
-wondering creating checkpoints needs additional stopping guarantees.
-
-
-To solve the issue that SIGSTOP is simply broken right now I am totally
-fine with something like:
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ba4d1ef39a9e..cb9acdfb32fa 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
- 			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
- 	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+index ace8772a4f03..4697493842f5 100644
+--- a/tools/perf/builtin-daemon.c
++++ b/tools/perf/builtin-daemon.c
+@@ -402,35 +402,42 @@ static pid_t handle_signalfd(struct daemon *daemon)
+ 	int status;
+ 	pid_t pid;
  
--	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
-+	if (unlikely(fatal_signal_pending(task) ||
-+		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
- 		return false;
++	/*
++	 * Take signal fd data as pure signal notification and check all
++	 * the sessions state. The reason is that multiple signals can get
++	 * coalesced in kernel and we can receive only single signal even
++	 * if multiple SIGCHLD were generated.
++	 */
+ 	err = read(daemon->signal_fd, &si, sizeof(struct signalfd_siginfo));
+-	if (err != sizeof(struct signalfd_siginfo))
++	if (err != sizeof(struct signalfd_siginfo)) {
++		pr_err("failed to read signal fd\n");
+ 		return -1;
++	}
  
- 	if (mask & JOBCTL_STOP_SIGMASK)
+ 	list_for_each_entry(session, &daemon->sessions, list) {
++		if (session->pid == -1)
++			continue;
+ 
+-		if (session->pid != (int) si.ssi_pid)
++		pid = waitpid(session->pid, &status, WNOHANG);
++		if (pid <= 0)
+ 			continue;
+ 
+-		pid = waitpid(session->pid, &status, 0);
+-		if (pid == session->pid) {
+-			if (WIFEXITED(status)) {
+-				pr_info("session '%s' exited, status=%d\n",
+-					session->name, WEXITSTATUS(status));
+-			} else if (WIFSIGNALED(status)) {
+-				pr_info("session '%s' killed (signal %d)\n",
+-					session->name, WTERMSIG(status));
+-			} else if (WIFSTOPPED(status)) {
+-				pr_info("session '%s' stopped (signal %d)\n",
+-					session->name, WSTOPSIG(status));
+-			} else {
+-				pr_info("session '%s' Unexpected status (0x%x)\n",
+-					session->name, status);
+-			}
++		if (WIFEXITED(status)) {
++			pr_info("session '%s' exited, status=%d\n",
++				session->name, WEXITSTATUS(status));
++		} else if (WIFSIGNALED(status)) {
++			pr_info("session '%s' killed (signal %d)\n",
++				session->name, WTERMSIG(status));
++		} else if (WIFSTOPPED(status)) {
++			pr_info("session '%s' stopped (signal %d)\n",
++				session->name, WSTOPSIG(status));
++		} else {
++			pr_info("session '%s' Unexpected status (0x%x)\n",
++				session->name, status);
+ 		}
+ 
+ 		session->state = KILL;
+ 		session->pid = -1;
+-		return pid;
+ 	}
+ 
+ 	return 0;
+@@ -443,7 +450,6 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
+ 		.fd	= daemon->signal_fd,
+ 		.events	= POLLIN,
+ 	};
+-	pid_t wpid = 0, pid = session->pid;
+ 	time_t start;
+ 
+ 	start = time(NULL);
+@@ -452,7 +458,7 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
+ 		int err = poll(&pollfd, 1, 1000);
+ 
+ 		if (err > 0) {
+-			wpid = handle_signalfd(daemon);
++			handle_signalfd(daemon);
+ 		} else if (err < 0) {
+ 			perror("failed: poll\n");
+ 			return -1;
+@@ -460,7 +466,7 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
+ 
+ 		if (start + secs < time(NULL))
+ 			return -1;
+-	} while (wpid != pid);
++	} while (session->pid != -1);
+ 
+ 	return 0;
+ }
+@@ -1344,7 +1350,7 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+ 		close(sock_fd);
+ 	if (conf_fd != -1)
+ 		close(conf_fd);
+-	if (conf_fd != -1)
++	if (signal_fd != -1)
+ 		close(signal_fd);
+ 
+ 	pr_info("daemon exited\n");
+-- 
+2.30.2
 
-
-
-Which just keeps from creating unstoppable processes today.  I am just
-not convinced that is what we want as a long term solution.
-
-Eric
