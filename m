@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AFE342F33
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E637A342F35
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhCTTR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 15:17:29 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:33433 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCTTRZ (ORCPT
+        id S229865AbhCTTSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhCTTSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 15:17:25 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DA6E922238;
-        Sat, 20 Mar 2021 20:17:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616267844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=btr13Yp+4POSyeTxRd5R5ehu+2XAC6Qyi7g35AeUOa4=;
-        b=TgwNGqO6gPJf0+cIgj6ExhDbg+IgTiQKZy2Z/SXP8utb6hFdLYuB/1Fp/5uX1txXnV9cZH
-        QtjtsY0uX0fepunadRdKwA6bTlOp3Qlwj1Q8+RgN66Ubis4vOx+r4aO2VvfenJXvZnYnKJ
-        JYgPtelBQ1tplzK2ErqWBC43SN3Yxtk=
+        Sat, 20 Mar 2021 15:18:36 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E298C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 12:18:36 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id a198so15100670lfd.7
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 12:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oVNqh986E52U93S+Xl3r6awL7z3dUtOFYc3bgu+oIXg=;
+        b=ZwgK1qvl23/gFe170eG0WMX0xqWAH7nCJr3BD91hAZ2cSNe8zVq2W14ahSXrh3wD6d
+         m2GedAPvKaiJp6gRXkow9DP84VvHm8t+f5F4GTXcZAD5QJtJWXRuAZNs5GHx+HTBX03M
+         KFEeM4tShubhnQ1pVZoZSBp+1xU0QW15i1geU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oVNqh986E52U93S+Xl3r6awL7z3dUtOFYc3bgu+oIXg=;
+        b=OTykfmFSU2vu8WxZS4HQAB7AfHR4klZhwiRX3a6cDtKv9wn7Op+NDir5pHZggCy3Fc
+         oswhkmOHs65tbVz8FMHCHVBQ2TXhlkRKLAuuMT+i2bNuXbwpWbA3fdqzD6lWAsBUpLn8
+         x5VnAkELWmrJ22zTU2a7HCv+RLamVlrEwupEHMH8g347bNDuZQv//7h+8gqfhoMzIPfu
+         RHQwnSwkn5dBN8VDxZJkXLIRpPusm31hVjfeIbp1t9wR2mGk4S3GP39nhHuSK4xIVwRy
+         YIzNqRKDqnB5ZCUmGFZI+t6RHlUaasbIe6T1JZQlZox+btFAasInpFRO4m9Q3fANP+z5
+         TZfg==
+X-Gm-Message-State: AOAM533RJidxSbmHpmSyHIzojmLxc+7flB6a5zaxMXjSskiPH3kyPyGN
+        za4T1FlA/DqUakDAzePaoL1LzQ7J846PVQ==
+X-Google-Smtp-Source: ABdhPJypY3AwcW/h4di1GSav+eerGGeYZfeKJLiiiaFVBM81YRiHUVM3MypobbwvjW1Z3q3uxtPEhg==
+X-Received: by 2002:a19:607:: with SMTP id 7mr4387624lfg.433.1616267912766;
+        Sat, 20 Mar 2021 12:18:32 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id y8sm1267885ljk.9.2021.03.20.12.18.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 12:18:31 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id m12so15104937lfq.10
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 12:18:31 -0700 (PDT)
+X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr4170310lfv.421.1616267911421;
+ Sat, 20 Mar 2021 12:18:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 20 Mar 2021 20:17:23 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
-In-Reply-To: <925fb92b-39da-ebc5-c0ac-6dba02628956@hisilicon.com>
-References: <20210318092406.5340-1-michael@walle.cc>
- <20210318092406.5340-3-michael@walle.cc>
- <925fb92b-39da-ebc5-c0ac-6dba02628956@hisilicon.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <94797376448f4a276dea8489b2ac9e44@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210320153832.1033687-1-axboe@kernel.dk> <m14kh5aj0n.fsf@fess.ebiederm.org>
+ <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 20 Mar 2021 12:18:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+Message-ID: <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yicong,
+On Sat, Mar 20, 2021 at 10:51 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Alternatively, make it not use
+> CLONE_SIGHAND|CLONE_THREAD at all, but that would make it
+> unnecessarily allocate its own signal state, so that's "cleaner" but
+> not great either.
 
-Am 2021-03-20 05:16, schrieb Yicong Yang:
-> On 2021/3/18 17:24, Michael Walle wrote:
->> Add support to show the name and JEDEC identifier as well as to dump 
->> the
->> SFDP table. Not all flashes list their SFDP table contents in their
->> datasheet. So having that is useful. It might also be helpful in bug
->> reports from users.
->> 
->> The idea behind the sysfs module is also to have raw access to the SPI
->> NOR flash device registers, which can also be useful for debugging.
-> 
-> I like the idea to dump the sfdp data,it will make debug easier.
-> should it go in debugfs?
-> we already have debugfs files for partname and partid of the flash.
+Thinking some more about that, it would be problematic for things like
+the resource counters too. They'd be much better shared.
 
-I've seen that, but thats for the MTD subsystem and is per MTD. Well,
-one could add an own debugfs for spi-nor, but I still fear it might
-not be available just when its needed. Of course a developer can
-easily enable it for its debugging kernel. But I'm not sure if thats
-the only use case.
+Not adding it to the thread list etc might be clever, but feels a bit too scary.
 
-I'd guess it boils down to, whether there could also be tooling
-around this. Eg. think of something like "lssfdp".
+So on the whole I think Jens' minor patches to just not have IO helper
+threads accept signals are probably the right thing to do.
 
-I'd prefer sysfs, but lets hear what the maintainers think.
-
-[..]
-
->> +static ssize_t name_show(struct device *dev,
->> +			 struct device_attribute *attr, char *buf)
->> +{
->> +	struct spi_device *spi = to_spi_device(dev);
->> +	struct spi_mem *spimem = spi_get_drvdata(spi);
->> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
->> +
->> +	return sprintf(buf, "%s\n", nor->info->name);
-> 
-> perhaps sysfs_emit() instead if we go sysfs? as suggested by [1].
-
-Thanks, didn't know about that new helper.
-
--michael
+           Linus
