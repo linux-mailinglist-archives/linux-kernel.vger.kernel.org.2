@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9AD3429F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819083429E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 03:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCTCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 22:18:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23351 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCTCSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 22:18:39 -0400
-IronPort-SDR: vQmIFFW8aAnnNHDVDsCwDXPkEISVk5YHLjEsENBDhpFyKqkyd3D7cYMmRLddJIlpuaGSfMhXSN
- bbVM7tLOCcgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="186657686"
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="186657686"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 19:18:38 -0700
-IronPort-SDR: ifCZBgEbNVm4RtJUYXhspW+lf4lAWdTcukLek85azk0D9uY8kRdm8kqljVo6iT21BK1dRHFuzw
- GPjPR5c1+GDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="512681377"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Mar 2021 19:18:37 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Dave Jiang <dave.jiang@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 1/1] iommu/vt-d: Fix lockdep splat in intel_pasid_get_entry()
-Date:   Sat, 20 Mar 2021 10:09:16 +0800
-Message-Id: <20210320020916.640115-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229712AbhCTCJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 22:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhCTCJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 22:09:37 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C009C061760;
+        Fri, 19 Mar 2021 19:09:26 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso5692848pjb.4;
+        Fri, 19 Mar 2021 19:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t+Sd5TkDkbYjDcW9c09ppjohkzoeSBsR3J/XEf8zomc=;
+        b=V3n6jkfcvEkoHpTVHHc2tsWXuinWGyHZTGyhBSxnADEwW7fdQ0GnRCSIzxDcrMUqE1
+         MXBuRsJoNO9SIrYDBalKJpfL1w1cW7Lm23UPOWHdh/bYVgVJIqQdjmrygX1hbPZAdeOd
+         k03u64ZAh8tJ10tFn1Oi24srF1M3jrBPtXDm7eN3l5n1eKtYR1awFWPnql15fwOwDK9H
+         qQnqiqR0aLkoOyJW2xydHWpYHfmqIdPPq3ypQUPEd3PJlj+L3YoS9aeyDOVRXYYzPD+/
+         NFIumgHxSHpa+vgRyvYqBx4DM0CNSdjKY/AQtmYIGdMhObqXDFVIfSYuPKzeh8aI02r6
+         lv3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t+Sd5TkDkbYjDcW9c09ppjohkzoeSBsR3J/XEf8zomc=;
+        b=nXy2XMmxH9wI22y8HUoSqOX8X1j3zcAezUWThGfFYzaZsM2/Mebs3zVX/XCpKJ8BIi
+         rs2IaxJinwWBrytq8uGPDVPOafpv2vA7ClXzqy7GSFWk5yF25cGptAyCr6hRhnJPenU/
+         iWdVvzodVaI462OQaidw5fm6NU+cwaEoVdf1f9ysAdSh4JF+YMSUQ8tmoZEHweZ+qzQM
+         rIiZPOBWD+swaFBi+oKW/1aXAIPyYM1xtg+vj9qj4A5oV5u3AEMMIquN9cIuNdyaywIf
+         qL7Bf9S/WkGsVgTkPKbbeG6IP6uxn7N7K/eS+O8NIDJAKhPKbEeKzr0nTylH3ZeQknt+
+         eV2A==
+X-Gm-Message-State: AOAM533wBVz/d/0q58vFpHhAwlQ4mtSEQlnH20uDKewgi/uwvkTqqIUG
+        v3NW91gelOo5bG9KGdMLzIw=
+X-Google-Smtp-Source: ABdhPJx5mqZ3b2Tdd/JDeRtXn/WwG7dih3Ww8eM9H065TK7jFCpTnOg+ljp0WgS1SfQ142iuVpX4ZA==
+X-Received: by 2002:a17:90a:bf15:: with SMTP id c21mr1417714pjs.160.1616206165399;
+        Fri, 19 Mar 2021 19:09:25 -0700 (PDT)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id v13sm6018780pfu.54.2021.03.19.19.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 19:09:23 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 13:09:20 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 01/25] mm: Introduce struct folio
+Message-ID: <20210320020920.GD77072@balbir-desktop>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210305041901.2396498-2-willy@infradead.org>
+ <20210318235645.GB3346@balbir-desktop>
+ <20210319012527.GX3420@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319012527.GX3420@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pasid_lock is used to synchronize different threads from modifying a
-same pasid directory entry at the same time. It causes below lockdep splat.
+On Fri, Mar 19, 2021 at 01:25:27AM +0000, Matthew Wilcox wrote:
+> On Fri, Mar 19, 2021 at 10:56:45AM +1100, Balbir Singh wrote:
+> > On Fri, Mar 05, 2021 at 04:18:37AM +0000, Matthew Wilcox (Oracle) wrote:
+> > > A struct folio refers to an entire (possibly compound) page.  A function
+> > > which takes a struct folio argument declares that it will operate on the
+> > > entire compound page, not just PAGE_SIZE bytes.  In return, the caller
+> > > guarantees that the pointer it is passing does not point to a tail page.
+> > >
+> > 
+> > Is this a part of a larger use case or general cleanup/refactor where
+> > the split between page and folio simplify programming?
+> 
+> The goal here is to manage memory in larger chunks.  Pages are now too
+> small for just about every workload.  Even compiling the kernel sees a 7%
+> performance improvement just by doing readahead using relatively small
+> THPs (16k-256k).  You can see that work here:
+> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/master
+> 
+> I think Kirill, Hugh and others have done a fantastic job stretching
+> the page struct to work in shmem, but we really need a different type
+> to avoid people writing code that _looks_ right but is actually buggy.
+> So I'm starting again, this time with the folio metaphor.
 
-[   83.296538] ========================================================
-[   83.296538] WARNING: possible irq lock inversion dependency detected
-[   83.296539] 5.12.0-rc3+ #25 Tainted: G        W
-[   83.296539] --------------------------------------------------------
-[   83.296540] bash/780 just changed the state of lock:
-[   83.296540] ffffffff82b29c98 (device_domain_lock){..-.}-{2:2}, at:
-           iommu_flush_dev_iotlb.part.0+0x32/0x110
-[   83.296547] but this lock took another, SOFTIRQ-unsafe lock in the past:
-[   83.296547]  (pasid_lock){+.+.}-{2:2}
-[   83.296548]
+Thanks, makes sense, I'll take a look.
 
-           and interrupts could create inverse lock ordering between them.
-
-[   83.296549] other info that might help us debug this:
-[   83.296549] Chain exists of:
-                 device_domain_lock --> &iommu->lock --> pasid_lock
-[   83.296551]  Possible interrupt unsafe locking scenario:
-
-[   83.296551]        CPU0                    CPU1
-[   83.296552]        ----                    ----
-[   83.296552]   lock(pasid_lock);
-[   83.296553]                                local_irq_disable();
-[   83.296553]                                lock(device_domain_lock);
-[   83.296554]                                lock(&iommu->lock);
-[   83.296554]   <Interrupt>
-[   83.296554]     lock(device_domain_lock);
-[   83.296555]
-                *** DEADLOCK ***
-
-Fix it by replacing the pasid_lock with an atomic exchange operation.
-
-Reported-and-tested-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/pasid.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-Log:
-v1->v2:
-  - v1: https://lore.kernel.org/linux-iommu/20210317005834.173503-1-baolu.lu@linux.intel.com/
-  - Use retry to make code neat;
-  - Add a comment about no clear case, hence no race.
-
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 7a73385edcc0..f2c747e62c6a 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -24,7 +24,6 @@
- /*
-  * Intel IOMMU system wide PASID name space:
-  */
--static DEFINE_SPINLOCK(pasid_lock);
- u32 intel_pasid_max_id = PASID_MAX;
- 
- int vcmd_alloc_pasid(struct intel_iommu *iommu, u32 *pasid)
-@@ -259,19 +258,25 @@ struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
- 	dir_index = pasid >> PASID_PDE_SHIFT;
- 	index = pasid & PASID_PTE_MASK;
- 
--	spin_lock(&pasid_lock);
-+retry:
- 	entries = get_pasid_table_from_pde(&dir[dir_index]);
- 	if (!entries) {
- 		entries = alloc_pgtable_page(info->iommu->node);
--		if (!entries) {
--			spin_unlock(&pasid_lock);
-+		if (!entries)
- 			return NULL;
--		}
- 
--		WRITE_ONCE(dir[dir_index].val,
--			   (u64)virt_to_phys(entries) | PASID_PTE_PRESENT);
-+		/*
-+		 * The pasid directory table entry won't be freed after
-+		 * allocation. No worry about the race with free and
-+		 * clear. However, this entry might be populated by others
-+		 * while we are preparing it. Use theirs with a retry.
-+		 */
-+		if (cmpxchg64(&dir[dir_index].val, 0ULL,
-+			      (u64)virt_to_phys(entries) | PASID_PTE_PRESENT)) {
-+			free_pgtable_page(entries);
-+			goto retry;
-+		}
- 	}
--	spin_unlock(&pasid_lock);
- 
- 	return &entries[index];
- }
--- 
-2.25.1
-
+Balbir Singh.
