@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBEE342F12
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B4342F15
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhCTSrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 14:47:40 -0400
-Received: from mout.gmx.net ([212.227.17.20]:46849 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhCTSrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 14:47:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616266033;
-        bh=LuOjfQRBhHaxebGkf9teuGUSZn3FEqur6K8tG5qXzbw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=NSfDKI2FYEv4rlvO2c/VGEasauxFNeXLDT9XBpN/3AGKYEkXk1HANVmi9TSY2F/kL
-         GjCctfv90pKvApD/4WbtMi0wbmDbhjsX3+mxFPMxeTDifaI5N1wPGVyvmR03ygFqWM
-         qhW8824Xkj7EPmfOUL1cE0xlygYfIwHmVMdY5/Ww=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MdefJ-1lxIQa02AD-00Zjd1; Sat, 20
- Mar 2021 19:47:13 +0100
-Date:   Sat, 20 Mar 2021 19:47:12 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/14] Initial support for Nuvoton WPCM450 BMC SoC
-Message-ID: <YFZDMN2Y45LywFhp@latitude>
-References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
+        id S229834AbhCTS4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 14:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTS4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 14:56:00 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F8AC061574;
+        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id f12so9463560qtq.4;
+        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvMslKtKSENPG07UqFWflJuvERaKu864Oir8rwcIzrQ=;
+        b=YzHkKvURUJRIRMRZPbZ5MmbAxuYGrkpCg7BI27I3IQy748oVj0FjOKpIjzyN+9v0Ch
+         QTNatjPqYPrFkc941d7HqKkPz4q5CXIeE9BuBM5T9YqX/4BR0nH6Ic3NFsF0fMvwDFW4
+         LmrxyDKBtjHY0sm89vhm2cmA4RK2UtdzHcp7Up068wPAvmxc5UulHTjT1285IetFsIfH
+         kKGnTVO1pRyAQ2/e5B+uzanSDVZKrCnDQ3eWSIJf7UEapirOqaOiwv1p/DiKMHUQtL4e
+         b2pResjEitwt2a4PmTck7ztm6/ozEMzT+fNZmC4c/aoVh2QD7nuzboSwE3OyC6h53yzO
+         ak/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvMslKtKSENPG07UqFWflJuvERaKu864Oir8rwcIzrQ=;
+        b=ZVTbhCXo1GqHL1rzkf8jjG30Gvrusixsiu0b/rlhHkA+8zjRliw+IkxgGSqaI5Sh2I
+         EYSCDIUJ7W3kpKA9VRrLPNYJ3w8prtzNkwVwSVQh72jJ1ktOskj6RGH7WlKMRVKF/hPn
+         pr//2r9nZgbtXDzWF9GWTt6+/HFPcTIl3nJUJSQ4e77+Xiu9BzbvmdIvBFQ52X0HE6e0
+         dIGtIa2oQ130XvltgC0qPwk0ZGLxKRGWJSlOu+qbHgOfZGEovzdu5IK0TRbtWoH9jcVC
+         lRTtZ0cQJ+G/f3/QO/hfu9Arn0/RHtvfrFWIXfadAjBj1VkH1pg2U6kHopwFV5tcOMIr
+         qdpA==
+X-Gm-Message-State: AOAM5312grgBZ/KO+ONVRkgv44tRJIIm9pIqejLV3+e+kq6GCDx0QsGn
+        nEDsYQbmntjWjKcvznc65ik/YIk0cpBcvKRa
+X-Google-Smtp-Source: ABdhPJyfaYMjK2lPbLYoCP9ThVyQNowWBKtbmdjCV0q7PZmvI5/bHiza41DPIwldavCG7mqfo0CbZw==
+X-Received: by 2002:ac8:568d:: with SMTP id h13mr3885051qta.139.1616266559066;
+        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.13.205])
+        by smtp.gmail.com with ESMTPSA id f8sm6145036qth.6.2021.03.20.11.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 11:55:58 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] fs/namei.c: Mundane typo fix
+Date:   Sun, 21 Mar 2021 00:23:32 +0530
+Message-Id: <20210320185332.27937-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u+V4Hm1L7gfdagCz"
-Content-Disposition: inline
-In-Reply-To: <20210320181610.680870-1-j.neuschaefer@gmx.net>
-X-Provags-ID: V03:K1:o8+G4TVvh3KdxtyWxezJR3C4JAolmncFVIJVLrEkLtrqwecWd9p
- OKjY6SZZo2QXxEEVtO6KvB7rqC/AWy3Dz2rUOQSzYZQ7ZHhIeSTOpJ5AoRmsIgz5oTc1Z0f
- lIWHXcaBN+nrI0MYoFR2EoRvuwOaAjt0oZT1ven8FiZMt+Dx/xHZeh52aCR8t/1/zeGck3P
- Xs6+KWaS5T/bY4oJIixYg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b093PQXZp68=:pheTT2yS73H0mjRqZcfJQY
- IhFsMWInNOs/KEXtpDqYKZifUuzPtcwNtPTta4TuDqquzixrDL1kasqRk8D1VIqljfYO5nRAz
- lMy2QGXAjp/f4Ich8q6Kzu23I8BZIA6ULqG3/JXDCggWQ1et7RF++BPdWtuV3WWi8dNZEKSF9
- zqvTEu3W0y6QlT4CM470EpNXCEtKWdmmEal0u6LoHsYAoLA7vlTraNRthvL1RGeqDUisIt30Z
- sxZJu7X4cXbsqqwf8T3iu6bZ3g04tFalZZBdMiwvv7y8U3S36vOcvQDRR/vfkndD5F3aKxra9
- 0Rtl0nNK7B06RrCPkIp70dbks2GfQhBSu6toZmERZu83gwKRJLiuUnQozKWQTudeugEz3IyjU
- EVvbTNQfJrSa2ZeebLS5Ld+BHuqWwR2+tekgG+2XqKiZIupSOEN5cfQHNPMPea0eDwnmv0y4I
- P2SnWvEHJV/qKqr2LjOjoddeahuPjVDqCLAkk7lopjeO1STYrDsKvRJkm7ZIGAvaQaKDkWGBv
- pGQjcFfxYpniSctUT+7gmD9RQnAJjaVuB8h4u4ixBcYbiq2ZnyIQIleb7M37C2hDI1fPfSfkq
- qOKiPVn50LZe6hzcpLQVRaKwf0T4Hpa4c7vJ9QI30MzBy+6vu6N6XOY4UByC8KGi+yi1YFwSY
- RvbCYDMjx72LmVqELUsEUmKnRe/vRiEqpu/KgF0EDJbGt5Hf0h2LuzSiV0b5zjrcsvIryGrgp
- ENA5MYbPbH1AMnZreYBIGetw8y2Nf8Wtkts71zbQyGnu9+mtt4bzHoR8HdBdrsFFOHGQ3RXN/
- slx9/pbd9PTdg+z0BUWacF774XnP0aSaD59uR+C/IDcVVFkvvIezRaO2hc6nnX0h74SQ3745X
- AW+cMbo+l68EMjZJagpeDy6Ewi00Ap1sJ5d7mvGWk9ASb8ggP6+i6Ab+sbJr/X0UR1u0PuYUh
- PeLkQeN/G2fcqSgXdFRg0bAdvFEF2pLuisHrO+XvFzCaa+8EKE8lt+gkQivOFPkrEw7x0fZ4p
- 8XU1JYM1y6QkeeCXhZ28GIYXZNB62xaYebZnUeacm6l9CcYasd1pbamT3Ni7l8gbuqy7oA5z/
- d0Tnr2pa1e0lbpcNTrX3IzHYx3gkYLxIo5ONA0pFs5aswWEYhWH2tp38hlEOhrj7XQQmWirGI
- k0ERrJyrRZUlVoIW8DJTh2yipkWpmpw2Aj9MG/1x9qbC5wBje1zAykInEKL4epniNsJq95jB/
- ott8/6Gi/wguFRklB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---u+V4Hm1L7gfdagCz
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s/carfully/carefully/
 
-On Sat, Mar 20, 2021 at 07:15:56PM +0100, Jonathan Neusch=C3=A4fer wrote:
-> This series adds basic support for the Nuvoton WPCM450 BMC SoC. It's an o=
-lder
-> SoC but still commonly found on eBay, mostly in Supermicro X9 server boar=
-ds.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/namei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Something I forgot to mention: I wrote a bit of third-party
-documentation based on the various vendor kernel trees and it's
-available at:
+diff --git a/fs/namei.c b/fs/namei.c
+index 216f16e74351..bd0592000d87 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2045,7 +2045,7 @@ static inline unsigned int fold_hash(unsigned long x, unsigned long y)
+ #endif
 
-  https://github.com/neuschaefer/wpcm450/wiki
+ /*
+- * Return the hash of a string of known length.  This is carfully
++ * Return the hash of a string of known length.  This is carefully
+  * designed to match hash_name(), which is the more critical function.
+  * In particular, we must end by hashing a final word containing 0..7
+  * payload bytes, to match the way that hash_name() iterates until it
+--
+2.26.2
 
-
-
-Best regards,
-Jonathan Neusch=C3=A4fer
-
---u+V4Hm1L7gfdagCz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBWQzAACgkQCDBEmo7z
-X9sNUQ//QYevCWqjbbrsYVVPQWIT8JzCoGIJDIpfzMsgBsu3pkklN9zSZs/R+yH9
-O4lDdU3eHDU53sgkoOEreUR89NfqJZ+/nZQD1V5KmrNl3gDFFiuofKSDGs8ay7JA
-2Eu5oyFceIoB93QjE6JIjcYXy2eQutaui+3q5/dqqJfUwBPHCHcDygLynoXuSb1R
-q7IpkNms4PrZzcCoOd2FS81TWEsnuSwABx9n6s7SfNCn2RMMzyVsOwfPiCryleQI
-LLz8bFWaeIM+VpxGwWvOK6xPO0PMnzXL6+sl2XPakyJSc74slvw0+X2XBvzUx+tg
-oFf8IKpDcO/j7A6LS68jInhUFOp3NIIxuvFZj+pk4zOg9a4Z0jnx6jZxCNIk9K8e
-OsSK1tHf5Oyh2eJrKRNAVEE3xSjvKfGLcJFDLRpgNKEoeSDBqTdFHarOilKGHzHJ
-revhD2cryCtdcvUaaJX/TCE8KSwQVzKkpgL/xAjzxqQMpl+yTEpLQf4qUY3G9K/Q
-S00Dd/He+q9FLT8mLfwwzYdXOU3o/HNcj+lcOc320C0DVyDmQG7OU4B7DM7U7hVD
-34PhR9AswDGo01EESVuU2NZtBVn4TQYTeUsdQJLlkN9Y0/lp1C6I/BLzn6uFwkXV
-L67mVUZHLhDmV63EgRh7WhlA4wJB4Lueg8w6cEbgEAx99DIy6S4=
-=Bcqm
------END PGP SIGNATURE-----
-
---u+V4Hm1L7gfdagCz--
