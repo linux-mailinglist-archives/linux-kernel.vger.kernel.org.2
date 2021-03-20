@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EB7342DD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14406342DD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhCTPgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        id S229956AbhCTPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhCTPgG (ORCPT
+        with ESMTP id S229835AbhCTPik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:36:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C377C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m/lHHBauPJoTi+xzkV1LtzuzjqXxwKLqACh+FHnxGBU=; b=LgNJtdggLE5+sv3lPkc+znvkby
-        3o9HPbUyjQXWz0D67uM5Hq8DXEOqfzoPS1BriJnayxUccdPFZFBjJ8GZ59MQIgLT0UmmSjOZfq+t7
-        XPzE9jr9i6pNjTTXWAVsY9xuPt63vpo6PVBzWywa+1SOde3Y/fWZq9zE8SWuNxYyjQoXfG9X5N95I
-        BJGd3JjkKCXJ18sJxxR0bcGNxGiugyVAiqU5Hilm748jEQEzRw2CdZj8/6Cfzd9qSFExBx/fi1raS
-        Wkoazp9qBq+EkitD6KfVbG2f0fjFyXms8tIxNANJ0S/Dc+P1T7wJ3qKAXUh0/onqcQlZATJ/vJcsj
-        RLdL+jYw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNdcx-008zTy-0R; Sat, 20 Mar 2021 15:34:59 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D57BF9864FF; Sat, 20 Mar 2021 16:34:57 +0100 (CET)
-Date:   Sat, 20 Mar 2021 16:34:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Subject: Re: [PATCH 1/6] sched: migration changes for core scheduling
-Message-ID: <20210320153457.GX4746@worktop.programming.kicks-ass.net>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-2-joel@joelfernandes.org>
+        Sat, 20 Mar 2021 11:38:40 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FC7C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:38:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id l1so4364254plg.12
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 08:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t1wyaEbIk1qk0jXhKLmoLck1wU+dWQUF616kERbYpQs=;
+        b=Eb9qXvJiuYFJhsn0CTFvgkOQVuNoyVsIG538Q+8gMLiJ12uX5nJSUWQ2OFIF407UME
+         /KVwPO9MlD2aflU7Kh/H02L5ac5K/OaT/xP0h7ko3o5GRT56BR4ybSOJmYrrvmH9/K3o
+         Mgckj36yYUHcpfx5W9kF8MAQXeQsTkNY4nxwzKk44yA4TL++Mbquciw/RrRUoXuiFxO4
+         uWp+96cfDvFG9bvCKgwQeoG48ZJUePE0G1Z0KIWjpPRsdMjM/P9Jq9FDzxmeXF7wmUeg
+         tbPQh2FLBUUy+Dkfp1ZrOBxDNt3/yPWT/haq82NM7DtbFw+fS6arRXgtwfpViTjehJVz
+         fK9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t1wyaEbIk1qk0jXhKLmoLck1wU+dWQUF616kERbYpQs=;
+        b=rTgnuER2DMnvxFHNr7AE15+gnH+fwSWnDeUtt2ehAu2u7nNuw0eU58YQLU5B2708uU
+         CzfjcIP2en9hmFt42CO5BWO33XV3wKCWZaTjh1mR/wU/456Jk5C56dmEFMmsLgodsroa
+         cttFfGOipyDgy4wRyB8O8zW/CAEXSySiqiKE0HZeBCjSSFLaEN0tcNga85xthwBgdMkU
+         HQAK8MaStoJ3eqALzG6DZY0CvjUGgSp/nqtR8fzco5F0/8d4gYaBw88Rju7m/+dzHV+g
+         4zgvbS2QDEyl1sCnPhndbOLQSRmzt9t+98H0H5MvDbOfEogEbgZxfuthlff5wH8RDCTG
+         Y9KA==
+X-Gm-Message-State: AOAM533FNvfT2aSIRVZQb+QzoezakL04MmvyyPWUf1xOrW5qPB4R0UHT
+        5HPcbOs/TmeavhNtW7mDEi3tXg==
+X-Google-Smtp-Source: ABdhPJw3yAkRnonh4M7gT2S3CvQnqFk9tfVHpJ6jpCxpSgAsRyUL5S5j960lxdLtr05B62T2NOqntQ==
+X-Received: by 2002:a17:90a:7061:: with SMTP id f88mr4165196pjk.56.1616254719515;
+        Sat, 20 Mar 2021 08:38:39 -0700 (PDT)
+Received: from localhost.localdomain ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 2sm8658753pfi.116.2021.03.20.08.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 08:38:38 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        linux-kernel@vger.kernel.org, oleg@redhat.com
+Subject: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+Date:   Sat, 20 Mar 2021 09:38:30 -0600
+Message-Id: <20210320153832.1033687-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319203253.3352417-2-joel@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 04:32:48PM -0400, Joel Fernandes (Google) wrote:
-> @@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->  	 * We do not migrate tasks that are:
->  	 * 1) throttled_lb_pair, or
->  	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
-> -	 * 3) running (obviously), or
-> -	 * 4) are cache-hot on their current CPU.
-> +	 * 3) task's cookie does not match with this CPU's core cookie
-> +	 * 4) running (obviously), or
-> +	 * 5) are cache-hot on their current CPU.
->  	 */
->  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
->  		return 0;
-> @@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->  		return 0;
->  	}
->  
-> +	/*
-> +	 * Don't migrate task if the task's cookie does not match
-> +	 * with the destination CPU's core cookie.
-> +	 */
-> +	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-> +		return 0;
-> +
->  	/* Record that we found atleast one task that could run on dst_cpu */
->  	env->flags &= ~LBF_ALL_PINNED;
->  
+Hi,
 
-This one is too strong.. persistent imbalance should be able to override
-it.
+Been trying to ensure that we do the right thing wrt signals and
+PF_IO_WORKER threads, and I think there are two cases we need to handle
+explicitly:
+
+1) Just don't allow signals to them in general. We do mask everything
+   as blocked, outside of SIGKILL, so things like wants_signal() will
+   never return true for them. But it's still possible to send them a
+   signal via (ultimately) group_send_sig_info(). This will then deliver
+   the signal to the original io_uring owning task, and that seems a bit
+   unexpected. So just don't allow them in general.
+
+2) STOP is done a bit differently, and we should not allow that either.
+
+Outside of that, I've been looking at same_thread_group(). This will
+currently return true for an io_uring task and it's IO workers, since
+they do share ->signal. From looking at the kernel users of this, that
+actually seems OK for the cases I checked. One is accounting related,
+which we obviously want, and others are related to permissions between
+tasks. FWIW, I ran with the below and didn't observe any ill effects,
+but I'd like someone to actually think about and verify that PF_IO_WORKER
+same_thread_group() usage is sane.
+
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 3f6a0fcaa10c..a580bc0f8aa3 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -667,10 +667,17 @@ static inline bool thread_group_leader(struct task_struct *p)
+ 	return p->exit_signal >= 0;
+ }
+ 
++static inline
++bool same_thread_group_account(struct task_struct *p1, struct task_struct *p2)
++{
++	return p1->signal == p2->signal
++}
++
+ static inline
+ bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
+ {
+-	return p1->signal == p2->signal;
++	return same_thread_group_account(p1, p2) &&
++			!((p1->flags | p2->flags) & PF_IO_WORKER);
+ }
+ 
+ static inline struct task_struct *next_thread(const struct task_struct *p)
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 5f611658eeab..625110cacc2a 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -307,7 +307,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+ 	 * those pending times and rely only on values updated on tick or
+ 	 * other scheduler action.
+ 	 */
+-	if (same_thread_group(current, tsk))
++	if (same_thread_group_account(current, tsk))
+ 		(void) task_sched_runtime(current);
+ 
+ 	rcu_read_lock();
+
+
