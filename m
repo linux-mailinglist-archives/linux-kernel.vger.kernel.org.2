@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BE2342F80
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F302C342F83
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCTUZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 16:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S229926AbhCTU0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 16:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCTUYf (ORCPT
+        with ESMTP id S229766AbhCTUZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 16:24:35 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18760C061574;
-        Sat, 20 Mar 2021 13:24:35 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so11950445oto.2;
-        Sat, 20 Mar 2021 13:24:35 -0700 (PDT)
+        Sat, 20 Mar 2021 16:25:39 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B668CC061574;
+        Sat, 20 Mar 2021 13:25:39 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so9711195pjb.0;
+        Sat, 20 Mar 2021 13:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZEYqSogeM6CmZN8LR8EqpRWf1NB380pmsnwSTz6O8L8=;
-        b=b07m1OERrtyaXXEURSZRDVpkge5gIgv6JYhO/sQCqA3uPacyhXbNR7jyiihSGcf2oM
-         wToq12W9GKP9xLEUuFiPxabUQN05cIYGFA65dE1fXN2baQnZjtN8hu/jK1SBiM5F49sY
-         pusEbt14Dmn6ZA6oVdtGYvo7i9xW46ZrfchG9s9qPP5V6uG2IO2dC2hl5XJERX/sUx+8
-         jvfkcFanV6cS7B0JS/dkzxSigwPeQXcYRii9NaukUGVVp1XNNVAIE2GAWFxE8MxdLtE0
-         eCcAJRcB9PgJrZiIHUnVO37ZWsapSThn8mST2suL5q5FgIoPgJjo82Dbcsjx65AdhlNp
-         bNjA==
+        h=from:to:cc:subject:date:message-id;
+        bh=vgEHWfJxSnMvNGltZK35bv4lE0nxYTmBjGCCpSZ2qwE=;
+        b=B3AQK37gdKNg75CyXMf9iaXlGL9RQhcnBKwEe3Lieo2WwIYNmzGlinRadiAHCpxnc0
+         sct6SsVizPmtD0Wz13XUBxHWj29/ihjOzNHPe4vJiFdv+PuZ9wfPxtoMwhHdVCGWAzVp
+         ZSQfzus9F+FSLPgr9VCMTCJxxfOWtfmHHWSFicAV61A9v13xWEGqkYXMhlxOGF3l+jcj
+         0dtIy+0LVKzVOzD7uBiQQvtz1hK6bEW3K2sBNtsa1cyQIrv2cAQDFgzdEnIFWfc67xoC
+         p6PVv4It8kFPdjLMT2sk7c6yxlqJfZCBf5iH0iyF12uz8TEv82fw0JvSqY7bUq6bDFCP
+         2sHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ZEYqSogeM6CmZN8LR8EqpRWf1NB380pmsnwSTz6O8L8=;
-        b=ju8CCtatg3SNrDLEP1jLn2SkJOTHecS0/I9C1syxlt5kgZvtVJH63QGn1RaDmvYRB5
-         LDZs39Qq8/WcBA5qNTgiBUPd2VMCE3MHawELpubIlgkRIXPK//R3WpvCniTbxQkGu+xo
-         DVTCWzQlH8+iIMmK6J6Wd+/yihTYfHD6cg1jEiT/koj3opG9Fj1/51T7MYGNL/ZGHgqx
-         yPGVsBkxuZEgK//krKTrRme5s5wVpb7eMC5OfZQvs4+n0C/+FIv2RF7SFD7JS34GHoJs
-         vDUTgphF613lVsOI15u6r77YSVe0Xzs+xrfnfc9uip0T/QqPP3W2zUTmDN4v3Jrdewbw
-         Gjlg==
-X-Gm-Message-State: AOAM532AQtK/5yyyu/2lVlH6toSLzQCykV1rSO1Ogq8CjrigmYDkL/e/
-        ya+5hI1MXMplmrqtMb8hEvrC1be4i9E=
-X-Google-Smtp-Source: ABdhPJzCtSMGSfTh2EsSYTg+FzHswi0RVNxZtA+X0tFH731lMRUM3CrdvogSn66SRMGF3iWbBtk90g==
-X-Received: by 2002:a9d:197:: with SMTP id e23mr5757061ote.92.1616271874152;
-        Sat, 20 Mar 2021 13:24:34 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y11sm2049740oov.9.2021.03.20.13.24.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 13:24:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 11/14] watchdog: npcm: Add support for WPCM450
-To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        openbmc@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org
-References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
- <20210320181610.680870-12-j.neuschaefer@gmx.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <bd66894d-2ff8-f0cf-7fbc-cf4609094ef2@roeck-us.net>
-Date:   Sat, 20 Mar 2021 13:24:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210320181610.680870-12-j.neuschaefer@gmx.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vgEHWfJxSnMvNGltZK35bv4lE0nxYTmBjGCCpSZ2qwE=;
+        b=gwyVmglpHNk2WZl77BtlBEWiNCeq2KjtuJrVBGnafd1B3x/MZKrToheHxUFYXJvH0x
+         HYlFv3rH2L3NA6D8UTYu3eB8wqVQmThcybYJLmiNY8glYp7NvrOxAtiD0n3JXWCfCHRR
+         b+lINTrxVfO+J0Kcf2ra9Z5IM0CgsbQBljRWk1dg0K2wyG0s9M0F2e3rvZxK1hF8jCeg
+         Hs/oJieBLMCOpLPTxmNOMGTyb9aplyxBiONZEfYZbM2U+pCFzDXWAYt8nxVh8wVlxo7l
+         hTI0zN2ymp8M4/Ccj3V2wFoByi3VkPo8afBiFVjzkRUDi1GN4aQPpq0PwBzBX/fONIbk
+         zU4w==
+X-Gm-Message-State: AOAM532jiR58iQ5wrfJUjCB98uKQvHvaRPjKdqdIvL10vmQL/+Nsta4k
+        M7fg6AHIBoqBJs4CMa97TIY=
+X-Google-Smtp-Source: ABdhPJxXOY21EFvd4PI13TZ0reKzvM6BOPt4J0kTB4D7tg4zVYP2zKz48Khz54lVG1zBdJH1yR0q5w==
+X-Received: by 2002:a17:90a:b63:: with SMTP id 90mr5085668pjq.124.1616271938959;
+        Sat, 20 Mar 2021 13:25:38 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
+        by smtp.googlemail.com with ESMTPSA id t1sm9252938pfc.173.2021.03.20.13.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 13:25:38 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     leitao@debian.org
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com, corbet@lwn.net,
+        rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        nayna@linux.ibm.com, pfsmorigo@gmail.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: vmx: fix incorrect kernel-doc comment syntax in files
+Date:   Sun, 21 Mar 2021 01:55:25 +0530
+Message-Id: <20210320202525.12562-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/20/21 11:16 AM, Jonathan Neuschäfer wrote:
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are certain files in drivers/crypto/vmx, which follow this syntax,
+but the content inside does not comply with kernel-doc.
+Such lines were probably not meant for kernel-doc parsing, but are parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warnings from kernel-doc.
 
-Patch description goes here.
+E.g., presence of kernel-doc like comment in the header line for
+drivers/crypto/vmx/vmx.c causes this warning by kernel-doc:
 
-Guenter
+"warning: expecting prototype for Routines supporting VMX instructions on the Power 8(). Prototype was for p8_init() instead"
 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+Similarly for other files too.
 
-> ---
->  drivers/watchdog/npcm_wdt.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/watchdog/npcm_wdt.c b/drivers/watchdog/npcm_wdt.c
-> index 765577f11c8db..28a24caa2627c 100644
-> --- a/drivers/watchdog/npcm_wdt.c
-> +++ b/drivers/watchdog/npcm_wdt.c
-> @@ -229,6 +229,7 @@ static int npcm_wdt_probe(struct platform_device *pdev)
-> 
->  #ifdef CONFIG_OF
->  static const struct of_device_id npcm_wdt_match[] = {
-> +	{.compatible = "nuvoton,wpcm450-wdt"},
->  	{.compatible = "nuvoton,npcm750-wdt"},
->  	{},
->  };
-> --
-> 2.30.2
-> 
+Provide a simple fix by replacing such occurrences with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210319
+
+ drivers/crypto/vmx/aes.c     | 2 +-
+ drivers/crypto/vmx/aes_cbc.c | 2 +-
+ drivers/crypto/vmx/aes_ctr.c | 2 +-
+ drivers/crypto/vmx/aes_xts.c | 2 +-
+ drivers/crypto/vmx/ghash.c   | 2 +-
+ drivers/crypto/vmx/vmx.c     | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/crypto/vmx/aes.c b/drivers/crypto/vmx/aes.c
+index d05c02baebcf..ec06189fbf99 100644
+--- a/drivers/crypto/vmx/aes.c
++++ b/drivers/crypto/vmx/aes.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * AES routines supporting VMX instructions on the Power 8
+  *
+  * Copyright (C) 2015 International Business Machines Inc.
+diff --git a/drivers/crypto/vmx/aes_cbc.c b/drivers/crypto/vmx/aes_cbc.c
+index d88084447f1c..ed0debc7acb5 100644
+--- a/drivers/crypto/vmx/aes_cbc.c
++++ b/drivers/crypto/vmx/aes_cbc.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * AES CBC routines supporting VMX instructions on the Power 8
+  *
+  * Copyright (C) 2015 International Business Machines Inc.
+diff --git a/drivers/crypto/vmx/aes_ctr.c b/drivers/crypto/vmx/aes_ctr.c
+index 79ba062ee1c1..9a3da8cd62f3 100644
+--- a/drivers/crypto/vmx/aes_ctr.c
++++ b/drivers/crypto/vmx/aes_ctr.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * AES CTR routines supporting VMX instructions on the Power 8
+  *
+  * Copyright (C) 2015 International Business Machines Inc.
+diff --git a/drivers/crypto/vmx/aes_xts.c b/drivers/crypto/vmx/aes_xts.c
+index 9fee1b1532a4..dabbccb41550 100644
+--- a/drivers/crypto/vmx/aes_xts.c
++++ b/drivers/crypto/vmx/aes_xts.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * AES XTS routines supporting VMX In-core instructions on Power 8
+  *
+  * Copyright (C) 2015 International Business Machines Inc.
+diff --git a/drivers/crypto/vmx/ghash.c b/drivers/crypto/vmx/ghash.c
+index 14807ac2e3b9..5bc5710a6de0 100644
+--- a/drivers/crypto/vmx/ghash.c
++++ b/drivers/crypto/vmx/ghash.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/**
++/*
+  * GHASH routines supporting VMX instructions on the Power 8
+  *
+  * Copyright (C) 2015, 2019 International Business Machines Inc.
+diff --git a/drivers/crypto/vmx/vmx.c b/drivers/crypto/vmx/vmx.c
+index a40d08e75fc0..7eb713cc87c8 100644
+--- a/drivers/crypto/vmx/vmx.c
++++ b/drivers/crypto/vmx/vmx.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * Routines supporting VMX instructions on the Power 8
+  *
+  * Copyright (C) 2015 International Business Machines Inc.
+-- 
+2.17.1
 
