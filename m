@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2011A342F70
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B79342F74
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCTUE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 16:04:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229780AbhCTUEv (ORCPT
+        id S229834AbhCTUJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 16:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTUJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 16:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616270691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnGnuCZZHz4XpqGqAahLmMqXi+ESBvx9VOBJS6yQPvo=;
-        b=EZOzHxGH8HZVAlFBR1R8RwegZXIlxrcBfFMIHGYvS9lNmwkMXc1D1jBrRR4kRTis6jk+Zg
-        /ugwsnV/M29hRh2ia99BFvGFK0vrNEcDer0gCQWcxPHXu0V5yFnhFolEZJtzJa/SA0zKfX
-        wPEOIj0bnySVGydiwyQmWvu3KhXBwH4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-dFZ2k8-1MRuiUzzAptNBrg-1; Sat, 20 Mar 2021 16:04:49 -0400
-X-MC-Unique: dFZ2k8-1MRuiUzzAptNBrg-1
-Received: by mail-wr1-f69.google.com with SMTP id p12so21116362wrn.18
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:04:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pnGnuCZZHz4XpqGqAahLmMqXi+ESBvx9VOBJS6yQPvo=;
-        b=boAMxLFnvQeZtzenp60nvdgBWlP5DZRZu/25X9nQ27bEv0algsROMJJAp05Ra2W18d
-         Un2tk6TREWFDLWKRSbWjjYnq6e0ey7SLnWvQqa+0oAXVclRSpsGJ9sbgNLc0vWGpKmG0
-         7DfDqw70gMDy/6Q3/uyxroaqaPbbD/8PhZGQg0k49/g6gpX3hoH+AnKJhM6V6RkyhT41
-         9nMSOu8xdnwdNTgZg/Dd9e8C+2w1STxCsGOYafpf5XIpAEcS2m32xPlw2jspZB/aEtsI
-         gmrsDi8ywDvXMZ9ZmMHMlpPkeV6JTRhBe0w/dpNW87GCALtUWyY881B5CKBGMwwxfnuT
-         hdWQ==
-X-Gm-Message-State: AOAM533oQiTVg6ddTcOn9MDuR8Bbh/KbDiUttF3W2yKgv8BWR3oPGycH
-        2RBRCnweO7ve5sb3Mn4xLjP3jCKZzu7C5zULOrBEvWhN5CjVLejj+xSMtL6gi61lNcQGBQV2t8C
-        jB9JL/RG9qeg1OmSu0Gygb6D9
-X-Received: by 2002:a05:6000:1363:: with SMTP id q3mr10599185wrz.74.1616270688148;
-        Sat, 20 Mar 2021 13:04:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7L9ySoCVBIPu7d6xQw3Xs2Tj/PnDDoZVrDpnDuMVdcWWj5/Ke+oKKH8pTiLrVtFu6ZdfbPg==
-X-Received: by 2002:a05:6000:1363:: with SMTP id q3mr10599168wrz.74.1616270687954;
-        Sat, 20 Mar 2021 13:04:47 -0700 (PDT)
-Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
-        by smtp.gmail.com with ESMTPSA id l15sm12002303wme.43.2021.03.20.13.04.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 13:04:47 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 16:04:44 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, virtio-fs@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        vgoyal@redhat.com, jasowang@redhat.com
-Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
-Message-ID: <20210320160430-mutt-send-email-mst@kernel.org>
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
- <20210318135223.1342795-3-ckuehl@redhat.com>
- <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com>
- <00c5dce8-fc2d-6e68-e3bc-a958ca5d2342@redhat.com>
+        Sat, 20 Mar 2021 16:09:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C747C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:09:41 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB6908D3;
+        Sat, 20 Mar 2021 21:09:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616270980;
+        bh=54YnA6l0786MMgUPy84Ruh3n0/JWV766Jm/XCuHtZkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Eail8CqSdt10yknT3xISYwD++Hce7WTsNdJeFK6jv0EG5UdaNab56PMyp7aubFBSN
+         Sa75AooJS4DIWWkk9l2OfIz05s6qcoRhxsIOjYJ0kvF7BIH5NKKvsqR2roKdHz4ZTK
+         oBWbsRUmtbKfBTBwSonoD70beeIHxiLj1rYLpktg=
+Date:   Sat, 20 Mar 2021 22:08:59 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     quanyang.wang@windriver.com
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: xlnx: zynqmp: release reset to DP controller before
+ accessing DP registers
+Message-ID: <YFZWW8IPhVff/VkS@pendragon.ideasonboard.com>
+References: <20210320083739.724246-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <00c5dce8-fc2d-6e68-e3bc-a958ca5d2342@redhat.com>
+In-Reply-To: <20210320083739.724246-1-quanyang.wang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:52:14AM -0500, Connor Kuehl wrote:
-> On 3/18/21 10:17 AM, Miklos Szeredi wrote:
-> > I removed the conditional compilation and renamed the limit.  Also made
-> > virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
-> 
-> Thanks, Miklos. I think it looks better with those changes.
-> 
-> > The virtio_ring patch in this series should probably go through the respective
-> > subsystem tree.
-> 
-> Makes sense. I've CC'd everyone that ./scripts/get_maintainers.pl suggested
-> for that patch on this entire series as well. Should I resend patch #1
-> through just that subsystem to avoid confusion or wait to see if it gets
-> picked out of this series?
+Hi Quanyang,
 
-Yes pls post separately. Thanks!
+Thank you for the patch.
 
-> Thanks again,
+On Sat, Mar 20, 2021 at 04:37:39PM +0800, quanyang.wang@windriver.com wrote:
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 > 
-> Connor
+> When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
+> error log as below:
+> 
+> root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+> [   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a0000.display on minor 0
+> [   88.529906] Console: switching to colour frame buffer device 128x48
+> [   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdrm frame buffer device
+> [   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsystem driver probed
+> root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
+> [   94.023404] Console: switching to colour dummy device 80x25
+> root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+> 	<hang here>
+> 
+> This is because that in zynqmp_dp_probe it tries to access some DP
+> registers while the DP controller is still in the reset state. When
+> running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
+> zynqmp_dp_phy_exit is called to force the DP controller into the reset
+> state. Then insmod will call zynqmp_dp_probe to write to the DP registers,
+> but at this moment the DP controller isn't brought out of the reset state
+> since the function zynqmp_dp_reset(dp, false) is called later and this
+> will result the system hang.
+> 
+> Releasing the reset to DP controller before any read/write operation to it
+> will fix this issue.
+> 
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 99158ee67d02..bb45b3663d6b 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -402,10 +402,6 @@ static int zynqmp_dp_phy_init(struct zynqmp_dp *dp)
+>  		}
+>  	}
+>  
+> -	ret = zynqmp_dp_reset(dp, false);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	zynqmp_dp_clr(dp, ZYNQMP_DP_PHY_RESET, ZYNQMP_DP_PHY_RESET_ALL_RESET);
+>  
+>  	/*
+> @@ -1682,6 +1678,10 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+>  		return PTR_ERR(dp->reset);
+>  	}
+>  
+> +	ret = zynqmp_dp_reset(dp, false);
+> +	if (ret < 0)
+> +		return ret;
+> +
 
+This change looks good to me.
+
+>  	ret = zynqmp_dp_phy_probe(dp);
+>  	if (ret)
+>  		return ret;
+
+But shouldn't we call zynqmp_dp_reset(dp, true) here ? Or rather, call
+it in the error path at the end of the function, with a goto label.
+
+For symmetry, should we also move the zynqmp_dp_reset() call from
+zynqmp_dp_phy_exit() to zynqmp_dp_remove() ?
+
+-- 
+Regards,
+
+Laurent Pinchart
