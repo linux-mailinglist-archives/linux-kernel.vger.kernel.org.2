@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10631342E58
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AAB342E5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCTQZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhCTQYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:24:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B87C061574;
-        Sat, 20 Mar 2021 09:24:53 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 25E098D3;
-        Sat, 20 Mar 2021 17:24:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616257489;
-        bh=nInQQvrkhlkfJ8ZjNLVB5LPKoCqesSs+QiwQULKudDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s4st2l9ajDflvAxV+bB4+XZ3+Dc0Y6YiyDWU4uPb5zfvRq4t8hAQkTW5w/flqFFNq
-         JKht7aMyT+sR0zun2zQNVpHKmefBQpURSe1G/5ZWKKE1PqSezXrX6rs0mikEEcpZue
-         yXNOEj6rCfyFCd3mJ9zevBryUam9yaJbBvScmqbA=
-Date:   Sat, 20 Mar 2021 18:24:09 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 19/19] media: i2c: rdacm20: Re-work ov10635 reset
-Message-ID: <YFYhqXnxXIFJTYTM@pendragon.ideasonboard.com>
-References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
- <20210319164148.199192-20-jacopo+renesas@jmondi.org>
+        id S229883AbhCTQZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:25:48 -0400
+Received: from mout.gmx.net ([212.227.17.21]:40719 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229821AbhCTQZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 12:25:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616257522;
+        bh=ZpkTsQVJAs0NmjcD3kPzM+Qqlv9LHiEPdh8aPjoXU6w=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=TKFg4pfGRP4tnVOXItunWvOkHGvYjwSoE0129cCYJgIS0Jk1yAG3E2746msZq0n54
+         4e8mqrcaiBHNFnmsJhL7ivB0w2ADgjAS8IiGQqkemTajDVQ4UiLl6bSpAdvTuiDHH5
+         L/6Ri1SJLxSs1y+Bxgrqn3ZygH0Y3xWKnchIJQKQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgNh1-1ltRSY3f4R-00hyOH; Sat, 20
+ Mar 2021 17:25:21 +0100
+Date:   Sat, 20 Mar 2021 17:25:19 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Rob Herring <robh@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] dt-bindings: arm: Convert nuvoton,npcm750 binding to
+ YAML
+Message-ID: <YFYh79cydgukgTSv@latitude>
+References: <20210313175321.2515675-1-j.neuschaefer@gmx.net>
+ <20210315162338.GA973222@robh.at.kernel.org>
+ <YE+dmdBBk0BZ7BIO@latitude>
+ <CAP6Zq1hsmTQfA+EvRmJsK2UosV3YAeRqNxA+jRaeYUx5T-wE1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OByzjVDcIkp4YBkT"
 Content-Disposition: inline
-In-Reply-To: <20210319164148.199192-20-jacopo+renesas@jmondi.org>
+In-Reply-To: <CAP6Zq1hsmTQfA+EvRmJsK2UosV3YAeRqNxA+jRaeYUx5T-wE1A@mail.gmail.com>
+X-Provags-ID: V03:K1:5gJjv8CuTmoyg4ZYdvDNUl7h45WoDH2ALmkuUuiOumF3NA9yGzj
+ k/LKmhSLnK0V0J56db+X7EpdYlj6F2yYt5WqHSHylG5AtBa/2Ami/8ZnoFycfXV9RW5woQE
+ QZyfsqEtmFwa8im7O0+r4kz+ecHSR9DMco3DBfkxEe/+rWtMbx5NwH8nHCiCm+51Hj741Hw
+ 8q31mPXxMcfoU2yjnFnig==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h3bbpHIxfWU=:9Fwy92oSnTi9znW9izPVaT
+ dxpolH6gYH7XXKvbx+O8Mk97e/UqQPqLj9hpfLEy8Ww19b2Pa0JrOkeFbZXW5Zy9071HyabBH
+ G76vTjEF6JzjhP4EvA3tRFU9jrQaclid6h/VyEgzECyWGkp44eYKJO9bzRN1vbfkXizAqPl1z
+ +JhA2Q+J2HSJe1D+Kzsaag3oUc0ED1Bg2i1rLBS0911GdLhSk+oLvr16RQ73DzCPcALn7imtJ
+ H42me/ZjGCRvkAUpAv+TkT5lzsOWB5xmrD01Tomk1HJZt4Z/T2Kg+OiCSs5FJvVdDOsBuWn/G
+ tomrly+S0t551AY56p760ALloBqsoQzNMCYfDo44lk1Joo6Q0JA33jzCSUq7qFRFq7i9UBPk3
+ g315lIiFD9xzz6c8VS9KuLJ0BAQmBTbVAtz41RAuWQubMiNxhgma3RI/OmUsrDw8Pfzw4zu4c
+ WXu3S+HLyMFHOOL2WuwVXN/EBM/+NIBbQpgIjEezvaXuP7avs79kz61QP9dHgVtv0W42vnT6r
+ ERa9tYjacXJZ86Tfn/Nkr2WHtUe3J0SbTfBk97I1qsBsRYZ75lJGl7X4jT8eglsZBsyHHqd+C
+ ddLp1FyR5lkT2j2WmQwckwmEZkQu/EKws2JVPGAIsdZ8BkxkzEXvq4Vr8L2q+9RW0b1QJESkS
+ 6GdviuJx2JcNDvQLqGYka6UhUzHGP92BhewAXKwY5ufQUdhpHrityl1PSbYA0d16wem85E4Gs
+ 7HoLu77IpUyBS+ypiP/OjUHLa2dVKgj6lT8gIPm43LDf5cHoKFmYP1X230Xw85wManq2mTGeO
+ +7UKdWyhXNcv08AyAOPdrBi6aQE1N7kuc9TlBBNmWa6q5+pa81GY6TzZU+3psZze0Z1CTtUJL
+ n0uzPkGjhqCrM7fRWrRg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
 
-Thank you for the patch.
+--OByzjVDcIkp4YBkT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 19, 2021 at 05:41:48PM +0100, Jacopo Mondi wrote:
-> The OV10635 image sensor embedded in the camera module is currently
-> reset after the MAX9271 initialization with two long delays that were
-> most probably not correctly characterized.
-> 
-> Re-work the image sensor reset procedure by holding the chip in reset
-> during the MAX9271 configuration, removing the long sleep delays and
-> only wait after the chip exits from reset for 350-500 microseconds
-> interval, which is larger than the minimum (2048 * (1 / XVCLK)) timeout
-> characterized in the chip manual.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm20.c | 29 +++++++++++++++++------------
->  1 file changed, 17 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 7ed3866b5335..7ba2d0249da8 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -454,6 +454,19 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  	if (ret)
->  		return ret;
->  
-> +	/*
-> +	 * Hold OV10635 in reset during max9271 configuration. The reset signal
-> +	 * has to be asserted for at least 200 microseconds.
-> +	 */
-> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+On Tue, Mar 16, 2021 at 01:03:38PM +0200, Tomer Maimon wrote:
+> Hi,
+>=20
+> Appreciate your help Jonathan and Rob,
+>=20
+> Just seeing the following EVB device tree
+> https://github.com/torvalds/linux/blob/master/arch/arm/boot/dts/aspeed-as=
+t2500-evb.dts#L8
+>=20
+> And not a EVB board.
+> https://github.com/torvalds/linux/blob/master/arch/arm/boot/dts/aspeed-bm=
+c-facebook-cmm.dts#L9
 
-enable and clear is very cnonfusing. How about mimicking the GPIO API,
-with direction_input(), direction_output() and set_value() functions ?
-It would also be nice if the polarity could be handled in a nicer way.
-There's no GPIO request API here, but maybe a max9271_gpio_set_flags() ?
+I see.
 
-> +	if (ret)
-> +		return ret;
-> +	usleep_range(200, 500);
-> +
->  	ret = max9271_configure_gmsl_link(&dev->serializer);
->  	if (ret)
->  		return ret;
-> @@ -468,22 +481,14 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  	dev->serializer.client->addr = dev->addrs[0];
->  
->  	/*
-> -	 * Reset the sensor by cycling the OV10635 reset signal connected to the
-> -	 * MAX9271 GPIO1 and verify communication with the OV10635.
-> +	 * Release ov10635 from reset and initialize it. The image sensor
-> +	 * requires at least 2048 XVCLK cycles (85 micro-seconds at 24MHz)
-> +	 * before being available. Stay safe and wait up to 500 micro-seconds.
->  	 */
-> -	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
-> -	if (ret)
-> -		return ret;
-> -	usleep_range(10000, 15000);
-> -
->  	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->  	if (ret)
->  		return ret;
-> -	usleep_range(10000, 15000);
-> +	usleep_range(100, 500);
->  
->  	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
->  		ret = ov10635_read16(dev, OV10635_PID);
+>=20
+> but still also option V2 is good for us.
 
--- 
-Regards,
+That's good to know.
 
-Laurent Pinchart
+
+
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--OByzjVDcIkp4YBkT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBWIegACgkQCDBEmo7z
+X9u3SBAAi7yF8y7prcMxeGu6T/oC2LpqRpmxMKOL9+ltzU3sjL7us8m8fwabaXSU
+dnrzNCEBzOrbhJxG5N23t4dttdjeH8dGU3bOUGkKwsedxltrTIHaOuJCoJZeKzn9
+zYM53pYfarMiNYSPQNWhF5OPl71CyABQfeqdVK29hpVRxdAE8V8Ts9nQ1jPR+ete
+SzmvZM3tDHCDQWPDVGCIWY5UZr2BYGOFGDOEyuH0XPsTODM6yXnRLw2RvFjPRtnX
+4LGoso8IpWDoUBZEvaTXyprQZ4X5C2lcAb1FCxZ+mEjBPPhtgkcK1JVy99E6/y7A
+BhkB2Vbv7bhkCrC6GVbPx4j7a45wegkEomDANGVKvTIw3CkrxCAfpVOGQY5Tv91K
+emnFaNkRziV3/erQN52FuyYQNWJ4K58Ec7zt9GO5DZTRBXdg3GCPNf0e3mOFXLo5
+8emly5xbSqA/Rh/lwBZcHlqx2ZIUFjRdyUdwawtKL9MMyGAGxe1kECKgKxwbtY0I
+k25TpiBvJOIbJIeUkZtlO2QkbpUKwNeIEq1m/43OVtBzAT7SISu0ObakT6q4m44y
+YDpjtUo258DbO+lVrB/WpIZzE6M/nW6aCvku9ahOMXAh4i6EYzILYieb0SZi/T7D
+k/7J4twe1H9nXmeX3QkCMEMxKYG4wTbjhns1/PwdMKz0xUiMXCI=
+=s8+L
+-----END PGP SIGNATURE-----
+
+--OByzjVDcIkp4YBkT--
