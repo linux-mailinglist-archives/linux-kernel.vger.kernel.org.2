@@ -2,360 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF38534293E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A53342952
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhCTAAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhCTAAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 20:00:12 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390DCC061760;
-        Fri, 19 Mar 2021 17:00:12 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id t18so12280006ejc.13;
-        Fri, 19 Mar 2021 17:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zTafU10YQYaIjshNkbpLe+B6v0K54rZkacG7T/BzgeA=;
-        b=VkvFmmMJsSp7M5acOUl+XJW8UZaR058eC0KPor1xSnVbiiNh/7Zahi0TsMrJoUp0PR
-         BaCGBNrE/KWmk5kOaLPeOVXyGzC5Dd7O1PHmNkcBDZT778gdYjfY+87DzrefSky3vbBA
-         RUTHkEMB92cDAbbRIvmjAa/toH8/DaWosqtRkz/02e6QC4Z6G6wIjFR2XhcNVam7kNq6
-         V1tsZei3RzpMs4K8NZMEJvbyaqiUUMGShReinfHl3hj5O9GpxJpdZFJGppRpT6pWdRK0
-         NGyRrl+02lHlth/7UixVMAdvltVRHfBiSUzrm1GDVAsgJ1R7BwHPbh/I369HbdSOdSTE
-         Zzzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zTafU10YQYaIjshNkbpLe+B6v0K54rZkacG7T/BzgeA=;
-        b=G3nTAEQq9vArzVCkrfKkWyY2ejB4BMZcjkGpymEbnWwV2HfvbitSkkkSkqDNWBBR+z
-         v4/R0G29FYfVVUVDm+QPzmODzudmEYuNMICt/Mi8UE44OWA1uHsmnlyqcKmTdxYxEogk
-         8EQbp1gZe6+LjbYTI8nRJX23bwkMJSSOhn+7ZeN2qe9eogw5C4Ks4rWg8lWbYVqtGNdg
-         qOJWi6Isf/BL2RlUDL8Yx2nUzvY3cipiiAvd5hD2qdMBukZ7s+tI+c2xuoJsVtxJbj4h
-         NpflDaaMp1O7Enz8FzNKhJpcfK+8U2hF8aYyUf4yIsKN+jyo44ysOfIyNqBqH46ktB4t
-         H7VQ==
-X-Gm-Message-State: AOAM530RsAiAXpWAhVqB9n1Do8jra/o3Z4/566kqf2p0E3fWu8UDp7dC
-        yr0O0u7NhjbOfanxvdBygUyNmGD/Wuc8T2Y/l6Y=
-X-Google-Smtp-Source: ABdhPJzF7qYEup/avluFhIIVJZLCv0GDiLAOHPc2MhqDxRgx52OkzuyIwGA7dSBXmrAlSsV9WWGjeAGxX3RuwZ0ZkdA=
-X-Received: by 2002:a17:906:789:: with SMTP id l9mr7129296ejc.161.1616198409563;
- Fri, 19 Mar 2021 17:00:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319005219.13595-1-zi.yan@sent.com> <20210319005219.13595-2-zi.yan@sent.com>
-In-Reply-To: <20210319005219.13595-2-zi.yan@sent.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 19 Mar 2021 16:59:57 -0700
-Message-ID: <CAHbLzkoX80=ZBYS85hnm-iSxGXijkf0=LgzNQ7dqjLW8KNbwhQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] mm: huge_memory: debugfs for file-backed THP split.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mika Penttila <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229928AbhCTAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhCTAJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 20:09:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E041F6198B;
+        Sat, 20 Mar 2021 00:09:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616198960;
+        bh=kYfmnH5SjVc8fAC/BUvrGryxHOoTPkOeOjgYKsN4IWg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=f0bg7TFEfNvg0epPib6Q0itNW6XXiFALLomLa5QzFV/TE5CruS3K2mo+qDh2OS4bw
+         +Sd4+15DZho6LI/ocgKrcHP0AKmfp77Q8T6BsRBdfMTYgYJjaYy6M6WtA96+xQN+Ju
+         4D2y7+eDozW3tl8InSzsU75lvYey/iR1KkyAlwI+N9jyImuFgQq3N1H6H9WGgHD0fq
+         MNu++nS7Kl0h61LhbThFq0nLB7JvL1SxInNR/XXEwtZbpIMhak/gnbOHol5pIMeiAo
+         kWbU+daTC0ngOdR0N7Fpwl9+mS36dDVZdihxHBnZbBuxzVGoC3LqqEIBQ175jye4Rb
+         bq5cKWOdTRF9g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D5094626ED;
+        Sat, 20 Mar 2021 00:09:20 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 updates for 5.12-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YFTvvrxm7BxAPIP5@osiris>
+References: <YFTvvrxm7BxAPIP5@osiris>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YFTvvrxm7BxAPIP5@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-4
+X-PR-Tracked-Commit-Id: 0b13525c20febcfecccf6fc1db5969727401317d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6bfea141b3d26898705704efd18401d91afcbb0a
+Message-Id: <161619896086.24257.10163938151058929673.pr-tracker-bot@kernel.org>
+Date:   Sat, 20 Mar 2021 00:09:20 +0000
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 5:52 PM Zi Yan <zi.yan@sent.com> wrote:
->
-> From: Zi Yan <ziy@nvidia.com>
->
-> Further extend <debugfs>/split_huge_pages to accept
-> "<path>,<off_start>,<off_end>" for file-backed THP split tests since
-> tmpfs may have file backed by THP that mapped nowhere.
->
-> Update selftest program to test file-backed THP split too.
->
-> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/huge_memory.c                              | 97 ++++++++++++++++++-
->  .../selftests/vm/split_huge_page_test.c       | 79 ++++++++++++++-
->  2 files changed, 168 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9bf9bc489228..6d6537cc8c56 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3049,12 +3049,74 @@ static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
->         return ret;
->  }
->
-> +static int split_huge_pages_in_file(const char *file_path, pgoff_t off_start,
-> +                               pgoff_t off_end)
-> +{
-> +       struct filename *file;
-> +       struct file *candidate;
-> +       struct address_space *mapping;
-> +       int ret = -EINVAL;
-> +       pgoff_t off_cur;
-> +       unsigned long total = 0, split = 0;
-> +
-> +       file = getname_kernel(file_path);
-> +       if (IS_ERR(file))
-> +               return ret;
-> +
-> +       candidate = file_open_name(file, O_RDONLY, 0);
-> +       if (IS_ERR(candidate))
-> +               goto out;
-> +
-> +       pr_info("split file-backed THPs in file: %s, offset: [0x%lx - 0x%lx]\n",
-> +                file_path, off_start, off_end);
-> +
-> +       mapping = candidate->f_mapping;
-> +
-> +       for (off_cur = off_start; off_cur < off_end;) {
-> +               struct page *fpage = pagecache_get_page(mapping, off_cur,
-> +                                               FGP_ENTRY | FGP_HEAD, 0);
-> +
-> +               if (xa_is_value(fpage) || !fpage) {
-> +                       off_cur += PAGE_SIZE;
-> +                       continue;
-> +               }
-> +
-> +               if (!is_transparent_hugepage(fpage)) {
-> +                       off_cur += PAGE_SIZE;
-> +                       goto next;
-> +               }
-> +               total++;
-> +               off_cur = fpage->index + thp_size(fpage);
-> +
-> +               if (!trylock_page(fpage))
-> +                       goto next;
-> +
-> +               if (!split_huge_page(fpage))
-> +                       split++;
-> +
-> +               unlock_page(fpage);
-> +next:
-> +               put_page(fpage);
-> +       }
-> +
-> +       filp_close(candidate, NULL);
-> +       ret = 0;
-> +
-> +       pr_info("%lu of %lu file-backed THP split\n", split, total);
-> +out:
-> +       putname(file);
-> +       return ret;
-> +}
-> +
-> +#define MAX_INPUT_BUF_SZ 255
+The pull request you sent on Fri, 19 Mar 2021 19:38:54 +0100:
 
-As I mentioned in the first patch, you may move this to the first
-patch. I don't think it is necessary to add some code then remove it
-right in the following patch.
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-4
 
-Otherwise the patch looks good to me. Reviewed-by: Yang Shi
-<shy828301@gmail.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6bfea141b3d26898705704efd18401d91afcbb0a
 
-> +
->  static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
->                                 size_t count, loff_t *ppops)
->  {
->         static DEFINE_MUTEX(split_debug_mutex);
->         ssize_t ret;
-> -       char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
-> +       /* hold pid, start_vaddr, end_vaddr or file_path, off_start, off_end */
-> +       char input_buf[MAX_INPUT_BUF_SZ];
->         int pid;
->         unsigned long vaddr_start, vaddr_end;
->
-> @@ -3064,11 +3126,40 @@ static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
->
->         ret = -EFAULT;
->
-> -       memset(input_buf, 0, 80);
-> +       memset(input_buf, 0, MAX_INPUT_BUF_SZ);
->         if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
->                 goto out;
->
-> -       input_buf[79] = '\0';
-> +       input_buf[MAX_INPUT_BUF_SZ - 1] = '\0';
-> +
-> +       if (input_buf[0] == '/') {
-> +               char *tok;
-> +               char *buf = input_buf;
-> +               char file_path[MAX_INPUT_BUF_SZ];
-> +               pgoff_t off_start = 0, off_end = 0;
-> +               size_t input_len = strlen(input_buf);
-> +
-> +               tok = strsep(&buf, ",");
-> +               if (tok) {
-> +                       strncpy(file_path, tok, MAX_INPUT_BUF_SZ);
-> +               } else {
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               ret = sscanf(buf, "0x%lx,0x%lx", &off_start, &off_end);
-> +               if (ret != 2) {
-> +                       pr_info("ret: %ld\n", ret);
-> +                       ret = -EINVAL;
-> +                       goto out;
-> +               }
-> +               ret = split_huge_pages_in_file(file_path, off_start, off_end);
-> +               if (!ret)
-> +                       ret = input_len;
-> +
-> +               goto out;
-> +       }
-> +
->         ret = sscanf(input_buf, "%d,0x%lx,0x%lx", &pid, &vaddr_start, &vaddr_end);
->         if (ret == 1 && pid == 1) {
->                 split_huge_pages_all();
-> diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
-> index 2c0c18e60c57..ebdf2d738978 100644
-> --- a/tools/testing/selftests/vm/split_huge_page_test.c
-> +++ b/tools/testing/selftests/vm/split_huge_page_test.c
-> @@ -7,11 +7,13 @@
->  #define _GNU_SOURCE
->  #include <stdio.h>
->  #include <stdlib.h>
-> +#include <stdarg.h>
->  #include <unistd.h>
->  #include <inttypes.h>
->  #include <string.h>
->  #include <fcntl.h>
->  #include <sys/mman.h>
-> +#include <sys/mount.h>
->  #include <malloc.h>
->  #include <stdbool.h>
->
-> @@ -24,6 +26,9 @@ uint64_t pmd_pagesize;
->  #define SMAP_PATH "/proc/self/smaps"
->  #define INPUT_MAX 80
->
-> +#define PID_FMT "%d,0x%lx,0x%lx"
-> +#define PATH_FMT "%s,0x%lx,0x%lx"
-> +
->  #define PFN_MASK     ((1UL<<55)-1)
->  #define KPF_THP      (1UL<<22)
->
-> @@ -87,13 +92,16 @@ static int write_file(const char *path, const char *buf, size_t buflen)
->         return (unsigned int) numwritten;
->  }
->
-> -static void write_debugfs(int pid, uint64_t vaddr_start, uint64_t vaddr_end)
-> +static void write_debugfs(const char *fmt, ...)
->  {
->         char input[INPUT_MAX];
->         int ret;
-> +       va_list argp;
-> +
-> +       va_start(argp, fmt);
-> +       ret = vsnprintf(input, INPUT_MAX, fmt, argp);
-> +       va_end(argp);
->
-> -       ret = snprintf(input, INPUT_MAX, "%d,0x%lx,0x%lx", pid, vaddr_start,
-> -                       vaddr_end);
->         if (ret >= INPUT_MAX) {
->                 printf("%s: Debugfs input is too long\n", __func__);
->                 exit(EXIT_FAILURE);
-> @@ -183,7 +191,8 @@ void split_pmd_thp(void)
->         }
->
->         /* split all THPs */
-> -       write_debugfs(getpid(), (uint64_t)one_page, (uint64_t)one_page + len);
-> +       write_debugfs(PID_FMT, getpid(), (uint64_t)one_page,
-> +               (uint64_t)one_page + len);
->
->         for (i = 0; i < len; i++)
->                 if (one_page[i] != (char)i) {
-> @@ -274,7 +283,7 @@ void split_pte_mapped_thp(void)
->         }
->
->         /* split all remapped THPs */
-> -       write_debugfs(getpid(), (uint64_t)pte_mapped,
-> +       write_debugfs(PID_FMT, getpid(), (uint64_t)pte_mapped,
->                       (uint64_t)pte_mapped + pagesize * 4);
->
->         /* smap does not show THPs after mremap, use kpageflags instead */
-> @@ -300,6 +309,65 @@ void split_pte_mapped_thp(void)
->         close(kpageflags_fd);
->  }
->
-> +void split_file_backed_thp(void)
-> +{
-> +       int status;
-> +       int fd;
-> +       ssize_t num_written;
-> +       char tmpfs_template[] = "/tmp/thp_split_XXXXXX";
-> +       const char *tmpfs_loc = mkdtemp(tmpfs_template);
-> +       char testfile[INPUT_MAX];
-> +
-> +       status = mount("tmpfs", tmpfs_loc, "tmpfs", 0, "huge=always,size=4m");
-> +
-> +       if (status) {
-> +               printf("Unable to create a tmpfs for testing\n");
-> +               exit(EXIT_FAILURE);
-> +       }
-> +
-> +       status = snprintf(testfile, INPUT_MAX, "%s/thp_file", tmpfs_loc);
-> +       if (status >= INPUT_MAX) {
-> +               printf("Fail to create file-backed THP split testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       fd = open(testfile, O_CREAT|O_WRONLY);
-> +       if (fd == -1) {
-> +               perror("Cannot open testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       /* write something to the file, so a file-backed THP can be allocated */
-> +       num_written = write(fd, tmpfs_loc, sizeof(tmpfs_loc));
-> +       close(fd);
-> +
-> +       if (num_written < 1) {
-> +               printf("Fail to write data to testing file\n");
-> +               goto cleanup;
-> +       }
-> +
-> +       /* split the file-backed THP */
-> +       write_debugfs(PATH_FMT, testfile, 0, 1024);
-> +
-> +       status = unlink(testfile);
-> +       if (status)
-> +               perror("Cannot remove testing file\n");
-> +
-> +cleanup:
-> +       status = umount(tmpfs_loc);
-> +       if (status) {
-> +               printf("Unable to umount %s\n", tmpfs_loc);
-> +               exit(EXIT_FAILURE);
-> +       }
-> +       status = rmdir(tmpfs_loc);
-> +       if (status) {
-> +               perror("cannot remove tmp dir");
-> +               exit(EXIT_FAILURE);
-> +       }
-> +
-> +       printf("file-backed THP split test done, please check dmesg for more information\n");
-> +}
-> +
->  int main(int argc, char **argv)
->  {
->         if (geteuid() != 0) {
-> @@ -313,6 +381,7 @@ int main(int argc, char **argv)
->
->         split_pmd_thp();
->         split_pte_mapped_thp();
-> +       split_file_backed_thp();
->
->         return 0;
->  }
-> --
-> 2.30.2
->
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
