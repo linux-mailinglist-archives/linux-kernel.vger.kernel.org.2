@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B4342F15
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E76342F18
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 20:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhCTS4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 14:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhCTS4A (ORCPT
+        id S229871AbhCTTBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 15:01:19 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:48335 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhCTTBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 14:56:00 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F8AC061574;
-        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id f12so9463560qtq.4;
-        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tvMslKtKSENPG07UqFWflJuvERaKu864Oir8rwcIzrQ=;
-        b=YzHkKvURUJRIRMRZPbZ5MmbAxuYGrkpCg7BI27I3IQy748oVj0FjOKpIjzyN+9v0Ch
-         QTNatjPqYPrFkc941d7HqKkPz4q5CXIeE9BuBM5T9YqX/4BR0nH6Ic3NFsF0fMvwDFW4
-         LmrxyDKBtjHY0sm89vhm2cmA4RK2UtdzHcp7Up068wPAvmxc5UulHTjT1285IetFsIfH
-         kKGnTVO1pRyAQ2/e5B+uzanSDVZKrCnDQ3eWSIJf7UEapirOqaOiwv1p/DiKMHUQtL4e
-         b2pResjEitwt2a4PmTck7ztm6/ozEMzT+fNZmC4c/aoVh2QD7nuzboSwE3OyC6h53yzO
-         ak/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tvMslKtKSENPG07UqFWflJuvERaKu864Oir8rwcIzrQ=;
-        b=ZVTbhCXo1GqHL1rzkf8jjG30Gvrusixsiu0b/rlhHkA+8zjRliw+IkxgGSqaI5Sh2I
-         EYSCDIUJ7W3kpKA9VRrLPNYJ3w8prtzNkwVwSVQh72jJ1ktOskj6RGH7WlKMRVKF/hPn
-         pr//2r9nZgbtXDzWF9GWTt6+/HFPcTIl3nJUJSQ4e77+Xiu9BzbvmdIvBFQ52X0HE6e0
-         dIGtIa2oQ130XvltgC0qPwk0ZGLxKRGWJSlOu+qbHgOfZGEovzdu5IK0TRbtWoH9jcVC
-         lRTtZ0cQJ+G/f3/QO/hfu9Arn0/RHtvfrFWIXfadAjBj1VkH1pg2U6kHopwFV5tcOMIr
-         qdpA==
-X-Gm-Message-State: AOAM5312grgBZ/KO+ONVRkgv44tRJIIm9pIqejLV3+e+kq6GCDx0QsGn
-        nEDsYQbmntjWjKcvznc65ik/YIk0cpBcvKRa
-X-Google-Smtp-Source: ABdhPJyfaYMjK2lPbLYoCP9ThVyQNowWBKtbmdjCV0q7PZmvI5/bHiza41DPIwldavCG7mqfo0CbZw==
-X-Received: by 2002:ac8:568d:: with SMTP id h13mr3885051qta.139.1616266559066;
-        Sat, 20 Mar 2021 11:55:59 -0700 (PDT)
-Received: from localhost.localdomain ([138.199.13.205])
-        by smtp.gmail.com with ESMTPSA id f8sm6145036qth.6.2021.03.20.11.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 11:55:58 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] fs/namei.c: Mundane typo fix
-Date:   Sun, 21 Mar 2021 00:23:32 +0530
-Message-Id: <20210320185332.27937-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 20 Mar 2021 15:01:12 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lNgqU-001gPD-7c; Sat, 20 Mar 2021 20:01:10 +0100
+Received: from p5b13afd4.dip0.t-ipconnect.de ([91.19.175.212] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lNgqU-0003fI-1B; Sat, 20 Mar 2021 20:01:10 +0100
+Subject: Re: [PATCH] IA64: Trivial spelling fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210320182347.21440-1-unixbhaskar@gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <a3f98ec2-46e4-c7be-5e73-96c768a35bef@physik.fu-berlin.de>
+Date:   Sat, 20 Mar 2021 20:01:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210320182347.21440-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.175.212
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bhaskar!
 
-s/carfully/carefully/
+On 3/20/21 7:23 PM, Bhaskar Chowdhury wrote:
+> 
+> s/seralize/serialize/ .....three different places
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  arch/ia64/kernel/pal.S | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/ia64/kernel/pal.S b/arch/ia64/kernel/pal.S
+> index d3e22c018b68..06d01a070aae 100644
+> --- a/arch/ia64/kernel/pal.S
+> +++ b/arch/ia64/kernel/pal.S
+> @@ -86,7 +86,7 @@ GLOBAL_ENTRY(ia64_pal_call_static)
+>  	mov ar.pfs = loc1
+>  	mov rp = loc0
+>  	;;
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+>  	br.ret.sptk.many b0
+>  END(ia64_pal_call_static)
+>  EXPORT_SYMBOL(ia64_pal_call_static)
+> @@ -194,7 +194,7 @@ GLOBAL_ENTRY(ia64_pal_call_phys_static)
+>  	mov rp = loc0
+>  	;;
+>  	mov ar.rsc=loc4			// restore RSE configuration
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+>  	br.ret.sptk.many b0
+>  END(ia64_pal_call_phys_static)
+>  EXPORT_SYMBOL(ia64_pal_call_phys_static)
+> @@ -252,7 +252,7 @@ GLOBAL_ENTRY(ia64_pal_call_phys_stacked)
+>  	mov rp = loc0
+>  	;;
+>  	mov ar.rsc=loc4			// restore RSE configuration
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+>  	br.ret.sptk.many b0
+>  END(ia64_pal_call_phys_stacked)
+>  EXPORT_SYMBOL(ia64_pal_call_phys_stacked)
+> --
+> 2.26.2
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for fixing this. Btw, we usually use all-lowercase letters for architecture
+names in the Linux kernel, so it should probably be "ia64: Trivial spelling fixes".
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 216f16e74351..bd0592000d87 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2045,7 +2045,7 @@ static inline unsigned int fold_hash(unsigned long x, unsigned long y)
- #endif
+And the easiest way to get those fixes into the kernel would be through Andrew Morton's
+tree.
 
- /*
-- * Return the hash of a string of known length.  This is carfully
-+ * Return the hash of a string of known length.  This is carefully
-  * designed to match hash_name(), which is the more critical function.
-  * In particular, we must end by hashing a final word containing 0..7
-  * payload bytes, to match the way that hash_name() iterates until it
---
-2.26.2
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
