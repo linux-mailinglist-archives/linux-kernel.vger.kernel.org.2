@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB6F342BF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0CD342BD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhCTLQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S231156AbhCTLND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCTLQM (ORCPT
+        with ESMTP id S230015AbhCTLMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:16:12 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95427C06178A;
-        Sat, 20 Mar 2021 04:16:12 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id a143so1066279ybg.7;
-        Sat, 20 Mar 2021 04:16:12 -0700 (PDT)
+        Sat, 20 Mar 2021 07:12:12 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541A9C06178A;
+        Sat, 20 Mar 2021 03:33:49 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id c17so10356262ilj.7;
+        Sat, 20 Mar 2021 03:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nbCYfgiOtpWpaHW3UiZCAz94mqRPq79OLUJJtrbRI7I=;
-        b=saJooZ4QrInaIbgLt/0TQ3KfUuHi93CFnRBZGfCVMa169EMUxKgXQEsup67xw7zWVm
-         RGn7HXCP1/e9rX6n64NQE9GC9WpxKcp1MUjjSpZI/jUTlTsavzKi4WTwDwuuWI/90ZUk
-         IBsgecR4tixEFWVm+XoBpKDnrP3BBvCBU2IBqM+Ce6WKzN7PSp09e1JSks8tTMsQtbXe
-         HrBzJyBsiGnvEJf0BM1ARZS+zEXTmiUAAvQ9fW0A6MUIHA2nvddHnzZLPtO1vlp6qiS2
-         +HusYyo48lAx7b34v70zwVsInwcnDMOn3J6mpHtXq2KiCXXPDUup0TWz97tM0E6O+vTh
-         WVOA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xaGlk2i4k4xjrgxv5GCvNM+Vcz1bxTHvvKwGlfw7Mxg=;
+        b=XLrdFwzHA9lCbJzFer+aRn0FKRE/KKbYX4paLFhRsCU2OWn6bg2V7Yt782lecLwIZk
+         3xS9SaJa8ecMvkxrRrr96vjN/5P1nrseX36JbMKoUgG1XoQNf4yILRr08n9P4dEAfVFN
+         ndy4fyuIlVjfPCPb0nTDXTp9/yZ98DMLPTEmc6Tu4u2WC4ydAlu2VyjCOKNGhhXI/W2s
+         GBKYw49T0i/luT3ABpb9oQcw5F/5XFbwNiSbXBknAC+ifddjsWO/UXPe88yJBfBeVWKC
+         xt53hOZwHqc6xDLuhN4pc90scHhqsAZEdskl3yoVoGdd07GWJGYzw1ntC6TizMIDIweT
+         QiMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbCYfgiOtpWpaHW3UiZCAz94mqRPq79OLUJJtrbRI7I=;
-        b=q11rnOvQiYV6fKGo8DecoBZvKSr9M+nVfF1xH7M65NOciZIO6J5KiQ550Ak5UEwfOx
-         me1R2O1fELdgUKiKZOSXZMR1GpL9RZDWAub1AcRm5jhmT6JeUlm+3+OUix3nDvLK4UOJ
-         mOoQjG+P8+lqZyfAeDmyc5TsofYtN2V1FkhwMs9vNFcC63KnULVJFQpcBRdxmsGNLTlS
-         dxBX2AshUFXKS7noV/I4I9pACkaGXsCY/EQtKvp9RO1wbRj1Wxp8+qMuRkuwvC5bOymA
-         apRRcVKmcLqAOqHqwwWGb44+a+54cBifsSk50k4EcDRxMMkH5FXKuUN/k4mEUDq81j1/
-         K3FQ==
-X-Gm-Message-State: AOAM530mGMNhEerMqwr9Albqiu7MYnF98k6j+FWCW90kp3j+zgs5iWoc
-        iWDlMtHnPWBnRannXZRFSsngrp0GZ8hASOubS7R+sH4t1Z4q5Q==
-X-Google-Smtp-Source: ABdhPJwpVYQmBzRJ8WziWDH454+t7Zpo8F7a5QFtiwS8atfzbqFD0ejdoeiqA29DPIqFSKL5k22epEdp7XU49U3ZH2Y=
-X-Received: by 2002:a5b:449:: with SMTP id s9mr11448764ybp.115.1616222982003;
- Fri, 19 Mar 2021 23:49:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319175950.509fcbd0@canb.auug.org.au> <YFS1h6h+71sRlwFR@osiris>
- <20210320162734.1630cc55@elm.ozlabs.ibm.com> <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
-In-Reply-To: <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 20 Mar 2021 07:49:31 +0100
-Message-ID: <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Mar 19
-To:     Stephen Rothwell <sfr@rothwell.id.au>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xaGlk2i4k4xjrgxv5GCvNM+Vcz1bxTHvvKwGlfw7Mxg=;
+        b=lnw//37UHz+DnQbZD8lQaFYQTtvUwf6wSXiRJaVBFG9/OMO5m9H5UnwT6m86sjJiPe
+         q7DkEYF6xfu3C3iThF0wBdWJeRrj5SJquyg3LPkxENp53y4XzaJxgfo/7/XUevAewPbf
+         Jm7ldOl0ZB2PJQWub1Z8o4EmHoZdzBf9r3ofvL3JZiutxFUlSD9lG1w8nW4ARwZxUYrT
+         jLdfzJ2StO9X9e/BQXBaYKiScCfKNgmlJ978DOj0O9uS72fzirFNT2ULwtmyDabxmWcn
+         rhvz2jaBFGXVemAfkntH8QAVTesl5YVyxNDk0RddiMZsRjcsdRptv7E5YbE+hHtcZm52
+         hnRw==
+X-Gm-Message-State: AOAM5305GlFXow+kdY5w8wp3D6irHr/ejPG3aHW0zTNsjM6qBmrNtfJu
+        QQizhdZGZxN2gfaQvXzaI+3I5+SP7yPfJA==
+X-Google-Smtp-Source: ABdhPJxhsvRW3v+zrvOebXyKVredO5FCmhgmS1lkDZIvenC/aYsSzP3zHXlvcArWWKvhynF18VCdNQ==
+X-Received: by 2002:a63:a547:: with SMTP id r7mr15162795pgu.186.1616223211846;
+        Fri, 19 Mar 2021 23:53:31 -0700 (PDT)
+Received: from ?IPv6:2405:201:600d:a089:1ce8:18d9:6e3d:8c29? ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
+        by smtp.gmail.com with ESMTPSA id i7sm7513423pfq.184.2021.03.19.23.53.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 23:53:31 -0700 (PDT)
+Subject: Re: [RFC] scripts: kernel-doc: avoid warnings due to initial
+ commented lines in file
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Markus Heiser <markus.heiser@darmarit.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Daniel Axtens <dja@axtens.net>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210309125324.4456-1-yashsri421@gmail.com>
+ <8959bf29-9ee1-6a1d-da18-f440232864f3@darmarit.de>
+ <c673e76f-72db-bbee-39d6-f5428e765173@gmail.com>
+ <871rcg2p8g.fsf@meer.lwn.net>
+ <CAKXUXMzwTp1H_vokVEAJSnmm7jNHfWzhhmLfpcrrBD9b8ak+dA@mail.gmail.com>
+ <878s6kto3g.fsf@meer.lwn.net>
+ <CAKXUXMxWOvM5HRwmAAWEsqQc2k6_ReqRw0uD=VANLO5D7OpFtg@mail.gmail.com>
+ <87o8fgpbpx.fsf@meer.lwn.net>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <99a21e10-266e-b997-7048-c29a570afe0b@gmail.com>
+Date:   Sat, 20 Mar 2021 12:23:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87o8fgpbpx.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 7:07 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> Sorry for that, and thanks a lot for taking a look. For the Rust
-> support I had to increase a few limits, mainly the symbol length. Let
-> me check and I'll report back.
+On 18/3/21 11:48 pm, Jonathan Corbet wrote:
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+> 
+>> Yeah, and as this line-counting is really just a poor man's
+>> heuristics, we might just be better to really turn this heuristics
+>> into a dedicated cleanup warning script, then we can check for more
+>> indicators, such as "does it contain the word Copyright" somewhere in
+>> the kernel-doc comment, which tells us even more that this is not a
+>> kernel-doc as we would expect it.
+> 
+> I really don't think we need that kind of heuristic.  The format of
+> kerneldoc comments is fairly rigid; it shouldn't be too hard to pick out
+> the /** comments that don't fit that format, right?  Am I missing
+> something there?
+> 
+> Thanks,
+> 
+> jon
+> 
 
-Reproduced on s390. However, under defconfig, one also needs to revert
-kernel/livepatch/core.c to avoid triggering the assert, i.e.:
+Thanks for the inputs Lukas and Jonathan. I shall try to come up with
+something.
 
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index a33f3dcde593..eed280fae433 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -18,7 +18,7 @@
- #endif
-
- /* Chosen so that structs with an unsigned long line up. */
--#define MAX_PARAM_PREFIX_LEN (256 - sizeof(unsigned long))
-+#define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
-
- #define __MODULE_INFO(tag, name, info)                                   \
-        static const char __UNIQUE_ID(name)[]                             \
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index 080ebb94d012..1e1699cc3fd6 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -213,7 +213,7 @@ static int klp_resolve_symbols(Elf64_Shdr
-*sechdrs, const char *strtab,
-         * we use the smallest/strictest upper bound possible (248, based on
-         * the current definition of MODULE_NAME_LEN) to prevent overflows.
-         */
--       BUILD_BUG_ON(MODULE_NAME_LEN < 248 || KSYM_NAME_LEN != 512);
-+       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 512);
-
-        relas = (Elf_Rela *) relasec->sh_addr;
-        /* For each rela in this klp relocation section */
-@@ -227,7 +227,7 @@ static int klp_resolve_symbols(Elf64_Shdr
-*sechdrs, const char *strtab,
-
-                /* Format: .klp.sym.sym_objname.sym_name,sympos */
-                cnt = sscanf(strtab + sym->st_name,
--                            ".klp.sym.%247[^.].%511[^,],%lu",
-+                            ".klp.sym.%55[^.].%511[^,],%lu",
-                             sym_objname, sym_name, &sympos);
-                if (cnt != 3) {
-                        pr_err("symbol %s has an incorrectly formatted name\n",
-
-Cheers,
-Miguel
+Thanks
+Aditya
