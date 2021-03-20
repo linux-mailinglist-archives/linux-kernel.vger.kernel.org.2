@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D3E342E4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C3F342E53
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCTQSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:18:30 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47100 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCTQS1 (ORCPT
+        id S229952AbhCTQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:20:14 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:34810 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhCTQTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:18:27 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 35EF18D3;
-        Sat, 20 Mar 2021 17:18:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616257106;
-        bh=9jcusMGa/y+S8wJ82CkMxUncDCQ1MlgmDfai7+e/V9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d0SVlBQc7WxVJ9aP2eXyGwryzJmD70GZ4yQ40oB0pQly1IV9FGz5Pf49Ok9rH6a6+
-         3U5jhIkcT8vfYIHKUDu9zJELsHiLTeTTGLHoQ6qT/T+ZaDz3tmYb1GOm1Ncr1Ov5BG
-         AnaC0yjadPlK4mk0Ggt9OBCAqjkcbvmclZ23zMYk=
-Date:   Sat, 20 Mar 2021 18:17:46 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 16/19] media: i2c: rdacm20: Replace goto with a loop
-Message-ID: <YFYgKgBIJbVP9KhM@pendragon.ideasonboard.com>
-References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
- <20210319164148.199192-17-jacopo+renesas@jmondi.org>
+        Sat, 20 Mar 2021 12:19:38 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNeK7-00FJur-86; Sat, 20 Mar 2021 10:19:35 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNeK4-0002L4-Py; Sat, 20 Mar 2021 10:19:34 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Stefan Metzmacher <metze@samba.org>
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+        <20210320153832.1033687-2-axboe@kernel.dk>
+Date:   Sat, 20 Mar 2021 11:18:29 -0500
+In-Reply-To: <20210320153832.1033687-2-axboe@kernel.dk> (Jens Axboe's message
+        of "Sat, 20 Mar 2021 09:38:31 -0600")
+Message-ID: <m1eeg9bxyi.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210319164148.199192-17-jacopo+renesas@jmondi.org>
+Content-Type: text/plain
+X-XM-SPF: eid=1lNeK4-0002L4-Py;;;mid=<m1eeg9bxyi.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18CIZY+/GAkzRU0WK1K+zdRzn1Dnv8x+DQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMNoVowels,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4981]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Jens Axboe <axboe@kernel.dk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1748 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (0.8%), b_tie_ro: 12 (0.7%), parse: 0.95
+        (0.1%), extract_message_metadata: 16 (0.9%), get_uri_detail_list: 1.02
+        (0.1%), tests_pri_-1000: 24 (1.4%), tests_pri_-950: 1.30 (0.1%),
+        tests_pri_-900: 1.10 (0.1%), tests_pri_-90: 1502 (85.9%), check_bayes:
+        1500 (85.8%), b_tokenize: 4.7 (0.3%), b_tok_get_all: 6 (0.4%),
+        b_comp_prob: 1.77 (0.1%), b_tok_touch_all: 1482 (84.8%), b_finish:
+        1.20 (0.1%), tests_pri_0: 176 (10.1%), check_dkim_signature: 0.48
+        (0.0%), check_dkim_adsp: 2.3 (0.1%), poll_dns_idle: 0.81 (0.0%),
+        tests_pri_10: 2.3 (0.1%), tests_pri_500: 7 (0.4%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [PATCH 1/2] signal: don't allow sending any signals to PF_IO_WORKER threads
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+Jens Axboe <axboe@kernel.dk> writes:
 
-Thank you for the patch.
+> They don't take signals individually, and even if they share signals with
+> the parent task, don't allow them to be delivered through the worker
+> thread.
 
-On Fri, Mar 19, 2021 at 05:41:45PM +0100, Jacopo Mondi wrote:
-> During the camera module initialization the image sensor PID is read to
-> verify it can correctly be identified. The current implementation is
-> rather confused and uses a loop implemented with a label and a goto.
-> 
-> Replace it with a more compact for() loop.
-> 
-> No functional changes intended.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+This is silly I know, but why do we care?
+
+The creds should be reasonably in-sync with the rest of the threads.
+
+There are other threads that will receive the signal, especially when
+you worry about group_send_sig_info.  Which signal sending code paths
+are actually a problem.
+
+> Reported-by: Stefan Metzmacher <metze@samba.org>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 > ---
->  drivers/media/i2c/rdacm20.c | 29 +++++++++++++----------------
->  1 file changed, 13 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 7bdcfafa6c10..760705dd2918 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -59,6 +59,8 @@
->   */
->  #define OV10635_PIXEL_RATE		(44000000)
+>  kernel/signal.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index ba4d1ef39a9e..730ecd3d6faf 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -833,6 +833,9 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
 >  
-> +#define OV10635_PID_TIMEOUT		3
-> +
->  static const struct ov10635_reg {
->  	u16	reg;
->  	u8	val;
-> @@ -438,7 +440,7 @@ static int rdacm20_get_fmt(struct v4l2_subdev *sd,
->  static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  {
->  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
-> -	unsigned int retry = 3;
-> +	unsigned int i;
->  	int ret;
+>  	if (!valid_signal(sig))
+>  		return -EINVAL;
+> +	/* PF_IO_WORKER threads don't take any signals */
+> +	if (t->flags & PF_IO_WORKER)
+> +		return -EPERM;
 >  
->  	/*
-> @@ -478,23 +480,18 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  		return ret;
->  	usleep_range(10000, 15000);
->  
-> -again:
-> -	ret = ov10635_read16(dev, OV10635_PID);
-> -	if (ret < 0) {
-> -		if (retry--)
-> -			goto again;
-> +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
-
-As commented on a previous patch, this macro is used here only, I would
-have made it local.
-
-> +		ret = ov10635_read16(dev, OV10635_PID);
-> +		if (ret == OV10635_VERSION)
-> +			break;
-> +		else if (ret >= 0)
-> +			/* Sometimes we get a successful read but a wrong ID. */
-> +			dev_dbg(dev->dev, "OV10635 ID mismatch (%d)\n", ret);
->  
-> -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
-> -			ret);
-> -		return -ENXIO;
-> +		usleep_range(1000, 2000);
->  	}
-> -
-> -	if (ret != OV10635_VERSION) {
-> -		if (retry--)
-> -			goto again;
-> -
-> -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
-> -			ret);
-
-Blank line ?
-
-> +	if (i == OV10635_PID_TIMEOUT) {
-> +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
->  		return -ENXIO;
->  	}
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+>  	if (!si_fromuser(info))
+>  		return 0;
