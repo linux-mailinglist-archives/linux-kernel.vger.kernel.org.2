@@ -2,110 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B32342F95
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41288342F99
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 21:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCTUo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 16:44:29 -0400
-Received: from mout.gmx.net ([212.227.15.18]:42147 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhCTUoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 16:44:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616273041;
-        bh=I1uxDkqVHbCR5GFqrDLurMaSGLta0rEs3GRT85AXsPI=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MzsCcUtFxDJcnbKACYU2oKKsK87EVr7b0IlG6b9q5r1wyyR2X2rN2HBXfHA+0Bm1L
-         16Bxh+kfBcpvwSWsCSHVPBjd3n6lqFCoNtFLTtfByfmTJgy+F6HiXeSN/z9/jQ3+lm
-         YyBdTUoECLThF9/DwoswUPJr61aci3LcMZst7KyA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma20k-1l9MSz0vps-00W0d8; Sat, 20
- Mar 2021 21:44:01 +0100
-Date:   Sat, 20 Mar 2021 21:43:59 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Tomer Maimon <tmaimon77@gmail.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Benjamin Fair <benjaminfair@google.com>
-Subject: Re: [PATCH 11/14] watchdog: npcm: Add support for WPCM450
-Message-ID: <YFZej3Eg6yfCeGwC@latitude>
-References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
- <20210320181610.680870-12-j.neuschaefer@gmx.net>
- <bd66894d-2ff8-f0cf-7fbc-cf4609094ef2@roeck-us.net>
+        id S229815AbhCTUxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 16:53:55 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:57138 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTUxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 16:53:24 -0400
+Received: by mail-il1-f198.google.com with SMTP id g9so11254228ilq.23
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:53:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4V27qZ8HGyrQu+l3shguVQUVaWwB04qajz95OS6c1nY=;
+        b=b16RnJtnvRauhpIUQRusqEsldzEdXYnNA/7b6YyMfUqZNHNbOGKyjDTZDDHZRZDQVK
+         QguamR8Dk+IIVgzpy6Y+Xs60infLt4BnQsW0Maw4yKMYHJaum8HbZIbStcfbU7psrp9M
+         ymtqOdRiD/Wo9QvOdPEG2AeQTkcr0zQO4CxYb3ZsDM+LTcoDXmzxXe55kb177UWeeiT5
+         fMw57QVq9E8bcBu138v8DGhaVQ31t1kr9qCsUa9hBrlavk82JnQ+ajgZLM8PnGD7Ix1Z
+         drugxb6p5qdPWHsYPrLfA8SqGWwuBwm1wjyT5qtZM1Rp7E4tYNs13+tSozbDqeU8/qvG
+         CsJA==
+X-Gm-Message-State: AOAM531/rTBNhJmn3dTm3DMK6X9pkSj+IErjxOKW3tSnJXP84op8sddM
+        UftV6Nb8pMcd2bB7ZmuLGXhDqkFwNcicUJiSO2POCXfqTBYa
+X-Google-Smtp-Source: ABdhPJx5niHz0GajqLEPAJmIyP55isEXpo/am+K2V0qoyfLIArUbxx/bntc1KqdEVVQVW6KgquGX88cpc3UHpX62X5RxAPMZETch
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Wy8EjUemgdhkONYP"
-Content-Disposition: inline
-In-Reply-To: <bd66894d-2ff8-f0cf-7fbc-cf4609094ef2@roeck-us.net>
-X-Provags-ID: V03:K1:z6wSN01V5RzuYpjYHcKMiN3aHNuJ+jErDxcJ+YqN6xL+k03BK3c
- 6HM6wRMf5oj0qXdD6t3o9yhyfz6gGxYUM8dvJJ7eQomrhbeQCz+kyi7PrAvwY5fW5WUqYNf
- 4Q9j05nHfNMqTxolzY137kzJt25TN/kbb0z5Df9k/OdkWGctWA0DXeFEsXSe/7/gc6yzEfN
- KAMaoSxIrfgGEb/IF7qBA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Lv1DmPc7Kdw=:kSZD6xA/UQCj6o/jl8YIZ1
- EVtHt0jue9Bl2V9Mmrj6R3b5MGYCU586DR2FSy7thVv9U/GzzVulCsvLYKMHplMINV9ekvZFh
- XlwJvIbAxaec0LmkNRAwm78LroNxEThL7eCes29JZ7OmRP0xb2DIuWm1Ej6CkkeTneOKRrx+1
- h4fiP32HZeHF8mw0aH+gkyc5TCdLDYVVtZs/WEjNDcvQWNDJaIWcX4cLBVbxlxSJ831KkjVmn
- w71JBHRu4jsXif5uIjWvJwzGlwy9mE33PzRoRQErKJSOdieHALBRDPsK59ShgpZRojUGmdLuY
- 4ap36by0WGd4z2zxAfU42PctoXmQd+F5073Xo7IC8a/BKWko5wRd1j5jWtx+CfXgz61TDKmkZ
- vmxM1FkLWfI5m4KbKs7DWaHDsmCvpwRB6DJ6nTqDlEDskbaPZeD3n6VzUNdN2mwY1aw1aanTy
- OA867lEDdmXJ3u7OZhYrQD8LhI1eBnuke60ERqqRsVoX1w3OXA+PXcjIXkIKiK/1nLCeAVnwM
- rvEkEloygtODM4YKGmF9FQKxEpSJ4yhRdJNlMTbOxLCUcL9P9Tn1KZ4RNELzwUb6dtMiKfcHM
- F/wFkE1F6Ogvux2t4SCNoHxGzvWYlWqKZPU+i81PcU+LLngwHAuZU+2RSWXS3Sgl7oX1xQVCt
- Xoo+cA1U4W8vw6azIVZAMW50FEtERYY5/abJzfbF91SOi3riD3rCaqdwf24oETkJ/Bz0WHg9Y
- QUmYcjEmrrARFMI965ED+pHSagjqIooODe4L1IzN/DkLRNHwdUav11vteGzMB1clsx1uW8zCp
- X8rcpsr1D7mijnwNmQWkh0efO8isvUOc8ZKRTcNFzWTpy66ty7zSr0X5pxx/lcJlqL1VSlbWE
- E9tPLQptBkIymV9u1o+lCKfmw/OcQ2V/TCkFwQmbCTZ0GIIJGxg/ZcrZ11C11JjZluxA93RLD
- tVZy7gGnDFZ5aKSzGxPZKgrh5ltjdXc5I0zcsmtv+dDMcnPUYRZcPbs9nfm5eQglIOWDXUhpG
- jsbJo9Z7QXl/9q7P15on40TDRuwh98RleguptGH/3/wZ0JgcQzYVe5Lk6oa8PBMEiGreqAi8j
- PPGUmWCNZJcBb81Ayl5JNA/tHbKmxMl+kYRD0A9ZXevKgyVo8eYUjI3g6DCRLbbHvZx0ydZgt
- 6rqVwKyjScqvkdV1sZvrjC4pCAJBdUiBfIUGD0GRfD4b7aoOWIjhpB55YHweEatQ17PG4EnPb
- JLqZhZe0vt3ywM0Wh
+X-Received: by 2002:a92:da82:: with SMTP id u2mr6832094iln.301.1616273602363;
+ Sat, 20 Mar 2021 13:53:22 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 13:53:22 -0700
+In-Reply-To: <00000000000053da9405bd7d2644@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000edc8ba05bdfe052d@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
+From:   syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
---Wy8EjUemgdhkONYP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16889906d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6abda3336c698a07
+dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dfe8bed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155a117cd00000
 
-On Sat, Mar 20, 2021 at 01:24:31PM -0700, Guenter Roeck wrote:
-> On 3/20/21 11:16 AM, Jonathan Neusch=C3=A4fer wrote:
->=20
-> Patch description goes here.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com
 
-Ah right, I forgot to add one. I'll fix it in the next iteration.
+==================================================================
+BUG: KASAN: use-after-free in bdev_nr_sectors include/linux/genhd.h:266 [inline]
+BUG: KASAN: use-after-free in disk_part_iter_next+0x49d/0x530 block/genhd.c:206
+Read of size 8 at addr ffff88803268d0a8 by task syz-executor193/10255
 
+CPU: 0 PID: 10255 Comm: syz-executor193 Not tainted 5.12.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ bdev_nr_sectors include/linux/genhd.h:266 [inline]
+ disk_part_iter_next+0x49d/0x530 block/genhd.c:206
+ partition_overlaps+0x96/0x200 block/partitions/core.c:425
+ bdev_add_partition+0x66/0x130 block/partitions/core.c:444
+ blkpg_do_ioctl+0x2d0/0x340 block/ioctl.c:43
+ blkpg_ioctl block/ioctl.c:60 [inline]
+ blkdev_ioctl+0x577/0x6d0 block/ioctl.c:548
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1667
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445739
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffca5947308 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000445739
+RDX: 0000000020000240 RSI: 0000000000001269 RDI: 0000000000000003
+RBP: 00007ffca5947380 R08: 000000000000ece4 R09: 000000000000ece4
+R10: 0023706f6f6c2f76 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffca5947370 R14: 00007ffca5947360 R15: 00007ffca594732c
 
-Jonathan
+Allocated by task 10192:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ __kasan_slab_alloc+0x75/0x90 mm/kasan/common.c:460
+ kasan_slab_alloc include/linux/kasan.h:223 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2915 [inline]
+ kmem_cache_alloc+0x155/0x370 mm/slub.c:2920
+ bdev_alloc_inode+0x18/0x80 fs/block_dev.c:795
+ alloc_inode+0x61/0x230 fs/inode.c:234
+ new_inode_pseudo fs/inode.c:928 [inline]
+ new_inode+0x27/0x2f0 fs/inode.c:957
+ bdev_alloc+0x20/0x2f0 fs/block_dev.c:885
+ add_partition+0x1ab/0x880 block/partitions/core.c:346
+ bdev_add_partition+0xb6/0x130 block/partitions/core.c:449
+ blkpg_do_ioctl+0x2d0/0x340 block/ioctl.c:43
+ blkpg_ioctl block/ioctl.c:60 [inline]
+ blkdev_ioctl+0x577/0x6d0 block/ioctl.c:548
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1667
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
---Wy8EjUemgdhkONYP
-Content-Type: application/pgp-signature; name="signature.asc"
+Freed by task 0:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3177
+ i_callback+0x3f/0x70 fs/inode.c:223
+ rcu_do_batch kernel/rcu/tree.c:2559 [inline]
+ rcu_core+0x74a/0x12f0 kernel/rcu/tree.c:2794
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
 
------BEGIN PGP SIGNATURE-----
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ destroy_inode+0x129/0x1b0 fs/inode.c:289
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x57e/0x810 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+ disk_part_iter_exit block/genhd.c:235 [inline]
+ disk_part_iter_next+0x9a/0x530 block/genhd.c:202
+ blk_drop_partitions+0x10a/0x180 block/partitions/core.c:541
+ bdev_disk_changed+0x238/0x430 fs/block_dev.c:1246
+ __loop_clr_fd+0x7c7/0xff0 drivers/block/loop.c:1271
+ lo_release+0x1ac/0x1f0 drivers/block/loop.c:1923
+ __blkdev_put+0x54e/0x800 fs/block_dev.c:1588
+ blkdev_put+0x92/0x580 fs/block_dev.c:1641
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1649
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBWXoMACgkQCDBEmo7z
-X9tPiRAAvkv6tfjOOgM95MG2HhT2PytoRTq2mFRgcZ2Hl+ZrPMtcm9nAEa3Lvz4e
-Xuf+zBSF4iebdp5WY1paCHAvM+l23mn3F4HDldEWu7l9vFfysOvDxuaIeMVihC3q
-g8cfx7DQfXAMe+R8sdyAbE52lR8ZVSzTWiYh2Lkb23t3zGvtoxtfvcG9IITpXyLP
-SWiKl18uHRcMSHPEpB0blgBabE0BkO0Om1Tjsgi/h2Jahxwwio4unsyps/F7YAqi
-N8zmr164rt8AIJlFJVED8xpkm/94VJbmJdqpMMsGV0i/itGVHQ4RSHdqe3G3nlWo
-GxkJyGrXY6pFD1WfvdyG2SwyQ2zAwhtqn678sLZ8sc5uamkezzvp0AUofgoMSYI7
-ebi+l421mQe6fPwyJSufFJ8pDoIa7ohjOJOSpM9wOoyzQSD5RQwDL+JY560PY80i
-zN6VS/1/V423GRQxXW0dJ4UdEWtZlfm3r1mwfRFY8kW9SeiT7BVqVrrq0ydG86HN
-jejPBByNfDjjtxdGcJhRBO5lwN1Li8d4fR4w0mw1FrBQXm1UGGVSAxsO1/iWRKqe
-iEw2xCpVHICnOmQwO+mW4/blErFBuSw6nnQ77zHzgYJI1syy2sbBKKcO4vmq199F
-lMr4mOvpuDxtotGlQcqpdvRZxpb2oBjNVohTIc/sl6v2CyNeZrA=
-=F2JL
------END PGP SIGNATURE-----
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ destroy_inode+0x129/0x1b0 fs/inode.c:289
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x57e/0x810 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+ disk_part_iter_exit block/genhd.c:235 [inline]
+ disk_part_iter_next+0x9a/0x530 block/genhd.c:202
+ blk_drop_partitions+0x10a/0x180 block/partitions/core.c:541
+ bdev_disk_changed+0x238/0x430 fs/block_dev.c:1246
+ __blkdev_get+0x86c/0xa30 fs/block_dev.c:1350
+ blkdev_get_by_dev fs/block_dev.c:1454 [inline]
+ blkdev_get_by_dev+0x26c/0x600 fs/block_dev.c:1422
+ blkdev_reread_part block/ioctl.c:100 [inline]
+ blkdev_common_ioctl+0x137e/0x17e0 block/ioctl.c:508
+ blkdev_ioctl+0x1ef/0x6d0 block/ioctl.c:577
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1667
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
---Wy8EjUemgdhkONYP--
+The buggy address belongs to the object at ffff88803268d080
+ which belongs to the cache bdev_cache of size 2792
+The buggy address is located 40 bytes inside of
+ 2792-byte region [ffff88803268d080, ffff88803268db68)
+The buggy address belongs to the page:
+page:ffffea0000c9a200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x32688
+head:ffffea0000c9a200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 ffffea0005110a00 0000000200000002 ffff8880109bdb40
+raw: 0000000000000000 00000000800b000b 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88803268cf80: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
+ ffff88803268d000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88803268d080: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                  ^
+ ffff88803268d100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88803268d180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
