@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0069B34301C
+	by mail.lfdr.de (Postfix) with ESMTP id 71CCD34301D
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhCTWm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 18:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
+        id S230203AbhCTWm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 18:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhCTWmB (ORCPT
+        with ESMTP id S230313AbhCTWmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:42:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7FCC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4mDsL15abTqOqk7vZ4xYCrnDfgqfrdW7pgSkeCPBCaY=; b=ff1dQ5SO1IOX3GCqwxUc2DiqIv
-        92REu42OwWBMdUoGVpqkqy97OZM2t951WjCMi4tcKE1MBkJ8jyfTNGD6lGsR4n4Ww7NKbcjFbTuXz
-        LFg5HlUPeeJ7rareEj9CslUbMzzDNr8gnea2ZrHgqHp3RtCSnGt7ZLoVgF97+cj3dnjwIpydy3jU7
-        GWw3Og9gzmkuFUUI8fBATo0StNYmbGBWjbkBxOLx3X/iMmzbMI48gYHvA1deLGMwP6OKe4mkNeXsc
-        KEslviC+PB/9OkS7uZADatHRsJ6AM7YUsA2MhYUpZ+PRV10aL+iAwxoNtJGMUww0MpKw72yA2/zPh
-        33vgAScQ==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNkHt-0024j2-Jd; Sat, 20 Mar 2021 22:41:42 +0000
-Date:   Sat, 20 Mar 2021 15:41:41 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: epapr: A typo fix
-In-Reply-To: <20210320213932.22697-1-unixbhaskar@gmail.com>
-Message-ID: <58285cd-cc1e-3988-2753-a8eaae9e419@bombadil.infradead.org>
-References: <20210320213932.22697-1-unixbhaskar@gmail.com>
+        Sat, 20 Mar 2021 18:42:12 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108E7C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:42:12 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id s21so6442214pjq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CP6XWAgVpuegbTUMFWEzWCVzLKWLQ4kM5wh2fwuAa3k=;
+        b=QCoTt0q8o50hCJ8UjJQemjoANIbbaJDpuwoPqbATB6EIz/Pc1vN3X3dOSSwWRYMSrc
+         7cmtlIO7o/9ZmKite6RZZc4mmsKvit/GK4IFTFH4gZ623/ccyPh389sYimYUUWVpHsHG
+         AwgQu2we0zKfZXoNLiqsJlAZqIzTTIc2c5QdNsk7SiD8ugQjuiFpUWKr3s7VegBr5X1A
+         ktzseNUXTTtGnCN21Ai41CmbWirMAGVSK45KLItke2XKfLxCNi+w9kQwM01NmsRv4Vgx
+         z5oJ3HJteK0zPWM6lQrgkWy8g2TOMDagQQ5YtNa1Q0uJuFt13UQkkaIhCU7PsfHrm1cG
+         pPzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CP6XWAgVpuegbTUMFWEzWCVzLKWLQ4kM5wh2fwuAa3k=;
+        b=irPcJ3s0HE27xeqrfonVm/QnYb9IClRgcZynhQ+c59fA0cFA4ImyMp1+yQMMdmKOYY
+         tVipYNa13GY8BMHte5VV5n1q8xhXd3f520AI/HHnmxXzC+gAkeNcggbHob12FkTOBFvY
+         pcpedjohn/LP6yJnNtC8fe3ZR+F0hXVp6qoP52wJEJDbGTID8SIDNiaCYqTukb1v+8SW
+         WWo1ZF/jXJRb0HsZtm1zHvzkm+p8ybQm2jDkTtZa+BmOMzUaQyGQmmjn3iX25juY7Lri
+         gyXrkUmm/QpF2S/F2wZVe9QpO7LobamJ1YU1RI+NxPjkn1hfGNlTuuNc+ketIkPW8XFa
+         ZS3A==
+X-Gm-Message-State: AOAM531kDibYA6AnKcBygwSULT9brJK6VvAkpl35yEvwok5ks5RETiPC
+        CRchGMVxunY+9WJXo4WFbzkYOA==
+X-Google-Smtp-Source: ABdhPJx0He7mkEzKdzieiot3buPG3NUDE5uB5sDIpiCJP0xJE8B/hnR/XxQxOQl9Z8opYTIIdHRlkA==
+X-Received: by 2002:a17:90a:5898:: with SMTP id j24mr5336476pji.110.1616280131349;
+        Sat, 20 Mar 2021 15:42:11 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id b9sm8679749pgn.42.2021.03.20.15.42.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 15:42:10 -0700 (PDT)
+Subject: Re: [PATCH 1/2] signal: don't allow sending any signals to
+ PF_IO_WORKER threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Stefan Metzmacher <metze@samba.org>
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+ <20210320153832.1033687-2-axboe@kernel.dk> <m1eeg9bxyi.fsf@fess.ebiederm.org>
+ <CAHk-=wjLMy+J20ZSBec4iarw2NeSu5sWXm6wdMH59n-e0Qe06g@mail.gmail.com>
+ <m1czvt8q0r.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <43f05d70-11a9-d59a-1eac-29adc8c53894@kernel.dk>
+Date:   Sat, 20 Mar 2021 16:42:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_154141_669336_4759A38C 
-X-CRM114-Status: GOOD (  12.73  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/parmeters/parameters/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <m1czvt8q0r.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/20/21 3:38 PM, Eric W. Biederman wrote:
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
+> 
+>> On Sat, Mar 20, 2021 at 9:19 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>>
+>>> The creds should be reasonably in-sync with the rest of the threads.
+>>
+>> It's not about credentials (despite the -EPERM).
+>>
+>> It's about the fact that kernel threads cannot handle signals, and
+>> then get caught in endless loops of "if (sigpending()) return
+>> -EAGAIN".
+>>
+>> For a normal user thread, that "return -EAGAIN" (or whatever) will end
+>> up returning an error to user space - and before it does that, it will
+>> go through the "oh, returning to user space, so handle signal" path.
+>> Which will clear sigpending etc.
+>>
+>> A thread that never returns to user space fundamentally cannot handle
+>> this. The sigpending() stays on forever, the signal never gets
+>> handled, the thread can't do anything.
+>>
+>> So delivering a signal to a kernel thread fundamentally cannot work
+>> (although we do have some threads that explicitly see "oh, if I was
+>> killed, I will exit" - think things like in-kernel nfsd etc).
+> 
+> I agree that getting a kernel thread to receive a signal is quite
+> tricky.  But that is not what the patch affects.
+> 
+> The patch covers the case when instead of specifying the pid of the
+> process to kill(2) someone specifies the tid of a thread.  Which implies
+> that type is PIDTYPE_TGID, and in turn the signal is being placed on the
+> t->signal->shared_pending queue.  Not the thread specific t->pending
+> queue.
+> 
+> So my question is since the signal is delivered to the process as a
+> whole why do we care if someone specifies the tid of a kernel thread,
+> rather than the tid of a userspace thread?
 
+Right, that's what this first patch does, and in all honesty, it's not
+required like the 2/2 patch is. I do think it makes it more consistent,
+though - the threads don't take signals, period. Allowing delivery from
+eg kill(2) and then pass it to the owning task of the io_uring is
+somewhat counterintuitive, and differs from earlier kernels where there
+was no relationsship between that owning task and the async worker
+thread.
 
-On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+That's why I think the patch DOES make sense. These threads may share a
+personality with the owning task, but I don't think we should be able to
+manipulate them from userspace at all. That includes SIGSTOP, of course,
+but also regular signals.
 
->
-> s/parmeters/parameters/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Hence I do think we should do something like this.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+-- 
+Jens Axboe
 
-
-> ---
-> arch/powerpc/include/asm/epapr_hcalls.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/include/asm/epapr_hcalls.h b/arch/powerpc/include/asm/epapr_hcalls.h
-> index c99ba08a408d..cdf3c6df5123 100644
-> --- a/arch/powerpc/include/asm/epapr_hcalls.h
-> +++ b/arch/powerpc/include/asm/epapr_hcalls.h
-> @@ -65,7 +65,7 @@
->  * but the gcc inline assembly syntax does not allow us to specify registers
->  * on the clobber list that are also on the input/output list.  Therefore,
->  * the lists of clobbered registers depends on the number of register
-> - * parmeters ("+r" and "=r") passed to the hypercall.
-> + * parameters ("+r" and "=r") passed to the hypercall.
->  *
->  * Each assembly block should use one of the HCALL_CLOBBERSx macros.  As a
->  * general rule, 'x' is the number of parameters passed to the assembly
-> --
-> 2.26.2
->
->
