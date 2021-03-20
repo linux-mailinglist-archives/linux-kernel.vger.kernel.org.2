@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6766C342AA0
+	by mail.lfdr.de (Postfix) with ESMTP id D95AD342AA1
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 06:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCTE6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 00:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCTE5k (ORCPT
+        id S229942AbhCTE6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 00:58:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229583AbhCTE5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 00:57:40 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD51C061761;
-        Fri, 19 Mar 2021 21:57:40 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id h3so7277289pfr.12;
-        Fri, 19 Mar 2021 21:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pKaorJcxqHmWLsdkc7AjkYdzrCa5R9G29rvcEX/TjMY=;
-        b=eG0CbR4t8qEXoLgI3sqKQcYJOPFabLrwpHioqOGoYpUOwdRR2LPyRi/+YUTtqywDbF
-         6Bi/8RMKQydNG4M7lTmyfayAKkSHYdZe5WiI4nVBxKMgX6V/bbSJVFoZhL1dfz7wAtEq
-         /lFsYm6ShUGU5IwXDuzUQDGBxnK+TJe7OrVcCXWgjbvGdy1p4nSNrEDCv5UbtpWbVzN/
-         l3tLGqg4+6DFSeECGD9V9kK/nw4PbwwsHcbWwSG9CW6yb/NNjGzsGhMgXAAfPNC9XMDY
-         n783kkZDZQv+kd8ZA+/QZpPGuB735vsA+ncT92k9pRgPQwQ9ZIN89DG0p41GrsjuucUx
-         jlng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pKaorJcxqHmWLsdkc7AjkYdzrCa5R9G29rvcEX/TjMY=;
-        b=MR2Vxc/FKZy23dzMthpdugHA5/lNbLYpaZfcD3/PEkV/M7YM/9EqCjcV4yF9ZqvKCc
-         IXd2Ug2xs6PdJ/g3+aXlw5OJst2XPxmzC1RaJU5QgOWXNkJuKLEM5pqXaqdlzi5n4Aag
-         5wtxRmwNTZeYKemU/ItVqGkrUqGw9hfVzMuVv1n1dJAnALYgSs3vQpfUuVXbou3WP2EL
-         mKhuhEd/gtUVcBTMRgUe2DTj4osqrUcUdXBDm2YePDx5bn3ruuoAKV5baPEPIkwfFuCU
-         Kcp8pNuJs1pSWqQZ4ApW7qpDonfF45FN8c6ZhWNKDWTEzLO7xZFGBswMcgExcBh29rsu
-         djwg==
-X-Gm-Message-State: AOAM5314T5YwrB2nUaKq4YfKnoeHfkNytvWgXnu4oeT4OBDcg7jelpcs
-        srUzgof3Hhm6iikeMN+d8sY=
-X-Google-Smtp-Source: ABdhPJxYTjYyI/r0AvdJpfRjWq2J/veKJmRZrPdsAWlKAGKDg+ozYCqiUgzKh1VKtK8yPweGmD96nw==
-X-Received: by 2002:a63:df09:: with SMTP id u9mr14350990pgg.64.1616216259743;
-        Fri, 19 Mar 2021 21:57:39 -0700 (PDT)
-Received: from localhost.localdomain ([223.71.18.62])
-        by smtp.googlemail.com with ESMTPSA id t10sm6789176pjf.30.2021.03.19.21.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 21:57:39 -0700 (PDT)
-From:   kehuanlin <chgokhl@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kehuanlin@fishsemi.com, kehuanlin <chgokhl@gmail.com>
-Subject: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-Date:   Sat, 20 Mar 2021 12:57:20 +0800
-Message-Id: <20210320045720.11872-1-chgokhl@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Sat, 20 Mar 2021 00:57:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616216261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J3dVHYyPLLYK+/fjLt1QByORvvHqzjgGQxzlyWvSTq0=;
+        b=LrSSZtt0wVwLgb4eU1I74xQz4CVbd+GhUEIQ4S6RBBjrM6P14SWYud8szG2crHVOFGptOq
+        03Q2KdJYnZQ1pfIxjBHekRfZf9mQyROm6ojNw3e5nKFXLZYoYfKEWOrGsph6ID2I9+UxP+
+        GcczKzAWv+UAliQT6p8kS5gi+wCs3l0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-t7vHDpVgNUa3n5WbSuuKqA-1; Sat, 20 Mar 2021 00:57:39 -0400
+X-MC-Unique: t7vHDpVgNUa3n5WbSuuKqA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86B041007467;
+        Sat, 20 Mar 2021 04:57:37 +0000 (UTC)
+Received: from thuth.remote.csb (ovpn-112-13.ams2.redhat.com [10.36.112.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AB445C1D1;
+        Sat, 20 Mar 2021 04:57:32 +0000 (UTC)
+Subject: Re: [PATCH v1 1/2] s390/kvm: split kvm_s390_real_to_abs
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210319193354.399587-1-imbrenda@linux.ibm.com>
+ <20210319193354.399587-2-imbrenda@linux.ibm.com>
+From:   Thomas Huth <thuth@redhat.com>
+Message-ID: <fa583ab0-36ac-47a7-7fa3-4ce88c518488@redhat.com>
+Date:   Sat, 20 Mar 2021 05:57:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319193354.399587-2-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rpm_resume() will call parent's resume callback recursively.
-Since mmc_host has no its own pm_runtime callbacks, the mmc devices
-may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
-device with pm_runtime_no_callbacks can fix the issue.
+On 19/03/2021 20.33, Claudio Imbrenda wrote:
+> A new function _kvm_s390_real_to_abs will apply prefixing to a real address
+> with a given prefix value.
+> 
+> The old kvm_s390_real_to_abs becomes now a wrapper around the new function.
+> 
+> This is needed to avoid code duplication in vSIE.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> ---
+>   arch/s390/kvm/gaccess.h | 23 +++++++++++++++++------
+>   1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+> index daba10f76936..7c72a5e3449f 100644
+> --- a/arch/s390/kvm/gaccess.h
+> +++ b/arch/s390/kvm/gaccess.h
+> @@ -18,17 +18,14 @@
+>   
+>   /**
+>    * kvm_s390_real_to_abs - convert guest real address to guest absolute address
+> - * @vcpu - guest virtual cpu
+> + * @prefix - guest prefix
+>    * @gra - guest real address
+>    *
+>    * Returns the guest absolute address that corresponds to the passed guest real
+> - * address @gra of a virtual guest cpu by applying its prefix.
+> + * address @gra of by applying the given prefix.
+>    */
+> -static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
+> -						 unsigned long gra)
+> +static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
 
-Signed-off-by: kehuanlin <chgokhl@gmail.com>
----
- drivers/mmc/core/host.c | 2 ++
- 1 file changed, 2 insertions(+)
+<bikeshedding>
+Just a matter of taste, but maybe this could be named differently? 
+kvm_s390_real2abs_prefix() ? kvm_s390_prefix_real_to_abs()?
+</bikeshedding>
 
-diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-index 9b89a91b6b47..177bebd9a6c4 100644
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -15,6 +15,7 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/pagemap.h>
-+#include <linux/pm_runtime.h>
- #include <linux/pm_wakeup.h>
- #include <linux/export.h>
- #include <linux/leds.h>
-@@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- 	host->class_dev.class = &mmc_host_class;
- 	device_initialize(&host->class_dev);
- 	device_enable_async_suspend(&host->class_dev);
-+	pm_runtime_no_callbacks(&host->class_dev);
- 
- 	if (mmc_gpio_alloc(host)) {
- 		put_device(&host->class_dev);
--- 
-2.30.0
+Anyway:
+Reviewed-by: Thomas Huth <thuth@redhat.com>
 
