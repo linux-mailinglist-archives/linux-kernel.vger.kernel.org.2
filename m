@@ -2,253 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2768342BCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC32B342C0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhCTLMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
+        id S229748AbhCTLXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhCTLMI (ORCPT
+        with ESMTP id S229564AbhCTLX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:08 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83613C0610E0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:00:49 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w18so13777022edc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:00:49 -0700 (PDT)
+        Sat, 20 Mar 2021 07:23:29 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E2C0613E7;
+        Sat, 20 Mar 2021 04:23:28 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id e7so4913691vsq.3;
+        Sat, 20 Mar 2021 04:23:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pgUlQnIH/sy7L2vQNmfcbiIFL+U1sgCh1fWfgNUyW4U=;
-        b=yvvlT4dPVpALglSKY0w0kmQriRtM9Y6svF0/dqES2TPcgzCvlc3ZV3gss4diGe42qa
-         eE/FJNjSzAg0D99ac4B8m86Akf1dmAp8E+UgF0lHSPFGpnGQ9kKt7p+I43IGOVnyE1rz
-         tZ2JTQNc3EGHXrIJCklUVshqDuM7yfkHTb/ofSc/zUiLn/xsHGTW1t1E4LAkby1rmHBq
-         AA8fv3FD8ZItUqIrPAGTZRuKwbDNYiZQFy4XTbfya5EUbROla60bU3Eqsie6/GzF4Nig
-         OfDoM3B7zwzQ6Xhb4I4TrFz4ske1PBLsE46ivpSIhRRvDO98m8JJvYOFCGbl4K24VAYS
-         CESQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4vy1aMcR3fimLYV9+ZsVOuid4FN44Gd0gT+R621B+Uw=;
+        b=ssJSnoWCzd8gD9ybCXBjYNfc82DVY/10RRlXc7xizp6QgSrwLzX/d021O6qwO37IFz
+         eY9IvYEUM49QCtqJds1ZqnybZiHX/wTH69uqskAZJh5l3oE7UVwztXy+oLQ8hSZCfpZ1
+         b4ta1OEiBsINgi/Dk3+7DFZlMbDXHvJjX8tOUpoPPQ1oYI/gKD+EkEceOn/jEJedaO1T
+         Hfg8PakIc+vPhdEGUQA48GUiqKav2CmeqKCDeFD40q/lArfXNviJc8mlxot4Nd8+mUzc
+         pxo+E+lpBKH3jKh1qo2opusHaOTFU8s7vFoTSE41OKot/2pBpVVmTldlFSfYqGoVCi0n
+         0NrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pgUlQnIH/sy7L2vQNmfcbiIFL+U1sgCh1fWfgNUyW4U=;
-        b=f8M710vQ0yfB5Ffs2nv5q91hMjrFCoP3zvRsC0cWEnfFUgFpCrgAaRHH2DTztqUtY/
-         ARbdugT1K0F22TWK2twu1wSs/lgQYowsR41xlJnAwJWAoCsxtGF4Y/qpblTCm2viBaKC
-         HOHL1RZMMJZbSuFNkim/oV8TmznR6InrrO/hOaUOPvSkhTIk/B2usyJFqhZjEJgyfyqw
-         GDUqMe/ivMHKI67wBzcjmN3aYmhdjV6qF1nAnFjMMpiZaI1NQdL+xAMnZGAtVm0L9cnL
-         1X9Ycy9dRfzDaqEVo5OvfuNpM1aJBI2uVs9uvDy1FSZfzfHtoqovgqJ1Bu2BRTU29gfJ
-         b/vw==
-X-Gm-Message-State: AOAM533CSNBdHsf7UKbAYhd4oLm3P+Zgq6p+GJwUpBEgdDmE2wSdD5hZ
-        mbCOtQxukisAB+4NcGnQqviJiRs/9yvUN4xXqtBxI/A1NQU/phZM
-X-Google-Smtp-Source: ABdhPJw+RmCAZ30vRYMFf2lJockDUW5ppiKYZnoOOJuSUUTiYWinH2c/rc7HPo9SIdkrkP978ahsTz4R1jMUbeSiy/I=
-X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr1039935ejc.375.1616228105639;
- Sat, 20 Mar 2021 01:15:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319121744.114946147@linuxfoundation.org>
-In-Reply-To: <20210319121744.114946147@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 20 Mar 2021 13:44:54 +0530
-Message-ID: <CA+G9fYuM5SQwM5g8w8MLbYBqByaepz1fKGs5iwkhKR_y1A6aVQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 0/8] 4.19.182-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4vy1aMcR3fimLYV9+ZsVOuid4FN44Gd0gT+R621B+Uw=;
+        b=FSZXvArUUmf1CEy1JqtIxEhTdxJyPs7TmplJk5khOLTWgxkKFZWS/crJI8pA5TkINV
+         pYXZJiizcpgDHPNIrx2+tZvZWKly5n1cA/RSWztIT4WZ2+/ICzgwlfGvP23zVr0y0vyC
+         iNuULuHTzglNGLCE62uBdaczrEh8Xwp+hrHaP+zCDSyxr3/4okwJgfcaR72K2Kl2d5/k
+         NLGEf3hulDb15fCaNrNtv/WTscbtMKrakKW0QXUksoEvheBwAuZf5tJ6Csgr5zRYhX0j
+         EJd8Qn3uSGrmo5Hk84JTejBjqvLwHwISX1kwoxV+vxtdwp8rc6ko/e7eVAmI2keeDU/C
+         C6UQ==
+X-Gm-Message-State: AOAM531lwfxc+ioZXYb6DuPG687pj8IT7NrJ2phK74+s0bqA/bjg6GSO
+        5a1jsHLioIYUTaRI7Nz6ePqL3n51nZ6qLA==
+X-Google-Smtp-Source: ABdhPJw3GR8zVb+vu6tHKI2Wkarip5L+OUxGtfyITidfvhyOEKOB5US/4pNBzdmC6ygSj4v/DNz34Q==
+X-Received: by 2002:a17:902:9786:b029:e6:508a:7b8c with SMTP id q6-20020a1709029786b02900e6508a7b8cmr17705676plp.44.1616228161099;
+        Sat, 20 Mar 2021 01:16:01 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:1ce8:18d9:6e3d:8c29])
+        by smtp.googlemail.com with ESMTPSA id 4sm7422117pjl.51.2021.03.20.01.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 01:16:00 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     code@tyhicks.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, corbet@lwn.net,
+        ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, christian.brauner@ubuntu.com
+Subject: [PATCH] ecryptfs: fix incorrect kernel-doc comment syntax in files
+Date:   Sat, 20 Mar 2021 13:45:51 +0530
+Message-Id: <20210320081551.13954-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 17:48, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.182 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.182-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The opening comment mark '/**' is used for kernel-doc comments.
+There are files in fs/encrypts which follows this syntax, but the content
+inside does not comply with kernel-doc.
+This causes unexpected warnings from kernel-doc.
 
+E.g., header comment for fs/ecryptfs/dentry.c follows kernel-doc syntax
+for comments(i.e., '/**'), but the content inside does not.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Running kernel-doc -none on fs/ecryptfs/dentry.c causes these
+unexpected warnings:
+"warning: Incorrect use of kernel-doc format:  * ecryptfs_d_revalidate - revalidate an ecryptfs dentry"
+"warning: Function parameter or member 'dentry' not described in 'ecryptfs_d_revalidate'"
+"warning: Function parameter or member 'flags' not described in 'ecryptfs_d_revalidate'"
+"warning: expecting prototype for eCryptfs(). Prototype was for ecryptfs_d_revalidate() instead"
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Similarly for other files too.
 
-Summary
-------------------------------------------------------------------------
+Provide a simple fix by replacing such occurrences with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-kernel: 4.19.182-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 7281e11121f6fb47ea1e757b7781c5c15e3781fe
-git describe: v4.19.181-9-g7281e11121f6
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.181-9-g7281e11121f6
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+* Applies perfectly on next-20210312
 
-No regressions (compared to build v4.19.181)
+ fs/ecryptfs/crypto.c          |  2 +-
+ fs/ecryptfs/debug.c           |  2 +-
+ fs/ecryptfs/dentry.c          |  2 +-
+ fs/ecryptfs/ecryptfs_kernel.h |  2 +-
+ fs/ecryptfs/file.c            |  2 +-
+ fs/ecryptfs/inode.c           |  2 +-
+ fs/ecryptfs/keystore.c        |  6 +++---
+ fs/ecryptfs/kthread.c         |  2 +-
+ fs/ecryptfs/main.c            | 10 +++++-----
+ fs/ecryptfs/messaging.c       |  2 +-
+ fs/ecryptfs/miscdev.c         |  2 +-
+ fs/ecryptfs/mmap.c            |  6 +++---
+ fs/ecryptfs/read_write.c      |  2 +-
+ fs/ecryptfs/super.c           |  2 +-
+ 14 files changed, 22 insertions(+), 22 deletions(-)
 
-No fixes (compared to build v4.19.181)
+diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+index 7671412b8f0b..48184ff65f90 100644
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2004 Erez Zadok
+diff --git a/fs/ecryptfs/debug.c b/fs/ecryptfs/debug.c
+index 1f65e99f9a41..65702d7fc4b9 100644
+--- a/fs/ecryptfs/debug.c
++++ b/fs/ecryptfs/debug.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  * Functions only useful for debugging.
+  *
+diff --git a/fs/ecryptfs/dentry.c b/fs/ecryptfs/dentry.c
+index 44606f079efb..acaa0825e9bb 100644
+--- a/fs/ecryptfs/dentry.c
++++ b/fs/ecryptfs/dentry.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2003 Erez Zadok
+diff --git a/fs/ecryptfs/ecryptfs_kernel.h b/fs/ecryptfs/ecryptfs_kernel.h
+index 4a62a7dcc4f5..f8aa99e41c48 100644
+--- a/fs/ecryptfs/ecryptfs_kernel.h
++++ b/fs/ecryptfs/ecryptfs_kernel.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  * Kernel declarations.
+  *
+diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
+index 5fb45d865ce5..2d8344774885 100644
+--- a/fs/ecryptfs/file.c
++++ b/fs/ecryptfs/file.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2004 Erez Zadok
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index 18e9285fbb4c..541b46d76f89 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2004 Erez Zadok
+diff --git a/fs/ecryptfs/keystore.c b/fs/ecryptfs/keystore.c
+index 2abd219cfeec..475d939ff695 100644
+--- a/fs/ecryptfs/keystore.c
++++ b/fs/ecryptfs/keystore.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  * In-kernel key management code.  Includes functions to parse and
+  * write authentication token-related packets with the underlying
+@@ -21,7 +21,7 @@
+ #include <linux/slab.h>
+ #include "ecryptfs_kernel.h"
+ 
+-/**
++/*
+  * request_key returned an error instead of a valid key address;
+  * determine the type of error, make appropriate log entries, and
+  * return an error code.
+@@ -576,7 +576,7 @@ ecryptfs_find_auth_tok_for_sig(
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * write_tag_70_packet can gobble a lot of stack space. We stuff most
+  * of the function's parameters in a kmalloc'd struct to help reduce
+  * eCryptfs' overall stack usage.
+diff --git a/fs/ecryptfs/kthread.c b/fs/ecryptfs/kthread.c
+index a7c903cb01a0..d1b1c3546972 100644
+--- a/fs/ecryptfs/kthread.c
++++ b/fs/ecryptfs/kthread.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 2008 International Business Machines Corp.
+diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
+index cdf40a54a35d..9bc19a092917 100644
+--- a/fs/ecryptfs/main.c
++++ b/fs/ecryptfs/main.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2003 Erez Zadok
+@@ -24,7 +24,7 @@
+ #include <linux/magic.h>
+ #include "ecryptfs_kernel.h"
+ 
+-/**
++/*
+  * Module parameter that defines the ecryptfs_verbosity level.
+  */
+ int ecryptfs_verbosity = 0;
+@@ -34,7 +34,7 @@ MODULE_PARM_DESC(ecryptfs_verbosity,
+ 		 "Initial verbosity level (0 or 1; defaults to "
+ 		 "0, which is Quiet)");
+ 
+-/**
++/*
+  * Module parameter that defines the number of message buffer elements
+  */
+ unsigned int ecryptfs_message_buf_len = ECRYPTFS_DEFAULT_MSG_CTX_ELEMS;
+@@ -43,7 +43,7 @@ module_param(ecryptfs_message_buf_len, uint, 0);
+ MODULE_PARM_DESC(ecryptfs_message_buf_len,
+ 		 "Number of message buffer elements");
+ 
+-/**
++/*
+  * Module parameter that defines the maximum guaranteed amount of time to wait
+  * for a response from ecryptfsd.  The actual sleep time will be, more than
+  * likely, a small amount greater than this specified value, but only less if
+@@ -57,7 +57,7 @@ MODULE_PARM_DESC(ecryptfs_message_wait_timeout,
+ 		 "sleep while waiting for a message response from "
+ 		 "userspace");
+ 
+-/**
++/*
+  * Module parameter that is an estimate of the maximum number of users
+  * that will be concurrently using eCryptfs. Set this to the right
+  * value to balance performance and memory use.
+diff --git a/fs/ecryptfs/messaging.c b/fs/ecryptfs/messaging.c
+index c0dfd9647627..9f42fca7fc36 100644
+--- a/fs/ecryptfs/messaging.c
++++ b/fs/ecryptfs/messaging.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 2004-2008 International Business Machines Corp.
+diff --git a/fs/ecryptfs/miscdev.c b/fs/ecryptfs/miscdev.c
+index 742ece22c1d4..7e741e36dfe7 100644
+--- a/fs/ecryptfs/miscdev.c
++++ b/fs/ecryptfs/miscdev.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 2008 International Business Machines Corp.
+diff --git a/fs/ecryptfs/mmap.c b/fs/ecryptfs/mmap.c
+index 2f333a40ff4d..485f6c1e19b5 100644
+--- a/fs/ecryptfs/mmap.c
++++ b/fs/ecryptfs/mmap.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  * This is where eCryptfs coordinates the symmetric encryption and
+  * decryption of the file data as it passes between the lower
+@@ -78,7 +78,7 @@ static void strip_xattr_flag(char *page_virt,
+ 	}
+ }
+ 
+-/**
++/*
+  *   Header Extent:
+  *     Octets 0-7:        Unencrypted file size (big-endian)
+  *     Octets 8-15:       eCryptfs special marker
+@@ -229,7 +229,7 @@ static int ecryptfs_readpage(struct file *file, struct page *page)
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * Called with lower inode mutex held.
+  */
+ static int fill_zeros_to_end_of_page(struct page *page, unsigned int to)
+diff --git a/fs/ecryptfs/read_write.c b/fs/ecryptfs/read_write.c
+index 0438997ac9d8..384b383b4a48 100644
+--- a/fs/ecryptfs/read_write.c
++++ b/fs/ecryptfs/read_write.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 2007 International Business Machines Corp.
+diff --git a/fs/ecryptfs/super.c b/fs/ecryptfs/super.c
+index 6b1853f1c06a..cc16d044165d 100644
+--- a/fs/ecryptfs/super.c
++++ b/fs/ecryptfs/super.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * eCryptfs: Linux filesystem encryption layer
+  *
+  * Copyright (C) 1997-2003 Erez Zadok
+-- 
+2.17.1
 
-
-Ran 58666 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- powerpc
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-bpf
-* libhugetlbfs
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-vm
-* kselftest-x86
-* ltp-containers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
