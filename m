@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F31342F0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156B7342F03
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 19:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhCTSnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 14:43:21 -0400
-Received: from mail.monom.org ([188.138.9.77]:50866 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhCTSmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 14:42:47 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 62EAE50035C;
-        Sat, 20 Mar 2021 19:42:45 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.96.195])
-        by mail.monom.org (Postfix) with ESMTPSA id 97B85500328;
-        Sat, 20 Mar 2021 19:42:44 +0100 (CET)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.262-rt219
-Date:   Sat, 20 Mar 2021 16:25:35 -0000
-Message-ID: <161625753552.20205.6230905513724868931@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S229805AbhCTSds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 14:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTSdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 14:33:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5677C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 11:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IvAI5fW7NUyKvLhYK1h5YVBZ+5nIkDZ3p07mheREskg=; b=qEiZtHkCP8o4JfWBU2Vvr49QSU
+        6+Pz6nK/AYq8VlF0X69cuQxiNpvTRHnwWCtvsaeHMmVSOwBRhDwvqcXn8v5MM98MzT6VRYIt8fCIa
+        tpDVggB3jWPezBKawbdINhQnJrs/FNdpE3wtQ93gLBKNRSWlqwWK5lUxbtnthroTNZCVenF8u57vg
+        KYEuiTyU3j0+mNdzPXssBomL75RffcGYkJpLxFgxdpKrxhlcVUzIL8R+r3/ZKuN5OgxkryQKTSFMl
+        u9TUBC1s42v5W6Ho0PHHH5XjujP1Ba6FUtOvK4b+4ZGhJE5iZOtcJ0nDo+YTvMIo34BF9t7WJF0WP
+        GEHoKxcw==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNgPu-001z0K-TR; Sat, 20 Mar 2021 18:33:44 +0000
+Date:   Sat, 20 Mar 2021 11:33:42 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LinuxKernel <linux-kernel@vger.kernel.org>
+Subject: Re: [unixbhaskar@gmail.com: [PATCH] IA64: Trivial spelling fixes]
+In-Reply-To: <YFY+9uwvNLeb/3Ab@Gentoo>
+Message-ID: <396ec2ad-5387-70ff-8c51-4bce3267b9ab@bombadil.infradead.org>
+References: <YFY+9uwvNLeb/3Ab@Gentoo>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210320_113342_973869_AE9558B2 
+X-CRM114-Status: GOOD (  10.88  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote: > ----- Forwarded
+    message from Bhaskar Chowdhury <unixbhaskar@gmail.com> ----- > > Date: Sat,
+    20 Mar 2021 23:53:47 +0530 > From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+    > To: unixbhaskar@gmail.com, [...] 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
 
-I'm pleased to announce the 4.4.262-rt219 stable release.
 
-This is just an update to the latest stable release. No RT
-specific changes.
+On Sat, 20 Mar 2021, Bhaskar Chowdhury wrote:
 
-I tried to fix the locking self failures I reported last time. As it
-turns out the test setup was somehow broken. After redoing all the
-test just using 'defconfig + kvmconfig + locking_selftest' all worked
-fine. I also tested older v4.4-rt releases and there was no failures.
+> ----- Forwarded message from Bhaskar Chowdhury <unixbhaskar@gmail.com> -----
+>
+> Date: Sat, 20 Mar 2021 23:53:47 +0530
+> From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> To: unixbhaskar@gmail.com, linux-ia64@vger.kernel.org, 
+> linux-kernel@vger.kernel.org
+> Subject: [PATCH] IA64: Trivial spelling fixes
+> X-Mailer: git-send-email 2.26.2
+>
+>
+> s/seralize/serialize/ .....three different places
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Furthermore, the cyclicdeadline fails again, which I probably a good
-thing; I don't believe in self healing capabilities of the -rt patchset.
-Anyway, I think my build/test setup was just broken.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Known issue:
 
-  - locktorture reports a might_sleep warning for spin_locks test
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.4-rt
-  Head SHA1: d18d08f6afe25c27207d26a9811e23abf7ef36b8
-
-Or to build 4.4.262-rt219 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.262.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.262-rt219.patch.xz
-
-Enjoy!
-Daniel
+> ---
+>  arch/ia64/kernel/pal.S | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/ia64/kernel/pal.S b/arch/ia64/kernel/pal.S
+> index d3e22c018b68..06d01a070aae 100644
+> --- a/arch/ia64/kernel/pal.S
+> +++ b/arch/ia64/kernel/pal.S
+> @@ -86,7 +86,7 @@ GLOBAL_ENTRY(ia64_pal_call_static)
+> 	 mov ar.pfs = loc1
+> 	 mov rp = loc0
+> 	 ;;
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+> 	 br.ret.sptk.many b0
+>  END(ia64_pal_call_static)
+>  EXPORT_SYMBOL(ia64_pal_call_static)
+> @@ -194,7 +194,7 @@ GLOBAL_ENTRY(ia64_pal_call_phys_static)
+> 	 mov rp = loc0
+> 	 ;;
+> 	 mov ar.rsc=loc4			// restore RSE configuration
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+> 	 br.ret.sptk.many b0
+>  END(ia64_pal_call_phys_static)
+>  EXPORT_SYMBOL(ia64_pal_call_phys_static)
+> @@ -252,7 +252,7 @@ GLOBAL_ENTRY(ia64_pal_call_phys_stacked)
+> 	 mov rp = loc0
+> 	 ;;
+> 	 mov ar.rsc=loc4			// restore RSE configuration
+> -	srlz.d				// seralize restoration of psr.l
+> +	srlz.d				// serialize restoration of psr.l
+> 	 br.ret.sptk.many b0
+>  END(ia64_pal_call_phys_stacked)
+>  EXPORT_SYMBOL(ia64_pal_call_phys_stacked)
+> --
+> 2.26.2
+>
+>
+> ----- End forwarded message -----
+>
+>
