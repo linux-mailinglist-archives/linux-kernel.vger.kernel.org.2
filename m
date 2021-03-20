@@ -2,165 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3C0342C6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE97D342C8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhCTLnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:43:46 -0400
-Received: from mga18.intel.com ([134.134.136.126]:6314 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229841AbhCTLnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:43:23 -0400
-IronPort-SDR: TibEZm7xait4W2m9rmIuOO/Av/Ov52WWrDOMF/LJU0a58NIerXPFBC2568xW8xjpGHOc0nqPO7
- IdetyflgbFEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177619089"
-X-IronPort-AV: E=Sophos;i="5.81,264,1610438400"; 
-   d="scan'208";a="177619089"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2021 04:43:23 -0700
-IronPort-SDR: o5VA89ws+NNXnzxDuhDI2UCknlr549bJ2PX6UORZTonEzfhqHCGEgWA6Swt81zmwf1kZNG0LpJ
- pYTLr1pIo62g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,264,1610438400"; 
-   d="scan'208";a="451165481"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 20 Mar 2021 04:43:22 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lNa0n-0002ZD-Hm; Sat, 20 Mar 2021 11:43:21 +0000
-Date:   Sat, 20 Mar 2021 19:42:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/test] BUILD SUCCESS
- 25577a0bbbd347ae3459f56a44ad4704f0fce723
-Message-ID: <6055dfba.TEzc3Vo7bB1D5BB2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230237AbhCTLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhCTLxs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:53:48 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFC2C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:53:47 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id 61so11745588wrm.12
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HpQiKE3viHQSmvStiXLE6V0egAkgaoLKibEIaY1h13E=;
+        b=okHpkw/X0VJ4lMjNB9cAJGz2PjVaXC+MPbUkivZ9fGCWs3nY9LQL5Lz26wz2cNZpZz
+         cuOH/uSjyh+kd8Ha2Gw7sgM5jCe8ubar6oVmHwg96pZ22FeulDANrmjC1kD5IXKjecE9
+         7Q11bCt/vZCj52UV/MP9P5UyGZU4dlwf/gfSkf78MBWiWOVnyA7HithvIsny4f53ZkzT
+         92uO8YtfZ70InSes/RPS3HectFyRJuEvDGg+MW/qQkrvg6tr4dg6lQ8BNmibtvhqgt7n
+         /cROngbJMfkr5bNjNT2NfPrrXgEYbc0rYh/oyN1VbYDJuzPxsJXRxiQXJAI4bjzPDWet
+         OEkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HpQiKE3viHQSmvStiXLE6V0egAkgaoLKibEIaY1h13E=;
+        b=sc7ZY5y31/l/UQFsNpsVg0eLferTi+QtzvbSehpjhSxeeZE+3jPEnOwcuv96rfyzoD
+         Ave+M+8qJfwzdYhlQrm8h2cACqSMf5jDqm7+AGNJecD+wMdCnDt8gcgtkyyq3gKJkBwc
+         AIHQ5Z5AJzJeR5kHeg33r2OwgV9AXm1jNTBrV5AFrVhKhRu2jehi5gTXQnzRgjHDfmMT
+         GZEMpmofI4KzBLzynZ/MV7zYtuRkSWts+fktJCIEn2WHBquwfQj2xVDAuNBYt0s+S+eY
+         RujhOpoCrl1FFO37IoALH3oU1si8hm6xj2WDdZqBch9ioe9o1Tt4fwTNodnLvNm0DmvX
+         ne9Q==
+X-Gm-Message-State: AOAM5338VLPrkUk9X9yQDgNP2kD45zuvnVblgc4HoL/Y3UmGvb9tlrux
+        fruwjRj6h81PegeF/EKW6WalFA==
+X-Google-Smtp-Source: ABdhPJwJ+Nxbe35r4gLdYKYJiqjTHuD0dox6anBfnURf73Y/XDFwRC/J09HLdInfhvtmhFBWwDq79g==
+X-Received: by 2002:a5d:518c:: with SMTP id k12mr9134434wrv.15.1616241226623;
+        Sat, 20 Mar 2021 04:53:46 -0700 (PDT)
+Received: from [192.168.1.9] (hst-208-211.medicom.bg. [84.238.208.211])
+        by smtp.googlemail.com with ESMTPSA id m14sm8907193wmi.27.2021.03.20.04.53.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 04:53:46 -0700 (PDT)
+Subject: Re: [PATCH] v4l2-ctrls: Fix h264 hierarchical coding type menu ctrl
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20210302224206.3680649-1-stanimir.varbanov@linaro.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <c8d448f1-bbe2-eb21-987a-877251d7aead@linaro.org>
+Date:   Sat, 20 Mar 2021 13:53:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20210302224206.3680649-1-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/test
-branch HEAD: 25577a0bbbd347ae3459f56a44ad4704f0fce723  Merge remote-tracking branch 'linus/master' into dev.2021.03.18a
+Kindly ping for review.
 
-elapsed time: 726m
+On 3/3/21 12:42 AM, Stanimir Varbanov wrote:
+> Add a name of the menu and fill control type.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 016cf6204cbb..5d99e2294335 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -421,6 +421,11 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+>  		"Annex B Start Code",
+>  		NULL,
+>  	};
+> +	static const char * const h264_hierarchical_coding_type[] = {
+> +		"Hier Coding B",
+> +		"Hier Coding P",
+> +		NULL,
+> +	};
+>  	static const char * const mpeg_mpeg2_level[] = {
+>  		"Low",
+>  		"Main",
+> @@ -697,6 +702,8 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+>  		return h264_decode_mode;
+>  	case V4L2_CID_STATELESS_H264_START_CODE:
+>  		return h264_start_code;
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_TYPE:
+> +		return h264_hierarchical_coding_type;
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL:
+>  		return mpeg_mpeg2_level;
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE:
+> @@ -1326,6 +1333,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_IDC:
+>  	case V4L2_CID_MPEG_VIDEO_H264_SEI_FP_ARRANGEMENT_TYPE:
+>  	case V4L2_CID_MPEG_VIDEO_H264_FMO_MAP_TYPE:
+> +	case V4L2_CID_MPEG_VIDEO_H264_HIERARCHICAL_CODING_TYPE:
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL:
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_PROFILE:
+>  	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
+> 
 
-configs tested: 103
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                         tb0287_defconfig
-powerpc                     tqm8541_defconfig
-arm                         socfpga_defconfig
-arc                              alldefconfig
-powerpc                  iss476-smp_defconfig
-sh                          lboxre2_defconfig
-arm                  colibri_pxa300_defconfig
-arm                            qcom_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                         cm_x300_defconfig
-powerpc                     pq2fads_defconfig
-mips                     loongson1c_defconfig
-m68k                           sun3_defconfig
-mips                        bcm63xx_defconfig
-arm                    vt8500_v6_v7_defconfig
-arc                            hsdk_defconfig
-arm                           u8500_defconfig
-arm                          imote2_defconfig
-sh                           se7750_defconfig
-mips                     decstation_defconfig
-mips                        qi_lb60_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc837x_rdb_defconfig
-s390                       zfcpdump_defconfig
-powerpc                     redwood_defconfig
-sparc                            allyesconfig
-arm                        spear3xx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+regards,
+Stan
