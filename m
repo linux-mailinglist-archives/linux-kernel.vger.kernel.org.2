@@ -2,172 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77BE342A67
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 05:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED4B342A68
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 05:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCTERG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 00:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhCTEQl (ORCPT
+        id S229956AbhCTERH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 00:17:07 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13997 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhCTEQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 00:16:41 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FB3C061761
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id c204so7239958pfc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ouW7w1tJWbMBvkhdIE4FNoeWEk82Uxbfl+Y1tFiGtH8=;
-        b=GaR+AlXSZ33dTxAXj2aQHNsb/sGlsgOLi4SYfJYpDeQ41vo5yOlbpjw4vqeKO6cOg4
-         Jwab7ZTirHmKX0QkEAs6s5nMXaMkHvyvNTDPe9qDsvb6q4qO6bCoL30EUYZeTFe/sDZJ
-         KHCA8IZ67qajMR7PT+Sh5vGYLDEFNJSP27mII=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ouW7w1tJWbMBvkhdIE4FNoeWEk82Uxbfl+Y1tFiGtH8=;
-        b=O/TEgs/i5m/lFGYMMxiH1DaRrkryhQ3dD6InQ/c3pzKAGMyapHuumfbBRQa3OqskYM
-         Icgc9UdJND2FMkQWjDvG4f2x7kuWZG7FI4Gh/0vgM5T4nPXjZEe2dIfB/xTJC96YTzsT
-         AuYagu1z+np2jfVsfiE59E/TN/GIL28T8GRyVJo6Dgq7PlUQSmWpFZ7FAkvfbGH/sI4D
-         yr5sNcwuVAxi2rEr+tM+tVViSiqHdfIQmkcoiTpsME7E+l8r6sGJdbibDld6SnJaXQWc
-         xgnJb2L3qfJD2jEhgQTItTM6bUt0Ewfuj1Km7ualx2bNhnRLdN0y7v7zNk3IWHzhCVQf
-         AJdg==
-X-Gm-Message-State: AOAM532aQf6KUfhtA6rsGSsxbFShZttuLbsf77N79FWS/DB5sjb3qyxl
-        FbMada5w1y6hi3JBdIuCMbbHqgJg5mBp6A==
-X-Google-Smtp-Source: ABdhPJyuVJUZTJmCmSbcUFGQVZHQYq/vnOWl4IN/MCtT7KdD0RfsEBPHuUvCBSAo8mGviV9bc7WcPA==
-X-Received: by 2002:a62:7708:0:b029:1ee:f656:51d5 with SMTP id s8-20020a6277080000b02901eef65651d5mr12471549pfc.59.1616213800520;
-        Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:f0c7:e1f7:948e:d8d5])
-        by smtp.gmail.com with ESMTPSA id s62sm6998869pfb.148.2021.03.19.21.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 21:16:40 -0700 (PDT)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     stable@vger.kernel.org
-Cc:     groeck@chromium.org, Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [for-stable-4.19 PATCH v2 2/2] lkdtm: don't move ctors to .rodata
-Date:   Sat, 20 Mar 2021 12:16:26 +0800
-Message-Id: <20210320121614.for-stable-4.19.v2.2.I0387622b15d84eed675e48a0ba3be9c03b9f9e97@changeid>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-In-Reply-To: <20210320041626.885806-1-drinkcat@chromium.org>
-References: <20210320041626.885806-1-drinkcat@chromium.org>
+        Sat, 20 Mar 2021 00:16:56 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F2S8d4THczrYDv;
+        Sat, 20 Mar 2021 12:14:57 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Sat, 20 Mar 2021
+ 12:16:50 +0800
+Subject: Re: [PATCH 2/2] mtd: spi-nor: add initial sysfs support
+To:     Michael Walle <michael@walle.cc>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "Richard Weinberger" <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-3-michael@walle.cc>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <925fb92b-39da-ebc5-c0ac-6dba02628956@hisilicon.com>
+Date:   Sat, 20 Mar 2021 12:16:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210318092406.5340-3-michael@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+On 2021/3/18 17:24, Michael Walle wrote:
+> Add support to show the name and JEDEC identifier as well as to dump the
+> SFDP table. Not all flashes list their SFDP table contents in their
+> datasheet. So having that is useful. It might also be helpful in bug
+> reports from users.
+> 
+> The idea behind the sysfs module is also to have raw access to the SPI
+> NOR flash device registers, which can also be useful for debugging.
 
-commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 upstream.
+Hi Michael,
 
-When building with KASAN and LKDTM, clang may implictly generate an
-asan.module_ctor function in the LKDTM rodata object. The Makefile moves
-the lkdtm_rodata_do_nothing() function into .rodata by renaming the
-file's .text section to .rodata, and consequently also moves the ctor
-function into .rodata, leading to a boot time crash (splat below) when
-the ctor is invoked by do_ctors().
+I like the idea to dump the sfdp data,it will make debug easier. should it go in debugfs?
+we already have debugfs files for partname and partid of the flash.
 
-Let's prevent this by marking the function as noinstr rather than
-notrace, and renaming the file's .noinstr.text to .rodata. Marking the
-function as noinstr will prevent tracing and kprobes, and will inhibit
-any undesireable compiler instrumentation.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/mtd/spi-nor/Makefile |  2 +-
+>  drivers/mtd/spi-nor/core.c   |  5 +++
+>  drivers/mtd/spi-nor/core.h   |  3 ++
+>  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 95 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
+> 
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index 653923896205..aff308f75987 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> -spi-nor-objs			:= core.o sfdp.o
+> +spi-nor-objs			:= core.o sfdp.o sysfs.o
+>  spi-nor-objs			+= atmel.o
+>  spi-nor-objs			+= catalyst.o
+>  spi-nor-objs			+= eon.o
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 4a315cb1c4db..2eaf4ba8c0f3 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3707,6 +3707,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = spi_nor_sysfs_create(nor);
+> +	if (ret)
+> +		return ret;
+> +
+>  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+>  				   data ? data->nr_parts : 0);
+>  }
+> @@ -3716,6 +3720,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
+>  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>  
+>  	spi_nor_restore(nor);
+> +	spi_nor_sysfs_remove(nor);
+>  
+>  	/* Clean up MTD stuff. */
+>  	return mtd_device_unregister(&nor->mtd);
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 668f22011b1d..dd592f7b62d1 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -488,4 +488,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+>  	return mtd->priv;
+>  }
+>  
+> +int spi_nor_sysfs_create(struct spi_nor *nor);
+> +void spi_nor_sysfs_remove(struct spi_nor *nor);
+> +
+>  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
+> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+> new file mode 100644
+> index 000000000000..0de031e246c5
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/sysfs.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/mtd/spi-nor.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/spi/spi-mem.h>
+> +#include <linux/sysfs.h>
+> +
+> +#include "core.h"
+> +
+> +static ssize_t name_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	struct spi_device *spi = to_spi_device(dev);
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	return sprintf(buf, "%s\n", nor->info->name);
 
-The ctor function (if any) will be placed in .text and will work
-correctly.
+perhaps sysfs_emit() instead if we go sysfs? as suggested by [1].
 
-Example splat before this patch is applied:
+[1] Documentation/filesystems/sysfs.rst:line 246
 
-[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
-[    0.922088] Mem abort info:
-[    0.922828]   ESR = 0x8600000e
-[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    0.925036]   SET = 0, FnV = 0
-[    0.925838]   EA = 0, S1PTW = 0
-[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
-[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
-[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
-[    0.932806] Modules linked in:
-[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
-[    0.935620] Hardware name: linux,dummy-virt (DT)
-[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[    0.938609] pc : asan.module_ctor+0x0/0x14
-[    0.939759] lr : do_basic_setup+0x4c/0x70
-[    0.940889] sp : ffff27b600177e30
-[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
-[    0.943306] x27: 0000000000000000 x26: 0000000000000000
-[    0.944803] x25: 0000000000000000 x24: 0000000000000000
-[    0.946289] x23: 0000000000000001 x22: 0000000000000000
-[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
-[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
-[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
-[    0.952246] x15: 0000000000000000 x14: 0000000000000000
-[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
-[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
-[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
-[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
-[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
-[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
-[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
-[    0.964155] Call trace:
-[    0.964844]  asan.module_ctor+0x0/0x14
-[    0.965895]  kernel_init_freeable+0x158/0x198
-[    0.967115]  kernel_init+0x14/0x19c
-[    0.968104]  ret_from_fork+0x10/0x30
-[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
-[    0.970815] ---[ end trace b5339784e20d015c ]---
+Thanks,
+Yicong
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
-
-(no changes since v1)
-
- drivers/misc/lkdtm/Makefile | 2 +-
- drivers/misc/lkdtm/rodata.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
-index cce47a15a79f..aeb960cb096d 100644
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@ -13,7 +13,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
- 
- OBJCOPYFLAGS :=
- OBJCOPYFLAGS_rodata_objcopy.o	:= \
--			--rename-section .text=.rodata,alloc,readonly,load
-+			--rename-section .noinstr.text=.rodata,alloc,readonly,load
- targets += rodata.o rodata_objcopy.o
- $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
- 	$(call if_changed,objcopy)
-diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
-index 58d180af72cf..baacb876d1d9 100644
---- a/drivers/misc/lkdtm/rodata.c
-+++ b/drivers/misc/lkdtm/rodata.c
-@@ -5,7 +5,7 @@
-  */
- #include "lkdtm.h"
- 
--void notrace lkdtm_rodata_do_nothing(void)
-+void noinstr lkdtm_rodata_do_nothing(void)
- {
- 	/* Does nothing. We just want an architecture agnostic "return". */
- }
--- 
-2.31.0.rc2.261.g7f71774620-goog
+> +}
+> +static DEVICE_ATTR_RO(name);
+> +
+> +static ssize_t jedec_id_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+> +{
+> +	struct spi_device *spi = to_spi_device(dev);
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	return sprintf(buf, "%*phN\n", nor->info->id_len, nor->info->id);
+> +}
+> +static DEVICE_ATTR_RO(jedec_id);
+> +
+> +static struct attribute *spi_nor_sysfs_entries[] = {
+> +	&dev_attr_name.attr,
+> +	&dev_attr_jedec_id.attr,
+> +	NULL
+> +};
+> +
+> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
+> +			 struct bin_attribute *bin_attr, char *buf,
+> +			 loff_t off, size_t count)
+> +{
+> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +	struct sfdp *sfdp = nor->sfdp;
+> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
+> +
+> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
+> +				       sfdp_size);
+> +}
+> +static BIN_ATTR_RO(sfdp, PAGE_SIZE);
+> +
+> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
+> +	&bin_attr_sfdp,
+> +	NULL
+> +};
+> +
+> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+> +					    struct bin_attribute *attr, int n)
+> +{
+> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	if (attr == &bin_attr_sfdp && nor->sfdp)
+> +		return 0444;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct attribute_group spi_nor_sysfs_attr_group = {
+> +	.name		= NULL,
+> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
+> +	.attrs		= spi_nor_sysfs_entries,
+> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
+> +};
+> +
+> +int spi_nor_sysfs_create(struct spi_nor *nor)
+> +{
+> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
+> +}
+> +
+> +void spi_nor_sysfs_remove(struct spi_nor *nor)
+> +{
+> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
+> +}
+> 
 
