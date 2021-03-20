@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A167342FB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 22:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C64342FC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhCTVtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 17:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhCTVsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 17:48:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A8076148E;
-        Sat, 20 Mar 2021 21:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616276912;
-        bh=gLKsuG2g0dteVb/OkiGntYYLEXDUUE0BKDyibYB8WWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UHPI7tPPP5T16oGItRbt0jsmuswK/2bNDVCYpd1KNn8tEk1DK+4OG9QkiRjvLYvYZ
-         SuJt7IZLVaikW7iNuSA6X4HbP3ZZ7/89ij5E/f/O446cVbiW+cRhXFu+2OBEiEyTGw
-         dOab+IKszcaS7x2CF70mrcN9XM1vvwPpePdBUVq+B4A/j57aGJjLNENY9DzkjQOkB8
-         wWKkFZoc7JkqZ0rFcPT5WnfwWqIPY3EkkvVsj+QK0CqjMdessg+j6kGAeLK626j7EN
-         VOHAi+jm6Y62XvP/rjC2/q5jNkm4Au8ua+MqGBfXw3Cku70s4lxGi+S9s2/FWA8DOd
-         n5zVkWYnt/fWA==
-Date:   Sat, 20 Mar 2021 14:48:31 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3][next] xfs: Replace one-element arrays with
- flexible-array members
-Message-ID: <20210320214831.GA22100@magnolia>
-References: <20210311042302.GA137676@embeddedor>
- <20210311044700.GU3419940@magnolia>
- <96be7032-a95c-e8d2-a7f8-64b96686ea42@embeddedor.com>
- <20210320201711.GY22100@magnolia>
- <d5a9046e-e204-c854-34fe-2a39e58faea4@embeddedor.com>
+        id S229884AbhCTWJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 18:09:42 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:33944 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhCTWJH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 18:09:07 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNjmM-00GVVv-9d; Sat, 20 Mar 2021 16:09:06 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lNjmL-00062O-KY; Sat, 20 Mar 2021 16:09:06 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, criu@openvz.org
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+        <m14kh5aj0n.fsf@fess.ebiederm.org>
+        <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
+        <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+Date:   Sat, 20 Mar 2021 17:08:02 -0500
+In-Reply-To: <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+        (Linus Torvalds's message of "Sat, 20 Mar 2021 12:18:15 -0700")
+Message-ID: <m1im5l5vi5.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5a9046e-e204-c854-34fe-2a39e58faea4@embeddedor.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1lNjmL-00062O-KY;;;mid=<m1im5l5vi5.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX185RE4CDnNBooFl4xRNceHuRx8rf7VZFnQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 358 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.4 (1.2%), b_tie_ro: 3.0 (0.8%), parse: 1.12
+        (0.3%), extract_message_metadata: 12 (3.3%), get_uri_detail_list: 2.4
+        (0.7%), tests_pri_-1000: 11 (3.2%), tests_pri_-950: 1.05 (0.3%),
+        tests_pri_-900: 0.78 (0.2%), tests_pri_-90: 52 (14.5%), check_bayes:
+        51 (14.2%), b_tokenize: 6 (1.6%), b_tok_get_all: 8 (2.2%),
+        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 32 (9.0%), b_finish: 0.62
+        (0.2%), tests_pri_0: 262 (73.0%), check_dkim_signature: 0.56 (0.2%),
+        check_dkim_adsp: 2.6 (0.7%), poll_dns_idle: 0.79 (0.2%), tests_pri_10:
+        2.8 (0.8%), tests_pri_500: 8 (2.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 03:20:55PM -0500, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 3/20/21 15:17, Darrick J. Wong wrote:
-> >>>> Below are the results of running xfstests for groups shutdown and log
-> >>>> with the following configuration in local.config:
-> >>>>
-> >>>> export TEST_DEV=/dev/sda3
-> >>>> export TEST_DIR=/mnt/test
-> >>>> export SCRATCH_DEV=/dev/sda4
-> >>>> export SCRATCH_MNT=/mnt/scratch
-> >>>>
-> >>>> The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
-> >>>
-> >>> Looks good to me, will toss it at my fstests cloud and see if anything
-> >>> shakes out.  Thanks for cleaning up this goofy thorn-pile!
-> >>
-> >> Great. It's been fun to work on this. :p
-> > 
-> > Did you run the /entire/ fstests suite?  With this patch applied to
-> > 5.12-rc2, I keep seeing list corruption assertions about an hour into
-> 
-> Nope; I run xfstests 'shutdown' and 'log' groups on 5.11.0, only.
-> 
-> How do you run the entire fstests?
-> Could you give me some pointers?
 
-./check -g all
+Added criu because I just realized that io_uring (which can open files
+from an io worker thread) looks to require some special handling for
+stopping and freezing processes.  If not in the SIGSTOP case in the
+related cgroup freezer case.
 
-(instead of "./check -g shutdown")
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-> > the test run, and usually on some test that heavily exercises allocating
-> > and deleting file extents.  I'll try to look at this patch more closely
-> > next week, but I figured I should let you know early, on the off chance
-> > something sticks out to you.
-> 
-> OK. I'll go run my tests on 5.12-rc2.
-> 
-> Should I run the entire xfstests, too?
+> On Sat, Mar 20, 2021 at 10:51 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> Alternatively, make it not use
+>> CLONE_SIGHAND|CLONE_THREAD at all, but that would make it
+>> unnecessarily allocate its own signal state, so that's "cleaner" but
+>> not great either.
+>
+> Thinking some more about that, it would be problematic for things like
+> the resource counters too. They'd be much better shared.
+>
+> Not adding it to the thread list etc might be clever, but feels a bit too scary.
+>
+> So on the whole I think Jens' minor patches to just not have IO helper
+> threads accept signals are probably the right thing to do.
 
-Yes, please.
+The way I see it we have two options:
 
---D
+1) Don't ask PF_IO_WORKERs to stop do_signal_stop and in
+   task_join_group_stop.
 
-> Thanks
-> --
-> Gustavo
+   The easiest comprehensive implementation looks like just
+   updating task_set_jobctl_pending to treat PF_IO_WORKER
+   as it treats PF_EXITING.
+
+2) Have the main loop of the kernel thread test for JOBCTL_STOP_PENDING
+   and call into do_signal_stop.
+
+It is a wee bit trickier to modify the io_workers to stop, but it does
+not look prohibitively difficult.
+
+All of the work performed by the io worker is work scheduled via
+io_uring by the process being stopped.
+
+- Is the amount of work performed by the io worker thread sufficiently
+  negligible that we don't care?
+
+- Or is the amount of work performed by the io worker so great that it
+  becomes a way for an errant process to escape SIGSTOP?
+
+As the code is all intermingled with the cgroup_freezer.  I am also
+wondering creating checkpoints needs additional stopping guarantees.
+
+
+To solve the issue that SIGSTOP is simply broken right now I am totally
+fine with something like:
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index ba4d1ef39a9e..cb9acdfb32fa 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
+ 			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
+ 	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+ 
+-	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
++	if (unlikely(fatal_signal_pending(task) ||
++		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
+ 		return false;
+ 
+ 	if (mask & JOBCTL_STOP_SIGMASK)
+
+
+
+Which just keeps from creating unstoppable processes today.  I am just
+not convinced that is what we want as a long term solution.
+
+Eric
