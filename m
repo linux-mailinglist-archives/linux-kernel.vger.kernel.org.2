@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E3E342DE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F05342DE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 16:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhCTPml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 11:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhCTPmN (ORCPT
+        id S229871AbhCTPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 11:43:14 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:46806 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhCTPmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 11:42:13 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D7EC061574;
-        Sat, 20 Mar 2021 08:42:11 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id x21so14276139eds.4;
-        Sat, 20 Mar 2021 08:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=8C4TkW2VBo+3wK2nTKB/hjLpyDt3GndZ24G33/9RjKE=;
-        b=Jt7RAU1zd4P2MJfFTYCqrXYCCJ7Rx1CDq+xC1Txde5GC5vI5Ta5g1+jN+ENXbm0l98
-         WtecMcS4Ah2vcZWwpWXN5uiGNbeFum4r1cUBtwbVHv9qCCgjEBTbxAo8PeMz3gF5kjDs
-         GEQme3rn+zRMVbD5XFns3qkqAb/sFcnGOkvIEKJBLEyKmuOhdLQaY0Qtf6CI+Tb2itlu
-         Qrrx196n1B8grOj0uyp+oqZKulIATBQ37aLTHUZEMoCTE5a8jAAwA2h9MoWCbSCfHU3d
-         AChPbxWC9I9S2Vjs+0PI5Mg2cyifGVvbMa1HI+AYtoI3aMXULloPsa1hvXv1VmbMBOxR
-         tbDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=8C4TkW2VBo+3wK2nTKB/hjLpyDt3GndZ24G33/9RjKE=;
-        b=nnLdfS2zr8cJCJPolvpSfR4qNQ3GJ/vcR9nYNGnDMeP0AQ7WfpMQ9vJ3KHslefcwLj
-         G0wo1VkSfQb5oulWONxtws/4XCtRqKOKxRdXvzZei98YAWfiHT5JfRpWr6BMARRxKADd
-         Qj6P23UwrnDSOW+CMc56Zq77ta8P1WtyBJfTE7g8efy5FTdKWgQSPCeJn357NniHvUZA
-         IjdR8n+LHqIRA27fxDh0JF8KUcEWmsCxvNxcOuxRhiOaKpRJn0X/gsaGt9CxHQ5GJTRD
-         QUetUCUlRF/AjUh8Z7X4Lqd9HXuDLR3tzf5x06ZxYEYa89IjowwY159Vvv26AIJkDcPg
-         t6AQ==
-X-Gm-Message-State: AOAM532Y3kABZTaTnkkq5dHFb0gcfZVVArK3DJJgl68438jYm/uWGwIO
-        vTdD64QZGgWRFKYh4n7M4w==
-X-Google-Smtp-Source: ABdhPJz8foQU11+dUCQqanKqqZJdjFyPuN86QEk3bDOkpGUzdJmwJTAgt65RUoYa/3vsk9pCXErJHw==
-X-Received: by 2002:aa7:cf02:: with SMTP id a2mr15888733edy.59.1616254930344;
-        Sat, 20 Mar 2021 08:42:10 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.248.213])
-        by smtp.gmail.com with ESMTPSA id a9sm6456336eds.33.2021.03.20.08.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 08:42:09 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 18:42:08 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] proc: mandate ->proc_lseek in "struct proc_ops"
-Message-ID: <YFYX0Bzwxlc7aBa/@localhost.localdomain>
+        Sat, 20 Mar 2021 11:42:55 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07EB98D3;
+        Sat, 20 Mar 2021 16:42:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616254972;
+        bh=173LBmGmWR/M+VIJkThtB3MyheJPfVfgrWH8Pz618eQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hoz6NGVDOvIC3yHD4GyFLSZ5eDfRsgNsx/Jqr8cX2ybyDfbGs+LTohNWsOI3Wr99P
+         ffqnmHBZRWXiBxtiKzYC8jXq4nJLbq4jmcpVzOdFRgwrmOQV7r2yZSSRmce8ihn8Ji
+         ifF8uRJgYciQfttNRPS+Jkce9qpPpQ02TuD01OqU=
+Date:   Sat, 20 Mar 2021 17:42:12 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v3 05/19] media: v4l2-subdev: De-deprecate init() subdev
+ op
+Message-ID: <YFYX1KHi74XPEWLi@pendragon.ideasonboard.com>
+References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
+ <20210319164148.199192-6-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20210319164148.199192-6-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that proc_ops are separate from file_operations and other
-operations it easy to check all instances to have ->proc_lseek
-hook and remove check in main code.
+Hi Jacopo,
 
-Note:
-nonseekable_open() files naturally don't require ->proc_lseek.
+Thank you for the patch.
 
-Garbage collect pde_lseek() function.
+CC'ing Sakari on v3 to get feedback.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+On Fri, Mar 19, 2021 at 05:41:34PM +0100, Jacopo Mondi wrote:
+> The init() subdev core operation is deemed to be deprecated for new
+> subdevice drivers. However it could prove useful for complex
+> architectures to defer operation that require access to the
+> communication bus if said bus is not available (or fully configured)
+> at the time when the subdevice probe() function is run.
+> 
+> As an example, the GMSL architecture requires the GMSL configuration
+> link to be configured on the host side after the remote subdevice
+> has completed its probe function. After the configuration on the host
+> side has been performed, the subdevice registers can be accessed through
+> the communication bus.
+> 
+> In particular:
+> 
+> 	HOST			REMOTE
+> 
+> 	probe()
+> 	   |
+> 	   ---------------------> |
+> 				  probe() {
+> 				     bus config()
+> 				  }
+> 	   |<--------------------|
+> 	v4l2 async bound {
+> 	    bus config()
+> 	    call subdev init()
+> 	   |-------------------->|
+> 				 init() {
+> 				     access register on the bus()
+> 				}
+> 	   |<-------------------
+> 	}
+> 
+> In the GMSL use case the bus configuration requires the enablement of the
+> noise immunity threshold on the remote side which ensures reliability
+> of communications in electrically noisy environments. After the subdevice
+> has enabled the threshold at the end of its probe() sequence the host
+> side shall compensate it with an higher signal amplitude. Once this
+> sequence has completed the bus can be accessed with noise protection
+> enabled and all the operations that require a considerable number of
+> transactions on the bus (such as the image sensor configuration
+> sequence) are run in the subdevice init() operation implementation.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  include/media/v4l2-subdev.h | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> index d0e9a5bdb08b..3068d9940669 100644
+> --- a/include/media/v4l2-subdev.h
+> +++ b/include/media/v4l2-subdev.h
+> @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
+>   *	each pin being configured.  This function could be called at times
+>   *	other than just subdevice initialization.
+>   *
+> - * @init: initialize the sensor registers to some sort of reasonable default
+> - *	values. Do not use for new drivers and should be removed in existing
+> - *	drivers.
+> + * @init: initialize the subdevice registers to some sort of reasonable default
+> + *	values. Do not use for new drivers (and should be removed in existing
+> + *	ones) for regular architectures where the image sensor is connected to
+> + *	the host receiver. For more complex architectures where the subdevice
+> + *	initialization should be deferred to the completion of the probe
+> + *	sequence of some intermediate component, or the communication bus
+> + *	requires configurations on the host side that depend on the completion
+> + *	of the probe sequence of the remote subdevices, the usage of this
+> + *	operation could be considered to allow the devices along the pipeline to
+> + *	probe and register in the media graph and to defer any operation that
+> + *	require actual access to the communication bus to their init() function
+> + *	implementation.
+>   *
+>   * @load_fw: load firmware.
+>   *
 
- drivers/isdn/capi/kcapi_proc.c                     |    1 +
- drivers/net/wireless/intersil/hostap/hostap_proc.c |    1 +
- drivers/scsi/esas2r/esas2r_main.c                  |    1 +
- fs/proc/inode.c                                    |   14 ++------------
- include/linux/proc_fs.h                            |    1 +
- 5 files changed, 6 insertions(+), 12 deletions(-)
+-- 
+Regards,
 
---- a/drivers/isdn/capi/kcapi_proc.c
-+++ b/drivers/isdn/capi/kcapi_proc.c
-@@ -201,6 +201,7 @@ static ssize_t empty_read(struct file *file, char __user *buf,
- 
- static const struct proc_ops empty_proc_ops = {
- 	.proc_read	= empty_read,
-+	.proc_lseek	= default_llseek,
- };
- 
- // ---------------------------------------------------------------------------
---- a/drivers/net/wireless/intersil/hostap/hostap_proc.c
-+++ b/drivers/net/wireless/intersil/hostap/hostap_proc.c
-@@ -227,6 +227,7 @@ static ssize_t prism2_aux_dump_proc_no_read(struct file *file, char __user *buf,
- 
- static const struct proc_ops prism2_aux_dump_proc_ops = {
- 	.proc_read	= prism2_aux_dump_proc_no_read,
-+	.proc_lseek	= default_llseek,
- };
- 
- 
---- a/drivers/scsi/esas2r/esas2r_main.c
-+++ b/drivers/scsi/esas2r/esas2r_main.c
-@@ -617,6 +617,7 @@ static const struct file_operations esas2r_proc_fops = {
- };
- 
- static const struct proc_ops esas2r_proc_ops = {
-+	.proc_lseek		= default_llseek,
- 	.proc_ioctl		= esas2r_proc_ioctl,
- #ifdef CONFIG_COMPAT
- 	.proc_compat_ioctl	= compat_ptr_ioctl,
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -273,25 +273,15 @@ void proc_entry_rundown(struct proc_dir_entry *de)
- 	spin_unlock(&de->pde_unload_lock);
- }
- 
--static loff_t pde_lseek(struct proc_dir_entry *pde, struct file *file, loff_t offset, int whence)
--{
--	typeof_member(struct proc_ops, proc_lseek) lseek;
--
--	lseek = pde->proc_ops->proc_lseek;
--	if (!lseek)
--		lseek = default_llseek;
--	return lseek(file, offset, whence);
--}
--
- static loff_t proc_reg_llseek(struct file *file, loff_t offset, int whence)
- {
- 	struct proc_dir_entry *pde = PDE(file_inode(file));
- 	loff_t rv = -EINVAL;
- 
- 	if (pde_is_permanent(pde)) {
--		return pde_lseek(pde, file, offset, whence);
-+		return pde->proc_ops->proc_lseek(file, offset, whence);
- 	} else if (use_pde(pde)) {
--		rv = pde_lseek(pde, file, offset, whence);
-+		rv = pde->proc_ops->proc_lseek(file, offset, whence);
- 		unuse_pde(pde);
- 	}
- 	return rv;
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -32,6 +32,7 @@ struct proc_ops {
- 	ssize_t	(*proc_read)(struct file *, char __user *, size_t, loff_t *);
- 	ssize_t (*proc_read_iter)(struct kiocb *, struct iov_iter *);
- 	ssize_t	(*proc_write)(struct file *, const char __user *, size_t, loff_t *);
-+	/* mandatory unless nonseekable_open() or equivalent is used */
- 	loff_t	(*proc_lseek)(struct file *, loff_t, int);
- 	int	(*proc_release)(struct inode *, struct file *);
- 	__poll_t (*proc_poll)(struct file *, struct poll_table_struct *);
+Laurent Pinchart
