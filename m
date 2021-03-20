@@ -2,200 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85D342C4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FD5342C51
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 12:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhCTLhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 07:37:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:35314 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhCTLhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:37:23 -0400
-IronPort-SDR: elonyAyXQakfgHiXzEAs7Yuq/Z0PURYCHCgMJ0R1FWNzsrkMJMkaPhTVhTggorlOofvh+ccbs7
- wFzHKrbblLvw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="189417985"
-X-IronPort-AV: E=Sophos;i="5.81,264,1610438400"; 
-   d="scan'208";a="189417985"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2021 04:37:23 -0700
-IronPort-SDR: kGfAQY2s2nmGP3osXfB9A1tApJ++aqWed80Sz6Elc5Lca442gKMHmsVrrCtUKtTCFIZrrq8VvL
- TqPXS3Ib7VTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,264,1610438400"; 
-   d="scan'208";a="512766747"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Mar 2021 04:37:22 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lNZuz-0002Z4-Da; Sat, 20 Mar 2021 11:37:21 +0000
-Date:   Sat, 20 Mar 2021 19:36:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- c93a5e20c3c2dabef8ea360a3d3f18c6f68233ab
-Message-ID: <6055de4d.d81wl7NXAKzDU4+P%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230002AbhCTLiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 07:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229713AbhCTLiQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 07:38:16 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E220AC0613E8
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:38:15 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id r20so15111718ljk.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 04:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kpNq+4pzC9q8PqJhkJv2XRb1wrmskPmzcnX1wwKvIT4=;
+        b=usugGJstphxXID2U3mOQ0opUCwdg/eCHLAtS59XDR8tr3xP4kZJtMMR0DrqiFbW6mZ
+         BbckAuDWNuz4KbRLDestCcqT8Uez7tzJLs3cwOfMLdwRXZsl7SibDBzirk2IQpxekq61
+         /1QsQsXGlPQCx2dOSloA4aUDIYozO+iw6KrlI5M8yeiFs7qryv3HcqriKXyrq/4EumRg
+         l/+GL0zfhGgQtURUrW75R1gFnJPspwWqYqyt9UVBfhyO4nJMyX/Sv27EqiGlzWull2St
+         yuH9eYED9+/Acl2/IA4GACeD2tlkq04pmCkJl+RObkCDqUMklXKnGJGd+VyRHyzvZcko
+         jpUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kpNq+4pzC9q8PqJhkJv2XRb1wrmskPmzcnX1wwKvIT4=;
+        b=fhLPKcJp+KsdhHy5yho7MD9//T5n7tiNkzvFc8FdhhiquIs6uCym7bpfUGgHEU00iA
+         9/qUG1y/FtCQ3vVigq5OIIage/dHlFOC9VrJ7gjZV81bXKeINHFvmBIeROeyikL2SQm7
+         9bTZuAHrZoruC+jYzffT0OkweHwDqU1o1j8narQkjgbsUcAuLZ/VRtPgbZw1mrsW2LEe
+         ZLisnOOcj+hgPMdkana/t1yAlEwjHBDivNcJEYlnpDW3IMWBON3PfC3tIo2BQ2ngYgPJ
+         /9dJxjbZyOiuyUApGjmpwx0qIYoFAxKD0vZJqO6MlTheDgCRynzcMcp60JURMkD6uwXd
+         DcaQ==
+X-Gm-Message-State: AOAM533RTguLbbntJQqYQjz5usUgKB/zHuUyuBfTUCofiXuvo7uyZgit
+        MIo4PECBdKKIxW980DeDUX/MUNWhl44ZO26uvL2lFQ==
+X-Google-Smtp-Source: ABdhPJyph+35e/m+iaGdkuTx9JEupeD2nzqVohDvenngcwRbROO6Pk1TaZAWccwtj4OtmgFGBBO29aVwIAewWbg4Yhc=
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr3571819ljc.368.1616240294278;
+ Sat, 20 Mar 2021 04:38:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210315114214.3096-1-noltari@gmail.com> <CACRpkdYdHgP7QNWco4aN1G-GaRjOd2Y=_fkxv4zOKsQtXtpqfg@mail.gmail.com>
+ <34672AEE-B28E-4B07-BFDA-8DF2F20FD410@gmail.com>
+In-Reply-To: <34672AEE-B28E-4B07-BFDA-8DF2F20FD410@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 20 Mar 2021 12:38:03 +0100
+Message-ID: <CACRpkdbKtjNjC57_m9+3BTex6XmjUrsYN8NkMiCxPt37s3pv-A@mail.gmail.com>
+Subject: Re: [PATCH v7 00/22] pinctrl: add BCM63XX pincontrol support
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: c93a5e20c3c2dabef8ea360a3d3f18c6f68233ab  genirq/matrix: Prevent allocation counter corruption
+On Wed, Mar 17, 2021 at 12:20 PM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
 
-elapsed time: 815m
+> I appreciate that, but I=E2=80=99m having a hard time in understanding wh=
+at
+> Rob wants and since there are no examples available on most of the
+> stuff he=E2=80=99s requesting this is really frustrating...
 
-configs tested: 138
-configs skipped: 2
+I am sorry that the situation can be stressful.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This is not Rob's fault, at least it's also mine.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                         tb0287_defconfig
-powerpc                     tqm8541_defconfig
-arm                         socfpga_defconfig
-arc                              alldefconfig
-powerpc                  iss476-smp_defconfig
-sh                          lboxre2_defconfig
-mips                malta_kvm_guest_defconfig
-arm                         lubbock_defconfig
-arm                          ep93xx_defconfig
-sh                            hp6xx_defconfig
-arm                  colibri_pxa300_defconfig
-arm                            qcom_defconfig
-powerpc                     redwood_defconfig
-nds32                             allnoconfig
-powerpc                   lite5200b_defconfig
-powerpc                 canyonlands_defconfig
-ia64                             allmodconfig
-m68k                            q40_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        neponset_defconfig
-arm                        multi_v7_defconfig
-sh                        edosk7705_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                         cm_x300_defconfig
-powerpc                     pq2fads_defconfig
-mips                     loongson1c_defconfig
-m68k                           sun3_defconfig
-mips                        bcm63xx_defconfig
-arm                    vt8500_v6_v7_defconfig
-arc                            hsdk_defconfig
-arm                           u8500_defconfig
-arm                          imote2_defconfig
-powerpc                     taishan_defconfig
-powerpc                        warp_defconfig
-arm                        mvebu_v7_defconfig
-xtensa                  audio_kc705_defconfig
-m68k                        stmark2_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                       maple_defconfig
-arm                       mainstone_defconfig
-sparc64                             defconfig
-powerpc                      acadia_defconfig
-powerpc                      pmac32_defconfig
-sh                           se7750_defconfig
-mips                     decstation_defconfig
-mips                        qi_lb60_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                            zx1_defconfig
-powerpc                     skiroot_defconfig
-powerpc                     ksi8560_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                     tqm5200_defconfig
-parisc                              defconfig
-powerpc                 linkstation_defconfig
-s390                             allmodconfig
-arm                       versatile_defconfig
-arm                        clps711x_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                               allmodconfig
-parisc                generic-64bit_defconfig
-mips                        maltaup_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-i386                 randconfig-a013-20210319
-i386                 randconfig-a016-20210319
-i386                 randconfig-a011-20210319
-i386                 randconfig-a014-20210319
-i386                 randconfig-a015-20210319
-i386                 randconfig-a012-20210319
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+The real problem we have is lack of hardware people
+reviewing hardware descriptions, to put it simple.
+As reviewers we get a bit confused, then we try to make
+a mind map of the hardware as most driver developers do,
+but as we are not chip designers we will make
+mistakes and get confused and there will be a bit
+of back-and-forth and inconsistencies.
 
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
+The bindings have very high ambitions (to describe all
+hardware) but it's a bit like food: the less you know
+about how it's produced, the better the taste.
+In fact it is a best effort and involves a bit of guesswork
+and group effort and you are part of the group effort
+now :)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yours,
+Linus Walleij
