@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EC7342E2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD9F342E31
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhCTQIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhCTQIP (ORCPT
+        id S229870AbhCTQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:09:38 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:58159 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhCTQJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:08:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C56C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 09:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lLZoxS2jnucsow36f/+/xibANjR777Ge9+Ym0kKbvpc=; b=KllN2K/hkTM3EeUXWft/eHxhZU
-        KwdnPxKrzdC78hBbNskkRUWhFqjvdw8XdCylXMknUiDffnDK0M2/boumqKHhD4bzvSK/v0GeCfl+K
-        wOlEms5d2g+L+Uusz5QPgwzGrQIAlQvu+xzanUZPaqdFwpc2OdFp0v+lnjkek59XpotGtbfQ4dxAy
-        1Ozdsm7A6dwvohusQ+uhN2hcft9FnquuM6L/MMQBBUL4f4h5g8pwnrp4yDj3TeUmJXDrv0GxaZISI
-        QZ9W7x/yRkJRnUBfZmLbQWpUy1qxtJjxGPR3LzXiZ3fqf2vmSM3Br9J2brTy86EYLNF/qmSvAKOeh
-        sXKtWdHw==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNe94-001vTD-A8; Sat, 20 Mar 2021 16:08:11 +0000
-Date:   Sat, 20 Mar 2021 09:08:10 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-cc:     code@tyhicks.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, corbet@lwn.net,
-        ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        christian.brauner@ubuntu.com
-Subject: Re: [PATCH] ecryptfs: fix incorrect kernel-doc comment syntax in
- files
-In-Reply-To: <20210320081551.13954-1-yashsri421@gmail.com>
-Message-ID: <731fb5fd-b20-c1e-bfe-276845a9a91@bombadil.infradead.org>
-References: <20210320081551.13954-1-yashsri421@gmail.com>
+        Sat, 20 Mar 2021 12:09:30 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MbS0X-1lzRxJ1k7d-00bsD0; Sat, 20 Mar 2021 17:09:28 +0100
+Received: by mail-ot1-f44.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso11547416otq.3;
+        Sat, 20 Mar 2021 09:09:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533ZUKYOyZzGy6OPjuZ1OgQGtZnsaFkmTFVx8z3S8ML4ZksK8UXr
+        w1iT+fVqYYWlWi+Ds7ztUm4qxVRWln1w8FnmxYM=
+X-Google-Smtp-Source: ABdhPJzVJ2N60DvRV+HXUfGN7wgdYKablAq/4WybV8N0rgJq8z/pefYzkkd4Bi6D1LHZW2s/hrzhyYZqUkMU8Xg6NHw=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr5332246otq.305.1616256566981;
+ Sat, 20 Mar 2021 09:09:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_090810_373986_08DFD58B 
-X-CRM114-Status: GOOD (  10.26  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sat, 20 Mar 2021, Aditya Srivastava wrote: > The opening
-    comment mark '/**' is used for kernel-doc comments. > There are files in
-   fs/encrypts which follows this syntax, but the content > inside does not comply
-    with kernel-doc. > This causes un [...] 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+References: <20210319161956.2838291-2-boqun.feng@gmail.com>
+ <20210319211246.GA250618@bjorn-Precision-5520> <CAK8P3a3qj=9KEN=X2uGCq0TrOGpyPw1Gwipmn=Gqx4LAfqUEDQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3qj=9KEN=X2uGCq0TrOGpyPw1Gwipmn=Gqx4LAfqUEDQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 20 Mar 2021 17:09:10 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a07wedojBU6xDKotiOsPR8k2XEXMB1SvJSRpeG++URA5Q@mail.gmail.com>
+Message-ID: <CAK8P3a07wedojBU6xDKotiOsPR8k2XEXMB1SvJSRpeG++URA5Q@mail.gmail.com>
+Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:e5seU3cMjlkxmy+JPXSrnFT4ztNPO1iZqQeA233JbxeaFAbG1O7
+ FJ9y+M7wlylI8ckUctYL2VG5GAQmHQiDlgI1eCYfVQGQHEoDz8krnzidhXx+zP4WxOjFWc2
+ lRCWI5sZ4uhb81wwDRi1wLcbtr52KUSq+LWSil/95SmBbp2fg2viYkZ0KfpA4C0gAhf7XMP
+ SZmtSuT1/KbCgSGw3wncQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4EZW7c1Jfts=:8PzPUEN0NNQUVT8VHQ7qpC
+ p2O60nEVJjklT8Qa5pFNUavcGblWZ1vLAOkXT1S3F/WT0ZmCJdtDFw44PNmagaPxBoh4Llged
+ 9gZzbO2Rk3JjsIJcmoCLZw2Mx9E4HXsPFuGNQWW5fh8v/oYHFqgIXDtN8WLR0eHxhvHWFBMSD
+ r9f+SfebCrAJdTs+sK6TxuxPatT+lfSI0W/dY1QKNH2As+i9kLmgM321MEjHKNkfSeoiCts5n
+ 7KwyDYQwSajOHbqhlTpubKxclfhyIo3xOyigEKp4DlcdBHKlor26eeB7u7KnhIpac+aPqq8C0
+ ArIHiz2kcdaOWin07xB8OuMNn0N2GaObADAZgq39k/8gDZ54gLgSxTSJe4MG47ZYCXvGNX/Qk
+ fktBuSZrv7BkSYOTrw8UCjtLCY6uHXtHpycpqkDjhcSe+N4LYpVttFIlJS1r6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 20, 2021 at 1:54 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>      I actually still have a (not really tested) patch series to clean up
+> the pci host bridge registration, and this should make this a lot easier
+> to add on top.
+>
+> I should dig that out of my backlog and post for review.
 
+I've uploaded my series to
+https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git
+pci-probe-rework-20210320
 
-On Sat, 20 Mar 2021, Aditya Srivastava wrote:
+The purpose of this series is mostly to simplify what variations of
+host probe methods exist, towards using pci_host_probe() as the
+only method. It does provide some simplifications based on that
+that, including a way to universally have access to the pci_host_bridge
+pointer during the probe function.
 
-> The opening comment mark '/**' is used for kernel-doc comments.
-> There are files in fs/encrypts which follows this syntax, but the content
-> inside does not comply with kernel-doc.
-> This causes unexpected warnings from kernel-doc.
->
-> E.g., header comment for fs/ecryptfs/dentry.c follows kernel-doc syntax
-> for comments(i.e., '/**'), but the content inside does not.
->
-> Running kernel-doc -none on fs/ecryptfs/dentry.c causes these
-> unexpected warnings:
-> "warning: Incorrect use of kernel-doc format:  * ecryptfs_d_revalidate - revalidate an ecryptfs dentry"
-> "warning: Function parameter or member 'dentry' not described in 'ecryptfs_d_revalidate'"
-> "warning: Function parameter or member 'flags' not described in 'ecryptfs_d_revalidate'"
-> "warning: expecting prototype for eCryptfs(). Prototype was for ecryptfs_d_revalidate() instead"
->
-> Similarly for other files too.
->
-> Provide a simple fix by replacing such occurrences with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
->
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
-> * Applies perfectly on next-20210312
->
-> fs/ecryptfs/crypto.c          |  2 +-
-> fs/ecryptfs/debug.c           |  2 +-
-> fs/ecryptfs/dentry.c          |  2 +-
-> fs/ecryptfs/ecryptfs_kernel.h |  2 +-
-> fs/ecryptfs/file.c            |  2 +-
-> fs/ecryptfs/inode.c           |  2 +-
-> fs/ecryptfs/keystore.c        |  6 +++---
-> fs/ecryptfs/kthread.c         |  2 +-
-> fs/ecryptfs/main.c            | 10 +++++-----
-> fs/ecryptfs/messaging.c       |  2 +-
-> fs/ecryptfs/miscdev.c         |  2 +-
-> fs/ecryptfs/mmap.c            |  6 +++---
-> fs/ecryptfs/read_write.c      |  2 +-
-> fs/ecryptfs/super.c           |  2 +-
-> 14 files changed, 22 insertions(+), 22 deletions(-)
->
+         Arnd
