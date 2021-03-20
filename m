@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4B5342D43
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE01B342D47
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhCTOXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 10:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhCTOXi (ORCPT
+        id S229993AbhCTOY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 10:24:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:55085 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhCTOY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 10:23:38 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC1FC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:23:38 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id v26so9197331iox.11
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kQcbTGanAzrgBGCF/DKThsZjt/13iN1Rp0nICH3M9pk=;
-        b=olTZRjhoRaI6B/JDy56MsvNTIlwMF27aPC5lL9ePvK033EmT21syW+tJhy4QUKIo+R
-         vGiHj1e9xEGqU9fUhiyCzN5zPFPUzZNFndaEjiSLQhxHSrtEvMEoBGNd1dUWpo8kYhq0
-         F34cThDXnkcumLUcCRgqM+qBIDt/RLg3gQlrVyX7OdCnq8zbnxNsXfi8lSfCq2bmK2IO
-         eq/dxP9egxoyv/cs8gdiXamFKKzT59vLCqIbdlMOMM6Gj9wRi/M+PSKy27CCjfOsiH+X
-         h5HOuEmNbPvg/Rppw5BzXl74pE23jtV2b+JHw+6QLwLOwOYki8PymWXgHBYZosPme19a
-         HD6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kQcbTGanAzrgBGCF/DKThsZjt/13iN1Rp0nICH3M9pk=;
-        b=h4E9ywk4lbs1L8UN8wL5RPsUhr/F/H7BV3LdVRd3YZD6TbZdlERerS6kr2R7k5yjwj
-         Tq7tETPMHSJsUfYbLdJfJdb7zZC35DhTGXtRReMHvRluUGn8VFVOTro64H6MwwEFeb8m
-         6/TB+80uHbGdHvWW7qlbjs3UNct6HtSNkIfse51ypb0tJUM7G0hr46Sshtv6NvgK5EjJ
-         6PzHboLU5NCbAsXFXGDlsw63drJo/HuQnqi9nUuIBvcr0eY/oy4wEs+36F/RYabuRucO
-         zj1cSyX+Qp8QKoMIx+8svOw8ala9k7oYYVSCQ3mVxyaXu6k54L3+Y+iXliSMei8hdyAk
-         KZ5A==
-X-Gm-Message-State: AOAM532ZKta4uUCHrnLtliaW4qNVQrMFx4txdkBoZmyAyVyQ021FYXq7
-        j0K7wVYbfrVaAmeZLVo8c/gkRKE3odapoCiy
-X-Google-Smtp-Source: ABdhPJwW/D+7SEinGZQ3lVcOqHDEhRusbrR2WJ5tPjiuwwyGi3OG9W169lkEBLln9OG4O7Zvmvirkw==
-X-Received: by 2002:a5d:9250:: with SMTP id e16mr6164893iol.27.1616250217388;
-        Sat, 20 Mar 2021 07:23:37 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v19sm4234117iol.21.2021.03.20.07.23.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 07:23:36 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/4] net: ipa: fix validation
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210319042923.1584593-1-elder@linaro.org>
- <5c6fabcf-88c7-29db-431e-01818321e9e7@linaro.org>
-Message-ID: <9ef8e593-d6be-a936-7a02-0a08e0be51be@linaro.org>
-Date:   Sat, 20 Mar 2021 09:23:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sat, 20 Mar 2021 10:24:26 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MCsgS-1lWSEK1GC0-008p20; Sat, 20 Mar 2021 15:24:24 +0100
+Received: by mail-oi1-f180.google.com with SMTP id d12so8048606oiw.12;
+        Sat, 20 Mar 2021 07:24:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530jlpK61PYnRhLAgUkej1pRP07YE7NFtif0MI+tthMAVhU2DeJV
+        3TT0bGOuKugLekIZsfWgtfqYsWThHQ0kE5tj6K0=
+X-Google-Smtp-Source: ABdhPJwFux/CWtJN4dtM1TpbyyYUNN266hbwwVFHhGiD4/+JrypfSbnb4Kw3jN9gqUDMobOfJpAmk7MjdcZ0Eq7ynN8=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr4360026oie.67.1616250262889;
+ Sat, 20 Mar 2021 07:24:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5c6fabcf-88c7-29db-431e-01818321e9e7@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210319161956.2838291-2-boqun.feng@gmail.com>
+ <20210319211246.GA250618@bjorn-Precision-5520> <87tup6gf3m.wl-maz@kernel.org>
+ <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com> <87sg4qgdrd.wl-maz@kernel.org>
+In-Reply-To: <87sg4qgdrd.wl-maz@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 20 Mar 2021 15:24:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2qATr7qAkPqkZW4aifb3rq6CPrrsEX=8XcjTk0j5aW0A@mail.gmail.com>
+Message-ID: <CAK8P3a2qATr7qAkPqkZW4aifb3rq6CPrrsEX=8XcjTk0j5aW0A@mail.gmail.com>
+Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:l1X1JfvJ5007g7U7VVbAmUywffPsU8+DmIMFcUVUGo95p79luYx
+ DZyCknBiy3VNnP6CwtBVGXKKxTA/ipMHE+Y4q8cQenTKaJ8egc+0K1+Kffyd+UqpO6nt7D2
+ sHfLCB31EtzXpDoJr+sxrilJ7wloJKKr4tMhwWVU7Jzs8yV01T05NNvxQXxTiDPmRg9SJEM
+ /nFAtHshLNIbLTcK3XK6A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vkUr1XpaayI=:ftzMyzxZDIQgB2pWcpSAYj
+ DGgIEXjR/I4yaxvG/OOBOkmKKQeUyT+gkF0oha5ok9emW73SDITUkK3JLKiAyaKM3TgcgcB/r
+ by6qzBsQBN26lqpOIW5TyLQ6sY2aJX0IAigtdStj55RoFFmj/2gXLj5G07rEuzDQ6Q79fNctN
+ toeXZ3gTWWdWVjKyFndelRFye1DfAjufNASw6lIgX5ufsWYDewFGW1Ma3IKcfuv0lES8oPdfF
+ lxy4nh+uvaueEMhQWeA6zMLFNpioobg8VLAARXzrm2UjcNNPAM2DWyhaCcDzVQa8E+SvrvodT
+ 4PBEVwsvIdNnfIOwyuG847HYFQuiragC5+hF0bshk8FjeG3Xt5mn47qqSW7qW+AjsVXTdTGGZ
+ hcmMRh8wniH5tw8brmKV/IiSWftme4J28DtWWocjxGF1nRzGikYIUnaWFETdX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/20/21 8:24 AM, Alex Elder wrote:
-> On 3/18/21 11:29 PM, Alex Elder wrote:
->> There is sanity checking code in the IPA driver that's meant to be
->> enabled only during development.  This allows the driver to make
->> certain assumptions, but not have to verify those assumptions are
->> true at (operational) runtime.  This code is built conditional on
->> IPA_VALIDATION, set (if desired) inside the IPA makefile.
-> 
-> Given the pushback on the ipa_assert() patch I will send
-> out version 2 of this series, omitting the two patches
-> that involve assertions.
+On Sat, Mar 20, 2021 at 2:23 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Sat, 20 Mar 2021 13:03:13 +0000,
+> Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Sat, Mar 20, 2021 at 1:54 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > On Fri, 19 Mar 2021 21:12:46 +0000,
+> > >
+> > > Having an optional callback to host bridges to obtain the MSI domain
+> > > may be possible in some cases though (there might be a chicken/egg
+> > > problem for some drivers though...).
+> >
+> > I would expect that the host bridge driver can find the MSI domain
+> > at probe time and just add a pointer into the pci_host_bridge
+> > structure.
+>
+> In most cases, it doesn't implement it itself, and I'd be reluctant to
+> duplicate information that can already be retrieved from somewhere
+> else in a generic way (i.e. no PCI specific).
 
-I posted version 2, but I think dropping two patches
-without changing the subject might have messed up
-the robots.  I don't know how to fix that and don't
-want to make any more trouble by trying.
+At the moment, the information is retried through a maze of different
+functions, and already duplicated in both the pci_host_bridge and the
+pci_bus structures.  If we can change everything to use
+CONFIG_GENERIC_MSI_IRQ_DOMAIN, then most of that code
+can probably just go away, leaving only the part in the phb.
 
-If there's something I can do, someone please tell me.
-
-					-Alex
-
-> I still think there's a case for my proposal, but I'm
-> going to move on for now and try to find other ways
-> to do what I want.  In some cases BUILD_BUG_ON() or
-> WARN_ON_DEV() could be used.  In other spots, I might
-> be able to use dev_dbg() for checking things only
-> while developing.  But there remain a few cases where
-> none of these options is quite right.
-> 
-> If I ever want to suggest an assertion again I'll do
-> it as an RFC and will copy Leon and Andrew, to make
-> sure they can provide input.
-> 
-> Thanks.
-> 
->                      -Alex
-> 
->> Unfortunately, this validation code has some errors.  First, there
->> are some mismatched arguments supplied to some dev_err() calls in
->> ipa_cmd_table_valid() and ipa_cmd_header_valid(), and these are
->> exposed if validation is enabled.  Second, the tag that enables
->> this conditional code isn't used consistently (it's IPA_VALIDATE
->> in some spots and IPA_VALIDATION in others).
->>
->> This series fixes those two problems with the conditional validation
->> code.
->>
->> In addition, this series introduces some new assertion macros.  I
->> have been meaning to add this for a long time.  There are comments
->> indicating places where assertions could be checked throughout the
->> code.
->>
->> The macros are designed so that any asserted condition will be
->> checked at compile time if possible.  Otherwise, the condition
->> will be checked at runtime *only* if IPA_VALIDATION is enabled,
->> and ignored otherwise.
->>
->> NOTE:  The third patch produces two bogus (but understandable)
->> warnings from checkpatch.pl.  It does not recognize that the "expr"
->> argument passed to those macros aren't actually evaluated more than
->> once.  In both cases, all but one reference is consumed by the
->> preprocessor or compiler.
->>
->> A final patch converts a handful of commented assertions into
->> "real" ones.  Some existing validation code can done more simply
->> with assertions, so over time such cases will be converted.  For
->> now though, this series adds this assertion capability.
->>
->>                     -Alex
->>
->> Alex Elder (4):
->>    net: ipa: fix init header command validation
->>    net: ipa: fix IPA validation
->>    net: ipa: introduce ipa_assert()
->>    net: ipa: activate some commented assertions
->>
->>   drivers/net/ipa/Makefile       |  2 +-
->>   drivers/net/ipa/gsi_trans.c    |  8 ++---
->>   drivers/net/ipa/ipa_assert.h   | 50 ++++++++++++++++++++++++++++++++
->>   drivers/net/ipa/ipa_cmd.c      | 53 ++++++++++++++++++++++------------
->>   drivers/net/ipa/ipa_cmd.h      |  6 ++--
->>   drivers/net/ipa/ipa_endpoint.c |  6 ++--
->>   drivers/net/ipa/ipa_main.c     |  6 ++--
->>   drivers/net/ipa/ipa_mem.c      |  6 ++--
->>   drivers/net/ipa/ipa_reg.h      |  7 +++--
->>   drivers/net/ipa/ipa_table.c    | 11 ++++---
->>   drivers/net/ipa/ipa_table.h    |  6 ++--
->>   11 files changed, 115 insertions(+), 46 deletions(-)
->>   create mode 100644 drivers/net/ipa/ipa_assert.h
->>
-> 
-
+       Arnd
