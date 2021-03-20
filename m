@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68125342FCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711A5342FCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhCTWNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 18:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhCTWNM (ORCPT
+        id S229913AbhCTWOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 18:14:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45162 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhCTWNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:13:12 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C54CC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:13:12 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v11so12708248wro.7
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+k6slClDpNP9SV+PQNJ75LS2okQYo2MttA9wZhjFk8c=;
-        b=vlZgIlC5LmJbiG/QvGeAhR4JUA1FWFlTK3ApXq5EDjmW0uG3G6OgheFnknF18tG1ZZ
-         vroKHJOLfENoAaa0ZNeavMc64uubyijyU/rzbMTEgimnMM27owovvbmhGvTTcx3LtVt5
-         khRFwi9ScUBKd1V7HbbLUwmLHNecR0XI9WaY9a16SYUJVtxtgFm9ZR6BWsSYMKmy1WzO
-         WZljhbtKlCE9zJUKn2ukbH3HdSO4H+gsq2gCRyMd3nUP5x+NeZL3Aim4zj8THzvGnohy
-         ksQcy91A1pde/+wH2ObObeg4+7YE9saT0ux9Zbn5DHxDz+Xivh82RDljQGI3mpO+xQKu
-         dz6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+k6slClDpNP9SV+PQNJ75LS2okQYo2MttA9wZhjFk8c=;
-        b=djOzPISjkf1y+cfmnIGFRxLz+WKGMqtZ4ihkUULaBvjrA0EvJ4gr8Ql2zoJQyiCY8w
-         /kwFNSE/epfH2l9U/h4B7pxRwZv2IgbS3ubigDkXDFNJYxG1ZtPbyAl2VCKJGNlCiM+U
-         JIw+Lkt7M9e3guNOO5bkSu5OMVdYUUB9jaRo9+i531iA0ZDktLVk8jViiWFNecM7Sk9L
-         alUSpTlB9hZwJhmopZVsYWo09dH2bawstDEB2tg0jrUFfWQ+m7txU9ORzXtiAKcxmexy
-         33VReqtH45tgCrTVDrwPy5k1+yrzexlBiIvvCqC2ckWwjcjWoA45TeYfvFoSbDAjSWdV
-         /U9g==
-X-Gm-Message-State: AOAM5322Iy/ezxk7kvln89kWdu41NEsAP96DpipaGLnjGVMKOQgzk7C+
-        iDASb70jEPYbQ/6kFwDS9LnOgNOHTdPuiw==
-X-Google-Smtp-Source: ABdhPJxX7/WCTOFk/0ieWM8Eqh8N2Saf6ltSUbuzPpWDhAoktf5akzEodFrUsRa3VvH4BkQhA37uqQ==
-X-Received: by 2002:a5d:5411:: with SMTP id g17mr11032665wrv.194.1616278390691;
-        Sat, 20 Mar 2021 15:13:10 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:2452:bc69:af94:a0d8? ([2a01:e34:ed2f:f020:2452:bc69:af94:a0d8])
-        by smtp.googlemail.com with ESMTPSA id x23sm12021891wmi.33.2021.03.20.15.13.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 15:13:10 -0700 (PDT)
-Subject: Re: [PATCH 2/3] clocksource/drivers/timer-ti-dm: Remove extra
- of_node_put()
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210304072135.52712-1-tony@atomide.com>
- <20210304072135.52712-3-tony@atomide.com>
- <4c23ce3e-3304-b10d-5054-f421822b5dc2@ti.com> <YEHiojjAj4YLWGxA@atomide.com>
- <YEZCFgFEKTaxJTpG@atomide.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ee7cb91f-5fc1-d852-f109-db3c189e45a1@linaro.org>
-Date:   Sat, 20 Mar 2021 23:13:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 20 Mar 2021 18:13:31 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616278410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9mjR39JAnk9LVTRWHFFkIeF7jmr7jmcsLWwDIHiw89w=;
+        b=U6UCIMJtU8CzmTNm92+RpXTYXA9/F0wT9TidSuQfUoagt+Z3UVMgdXeHMwcqf+UKpK9RQG
+        XdmQvhosA1xPM8vXyvTrO01FfQ6ihoHZUAEJ7Q+uQEH9lkkw1Cps0L1cJzDBdIjp9BWXvM
+        seD125S++B2H+TLadPtvpOV4sXI5FUgX4WafONScUm4wDXptaq1mQJuk4MrngU4KzrCwPb
+        kmn8Dvf06Oxp6FzHvx0oxJJWodCQL3NCtw5K2FjjJEWeH1VQxlUbjoGlNoMCSqRtphmIl9
+        Xgr0D3qtdi0m/4WfKfVUugX3O9xD2KZWL3vy2OjtVlNbRvT849XFvauiM2l4pA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616278410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9mjR39JAnk9LVTRWHFFkIeF7jmr7jmcsLWwDIHiw89w=;
+        b=ftjeSDSqFhj471humgpgmU1OK2BUphH+h6o9Cy7UkO+FL9OxyhDX9RJfh3XeQMZZzCocHZ
+        rQZMZgdDykEYZMBw==
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        luto@kernel.org, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
+        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the first use of dynamic user state
+In-Reply-To: <20210221185637.19281-15-chang.seok.bae@intel.com>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com> <20210221185637.19281-15-chang.seok.bae@intel.com>
+Date:   Sat, 20 Mar 2021 23:13:29 +0100
+Message-ID: <87o8fda2ye.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YEZCFgFEKTaxJTpG@atomide.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 16:26, Tony Lindgren wrote:
-> Hi,
-> 
-> * Tony Lindgren <tony@atomide.com> [210305 07:58]:
->> * Grygorii Strashko <grygorii.strashko@ti.com> [210304 20:56]:
->>>
->>>
->>> On 04/03/2021 09:21, Tony Lindgren wrote:
->>>> We have of_translate_address() already do of_node_put() as needed.
->>>> I probably looked at __of_translate_address() earlier by accident
->>>> that of_translate_address() uses.
->>>
->>> I do not see of_node_put() in of_translate_address() and
->>>  __of_translate_address() is doing of_node_get(dev);
->>> ?
->>
->> Oh right.. this is confusing.. Yeah we can ignore this patch.
->> We should have the use count set for only the system timer(s)
->> we claim.
-> 
-> Daniel, would you like me to repost this series with this patch dropped?
+On Sun, Feb 21 2021 at 10:56, Chang S. Bae wrote:
+> +
+> +/* Update MSR IA32_XFD with xfirstuse_not_detected() if needed. */
+> +static inline void xdisable_switch(struct fpu *prev, struct fpu *next)
+> +{
+> +	if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
+> +		return;
+> +
+> +	if (unlikely(prev->state_mask != next->state_mask))
+> +		xdisable_setbits(xfirstuse_not_detected(next));
+> +}
 
-No, it is ok. I will take care of not picking it.
+So this is invoked on context switch. Toggling bit 18 of MSR_IA32_XFD
+when it does not match. The spec document says:
 
-Thanks
-  -- Daniel
+  "System software may disable use of Intel AMX by clearing XCR0[18:17], by
+   clearing CR4.OSXSAVE, or by setting IA32_XFD[18]. It is recommended that
+   system software initialize AMX state (e.g., by executing TILERELEASE)
+   before doing so. This is because maintaining AMX state in a
+   non-initialized state may have negative power and performance
+   implications."
 
+I'm not seeing anything related to this. Is this a recommendation
+which can be ignored or is that going to be duct taped into the code
+base once the first user complains about slowdowns of their non AMX
+workloads on that machine?
 
+Thanks,
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+        tglx
