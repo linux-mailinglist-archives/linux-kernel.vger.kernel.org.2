@@ -2,59 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518C3342958
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF03B342963
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhCTAKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhCTAJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 20:09:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2FAD761987;
-        Sat, 20 Mar 2021 00:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616198961;
-        bh=52Oxk7pD0F9HhMNX4sbSTYc3zbeGdV2dEoP3OKi3N1w=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YehSIjmqCABWlvsDAxPm8wh60Txg000hk8PR+HQxoAgfjqwu1LYhFvD+N3nBmSDSQ
-         xxfbsNBDcG8nw2B1HPq4mYQape9It7X5W2xNV2orS2qW0Sl5XOuSlAoXPNeNGEViYJ
-         +bKVs1XgWWOaFJCzhI5KaTMvJeYkDUCDkkEZvLOAUZ9hAjTcDcVyZWnvyXMd/rpSUc
-         unPZ/pbftcaQpJmrKBXlrVIiTyrLZXaSyzir/K2U1fOdMsn6oaW0ZshP4TGccHpOLJ
-         +v22s1sT+Tzz9ehe6Wl3Ed4Ik2smKFMxYbmS2RuHrOTaFKfFnzUP6zxdQOm3CpZphl
-         UgvP3ypboHahA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 279A8626EB;
-        Sat, 20 Mar 2021 00:09:21 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes for Linux 5.12-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210319202516.2235406-1-pbonzini@redhat.com>
-References: <20210319202516.2235406-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210319202516.2235406-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 9ce3746d64132a561bceab6421715e7c04e85074
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ecd8ee7f9c1af253738ca4321509ddee727d468d
-Message-Id: <161619896115.24257.10607580677188682781.pr-tracker-bot@kernel.org>
-Date:   Sat, 20 Mar 2021 00:09:21 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        id S229634AbhCTAQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhCTAPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 20:15:36 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8547C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 17:15:35 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id i9so4792773qka.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Mar 2021 17:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yMoS29iTA682CqL5fMoldhYnScAFTc+8697an6z6GgU=;
+        b=M+ICxMkbJW236SJSGga3tQq1zmIDGhoaMAkNfp11B3j8To9eFo4HwGdRNMPdnIJYWY
+         Qkpb70leO8vfyONelNpvNujLDqVRXC5FMWxbY1IYaomTQaiD4FJfEDP/rkZJbvxnAtrp
+         yEge65e6Wvvq2StTLpB75/OWZ2meFqXFYLiYevmdiB/90ObLM7RIagYhuSlYCsj/d7i1
+         Zqp0pToJgWzZZRW3K/dd8Q8Kq8dtLgihDlAJgO0I/kMQylcr65ihQku5LqagvyD0oTEa
+         72TqOFzxkULY9V24crr7mynDGcBXxpCe1Nnwzxas4zr+j+8WmhBhHtLYyADYkWlOlYua
+         VrmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=yMoS29iTA682CqL5fMoldhYnScAFTc+8697an6z6GgU=;
+        b=uJNB6jEJB0Gz/CYkeMwrVf0g7YMxnR3RTRXY+S4e7IatGhJACF/nfv16VKkixkNFfm
+         YAjBHK/th1J6xHg42YdUDdroqW2LPQfwP96GvbSTcq3rjeRfCwx458yguZU+Q/1GtE7M
+         8F5H+SM8JbtoOfv65eZl/PTzm3gvvSocZGcsf8eXZmgcMZ2HjCLG0kHrgC5bVtLXn9Ee
+         5QcJh3kkFY66Pb8sE7UQLkWoeyNB7byyzabbQajP+X+BZDN6b+iVjeZM8ksEUefj9Qe6
+         AAbBp+vsL58w4plVi0TE53MXBwxvHq+IW16mpCCOrMXF1GOC6CsRszQz9h56uJl9ILZd
+         bDhg==
+X-Gm-Message-State: AOAM531CC1QGIN9SB+4wLcBKP/lU8WRfFxiRM7AlvUqSwxsoOLRxfrDh
+        BZRWag6Swpuj0LN4pr08wGuXP59V/q4nQQ==
+X-Google-Smtp-Source: ABdhPJxvQGxS2C/IsQCPHgUy1YfQKAwoQATBYrim6NsViYfYDlxwzZ2bwWhxl/k4rJE3dx2riW70CQ==
+X-Received: by 2002:a05:620a:16d4:: with SMTP id a20mr1165223qkn.410.1616199335117;
+        Fri, 19 Mar 2021 17:15:35 -0700 (PDT)
+Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
+        by smtp.gmail.com with ESMTPSA id n136sm5610324qke.123.2021.03.19.17.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Mar 2021 17:15:34 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
+Date:   Fri, 19 Mar 2021 20:15:18 -0400
+Message-Id: <20210320001518.93149-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Mar 2021 16:25:16 -0400:
+When LATENCYTOP is enabled and ARCH_WANT_FRAME_POINTERS
+is disabled, Kbuild gives the following warning:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+WARNING: unmet direct dependencies detected for FRAME_POINTER
+  Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
+  Selected by [y]:
+  - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ecd8ee7f9c1af253738ca4321509ddee727d468d
+This is because LATENCYTOP selects FRAME_POINTER,
+without selecting or depending on ARCH_WANT_FRAME_POINTERS,
+despite FRAME_POINTER depending on ARCH_WANT_FRAME_POINTERS.
 
-Thank you!
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ lib/Kconfig.debug | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5a698fc34d56..59e78f1b3821 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1675,6 +1675,7 @@ config LATENCYTOP
+ 	depends on DEBUG_KERNEL
+ 	depends on STACKTRACE_SUPPORT
+ 	depends on PROC_FS
++	select ARCH_WANT_FRAME_POINTERS if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+ 	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+ 	select KALLSYMS
+ 	select KALLSYMS_ALL
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
