@@ -2,63 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CA5342F9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 22:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47984342FA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 22:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCTU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 16:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhCTU7M (ORCPT
+        id S229854AbhCTVVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 17:21:32 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.35]:22156 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229835AbhCTVVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 16:59:12 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0021C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:59:11 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id z3so9866201ioc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 13:59:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=csdcb39EwOUNY8JAtO80cS70n2uoogIktQSMq1qcSPw=;
-        b=fHy6SL5AwnPWxVcrgPSul+YGG9RdVJmy7kdgTGVwFj7mqFb3/9np1l80hG86VSrr2D
-         /cVMHvp9tDefmUhQWJfeSgi3FgxvLF71wXMSLG8nqV2YpFN4GvJUXd1JcwLQBZ2dwKwI
-         HVBlOBOGKFhlNymWgStCGbz45BkHOTKs7yILFIf++JX8h6xE88KtZx5rS+mHFtgZygWh
-         OJ+RZ+88/1ezaZNx22a0rk+8042Icj6KTABWokqYz4iNqWg7CHEwvFAj25vJWVAQ+sSd
-         s/n9mHss8ENk906++r7c9UE43RwQ2jQ16mYc0kIPofk+OXP70QZrzRd1U4T81/FQbQTf
-         CCrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=csdcb39EwOUNY8JAtO80cS70n2uoogIktQSMq1qcSPw=;
-        b=Rj3qreWD28wIpas5k1qI1e2mEszI/lxV4dl6hc/O4kcROGhdxBuRDv8IPtu8zPcUbM
-         m5L4R1EFzvaaZ84dSFDyPtGolTChlkblzh8hB+svPE2kxiElwDh/dDbK7KPT+ZItFg8p
-         0xDQLH94jxhEkydz2CxK3sIV514YUjCihQ05PSBgXVLl9wd3/dMVqtD3W1QYGTt0tjEz
-         ufzARPzpSYPkdxxTbMHGZ4iaQz8bePjf4oJ3Mppq878pdiey0lFocdGKTinfBRx/7o/Z
-         iR6tdPztzn4qtSqh7FVbcF4C7eOM6xmoDqR6/WIq9AwkIyphBsG65ZBifXCutmgNLDB2
-         5UyA==
-X-Gm-Message-State: AOAM533jNjabRCJUm0Wd5aRyNK7Vwth2Q3bu254pQ7o0iPv86jOy3L6p
-        +ZYnc00aYV6KSgRzJXhJ6M63KfFJcZbVOiniWCA=
-X-Google-Smtp-Source: ABdhPJwV3ZrZf+hLItxnK6cdd6Q9BV91CJZYfEUlou3wqKc80chbaB8chd6p4Y3Le7lWx0UO/Sxg6Z5OGqUcBLBVN3M=
-X-Received: by 2002:a02:c610:: with SMTP id i16mr6127404jan.36.1616273951067;
- Sat, 20 Mar 2021 13:59:11 -0700 (PDT)
+        Sat, 20 Mar 2021 17:21:05 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 5065E2042F
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 16:21:04 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Nj1slNJcfPkftNj1sl1Dug; Sat, 20 Mar 2021 16:21:04 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=wvk/qSZI6Fzn1oUDvqP0MKw745b0VRkjkJqWjBqnIpM=; b=keKyp3vZxo972ZfNGZJSlB9/DH
+        /iJVv8r1TyxmdclN34lQ8NDDkOanuelOpAztihwESJPgBUeofUX9cNrDxONHZPMSbz/GeWPJm2Ktg
+        vhZ4PNX7N/YthiQ7KOwpSkKRTgLQrA9wcSZSDadnrfRpJTsxbwJfvcxUGW15pyiYaUS6xv+gNUqbs
+        aB6PNWLlYg97kUZgAgOhnyfVLhOEBt+4TBfuXfmnYJHywwXwcoH7zgmejMOdhmBJs0n7ZjPfzX3OF
+        ZjMM7SYB6/XureWJY2Xj3nKDEU3bEVGBQnt3RfeaB5c5CJSh7zRhWhQ++bgia0DItlT0D2gzk5TDl
+        imB4Bjew==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60306 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lNj1s-00413S-0O; Sat, 20 Mar 2021 16:21:04 -0500
+Subject: Re: [PATCH v3][next] xfs: Replace one-element arrays with
+ flexible-array members
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210311042302.GA137676@embeddedor>
+ <20210311044700.GU3419940@magnolia>
+ <96be7032-a95c-e8d2-a7f8-64b96686ea42@embeddedor.com>
+ <20210320201711.GY22100@magnolia>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <d5a9046e-e204-c854-34fe-2a39e58faea4@embeddedor.com>
+Date:   Sat, 20 Mar 2021 15:20:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Sat, 20 Mar 2021 16:59:00 -0400
-Message-ID: <CAA5qM4BrCgvQhPcpHG09-_ukt3EUU92QHkGgDk1UXHqOhvWDPw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify static
- struct resources"
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210320201711.GY22100@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lNj1s-00413S-0O
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60306
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested-by: Tong Zhang <ztong0001@gmail.com>
+
+
+On 3/20/21 15:17, Darrick J. Wong wrote:
+>>>> Below are the results of running xfstests for groups shutdown and log
+>>>> with the following configuration in local.config:
+>>>>
+>>>> export TEST_DEV=/dev/sda3
+>>>> export TEST_DIR=/mnt/test
+>>>> export SCRATCH_DEV=/dev/sda4
+>>>> export SCRATCH_MNT=/mnt/scratch
+>>>>
+>>>> The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
+>>>
+>>> Looks good to me, will toss it at my fstests cloud and see if anything
+>>> shakes out.  Thanks for cleaning up this goofy thorn-pile!
+>>
+>> Great. It's been fun to work on this. :p
+> 
+> Did you run the /entire/ fstests suite?  With this patch applied to
+> 5.12-rc2, I keep seeing list corruption assertions about an hour into
+
+Nope; I run xfstests 'shutdown' and 'log' groups on 5.11.0, only.
+
+How do you run the entire fstests?
+Could you give me some pointers?
+
+> the test run, and usually on some test that heavily exercises allocating
+> and deleting file extents.  I'll try to look at this patch more closely
+> next week, but I figured I should let you know early, on the off chance
+> something sticks out to you.
+
+OK. I'll go run my tests on 5.12-rc2.
+
+Should I run the entire xfstests, too?
+
+Thanks
+--
+Gustavo
