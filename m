@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0272342CE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 13:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965EC342CF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 14:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhCTMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 08:55:23 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:49457 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCTMzK (ORCPT
+        id S229698AbhCTNAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 09:00:52 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:50809 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhCTNAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 08:55:10 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N6sON-1lkjHX1Upr-018KVg; Sat, 20 Mar 2021 13:55:08 +0100
-Received: by mail-ot1-f51.google.com with SMTP id l23-20020a05683004b7b02901b529d1a2fdso11205085otd.8;
-        Sat, 20 Mar 2021 05:55:07 -0700 (PDT)
-X-Gm-Message-State: AOAM533WbbEcgQWjQosCwsVh8o65iilFHytyV2IXZYZIzH+3ttM7CU5z
-        oaHHJ3h4Z14M4EPydV1999HCY/wK6tTNQsVIF/A=
-X-Google-Smtp-Source: ABdhPJxfJjFtVcXJVTzNQbZX61NIbImCp304YJaZ1bespXEDPPNSNNKZMiQFU3RpZzf8rAsn4Jwio7QzZOKXntzCFwc=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr4900234otq.251.1616244906923;
- Sat, 20 Mar 2021 05:55:06 -0700 (PDT)
+        Sat, 20 Mar 2021 09:00:39 -0400
+Received: from relay2-d.mail.gandi.net (unknown [217.70.183.194])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id D5C353B566D;
+        Sat, 20 Mar 2021 08:49:40 +0000 (UTC)
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 39AEC40003;
+        Sat, 20 Mar 2021 08:48:14 +0000 (UTC)
+Subject: Re: [PATCH 0/3] Move kernel mapping outside the linear mapping
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <mhng-cf5d29ec-e941-4579-8c42-2c11799a8f2f@penguin>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <fdc52c40-3324-fc9a-ffda-926ced856a80@ghiti.fr>
+Date:   Sat, 20 Mar 2021 04:48:14 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210319161956.2838291-2-boqun.feng@gmail.com> <20210319211246.GA250618@bjorn-Precision-5520>
-In-Reply-To: <20210319211246.GA250618@bjorn-Precision-5520>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 20 Mar 2021 13:54:50 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3qj=9KEN=X2uGCq0TrOGpyPw1Gwipmn=Gqx4LAfqUEDQ@mail.gmail.com>
-Message-ID: <CAK8P3a3qj=9KEN=X2uGCq0TrOGpyPw1Gwipmn=Gqx4LAfqUEDQ@mail.gmail.com>
-Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:3nBsTRjKU4DNvoz6P1XhrvpmUe2H2tSo8FW7//VtMMpKIMWFU59
- 5LvE5Rx1nrpyksyqctFc2uXS0S/OpKnNXpdurXFpAqI90/1C7+xhQ/zwmogZ+jYulAPORGD
- dNeW6LLglWNElfFjxknk0nkmpPRQ/ot9K2svvsvzKQn/yuCxAzG826H2zES5GgZyf95YYIm
- pakNjUSpBxeJ720qndNSQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:j0FktJ2XUn0=:lJoW9JkB4eIpwg7b9EEESz
- X0lb8lWTNq/QGTiQ2WbUktkPsDiYufirJuh+wEMlvpZUm0zNvhqDhk3AKkVJQ+DkDCiDTz9x+
- mGZsJUnFIjxg8ABjCB5aR5UP+Gi0AqgOhs1yxYjczDwjFy2q+UPKWU17gn7fSW1QTfr981uZQ
- MsoGRX4GgTzPwfYYlc59Bbrhyt011UflGqfesTS2Ltp07YjUEJnVqjtcsO6AoY3yfOLx1y1Xg
- J3Wj+qRK2RSZDtjiy0HbbDVxniB9/jkLS43Vo5Dw2sAsRP/eRZH6qg8SLcIti/9zD25Kcgtw3
- RU9FCiK9ibCzm5rrNPAoz9WLVwaLpe7Mxe8t9/iLA6cAbu4YyZavZ5VpQuCOJrI1dbHe4TIsH
- 2bn42she0Cqs03K+1ZZZ4EOqsbnF0L7vl6MPXaz09hzHRUgp/mqjhViQqfA8iEy1v+iIbGnj4
- H2zWIvCrXiYjlZS7oEcbxKoDj1E9IzesUe9ia9AcssBIx79NP98lHbTbD1uBVRiwVDBuT1ku9
- hjx2UxqMn8JT79ps6BhvIBpRVIQP7MVqplXXBiVoxAQtOhK333xHJNN18ZTz7P3Yg==
+In-Reply-To: <mhng-cf5d29ec-e941-4579-8c42-2c11799a8f2f@penguin>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:14 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > However, for a virtualized PCI bus, there might be no enough data in of
-> > or acpi table to create a pci_config_window. This is similar to the case
-> > where CONFIG_PCI_DOMAINS_GENERIC=n, IOW, architectures use their own
-> > structure for sysdata, so no apci table lookup is required.
-> >
-> > In order to enable Hyper-V's virtual PCI (which doesn't have acpi table
-> > entry for PCI) on ARM64 (which selects CONFIG_PCI_DOMAINS_GENERIC), we
-> > introduce arch-specific pci sysdata (similar to the one for x86) for
-> > ARM64, and allow the core PCI code to detect the type of sysdata at the
-> > runtime. The latter is achieved by adding a pci_ops::use_arch_sysdata
-> > field.
-> >
-> > Originally-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Signed-off-by: Boqun Feng (Microsoft) <boqun.feng@gmail.com>
-> > ---
-> >  arch/arm64/include/asm/pci.h | 29 +++++++++++++++++++++++++++++
-> >  arch/arm64/kernel/pci.c      | 15 ++++++++++++---
-> >  include/linux/pci.h          |  3 +++
-> >  3 files changed, 44 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
-> > index b33ca260e3c9..dade061a0658 100644
-> > --- a/arch/arm64/include/asm/pci.h
-> > +++ b/arch/arm64/include/asm/pci.h
-> > @@ -22,6 +22,16 @@
-> >
-> >  extern int isa_dma_bridge_buggy;
-> >
-> > +struct pci_sysdata {
-> > +     int domain;     /* PCI domain */
-> > +     int node;       /* NUMA Node */
-> > +#ifdef CONFIG_ACPI
-> > +     struct acpi_device *companion;  /* ACPI companion device */
-> > +#endif
-> > +#ifdef CONFIG_PCI_MSI_IRQ_DOMAIN
-> > +     void *fwnode;                   /* IRQ domain for MSI assignment */
-> > +#endif
-> > +};
->
-> Our PCI domain code is really a mess (mostly my fault) and I hate to
-> make it even more complicated by adding more switches, e.g.,
-> ->use_arch_sysdata.
->
-> I think the design problem is that PCI host bridge drivers should
-> supply the PCI domain up front instead of having callbacks to extract
-> it.
->
-> We could put "int domain_nr" in struct pci_host_bridge, and the arch
-> code or host bridge driver (pcibios_init_hw(), *_pcie_probe(), VMD,
-> HV, etc) could fill in pci_host_bridge.domain_nr before calling
-> pci_scan_root_bus_bridge() or pci_host_probe().
->
-> Then maybe we could get rid of pci_bus_find_domain_nr() and some of
-> the needlessly arch-specific implementations of pci_domain_nr().
-> I think we likely could get rid of CONFIG_PCI_DOMAINS_GENERIC, too,
-> eventually.
+Le 3/9/21 à 9:54 PM, Palmer Dabbelt a écrit :
+> On Thu, 25 Feb 2021 00:04:50 PST (-0800), alex@ghiti.fr wrote:
+>> I decided to split sv48 support in small series to ease the review.
+>>
+>> This patchset pushes the kernel mapping (modules and BPF too) to the last
+>> 4GB of the 64bit address space, this allows to:
+>> - implement relocatable kernel (that will come later in another
+>>   patchset) that requires to move the kernel mapping out of the linear
+>>   mapping to avoid to copy the kernel at a different physical address.
+>> - have a single kernel that is not relocatable (and then that avoids the
+>>   performance penalty imposed by PIC kernel) for both sv39 and sv48.
+>>
+>> The first patch implements this behaviour, the second patch introduces a
+>> documentation that describes the virtual address space layout of the 
+>> 64bit
+>> kernel and the last patch is taken from my sv48 series where I simply 
+>> added
+>> the dump of the modules/kernel/BPF mapping.
+>>
+>> I removed the Reviewed-by on the first patch since it changed enough from
+>> last time and deserves a second look.
+>>
+>> Alexandre Ghiti (3):
+>>   riscv: Move kernel mapping outside of linear mapping
+>>   Documentation: riscv: Add documentation that describes the VM layout
+>>   riscv: Prepare ptdump for vm layout dynamic addresses
+>>
+>>  Documentation/riscv/index.rst       |  1 +
+>>  Documentation/riscv/vm-layout.rst   | 61 ++++++++++++++++++++++
+>>  arch/riscv/boot/loader.lds.S        |  3 +-
+>>  arch/riscv/include/asm/page.h       | 18 ++++++-
+>>  arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
+>>  arch/riscv/include/asm/set_memory.h |  1 +
+>>  arch/riscv/kernel/head.S            |  3 +-
+>>  arch/riscv/kernel/module.c          |  6 +--
+>>  arch/riscv/kernel/setup.c           |  3 ++
+>>  arch/riscv/kernel/vmlinux.lds.S     |  3 +-
+>>  arch/riscv/mm/fault.c               | 13 +++++
+>>  arch/riscv/mm/init.c                | 81 +++++++++++++++++++++++------
+>>  arch/riscv/mm/kasan_init.c          |  9 ++++
+>>  arch/riscv/mm/physaddr.c            |  2 +-
+>>  arch/riscv/mm/ptdump.c              | 67 +++++++++++++++++++-----
+>>  15 files changed, 258 insertions(+), 50 deletions(-)
+>>  create mode 100644 Documentation/riscv/vm-layout.rst
+> 
+> This generally looks good, but I'm getting a bunch of checkpatch 
+> warnings and some conflicts, do you mind fixing those up (and including 
+> your other kasan patch, as that's likely to conflict)?
 
-Agreed. I actually still have a (not really tested) patch series to clean up
-the pci host bridge registration, and this should make this a lot easier
-to add on top.
+I have just tried to rebase this on for-next, and that quite conflicts 
+with Vitaly's XIP patch, I'm fixing this and post a v3.
 
-I should dig that out of my backlog and post for review.
-
-         Arnd
+Alex
