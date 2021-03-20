@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9D9342E48
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8574342E4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhCTQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        id S229936AbhCTQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCTQRQ (ORCPT
+        with ESMTP id S229821AbhCTQRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:17:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C9C061574;
-        Sat, 20 Mar 2021 09:17:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=N4NO8hc0+T0jY4h6nLD8bMmPoT+/SJOmyVlAlER7H/M=; b=zWTt5V/nuE1N1/cO26LcMPkjWW
-        rCQ3eqqM30BAmSVdBgDjiqEdFAx1XTe7kcDM1ke7n9ya/Lpo18ya28U7UW2pgZuccslk7ROm7QBN4
-        fp/BKUBAbH3e+PA4LKMchSXSyZ04dMjHXo2gxNE94JXfBkmapjShlBhJEM1bvKY1qgPs4p1pFCBuM
-        aCMlvLJH25oDvMjAEP+CrHo37GehHan/COoNmYHZ8JOGfV8/34EUVOy1eY+TtL3EJQqSYrwDyHyOd
-        HQUoyZyCXgzKoOaQwuBMJ3VqYLJr6KThO+gLal/XkoGGFsZz/SoJi43rIzHwqgYST3CmknEWXFF7V
-        SNpuuY0A==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNeHc-001vg2-3s; Sat, 20 Mar 2021 16:17:01 +0000
-Date:   Sat, 20 Mar 2021 09:17:00 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Meng Yu <yumeng18@huawei.com>
-cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: atmel-ecc - fix W=1 "cannot understand"
- warning
-In-Reply-To: <1616228113-15169-1-git-send-email-yumeng18@huawei.com>
-Message-ID: <ef7317fa-da8-ec31-c6da-bcda1e8aadc@bombadil.infradead.org>
-References: <1616228113-15169-1-git-send-email-yumeng18@huawei.com>
+        Sat, 20 Mar 2021 12:17:24 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE330C061574;
+        Sat, 20 Mar 2021 09:17:23 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id a198so14698755lfd.7;
+        Sat, 20 Mar 2021 09:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=MjE8p8N6AtPJDpjXiZiJj0taGnUvpDrOn3GR8Bz5Jq0=;
+        b=pdgc8nLLZlAQ+Sh900ZiHpWCImI587k43qprKp7qpwcyqBPEsYDcsRHy4H1s+Gu2OE
+         IYAknTO9G91lsw0antFasThFJcdtjym54WK633zowikjgq+1J1/MxjhIeK01aI0DLuj1
+         oYRuF5OJ04H9BG96F3QsQa2QsymQuJvkMoGyJtYklHy8wzCN/HsWSQ1C1SLyUFhHq2DR
+         RAo3mtEeKx15A753kb0gMxAPjiA5pAcAQzVbvNFlcQjavC+TNT8s2NDOmq7pBPR0qtzY
+         xaLJ8GAtxNgDlvYVM2dvi3AuQAB0Fyn8qnmf+l2i3md2Ik1E1XWQgfITmTdhvEhb/ihT
+         Mlng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=MjE8p8N6AtPJDpjXiZiJj0taGnUvpDrOn3GR8Bz5Jq0=;
+        b=e/cP1i4uUcptGcqaD5hQLf2tv66hecoKuQHDfP4IDhBhi/p8tVRfm3wx16PGLvxvDA
+         rW7AUH+WoETF6Ldq25X5aTJqQN9YG1OAzJYHD6xEh2O8KP31Zn0u29JWv42FDCotVJBv
+         jTuVf3gjouZCRpNwOyLZR2Tp7kA/pu0XUejdPKXYHhMxoiCMjUh05jem8LoqrCeNQGN6
+         ESNdnvZu2fDrr2cD1HGGoVSjVmf1NjlNAkJBziwS5gkKSLi0jpscRX7/3tK9hEj0i3ES
+         4QlmAk7r06626vWZERODivXD2DvW7PsCP+T4BkDH7H2ZzabwaCWp371fpnArcX9Nh47E
+         7alQ==
+X-Gm-Message-State: AOAM5306JOeil1ppJ5vogimeOKOKN4j1dU+4QWWprDkQinKetRXEl89o
+        fdpBUEPoosBsxt4wEB8VIlVcAAdf7pbU6tWJSZ3k5rLoDjL+dw==
+X-Google-Smtp-Source: ABdhPJwFn/b0MVFEepvQaUa9qOAcI7i+QWH0OFcXEM7mh0QqbMKL8AoasqOPlfavWSMaHnD/LroEml12txZ9kDBfO3E=
+X-Received: by 2002:a19:3f04:: with SMTP id m4mr3905483lfa.395.1616257041813;
+ Sat, 20 Mar 2021 09:17:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_091700_177392_EFE86B4E 
-X-CRM114-Status: GOOD (  12.51  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sat, 20 Mar 2021, Meng Yu wrote: > Fix kernel-doc warnings
-    due to missing "struct" keyword. > > The warning likes: > drivers/crypto/atmel-ecc.c:40:
-    warning: cannot understand function prototype: 'struct atmel_ecdh_ctx ' >
-    > Signed-of [...] 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 20 Mar 2021 11:17:10 -0500
+Message-ID: <CAH2r5msU=QjVKHq_qYNOqwtLFctqU6E6cM9nBUw934Zb7YR9Hw@mail.gmail.com>
+Subject: [GIT PULL] CIFS/SMB3 Fixes
+To:     CIFS <linux-cifs@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Please pull the following changes since commit
+1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
 
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
 
-On Sat, 20 Mar 2021, Meng Yu wrote:
+are available in the Git repository at:
 
-> Fix kernel-doc warnings due to missing "struct" keyword.
->
-> The warning likes:
-> drivers/crypto/atmel-ecc.c:40: warning: cannot understand function prototype: 'struct atmel_ecdh_ctx '
->
-> Signed-off-by: Meng Yu <yumeng18@huawei.com>
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-rc3-smb3
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+for you to fetch changes up to 65af8f0166f4d15e61c63db498ec7981acdd897f:
 
-Thanks.
+  cifs: fix allocation size on newly created files (2021-03-19 11:51:31 -0500)
 
-> ---
-> drivers/crypto/atmel-ecc.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-> index 515946c..333fbef 100644
-> --- a/drivers/crypto/atmel-ecc.c
-> +++ b/drivers/crypto/atmel-ecc.c
-> @@ -26,7 +26,7 @@
-> static struct atmel_ecc_driver_data driver_data;
->
-> /**
-> - * atmel_ecdh_ctx - transformation context
-> + * struct atmel_ecdh_ctx - transformation context
->  * @client     : pointer to i2c client device
->  * @fallback   : used for unsupported curves or when user wants to use its own
->  *               private key.
-> -- 
-> 2.8.1
->
->
+----------------------------------------------------------------
+5 cifs/smb3 fixes, 3 for stable, including an important ACL fix and
+security signature fix
+
+Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/530
+----------------------------------------------------------------
+Aurelien Aptel (1):
+      cifs: warn and fail if trying to use rootfs without the config option
+
+Liu xuzhi (1):
+      fs/cifs/: fix misspellings using codespell tool
+
+Shyam Prasad N (1):
+      cifs: update new ACE pointer after populate_new_aces.
+
+Steve French (1):
+      cifs: fix allocation size on newly created files
+
+Vincent Whitchurch (1):
+      cifs: Fix preauth hash corruption
+
+ fs/cifs/cifs_swn.c   |  2 +-
+ fs/cifs/cifsacl.c    |  9 ++++++---
+ fs/cifs/fs_context.c |  6 ++++--
+ fs/cifs/inode.c      | 10 +++++++++-
+ fs/cifs/transport.c  |  7 ++++++-
+ 5 files changed, 26 insertions(+), 8 deletions(-)
+
+-- 
+Thanks,
+
+Steve
