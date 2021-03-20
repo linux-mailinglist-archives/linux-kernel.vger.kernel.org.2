@@ -2,99 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAE4343033
+	by mail.lfdr.de (Postfix) with ESMTP id E4A5C343035
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 23:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhCTWwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 18:52:07 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51869 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229815AbhCTWvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 18:51:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616280705; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=h/kjQNHZr8syD5KgsFNW5AuVRmt+/DMN0c37FkLXUN4=;
- b=ZBZfP2XDcwHe0Osr4MfazZvTX6izhKaZZtNbyeIHrOyMUCx1d6aJcrfltmTdMYPScXxXqKcD
- ab0tbR3pEpXtRw+3NVoZZbvqgZ1sS/etH2RnvWgQZtHjTCcC+9H8hr2+IGQt5n47nFodz1Bt
- iO/Ls6PkNZN1xKlNUtsfPfR+934=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60567c7d2b0e10a0ba709b67 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 20 Mar 2021 22:51:41
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3BC6FC43465; Sat, 20 Mar 2021 22:51:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61806C433C6;
-        Sat, 20 Mar 2021 22:51:40 +0000 (UTC)
+        id S229880AbhCTWxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 18:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229886AbhCTWxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 18:53:09 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7892C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:53:08 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id y5so8403561pfn.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 15:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=loJtadz11k9s/k92JAPlZ0uUPDBkIe52qTJzUu616NU=;
+        b=n06jRY9UMbT/u4rKxl6i122jNhUHyan6aXjvVaugHUiJocJeu6I9n8Dile+eGY4zkJ
+         ETXf2302ueG59950/GQ6J2RaAclnVbE2xTKoZIQBs1cTmn+0gsyCZcJZkjApg8XRwHyl
+         TCEavpkSMjEiUMTub4LAZBs518LzzzV+YpTtiL9ZbSox5yh2Wq0r2aZlXg8Z3plHRxGK
+         nWWW18XKW2qyQ9IEsyj3SvdwhrqYd1SQxJYRmPf6zb30h1jSy9DMCLalNu42Ws1NiPQe
+         mitiJmz0vpDk5sRLgGD57yF6ZhFs3xs40ZrNKgRuoyb7f0HjebcN6Lz9mMKQyPsUJMfK
+         dMxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=loJtadz11k9s/k92JAPlZ0uUPDBkIe52qTJzUu616NU=;
+        b=EOcjSLjZBwoz/RTIqJM18Y7B6aUcIjqdrrqkhAdzLzqf47H3TPieNp55ZgzLwEI9eP
+         +sObzJ7zUgsDsTjhNN0wIO0uVu4Xag7xshfmGjQ6CBucbn22olZsuDYLu9xNs35Uvb8Y
+         vrW0QLpBWgikgWhIbXvtGMkEwFgB/IlBkEpfjHrRxPyTtKa11VHQCbxBnD8xyLVhIBcL
+         FrhDHeGkkdePwOMbW9rLTSf4PTxhQkCszSGBjbKGXBSdcCzmwzqo4cQZ3eJAQLHApy5R
+         G23GKX/mqGjcC4WCP2vNXw0yXuazMe2N308WAA5SekB50/Ag6XxcxlYKuc3w5/kAJuXZ
+         gOmg==
+X-Gm-Message-State: AOAM53199uwLCJUYWY3OJX9DwPzOjk2109DImooy+2B2xKyjfnkvq0zf
+        NRAqk703gbS0tAm/N9O6FHyzBA==
+X-Google-Smtp-Source: ABdhPJzDqXRafmaH7Jo+tjWnSiLzYWX6L7b3GS9juDTDlP5hsT/Ae9XvHHxxF01YNrmYs9nAGMBcKw==
+X-Received: by 2002:a63:d40b:: with SMTP id a11mr16710498pgh.192.1616280788204;
+        Sat, 20 Mar 2021 15:53:08 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id l4sm9077825pgn.77.2021.03.20.15.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 15:53:07 -0700 (PDT)
+Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, criu@openvz.org
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+ <m14kh5aj0n.fsf@fess.ebiederm.org>
+ <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
+ <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+ <m1im5l5vi5.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <907b36b6-a022-019a-34ea-58ce46dc2d12@kernel.dk>
+Date:   Sat, 20 Mar 2021 16:53:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <m1im5l5vi5.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Sat, 20 Mar 2021 15:51:40 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, mhocko@suse.com, david@redhat.com,
-        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
-        oliver.sang@intel.com
-Subject: Re: [PATCH v4 3/3] mm: fs: Invalidate BH LRU during page migration
-In-Reply-To: <20210320195439.GE3420@casper.infradead.org>
-References: <20210319175127.886124-1-minchan@kernel.org>
- <20210319175127.886124-3-minchan@kernel.org>
- <20210320093249.2df740cd139449312211c452@linux-foundation.org>
- <YFYuyS51hpE2gp+f@google.com> <20210320195439.GE3420@casper.infradead.org>
-Message-ID: <8a01ba3dc10be8fa9d2cb52687f3f26b@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-20 12:54, Matthew Wilcox wrote:
-> On Sat, Mar 20, 2021 at 10:20:09AM -0700, Minchan Kim wrote:
->> > > Tested-by: Oliver Sang <oliver.sang@intel.com>
->> > > Reported-by: kernel test robot <oliver.sang@intel.com>
->> > > Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
->> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
->> >
->> > The signoff chain ordering might mean that Chris was the primary author, but
->> > there is no From:him.  Please clarify?
->> 
->> He tried first version but was diffrent implementation since I
->> changed a lot. That's why I added his SoB even though current
->> implementaion is much different. So, maybe I am primary author?
+On 3/20/21 4:08 PM, Eric W. Biederman wrote:
+> 
+> Added criu because I just realized that io_uring (which can open files
+> from an io worker thread) looks to require some special handling for
+> stopping and freezing processes.  If not in the SIGSTOP case in the
+> related cgroup freezer case.
+> 
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
+> 
+>> On Sat, Mar 20, 2021 at 10:51 AM Linus Torvalds
+>> <torvalds@linux-foundation.org> wrote:
+>>>
+>>> Alternatively, make it not use
+>>> CLONE_SIGHAND|CLONE_THREAD at all, but that would make it
+>>> unnecessarily allocate its own signal state, so that's "cleaner" but
+>>> not great either.
+>>
+>> Thinking some more about that, it would be problematic for things like
+>> the resource counters too. They'd be much better shared.
+>>
+>> Not adding it to the thread list etc might be clever, but feels a bit too scary.
+>>
+>> So on the whole I think Jens' minor patches to just not have IO helper
+>> threads accept signals are probably the right thing to do.
+> 
+> The way I see it we have two options:
+> 
+> 1) Don't ask PF_IO_WORKERs to stop do_signal_stop and in
+>    task_join_group_stop.
+> 
+>    The easiest comprehensive implementation looks like just
+>    updating task_set_jobctl_pending to treat PF_IO_WORKER
+>    as it treats PF_EXITING.
+> 
+> 2) Have the main loop of the kernel thread test for JOBCTL_STOP_PENDING
+>    and call into do_signal_stop.
+> 
+> It is a wee bit trickier to modify the io_workers to stop, but it does
+> not look prohibitively difficult.
+> 
+> All of the work performed by the io worker is work scheduled via
+> io_uring by the process being stopped.
+> 
+> - Is the amount of work performed by the io worker thread sufficiently
+>   negligible that we don't care?
+> 
+> - Or is the amount of work performed by the io worker so great that it
+>   becomes a way for an errant process to escape SIGSTOP?
+> 
+> As the code is all intermingled with the cgroup_freezer.  I am also
+> wondering creating checkpoints needs additional stopping guarantees.
 
-Hey Minchan, let's have you as the primary author.
+The work done is the same a syscall, basically. So it could be long
+running and essentially not doing anything (eg read from a socket, no
+data is there), or it's pretty short lived (eg read from a file, just
+waiting on DMA).
 
-> Maybe Chris is Reported-by: ?  And don't forget Laura Abbott as 
-> original
-> author of the patch Chris submitted.  I think she should be 
-> Reported-by:
-> as well, since there is no code from either of them in this version of
-> the patch.
+This is outside of my domain of expertise, which is exactly why I added
+you and Linus to make some calls on what the best approach here would
+be. My two patches obviously go route #1 in terms of STOP. And fwiw,
+I tested this:
 
-Yes, let's have a Reported-by: from Laura. We can change my 
-Signed-off-by to Reported-by: as well.
+> To solve the issue that SIGSTOP is simply broken right now I am totally
+> fine with something like:
+> 
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index ba4d1ef39a9e..cb9acdfb32fa 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
+>  			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
+>  	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+>  
+> -	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
+> +	if (unlikely(fatal_signal_pending(task) ||
+> +		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
+>  		return false;
+>  
+>  	if (mask & JOBCTL_STOP_SIGMASK)
+
+and can confirm it works fine for me with 2/2 reverted and this applied
+instead.
+
+> Which just keeps from creating unstoppable processes today.  I am just
+> not convinced that is what we want as a long term solution.
+
+How about we go with either my 2/2 or yours above to at least ensure we
+don't leave workers looping as schedule() is a nop with sigpending? If
+there's a longer timeline concern that "evading" SIGSTOP is a concern, I
+have absolutely no qualms with making the IO threads participate. But
+since it seems conceptually simple but with potentially lurking minor
+issues, probably not the ideal approach for right now.
 
 -- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Jens Axboe
+
