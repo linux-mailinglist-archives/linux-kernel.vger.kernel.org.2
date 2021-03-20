@@ -2,225 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935CF342977
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FBA34297C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 01:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhCTAcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 20:32:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50381 "EHLO mga02.intel.com"
+        id S229748AbhCTAez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 20:34:55 -0400
+Received: from mout.gmx.net ([212.227.17.21]:42527 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhCTAbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 20:31:50 -0400
-IronPort-SDR: 5wcfNQ5gXQPSR3XOUPBkZcBOLjrAlWQE0tqchxuV3P8pfZ1LmNoWtIj/urFCDRdDxl6min6Gk1
- m6rl8/y4yOpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="177123803"
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="177123803"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 17:31:45 -0700
-IronPort-SDR: TfKu/TAa0ndWDvddLToAmAkChy10pPaiK7pfK/CagxirAbUlpPenPJmWny6x7TVL8kUIpxJehr
- QUJWrdQFwrQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="603301554"
-Received: from lkp-server02.sh.intel.com (HELO 1c294c63cb86) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Mar 2021 17:31:43 -0700
-Received: from kbuild by 1c294c63cb86 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lNPWp-0002Bn-38; Sat, 20 Mar 2021 00:31:43 +0000
-Date:   Sat, 20 Mar 2021 08:30:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- 38c93587375053c5b9ef093f4a5ea754538cba32
-Message-ID: <6055423b.kFS5HeLmGHUpuK95%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229725AbhCTAe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 20:34:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616200460;
+        bh=aOTWQ5venLz7NwFAO6rPkbHTKJFqh7QOlQrdKKM2Hlg=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=EH68PRRfDzSzyfFTG68lAKYONrDWP/4zzMsWtOlZ8IVUW3VNAvJJM3mlpdcX0h5fd
+         t0rdCCcuaEtP7FSliOAVcpX30QbBijPQO42svAkqJoghxHM5S4oSlcec2PBDLvry1t
+         LCmmgwUq36HPPP0JrNVHDYxAaHtF/ASYVy+RzrdQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M72oB-1lKPhM1DrT-008XAU; Sat, 20
+ Mar 2021 01:34:19 +0100
+Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
+To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <20210317012054.238334-1-davispuh@gmail.com>
+ <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+ <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
+ <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
+ <01129192-1b93-2a93-2edd-f29f544fe340@gmx.com>
+ <CAOE4rSwOLQY1JWr-Mdq06Y9nwU_WcQBnfXZx3VWhRQGnBThHUQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <f48c758a-39a3-c73e-fc50-5ab37d2280f9@gmx.com>
+Date:   Sat, 20 Mar 2021 08:34:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOE4rSwOLQY1JWr-Mdq06Y9nwU_WcQBnfXZx3VWhRQGnBThHUQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UYuhJ4QP8HEdj6JjvSJpCAcZxkx1KEios0exHg3uT6rqCT0NQrv
+ gRjZnQJs17VUIWjLwXZCsoKf9QeYt22zd2KzAptmiRmNAeDwkl29DTg90vKw/HK3WPmqDCA
+ 3f3L9YWAJo99Ydn6KHa+KIoTIrbS9gVj8dpw4t2eD4rBYdDeoN5QMBkq87IpTaX+rJ5q8H0
+ snzfwVl/jw6iGg+yqo1YA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LXKv7PmoN3o=:2shYwHtD63HWmr0CmqoqHn
+ QcghOFUR7cdIrO86jxJBwbCnuQVo8t+KPPRnBlmDhASCcZUOOmDRVyOvQfzTZOUY9PM9B2fam
+ 5BVzJYnN2mRZ6CjbnOHu64wVeDPAnwRsK7UrhtETAbs67pk4Z8gnzkrk2/cBxr/rKXx4SEq3W
+ AOSeXzTdnBrwPOPg+FZbEke8qozibLqL6Y2O4UsjefOLw3CMyBPp+Ec+EzfUwVTGNIAWQ5Ck5
+ KXSFzKZu4Dc/xZ01WacKMcQVimkyia6KwNc2tKvX1ZuEBXmRkH8U4j1VW5u7O2wwvw7kGE0rh
+ z/BLGwPN/moiisFzkhyvhFz6vPUJzsPS9sw89ZKW8DqsLj+C140GFd2b7gozTIyEqI2nUXTHC
+ LcBH5r+HjJTHm6qqIXjdxmyCBTmBmVix38ni+F4zOjpHh2lBKta1GdFXrKqlbnofFVed/2eZr
+ 97+DvALIrRKJpYHb/qSb2ShKS6TK0UcZsEXNzLUKpkNdRo7J9qB/tyt7RyQ5ibpcnEDnFpoRT
+ ioq7DU27SAALKVaRZ2OKvdUR9kKxqyo5HLlM/HB4kr7cXpxXMWwd7Xhblu08/8kPuxXwXAV67
+ cDUdSB0DODHbDZXKjRxRS3wZPG0mCGjeHOvuOAO40+JBER48FZP6bC30sgffH8t27+OsY4FUu
+ hZTtaKU0Sw58lSmgVZqEFpmqk3ttTgLCbYslZipcP+7DYQ6a37b8mBcwXIHq4qM2tTfvw2trQ
+ J7xso5iEv9xVuq8D6f5AvWknRdkB53U6bg2Jg0XoHHw1jGKqDIGHlQKY7X14nkg/Aa/qrf9iV
+ ic/DCA0SUR0CNDBefH5+u+dyPQXmmLR/RY8AyoIYr/tUQwuSsdQryZzQ/Tb+gsr1BSUdzXMU5
+ zP1us/7o6mpxzkrq9BFQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: 38c93587375053c5b9ef093f4a5ea754538cba32  static_call: Fix static_call_update() sanity check
 
-elapsed time: 724m
 
-configs tested: 163
-configs skipped: 2
+On 2021/3/19 =E4=B8=8B=E5=8D=8811:34, D=C4=81vis Mos=C4=81ns wrote:
+> ceturtd., 2021. g. 18. marts, plkst. 01:49 =E2=80=94 lietot=C4=81js Qu W=
+enruo
+> (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+>>
+>>
+>>
+>> On 2021/3/18 =E4=B8=8A=E5=8D=885:03, D=C4=81vis Mos=C4=81ns wrote:
+>>> tre=C5=A1d., 2021. g. 17. marts, plkst. 12:28 =E2=80=94 lietot=C4=81js=
+ Qu Wenruo
+>>> (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+>>>>
+>>>>
+>>>>
+>>>> On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
+>>>>> tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81=
+js D=C4=81vis Mos=C4=81ns
+>>>>> (<davispuh@gmail.com>) rakst=C4=ABja:
+>>>>>>
+>>>>>> Currently if there's any corruption at all in extent tree
+>>>>>> (eg. even single bit) then mounting will fail with:
+>>>>>> "failed to read block groups: -5" (-EIO)
+>>>>>> It happens because we immediately abort on first error when
+>>>>>> searching in extent tree for block groups.
+>>>>>>
+>>>>>> Now with this patch if `ignorebadroots` option is specified
+>>>>>> then we handle such case and continue by removing already
+>>>>>> created block groups and creating dummy block groups.
+>>>>>>
+>>>>>> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+>>>>>> ---
+>>>>>>     fs/btrfs/block-group.c | 14 ++++++++++++++
+>>>>>>     fs/btrfs/disk-io.c     |  4 ++--
+>>>>>>     fs/btrfs/disk-io.h     |  2 ++
+>>>>>>     3 files changed, 18 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>>>>>> index 48ebc106a606..827a977614b3 100644
+>>>>>> --- a/fs/btrfs/block-group.c
+>>>>>> +++ b/fs/btrfs/block-group.c
+>>>>>> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_=
+info *info)
+>>>>>>            ret =3D check_chunk_block_group_mappings(info);
+>>>>>>     error:
+>>>>>>            btrfs_free_path(path);
+>>>>>> +
+>>>>>> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)=
+) {
+>>>>>> +               btrfs_put_block_group_cache(info);
+>>>>>> +               btrfs_stop_all_workers(info);
+>>>>>> +               btrfs_free_block_groups(info);
+>>>>>> +               ret =3D btrfs_init_workqueues(info, NULL);
+>>>>>> +               if (ret)
+>>>>>> +                       return ret;
+>>>>>> +               ret =3D btrfs_init_space_info(info);
+>>>>>> +               if (ret)
+>>>>>> +                       return ret;
+>>>>>> +               return fill_dummy_bgs(info);
+>>>>
+>>>> When we hit bad things in extent tree, we should ensure we're mountin=
+g
+>>>> the fs RO, or we can't continue.
+>>>>
+>>>> And we should also refuse to mount back to RW if we hit such case, so
+>>>> that we don't need anything complex, just ignore the whole extent tre=
+e
+>>>> and create the dummy block groups.
+>>>>
+>>>
+>>> That's what we're doing here, `ignorebadroots` implies RO mount and
+>>> without specifying it doesn't mount at all.
+>>>
+>>>>>
+>>>>> This isn't that nice, but I don't really know how to properly clean =
+up
+>>>>> everything related to already created block groups so this was easie=
+st
+>>>>> way. It seems to work fine.
+>>>>> But looks like need to do something about replay log aswell because =
+if
+>>>>> it's not disabled then it fails with:
+>>>>>
+>>>>> [ 1397.246869] BTRFS info (device sde): start tree-log replay
+>>>>> [ 1398.218685] BTRFS warning (device sde): sde checksum verify faile=
+d
+>>>>> on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
+>>>>> [ 1398.218803] BTRFS warning (device sde): sde checksum verify faile=
+d
+>>>>> on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
+>>>>> [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054=
+:
+>>>>> errno=3D-5 IO failure
+>>>>> [ 1398.218828] BTRFS: error (device sde) in
+>>>>> btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
+>>>>> [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
+>>>>> errno=3D-5 IO failure (Failed to recover log tree)
+>>>>> [ 1398.229048] BTRFS error (device sde): open_ctree failed
+>>>>
+>>>> This is because we shouldn't allow to do anything write to the fs if =
+we
+>>>> have anything wrong in extent tree.
+>>>>
+>>>
+>>> This is happening when mounting read-only. My assumption is that it
+>>> only tries to replay in memory without writing anything to disk.
+>>>
+>>
+>> We lacks the check on log tree.
+>>
+>> Normally for such forced RO mount, log replay is not allowed.
+>>
+>> We should output a warning to prompt user to use nologreplay, and rejec=
+t
+>> the mount.
+>>
+>
+> I'm not familiar with log replay but couldn't there be something
+> useful (ignoring ref counts) that would still be worth replaying in
+> memory?
+>
+Log replay means metadata write.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Any write needs a valid extent tree to find out free space for new
+metadata/data.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                      walnut_defconfig
-sh                             sh03_defconfig
-sh                           se7343_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                          rsk7203_defconfig
-sh                          kfr2r09_defconfig
-arc                            hsdk_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     stx_gp3_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                                  defconfig
-mips                     loongson1b_defconfig
-m68k                        m5407c3_defconfig
-sh                           se7712_defconfig
-m68k                       m5275evb_defconfig
-arm                           sunxi_defconfig
-powerpc                   bluestone_defconfig
-arm                         at91_dt_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                      pmac32_defconfig
-powerpc                     skiroot_defconfig
-arm                            qcom_defconfig
-m68k                       m5249evb_defconfig
-powerpc                     pseries_defconfig
-powerpc                      ppc64e_defconfig
-arm                          badge4_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     redwood_defconfig
-nds32                             allnoconfig
-powerpc                   lite5200b_defconfig
-powerpc                 canyonlands_defconfig
-xtensa                generic_kc705_defconfig
-arm                          exynos_defconfig
-arm                          lpd270_defconfig
-m68k                             allyesconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     tqm8548_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                         tb0287_defconfig
-arm                           u8500_defconfig
-arm                          imote2_defconfig
-sh                          r7780mp_defconfig
-powerpc                      ppc6xx_defconfig
-mips                          rb532_defconfig
-openrisc                 simple_smp_defconfig
-riscv                          rv32_defconfig
-sh                      rts7751r2d1_defconfig
-nios2                         3c120_defconfig
-sh                          polaris_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                       maple_defconfig
-powerpc                    adder875_defconfig
-arm                         lpc32xx_defconfig
-s390                             alldefconfig
-powerpc                     taishan_defconfig
-powerpc                        warp_defconfig
-arm                        mvebu_v7_defconfig
-xtensa                  audio_kc705_defconfig
-m68k                        stmark2_defconfig
-arm                       aspeed_g4_defconfig
-arm                       mainstone_defconfig
-sparc64                             defconfig
-powerpc                      acadia_defconfig
-sh                           se7750_defconfig
-mips                     decstation_defconfig
-mips                        qi_lb60_defconfig
-sh                          landisk_defconfig
-parisc                           alldefconfig
-arc                      axs103_smp_defconfig
-mips                          ath25_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                     tqm5200_defconfig
-parisc                              defconfig
-powerpc                 linkstation_defconfig
-s390                             allmodconfig
-arm                       versatile_defconfig
-sh                   sh7724_generic_defconfig
-sparc                       sparc64_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         nhk8815_defconfig
-ia64                      gensparse_defconfig
-arm                        clps711x_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                               allmodconfig
-parisc                generic-64bit_defconfig
-mips                        maltaup_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-h8300                            allyesconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210318
-i386                 randconfig-a005-20210318
-i386                 randconfig-a003-20210318
-i386                 randconfig-a002-20210318
-i386                 randconfig-a006-20210318
-i386                 randconfig-a004-20210318
-i386                 randconfig-a001-20210319
-i386                 randconfig-a005-20210319
-i386                 randconfig-a003-20210319
-i386                 randconfig-a002-20210319
-i386                 randconfig-a006-20210319
-i386                 randconfig-a004-20210319
-x86_64               randconfig-a011-20210318
-x86_64               randconfig-a016-20210318
-x86_64               randconfig-a013-20210318
-x86_64               randconfig-a015-20210318
-x86_64               randconfig-a014-20210318
-x86_64               randconfig-a012-20210318
-i386                 randconfig-a013-20210318
-i386                 randconfig-a016-20210318
-i386                 randconfig-a011-20210318
-i386                 randconfig-a014-20210318
-i386                 randconfig-a015-20210318
-i386                 randconfig-a012-20210318
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+So no, we can't do anything but completely ignoring the log.
 
-clang tested configs:
-x86_64               randconfig-a006-20210318
-x86_64               randconfig-a001-20210318
-x86_64               randconfig-a005-20210318
-x86_64               randconfig-a002-20210318
-x86_64               randconfig-a003-20210318
-x86_64               randconfig-a004-20210318
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Qu
