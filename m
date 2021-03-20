@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE01B342D47
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4528A342D4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 15:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCTOY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 10:24:58 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:55085 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhCTOY0 (ORCPT
+        id S229805AbhCTO3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 10:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhCTO25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 10:24:26 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MCsgS-1lWSEK1GC0-008p20; Sat, 20 Mar 2021 15:24:24 +0100
-Received: by mail-oi1-f180.google.com with SMTP id d12so8048606oiw.12;
-        Sat, 20 Mar 2021 07:24:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530jlpK61PYnRhLAgUkej1pRP07YE7NFtif0MI+tthMAVhU2DeJV
-        3TT0bGOuKugLekIZsfWgtfqYsWThHQ0kE5tj6K0=
-X-Google-Smtp-Source: ABdhPJwFux/CWtJN4dtM1TpbyyYUNN266hbwwVFHhGiD4/+JrypfSbnb4Kw3jN9gqUDMobOfJpAmk7MjdcZ0Eq7ynN8=
-X-Received: by 2002:a05:6808:313:: with SMTP id i19mr4360026oie.67.1616250262889;
- Sat, 20 Mar 2021 07:24:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319161956.2838291-2-boqun.feng@gmail.com>
- <20210319211246.GA250618@bjorn-Precision-5520> <87tup6gf3m.wl-maz@kernel.org>
- <CAK8P3a1OGZsGmwGTHaVWBjpr_G4aDvO1mfUGU3o8XyLLgHqXpw@mail.gmail.com> <87sg4qgdrd.wl-maz@kernel.org>
-In-Reply-To: <87sg4qgdrd.wl-maz@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 20 Mar 2021 15:24:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2qATr7qAkPqkZW4aifb3rq6CPrrsEX=8XcjTk0j5aW0A@mail.gmail.com>
-Message-ID: <CAK8P3a2qATr7qAkPqkZW4aifb3rq6CPrrsEX=8XcjTk0j5aW0A@mail.gmail.com>
-Subject: Re: [RFC 1/2] arm64: PCI: Allow use arch-specific pci sysdata
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Clint Sbisa <csbisa@amazon.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
+        Sat, 20 Mar 2021 10:28:57 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7346C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:28:56 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id f9so20209755edd.13
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 07:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZJIhDl3dbfmuJaK3uoX7aKesDYTkhJ/dpFprfzrrMMQ=;
+        b=iekiG38RMHMqotvnjsWADzkjN8LBZy0T5PdAh2/x4zxQG+/gnSDXsQbaHLg157U03g
+         MK7BqYXwa9Z5YExdy1JA9WhBQxV5iWiY3PjtF1D7k9FJpAFVczlqUWT5Ygo/N3jcVHQK
+         kltkdr55DkCbVjC6N+dU2Ylkab6+7Z8EfE2QN6UXUlmzLd4HUik6Ygo+KqdvJzPdZSMP
+         46Q/GrrvOsa3okgJmBjij3e8EfhVwCtYR5xLOAlUqhSAtSyxIn1iFaHHiJy9eTAl68pX
+         KyW0aHGVXzexYr8eD027p6CGsaOHDJYasQsfVa4lKTXqnz01ooDZJmOsJHeUBfnuTIEv
+         zWeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZJIhDl3dbfmuJaK3uoX7aKesDYTkhJ/dpFprfzrrMMQ=;
+        b=o/j/kMB5Wk5zvrLndUzL0p7G2kYeeBeWEhIrJ++Qw20sHsvT4XB2cgXA23t6cXSsiw
+         aYwOk4cPTBYF5ydLoN6IHN6JA2VIM+6da8WoKqD7UGKu4Yl4RJNXyAZdSNqRBZC1bYT9
+         XchkiYiJjffcvNAY+BgQWoMHlD1oA8szNyXARPhbGPoyo+C/Tne/FLX2LtkPXe2mpzzt
+         SVby9CCl3L/IKWKA0JdLMUoQ/ag9bd9fSejXaRdIyY6i/D1QhDjgR+tsm1eRKRuZDweN
+         cxdcvUxtCr5d9xgP7alpkI/ECDaBstUa6P04AQmcRwft1vSQpOPUKZIlcSqbT6uzkO+F
+         MYhQ==
+X-Gm-Message-State: AOAM53327U51F+HGQwXFTS1nhEnjC84cDNeLZxrMo8Y+39qm1dPpwThI
+        26krfPYpf7hHgQVUvVPPgzXUiBcCrLCi
+X-Google-Smtp-Source: ABdhPJwHmgIAdnlzw2k/d9RrWtIKW6/663KxRbUPItmuN/KgAczpxnymtpmzJaPiLAr9CkkdlUsfCCjUWQRX
+X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:84f2:bf18:7ada:738e])
+ (user=dvyukov job=sendgmr) by 2002:a17:906:b159:: with SMTP id
+ bt25mr9871210ejb.364.1616250535324; Sat, 20 Mar 2021 07:28:55 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 15:28:51 +0100
+Message-Id: <20210320142851.1328291-1-dvyukov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH] net: make unregister netdev warning timeout configurable
+From:   Dmitry Vyukov <dvyukov@google.com>
+To:     davem@davemloft.net, edumazet@google.com
+Cc:     Dmitry Vyukov <dvyukov@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:l1X1JfvJ5007g7U7VVbAmUywffPsU8+DmIMFcUVUGo95p79luYx
- DZyCknBiy3VNnP6CwtBVGXKKxTA/ipMHE+Y4q8cQenTKaJ8egc+0K1+Kffyd+UqpO6nt7D2
- sHfLCB31EtzXpDoJr+sxrilJ7wloJKKr4tMhwWVU7Jzs8yV01T05NNvxQXxTiDPmRg9SJEM
- /nFAtHshLNIbLTcK3XK6A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vkUr1XpaayI=:ftzMyzxZDIQgB2pWcpSAYj
- DGgIEXjR/I4yaxvG/OOBOkmKKQeUyT+gkF0oha5ok9emW73SDITUkK3JLKiAyaKM3TgcgcB/r
- by6qzBsQBN26lqpOIW5TyLQ6sY2aJX0IAigtdStj55RoFFmj/2gXLj5G07rEuzDQ6Q79fNctN
- toeXZ3gTWWdWVjKyFndelRFye1DfAjufNASw6lIgX5ufsWYDewFGW1Ma3IKcfuv0lES8oPdfF
- lxy4nh+uvaueEMhQWeA6zMLFNpioobg8VLAARXzrm2UjcNNPAM2DWyhaCcDzVQa8E+SvrvodT
- 4PBEVwsvIdNnfIOwyuG847HYFQuiragC5+hF0bshk8FjeG3Xt5mn47qqSW7qW+AjsVXTdTGGZ
- hcmMRh8wniH5tw8brmKV/IiSWftme4J28DtWWocjxGF1nRzGikYIUnaWFETdX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 2:23 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Sat, 20 Mar 2021 13:03:13 +0000,
-> Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Sat, Mar 20, 2021 at 1:54 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > On Fri, 19 Mar 2021 21:12:46 +0000,
-> > >
-> > > Having an optional callback to host bridges to obtain the MSI domain
-> > > may be possible in some cases though (there might be a chicken/egg
-> > > problem for some drivers though...).
-> >
-> > I would expect that the host bridge driver can find the MSI domain
-> > at probe time and just add a pointer into the pci_host_bridge
-> > structure.
->
-> In most cases, it doesn't implement it itself, and I'd be reluctant to
-> duplicate information that can already be retrieved from somewhere
-> else in a generic way (i.e. no PCI specific).
+netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+after 10 seconds. While 10 second wait generally should not happen
+under normal workload in normal environment, it seems to fire falsely
+very often during fuzzing and/or in qemu emulation (~10x slower).
+At least it's not possible to understand if it's really a false
+positive or not. Automated testing generally bumps all timeouts
+to very high values to avoid flake failures.
+Make the timeout configurable for automated testing systems.
+Lowering the timeout may also be useful for e.g. manual bisection.
+The default value matches the current behavior.
 
-At the moment, the information is retried through a maze of different
-functions, and already duplicated in both the pci_host_bridge and the
-pci_bus structures.  If we can change everything to use
-CONFIG_GENERIC_MSI_IRQ_DOMAIN, then most of that code
-can probably just go away, leaving only the part in the phb.
+Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ net/Kconfig    | 12 ++++++++++++
+ net/core/dev.c |  4 +++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-       Arnd
+diff --git a/net/Kconfig b/net/Kconfig
+index 8cea808ad9e8d..ebb9cc00ac81d 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -461,6 +461,18 @@ config ETHTOOL_NETLINK
+ 	  netlink. It provides better extensibility and some new features,
+ 	  e.g. notification messages.
+ 
++config UNREGISTER_NETDEV_TIMEOUT
++	int "Unregister network device timeout in seconds"
++	default 10
++	range 0 3600
++	help
++	  This option controls the timeout (in seconds) used to issue
++	  a warning while waiting for a network device refcount to drop to 0
++	  during device unregistration.
++	  A lower value may be useful during bisection to detect a leaked
++	  reference faster. A larger value may be useful to prevent false
++	  warnings on slow/loaded systems.
++
+ endif   # if NET
+ 
+ # Used by archs to tell that they support BPF JIT compiler plus which flavour.
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 0f72ff5d34ba0..ca03ee407133b 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10405,7 +10405,9 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 
+ 		refcnt = netdev_refcnt_read(dev);
+ 
+-		if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
++		if (refcnt &&
++		    time_after(jiffies, warning_time +
++			       CONFIG_UNREGISTER_NETDEV_TIMEOUT * HZ)) {
+ 			pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
+ 				 dev->name, refcnt);
+ 			warning_time = jiffies;
+
+base-commit: 5aa3c334a449bab24519c4967f5ac2b3304c8dcf
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
