@@ -2,99 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB0B342E34
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2B4342E3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 17:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCTQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 12:10:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47876 "EHLO mail.kernel.org"
+        id S229846AbhCTQOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 12:14:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhCTQKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 12:10:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E51B6192A;
-        Sat, 20 Mar 2021 16:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616256624;
-        bh=vD0Wdp9YFjUQBL1Ai7L0O0WXGozIvL/TI0S31jBOuXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g0rrf8vGYYZVxc9OLAT109w5DQxSkBsMlsTgxY5rQw3sjjVZe747+dhIkzEx6FVDw
-         RHGu7tzh4ZtAwT3w3lH1rEM3PhiuIUHlYreji8ljcpO1XMxU9JkkPvmXPxKumTE8jK
-         EAxSJIJuym/+tLjbj3+BSkTmdRzAt5sl4s70cbHUxO6fM/pHBaKLJgkSia7cp46CSM
-         bg3YmVHFE1HSur37iBKG46D4qylR3XJ4GsvyHe/6Hjd7Mk37mUJBOLaaqXJecJIWQC
-         m0OnsyvHzAyk9++6W9McFTvnJpsyyjKy1DMw0/WHyKMAuBafgK/Z3q3odDbib6+cT/
-         qCm2wW+ZuJzcQ==
-Received: by pali.im (Postfix)
-        id D9E9A88D; Sat, 20 Mar 2021 17:10:21 +0100 (CET)
-Date:   Sat, 20 Mar 2021 17:10:21 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Don Bollinger <don@thebollingers.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, 'Jakub Kicinski' <kuba@kernel.org>,
-        arndb@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, brandon_chuang@edge-core.com,
-        wally_wang@accton.com, aken_liu@edge-core.com, gulv@microsoft.com,
-        jolevequ@microsoft.com, xinxliu@microsoft.com,
-        'netdev' <netdev@vger.kernel.org>,
-        'Moshe Shemesh' <moshe@nvidia.com>
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <20210320161021.fngdgxvherg4v3lr@pali>
-References: <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
- <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>
- <YEL3ksdKIW7cVRh5@lunn.ch>
- <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
- <YEvILa9FK8qQs5QK@lunn.ch>
- <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
- <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <001201d719c6$6ac826c0$40587440$@thebollingers.org>
- <YFJHN+raumcJ5/7M@lunn.ch>
+        id S229618AbhCTQOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 12:14:34 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8D6D61932;
+        Sat, 20 Mar 2021 16:14:31 +0000 (UTC)
+Date:   Sat, 20 Mar 2021 16:14:28 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux@deviqon.com,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH] iio: kfifo: add devm_iio_triggered_buffer_setup_ext
+ variant
+Message-ID: <20210320161428.2252376f@jic23-huawei>
+In-Reply-To: <CA+U=DsqL3BS0QFsV01caxFjsUmeSsfrbuo1ezKtfBhAncCBoMA@mail.gmail.com>
+References: <20210311091042.22417-1-aardelean@deviqon.com>
+        <CA+U=DsqL3BS0QFsV01caxFjsUmeSsfrbuo1ezKtfBhAncCBoMA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFJHN+raumcJ5/7M@lunn.ch>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Don!
+On Fri, 12 Mar 2021 07:27:28 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-I have read whole discussion and your EEPROM patch proposal. But for me
-it looks like some kernel glue code for some old legacy / proprietary
-access method which does not have any usage outside of that old code.
+> On Thu, Mar 11, 2021 at 11:14 AM Alexandru Ardelean
+> <aardelean@deviqon.com> wrote:
+> >
+> > This is similar to the {devm_}iio_triggered_buffer_setup_ext variants added
+> > via commit 5164c7889857 ("iio: triggered-buffer: add
+> > {devm_}iio_triggered_buffer_setup_ext variants").
+> >
+> > These can be used to pass extra buffer attributes to the buffer object.
+> > This is a bit of temporary mechanism (hopefully) so that drivers that want
+> > to allocate a kfifo buffer with extra buffer attributes, don't need to
+> > include 'buffer_impl.h' directly. This can also become an API function (in
+> > it's own right, unfortunately), but it may be a little less bad vs drivers
+> > having to include 'buffer_impl.h'.
+> >
+> > So, far the drivers that want to pass buffer attributes, all have to do
+> > with some HW FIFO attributes, so there may be a chance of unifying them
+> > into IIO core somehow (as some standard API). But, until that happens, we
+> > just need to let them register their HW FIFO attributes directly (without
+> > having to let them include 'buffer_impl.h' directly).
+> >  
+> 
+> This isn't required anymore.
+> Please disregard.
+> Apologies for the noise
 
-Your code does not contain any quirks which are needed to read different
-EEPROMs in different SFP modules. As Andrew wrote there are lot of
-broken SFPs which needs special handling and this logic is already
-implemented in sfp.c and sfp-bus.c kernel drivers. These drivers then
-export EEPROM content to userspace via ethtool -m API in unified way and
-userspace does not implement any quirks (nor does not have to deal with
-quirks).
+As it's now required again, applied to the togreg branch of iio.git and
+pushed out as testing for the autobuilders to poke at it.
 
-If you try to read EEPROM "incorrectly" then SFP module with its EEPROM
-chip (or emulation of chip) locks and is fully unusable after you unplug
-it and plug it again. Kernel really should not export API to userspace
-which can cause "damage" to SFP modules. And currently it does *not* do
-it.
+thanks,
 
-I have contributed code for some GPON SFP modules, so their EEPROM can
-be correctly read and exported to userspace via ethtool -m. So I know
-that this is very fragile area and needs to be properly handled.
+Jonathan
 
-So I do not see any reason why can be a new optoe method in _current_
-form useful. It does not implemented required things for handling
-different EEPROM modules.
+> 
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >
+> > Related to the discussion here:
+> >   https://lore.kernel.org/linux-iio/CA+U=Dspk3cWjiiRmDrgfHAY6houjr-KtSD3u4BssUcb=c2ujpQ@mail.gmail.com/T/#mcfda9d6cb6426caefa4a5db6d634640bfdbe328e
+> >
+> >  drivers/iio/buffer/kfifo_buf.c | 16 ++++++++++------
+> >  include/linux/iio/kfifo_buf.h  | 12 ++++++++----
+> >  2 files changed, 18 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/iio/buffer/kfifo_buf.c b/drivers/iio/buffer/kfifo_buf.c
+> > index 4ecfa0ec3016..13eea2e11cbc 100644
+> > --- a/drivers/iio/buffer/kfifo_buf.c
+> > +++ b/drivers/iio/buffer/kfifo_buf.c
+> > @@ -206,22 +206,24 @@ static struct iio_buffer *devm_iio_kfifo_allocate(struct device *dev)
+> >  }
+> >
+> >  /**
+> > - * devm_iio_kfifo_buffer_setup - Allocate a kfifo buffer & attach it to an IIO device
+> > + * devm_iio_kfifo_buffer_setup_ext - Allocate a kfifo buffer & attach it to an IIO device
+> >   * @dev: Device object to which to attach the life-time of this kfifo buffer
+> >   * @indio_dev: The device the buffer should be attached to
+> >   * @mode_flags: The mode flags for this buffer (INDIO_BUFFER_SOFTWARE and/or
+> >   *             INDIO_BUFFER_TRIGGERED).
+> >   * @setup_ops: The setup_ops required to configure the HW part of the buffer (optional)
+> > + * @buffer_attrs: Extra sysfs buffer attributes for this IIO buffer
+> >   *
+> >   * This function allocates a kfifo buffer via devm_iio_kfifo_allocate() and
+> >   * attaches it to the IIO device via iio_device_attach_buffer().
+> >   * This is meant to be a bit of a short-hand/helper function as there are a few
+> >   * drivers that seem to do this.
+> >   */
+> > -int devm_iio_kfifo_buffer_setup(struct device *dev,
+> > -                               struct iio_dev *indio_dev,
+> > -                               int mode_flags,
+> > -                               const struct iio_buffer_setup_ops *setup_ops)
+> > +int devm_iio_kfifo_buffer_setup_ext(struct device *dev,
+> > +                                   struct iio_dev *indio_dev,
+> > +                                   int mode_flags,
+> > +                                   const struct iio_buffer_setup_ops *setup_ops,
+> > +                                   const struct attribute **buffer_attrs)
+> >  {
+> >         struct iio_buffer *buffer;
+> >
+> > @@ -237,8 +239,10 @@ int devm_iio_kfifo_buffer_setup(struct device *dev,
+> >         indio_dev->modes |= mode_flags;
+> >         indio_dev->setup_ops = setup_ops;
+> >
+> > +       buffer->attrs = buffer_attrs;
+> > +
+> >         return iio_device_attach_buffer(indio_dev, buffer);
+> >  }
+> > -EXPORT_SYMBOL_GPL(devm_iio_kfifo_buffer_setup);
+> > +EXPORT_SYMBOL_GPL(devm_iio_kfifo_buffer_setup_ext);
+> >
+> >  MODULE_LICENSE("GPL");
+> > diff --git a/include/linux/iio/kfifo_buf.h b/include/linux/iio/kfifo_buf.h
+> > index 1522896e1daf..ccd2ceae7b25 100644
+> > --- a/include/linux/iio/kfifo_buf.h
+> > +++ b/include/linux/iio/kfifo_buf.h
+> > @@ -10,9 +10,13 @@ struct device;
+> >  struct iio_buffer *iio_kfifo_allocate(void);
+> >  void iio_kfifo_free(struct iio_buffer *r);
+> >
+> > -int devm_iio_kfifo_buffer_setup(struct device *dev,
+> > -                               struct iio_dev *indio_dev,
+> > -                               int mode_flags,
+> > -                               const struct iio_buffer_setup_ops *setup_ops);
+> > +int devm_iio_kfifo_buffer_setup_ext(struct device *dev,
+> > +                                   struct iio_dev *indio_dev,
+> > +                                   int mode_flags,
+> > +                                   const struct iio_buffer_setup_ops *setup_ops,
+> > +                                   const struct attribute **buffer_attrs);
+> > +
+> > +#define devm_iio_kfifo_buffer_setup(dev, indio_dev, mode_flags, setup_ops)     \
+> > +       devm_iio_kfifo_buffer_setup_ext((dev), (indio_dev), (mode_flags), (setup_ops), NULL)
+> >
+> >  #endif
+> > --
+> > 2.29.2
+> >  
 
-I would rather suggest you to use ethtool -m IOCTL API and in case it is
-not suitable for QSFP (e.g. because of paging system) then extend this
-API.
-
-There were already proposals for using netlink socket interface which is
-today de-facto standard interface for new code. sysfs API for such thing
-really looks like some legacy code and nowadays we have better access
-methods.
-
-If you want, I can help you with these steps and make patches to be in
-acceptable state; not written in "legacy" style. As I'm working with
-GPON SFP modules with different EEPROMs in them, I'm really interested
-in any improvements in their EEPROM area.
