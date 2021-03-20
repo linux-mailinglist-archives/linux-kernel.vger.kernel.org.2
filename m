@@ -2,148 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F39342EA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582AA342EA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 18:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhCTRdd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Mar 2021 13:33:33 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:35919 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCTRd3 (ORCPT
+        id S229897AbhCTRja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 13:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTRjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 13:33:29 -0400
-Received: from mac-pro.holtmann.net (p4fefce19.dip0.t-ipconnect.de [79.239.206.25])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 33FD2CECF7;
-        Sat, 20 Mar 2021 18:41:05 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v1] Bluetooth: Add ncmd=0 recovery handling
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210319131533.v1.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
-Date:   Sat, 20 Mar 2021 18:33:26 +0100
-Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Alain Michaud <alainm@chromium.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <DC038B82-5539-48D5-84BE-4575F2E794AD@holtmann.org>
-References: <20210319131533.v1.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
-To:     Manish Mandlik <mmandlik@google.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Sat, 20 Mar 2021 13:39:14 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91309C061574;
+        Sat, 20 Mar 2021 10:39:13 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id e7so14458919edu.10;
+        Sat, 20 Mar 2021 10:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=fSx+Zs7EP5WNMLXrvYywy27msSplCPR3kWnh7vE+X3Y=;
+        b=QrHJuaBEj0r5XptedQFnDUckmOlQMcShVczHQYTm3bhF8bg71P3fIw6GEpaHdNI/j8
+         zN7YSMUlxHF7bcZH0W/nQEtwI+uLc+67FvsJz9VjS4B1TgvL9wwmQEiBUU3NRbv/TbzR
+         6aH0U/v4cgYIqf4R0jAiYnFM6Siy72dBP1o3whACk+v76I8LiaLKOy5jmKHdevymZFRw
+         IRUJPVQc77S1zhKvdN3vaLFj6xqKnwWwWEZxM0VH//oiCDdNikEWoqcVM3QkYFejMWca
+         de4MOyIZvq51N9hqTTPJ5mZAO3iKTDX3dm791uqZy85iPDwnf8c6CQXaURLrQ/qO/Hcm
+         2XIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fSx+Zs7EP5WNMLXrvYywy27msSplCPR3kWnh7vE+X3Y=;
+        b=nH/lhS8diDNfp1F30aZPmdhlvyRc+DbmZJIKcUSmbYW8TU4g1n6ntr+nYeLomv9BK6
+         wiVhiTX2L4GSSpxcBGhOONPHu4aRlFAdruQX5eiqxZ3qxF+4psemd72//58ieVCti19c
+         zMaAup4X6aWhPyAd5gIBTfJZg1Vj/9J6WuJUMugCfsPiurr6tb37AIyhpRdwrkkQ8tHa
+         aYXYMAenvYLv1Q0dRXAxgCGW/vL0g43JXBJrigKiobjSIp/sgdVxrLFjGi0JJmirNpuZ
+         woa8W6hSEA8om/1D4z68qe6qwB7DvfjmdTpu8jTjhqc2vRS9dYyUug10VtTHPeloI/Be
+         MXYw==
+X-Gm-Message-State: AOAM530JBv9AzvxsbveEuCtLtpQNg2EelD0wWRFgbgaMviQqqxXEgk1l
+        4Syje4ThDI1dD4gzENtABw==
+X-Google-Smtp-Source: ABdhPJyM2PI6OJKpMYe6SsKfQZo8BWtdZTpo2LtXVWwfV6BxFZ3wQTwlkVNjXQIekOkRVyrG+Zjojg==
+X-Received: by 2002:aa7:d5c9:: with SMTP id d9mr17222261eds.102.1616261951878;
+        Sat, 20 Mar 2021 10:39:11 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.248.213])
+        by smtp.gmail.com with ESMTPSA id c17sm7241840edw.32.2021.03.20.10.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 10:39:11 -0700 (PDT)
+Date:   Sat, 20 Mar 2021 20:39:09 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] Document that PF_KTHREAD _is_ ABI
+Message-ID: <YFYzPcHKWm3U04pN@localhost.localdomain>
+References: <YFYjOB1jpbqyNPAp@localhost.localdomain>
+ <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manish,
+On Sat, Mar 20, 2021 at 10:23:12AM -0700, Andy Lutomirski wrote:
+> > On Mar 20, 2021, at 9:31 AM, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > ﻿PF_KTHREAD value is visible via field number 9 of /proc/*/stat
+> >
+> >    $ sudo cat /proc/2/stat
+> >    2 (kthreadd) S 0 0 0 0 -1 2129984 0 ...
+> >                  ^^^^^^^
+> >
+> > It is used by at least systemd to check for kernel-threadness:
+> > https://github.com/systemd/systemd/blob/main/src/basic/process-util.c#L354
+> > src/basic/process-util.c:is_kernel_thread()
+> 
+> Eww.
+> 
+> Could we fix it differently and more permanently by modifying the proc
+> code to display the values systemd expects?
 
-> During command status or command complete event, the controller may set
-> ncmd=0 indicating that it is not accepting any more commands. In such a
-> case, host holds off sending any more commands to the controller. If the
-> controller doesn't recover from such condition, host will wait forever.
-> 
-> This patch adds a timer when controller gets into such condition and
-> resets the controller if controller doesn't recover within the timeout
-> period.
-> 
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Manish Mandlik <mmandlik@google.com>
-> ---
-> Hello Maintainers,
-> 
-> We noticed that during suspend, sometimes the controller firmware gets
-> into a state where it is not accepting any more commands (it returns
-> ncmd=0 in Command Status):
-> 
-> < HCI Command: Disconnect (0x01|0x0006) plen 3  #398 [hci0] 83.760502
->         Handle: 1
->         Reason: Remote Device Terminated due to Power Off (0x15)
->> HCI Event: Command Status (0x0f) plen 4       #399 [hci0] 83.761694
->       Disconnect (0x01|0x0006) ncmd 0
->         Status: Success (0x00)
-> 
-> In such a case, the host holds off sending any more packets to the
-> controller until it is ready to accept more commands. If the controller
-> doesn't recover from such a condition, Command Timeout does not get
-> triggered as Command Timeout is queued only once the packet is sent to
-> the controller; hence, the host will wait forever. 
-> 
-> This patch adds a timer to recover from this condition. Since the
-> suspend timeout is 2 seconds, I'm using 4 seconds timeout to recover
-> from ncmd=0. This should give ample amount of time for recovery and
-> should not create any race conditions with the suspend. Once we resume
-> from the suspend normally, the timer would expire and reset the
-> controller. I have verified this patch locally and able to connect to
-> peer device after resume from suspend. Please let me know your thoughts
-> on this.
-> 
-> Thanks,
-> Manish.
-> 
-> include/net/bluetooth/hci.h      |  1 +
-> include/net/bluetooth/hci_core.h |  1 +
-> net/bluetooth/hci_core.c         | 15 +++++++++++++++
-> net/bluetooth/hci_event.c        | 10 ++++++++++
-> 4 files changed, 27 insertions(+)
-> 
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index ea4ae551c426..c4b0650fb9ae 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -339,6 +339,7 @@ enum {
-> #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
-> #define HCI_INIT_TIMEOUT	msecs_to_jiffies(10000)	/* 10 seconds */
-> #define HCI_CMD_TIMEOUT		msecs_to_jiffies(2000)	/* 2 seconds */
-> +#define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
-> #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
-> #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
-> #define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index ebdd4afe30d2..f14692b39fd5 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -470,6 +470,7 @@ struct hci_dev {
-> 	struct delayed_work	service_cache;
-> 
-> 	struct delayed_work	cmd_timer;
-> +	struct delayed_work	ncmd_timer;
-> 
-> 	struct work_struct	rx_work;
-> 	struct work_struct	cmd_work;
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index b0d9c36acc03..5ee1609456bd 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -2769,6 +2769,20 @@ static void hci_cmd_timeout(struct work_struct *work)
-> 	queue_work(hdev->workqueue, &hdev->cmd_work);
-> }
-> 
-> +/* HCI ncmd timer function */
-> +static void hci_ncmd_timeout(struct work_struct *work)
-> +{
-> +	struct hci_dev *hdev = container_of(work, struct hci_dev,
-> +					    ncmd_timer.work);
-> +
-> +	bt_dev_err(hdev, "ncmd timeout");
-> +
-> +	if (hci_dev_do_close(hdev))
-> +		return;
-> +
-> +	hci_dev_do_open(hdev);
-> +}
-> +
+Right now there is no need to fix anything because 4 bits are available.
+I put a comment so that PF_KTHREAD won't be moved accidently definitely
+breaking systemd.
 
-I am pretty certain this can dead-lock if ncmd=0 happens inside hci_dev_do_open,do_close itself.
+> > It means that the value can't be changed despite perceived notion that
+> > task_struct flags are internal to kernel and can be shuffled at whim.
+> >
+> > Formally, _all_ struct task_struct::flags PF_* values are kernel ABI
+> > which is a disaster.
+> >
+> > I hope we can mask everything but few flags and hope for the best :^)
 
-The second thing is that do_close+do_open is heavy hammer you are swinging here. It will also result in mgmt powered down/up. Is this something you really want since bluetoothd will notice this and has to re-init everything.
+> > +/*
+> > + * PF_KTHREAD is part of kernel ABI, visible via value #9 in /proc/$pid/stat
+> > + */
+> > #define PF_KTHREAD        0x00200000    /* I am a kernel thread */
 
-Regards
+I think everything should be masked except PF_KTHREAD and maybe few
+flags for which known users exist and then don't touch them.
 
-Marcel
+Some flags are clearly internal like PF_MEMALLOC and PF_IDLE.
 
+Some aren't -- PF_FORKNOEXEC. However it is silly for userspace to query it
+because programs knows if it forked but didn't exec without external help.
