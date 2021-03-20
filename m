@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA08342991
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B8D342993
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 02:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhCTBEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 21:04:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhCTBEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 21:04:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7051C6194B;
-        Sat, 20 Mar 2021 01:04:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616202274;
-        bh=7DSr2YWlRb/3DPRrevc7NPTF1eK14cvWuynOrfdjdd4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NFEfmIGVCcgE9Gw7EjECIfxuY28HareUFZ6B8DSEv1ke5mK5HTlhNkrxBbiRAt/T0
-         h/SMWX+pcRoL3tH+HTbuVt9gTj2uFMtbzzPdPdFcaF4p48aoTYCyVWnz3Z9szmzdOs
-         P5eBUTY3Gw9zKh2DUEv7pGSprAMY+SjTwNz+XoEE1Q/H7Ib7DuYIDL6t6dn0Y1AEEZ
-         zSr3AvJOaiJ/FJYeGdjWVw4cMOaivslzTnQRRxwJfsYWY8T+Ha47iFuD6eyASS9DbZ
-         cqI54CaFYFEwRdcdEwXS6yIN2BSGic8uF/Xv1mX/iZG+pjh4cl42FFXU/IHH7KJAr5
-         G2S2qYx6s8r9A==
-Date:   Sat, 20 Mar 2021 10:04:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org
-Subject: Re: [PATCH -tip v3 07/11] ia64: Add instruction_pointer_set() API
-Message-Id: <20210320100428.7cd2acb7d5c084ce293249d9@kernel.org>
-In-Reply-To: <161615658087.306069.12036720803234007510.stgit@devnote2>
-References: <161615650355.306069.17260992641363840330.stgit@devnote2>
-        <161615658087.306069.12036720803234007510.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229725AbhCTBIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 21:08:10 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23040 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTBHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 21:07:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616202468; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=2l8Ck/OcKx5qO7gLfc9ccllEr4/gISugeMnGy0cBO8A=; b=h2yfPNMnW1T6Hyvg1HeHvzfeMFP1omKg18GmkTp39fopD3lOtPqSgbAQq5/cqo3dxLFHAVw6
+ QWJL/yc7ZTizkjkzN2RWzRsinv9skQuW2xBvzeg46GEKM72CHSaZNF/r7Y6dcZhMn4FFc1Zn
+ HaI2SiM4fB3fhla2bI1ssBBLyFQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60554adbe2200c0a0de1c118 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 20 Mar 2021 01:07:39
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1BD4CC43463; Sat, 20 Mar 2021 01:07:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.100.126] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6968C433C6;
+        Sat, 20 Mar 2021 01:07:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6968C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH 2/2] usb: dwc3: gadget: Ignore EP queue requests during
+ bus reset
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+References: <1616146285-19149-1-git-send-email-wcheng@codeaurora.org>
+ <1616146285-19149-3-git-send-email-wcheng@codeaurora.org>
+ <eae3f779-acb0-c685-4323-d97c7c5c6296@synopsys.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <1886f649-3da2-de25-405c-69c66876b0fd@codeaurora.org>
+Date:   Fri, 19 Mar 2021 18:07:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <eae3f779-acb0-c685-4323-d97c7c5c6296@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 21:23:01 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> Add instruction_pointer_set() API for ia64.
+
+On 3/19/2021 5:40 PM, Thinh Nguyen wrote:
+> Hi,
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/ia64/include/asm/ptrace.h |    8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+> Wesley Cheng wrote:
+>> The current dwc3_gadget_reset_interrupt() will stop any active
+>> transfers, but only addresses blocking of EP queuing for while we are
+>> coming from a disconnected scenario, i.e. after receiving the disconnect
+>> event.  If the host decides to issue a bus reset on the device, the
+>> connected parameter will still be set to true, allowing for EP queuing
+>> to continue while we are disabling the functions.  To avoid this, set the
+>> connected flag to false until the stop active transfers is complete.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/gadget.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 6e14fdc..d5ed0f69 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -3327,6 +3327,15 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+>>  	u32			reg;
+>>  
+>>  	/*
+>> +	 * Ideally, dwc3_reset_gadget() would trigger the function
+>> +	 * drivers to stop any active transfers through ep disable.
+>> +	 * However, for functions which defer ep disable, such as mass
+>> +	 * storage, we will need to rely on the call to stop active
+>> +	 * transfers here, and avoid allowing of request queuing.
+>> +	 */
+>> +	dwc->connected = false;
+>> +
+>> +	/*
+>>  	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
+>>  	 * would cause a missing Disconnect Event if there's a
+>>  	 * pending Setup Packet in the FIFO.
+>>
 > 
-> diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
-> index b3aa46090101..e382f1a6bff3 100644
-> --- a/arch/ia64/include/asm/ptrace.h
-> +++ b/arch/ia64/include/asm/ptrace.h
-> @@ -45,6 +45,7 @@
->  #include <asm/current.h>
->  #include <asm/page.h>
->  
-> +# define ia64_psr(regs)			((struct ia64_psr *) &(regs)->cr_ipsr)
->  /*
->   * We use the ia64_psr(regs)->ri to determine which of the three
->   * instructions in bundle (16 bytes) took the sample. Generate
-> @@ -71,6 +72,12 @@ static inline long regs_return_value(struct pt_regs *regs)
->  		return -regs->r8;
->  }
->  
-> +static inline void instruction_pointer_set(struct pt_regs *regs, unsigned long val)
-> +{
-> +	ia64_psr(regs)->ri = (val & 0xf);
-> +	regs->cr_iip = (val & ~0xfULL);
-> +}
+> This doesn't look right. Did you have rebase issue with your local
+> change again?
+> 
+> BR,
+> Thinh
+> 
+Hi Thinh,
 
-Oops, this caused a build error. Thanks for the kernel test bot.
+This was rebased on Greg's usb-linus branch, which has commit
+f09ddcfcb8c5 ("usb: dwc3: gadget: Prevent EP queuing while stopping
+transfers") merged.
 
-It seems that all code which accessing to the "struct ia64_psr" in asm/ptrace.h
-has to be a macro, because "struct ia64_psr" is defined in the asm/processor.h
-which includes asm/ptrace.h (for pt_regs?).
-If the code is defined as an inline function, the "struct ia64_psr" is evaluated
-at that point, and caused build error.
+commit f09ddcfcb8c5  moved the dwc->connected = true to after we have
+finished stop active transfers.  However, this change will also ensure
+that the connected flag is set to false to ensure that when we call stop
+active transfers, nothing can prepare TRBs.  (previous commit only
+addresses the case where we get the reset interrupt when coming from a
+disconnected state)
 
-arch/ia64/include/asm/ptrace.h:77:16: error: dereferencing pointer to incomplete type 'struct ia64_psr'
-
-But macro code evaluation is postponed until it is used...
-
-Let me update it.
-
-Thank you,
+Thanks
+Wesley Cheng
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
