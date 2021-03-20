@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90E6342A25
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7F7342A2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Mar 2021 04:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCTDEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Mar 2021 23:04:07 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61111 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhCTDDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Mar 2021 23:03:49 -0400
-IronPort-SDR: wx+LIm3kxa2oFvF3OsyEATQUXQaqu1wfFZ9Qtyjmz5mqLpyX0uyLwPRufXt6flrd7rHG9/wPt4
- aNnt0wIEiQ3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="186661577"
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="186661577"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 20:03:49 -0700
-IronPort-SDR: GtzBBybHgTE+q3gu17H1/MN7s+4+3UH6qtj1OQ6e8CwwqZDyOkXzcS0jT7MpqN0HdGy37AVFAE
- tRcWQAiNCrTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,263,1610438400"; 
-   d="scan'208";a="441520667"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 Mar 2021 20:03:47 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 5/5] iommu/vt-d: Avoid unnecessary cache flush in pasid entry teardown
-Date:   Sat, 20 Mar 2021 10:54:15 +0800
-Message-Id: <20210320025415.641201-6-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210320025415.641201-1-baolu.lu@linux.intel.com>
-References: <20210320025415.641201-1-baolu.lu@linux.intel.com>
+        id S229780AbhCTD0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Mar 2021 23:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhCTD0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Mar 2021 23:26:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7F8C061761;
+        Fri, 19 Mar 2021 20:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kEfEWIhBq2zE+HxZoC4lm1vNYaQCx2j9hxZ78LM+5kQ=; b=ZupSzN80E4VJvwrYB0bcCXNkhO
+        Gkg0eqfi2txQszZAkHfFSsz1UHnKwTf1fAnSwtwkfpFDXo739+jczEndpqVQNiOeIS2g9F38+8N7E
+        wMc7m4f7H73fzy6hV/cn5HnQ2Ix66O0q238F97ElkNDsvMRNYcpI5JGjruoPPkFE6vOb2qiH5f7/W
+        IWLpUj1RXd9Sw1xbieBKa0cT179ibjAocvig7CKTih/ZVAF9V0FvyEa9r3u01r8Ntq6XbEo/8EIZE
+        EI1VOmjECBLFc8nEyhtomT14d+WppGRt/ynK9qvjuNVdO5OsA6XhzvHCF5w6aIQMD4izMVhX8u7+m
+        H2rpRYOg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNSFQ-005Kxb-QF; Sat, 20 Mar 2021 03:25:58 +0000
+Date:   Sat, 20 Mar 2021 03:25:56 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <20210320032556.GD3420@casper.infradead.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a present pasid entry is disassembled, all kinds of pasid related
-caches need to be flushed. But when a pasid entry is not being used
-(PRESENT bit not set), we don't need to do this. Check the PRESENT bit
-in intel_pasid_tear_down_entry() and avoid flushing caches if it's not
-set.
+On Fri, Mar 19, 2021 at 06:52:58PM -0700, Hugh Dickins wrote:
+> > +	/*
+> > +	 * Drop the base reference from __alloc_pages and free. In
+> > +	 * case there is an outstanding speculative reference, from
+> > +	 * e.g. the page cache, it will put and free the page later.
+> > +	 */
+> > +	if (likely(put_page_testzero(page))) {
+> >  		free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > +		return;
+> > +	}
+> > +
+> > +	/*
+> > +	 * The speculative reference will put and free the page.
+> > +	 *
+> > +	 * However, if the speculation was into a higher-order page
+> > +	 * chunk that isn't marked compound, the other side will know
+> > +	 * nothing about our buddy pages and only free the order-0
+> > +	 * page at the start of our chunk! We must split off and free
+> > +	 * the buddy pages here.
+> > +	 *
+> > +	 * The buddy pages aren't individually refcounted, so they
+> > +	 * can't have any pending speculative references themselves.
+> > +	 */
+> > +	if (!PageHead(page) && order > 0) {
+> 
+> The put_page_testzero() has released our reference to the first
+> subpage of page: it's now under the control of the racing speculative
+> lookup.  So it seems to me unsafe to be checking PageHead(page) here:
+> if it was actually a compound page, PageHead might already be cleared
+> by now, and we doubly free its tail pages below?  I think we need to
+> use a "bool compound = PageHead(page)" on entry to __free_pages().
+> 
+> Or alternatively, it's wrong to call __free_pages() on a compound
+> page anyway, so we should not check PageHead at all, except in a
+> WARN_ON_ONCE(PageCompound(page)) at the start?
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/pasid.c | 3 +++
- 1 file changed, 3 insertions(+)
+Alas ...
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index dd69df5a188a..7a73385edcc0 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -502,6 +502,9 @@ void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
- 	if (WARN_ON(!pte))
- 		return;
- 
-+	if (!(pte->val[0] & PASID_PTE_PRESENT))
-+		return;
-+
- 	did = pasid_get_domain_id(pte);
- 	intel_pasid_clear_entry(dev, pasid, fault_ignore);
- 
--- 
-2.25.1
+$ git grep '__free_pages\>.*compound'
+drivers/dma-buf/heaps/system_heap.c:            __free_pages(page, compound_order(page));
+drivers/dma-buf/heaps/system_heap.c:            __free_pages(p, compound_order(p));
+drivers/dma-buf/heaps/system_heap.c:            __free_pages(page, compound_order(page));
+mm/huge_memory.c:               __free_pages(zero_page, compound_order(zero_page));
+mm/huge_memory.c:               __free_pages(zero_page, compound_order(zero_page));
+mm/slub.c:                      __free_pages(page, compound_order(page));
 
+Maybe we should disallow it!
+
+There are a few other places to check:
+
+$ grep -l __GFP_COMP $(git grep -lw __free_pages) | wc -l
+24
+
+(assuming the pages are allocated and freed in the same file, which is a
+reasonable approximation, but not guaranteed to catch everything.  Many
+of these 24 will be false positives, of course.)
