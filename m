@@ -2,62 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADC23432D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 14:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488C33432DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 15:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhCUNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 09:53:42 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:43124 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhCUNxU (ORCPT
+        id S229995AbhCUOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 10:11:15 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60665 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229784AbhCUOLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 09:53:20 -0400
-Received: from tomoyo.flets-east.jp ([153.202.107.157])
-        by mwinf5d13 with ME
-        id j1t8240033PnFJp031tGHl; Sun, 21 Mar 2021 14:53:19 +0100
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 21 Mar 2021 14:53:19 +0100
-X-ME-IP: 153.202.107.157
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [RESEND PATCH v1] checkpatch: exclude four preprocessor sub-expressions from MACRO_ARG_REUSE
-Date:   Sun, 21 Mar 2021 22:53:05 +0900
-Message-Id: <20210321135305.543537-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
+        Sun, 21 Mar 2021 10:11:05 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1052C5C00CC;
+        Sun, 21 Mar 2021 10:11:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 21 Mar 2021 10:11:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=gD7UJ01FtJ5YrDw91A6gmdh8FW
+        jd+HeYnOc442hiP5k=; b=UApRS2yc3gsVa7NYglT2h0UZBCTtEG3KE+dqj/pj/1
+        f8EFNFcl1yRinHCFgWW8WhTEXmi+5m7N7RCf/ibmbCUkKojBYDpuSqZ2yENepTOt
+        zdFc1DWsA+s7mSTVNyLIHQOIdBymQKFgLUruNN4l4L6u83WzvU6qnDDQ4S6+7UVc
+        TXNizhtwN1c9XrMsMsi/884dMcRMR32+C/DxPz7nGW7s5dsacpuuASPwWAk3KfoY
+        JyQuIP447hW94iNFm8zm/tUmXAaneX3lrgfEhdw+/2adS5GWK5lJ67lPOB+IUFhe
+        aY6oXwx/VItlYj+lRIQ5vosE2veK7rbrwoPRo/tYm/HQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=gD7UJ01FtJ5YrDw91
+        A6gmdh8FWjd+HeYnOc442hiP5k=; b=lefm+RoZT4hMjjPR7nMoF4TxuCJdt1IoJ
+        h8zfCmvtXQmGca1ND5tRf7hJ1tfBoqrOS82smBX4EljD9fY2FqehZJ6/PtSc6GHP
+        sOe5wylUxFLnwMH+CwpI/SI4qNpTcbtpyNHPlkzMPESz8LZm+eQMhScIDAn0bk9x
+        /DtVyqlqfXQxFTOvrNd1nk092g2UQDNRq0v/3oRwdkV3Zv6AGxDJTFxCOmgh8eob
+        3igpjH6FbiGc+rXj9LeloB/GlrkvFT86kramSfB1X1UbF6KUdAyOWqyg+s73xcAS
+        odS7hZ47M96GQNEyoroqU70Cqdkbga4eCKTH6hWKz1tSW4gQKLJmg==
+X-ME-Sender: <xms:-FNXYB1uHxIMo3gXfJXcYgmWURQ7xghKMabVHBlCc6cxelbRk5YBRQ>
+    <xme:-FNXYIEMAuUWpdc5rvMav5sCsJ69DKEBVm3cT0HNHu6iaMYIxX__zrqXfOBaDqWos
+    gNUzfcUwtvxdB2rmtE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegvddgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeejleeihfdvtefgtd
+    ethfdtgefftdeiffefjeeiffefveeuleejheejvefhffeukeenucfkphepudelfedrvdej
+    rddufedrvdefheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:-FNXYB6RZ7XJAakDNgQEo3mtCM37OpD3-h_bDAdxJNX3PCC821zYtA>
+    <xmx:-FNXYO0pBVqisXyt1RKrLzQIDH0ROhqlid_-VEjQlLG6ITbLcyIfYA>
+    <xmx:-FNXYEGMnWA-wwrxf2P81_f7oOzUO180HAYUUdDrQgtC9lC0mejObA>
+    <xmx:-VNXYIDAKWqDbdXDc3sFFXRvL97Cxv0m33kiElp3D9cO7hcQ94vBKw>
+Received: from ThinkpadX1Yoga3.localdomain (unknown [193.27.13.235])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 448FD240194;
+        Sun, 21 Mar 2021 10:11:03 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        Alistair Francis <alistair@alistair22.me>
+Subject: [PATCH v3 0/9] Add Wacom I2C support to rM2
+Date:   Sun, 21 Mar 2021 10:10:40 -0400
+Message-Id: <20210321141049.148-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__must_be_array, offsetof, sizeof_field and __stringify are all
-preprocessor macros and do not evaluate their arguments. As such, it
-is safe not to warn when arguments are being reused in those four
-sub-expressions.
+From: Alistair Francis <alistair@alistair22.me>
 
-Exclude those so that they can pass checkpatch.
+Add support to the reMarkable2 (rM2) for the Wacom I2C device.
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is based on the reMarkable Linux fork and with this series I am
+able to probe the Wacom digitiser.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index df8b23dc1eb0..25ee4fd5b118 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5736,7 +5736,7 @@ sub process {
- 			        next if ($arg =~ /\.\.\./);
- 			        next if ($arg =~ /^type$/i);
- 				my $tmp_stmt = $define_stmt;
--				$tmp_stmt =~ s/\b(sizeof|typeof|__typeof__|__builtin\w+|typecheck\s*\(\s*$Type\s*,|\#+)\s*\(*\s*$arg\s*\)*\b//g;
-+				$tmp_stmt =~ s/\b(__must_be_array|offsetof|sizeof|sizeof_field|__stringify|typeof|__typeof__|__builtin\w+|typecheck\s*\(\s*$Type\s*,|\#+)\s*\(*\s*$arg\s*\)*\b//g;
- 				$tmp_stmt =~ s/\#+\s*$arg\b//g;
- 				$tmp_stmt =~ s/\b$arg\s*\#\#//g;
- 				my $use_cnt = () = $tmp_stmt =~ /\b$arg\b/g;
+Alistair Francis (9):
+  dt-bindings: Add Wacom to vendor bindings
+  dt-bindings: touchscreen: Initial commit of wacom,generic
+  Input: wacom_i2c - Add device tree support to wacom_i2c
+  Input: wacom_i2c - Add touchscren properties
+  Input: wacom_i2c - Add support for distance and tilt x/y
+  Input: wacom_i2c - Clean up the query device fields
+  Input: wacom_i2c - Add support for vdd regulator
+  ARM: imx_v6_v7_defconfig: Enable Wacom I2C
+  ARM: dts: imx7d: remarkable2: add wacom digitizer device
+
+ .../input/touchscreen/wacom,generic.yaml      |  48 +++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/imx7d-remarkable2.dts       |  52 +++++++
+ arch/arm/configs/imx_v6_v7_defconfig          |   1 +
+ drivers/input/touchscreen/wacom_i2c.c         | 129 +++++++++++++++---
+ 5 files changed, 210 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
+
 -- 
-2.26.2
+2.30.1
 
