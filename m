@@ -2,243 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12343343243
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752FC343247
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCUMKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 08:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCUMJV (ORCPT
+        id S230002AbhCUMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 08:10:36 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:63742 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229874AbhCUMKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 08:09:21 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A42C061574;
-        Sun, 21 Mar 2021 05:09:21 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso7087142pjb.3;
-        Sun, 21 Mar 2021 05:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=65xS++HGiZkujdsZR4AQVb+3YXoj/1io84bOdJMhmhE=;
-        b=bX3lXOrO99s+3URCG1rF3xz08Ldc7x+dIV0nXOWv60xnvaHBCA2XKu/37JqTJAS4Eb
-         o9Y7s5NB/uVox+SOei06QbwVEbdkLsvAt8pDUTMwZ2zvMIuO42JO2b0LmokFl/oWSQCi
-         TlYOUENU67DT/L/AvN6g994qx8C6k/9vP/HjhaFOdEDrZtu2ui7F3Fofi6iCb80PAl50
-         CMp+zjL7/K3HegSe8iU4V+DfJkN+qX/JDKge1Bw2JuBMkMwDizMGb8DF0NWsZRCaUzWD
-         oULps5sVbquDI+slsmrOx5kMiPMMRGOGhSp24togDpNGhHzCwJVhK2LhurGH/mxmu+t9
-         0X8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=65xS++HGiZkujdsZR4AQVb+3YXoj/1io84bOdJMhmhE=;
-        b=j+BEDGZLxygca8Ldzj8/PiRTAErwIaHHPpaWAGdgC51h+muGmpEaO3PmAvKwIlbVdB
-         woHqA7hgyKmKWSS0O6X4kRNjgS1FUfC/Fh4OOOpH9r0klocnCLWlcchx3x61CyvHDu8Q
-         DqV3nzMWZasVqPushhrsXnbQa4HOIolsYfRWqDrofUcbz4rJfQ+eqjSn8yZeN/87HoEu
-         5OS9Tc/WiI4jxvFInvY2CqCOKwxyoCKzgade+pYNMIdQGfdByOPH6+3QNmsECr12qWmN
-         2EtAt2NwzZWM6c8Td+Ya5YL62FKmovOaapp8Oi9hRDHMMrzlVnGJzf3sSBNQVC/F3mf8
-         rG/g==
-X-Gm-Message-State: AOAM531yHdlB3PUlE2WxLjp3+rW48rrGr/V8E3oVGGwSJBy1t9PfIks3
-        palBemB+Dvn5SQNxCHVZymU=
-X-Google-Smtp-Source: ABdhPJyWQ0F9qunwou6ZDyiMMtoHuyGgMdWrBXh1xagauBYeVvDzAz3d4QbAnuNvcal40z3iFpqWFw==
-X-Received: by 2002:a17:90b:33c7:: with SMTP id lk7mr8038357pjb.95.1616328560906;
-        Sun, 21 Mar 2021 05:09:20 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:4cb7:d0cb:1241:5cf8])
-        by smtp.googlemail.com with ESMTPSA id f11sm10080642pga.34.2021.03.21.05.09.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 05:09:20 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     herbert@gondor.apana.org.au
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com, corbet@lwn.net,
-        rdunlap@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: ux500: fix incorrect kernel-doc comment syntax
-Date:   Sun, 21 Mar 2021 17:39:12 +0530
-Message-Id: <20210321120912.12905-1-yashsri421@gmail.com>
+        Sun, 21 Mar 2021 08:10:07 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12LC5G3v023747;
+        Sun, 21 Mar 2021 05:10:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=bkpsK+IigyeEXfiNw5e28SUQTFzKvOTRritcb6gcc1Q=;
+ b=WKu03SpLejE+kNeDkoCm8H2VDik3ICrFwtXo5NTFYB0pKfvsrJoGIKkBkquPmPxV3AkH
+ 2kmXLIDeiIzhsWiHJlLPF5a1ZbfUDKxKoiB9B09BTZBXH/FF6qE2BnWJh13HYPwHHWxW
+ mXqoPgW3KkcmJXKAR3TA6vpf/+ajbLTWtNwJM4ug+cQJ5D2Lp8asEARA8eIIJ4zcTcOl
+ bttQ1DXXLUgwdWSOKSwTB2SkBZDRHwzk/Qz0mdWCGKItG7S3NdZPzA9e04mwf5cNKg1j
+ c0GmuBBqFKHJDgRmjlqK2TGWeB+DJk7gLHir4EhpiYnWppIuUaAALMC+WuhZGijyWhFe QA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 37dedrab2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 21 Mar 2021 05:10:06 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 21 Mar
+ 2021 05:10:04 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 21 Mar 2021 05:10:04 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 4D6CF3F703F;
+        Sun, 21 Mar 2021 05:10:00 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net-next PATCH 0/8] configuration support for switch headers & phy
+Date:   Sun, 21 Mar 2021 17:39:50 +0530
+Message-ID: <20210321120958.17531-1-hkelam@marvell.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-21_01:2021-03-19,2021-03-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-There are certain files in drivers/crypto/ux500, which follow this syntax,
-but the content inside does not comply with kernel-doc.
-Such lines were probably not meant for kernel-doc parsing, but are parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warnings from kernel-doc.
+This series of patches add support for parsing switch headers and
+configuration support for phy modulation type(NRZ or PAM4).
 
-E.g., presence of kernel-doc like comment in the header lines for
-drivers/crypto/ux500/cryp/cryp.h at header causes this warning:
+PHYs that support changing modulation type ,user can configure it
+through private flags pam4.
 
-"warning: expecting prototype for ST(). Prototype was for _CRYP_H_() instead"
+Marvell switches support DSA(distributed switch architecture) with
+different switch headers like FDSA and EDSA. This patch series adds
+private flags to enable user to configure interface in fdsa/edsa
+mode such that flow steering (forwading packets to pf/vf depending on
+switch header fields) and packet parsing can be acheived.
 
-Similarly for other files too.
+Also adds support for HIGIG2 protocol, user can configure interface
+in higig mode through higig private flage, such that packet classification
+and flow sterring achieved on packets with higig header
 
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- drivers/crypto/ux500/cryp/cryp.c      |  2 +-
- drivers/crypto/ux500/cryp/cryp.h      |  2 +-
- drivers/crypto/ux500/cryp/cryp_core.c |  2 +-
- drivers/crypto/ux500/cryp/cryp_irq.c  |  2 +-
- drivers/crypto/ux500/cryp/cryp_irq.h  |  4 ++--
- drivers/crypto/ux500/cryp/cryp_irqp.h |  4 ++--
- drivers/crypto/ux500/cryp/cryp_p.h    | 14 +++++++-------
- 7 files changed, 15 insertions(+), 15 deletions(-)
+Felix Manlunas (2):
+  octeontx2-af: Add new CGX_CMDs to set and get PHY modulation type
+  octeontx2-pf: Add ethtool priv flag to control PAM4 on/off
 
-diff --git a/drivers/crypto/ux500/cryp/cryp.c b/drivers/crypto/ux500/cryp/cryp.c
-index 9866c2a5e9a7..2b9436723d57 100644
---- a/drivers/crypto/ux500/cryp/cryp.c
-+++ b/drivers/crypto/ux500/cryp/cryp.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-diff --git a/drivers/crypto/ux500/cryp/cryp.h b/drivers/crypto/ux500/cryp/cryp.h
-index 8da7f87b339b..db5713d7c940 100644
---- a/drivers/crypto/ux500/cryp/cryp.h
-+++ b/drivers/crypto/ux500/cryp/cryp.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-diff --git a/drivers/crypto/ux500/cryp/cryp_core.c b/drivers/crypto/ux500/cryp/cryp_core.c
-index c3adeb2e5823..df68b7bd0a7a 100644
---- a/drivers/crypto/ux500/cryp/cryp_core.c
-+++ b/drivers/crypto/ux500/cryp/cryp_core.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Joakim Bech <joakim.xx.bech@stericsson.com> for ST-Ericsson.
-diff --git a/drivers/crypto/ux500/cryp/cryp_irq.c b/drivers/crypto/ux500/cryp/cryp_irq.c
-index 7ebde69e8c76..6d2f07bec98a 100644
---- a/drivers/crypto/ux500/cryp/cryp_irq.c
-+++ b/drivers/crypto/ux500/cryp/cryp_irq.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-diff --git a/drivers/crypto/ux500/cryp/cryp_irq.h b/drivers/crypto/ux500/cryp/cryp_irq.h
-index 1984f30100ff..da90029ea141 100644
---- a/drivers/crypto/ux500/cryp/cryp_irq.h
-+++ b/drivers/crypto/ux500/cryp/cryp_irq.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-@@ -19,7 +19,7 @@ enum cryp_irq_src_id {
- 	CRYP_IRQ_SRC_ALL = 0x3
- };
- 
--/**
-+/*
-  * M0 Funtions
-  */
- void cryp_enable_irq_src(struct cryp_device_data *device_data, u32 irq_src);
-diff --git a/drivers/crypto/ux500/cryp/cryp_irqp.h b/drivers/crypto/ux500/cryp/cryp_irqp.h
-index 879ed68a12d7..4981a3f461e5 100644
---- a/drivers/crypto/ux500/cryp/cryp_irqp.h
-+++ b/drivers/crypto/ux500/cryp/cryp_irqp.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-@@ -13,7 +13,7 @@
- 
- #include "cryp_irq.h"
- 
--/**
-+/*
-  *
-  * CRYP Registers - Offset mapping
-  *     +-----------------+
-diff --git a/drivers/crypto/ux500/cryp/cryp_p.h b/drivers/crypto/ux500/cryp/cryp_p.h
-index 0df84eaa8531..ba17b1ffd94d 100644
---- a/drivers/crypto/ux500/cryp/cryp_p.h
-+++ b/drivers/crypto/ux500/cryp/cryp_p.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
--/**
-+/*
-  * Copyright (C) ST-Ericsson SA 2010
-  * Author: Shujuan Chen <shujuan.chen@stericsson.com> for ST-Ericsson.
-  * Author: Jonas Linde <jonas.linde@stericsson.com> for ST-Ericsson.
-@@ -17,7 +17,7 @@
- #include "cryp.h"
- #include "cryp_irqp.h"
- 
--/**
-+/*
-  * Generic Macros
-  */
- #define CRYP_SET_BITS(reg_name, mask) \
-@@ -34,7 +34,7 @@
- 	writel_relaxed(((readl_relaxed(reg) & ~(mask)) | \
- 		(((u32)val << shift) & (mask))), reg)
- 
--/**
-+/*
-  * CRYP specific Macros
-  */
- #define CRYP_PERIPHERAL_ID0		0xE3
-@@ -48,7 +48,7 @@
- #define CRYP_PCELL_ID2			0x05
- #define CRYP_PCELL_ID3			0xB1
- 
--/**
-+/*
-  * CRYP register default values
-  */
- #define MAX_DEVICE_SUPPORT		2
-@@ -62,7 +62,7 @@
- #define CRYP_KEY_DEFAULT		0x0
- #define CRYP_INIT_VECT_DEFAULT		0x0
- 
--/**
-+/*
-  * CRYP Control register specific mask
-  */
- #define CRYP_CR_SECURE_MASK		BIT(0)
-@@ -91,7 +91,7 @@
- #define CRYP_SR_IFEM_MASK		BIT(0)
- #define CRYP_SR_BUSY_MASK		BIT(4)
- 
--/**
-+/*
-  * Bit position used while setting bits in register
-  */
- #define CRYP_CR_PRLG_POS		1
-@@ -107,7 +107,7 @@
- 
- #define CRYP_SR_BUSY_POS		4
- 
--/**
-+/*
-  * CRYP PCRs------PC_NAND control register
-  * BIT_MASK
-  */
--- 
+Hariprasad Kelam (6):
+  octeontx2-af: Support for parsing pkts with switch headers
+  octeontx2-af: Do not allow VFs to overwrite PKIND config
+  octeontx2-af: Put CGX LMAC also in Higig2 mode
+  octeontx2-pf: Support to enable EDSA/Higig2 pkts parsing
+  octeontx2-af: Add flow steering support for FDSA tag
+  octeontx2-pf: Add ntuple filter support for FDSA
+
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 177 ++++++++++++-
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  19 +-
+ .../ethernet/marvell/octeontx2/af/cgx_fw_if.h |   6 +
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  39 ++-
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  14 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   9 +
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 103 +++++++-
+ .../marvell/octeontx2/af/rvu_debugfs.c        |   3 +-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  44 +++-
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  76 ++++++
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |  14 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +
+ .../marvell/octeontx2/nic/otx2_common.h       |  36 ++-
+ .../marvell/octeontx2/nic/otx2_ethtool.c      | 244 ++++++++++++++++++
+ .../marvell/octeontx2/nic/otx2_flows.c        |  58 ++++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  21 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |   1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  10 +
+ 18 files changed, 832 insertions(+), 44 deletions(-)
+
+--
 2.17.1
-
