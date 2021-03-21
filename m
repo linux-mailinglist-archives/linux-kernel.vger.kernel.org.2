@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EEB34353E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0A1343542
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhCUV5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbhCUV5O (ORCPT
+        id S231624AbhCUV6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:58:48 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:40323 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231548AbhCUV6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:57:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72954C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 14:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
-        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E3phNZz3FbYHtT/FEkxKlmaOuMB+SZr1iPpbaRd+TZg=; b=jV58Qg/CnlhIwAjB/jsgJbRoIw
-        id+yiN3aYimfGv/YJBOAiBt7enjA3GtXe1Byhm7s6Ne7X24WQiM2AzdwCA7yopj9AP0OMj6zY7nKQ
-        l/2hsDujRJaJwmIaWFGhFCGtXFXOR3ubB87ZSpgM2uRvxVzdHvcxwxnbDx9B1R7bqU6VCh3OVrpW8
-        VSA/VWLcrwo7CBzMSQA9k55HQcllqaYbdoxptigK0w2APhbQHd7KzV9vzzQoS8GjNlUpSTTC/NcC6
-        KXI4gycLqNGgmRu5yQJGdGoeUpjQD62VnQynzksLIssEsTCycywFZSRxclnEODwvV169KpgFqk27w
-        XKgNSoIA==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lO64K-002WiZ-Lh; Sun, 21 Mar 2021 21:57:09 +0000
-Date:   Sun, 21 Mar 2021 14:57:08 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/entry: A typo fix
-In-Reply-To: <20210321202253.1393665-1-unixbhaskar@gmail.com>
-Message-ID: <bdbd8a75-8a48-f96e-a893-a8593ded79b5@infradead.org>
-References: <20210321202253.1393665-1-unixbhaskar@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210321_145708_730729_914DC158 
-X-CRM114-Status: GOOD (  11.61  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote: > > s/definitly/definitely/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+        Sun, 21 Mar 2021 17:58:21 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 21 Mar 2021 14:58:20 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Mar 2021 14:58:19 -0700
+X-QCInternal: smtphost
+Received: from maggarwa.ap.qualcomm.com (HELO nitirawa-linux.qualcomm.com) ([10.206.25.176])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 22 Mar 2021 03:27:40 +0530
+Received: by nitirawa-linux.qualcomm.com (Postfix, from userid 2342877)
+        id C2DA72E19; Mon, 22 Mar 2021 03:27:39 +0530 (IST)
+From:   Nitin Rawat <nitirawa@codeaurora.org>
+To:     asutoshd@codeaurora.org, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bjorn.andersson@linaro.org,
+        adrian.hunter@intel.com, bvanassche@acm.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nitin Rawat <nitirawa@codeaurora.org>
+Subject: [PATCH V2 0/3] scsi: ufs: Add a vops to configure VCC voltage level
+Date:   Mon, 22 Mar 2021 03:27:34 +0530
+Message-Id: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+UFS specification allows different VCC configurations for UFS devices,
+for example,
+	(1)2.70V - 3.60V (For UFS 2.x devices)
+	(2)2.40V - 2.70V (For UFS 3.x devices)
+For platforms supporting both ufs 2.x (2.7v-3.6v) and
+ufs 3.x (2.4v-2.7v), the voltage requirements (VCC) is 2.4v-3.6v.
+So to support this, we need to start the ufs device initialization with
+the common VCC voltage(2.7v) and after reading the device descriptor we
+need to switch to the correct range(vcc min and vcc max) of VCC voltage
+as per UFS device type since 2.7v is the marginal voltage as per specs
+for both type of devices.
 
+Once VCC regulator supply has been intialised to 2.7v and UFS device
+type is read from device descriptor, we follows below steps to
+change the VCC voltage values.
 
-On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote:
+1. Set the device to SLEEP state.
+2. Disable the Vcc Regulator.
+3. Set the vcc voltage according to the device type and reenable
+   the regulator.
+4. Set the device mode back to ACTIVE.
 
->
-> s/definitly/definitely/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+The above changes are done in vendor specific file by
+adding a vops which will be needed for platform
+supporting both ufs 2.x and ufs 3.x devices.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+v1 -> v2
+Added suggested-by on patch2 (scsi: ufs: add a vops to configure VCC voltage level)
 
+Nitin Rawat (3):
+  scsi: ufs: export api for use in vendor file
+  scsi: ufs: add a vops to configure VCC voltage level
+  scsi: ufs-qcom: configure VCC voltage level in vendor file
 
-> ---
-> arch/x86/entry/entry_64.S | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index 400908dff42e..0a7e9647e84a 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -511,7 +511,7 @@ SYM_CODE_START(\asmsym)
-> 	/*
-> 	 * No need to switch back to the IST stack. The current stack is either
-> 	 * identical to the stack in the IRET frame or the VC fall-back stack,
-> -	 * so it is definitly mapped even with PTI enabled.
-> +	 * so it is definitely mapped even with PTI enabled.
-> 	 */
-> 	jmp	paranoid_exit
->
-> --
-> 2.31.0
->
->
+ drivers/scsi/ufs/ufs-qcom.c | 51 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshcd.c   | 13 +++++++++---
+ drivers/scsi/ufs/ufshcd.h   | 14 +++++++++++++
+ 3 files changed, 75 insertions(+), 3 deletions(-)
+
+--
+2.7.4
+
