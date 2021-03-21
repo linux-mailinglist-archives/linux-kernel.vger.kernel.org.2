@@ -2,136 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945B7343502
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39933343504
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhCUVZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhCUVZS (ORCPT
+        id S231362AbhCUV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:26:15 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:40767 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhCUV0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:25:18 -0400
-Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10265C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 14:25:18 -0700 (PDT)
-Received: by sf.home (Postfix, from userid 1000)
-        id 43C355A22061; Sun, 21 Mar 2021 21:25:07 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>
-Subject: [PATCH] mm: add page_owner_stack=off to make stack collection optional
-Date:   Sun, 21 Mar 2021 21:25:01 +0000
-Message-Id: <20210321212501.2504947-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.0
+        Sun, 21 Mar 2021 17:26:10 -0400
+Received: by mail-pj1-f54.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so9356449pjq.5;
+        Sun, 21 Mar 2021 14:26:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0iamQhREoLz4yBTZ1ac4df91aNQ8GHtf/WoDk/3WJ7o=;
+        b=sxUcnHfbX2QQz4bFtJOqUDSrKvM8STDfC90kgoIZzZOx+ulBr8xVfZqPSY7+9uourS
+         2NfpEhP4FBOIE9tFRLQEadlkVlCIG9BEyi0gVUumuYCccb0F0lusPhgg+/sKTBBxTS3r
+         /3mG+XPkTOzG0neqsp9T2Q6wUOOup8lL68AL8nC6Mf/uChFgkSG8+IJjRkn3ZyqX1QOL
+         NAlT5IYwSemu+D8IH0AvrCPu6QVbEd2hNd+7B7oFg86Bu+SGmn8JlaqzsBB2PN137/QO
+         NTi7gxGLqG+MdNNe3GfjEX0FFMNiZTypUP7myYEUph+oEzOOaFVCMGYpIc4TZ1cC9GG4
+         BIRA==
+X-Gm-Message-State: AOAM531aHdSJ4QcfZCDVZPMcwMUM7/hrhR7LM6+edv9mFcDVaQJK1DQD
+        u48wO8ea+o/3t+Hi1Qw2CV4tMHlbKUE=
+X-Google-Smtp-Source: ABdhPJxBYX3cfQlW+9TXDGgYilDA2rXayowMbW3ZqGmlFDGOE2zxgvxrS2qAmngN6wahKWveqXBYbg==
+X-Received: by 2002:a17:90a:a4cb:: with SMTP id l11mr9648060pjw.144.1616361969509;
+        Sun, 21 Mar 2021 14:26:09 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:17e0:fd07:e626:199? ([2601:647:4000:d7:17e0:fd07:e626:199])
+        by smtp.gmail.com with ESMTPSA id l19sm11320534pjt.16.2021.03.21.14.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 14:26:08 -0700 (PDT)
+Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
+To:     syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000053da9405bd7d2644@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <f40ed33d-8ca2-a2f2-e534-9db9920570ad@acm.org>
+Date:   Sun, 21 Mar 2021 14:26:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <00000000000053da9405bd7d2644@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some architectures (like ia64) stack walking is slow
-and currently requires memory allocation. This causes stack
-collection for page_owner=on to fall into recursion.
+On 3/14/21 4:08 AM, syzbot wrote:
+> syzbot found the following issue on:
+> 
+> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
 
-This patch implements a page_owner_stack=off to allow page stats
-collection.
-
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- .../admin-guide/kernel-parameters.txt         |  6 +++++
- mm/Kconfig.debug                              |  3 ++-
- mm/page_owner.c                               | 23 +++++++++++++------
- 3 files changed, 24 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..3e710c4ab4df 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3518,6 +3518,12 @@
- 			we can turn it on.
- 			on: enable the feature
- 
-+	page_owner_stack= [KNL] Boot-time parameter option disabling stack
-+			collection of page allocation. Has effect only if
-+			"page_owner=on" is set. Useful for cases when stack
-+			collection is too slow or not feasible.
-+			off: disable the feature
-+
- 	page_poison=	[KNL] Boot-time parameter changing the state of
- 			poisoning on the buddy allocator, available with
- 			CONFIG_PAGE_POISONING=y.
-diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
-index 1e73717802f8..c1ecaf066c93 100644
---- a/mm/Kconfig.debug
-+++ b/mm/Kconfig.debug
-@@ -57,7 +57,8 @@ config PAGE_OWNER
- 	  help to find bare alloc_page(s) leaks. Even if you include this
- 	  feature on your build, it is disabled in default. You should pass
- 	  "page_owner=on" to boot parameter in order to enable it. Eats
--	  a fair amount of memory if enabled. See tools/vm/page_owner_sort.c
-+	  a fair amount of memory if enabled. Call chain tracking can be
-+	  disabled with "page_owner_stack=off". See tools/vm/page_owner_sort.c
- 	  for user-space helper.
- 
- 	  If unsure, say N.
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index d15c7c4994f5..2cc1113fa28d 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -31,6 +31,7 @@ struct page_owner {
- };
- 
- static bool page_owner_enabled = false;
-+static bool page_owner_stack_enabled = true;
- DEFINE_STATIC_KEY_FALSE(page_owner_inited);
- 
- static depot_stack_handle_t dummy_handle;
-@@ -41,21 +42,26 @@ static void init_early_allocated_pages(void);
- 
- static int __init early_page_owner_param(char *buf)
- {
--	if (!buf)
--		return -EINVAL;
--
--	if (strcmp(buf, "on") == 0)
--		page_owner_enabled = true;
--
--	return 0;
-+	return kstrtobool(buf, &page_owner_enabled);
- }
- early_param("page_owner", early_page_owner_param);
- 
-+static int __init early_page_owner_stack_param(char *buf)
-+{
-+	return kstrtobool(buf, &page_owner_stack_enabled);
-+}
-+early_param("page_owner_stack", early_page_owner_stack_param);
-+
- static bool need_page_owner(void)
- {
- 	return page_owner_enabled;
- }
- 
-+static bool need_page_owner_stack(void)
-+{
-+	return page_owner_stack_enabled;
-+}
-+
- static __always_inline depot_stack_handle_t create_dummy_stack(void)
- {
- 	unsigned long entries[4];
-@@ -122,6 +128,9 @@ static noinline depot_stack_handle_t save_stack(gfp_t flags)
- 	depot_stack_handle_t handle;
- 	unsigned int nr_entries;
- 
-+	if (!need_page_owner_stack())
-+		return failure_handle;
-+
- 	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
- 
- 	/*
--- 
-2.31.0
-
+#syz test: https://github.com/bvanassche/linux a5f35387ebdc
