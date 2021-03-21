@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044613435A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417D93435AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhCUXIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 19:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S231173AbhCUXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 19:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhCUXIO (ORCPT
+        with ESMTP id S230248AbhCUXTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 19:08:14 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B659EC061574;
-        Sun, 21 Mar 2021 16:08:13 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g8so11288635lfv.12;
-        Sun, 21 Mar 2021 16:08:13 -0700 (PDT)
+        Sun, 21 Mar 2021 19:19:32 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEA9C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 16:19:32 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id i9so8868467qka.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 16:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jbiSYaRoly7YDQ5SJLDPetR8P6ODmQjNdf1sQDmotw8=;
-        b=ff+gaXNO3SSTluTB7T2bmC03+xJqcrP0+E+h7VIJSxc+I1w8JJf5Td4SwNSbYg6dxN
-         Uqr+C2lKLyZ5ls2FfSIhacn5Qcn6k8gGUTgmQMC9bazdY59ocqmdF1YYWJAgjKDe7Eu/
-         UfsZPOnGXLW/UNpzMNO3N3uAca7+Pi7oI2XJkOaqklHLpITIz7buj0CzWCITM7Gqx702
-         Ycqg6cgKC6pz05Dnzkf00gepG6WLM74ubsK1HENqCjUZdnQK5hhJASfLjhl6Uh5Yb4+d
-         2YhMfIZ/M/o2NyzDCrUFPAXHw2ImKEqyZGHS2IXv+0Ip18DDZhUp3qFJtzQ+Qyn0r1UC
-         g5ZA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIqf3h/ft4wOq4cykQH7kGKLCaIOsedzdoAuEFmsYSc=;
+        b=evAP+wHMAHNt8Lo9OWoX35orj7Ko4+iSwzMld1X37th2p3vV8+BIKtJltOyVPGj0F3
+         jwUESgM/bdOadptc/YOQ5yQ+nPhxdPkjaSl06zNKG74TB2npXbVcERsdhcEa6I1Bq/dm
+         R8KbD97Ir1GcjaXVqmZn94In9E2Mn8r/S/kFfjWGWwAGpxBNeCjjX8VFiEnrxlIBaOti
+         3PqWrpH7VYhMeFi57KAukZE2dWOSFp70tjnQc7RN7sq27fGAwEy4RcrqNXhGC3AEe5gD
+         dL9btMNaVAm4yxolZZqY2E2AzDXuXD7cA87b0c7hEIWhCflEckMb2U9nbc2fxEUx46aA
+         Ub+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jbiSYaRoly7YDQ5SJLDPetR8P6ODmQjNdf1sQDmotw8=;
-        b=ebMwh1Dxztci/gkxkvOxe3iAUP3HaCIU33JLZeawhvr6CEQ6SZlnadtQf+6bKlpTT/
-         uWnn6KSd7IrffbMESGogzdQiCFz7uDhReWnZNrx2PhCAoJj6lTVFSZ9K+4ver392oNyE
-         0wOUux+jUySt7Dkv1eATGVAFTEmh1pa4guWt028TaMtf7XT87cqgpC0vm2PxYBudeWoK
-         lBh6LGsWYxw+M0gnW9F7n6kCfN2iwbMg4CKCnT2QuNqCXbTdj/qKkfeON4nA8msbkoTY
-         k1QOJyoiG7CVmvVzoC0IfSP3GMqBTtSDtqaGaEbp3aoV+9R6izPtx6/bvd3Wm1kM8mXk
-         hrtQ==
-X-Gm-Message-State: AOAM530QcQLB3H6+frWNPDdKGwexhOeh+gbqlhM6t4gw0Xo88/zFQyod
-        1MkKreJlizQNSWJ72UcDKVLOlytfaV8=
-X-Google-Smtp-Source: ABdhPJysoMEqRcybkZrFHhug/ztvNZPJzxopxxz3Fm57izRLkvgXGQNrHJ1TXpgkzSICRHLKKfazLg==
-X-Received: by 2002:a05:6512:3b95:: with SMTP id g21mr4698937lfv.261.1616368091896;
-        Sun, 21 Mar 2021 16:08:11 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-47.dynamic.spd-mgts.ru. [109.252.193.47])
-        by smtp.googlemail.com with ESMTPSA id g9sm1361501lfc.258.2021.03.21.16.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Mar 2021 16:08:11 -0700 (PDT)
-Subject: Re: [PATCH v6 0/3] Support wakeup methods of Atmel maXTouch
- controllers
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Nick Dyer <nick@shmanahar.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210302102158.10533-1-digetx@gmail.com>
- <8c1280f6-b79f-9c62-a064-68b119d74c49@gmail.com>
- <YFfMNQPvaNOjUwBB@google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9f1f1bbb-31ef-c4fe-fcf5-c798e53739cf@gmail.com>
-Date:   Mon, 22 Mar 2021 02:08:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=uIqf3h/ft4wOq4cykQH7kGKLCaIOsedzdoAuEFmsYSc=;
+        b=T+Oplmm5MbTZ0PM0NlP6QBpr8GaGbu6Cdji7JANp/kFBl4jRETqFSfQ5k24JvtC7yb
+         5yf8xrKtlnBk+muvL931Jqx47TsbIHtu7jeFE7axMQ8RHLdXDEG1cRKP1pSU/IH/ocSl
+         612sW/o25xn6wQjJHN1VFgvfbkWGkfUbviWBEbUvTB5rZ8W3oW4WQ9thVBt0vJW/vGx6
+         hPSD76fTYsroylj4E8hee96Strey64toiEpRA43ONCpI3VkuuZ+Ll/m/YCXP4fCySdDt
+         HmwsTfAu0+tDgfAHm9fdalS0jbNRxWGNemyLnllLGW9HfIMjFcSdioFboNj3cqZfJN8g
+         7aKw==
+X-Gm-Message-State: AOAM530K8G26LPPR+gwLnqabeT4bsaxW4BwS7gwY+j6K+rhAAIjBkBRp
+        TvnkuIWWiVc5cOrfxvDx7oo=
+X-Google-Smtp-Source: ABdhPJyRhWgZhN0TXJdpdQLeAkr3LrwuKdDatxsr2+ac68ylTEp6DilSw/v+O8gsQ4pfUOTBJUGNpQ==
+X-Received: by 2002:a37:a5c2:: with SMTP id o185mr8772671qke.428.1616368771261;
+        Sun, 21 Mar 2021 16:19:31 -0700 (PDT)
+Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
+        by smtp.gmail.com with ESMTPSA id c5sm9812346qkg.105.2021.03.21.16.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 16:19:31 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
+Subject: [PATCH] sound: soc: sh: fix Kconfig dependency on DMADEVICES
+Date:   Sun, 21 Mar 2021 19:19:19 -0400
+Message-Id: <20210321231919.262142-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YFfMNQPvaNOjUwBB@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.03.2021 01:44, Dmitry Torokhov пишет:
-> Hi Dmitry,
-> 
-> On Sat, Mar 20, 2021 at 07:02:43PM +0300, Dmitry Osipenko wrote:
->> 02.03.2021 13:21, Dmitry Osipenko пишет:
->>> Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
->>> have a WAKE line that needs to be asserted in order to wake controller
->>> from a deep sleep, otherwise it will be unusable. This series implements
->>> support for the wakeup methods in accordance to the mXT1386 datasheet [1],
->>> see page 29 (chapter "5.8 WAKE Line").
->>>
->>> The mXT1386 is a widely used controller found on many older Android tablet
->>> devices. Touchscreen on Acer A500 tablet now works properly after this
->>> series.
->>>
->>> This patchset is a continuation of the work originally started by
->>> Jiada Wang [2].
->>>
->>> [1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
->>> [2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
->>
->> Hi,
->>
->> This series is very wanted by Android tablet devices from Acer, Asus and
->> other vendors which use Maxtouch 1386 controller. Touchscreens don't
->> work without the wakeup support, i.e. without this series. The wakeup
->> support is implemented in accordance to the datasheet and touchscreens
->> are working excellent using these patches.
->>
->> Could you please take this series into v5.13?
->>
->> Or could you please let me know what exactly needs to be improved?
-> 
-> Sorry, I was still slightly unhappy that we still are not tracking the
-> state of controller and opportunistically retrying failed I2C transfers,
-> but as I am failing to find time to come up with another solution I have
-> just applied your series.
+When SND_SIU_MIGOR is enabled, and DMADEVICES is disabled,
+Kbuild gives the following warning:
 
-Thank you! I don't have other solutions either, although /I think/
-potentially it should be possible to differentiate the I2C error here.
-On NVIDIA Tegra I see that I2C controller always gets a h/w NAK on TS
-wake-up and it returns -EREMOTEIO in this case. IIRC, some other
-non-NVIDIA I2C drivers always return -EIO on any error, so this method
-isn't universal, but certainly it feels like there is some a room for
-further improvements.
+WARNING: unmet direct dependencies detected for SND_SOC_SH4_SIU
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (SUPERH [=y] || ARCH_RENESAS || COMPILE_TEST [=n]) && ARCH_SHMOBILE [=y] && HAVE_CLK [=y] && DMADEVICES [=n]
+  Selected by [y]:
+  - SND_SIU_MIGOR [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (SUPERH [=y] || ARCH_RENESAS || COMPILE_TEST [=n]) && SH_MIGOR [=y] && I2C [=y]
+
+This is because SND_SIU_MIGOR selects SND_SOC_SH4_SIU
+without selecting or depending on DMADEVICES,
+despite SND_SOC_SH4_SIU depending on DMADEVICES.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ sound/soc/sh/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 346c806ba390..503ee235e46d 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -60,7 +60,7 @@ config SND_SH7760_AC97
+ 
+ config SND_SIU_MIGOR
+ 	tristate "SIU sound support on Migo-R"
+-	depends on SH_MIGOR && I2C
++	depends on SH_MIGOR && I2C && DMADEVICES
+ 	select SND_SOC_SH4_SIU
+ 	select SND_SOC_WM8978
+ 	help
+-- 
+2.25.1
+
