@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108FF3430C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248C83430C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCUDee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 23:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S229986AbhCUDhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 23:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCUDeV (ORCPT
+        with ESMTP id S229805AbhCUDhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 23:34:21 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6EDC061574;
-        Sat, 20 Mar 2021 20:34:20 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id f12so9942232qtq.4;
-        Sat, 20 Mar 2021 20:34:20 -0700 (PDT)
+        Sat, 20 Mar 2021 23:37:45 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6052C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:37:44 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id v2so6376199pgk.11
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:37:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n8w1eH7eROhNtrsz0SZcF8+sLNNFxSNw1Hceyzky/t4=;
-        b=R5+MEtSUCDqdcrKGdHzcgi6ku/Rn8hyn2UCzIpi+JgFHAfXswAU+dNk0GTYL5PH8XQ
-         t2X3JPW7bz9iW9FpZXJKHr4GYx9qvxrjYAaceCTQcT63gHe3tTXOhiNOcH/OtO/3klwH
-         ygyAgfl6McZcGui8KRRkNIE0xkEJrvmg3Dd+2U3j4qVC3aWgnW+5BV0fOhsLMBR4nJI+
-         rSimDsD2co2P9w7wjtJmBPkA1SnD5cX75hY7I+9gEtwzabszu+6NqvZ67dtJwS0mAjSN
-         PY30Zchse7+S/Uki/1K094EZWEgSwxV/G6aRdRRzcnToU5QuPj6lhmgaUF0/t/Km9391
-         PHpw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UO8rbq0+kqRaTjZw3G4nKUjHlHbuRA+XYvccxPC+8fc=;
+        b=F/gnec5pQX2xPdlwo2ptR3vuUqplHpKTaIO68mwzbh1cLT9S5vyjyj08b0hRdo0fRA
+         aPtC7T0rehITzUswqexVYYN0otPWzeAxny8FkEto7wxipNyEAKF4eswwy3I0CG8iolK0
+         cVXzk0jVFN8xxuMZ8QEN11/XL7dOT2XR7ymXY44vQwdIxyeQlHTfGEuNn8Zm1s5Jx1A9
+         iD5KEWqU8G3BUUH+/AkgeQQstXMCcHkYrgnDb7qJWjAelFPq+0eK9CtgYrtvGixyiJtv
+         0/AV14nSrgUD6e2OmOwfpA8NlGIrIUHNRGx97eQe3s6Xy9/S8iXtWGVa/Q7ddfM3qNuu
+         nCTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n8w1eH7eROhNtrsz0SZcF8+sLNNFxSNw1Hceyzky/t4=;
-        b=jnHJXbcJYN1NX1baSxDDa5kAZKWPbHuUSbuq8X1d9pf916j3d48iKWVa7hjIXmhcai
-         SvzJk0P0UDT4ZwqTcz3615O5temsHHGDdhhJZNEBQzZ9utsofUonU669p/aQCpKgRTwK
-         2XcDCloFKV/JMNChyp6X2PUhRYBdSxbzphREHXgUImVcGSbsehO/3JE46oCujTxT42sZ
-         FJLafThYYOzGTKESWTZK3u0Pz7tbTpuDSKjZQVmjLi6SI/b5r3myn1/2bXvhrR7SJ28u
-         WEcJtGvE/4K8ZG84SaHOoOLB/yVPe5ASgaPFxc/VJgssN9nd8AiEDdLOND3KlD9IK/Z8
-         7/EQ==
-X-Gm-Message-State: AOAM5319jo8o2i10no44Lv2lLRQPAnHgAGWSq4N/qqHmBTRMZtisB/Hi
-        pRlwndbZKqvmZ8CfgS48rj4=
-X-Google-Smtp-Source: ABdhPJxumIiSFoPb6T4PHuSC26JVlRP0hVOqFKo6qRJv4mvLmUXPZ8ZlryfBiJF7HFshd2FRnTd/ow==
-X-Received: by 2002:aed:2ce3:: with SMTP id g90mr4873757qtd.308.1616297660114;
-        Sat, 20 Mar 2021 20:34:20 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.26])
-        by smtp.gmail.com with ESMTPSA id r133sm8200442qke.20.2021.03.20.20.34.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UO8rbq0+kqRaTjZw3G4nKUjHlHbuRA+XYvccxPC+8fc=;
+        b=LLaQ1lNJdNpIcNtKsj/4YaC2d8pZGlUPCzlo3iRPAHuPfFw5KPGUxszHP5BvDv2yjy
+         Ewl6iomPBuc6r939849ZoTH2aFhZybZd5bG4hixS9cJ/281LC27ZS0M3/oDtkYschxk8
+         KbWZztC47LTydIoxUJSeiMmkJGHrbiPu+n6YvpRPaQVDiFYzEfb+cEdBx1AhP+0ZbeH+
+         wHBiPhWwkrrT4c3ZYDFtCEwYVINr9UfBTIX4uzW7q4MsEs44NVnkko9bU93ACEm1nXQx
+         ZwdYDNy8VlSjVCVh/nUUYmzZyGMirElcWSEdZquNm7M7LcyuuSrogr1IvBKbksDZqypC
+         W8Zw==
+X-Gm-Message-State: AOAM532hHc7Tvhj6q3/WdcCO4DuSYvv+v1UQo3ZwNeH4fffF62nAl7tb
+        J6X8G3dsT04Pg4rfqwa/H9H/lY/WE5U=
+X-Google-Smtp-Source: ABdhPJymdtdqAVJYxOk6uVcvorM3cCBvr0inWwlQnN2ca5LzxTGnat1XqW/aqiGOwRQEEs76gkjl9A==
+X-Received: by 2002:aa7:9394:0:b029:1f4:2b30:4cdb with SMTP id t20-20020aa793940000b02901f42b304cdbmr16213688pfe.50.1616297863405;
+        Sat, 20 Mar 2021 20:37:43 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id l190sm9708422pfl.73.2021.03.20.20.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 20:34:19 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     serge@hallyn.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] cap: Trivial spelling fixes throughout the file
-Date:   Sun, 21 Mar 2021 09:04:02 +0530
-Message-Id: <20210321033402.5728-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Sat, 20 Mar 2021 20:37:42 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org (open list:SWIOTLB SUBSYSTEM)
+Subject: [PATCH v2] swiotlb: Make SWIOTLB_NO_FORCE perform no allocation
+Date:   Sat, 20 Mar 2021 20:37:40 -0700
+Message-Id: <20210321033740.312500-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210319040055.183433-1-f.fainelli@gmail.com>
+References: <20210319040055.183433-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When SWIOTLB_NO_FORCE is used, there should really be no allocations of
+default_nslabs to occur since we are not going to use those slabs. If a
+platform was somehow setting swiotlb_no_force and a later call to
+swiotlb_init() was to be made we would still be proceeding with
+allocating the default SWIOTLB size (64MB), whereas if swiotlb=noforce
+was set on the kernel command line we would have only allocated 2KB.
 
-Mundane spelling fixes throughout the file.
+This would be inconsistent and the point of initializing default_nslabs
+to 1, was intended to allocate the minimum amount of memory possible, so
+simply remove that minimal allocation period.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- security/commoncap.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Changes in v2:
 
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 1c519c875217..d4bb6d619200 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -83,7 +83,7 @@ int cap_capable(const struct cred *cred, struct user_namespace *targ_ns,
- 		if (ns->level <= cred->user_ns->level)
- 			return -EPERM;
+- rebased against devel/for-linus-5.13
+- updated commit message to reflect variable names
 
--		/*
-+		/*
- 		 * The owner of the user namespace in the parent of the
- 		 * user namespace has all caps.
- 		 */
-@@ -842,7 +842,7 @@ static inline bool __is_setgid(struct cred *new, const struct cred *old)
-  *   1) cap_effective has all caps
-  *   2) we became root *OR* are were already root
-  *   3) root is supposed to have all caps (SECURE_NOROOT)
-- * Since this is just a normal root execing a process.
-+ * Since this is just a normal root executing a process.
-  *
-  * Number 1 above might fail if you don't have a full bset, but I think
-  * that is interesting information to audit.
-@@ -1132,7 +1132,7 @@ int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags)
- 		break;
+ kernel/dma/swiotlb.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
- 	case LSM_SETID_FS:
--		/* juggle the capabilties to follow FSUID changes, unless
-+		/* juggle the capabilities to follow FSUID changes, unless
- 		 * otherwise suppressed
- 		 *
- 		 * FIXME - is fsuser used for all CAP_FS_MASK capabilities?
-@@ -1183,10 +1183,10 @@ static int cap_safe_nice(struct task_struct *p)
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 539c76beb52e..d20002a61546 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -83,12 +83,10 @@ setup_io_tlb_npages(char *str)
+ 	}
+ 	if (*str == ',')
+ 		++str;
+-	if (!strcmp(str, "force")) {
++	if (!strcmp(str, "force"))
+ 		swiotlb_force = SWIOTLB_FORCE;
+-	} else if (!strcmp(str, "noforce")) {
++	else if (!strcmp(str, "noforce"))
+ 		swiotlb_force = SWIOTLB_NO_FORCE;
+-		default_nslabs = 1;
+-	}
+ 
+ 	return 0;
  }
-
- /**
-- * cap_task_setscheduler - Detemine if scheduler policy change is permitted
-+ * cap_task_setscheduler - Determine if scheduler policy change is permitted
-  * @p: The task to affect
-  *
-- * Detemine if the requested scheduler policy change is permitted for the
-+ * Determine if the requested scheduler policy change is permitted for the
-  * specified task, returning 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setscheduler(struct task_struct *p)
-@@ -1195,11 +1195,11 @@ int cap_task_setscheduler(struct task_struct *p)
- }
-
- /**
-- * cap_task_ioprio - Detemine if I/O priority change is permitted
-+ * cap_task_ioprio - Determine if I/O priority change is permitted
-  * @p: The task to affect
-  * @ioprio: The I/O priority to set
-  *
-- * Detemine if the requested I/O priority change is permitted for the specified
-+ * Determine if the requested I/O priority change is permitted for the specified
-  * task, returning 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setioprio(struct task_struct *p, int ioprio)
-@@ -1208,11 +1208,11 @@ int cap_task_setioprio(struct task_struct *p, int ioprio)
- }
-
- /**
-- * cap_task_ioprio - Detemine if task priority change is permitted
-+ * cap_task_ioprio - Determine if task priority change is permitted
-  * @p: The task to affect
-  * @nice: The nice value to set
-  *
-- * Detemine if the requested task priority change is permitted for the
-+ * Determine if the requested task priority change is permitted for the
-  * specified task, returning 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setnice(struct task_struct *p, int nice)
---
-2.20.1
+@@ -211,6 +209,9 @@ swiotlb_init(int verbose)
+ 	size_t bytes = PAGE_ALIGN(default_nslabs << IO_TLB_SHIFT);
+ 	void *tlb;
+ 
++	if (swiotlb_force == SWIOTLB_NO_FORCE)
++		return;
++
+ 	/* Get IO TLB memory from the low pages */
+ 	tlb = memblock_alloc_low(bytes, PAGE_SIZE);
+ 	if (!tlb)
+-- 
+2.25.1
 
