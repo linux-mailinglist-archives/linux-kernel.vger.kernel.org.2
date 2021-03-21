@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE023431B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6663431B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCUH7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 03:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhCUH6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 03:58:38 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4A7C061574;
-        Sun, 21 Mar 2021 00:58:38 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id y18so7514470qky.11;
-        Sun, 21 Mar 2021 00:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/FodDC12fPiOO8KW+LQzpBz2k4WggnFhqLfSXUOk7I=;
-        b=H0Tl3FAbKGNNdQY1nn7qXJAoUpOyIY1laxGMwhds2cDvmv77zy8ROW8tUBT/43pmWQ
-         JoE6R9uodvdFZuJpRRPcI7hAVNwpwhX1gjPkUuBm77PQXlqmqRuqBeg8SSxlwIwq73fv
-         tyutaF5pxdVXAA/8zpZmQXPMRI8jhs95LlW/rNVA6lfo6l74NpRBuZMwEqe3VkNcOM+i
-         8MaHIB5BBEEHBW2o+4bz+24yVyED2d5PPp66ZoADjtYOyesD1gzFwztPs3Q5y5JQX6Mh
-         wymI/gthKne2if6WGNTfWtpp/b8hq7ccDSt6RQuIuVQHi1vhUWN5hBUovoP5ywerYNEV
-         ghWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/FodDC12fPiOO8KW+LQzpBz2k4WggnFhqLfSXUOk7I=;
-        b=biRay4HkuvwE67msl29/E6rdC7BY3idaHbXamUx8QontcpWLvrAqBgFqkfiF4y2bDT
-         LrNxwzdyXjzH4KARO7j7XSwNMRnO3uVF23RYKQ4QluYLM30tMj7S3jTdCshEpOo7ZsPM
-         h7uYMiUp8ClpinU4r9o9/uMGnH4vtc/12K8sLJtqntz5okR8e5PWKcnV5fodOkaK+NeP
-         7FZW1BxW6VcgtWy8BHpn4dHKCD5CfdqPxLXGeVO6PdvXINc4KPocxwjXN7eRtuDJr8zK
-         00oKmyUzjUmxEE6B8RWm89U93j0agizqet9IKAEkNflsfqD/vKO7eEVu+TEWJWMiFBFg
-         xIAw==
-X-Gm-Message-State: AOAM5330bozn+e/OJzzDEOWpwjydhW8HdtkY5BsHEqlAfabAK0iYTeJM
-        NWsjUEJZoFbq4ed+jLSc3O0=
-X-Google-Smtp-Source: ABdhPJxNLUvkzFIE3YzBjX0C4EvNEPKtpihnwmObFP1TJ19QdzliFLuYNnnzcn50yB9+IqaPAxZBfA==
-X-Received: by 2002:ae9:f81a:: with SMTP id x26mr5608819qkh.497.1616313517322;
-        Sun, 21 Mar 2021 00:58:37 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.55.204])
-        by smtp.gmail.com with ESMTPSA id d23sm8298626qka.125.2021.03.21.00.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 00:58:36 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] clk: renesas: Couple of spelling fixes
-Date:   Sun, 21 Mar 2021 13:28:13 +0530
-Message-Id: <20210321075813.9471-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229912AbhCUIQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 04:16:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40840 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229821AbhCUIQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 04:16:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D9177AD38;
+        Sun, 21 Mar 2021 08:16:14 +0000 (UTC)
+Date:   Sun, 21 Mar 2021 09:16:14 +0100
+Message-ID: <s5htup4exbl.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jasmin Fazlic <superfassl@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
+        Tom Rix <trix@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] ALSA: hdsp and hdspm, don't disable device if not enabled
+In-Reply-To: <20210320222337.243368-1-ztong0001@gmail.com>
+References: <20210320222337.243368-1-ztong0001@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 20 Mar 2021 23:23:33 +0100,
+Tong Zhang wrote:
+> 
+> This series fixes issues in hdsp and hdspm. The drivers in question want
+> to disable a device that is not enabled on error path.
+> 
+> v2: add fix to rme9652
+> 
+> Tong Zhang (3):
+>   ALSA: hdsp: don't disable if not enabled
+>   ALSA: hdspm: don't disable if not enabled
+>   ALSA: rme9652: don't disable if not enabled
 
-s/suposed/supposed/
-s/concurent/concurrent/
+Thanks for the patches.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/clk/renesas/r9a06g032-clocks.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+IMO, a safer way for this is to add pci_is_enabled() check in *_free()
+functions around the call of pci_disable_device().  The point is that
+*_free() is the sole destructor function that manages all stuff, hence
+it's better to do all there.  And, of course, it'll be less changes.
 
-diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
-index 892e91b92f2c..1fe166e7f8bd 100644
---- a/drivers/clk/renesas/r9a06g032-clocks.c
-+++ b/drivers/clk/renesas/r9a06g032-clocks.c
-@@ -279,7 +279,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
- 	/*
- 	 * These are not hardware clocks, but are needed to handle the special
- 	 * case where we have a 'selector bit' that doesn't just change the
--	 * parent for a clock, but also the gate it's suposed to use.
-+	 * parent for a clock, but also the gate it's supposed to use.
- 	 */
- 	{
- 		.index = R9A06G032_UART_GROUP_012,
-@@ -311,7 +311,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
+Care to resend v3 patches with that?
 
- struct r9a06g032_priv {
- 	struct clk_onecell_data data;
--	spinlock_t lock; /* protects concurent access to gates */
-+	spinlock_t lock; /* protects concurrent access to gates */
- 	void __iomem *reg;
- };
 
---
-2.30.1
+thanks,
 
+Takashi
