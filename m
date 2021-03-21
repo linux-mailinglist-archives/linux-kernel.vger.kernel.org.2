@@ -2,405 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7B03433CA
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3353433C9
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 18:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhCURhl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Mar 2021 13:37:41 -0400
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:34920 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbhCURhX (ORCPT
+        id S230336AbhCURhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 13:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229926AbhCURhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 13:37:23 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id EC3B09E0079;
-        Sun, 21 Mar 2021 17:37:15 +0000 (GMT)
-Date:   Sun, 21 Mar 2021 17:37:13 +0000
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "zzzzArdelean, zzzzAlexandru" <alexandru.Ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
-Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
- extra buffers for IIO device
-Message-ID: <20210321173713.2691e0bb@jic23-huawei>
-In-Reply-To: <20210320174100.6808ad36@jic23-huawei>
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
-        <20210215104043.91251-21-alexandru.ardelean@analog.com>
-        <877ca331-1a56-1bd3-6637-482bbf060ba9@metafoo.de>
-        <20210228143429.00001f01@Huawei.com>
-        <5f9070a5-2c3d-f185-1981-10ec768dbb4a@metafoo.de>
-        <20210228172753.0000568c@Huawei.com>
-        <CA+U=Dsqs_B3=6FSS0dmGsRUKwD826Qy250OXzyp5mBFHt4t6MQ@mail.gmail.com>
-        <CY4PR03MB2631CF5082542DBF3F109E08996C9@CY4PR03MB2631.namprd03.prod.outlook.com>
-        <20210320174100.6808ad36@jic23-huawei>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 21 Mar 2021 13:37:21 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72952C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 10:37:20 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id q5so9414744pfh.10
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 10:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h1o7IzHwWbxdPHi+8uUp3/Koaw8yljOar4ODRP9JcNU=;
+        b=QCSrTB65+gO/mWpneMOKqnkMx0IckhHxEMVpw/wknbb2Lz3sRC9GExh18/RQNLu3dI
+         ENXytI4LIW1QVxzKHwNKRfEbSC8CsR+oBz9O3UrcGodRRnUlgcNagLnp4f7Ul6ErFRgC
+         RI5jXj4Np1phupV3DzS7y1TeSymkUHwSe60eQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h1o7IzHwWbxdPHi+8uUp3/Koaw8yljOar4ODRP9JcNU=;
+        b=rRvkHshbQxXzBPaF+rr6iG3mUWCZjai2VMkEiHK/z/kKEpVprK0Il/hCL6K3C5tRO2
+         B69ftoViVRnN3DBUH4CxxvvTFGlE9Isshgnga6lARQKxOJucWwE9nXhvssimFiIYYhOM
+         U/43WD0LwCeQG2r+47OIVjAA8df9kR5HnOo0VDuI/6QrXfkxeH4DX5eY5cV/9MXoN3U5
+         4C4Upv7+JjPKVNWjIiWyaZaQwJMNnYTBfdsXbflhQyI7tdQRASXQ24pDu/DkkavcRJpq
+         QJJKewyRSFa4pgoWQfNG/PhXo3k1+EVUPNkvyT3ZZtgqykY9Pt/38cT9tEgHLVXI2sX9
+         u69Q==
+X-Gm-Message-State: AOAM532Xs5nH1P7oV8luu2KihsKwlYHJMtIoIyoctBTjybfaKXWPXOXh
+        SwxTHsJ76KFG3uL+q0vthSfsxg==
+X-Google-Smtp-Source: ABdhPJx7f+7KrqqQ2UNcYrMTPWR7geuxADOud2Pt1BKnWAECIduFCs6HMz/l+Z7c6l0ZWemH+Lr/xw==
+X-Received: by 2002:a62:68c1:0:b029:1ee:5dfa:860b with SMTP id d184-20020a6268c10000b02901ee5dfa860bmr17681481pfc.35.1616348239667;
+        Sun, 21 Mar 2021 10:37:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v2sm11087872pjg.34.2021.03.21.10.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 10:37:18 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 10:37:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     John Wood <john.wood@gmx.com>
+Cc:     Jann Horn <jannh@google.com>, Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v6 2/8] security/brute: Define a LSM and manage
+ statistical data
+Message-ID: <202103211013.4680330D7@keescook>
+References: <20210307113031.11671-1-john.wood@gmx.com>
+ <20210307113031.11671-3-john.wood@gmx.com>
+ <202103171823.E7F64A593@keescook>
+ <20210320150153.GA3023@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320150153.GA3023@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 17:41:00 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
-
-> On Mon, 15 Mar 2021 09:58:08 +0000
-> "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+On Sat, Mar 20, 2021 at 04:01:53PM +0100, John Wood wrote:
+> Hi,
+> First of all thanks for the review. More info and questions inline.
 > 
-> > > -----Original Message-----
-> > > From: Alexandru Ardelean <ardeleanalex@gmail.com>
-> > > Sent: Saturday, March 6, 2021 6:01 PM
-> > > To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Cc: Lars-Peter Clausen <lars@metafoo.de>; zzzzArdelean,
-> > > zzzzAlexandru <alexandru.Ardelean@analog.com>; LKML <linux-    
-> > > kernel@vger.kernel.org>; linux-iio <linux-iio@vger.kernel.org>;    
-> > > Hennerich, Michael <Michael.Hennerich@analog.com>; Jonathan
-> > > Cameron <jic23@kernel.org>; Sa, Nuno <Nuno.Sa@analog.com>;
-> > > Bogdan, Dragos <Dragos.Bogdan@analog.com>
-> > > Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
-> > > extra buffers for IIO device
-> > > 
-> > > [External]
-> > > 
-> > > On Sun, Feb 28, 2021 at 9:00 PM Jonathan Cameron
-> > > <Jonathan.Cameron@huawei.com> wrote:    
-> > > >
-> > > > On Sun, 28 Feb 2021 16:51:51 +0100
-> > > > Lars-Peter Clausen <lars@metafoo.de> wrote:
-> > > >    
-> > > > > On 2/28/21 3:34 PM, Jonathan Cameron wrote:    
-> > > > > > On Sun, 28 Feb 2021 09:51:38 +0100
-> > > > > > Lars-Peter Clausen <lars@metafoo.de> wrote:
-> > > > > >    
-> > > > > >> On 2/15/21 11:40 AM, Alexandru Ardelean wrote:    
-> > > > > >>> With this change, an ioctl() call is added to open a character    
-> > > device for a    
-> > > > > >>> buffer. The ioctl() number is 'i' 0x91, which follows the
-> > > > > >>> IIO_GET_EVENT_FD_IOCTL ioctl.
-> > > > > >>>
-> > > > > >>> The ioctl() will return an FD for the requested buffer index.    
-> > > The indexes    
-> > > > > >>> are the same from the /sys/iio/devices/iio:deviceX/bufferY    
-> > > (i.e. the Y    
-> > > > > >>> variable).
-> > > > > >>>
-> > > > > >>> Since there doesn't seem to be a sane way to return the FD for    
-> > > buffer0 to    
-> > > > > >>> be the same FD for the /dev/iio:deviceX, this ioctl() will return    
-> > > another    
-> > > > > >>> FD for buffer0 (or the first buffer). This duplicate FD will be    
-> > > able to    
-> > > > > >>> access the same buffer object (for buffer0) as accessing    
-> > > directly the    
-> > > > > >>> /dev/iio:deviceX chardev.
-> > > > > >>>
-> > > > > >>> Also, there is no IIO_BUFFER_GET_BUFFER_COUNT ioctl()    
-> > > implemented, as the    
-> > > > > >>> index for each buffer (and the count) can be deduced from    
-> > > the    
-> > > > > >>> '/sys/bus/iio/devices/iio:deviceX/bufferY' folders (i.e the    
-> > > number of    
-> > > > > >>> bufferY folders).
-> > > > > >>>
-> > > > > >>> Used following C code to test this:
-> > > > > >>> -------------------------------------------------------------------
-> > > > > >>>
-> > > > > >>>    #include <stdio.h>
-> > > > > >>>    #include <stdlib.h>
-> > > > > >>>    #include <unistd.h>
-> > > > > >>>    #include <sys/ioctl.h>
-> > > > > >>>    #include <fcntl.h"
-> > > > > >>>    #include <errno.h>
-> > > > > >>>
-> > > > > >>>    #define IIO_BUFFER_GET_FD_IOCTL      _IOWR('i', 0x91, int)
-> > > > > >>>
-> > > > > >>> int main(int argc, char *argv[])
-> > > > > >>> {
-> > > > > >>>           int fd;
-> > > > > >>>           int fd1;
-> > > > > >>>           int ret;
-> > > > > >>>
-> > > > > >>>           if ((fd = open("/dev/iio:device0", O_RDWR))<0) {
-> > > > > >>>                   fprintf(stderr, "Error open() %d errno %d\n",fd,    
-> > > errno);    
-> > > > > >>>                   return -1;
-> > > > > >>>           }
-> > > > > >>>
-> > > > > >>>           fprintf(stderr, "Using FD %d\n", fd);
-> > > > > >>>
-> > > > > >>>           fd1 = atoi(argv[1]);
-> > > > > >>>
-> > > > > >>>           ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &fd1);
-> > > > > >>>           if (ret < 0) {
-> > > > > >>>                   fprintf(stderr, "Error for buffer %d ioctl() %d errno    
-> > > %d\n", fd1, ret, errno);    
-> > > > > >>>                   close(fd);
-> > > > > >>>                   return -1;
-> > > > > >>>           }
-> > > > > >>>
-> > > > > >>>           fprintf(stderr, "Got FD %d\n", fd1);
-> > > > > >>>
-> > > > > >>>           close(fd1);
-> > > > > >>>           close(fd);
-> > > > > >>>
-> > > > > >>>           return 0;
-> > > > > >>> }
-> > > > > >>> -------------------------------------------------------------------
-> > > > > >>>
-> > > > > >>> Results are:
-> > > > > >>> -------------------------------------------------------------------
-> > > > > >>>    # ./test 0
-> > > > > >>>    Using FD 3
-> > > > > >>>    Got FD 4
-> > > > > >>>
-> > > > > >>>    # ./test 1
-> > > > > >>>    Using FD 3
-> > > > > >>>    Got FD 4
-> > > > > >>>
-> > > > > >>>    # ./test 2
-> > > > > >>>    Using FD 3
-> > > > > >>>    Got FD 4
-> > > > > >>>
-> > > > > >>>    # ./test 3
-> > > > > >>>    Using FD 3
-> > > > > >>>    Got FD 4
-> > > > > >>>
-> > > > > >>>    # ls /sys/bus/iio/devices/iio\:device0
-> > > > > >>>    buffer  buffer0  buffer1  buffer2  buffer3  dev
-> > > > > >>>    in_voltage_sampling_frequency  in_voltage_scale
-> > > > > >>>    in_voltage_scale_available
-> > > > > >>>    name  of_node  power  scan_elements  subsystem  uevent
-> > > > > >>> -------------------------------------------------------------------
-> > > > > >>>
-> > > > > >>> iio:device0 has some fake kfifo buffers attached to an IIO    
-> > > device.    
-> > > > > >> For me there is one major problem with this approach. We only    
-> > > allow one    
-> > > > > >> application to open /dev/iio:deviceX at a time. This means we    
-> > > can't have    
-> > > > > >> different applications access different buffers of the same    
-> > > device. I    
-> > > > > >> believe this is a circuital feature.    
-> > > > > > Thats not quite true (I think - though I've not tested it).  What we    
-> > > don't    
-> > > > > > allow is for multiple processes to access them in an unaware    
-> > > fashion.    
-> > > > > > My assumption is we can rely on fork + fd passing via appropriate    
-> > > sockets.    
-> > > > > >    
-> > > > > >> It is possible to open the chardev, get the annonfd, close the    
-> > > chardev    
-> > > > > >> and keep the annonfd open. Then the next application can do    
-> > > the same and    
-> > > > > >> get access to a different buffer. But this has room for race    
-> > > conditions    
-> > > > > >> when two applications try this at the very same time.
-> > > > > >>
-> > > > > >> We need to somehow address this.    
-> > > > > > I'd count this as a bug :).  It could be safely done in a particular    
-> > > custom    
-> > > > > > system but in general it opens a can of worm.
-> > > > > >    
-> > > > > >> I'm also not much of a fan of using ioctls to create annon fds. In    
-> > > part    
-> > > > > >> because all the standard mechanisms for access control no    
-> > > longer work.    
-> > > > > > The inability to trivially have multiple processes open the anon    
-> > > fds    
-> > > > > > without care is one of the things I like most about them.
-> > > > > >
-> > > > > > IIO drivers and interfaces really aren't designed for multiple    
-> > > unaware    
-> > > > > > processes to access them.  We don't have per process controls    
-> > > for device    
-> > > > > > wide sysfs attributes etc.  In general, it would be hard to
-> > > > > > do due to the complexity of modeling all the interactions    
-> > > between the    
-> > > > > > different interfaces (events / buffers / sysfs access) in a generic    
-> > > fashion.    
-> > > > > >
-> > > > > > As such, the model, in my head at least, is that we only want a    
-> > > single    
-> > > > > > process to ever be responsible for access control.  That process    
-> > > can then    
-> > > > > > assign access to children or via a deliberate action (I think passing    
-> > > the    
-> > > > > > anon fd over a unix socket should work for example).  The intent    
-> > > being    
-> > > > > > that it is also responsible for mediating access to infrastructure    
-> > > that    
-> > > > > > multiple child processes all want to access.
-> > > > > >
-> > > > > > As such, having one chrdev isn't a disadvantage because only one    
-> > > process    
-> > > > > > should ever open it at a time.  This same process also handles the
-> > > > > > resource / control mediation.  Therefore we should only have    
-> > > one file    
-> > > > > > exposed for all the standard access control mechanisms.
-> > > > > >    
-> > > > > Hm, I see your point, but I'm not convinced.
-> > > > >
-> > > > > Having to have explicit synchronization makes it difficult to mix and
-> > > > > match. E.g. at ADI a popular use case for testing was to run some    
-> > > signal    
-> > > > > generator application on the TX buffer and some signal analyzer
-> > > > > application on the RX buffer.
-> > > > >
-> > > > > Both can be launched independently and there can be different    
-> > > types of    
-> > > > > generator and analyzer applications. Having to have a 3rd    
-> > > application to    
-> > > > > arbitrate access makes this quite cumbersome. And I'm afraid that    
-> > > in    
-> > > > > reality people might just stick with the two devices model just to    
-> > > avoid    
-> > > > > this restriction.    
-> > > >
-> > > > I'd argue that's a problem best tackled in a library - though it's a bit
-> > > > fiddly.  It ought to be possible to make it invisible that this level
-> > > > of sharing is going on.   The management process you describe would    
-> > > probably    
-> > > > be a thread running inside the first process to try and access a given    
-> > > device.    
-> > > > A second process failing to open the file with -EBUSY then connects    
-> > > to    
-> > > > appropriate socket (via path in /tmp or similar) and asks for the FD.
-> > > > There are race conditions that might make it fail, but a retry loop    
-> > > should    
-> > > > deal with those.
-> > > >
-> > > > I agree people might just stick to a two device model and if the    
-> > > devices    
-> > > > are independent enough I'm not sure that is the wrong way to    
-> > > approach the    
-> > > > problem.  It represents the independence and that the driver is    
-> > > being careful    
-> > > > that it both can and is safely handle independent simultaneous    
-> > > accessors.    
-> > > > We are always going to have some drivers doing that anyway    
-> > > because they've    
-> > > > already been doing that for years.
-> > > >    
-> > > 
-> > > This is the last of the 3 patches that I need to re-spin after Lars' review.
-> > > I have a good handle on the small stuff.
-> > > 
-> > > I'm not sure about the race-condition about which Lars was talking
-> > > about.
-> > > I mean, I get the problem, but is it a problem that we should fix in the
-> > > kernel?    
-> > 
-> > Hi all,
-> > 
-> > FWIW, I think that this really depends on the chosen ABI. If we do use
-> > the ioctl to return the buffer fd and just allow one app to hold the chardev
-> > at a time, I agree with Alex that this is not really a race and is just something
-> > that userspace needs to deal with....
-> > 
-> > That said and giving my superficial (I did not really read the full series) piece on this,
-> > I get both Lars and Jonathan points and, personally, it feels that the most natural thing
-> > would be to have a chardev per buffer...
-> > 
-> > On the other hand, AFAIC, events are also being handled in the same chardev as
-> > buffers, which makes things harder in terms of consistency... Events are per device
-> > and not per buffers right? My point is that, to have a chardev per buffer, it would make
-> > sense to detach events from the buffer stuff and that seems to be not doable without
-> > breaking ABI (we would probably need to assume that events and buffer0 are on the
-> > same chardev).  
+> On Wed, Mar 17, 2021 at 07:00:56PM -0700, Kees Cook wrote:
+> > On Sun, Mar 07, 2021 at 12:30:25PM +0100, John Wood wrote:
+> > >
+> > >  config LSM
+> > >  	string "Ordered list of enabled LSMs"
+> > > -	default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> > > -	default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> > > -	default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+> > > -	default "lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
+> > > -	default "lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
+> > > +	default "brute,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> > > +	default "brute,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> > > +	default "brute,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+> > > +	default "brute,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
+> > > +	default "brute,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
+> >
+> > It probably doesn't matter much, but I think brute should be added
+> > between lockdown and yama.
 > 
-> Events are interesting as there is no particular reason to assume the driver
-> handling buffer0 is the right one to deal with them.  It might just as easily
-> be the case that they are of interest to a process that is concerned with buffer1.
-> 
-> To add a bit more flavour to my earlier comments.
-> 
-> I'm still concerned that if we did do multiple /dev/* files it would allow code
-> to think it has complete control over the device when it really doesn't.
-> Events are just one aspect of that.
-> 
-> We have had discussions in the past about allowing multiple userspace consumers
-> for a single buffer, but the conclusion there was that was a job for userspace
-> (daemon or similar) software which can deal with control inter dependencies etc.
-> 
-> There are already potential messy corners we don't handle for userspace
-> iio buffers vs in kernel users (what happens if they both try to control the
-> sampling frequency?)  I'm not keen to broaden this problem set.
-> If a device genuinely has separate control and pipelines for different
-> buffers then we are probably better representing that cleanly as
-> an mfd type layer and two separate IIO devices. Its effectively the
-> same a multi chip package.
-> 
-> A more classic multibuffer usecase is the one where you have related
-> datastreams that run at different rates (often happens in devices with
-> tagged FIFO elements). These are tightly coupled but we need to split
-> the data stream (or add tagging to our FIFOs.). Another case would be
-> DMA based device that puts channels into buffers that are entirely
-> separate in memory address rather than interleaved.
-> 
-> So I still need to put together a PoC, but it feels like there are various
-> software models that will give the illusion of there being separate
-> /dev/* files, but with an aspect of control being possible.
-> 
-> 1. Daemon, if present that can hand off chardevs to who needs them
-> 2. Library to make the first user of the buffer responsible for providing
->    service to other users.  Yes there are races, but I don't think they
->    are hard to deal in normal usecases.  (retry loops)
+> What is the rationale for the stacking order (in relation with brute and
+> lockdown)?
 
-Hi Nuno / Others,
-
-Nuno's mention of things being similar for the event anon
-FD to the situation for the buffer anon FDs made me realise there was
-a horrible short cut to a proof of concept that didn't require me
-to wire up a multiple buffer device.
-
-Upshot, is that I've just sent out a (definitely not for merging)
-hacked up version of the iio_event_monitor that can act as server
-or client.  The idea is that the socket handling looks a bit
-like what I'd expect to see hidden away in a library so as to
-allow
-
-1) Client 1 is after buffer 3.
-   It tries to open the /dev/iio\:deviceX chrdev and succeeds.
-   It spins up a thread with a listening socket for /tmp/iio\:deviceX-magic
-   Continues in main thread to request buffer 3.
-2) Client 2 is after buffer 2
-   I tries to open the /dev/iio\:deviceX chrdev and fails.
-   It sleeps a moment (reduces chance of race with client 1)
-   It opens a connection to the socket via /tmp/iio\:deviceX-magic
-   Sends a request for the buffer 2 FD.
-   Thread in Client 1 calls the ioctl to get the buffer 2 FD which
-   it then sends on to Client 2 which can use it as if it had
-   requested it directly.
-
-We might want to have a generic server version as well that doesn't
-itself make use of any of the buffers as keeps the model more symmetric
-and reduce common corner cases.
-
-Anyhow the code I put together is terrible, but I wasn't 100% sure
-there weren't any issues passing anon fd file handles and this shows
-that at least in theory the approach I proposed above works.
-
-Test is something like
-./iio_events_network /dev/iio\:device1
-./iio_events_network -c
-
-Then make some events happen (I was using the dummy driver and
-the event generator associated with that).
-The server in this PoC just quits after handling off the FD.
-
-Jonathan
+lockdown has some very early hooks, so leaving it at the front seems
+organizationally correct to me. It doesn't really matter, though, so
+perhaps we should just alphabetize them, but that's for another day.
 
 > 
-> Jonathan
+> > > diff --git a/security/Makefile b/security/Makefile
+> > > index 3baf435de541..1236864876da 100644
+> > > --- a/security/Makefile
+> > > +++ b/security/Makefile
+> > > @@ -36,3 +36,7 @@ obj-$(CONFIG_BPF_LSM)			+= bpf/
+> > >  # Object integrity file lists
+> > >  subdir-$(CONFIG_INTEGRITY)		+= integrity
+> > >  obj-$(CONFIG_INTEGRITY)			+= integrity/
+> > > +
+> > > +# Object brute file lists
+> > > +subdir-$(CONFIG_SECURITY_FORK_BRUTE)	+= brute
+> > > +obj-$(CONFIG_SECURITY_FORK_BRUTE)	+= brute/
+> >
+> > I don't think subdir is needed here? I think you can use obj-... like
+> > loadpin, etc.
 > 
-> 
-> > 
-> > - Nuno Sá  
-> 
+> loadpin also uses subdir just like selinux, smack, tomoyo, etc.. So, why
+> is it not necessary for brute?
 
+Oops, yes, my mistake. I didn't look at the Makefile as a whole. I will
+adjust my suggestion as: please split subdir and obj as done by the
+other LSMs (integrity should be fixed to do the same, but that doesn't
+need to be part of this series).
+
+> 
+> > > +#include <asm/current.h>
+> >
+> > Why is this needed?
+> 
+> IIUC, the "current" macro is defined in this header. I try to include the
+> appropiate header for every macro and function used.
+
+The common approach is actually to minimize the number of explicit
+headers so that if header files includes need to be changed, they only
+need to be changed internally instead of everywhere in the kernel.
+Please find an appropriately minimal set of headers to include.
+
+> 
+> > > +/**
+> > > + * struct brute_stats - Fork brute force attack statistics.
+> > > + * @lock: Lock to protect the brute_stats structure.
+> > > + * @refc: Reference counter.
+> > > + * @faults: Number of crashes.
+> > > + * @jiffies: Last crash timestamp.
+> > > + * @period: Crash period's moving average.
+> > > + *
+> > > + * This structure holds the statistical data shared by all the fork hierarchy
+> > > + * processes.
+> > > + */
+> > > +struct brute_stats {
+> > > +	spinlock_t lock;
+> > > +	refcount_t refc;
+> > > +	unsigned char faults;
+> > > +	u64 jiffies;
+> > > +	u64 period;
+> > > +};
+> >
+> > I assume the max-255 "faults" will be explained... why is this so small?
+> 
+> If a brute force attack is running slowly for a long time, the application
+> crash period's EMA is not suitable for the detection. This type of attack
+> must be detected using a maximum number of faults. In this case, the
+> BRUTE_MAX_FAULTS is defined as 200.
+
+Okay, so given the choise of BRUTE_MAX_FAULTS, you limited the storage
+size? I guess I worry about this somehow wrapping around easily. Given
+the struct has padding due to the u8 storage, it seems like just using
+int would be fine too.
+
+> > > +static int brute_task_alloc(struct task_struct *task, unsigned long clone_flags)
+> > > +{
+> > > +	struct brute_stats **stats, **p_stats;
+> > > +
+> > > +	stats = brute_stats_ptr(task);
+> > > +	p_stats = brute_stats_ptr(current);
+> > > +
+> > > +	if (likely(*p_stats)) {
+> > > +		brute_share_stats(*p_stats, stats);
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	*stats = brute_new_stats();
+> > > +	if (!*stats)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	brute_share_stats(*stats, p_stats);
+> > > +	return 0;
+> > > +}
+> >
+> > During the task_alloc hook, aren't both "current" and "task" already
+> > immutable (in the sense that no lock needs to be held for
+> > brute_share_stats())?
+> 
+> I will work on it.
+> 
+> > And what is the case where brute_stats_ptr(current) returns NULL?
+> 
+> Sorry, but I don't understand what you are trying to explain me.
+> brute_stats_ptr(current) returns a pointer to a pointer. So, I think
+> your question is: What's the purpose of the "if (likely(*p_stats))"
+> check? If it is the case, this check is to guarantee that all the tasks
+> have statistical data. If some task has been allocated prior the brute
+> LSM initialization, this task doesn't have stats. So, with this check
+> all the tasks that fork have stats.
+
+Thank you for figuring out my poorly-worded question. :) Yes, I was
+curious about the "if (likely(*p_stats))". It seems like it shouldn't be
+possible for a process to lack a stats allocation: the LSMs get
+initialized before processes. If you wanted to be defensive, I would
+have expected:
+
+if (WARN_ON_ONCE(!*p_stats))
+	return -ENOMEM;
+
+or something (brute should be able to count on the kernel internals
+behaving here: you're not expecting any path where this could happen).
+
+> 
+> > > +
+> > > +/**
+> > > + * brute_task_execve() - Target for the bprm_committing_creds hook.
+> > > + * @bprm: Points to the linux_binprm structure.
+> > > + *
+> > > + * When a forked task calls the execve system call, the memory contents are set
+> > > + * with new values. So, in this scenario the parent's statistical data no need
+> > > + * to be shared. Instead, a new statistical data structure must be allocated to
+> > > + * start a new hierarchy. This condition is detected when the statistics
+> > > + * reference counter holds a value greater than or equal to two (a fork always
+> > > + * sets the statistics reference counter to a minimum of two since the parent
+> > > + * and the child task are sharing the same data).
+> > > + *
+> > > + * However, if the execve function is called immediately after another execve
+> > > + * call, althought the memory contents are reset, there is no need to allocate
+> > > + * a new statistical data structure. This is possible because at this moment
+> > > + * only one task (the task that calls the execve function) points to the data.
+> > > + * In this case, the previous allocation is used but the statistics are reset.
+> > > + *
+> > > + * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > + * since the task_free hook can be called from an IRQ context during the
+> > > + * execution of the bprm_committing_creds hook.
+> > > + */
+> > > +static void brute_task_execve(struct linux_binprm *bprm)
+> > > +{
+> > > +	struct brute_stats **stats;
+> > > +	unsigned long flags;
+> > > +
+> > > +	stats = brute_stats_ptr(current);
+> > > +	if (WARN(!*stats, "No statistical data\n"))
+> > > +		return;
+> > > +
+> > > +	spin_lock_irqsave(&(*stats)->lock, flags);
+> > > +
+> > > +	if (!refcount_dec_not_one(&(*stats)->refc)) {
+> > > +		/* execve call after an execve call */
+> > > +		(*stats)->faults = 0;
+> > > +		(*stats)->jiffies = get_jiffies_64();
+> > > +		(*stats)->period = 0;
+> > > +		spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	/* execve call after a fork call */
+> > > +	spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +	*stats = brute_new_stats();
+> > > +	WARN(!*stats, "Cannot allocate statistical data\n");
+> > > +}
+> >
+> > I don't think any of this locking is needed -- you're always operating
+> > on "current", so its brute_stats will always be valid.
+> 
+> But another process (that share the same stats) could be modifying this
+> concurrently.
+> 
+> Scenario 1: cpu 1 writes stats and cpu 2 writes stats.
+> Scenario 2: cpu 1 writes stats, then IRQ on the same cpu writes stats.
+> 
+> I think it is possible. So AFAIK we need locking. Sorry if I am wrong.
+
+Maybe I'm misunderstanding, but even your comments on the function say
+that the zeroing path is there to avoid a new allocation, since only 1
+thread has access to that "stats". (i.e. no locking needed), and in the
+other path, a new stats is allocated (no locking needed). What are the
+kernel execution paths you see where you'd need locking here?
+
+> > > +/**
+> > > + * brute_task_free() - Target for the task_free hook.
+> > > + * @task: Task about to be freed.
+> > > + *
+> > > + * The statistical data that is shared between all the fork hierarchy processes
+> > > + * needs to be freed when this hierarchy disappears.
+> > > + *
+> > > + * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > + * since the task_free hook can be called from an IRQ context during the
+> > > + * execution of the task_free hook.
+> > > + */
+> > > +static void brute_task_free(struct task_struct *task)
+> > > +{
+> > > +	struct brute_stats **stats;
+> > > +	unsigned long flags;
+> > > +	bool refc_is_zero;
+> > > +
+> > > +	stats = brute_stats_ptr(task);
+> > > +	if (WARN(!*stats, "No statistical data\n"))
+> > > +		return;
+> > > +
+> > > +	spin_lock_irqsave(&(*stats)->lock, flags);
+> > > +	refc_is_zero = refcount_dec_and_test(&(*stats)->refc);
+> > > +	spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +
+> > > +	if (refc_is_zero) {
+> > > +		kfree(*stats);
+> > > +		*stats = NULL;
+> > > +	}
+> > > +}
+> >
+> > Same thing -- this is what dec_and_test is for: it's atomic, so no
+> > locking needed.
+> 
+> Ok, in this case I can see that the locking is not necessary due to the
+> stats::refc is atomic. But in the previous case, faults, jiffies and
+> period are not atomic. So I think the lock is necessary. If not, what am
+> I missing?
+
+I thought the code had established that there could only be a single
+stats holder for that code, so no locking. Maybe I misunderstood?
+
+-- 
+Kees Cook
