@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70D83430D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 05:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFBE3430E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 05:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCUEKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 00:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        id S229865AbhCUEg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 00:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCUEKD (ORCPT
+        with ESMTP id S229556AbhCUEgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 00:10:03 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B248C061574;
-        Sat, 20 Mar 2021 21:10:03 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id r14so9945268qtt.7;
-        Sat, 20 Mar 2021 21:10:03 -0700 (PDT)
+        Sun, 21 Mar 2021 00:36:47 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5417C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 21:36:46 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id cx5so7087753qvb.10
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 21:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gB06eIi+AHoV6u6Rh5CWH8MdVE/5WSskFA6H59FSDO4=;
-        b=u3yhtY/yum6Lz+WhbrEJnbfw1x5kkUu+VAjI7e+OifspeOYATcX6b0W0AlLJoDnF7L
-         DnryCqzQkPPiAE2400DaC1WRYzyTEMJ8OBN4DX6cOtMPZC/qsntodq4j5s43g+ccMiRL
-         Y4ITEdDAaEScFs5u/qq5AtH9giIy8eK+I4VC4CNVIOXr5DRrlTt1OFvD6IC/qz6G7sIh
-         bIGUbRDE77TIUov30/YwkZmXYE8bun9JM6T2radnBh5CG5eSMhkMH1EHeUKeAhQbwTxj
-         UFT+fCkOlwOEW03P5JCZXeLN6euI7HnoBo1PQR2/JFWqF523pSIM5kx7/qw3ZBgTrqdY
-         cZiQ==
+        bh=cgjAg1npPwTI8+HwC0MGr8ZbYybNytKphsGDAOhPsLY=;
+        b=lwHRgJHdI6PktQQz+JEk7ibvwGgLSHWbswwbhRcQtaWhd1D4wiYoI/VUQ0xImq30sE
+         Emkoh8JenvMIL6SQ0PRKXCz2ImFsqBfT+ud3SqaKfF1ZWyUlCVG6U15ocldNqYp2cnbK
+         FLBQ5RIS3tp8kh21ibc1+6kj92XD3nzZOV+j79j05u+yKLwJQtV5fgxy5+iiDRCYprZl
+         qx/QlkOUS27EIdYVS999uEBUQRssRjQl4QQQPEr5TZ1FzGZ/BKef2fPyioHfPM1RHRoc
+         uLS9bGQQWA++uTdTRCp7MMbrApuSYXOYLfElyc+JNbPjBKQOFzazVm8HI0CZTMXisee8
+         8HBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gB06eIi+AHoV6u6Rh5CWH8MdVE/5WSskFA6H59FSDO4=;
-        b=U+3PtT1GzUrRDpzDCyij47rv0oAP+CXssqBch1QNPyE11rTDeTSBRRAJ7RyOG7yfaA
-         i+g4MWuEh9dIR9NbZ7awGXmZdc5KuO8XERRTPRBxoyndPQbvHdKSyfHxQaIDszkK+eFB
-         TYpfMxG4Mvx4iFn4tW/GOBDU4mL36FLQ2tcn5vvaR+77p5M6kzzUvYg5thJkFFQQ4lws
-         2r432bft17a61ygAtlrN2J8gl3lq8MaPAxjL8wYUmOn4gUpzj8jIS24KUjOa/jlCJVlk
-         X+98q7NwXF8Vr9kUFEKs0OZer9zm8C5TcgCsqExvSJpjazahNxs564JEiwJB4zYJGa8Z
-         qG1w==
-X-Gm-Message-State: AOAM530UpIH/ZQ3/PufEyKW+YuT46MACMXgNp3hAX7jdl49dfna4Nxzq
-        1mpGtl75/owagaAuQEupkR5+6WxnLnkFfj4/
-X-Google-Smtp-Source: ABdhPJxLz0Nit66lTrXnzQ5G3P4RCFORCXatYUJT2mmTACAS6nkXrfMn3Z1gcVexiDXxr8n3IKfvjA==
-X-Received: by 2002:ac8:7fc1:: with SMTP id b1mr4907122qtk.363.1616299802311;
-        Sat, 20 Mar 2021 21:10:02 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.26])
-        by smtp.gmail.com with ESMTPSA id 18sm8323882qkr.90.2021.03.20.21.09.58
+        bh=cgjAg1npPwTI8+HwC0MGr8ZbYybNytKphsGDAOhPsLY=;
+        b=SLezZXA+fx42YwJteiPoP2t+Q4tpzQT/XJRX8qyarMgePcy7GZopg8CQdUDtTLyGNh
+         3ifh+qKBC98pypEvI2MFPvu0aLWmNdLS9vIoY/Z0rrAKiA1tvF8a5yh28gVnDa3Mz3Zc
+         QBsOtCba2SYbZkfyxdUhRCxie7SHhaRoH5kvjS08ywkC7RBGHVLgtckT8DSBVK7hDniM
+         E+TlvwuL8Ng+TrU5SwePtp7a5rK6c3pCIg3DgpNJvq/OdarnCD9o6l3PqwaA2IdmCWlL
+         t2AaXUx6DSKLGN5qcpAHSsc9nro4rnbLxp5FcNb12LrbfaR/4h3VKtM3ljJG99Exvh8d
+         ZhgQ==
+X-Gm-Message-State: AOAM532DWS3hdNZJTbT+cnLBkJ4Btv+z1O1dTMLoDusvJlznsDc9YvR0
+        CnjZ8B8I+FlyGiA/54/iHuw=
+X-Google-Smtp-Source: ABdhPJwxQQTq0TQ2vHLqc8iL7D4hvrPZfup+rA2DXEXO0JzU0c5JzdZxhK0ebgZ/ZoOT1R5RsPLsYg==
+X-Received: by 2002:ad4:4d92:: with SMTP id cv18mr15892707qvb.5.1616301405966;
+        Sat, 20 Mar 2021 21:36:45 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.13.177])
+        by smtp.gmail.com with ESMTPSA id o125sm8006024qkf.87.2021.03.20.21.36.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 21:10:01 -0700 (PDT)
+        Sat, 20 Mar 2021 21:36:45 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     nsaenzjulienne@suse.de, gregkh@linuxfoundation.org,
+        jacopo@jmondi.org, dave.stevenson@raspberrypi.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
 Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] device_cgroup: A typo fix
-Date:   Sun, 21 Mar 2021 09:39:41 +0530
-Message-Id: <20210321040941.31973-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+Subject: [PATCH] staging: vchiq: Typo fixes
+Date:   Sun, 21 Mar 2021 10:06:29 +0530
+Message-Id: <20210321043629.585758-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -63,31 +67,36 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/acessed/accessed/
-
+s/sepecific/specific/
+s/comonent/component/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- Changes from V1:
-  Getting rid of unwanted comment delimeter addition
-  Subject line missed propper commit subject labeling
+ drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- security/device_cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index 9097bcbd67d8..06bca7be5203 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -432,7 +432,7 @@ buffer_from_host(struct vchiq_mmal_instance *instance,
+ 	m.u.buffer_from_host.buffer_header.pts = MMAL_TIME_UNKNOWN;
+ 	m.u.buffer_from_host.buffer_header.dts = MMAL_TIME_UNKNOWN;
 
-diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-index 04375df52fc9..30b3083276df 100644
---- a/security/device_cgroup.c
-+++ b/security/device_cgroup.c
-@@ -409,7 +409,7 @@ static bool verify_new_ex(struct dev_cgroup *dev_cgroup,
- 		} else {
- 			/*
- 			 * new exception in the child will add more devices
--			 * that can be acessed, so it can't match any of
-+			 * that can be accessed, so it can't match any of
- 			 * parent's exceptions, even slightly
- 			 */
- 			match = match_exception_partial(&dev_cgroup->exceptions,
+-	/* clear buffer type sepecific data */
++	/* clear buffer type specific data */
+ 	memset(&m.u.buffer_from_host.buffer_header_type_specific, 0,
+ 	       sizeof(m.u.buffer_from_host.buffer_header_type_specific));
+
+@@ -927,7 +927,7 @@ static int port_info_get(struct vchiq_mmal_instance *instance,
+ 	return ret;
+ }
+
+-/* create comonent on vc */
++/* create component on vc */
+ static int create_component(struct vchiq_mmal_instance *instance,
+ 			    struct vchiq_mmal_component *component,
+ 			    const char *name)
 --
-2.20.1
+2.31.0
 
