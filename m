@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC12634348B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3428334348C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhCUULr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 16:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55276 "EHLO mail.kernel.org"
+        id S230509AbhCUUMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 16:12:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230336AbhCUULi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 16:11:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C249361944;
-        Sun, 21 Mar 2021 20:11:37 +0000 (UTC)
+        id S230355AbhCUULl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 16:11:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49B636194D;
+        Sun, 21 Mar 2021 20:11:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616357498;
-        bh=3XReXXhoy2tYviynTJ5Q900MnucAp85YDI06L2VKMPo=;
+        s=k20201202; t=1616357500;
+        bh=Aint24rl9lYx+DBTtXMQ2AHoEwyipXhG569nmiT5JrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aouzb2raCAIla8bsY7P9d6g1PAuUdtXbuukfOqAQDVvQonwpbSxCGXbx0Bb4x7jRk
-         VBi+vql4D2pn4mIcP7mEQAEoRnC4DAJz9zcgx5UoWxVT1otQCR3Ptsxd4ixrMLk/8l
-         Fkq07yZcn2mRWDDzRAtsdOGZxgLumZCb7BIfXaRvDHMwEscH9f/QvI8Z3hkuGXjFiO
-         7s7OocBA+vkiPpioHHgRlPxjMSw27nFZKv1mpwyqN0QjcF6dRCYja5gt3W4ruAc5zV
-         q+OvrPsGMGcQqaOQmX6gp+YBGhHrhU69XtZiNZW2BbhNHF6AW8/YCEZSJyXP3P7WUK
-         F0S1OIMKgxqVQ==
+        b=SDL3jSWaCp5VQybwPVrjmXXI+vDI0bB2iQk86E+G8KwjwuR4/HHUCX7Ds3tBn6Nhp
+         rLV4Sqqs6qJDJMnkan/vtCuiwcbWD0n5xVKkH9eDPYJvY4Mh2v44n6Q3x4Jc9qIe5u
+         ImKajbKgcWm/aZoCYmz5UB7Vg3+pLwjETs8BbAOqnCv6aqE6oe21AfwYXQycnd+C8p
+         saBloc2GFKOzyRE9ZILXUwT3Y92vJd0W5bV2ylEudTOpdI2L1f+Pf/PzU7bhzaFMcf
+         xJ3gQkphDQ7TRzMX4FQqT/BMjKjOyhOmDfENoFRpRgwDRTNWSJhpKSMEr9Aa/M2Eyw
+         raPh1BL78lrRw==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 2/3] habanalabs: support legacy and new pll indexes
-Date:   Sun, 21 Mar 2021 22:11:29 +0200
-Message-Id: <20210321201130.4670-2-ogabbay@kernel.org>
+Cc:     Koby Elbaz <kelbaz@habana.ai>
+Subject: [PATCH 3/3] habanalabs: improve utilization calculation
+Date:   Sun, 21 Mar 2021 22:11:30 +0200
+Message-Id: <20210321201130.4670-3-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210321201130.4670-1-ogabbay@kernel.org>
 References: <20210321201130.4670-1-ogabbay@kernel.org>
@@ -38,459 +38,456 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+From: Koby Elbaz <kelbaz@habana.ai>
 
-In order to use minimum of hard coded values common to LKD and F/W
-a dynamic method to work with PLLs is introduced in this patch.
-Formerly asic specific PLL numbering is now common for all asics.
-To be backward compatible a bit in dev status is defined, if the bit is
-not set LKD will keep working with old PLL numbering.
+The new approach is based on the notion that the relative
+current power consumption is in relation of proportionality
+to device's true utilization.
+Utilization info ranges between [0,100]%
+Currently, dc_power values are hard-coded.
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c  | 49 ++++++++++++++++++-
- drivers/misc/habanalabs/common/habanalabs.h   | 14 ++++--
- drivers/misc/habanalabs/common/sysfs.c        | 24 ++++++---
- drivers/misc/habanalabs/gaudi/gaudi.c         | 33 +++++++++++++
- drivers/misc/habanalabs/goya/goya.c           | 26 ++++++++++
- .../misc/habanalabs/include/common/cpucp_if.h | 41 ++++++++++++++++
- .../habanalabs/include/common/hl_boot_if.h    |  6 +++
- .../habanalabs/include/gaudi/gaudi_fw_if.h    | 14 ------
- .../misc/habanalabs/include/goya/goya_fw_if.h | 11 -----
- 9 files changed, 182 insertions(+), 36 deletions(-)
+ .../habanalabs/common/command_submission.c    |  18 ---
+ drivers/misc/habanalabs/common/device.c       | 121 ++----------------
+ drivers/misc/habanalabs/common/habanalabs.h   |  25 +---
+ .../misc/habanalabs/common/habanalabs_ioctl.c |  11 +-
+ drivers/misc/habanalabs/common/hw_queue.c     |   8 --
+ drivers/misc/habanalabs/gaudi/gaudi.c         |  20 ++-
+ drivers/misc/habanalabs/gaudi/gaudiP.h        |   3 +
+ drivers/misc/habanalabs/goya/goya.c           |   1 +
+ drivers/misc/habanalabs/goya/goyaP.h          |   2 +
+ 9 files changed, 40 insertions(+), 169 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 2a58edaf984a..092691a8917d 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -539,18 +539,63 @@ int hl_fw_cpucp_total_energy_get(struct hl_device *hdev, u64 *total_energy)
- 	return rc;
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index ba6d3e317255..21a60b7c2091 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -505,24 +505,6 @@ static void cs_do_release(struct kref *ref)
+ 		goto out;
+ 	}
+ 
+-	hdev->asic_funcs->hw_queues_lock(hdev);
+-
+-	hdev->cs_active_cnt--;
+-	if (!hdev->cs_active_cnt) {
+-		struct hl_device_idle_busy_ts *ts;
+-
+-		ts = &hdev->idle_busy_ts_arr[hdev->idle_busy_ts_idx++];
+-		ts->busy_to_idle_ts = ktime_get();
+-
+-		if (hdev->idle_busy_ts_idx == HL_IDLE_BUSY_TS_ARR_SIZE)
+-			hdev->idle_busy_ts_idx = 0;
+-	} else if (hdev->cs_active_cnt < 0) {
+-		dev_crit(hdev->dev, "CS active cnt %d is negative\n",
+-			hdev->cs_active_cnt);
+-	}
+-
+-	hdev->asic_funcs->hw_queues_unlock(hdev);
+-
+ 	/* Need to update CI for all queue jobs that does not get completion */
+ 	hl_hw_queue_update_ci(cs);
+ 
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 53bc5ccb612f..49f0ceac4b81 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -383,17 +383,9 @@ static int device_early_init(struct hl_device *hdev)
+ 		goto free_sob_reset_wq;
+ 	}
+ 
+-	hdev->idle_busy_ts_arr = kmalloc_array(HL_IDLE_BUSY_TS_ARR_SIZE,
+-					sizeof(struct hl_device_idle_busy_ts),
+-					(GFP_KERNEL | __GFP_ZERO));
+-	if (!hdev->idle_busy_ts_arr) {
+-		rc = -ENOMEM;
+-		goto free_chip_info;
+-	}
+-
+ 	rc = hl_mmu_if_set_funcs(hdev);
+ 	if (rc)
+-		goto free_idle_busy_ts_arr;
++		goto free_chip_info;
+ 
+ 	hl_cb_mgr_init(&hdev->kernel_cb_mgr);
+ 
+@@ -422,8 +414,6 @@ static int device_early_init(struct hl_device *hdev)
+ 
+ free_cb_mgr:
+ 	hl_cb_mgr_fini(hdev, &hdev->kernel_cb_mgr);
+-free_idle_busy_ts_arr:
+-	kfree(hdev->idle_busy_ts_arr);
+ free_chip_info:
+ 	kfree(hdev->hl_chip_info);
+ free_sob_reset_wq:
+@@ -461,7 +451,6 @@ static void device_early_fini(struct hl_device *hdev)
+ 
+ 	hl_cb_mgr_fini(hdev, &hdev->kernel_cb_mgr);
+ 
+-	kfree(hdev->idle_busy_ts_arr);
+ 	kfree(hdev->hl_chip_info);
+ 
+ 	destroy_workqueue(hdev->sob_reset_wq);
+@@ -582,100 +571,24 @@ static void device_late_fini(struct hl_device *hdev)
+ 	hdev->late_init_done = false;
  }
  
--int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, u16 pll_index,
-+int get_used_pll_index(struct hl_device *hdev, enum pll_index input_pll_index,
-+						enum pll_index *pll_index)
-+{
-+	struct asic_fixed_properties *prop = &hdev->asic_prop;
-+	u8 pll_byte, pll_bit_off;
-+	bool dynamic_pll;
-+
-+	if (input_pll_index >= PLL_MAX) {
-+		dev_err(hdev->dev, "PLL index %d is out of range\n",
-+							input_pll_index);
-+		return -EINVAL;
-+	}
-+
-+	dynamic_pll = prop->fw_security_status_valid &&
-+		(prop->fw_app_security_map & CPU_BOOT_DEV_STS0_DYN_PLL_EN);
-+
-+	if (!dynamic_pll) {
-+		/*
-+		 * in case we are working with legacy FW (each asic has unique
-+		 * PLL numbering) extract the legacy numbering
-+		 */
-+		*pll_index = hdev->legacy_pll_map[input_pll_index];
-+		return 0;
-+	}
-+
-+	/* PLL map is a u8 array */
-+	pll_byte = prop->cpucp_info.pll_map[input_pll_index >> 3];
-+	pll_bit_off = input_pll_index & 0x7;
-+
-+	if (!(pll_byte & BIT(pll_bit_off))) {
-+		dev_err(hdev->dev, "PLL index %d is not supported\n",
-+							input_pll_index);
-+		return -EINVAL;
-+	}
-+
-+	*pll_index = input_pll_index;
-+
-+	return 0;
-+}
-+
-+int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, enum pll_index pll_index,
- 		u16 *pll_freq_arr)
+-uint32_t hl_device_utilization(struct hl_device *hdev, uint32_t period_ms)
++int hl_device_utilization(struct hl_device *hdev, u32 *utilization)
  {
- 	struct cpucp_packet pkt;
-+	enum pll_index used_pll_idx;
- 	u64 result;
- 	int rc;
+-	struct hl_device_idle_busy_ts *ts;
+-	ktime_t zero_ktime, curr = ktime_get();
+-	u32 overlap_cnt = 0, last_index = hdev->idle_busy_ts_idx;
+-	s64 period_us, last_start_us, last_end_us, last_busy_time_us,
+-		total_busy_time_us = 0, total_busy_time_ms;
+-
+-	zero_ktime = ktime_set(0, 0);
+-	period_us = period_ms * USEC_PER_MSEC;
+-	ts = &hdev->idle_busy_ts_arr[last_index];
+-
+-	/* check case that device is currently in idle */
+-	if (!ktime_compare(ts->busy_to_idle_ts, zero_ktime) &&
+-			!ktime_compare(ts->idle_to_busy_ts, zero_ktime)) {
+-
+-		last_index--;
+-		/* Handle case idle_busy_ts_idx was 0 */
+-		if (last_index > HL_IDLE_BUSY_TS_ARR_SIZE)
+-			last_index = HL_IDLE_BUSY_TS_ARR_SIZE - 1;
+-
+-		ts = &hdev->idle_busy_ts_arr[last_index];
+-	}
+-
+-	while (overlap_cnt < HL_IDLE_BUSY_TS_ARR_SIZE) {
+-		/* Check if we are in last sample case. i.e. if the sample
+-		 * begun before the sampling period. This could be a real
+-		 * sample or 0 so need to handle both cases
+-		 */
+-		last_start_us = ktime_to_us(
+-				ktime_sub(curr, ts->idle_to_busy_ts));
+-
+-		if (last_start_us > period_us) {
+-
+-			/* First check two cases:
+-			 * 1. If the device is currently busy
+-			 * 2. If the device was idle during the whole sampling
+-			 *    period
+-			 */
+-
+-			if (!ktime_compare(ts->busy_to_idle_ts, zero_ktime)) {
+-				/* Check if the device is currently busy */
+-				if (ktime_compare(ts->idle_to_busy_ts,
+-						zero_ktime))
+-					return 100;
+-
+-				/* We either didn't have any activity or we
+-				 * reached an entry which is 0. Either way,
+-				 * exit and return what was accumulated so far
+-				 */
+-				break;
+-			}
+-
+-			/* If sample has finished, check it is relevant */
+-			last_end_us = ktime_to_us(
+-					ktime_sub(curr, ts->busy_to_idle_ts));
+-
+-			if (last_end_us > period_us)
+-				break;
+-
+-			/* It is relevant so add it but with adjustment */
+-			last_busy_time_us = ktime_to_us(
+-						ktime_sub(ts->busy_to_idle_ts,
+-						ts->idle_to_busy_ts));
+-			total_busy_time_us += last_busy_time_us -
+-					(last_start_us - period_us);
+-			break;
+-		}
+-
+-		/* Check if the sample is finished or still open */
+-		if (ktime_compare(ts->busy_to_idle_ts, zero_ktime))
+-			last_busy_time_us = ktime_to_us(
+-						ktime_sub(ts->busy_to_idle_ts,
+-						ts->idle_to_busy_ts));
+-		else
+-			last_busy_time_us = ktime_to_us(
+-					ktime_sub(curr, ts->idle_to_busy_ts));
+-
+-		total_busy_time_us += last_busy_time_us;
++	u64 max_power, curr_power, dc_power;
++	int rc;
  
-+	rc = get_used_pll_index(hdev, pll_index, &used_pll_idx);
+-		last_index--;
+-		/* Handle case idle_busy_ts_idx was 0 */
+-		if (last_index > HL_IDLE_BUSY_TS_ARR_SIZE)
+-			last_index = HL_IDLE_BUSY_TS_ARR_SIZE - 1;
++	max_power = hdev->asic_prop.max_power_default;
++	dc_power = hdev->asic_prop.dc_power_default;
++	rc = hl_fw_cpucp_power_get(hdev, &curr_power);
+ 
+-		ts = &hdev->idle_busy_ts_arr[last_index];
 +	if (rc)
 +		return rc;
-+
- 	memset(&pkt, 0, sizeof(pkt));
  
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PLL_INFO_GET <<
- 				CPUCP_PKT_CTL_OPCODE_SHIFT);
--	pkt.pll_type = __cpu_to_le16(pll_index);
-+	pkt.pll_type = __cpu_to_le16((u16)used_pll_idx);
+-		overlap_cnt++;
+-	}
++	curr_power = clamp(curr_power, dc_power, max_power);
  
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
- 			HL_CPUCP_INFO_TIMEOUT_USEC, &result);
+-	total_busy_time_ms = DIV_ROUND_UP_ULL(total_busy_time_us,
+-						USEC_PER_MSEC);
++	*utilization = (u32)(((curr_power - dc_power) * 100) /
++			     (max_power - dc_power));
+ 
+-	return DIV_ROUND_UP_ULL(total_busy_time_ms * 100, period_ms);
++	return 0;
+ }
+ 
+ /*
+@@ -1110,14 +1023,6 @@ int hl_device_reset(struct hl_device *hdev, u32 flags)
+ 	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++)
+ 		hl_cq_reset(hdev, &hdev->completion_queue[i]);
+ 
+-	hdev->idle_busy_ts_idx = 0;
+-	hdev->idle_busy_ts_arr[0].busy_to_idle_ts = ktime_set(0, 0);
+-	hdev->idle_busy_ts_arr[0].idle_to_busy_ts = ktime_set(0, 0);
+-
+-	if (hdev->cs_active_cnt)
+-		dev_crit(hdev->dev, "CS active cnt %d is not 0 during reset\n",
+-			hdev->cs_active_cnt);
+-
+ 	mutex_lock(&hdev->fpriv_list_lock);
+ 
+ 	/* Make sure the context switch phase will run again */
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 65f34918faed..dc8126b270d1 100644
+index dc8126b270d1..ddb65639f518 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1946,6 +1946,8 @@ struct hl_mmu_funcs {
+@@ -61,8 +61,6 @@
+ 
+ #define HL_SIM_MAX_TIMEOUT_US		10000000 /* 10s */
+ 
+-#define HL_IDLE_BUSY_TS_ARR_SIZE	4096
+-
+ #define HL_COMMON_USER_INTERRUPT_ID	0xFFF
+ 
+ /* Memory */
+@@ -391,6 +389,7 @@ struct hl_mmu_properties {
+  * @dram_size: DRAM total size.
+  * @dram_pci_bar_size: size of PCI bar towards DRAM.
+  * @max_power_default: max power of the device after reset
++ * @dc_power_default: power consumed by the device in mode idle.
+  * @dram_size_for_default_page_mapping: DRAM size needed to map to avoid page
+  *                                      fault.
+  * @pcie_dbi_base_address: Base address of the PCIE_DBI block.
+@@ -463,6 +462,7 @@ struct asic_fixed_properties {
+ 	u64				dram_size;
+ 	u64				dram_pci_bar_size;
+ 	u64				max_power_default;
++	u64				dc_power_default;
+ 	u64				dram_size_for_default_page_mapping;
+ 	u64				pcie_dbi_base_address;
+ 	u64				pcie_aux_dbi_reg_addr;
+@@ -1760,16 +1760,6 @@ struct hl_device_reset_work {
+ 	struct hl_device		*hdev;
+ };
+ 
+-/**
+- * struct hl_device_idle_busy_ts - used for calculating device utilization rate.
+- * @idle_to_busy_ts: timestamp where device changed from idle to busy.
+- * @busy_to_idle_ts: timestamp where device changed from busy to idle.
+- */
+-struct hl_device_idle_busy_ts {
+-	ktime_t				idle_to_busy_ts;
+-	ktime_t				busy_to_idle_ts;
+-};
+-
+ /**
+  * struct hr_mmu_hop_addrs - used for holding per-device host-resident mmu hop
+  * information.
+@@ -1941,8 +1931,6 @@ struct hl_mmu_funcs {
+  *              when a user opens the device
+  * @fpriv_list_lock: protects the fpriv_list
+  * @compute_ctx: current compute context executing.
+- * @idle_busy_ts_arr: array to hold time stamps of transitions from idle to busy
+- *                    and vice-versa
   * @aggregated_cs_counters: aggregated cs counters among all contexts
   * @mmu_priv: device-specific MMU data.
   * @mmu_func: device-related MMU functions.
-+ * @legacy_pll_map: map holding map between dynamic (common) PLL indexes and
-+ *                  static (asic specific) PLL indexes.
-  * @dram_used_mem: current DRAM memory consumption.
-  * @timeout_jiffies: device CS timeout value.
-  * @max_power: the max power of the device, as configured by the sysadmin. This
-@@ -2070,6 +2072,8 @@ struct hl_device {
+@@ -1960,13 +1948,10 @@ struct hl_mmu_funcs {
+  * @curr_pll_profile: current PLL profile.
+  * @card_type: Various ASICs have several card types. This indicates the card
+  *             type of the current device.
+- * @cs_active_cnt: number of active command submissions on this device (active
+- *                 means already in H/W queues)
+  * @major: habanalabs kernel driver major.
+  * @high_pll: high PLL profile frequency.
+  * @soft_reset_cnt: number of soft reset since the driver was loaded.
+  * @hard_reset_cnt: number of hard reset since the driver was loaded.
+- * @idle_busy_ts_idx: index of current entry in idle_busy_ts_arr
+  * @clk_throttling_reason: bitmask represents the current clk throttling reasons
+  * @id: device minor.
+  * @id_control: minor of the control device
+@@ -2065,8 +2050,6 @@ struct hl_device {
+ 
+ 	struct hl_ctx			*compute_ctx;
+ 
+-	struct hl_device_idle_busy_ts	*idle_busy_ts_arr;
+-
+ 	struct hl_cs_counters_atomic	aggregated_cs_counters;
+ 
  	struct hl_mmu_priv		mmu_priv;
- 	struct hl_mmu_funcs		mmu_func[MMU_NUM_PGT_LOCATIONS];
+@@ -2081,12 +2064,10 @@ struct hl_device {
+ 	atomic_t			in_reset;
+ 	enum hl_pll_frequency		curr_pll_profile;
+ 	enum cpucp_card_types		card_type;
+-	int				cs_active_cnt;
+ 	u32				major;
+ 	u32				high_pll;
+ 	u32				soft_reset_cnt;
+ 	u32				hard_reset_cnt;
+-	u32				idle_busy_ts_idx;
+ 	u32				clk_throttling_reason;
+ 	u16				id;
+ 	u16				id_control;
+@@ -2275,7 +2256,7 @@ int hl_device_reset(struct hl_device *hdev, u32 flags);
+ void hl_hpriv_get(struct hl_fpriv *hpriv);
+ int hl_hpriv_put(struct hl_fpriv *hpriv);
+ int hl_device_set_frequency(struct hl_device *hdev, enum hl_pll_frequency freq);
+-uint32_t hl_device_utilization(struct hl_device *hdev, uint32_t period_ms);
++int hl_device_utilization(struct hl_device *hdev, u32 *utilization);
  
-+	enum pll_index			*legacy_pll_map;
-+
- 	atomic64_t			dram_used_mem;
- 	u64				timeout_jiffies;
- 	u64				max_power;
-@@ -2383,7 +2387,9 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 		struct hl_info_pci_counters *counters);
- int hl_fw_cpucp_total_energy_get(struct hl_device *hdev,
- 			u64 *total_energy);
--int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, u16 pll_index,
-+int get_used_pll_index(struct hl_device *hdev, enum pll_index input_pll_index,
-+						enum pll_index *pll_index);
-+int hl_fw_cpucp_pll_info_get(struct hl_device *hdev, enum pll_index pll_index,
- 		u16 *pll_freq_arr);
- int hl_fw_cpucp_power_get(struct hl_device *hdev, u64 *power);
- int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
-@@ -2404,8 +2410,10 @@ int hl_pci_set_outbound_region(struct hl_device *hdev,
- int hl_pci_init(struct hl_device *hdev);
- void hl_pci_fini(struct hl_device *hdev);
+ int hl_build_hwmon_channel_info(struct hl_device *hdev,
+ 		struct cpucp_sensor *sensors_arr);
+diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+index 9fc429b82a92..33841c272eb6 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
++++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+@@ -226,19 +226,14 @@ static int device_utilization(struct hl_device *hdev, struct hl_info_args *args)
+ 	struct hl_info_device_utilization device_util = {0};
+ 	u32 max_size = args->return_size;
+ 	void __user *out = (void __user *) (uintptr_t) args->return_pointer;
++	int rc;
  
--long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr);
--void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq);
-+long hl_get_frequency(struct hl_device *hdev, enum pll_index pll_index,
-+								bool curr);
-+void hl_set_frequency(struct hl_device *hdev, enum pll_index pll_index,
-+								u64 freq);
- int hl_get_temperature(struct hl_device *hdev,
- 		       int sensor_index, u32 attr, long *value);
- int hl_set_temperature(struct hl_device *hdev,
-diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-index f37634cf8b65..c7ac5dc0cda4 100644
---- a/drivers/misc/habanalabs/common/sysfs.c
-+++ b/drivers/misc/habanalabs/common/sysfs.c
-@@ -9,12 +9,18 @@
+ 	if ((!max_size) || (!out))
+ 		return -EINVAL;
  
- #include <linux/pci.h>
- 
--long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
-+long hl_get_frequency(struct hl_device *hdev, enum pll_index pll_index,
-+								bool curr)
- {
- 	struct cpucp_packet pkt;
-+	u32 used_pll_idx;
- 	u64 result;
- 	int rc;
- 
-+	rc = get_used_pll_index(hdev, pll_index, &used_pll_idx);
+-	if ((args->period_ms < 100) || (args->period_ms > 1000) ||
+-		(args->period_ms % 100)) {
+-		dev_err(hdev->dev,
+-			"period %u must be between 100 - 1000 and must be divisible by 100\n",
+-			args->period_ms);
++	rc = hl_device_utilization(hdev, &device_util.utilization);
 +	if (rc)
-+		return rc;
-+
- 	memset(&pkt, 0, sizeof(pkt));
+ 		return -EINVAL;
+-	}
+-
+-	device_util.utilization = hl_device_utilization(hdev, args->period_ms);
  
- 	if (curr)
-@@ -23,7 +29,7 @@ long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
- 	else
- 		pkt.ctl = cpu_to_le32(CPUCP_PACKET_FREQUENCY_GET <<
- 						CPUCP_PKT_CTL_OPCODE_SHIFT);
--	pkt.pll_index = cpu_to_le32(pll_index);
-+	pkt.pll_index = cpu_to_le32((u32)used_pll_idx);
+ 	return copy_to_user(out, &device_util,
+ 		min((size_t) max_size, sizeof(device_util))) ? -EFAULT : 0;
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 0f335182267f..4acc25dccad3 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -635,14 +635,6 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
  
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
- 						0, &result);
-@@ -31,23 +37,29 @@ long hl_get_frequency(struct hl_device *hdev, u32 pll_index, bool curr)
- 	if (rc) {
- 		dev_err(hdev->dev,
- 			"Failed to get frequency of PLL %d, error %d\n",
--			pll_index, rc);
-+			used_pll_idx, rc);
- 		return rc;
- 	}
+ 	spin_unlock(&hdev->cs_mirror_lock);
  
- 	return (long) result;
- }
- 
--void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
-+void hl_set_frequency(struct hl_device *hdev, enum pll_index pll_index,
-+								u64 freq)
- {
- 	struct cpucp_packet pkt;
-+	u32 used_pll_idx;
- 	int rc;
- 
-+	rc = get_used_pll_index(hdev, pll_index, &used_pll_idx);
-+	if (rc)
-+		return;
-+
- 	memset(&pkt, 0, sizeof(pkt));
- 
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_FREQUENCY_SET <<
- 					CPUCP_PKT_CTL_OPCODE_SHIFT);
--	pkt.pll_index = cpu_to_le32(pll_index);
-+	pkt.pll_index = cpu_to_le32((u32)used_pll_idx);
- 	pkt.value = cpu_to_le64(freq);
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
-@@ -56,7 +68,7 @@ void hl_set_frequency(struct hl_device *hdev, u32 pll_index, u64 freq)
- 	if (rc)
- 		dev_err(hdev->dev,
- 			"Failed to set frequency to PLL %d, error %d\n",
--			pll_index, rc);
-+			used_pll_idx, rc);
- }
- 
- u64 hl_get_max_power(struct hl_device *hdev)
+-	if (!hdev->cs_active_cnt++) {
+-		struct hl_device_idle_busy_ts *ts;
+-
+-		ts = &hdev->idle_busy_ts_arr[hdev->idle_busy_ts_idx];
+-		ts->busy_to_idle_ts = ktime_set(0, 0);
+-		ts->idle_to_busy_ts = ktime_get();
+-	}
+-
+ 	list_for_each_entry_safe(job, tmp, &cs->job_list, cs_node)
+ 		switch (job->queue_type) {
+ 		case QUEUE_TYPE_EXT:
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index a65ae0dbdb92..8fa190fde462 100644
+index 8fa190fde462..f273b792bc5d 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -105,6 +105,36 @@
+@@ -426,6 +426,19 @@ get_collective_mode(struct hl_device *hdev, u32 queue_id)
+ 	return HL_COLLECTIVE_NOT_SUPPORTED;
+ }
  
- #define GAUDI_PLL_MAX 10
- 
-+/*
-+ * this enum kept here for compatibility with old FW (in which each asic has
-+ * unique PLL numbering
-+ */
-+enum gaudi_pll_index {
-+	GAUDI_CPU_PLL = 0,
-+	GAUDI_PCI_PLL,
-+	GAUDI_SRAM_PLL,
-+	GAUDI_HBM_PLL,
-+	GAUDI_NIC_PLL,
-+	GAUDI_DMA_PLL,
-+	GAUDI_MESH_PLL,
-+	GAUDI_MME_PLL,
-+	GAUDI_TPC_PLL,
-+	GAUDI_IF_PLL,
-+};
++static inline void set_default_power_values(struct hl_device *hdev)
++{
++	struct asic_fixed_properties *prop = &hdev->asic_prop;
 +
-+static enum pll_index gaudi_pll_map[PLL_MAX] = {
-+	[CPU_PLL] = GAUDI_CPU_PLL,
-+	[PCI_PLL] = GAUDI_PCI_PLL,
-+	[SRAM_PLL] = GAUDI_SRAM_PLL,
-+	[HBM_PLL] = GAUDI_HBM_PLL,
-+	[NIC_PLL] = GAUDI_NIC_PLL,
-+	[DMA_PLL] = GAUDI_DMA_PLL,
-+	[MESH_PLL] = GAUDI_MESH_PLL,
-+	[MME_PLL] = GAUDI_MME_PLL,
-+	[TPC_PLL] = GAUDI_TPC_PLL,
-+	[IF_PLL] = GAUDI_IF_PLL,
-+};
++	if (hdev->card_type == cpucp_card_type_pmc) {
++		prop->max_power_default = MAX_POWER_DEFAULT_PMC;
++		prop->dc_power_default = DC_POWER_DEFAULT_PMC;
++	} else {
++		prop->max_power_default = MAX_POWER_DEFAULT_PCI;
++		prop->dc_power_default = DC_POWER_DEFAULT_PCI;
++	}
++}
 +
- static const char gaudi_irq_name[GAUDI_MSI_ENTRIES][GAUDI_MAX_STRING_LEN] = {
- 		"gaudi cq 0_0", "gaudi cq 0_1", "gaudi cq 0_2", "gaudi cq 0_3",
- 		"gaudi cq 1_0", "gaudi cq 1_1", "gaudi cq 1_2", "gaudi cq 1_3",
-@@ -1588,6 +1618,9 @@ static int gaudi_sw_init(struct hl_device *hdev)
+ static int gaudi_get_fixed_properties(struct hl_device *hdev)
+ {
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+@@ -537,7 +550,7 @@ static int gaudi_get_fixed_properties(struct hl_device *hdev)
+ 	prop->num_of_events = GAUDI_EVENT_SIZE;
+ 	prop->tpc_enabled_mask = TPC_ENABLED_MASK;
  
- 	hdev->asic_specific = gaudi;
+-	prop->max_power_default = MAX_POWER_DEFAULT_PCI;
++	set_default_power_values(hdev);
  
-+	/* store legacy PLL map */
-+	hdev->legacy_pll_map = gaudi_pll_map;
+ 	prop->cb_pool_cb_cnt = GAUDI_CB_POOL_CB_CNT;
+ 	prop->cb_pool_cb_size = GAUDI_CB_POOL_CB_SIZE;
+@@ -7796,10 +7809,7 @@ static int gaudi_cpucp_info_get(struct hl_device *hdev)
+ 
+ 	hdev->card_type = le32_to_cpu(hdev->asic_prop.cpucp_info.card_type);
+ 
+-	if (hdev->card_type == cpucp_card_type_pci)
+-		prop->max_power_default = MAX_POWER_DEFAULT_PCI;
+-	else if (hdev->card_type == cpucp_card_type_pmc)
+-		prop->max_power_default = MAX_POWER_DEFAULT_PMC;
++	set_default_power_values(hdev);
+ 
+ 	hdev->max_power = prop->max_power_default;
+ 
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index 50bb4ad570fd..5929be81ec23 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -47,6 +47,9 @@
+ #define MAX_POWER_DEFAULT_PCI		200000		/* 200W */
+ #define MAX_POWER_DEFAULT_PMC		350000		/* 350W */
+ 
++#define DC_POWER_DEFAULT_PCI		60000		/* 60W */
++#define DC_POWER_DEFAULT_PMC		60000		/* 60W */
 +
- 	/* Create DMA pool for small allocations */
- 	hdev->dma_pool = dma_pool_create(dev_name(hdev->dev),
- 			&hdev->pdev->dev, GAUDI_DMA_POOL_BLK_SIZE, 8, 0);
+ #define GAUDI_CPU_TIMEOUT_USEC		30000000	/* 30s */
+ 
+ #define TPC_ENABLED_MASK		0xFF
 diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 9e7531167c73..f3b3145b206f 100644
+index f3b3145b206f..09b423455439 100644
 --- a/drivers/misc/habanalabs/goya/goya.c
 +++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -118,6 +118,29 @@
- #define IS_MME_IDLE(mme_arch_sts) \
- 	(((mme_arch_sts) & MME_ARCH_IDLE_MASK) == MME_ARCH_IDLE_MASK)
+@@ -469,6 +469,7 @@ int goya_get_fixed_properties(struct hl_device *hdev)
+ 	prop->cb_pool_cb_cnt = GOYA_CB_POOL_CB_CNT;
+ 	prop->cb_pool_cb_size = GOYA_CB_POOL_CB_SIZE;
+ 	prop->max_power_default = MAX_POWER_DEFAULT;
++	prop->dc_power_default = DC_POWER_DEFAULT;
+ 	prop->tpc_enabled_mask = TPC_ENABLED_MASK;
+ 	prop->pcie_dbi_base_address = mmPCIE_DBI_BASE;
+ 	prop->pcie_aux_dbi_reg_addr = CFG_BASE + mmPCIE_AUX_DBI;
+diff --git a/drivers/misc/habanalabs/goya/goyaP.h b/drivers/misc/habanalabs/goya/goyaP.h
+index 23fe099ed218..ef8c6c8b5c8d 100644
+--- a/drivers/misc/habanalabs/goya/goyaP.h
++++ b/drivers/misc/habanalabs/goya/goyaP.h
+@@ -49,6 +49,8 @@
  
-+/*
-+ * this enum kept here for compatibility with old FW (in which each asic has
-+ * unique PLL numbering
-+ */
-+enum goya_pll_index {
-+	GOYA_CPU_PLL = 0,
-+	GOYA_IC_PLL,
-+	GOYA_MC_PLL,
-+	GOYA_MME_PLL,
-+	GOYA_PCI_PLL,
-+	GOYA_EMMC_PLL,
-+	GOYA_TPC_PLL,
-+};
+ #define MAX_POWER_DEFAULT		200000		/* 200W */
+ 
++#define DC_POWER_DEFAULT		20000		/* 20W */
 +
-+static enum pll_index goya_pll_map[PLL_MAX] = {
-+	[CPU_PLL] = GOYA_CPU_PLL,
-+	[IC_PLL] = GOYA_IC_PLL,
-+	[MC_PLL] = GOYA_MC_PLL,
-+	[MME_PLL] = GOYA_MME_PLL,
-+	[PCI_PLL] = GOYA_PCI_PLL,
-+	[EMMC_PLL] = GOYA_EMMC_PLL,
-+	[TPC_PLL] = GOYA_TPC_PLL,
-+};
+ #define DRAM_PHYS_DEFAULT_SIZE		0x100000000ull	/* 4GB */
  
- static const char goya_irq_name[GOYA_MSIX_ENTRIES][GOYA_MAX_STRING_LEN] = {
- 		"goya cq 0", "goya cq 1", "goya cq 2", "goya cq 3",
-@@ -853,6 +876,9 @@ static int goya_sw_init(struct hl_device *hdev)
- 
- 	hdev->asic_specific = goya;
- 
-+	/* store legacy PLL map */
-+	hdev->legacy_pll_map = goya_pll_map;
-+
- 	/* Create DMA pool for small allocations */
- 	hdev->dma_pool = dma_pool_create(dev_name(hdev->dev),
- 			&hdev->pdev->dev, GOYA_DMA_POOL_BLK_SIZE, 8, 0);
-diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
-index 6ba480a316ce..e745c78dd8fd 100644
---- a/drivers/misc/habanalabs/include/common/cpucp_if.h
-+++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
-@@ -28,6 +28,9 @@
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_SHIFT		6
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_MASK		0x000007C0
- 
-+#define PLL_MAP_MAX_BITS	128
-+#define PLL_MAP_LEN		(PLL_MAP_MAX_BITS / 8)
-+
- /*
-  * info of the pkt queue pointers in the first async occurrence
-  */
-@@ -473,6 +476,42 @@ enum cpucp_pll_type_attributes {
- 	cpucp_pll_pci,
- };
- 
-+/*
-+ * PLL enumeration table used for all ASICs and future SW versions.
-+ * For future ASIC-LKD compatibility, we can only add new enumerations.
-+ * at the end of the table.
-+ * Changing the order of entries or removing entries is not allowed.
-+ */
-+enum pll_index {
-+	CPU_PLL = 0,
-+	PCI_PLL = 1,
-+	NIC_PLL = 2,
-+	DMA_PLL = 3,
-+	MESH_PLL = 4,
-+	MME_PLL = 5,
-+	TPC_PLL = 6,
-+	IF_PLL = 7,
-+	SRAM_PLL = 8,
-+	NS_DCORE_PLL = 9,
-+	MESH_DCORE_PLL = 10,
-+	HBM_PLL = 11,
-+	TPC_DCORE_PLL = 12,
-+	VIDEO_DCORE_PLL = 13,
-+	SRAM_DCORE_PLL = 14,
-+	NIC_PHY_DCORE_PLL = 15,
-+	MSS_DCORE_PLL = 16,
-+	DMA_DCORE_PLL = 17,
-+	SIF_PLL = 18,
-+	DDR_PLL = 19,
-+	VID_PLL = 20,
-+	BANK_PLL = 21,
-+	MMU_PLL = 22,
-+	IC_PLL = 23,
-+	MC_PLL = 24,
-+	EMMC_PLL = 25,
-+	PLL_MAX
-+};
-+
- /* Event Queue Packets */
- 
- struct eq_generic_event {
-@@ -547,6 +586,7 @@ struct cpucp_security_info {
-  * @dram_size: available DRAM size.
-  * @card_name: card name that will be displayed in HWMON subsystem on the host
-  * @sec_info: security information
-+ * @pll_map: Bit map of supported PLLs for current ASIC version.
-  */
- struct cpucp_info {
- 	struct cpucp_sensor sensors[CPUCP_MAX_SENSORS];
-@@ -568,6 +608,7 @@ struct cpucp_info {
- 	__u8 pad[7];
- 	struct cpucp_security_info sec_info;
- 	__le32 reserved6;
-+	uint8_t pll_map[PLL_MAP_LEN];
- };
- 
- struct cpucp_mac_addr {
-diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-index d17185b6aea9..1717874ff306 100644
---- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
-+++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-@@ -179,6 +179,11 @@
-  *					configured and is ready for use.
-  *					Initialized in: ppboot
-  *
-+ * CPU_BOOT_DEV_STS0_DYN_PLL_EN		Dynamic PLL configuration is enabled.
-+ *					FW sends to host a bitmap of supported
-+ *					PLLs.
-+ *					Initialized in: linux
-+ *
-  * CPU_BOOT_DEV_STS0_ENABLED		Device status register enabled.
-  *					This is a main indication that the
-  *					running FW populates the device status
-@@ -206,6 +211,7 @@
- #define CPU_BOOT_DEV_STS0_PKT_PI_ACK_EN			(1 << 15)
- #define CPU_BOOT_DEV_STS0_FW_LD_COM_EN			(1 << 16)
- #define CPU_BOOT_DEV_STS0_FW_IATU_CONF_EN		(1 << 17)
-+#define CPU_BOOT_DEV_STS0_DYN_PLL_EN			(1 << 19)
- #define CPU_BOOT_DEV_STS0_ENABLED			(1 << 31)
- 
- enum cpu_boot_status {
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-index 25acd9e87e20..a9f51f9f9e92 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-@@ -20,20 +20,6 @@
- #define UBOOT_FW_OFFSET			0x100000	/* 1MB in SRAM */
- #define LINUX_FW_OFFSET			0x800000	/* 8MB in HBM */
- 
--enum gaudi_pll_index {
--	CPU_PLL = 0,
--	PCI_PLL,
--	SRAM_PLL,
--	HBM_PLL,
--	NIC_PLL,
--	DMA_PLL,
--	MESH_PLL,
--	MME_PLL,
--	TPC_PLL,
--	IF_PLL,
--	PLL_MAX
--};
--
- enum gaudi_nic_axi_error {
- 	RXB,
- 	RXE,
-diff --git a/drivers/misc/habanalabs/include/goya/goya_fw_if.h b/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-index daf8d8cd14be..bc05f86c73ac 100644
---- a/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-+++ b/drivers/misc/habanalabs/include/goya/goya_fw_if.h
-@@ -15,17 +15,6 @@
- #define UBOOT_FW_OFFSET		0x100000		/* 1MB in SRAM */
- #define LINUX_FW_OFFSET		0x800000		/* 8MB in DDR */
- 
--enum goya_pll_index {
--	CPU_PLL = 0,
--	IC_PLL,
--	MC_PLL,
--	MME_PLL,
--	PCI_PLL,
--	EMMC_PLL,
--	TPC_PLL,
--	PLL_MAX
--};
--
- #define GOYA_PLL_FREQ_LOW		50000000 /* 50 MHz */
- 
- #endif /* GOYA_FW_IF_H */
+ #define GOYA_DEFAULT_CARD_NAME		"HL1000"
 -- 
 2.25.1
 
