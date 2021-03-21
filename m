@@ -2,143 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982AA34317C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 06:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3E8343183
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 07:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCUFwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 01:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        id S229886AbhCUGQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 02:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhCUFvr (ORCPT
+        with ESMTP id S229817AbhCUGQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 01:51:47 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C60C061574;
-        Sat, 20 Mar 2021 22:51:47 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id l13so10005412qtu.9;
-        Sat, 20 Mar 2021 22:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6awWR6J01S3VvaFl3l226JcCIWl910GFIDAp2HokN38=;
-        b=QfSc/Hmcj8RYWcukNSs5oJtHP2rBqciQFojqJRMh6+2MmKoJQXWQQezTv1iIdaoa+H
-         9dHDCJBi0i8woUgns9Pdq/K3BaAghbaojHycO3qsOshhmP3dL577Z1zgRl2CfjwziExu
-         4ANF1fR45LA8yeESbxi1l9ZbSk3hnoIoc4kW/5qwFiBJcyF+pdG98Pa6p0EYiS6+0mR8
-         hZNYVMiaHG2FE4XhrD6ClFUaOCmLDEvHFnS51q8zK3jLHvctMUSwFRfovmnRVDy9D13p
-         55l2fY1IteMLVTDSs8KM7oarbwFxjOFuWrfSw1Pht4AfdV8N2ybkwL6K3/QryNVijTAi
-         ggXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6awWR6J01S3VvaFl3l226JcCIWl910GFIDAp2HokN38=;
-        b=M3LL2qvBPW33t7mzQK5HLsPik4ckL9EtXmgLpOb7PXSlISzMh5fOvAM5ZoZjd9przk
-         jZCwgkSQVEX+TypgKPNOOIQ6SRbGvVQM8vU9yDJQMeFuVHpeeLQqV8TwN/eoPRgc5AEF
-         73DYqp4mvAxjW5w6aoOCU914wrMaoCoIuSDG00pR4ArGfWWOJ5w4IxIx2ZJ3d8K2PaFQ
-         aOyU/bdmaZpUB1KKuhSv/pmeR+Oq1mNIX/qar+qw9+KPGDsmqIbYHmsqq8KAW6qbF9ti
-         H5h38VAJKRS4rKhTQa2bM4NYNb9olY3dK/IudtiHVVGmi3FZW/lfsKoeP8x007Sgl5Ft
-         WFJA==
-X-Gm-Message-State: AOAM533H9bKykexhgd9v1UU2GlpqlkJ2L1I/brbt7RO9LwtnQqjU557R
-        BWSGdccs2VWR/bzX4I3bshw=
-X-Google-Smtp-Source: ABdhPJySkkAFeiAd27mDgmoUE9tw3W94rJaHOLPZBbRrst+ymaFnUzDlKMhjico51M13z2959Urs6g==
-X-Received: by 2002:a05:622a:293:: with SMTP id z19mr4905508qtw.309.1616305906600;
-        Sat, 20 Mar 2021 22:51:46 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:f925:bb4b:54d2:533])
-        by smtp.googlemail.com with ESMTPSA id n77sm8359502qkn.128.2021.03.20.22.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 22:51:46 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Scott Murray <scott@spiteful.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH] PCI: hotplug: fix null-ptr-dereferencd in cpcihp error path
-Date:   Sun, 21 Mar 2021 01:51:08 -0400
-Message-Id: <20210321055109.322496-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 21 Mar 2021 02:16:26 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5107BC061574;
+        Sat, 20 Mar 2021 23:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Br1uGt6D1+jXGWTW1CUN2cJ2ukPw7FkusMkCoPTdIg0=; b=RfQCFWS3NRK2z1CuuDGmTLaTN+
+        V6ms5ObqVZn4RUgEnNxoZ2ab8grkXebFWDsSR/9u2SycKLXDuCNMIJksR4twPZUkqav0vGyspiHz/
+        ZzeaLe9Z4Xf05M2vNq4DDl4+2ezjpb3qY0Q+RxpQW1w2hrirSOYVMr8aAZqBdGAqbRnsmMz8yNvF3
+        /Z4CuQV0yhBX+C3UkyTrY0FR4UU7qqBu3d+BuipklNJIoCMnYOB7PMqhZZ9Pf2OBDH+lbFuMxlLQ0
+        bIGTOdHDAFmGkTAUOgjqWmXanJr057RIfy9tcXrkpgWftGWpVrOwUb/boXaNagJ2J6U/oLfgYfgK1
+        zGe2yrvA==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNrNu-009emY-Q0; Sun, 21 Mar 2021 06:16:23 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs: fs_context: make it be kernel-doc clean
+Date:   Sat, 20 Mar 2021 23:16:18 -0700
+Message-Id: <20210321061618.17754-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an issue in the error path, which cpci_thread may remain NULL.
-Calling kthread_stop(cpci_thread) will trigger a BUG().
-It is better to check whether the thread is really created and started
-before stop it.
+Modify fs/fs_context.c to be kernel-doc clean.
+Use "Return:" notation for function return values.
+Add or modify function parameter descriptions as needed.
 
-[    1.292859] BUG: kernel NULL pointer dereference, address: 0000000000000028
-[    1.293252] #PF: supervisor write access in kernel mode
-[    1.293533] #PF: error_code(0x0002) - not-present page
-[    1.295163] RIP: 0010:kthread_stop+0x22/0x170
-[    1.300491] Call Trace:
-[    1.300628]  cpci_hp_unregister_controller+0xf6/0x130
-[    1.300906]  zt5550_hc_init_one+0x27a/0x27f [cpcihp_zt5550]
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: David Howells <dhowells@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org
 ---
- drivers/pci/hotplug/cpci_hotplug_core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/fs_context.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/hotplug/cpci_hotplug_core.c b/drivers/pci/hotplug/cpci_hotplug_core.c
-index d0559d2faf50..b44da397d631 100644
---- a/drivers/pci/hotplug/cpci_hotplug_core.c
-+++ b/drivers/pci/hotplug/cpci_hotplug_core.c
-@@ -47,7 +47,7 @@ static atomic_t extracting;
- int cpci_debug;
- static struct cpci_hp_controller *controller;
- static struct task_struct *cpci_thread;
--static int thread_finished;
-+static int thread_started;
+--- linux-next-20210319.orig/fs/fs_context.c
++++ linux-next-20210319/fs/fs_context.c
+@@ -92,7 +92,7 @@ static int vfs_parse_sb_flag(struct fs_c
+  *
+  * This may be called multiple times for a context.
+  *
+- * Returns 0 on success and a negative error code on failure.  In the event of
++ * Return: %0 on success and a negative error code on failure.  In the event of
+  * failure, supplementary error information may have been set.
+  */
+ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
+@@ -139,6 +139,10 @@ EXPORT_SYMBOL(vfs_parse_fs_param);
  
- static int enable_slot(struct hotplug_slot *slot);
- static int disable_slot(struct hotplug_slot *slot);
-@@ -447,7 +447,7 @@ event_thread(void *data)
- 				msleep(500);
- 			} else if (rc < 0) {
- 				dbg("%s - error checking slots", __func__);
--				thread_finished = 1;
-+				thread_started = 0;
- 				goto out;
- 			}
- 		} while (atomic_read(&extracting) && !kthread_should_stop());
-@@ -479,7 +479,7 @@ poll_thread(void *data)
- 					msleep(500);
- 				} else if (rc < 0) {
- 					dbg("%s - error checking slots", __func__);
--					thread_finished = 1;
-+					thread_started = 0;
- 					goto out;
- 				}
- 			} while (atomic_read(&extracting) && !kthread_should_stop());
-@@ -501,7 +501,7 @@ cpci_start_thread(void)
- 		err("Can't start up our thread");
- 		return PTR_ERR(cpci_thread);
- 	}
--	thread_finished = 0;
-+	thread_started = 1;
- 	return 0;
- }
+ /**
+  * vfs_parse_fs_string - Convenience function to just parse a string.
++ * @fc: The filesystem context for this config option
++ * @key: The string option's name
++ * @value: The string option's value (optional)
++ * @v_size: Length of the @value string
+  */
+ int vfs_parse_fs_string(struct fs_context *fc, const char *key,
+ 			const char *value, size_t v_size)
+@@ -166,13 +170,13 @@ EXPORT_SYMBOL(vfs_parse_fs_string);
  
-@@ -509,7 +509,7 @@ static void
- cpci_stop_thread(void)
- {
- 	kthread_stop(cpci_thread);
--	thread_finished = 1;
-+	thread_started = 0;
- }
+ /**
+  * generic_parse_monolithic - Parse key[=val][,key[=val]]* mount data
+- * @ctx: The superblock configuration to fill in.
++ * @fc: The superblock configuration to fill in.
+  * @data: The data to parse
+  *
+  * Parse a blob of data that's in key[=val][,key[=val]]* form.  This can be
+  * called from the ->monolithic_mount_data() fs_context operation.
+  *
+- * Returns 0 on success or the error returned by the ->parse_option() fs_context
++ * Return: %0 on success or the error returned by the ->parse_option() fs_context
+  * operation on failure.
+  */
+ int generic_parse_monolithic(struct fs_context *fc, void *data)
+@@ -310,7 +314,7 @@ void fc_drop_locked(struct fs_context *f
+ static void legacy_fs_context_free(struct fs_context *fc);
  
- int
-@@ -571,7 +571,7 @@ cpci_hp_unregister_controller(struct cpci_hp_controller *old_controller)
- 	int status = 0;
+ /**
+- * vfs_dup_fc_config: Duplicate a filesystem context.
++ * vfs_dup_fs_context - Duplicate a filesystem context.
+  * @src_fc: The context to copy.
+  */
+ struct fs_context *vfs_dup_fs_context(struct fs_context *src_fc)
+@@ -356,7 +360,9 @@ EXPORT_SYMBOL(vfs_dup_fs_context);
  
- 	if (controller) {
--		if (!thread_finished)
-+		if (thread_started)
- 			cpci_stop_thread();
- 		if (controller->irq)
- 			free_irq(controller->irq, controller->dev_id);
--- 
-2.25.1
-
+ /**
+  * logfc - Log a message to a filesystem context
+- * @fc: The filesystem context to log to.
++ * @log: The filesystem context to log to.
++ * @prefix: message prefix
++ * @level: kernel log message level
+  * @fmt: The format of the buffer.
+  */
+ void logfc(struct fc_log *log, const char *prefix, char level, const char *fmt, ...)
