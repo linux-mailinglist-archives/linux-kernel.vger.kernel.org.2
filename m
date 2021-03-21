@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1A4343483
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380FF343484
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCUUGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 16:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S230483AbhCUUGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 16:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhCUUGh (ORCPT
+        with ESMTP id S230477AbhCUUGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 16:06:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514EDC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 13:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
-        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w9fVuu4ijKfT/SM9xHqc97jxMHshuj1pg66tuy8DPKw=; b=JiEbpi326aRR3rM4kJej9m9Blp
-        mDodxuUJfwmBgEUiF+oMegnaxrV9sOIDk8vqcmcyOFPXr32YnG0wnOVSF/mU4EWx5WrEn2ejJ0bvU
-        +CH9a1jIz+XjcoEznwllUZBzNpK1VE2qw2ZNUArKIuAvjd88sckrQuVD3OdD+0nkPu9+PgzyHdizv
-        4G8UcfZOVQF3bacumuKkt3sTz3NdapUyXe2/8wgtqO6FcbdIrXaBsmtPQlrJdT4N/jXjta3i6fRKn
-        VpInhWmJbU7BvaT3murc28HYvNNGhZGnqXTI6ssFK1rIMatMnN+c3AEOzRgy6hBQZIGTmO4le35Bx
-        PDVIem4g==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lO4LF-002UH9-Cd; Sun, 21 Mar 2021 20:06:30 +0000
-Date:   Sun, 21 Mar 2021 13:06:29 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, jroedel@suse.de, mhiramat@kernel.org,
-        gustavoars@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/insn-eval: Few typo fixes
-In-Reply-To: <20210321200211.487449-1-unixbhaskar@gmail.com>
-Message-ID: <959c2b7c-5723-8b82-bfd7-3361f128ddc@infradead.org>
-References: <20210321200211.487449-1-unixbhaskar@gmail.com>
+        Sun, 21 Mar 2021 16:06:47 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E648BC061574;
+        Sun, 21 Mar 2021 13:06:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id v2so7269357pgk.11;
+        Sun, 21 Mar 2021 13:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bgLat3QwQPXE22lSgKapuRMIQv3ZeL5g0dF3mAIdnRI=;
+        b=B3XcgUclaLkzK0LXQgNpeszR5pjA+s085zycj2x3gYErQiomnzZiV86UNgSUzJnvex
+         G6N//i5pVQrHFunuIpMQ7brqR3Ba9lD7fgA2cxoYNkOEgkjMSXDIZPskK1K+63/6qaei
+         dL2DnGxHuh/LhJS3FprNqfTCQ2eZhPyf1SaqhuI2kRcv7JO9A0LNTfx6VsjU5RGPQXlO
+         1EmwxrtvxlJxUnFQV3pRd4reD00SWD9vN3h69oVepSLuRfiRBZJxJlLKG1zSBNSAt5rM
+         nu2hwzdWnfoH3oZsSm/jdPb01I6f37lvXmWhHF5PweFnjeuOxG8Oqi77QLzE6uO29BQE
+         cPeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bgLat3QwQPXE22lSgKapuRMIQv3ZeL5g0dF3mAIdnRI=;
+        b=EcECZYPz4jlQKSLOKxgcC+30OzVHr84vE5tVZU7u2J/eJhNYCDE0W/7cfR6Rda2H4O
+         G/vLil8ABEfN/1bW+rEZJnPL0d00sN38r8mmHg8nTZ8p/5xn1SeipHK+FqLFh929jpkt
+         8PSWr7mwG8TyNCi6FYMg5u5dW2L/2GpGVnHaBsN+O5K32pMKzoNMuGPqM4JCtJh8geP6
+         eibYse+VKeq6QgWwlT+qH3MCmXbE8IDGysVqWmZC5gvC5nOsGco0dFVwBE7PAXHoByfF
+         vRfrYdI7vMuhFnflfNfmAuB6guTOD8D+KzegOhr31uTJlV8igUZRSmzJUzjjpfKRtxgo
+         Rm7g==
+X-Gm-Message-State: AOAM533Ecm8sdTKEndOsOXjeYwI8F4Cmr/JP/yfH4MaDRXenJ8TYx2qF
+        ay9P3xpafCmK6VFnfE6AB88=
+X-Google-Smtp-Source: ABdhPJyiqF0vl+26lOXTpiSDJc8I+xyFBKSSI5l9FEpRhfFDwUqlfc5OJ/G+jNBOB0G8UjUcbWi6cQ==
+X-Received: by 2002:a63:2507:: with SMTP id l7mr3633544pgl.198.1616357206297;
+        Sun, 21 Mar 2021 13:06:46 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
+        by smtp.gmail.com with ESMTPSA id fh19sm11246900pjb.33.2021.03.21.13.06.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 13:06:44 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 13:06:41 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v3 3/9] Input: wacom_i2c - Add device tree support to
+ wacom_i2c
+Message-ID: <YFenUUP5RDRaAzvP@google.com>
+References: <20210321141049.148-1-alistair@alistair23.me>
+ <20210321141049.148-4-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210321_130629_453289_8F1D8C4B 
-X-CRM114-Status: GOOD (  13.69  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote: > > s/deterimine/determine/
-    > s/invalild/invalid/ > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210321141049.148-4-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alistair,
 
-
-On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote:
-
->
-> s/deterimine/determine/
-> s/invalild/invalid/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
+On Sun, Mar 21, 2021 at 10:10:43AM -0400, Alistair Francis wrote:
+> Allow the wacom-i2c device to be exposed via device tree.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 > ---
-> arch/x86/lib/insn-eval.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-> index bb0b3fe1e0a0..fdd9226863d3 100644
-> --- a/arch/x86/lib/insn-eval.c
-> +++ b/arch/x86/lib/insn-eval.c
-> @@ -232,7 +232,7 @@ static int resolve_default_seg(struct insn *insn, struct pt_regs *regs, int off)
->  * resolve_seg_reg() - obtain segment register index
->  * @insn:	Instruction with operands
->  * @regs:	Register values as seen when entering kernel mode
-> - * @regoff:	Operand offset, in pt_regs, used to deterimine segment register
-> + * @regoff:	Operand offset, in pt_regs, used to determine segment register
->  *
->  * Determine the segment register associated with the operands and, if
->  * applicable, prefixes and the instruction pointed by @insn.
-> @@ -576,7 +576,7 @@ static int get_reg_offset_16(struct insn *insn, struct pt_regs *regs,
-> 	 * If ModRM.mod is 0 and ModRM.rm is 110b, then we use displacement-
-> 	 * only addressing. This means that no registers are involved in
-> 	 * computing the effective address. Thus, ensure that the first
-> -	 * register offset is invalild. The second register offset is already
-> +	 * register offset is invalid. The second register offset is already
-> 	 * invalid under the aforementioned conditions.
-> 	 */
-> 	if ((X86_MODRM_MOD(insn->modrm.value) == 0) &&
-> --
-> 2.31.0
->
->
+>  drivers/input/touchscreen/wacom_i2c.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 1afc6bde2891..fc0bf583d33b 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/irq.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/of.h>
+>  #include <asm/unaligned.h>
+>  
+>  #define WACOM_CMD_QUERY0	0x04
+> @@ -262,10 +263,17 @@ static const struct i2c_device_id wacom_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, wacom_i2c_id);
+>  
+> +static const struct of_device_id wacom_i2c_of_match_table[] __maybe_unused = {
+> +	{ .compatible = "wacom,generic" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, wacom_i2c_of_match_table);
+> +
+>  static struct i2c_driver wacom_i2c_driver = {
+>  	.driver	= {
+>  		.name	= "wacom_i2c",
+>  		.pm	= &wacom_i2c_pm,
+> +		.of_match_table = of_match_ptr(wacom_i2c_of_match_table),
+
+You need to either guard wacom_i2c_of_match_table by #ifdef CONFIG_OF or
+drop of_match_ptr() and assign directly as otherwise you will get
+"unused variable" warning.
+
+Thanks.
+
+-- 
+Dmitry
