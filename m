@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3E8343183
+	by mail.lfdr.de (Postfix) with ESMTP id C9768343184
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 07:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhCUGQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 02:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S229928AbhCUGWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 02:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhCUGQ0 (ORCPT
+        with ESMTP id S229791AbhCUGVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 02:16:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5107BC061574;
-        Sat, 20 Mar 2021 23:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Br1uGt6D1+jXGWTW1CUN2cJ2ukPw7FkusMkCoPTdIg0=; b=RfQCFWS3NRK2z1CuuDGmTLaTN+
-        V6ms5ObqVZn4RUgEnNxoZ2ab8grkXebFWDsSR/9u2SycKLXDuCNMIJksR4twPZUkqav0vGyspiHz/
-        ZzeaLe9Z4Xf05M2vNq4DDl4+2ezjpb3qY0Q+RxpQW1w2hrirSOYVMr8aAZqBdGAqbRnsmMz8yNvF3
-        /Z4CuQV0yhBX+C3UkyTrY0FR4UU7qqBu3d+BuipklNJIoCMnYOB7PMqhZZ9Pf2OBDH+lbFuMxlLQ0
-        bIGTOdHDAFmGkTAUOgjqWmXanJr057RIfy9tcXrkpgWftGWpVrOwUb/boXaNagJ2J6U/oLfgYfgK1
-        zGe2yrvA==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNrNu-009emY-Q0; Sun, 21 Mar 2021 06:16:23 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fs: fs_context: make it be kernel-doc clean
-Date:   Sat, 20 Mar 2021 23:16:18 -0700
-Message-Id: <20210321061618.17754-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 21 Mar 2021 02:21:44 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222EDC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 23:21:42 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id i9so7407697qka.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 23:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=QiMR/7kVNAHQPi1JJIP15a2QhN7I0Z/L0gSSIvJUTEJvf+eDwSXj33iAFdAlT9BaqC
+         oj+LVdVD6mHiXGMppy1JuI6fYYotiFOOvZgd1W/ZdVLo8lT2dBUv2/nNr29dLl91AulA
+         fPSGYNNHO8bCm1tw8b8q1aSjaWuIO3f03HV8emH0COCziYASQSQ6LPwPFpPLgdACQeFV
+         75rRZ6WZ6zXYgOFY6WouK0S6XlHW4mNtSFw/45UoSof2IYxVHH1FvmmCTDdZm+L1g6hF
+         oRd/bzn/KzEjYk4awGVzBCyyn6qRlvUJPdTL/9B6VvcUkLc804pOSxhUkbxBn2i+3sAD
+         Qbxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=aEMhhGp/pf/4CDPiQW1LjPzB6hwbDoVGlBv4FTDwmcN3vIrUNuwjsrccmVQMnTd/LX
+         F6TcVZiR9xy28qSYuljfhcQCesY5LbcQbwpVBcGtODamXI27N5e+quXhCK6aSMvg6jjd
+         R63rhTYZ/rqnmdPJ1boE1hm/1cPAXDb8mh4goD5HAhx0mLL6nApMq6iUKyaPF0qxz67N
+         Mw4mTE7ByO7FEmEw6tsoXhdHXYLPLcNnt+CNKaK7fOgROMtJyjWkKRXUcsq4qYC+J+9F
+         2hknxvd0CkKedcyD0fYhCCTSiQmDuQP5FwmHxHV6yffNKgWLuBCB5YVX+Te81gVPfY84
+         PKgA==
+X-Gm-Message-State: AOAM530AUx+8DWwOHSdCrZvGrRjCGhew1RThcfSxy38BBSjtrqKDc951
+        /fprOW3cMm3Kc+2mWqTpQ++94ZNzopV/PtCaiQ==
+X-Google-Smtp-Source: ABdhPJxhxj4brRfAPH4SkcGq2PpahwtU3vS+7qsKR9zHJ6kkXLEg8vAJ33K/T6XfdinXPSKHFzgMx4oCGrnB5AT8XMg=
+X-Received: by 2002:a05:620a:2202:: with SMTP id m2mr5622715qkh.396.1616307701144;
+ Sat, 20 Mar 2021 23:21:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: habeebabdulwahid@gmail.com
+Received: by 2002:ac8:586:0:0:0:0:0 with HTTP; Sat, 20 Mar 2021 23:21:40 -0700 (PDT)
+From:   "Mrs. Elizabeth Edward" <elizabethhedw@gmail.com>
+Date:   Sun, 21 Mar 2021 06:21:40 +0000
+X-Google-Sender-Auth: HEFGGuW900Ycvcb5KW-VZk34BZE
+Message-ID: <CAP0T7AsBvOOH-B7HV7yhqOZEm5SsR4O+P-WYdJxAT8cx2eCmwA@mail.gmail.com>
+Subject: REPLY ME URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify fs/fs_context.c to be kernel-doc clean.
-Use "Return:" notation for function return values.
-Add or modify function parameter descriptions as needed.
+Greeting
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org
----
- fs/fs_context.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+Please forgive me for stressing you with my predicaments and I sorry
+to approach you through this media it is because it serves the fastest
+means of communication. I came across your E-mail from my personal
+search and I decided to contact you believing you will be honest to
+fulfill my final wish before I die.
 
---- linux-next-20210319.orig/fs/fs_context.c
-+++ linux-next-20210319/fs/fs_context.c
-@@ -92,7 +92,7 @@ static int vfs_parse_sb_flag(struct fs_c
-  *
-  * This may be called multiple times for a context.
-  *
-- * Returns 0 on success and a negative error code on failure.  In the event of
-+ * Return: %0 on success and a negative error code on failure.  In the event of
-  * failure, supplementary error information may have been set.
-  */
- int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
-@@ -139,6 +139,10 @@ EXPORT_SYMBOL(vfs_parse_fs_param);
- 
- /**
-  * vfs_parse_fs_string - Convenience function to just parse a string.
-+ * @fc: The filesystem context for this config option
-+ * @key: The string option's name
-+ * @value: The string option's value (optional)
-+ * @v_size: Length of the @value string
-  */
- int vfs_parse_fs_string(struct fs_context *fc, const char *key,
- 			const char *value, size_t v_size)
-@@ -166,13 +170,13 @@ EXPORT_SYMBOL(vfs_parse_fs_string);
- 
- /**
-  * generic_parse_monolithic - Parse key[=val][,key[=val]]* mount data
-- * @ctx: The superblock configuration to fill in.
-+ * @fc: The superblock configuration to fill in.
-  * @data: The data to parse
-  *
-  * Parse a blob of data that's in key[=val][,key[=val]]* form.  This can be
-  * called from the ->monolithic_mount_data() fs_context operation.
-  *
-- * Returns 0 on success or the error returned by the ->parse_option() fs_context
-+ * Return: %0 on success or the error returned by the ->parse_option() fs_context
-  * operation on failure.
-  */
- int generic_parse_monolithic(struct fs_context *fc, void *data)
-@@ -310,7 +314,7 @@ void fc_drop_locked(struct fs_context *f
- static void legacy_fs_context_free(struct fs_context *fc);
- 
- /**
-- * vfs_dup_fc_config: Duplicate a filesystem context.
-+ * vfs_dup_fs_context - Duplicate a filesystem context.
-  * @src_fc: The context to copy.
-  */
- struct fs_context *vfs_dup_fs_context(struct fs_context *src_fc)
-@@ -356,7 +360,9 @@ EXPORT_SYMBOL(vfs_dup_fs_context);
- 
- /**
-  * logfc - Log a message to a filesystem context
-- * @fc: The filesystem context to log to.
-+ * @log: The filesystem context to log to.
-+ * @prefix: message prefix
-+ * @level: kernel log message level
-  * @fmt: The format of the buffer.
-  */
- void logfc(struct fc_log *log, const char *prefix, char level, const char *fmt, ...)
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
+
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
+
+Best Regards
+
+Mrs. Elizabeth Edward
