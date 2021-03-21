@@ -2,184 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5A934358C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 23:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F9034358F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 23:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCUWxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 18:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S230270AbhCUWyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 18:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhCUWxj (ORCPT
+        with ESMTP id S231243AbhCUWyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 18:53:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655AC061756;
-        Sun, 21 Mar 2021 15:53:39 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 22:53:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616367215;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YJEZxp4IKDr5QaThTmYCgKywiCfFrfGmeaoIpA5073k=;
-        b=E7f9D9C1ABruK6nRYZbudoAibcjuC8OweUyWyTV+lpFc1EeaHIaiUnsjB3DA/Dp/XRZfF/
-        OUM6JkH7kN2CUfI7pdvNsH9uF7RG7Ru7P3dgBlewneH4fAGLHe39IaOCVufCyiM9qaNi5E
-        mjDLnnNKh/nUDnFjZzCcMm6kuSUlgohkPEVnca613/M+9bCY+iVMVZdXbjOl8S9MU4TipY
-        Hf/nKii112G36RgmNlnaokRT1jFJPEX0rQBPcy0bO/ThnCNNwKqMA9OIQb6dmzXrXU0jco
-        OEeiP13OYPQHVD8jJ/4OlXIHV9/wTk68EOuxsf+qyjEs5S2SQPV1hZ/+svcyWQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616367215;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YJEZxp4IKDr5QaThTmYCgKywiCfFrfGmeaoIpA5073k=;
-        b=7mQxXWzdehml0VudisU1Jd8o1eb5D1RYxv7TBRAjJkeDBFvUL4dZRrM+9CDVaqZTKTx1rY
-        pSM6cD5d4wE8LvCw==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86: Remove unusual Unicode characters from comments
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        Sun, 21 Mar 2021 18:54:33 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEEEC061574;
+        Sun, 21 Mar 2021 15:54:32 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id h13so17128149eds.5;
+        Sun, 21 Mar 2021 15:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z9xr4Xi94dVtC2WveM03iOasplX5pn6cocHVxQtURPw=;
+        b=Wj044R0ik1Ev6nWZVjfnuFjisPcuGeYUoV73SdRZzv7Q70RmfZQV59vJkLuwi31+h7
+         /RE9Vyl/tKZM7iT0Bz91iqVuIcO8EeAWQOLTFPskd5ie0hmDHmTdC3zGRNbW5qDZAkoQ
+         af8NrkF6AJdS/rbiQt2ime8LzN9LBaA4aWOkvQ1cokAQB0fZ7765lITqWCiUsx2nzg3q
+         EegeL4t3vKPLWgtuqTWcGU3P53BGvtvHaNwxAPoLMtAQXn4d60uDVOvdrgRtmcceXX3l
+         cJx/4RIjk/p4ilKvEmxWfjxdMWn//Kk5Bt/XbQI17kZ+KH320mFIHse++qmVErGqZbMs
+         5AKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Z9xr4Xi94dVtC2WveM03iOasplX5pn6cocHVxQtURPw=;
+        b=LManxKjMu/Tyipmixs/Tv+QuSDHz1RowM6i7QngA//RTpwAJF1KLUp6qGNQ+JjU0Qz
+         p9Iz/1WmcS6BbZj8BhfMpDrCiMd8ty6mFMeRVDwLRZ92q3Zb3+9JERZzkbytMxtKcv+X
+         ybLLioV7+/5PYZ46uxHlcfxJrx5fjXxp3h9SwakGty1d3gq/xQiuSeWLnMY+BocBj//Y
+         QfNByB3rMzEmJPtBeaZXS+6eSSdpGeF9Tl7ZGY+HatpOXocPz688T8dmDV/7YxlO7WT8
+         pNNv+kQ/7yW7Gkt6XBDQ2hKOEwxiUbrLbyhehLlzXSD4qfWMfGNK5/beISzSjfk2wLnY
+         jUcg==
+X-Gm-Message-State: AOAM532pqhP4iSaC/pXf1ltE0JwjL74sTra0OonSH+r3vRBNsw/pawvY
+        HdyHK4VbFjrww9V7Bx5St3o=
+X-Google-Smtp-Source: ABdhPJzl24D9UVY26MI5xmR81wQBrgXkw6Vq0VAa/xb9HuP+7Ib4rduRhdP9QZq/xlQ+AO9ZnpPXvA==
+X-Received: by 2002:aa7:df84:: with SMTP id b4mr22388520edy.240.1616367271346;
+        Sun, 21 Mar 2021 15:54:31 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id e4sm8084346ejz.4.2021.03.21.15.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 15:54:30 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 21 Mar 2021 23:54:28 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Randy Dunlap <rdunlap@bombadil.infradead.org>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, pbonzini@redhat.com,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: A typo fix
+Message-ID: <20210321225428.GA1885130@gmail.com>
+References: <20210320190425.18743-1-unixbhaskar@gmail.com>
+ <f9d4429-d594-8898-935a-e222bb8c247@bombadil.infradead.org>
 MIME-Version: 1.0
-Message-ID: <161636721493.398.15286526884013721016.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9d4429-d594-8898-935a-e222bb8c247@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     c681df88dcb12b1efd7e4efcfe498c5e9c31ce02
-Gitweb:        https://git.kernel.org/tip/c681df88dcb12b1efd7e4efcfe498c5e9c3=
-1ce02
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Sun, 21 Mar 2021 23:32:33 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 21 Mar 2021 23:50:07 +01:00
+* Randy Dunlap <rdunlap@bombadil.infradead.org> wrote:
 
-x86: Remove unusual Unicode characters from comments
+> 
+> 
+> On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+> 
+> > 
+> > s/resued/resumed/
+> > 
+> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> 
+> > ---
+> > arch/x86/include/asm/kvm_host.h | 2 +-
+> > 1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 9bc091ecaaeb..eae82551acb1 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1470,7 +1470,7 @@ extern u64 kvm_mce_cap_supported;
+> > /*
+> >  * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
+> >  *			userspace I/O) to indicate that the emulation context
+> > - *			should be resued as is, i.e. skip initialization of
+> > + *			should be resumed as is, i.e. skip initialization of
+> >  *			emulation context, instruction fetch and decode.
 
-We've accumulated a few unusual Unicode characters in arch/x86/
-over the years, substitute them with their proper ASCII equivalents.
+This is the *wrong* fix, the correct word in this context is 'reused', 
+not 'resumed' ...
 
-A few of them were a whitespace equivalent: '=C2=A0' - the use was harmless.
+See how I fixed most arch/x86/ typo fixes in tip:x86/cleanups:
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/events/intel/uncore_snbep.c | 12 ++++++------
- arch/x86/include/asm/elf.h           | 10 +++++-----
- arch/x86/include/asm/nospec-branch.h |  2 +-
- arch/x86/platform/pvh/head.S         |  6 +++---
- 4 files changed, 15 insertions(+), 15 deletions(-)
+  d9f6e12fb0b7: ("x86: Fix various typos in comments")
+  163b099146b8: ("x86: Fix various typos in comments, take #2")
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/unc=
-ore_snbep.c
-index b79951d..3241581 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -280,17 +280,17 @@
-  * | [63]  |    00h    | VALID - When set, indicates the CPU bus
-  *                       numbers have been initialized. (RO)
-  * |[62:48]|    ---    | Reserved
-- * |[47:40]|    00h    | BUS_NUM_5 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * |[47:40]|    00h    | BUS_NUM_5 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(5). (RO)
-- * |[39:32]|    00h    | BUS_NUM_4 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * |[39:32]|    00h    | BUS_NUM_4 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(4). (RO)
-- * |[31:24]|    00h    | BUS_NUM_3 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * |[31:24]|    00h    | BUS_NUM_3 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(3). (RO)
-- * |[23:16]|    00h    | BUS_NUM_2 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * |[23:16]|    00h    | BUS_NUM_2 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(2). (RO)
-- * |[15:8] |    00h    | BUS_NUM_1 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * |[15:8] |    00h    | BUS_NUM_1 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(1). (RO)
-- * | [7:0] |    00h    | BUS_NUM_0 =E2=80=94 Return the bus number BIOS assi=
-gned
-+ * | [7:0] |    00h    | BUS_NUM_0 - Return the bus number BIOS assigned
-  *                       CPUBUSNO(0). (RO)
-  */
- #define SKX_MSR_CPU_BUS_NUMBER		0x300
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 9224d40..7d75008 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -283,12 +283,12 @@ extern u32 elf_hwcap2;
-  *
-  * The decision process for determining the results are:
-  *
-- * =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0    =C2=A0CPU: | lacks NX* =C2=
-=A0| has NX, ia32 =C2=A0 =C2=A0 | has NX, x86_64 |
-- * ELF: =C2=A0 =C2=A0 =C2=A0 =C2=A0    =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0| =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0|
-+ *                 CPU: | lacks NX*  | has NX, ia32     | has NX, x86_64 |
-+ * ELF:                 |            |                  |                |
-  * ---------------------|------------|------------------|----------------|
-- * missing PT_GNU_STACK | exec-all =C2=A0 | exec-all =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 | exec-none=C2=A0 =C2=A0 =C2=A0 |
-- * PT_GNU_STACK =3D=3D RWX =C2=A0| exec-stack | exec-stack =C2=A0 =C2=A0 =C2=
-=A0 | exec-stack =C2=A0 =C2=A0 |
-- * PT_GNU_STACK =3D=3D RW =C2=A0 | exec-none =C2=A0| exec-none =C2=A0 =C2=A0=
- =C2=A0 =C2=A0| exec-none =C2=A0 =C2=A0 =C2=A0|
-+ * missing PT_GNU_STACK | exec-all   | exec-all         | exec-none      |
-+ * PT_GNU_STACK =3D=3D RWX  | exec-stack | exec-stack       | exec-stack    =
- |
-+ * PT_GNU_STACK =3D=3D RW   | exec-none  | exec-none        | exec-none     =
- |
-  *
-  *  exec-all  : all PROT_READ user mappings are executable, except when
-  *              backed by files on a noexec-filesystem.
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nosp=
-ec-branch.h
-index cb9ad6b..d83ea9e 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -33,7 +33,7 @@
-=20
- /*
-  * Google experimented with loop-unrolling and this turned out to be
-- * the optimal version =E2=80=94 two calls, each with their own speculation
-+ * the optimal version - two calls, each with their own speculation
-  * trap should their return address end up getting used, in a loop.
-  */
- #define __FILL_RETURN_BUFFER(reg, nr, sp)	\
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index d2ccadc..66b3173 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -30,10 +30,10 @@
-  *          the boot start info structure.
-  * - `cr0`: bit 0 (PE) must be set. All the other writeable bits are cleared.
-  * - `cr4`: all bits are cleared.
-- * - `cs `: must be a 32-bit read/execute code segment with a base of =E2=80=
-=980=E2=80=99
-- *          and a limit of =E2=80=980xFFFFFFFF=E2=80=99. The selector value =
-is unspecified.
-+ * - `cs `: must be a 32-bit read/execute code segment with a base of `0`
-+ *          and a limit of `0xFFFFFFFF`. The selector value is unspecified.
-  * - `ds`, `es`: must be a 32-bit read/write data segment with a base of
-- *               =E2=80=980=E2=80=99 and a limit of =E2=80=980xFFFFFFFF=E2=
-=80=99. The selector values are all
-+ *               `0` and a limit of `0xFFFFFFFF`. The selector values are all
-  *               unspecified.
-  * - `tr`: must be a 32-bit TSS (active) with a base of '0' and a limit
-  *         of '0x67'.
+These single file typo fixes are a bad idea for another reason as 
+well, as they create a lot of unnecessary churn.
+
+Thanks,
+
+	Ingo
