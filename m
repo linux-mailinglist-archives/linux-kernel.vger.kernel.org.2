@@ -2,104 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9415B343355
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B83034335D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhCUQF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 12:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        id S230035AbhCUQQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 12:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhCUQFX (ORCPT
+        with ESMTP id S229784AbhCUQPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 12:05:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0CAC061574;
-        Sun, 21 Mar 2021 09:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
-        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bRZkMDyVjEHYQP3aS4EHghK5KTFY9dCEonp0Ggkl0WM=; b=I4tVtOwMges9O1MI9txjFLx9mD
-        F/fxTJGlxxEtOLPsLOChvC5Cp5Ey7c+zdT9h90Oh/NfUPfQ99N4MbtQwHtSvB2SVv5YzBTCNdONBM
-        tL1NBrLwU1BkxJN58FlX3BHA3d02x/IQ0stGwjYPCzI4WcocIUVNUPc/FpP+yw+wx8JqmBMeyLcS0
-        wbYQTHd+wyAMzMjbHvZfQHkpoPXyLZLnmT76+oWzXmwgQtDpZuEBPVdVhuoT9u//Pry4OMD3D1kda
-        Oo3tUQcNyk7UBy8fhN+qW40q1qw6eeyVpTjnNhdQdR8gk9i58pZGg2IQtmNTl++6fJ7dc9EqN6JkM
-        JUyXCy2Q==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lO0Zo-002OLF-QV; Sun, 21 Mar 2021 16:05:17 +0000
-Date:   Sun, 21 Mar 2021 09:05:16 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: renesas: Couple of spelling fixes
-In-Reply-To: <20210321075813.9471-1-unixbhaskar@gmail.com>
-Message-ID: <53201147-ac5a-c5a1-b6c0-240d9423c61@infradead.org>
-References: <20210321075813.9471-1-unixbhaskar@gmail.com>
+        Sun, 21 Mar 2021 12:15:46 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81907C061574;
+        Sun, 21 Mar 2021 09:15:46 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso13518346oti.11;
+        Sun, 21 Mar 2021 09:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SGDgCsgqZ+Jm9MN6MAj/2oOtkuCICMDSOY6njb7Ulws=;
+        b=HzHoSiCYzUfWRtNDzcfvb8HpqfXDLUfiLGZxLMeQzgIRELNIXgLj/JCVHPRy9SrtmI
+         p/Yqg88dNJJz6rs7rOdZ4IHysRk/QORm3D67ZQM2ljfqv+Q5ScKSQ/p2/jvxjwz9I+Na
+         +WkSU4xoDhSbHfE1OGIgDvbor58hQrtX67xL3RCmWd2/RGwBC48Du7AW+MZqsgFq1UVS
+         NayHPpXzCoIFlmlE9ulGEXHZ/hYJSWVnykSwNROMhpPuO0u31ECXTuA0BsUTHOZMlSgZ
+         mnttuoCTTKbEOzKYHPW4zcBZBg/BPNggbNrPbjEHv0p5OEq9CpEQZe3l0vbUUbd011Yx
+         a3kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=SGDgCsgqZ+Jm9MN6MAj/2oOtkuCICMDSOY6njb7Ulws=;
+        b=dIAxOQf1Ai6rO/zh4ShvS92LLZeyqpO9ucxTehlnHDyQOjhi8hZOKqF7DJdRksWaj9
+         NFI0le95h+RvsOT8EtRMte0x6TsBC7GSZXTsjgVNOO74q6K0kX/vBVYDzuD79bxbKReP
+         rJT6t+oO45PLOAsCLNN5rTuPy6ySSYKKc8s4ZRRES33kf+MuU+1O1cwN8OJI+cc3HRsp
+         +0maecQsKSyIjtm55vlORxFZD9cBDe1DZmIh2y4acSUYNMyaeL4lhfMXMX5/olCV5mar
+         12uC9QsJsv0AH8Em40SvlORN8xrUrYVRthQQ33qlR5TkqSS8a+/QndPhlMBs02EGHlDK
+         FKEg==
+X-Gm-Message-State: AOAM5316+QeXeSEtcMVnQ2D6kwYL9fFc8HIYcn8TOEla2TBeRh/DrtJw
+        mO9D0hY7UVU8zqh0QuEIlGf3R+Wn1bY=
+X-Google-Smtp-Source: ABdhPJzKeb/hA6C7+VitvJmDfjulbMSR7v+QQGzIP1QhlGHgkhlNLzpbJdwPKzLi6lafbRDFwsTO/A==
+X-Received: by 2002:a9d:2f45:: with SMTP id h63mr8116195otb.372.1616343345728;
+        Sun, 21 Mar 2021 09:15:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 44sm2710512otf.60.2021.03.21.09.15.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 09:15:45 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 net-next 1/2] net: socket: use BIT() for MSG_*
+To:     menglong8.dong@gmail.com, herbert@gondor.apana.org.au,
+        andy.shevchenko@gmail.com, kuba@kernel.org, David.Laight@aculab.com
+Cc:     davem@davemloft.net, dong.menglong@zte.com.cn,
+        viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20210321134357.148323-1-dong.menglong@zte.com.cn>
+ <20210321134357.148323-2-dong.menglong@zte.com.cn>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <7b0e1c1e-b45a-4ae3-6e4f-aa7a3dccafdb@roeck-us.net>
+Date:   Sun, 21 Mar 2021 09:15:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210321_090516_880398_011AC1A0 
-X-CRM114-Status: GOOD (  15.01  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/suposed/supposed/
-    > s/concurent/concurrent/ > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+In-Reply-To: <20210321134357.148323-2-dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/21/21 6:43 AM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> The bit mask for MSG_* seems a little confused here. Replace it
+> with BIT() to make it clear to understand.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
+With this patch sent as patch 1/2, any code trying to bisect
+a compat related network problem will fail at this commit.
 
-On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
-
->
-> s/suposed/supposed/
-> s/concurent/concurrent/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
+Guenter
 
 > ---
-> drivers/clk/renesas/r9a06g032-clocks.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
-> index 892e91b92f2c..1fe166e7f8bd 100644
-> --- a/drivers/clk/renesas/r9a06g032-clocks.c
-> +++ b/drivers/clk/renesas/r9a06g032-clocks.c
-> @@ -279,7 +279,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
-> 	/*
-> 	 * These are not hardware clocks, but are needed to handle the special
-> 	 * case where we have a 'selector bit' that doesn't just change the
-> -	 * parent for a clock, but also the gate it's suposed to use.
-> +	 * parent for a clock, but also the gate it's supposed to use.
-> 	 */
-> 	{
-> 		.index = R9A06G032_UART_GROUP_012,
-> @@ -311,7 +311,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
->
-> struct r9a06g032_priv {
-> 	struct clk_onecell_data data;
-> -	spinlock_t lock; /* protects concurent access to gates */
-> +	spinlock_t lock; /* protects concurrent access to gates */
-> 	void __iomem *reg;
-> };
->
-> --
-> 2.30.1
->
->
+>  include/linux/socket.h | 71 ++++++++++++++++++++++--------------------
+>  1 file changed, 37 insertions(+), 34 deletions(-)
+> 
+> diff --git a/include/linux/socket.h b/include/linux/socket.h
+> index 385894b4a8bb..d5ebfe30d96b 100644
+> --- a/include/linux/socket.h
+> +++ b/include/linux/socket.h
+> @@ -283,42 +283,45 @@ struct ucred {
+>     Added those for 1003.1g not all are supported yet
+>   */
+>  
+> -#define MSG_OOB		1
+> -#define MSG_PEEK	2
+> -#define MSG_DONTROUTE	4
+> -#define MSG_TRYHARD     4       /* Synonym for MSG_DONTROUTE for DECnet */
+> -#define MSG_CTRUNC	8
+> -#define MSG_PROBE	0x10	/* Do not send. Only probe path f.e. for MTU */
+> -#define MSG_TRUNC	0x20
+> -#define MSG_DONTWAIT	0x40	/* Nonblocking io		 */
+> -#define MSG_EOR         0x80	/* End of record */
+> -#define MSG_WAITALL	0x100	/* Wait for a full request */
+> -#define MSG_FIN         0x200
+> -#define MSG_SYN		0x400
+> -#define MSG_CONFIRM	0x800	/* Confirm path validity */
+> -#define MSG_RST		0x1000
+> -#define MSG_ERRQUEUE	0x2000	/* Fetch message from error queue */
+> -#define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
+> -#define MSG_MORE	0x8000	/* Sender will send more */
+> -#define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+> -#define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+> -#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+> -#define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+> -#define MSG_EOF         MSG_FIN
+> -#define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+> -#define MSG_SENDPAGE_DECRYPTED	0x100000 /* sendpage() internal : page may carry
+> -					  * plain text and require encryption
+> -					  */
+> -
+> -#define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
+> -#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+> -#define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
+> -					   descriptor received through
+> -					   SCM_RIGHTS */
+> +#define MSG_OOB		BIT(0)
+> +#define MSG_PEEK	BIT(1)
+> +#define MSG_DONTROUTE	BIT(2)
+> +#define MSG_TRYHARD	BIT(2)	/* Synonym for MSG_DONTROUTE for DECnet		*/
+> +#define MSG_CTRUNC	BIT(3)
+> +#define MSG_PROBE	BIT(4)	/* Do not send. Only probe path f.e. for MTU	*/
+> +#define MSG_TRUNC	BIT(5)
+> +#define MSG_DONTWAIT	BIT(6)	/* Nonblocking io		*/
+> +#define MSG_EOR		BIT(7)	/* End of record		*/
+> +#define MSG_WAITALL	BIT(8)	/* Wait for a full request	*/
+> +#define MSG_FIN		BIT(9)
+> +#define MSG_SYN		BIT(10)
+> +#define MSG_CONFIRM	BIT(11)	/* Confirm path validity	*/
+> +#define MSG_RST		BIT(12)
+> +#define MSG_ERRQUEUE	BIT(13)	/* Fetch message from error queue */
+> +#define MSG_NOSIGNAL	BIT(14)	/* Do not generate SIGPIPE	*/
+> +#define MSG_MORE	BIT(15)	/* Sender will send more	*/
+> +#define MSG_WAITFORONE	BIT(16)	/* recvmmsg(): block until 1+ packets avail */
+> +#define MSG_SENDPAGE_NOPOLICY	BIT(16)	/* sendpage() internal : do no apply policy */
+> +#define MSG_SENDPAGE_NOTLAST	BIT(17)	/* sendpage() internal : not the last page  */
+> +#define MSG_BATCH		BIT(18)	/* sendmmsg(): more messages coming */
+> +#define MSG_EOF	MSG_FIN
+> +#define MSG_NO_SHARED_FRAGS	BIT(19)	/* sendpage() internal : page frags
+> +					 * are not shared
+> +					 */
+> +#define MSG_SENDPAGE_DECRYPTED	BIT(20)	/* sendpage() internal : page may carry
+> +					 * plain text and require encryption
+> +					 */
+> +
+> +#define MSG_ZEROCOPY		BIT(26)	/* Use user data in kernel path */
+> +#define MSG_FASTOPEN		BIT(29)	/* Send data in TCP SYN */
+> +#define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
+> +					 * descriptor received through
+> +					 * SCM_RIGHTS
+> +					 */
+>  #if defined(CONFIG_COMPAT)
+> -#define MSG_CMSG_COMPAT	0x80000000	/* This message needs 32 bit fixups */
+> +#define MSG_CMSG_COMPAT		BIT(31)	/* This message needs 32 bit fixups */
+>  #else
+> -#define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
+> +#define MSG_CMSG_COMPAT		0	/* We never have 32 bit fixups */
+>  #endif
+>  
+>  
+> 
+
