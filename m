@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D9E34343F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 20:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF8C343443
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 20:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhCUTA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 15:00:28 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:58137 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhCUTAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 15:00:11 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MAtoX-1lYong0w9J-00BISS for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021
- 20:00:09 +0100
-Received: by mail-ot1-f44.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so13808758otk.5
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 12:00:09 -0700 (PDT)
-X-Gm-Message-State: AOAM530PB54+ZSf3XQcsFau7XLI38fuXH0VZrnUZMAF9ObRADEYEwg+s
-        libm4w94NHhTfgT2yPyf8lfbjI4c33Vd7BLKCuc=
-X-Google-Smtp-Source: ABdhPJybH4GsSHDVF63TrZC0HLL2rVmPAVn9K3V1fSlJF04CEVe0+nsLseDn44KoWji0BeRcTqynosSoI+6j3MqRnJI=
-X-Received: by 2002:a9d:316:: with SMTP id 22mr4722339otv.210.1616353207990;
- Sun, 21 Mar 2021 12:00:07 -0700 (PDT)
+        id S230178AbhCUTCl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Mar 2021 15:02:41 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:43256 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230028AbhCUTCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 15:02:19 -0400
+Received: from p508fc3a3.dip0.t-ipconnect.de ([80.143.195.163] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lO3Kr-000710-FT; Sun, 21 Mar 2021 20:02:01 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= <uwe@kleine-koenig.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johan Jonker <jbx6244@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        David Bauer <mail@david-bauer.net>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Tianling Shen <cnsztl@gmail.com>,
+        Tianling Shen <cnsztl@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Sun, 21 Mar 2021 20:02:00 +0100
+Message-ID: <1851600.PYKUYFuaPT@phil>
+In-Reply-To: <20210319051627.814-1-cnsztl@gmail.com>
+References: <20210319051627.814-1-cnsztl@gmail.com>
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
- <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
- <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
- <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
- <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com> <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
-In-Reply-To: <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 21 Mar 2021 19:59:52 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a26dWjbS8CjGwc7S5S0M4SonWh4afqdxpoa8Q9vQhC0TA@mail.gmail.com>
-Message-ID: <CAK8P3a26dWjbS8CjGwc7S5S0M4SonWh4afqdxpoa8Q9vQhC0TA@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Peter Maydell <peter.maydell@linaro.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:pbC1xdMBCn4LA6auhd3jgd8VkxHDgJqrGbFaDXsRhuRO+ZhbL/d
- 7oPDP6OSBHRtOvGvPsd7LzSNzLrkOBpSiWtocwAByhsvcjwAPOQTlRK0NC0jEKPqfmy9pOZ
- 1pd3758sJ88XTxMMuRmyljds5JAZMclWBo3jdQmwAkvuTNSd1RFGGbNB0qpHmRw+4ob4unx
- yedxDTt2TaNo4ViQe3xWg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DMMNpiWVmjo=:Jv1H2Nhr1PV98cwkQCZR7l
- m0oPs6oso4ZGr08hFNl4Zu6sDSA77YafBFn7hbVDtKinvpPb33+hSuZ3txtTyjWmI6jq15XwP
- Q/LwdfMsjAbmvo86VQJtDJW/AubdzR8Hs7q/tr357o2oq+SYAC9EZe8lGrsvg+K0yPC5h4Gxc
- w8Ns8BAnBxjH6NaUSgt8LitpQAeWO88lId/x3Mj40iDp6Wv/e9NRPvSW9q39e2+tBYhStmVCQ
- rh+PFosO+bkFc3/NA4RKZUAiT0yXrMEYcvOCYsLIXV6w3RoZlWGIotZy+BsszaNO+ACY1Z7Vn
- l/brlsIQ9cZkB5TJvSTMBpkNhrFTCAlZ0A9w91J/6YeUj+V2A669fbsgPjmgnk/I6oDai/bNB
- 4X+XCEg/+GEHR5WgWUeNTFSlXRp1cs8tcg8rPgvMHmRNJFgPug1X/sMKxFEFy
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 9:43 PM Peter Maydell <peter.maydell@linaro.org> wrote:
->
-> On Fri, 12 Mar 2021 at 09:16, Arnd Bergmann <arnd@arndb.de> wrote:
-> > So it's probably qemu that triggers the 'synchronous external
-> > abort' when accessing the PCI I/O space, which in turn hints
-> > towards a bug in qemu. Presumably it only returns data from
-> > I/O ports that are actually mapped to a device when real hardware
-> > is supposed to return 0xffffffff when reading from unused I/O ports.
->
-> Do you have a reference to the bit of the PCI spec that mandates
-> this -1/discard behaviour for attempted access to places where
-> there isn't actually a PCI device mapped ? The spec is pretty
-> long and hard to read...
->
-> (Knowing to what extent this behaviour is mandatory for all
-> PCI systems/host controllers vs just "it would be nice if the
-> gpex host controller worked this way" would help in figuring
-> out where in QEMU to change.)
+Hi,
 
-I spent some more time looking at both really old PCI specifications,
-and new ones.
-The old PCI specs seem to just leave this bit as out of scope because
-it does not concern transactions on the bus. The PCI host controller
-can either report a 'master abort' to the CPU, or ignore it, and each
-bridge can decide to turn master aborts on reads into all 1s.
-We do have support some SoCs in Linux that trigger a CPU exception,
-but we tend to deal with those with an ugly hack that just ignores
-all exceptions from the CPU. Most host bridges fortunately behave
-like an x86 PC though, and do not trigger an exception here.
+Am Freitag, 19. März 2021, 06:16:26 CET schrieb Tianling Shen:
+> Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
+> 
+> Changes in v6:
+> - Fixed format of LED nodes
+> 
+> Changes in v5:
+> - Dropped the empty PCIe node
+> - Dropped useless `/delete-property/`
+> - Renamed LED nodes
+> 
+> Changes in v4:
+> - Correctly dropped `display-subsystem` node
+> - Dropped meaningless `pwm-fan` node
+> - Dropped wrong `sdmmc` node
+> - Disabled `i2c4` and `uart0` as they don't exist in the design
+> - Format fixes
+> 
+> Changes in v3:
+> - Dropped non-existent node `display_subsystem`
+> 
+> Changes in v2:
+> - Disable display for NanoPi R4S (reference commit: 74532de460ec)
+> - Light "sys" LED on NanoPi R4S (reference commit: 833821eeab91)
+> 
+> Signed-off-by: Tianling Shen <cnsztl@gmail.com>
 
-In the PCIe 4.0 specification, I found that the behavior is configurable
-at the root port, using the 'RP PIO Exception Register' at offset 0x1c
-in the DPC Extended Capability. This register defaults to '0', meaning
-that reads from an unknown port that generate a 'Unsupported Request
-Completion' get turned into all 1s. If the firmware or OS enables it,
-this can be turned into an AER log event, generate an interrupt or
-a CPU exception.
+In v4 you received a
+Acked-by: Rob Herring <robh@kernel.org>
 
-Linux has a driver for DPC, which apparently configures it to
-cause an interrupt to log the event, but it does not hook up the
-CPU exception handler to this. I don't see an implementation of DPC
-in qemu, which I take as an indication that it should use the
-default behavior and cause neither an interrupt nor a CPU exception.
+Please pick these up and carry them over into new versions
+of your patchset. Otherwise Rob would needlessly review
+things multiple times.
 
-      Arnd
+
+Heiko
+
+> ---
+>  Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> index c3036f95c7bc..4a6f772c1043 100644
+> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
+> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> @@ -134,6 +134,7 @@ properties:
+>                - friendlyarm,nanopi-m4
+>                - friendlyarm,nanopi-m4b
+>                - friendlyarm,nanopi-neo4
+> +              - friendlyarm,nanopi-r4s
+>            - const: rockchip,rk3399
+>  
+>        - description: GeekBuying GeekBox
+> 
+
+
+
+
