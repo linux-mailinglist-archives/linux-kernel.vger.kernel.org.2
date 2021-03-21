@@ -2,138 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36632343547
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAE4343548
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhCUV6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:58:52 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:40323 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhCUV6Y (ORCPT
+        id S231686AbhCUV71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231621AbhCUV67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:58:24 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Mar 2021 14:58:24 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Mar 2021 14:58:22 -0700
-X-QCInternal: smtphost
-Received: from maggarwa.ap.qualcomm.com (HELO nitirawa-linux.qualcomm.com) ([10.206.25.176])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 22 Mar 2021 03:27:48 +0530
-Received: by nitirawa-linux.qualcomm.com (Postfix, from userid 2342877)
-        id 8ECCB2E19; Mon, 22 Mar 2021 03:27:47 +0530 (IST)
-From:   Nitin Rawat <nitirawa@codeaurora.org>
-To:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bjorn.andersson@linaro.org,
-        adrian.hunter@intel.com, bvanassche@acm.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nitin Rawat <nitirawa@codeaurora.org>
-Subject: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in vendor file
-Date:   Mon, 22 Mar 2021 03:27:37 +0530
-Message-Id: <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
-References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+        Sun, 21 Mar 2021 17:58:59 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70F0C061574;
+        Sun, 21 Mar 2021 14:58:58 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id m3so4558349ybt.0;
+        Sun, 21 Mar 2021 14:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1G/wF3hyDKnqEu40AnD1bhMq6Qusfx8aUmB558U84aE=;
+        b=YJyzc7877676oUKA2KCWxPxfZHLKtDFSCFznBsu4dpl2y2lUUnf677JHCogTSmkLv2
+         OSR7pmIWRw2b+H8dWCSlZhB0nhIMWDzYY+2W6Aacn9K/HCY2FklIhQzuem34Mc+DQBNR
+         1qLdKqjqNEg3dRnAqW2/p56jVS0xxC6ni6pNMir2yiq9r3LIzsPfJoE0OC3YbjJ8ihMI
+         iNtERbcbWZkik1GmZU2UFSn746A9MIDAtvYE+3b9owPVerH00vfMocJl2hU/hOjoplOG
+         miCVpfDCGctJEvtSKmFY/acUkGrJDhBVr8rRW04UdO8oGgpyBxRdYe9FhEn7FI0e3G5j
+         lLuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1G/wF3hyDKnqEu40AnD1bhMq6Qusfx8aUmB558U84aE=;
+        b=baBa5T1pgWGMCkVxwJUiG2JN3w7RIViyToA1Ec5x6EDCyKqmout+jz3nqJjsnC8Zek
+         2RQNKLYhV0uk+I4PGTbsE4FZw12JcHC8cEbXAnpqlGkVVbQl6Snu4H5IGA22K8RBTNdq
+         jSTOAJp1stiQhGLPEdBhDhJCXavxqrduTJmDWj5iJXXzSGidoASoSI3jm0GkXug++9IT
+         cICRFI7To8IdkpPpVavgh+pqMei+2HtRrfv5utxE7xFSfawyuqXr4bY0r5nFWp3Gs+mh
+         Z5f3a+BWMVNVkPVNktvEdKZdGE4AGAYwfr1trBUfsfm0U3UNRVifkjwbJZIBk6y4mgxJ
+         4c/w==
+X-Gm-Message-State: AOAM532vn+5hsZp7k3J4N4PZKkmX1wunuqzq18HVsPc74kuHA8aeX95b
+        b1HWlG3Lz/Ku1+5DJ5k8fhMmJKHmLnRHco5Yulc=
+X-Google-Smtp-Source: ABdhPJyyxD3GsUUjjT3W6V972DEomE6nLI1jYgMnLdtT6PcPbgRFWV1RiSzaK8RR59mhI/1PU7Yle1diZW9HlRp/wMA=
+X-Received: by 2002:a25:e651:: with SMTP id d78mr20501386ybh.93.1616363938165;
+ Sun, 21 Mar 2021 14:58:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210321193705.GA13699@duo.ucw.cz> <CANiq72n=XNwH8JrPfpzTMrHujhCYVzk5BgVmifiVcTk3W_=L2A@mail.gmail.com>
+ <20210321205619.GB28813@duo.ucw.cz>
+In-Reply-To: <20210321205619.GB28813@duo.ucw.cz>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sun, 21 Mar 2021 22:58:47 +0100
+Message-ID: <CANiq72=FmY=MQrockHjKay=govJ=Wk51D2tnnLsM9N8HLh207g@mail.gmail.com>
+Subject: Re: Getting Rust to work
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        rust-for-linux@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a part of vops handler, VCC voltage is updated
-as per the ufs device probed after reading the device
-descriptor. We follow below steps to configure voltage
-level.
+On Sun, Mar 21, 2021 at 9:56 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Done, in a private message.
 
-1. Set the device to SLEEP state.
-2. Disable the Vcc Regulator.
-3. Set the vcc voltage according to the device type and reenable
-   the regulator.
-4. Set the device mode back to ACTIVE.
+I tried your config and it worked, so it looks like the problem is
+your old libclang (7) does not recognize some of the flags. If you can
+try a newer LLVM installation, it would be great to confirm it.
 
-Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
----
- drivers/scsi/ufs/ufs-qcom.c | 51 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+Nevertheless, thanks a lot for providing it -- it was useful to test it.
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f97d7b0..ca35f5c 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -21,6 +21,17 @@
- #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
- 	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
-
-+#define	ANDROID_BOOT_DEV_MAX	30
-+static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
-+
-+/* Min and Max VCC voltage values for ufs 2.x and
-+ * ufs 3.x devices
-+ */
-+#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
-+#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
-+#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
-+#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
-+
- enum {
- 	TSTBUS_UAWM,
- 	TSTBUS_UARM,
-@@ -1293,6 +1304,45 @@ static void ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
- 	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
- }
-
-+  /**
-+   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
-+   * @hba: host controller instance
-+   * Update VCC voltage based on UFS device(ufs 2.x or
-+   * ufs 3.x probed)
-+   */
-+static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
-+{
-+	struct ufs_dev_info *dev_info = &hba->dev_info;
-+	struct ufs_vreg *vreg = hba->vreg_info.vcc;
-+	int ret;
-+
-+	/* Put the device in sleep before lowering VCC level */
-+	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
-+
-+	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
-+	ret = ufshcd_disable_vreg(hba->dev, vreg);
-+
-+	/* add ~2ms delay before renabling VCC at lower voltage */
-+	usleep_range(2000, 2100);
-+
-+	/* set VCC min and max voltage according to ufs device type */
-+	if (dev_info->wspecversion >= 0x300) {
-+		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
-+		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
-+	}
-+
-+	else {
-+		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
-+		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
-+	}
-+
-+	ret = ufshcd_enable_vreg(hba->dev, vreg);
-+
-+	/* Bring the device in active now */
-+	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-+	return ret;
-+}
-+
- static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
- {
- 	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
-@@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.device_reset		= ufs_qcom_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
- 	.program_key		= ufs_qcom_ice_program_key,
-+	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
- };
-
- /**
---
-2.7.4
-
+Cheers,
+Miguel
