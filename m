@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B423E343351
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9415B343355
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCUQBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 12:01:04 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:51001 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhCUQA6 (ORCPT
+        id S229991AbhCUQF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 12:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhCUQFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 12:00:58 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 94fcbf52;
-        Sun, 21 Mar 2021 17:00:50 +0100 (CET)
-Date:   Sun, 21 Mar 2021 17:00:50 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, robh+dt@kernel.org, arnd@kernel.org,
-        marcan@marcan.st, maz@kernel.org, mohamed.mediouni@caramail.com,
-        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20210320151903.60759-1-sven@svenpeter.dev> (message from Sven
-        Peter on Sat, 20 Mar 2021 15:19:33 +0000)
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-References: <20210320151903.60759-1-sven@svenpeter.dev>
-Message-ID: <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
+        Sun, 21 Mar 2021 12:05:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0CAC061574;
+        Sun, 21 Mar 2021 09:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
+        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bRZkMDyVjEHYQP3aS4EHghK5KTFY9dCEonp0Ggkl0WM=; b=I4tVtOwMges9O1MI9txjFLx9mD
+        F/fxTJGlxxEtOLPsLOChvC5Cp5Ey7c+zdT9h90Oh/NfUPfQ99N4MbtQwHtSvB2SVv5YzBTCNdONBM
+        tL1NBrLwU1BkxJN58FlX3BHA3d02x/IQ0stGwjYPCzI4WcocIUVNUPc/FpP+yw+wx8JqmBMeyLcS0
+        wbYQTHd+wyAMzMjbHvZfQHkpoPXyLZLnmT76+oWzXmwgQtDpZuEBPVdVhuoT9u//Pry4OMD3D1kda
+        Oo3tUQcNyk7UBy8fhN+qW40q1qw6eeyVpTjnNhdQdR8gk9i58pZGg2IQtmNTl++6fJ7dc9EqN6JkM
+        JUyXCy2Q==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lO0Zo-002OLF-QV; Sun, 21 Mar 2021 16:05:17 +0000
+Date:   Sun, 21 Mar 2021 09:05:16 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: renesas: Couple of spelling fixes
+In-Reply-To: <20210321075813.9471-1-unixbhaskar@gmail.com>
+Message-ID: <53201147-ac5a-c5a1-b6c0-240d9423c61@infradead.org>
+References: <20210321075813.9471-1-unixbhaskar@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210321_090516_880398_011AC1A0 
+X-CRM114-Status: GOOD (  15.01  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/suposed/supposed/
+    > s/concurent/concurrent/ > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+    Acked-by: Randy Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Sat, 20 Mar 2021 15:19:33 +0000
-> From: Sven Peter <sven@svenpeter.dev>
-> 
-> Hi,
-> 
-> After Hector's initial work [1] to bring up Linux on Apple's M1 it's time to
-> bring up more devices. Most peripherals connected to the SoC are behind a iommu
-> which Apple calls "Device Address Resolution Table", or DART for short [2].
-> Unfortunately, it only shares the name with PowerPC's DART.
-> Configuring this iommu is mandatory if these peripherals require DMA access.
-> 
-> This patchset implements initial support for this iommu. The hardware itself
-> uses a pagetable format that's very similar to the one already implement in
-> io-pgtable.c. There are some minor modifications, namely some details of the
-> PTE format and that there are always three pagetable levels, which I've
-> implement as a new format variant.
-> 
-> I have mainly tested this with the USB controller in device mode which is
-> compatible with Linux's dwc3 driver. Some custom PHY initialization (which is
-> not yet ready or fully understood) is required though to bring up the ports,
-> see e.g. my patches to our m1n1 bootloader [3,4]. If you want to test the same
-> setup you will probably need that branch for now and add the nodes from
-> the DT binding specification example to your device tree.
-> 
-> Even though each DART instances could support up to 16 devices usually only
-> a single device is actually connected. Different devices generally just use
-> an entirely separate DART instance with a seperate MMIO range, IRQ, etc.
-> 
-> I have just noticed today though that at least the USB DWC3 controller in host
-> mode uses *two* darts at the same time. I'm not sure yet which parts seem to
-> require which DART instance.
-> 
-> This means that we might need to support devices attached to two iommus
-> simultaneously and just create the same iova mappings. Currently this only
-> seems to be required for USB according to Apple's Device Tree.
-> 
-> I see two options for this and would like to get feedback before
-> I implement either one:
-> 
->     1) Change #iommu-cells = <1>; to #iommu-cells = <2>; and use the first cell
->        to identify the DART and the second one to identify the master.
->        The DART DT node would then also take two register ranges that would
->        correspond to the two DARTs. Both instances use the same IRQ and the
->        same clocks according to Apple's device tree and my experiments.
->        This would keep a single device node and the DART driver would then
->        simply map iovas in both DARTs if required.
-> 
->     2) Keep #iommu-cells as-is but support
->             iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
->        instead.
->        This would then require two devices nodes for the two DART instances and
->        some housekeeping in the DART driver to support mapping iovas in both
->        DARTs.
->        I believe omap-iommu.c supports this setup but I will have to read
->        more code to understand the details there and figure out how to implement
->        this in a sane way.
-> 
-> I currently prefer the first option but I don't understand enough details of
-> the iommu system to actually make an informed decision.
-> I'm obviously also open to more options :-)
 
-Hi Sven,
 
-I don't think the first option is going to work for PCIe.  PCIe
-devices will have to use "iommu-map" properties to map PCI devices to
-the right iommu, and the currently implementation seems to assume that
-#iommu-cells = <1>.  The devictree binding[1] doesn't explicitly state
-that it relies on #iommu-cells = <1>, but it isn't clear how the
-rid-base to iommu-base mapping mechanism would work when that isn't
-the case.
+On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
 
-Now the PCIe DARTs are simpler and seem to have only one "instance"
-per DART.  So if we keep #iommu-cells = <1> for those, you'd still be
-fine using the first approach.
+>
+> s/suposed/supposed/
+> s/concurent/concurrent/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-As I mentioned before, not all DARTs support the full 32-bit aperture.
-In particular the PCIe DARTs support a smaller address-space.  It is
-not clear whether this is a restriction of the PCIe host controller or
-the DART, but the Apple Device Tree has "vm-base" and "vm-size"
-properties that encode the base address and size of the aperture.
-These single-cell properties which is probably why for the USB DARTs
-only "vm-base" is given; since "vm-base" is 0, a 32-bit number
-wouldn't be able to encode the full aperture size.  We could make them
-64-bit numbers in the Linux device tree though and always be explicit
-about the size.  Older Sun SPARC machines used a single "virtual-dma"
-property to encode the aperture.  We could do someting similar.  You
-would use this property to initialize domain->geometry.aperture_start
-and domain->geometry.aperture_end in diff 3/3 of this series.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-I think it would make sense to include this in this series, as this
-would make adding support for PCIe very easy, and PCIe gives you
-aupport for network (both wired and wireless) and the type-A USB ports
-on the mini.
 
-Cheers,
-
-Mark
-
-[1] Documentation/devicetree/bindings/pci/pci-iommu.txt
+> ---
+> drivers/clk/renesas/r9a06g032-clocks.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
+> index 892e91b92f2c..1fe166e7f8bd 100644
+> --- a/drivers/clk/renesas/r9a06g032-clocks.c
+> +++ b/drivers/clk/renesas/r9a06g032-clocks.c
+> @@ -279,7 +279,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
+> 	/*
+> 	 * These are not hardware clocks, but are needed to handle the special
+> 	 * case where we have a 'selector bit' that doesn't just change the
+> -	 * parent for a clock, but also the gate it's suposed to use.
+> +	 * parent for a clock, but also the gate it's supposed to use.
+> 	 */
+> 	{
+> 		.index = R9A06G032_UART_GROUP_012,
+> @@ -311,7 +311,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
+>
+> struct r9a06g032_priv {
+> 	struct clk_onecell_data data;
+> -	spinlock_t lock; /* protects concurent access to gates */
+> +	spinlock_t lock; /* protects concurrent access to gates */
+> 	void __iomem *reg;
+> };
+>
+> --
+> 2.30.1
+>
+>
