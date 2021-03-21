@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB703433D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 18:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918EB3433E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 18:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCURow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 13:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhCURoW (ORCPT
+        id S230192AbhCURrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 13:47:02 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:39317 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhCURqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 13:44:22 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58CEC061574;
-        Sun, 21 Mar 2021 10:44:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u9so17578295ejj.7;
-        Sun, 21 Mar 2021 10:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fYGF5sGH9yTwb4yGNT0DDgLLyY4Lq+vokKLWKOMuKD0=;
-        b=OuAZCA0g4oL2WK4UKmTvZisRiNRkPLvX8hxmS4l+BjTM72PJx42FlqPY0U7Iq025x9
-         gqHuPcfSL44u7JzvPRrV/O4C+JsfqjDIimdodJQHE1JkXA5fCyRP2fzooqtE3fD8tMQ1
-         Y8Rex67TMX5vGpTGN8jZScjar3wwXtI2ohAejFjFB8HBZSRVZXpQsgTAftogWvKfzMGG
-         rN0IyAb/LXNoJl97kMbKPckmi4XC/zUnArQG+Ru6lm7J82gqxjATuP6aceAx0mQyKIRv
-         V+5TGpfd49eqkROTDH3kYLyntiqTdC2hlUx9Hpuvf0k00r6R1ipFrqZ3Z/GPWIr2TRnc
-         mbIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fYGF5sGH9yTwb4yGNT0DDgLLyY4Lq+vokKLWKOMuKD0=;
-        b=ktxsmQnnd89NgJe+UhUW/IeMq+DO2n8/vCpIdSa6MGb4bf/aqiIYuVy9hmQn66C/OK
-         Cb4cQJNJHEOKocA8M+iLn9TQlbBpXqLQH1DjSnyfkxGm/uOB9hqte3Od5E2Nlp+bKGkc
-         NH/Z2vXb+a6KTSwEeSOLO4azcs6I7L1fQ22n8d814tuGP5lxvtfuwb5PBKIG2YiEKZuR
-         ox3QRO3zV/vhVJIto5UhMCtHU0rTplYidxv4acbVostCUjoWwXiGpAuIm63UEsWPlrjI
-         pTbAn/41TB8WDEFmbM5+/5QPw19dyfD2TQivQYf9QOqJHoExilGM7VmQubIHr+Qv6CQP
-         lFHA==
-X-Gm-Message-State: AOAM533Ev3tEKQlruMA3j+TrKZ0kfYsIs461fAxegvwASvy/Nbl8PVcp
-        p3yuuXbUmW4S6nk7ht9iqVs=
-X-Google-Smtp-Source: ABdhPJzf8l3KvrgKYg3s9d9HN1erE7HxUWwWIF0x5iI7EC9BHeOD1ifvZesGWjFE4Jt8srWTdCsjHw==
-X-Received: by 2002:a17:906:3395:: with SMTP id v21mr15538126eja.322.1616348660368;
-        Sun, 21 Mar 2021 10:44:20 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id q16sm8959645edv.61.2021.03.21.10.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 10:44:20 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 19:44:19 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: enetc: fix bitfields, we are clearing wrong bits
-Message-ID: <20210321174419.jiwfu2nsfyhlhllc@skbuf>
-References: <20210321162500.GA26497@amd>
+        Sun, 21 Mar 2021 13:46:33 -0400
+Date:   Sun, 21 Mar 2021 17:46:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1616348792;
+        bh=gmq6lQd1NWtTBrDin6uNBMByAAtGgaIcn+myFTSLQ/s=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=MMsi0TleVJz7y1uj9wXqfmW/4SDHQjrCVHNu2pHqeeg+u8VThfJiYBtS26p3nSLqR
+         jdpMFb/q/k4D8EiX2QlbfYCNxSIx7XeBq1dDBG1TJ+Y2qUevxxg3I2OH6Eh1H8RJLz
+         AEQWaV3v/UrLaQviXV+sfvdbeTt+7E2f8pHaJya8=
+To:     caleb@connolly.tech, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH v2 1/3] arm64: dts: qcom: sm8150: add other QUP nodes and iommus
+Message-ID: <20210321174522.123036-2-caleb@connolly.tech>
+In-Reply-To: <20210321174522.123036-1-caleb@connolly.tech>
+References: <20210321174522.123036-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321162500.GA26497@amd>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 05:25:00PM +0100, Pavel Machek wrote:
-> Bitfield manipulation in enetc_mac_config() looks wrong. Fix
-> it. Untested.
-> 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> 
-> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> index 224fc37a6757..b85079493933 100644
-> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-> @@ -505,7 +505,7 @@ static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
->  	if (phy_interface_mode_is_rgmii(phy_mode)) {
->  		val = enetc_port_rd(hw, ENETC_PM0_IF_MODE);
->  		val &= ~ENETC_PM0_IFM_EN_AUTO;
-> -		val &= ENETC_PM0_IFM_IFMODE_MASK;
-> +		val &= ~ENETC_PM0_IFM_IFMODE_MASK;
->  		val |= ENETC_PM0_IFM_IFMODE_GMII | ENETC_PM0_IFM_RG;
->  		enetc_port_wr(hw, ENETC_PM0_IF_MODE, val);
->  	}
-> 
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Add the first and third qupv3 nodes used to hook
+up peripherals on some devices, as well as the iommus properties for all
+of them.
 
-Fixes: c76a97218dcb ("net: enetc: force the RGMII speed and duplex instead of operating in inband mode")
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+---
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Note that for normal operation, the bug was inconsequential, due to the
-fact that we write the IF_MODE register in two stages, first in
-.phylink_mac_config (which incorrectly cleared out a bunch of stuff),
-then we update the speed and duplex to the correct values in
-.phylink_mac_link_up. Maybe loopback mode was broken.
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qco=
+m/sm8150.dtsi
+index e5bb17bc2f46..543417d74216 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -577,12 +577,26 @@ gcc: clock-controller@100000 {
+ =09=09=09=09 <&sleep_clk>;
+ =09=09};
+=20
++=09=09qupv3_id_0: geniqup@8c0000 {
++=09=09=09compatible =3D "qcom,geni-se-qup";
++=09=09=09reg =3D <0x0 0x008c0000 0x0 0x6000>;
++=09=09=09clock-names =3D "m-ahb", "s-ahb";
++=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
++=09=09=09=09 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0xc3 0x0>;
++=09=09=09#address-cells =3D <2>;
++=09=09=09#size-cells =3D <2>;
++=09=09=09ranges;
++=09=09=09status =3D "disabled";
++=09=09};
++
+ =09=09qupv3_id_1: geniqup@ac0000 {
+ =09=09=09compatible =3D "qcom,geni-se-qup";
+ =09=09=09reg =3D <0x0 0x00ac0000 0x0 0x6000>;
+ =09=09=09clock-names =3D "m-ahb", "s-ahb";
+ =09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
+ =09=09=09=09 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0x603 0x0>;
+ =09=09=09#address-cells =3D <2>;
+ =09=09=09#size-cells =3D <2>;
+ =09=09=09ranges;
+@@ -598,6 +612,20 @@ uart2: serial@a90000 {
+ =09=09=09};
+ =09=09};
+=20
++=09=09qupv3_id_2: geniqup@cc0000 {
++=09=09=09compatible =3D "qcom,geni-se-qup";
++=09=09=09reg =3D <0x0 0x00cc0000 0x0 0x6000>;
++
++=09=09=09clock-names =3D "m-ahb", "s-ahb";
++=09=09=09clocks =3D <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
++=09=09=09=09 <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
++=09=09=09iommus =3D <&apps_smmu 0x7a3 0x0>;
++=09=09=09#address-cells =3D <2>;
++=09=09=09#size-cells =3D <2>;
++=09=09=09ranges;
++=09=09=09status =3D "disabled";
++=09=09};
++
+ =09=09config_noc: interconnect@1500000 {
+ =09=09=09compatible =3D "qcom,sm8150-config-noc";
+ =09=09=09reg =3D <0 0x01500000 0 0x7400>;
+--=20
+2.30.2
 
-Thanks!
+
