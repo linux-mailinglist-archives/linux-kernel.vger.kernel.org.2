@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E66834359A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C17934359F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhCUXCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 19:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhCUXCh (ORCPT
+        id S230332AbhCUXHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 19:07:35 -0400
+Received: from audible.transient.net ([24.143.126.66]:55348 "HELO
+        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230192AbhCUXHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 19:02:37 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385D6C061574;
-        Sun, 21 Mar 2021 16:02:37 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id w8so7390899pjf.4;
-        Sun, 21 Mar 2021 16:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wt8++bptJVOSz9C4Ne0h46n+NrRwxPXNADEhwT2DHoo=;
-        b=TFKXIk2+tSJx++PVmBpOGjSpR7wp2qTThVKHo4eS9zTruWODhroxXMFkvQylQzyyZU
-         OglnC3FYJdAsyzYmUys8znayx9uXsQkXDjBTwkI3g580QB/JMicZHcXCjNZb/wwwDgx3
-         ooe0w3ZD+476WslLWH6v0Q1fyihlc00xhnY6hiKBpYZgGSi8pA3UlKDdoq63SFacJC9s
-         pW8P9UFHnjhOrgmFq36fZhm+m5HqE7a9cebvthUatzOLuTM2fv4vW7bNaGLkG9sC966f
-         aVFx1/DnkWxIufEzRByigSqCtv+/VBc0jZlbrflSHvHxMCUv/BZsJxN26OfRzhbODHdb
-         so3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wt8++bptJVOSz9C4Ne0h46n+NrRwxPXNADEhwT2DHoo=;
-        b=ebcFjfExe4eOI1VV5b4KByWxfETOyAcpoCFjGt30E4u6xTGu/mLuuc/zShtTs1YG+q
-         0IN6h4ulIl4aCNZXV4I/bPEeLX/+HhGBBSSt2YE4iTkBvtWNabZPhZn7qWF3ypJ8+947
-         Pb+S61/X4Wh4F+CMjHa3d90BmWyLBa8QchO2LaU/TrM1q5h40pxAXggDSgbA6rYEN5HH
-         uZahxNV9ALn/KCjxTbNj0uPm+IgQh9P2eR2IUGIwwkf6fCLA8XLMYUvRA5T4DEO9ULs8
-         tvgyJxg6AddHpmlXMjyjU7/LtIz8oOEtFN7lMcJgNix3eR45hWVI+2yEFgPvJcEnBVtY
-         XrDg==
-X-Gm-Message-State: AOAM530v7iNIE9Zu9VPlda65ys+5mbnRXKwxjY6SW4JshHNvvPOauudn
-        ODu/7vaYrUwaekWtRxB9DHQ=
-X-Google-Smtp-Source: ABdhPJxQg/IKszDWYZntvg6N1nogTA5ms5twvxpUYaHVofX/vuKnB7Jv1btt0i+qO6679jYQicKLhw==
-X-Received: by 2002:a17:90b:794:: with SMTP id l20mr9944216pjz.207.1616367756731;
-        Sun, 21 Mar 2021 16:02:36 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
-        by smtp.gmail.com with ESMTPSA id i1sm11691234pfo.160.2021.03.21.16.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 16:02:35 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 16:02:33 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: docs - Update according to the latest API changes
-Message-ID: <YFfQiccnYv3VMJOn@google.com>
-References: <20210304090948.27014-1-heikki.krogerus@linux.intel.com>
+        Sun, 21 Mar 2021 19:07:10 -0400
+Received: (qmail 3123 invoked from network); 21 Mar 2021 23:07:08 -0000
+Received: from cucamonga.audible.transient.net (192.168.2.5)
+  by canarsie.audible.transient.net with QMQP; 21 Mar 2021 23:07:08 -0000
+Received: (nullmailer pid 864085 invoked by uid 1000);
+        Sun, 21 Mar 2021 23:07:08 -0000
+Date:   Sun, 21 Mar 2021 23:07:08 +0000
+From:   Jamie Heilman <jamie@audible.transient.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Linux 5.10.25
+Message-ID: <YFfRnGyisaqcfygs@audible.transient.net>
+Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <161623579648126@kroah.com>
+ <YFZpy9Ov99npi9T8@audible.transient.net>
+ <YFbwUPaIgNv035+j@kroah.com>
+ <YFb1G4goExfAXGnu@audible.transient.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304090948.27014-1-heikki.krogerus@linux.intel.com>
+In-Reply-To: <YFb1G4goExfAXGnu@audible.transient.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:09:48PM +0300, Heikki Krogerus wrote:
-> The old device property API is about to be removed, so
-> explaing how to use complete software nodes instead.
+Jamie Heilman wrote:
+> Greg Kroah-Hartman wrote:
+> > On Sat, Mar 20, 2021 at 09:31:55PM +0000, Jamie Heilman wrote:
+> > > [ugh, resent with the lkml headers unbroken, sorry about the dupe]
+> > > 
+> > > Greg Kroah-Hartman wrote:
+> > > > J. Bruce Fields (2):
+> > > >       Revert "nfsd4: remove check_conflicting_opens warning"
+> > > >       Revert "nfsd4: a client's own opens needn't prevent delegations"
+> > > 
+> > > Hrm, just got this when I udpated my nfs server (32bit Via EPIA system)
+> > > from 5.10.20 to 5.10.25:
+> > > 
+> > > [   49.225914] NFSD: Using UMH upcall client tracking operations.
+> > > [   49.231919] NFSD: starting 90-second grace period (net f0000036)
+> > > [   50.036973] ------------[ cut here ]------------
+> > > [   50.041771] WARNING: CPU: 0 PID: 2284 at fs/nfsd/nfs4state.c:4968 nfsd4_process_open2+0xf9c/0x1170 [nfsd]
+> > > [   50.051434] Modules linked in: md5 cpufreq_conservative cpufreq_userspace cpufreq_powersave cpufreq_ondemand autofs4 quota_v2 quota_tree nfsd auth_rpcgss nfs lockd grace nfs_ssc fscache sunrpc xt_mark cls_fw sch_htb iptable_nat xt_nat nf_nat ipt_REJECT nf_reject_ipv4 xt_tcpudp xt_multiport iptable_mangle xt_state xt_conntrack nf_conntrack nf_defrag_ipv4 nf_log_ipv4 nf_log_common xt_LOG xt_limit iptable_filter ip_tables x_tables nhpoly1305 chacha_generic libchacha adiantum libpoly1305 dm_crypt dm_mod snd_hda_codec_via snd_hda_codec_generic snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_timer snd via_rhine psmouse soundcore mii via_agp sg via_velocity evdev agpgart
+> > > [   50.113386] CPU: 0 PID: 2284 Comm: nfsd Tainted: G                T 5.10.25 #1
+> > > [   50.120669] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./To be filled by O.E.M., BIOS 080014  06/01/2009
+> > > [   50.131652] EIP: nfsd4_process_open2+0xf9c/0x1170 [nfsd]
+> > > [   50.137036] Code: 04 88 45 a4 88 07 8b 45 a0 8d 78 49 8b 45 84 8d 70 01 e9 2b f8 ff ff c7 45 9c 00 00 00 00 31 ff bb 00 00 27 67 e9 04 f6 ff ff <0f> 0b e9 a0 f5 ff ff 0f b6 d4 0f a3 15 94 3f 23 f8 0f 83 b1 fd ff
+> > > [   50.155866] EAX: 00000000 EBX: 82da25b0 ECX: 830c0920 EDX: 00000000
+> > > [   50.162187] ESI: 82da25b0 EDI: 82da55a0 EBP: 8310be68 ESP: 8310bddc
+> > > [   50.168507] DS: 007b ES: 007b FS: 0000 GS: 00e0 SS: 0068 EFLAGS: 00010246
+> > > [   50.175338] CR0: 80050033 CR2: 00551e50 CR3: 03222000 CR4: 000006b0
+> > > [   50.181654] Call Trace:
+> > > [   50.184165]  ? inode_permission+0x17/0xc0
+> > > [   50.188289]  nfsd4_open+0x429/0x910 [nfsd]
+> > > [   50.192483]  ? nfsd4_encode_operation+0x185/0x1e0 [nfsd]
+> > > [   50.197900]  ? nfsd4_rename+0x1a0/0x1a0 [nfsd]
+> > > [   50.202439]  nfsd4_proc_compound+0x457/0x6c0 [nfsd]
+> > > [   50.207419]  nfsd_dispatch+0xdc/0x1a0 [nfsd]
+> > > [   50.211816]  svc_process_common+0x38a/0x650 [sunrpc]
+> > > [   50.216880]  ? svc_xprt_do_enqueue+0xd7/0xe0 [sunrpc]
+> > > [   50.222017]  ? svc_xprt_received+0x5d/0xf0 [sunrpc]
+> > > [   50.227000]  ? nfsd_svc+0x300/0x300 [nfsd]
+> > > [   50.231190]  svc_process+0xa9/0xf0 [sunrpc]
+> > > [   50.235468]  nfsd+0xcd/0x120 [nfsd]
+> > > [   50.239025]  kthread+0xe1/0x100
+> > > [   50.242259]  ? nfsd_destroy+0x50/0x50 [nfsd]
+> > > [   50.246588]  ? kthread_create_on_node+0x30/0x30
+> > > [   50.251165]  ret_from_fork+0x1c/0x28
+> > > [   50.254789] ---[ end trace 171bde4774bc9795 ]---
+> > > 
+> > > Can't readily reproduce it though, so likely a race condition or
+> > > something that requires more state buildup than I have after a few
+> > > minutes of uptime.  Kernel config at
+> > > http://audible.transient.net/~jamie/k/nfsd.config-5.10.25 in case you
+> > > think this worth more investigation.
+> > 
+> > Do you also have this issue in Linus's tree and the latest 5.11.y
+> > release?
 > 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Haven't tried it, but like I said, I couldn't even reproduce it again
+> with 5.10.25, or booting between 5.10.20 to 5.10.25 again ... I'll
+> give the others a shot and see if I can repro it there.
 
-Applied, thank you.
+Yeah, can't repro it with 5.11.8 or 5.12.0-rc3-00281-g1d4345eb51a1
+either, seems to have been a spurious thing.
 
 -- 
-Dmitry
+Jamie Heilman                     http://audible.transient.net/~jamie/
