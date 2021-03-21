@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EBB3430A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 03:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FA23430B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhCUCZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 22:25:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14113 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhCUCYp (ORCPT
+        id S229870AbhCUDJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 23:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCUDJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 22:24:45 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F31ck6jwkz19G1W;
-        Sun, 21 Mar 2021 10:22:46 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 21 Mar 2021 10:24:39 +0800
-Subject: Re: [PATCH 4.19 0/8] 4.19.182-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210319121744.114946147@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <750c457f-2a59-1e80-193e-fbdd00d5efb0@huawei.com>
-Date:   Sun, 21 Mar 2021 10:24:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sat, 20 Mar 2021 23:09:04 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF71AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:09:03 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id g15so7213669qkl.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=f/4iqXfUBBV4H6ClbQNOrfLH1q9eF+zQCEV2tH/kBis=;
+        b=mpsvqdPdzqsotKW/gNJSoVlXq2/sYVVXTPaKvcax5EdemvbiYNtUrBunJdut6+lteB
+         j263JhN5JzX2fvExrFBA6/lAK+nxGdqrNdvwEBh4LNI8LQRzJtqdDUwF9iyVwlaZiS+r
+         leBpnrdMrmpsyWvxuwgmckp2u4eW0plv6qYj6Om3qq7E1erdV0LQCjR2ycGC9GceQpKY
+         Q68UQko2YgPeRK7qO0EuZmJuZeR5WV98gRQ9xIYH7pGqD8IY/bhSJgV3DNw07aKveybO
+         9iHygAjW1zxj3I1vHSSXB1rOYYmn2AbL4FcHkRv58UKeAwECdB67vSTHfR5jZXBT38NU
+         NXlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=f/4iqXfUBBV4H6ClbQNOrfLH1q9eF+zQCEV2tH/kBis=;
+        b=Lzw9kqCL34YHyNxdWHKWJ1wpjCcFzzUU5Wuq6at0/gVpFUGUXELx5uhClvo9JPFX4/
+         ef7ZKLyVMAvFVC2A0ANqm66Ou25WRhTO2CCjNKpyBW0JF4km6HsIjrGgLhiRAD+VlTP9
+         +eaE5R2bJbsK2Iwpj0XVCJShXYE3JIrE8YWOpl6dywkcQgmVFpSON9eLyr8sBIIAJacX
+         7qC5Hf5YjEcAvYGiiL54omLh6DktTQhT5FQ/HQ98vBbvMw6m7ADrKDeHEEc48uFQbmek
+         x7o07KlEyCglBL6tMOTjOkwJJFwItokLpzcax4FCZTByra4oOY76YaZ+T0AhPAw0P/zH
+         YqVw==
+X-Gm-Message-State: AOAM533CrIb4J3JEU629qXwt5JfghztFQ5R8HtNa5WElOtX7mI4SV+7O
+        UwZ20Y0ifEWly9GHXt4Qedv+JnhREu5stRFZ
+X-Google-Smtp-Source: ABdhPJyP6AkE8sZMeBrWaBXjpWRvJrLcF0UnRrI27MoTani1uLYCuKandRBhTJCRUxAKWW2aePbooA==
+X-Received: by 2002:a05:620a:a92:: with SMTP id v18mr5379957qkg.417.1616296142911;
+        Sat, 20 Mar 2021 20:09:02 -0700 (PDT)
+Received: from debian ([156.146.54.26])
+        by smtp.gmail.com with ESMTPSA id q15sm6775042qti.9.2021.03.20.20.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 20:09:02 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 08:38:56 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mhiramat@kernel.org
+Cc:     LinuxKernel <linux-kernel@vger.kernel.org>
+Subject: Bootconfig ..too many deep level of header file
+Message-ID: <20210321030855.GA18105@debian>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        mhiramat@kernel.org, LinuxKernel <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210319121744.114946147@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ Hey, Masami
+
+ I was wondering why so many level of "deep nesting" of a particualr header
+ file like this one :
+
+ ✔ ~/git-linux/linux/tools/bootconfig/include/linux [patch L|✔]
+08:34 $ cat bootconfig.h
+/* SPDX-License-Identifier: GPL-2.0 */
+#ifndef _BOOTCONFIG_LINUX_BOOTCONFIG_H
+#define _BOOTCONFIG_LINUX_BOOTCONFIG_H
+
+#include "../../../../include/linux/bootconfig.h"
+
+#endif
+
+I am surely missing some basic stuff...but...anyway, I have taken a peek on other files in the same dir and none have the nesting like that(the include ../ ...line)
+
+Any specific reason? OR did you thought of keeping all the header file in one paplace(wildly guessing) ...
 
 
-On 2021/3/19 20:18, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.182 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 21 Mar 2021 12:17:37 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.182-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-Tested on arm64 and x86 for 4.19.182-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.182-rc1
-Commit: 7281e11121f6fb47ea1e757b7781c5c15e3781fe
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4688
-passed: 4688
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 4688
-passed: 4688
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
-
+~Bhaskar
