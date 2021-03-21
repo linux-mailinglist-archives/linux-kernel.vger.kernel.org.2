@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AB0343272
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D37343275
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhCUMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 08:31:01 -0400
-Received: from ozlabs.org ([203.11.71.1]:58413 "EHLO ozlabs.org"
+        id S229933AbhCUMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 08:31:36 -0400
+Received: from mout.gmx.net ([212.227.15.19]:45189 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229840AbhCUMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 08:30:56 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3H6K5QSzz9sSC;
-        Sun, 21 Mar 2021 23:30:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1616329854;
-        bh=At0Z8aWmgu7qu0pmLP6lB84s/HhVQBTf0u8fIQCc9C0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=QCylja3G+/AIOHZlJ0VG3XhsXd0Or0z96nmg7md8Aobbqjf6yqN8jdkG8jWO76ghQ
-         Mq1BdgFvd0zWSajzjLyPEu+763wRhFonN4mOnyp14bq/lcnYFfQAK509RtKCBz9XOZ
-         gOaimDWVIjacoeYTFPi4mgotbvbjVJWAbZEv/g5eeroWidSI4q2HCjxNxW22jSc7C1
-         bqnCIjLECceT/m03/4ny2ewgwNlP5PM+qJ9fSAgGusXScQID0JzTqr8OCa+5Cu9FQi
-         fLKqlcBDaq8XWEnnek4h4CivohSP9nSvjmpxhIWDvaZ4kMLFEm+hFh+Lp1+Jv7olhH
-         JzfW1T0LQ6B3w==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Stephen Rothwell <sfr@rothwell.id.au>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        id S229840AbhCUMbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 08:31:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616329869;
+        bh=50Y/rHSssdb5Pwhs5XahNE/25EWb0MYPd2+DkOjaeSo=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=K4MFOgmkGsCESMw93aZbF3tNIhXEMdLh8c1/gCzCjBH47PHtNeSWRNCNZRDxQlsUH
+         yRxoc+T5plK26zQtl0Eo4BDqsF4WdAAKSqJpupnrggn93jlEwyvM/Cbix2x7zMkf/i
+         iQvMC3sj5QLEfdHlgvkS2UZykwEJSgmnQ3ElbCbE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mj8mV-1lrUhF3pG1-00fAWY; Sun, 21
+ Mar 2021 13:31:09 +0100
+Date:   Sun, 21 Mar 2021 13:31:07 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Daniel Axtens <dja@axtens.net>
-Subject: Re: linux-next: Tree for Mar 19
-In-Reply-To: <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
-References: <20210319175950.509fcbd0@canb.auug.org.au>
- <YFS1h6h+71sRlwFR@osiris> <20210320162734.1630cc55@elm.ozlabs.ibm.com>
- <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
- <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
- <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
-Date:   Sun, 21 Mar 2021 23:30:44 +1100
-Message-ID: <8735woit8r.fsf@mpe.ellerman.id.au>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 00/14] Initial support for Nuvoton WPCM450 BMC SoC
+Message-ID: <YFc8ix6TsQhLIC2v@latitude>
+References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
+ <CAP6Zq1jdO_kw-B-SX0VNiVqQ1rz1vbt+DJ1quvm286+cbKec1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ilxIgzm+yXs67A+p"
+Content-Disposition: inline
+In-Reply-To: <CAP6Zq1jdO_kw-B-SX0VNiVqQ1rz1vbt+DJ1quvm286+cbKec1Q@mail.gmail.com>
+X-Provags-ID: V03:K1:FQs9pDrWozbdgB4aDvQJNyPj2qq4NUi4WXWfmpdJ9Ugs4le4doN
+ vAUyUjwOFkMcwaivZp+wkpUWkuzY4nri9ZCR7tZhFTEffA/Lh1Xw9rm1HtP9E3Ni7Dz20xh
+ y9JZYMocTjRBzWsA7voim/gFXOapLP5ZSrGeer53sOdnZpZIAgGjXNBPwSU/yoQurDCbuA1
+ jierxz6Mvs/CkddABmvSg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Sqz6zrCVGo0=:fb6rpxLt5B0hw5thCb9eeF
+ bQIIdxRE9R5+SKzws+F0Y1QssVXt7m1y8Uuc0x0B+3xT4mcR4ov/ubEmpi3/oB67VnR9Z2bI6
+ dEaxreH4+J1oKkZ8cqsBiWk7k5Q//Rvo63jodH0Gqo67Dj25EcKUkzG0gWhrZTnZPDlVSKyjh
+ wTaQdhWy9H+IrOHyXFJomY+UURogtjyOf0EXtK+8vnYHULbEUFhRJO8CfVDL7LPLTdgCPBaIc
+ T0re3EOMeir1Bvy/kByR6M2WblaHNghIMtr5BZc2Qeiq9MPzJlSzYo5tVx/4DvYQFnTpah6ok
+ BLl6SbskYQ+jJvKZcYOFm505FpYA8EWt0OkHN2BqTC5smZ79uBuwjsIMUAzHhjctEOAoYv/+1
+ 4d8WN2msJZuvmWaYHOkEtLB+HSH/6/AYU6deVWnFKlkqYVbiv6Q6YzSUc3cAxQA4gP/zW0XC8
+ KH85vAd3L2eILogfWC71pEKRfsx722rBddYulqVlYoN0pYhgsydwSdMJzzF6G9GrFcz2mK7eJ
+ UNkKJSsQhZ+zK9R0bKMAjROJp/7YKRht2GIHdsK5KkEhP/p4SnBZGv5yK7Mf/vmHZV8Da0qs5
+ MtEeifs9tZHSsdCED+dOcJ7dkB1u7C0cFhmKgLpzubqY4ONuH+vB6y0ZE/mezLKm2WoGhPJBx
+ FdIlAMKshvmwrX4f/06vvVfANJYvf3d1XpEJ2Thmgj5YT5UFZEC53Xb1WaWhtFH7XxXOriwQ9
+ ekmp57ewVjoW5Fw61i7JgXTPFJMHNdhWD2PHz7WnDB3yknetESFKmvd3W+lp21zPmBDhG+puU
+ SYINtf3viibAseRDs/Dmh9Uo2XmvJ8c3CorsiqkxpzWn7j7NfhXa4R5uwC/nU+JzIbrKVCob6
+ O2Lvrj9/hyCVNhy4JnGw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
-> On Sat, Mar 20, 2021 at 7:49 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
->>
->> Reproduced on s390. However, under defconfig, one also needs to revert
->> kernel/livepatch/core.c to avoid triggering the assert, i.e.:
->
-> Stephen: I will put this in rust-next so that others don't see
-> problems on their side and test it with a allmodconfig for powerpc and
-> s390 -- is it Monday the next round, right?
 
-Yes. But Monday in UTC+11 :)
+--ilxIgzm+yXs67A+p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-cheers
+On Sun, Mar 21, 2021 at 01:07:53PM +0200, Tomer Maimon wrote:
+> Hi Jonathan,
+>=20
+> Thanks a lot for trying to add WPCM450.
+>=20
+> Hoever WPCM450 is in EOL for several years and we are not supporting this
+> product anymore.
+> As you said it is only available in the secondary market.
+>=20
+> Due to it is better not to add the WPCM450 under Nuvoton maintenance.
+
+I understand. I will instead add a new, separate section for WPCM450 to
+the MAINTAINERS file.
+
+> Again we highly appreciate your support and time on NPCM750 patches.
+
+I expect there will be some more cooperation, because the SoCs share
+some architectural similarity, for example the 100Mbit Ethernet
+controller.
+
+
+Best regards,
+Jonathan
+
+--ilxIgzm+yXs67A+p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBXPIMACgkQCDBEmo7z
+X9u1mA//SQ1OYXP0aAQV5lmvmwj1JJq9R1Hxu1Bu4plirEkWUGR9IYbUpNEb0Wjt
+aslffTV/Y9LjLYryXv2lQRVdbylFF2IsQL2oM+N6H9wl+GqoYswLdSuJ7YtQnWYs
+yw2hEtB3Dt9vS+p86JWT8cb2r0v+hpdnuYuhFG9kLx4hl/HI8//NsDmP9LuzLgR8
+ebh1k25S7SFGuHYQDw1LFoTCZuh43RTM0EdR8NXyPLIbAcE6DZC2d160E7cSfRcN
++RMt/GDMwlFdsbVoN/jH0yknDm+sLlDtSquixbztH65lcWiDliYtPYbFB1HopJrP
+dSikkJQFP6agSKeyHNUlHwChQxulkqV5EmS3HoF+SQcG/1WySakvz/qWKn3p1cBl
+v9wKLbPvCw1H3UnWuXG5ZRZ6E8cTnoqvDyBFdCCeYmGchZc7CV0nBk2ldibD8Sd2
+1a1nXau6B+GeVDFfgNoIulFSb+xJpar8/soZc3YyZHDnGsj3HuQBVech2X7zHccj
+ZXrUeLetzM0HZ8wARcMsKQCcNhCVEot8d+4zdInLafEGZk1htAnvK89TKYdIXbks
+5m43CTcDF7mn1Kb/6EJliXoR/6WtXXceEnMhYaGqFzIuCgH3hRpR8msqjHbnbYr7
+C3PTO9D22Hb5puORp1jhJD+jNSyvIG23MnSDtJbQTZd4xSikR4k=
+=QlNO
+-----END PGP SIGNATURE-----
+
+--ilxIgzm+yXs67A+p--
