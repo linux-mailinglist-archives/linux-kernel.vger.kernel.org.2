@@ -2,127 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3484343296
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30EA34328C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhCUMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 08:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhCUMm4 (ORCPT
+        id S229897AbhCUMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 08:40:28 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:38730 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhCUMkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 08:42:56 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D25C061574;
-        Sun, 21 Mar 2021 05:42:56 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id g10so5148704plt.8;
-        Sun, 21 Mar 2021 05:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lQ4bmh/CsDFXlzhabMxrzD2UIU3buMBGOPGfvJyLVio=;
-        b=p9NBlQJ/In/nlUJwYY37Tm2D/f8It4ym8rskyTtG35WadMQDlnqmLFnXWe+Pnu54ew
-         +BRkkBPB8su2oRou37JQMOFmxZJBupi/RJvAfaqvDdPJTj29PqlCXznJvGEWfVmjyvhd
-         qGQpajJwOFVMng5j2vaaGMAsrWV+NdU7r9/eRN50V7ueXOU1YRqbg1ev0R6dS6tQnApF
-         ZHQYij9Rc2R18+kTwSKOucajf1dOM/EB7HNegBd+N4yRy2TANWISjPfq/I/+HNtEvQ1g
-         8yUrbaUptRLdF+QSFM6PWjxuGs1U8sHPclcI6SiIXKigBQwxtU6rY0fGqQjMBnacfzsG
-         kg9Q==
+        Sun, 21 Mar 2021 08:40:05 -0400
+Received: by mail-il1-f197.google.com with SMTP id o7so37845475ilt.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 05:40:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lQ4bmh/CsDFXlzhabMxrzD2UIU3buMBGOPGfvJyLVio=;
-        b=Z0hvoJBI0aGbehoX+47J12ZC+NcQRNmabr0RF0nDHwt8z2CMU1If9h/b1fjpLUXh9N
-         G6GNPm+NOemWIJ35M54FMmFevfjuoPVt+Vfi6WngBUth9qbQmknprPsyrpL/91+ghkCc
-         zLEZRzrkbKarD2NI3W0QCQyOwYXpb1a1vB0Vob4MSEm7uIUNBawD4BePRmjPqPK8D8s0
-         5N7PLoM+WjFduGlbPk9zl2fEZtHyPaTpw++8FBQyb+zhSOaRj01D7FMnRPVu2QcARPqK
-         ymRupJTx+924zXR7eyEO11F/2GBeewPrV9ZzfEaPFvIBY1c20qYI2e5GXqsrVukde3MW
-         cryA==
-X-Gm-Message-State: AOAM530dqUzeBC78drjjwEsPX4aYV+Bh0oKEhYB+1/Pkkqo3ag9PLVrr
-        XFNlkx3cKukHk4dz+84qPes=
-X-Google-Smtp-Source: ABdhPJwklQUCyHeQqTqMRMRZ+d2kmZPGMBLUW4QQk1p3Rm5yw/iJjUcMT2OtFapv9fXokRqB86i3BA==
-X-Received: by 2002:a17:902:b70e:b029:e6:cef9:6486 with SMTP id d14-20020a170902b70eb02900e6cef96486mr17438560pls.18.1616330575662;
-        Sun, 21 Mar 2021 05:42:55 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id e1sm11235065pfd.72.2021.03.21.05.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 05:42:55 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     andy.shevchenko@gmail.com, kuba@kernel.org, linux@roeck-us.net,
-        David.Laight@aculab.com
-Cc:     davem@davemloft.net, dong.menglong@zte.com.cn,
-        viro@zeniv.linux.org.uk, herbert@gondor.apana.org.au,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next 2/2] net: socket: change MSG_CMSG_COMPAT to BIT(21)
-Date:   Sun, 21 Mar 2021 20:39:29 +0800
-Message-Id: <20210321123929.142838-3-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210321123929.142838-1-dong.menglong@zte.com.cn>
-References: <20210321123929.142838-1-dong.menglong@zte.com.cn>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Du7jbAAe3dZDXGgzm0EhuVuhWQs9ocY52TW7Eb3PJSI=;
+        b=O02TVaj66tsfcvBUqYnIFXLkp0BIEjlUTKS5ohLU5HbQNY34Yn0gEXmOlABDIwcARM
+         hcwZhjLG1SnmJZIWFye8SDfSzZFSepO0xrvrTTU/2mKgT2pNAuRmzJTK7Sl+2FfwfyGV
+         Q+e3F0tAZS38xaSdMiief6xtfLy5sHSlMWiJQMAYMh1DZa6yYM5ill+D4hLbXmFhbcJC
+         1eQJf+WwN4PqOJD5Rr/NU/MjQmm8a74CAdHWtASEmVgLZ/sQApzS57CB5Kjp/GFVsKZl
+         Jp1TbBNqSxg7SCgrl3PqLytkLv/Zto7DiMeCKq7zdJYqzX/SMrB5sdxw3ptRI5lVTghE
+         xIww==
+X-Gm-Message-State: AOAM5303n8QT89vCjz/4E1oswNQ2UZEsmbLfrTXl4x6epFu72xEezeQI
+        FJsKJq4aGZj3kB2N4kelSltwei7qABZ445QEayQ7pG2hU09S
+X-Google-Smtp-Source: ABdhPJwLUId8Sas9RSZ3Jj2SPQjCYzKqv5Gs8fATOIuPtXwbqn1x3RcTQQiwdqKz10rHDN98oBhipUM12tdzeJmdaeVp+nWELDAY
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1351:: with SMTP id k17mr8707489ilr.204.1616330405017;
+ Sun, 21 Mar 2021 05:40:05 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 05:40:05 -0700
+In-Reply-To: <00000000000053da9405bd7d2644@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a17fb305be0b3f38@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
+From:   syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, hch@lst.de, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+syzbot has bisected this issue to:
 
-Currently, MSG_CMSG_COMPAT is defined as '1 << 31'. However, 'msg_flags'
-is defined with type of 'int' somewhere, such as 'packet_recvmsg' and
-other recvmsg functions:
+commit a33df75c6328bf40078b35f2040d8e54d574c357
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Sun Jan 24 10:02:41 2021 +0000
 
-static int packet_recvmsg(struct socket *sock, struct msghdr *msg,
-			  size_t len,
-			  int flags)
+    block: use an xarray for disk->part_tbl
 
-If MSG_CMSG_COMPAT is set in 'flags', it's value will be negative.
-Once it perform bit operations with MSG_*, the upper 32 bits of
-the result will be set, just like what Guenter Roeck explained
-here:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17989906d00000
+start commit:   1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14589906d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10589906d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6abda3336c698a07
+dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dfe8bed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155a117cd00000
 
-https://lore.kernel.org/netdev/20210317013758.GA134033@roeck-us.net
+Reported-by: syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com
+Fixes: a33df75c6328 ("block: use an xarray for disk->part_tbl")
 
-As David Laight suggested, fix this by change MSG_CMSG_COMPAT to
-some value else. MSG_CMSG_COMPAT is an internal value, which is't
-used in userspace, so this change works.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/linux/socket.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index d5ebfe30d96b..317b2933f499 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -312,17 +312,18 @@ struct ucred {
- 					 * plain text and require encryption
- 					 */
- 
-+#if defined(CONFIG_COMPAT)
-+#define MSG_CMSG_COMPAT		BIT(21)	/* This message needs 32 bit fixups */
-+#else
-+#define MSG_CMSG_COMPAT		0	/* We never have 32 bit fixups */
-+#endif
-+
- #define MSG_ZEROCOPY		BIT(26)	/* Use user data in kernel path */
- #define MSG_FASTOPEN		BIT(29)	/* Send data in TCP SYN */
- #define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
- 					 * descriptor received through
- 					 * SCM_RIGHTS
- 					 */
--#if defined(CONFIG_COMPAT)
--#define MSG_CMSG_COMPAT		BIT(31)	/* This message needs 32 bit fixups */
--#else
--#define MSG_CMSG_COMPAT		0	/* We never have 32 bit fixups */
--#endif
- 
- 
- /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
--- 
-2.31.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
