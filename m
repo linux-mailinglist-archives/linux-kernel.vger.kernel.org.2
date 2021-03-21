@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2D834350F
+	by mail.lfdr.de (Postfix) with ESMTP id 0E23134350D
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhCUVs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:48:56 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44755 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhCUVss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:48:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3WV36cX0z9sVb;
-        Mon, 22 Mar 2021 08:48:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616363326;
-        bh=8c4uVwI2rJbWaLIKFQY5LtweLwNmoqXVhQ0ScRe9ykY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WlVoyOk0tETScR7x8LodmJXot/RoiqfZmujx201yibfs7xLMm7tJVAGWGX1DhbecK
-         Q2bsuGb0q2Bcs7oS2zfcBCCi9x2nTFlv9C9Or1qk+FA6qM6qOL7nHT38H8gtu+UFx6
-         OPBOmYdiZZiLVvDVuERcDkbTuvOKrWg/6UryJ4YrPNxTEHGNzK5kZZaVCKb6DPF8Im
-         7/N8lJ1ghr+wzmeVjZE3GFQ7a+52Bd2+RzW+Tup/zV0kVnZolle760Q0icYF56k244
-         vi+NCiKlxoZBMFy7Wi0T4tlMvg7kS4QhKye/vDCKqNmVtd8RmjyYfPKJcOa3lEW8Hr
-         UljP6gwjAxCKg==
-Date:   Mon, 22 Mar 2021 08:48:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, glittao@gmail.com,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: arm64: compiler_types.h:320:38: error: call to
- __compiletime_assert_417
-Message-ID: <20210322084842.23f9ce0e@canb.auug.org.au>
-In-Reply-To: <53cc267d-aa0a-071a-f9f8-0b47ec4b2b9d@suse.cz>
-References: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
-        <53cc267d-aa0a-071a-f9f8-0b47ec4b2b9d@suse.cz>
+        id S231384AbhCUVrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230360AbhCUVrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 17:47:00 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AD3C061574;
+        Sun, 21 Mar 2021 14:46:59 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id d8-20020a1c1d080000b029010f15546281so7971355wmd.4;
+        Sun, 21 Mar 2021 14:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FHVroE09bYfHZ55DaPFtDs49Byg6Kj1pwjra28kTtDc=;
+        b=cZ3Z2iqzc+HKxMSXTVl8O24XA5V5hy2iN4NP/8/PjkvFpBZCd5gdSVYl0jUpUfwIuA
+         oaOqEibaWW7Iap2K8KNEGQJI8KHJvQW1s4nS01J4X/P+DcRJFI0oPj1sj2Z4Buk/cARN
+         avf+dspseEpjBQ+SyJ7IbJIxunAiI6PADPwaZHygb55lJTV9kobgH5gPmNfhbqrD8uet
+         JZz+TuYSWX0A6D46KUzU1hPcENmX7RaOMKlvMndrrYN/pO5PeNvIBuBsCuz/83cPeqP6
+         /8b4wuZ7IGnZigambPX0p9poYN3hBywSxu7LvX/aeXHq9mjbD5T3JsebQ0CqEJU5iMVQ
+         /i4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FHVroE09bYfHZ55DaPFtDs49Byg6Kj1pwjra28kTtDc=;
+        b=WBj9qxoQaw8cds546usm/BIVBacbkhSeJOwN+/2g9B8xyml514lNzAUeG5qdJyX0hQ
+         CanspalEODrRWnurEo98rvD8DCxkLty3gMOhbZa3Mxe2rlETfCprSSCdmPWRgqw6yc4s
+         NQgWUgCD7LYZtfXLHRNSYFX0t1CwxjZDKAVByovvK++jQyKp6OeYI2BK4C74DcnQKFL0
+         EXuMq5o1Mczm9MQ2BcpGUPrV8DIM6pMSeS2mNK7ddkd/4lEFMWzY3knITkIb6X2CvN74
+         yqDoxbLZr1g8UY+1jG9J/kvVCek6VfAzy2hFH8S4K0s2Xtd6bXQi+XZpNiDlKNssaVL0
+         9Bqw==
+X-Gm-Message-State: AOAM5325ONrw0cQe4hBhfDAxd33BW6pdfFTeVYjMxqtJp7NpLe8HOiZm
+        ZVKrflm278BMilr1eL7nRld9PLOh55otOZtL
+X-Google-Smtp-Source: ABdhPJz3/OZOyp/t3SBNk/Xl3q0rAGlb80cj8tSYGJBFmQzfC5TgSgbinL39KJCiZM+8ebj7fwvHwA==
+X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr13400834wmh.9.1616363217170;
+        Sun, 21 Mar 2021 14:46:57 -0700 (PDT)
+Received: from localhost.localdomain ([46.109.162.86])
+        by smtp.gmail.com with ESMTPSA id p12sm17651849wrx.28.2021.03.21.14.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 14:46:56 -0700 (PDT)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-kernel@vger.kernel.org, ce3g8jdj@umail.furryterror.org,
+        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
+Date:   Sun, 21 Mar 2021 23:49:39 +0200
+Message-Id: <20210321214939.6984-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210317012054.238334-1-davispuh@gmail.com>
+References: <20210317012054.238334-1-davispuh@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xwA4.Gdm1ru6LnNX+E1nfnF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xwA4.Gdm1ru6LnNX+E1nfnF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Currently if there's any corruption at all in extent tree
+(eg. even single bit) then mounting will fail with:
+"failed to read block groups: -5" (-EIO)
+It happens because we immediately abort on first error when
+searching in extent tree for block groups.
 
-Hi Vlastimil,
+Now with this patch if `ignorebadroots` option is specified
+then we handle such case and continue by removing already
+created block groups and creating dummy block groups.
 
-On Fri, 19 Mar 2021 19:01:28 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> Andrew, please add this -fix
-> Thanks.
->=20
-> ----8<----
-> From f97312224278839321a5ff9be2b8487553a97c63 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Fri, 19 Mar 2021 18:56:50 +0100
-> Subject: [PATCH] selftests: add a kselftest for SLUB debugging
->  functionality-fix
->=20
-> Remove a BUILD_BUG_ON left over from original resiliency_test() that brea=
-ks
-> builds.
->=20
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  lib/test_slub.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/lib/test_slub.c b/lib/test_slub.c
-> index 0075d9b44251..b7ad6c0b07a6 100644
-> --- a/lib/test_slub.c
-> +++ b/lib/test_slub.c
-> @@ -97,9 +97,6 @@ static void __init test_clobber_redzone_free(void)
-> =20
->  static void __init resiliency_test(void)
->  {
-> -
-> -	BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 || KMALLOC_SHIFT_HIGH < 10);
-> -
->  	pr_err("SLUB resiliency testing\n");
->  	pr_err("-----------------------\n");
->  	pr_err("A. Corruption after allocation\n");
-> --=20
-> 2.30.2
->=20
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+---
+ fs/btrfs/block-group.c | 20 ++++++++++++++++++++
+ fs/btrfs/disk-io.c     |  4 ++--
+ fs/btrfs/disk-io.h     |  2 ++
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
-Added to linux-next today.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 48ebc106a606..f485cf14c2f8 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2048,6 +2048,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 	ret = check_chunk_block_group_mappings(info);
+ error:
+ 	btrfs_free_path(path);
++
++	if (ret == -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
++
++		if (btrfs_super_log_root(info->super_copy) != 0) {
++			btrfs_warn(info, "Ignoring tree-log replay due to extent tree corruption!");
++			btrfs_set_super_log_root(info->super_copy, 0);
++		}
++
++		btrfs_put_block_group_cache(info);
++		btrfs_stop_all_workers(info);
++		btrfs_free_block_groups(info);
++		ret = btrfs_init_workqueues(info, NULL);
++		if (ret)
++			return ret;
++		ret = btrfs_init_space_info(info);
++		if (ret)
++			return ret;
++		return fill_dummy_bgs(info);
++	}
++
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 07a2b4f69b10..dc744f76d075 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1955,7 +1955,7 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
+ }
+ 
+ /* helper to cleanup workers */
+-static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ {
+ 	btrfs_destroy_workqueue(fs_info->fixup_workers);
+ 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
+@@ -2122,7 +2122,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
+ 	mutex_init(&fs_info->qgroup_rescan_lock);
+ }
+ 
+-static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 		struct btrfs_fs_devices *fs_devices)
+ {
+ 	u32 max_active = fs_info->thread_pool_size;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index e45057c0c016..f9bfcba86a04 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -137,6 +137,8 @@ int btrfs_find_free_objectid(struct btrfs_root *root, u64 *objectid);
+ int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid);
+ int __init btrfs_end_io_wq_init(void);
+ void __cold btrfs_end_io_wq_exit(void);
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs_devices *fs_devices);
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ void btrfs_set_buffer_lockdep_class(u64 objectid,
+-- 
+2.30.2
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xwA4.Gdm1ru6LnNX+E1nfnF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBXvzoACgkQAVBC80lX
-0GyPswf+J23Z6wvsxqMz+OJYmNuDS4Z6KKjBPPtwcBELjSE/fcSvgEQYrD5VkzXT
-NGcoSk70rtbit2693ClReevlcs8YvJCSVIsg4k+otGq9xil6PrlMeDy4QU0m7x42
-ARDW+5ivwSez9VZOrn/hEBOUqf1qjz6qo2l75z842EwByjCqWubpoFRU1vWAdOmE
-SPWp97eBenTKq8Jo1B1g9mmrbF9G/J2p3vKicctGO8zI6HLy+uu/3hki+fY5rX8Z
-wnekVdcTuJIIueiYYJWdv1plrVGY2iKciAao0OkIX5fHOpC9n1yq4v7XSlmtTDbA
-NktLLuuGxlEGG1Ry2Gxba7+4/D57OA==
-=80aU
------END PGP SIGNATURE-----
-
---Sig_/xwA4.Gdm1ru6LnNX+E1nfnF--
