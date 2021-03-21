@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD6C3430A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 03:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EBB3430A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 03:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCUCYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 22:24:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13649 "EHLO
+        id S229897AbhCUCZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 22:25:05 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14113 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCUCXn (ORCPT
+        with ESMTP id S230060AbhCUCYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 22:23:43 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F31Zx08ftzmb3n;
-        Sun, 21 Mar 2021 10:21:13 +0800 (CST)
+        Sat, 20 Mar 2021 22:24:45 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F31ck6jwkz19G1W;
+        Sun, 21 Mar 2021 10:22:46 +0800 (CST)
 Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 21 Mar 2021 10:23:35 +0800
-Subject: Re: [PATCH 5.10 00/13] 5.10.25-rc1 review
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 21 Mar 2021 10:24:39 +0800
+Subject: Re: [PATCH 4.19 0/8] 4.19.182-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
@@ -26,14 +26,14 @@ CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
         <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
         <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
         <stable@vger.kernel.org>
-References: <20210319121745.112612545@linuxfoundation.org>
+References: <20210319121744.114946147@linuxfoundation.org>
 From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <5c223d25-208d-ce63-1e4f-629998665bf2@huawei.com>
-Date:   Sun, 21 Mar 2021 10:23:35 +0800
+Message-ID: <750c457f-2a59-1e80-193e-fbdd00d5efb0@huawei.com>
+Date:   Sun, 21 Mar 2021 10:24:39 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210319121745.112612545@linuxfoundation.org>
+In-Reply-To: <20210319121744.114946147@linuxfoundation.org>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,8 +46,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 2021/3/19 20:18, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.25 release.
-> There are 13 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.19.182 release.
+> There are 8 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -55,9 +55,9 @@ On 2021/3/19 20:18, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.25-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.182-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
 > and the diffstat can be found below.
 > 
 > thanks,
@@ -65,20 +65,20 @@ On 2021/3/19 20:18, Greg Kroah-Hartman wrote:
 > greg k-h
 > 
 
-Tested on arm64 and x86 for 5.10.25,
+Tested on arm64 and x86 for 4.19.182-rc1,
 
 Kernel repo:
 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.25
-Commit: 3ba56f490c7ab26974806f8c2f14fc49652efe10
+Branch: linux-4.19.y
+Version: 4.19.182-rc1
+Commit: 7281e11121f6fb47ea1e757b7781c5c15e3781fe
 Compiler: gcc version 7.3.0 (GCC)
 
 arm64:
 --------------------------------------------------------------------
 Testcase Result Summary:
-total: 4721
-passed: 4721
+total: 4688
+passed: 4688
 failed: 0
 timeout: 0
 --------------------------------------------------------------------
@@ -86,8 +86,8 @@ timeout: 0
 x86:
 --------------------------------------------------------------------
 Testcase Result Summary:
-total: 4721
-passed: 4721
+total: 4688
+passed: 4688
 failed: 0
 timeout: 0
 --------------------------------------------------------------------
