@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0160F34308A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 02:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA1B34308C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 02:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhCUBnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 21:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
+        id S230016AbhCUBqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 21:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCUBml (ORCPT
+        with ESMTP id S229787AbhCUBqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 21:42:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56484C061574;
-        Sat, 20 Mar 2021 18:42:41 -0700 (PDT)
+        Sat, 20 Mar 2021 21:46:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0104CC061574;
+        Sat, 20 Mar 2021 18:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
+        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OHbnhUmSKXKUNQXDuUhAYkDR4SHYPZJ41RILLR4eq0o=; b=WJD6WJqsGwCY3P1j5e3ovPL//F
-        5RbS0a3Lg88hg9MB0jYULiy/rFKJzbGCbrOapYTb266XbbyKA8CTrtvek66/nG33VaFg7VdMBRbZR
-        rnPMGsBm9j06adyP+A8QTZhRk0UEwOFu8zRa/WX5OeKUuZ+8YrF+LcaXS/z87nWR3tKlZ6cwW0Syp
-        kq9Y5/xMHFDtxNLwNsH9lKI3RuLMynoTNQK4hzK4Vqwfsf9J1ZXgGgduQBDRr8PlJm3OFdHS6ZrwQ
-        3fhRurJFVDu4wmnenxltcI7MoWu83uWJo+ueqXyOwnSdoY74gjndAyvqk62MAvIAKmI/huMjFZFAX
-        h7v56bTQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNn6Q-006Ymd-I3; Sun, 21 Mar 2021 01:42:05 +0000
-Date:   Sun, 21 Mar 2021 01:42:02 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        David Wysochanski <dwysocha@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 08/28] netfs: Provide readahead and readpage netfs
- helpers
-Message-ID: <20210321014202.GF3420@casper.infradead.org>
-References: <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
- <161539537375.286939.16642940088716990995.stgit@warthog.procyon.org.uk>
+        bh=2heULiZzRc9ya4FMm4sJf9hBa2CE3wvw1PQn8pY8k/c=; b=kVuWUxbMnCfTbN3+D71TED1rYk
+        H3UbMAgc9Iq5PEzR9vW3ZIzK8H2N7imI49gh1LkBR+el7Lh/S5ZBs5Yo0LyOjGw22sFa5cyeY3nO4
+        jp5fKt+wXego/5ADJiZtJXNEZFzEJDnI3A9+uSEn9Dxmg+zOHVvwACGRhlKuSijUngz9+duLVnWuc
+        36vK0U09Se/o32yQZHGgyw88R2eOv5VAQ/rK3GQjKMVoqVCZGafh9ehLMcEOCUD96IqGOAAVqal+A
+        nDuWvl7SXTVuvEBRcGtkI165uPgE1301umoSv/Fk6VR6w+2iuZiM4OlRKR7/YK3Fm7KB62rySRgAk
+        BsKzsbmw==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNnA9-0028Jk-Qw; Sun, 21 Mar 2021 01:45:54 +0000
+Date:   Sat, 20 Mar 2021 18:45:53 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Rudimentary typo fix
+In-Reply-To: <20210321005755.26660-1-unixbhaskar@gmail.com>
+Message-ID: <94a3b75e-834a-9bc8-ee31-8278e28d3d34@bombadil.infradead.org>
+References: <20210321005755.26660-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161539537375.286939.16642940088716990995.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Sender: Randy Dunlap <rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210320_184553_896885_0201B717 
+X-CRM114-Status: GOOD (  13.12  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/archictures/architectures/
+    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
+    Dunlap <rdunlap@infradead.org> 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 04:56:13PM +0000, David Howells wrote:
-> +void netfs_readahead(struct readahead_control *ractl,
-> +		     const struct netfs_read_request_ops *ops,
-> +		     void *netfs_priv)
-> +{
-> +	struct netfs_read_request *rreq;
-> +	struct page *page;
-> +	unsigned int debug_index = 0;
-> +
-> +	_enter("%lx,%x", readahead_index(ractl), readahead_count(ractl));
-> +
-> +	if (readahead_count(ractl) == 0)
-> +		goto cleanup;
-> +
-> +	rreq = netfs_alloc_read_request(ops, netfs_priv, ractl->file);
-> +	if (!rreq)
-> +		goto cleanup;
-> +	rreq->mapping	= ractl->mapping;
-> +	rreq->start	= readahead_pos(ractl);
-> +	rreq->len	= readahead_length(ractl);
-> +
-> +	netfs_rreq_expand(rreq, ractl);
-> +
-> +	atomic_set(&rreq->nr_rd_ops, 1);
-> +	do {
-> +		if (!netfs_rreq_submit_slice(rreq, &debug_index))
-> +			break;
-> +
-> +	} while (rreq->submitted < rreq->len);
-> +
-> +	while ((page = readahead_page(ractl)))
-> +		put_page(page);
 
-You don't need this pair of lines (unless I'm missing something).
-read_pages() in mm/readahead.c puts the reference and unlocks any
-pages which are not read by the readahead op.  Indeed, I think doing
-this is buggy because you don't unlock the page.
 
-> +	/* If we decrement nr_rd_ops to 0, the ref belongs to us. */
-> +	if (atomic_dec_and_test(&rreq->nr_rd_ops))
-> +		netfs_rreq_assess(rreq, false);
-> +	return;
-> +
-> +cleanup:
-> +	if (netfs_priv)
-> +		ops->cleanup(ractl->mapping, netfs_priv);
-> +	return;
-> +}
-> +EXPORT_SYMBOL(netfs_readahead);
+On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
 
-> +int netfs_readpage(struct file *file,
-> +		   struct page *page,
-> +		   const struct netfs_read_request_ops *ops,
-> +		   void *netfs_priv)
-> +{
-> +	struct netfs_read_request *rreq;
-> +	unsigned int debug_index = 0;
-> +	int ret;
-> +
-> +	_enter("%lx", page->index);
-> +
-> +	rreq = netfs_alloc_read_request(ops, netfs_priv, file);
-> +	if (!rreq) {
-> +		if (netfs_priv)
-> +			ops->cleanup(netfs_priv, page->mapping);
-> +		unlock_page(page);
-> +		return -ENOMEM;
-> +	}
-> +	rreq->mapping	= page->mapping;
+>
+> s/archictures/architectures/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-FYI, this isn't going to work with swap-over-NFS.  You have to use
-page_file_mapping().
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> +	rreq->start	= page->index * PAGE_SIZE;
 
-and page_index() here.
-
-I rather dislike it that swap-over-NFS uses readpage which makes this
-need to exist.  If somebody were to switch SWP_FS_OPS to using kiocbs,
-some of this pain could go away.
-
+> ---
+> tools/perf/builtin-stat.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 2e2e4a8345ea..5cc5eeae6ade 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1705,7 +1705,7 @@ static int add_default_attributes(void)
+> 	bzero(&errinfo, sizeof(errinfo));
+> 	if (transaction_run) {
+> 		/* Handle -T as -M transaction. Once platform specific metrics
+> -		 * support has been added to the json files, all archictures
+> +		 * support has been added to the json files, all architectures
+> 		 * will use this approach. To determine transaction support
+> 		 * on an architecture test for such a metric name.
+> 		 */
+> --
+> 2.30.1
+>
+>
