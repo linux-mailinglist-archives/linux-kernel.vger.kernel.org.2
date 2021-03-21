@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AE3343083
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 02:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE67343085
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 02:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCUBiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 21:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        id S229961AbhCUBmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 21:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCUBht (ORCPT
+        with ESMTP id S229787AbhCUBl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 21:37:49 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5932C061574;
-        Sat, 20 Mar 2021 18:37:48 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t20so4747000plr.13;
-        Sat, 20 Mar 2021 18:37:48 -0700 (PDT)
+        Sat, 20 Mar 2021 21:41:58 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1380C061574;
+        Sat, 20 Mar 2021 18:41:57 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id v3so11597915ilj.12;
+        Sat, 20 Mar 2021 18:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+NrUwEQ+bsoIs8jVM+ts0cRMowyDewcITmqnPWt/Y4Y=;
-        b=tOitYwU4FwouPApfi+54lpDK8KVwEYlJZCxj/X9jllVPWNJkYYuJZilOh29WCps1FQ
-         WvnWpEaSG6sCWmtZwEpoCRfAk7hIUZPYvRJIORZ4UMy/KMCHJg7uViBTwZAZH7dQhrp3
-         S3B5PZkeQ+JBokP2ww8QJMNWoLDvUkKCKsvNJWKt1JdgDxAlnfJJWQneyplolEGv9yas
-         VF4T8G8e2htiZQB7IsQhZEvBwz2QBiOftnOOBnySUCxnFj2C23SjzzWevWeD+IpDs6H6
-         HFRhFr3A7GUm74M8D/cdGaNf9/oce5465NRjmV3B1+BDhbsYB9G9P38BVCzqqz7BgsCL
-         wuvQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ESm/lcAtyH6vOOdrN20V7/6mrqkNWK2PhIRlFX72nnk=;
+        b=Slcomi9lRemWi45PXjS7tTUbBS1JZHYQfYXhgBxhP+9jVcYoUxSw1zNCF+6hI0dpvE
+         OpAVg5Fx6KjZ8rzlCo/9+eq1Qppy/d6PoMe5dGg3tSUvPlTorilWuAKVSW/UZPe2qCc5
+         W4bT4ORI2HSrfhMWqb97uTHncbWKD7kBJLDcir/Yl4tYuhjCeHLA3Dkose3m0oKwkzpd
+         wJD7JA+0pMDDEb6BGh3etKeK6MQuwJZsQOS9FgrtaP//Gd6BhsGnU0QldhL5P9ewYxSS
+         BvUU79N8p2MN2law69tklUsqCjH4/pNoalQgbinJI7FeLXHK0ciK0W8d1AZfE4JWbkEW
+         wXiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+NrUwEQ+bsoIs8jVM+ts0cRMowyDewcITmqnPWt/Y4Y=;
-        b=Rc9XnTZS0keebxw0yW+89QFGPiTDAZoyqNmPcZoHc1iY8RBZ6VUSbPfBK3eDe1vSDS
-         LAtjdNxg9QinxaBbrulvJz+J7rs6lUQN9w8k8r0IZ9E1zafDM1yC/ohjQ+6HBu/BgYtQ
-         Zf5Fpv9FOE1/ZmUYG0lLHhrjf7AZ/sCCCk3arL9Atlq/20NhzGmCL3chFqlge84KJdYb
-         hvmXIjKd/k69SbJ+qJ+EQpizuTES8BWi40DoOPVY0dMEAHY2C8pczd+hVuUMLKxJgUzA
-         FcJcYfk6A7io2FkTQk/vADh6/Xsq28+UTGEAMKOkJoMrcZwzTJgqXP8dGCa+bTtFHmWm
-         2IIQ==
-X-Gm-Message-State: AOAM532Xr5uznlYu+FNh923VY2SGoyOTYgsbFXuUVQB/lxNDEM3ZLMe3
-        E78oDEbB5++nqDUMIgj8yfleGLkN0JM=
-X-Google-Smtp-Source: ABdhPJww7xF7N21im+Enw3eLfpYtACF+f9CpIrNFHlwPCdfjhq4FuJmm6pFTUtUVaWjxUIbSSWA//A==
-X-Received: by 2002:a17:90a:458b:: with SMTP id v11mr5722369pjg.189.1616290667226;
-        Sat, 20 Mar 2021 18:37:47 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i1sm9650016pfo.160.2021.03.20.18.37.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Mar 2021 18:37:46 -0700 (PDT)
-Subject: Re: [PATCH net-next] dsa: simplify Kconfig symbols and dependencies
-To:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210319154617.187222-1-alobakin@pm.me>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f0114c48-7bfe-1d08-e8c6-ef7f1a60d313@gmail.com>
-Date:   Sat, 20 Mar 2021 18:37:38 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ESm/lcAtyH6vOOdrN20V7/6mrqkNWK2PhIRlFX72nnk=;
+        b=Agpi9aTfjgm9qpWfyXpVnOpMep4n78Zq75mLY9IkRT5am0QbftPW724VZCCafSH2+S
+         jFixLKEjDgcMXS4vU3KM6AWaPGT2fTQSL2eatcO/t9hSOFOzOtxBWqqPpP7cc70tU6KS
+         6hoVmtBE7v96RHL7ii1pl9EDhC6UhPNkKbuTtx4xBeomCeuo1beLbswi1xekhJzPlrjR
+         L6SMpSeIIECDFHxYuZkQ/P1vx7J3hHKYVExD9vDVCDLbHxNM7mx8rYJSdvMgAiHoMq/W
+         nwKYPPoWa30oK7LXq4MnzyvN08oeqzuD+TjgbgngJtziiLyWdABfj89wNFSEHpqJN4kK
+         5axQ==
+X-Gm-Message-State: AOAM533S4b3rKqDytAuQxIIlosEVIT8DKs9igj0lAB1Ki1z2ADZQRq2/
+        U3z5hPkGcsvCix9zetn4R7q+MvHGNfvsKJU8/Vs=
+X-Google-Smtp-Source: ABdhPJxNeIjqHTvGCd7IurM2wlzsVlmtt6xN0OLxtQkRnmCvjdQMcxkQ0T6588MjsLSkCQny4bHDaSB87LL3nLoSd/I=
+X-Received: by 2002:a92:d6cf:: with SMTP id z15mr7156094ilp.40.1616290917099;
+ Sat, 20 Mar 2021 18:41:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319154617.187222-1-alobakin@pm.me>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210316022740.132-1-alistair@alistair23.me> <20210316022740.132-3-alistair@alistair23.me>
+ <20210319130615.k2y6u7otnzbs3hpx@pengutronix.de>
+In-Reply-To: <20210319130615.k2y6u7otnzbs3hpx@pengutronix.de>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Sat, 20 Mar 2021 21:40:05 -0400
+Message-ID: <CAKmqyKOxnXb5Pvbs=ikm_YqvRHrC03s3QU51cfwpw9C4+EWQFw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] ARM: imx7d-remarkable2.dts: Initial device tree
+ for reMarkable2
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 9:06 AM Marco Felsch <m.felsch@pengutronix.de> wrote:
+>
+> Hi Alistair,
+>
+> the patch looks quite good only a few notes inline.
+>
+> PS: It would be cool to have a log to previous patch versions.
 
+I'm not sure how I could add that, I will add a changelog for this
+version though.
 
-On 3/19/2021 8:46 AM, Alexander Lobakin wrote:
-> 1. Remove CONFIG_HAVE_NET_DSA.
-> 
-> CONFIG_HAVE_NET_DSA is a legacy leftover from the times when drivers
-> should have selected CONFIG_NET_DSA manually.
-> Currently, all drivers has explicit 'depends on NET_DSA', so this is
-> no more needed.
-> 
-> 2. CONFIG_HAVE_NET_DSA dependencies became CONFIG_NET_DSA's ones.
-> 
->  - dropped !S390 dependency which was introduced to be sure NET_DSA
->    can select CONFIG_PHYLIB. DSA migrated to Phylink almost 3 years
->    ago and the PHY library itself doesn't depend on !S390 since
->    commit 870a2b5e4fcd ("phylib: remove !S390 dependeny from Kconfig");
->  - INET dependency is kept to be sure we can select NET_SWITCHDEV;
->  - NETDEVICES dependency is kept to be sure we can select PHYLINK.
-> 
-> 3. DSA drivers menu now depends on NET_DSA.
-> 
-> Instead on 'depends on NET_DSA' on every single driver, the entire
-> menu now depends on it. This eliminates a lot of duplicated lines
-> from Kconfig with no loss (when CONFIG_NET_DSA=m, drivers also can
-> be only m or n).
-> This also has a nice side effect that there's no more empty menu on
-> configurations without DSA.
-> 
-> 4. Kbuild will now descend into 'drivers/net/dsa' only when
->    CONFIG_NET_DSA is y or m.
-> 
-> This is safe since no objects inside this folder can be built without
-> DSA core, as well as when CONFIG_NET_DSA=m, no objects can be
-> built-in.
-> 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>
+> On 21-03-15 22:27, Alistair Francis wrote:
+>
+> ...
+>
+> > +&crypto {
+> > +     status = "disabled";
+> > +};
+>
+> Why do you disable the crypto subsystem?
+>
+> > +&dma_apbh {
+> > +     status = "disabled";
+> > +};
+>
+> Why do you disable this dma controller?
+>
+> > +
+> > +&sdma {
+> > +     status = "okay";
+> > +};
+>
+> This is the default state so you can drop this node.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+You are right, these are all just left over from the vendor DT, I have
+removed all 3.
+
+Alistair
+
+>
+> Regards,
+>   Marco
