@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2753430C9
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE513430C8
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhCUDuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 23:50:02 -0400
-Received: from [198.145.29.99] ([198.145.29.99]:48774 "EHLO mail.kernel.org"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S229834AbhCUDtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 23:49:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6417D61934
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 03:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616298526;
-        bh=+8YE7y/YSZgHrNvzwVhgChZcApXUwgfjd8Riuw6hYcc=;
-        h=From:Date:Subject:To:From;
-        b=s4dfSmafrPTZcb/SrOJOtZyNCSs4yCAZXoBj2nW6bkqspGV1JqFXriw0XTN1SeJTr
-         hp802iq3pePrSuWUUmXZ2384aUgvHxb1WoJHE1sHGt9/FXUq7tgRsMWYF6FDvwgVCw
-         j4rt82dHErNxGFcowFalI6F52g8dK1P/zWc8Kd97OMV6DXi8PztryKbmZ6VSAmiAvH
-         WGBVf6PZd5sBjzBTDjuUhVjR9FLJRFHEvQUduWAgcKAeJ0AmyIGXi76Y8YQTqgqZ0u
-         lAqhsuvpfCPmIsfppYyHG3LcD4x9ZUTRqZ2OuKo0Kw6Y4a1ngqfY0sST3HZQsq+Wqn
-         9uB4EOAAX2YnQ==
-Received: by mail-ed1-f42.google.com with SMTP id y6so15346795eds.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:48:46 -0700 (PDT)
-X-Gm-Message-State: AOAM530UtEgz6fT5jCaI1Z69ucIjJPOG2gue9Du5yJlP54t+lPoYTEdQ
-        4cUFdgDnt9iT5pmy8RFv5IcSWx5h/wdz5UHLPxA23w==
-X-Google-Smtp-Source: ABdhPJxdBic9TpvbjrDK9gci5p/l6RzjCDIrJZmR2Gdzn1E5tLqLPAgdkqXOqNIolK04Cx88Tz6VqT9BVO7Wv0W1y74=
-X-Received: by 2002:aa7:c353:: with SMTP id j19mr18340895edr.263.1616298524972;
- Sat, 20 Mar 2021 20:48:44 -0700 (PDT)
+        id S229871AbhCUDt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 23:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCUDs5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 23:48:57 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D09EC061574;
+        Sat, 20 Mar 2021 20:48:57 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id y2so7510290qtw.13;
+        Sat, 20 Mar 2021 20:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RyB7Cj5ghAs4zslIymp809ee3iouAj8eNfXiQ4STLI4=;
+        b=KWAzdrZL+s51E7Ah72wUko6U8y/SsBrYU7jCFtItfCQTZO7FeZUkPjgDhBvNLfNOVc
+         fLQ4mIt7Iv53957EGgve4IlvEmayUKPou3ggkxFX8voH90TkogUwnCDZzIKJsbWqrPo8
+         5vV59x4DxNeFSei0gj9i59XmLzXdV5lrwYfxDP7YAGZGggD08iYMX0wCj7vypez/aVIL
+         nOUxKrT7rRK42eQGngSFcvhZzXy4bun7k7iRjcJl0khh/bC51qlH/NG9FmdR7GdMJWgb
+         rEROKBhbyAoImfNqXh/qHnZ/TqG0SxSk8l4uzOx4Gk5MfPs5UE92Jr9xk9MuiFs+u0JN
+         kC/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RyB7Cj5ghAs4zslIymp809ee3iouAj8eNfXiQ4STLI4=;
+        b=YWcnCCDs13NZBZNY3We639XY/xhR9/sIVSrGHPfvBzCA26il3a2WkV/QGyN8Sa+OXM
+         d4uxOq5F61X55Om4lErCAbMg3a6VSoeEKN4jOh5eW3JPvl4tuC40w1oUrV85qUMf4UTu
+         YDgtv0KwmHXYhzJyHT+JzMbgpMzsZyxrg5vXn6JnQLP/Glo9UaadRklRQCVNW55i6Cbj
+         VOFy8caV2N/dJ+Vjy96luS1GUhshDIOp9+tB7POOI29IsQf386HRHHjDlgECvd6J0HZQ
+         2Q6mJ3r90wrUBpT6vDB8InD431pBpPa9gWjMq14xBF9sHMRMpH93FxW9Vcf01+f1pLL1
+         8mnA==
+X-Gm-Message-State: AOAM5304BAkWmpN1+4bEXpo57PQRIyDsTatoaFIprcFgw/ZBKwC4K2Fg
+        aihB8x9mnFgo9JDZDY4kwBI=
+X-Google-Smtp-Source: ABdhPJwFNr0x0BqjXjmYSJ/MGzJzhwtj4XVbBKRYdXbf3qpyBsfXIORj3VhNeBl7Px90Mi9VjdYxOw==
+X-Received: by 2002:ac8:7b4b:: with SMTP id m11mr5021176qtu.276.1616298536394;
+        Sat, 20 Mar 2021 20:48:56 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.26])
+        by smtp.gmail.com with ESMTPSA id k126sm8217938qkb.4.2021.03.20.20.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 20:48:55 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] security: A typo fix
+Date:   Sun, 21 Mar 2021 09:18:44 +0530
+Message-Id: <20210321034844.28316-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 20 Mar 2021 20:48:34 -0700
-X-Gmail-Original-Message-ID: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
-Message-ID: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
-Subject: Is s390's new generic-using syscall code actually correct?
-To:     Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, X86 ML <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all-
+s/acessed/accessed/
 
-I'm working on my kentry patchset, and I encountered:
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+  Two comment block delimiter automatically delete themselve and created
+  themselves ..wondering..I hope that won't be problem,is it?
+ security/device_cgroup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-commit 56e62a73702836017564eaacd5212e4d0fa1c01d
-Author: Sven Schnelle <svens@linux.ibm.com>
-Date:   Sat Nov 21 11:14:56 2020 +0100
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index 04375df52fc9..c2c052512472 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -404,14 +404,14 @@ static bool verify_new_ex(struct dev_cgroup *dev_cgroup,
+ 			/*
+ 			 * new exception in the child doesn't matter, only
+ 			 * adding extra restrictions
+-			 */
++			 */
+ 			return true;
+ 		} else {
+ 			/*
+ 			 * new exception in the child will add more devices
+-			 * that can be acessed, so it can't match any of
++			 * that can be accessed, so it can't match any of
+ 			 * parent's exceptions, even slightly
+-			 */
++			 */
+ 			match = match_exception_partial(&dev_cgroup->exceptions,
+ 							refex->type,
+ 							refex->major,
+--
+2.20.1
 
-    s390: convert to generic entry
-
-As part of this work, I was cleaning up the generic syscall helpers,
-and I encountered the goodies in do_syscall() and __do_syscall().
-
-I'm trying to wrap my head around the current code, and I'm rather confused.
-
-1. syscall_exit_to_user_mode_work() does *all* the exit work, not just
-the syscall exit work.  So a do_syscall() that gets called twice will
-do the loopy part of the exit work (e.g. signal handling) twice.  Is
-this intentional?  If so, why?
-
-2. I don't understand how this PIF_SYSCALL_RESTART thing is supposed
-to work.  Looking at the code in Linus' tree, if a signal is pending
-and a syscall returns -ERESTARTSYS, the syscall will return back to
-do_syscall().  The work (as in (1)) gets run, calling do_signal(),
-which will notice -ERESTARTSYS and set PIF_SYSCALL_RESTART.
-Presumably it will also push the signal frame onto the stack and aim
-the return address at the svc instruction mentioned in the commit
-message from "s390: convert to generic entry".  Then __do_syscall()
-will turn interrupts back on and loop right back into do_syscall().
-That seems incorrect.
-
-Can you enlighten me?  My WIP tree is here:
-https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/log/?h=x86/kentry
-
-Here are my changes to s390, and I don't think they're really correct:
-
-
-https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/diff/arch/s390/kernel/syscall.c?h=x86/kentry&id=58a459922be0fb8e0f17aeaebcb0ac8d0575a62c
