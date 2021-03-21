@@ -2,92 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFB3343210
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 12:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD49343213
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 12:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCULCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 07:02:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56732 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCULCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 07:02:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F12DFACA8;
-        Sun, 21 Mar 2021 11:02:00 +0000 (UTC)
-Date:   Sun, 21 Mar 2021 12:01:58 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v5.12-rc4
-Message-ID: <20210321110158.GA14211@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S229897AbhCULFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 07:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCULE5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 07:04:57 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73132C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 04:04:57 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id bf3so15927045edb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 04:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8pbSHoOc4fdbEmSmiSG1Rc1zJ6Vo+wX1h1aVlPgdpxQ=;
+        b=TFrOc3y6fE6WVMQzcw5ZSat+UP1VZf4xVGkAH9McSR/CRL8zo/CbAx1Phy681QQ3xZ
+         IX0JgOzzYmM1oAvOawijWUnf0NW4iVNcZtcBtOCQfIsIFCpOfNomPF6RB7VDT9zLHrBq
+         EMd7qkmVGhEXIK0vTetvTuuVv8TI6cYtiMQo7TxDBlE8hfEeC7JZu+HMu/2ChVsf7D90
+         nl7grNbHuz5JPSDXrjFrztfwIYB/+51dNzl4tqczsrjvnzs8fpKRNJYpG5z1kZY7x6Ue
+         cBv4KoTgqFrXI9dGb1vNrvdV2HiuPCSL9nCpdyyHkAJ/Cjmv5GUHyDW1Q3XuKh7HKc7d
+         yZYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8pbSHoOc4fdbEmSmiSG1Rc1zJ6Vo+wX1h1aVlPgdpxQ=;
+        b=mqD+Y4IcGX7ODHbh7iZxB88v+8D+FrDPCmnYZOXfLmfiS09mxO4n8A4sLgT66OwmlS
+         7pGzKogHosYANDfBXGOfmvenJV2ZopvVMnMAkL9N2ZxnGQ1kO3ryvSBDaKhHVY+3wV52
+         1wYnhRcDHONMVmtkA+R/rYrPq/WjS8CUpe4WRfoDhrWANzxRlCmel/SzlLL7PrnxqqBd
+         ubNHrVWeeSnM+DvpLXmgt+RFRnOpWvwnhuGyqiu1T7yAd6ICizYafRlPOckS0Pnj7UBZ
+         4jgOGXEPEc2YZJAejY+R0jx4PiMCqRHpx2AvQakufFRPGdWugwfXy+4r6PE+rAnME+71
+         MFVQ==
+X-Gm-Message-State: AOAM532POJ+0R95pGEZSKxwUrtiIaiIl5glKTLIRRpz/Jjldn02ZJcxs
+        +23Op6lA4tIFqik72QKZToRnqQ==
+X-Google-Smtp-Source: ABdhPJyJ+ucISqC14qWVE5aQwMAabKowr89pwwN8mGomfk/kl0g2xJPav4RKOyPIA5QeyEaB0ZOmpA==
+X-Received: by 2002:aa7:c7c5:: with SMTP id o5mr19889227eds.31.1616324695913;
+        Sun, 21 Mar 2021 04:04:55 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id s6sm6901887ejx.83.2021.03.21.04.04.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Mar 2021 04:04:55 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [RFC PATCH v2 00/11] bfq: introduce bfq.ioprio for cgroup
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <cover.1615517202.git.brookxu@tencent.com>
+Date:   Sun, 21 Mar 2021 12:04:53 +0100
+Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F64D5CC8-E650-4AE6-8452-7FA0C1976271@linaro.org>
+References: <cover.1615517202.git.brookxu@tencent.com>
+To:     brookxu <brookxu.cn@gmail.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull the freshest pile of shiny x86/urgent fixes for 5.12.
 
-Thx.
+> Il giorno 12 mar 2021, alle ore 12:08, brookxu <brookxu.cn@gmail.com> =
+ha scritto:
+>=20
+> From: Chunguang Xu <brookxu@tencent.com>
+>=20
 
----
+Hi Chunguang,
 
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
+> Tasks in the production environment can be roughly divided into
+> three categories: emergency tasks, ordinary tasks and offline
+> tasks. Emergency tasks need to be scheduled in real time, such
+> as system agents. Offline tasks do not need to guarantee QoS,
+> but can improve system resource utilization during system idle
+> periods, such as background tasks. The above requirements need
+> to achieve IO preemption. At present, we can use weights to
+> simulate IO preemption, but since weights are more of a shared
+> concept, they cannot be simulated well. For example, the weights
+> of emergency tasks and ordinary tasks cannot be determined well,
+> offline tasks (with the same weight) actually occupy different
+> resources on disks with different performance, and the tail
+> latency caused by offline tasks cannot be well controlled. Using
+> ioprio's concept of preemption, we can solve the above problems
+> very well. Since ioprio will eventually be converted to weight,
+> using ioprio alone can also achieve weight isolation within the
+> same class. But we can still use bfq.weight to control resource,
+> achieving better IO Qos control.
+>=20
+> However, currently the class of bfq_group is always be class, and
+> the ioprio class of the task can only be reflected in a single
+> cgroup. We cannot guarantee that real-time tasks in a cgroup are
+> scheduled in time. Therefore, we introduce bfq.ioprio, which
+> allows us to configure ioprio class for cgroup. In this way, we
+> can ensure that the real-time tasks of a cgroup can be scheduled
+> in time. Similarly, the processing of offline task groups can
+> also be simpler.
+>=20
 
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
+I find this contribution very interesting.  Anyway, given the
+relevance of such a contribution, I'd like to hear from relevant
+people (Jens, Tejun, ...?), before revising individual patches.
 
-are available in the Git repository at:
+Yet I already have a general question.  How does this mechanism comply
+with per-process ioprios and ioprio classes?  For example, what
+happens if a process belongs to BE-class group according to your
+mechanism, but to a RT class according to its ioprio?  Does the
+pre-group class dominate the per-process class?  Is all clean and
+predictable?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.12-rc4
+> The bfq.ioprio interface now is available for cgroup v1 and cgroup
+> v2. Users can configure the ioprio for cgroup through this interface,
+> as shown below:
+>=20
+> echo "1 2"> blkio.bfq.ioprio
 
-for you to fetch changes up to dd926880da8dbbe409e709c1d3c1620729a94732:
+Wouldn't it be nicer to have acronyms for classes (RT, BE, IDLE),
+instead of numbers?
 
-  x86/apic/of: Fix CPU devicetree-node lookups (2021-03-19 23:01:49 +0100)
+Thank you very much for this improvement proposal,
+Paolo
 
-----------------------------------------------------------------
-- Add the arch-specific mapping between physical and logical CPUs to fix
-devicetree-node lookups.
+>=20
+> The above two values respectively represent the values of ioprio
+> class and ioprio for cgroup. The ioprio of tasks within the cgroup
+> is uniformly equal to the ioprio of the cgroup. If the ioprio of
+> the cgroup is disabled, the ioprio of the task remains the same,
+> usually from io_context.
+>=20
+> When testing, using fio and fio_generate_plots we can clearly see
+> that the IO delay of the task satisfies RT> BE> IDLE. When RT is
+> running, BE and IDLE are guaranteed minimum bandwidth. When used
+> with bfq.weight, we can also isolate the resource within the same
+> class.
+>=20
+> The test process is as follows:
+> # prepare data disk
+> mount /dev/sdb /data1
+>=20
+> # create cgroup v1 hierarchy
+> cd /sys/fs/cgroup/blkio
+> mkdir rt be idle
+> echo "1 0" > rt/blkio.bfq.ioprio
+> echo "2 0" > be/blkio.bfq.ioprio
+> echo "3 0" > idle/blkio.bfq.ioprio
+>=20
+> # run fio test
+> fio fio.ini
+>=20
+> # generate svg graph
+> fio_generate_plots res
+>=20
+> The contents of fio.ini are as follows:
+> [global]
+> ioengine=3Dlibaio
+> group_reporting=3D1
+> log_avg_msec=3D500
+> direct=3D1
+> time_based=3D1
+> iodepth=3D16
+> size=3D100M
+> rw=3Dwrite
+> bs=3D1M
+> [rt]
+> name=3Drt
+> write_bw_log=3Drt
+> write_lat_log=3Drt
+> write_iops_log=3Drt
+> filename=3D/data1/rt.bin
+> cgroup=3Drt
+> runtime=3D30s
+> nice=3D-10
+> [be]
+> name=3Dbe
+> new_group
+> write_bw_log=3Dbe
+> write_lat_log=3Dbe
+> write_iops_log=3Dbe
+> filename=3D/data1/be.bin
+> cgroup=3Dbe
+> runtime=3D60s
+> [idle]
+> name=3Didle
+> new_group
+> write_bw_log=3Didle
+> write_lat_log=3Didle
+> write_iops_log=3Didle
+> filename=3D/data1/idle.bin
+> cgroup=3Didle
+> runtime=3D90s
+>=20
+> V2:
+> 1. Optmise bfq_select_next_class().
+> 2. Introduce bfq_group [] to track the number of groups for each =
+CLASS.
+> 3. Optimse IO injection, EMQ and Idle mechanism for CLASS_RT.
+>=20
+> Chunguang Xu (11):
+>  bfq: introduce bfq_entity_to_bfqg helper method
+>  bfq: limit the IO depth of idle_class to 1
+>  bfq: keep the minimun bandwidth for be_class
+>  bfq: expire other class if CLASS_RT is waiting
+>  bfq: optimse IO injection for CLASS_RT
+>  bfq: disallow idle if CLASS_RT waiting for service
+>  bfq: disallow merge CLASS_RT with other class
+>  bfq: introduce bfq.ioprio for cgroup
+>  bfq: convert the type of bfq_group.bfqd to bfq_data*
+>  bfq: remove unnecessary initialization logic
+>  bfq: optimize the calculation of bfq_weight_to_ioprio()
+>=20
+> block/bfq-cgroup.c  |  99 +++++++++++++++++++++++++++++++----
+> block/bfq-iosched.c |  47 ++++++++++++++---
+> block/bfq-iosched.h |  28 ++++++++--
+> block/bfq-wf2q.c    | 124 +++++++++++++++++++++++++++++++++-----------
+> 4 files changed, 244 insertions(+), 54 deletions(-)
+>=20
+> --=20
+> 2.30.0
+>=20
 
-- Restore the IRQ2 ignore logic
-
-- Fix get_nr_restart_syscall() to return the correct restart syscall number.
-Split in a 4-patches set to avoid kABI breakage when backporting to dead
-kernels.
-
-----------------------------------------------------------------
-Johan Hovold (1):
-      x86/apic/of: Fix CPU devicetree-node lookups
-
-Oleg Nesterov (4):
-      kernel, fs: Introduce and use set_restart_fn() and arch_set_restart_data()
-      x86: Move TS_COMPAT back to asm/thread_info.h
-      x86: Introduce TS_COMPAT_RESTART to fix get_nr_restart_syscall()
-      x86: Introduce restart_block->arch_data to remove TS_COMPAT_RESTART
-
-Thomas Gleixner (1):
-      x86/ioapic: Ignore IRQ2 again
-
- arch/x86/include/asm/processor.h   |  9 ---------
- arch/x86/include/asm/thread_info.h | 15 ++++++++++++++-
- arch/x86/kernel/apic/apic.c        |  5 +++++
- arch/x86/kernel/apic/io_apic.c     | 10 ++++++++++
- arch/x86/kernel/signal.c           | 24 +-----------------------
- fs/select.c                        | 10 ++++------
- include/linux/restart_block.h      |  1 +
- include/linux/thread_info.h        | 13 +++++++++++++
- kernel/futex.c                     |  3 +--
- kernel/time/alarmtimer.c           |  2 +-
- kernel/time/hrtimer.c              |  2 +-
- kernel/time/posix-cpu-timers.c     |  2 +-
- 12 files changed, 52 insertions(+), 44 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
