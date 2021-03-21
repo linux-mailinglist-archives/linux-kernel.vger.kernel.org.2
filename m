@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AA934350A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2D834350F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhCUVnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbhCUVnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:43:15 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07066C061574;
-        Sun, 21 Mar 2021 14:43:14 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e33so7358127pgm.13;
-        Sun, 21 Mar 2021 14:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6lljKH+lDULzki+SahZ8fivj9j6DdHhqc8M0ppuQ1QI=;
-        b=AyKgGoek6Hmg/KrUL+ccMAcVdumd89yfTKyuIWEaW7q2f7Ref3BaaJ8MHta4APJE5V
-         DlOfkaNtU42qASQQxmDAUiOh5mN9LCUGpD/VtKTE+EqSmMyzstmNIaaaMPWdLQZEsGOR
-         QuNcILj1lHbLRqgVRHeIdCXl8+BZsMjEPNzgXV0mkefUjh5lfNsIG81rAu3cbOMbn8PG
-         IyhDZ2uuoAddzDOAFwssWqjm5RSkoeZ77j4gnkJrLqdgTuDOUIF+9p7eJooXINftk9/T
-         ojlajNnGD8K937lMQMBedYIb1VaQnoYqwo59/6YK8FnrzBPyCMX3BIDZKTfJyp+7S9D/
-         bo4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6lljKH+lDULzki+SahZ8fivj9j6DdHhqc8M0ppuQ1QI=;
-        b=nJZkTiVhSvM4PeM3GZAbheZe/LHhcTN9g3XDnC7Ix1E0d0MfjqNVj8YoHH9AotV94a
-         byScdw7KxWqz7au+C2VaWXyoXday7ff9tQTHY7nsFI0CVFiW8a63N7Gbb9u1jQYfxUoW
-         bu27tKGyji89700H2Dw/LX0QJce1s+WYc9B9gUIT/fKDEq0n/EBsEsxIeZyv0REv4lpS
-         +2nnJPfp3lTT1MM8O/cfGPyCQFrz8eIS3MolKm9Me4lVz83FSWNL03fgqJEhUbnewPDw
-         jdPNB+mtOQV/pa134dDODaalQ1uqpHyFkU8HFEvMiRo/9kuspcz7nkgCP9rnBPWyQffQ
-         fYqw==
-X-Gm-Message-State: AOAM532JuBK1Cw8CoR6T+QPihmjlJYaozXZLtMsga1pzZWNrvNb8+A7l
-        zrIcxQsS8QiMAJEzITZ+p6xOrA0DXmk=
-X-Google-Smtp-Source: ABdhPJxmAXdgeEH0OYGHce8wWYJPHB2t+bQ33TrK/xzKbKY+gQkGD++ufpgbmKYSUEFPFybwuPrc8w==
-X-Received: by 2002:a63:d704:: with SMTP id d4mr19742608pgg.221.1616362994422;
-        Sun, 21 Mar 2021 14:43:14 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
-        by smtp.gmail.com with ESMTPSA id 6sm12243826pfv.179.2021.03.21.14.43.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 14:43:13 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 14:43:09 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v3 7/9] Input: wacom_i2c - Add support for vdd regulator
-Message-ID: <YFe97R+swzXmzn7b@google.com>
-References: <20210321141049.148-1-alistair@alistair23.me>
- <20210321141049.148-8-alistair@alistair23.me>
+        id S231406AbhCUVs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:48:56 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44755 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231388AbhCUVss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 17:48:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3WV36cX0z9sVb;
+        Mon, 22 Mar 2021 08:48:43 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616363326;
+        bh=8c4uVwI2rJbWaLIKFQY5LtweLwNmoqXVhQ0ScRe9ykY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WlVoyOk0tETScR7x8LodmJXot/RoiqfZmujx201yibfs7xLMm7tJVAGWGX1DhbecK
+         Q2bsuGb0q2Bcs7oS2zfcBCCi9x2nTFlv9C9Or1qk+FA6qM6qOL7nHT38H8gtu+UFx6
+         OPBOmYdiZZiLVvDVuERcDkbTuvOKrWg/6UryJ4YrPNxTEHGNzK5kZZaVCKb6DPF8Im
+         7/N8lJ1ghr+wzmeVjZE3GFQ7a+52Bd2+RzW+Tup/zV0kVnZolle760Q0icYF56k244
+         vi+NCiKlxoZBMFy7Wi0T4tlMvg7kS4QhKye/vDCKqNmVtd8RmjyYfPKJcOa3lEW8Hr
+         UljP6gwjAxCKg==
+Date:   Mon, 22 Mar 2021 08:48:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, glittao@gmail.com,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: arm64: compiler_types.h:320:38: error: call to
+ __compiletime_assert_417
+Message-ID: <20210322084842.23f9ce0e@canb.auug.org.au>
+In-Reply-To: <53cc267d-aa0a-071a-f9f8-0b47ec4b2b9d@suse.cz>
+References: <CA+G9fYu-t_JwoBVXKhiDUY-FRdX3F3LgbDw9bFeiuciwC70TaQ@mail.gmail.com>
+        <53cc267d-aa0a-071a-f9f8-0b47ec4b2b9d@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321141049.148-8-alistair@alistair23.me>
+Content-Type: multipart/signed; boundary="Sig_/xwA4.Gdm1ru6LnNX+E1nfnF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 10:10:47AM -0400, Alistair Francis wrote:
-> Add support for a VDD regulator. This allows the kernel to prove the
-> Wacom-I2C device on the rM2.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+--Sig_/xwA4.Gdm1ru6LnNX+E1nfnF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Vlastimil,
+
+On Fri, 19 Mar 2021 19:01:28 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> Andrew, please add this -fix
+> Thanks.
+>=20
+> ----8<----
+> From f97312224278839321a5ff9be2b8487553a97c63 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Fri, 19 Mar 2021 18:56:50 +0100
+> Subject: [PATCH] selftests: add a kselftest for SLUB debugging
+>  functionality-fix
+>=20
+> Remove a BUILD_BUG_ON left over from original resiliency_test() that brea=
+ks
+> builds.
+>=20
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  drivers/input/touchscreen/wacom_i2c.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 7aa0d1c3dbc9..00db516fa3de 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -13,6 +13,7 @@
->  #include <linux/irq.h>
->  #include <linux/input/touchscreen.h>
->  #include <linux/interrupt.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/of.h>
->  #include <asm/unaligned.h>
-> @@ -56,6 +57,7 @@ struct wacom_i2c {
->  	struct i2c_client *client;
->  	struct input_dev *input;
->  	struct touchscreen_properties props;
-> +	struct regulator *vdd;
->  	u8 data[WACOM_QUERY_SIZE];
->  	bool prox;
->  	int tool;
-> @@ -203,11 +205,29 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  	struct wacom_features features = { 0 };
->  	int error;
->  
-> +	wac_i2c = kzalloc(sizeof(*wac_i2c), GFP_KERNEL);
-> +	if (!wac_i2c)
-> +		return -ENOMEM;
-> +
->  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
->  		dev_err(&client->dev, "i2c_check_functionality error\n");
->  		return -EIO;
+>  lib/test_slub.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/lib/test_slub.c b/lib/test_slub.c
+> index 0075d9b44251..b7ad6c0b07a6 100644
+> --- a/lib/test_slub.c
+> +++ b/lib/test_slub.c
+> @@ -97,9 +97,6 @@ static void __init test_clobber_redzone_free(void)
+> =20
+>  static void __init resiliency_test(void)
+>  {
+> -
+> -	BUILD_BUG_ON(KMALLOC_MIN_SIZE > 16 || KMALLOC_SHIFT_HIGH < 10);
+> -
+>  	pr_err("SLUB resiliency testing\n");
+>  	pr_err("-----------------------\n");
+>  	pr_err("A. Corruption after allocation\n");
+> --=20
+> 2.30.2
+>=20
 
-You are leaking memory here. Additionally, I do not see you removing the
-original allocation below, so I think you end up with 2 instances of
-structure wacom_i2c.
+Added to linux-next today.
 
-Thanks.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Dmitry
+--Sig_/xwA4.Gdm1ru6LnNX+E1nfnF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBXvzoACgkQAVBC80lX
+0GyPswf+J23Z6wvsxqMz+OJYmNuDS4Z6KKjBPPtwcBELjSE/fcSvgEQYrD5VkzXT
+NGcoSk70rtbit2693ClReevlcs8YvJCSVIsg4k+otGq9xil6PrlMeDy4QU0m7x42
+ARDW+5ivwSez9VZOrn/hEBOUqf1qjz6qo2l75z842EwByjCqWubpoFRU1vWAdOmE
+SPWp97eBenTKq8Jo1B1g9mmrbF9G/J2p3vKicctGO8zI6HLy+uu/3hki+fY5rX8Z
+wnekVdcTuJIIueiYYJWdv1plrVGY2iKciAao0OkIX5fHOpC9n1yq4v7XSlmtTDbA
+NktLLuuGxlEGG1Ry2Gxba7+4/D57OA==
+=80aU
+-----END PGP SIGNATURE-----
+
+--Sig_/xwA4.Gdm1ru6LnNX+E1nfnF--
