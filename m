@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129EB34353C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FFA34353D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhCUVzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S231678AbhCUV5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhCUVzM (ORCPT
+        with ESMTP id S231684AbhCUV40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:55:12 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE2DC061574;
-        Sun, 21 Mar 2021 14:55:12 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id 94so11047563qtc.0;
-        Sun, 21 Mar 2021 14:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/XStqP8D36CZJzw2TftI54Ck6LfKQaVMF+TC1pFq5UY=;
-        b=boTqQ/9S6wam0P8nPn8btJusb093uXNIQ+5szswt4fPF0puRU1LwUoRPlSnbGlSVnf
-         PG2rgmLg5ihl/HCy5l6yfzUd8TRaVTUDRyrRS1H1ZN87AK52jtsVD71/Pc/KZTdQLxDc
-         Wp5oIZI69GG7YfRRGgLa4owGJIvKKbA9o8TvAOWvQvd/A3MKF5iNQOs6fjw6q9R7zHDp
-         CMnjcoMcruP8lRHGDsx+Qwwphj2+AiLyk0LSQndypvb8zSM6Q53FFa3+B68Htng8VvfO
-         3EZJAhcrCniYhwdqvXwn1cXMpcdyfjpVfAwsNMEci4jRkx3E9kV5CyaOmbXCN7Dxz73k
-         xafA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/XStqP8D36CZJzw2TftI54Ck6LfKQaVMF+TC1pFq5UY=;
-        b=jnRcepvG01cOaWeIsE+ib/BimKG58xKnhVPwEp5wOvA58s2svqLJWuNreKxoJIkwpA
-         bMota5QQt4TBAryjgwKn196ea74EbVYAbkLZrHyfLUDCgno9S10M0nEfvBc+h3Dam1g0
-         xQTqf8dXoBsi8qFDQMI2vimVJW212wcE+KmqKdQ/f6Gja4WZA0eSeC4TWxE8+N1bjl1X
-         r8JLBecwsSxJV6f0ZOL3Y5LtAGAj7O35ML/6jqd+CKd415MDyKoxCVVs8AlQdC1h/BtR
-         9w06aYyDt1qxCUtLbiWwek9rOVBlaDnucKgNQcW4J1QEzozzDqMTjmAaOLeL/gxVECb6
-         pRww==
-X-Gm-Message-State: AOAM533dkTkfKsccc+j11M6r1nwh6zeudnP1iNMTo98YVRlxv34kwJSw
-        /THKMhnGt19uakB1WROiehF/4lS6HCA=
-X-Google-Smtp-Source: ABdhPJzuEUoa9KmXdMY9wULzE4YA/lfRLKC+pxc4pScjCeblaVmy7HRsyA9lMPhMUxxsJ6k5t5/hJw==
-X-Received: by 2002:ac8:6790:: with SMTP id b16mr7160203qtp.379.1616363711463;
-        Sun, 21 Mar 2021 14:55:11 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id r133sm9655356qke.20.2021.03.21.14.55.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 14:55:11 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 12/12] MAINTAINERS: Add entry for the bitmap API
-Date:   Sun, 21 Mar 2021 14:54:57 -0700
-Message-Id: <20210321215457.588554-13-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210321215457.588554-1-yury.norov@gmail.com>
-References: <20210321215457.588554-1-yury.norov@gmail.com>
+        Sun, 21 Mar 2021 17:56:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575E2C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 14:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:References:
+        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZKVzlnXlMJEe8ElFXRtjSh1k6bid7k0NG9SIS5uR8PA=; b=FZAYHZPHPR6Pue1/rnrR5Gngoq
+        PzYViBmcz1y0iNsH+IWNLM2pgd1sGeEfLUx4qv4qUmql6HvRQi7bvcskp1tNO8aUhbvlxb4+nvL3+
+        NGMmZrR0394lNgG7l/+1mgOHyDytF58BmQlHnzg6dHpwZrS+Ci4ozRWmX8FJcL8i/4E8Usuh/SzmN
+        hNb09MB9uRWJKFhAYf6/SHN6aQRlwPZ/CCvSqjqIiMtJpZ14KX57Pj0p+x6uDpvgWT+jvcf+ZYQjg
+        vDMOyxGl2hyMbHF6aSWB/HNgN8esOue0uzuxfevalj3RfVGYCkufi10vjOgijZh3/cIE3x4gxjaIq
+        WN8SzdLA==;
+Received: from rdunlap (helo=localhost)
+        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
+        id 1lO63R-002Wfn-HO; Sun, 21 Mar 2021 21:56:14 +0000
+Date:   Sun, 21 Mar 2021 14:56:13 -0700 (PDT)
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/entry: Fix a typo
+In-Reply-To: <20210321201345.994577-1-unixbhaskar@gmail.com>
+Message-ID: <cdbd84e4-6099-3ab1-aa44-1f78ab93de1@infradead.org>
+References: <20210321201345.994577-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20210321_145613_599994_491A5967 
+X-CRM114-Status: GOOD (  13.70  )
+X-Spam-Score: -0.0 (/)
+X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote: > > s/swishes/switch/
+    should be 'switches' 
+ Content analysis details:   (-0.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- MAINTAINERS | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38ee5c1a7c3a..62be169be25a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3163,6 +3163,22 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BITMAP API
-+M:	Yury Norov <yury.norov@gmail.com>
-+R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-+S:	Maintained
-+F:	include/asm-generic/bitops/find.h
-+F:	include/linux/bitmap.h
-+F:	lib/bitmap.c
-+F:	lib/find_bit.c
-+F:	lib/find_bit_benchmark.c
-+F:	lib/test_bitmap.c
-+F:	tools/include/asm-generic/bitops/find.h
-+F:	tools/include/linux/bitmap.h
-+F:	tools/lib/bitmap.c
-+F:	tools/lib/find_bit.c
-+
- BLINKM RGB LED DRIVER
- M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
- S:	Maintained
--- 
-2.25.1
+On Mon, 22 Mar 2021, Bhaskar Chowdhury wrote:
 
+>
+> s/swishes/switch/
+
+should be 'switches'
+
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+> arch/x86/entry/entry_32.S | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+> index 4554a27a2747..c1fe264900e9 100644
+> --- a/arch/x86/entry/entry_32.S
+> +++ b/arch/x86/entry/entry_32.S
+> @@ -1107,7 +1107,7 @@ SYM_FUNC_END(entry_INT80_32)
+>  * Switch back for ESPFIX stack to the normal zerobased stack
+>  *
+>  * We can't call C functions using the ESPFIX stack. This code reads
+> - * the high word of the segment base from the GDT and swishes to the
+> + * the high word of the segment base from the GDT and switch to the
+>  * normal stack and adjusts ESP with the matching offset.
+>  *
+>  * We might be on user CR3 here, so percpu data is not mapped and we can't
+> --
+> 2.31.0
+>
+>
