@@ -2,101 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0F134333F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E395343342
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhCUPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 11:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        id S230368AbhCUPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 11:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbhCUPke (ORCPT
+        with ESMTP id S230115AbhCUPmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 11:40:34 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57605C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 08:40:34 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b10so11322255iot.4
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 08:40:34 -0700 (PDT)
+        Sun, 21 Mar 2021 11:42:39 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB14C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 08:42:39 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id q11so5273655pld.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 08:42:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xFEl7zRd1y3+Yjl6YpSAci6EecEvaghk0CRZeU1EYug=;
-        b=iwAvu2rH2NjnO6TRux4mQwSWkzaQ4bB6mc4ycyeLkNw8QB03szvHYT/JO1FvM/sLIV
-         ZJ8ZptUPACF/qtJFVQIf2IlRKGmNmDUhtbu3Sjh4DZBvVKMBviIS9LVGZhcVPZnAmfsf
-         ozPBsGvZA9z+swXBKk1rqdzrOfqQ+gysyHJn8g5J5jjQhsoJdw54KFUJwD94ZF9z9gSb
-         ombiis1gU8zNwIt5vMwBj9jev1OWzXmyad6ZPSsrI/Q0qrXkjfBeVBiljs+Gg74Kf5zg
-         XKduTsMFv52c1+fftEbqOkDgR+jDXBzGKLK6WIW8Gfhkc0GFsZQYQTqef+T0lJdSmy4c
-         GFkA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lfjjDnUJu9opPPSvQVQubITocISsFGgS1UWLUqrIkKA=;
+        b=2Q4EYjPPArir5nkhENmAqet6f7qHsv+Fd0FeFVmw9hhZRfkEXbnUUQjDkz2ovHu3Fv
+         CLgenqXPoHqF/MtNiJ/GCf1NUNW/yMsohywIk0spdMmjpgcq4FG28nDcOQCPqkc6nuOA
+         44YxEIUkOavNg+lt0Jn7q5R0u5yyW0pZPo/z9dy50yllOMZcImxM0xgWn0eqSTWoWPiT
+         ot5sn5G07FOsMrUgli1JPU2WEdPpQa231UTywAfBwcg2rl8Hd7YxR3E0kedGBhcq0mFp
+         whHxeDJacp/3JHCR3tGVWe7WuQhTixcw6HSYq055Qdi6XS7kHRhKnKNq8FNEUiHdoVdg
+         ZaEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xFEl7zRd1y3+Yjl6YpSAci6EecEvaghk0CRZeU1EYug=;
-        b=oCyx121Xyhqx+8A8Rno6bw0Z4DMYZCNg53Mos/o9Bk8nx0lu/BkQvtcXsGnemT5dNd
-         lsDauzYYzrgtEZFCJB3186pLjBMVgC12UE+Xdy2gx7Mermc7S8zHyGhyeyG90aYERD6E
-         dYBkXX/+Uy+ghNe+RBmMyl59m+zdeXC3ESRvo64+xx00Fn9gn+Y7NVSMtp2YLsFCM3Qg
-         rOrtTnHIDUi6IMUEdfYzlIeZAh4yW/tdPa47jX0lzJYYRp5RQcnXLQiWtOImuhGq/KVG
-         v/WIidP42iaSe/7WN9QUE8iUzoIccJ4gPz5At2oDkTjuIaxu0RTswCrsfWZ5bAzhzP/m
-         lO2g==
-X-Gm-Message-State: AOAM532hOE73eYTN3nFsZneQtE/fwwqny+UQ4NEDezgzl77idTSts1pq
-        vyiH+dpTV+7VFNg1SYDqpqvy7RU2LGHjHbGYsBk=
-X-Google-Smtp-Source: ABdhPJxfezZGN6S4kSlRC4d9WhjUyi4Cow0vVF3nxcd2+q7qH4p7tHEO6zD4Xw2kRMyi5eZwojtKgLAX75USekNds84=
-X-Received: by 2002:a02:3085:: with SMTP id q127mr7954477jaq.137.1616341233776;
- Sun, 21 Mar 2021 08:40:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lfjjDnUJu9opPPSvQVQubITocISsFGgS1UWLUqrIkKA=;
+        b=GTl4udfGJiF/5PdCIRw9qY28aU7mmmniqfX8Lqk9Ii8jJQ4kgyb8wi257uzZgb1K8a
+         lXmREsK1OTl7RHshMn7M3qeH2HUUS/HkLvAbiMHuI5Qp+F6FnsOddqP8tqTjS3C+WYXC
+         XJysd4oAACW0eVhr9g1JktGWTqMoCISaOCZkaxddzcHQdNZquQUG9+eR04PXnor0NMjB
+         DcAe1QqtiqFHiujxWk97qY3uUgtCdIA7IacavhjeDHd/1bFBOVxDKfKHB+z7lqOdHNaF
+         7fctkmWUSCr39UCoW7YrsAoeqsiDBBnrVnSGv3gXko4kpRZLsfMnFi61Ba7YP5X+mxMe
+         +AIg==
+X-Gm-Message-State: AOAM5316zizMoIkZ49ZAorg7WeVDZSosz68mCUCszVA30IxsuDuys/9h
+        sBomGBNiAJJNu7ZpIr/l8dd6Vg==
+X-Google-Smtp-Source: ABdhPJzmQLX2cg+/nJ82cLk9xUY3UiFH3iaFNYt6lVtZkHB0fyjrGJ0Qn8wtyIc26JtTTa9teUqtbQ==
+X-Received: by 2002:a17:90a:b392:: with SMTP id e18mr8771052pjr.66.1616341358593;
+        Sun, 21 Mar 2021 08:42:38 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id w2sm10522754pgh.54.2021.03.21.08.42.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 08:42:38 -0700 (PDT)
+Subject: Re: [PATCHSET 0/2] PF_IO_WORKER signal tweaks
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, criu@openvz.org
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+ <m14kh5aj0n.fsf@fess.ebiederm.org>
+ <CAHk-=whyL6prwWR0GdgxLZm_w-QWwo7jPw_DkEGYFbMeCdo8YQ@mail.gmail.com>
+ <CAHk-=wh3DCgezr5RKQ4Mqffoj-F4i47rp85Q4MSFRNhrr8tg3w@mail.gmail.com>
+ <m1im5l5vi5.fsf@fess.ebiederm.org>
+ <907b36b6-a022-019a-34ea-58ce46dc2d12@kernel.dk>
+ <m135wo5yd3.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <718e91db-5f0b-9aed-7b65-9d41c9f9f8f4@kernel.dk>
+Date:   Sun, 21 Mar 2021 09:42:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210320222337.243368-1-ztong0001@gmail.com> <s5htup4exbl.wl-tiwai@suse.de>
-In-Reply-To: <s5htup4exbl.wl-tiwai@suse.de>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Sun, 21 Mar 2021 11:40:23 -0400
-Message-ID: <CAA5qM4CTdeLN894V9RTsx5kUdYC5g_OsHeyBWqpCwZcQoUZi5w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] ALSA: hdsp and hdspm, don't disable device if not enabled
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jasmin Fazlic <superfassl@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
-        Tom Rix <trix@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <m135wo5yd3.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 4:16 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Sat, 20 Mar 2021 23:23:33 +0100,
-> Tong Zhang wrote:
-> >
-> > This series fixes issues in hdsp and hdspm. The drivers in question want
-> > to disable a device that is not enabled on error path.
-> >
-> > v2: add fix to rme9652
-> >
-> > Tong Zhang (3):
-> >   ALSA: hdsp: don't disable if not enabled
-> >   ALSA: hdspm: don't disable if not enabled
-> >   ALSA: rme9652: don't disable if not enabled
->
-> Thanks for the patches.
->
-> IMO, a safer way for this is to add pci_is_enabled() check in *_free()
-> functions around the call of pci_disable_device().  The point is that
-> *_free() is the sole destructor function that manages all stuff, hence
-> it's better to do all there.  And, of course, it'll be less changes.
->
-> Care to resend v3 patches with that?
->
->
-> thanks,
->
-> Takashi
+On 3/21/21 9:18 AM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 3/20/21 4:08 PM, Eric W. Biederman wrote:
+>>>
+>>> Added criu because I just realized that io_uring (which can open files
+>>> from an io worker thread) looks to require some special handling for
+>>> stopping and freezing processes.  If not in the SIGSTOP case in the
+>>> related cgroup freezer case.
+>>>
+>>> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>>>
+>>>> On Sat, Mar 20, 2021 at 10:51 AM Linus Torvalds
+>>>> <torvalds@linux-foundation.org> wrote:
+>>>>>
+>>>>> Alternatively, make it not use
+>>>>> CLONE_SIGHAND|CLONE_THREAD at all, but that would make it
+>>>>> unnecessarily allocate its own signal state, so that's "cleaner" but
+>>>>> not great either.
+>>>>
+>>>> Thinking some more about that, it would be problematic for things like
+>>>> the resource counters too. They'd be much better shared.
+>>>>
+>>>> Not adding it to the thread list etc might be clever, but feels a bit too scary.
+>>>>
+>>>> So on the whole I think Jens' minor patches to just not have IO helper
+>>>> threads accept signals are probably the right thing to do.
+>>>
+>>> The way I see it we have two options:
+>>>
+>>> 1) Don't ask PF_IO_WORKERs to stop do_signal_stop and in
+>>>    task_join_group_stop.
+>>>
+>>>    The easiest comprehensive implementation looks like just
+>>>    updating task_set_jobctl_pending to treat PF_IO_WORKER
+>>>    as it treats PF_EXITING.
+>>>
+>>> 2) Have the main loop of the kernel thread test for JOBCTL_STOP_PENDING
+>>>    and call into do_signal_stop.
+>>>
+>>> It is a wee bit trickier to modify the io_workers to stop, but it does
+>>> not look prohibitively difficult.
+>>>
+>>> All of the work performed by the io worker is work scheduled via
+>>> io_uring by the process being stopped.
+>>>
+>>> - Is the amount of work performed by the io worker thread sufficiently
+>>>   negligible that we don't care?
+>>>
+>>> - Or is the amount of work performed by the io worker so great that it
+>>>   becomes a way for an errant process to escape SIGSTOP?
+>>>
+>>> As the code is all intermingled with the cgroup_freezer.  I am also
+>>> wondering creating checkpoints needs additional stopping guarantees.
+>>
+>> The work done is the same a syscall, basically. So it could be long
+>> running and essentially not doing anything (eg read from a socket, no
+>> data is there), or it's pretty short lived (eg read from a file, just
+>> waiting on DMA).
+>>
+>> This is outside of my domain of expertise, which is exactly why I added
+>> you and Linus to make some calls on what the best approach here would
+>> be. My two patches obviously go route #1 in terms of STOP. And fwiw,
+>> I tested this:
+>>
+>>> To solve the issue that SIGSTOP is simply broken right now I am totally
+>>> fine with something like:
+>>>
+>>> diff --git a/kernel/signal.c b/kernel/signal.c
+>>> index ba4d1ef39a9e..cb9acdfb32fa 100644
+>>> --- a/kernel/signal.c
+>>> +++ b/kernel/signal.c
+>>> @@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
+>>>  			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
+>>>  	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+>>>  
+>>> -	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
+>>> +	if (unlikely(fatal_signal_pending(task) ||
+>>> +		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
+>>>  		return false;
+>>>  
+>>>  	if (mask & JOBCTL_STOP_SIGMASK)
+>>
+>> and can confirm it works fine for me with 2/2 reverted and this applied
+>> instead.
+>>
+>>> Which just keeps from creating unstoppable processes today.  I am just
+>>> not convinced that is what we want as a long term solution.
+>>
+>> How about we go with either my 2/2 or yours above to at least ensure we
+>> don't leave workers looping as schedule() is a nop with sigpending? If
+>> there's a longer timeline concern that "evading" SIGSTOP is a concern, I
+>> have absolutely no qualms with making the IO threads participate. But
+>> since it seems conceptually simple but with potentially lurking minor
+>> issues, probably not the ideal approach for right now.
+> 
+> 
+> Here is the signoff for mine.
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> Yours misses the joining of group stop during fork.  So we better use
+> mine.
 
-Thanks Takashi.
-I made some changes and sent them as v3.
-- Tong
+I've updated it and attributed it to you, here is is:
+
+https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.12&id=4db4b1a0d1779dc159f7b87feb97030ec0b12597
+
+> As far as I can see that fixes the outstanding bugs.
+
+Great!
+
+> Jens can you make a proper patch out of it and send it to Linus for
+> -rc4?  I unfortunately have other commitments and this is all I can do
+> for today.
+
+Will do - I'm going to sanity run the current branch and do a followup
+pull request for Linus once I've verified everything is still sane.
+
+-- 
+Jens Axboe
+
