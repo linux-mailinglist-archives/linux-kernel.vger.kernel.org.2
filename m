@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F18343561
+	by mail.lfdr.de (Postfix) with ESMTP id C9123343562
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 23:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCUWX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 18:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhCUWXf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 18:23:35 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73383C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 15:23:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i26so2483565lfl.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 15:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=i7OJny7/V4yyN/9dZgPTdsmWzXvmlB1MW2uAwUkn2+s=;
-        b=B/10k1C91cCh8kg0GCGhNkTzShrZ5dExD69Lo83DjznVBnM26bOjhTQX6KFKpcZQvH
-         ukWoMudn/nOrhi+B9rap0AqKvpSacrhZSZgxsY4tslHKjR62aTQsbfsBPrs7ZoQ1D7vz
-         K2ZXmL9FHG+I9Zfcj95YMMDTnukP2SXN7ViwA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i7OJny7/V4yyN/9dZgPTdsmWzXvmlB1MW2uAwUkn2+s=;
-        b=H/TgfaTYvltLLXRzHlSiZ+/sQdBuOD81q4yy5lpVZu/dO5RdVqL47e1APEgUQLC9z5
-         Eg60doOl83djbaqIuqTKjgYnjm/AqVWCUkCJfYM9PSn2pYbL9IG5sxlMgf7wkbhXVZwG
-         qYUSHEd8ZTMZ8+FrXhiOamQR2NpO7LqZ5N0SJSvAgNmoNNSz/uWNx72Hr09DWPiwpfIE
-         Ajf2bxjg493SQgFqMRCbcombaLO+k5eG/5l+OQaDLPIio6a/C7I+gC/DQGPAVvErCU84
-         FaOOv76kkPTcfiToLtwbNE9wXXkCQZST6qbptexy4kJrcRJGJL28SwS73Zfcg/mwgOK7
-         ZlQw==
-X-Gm-Message-State: AOAM532uTWHjQNqZgav3/3uXVcSuNKGNzFpt6qIeGViPW4uryJY/thYN
-        ChVGpvN5lOGiHZ4T4tJtcZWmwb0DuImcfg==
-X-Google-Smtp-Source: ABdhPJy4RoLORhjH2JdlnQhGexrBNGCxCPG8LFgo+3/+52zK4aPbCxZnnmspqaBuSeQyqvfiwGK0Iw==
-X-Received: by 2002:ac2:53a3:: with SMTP id j3mr7071692lfh.92.1616365413751;
-        Sun, 21 Mar 2021 15:23:33 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id f22sm1352606lfc.68.2021.03.21.15.23.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Mar 2021 15:23:33 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id r20so18761693ljk.4
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 15:23:33 -0700 (PDT)
-X-Received: by 2002:a2e:9bd0:: with SMTP id w16mr7593653ljj.465.1616365412814;
- Sun, 21 Mar 2021 15:23:32 -0700 (PDT)
+        id S230255AbhCUW3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 18:29:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230114AbhCUW26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 18:28:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A31C6192B;
+        Sun, 21 Mar 2021 22:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616365738;
+        bh=ndidVnIP8iIXzvOnzRc7h9/HahXnNC1cisPzcAopuK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YPq3lhAN0RxwtNZdCneJ4V5jwuPqjtYB0NanzfVgHa2BrKAiKsvVk/IfG87rcwG04
+         Xf9+Jr9v0H9eOV+0KaznzQOCi/qeYUz4HcOdfuQ/ooZWMqOXAX3vCStSfizdo9rkIc
+         m+2PR1vmX4uGwCgTSyN00X4sH7QiCAL9hMDHKrafJTEpFDJvt99+nLSR28uDngC8zi
+         4NaWO+0cv+C0mruDXACeHK3KxV2DXfUbsTt4lMAwH8Lgss7yXgyERzWzwt/tktO9Vn
+         XhnPt2jbe8RvaQA3KbYbCpfYdn25qf/JYuI0+XITj63+jHcR//E/L0bbXtyV2/qT0c
+         BbMVd1lEp+LmA==
+Date:   Sun, 21 Mar 2021 23:28:55 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
+ Tiny RCU grace periods
+Message-ID: <20210321222855.GA863290@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-2-paulmck@kernel.org>
 MIME-Version: 1.0
-References: <YFeQ9eBFn5JELyYo@mit.edu>
-In-Reply-To: <YFeQ9eBFn5JELyYo@mit.edu>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 21 Mar 2021 15:23:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-Message-ID: <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-Subject: Re: [GIT PULL] ext4 fixes for v5.12
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304002632.23870-2-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 11:31 AM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> zhangyi (F) (3):
->       ext4: find old entry again if failed to rename whiteout
->       ext4: do not iput inode under running transaction in ext4_rename()
->       ext4: do not try to set xattr into ea_inode if value is empty
+On Wed, Mar 03, 2021 at 04:26:31PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> There is a need for a non-blocking polling interface for RCU grace
+> periods, so this commit supplies start_poll_synchronize_rcu() and
+> poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> get_state_synchronize_rcu() may be used if future grace periods are
+> inevitable (perhaps due to a later call_rcu() invocation).  The new
+> start_poll_synchronize_rcu() is to be used if future grace periods
+> might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+> provides a lockless check for a grace period having elapsed since
+> the corresponding call to either of the get_state_synchronize_rcu()
+> or start_poll_synchronize_rcu().
+> 
+> As with get_state_synchronize_rcu(), the return value from either
+> get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> to a later call to either poll_state_synchronize_rcu() or the existing
+> (might_sleep) cond_synchronize_rcu().
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  include/linux/rcutiny.h | 11 ++++++-----
+>  kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index 2a97334..69108cf4 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -17,14 +17,15 @@
+>  /* Never flag non-existent other CPUs! */
+>  static inline bool rcu_eqs_special_set(int cpu) { return false; }
+>  
+> -static inline unsigned long get_state_synchronize_rcu(void)
+> -{
+> -	return 0;
+> -}
+> +unsigned long get_state_synchronize_rcu(void);
+> +unsigned long start_poll_synchronize_rcu(void);
+> +bool poll_state_synchronize_rcu(unsigned long oldstate);
+>  
+>  static inline void cond_synchronize_rcu(unsigned long oldstate)
+>  {
+> -	might_sleep();
+> +	if (poll_state_synchronize_rcu(oldstate))
+> +		return;
+> +	synchronize_rcu();
 
-Side note: this is obviously entirely up to the author, but I think it
-would be nice if we would encourage people to use their native names
-if/when they want to.
+Perhaps cond_synchronize_rcu() could stay as it was. If it might
+call synchronize_rcu() then it inherits its constraint to be
+called from a quiescent state.
 
-Maybe this "zhangyi (F)" is how they _want_ to write their name in the
-kernel, and that's obviously fine if so.
-
-But at the same time, coming from Finland, I remember how people who
-had the "odd" characters (=C3=A5=C3=A4=C3=B6) in their name ended up replac=
-ing them
-with the US-ASCII version (generally "aa" "ae" and "oe"), and it
-always just looked bad to a native speaker. Particularly annoying in
-public contexts.
-
-At the same time, for the same reason, I can also understand people
-not wanting to even expose those characters at all, because then
-non-native speakers invariably messed it up even worse...
-
-Anyway, I think and hope that we have the infrastructure to do it
-right not just for Latin1, but the more complex non-Western character
-sets too.
-
-And as a result should possibly encourage people to use their native
-names if they want to. At least make people aware that it _should_
-work.
-
-Again, maybe I'm barking up the wrong tree, and in this case "zhangyi
-(F) <yi.zhang@huawei.com>" is just what zhangyi prefers simply because
-it's easier/more convenient.
-
-But I just wanted to mention it, because we _do_ have examples of it
-working. Not many, but some:
-
-    git log --pretty=3D"%an" --since=3D2.years | sort -u | tail
-
-including examples of having the Westernized name in parenthesis for
-the "use that one if you can't do the real one" case..
-
-            Linus
+Thanks.
