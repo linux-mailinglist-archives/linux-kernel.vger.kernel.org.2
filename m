@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B951834334A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6D034334E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCUPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 11:52:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14414 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhCUPv4 (ORCPT
+        id S230129AbhCUP5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 11:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhCUP5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 11:51:56 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F3MXP3lNbzjLZG;
-        Sun, 21 Mar 2021 23:50:13 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.117) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Sun, 21 Mar 2021
- 23:51:42 +0800
-To:     <schnelle@linux.ibm.com>, <gerald.schaefer@linux.ibm.com>,
-        <bhelgaas@google.com>
-CC:     <linux-s390@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linfeilong <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Subject: [PATCH] pci/hotplug: fix potential memory leak in disable_slot()
-Message-ID: <245c1063-f0cf-551a-b93c-1a0a5ac06eff@huawei.com>
-Date:   Sun, 21 Mar 2021 23:51:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sun, 21 Mar 2021 11:57:20 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42AEC061574;
+        Sun, 21 Mar 2021 08:57:19 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id x82so3891944ybg.5;
+        Sun, 21 Mar 2021 08:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h+sV6kItpzOoxa/owujtpfoPS6Krenk7d7kji7uHD8Y=;
+        b=AXRiArA+N7m+lJjxGLBMGag2x8p+oyrSDX7REudDbmoVllmletHDCbk4133HxY8qZJ
+         ni0/VEQJmwvO+yQ07o/0+GWCD+LN7ox4TtZPB+dYrisoLeBnCwiaB98XbMRq9Mn1aCJD
+         tJJnj4dXKOOGtlja4ejiXofKWuMm1a9yiI+MkfyptEQWiT/risQ4MR5YEhardZVhaZuq
+         hezCwtJiPqzklba5dRBUCldha+Xu7m4hUdJqJhSGB0fy8DsEw33eydU3Eq2g9gGqyrar
+         qNBSZWFDNTu4wjp8sxvu8+txHE6a3tGMJEmVAiRsmCe4uftnxssaJp2Y4GomdhLClMg+
+         mzLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h+sV6kItpzOoxa/owujtpfoPS6Krenk7d7kji7uHD8Y=;
+        b=d0MjvSvuu+1yxIKJiuQqrz2btIbBjDHPGUIivl29Mnj5/7QGbRWuAt5UpjVrxT5emg
+         b+NshiOElbqYPKyMqH/P5X6wjsEUcIEiQeEddvb6zqyHaPsnQms99YdH89s3ITcFrorH
+         zbA0fCGLvYfnbYUI1He4JkPiVsQWjflS6mBX9yUFgIyt08PT6BLi5RKLZGmfSjt+t6hi
+         aHTctx/8zIFYoKXe7pWnNakp8Gc3Mj/Nmi3POC7brznDBkSBKQbuM8g7yPyBRXt4Sehs
+         LomwSGEvUAgL/VL5oQrML8VkQxuQ/xU0H6LPVXTXYSov+8eRhMRUjfljvS0GvGNuJ+HZ
+         5fqQ==
+X-Gm-Message-State: AOAM530+WfRdVGLKLfyyHTDtjP5uHNPRsB50YKtZwLsuQoSfm+L//B9I
+        NQCsLB4hhNpQhBvPJvo2XYYZolBZ+kMP0FZStoU=
+X-Google-Smtp-Source: ABdhPJyjl/4f2AJtPh85RzYT2TXLjMWtWrU4SJXWlj8nLA87oFLQk1DSylUheFSRhE8uSDJ7TOMSyYwVSW52DCNGxBo=
+X-Received: by 2002:a25:3b55:: with SMTP id i82mr19904659yba.422.1616342238952;
+ Sun, 21 Mar 2021 08:57:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.117]
-X-CFilter-Loop: Reflected
+References: <20210319175950.509fcbd0@canb.auug.org.au> <YFS1h6h+71sRlwFR@osiris>
+ <20210320162734.1630cc55@elm.ozlabs.ibm.com> <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
+ <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
+ <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com> <8735woit8r.fsf@mpe.ellerman.id.au>
+In-Reply-To: <8735woit8r.fsf@mpe.ellerman.id.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sun, 21 Mar 2021 16:57:08 +0100
+Message-ID: <CANiq72m986+NTBVAZLVaD=3dg_PVdNx5bV9Uo5hVmgbMtta9BQ@mail.gmail.com>
+Subject: Re: linux-next: Tree for Mar 19
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Axtens <dja@axtens.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Mar 21, 2021 at 1:30 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Yes. But Monday in UTC+11 :)
 
-In disable_slot(), if we obtain desired PCI device
-successfully by calling pci_get_slot(), we should
-call pci_dev_put() to release its reference.
+Yeah :-) I'm on it.
 
-Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Signed-off-by: Feilong Lin <linfeilong@huawei.com>
----
- drivers/pci/hotplug/s390_pci_hpc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/hotplug/s390_pci_hpc.c b/drivers/pci/hotplug/s390_pci_hpc.c
-index c9e790c74051..999a34b6fd50 100644
---- a/drivers/pci/hotplug/s390_pci_hpc.c
-+++ b/drivers/pci/hotplug/s390_pci_hpc.c
-@@ -89,9 +89,11 @@ static int disable_slot(struct hotplug_slot *hotplug_slot)
- 		return -EIO;
-
- 	pdev = pci_get_slot(zdev->zbus->bus, zdev->devfn);
--	if (pdev && pci_num_vf(pdev)) {
-+	if (pdev) {
-+		rc = pci_num_vf(pdev);
- 		pci_dev_put(pdev);
--		return -EBUSY;
-+		if (rc)
-+			return -EBUSY;
- 	}
-
- 	zpci_remove_device(zdev);
--- 
-2.19.1
-
-
+Cheers,
+Miguel
