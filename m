@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F7D343069
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 01:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D12E34306E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 02:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCUAoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 20:44:21 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:50005 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhCUAoN (ORCPT
+        id S229875AbhCUA7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 20:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhCUA6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 20:44:13 -0400
-Received: by mail-il1-f200.google.com with SMTP id k10so21918171ilv.16
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 17:44:13 -0700 (PDT)
+        Sat, 20 Mar 2021 20:58:34 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8E1C061574;
+        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id f12so9808310qtq.4;
+        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
+        b=JMw3ewJMtAVd4yTjqh7ux/RxZgrXnd8KPkfnLkFLrrZULV0hUGPQJmw+bI15dVx3qf
+         CQno9uPhunkDAmloEPQWGpmAVwrDS4kDVv2JqMU7bSmgofRFGHhA5lV6rIcGyPGh/BQg
+         eHlKQE3K1eBpGAj/4bWabWdAAZaqQd5j9xFklJD/11rfk3ogIgbPfXdd9lW/EXOx4aJ2
+         KutK1KefTuxZwW7ozYcwSNMCRT44AQIksSDtEZ+T+3DiQq89Ub5OCEgPcuRa2bqSZMOH
+         VbcsGplWvXC4W9sUXE3ynGNVCXn/+IUd5dBCrULp+QgDlrxVUsj7E1wmUgTH16unBRRP
+         +AIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=uN6lN3GlmonU2JJ7kGA35tYhCyEqkzBSc3SkKsMuimQ=;
-        b=nBqJ8BSF3Tz38x7iL+1PEa0Mc+uCYHEkT++LBTOgpEKcJC8S1p/SglAJ85cm/6py5p
-         cVj0VVk4P0tuwdeGbJLzjdJSdWNAyXRBWnfGOayjNuXzwVVJnmwLQoxGROYUrfqay9Wv
-         sXTQh1vs4/TtnHXSQKyKdoRBT3WP0gDq1ai+jnEGTFPvzH5eIqGcOpYdBigOilbJeFNm
-         uNhTJ752ovWZBsiieaLjrZJtCzjtZfhrJlHFaHnphO7jtR72BULw03Z7enJT+a4TUSim
-         E3LGaQNFyYcF0t/mQYEb7FyeJ+ojDWX+CLfvcbxCbzdqhFXSjR9BJ8K5sUhm3aO37aoA
-         MMGA==
-X-Gm-Message-State: AOAM533WY9Rxm07d+kfMTRoQDNrvZabAOCEQecxCBErbTbue4stsfaxc
-        7+/CtzH9BIHNw2SQCo81KJSIP4ayio0LFf5nmuKzggnOXae+
-X-Google-Smtp-Source: ABdhPJyuklmBVSHUcr3qTbtDdGc0ESSn5ye7nLtlfvoHq7NIbmqEm8UhKgMkAM9CP1GOK3YPq9tniOn+ZZnCs2aa263W9rNq/AtV
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
+        b=HYYzNgtqbT8rB1YLmuzRkSNWcF+Ut9Q3XH8i3kNFI/ClSRuW6iF0+SyIq+uUxgYZoU
+         o3FFdwtzj5PFAHaFNyNY6VJHDiCqRBDH4ycP4BibEPwO23wmyYPqMqlbniVKW6ABAUHA
+         k0q5/5ugdLxQyWiVBkc+hDDiQDg/7nnm5DF2CuWRBSRWc3ZzGresj5MKVC3BJCKRsBzl
+         92zCxn4CsdOFE4M+9vO3SshdBuP0HXzQkie49gYhctd/ApY52P23sXvvzWXrIzgbndvC
+         6nDJSjq0o0VJ3mq3GDwUR/X4bTwoIjrMBzdXZXD7ALI1iIoV2m1IiAU3gnDecWjyjXPu
+         gGQQ==
+X-Gm-Message-State: AOAM532SCrGFcG+yjHDqIzVtL4pXNQPj5hR0i4jgnpypzakzeuqJyJN1
+        Kw41FJb/ask74ZzvYSQMPqg=
+X-Google-Smtp-Source: ABdhPJy96ZtyLWHigXJWo1rfi/ZX7PIoXySFPza2l2ON1lbJNeob/30XoVBuzhl4NZuqS5e9rNh8cw==
+X-Received: by 2002:ac8:4d95:: with SMTP id a21mr4515515qtw.304.1616288313236;
+        Sat, 20 Mar 2021 17:58:33 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.187])
+        by smtp.gmail.com with ESMTPSA id e14sm7748588qka.56.2021.03.20.17.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 17:58:32 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] perf tools: Rudimentary typo fix
+Date:   Sun, 21 Mar 2021 06:27:55 +0530
+Message-Id: <20210321005755.26660-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:635:: with SMTP id h21mr6225772jar.97.1616287452776;
- Sat, 20 Mar 2021 17:44:12 -0700 (PDT)
-Date:   Sat, 20 Mar 2021 17:44:12 -0700
-In-Reply-To: <00000000000020922505bd1c4500@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a49c105be013f72@google.com>
-Subject: Re: [syzbot] WARNING in io_wq_put
-From:   syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13853506d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c51293a9ca630f6d
-dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ec259ed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acfa62d00000
+s/archictures/architectures/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ tools/perf/builtin-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 12892 at fs/io-wq.c:1064 io_wq_destroy fs/io-wq.c:1064 [inline]
-WARNING: CPU: 1 PID: 12892 at fs/io-wq.c:1064 io_wq_put+0x153/0x260 fs/io-wq.c:1075
-Modules linked in:
-CPU: 1 PID: 12892 Comm: syz-executor789 Not tainted 5.12.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_wq_destroy fs/io-wq.c:1064 [inline]
-RIP: 0010:io_wq_put+0x153/0x260 fs/io-wq.c:1075
-Code: 8d e8 f1 5f f2 01 49 89 c4 41 83 fc 40 7d 4f e8 a3 e9 97 ff 42 80 7c 2d 00 00 0f 85 77 ff ff ff e9 7a ff ff ff e8 8d e9 97 ff <0f> 0b eb b9 8d 6b ff 89 ee 09 de bf ff ff ff ff e8 88 ed 97 ff 09
-RSP: 0018:ffffc9000a5efaa0 EFLAGS: 00010293
-RAX: ffffffff81e11103 RBX: ffff888021873040 RCX: ffff88801fbb3880
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000040
-RBP: 1ffff11004b3e480 R08: ffffffff81e1104e R09: ffffed1004b3e482
-R10: ffffed1004b3e482 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffff8880259f2400 R15: ffff888021873000
-FS:  00007f2407204700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000480510 CR3: 000000002d9a1000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_uring_clean_tctx fs/io_uring.c:8874 [inline]
- __io_uring_files_cancel+0xe11/0xe60 fs/io_uring.c:8939
- io_uring_files_cancel include/linux/io_uring.h:22 [inline]
- do_exit+0x258/0x2340 kernel/exit.c:780
- do_group_exit+0x168/0x2d0 kernel/exit.c:922
- get_signal+0x1734/0x1ef0 kernel/signal.c:2773
- arch_do_signal_or_restart+0x3c/0x610 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0xac/0x1e0 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x26/0x70 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x448c49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f24072041f8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000302 RBX: 00000000004cd508 RCX: 0000000000448c49
-RDX: 0000000000000000 RSI: 0000000000000302 RDI: 0000000000000005
-RBP: 00000000004cd500 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cd50c
-R13: 00007ffc6fa9d1bf R14: 00007f2407204300 R15: 0000000000022000
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 2e2e4a8345ea..5cc5eeae6ade 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1705,7 +1705,7 @@ static int add_default_attributes(void)
+ 	bzero(&errinfo, sizeof(errinfo));
+ 	if (transaction_run) {
+ 		/* Handle -T as -M transaction. Once platform specific metrics
+-		 * support has been added to the json files, all archictures
++		 * support has been added to the json files, all architectures
+ 		 * will use this approach. To determine transaction support
+ 		 * on an architecture test for such a metric name.
+ 		 */
+--
+2.30.1
 
