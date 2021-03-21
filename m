@@ -2,211 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA6F343271
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AB0343272
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 13:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCUMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 08:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhCUMaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 08:30:24 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99953C061574;
-        Sun, 21 Mar 2021 05:30:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id w8so6944302pjf.4;
-        Sun, 21 Mar 2021 05:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KfMzPZjWj4vEWxC64jkBmTku/Bg4RYDhn1mRma2jDt8=;
-        b=hegytKpYdRSuP2KRtRXvnXoxRL6o5TUG6vOY4yeXASkte2gkTvZzYhTtSmPnxAq+v9
-         9Hcn68jY5tETkaXali7jJZwmv0qJJ4qKDuqsQ8a/7ddrRCBVr6rqHtAjCCWEmMoSxQ8C
-         xj4AvwuHiarQk0OF3AUhT21yIOgrguIaVndkjaXXDmonXpLrs+xulUoFFlHr7JvvfuqQ
-         ag67lyTseGR3cQkkgmZO5w9Kb3IY4mII+7z3Mz3U8K+LLGglSTA5zny0fZLXhXRrIChW
-         GDcrbjaL8URhLtnkfkr4BuqnJBntGZJ1y1NI4r8LA9fGb9CHVhb0KibU1KZ7Z6Jt34zb
-         AAJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KfMzPZjWj4vEWxC64jkBmTku/Bg4RYDhn1mRma2jDt8=;
-        b=ly/6mNKY3JtSmjp5KZCjhid67A0cPJ9USF/tExkuwPgNPxlPcpuMqhIeon/IKU3iUD
-         WZH/TIXkG6zQP8GFvVx2SzbjA7YNPfv2FN2W59YAwxbv1VMqGpWvC0IKqUOdRWOHNaLm
-         1jDIJ5TN2SJfX0nU3aI324j9q961gOUHlP5gUr3U5jbimpQO0t+1uFLy7P7XKNECeBxA
-         UpgWP7UFxmEp138H1O4xiErcpgHxBO0NLnLQnbuQFPbLLjc3T9NHXQZNcm6HXABGKjhU
-         u4CVt+l/EFMf/sgaG13BhhdxF1aX6vaQUhDckMBN5Y7z+K/4SnWNaSVOlNc2QAa6+XSK
-         AosQ==
-X-Gm-Message-State: AOAM533ff/iBBcxCyFvaWPKuO0Y2MvGn6YDJPi9R4hmfzarg8CBKCpoG
-        F0EwMkkoLhHBiCTCxIScfcrK/5p0lcx5hfo0
-X-Google-Smtp-Source: ABdhPJxrZpRtLJ/jkSAjBSxfQgEgy62uvjYCzEAtSUy2I9ELjZgwt4OUC4GFVa3L3gPwSN14gkfhNg==
-X-Received: by 2002:a17:90a:8c08:: with SMTP id a8mr8252584pjo.136.1616329820543;
-        Sun, 21 Mar 2021 05:30:20 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:4cb7:d0cb:1241:5cf8])
-        by smtp.googlemail.com with ESMTPSA id f135sm10627171pfa.102.2021.03.21.05.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 05:30:20 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com, corbet@lwn.net,
-        rdunlap@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, leitao@debian.org,
-        nayna@linux.ibm.com, pfsmorigo@gmail.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] crypto: nx: fix incorrect kernel-doc comment syntax in files
-Date:   Sun, 21 Mar 2021 18:00:07 +0530
-Message-Id: <20210321123007.15505-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S229903AbhCUMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 08:31:01 -0400
+Received: from ozlabs.org ([203.11.71.1]:58413 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229840AbhCUMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 08:30:56 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3H6K5QSzz9sSC;
+        Sun, 21 Mar 2021 23:30:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1616329854;
+        bh=At0Z8aWmgu7qu0pmLP6lB84s/HhVQBTf0u8fIQCc9C0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=QCylja3G+/AIOHZlJ0VG3XhsXd0Or0z96nmg7md8Aobbqjf6yqN8jdkG8jWO76ghQ
+         Mq1BdgFvd0zWSajzjLyPEu+763wRhFonN4mOnyp14bq/lcnYFfQAK509RtKCBz9XOZ
+         gOaimDWVIjacoeYTFPi4mgotbvbjVJWAbZEv/g5eeroWidSI4q2HCjxNxW22jSc7C1
+         bqnCIjLECceT/m03/4ny2ewgwNlP5PM+qJ9fSAgGusXScQID0JzTqr8OCa+5Cu9FQi
+         fLKqlcBDaq8XWEnnek4h4CivohSP9nSvjmpxhIWDvaZ4kMLFEm+hFh+Lp1+Jv7olhH
+         JzfW1T0LQ6B3w==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Stephen Rothwell <sfr@rothwell.id.au>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Daniel Axtens <dja@axtens.net>
+Subject: Re: linux-next: Tree for Mar 19
+In-Reply-To: <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
+References: <20210319175950.509fcbd0@canb.auug.org.au>
+ <YFS1h6h+71sRlwFR@osiris> <20210320162734.1630cc55@elm.ozlabs.ibm.com>
+ <CANiq72nKJBVsuvqr17qa0xnkQTUz9aaAGRi8SfXZAn-G=RYQXw@mail.gmail.com>
+ <CANiq72n+-9vtpvvHTD=QzpskCbZEvTWhDXUaHrkwsJn4M3fjXg@mail.gmail.com>
+ <CANiq72mp4=4FZ_Vq1pzA07vkJ1mKFKOFFhcVoH9zTJjLtrBc9A@mail.gmail.com>
+Date:   Sun, 21 Mar 2021 23:30:44 +1100
+Message-ID: <8735woit8r.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-There are certain files in drivers/crypto/nx, which follow this syntax,
-but the content inside does not comply with kernel-doc.
-Such lines were probably not meant for kernel-doc parsing, but are parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warnings from kernel-doc.
+Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
+> On Sat, Mar 20, 2021 at 7:49 AM Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+>>
+>> Reproduced on s390. However, under defconfig, one also needs to revert
+>> kernel/livepatch/core.c to avoid triggering the assert, i.e.:
+>
+> Stephen: I will put this in rust-next so that others don't see
+> problems on their side and test it with a allmodconfig for powerpc and
+> s390 -- is it Monday the next round, right?
 
-E.g., presence of kernel-doc like comment in the header lines for
-drivers/crypto/nx/nx-sha256.c at header causes these warnings:
-"warning: Function parameter or member 'tfm' not described in 'nx_crypto_ctx_sha256_init'"
-"warning: expecting prototype for SHA(). Prototype was for nx_crypto_ctx_sha256_init() instead"
+Yes. But Monday in UTC+11 :)
 
-Similarly for other files too.
-
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-* Applies perfectly on next-20210319
-
- drivers/crypto/nx/nx-aes-cbc.c  | 2 +-
- drivers/crypto/nx/nx-aes-ccm.c  | 2 +-
- drivers/crypto/nx/nx-aes-ctr.c  | 2 +-
- drivers/crypto/nx/nx-aes-ecb.c  | 2 +-
- drivers/crypto/nx/nx-aes-gcm.c  | 2 +-
- drivers/crypto/nx/nx-aes-xcbc.c | 2 +-
- drivers/crypto/nx/nx-sha256.c   | 2 +-
- drivers/crypto/nx/nx-sha512.c   | 2 +-
- drivers/crypto/nx/nx.c          | 2 +-
- drivers/crypto/nx/nx_debugfs.c  | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/crypto/nx/nx-aes-cbc.c b/drivers/crypto/nx/nx-aes-cbc.c
-index 92e921eceed7..d6314ea9ae89 100644
---- a/drivers/crypto/nx/nx-aes-cbc.c
-+++ b/drivers/crypto/nx/nx-aes-cbc.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES CBC routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-aes-ccm.c b/drivers/crypto/nx/nx-aes-ccm.c
-index 4c9362eebefd..e7384d107573 100644
---- a/drivers/crypto/nx/nx-aes-ccm.c
-+++ b/drivers/crypto/nx/nx-aes-ccm.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES CCM routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-aes-ctr.c b/drivers/crypto/nx/nx-aes-ctr.c
-index 6d5ce1a66f1e..13f518802343 100644
---- a/drivers/crypto/nx/nx-aes-ctr.c
-+++ b/drivers/crypto/nx/nx-aes-ctr.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES CTR routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-aes-ecb.c b/drivers/crypto/nx/nx-aes-ecb.c
-index 77e338dc33f1..7a729dc2bc17 100644
---- a/drivers/crypto/nx/nx-aes-ecb.c
-+++ b/drivers/crypto/nx/nx-aes-ecb.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES ECB routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-aes-gcm.c b/drivers/crypto/nx/nx-aes-gcm.c
-index 19c6ed5baea4..fc9baca13920 100644
---- a/drivers/crypto/nx/nx-aes-gcm.c
-+++ b/drivers/crypto/nx/nx-aes-gcm.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES GCM routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-aes-xcbc.c b/drivers/crypto/nx/nx-aes-xcbc.c
-index 48dc1c98ca52..eb5c8f689360 100644
---- a/drivers/crypto/nx/nx-aes-xcbc.c
-+++ b/drivers/crypto/nx/nx-aes-xcbc.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * AES XCBC routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-sha256.c b/drivers/crypto/nx/nx-sha256.c
-index 90d9a37a57f6..b0ad665e4bda 100644
---- a/drivers/crypto/nx/nx-sha256.c
-+++ b/drivers/crypto/nx/nx-sha256.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * SHA-256 routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx-sha512.c b/drivers/crypto/nx/nx-sha512.c
-index eb8627a0f317..c29103a1a0b6 100644
---- a/drivers/crypto/nx/nx-sha512.c
-+++ b/drivers/crypto/nx/nx-sha512.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * SHA-512 routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx.c b/drivers/crypto/nx/nx.c
-index 1d0e8a1ba160..13bb705ba6a4 100644
---- a/drivers/crypto/nx/nx.c
-+++ b/drivers/crypto/nx/nx.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
-diff --git a/drivers/crypto/nx/nx_debugfs.c b/drivers/crypto/nx/nx_debugfs.c
-index 1975bcbee997..ee7cd88bb10a 100644
---- a/drivers/crypto/nx/nx_debugfs.c
-+++ b/drivers/crypto/nx/nx_debugfs.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * debugfs routines supporting the Power 7+ Nest Accelerators driver
-  *
-  * Copyright (C) 2011-2012 International Business Machines Inc.
--- 
-2.17.1
-
+cheers
