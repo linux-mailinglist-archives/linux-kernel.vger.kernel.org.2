@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59855343425
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 19:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4290F343422
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 19:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhCUSqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 14:46:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
+        id S230204AbhCUSqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 14:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230028AbhCUSpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230127AbhCUSpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 21 Mar 2021 14:45:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4BE6C61947;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 778E36194F;
         Sun, 21 Mar 2021 18:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616352335;
-        bh=taS95B2JKX3EeoXV2/iioOZMZK+lB1tX+LAmT0LamLU=;
+        bh=OEQTga+nGS7SltST+KPbdm/pr7MfqaDhR0z7J9HoLNI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YxCD13ovjmZ0MJzENsAcfw+MqEBQd9gLw/Vm9NSouhOCfAvWvfNycVbsM5HWi+mU3
-         ldHUqgn4X/GFhVUUfC4seugXGi+g7c5t9tV0YoCTdTjEjTsjZFxuJVvdZ2LmMqvn+y
-         vBRZcGiVl0mI6N3F2DJrlQ0nS8z4lSblqfoTMLbaqkKCOTlmz62XYEGsEHxxU3L6Ok
-         960QdgWzafzG5ZKwWU0awBsAF2jE4hdoM6mlgZOmdvtN28DtQEir0JS5CH/S4Utr43
-         1Q+9DiCOI6MfxpZzlf7Q9fyQK0p2UhgCXaIZWCLJJq9p0hbmh6st7ngeynD45SCkQp
-         axqeYxGcNS2og==
+        b=R4K13LR65OPtZS4SEAKprFR4ProAUBsX+Svh/FZR95ygFQmcHTEaGbT14k/K22Tgi
+         le25qtlNiMnuC9NOiGNv8Q2W0o4ZI9CNMXbuYoMoUBAfpY5fr09p79Ri7tB/0dUaeH
+         ES+KWTNabvVfOlPwCGz9/PpJTlSjH0N8FzlsKbRZbrCI1TGPl/Bqm1NS7ylTO22Z0A
+         JUBiPbT6SgZpyRN1Lz1JV7QHOvMUiNSTJSx0BKJB3Z49UQfC8UtesXJCgI4uwmmjav
+         MKvgSYPNjkH20+vaqWoruXUs0JY8haZJO1sf6YagabAeGSgqi2lB+oBg3PLd3lpNYW
+         bOk+WIHXECIKA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 474FF60A5B;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6C63F60A6A;
         Sun, 21 Mar 2021 18:45:35 +0000 (UTC)
-Subject: Re: [GIT PULL] EFI fixes
+Subject: Re: [GIT PULL] x86/urgent for v5.12-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210321104724.GA3399@gmail.com>
-References: <20210321104724.GA3399@gmail.com>
+In-Reply-To: <20210321110158.GA14211@zn.tnic>
+References: <20210321110158.GA14211@zn.tnic>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210321104724.GA3399@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2021-03-21
-X-PR-Tracked-Commit-Id: 429257a430a0e81e9979256e0db718e35e7d9cee
+X-PR-Tracked-Message-Id: <20210321110158.GA14211@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.12-rc4
+X-PR-Tracked-Commit-Id: dd926880da8dbbe409e709c1d3c1620729a94732
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 92ed88cb4d7cd01eadb0f71063ceb5202548ce35
-Message-Id: <161635233528.28302.7549879196884935471.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 5e3ddf96e75983e4c404467fbb61b92d09333a1f
+Message-Id: <161635233543.28302.6471859202104119473.pr-tracker-bot@kernel.org>
 Date:   Sun, 21 Mar 2021 18:45:35 +0000
-To:     Ingo Molnar <mingo@kernel.org>
+To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 21 Mar 2021 11:47:24 +0100:
+The pull request you sent on Sun, 21 Mar 2021 12:01:58 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-urgent-2021-03-21
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.12-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/92ed88cb4d7cd01eadb0f71063ceb5202548ce35
+https://git.kernel.org/torvalds/c/5e3ddf96e75983e4c404467fbb61b92d09333a1f
 
 Thank you!
 
