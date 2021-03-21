@@ -2,81 +2,634 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B2834340A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 19:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA4634340E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 19:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCUS0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 14:26:41 -0400
-Received: from fallback18.mail.ru ([185.5.136.250]:46304 "EHLO
-        fallback18.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhCUS0W (ORCPT
+        id S230063AbhCUS2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 14:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230042AbhCUS2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 14:26:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=HIUNGG2sbjceMbv3YdPGVo6WcSVDOprHh1d0jrqw4S8=;
-        b=xJhIAxmTob/d8b7fMeJFhG+Tw182PYT8fO6T9LZbQc+RLdM44raRH1ngt/IU7fISAiSF9sTmub43sJzDt5JHRmGj0pxwAvwis26QkaxJzdT4AJnvV/IuPjI4LCIZf80dhXQno3LPp+iXs3FVaT6vXL5L74Et2JShnRqLe/2Padc=;
-Received: from [10.161.64.44] (port=46284 helo=smtp36.i.mail.ru)
-        by fallback18.m.smailru.net with esmtp (envelope-from <dev.dragon@bk.ru>)
-        id 1lO2mJ-0001oO-Qi; Sun, 21 Mar 2021 21:26:20 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=HIUNGG2sbjceMbv3YdPGVo6WcSVDOprHh1d0jrqw4S8=;
-        b=lTnlkVbmbq6IpcvVIINXZhAicFsNBvvzmEqx4XVEDBn14fXUIuoUmeHVLK3OjpGIjGG0Miw6HG+g5gA9esmLVLqETMzA9QAd6pRvPrACYR2cp8V39eZiQtUHeavWSqc7kJW2oO/x4sUYLh9iFaKKeqC/5Is2oyZ07dh7M/kdNCc=;
-Received: by smtp36.i.mail.ru with esmtpa (envelope-from <dev.dragon@bk.ru>)
-        id 1lO2mC-00073Y-9Z; Sun, 21 Mar 2021 21:26:12 +0300
-From:   dev.dragon@bk.ru
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        Dmitrii Wolf <dev.dragon@bk.ru>
-Subject: [PATCH] Staging: wimax: i2400m: fixed a space coding style issue.
-Date:   Sun, 21 Mar 2021 21:26:02 +0300
-Message-Id: <20210321182602.13793-1-dev.dragon@bk.ru>
-X-Mailer: git-send-email 2.25.1
+        Sun, 21 Mar 2021 14:28:21 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF36C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 11:28:20 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id b184so9466343pfa.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 11:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=POo1SoTUwsWWnflL2igeiPiE/2YoV0u9IJHG+MIDORU=;
+        b=iHdGKUlN+xmxipuJMHD4y0Ch02Wn5luO0tquZ0RRAUzvd34Kxby0+9caMgXiVWv+7e
+         Lldf1Cv57E0FtCF1XI9B7OtrOzMMP4ObZi9EKUxdzNiOdwVWpZgNDuQXeTTKZuOlndqV
+         puuaR/FZ8U55eV7F5f55fjV2Gd3PPqI8jv94o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=POo1SoTUwsWWnflL2igeiPiE/2YoV0u9IJHG+MIDORU=;
+        b=Xk251h6K6mr+eqZ3/5mo7MqOcM9zuffZwTdFUCjNAhRjL0yyXFvaVDADl5oFkk7cLv
+         MV859vwvRkHFWfpSgJkBY6o6nt1B8hdF0+AiB321RnyD2/pXJjldAuWlr/SRFDgCGoOj
+         AYGG7JdT6ezbyV7r0uqJTyVnkjcsa/qW0VGNw/+7YF6ts3OZTtgqidbNZzaNervo1CQb
+         uX8D2Q+eUvZ0ftgeeP+Ap3Dizi29cp7DhGv1hJASfw186BnDYpZNqoyjpUL4mVKsPQ9W
+         EieRJbR9k38/10nzqIoDQnSwo32FTgNBhyR1M3vh1Sd1khqh3FtxvGcKgO/KtOfkD+oS
+         RYXw==
+X-Gm-Message-State: AOAM533wknJ34MoUZjfjrE8KVp3kLVdLUhLTZgJJEjpsUNaZw3RShPZ/
+        Qb+Xu6bwfy9hd22JHdP2JUhiGQ==
+X-Google-Smtp-Source: ABdhPJygMrBqqGxOk5LkBukeVmFjDrop1vSHRbvmmKWeMApUBRuSjDZSDcA5iuukfeTo5FepHI7JWQ==
+X-Received: by 2002:a63:5464:: with SMTP id e36mr19721434pgm.223.1616351299040;
+        Sun, 21 Mar 2021 11:28:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u1sm3104677pgg.11.2021.03.21.11.28.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 11:28:18 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 11:28:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     John Wood <john.wood@gmx.com>
+Cc:     Jann Horn <jannh@google.com>, Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v6 3/8] securtiy/brute: Detect a brute force attack
+Message-ID: <202103211108.628E6729F@keescook>
+References: <20210307113031.11671-1-john.wood@gmx.com>
+ <20210307113031.11671-4-john.wood@gmx.com>
+ <202103171902.E6F55172@keescook>
+ <20210320153406.GB3023@ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD95D6E7CC48CB1F5F1C82687294EF6886BAE1FA542CE3F1C38182A05F538085040A2D8DCAF47F463E2FE55B5AE1FDD7E597D4CB1270E7511DB2DBD7A399811FDCB
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7DECE8D0A5E25C0FCEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637E16D8B060A9A23898638F802B75D45FF914D58D5BE9E6BC131B5C99E7648C95C686AF563A045C75EEA3F2E4C0793BE6D8F6F6A116571AAA4A471835C12D1D9774AD6D5ED66289B5278DA827A17800CE74A95F4E53E8DCE969FA2833FD35BB23D2EF20D2F80756B5F868A13BD56FB6657A471835C12D1D977725E5C173C3A84C3A12191B5F2BB8629117882F4460429728AD0CFFFB425014E868A13BD56FB6657D81D268191BDAD3DC09775C1D3CA48CFF5D7AD01DFB9D5D8BA3038C0950A5D36C8A9BA7A39EFB766EC990983EF5C0329BA3038C0950A5D36D5E8D9A59859A8B622866CC385FEDF7476E601842F6C81A1F004C90652538430CDED94BCBF13EF3B93EC92FD9297F6718AA50765F7900637FF667FE45ADECF75A7F4EDE966BC389F395957E7521B51C24C7702A67D5C33162DBA43225CD8A89FD63380FFBEB38773CE5475246E174218B5C8C57E37DE458B4C7702A67D5C3316FA3894348FB808DBEB6346B700B4D54FE5BFE6E7EFDEDCD789D4C264860C145E
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2BBE337FB72E92315FF39D8DB89857825EFA8BF88FCBFD63CE0852D54D1EC5181BF0250D8680C883691E6F94FA312E0A3
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C686AF563A045C75EEA3F2E4C0793BE6D8F6F6A116571AAA49C2B6934AE262D3EE7EAB7254005DCED556CBE7F905700A49510FB958DCE06DB6ED91DBE5ABE359A7EE5648E065588D42272C4C079A4C8AD93EDB24507CE13387DFF0A840B692CF8
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D341ADA1A41A420E9B2156A8E67CC5E0CDD66E3AA19D6DDA538E71A1C43BAEB7ACDC7C25B3A331564B61D7E09C32AA3244C80F5E216D09D15C439D83C0CDAB76C9563871F383B54D9B3927AC6DF5659F194
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojvdUtdr6InbC5hCZz/SBVDg==
-X-Mailru-Sender: 3A338A78718AEC5AA85B3E7661095C1E1E9F55F0E8D3183050FA1648B6589AA1B88372C1FD1700EF3833C6AC539110AEA432B8CD90067B65A6C5C4E98768B51D7AA22088860DD9FF5CDEF9E650933936342CD0BA774DB6A9AE208404248635DF
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B43D3FA0ACCFBC07C6046E779C2B5E99975FBD50963AB15FEA049FFFDB7839CE9EFA817F5924DFCA7582F0A51C96DB3BE6076B455EEE56A0A3CAC5B547EC8A2DE3
-X-7FA49CB5: 0D63561A33F958A57C37F30D3D8E24904591BD133341F9CF53FEA819839E289E8941B15DA834481FA18204E546F3947C4A7E03851CBA2956F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637EAC5C7182FB0D3F7389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637D85817A53E56C800D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636A7F4EDE966BC389F9E8FC8737B5C22494D1995798259236B089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A392EE3A9D0FB4FE0F992DC2C6C1EEA0118B43847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148F53FDB0A1CE3EC88B3B503F486389A921A5CC5B56E945C8DA
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2BBE337FB72E923155C0AF1600DCBC20BBF0250D8680C8836F161B62DB08ECF63
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C686AF563A045C75E0391B587C9FC0F0475C7CDB0293AA60F9C2B6934AE262D3EE7EAB7254005DCED556CBE7F905700A4DC48ACC2A39D04F89CDFB48F4795C241BDAD6C7F3747799A
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojvdUtdr6InbAWCcUFIfbI0w==
-X-Mailru-MI: 1000000000800
-X-Mailru-Sender: A5480F10D64C9005E7955441BDF862652E1B67F9E76A4B63414D48FB47A17118CB0114F4C3D1B6D7CD4CDAD98BDCABE8DDBB79867CC2C1EC846E85FF75DBDC4983CE97D6EC8C31C553326A0E03014151EAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320153406.GB3023@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitrii Wolf <dev.dragon@bk.ru>
+On Sat, Mar 20, 2021 at 04:34:06PM +0100, John Wood wrote:
+> On Wed, Mar 17, 2021 at 07:57:10PM -0700, Kees Cook wrote:
+> > On Sun, Mar 07, 2021 at 12:30:26PM +0100, John Wood wrote:
+> > > @@ -74,7 +84,7 @@ static struct brute_stats *brute_new_stats(void)
+> > >  {
+> > >  	struct brute_stats *stats;
+> > >
+> > > -	stats = kmalloc(sizeof(struct brute_stats), GFP_KERNEL);
+> > > +	stats = kmalloc(sizeof(struct brute_stats), GFP_ATOMIC);
+> >
+> > Why change this here? I'd just start with this in the patch that
+> > introduces it.
+> 
+> To be coherent in the previous patch. In the previous patch the kmalloc
+> could use GFP_KERNEL due to the call was made out of an atomic context.
+> Now, with the new lock it needs GFP_ATOMIC. So the question:
+> 
+> If finally it need to use GFP_ATOMIC, the first patch need to use it even if
+> it is not necessary?
 
-Fixed a coding style.
+It's probably not a big deal, but for me, I'd just do GFP_ATOMIC from
+the start, maybe add a comment that says "some LSM hooks are from atomic
+context" or something.
 
-Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
----
- drivers/staging/wimax/i2400m/debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > >  	if (!stats)
+> > >  		return NULL;
+> > >
+> > > @@ -99,16 +109,17 @@ static struct brute_stats *brute_new_stats(void)
+> > >   * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > >   * since the task_free hook can be called from an IRQ context during the
+> > >   * execution of the task_alloc hook.
+> > > + *
+> > > + * Context: Must be called with interrupts disabled and brute_stats_ptr_lock
+> > > + *          held.
+> > >   */
+> > >  static void brute_share_stats(struct brute_stats *src,
+> > >  			      struct brute_stats **dst)
+> > >  {
+> > > -	unsigned long flags;
+> > > -
+> > > -	spin_lock_irqsave(&src->lock, flags);
+> > > +	spin_lock(&src->lock);
+> > >  	refcount_inc(&src->refc);
+> > >  	*dst = src;
+> > > -	spin_unlock_irqrestore(&src->lock, flags);
+> > > +	spin_unlock(&src->lock);
+> > >  }
+> >
+> > I still don't think any locking is needed here; the whole function can
+> > go away, IMO.
+> 
+> In this case I think this is possible:
+> 
+> Scenario 1: cpu 1 writes the stats pointer and cpu 2 is navigating the
+>             processes tree reading the same stats pointer.
+> 
+> Scenario 2: cpu 1 is navigating the processes tree reading the stats
+>             pointer and in IRQ the same stats pointer is wrote.
+> 
+> So, we need locking. Am I wrong?
 
-diff --git a/drivers/staging/wimax/i2400m/debugfs.c b/drivers/staging/wimax/i2400m/debugfs.c
-index 1c640b41ea4c..4e6e1e3f015e 100644
---- a/drivers/staging/wimax/i2400m/debugfs.c
-+++ b/drivers/staging/wimax/i2400m/debugfs.c
-@@ -170,7 +170,7 @@ int debugfs_i2400m_reset_set(void *data, u64 val)
- 	int result;
- 	struct i2400m *i2400m = data;
- 	enum i2400m_reset_type rt = val;
--	switch(rt) {
-+	switch (rt) {
- 	case I2400M_RT_WARM:
- 	case I2400M_RT_COLD:
- 	case I2400M_RT_BUS:
+But only the refcount is being incremented, yes? That doesn't need a
+lock because it's already an atomic.
+
+> 
+> > >  /**
+> > > @@ -126,26 +137,36 @@ static void brute_share_stats(struct brute_stats *src,
+> > >   * this task and the new one being allocated. Otherwise, share the statistics
+> > >   * that the current task already has.
+> > >   *
+> > > + * It's mandatory to disable interrupts before acquiring brute_stats_ptr_lock
+> > > + * and brute_stats::lock since the task_free hook can be called from an IRQ
+> > > + * context during the execution of the task_alloc hook.
+> > > + *
+> > >   * Return: -ENOMEM if the allocation of the new statistics structure fails. Zero
+> > >   *         otherwise.
+> > >   */
+> > >  static int brute_task_alloc(struct task_struct *task, unsigned long clone_flags)
+> > >  {
+> > >  	struct brute_stats **stats, **p_stats;
+> > > +	unsigned long flags;
+> > >
+> > >  	stats = brute_stats_ptr(task);
+> > >  	p_stats = brute_stats_ptr(current);
+> > > +	write_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > >
+> > >  	if (likely(*p_stats)) {
+> > >  		brute_share_stats(*p_stats, stats);
+> > > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  		return 0;
+> > >  	}
+> > >
+> > >  	*stats = brute_new_stats();
+> > > -	if (!*stats)
+> > > +	if (!*stats) {
+> > > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  		return -ENOMEM;
+> > > +	}
+> > >
+> > >  	brute_share_stats(*stats, p_stats);
+> > > +	write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  	return 0;
+> > >  }
+> >
+> > I'd much prefer that whatever locking is needed be introduced in the
+> > initial patch: this transformation just double the work to review. :)
+> 
+> So, IIUC I need to introduce all the locks in the initial patch even if
+> they are not necessary. Am I right?
+
+I would find it easier to follow. Perhaps other reviewers would have a
+different opinion.
+
+> 
+> > >
+> > > @@ -167,9 +188,9 @@ static int brute_task_alloc(struct task_struct *task, unsigned long clone_flags)
+> > >   * only one task (the task that calls the execve function) points to the data.
+> > >   * In this case, the previous allocation is used but the statistics are reset.
+> > >   *
+> > > - * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > - * since the task_free hook can be called from an IRQ context during the
+> > > - * execution of the bprm_committing_creds hook.
+> > > + * It's mandatory to disable interrupts before acquiring brute_stats_ptr_lock
+> > > + * and brute_stats::lock since the task_free hook can be called from an IRQ
+> > > + * context during the execution of the bprm_committing_creds hook.
+> > >   */
+> > >  static void brute_task_execve(struct linux_binprm *bprm)
+> > >  {
+> > > @@ -177,24 +198,33 @@ static void brute_task_execve(struct linux_binprm *bprm)
+> > >  	unsigned long flags;
+> > >
+> > >  	stats = brute_stats_ptr(current);
+> > > -	if (WARN(!*stats, "No statistical data\n"))
+> > > +	read_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > > +
+> > > +	if (WARN(!*stats, "No statistical data\n")) {
+> > > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  		return;
+> > > +	}
+> > >
+> > > -	spin_lock_irqsave(&(*stats)->lock, flags);
+> > > +	spin_lock(&(*stats)->lock);
+> > >
+> > >  	if (!refcount_dec_not_one(&(*stats)->refc)) {
+> > >  		/* execve call after an execve call */
+> > >  		(*stats)->faults = 0;
+> > >  		(*stats)->jiffies = get_jiffies_64();
+> > >  		(*stats)->period = 0;
+> > > -		spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +		spin_unlock(&(*stats)->lock);
+> > > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  		return;
+> > >  	}
+> > >
+> > >  	/* execve call after a fork call */
+> > > -	spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +	spin_unlock(&(*stats)->lock);
+> > > +	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > > +
+> > > +	write_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > >  	*stats = brute_new_stats();
+> > >  	WARN(!*stats, "Cannot allocate statistical data\n");
+> > > +	write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  }
+> >
+> > Again, I don't see a need for locking -- this is just managing the
+> > lifetime which is entirely handled by the implicit locking of "current"
+> > and the refcount_t.
+> 
+> Here I can see the same two scenarios noted before. So I think the locking
+> is needed. Am I right?
+> 
+> > >  /**
+> > > @@ -204,9 +234,9 @@ static void brute_task_execve(struct linux_binprm *bprm)
+> > >   * The statistical data that is shared between all the fork hierarchy processes
+> > >   * needs to be freed when this hierarchy disappears.
+> > >   *
+> > > - * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > - * since the task_free hook can be called from an IRQ context during the
+> > > - * execution of the task_free hook.
+> > > + * It's mandatory to disable interrupts before acquiring brute_stats_ptr_lock
+> > > + * and brute_stats::lock since the task_free hook can be called from an IRQ
+> > > + * context during the execution of the task_free hook.
+> > >   */
+> > >  static void brute_task_free(struct task_struct *task)
+> > >  {
+> > > @@ -215,17 +245,446 @@ static void brute_task_free(struct task_struct *task)
+> > >  	bool refc_is_zero;
+> > >
+> > >  	stats = brute_stats_ptr(task);
+> > > -	if (WARN(!*stats, "No statistical data\n"))
+> > > +	read_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > > +
+> > > +	if (WARN(!*stats, "No statistical data\n")) {
+> > > +		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >  		return;
+> > > +	}
+> > >
+> > > -	spin_lock_irqsave(&(*stats)->lock, flags);
+> > > +	spin_lock(&(*stats)->lock);
+> > >  	refc_is_zero = refcount_dec_and_test(&(*stats)->refc);
+> > > -	spin_unlock_irqrestore(&(*stats)->lock, flags);
+> > > +	spin_unlock(&(*stats)->lock);
+> > > +	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > >
+> > >  	if (refc_is_zero) {
+> > > +		write_lock_irqsave(&brute_stats_ptr_lock, flags);
+> > >  		kfree(*stats);
+> > >  		*stats = NULL;
+> > > +		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+> > > +	}
+> > > +}
+> >
+> > Same; I would expect this to be simply:
+> 
+> No comment. I think I am missing something. I need to clarify the previous
+> cases before to work on the next ones. Sorry and thanks for the guidance.
+
+Right -- so, there are a few concurrency cases you need to worry about,
+AIUI:
+
+1- stats lifetime (based on creation/death of tasks)
+2- stats value being written vs read
+3- stats values being written/read vs stats lifetime
+
+Using refcount_t in the standard pattern (as you're doing) should
+entirely cover "1".
+
+Since the values read from stats are mostly independent, it should be
+possible to use READ_ONCE() in the readers and WRITE_ONCE() under a lock
+in the writers (this is case "2").
+
+For "3", I think the implicit locking of "current" keeps you safe (as
+in, the stats can't go away because "current" will always have a
+reference on it).
+
+I see two places where stats are written. One appears to be the
+brute_task_execve() case where only 1 thread exists, so there's no
+lock needed, and the other case is brute_update_crash_period(), which
+makes sense to me to lock: two tasks might be sharing a stats as they
+crash.
+
+Of course, I could easily be missing something here, but it looks like
+much less locking is needed.
+
+> 
+> > 	stats = brute_stats_ptr(task);
+> > 	if (WARN_ON_ONCE(!*stats))
+> > 		return;
+> > 	if (refcount_dec_and_test(&(*stats)->refc)) {
+> > 		kfree(*stats);
+> > 		*stats = NULL;
+> > 	}
+> >
+> > > +
+> > > +/*
+> > > + * BRUTE_EMA_WEIGHT_NUMERATOR - Weight's numerator of EMA.
+> > > + */
+> > > +static const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7;
+> > > +
+> > > +/*
+> > > + * BRUTE_EMA_WEIGHT_DENOMINATOR - Weight's denominator of EMA.
+> > > + */
+> > > +static const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10;
+> >
+> > Should these be externally configurable (via sysfs)?
+> 
+> No problem. I think this is easier than locking :)
+
+Heh, for the most part, yes. ;) Though I have my own nightmares[1] about
+sysfs.
+
+> > > +/**
+> > > + * brute_update_crash_period() - Update the application crash period.
+> > > + * @stats: Statistics that hold the application crash period to update.
+> > > + * @now: The current timestamp in jiffies.
+> > > + *
+> > > + * The application crash period must be a value that is not prone to change due
+> > > + * to spurious data and follows the real crash period. So, to compute it, the
+> > > + * exponential moving average (EMA) is used.
+> > > + *
+> > > + * This kind of average defines a weight (between 0 and 1) for the new value to
+> > > + * add and applies the remainder of the weight to the current average value.
+> > > + * This way, some spurious data will not excessively modify the average and only
+> > > + * if the new values are persistent, the moving average will tend towards them.
+> > > + *
+> > > + * Mathematically the application crash period's EMA can be expressed as
+> > > + * follows:
+> > > + *
+> > > + * period_ema = period * weight + period_ema * (1 - weight)
+> > > + *
+> > > + * If the operations are applied:
+> > > + *
+> > > + * period_ema = period * weight + period_ema - period_ema * weight
+> > > + *
+> > > + * If the operands are ordered:
+> > > + *
+> > > + * period_ema = period_ema - period_ema * weight + period * weight
+> > > + *
+> > > + * Finally, this formula can be written as follows:
+> > > + *
+> > > + * period_ema -= period_ema * weight;
+> > > + * period_ema += period * weight;
+> > > + *
+> > > + * The statistics that hold the application crash period to update cannot be
+> > > + * NULL.
+> > > + *
+> > > + * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > + * since the task_free hook can be called from an IRQ context during the
+> > > + * execution of the task_fatal_signal hook.
+> > > + *
+> > > + * Context: Must be called with interrupts disabled and brute_stats_ptr_lock
+> > > + *          held.
+> > > + * Return: The last crash timestamp before updating it.
+> > > + */
+> > > +static u64 brute_update_crash_period(struct brute_stats *stats, u64 now)
+> > > +{
+> > > +	u64 current_period;
+> > > +	u64 last_crash_timestamp;
+> > > +
+> > > +	spin_lock(&stats->lock);
+> > > +	current_period = now - stats->jiffies;
+> > > +	last_crash_timestamp = stats->jiffies;
+> > > +	stats->jiffies = now;
+> > > +
+> > > +	stats->period -= brute_mul_by_ema_weight(stats->period);
+> > > +	stats->period += brute_mul_by_ema_weight(current_period);
+> > > +
+> > > +	if (stats->faults < BRUTE_MAX_FAULTS)
+> > > +		stats->faults += 1;
+> > > +
+> > > +	spin_unlock(&stats->lock);
+> > > +	return last_crash_timestamp;
+> > > +}
+> >
+> > Now *here* locking makes sense, and it only needs to be per-stat, not
+> > global, since multiple processes may be operating on the same stat
+> > struct. To make this more no-reader-locking-friendly, I'd also update
+> > everything at the end, and use WRITE_ONCE():
+> >
+> > 	u64 current_period, period;
+> > 	u64 last_crash_timestamp;
+> > 	u64 faults;
+> >
+> > 	spin_lock(&stats->lock);
+> > 	current_period = now - stats->jiffies;
+> > 	last_crash_timestamp = stats->jiffies;
+> >
+> > 	WRITE_ONCE(stats->period,
+> > 		   stats->period - brute_mul_by_ema_weight(stats->period) +
+> > 		   brute_mul_by_ema_weight(current_period));
+> >
+> > 	if (stats->faults < BRUTE_MAX_FAULTS)
+> > 		WRITE_ONCE(stats->faults, stats->faults + 1);
+> >
+> > 	WRITE_ONCE(stats->jiffies, now);
+> >
+> > 	spin_unlock(&stats->lock);
+> > 	return last_crash_timestamp;
+> >
+> > That way readers can (IIUC) safely use READ_ONCE() on jiffies and faults
+> > without needing to hold the &stats->lock (unless they need perfectly matching
+> > jiffies, period, and faults).
+> 
+> Thanks for the refactory. I will work on it (if I can understand locking). :(
+
+It may be worth reading Documentation/memory-barriers.txt which has some
+more details.
+
+> > > +/**
+> > > + * brute_manage_fork_attack() - Manage a fork brute force attack.
+> > > + * @stats: Statistical data shared by all the fork hierarchy processes.
+> > > + * @now: The current timestamp in jiffies.
+> > > + *
+> > > + * For a correct management of a fork brute force attack it is only necessary to
+> > > + * update the statistics and test if an attack is happening based on these data.
+> > > + *
+> > > + * The statistical data shared by all the fork hierarchy processes cannot be
+> > > + * NULL.
+> > > + *
+> > > + * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > + * since the task_free hook can be called from an IRQ context during the
+> > > + * execution of the task_fatal_signal hook.
+> > > + *
+> > > + * Context: Must be called with interrupts disabled and brute_stats_ptr_lock
+> > > + *          held.
+> > > + * Return: The last crash timestamp before updating it.
+> > > + */
+> > > +static u64 brute_manage_fork_attack(struct brute_stats *stats, u64 now)
+> > > +{
+> > > +	u64 last_fork_crash;
+> > > +
+> > > +	last_fork_crash = brute_update_crash_period(stats, now);
+> > > +	if (brute_attack_running(stats))
+> > > +		print_fork_attack_running();
+> > > +
+> > > +	return last_fork_crash;
+> > > +}
+> > > +
+> > > +/**
+> > > + * brute_get_exec_stats() - Get the exec statistics.
+> > > + * @stats: When this function is called, this parameter must point to the
+> > > + *         current process' statistical data. When this function returns, this
+> > > + *         parameter points to the parent process' statistics of the fork
+> > > + *         hierarchy that hold the current process' statistics.
+> > > + *
+> > > + * To manage a brute force attack that happens through the execve system call it
+> > > + * is not possible to use the statistical data hold by this process due to these
+> > > + * statistics disappear when this task is finished. In this scenario this data
+> > > + * should be tracked by the statistics of a higher fork hierarchy (the hierarchy
+> > > + * that contains the process that forks before the execve system call).
+> > > + *
+> > > + * To find these statistics the current fork hierarchy must be traversed up
+> > > + * until new statistics are found.
+> > > + *
+> > > + * Context: Must be called with tasklist_lock and brute_stats_ptr_lock held.
+> > > + */
+> > > +static void brute_get_exec_stats(struct brute_stats **stats)
+> > > +{
+> > > +	const struct task_struct *task = current;
+> > > +	struct brute_stats **p_stats;
+> > > +
+> > > +	do {
+> > > +		if (!task->real_parent) {
+> > > +			*stats = NULL;
+> > > +			return;
+> > > +		}
+> > > +
+> > > +		p_stats = brute_stats_ptr(task->real_parent);
+> > > +		task = task->real_parent;
+> > > +	} while (*stats == *p_stats);
+> > > +
+> > > +	*stats = *p_stats;
+> > > +}
+> >
+> > See Yama's task_is_descendant() for how to walk up the process tree
+> > (and I think the process group stuff will save some steps too); you
+> > don't need tasklist_lock held, just rcu_read_lock held, AIUI:
+> > Documentation/RCU/listRCU.rst
+> >
+> > And since you're passing this stats struct back up, and it would be outside of rcu read lock, you'd want to do a "get" on it first:
+> >
+> > 	rcu_read_lock();
+> > 	loop {
+> > 		...
+> > 	}
+> > 	refcount_inc_not_zero(&(*p_stats)->refc);
+> > 	rcu_read_unlock();
+> >
+> > 	*stats = *p_stats
+> 
+> Thanks for the suggestions. I will work on it for the next version.
+> Anyway, in the first version Kees Cook and Jann Horn noted that some tasks
+> could escape the rcu read lock and that alternate locking were needed.
+> 
+> Extract from the RFC:
+> 
+> [Kees Cook]
+> Can't newly created processes escape this RCU read lock? I think this
+> need alternate locking, or something in the task_alloc hook that will
+> block any new process from being created within the stats group.
+> 
+> [Jann Horn]
+> Good point; the proper way to deal with this would probably be to take
+> the tasklist_lock in read mode around this loop (with
+> read_lock(&tasklist_lock) / read_unlock(&tasklist_lock)), which pairs
+> with the write_lock_irq(&tasklist_lock) in copy_process(). Thanks to
+> the fatal_signal_pending() check while holding the lock in
+> copy_process(), that would be race-free - any fork() that has not yet
+> inserted the new task into the global task list would wait for us to
+> drop the tasklist_lock, then bail out at the fatal_signal_pending()
+> check.
+> 
+> I think that this scenario is still possible. So the tasklist_lock is
+> necessary. Am I right?
+
+Oops, yeah, best to listen to Jann and past-me. :) Were these comments
+about finding the parent or killing offenders?
+
+> > > +
+> > > +	spin_lock(&(*stats)->lock);
+> > > +	if (!(*stats)->faults)
+> > > +		(*stats)->jiffies = last_fork_crash;
+> > > +	spin_unlock(&(*stats)->lock);
+> > > +
+> > > +	brute_update_crash_period(*stats, now);
+> >
+> > and then you can add:
+> >
+> > 	if (refcount_dec_and_test(&(*stats)->refc))
+> > 		kfree(*stats);
+> >
+> > (or better yet, make that a helper) named something like
+> > "put_brute_stats".
+> 
+> Sorry, but I don't understand why we need to free the stats here.
+> What is the rationale behind this change?
+
+Err, I think I may have quoted the wrong chunk of your patch! Sorry; I
+was talking about the place where you did a free, I think? Disregard
+this for now. :)
+
+> > > +/**
+> > > + * brute_manage_exec_attack() - Manage an exec brute force attack.
+> > > + * @stats: Statistical data shared by all the fork hierarchy processes.
+> > > + * @now: The current timestamp in jiffies.
+> > > + * @last_fork_crash: The last fork crash timestamp before updating it.
+> > > + *
+> > > + * For a correct management of an exec brute force attack it is only necessary
+> > > + * to update the exec statistics and test if an attack is happening based on
+> > > + * these data.
+> > > + *
+> > > + * It is important to note that if the fork and exec crash periods are the same,
+> > > + * the attack test is avoided. This allows that in a brute force attack that
+> > > + * happens through the fork system call, the mitigation method does not act on
+> > > + * the parent process of the fork hierarchy.
+> > > + *
+> > > + * The statistical data shared by all the fork hierarchy processes cannot be
+> > > + * NULL.
+> > > + *
+> > > + * It's mandatory to disable interrupts before acquiring the brute_stats::lock
+> > > + * since the task_free hook can be called from an IRQ context during the
+> > > + * execution of the task_fatal_signal hook.
+> > > + *
+> > > + * Context: Must be called with interrupts disabled and tasklist_lock and
+> > > + *          brute_stats_ptr_lock held.
+> > > + */
+> > > +static void brute_manage_exec_attack(struct brute_stats *stats, u64 now,
+> > > +				     u64 last_fork_crash)
+> > > +{
+> > > +	int ret;
+> > > +	struct brute_stats *exec_stats = stats;
+> > > +	u64 fork_period;
+> > > +	u64 exec_period;
+> > > +
+> > > +	ret = brute_update_exec_crash_period(&exec_stats, now, last_fork_crash);
+> > > +	if (WARN(ret, "No exec statistical data\n"))
+> > > +		return;
+> >
+> > I think this should fail closed: if there's a static processing error,
+> > treat it as an attack.
+> 
+> Do you mean to trigger the mitigation of a brute force attack over this task?
+> So, IIUC you suggest that instead of generate warnings if there isn't
+> statistical data, we need to trigger the mitigation? This can be applied to
+> the case where the allocation of a brute_stats structure fails?
+
+Right -- it should be an impossible scenario that the stats are
+_missing_. There is not an expected execution path in the kernel where
+that could happen, so if you're testing for it (and correctly generating
+a WARN), it should _also_ fail closed: an impossible case has been
+found, so assume userspace is under attack. (Otherwise it could serve as
+a bypass for an attacker who has found a way to navigate a process into
+this state.)
+
+-Kees
+
 -- 
-2.25.1
-
+Kees Cook
