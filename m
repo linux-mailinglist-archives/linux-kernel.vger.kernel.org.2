@@ -2,140 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA0D343224
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 12:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E70343226
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 12:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCULna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 07:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhCULnU (ORCPT
+        id S229952AbhCULxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 07:53:35 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:34317 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhCULxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 07:43:20 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2522C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 04:43:19 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l4so16693666ejc.10
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 04:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=TDSs0Wdws3Dw1QRt+KH/0C9LcbA2OE9+PNRlmoNP6DY=;
-        b=a/UFs9KHU/efP1ZlxzYbmsMsY7371zSPuE7qMbp2ceV0HCtNvLuM02SijCoBveSEAu
-         vdmghvfm20Tj6C6PIxD/QJ/xNzrKrGCYENqtrhoCacfy4sdQakDp4PyCGY/Yl8Oa6zQD
-         JLIclKW7d8twLZYoATSXf5zpU4SiQ7Tw3f7UP/S5yN39R/5VzbHU7q1r1DvOimhq2DSF
-         izCF1zmmLMhMrrIno4UyBMm9aGVQL6YpOoMQUkIrq5YdRcU+20MHGmeQivPqKz2ITsr4
-         IG4MZeyfdrpEAYRR6m3DJ25Q//+q+s06VaFL7GaeYHzuhk5Xn6xsUKdFr2G9QkVKD+9Q
-         7s2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=TDSs0Wdws3Dw1QRt+KH/0C9LcbA2OE9+PNRlmoNP6DY=;
-        b=jQE5XC8sZjFrXt3Yq71adyVebkQUyd7JKJIwOOKGCg4Fm1dp+z35dQRPajse2wyEXk
-         XC+ABFJbCQfq/v95uSTWr5mM9jLQ0rF0hc2TVi065izyzHi1H/Vzy2uJbtj58jjk1+d4
-         gD3zQaTOyIpUJ73WCj1gXiSuizv3DCpY2PCsjTxrom+pq2YPC/sIz2QHKeFc7TlXbv5P
-         a7lQuZ1N7PtP+abfFcoz8xUlp2xCGBxYIzVyf5IFRiCBFNJ3mVh/SAvUAsGTggLwOWmO
-         qmKEQ6M0vJJbZxIU6vZbYIrZBbsiuK8OCeVEqEbiOoeCX6nERugA30qQquArX3DLjbYN
-         +BOQ==
-X-Gm-Message-State: AOAM530fGdj/cnHgYdoEXZ4i2EpDYsWVVupvEQw2HM5VgBVHjq9sq5OW
-        NJNXiaxAd8LIxpE4SaHKF80=
-X-Google-Smtp-Source: ABdhPJxseaSemOOH8IkeaYt2ggXpGzgZFPn0Idm52oxXl7qPr93mnhtxcNnKieSPAw6vTlLRNBd06Q==
-X-Received: by 2002:a17:906:2692:: with SMTP id t18mr13913791ejc.16.1616326998408;
-        Sun, 21 Mar 2021 04:43:18 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id jv19sm6930576ejc.74.2021.03.21.04.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 04:43:17 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 21 Mar 2021 12:43:15 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] IRQ updates & fixes
-Message-ID: <20210321114315.GA290313@gmail.com>
+        Sun, 21 Mar 2021 07:53:17 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MBmDy-1lXp3v1Bvw-00CCOl for <linux-kernel@vger.kernel.org>; Sun, 21 Mar
+ 2021 12:53:15 +0100
+Received: by mail-oi1-f178.google.com with SMTP id c16so1186569oib.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 04:53:15 -0700 (PDT)
+X-Gm-Message-State: AOAM5303s31v8lxvyuWZD7KR2Q13dA+qGVRUDPv3PXXUiOWQPbhLBmn0
+        wUWqPkXH8ND4SPUz3RKdYienrRq/Opm/JoHvbcI=
+X-Google-Smtp-Source: ABdhPJzdrdNu0/976S9nPBHtXVOauuaVG3EDLga/VkNgu94m7hzX65T0kx2hglnGYYbbi2qxGL2nAuC34LMfLqVyDrE=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr6541428oie.67.1616327594034;
+ Sun, 21 Mar 2021 04:53:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
+ <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+ <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com> <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
+In-Reply-To: <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 21 Mar 2021 12:52:57 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0X5bVNLQme70-25Mps=hoing5txa8ap2YVHiUBr3najg@mail.gmail.com>
+Message-ID: <CAK8P3a0X5bVNLQme70-25Mps=hoing5txa8ap2YVHiUBr3najg@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:hWf95woDn4Oki4P0tPlrC1sAIg/cU5g1H2+1pkHzwbuV4T22z7C
+ MxVjc+OK3lIJnuiUwyWWqNoQqNed/hkX8kSbTpPFTyzhjXOxow68oPuuaxFdfbXJn391X9T
+ 2DQ70I7iGDxdCML9wBRo0mTE+nhIr5Vfy6MqdFixOzQyhK1WkQ6r84aPikxVRRuh8btmT9H
+ F3kmUqtmPnhWG4xMP8aNQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:56kzO+ltDWw=:s21faXoEJCTf8hserHl06G
+ pAtEq0xyLTFBC+v1+3uLyPLg1/CnPjxKe5kbSccWBNiV6Z0UvQDtfa5gemqFuayVzbdcZ2ZQt
+ bODU6j7INoAOsKPIcs4oge4YX3DtOLQpGF9a+TDlpfggH058KoogyhIWFDTa6HHQQfeQAxbkt
+ wiHpQpTQwbNoz1n2Mr9eTMQXN75/GRQHHJqzP2T57gvdspF/eCPIV0CG2d6baK5aqz7u96Z5i
+ chUndEqpJ31oSs7lGN9mX5PPUOpI4zVSxO9qDi1kWFedwwYacQM4/GjWpiJUenXVJ1MziILoq
+ InRZe4rGE0NZT1sNy+sXlFy2tAVbym0mhBySpbs+0bWUZw0kUKEChliZISAOsDCyLtTtJ+BEI
+ Mi5KvVQpZeZHQtlM76Vl5hn53zsMk3+JCa2PvyBnhemjvF130LI/U81wPJkIVW2S/uibHkei+
+ aehRb9314EldovVxh6XaTrX3a/p1Nn1GDM6eFhS2KC76GbvusUAAC0+Qpmx+q1BMKRXmyWmj0
+ IGUJeq//hW5pyDKBRQ+hdwM8WZHICdescIGm6pEKTLwsbTM2GnnU2S4zK2zt+M+ZQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sat, Mar 20, 2021 at 9:43 PM Peter Maydell <peter.maydell@linaro.org> wrote:
+>
+> On Fri, 12 Mar 2021 at 09:16, Arnd Bergmann <arnd@arndb.de> wrote:
+> > So it's probably qemu that triggers the 'synchronous external
+> > abort' when accessing the PCI I/O space, which in turn hints
+> > towards a bug in qemu. Presumably it only returns data from
+> > I/O ports that are actually mapped to a device when real hardware
+> > is supposed to return 0xffffffff when reading from unused I/O ports.
+>
+> Do you have a reference to the bit of the PCI spec that mandates
+> this -1/discard behaviour for attempted access to places where
+> there isn't actually a PCI device mapped ? The spec is pretty
+> long and hard to read...
+>
+> (Knowing to what extent this behaviour is mandatory for all
+> PCI systems/host controllers vs just "it would be nice if the
+> gpex host controller worked this way" would help in figuring
+> out where in QEMU to change.)
 
-Please pull the latest irq/urgent git tree from:
+Sorry, I don't. I can probably find something in there myself,
+but in the end it comes down to Linux drivers relying on this
+behavior for ISA devices since the start. On an old-style x86
+PC, this is the only method for finding out if a device is present
+or not, since there is no description in the firmware that lists them.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2021-03-21
+PCIe devices remain backwards compatible with the old ISA
+bus, so the old behavior must generally be kept possible.
+I don't think a specification for the ISA bus exists at all, and
+I found nothing in the related LPC specification about reading
+from an unknown device.
 
-   # HEAD: 81e2073c175b887398e5bca6c004efa89983f58d genirq: Disable interrupts for force threaded handlers
+https://tldp.org/HOWTO/Plug-and-Play-HOWTO-6.html#ss6.12
+states the behavior of the ISA I/O ports and how Linux drivers rely
+on that. Is that enough for you?
 
-A change to robustify force-threaded IRQ handlers to always disable interrupts,
-plus a DocBook fix.
-
-[ Note: the force-threaded IRQ handler change has been accelerated 
-  from the normal schedule of such a change to keep the bad 
-  pattern/workaround of spin_lock_irqsave() in handlers or 
-  IRQF_NOTHREAD as a kludge from spreading. ]
-
- Thanks,
-
-	Ingo
-
------------------->
-Andy Shevchenko (1):
-      genirq/irq_sim: Fix typos in kernel doc (fnode -> fwnode)
-
-Thomas Gleixner (1):
-      genirq: Disable interrupts for force threaded handlers
-
-
- kernel/irq/irq_sim.c | 4 ++--
- kernel/irq/manage.c  | 4 ++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/irq/irq_sim.c b/kernel/irq/irq_sim.c
-index 48006608baf0..40880c350b95 100644
---- a/kernel/irq/irq_sim.c
-+++ b/kernel/irq/irq_sim.c
-@@ -159,7 +159,7 @@ static const struct irq_domain_ops irq_sim_domain_ops = {
-  * irq_domain_create_sim - Create a new interrupt simulator irq_domain and
-  *                         allocate a range of dummy interrupts.
-  *
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate.
-  *
-  * On success: return a new irq_domain object.
-@@ -228,7 +228,7 @@ static void devm_irq_domain_release_sim(struct device *dev, void *res)
-  *                              a managed device.
-  *
-  * @dev:        Device to initialize the simulator object for.
-- * @fnode:      struct fwnode_handle to be associated with this domain.
-+ * @fwnode:     struct fwnode_handle to be associated with this domain.
-  * @num_irqs:   Number of interrupts to allocate
-  *
-  * On success: return a new irq_domain object.
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index dec3f73e8db9..21ea370fccda 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1142,11 +1142,15 @@ irq_forced_thread_fn(struct irq_desc *desc, struct irqaction *action)
- 	irqreturn_t ret;
- 
- 	local_bh_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_disable();
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
- 
- 	irq_finalize_oneshot(desc, action);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_enable();
- 	local_bh_enable();
- 	return ret;
- }
+          Arnd
