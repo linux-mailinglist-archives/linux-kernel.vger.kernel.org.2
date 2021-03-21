@@ -2,55 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008163432B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 14:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF37C3432B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 14:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCUNSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 09:18:52 -0400
-Received: from aposti.net ([89.234.176.197]:38258 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229874AbhCUNSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 09:18:39 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] MIPS: generic: Support linking with LLVM ld.lld
-Date:   Sun, 21 Mar 2021 13:18:05 +0000
-Message-Id: <20210321131805.98422-1-paul@crapouillou.net>
+        id S229815AbhCUNVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 09:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhCUNV1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 09:21:27 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F681C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 06:21:26 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id b10so11085934iot.4
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 06:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hm0j+eixmdl/zBGbDZFFjyplev8KCj4c3qDD2qAyoQs=;
+        b=V/ixscQe0sYickdYafYCxUnh/2Wg3r3Kyt1ax2rsHdFYjKxFEtL1Yigz6Yy3+sevbf
+         40Ljm4s4Lj0hWxjbWJsv4KE6IqBW/XUEuGxri3mLHwqH84HfoXPK7BQGZCn50UD/xW5h
+         yvfxA87H8JZoLdthgmWjqoZgo2ntGO/akntDijcSlxws7ESsK5Kyb448Va5JtCzopUIE
+         P+OG6EQUvkAfeO9Y5f442uUIeayOyprgRzizbr5hWrYOQS6kH6ppDhFhQzcGYzfa1mYF
+         A2zHhIy6YSumTx/pTPzQvMR2dUjvcPjippnxFlyJLzOq+35HwKbWWzhWQsoM1WgAKnd7
+         St9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hm0j+eixmdl/zBGbDZFFjyplev8KCj4c3qDD2qAyoQs=;
+        b=OQIz7qxg+aQCEfiNyujbnrHVuESSDw66OXAHoeU6nGQ+/iZyW/FtLLo4FvgLI9TpSF
+         MyFyECDsnZNuekIqwBR8N2nkiDaxwgafnBD19Yvcgir+odQfemsDoZlddg6VUFqoNSUU
+         Cnu4ojjWzig63Osu1ZZBDSOnPK1YvBSFJUXA44rfmf00KmflDrUmT70b02fdT4lxpA5P
+         oIkqXSYaucMNZGIiKvA1ovWnnA8dtyFTMhyvOpO6egtTqq0YI9gVT+VmL/TGFdsjnEdY
+         HGJutLNGQuQQpzqAtg5Ww6V3B82l3eU7VPK1e+ZknnQMoZftyjoSEep6mpnuNcjzBvN0
+         9udw==
+X-Gm-Message-State: AOAM532U1sA1fG2eSIUv01mwg+a4BqUk/oypSs8bBzaUO2c6EkfVec7n
+        HOuEGVkqsenNUfz9F1ZWxpfxH7mkpdYPo4f/
+X-Google-Smtp-Source: ABdhPJzTSIaTOGsDTz6OIRL0MW2Ke8IhzwQonnCZd184Eu0CItzu9pX11IIxJLZ2iGqZGQ1ajDH4EA==
+X-Received: by 2002:a02:ccb2:: with SMTP id t18mr7732583jap.123.1616332885588;
+        Sun, 21 Mar 2021 06:21:25 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id b5sm5885325ioq.7.2021.03.21.06.21.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 06:21:25 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 2/2] net: ipa: fix IPA validation
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210320141729.1956732-1-elder@linaro.org>
+ <20210320141729.1956732-3-elder@linaro.org> <YFcCAr19ZXJ9vFQ5@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <dd4619e2-f96a-122f-2cf6-ec19445c6a5c@linaro.org>
+Date:   Sun, 21 Mar 2021 08:21:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFcCAr19ZXJ9vFQ5@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM's ld.lld chokes on the 64-bit sign-extended load addresses. Use
-32-bit addresses if the linker is LLVM's ld.lld.
+On 3/21/21 3:21 AM, Leon Romanovsky wrote:
+> On Sat, Mar 20, 2021 at 09:17:29AM -0500, Alex Elder wrote:
+>> There are blocks of IPA code that sanity-check various values, at
+>> compile time where possible.  Most of these checks can be done once
+>> during development but skipped for normal operation.  These checks
+>> permit the driver to make certain assumptions, thereby avoiding the
+>> need for runtime error checking.
+>>
+>> The checks are defined conditionally, but not consistently.  In
+>> some cases IPA_VALIDATION enables the optional checks, while in
+>> others IPA_VALIDATE is used.
+>>
+>> Fix this by using IPA_VALIDATION consistently.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/net/ipa/Makefile       | 2 +-
+>>   drivers/net/ipa/gsi_trans.c    | 8 ++++----
+>>   drivers/net/ipa/ipa_cmd.c      | 4 ++--
+>>   drivers/net/ipa/ipa_cmd.h      | 6 +++---
+>>   drivers/net/ipa/ipa_endpoint.c | 6 +++---
+>>   drivers/net/ipa/ipa_main.c     | 6 +++---
+>>   drivers/net/ipa/ipa_mem.c      | 6 +++---
+>>   drivers/net/ipa/ipa_table.c    | 6 +++---
+>>   drivers/net/ipa/ipa_table.h    | 6 +++---
+>>   9 files changed, 25 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/Makefile b/drivers/net/ipa/Makefile
+>> index afe5df1e6eeee..014ae36ac6004 100644
+>> --- a/drivers/net/ipa/Makefile
+>> +++ b/drivers/net/ipa/Makefile
+>> @@ -1,5 +1,5 @@
+>>   # Un-comment the next line if you want to validate configuration data
+>> -#ccflags-y		+=	-DIPA_VALIDATE
+>> +# ccflags-y		+=	-DIPA_VALIDATION
+> 
+> Maybe netdev folks think differently here, but general rule that dead
+> code and closed code is such, is not acceptable to in Linux kernel.
+> 
+> <...>
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/generic/Platform | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What is the purpose of CONFIG_KGDB?  Or CONFIG_DEBUG_KERNEL?
+Would you prefer I expose this through a kconfig option?  I
+intentionally did not do that, because I really intended it
+to be only for development, so defined it in the Makefile.
+But I have no objection to making it configurable that way.
 
-diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
-index b871af16b5b6..19b7d92a4ca7 100644
---- a/arch/mips/generic/Platform
-+++ b/arch/mips/generic/Platform
-@@ -12,8 +12,8 @@
- cflags-$(CONFIG_MACH_INGENIC_SOC)	+= -I$(srctree)/arch/mips/include/asm/mach-ingenic
- cflags-$(CONFIG_MIPS_GENERIC)	+= -I$(srctree)/arch/mips/include/asm/mach-generic
- 
--load-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff80100000
--zload-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff81000000
-+load-$(CONFIG_MIPS_GENERIC)		+= $(if $(CONFIG_LD_IS_LLD),0x80100000,0xffffffff80100000)
-+zload-$(CONFIG_MIPS_GENERIC)	+= $(if $(CONFIG_LD_IS_LLD),0x81000000,0xffffffff81000000)
- all-$(CONFIG_MIPS_GENERIC)	:= vmlinux.gz.itb
- 
- its-y					:= vmlinux.its.S
--- 
-2.30.2
+>> -#ifdef IPA_VALIDATE
+>> +#ifdef IPA_VALIDATION
+>>   	if (!size || size % 8)
+>>   		return -EINVAL;
+>>   	if (count < max_alloc)
+>>   		return -EINVAL;
+>>   	if (!max_alloc)
+>>   		return -EINVAL;
+>> -#endif /* IPA_VALIDATE */
+>> +#endif /* IPA_VALIDATION */
+> 
+> If it is possible to supply those values, the check should be always and
+> not only under some closed config option.
+
+These are assertions.
+
+There is no need to test them for working code.  If
+I run the code successfully with these tests enabled
+exactly once, and they are satisfied, then every time
+the code is run thereafter they will pass.  So I want
+to check them when debugging/developing only.  That
+way there is a mistake, it gets caught, but otherwise
+there's no pointless argument checking done.
+
+I'll explain the first check; the others have similar
+explanation.
+
+In the current code, the passed size is sizeof(struct)
+for three separate structures.
+   - If the structure size changes, I want to be
+     sure the constraint is still honored
+   - The code will break of someone happens
+     to pass a size of 0.  I don't expect that to
+     ever happen, but this states that requirement.
+
+This is an optimization, basically, but one that
+allows the assumed conditions to be optionally
+verified.
+
+>>   	/* By allocating a few extra entries in our pool (one less
+>>   	 * than the maximum number that will be requested in a
+>> @@ -140,14 +140,14 @@ int gsi_trans_pool_init_dma(struct device *dev, struct gsi_trans_pool *pool,
+>>   	dma_addr_t addr;
+>>   	void *virt;
+>>   
+>> -#ifdef IPA_VALIDATE
+>> +#ifdef IPA_VALIDATION
+>>   	if (!size || size % 8)
+>>   		return -EINVAL;
+>>   	if (count < max_alloc)
+>>   		return -EINVAL;
+>>   	if (!max_alloc)
+>>   		return -EINVAL;
+>> -#endif /* IPA_VALIDATE */
+>> +#endif /* IPA_VALIDATION */
+> 
+> Same
+> 
+> <...>
+> 
+>>   {
+>> -#ifdef IPA_VALIDATE
+>> +#ifdef IPA_VALIDATION
+>>   	/* At one time we assumed a 64-bit build, allowing some do_div()
+>>   	 * calls to be replaced by simple division or modulo operations.
+>>   	 * We currently only perform divide and modulo operations on u32,
+>> @@ -768,7 +768,7 @@ static void ipa_validate_build(void)
+>>   	BUILD_BUG_ON(!ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY));
+>>   	BUILD_BUG_ON(ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY) >
+>>   			field_max(AGGR_GRANULARITY_FMASK));
+>> -#endif /* IPA_VALIDATE */
+>> +#endif /* IPA_VALIDATION */
+> 
+> BUILD_BUG_ON()s are checked during compilation and not during runtime
+> like IPA_VALIDATION promised.
+
+So I should update the description.  But I'm not sure where
+you are referring to.  Here is the first line of the patch
+description:
+   There are blocks of IPA code that sanity-check various
+   values, at compile time where possible.
+
+> IMHO, the issue here is that this IPA code isn't release quality but
+> some debug drop variant and it is far from expected from submitted code.
+
+Doesn't sound very humble, IMHO.
+
+This code was found acceptable and merged for mainline a
+year ago.  At that time it supported IPA on the SDM845 SoC
+(IPA v3.5.1).  Had it not been merged, I would have continued
+refining the code out-of-tree until it could be merged.  But
+now, it's upstream, so anything I want to do to make it better
+must be done upstream.
+
+Since last year it has undergone considerable development,
+including adding support for the SC7180 SoC (IPA v4.2).  I
+am now in the process of getting things posted for review
+so IPA versions 4.5, 4.9, and 4.11 are supported.  With any
+luck all that will be done in this merge cycle; we'll see.
+
+Most of what I've been doing is gradually transforming
+things to support the new hardware.  But in the process
+I'm also improving what's there so that it is better
+organized, more consistent, more understandable, and
+maintainable.
+
+I have explained this previously, but this code was derived
+from Qualcomm "downstream" code.  Much was done toward
+getting it into the upstream kernel, including carving out
+great deal of code, and removing functionality to focus on
+just *one* target platform.
+
+Now that it's upstream, the aim is to add back functionality,
+ideally to support all current and future Qualcomm IPA hardware,
+and eventually (this year) to support some of the features
+(hardware filtering/routing/NAT) that were removed to make
+the code simpler.
+
+I'm doing a lot of development on this driver, yes.  But
+it doesn't mean it's broken, it means it's improving.
+
+					-Alex
+
+> Thanks
+> 
 
