@@ -2,37 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4320343377
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72A334337A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 17:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhCUQco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 12:32:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34576 "EHLO
+        id S229870AbhCUQe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 12:34:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35022 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhCUQcN (ORCPT
+        with ESMTP id S229903AbhCUQeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 12:32:13 -0400
+        Sun, 21 Mar 2021 12:34:25 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EAFE51C0B78; Sun, 21 Mar 2021 17:32:10 +0100 (CET)
-Date:   Sun, 21 Mar 2021 17:32:10 +0100
+        id 6C91A1C0B78; Sun, 21 Mar 2021 17:34:22 +0100 (CET)
+Date:   Sun, 21 Mar 2021 17:34:21 +0100
 From:   Pavel Machek <pavel@denx.de>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        netdev@vger.kernel.org
-Subject: net/dev: fix information leak to userspace
-Message-ID: <20210321163210.GC26497@amd>
+To:     linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: vDPA: explain in Kconfig what vDPA is, capitalise it consistenly
+Message-ID: <20210321163421.GA27314@amd>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gr/z0/N6AeWAPJVB"
+        protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
 Content-Disposition: inline
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
@@ -40,54 +32,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gr/z0/N6AeWAPJVB
+--fUYQa+Pmc3FrFX/N
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-dev_get_mac_address() does not always initialize whole
-structure. Unfortunately, other code copies such structure to
-userspace, leaking information. Fix it.
+Not everyone knows what vDPA stands for, explain it in Kconfig.
 
 Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Cc: stable@kernel.org
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 6c5967e80132..28283a9eb63a 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8949,11 +8949,9 @@ int dev_get_mac_address(struct sockaddr *sa, struct =
-net *net, char *dev_name)
- 		ret =3D -ENODEV;
- 		goto unlock;
- 	}
--	if (!dev->addr_len)
--		memset(sa->sa_data, 0, size);
--	else
--		memcpy(sa->sa_data, dev->dev_addr,
--		       min_t(size_t, size, dev->addr_len));
-+	memset(sa->sa_data, 0, size);
-+	memcpy(sa->sa_data, dev->dev_addr,
-+	       min_t(size_t, size, dev->addr_len));
- 	sa->sa_family =3D dev->type;
+diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+index ffd1e098bfd2..8cb37b3dd279 100644
+--- a/drivers/vdpa/Kconfig
++++ b/drivers/vdpa/Kconfig
+@@ -3,9 +3,9 @@ menuconfig VDPA
+ 	tristate "vDPA drivers"
+ 	depends on NET
+ 	help
+-	  Enable this module to support vDPA device that uses a
+-	  datapath which complies with virtio specifications with
+-	  vendor specific control path.
++	  Enable this module to support Virtual Data Path Acceleration
++	  (vDPA) device that uses a datapath which complies with
++	  virtio specifications with vendor specific control path.
 =20
- unlock:
-
+ if VDPA
+=20
+@@ -38,8 +38,8 @@ config MLX5_VDPA
+ 	bool
+ 	select VHOST_IOTLB
+ 	help
+-	  Support library for Mellanox VDPA drivers. Provides code that is
+-	  common for all types of VDPA drivers. The following drivers are planned:
++	  Support library for Mellanox vDPA drivers. Provides code that is
++	  common for all types of vDPA drivers. The following drivers are planned:
+ 	  net, block.
+=20
+ config MLX5_VDPA_NET
+@@ -47,7 +47,7 @@ config MLX5_VDPA_NET
+ 	select MLX5_VDPA
+ 	depends on MLX5_CORE
+ 	help
+-	  VDPA network driver for ConnectX6 and newer. Provides offloading
++	  vDPA network driver for ConnectX6 and newer. Provides offloading
+ 	  of virtio net datapath such that descriptors put on the ring will
+ 	  be executed by the hardware. It also supports a variety of stateless
+ 	  offloads depending on the actual device used and firmware version.
 
 --=20
 DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
 HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---gr/z0/N6AeWAPJVB
+
+--fUYQa+Pmc3FrFX/N
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmBXdQoACgkQMOfwapXb+vJdiACfU1FPb4O7ikDk8o+OPGYR1NmK
-4IIAoKK4mpRlql+ZnR9Uxo1kJUWTUrBn
-=VJfs
+iEYEARECAAYFAmBXdY0ACgkQMOfwapXb+vJknACeL11P9MrGSI8SPcEO+9pXT2Yr
+XFkAniRhgxn7QzLnY9kb83vTcwWRqIs9
+=z9v1
 -----END PGP SIGNATURE-----
 
---gr/z0/N6AeWAPJVB--
+--fUYQa+Pmc3FrFX/N--
