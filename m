@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886A834346E
+	by mail.lfdr.de (Postfix) with ESMTP id D416934346F
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 20:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhCUT4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 15:56:32 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:38036 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhCUTze (ORCPT
+        id S230376AbhCUT4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 15:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhCUTzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 15:55:34 -0400
+        Sun, 21 Mar 2021 15:55:38 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E1D9C061574;
+        Sun, 21 Mar 2021 12:55:38 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id A1CBC92009C; Sun, 21 Mar 2021 20:55:32 +0100 (CET)
+        id 7E8D492009D; Sun, 21 Mar 2021 20:55:37 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 9CEF192009B;
-        Sun, 21 Mar 2021 20:55:32 +0100 (CET)
-Date:   Sun, 21 Mar 2021 20:55:32 +0100 (CET)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 78DF392009B;
+        Sun, 21 Mar 2021 20:55:37 +0100 (CET)
+Date:   Sun, 21 Mar 2021 20:55:37 +0100 (CET)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 3/3] pata_legacy: Add `probe_mask' parameter like with
- ide-generic
-In-Reply-To: <alpine.DEB.2.21.2103202152120.21463@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2103211800110.21463@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2103202152120.21463@angie.orcam.me.uk>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 0/2] MIPS: SiByte: Update SWARM defconfig for PATA support
+Message-ID: <alpine.DEB.2.21.2103212028360.21463@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -34,110 +34,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Carry the `probe_mask' parameter over from ide-generic to pata_legacy so 
-that there is a way to prevent random poking at ISA port I/O locations 
-in attempt to discover adapter option cards with libata like with the 
-old IDE driver.  By default all enabled locations are tried, however it 
-may interfere with a different kind of hardware responding there.
+Hi,
 
-For example with a plain (E)ISA system the driver tries all the six 
-possible locations:
+ In the course of looking into Christoph's recent proposal to drop legacy 
+IDE drivers I have noticed that SiByte SWARM's defconfig does not enable 
+the pata_platform driver for the onboard PATA interface.  I think default 
+configuration ought to enable all the supported onboard devices unless 
+there are specific reasons so as not to, and the PATA interface is one of 
+the boot devices supported by the CFE firmware, so I think even more then 
+that it should be included by default.
 
-scsi host0: pata_legacy
-ata1: PATA max PIO4 cmd 0x1f0 ctl 0x3f6 irq 14
-ata1.00: ATA-4: ST310211A, 3.54, max UDMA/100
-ata1.00: 19541088 sectors, multi 16: LBA
-ata1.00: configured for PIO
-scsi 0:0:0:0: Direct-Access     ATA      ST310211A        3.54 PQ: 0 ANSI: 5
-scsi 0:0:0:0: Attached scsi generic sg0 type 0
-sd 0:0:0:0: [sda] 19541088 512-byte logical blocks: (10.0 GB/9.32 GiB)
-sd 0:0:0:0: [sda] Write Protect is off
-sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
-sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
- sda: sda1 sda2 sda3
-sd 0:0:0:0: [sda] Attached SCSI disk
-scsi host1: pata_legacy
-ata2: PATA max PIO4 cmd 0x170 ctl 0x376 irq 15
-scsi host1: pata_legacy
-ata3: PATA max PIO4 cmd 0x1e8 ctl 0x3ee irq 11
-scsi host1: pata_legacy
-ata4: PATA max PIO4 cmd 0x168 ctl 0x36e irq 10
-scsi host1: pata_legacy
-ata5: PATA max PIO4 cmd 0x1e0 ctl 0x3e6 irq 8
-scsi host1: pata_legacy
-ata6: PATA max PIO4 cmd 0x160 ctl 0x366 irq 12
+ Change split into two because the defconfig has become stale since the 
+last update, so 1/2 first regenerates it, and then 2/2 applies the actual 
+modification.
 
-however giving the kernel "pata_legacy.probe_mask=21" makes it try every 
-other location only:
+ Sadly I'm currently away from my SWARM board for the foreseeable future 
+and I have no remote access to it either, but this is supposed not to need 
+run-time verification.  Build-tested only then.
 
-scsi host0: pata_legacy
-ata1: PATA max PIO4 cmd 0x1f0 ctl 0x3f6 irq 14
-ata1.00: ATA-4: ST310211A, 3.54, max UDMA/100
-ata1.00: 19541088 sectors, multi 16: LBA
-ata1.00: configured for PIO
-scsi 0:0:0:0: Direct-Access     ATA      ST310211A        3.54 PQ: 0 ANSI: 5
-scsi 0:0:0:0: Attached scsi generic sg0 type 0
-sd 0:0:0:0: [sda] 19541088 512-byte logical blocks: (10.0 GB/9.32 GiB)
-sd 0:0:0:0: [sda] Write Protect is off
-sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
-sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
- sda: sda1 sda2 sda3
-sd 0:0:0:0: [sda] Attached SCSI disk
-scsi host1: pata_legacy
-ata2: PATA max PIO4 cmd 0x1e8 ctl 0x3ee irq 11
-scsi host1: pata_legacy
-ata3: PATA max PIO4 cmd 0x1e0 ctl 0x3e6 irq 8
+ Please apply.
 
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
- Documentation/admin-guide/kernel-parameters.txt |   11 +++++++++++
- drivers/ata/pata_legacy.c                       |    6 ++++++
- 2 files changed, 17 insertions(+)
-
-linux-pata-legacy-probe-mask.diff
-Index: linux-dolch/Documentation/admin-guide/kernel-parameters.txt
-===================================================================
---- linux-dolch.orig/Documentation/admin-guide/kernel-parameters.txt
-+++ linux-dolch/Documentation/admin-guide/kernel-parameters.txt
-@@ -3627,6 +3627,17 @@
- 			Set to non-zero to probe tertiary and further ISA
- 			port ranges on PCI systems.  Disabled by default.
- 
-+	pata_legacy.probe_mask=	[HW,LIBATA]
-+			Format: <int>
-+			Probe mask for legacy ISA PATA ports.  Depending on
-+			platform configuration and the use of other driver
-+			options up to 6 legacy ports are supported: 0x1f0,
-+			0x170, 0x1e8, 0x168, 0x1e0, 0x160, however probing
-+			of individual ports can be disabled by setting the
-+			corresponding bits in the mask to 1.  Bit 0 is for
-+			the first port in the list above (0x1f0), and so on.
-+			By default all supported ports are probed.
-+
- 	pata_legacy.qdi=	[HW,LIBATA]
- 			Format: <int>
- 			Set to non-zero to probe QDI controllers.  By default
-Index: linux-dolch/drivers/ata/pata_legacy.c
-===================================================================
---- linux-dolch.orig/drivers/ata/pata_legacy.c
-+++ linux-dolch/drivers/ata/pata_legacy.c
-@@ -71,6 +71,10 @@ module_param(probe_all, int, 0);
- MODULE_PARM_DESC(probe_all,
- 		 "Set to probe tertiary+ ISA port ranges even if PCI");
- 
-+static int probe_mask = ~0;
-+module_param(probe_mask, int, 0);
-+MODULE_PARM_DESC(probe_mask, "Probe mask for legacy ISA PATA ports");
-+
- static int autospeed;
- module_param(autospeed, int, 0);
- MODULE_PARM_DESC(autospeed, "Chip present that snoops speed changes");
-@@ -199,6 +203,8 @@ static int legacy_probe_add(unsigned lon
- 			free = lp;
- 		/* Matching port, or the correct slot for ordering */
- 		if (lp->port == port || legacy_port[i] == port) {
-+			if (!(probe_mask & 1 << i))
-+				return -1;
- 			free = lp;
- 			break;
- 		}
+  Maciej
