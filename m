@@ -2,147 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69255343314
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 15:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC9F34331B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCUO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 10:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhCUO6K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 10:58:10 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7544CC061574;
-        Sun, 21 Mar 2021 07:58:10 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so7224133pjv.1;
-        Sun, 21 Mar 2021 07:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5dXHwVvv9IXUBxrS0ZMAzE1TMsjF7G3MWedvK0pWz4U=;
-        b=h/kZmcRBez3kxRN1uzpDkq1nfNfxYng3ajzPuofAC9LO0W4opowUD0tDHFdOK1UFju
-         ZHc+DWLSPb5K2G7tWUOWirIvUkquPyhcsxynEF9QNOR3cbGQCLdkjLrlrgqRN+voLtpJ
-         x1H2/L0gfBA26BZTMSD6ZXP/JWeabxZD4SKLlFMdlpWvbVE1lAXXYXkv8ohFSWl3tkpn
-         wSdqfM/HgOVGBd6UnBE40yJja4thLcy8+xLA73fkEO77MIbXHKlS08OokqtqJbEjBVoS
-         Cc/G5dtZyU2s6AXnDdG4Mefeh+p3j9agizDv7ICHAkuizuKP9XZJay2vIolS/mOE4s6U
-         UkBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5dXHwVvv9IXUBxrS0ZMAzE1TMsjF7G3MWedvK0pWz4U=;
-        b=Pv9xQYmwIPahRYajXCrHYxe/kt6ODx85spuJFqLmQg0xKAu/JiNJ5bawde81ZAkxRp
-         gLNsFNqoFeGnnuYyC+r9nT8tgL0l+bLNkQoAoXD2Puy7DxgvDvBsuQHbnN+2LYwrtNRV
-         DefpdN2irPizsdigqFsaIZqeLllNA7fiuPWbPpAOpBe9ts6EMOTFr9NfchoDEdxojXy9
-         awS5kWG8IJj1YRHRnOcOmPYa1fS18CcCt/ggOpcGuQ79rVVMcfahfGuPKFRHtpQ5DrBf
-         8UrbObM6wIAUo0veABPkJ1eBJtnIcajfmPcqGGTTtUQyN7kuFDDnhefYEPnXfXh8pSu6
-         yFVQ==
-X-Gm-Message-State: AOAM532sSNDhPBmWXJHRRpWjHYHUszaUkXUnN1Xf4txPjZc05zGOOKgU
-        ftNtDzdLF40AvIMYeEiQWwA=
-X-Google-Smtp-Source: ABdhPJzyhvbnOK5sBh9TuzaiRT4d/BehvE77EyUQPHx4YeTm7o9jbh3rg+G1SKUkjaXSxbX0Dny1Pw==
-X-Received: by 2002:a17:90a:f3cc:: with SMTP id ha12mr8581843pjb.180.1616338689779;
-        Sun, 21 Mar 2021 07:58:09 -0700 (PDT)
-Received: from localhost ([103.77.152.181])
-        by smtp.gmail.com with ESMTPSA id g21sm11140296pfk.30.2021.03.21.07.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 07:58:09 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 20:27:23 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     alex.williamson@redhat.com, info@metux.ne,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210321145723.efaj7ywkfhefc4x5@archlinux>
-References: <20210317113140.3de56d6c@omen.home.shazbot.org>
- <YFMYzkg101isRXIM@unreal>
- <20210318103935.2ec32302@omen.home.shazbot.org>
- <YFOMShJAm4j/3vRl@unreal>
- <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
- <YFSgQ2RWqt4YyIV4@unreal>
- <20210319102313.179e9969@omen.home.shazbot.org>
- <YFW78AfbhYpn16H4@unreal>
- <20210320085942.3cefcc48@x1.home.shazbot.org>
- <YFcGlzbaSzQ5Qota@unreal>
+        id S230204AbhCUPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 11:03:01 -0400
+Received: from mout.gmx.net ([212.227.17.21]:56355 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229784AbhCUPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 11:02:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616338895;
+        bh=iZJ0fOWpOJ6yY0YV5G44L2lg06KSmwtvnOJXaEkExtE=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=TNevtl3AfhJUXcEqpWTW7NUxLvQgd20u+CY0RdjZf3BujlDhlIXg7X1pLwFuxZXhj
+         +YTaIqJ2gjjdMsNcalHURPf3NkI8uqHAu5Wgmk4uEt7R/BHTIy++v3ecmsSGpXyC8X
+         mmrsTxIKn/U+Jhv3dU7SwYGNs1saYQhvHW5yadII=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2wGi-1lP4yZ05KW-003QLQ; Sun, 21
+ Mar 2021 16:01:35 +0100
+Date:   Sun, 21 Mar 2021 16:01:18 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     John Wood <john.wood@gmx.com>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v6 3/8] securtiy/brute: Detect a brute force attack
+Message-ID: <20210321150118.GA3403@ubuntu>
+References: <20210307113031.11671-1-john.wood@gmx.com>
+ <20210307113031.11671-4-john.wood@gmx.com>
+ <202103171902.E6F55172@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFcGlzbaSzQ5Qota@unreal>
+In-Reply-To: <202103171902.E6F55172@keescook>
+X-Provags-ID: V03:K1:5iRc4TE2gbTpb1q7wZQyWklMZ218cDZeiH3XZxqi5sSaQxM3sNN
+ seyl4NGaBffNBmBaIVTCRRhcemFFknJCGG8DQxU3rAocenFA7bAbupDbVanP8H3YoLBMOtQ
+ 35N+lxieCSch3to5WtQHN5/RcoUdtyzSD/Xk6BKCqj/tY/EUDpeqwHz3rGEry2dh8W6NAeS
+ jcPWupq9LS2Vd1A9jIM0g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3NbpJK5y4jQ=:aWD+YeneMTTP1w7cCN7+0z
+ cVvuc+lpMtMDvU5ZF6QBO/z6KbyT7iqW1Be8hzoGjRklSCcBH5HU/RZ5HWoziUwNyo+BCYJjG
+ PyndvJwlRu8O8kiPtey9mUMJacigX9OB4GN7a71Tk+bfyyGRmjXK4g9v4m4lar3viWTqnpvgP
+ Nm9pmzaTxAVfA64WnD5Py0f1XiFP+mRHYn4IR9iM/8N6J30g79E2oMg/c6ld3KF+lXfXgvc3O
+ +hN5b8zHP+RLNkHRs1T56G7+mGHcapU0WJCfKHFOQi7dg8u5IuBkDCPp5eurv8xDwHlDyip+t
+ +jAku8To2bkM1NuAvPGk0H3WvE0DLUSzzJHZwe4jZUaeZ56stCRSau6Q5Z4zQzcyv3GTzBpfp
+ 6ljpBfE5GmGeJr7K5dVg95RtnA4XSiB9xC4dlSOrQhmvUT2TiDiJfL37HnXQhRUvzW8glBELx
+ 2XxeDX06zUShlRcQc3gb0YP2TKtIXf+M92S3iHj/A43lpWEkJTU3tWLZ5ScpXGWvZcngPs1jd
+ vlNdBXCSGrqlDQ1RZS/ETph2iJLi3htdbB2kIuGBr4dONIIaXtc5/EHr1LgG1HQSzaMBIdsAQ
+ JnkrGDELCsMOT3jeBG1JxAMF9UahobGYIVZZHzvGSGO5Bb+ZoazS3jII0lLu9b0KtOiZ69qIR
+ bB5ptTCMRWlj8uhmo/6xLkFVW6AXdbivIDil7KtuwQ/OeTELIt09CL8nSg7metZEwvg1fULeo
+ 2ohv9SfeEkjEAdEbQeYqvQe0FYrjsuWwpIon7UZtiTT2sF6C6Ng0nY57aqgRBBKSAx2eT1cCF
+ Trx+Rnj/h2rYdNbighM1cDX+Sc6hlTI0DQIrnGxcNI/pqNG3y4AIIlN+VnXg2yfIMWqKGcHn+
+ Me9X3NmpEyW2ipHkzm0g==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/21 10:40AM, Leon Romanovsky wrote:
-> On Sat, Mar 20, 2021 at 08:59:42AM -0600, Alex Williamson wrote:
-> > On Sat, 20 Mar 2021 11:10:08 +0200
-> > Leon Romanovsky <leon@kernel.org> wrote:
-> > > On Fri, Mar 19, 2021 at 10:23:13AM -0600, Alex Williamson wrote:
-> > > >
-> > > > What if we taint the kernel or pci_warn() for cases where either all
-> > > > the reset methods are disabled, ie. 'echo none > reset_method', or any
-> > > > time a device specific method is disabled?
-> > >
-> > > What does it mean "none"? Does it mean nothing supported? If yes, I think that
-> > > pci_warn() will be enough. At least for me, taint is usable during debug stages,
-> > > probably if device doesn't crash no one will look to see /proc/sys/kernel/tainted.
-> >
-> > "none" as implemented in this patch, clearing the enabled function
-> > reset methods.
+On Wed, Mar 17, 2021 at 07:57:10PM -0700, Kees Cook wrote:
+> On Sun, Mar 07, 2021 at 12:30:26PM +0100, John Wood wrote:
+> > +static u64 brute_update_crash_period(struct brute_stats *stats, u64 n=
+ow)
+> > +{
+> > +	u64 current_period;
+> > +	u64 last_crash_timestamp;
+> > +
+> > +	spin_lock(&stats->lock);
+> > +	current_period =3D now - stats->jiffies;
+> > +	last_crash_timestamp =3D stats->jiffies;
+> > +	stats->jiffies =3D now;
+> > +
+> > +	stats->period -=3D brute_mul_by_ema_weight(stats->period);
+> > +	stats->period +=3D brute_mul_by_ema_weight(current_period);
+> > +
+> > +	if (stats->faults < BRUTE_MAX_FAULTS)
+> > +		stats->faults +=3D 1;
+> > +
+> > +	spin_unlock(&stats->lock);
+> > +	return last_crash_timestamp;
+> > +}
 >
-> It is far from intuitive, the empty string will be easier to understand,
-> because "none" means no reset at all.
+> Now *here* locking makes sense, and it only needs to be per-stat, not
+> global, since multiple processes may be operating on the same stat
+> struct. To make this more no-reader-locking-friendly, I'd also update
+> everything at the end, and use WRITE_ONCE():
 >
-> >
-> > > > I'd almost go so far as to prevent disabling a device specific reset
-> > > > altogether, but for example should a device specific reset that fixes
-> > > > an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
-> > > > case if direct FLR were disabled via a device flag introduced with the
-> > > > quirk and the remaining resets can still be selected by preference.
-> > >
-> > > I don't know enough to discuss the PCI details, but you raised good point.
-> > > This sysfs is user visible API that is presented as is from device point
-> > > of view. It can be easily run into problems if PCI/core doesn't work with
-> > > user's choice.
-> > >
-> > > >
-> > > > Theoretically all the other reset methods work and are available, it's
-> > > > only a policy decision which to use, right?
-> > >
-> > > But this patch was presented as a way to overcome situations where
-> > > supported != working and user magically knows which reset type to set.
-> >
-> > It's not magic, the new sysfs attributes expose which resets are
-> > enabled and the order that they're used, the user can simply select the
-> > next one.  Being able to bypass a broken reset method is a helpful side
-> > effect of getting to select a preferred reset method.
+> 	u64 current_period, period;
+> 	u64 last_crash_timestamp;
+> 	u64 faults;
 >
-> Magic in a sense that user has no idea what those resets mean, the
-> expectation is that he will blindly iterate till something works.
+> 	spin_lock(&stats->lock);
+> 	current_period =3D now - stats->jiffies;
+> 	last_crash_timestamp =3D stats->jiffies;
 >
-> >
-> > > If you want to take this patch to be policy decision tool,
-> > > it will need to accept "reset_type1,reset_type2,..." sort of input,
-> > > so fallback will work natively.
-> >
-> > I don't see that as a requirement.  We have fall-through support in the
-> > kernel, but for a given device we're really only ever going to make use
-> > of one of those methods.  If a user knows enough about a device to have
-> > a preference, I think it can be singular.  That also significantly
-> > simplifies the interface and supporting code.  Thanks,
+> 	WRITE_ONCE(stats->period,
+> 		   stats->period - brute_mul_by_ema_weight(stats->period) +
+> 		   brute_mul_by_ema_weight(current_period));
 >
-> I'm struggling to get requirements from this thread. You talked about
-> policy decision to overtake fallback mechanism, Amey wanted to avoid
-> quirks.
-Just to clarify I don't want to avoid quirks. I just want device
-to be usable even if it doesn't have quirk as the quirk for that
-particular device may not be developed at all for different reasons
-mentioned earlier.
-[...]
+> 	if (stats->faults < BRUTE_MAX_FAULTS)
+> 		WRITE_ONCE(stats->faults, stats->faults + 1);
+>
+> 	WRITE_ONCE(stats->jiffies, now);
+>
+> 	spin_unlock(&stats->lock);
+> 	return last_crash_timestamp;
+>
+> That way readers can (IIUC) safely use READ_ONCE() on jiffies and faults
+> without needing to hold the &stats->lock (unless they need perfectly mat=
+ching
+> jiffies, period, and faults).
 
-Thanks,
-Amey
+Sorry, but I try to understand how to use locking properly without luck.
+
+I have read (and tried to understand):
+   tools/memory-model/Documentation/simple.txt
+   tools/memory-model/Documentation/ordering.txt
+   tools/memory-model/Documentation/recipes.txt
+   Documentation/memory-barriers.txt
+
+And I don't find the responses that I need. I'm not saying they aren't
+there but I don't see them. So my questions:
+
+If in the above function makes sense to use locking, and it is called from
+the brute_task_fatal_signal hook, then, all the functions that are called
+from this hook need locking (more than one process can access stats at the
+same time).
+
+So, as you point, how it is possible and safe to read jiffies and faults
+(and I think period even though you not mention it) using READ_ONCE() but
+without holding brute_stats::lock? I'm very confused.
+
+IIUC (during the reading of the documentation) READ_ONCE and WRITE_ONCE on=
+ly
+guarantees that a variable loaded with WRITE_ONCE can be read safely with
+READ_ONCE avoiding tearing, etc. So, I see these functions like a form of
+guarantee atomicity in variables.
+
+Another question. Is it also safe to use WRITE_ONCE without holding the lo=
+ck?
+Or this is only appliable to read operations?
+
+Any light on this will help me to do the best job in the next patches. If
+somebody can point me to the right direction it would be greatly appreciat=
+ed.
+
+Is there any documentation for newbies regarding this theme? I'm stuck.
+I have also read the documentation about spinlocks, semaphores, mutex, etc=
+..
+but nothing clears me the concept expose.
+
+Apologies if this question has been answered in the past. But the search i=
+n
+the mailing list has not been lucky.
+
+Thanks for your time and patience.
+John Wood
