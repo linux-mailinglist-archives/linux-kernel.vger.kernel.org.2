@@ -2,237 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FA83431B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE023431B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhCUH6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 03:58:34 -0400
-Received: from out02.smtpout.orange.fr ([193.252.22.211]:48996 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhCUH6Q (ORCPT
+        id S230076AbhCUH7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 03:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhCUH6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 03:58:16 -0400
-Received: from localhost.localdomain ([90.126.17.6])
-        by mwinf5d26 with ME
-        id ivyD2400307rLVE03vyDbg; Sun, 21 Mar 2021 08:58:14 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 21 Mar 2021 08:58:14 +0100
-X-ME-IP: 90.126.17.6
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, m.szyprowski@samsung.com, leon@kernel.org,
-        hverkuil-cisco@xs4all.nl, tglx@linutronix.de,
-        vaibhavgupta40@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: cx25821: switch from 'pci_' to 'dma_' API
-Date:   Sun, 21 Mar 2021 08:58:11 +0100
-Message-Id: <c31a2005bcb3707846ce3589d8e5d5284b0292cf.1616313340.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sun, 21 Mar 2021 03:58:38 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4A7C061574;
+        Sun, 21 Mar 2021 00:58:38 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id y18so7514470qky.11;
+        Sun, 21 Mar 2021 00:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/FodDC12fPiOO8KW+LQzpBz2k4WggnFhqLfSXUOk7I=;
+        b=H0Tl3FAbKGNNdQY1nn7qXJAoUpOyIY1laxGMwhds2cDvmv77zy8ROW8tUBT/43pmWQ
+         JoE6R9uodvdFZuJpRRPcI7hAVNwpwhX1gjPkUuBm77PQXlqmqRuqBeg8SSxlwIwq73fv
+         tyutaF5pxdVXAA/8zpZmQXPMRI8jhs95LlW/rNVA6lfo6l74NpRBuZMwEqe3VkNcOM+i
+         8MaHIB5BBEEHBW2o+4bz+24yVyED2d5PPp66ZoADjtYOyesD1gzFwztPs3Q5y5JQX6Mh
+         wymI/gthKne2if6WGNTfWtpp/b8hq7ccDSt6RQuIuVQHi1vhUWN5hBUovoP5ywerYNEV
+         ghWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/FodDC12fPiOO8KW+LQzpBz2k4WggnFhqLfSXUOk7I=;
+        b=biRay4HkuvwE67msl29/E6rdC7BY3idaHbXamUx8QontcpWLvrAqBgFqkfiF4y2bDT
+         LrNxwzdyXjzH4KARO7j7XSwNMRnO3uVF23RYKQ4QluYLM30tMj7S3jTdCshEpOo7ZsPM
+         h7uYMiUp8ClpinU4r9o9/uMGnH4vtc/12K8sLJtqntz5okR8e5PWKcnV5fodOkaK+NeP
+         7FZW1BxW6VcgtWy8BHpn4dHKCD5CfdqPxLXGeVO6PdvXINc4KPocxwjXN7eRtuDJr8zK
+         00oKmyUzjUmxEE6B8RWm89U93j0agizqet9IKAEkNflsfqD/vKO7eEVu+TEWJWMiFBFg
+         xIAw==
+X-Gm-Message-State: AOAM5330bozn+e/OJzzDEOWpwjydhW8HdtkY5BsHEqlAfabAK0iYTeJM
+        NWsjUEJZoFbq4ed+jLSc3O0=
+X-Google-Smtp-Source: ABdhPJxNLUvkzFIE3YzBjX0C4EvNEPKtpihnwmObFP1TJ19QdzliFLuYNnnzcn50yB9+IqaPAxZBfA==
+X-Received: by 2002:ae9:f81a:: with SMTP id x26mr5608819qkh.497.1616313517322;
+        Sun, 21 Mar 2021 00:58:37 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.204])
+        by smtp.gmail.com with ESMTPSA id d23sm8298626qka.125.2021.03.21.00.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 00:58:36 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] clk: renesas: Couple of spelling fixes
+Date:   Sun, 21 Mar 2021 13:28:13 +0530
+Message-Id: <20210321075813.9471-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+s/suposed/supposed/
+s/concurent/concurrent/
 
-When memory is allocated in 'cx25821_riscmem_alloc()' GFP_KERNEL can be
-used because either this flag is already used in the call chain, or it is
-called from a 'buf_prepare' function.
-
-The call chains are:
-  vb2_ops.buf_prepare              (in cx25821-video.c)
-    cx25821_buffer_prepare         (in cx25821-video.c)
-      cx25821_risc_buffer
-        cx25821_riscmem_alloc
-
-  snd_cx25821_hw_params            (in cx25821-alsa.c) <-- use GFP_KERNEL
-    cx25821_risc_databuffer_audio
-      cx25821_riscmem_alloc
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/cx25821/cx25821-alsa.c |  2 +-
- drivers/media/pci/cx25821/cx25821-core.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/clk/renesas/r9a06g032-clocks.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/pci/cx25821/cx25821-alsa.c b/drivers/media/pci/cx25821/cx25821-alsa.c
-index 8797d85a6b0a..438fdcec6eac 100644
---- a/drivers/media/pci/cx25821/cx25821-alsa.c
-+++ b/drivers/media/pci/cx25821/cx25821-alsa.c
-@@ -402,7 +402,7 @@ static int dsp_buffer_free(struct cx25821_audio_dev *chip)
- 	dprintk(2, "Freeing buffer\n");
- 	cx25821_alsa_dma_unmap(chip);
- 	cx25821_alsa_dma_free(chip->buf);
--	pci_free_consistent(chip->pci, risc->size, risc->cpu, risc->dma);
-+	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
- 	kfree(chip->buf);
- 
- 	chip->buf = NULL;
-diff --git a/drivers/media/pci/cx25821/cx25821-core.c b/drivers/media/pci/cx25821/cx25821-core.c
-index 07b6d0c49bbf..40c10ca94def 100644
---- a/drivers/media/pci/cx25821/cx25821-core.c
-+++ b/drivers/media/pci/cx25821/cx25821-core.c
-@@ -977,11 +977,11 @@ int cx25821_riscmem_alloc(struct pci_dev *pci,
- 	dma_addr_t dma = 0;
- 
- 	if (risc->cpu && risc->size < size) {
--		pci_free_consistent(pci, risc->size, risc->cpu, risc->dma);
-+		dma_free_coherent(&pci->dev, risc->size, risc->cpu, risc->dma);
- 		risc->cpu = NULL;
- 	}
- 	if (NULL == risc->cpu) {
--		cpu = pci_zalloc_consistent(pci, size, &dma);
-+		cpu = dma_alloc_coherent(&pci->dev, size, &dma, GFP_KERNEL);
- 		if (NULL == cpu)
- 			return -ENOMEM;
- 		risc->cpu  = cpu;
-@@ -1202,8 +1202,8 @@ void cx25821_free_buffer(struct cx25821_dev *dev, struct cx25821_buffer *buf)
- {
- 	if (WARN_ON(buf->risc.size == 0))
- 		return;
--	pci_free_consistent(dev->pci,
--			buf->risc.size, buf->risc.cpu, buf->risc.dma);
-+	dma_free_coherent(&dev->pci->dev, buf->risc.size, buf->risc.cpu,
-+			  buf->risc.dma);
- 	memset(&buf->risc, 0, sizeof(buf->risc));
- }
- 
-@@ -1302,7 +1302,7 @@ static int cx25821_initdev(struct pci_dev *pci_dev,
- 		dev->pci_lat, (unsigned long long)dev->base_io_addr);
- 
- 	pci_set_master(pci_dev);
--	err = pci_set_dma_mask(pci_dev, 0xffffffff);
-+	err = dma_set_mask(&pci_dev->dev, 0xffffffff);
- 	if (err) {
- 		pr_err("%s/0: Oops: no 32bit PCI DMA ???\n", dev->name);
- 		err = -EIO;
--- 
-2.27.0
+diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
+index 892e91b92f2c..1fe166e7f8bd 100644
+--- a/drivers/clk/renesas/r9a06g032-clocks.c
++++ b/drivers/clk/renesas/r9a06g032-clocks.c
+@@ -279,7 +279,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
+ 	/*
+ 	 * These are not hardware clocks, but are needed to handle the special
+ 	 * case where we have a 'selector bit' that doesn't just change the
+-	 * parent for a clock, but also the gate it's suposed to use.
++	 * parent for a clock, but also the gate it's supposed to use.
+ 	 */
+ 	{
+ 		.index = R9A06G032_UART_GROUP_012,
+@@ -311,7 +311,7 @@ static const struct r9a06g032_clkdesc r9a06g032_clocks[] = {
+
+ struct r9a06g032_priv {
+ 	struct clk_onecell_data data;
+-	spinlock_t lock; /* protects concurent access to gates */
++	spinlock_t lock; /* protects concurrent access to gates */
+ 	void __iomem *reg;
+ };
+
+--
+2.30.1
 
