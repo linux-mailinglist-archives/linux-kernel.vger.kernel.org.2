@@ -2,203 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365BE3434A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2A43434A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCUUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 16:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhCUUgq (ORCPT
+        id S230335AbhCUUmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 16:42:00 -0400
+Received: from st43p00im-ztbu10073601.me.com ([17.58.63.184]:33800 "EHLO
+        st43p00im-ztbu10073601.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230192AbhCUUlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 16:36:46 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 13:36:45 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id y1so18524937ljm.10
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 13:36:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=mWs4m4H0UHckILPcAJUyWMZRqNTjkHacTsWOznu0H/A=;
-        b=qT5/q7jJzAfAVVXHOLetaLhKzffdZEoHfZ4kfub/yUAx08GW2+FyODQ0x8h6MwH0/k
-         UsjmfOqRY6zEkYh9h+ux2PCQTRVu917npCcZ+9sF0FH86VGQ7RrsuYAkpGf+FQk6lIxk
-         KTU9HxELxVRZVXpBSXtTNIPCVJuNPkX+pif277OcIF2XI9PLWIjx9RKBNjGUER1ov1/Z
-         TkhHywmAXDeC5Y6pgOPmEDmFzT5SLJ9WeMDxlrvUfZ7SPX/0Q51IPLz2lSO9V6pBrZaN
-         Bz/Uy/RWnrrOnFEaw5jhU4etf0ejeQadqQWXy3ddJYpq1ms9fsVb0XOb0r3gpxSZESe0
-         mHsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=mWs4m4H0UHckILPcAJUyWMZRqNTjkHacTsWOznu0H/A=;
-        b=ocutNRNgUUIS8wCzudcYkgGjVHzhzKs9uclr8A0WDDtUrqvnCVBk5vC1PxzYE0RFHE
-         t6Il+G0hui9PHvar5SZw2kGxJYHMXbk4H21OnWeJosic+Ttj7ttq6c8ERQLXyKlDx4je
-         eaT8b7FCzxCePqpEcccP5xe8B+7kJNkD55/GK/L8TrIlc2K+ZZN+hX+XX7GMeoKR8qQN
-         rmtI149MVEziBlqQeq1BEprg7F6ugAXaxyXdARAkAldBIaMSVX3j7qfJm8fbdIcDKC2k
-         INMPQQYanNrrDEtkSGltxggm7OueAU8ulbeD/fCTLOiwsQQhnwHkrZoXDfuipIpz/ONN
-         JSMQ==
-X-Gm-Message-State: AOAM5314s16OwBAAFY7LgJIPQNvZ0XQlGO7xG40ItTNJgNoaH3uoPTGc
-        UF2WG07hUMfDlKXyMAl8GuI=
-X-Google-Smtp-Source: ABdhPJwZSINVw3nh/Sdhh7sNdJauxv6S5AXZtqEIsXUtBmO384SIZB3yQ82xLrzfJDUO08xJJ3CVAQ==
-X-Received: by 2002:a2e:8708:: with SMTP id m8mr7552461lji.339.1616359004288;
-        Sun, 21 Mar 2021 13:36:44 -0700 (PDT)
-Received: from grain.localdomain ([5.18.171.94])
-        by smtp.gmail.com with ESMTPSA id y8sm1701460ljk.9.2021.03.21.13.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 13:36:42 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 44FA65601D9; Sun, 21 Mar 2021 23:36:42 +0300 (MSK)
-Date:   Sun, 21 Mar 2021 23:36:42 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] prctl: fix overwrite last but one entry in auxv vector
-Message-ID: <YFeuWsnb6qKEU8+h@grain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.0.5 (2021-01-21)
+        Sun, 21 Mar 2021 16:41:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1616359281; bh=qY6FTSszBRKz4aJ0W3Dgs+oDjbP86ZelEG349qN5Hzc=;
+        h=From:To:Subject:Date:Message-Id;
+        b=MOJPk/zykVImzZJBzwfeph88tafwBNXdt401DC2IAntYyOqrNB934Otlu+CSx959n
+         1Ik8zh3oBQE9n33jN6HSzKKoBt4wReA4XzcKcGWgw9NWKKlICh05gxNtst61RjKOJ2
+         KdxPZL/ztQbGBwsdB1r2KlsTMeC2pcjwxpzN+uqETQPWF35IFCs0/XJ4bXcKWHav2l
+         /BjdnXQ9JyCwsr2KsB9iFHYNxUdWAKGkpuSaOUPiwoF7IbTpu5pv50z7/7T3bCW/06
+         vta+3576iEiRBaBODT0gFNXWHe9qrmTPHOcjMM5cW/cn42crWpSQLggYaRMmHOEwPx
+         MVDBpokm9rB0Q==
+Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
+        by st43p00im-ztbu10073601.me.com (Postfix) with ESMTPSA id 3BDA582033E;
+        Sun, 21 Mar 2021 20:41:17 +0000 (UTC)
+From:   Alain Volmat <avolmat@me.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@st.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
+Subject: [PATCH 00/16] clk: st: embed clock outputs within drivers
+Date:   Sun, 21 Mar 2021 21:40:22 +0100
+Message-Id: <20210321204038.14417-1-avolmat@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-03-21=5F05:2021-03-19=5F02,2021-03-21=5F05,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=877
+ adultscore=0 malwarescore=0 phishscore=0 suspectscore=0 spamscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103210166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey reported that current PR_SET_MM_AUXV (and PR_SET_MM_MAP) overwrite
-too many entries on non 64bit kernels. This is because auxv is defined
-as an array of longs and in result access to AT_VECTOR_SIZE - 2 entry
-is not a type of auxv entry but rather an entry before the last one.
+Most of ST clock drivers used by STi platform are updated in
+order to introduce clock outputs informations within each drivers
+and thus allow to avoid having to rely on clock-output-names properties
+within DT clock nodes.
+For that purpose, drivers are updated to allow handling both modes
+(with or without clock-output-names).
+Once all DT will have been updated, the legacy mode could be removed
+from the drivers.
+This will also allow, once all STi DT will be corrected, to remove the
+of_clk_detect_critical API from clk core code since STi clock drivers
+are the only drivers using this API.
 
-Since it is a common code for all architectures lets use __BITS_PER_LONG
-definition to determinate each type/value pair in auxv_t is fitting
-into `long` or not.
+This serie also contains modifications within STi DTS in order to use
+the newly introduced compatible and remove clock-output-names
+properties.
 
-Note that on compat mode (ie Elf32 running in 64bit compiled kernel)
-the preallocated vector size will be big enough to carry all entries
-and zapping two entries at the end of the vector won't cause problems.
+Alain Volmat (16):
+  clk: st: clkgen-pll: remove used variable of struct clkgen_pll
+  clk: st: flexgen: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: flexgen: add new introduced compatible
+  clk: st: clkgen-pll: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-pll: add new introduced compatible
+  clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
+  dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
+  ARM: dts: sti: update flexgen compatible within stih418-clock
+  ARM: dts: sti: update flexgen compatible within stih407-clock
+  ARM: dts: sti: update flexgen compatible within stih410-clock
+  ARM: dts: sti: update clkgen-pll entries in stih407-clock
+  ARM: dts: sti: update clkgen-pll entries in stih410-clock
+  ARM: dts: sti: update clkgen-pll entries in stih418-clock
+  ARM: dts: sti: update clkgen-fsyn entries in stih407-clock
+  ARM: dts: sti: update clkgen-fsyn entries in stih410-clock
+  ARM: dts: sti: update clkgen-fsyn entries in stih418-clock
 
-Same time lets drop useless task_lock()/task_unlock() calls from
-PR_SET_MM_AUXV. It doesn't protect anything here and seems to be
-sneaked in accidentally (Oleg pointed me to this moment).
+ .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
+ .../bindings/clock/st/st,flexgen.txt          |  10 +
+ .../bindings/clock/st/st,quadfs.txt           |   3 +
+ arch/arm/boot/dts/stih407-clock.dtsi          | 128 +------
+ arch/arm/boot/dts/stih410-clock.dtsi          | 138 +------
+ arch/arm/boot/dts/stih418-clock.dtsi          | 136 +------
+ drivers/clk/st/clk-flexgen.c                  | 344 +++++++++++++++++-
+ drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
+ drivers/clk/st/clkgen-pll.c                   | 121 +++++-
+ 9 files changed, 588 insertions(+), 408 deletions(-)
 
-Reported-by: Alexey Dobriyan <adobriyan@gmail.com>
-CC: Oleg Nesterov <oleg@redhat.com>
-CC: Andrey Vagin <avagin@gmail.com>
-CC: Dmitry Safonov <0x7f454c46@gmail.com>
-CC: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
----
-Take a look please, once time permit. The issue on its own
-should not be that critical but better to fix it. I tested
-it manually via trivial test but I think it is not enough.
-Need to implement some selftesting as well. Also obviously
-I ran test on x86 only.
+-- 
+2.17.1
 
- kernel/sys.c |   73 +++++++++++++++++++++++++++++++++--------------------------
- 1 file changed, 41 insertions(+), 32 deletions(-)
-
-Index: linux-tip.git/kernel/sys.c
-===================================================================
---- linux-tip.git.orig/kernel/sys.c
-+++ linux-tip.git/kernel/sys.c
-@@ -1961,6 +1961,33 @@ out:
- 	return error;
- }
- 
-+static int copy_auxv_from_user(unsigned long *auxv, size_t auxv_size,
-+			       const void __user *addr, size_t len)
-+{
-+	BUG_ON(auxv_size != sizeof(current->mm->saved_auxv));
-+
-+	if (!addr || len > auxv_size)
-+		return -EINVAL;
-+
-+	memset(auxv, 0, auxv_size);
-+	if (len && copy_from_user(auxv, addr, len))
-+		return -EFAULT;
-+
-+	/*
-+	 * Specification requires the vector to be
-+	 * ended up with AT_NULL entry thus userspace
-+	 * will notice where to stop enumerating. Thus
-+	 * if someone is passing a screwed data make sure
-+	 * at least it has the end of vector sign.
-+	 */
-+	if (len == auxv_size) {
-+		if (__BITS_PER_LONG == 64)
-+			auxv[AT_VECTOR_SIZE - 2] = AT_NULL;
-+		auxv[AT_VECTOR_SIZE - 1] = AT_NULL;
-+	}
-+	return 0;
-+}
-+
- #ifdef CONFIG_CHECKPOINT_RESTORE
- static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data_size)
- {
-@@ -1987,22 +2014,12 @@ static int prctl_set_mm_map(int opt, con
- 		return error;
- 
- 	if (prctl_map.auxv_size) {
--		/*
--		 * Someone is trying to cheat the auxv vector.
--		 */
--		if (!prctl_map.auxv ||
--				prctl_map.auxv_size > sizeof(mm->saved_auxv))
--			return -EINVAL;
--
--		memset(user_auxv, 0, sizeof(user_auxv));
--		if (copy_from_user(user_auxv,
--				   (const void __user *)prctl_map.auxv,
--				   prctl_map.auxv_size))
--			return -EFAULT;
--
--		/* Last entry must be AT_NULL as specification requires */
--		user_auxv[AT_VECTOR_SIZE - 2] = AT_NULL;
--		user_auxv[AT_VECTOR_SIZE - 1] = AT_NULL;
-+		int error = copy_auxv_from_user(user_auxv,
-+						sizeof(user_auxv),
-+						prctl_map.auxv,
-+						prctl_map.auxv_size);
-+		if (error)
-+			return error;
- 	}
- 
- 	if (prctl_map.exe_fd != (u32)-1) {
-@@ -2079,25 +2096,17 @@ static int prctl_set_auxv(struct mm_stru
- 	 * up to the caller to provide sane values here, otherwise userspace
- 	 * tools which use this vector might be unhappy.
- 	 */
--	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
--
--	if (len > sizeof(user_auxv))
--		return -EINVAL;
--
--	if (copy_from_user(user_auxv, (const void __user *)addr, len))
--		return -EFAULT;
--
--	/* Make sure the last entry is always AT_NULL */
--	user_auxv[AT_VECTOR_SIZE - 2] = 0;
--	user_auxv[AT_VECTOR_SIZE - 1] = 0;
-+	unsigned long user_auxv[AT_VECTOR_SIZE];
-+	int error;
- 
- 	BUILD_BUG_ON(sizeof(user_auxv) != sizeof(mm->saved_auxv));
- 
--	task_lock(current);
--	memcpy(mm->saved_auxv, user_auxv, len);
--	task_unlock(current);
--
--	return 0;
-+	error = copy_auxv_from_user(user_auxv, sizeof(user_auxv),
-+				    (const void __user *)addr,
-+				    len);
-+	if (!error)
-+		memcpy(mm->saved_auxv, user_auxv, len);
-+	return error;
- }
- 
- static int prctl_set_mm(int opt, unsigned long addr,
