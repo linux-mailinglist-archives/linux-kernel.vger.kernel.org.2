@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0989F3430C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2753430C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 04:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCUDj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Mar 2021 23:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCUDi7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Mar 2021 23:38:59 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39FBC061574;
-        Sat, 20 Mar 2021 20:38:58 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id by2so7054925qvb.11;
-        Sat, 20 Mar 2021 20:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=12bQcQuei9qklDt8Bo8n+CvJwVqQA6Mw+S2p2jEoi9w=;
-        b=mMItgp5lkSLaFidNBahvvYY3fcLp+rpJSquUyuMd7D7n5Ys5Pyt5FuJUHxETJT/+Ln
-         IKQRqJhC0GFx/YyXxAHzjOeS0suPHM+JD/jsBoraLRwZlrTbIBuAKxE4jTIJko7A8JUw
-         o1dGsI1JVSP52v2RaZIKWJ+/JPV8mSKgVNYNwSZ9UBmI8BmVX+BjeK5MP9N/JilUQPD/
-         /BdU/PcS2fLFiz+g+7r06H+vtVm3hrrgUJ8l/kMUhEbxaKrMVWQK/PiT2fw84UhD+YuL
-         vrEJExdkj+IOCJbxPo9dbCwA20bgsl1T7i4q9jb2pWNWw3gSHvuUKexmvi59kcbr3OEJ
-         TVjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=12bQcQuei9qklDt8Bo8n+CvJwVqQA6Mw+S2p2jEoi9w=;
-        b=XycVIHfGrL+CEXCI09eG1dHCG5ty2FWCkdprwIHlAxKYmBtzlGpCp++WR0oUDYUQzp
-         WI4I7i6d67yXCP2shm0zEvS8T6G6A+6oDEfzCyBhCwx48OcGaa/Sn5OT8bIFo3QlfauM
-         IQetgoY7vqeLmhgFQ2qIFnumAGli5hck3Jh0Hqf1fzioI4RleI7sClsCniUqJruL1R3D
-         GnXnkMiOyP0bHq8hnBA8jZuPFNVgya+5kfe5Vazj3Yujfmm5NWFWoo31KhyOBz0H1IWZ
-         tmICpcxfEJs/71YBCtFsdvLPwGR5ddYrB0Pw3O8msmKUbkKpChlpLdCimDvKIcUOPDYt
-         GL8A==
-X-Gm-Message-State: AOAM530ozi0yDRZx99OQYAhryY+KNk/XzcoXhcSgY5eujyIF/Riuz6i2
-        amzWkNn/b7vxLoHbDi1eNZY64mO4BWIeIEh4
-X-Google-Smtp-Source: ABdhPJxHAYsNSc0XEoBlU7v0LcNlAKceSzmO4eRTcT9oQPGS0OAczY6pB/zNs/54FmGQs/moce5E6w==
-X-Received: by 2002:ad4:470c:: with SMTP id k12mr15916617qvz.9.1616297938305;
-        Sat, 20 Mar 2021 20:38:58 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.26])
-        by smtp.gmail.com with ESMTPSA id z5sm6881661qtc.42.2021.03.20.20.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 20:38:57 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] security: A typo fix
-Date:   Sun, 21 Mar 2021 09:08:45 +0530
-Message-Id: <20210321033845.13735-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S229901AbhCUDuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Mar 2021 23:50:02 -0400
+Received: from [198.145.29.99] ([198.145.29.99]:48774 "EHLO mail.kernel.org"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S229834AbhCUDtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Mar 2021 23:49:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6417D61934
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 03:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616298526;
+        bh=+8YE7y/YSZgHrNvzwVhgChZcApXUwgfjd8Riuw6hYcc=;
+        h=From:Date:Subject:To:From;
+        b=s4dfSmafrPTZcb/SrOJOtZyNCSs4yCAZXoBj2nW6bkqspGV1JqFXriw0XTN1SeJTr
+         hp802iq3pePrSuWUUmXZ2384aUgvHxb1WoJHE1sHGt9/FXUq7tgRsMWYF6FDvwgVCw
+         j4rt82dHErNxGFcowFalI6F52g8dK1P/zWc8Kd97OMV6DXi8PztryKbmZ6VSAmiAvH
+         WGBVf6PZd5sBjzBTDjuUhVjR9FLJRFHEvQUduWAgcKAeJ0AmyIGXi76Y8YQTqgqZ0u
+         lAqhsuvpfCPmIsfppYyHG3LcD4x9ZUTRqZ2OuKo0Kw6Y4a1ngqfY0sST3HZQsq+Wqn
+         9uB4EOAAX2YnQ==
+Received: by mail-ed1-f42.google.com with SMTP id y6so15346795eds.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Mar 2021 20:48:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530UtEgz6fT5jCaI1Z69ucIjJPOG2gue9Du5yJlP54t+lPoYTEdQ
+        4cUFdgDnt9iT5pmy8RFv5IcSWx5h/wdz5UHLPxA23w==
+X-Google-Smtp-Source: ABdhPJxdBic9TpvbjrDK9gci5p/l6RzjCDIrJZmR2Gdzn1E5tLqLPAgdkqXOqNIolK04Cx88Tz6VqT9BVO7Wv0W1y74=
+X-Received: by 2002:aa7:c353:: with SMTP id j19mr18340895edr.263.1616298524972;
+ Sat, 20 Mar 2021 20:48:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 20 Mar 2021 20:48:34 -0700
+X-Gmail-Original-Message-ID: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
+Message-ID: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
+Subject: Is s390's new generic-using syscall code actually correct?
+To:     Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, X86 ML <x86@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all-
 
-s/programers/programmers/
+I'm working on my kentry patchset, and I encountered:
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- security/lsm_audit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 56e62a73702836017564eaacd5212e4d0fa1c01d
+Author: Sven Schnelle <svens@linux.ibm.com>
+Date:   Sat Nov 21 11:14:56 2020 +0100
 
-diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-index 82ce14933513..ddcf572105be 100644
---- a/security/lsm_audit.c
-+++ b/security/lsm_audit.c
-@@ -212,7 +212,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 	char comm[sizeof(current->comm)];
+    s390: convert to generic entry
 
- 	/*
--	 * To keep stack sizes in check force programers to notice if they
-+	 * To keep stack sizes in check force programmers to notice if they
- 	 * start making this union too large!  See struct lsm_network_audit
- 	 * as an example of how to deal with large data.
- 	 */
---
-2.20.1
+As part of this work, I was cleaning up the generic syscall helpers,
+and I encountered the goodies in do_syscall() and __do_syscall().
 
+I'm trying to wrap my head around the current code, and I'm rather confused.
+
+1. syscall_exit_to_user_mode_work() does *all* the exit work, not just
+the syscall exit work.  So a do_syscall() that gets called twice will
+do the loopy part of the exit work (e.g. signal handling) twice.  Is
+this intentional?  If so, why?
+
+2. I don't understand how this PIF_SYSCALL_RESTART thing is supposed
+to work.  Looking at the code in Linus' tree, if a signal is pending
+and a syscall returns -ERESTARTSYS, the syscall will return back to
+do_syscall().  The work (as in (1)) gets run, calling do_signal(),
+which will notice -ERESTARTSYS and set PIF_SYSCALL_RESTART.
+Presumably it will also push the signal frame onto the stack and aim
+the return address at the svc instruction mentioned in the commit
+message from "s390: convert to generic entry".  Then __do_syscall()
+will turn interrupts back on and loop right back into do_syscall().
+That seems incorrect.
+
+Can you enlighten me?  My WIP tree is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/log/?h=x86/kentry
+
+Here are my changes to s390, and I don't think they're really correct:
+
+
+https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/diff/arch/s390/kernel/syscall.c?h=x86/kentry&id=58a459922be0fb8e0f17aeaebcb0ac8d0575a62c
