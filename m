@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B8E3431D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 10:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ECE3431D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 10:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhCUJOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 05:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhCUJOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 05:14:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B00E461930;
-        Sun, 21 Mar 2021 09:14:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616318081;
-        bh=z97kX6cRsiWQ+kLn2PcEWBpfL+Nxlr7V5w7JYn8raEo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TvBVtgqetIN8APxXPAErCysuUdh/nZg0AoZ2Nld3XgCVpurPKbzK6hcOPDhezkMQB
-         r2CarikIJkobRmGb+0Jj0uRXH4hskPuUrm8CbfwqMkEpAX6qMkRneNbwyhj/lNHLUt
-         1lSHrzyRGmpd3quKdzk27Ea2rzoQncTkYHv3AWoUuFPsrpm+zFHHl9N90oJrxcJxp4
-         dCQKc10KNDMri8FFw0kx0IOyRDdWHQEElulJPA/TO5ZdJn6D8GpSyzHN88XJQXTS7C
-         rgKT2GxCAOO95lpn+n+NF/9mjtbb7MNg0DOp2JrcnmncL5Nh0vsJw1Qq001W3ObOQQ
-         5LSMhVISbskXA==
-Date:   Sun, 21 Mar 2021 11:14:37 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: Re: linux-next: manual merge of the net tree with Linus' tree
-Message-ID: <YFcOffNUTg8qxuNp@unreal>
-References: <20210319082939.77495e55@canb.auug.org.au>
- <YFTJdL1yDId+iae4@unreal>
- <65e47dcc-702b-98e0-2750-d5b11a7c0ae1@pengutronix.de>
- <CAHk-=wgmL3qJhjnoG1z9kH-N0RokWOHATRjPyLWGx=U7Ar-1qA@mail.gmail.com>
+        id S230035AbhCUJUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 05:20:13 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:47921 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229990AbhCUJTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 05:19:40 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id NuFClm1vjDUxpNuFGloHLt; Sun, 21 Mar 2021 10:19:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616318379; bh=TXLHcw1RjhUZdIV+6hnfsrc6KKPaVywI6lyplh6kE3E=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=p9bWA4JeIbjaGZVw6yj93BFWiKI6pSS8S3nxmnP3oNn08i8DLVetdk7OmA4F+Jr6E
+         sXUcYWlBPrhyjR/aGI0Iu10Hk7LLBBuFCg0esvHpNvfEgoFjoq9xSizSoJxp4fOJUb
+         OkS+q40p2XGuXZvzruFZ2N8iG2Y6NahZ5R+D8xuxfKq8vq0BakJS5PfJ+UK5Cc97yB
+         t7g6ntS0pQsfh8GjKEOZbtgN0PEhDXZCq0WP+0//BAdOBLVnXji458u5X6OdJGIu/M
+         27e8oc9qpnF9l+z7wwozP766MmS63yooWFClpAYfXqQi/pXuc0sYOrLU0YmPxZP/gW
+         yayx0gs8m04Ag==
+Subject: Re: [PATCH] media/pci: Assign value when defining variables
+To:     zuoqilin1@163.com, tskd08@gmail.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+References: <20210317030804.963-1-zuoqilin1@163.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <47a40a03-2b54-3cb6-9314-060457794882@xs4all.nl>
+Date:   Sun, 21 Mar 2021 10:19:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgmL3qJhjnoG1z9kH-N0RokWOHATRjPyLWGx=U7Ar-1qA@mail.gmail.com>
+In-Reply-To: <20210317030804.963-1-zuoqilin1@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfADTQshJhCvxtZJT0gSymhgjeL5XzdNdzwlm0YKqF9rD8CxQea7wfUEDL/m3pOo008wFd+R1+TjCdzKnuk2o/7INWlFEq59EwtrxXpz45fDEULzYB8mN
+ CGmQLKhLBHxq1T+Pa9z8kpLwGzRVzaYocuJpkBomAh6c9WGS96VrZim2sF1QThO26TS+rx8Qo19aFJ5a2zqz5nP+TqzCiVVWvbyR1BmNZauVguu3vD6kgyxi
+ ETsFlZ7HuWbiqq30ZYR/NqrROw2f8tC10XSj8beNtAL8Hrf9rF/D6lOuh62LQECktKZpN1nRzoaKB7tkHKqhsZYA1iCTbT/v4LhboSqehZvXFNO24gtok6qP
+ 1tKE0zE6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 12:42:06PM -0700, Linus Torvalds wrote:
-> On Sat, Mar 20, 2021 at 12:28 PM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> >
-> > Good idea. I'll send a pull request to David and Jakub.
+Hi zuoqilin,
+
+On 17/03/2021 04:08, zuoqilin1@163.com wrote:
+> From: zuoqilin <zuoqilin@yulong.com>
 > 
-> I don't think the revert is necessary. The conflict is so trivial that
-> it doesn't really matter.
+> When defining variables and assigning values can be done at the same time.
 
-<...>
+For future reference: add the name of the driver to the prefix. Saying
+'media/pci:' suggests that you patch multiple PCI drivers in that directory.
+But 'media/pci/pt1:' indicates that you patch only the pt1 driver.
 
-> But something like this that just removes the
-> MODULE_SUPPORTED_DEVICE() thing that basically never gets touched
-> anyway, and we happened to be unlucky in *one* file? Not a worry at
-> all.
+I've updated the subject, so no need to repost, but remember this for next
+time :-)
 
-For me this specific revert is a way to reduce the overhead from the maintainer
-when they prepare PRs. At least for me, PRs are most time consuming tasks.
+Regards,
 
-No patch - no conflict - less worries.
+	Hans
 
-Thanks
+> 
+> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> ---
+>  drivers/media/pci/pt1/pt1.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/pci/pt1/pt1.c b/drivers/media/pci/pt1/pt1.c
+> index 72b191c..f2aa368 100644
+> --- a/drivers/media/pci/pt1/pt1.c
+> +++ b/drivers/media/pci/pt1/pt1.c
+> @@ -334,8 +334,7 @@ static int pt1_sync(struct pt1 *pt1)
+>  static u64 pt1_identify(struct pt1 *pt1)
+>  {
+>  	int i;
+> -	u64 id;
+> -	id = 0;
+> +	u64 id = 0;
+>  	for (i = 0; i < 57; i++) {
+>  		id |= (u64)(pt1_read_reg(pt1, 0) >> 30 & 1) << i;
+>  		pt1_write_reg(pt1, 0, 0x00000008);
+> @@ -1122,8 +1121,7 @@ static int pt1_i2c_end(struct pt1 *pt1, int addr)
+>  
+>  static void pt1_i2c_begin(struct pt1 *pt1, int *addrp)
+>  {
+> -	int addr;
+> -	addr = 0;
+> +	int addr = 0;
+>  
+>  	pt1_i2c_emit(pt1, addr,     0, 0, 1, 1, addr /* itself */);
+>  	addr = addr + 1;
+> 
+
