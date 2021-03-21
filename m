@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8007C3432C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 14:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC1D3432C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 14:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCUNef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 09:34:35 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58283 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhCUNeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 09:34:16 -0400
-IronPort-SDR: CJapNXC+U5AZ4f+NocdZsVc1Gn/4Z/pApWkD5vqISxYGl+IHobozYOMuWg2+cXblTeSMbK/G/z
- RzPxQcjj21cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9929"; a="275221561"
-X-IronPort-AV: E=Sophos;i="5.81,266,1610438400"; 
-   d="scan'208";a="275221561"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 06:34:16 -0700
-IronPort-SDR: xHSXSYcBsmfzYbOQu3bCj24SaiwwzkfIkNFG7DxHnbl3iP4tRLbGuMsD00nGVbNBMvpzc3lEVp
- vS+HhS7TrwyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,266,1610438400"; 
-   d="scan'208";a="440773942"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Mar 2021 06:34:02 -0700
-Subject: Re: [PATCH 1/6] sched: migration changes for core scheduling
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-2-joel@joelfernandes.org>
- <20210320153457.GX4746@worktop.programming.kicks-ass.net>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <28e13609-c526-c6ee-22a3-898652aed5e6@linux.intel.com>
-Date:   Sun, 21 Mar 2021 21:34:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229897AbhCUNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 09:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhCUNoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 09:44:21 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2420FC061574;
+        Sun, 21 Mar 2021 06:44:21 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ha17so7005907pjb.2;
+        Sun, 21 Mar 2021 06:44:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kzUMaQj//ijD7ke16OhicLJLUKJN9vZihXxuPydTGfA=;
+        b=nO9Le5oXmtJlvjCkUCo+RMAc5cvr37KE2eXWhsqT9ojRNHYll3nkPo5Y3bGK3zU5JI
+         fpjGy4KedaQSE9arn/4iaer9NGmLslWkiI7V+6M9BCdPiRE9e9o+vwtoeS4QdfTWjD+q
+         7BXkWNLZycy7Jr5QhjcYa1tJA1ItfxsPr8sGBvN61jQzlbuXJUnpTFVbEnceeOMAHFHt
+         FfWPBwkycjQLTs8pzaxdEBTWDDcoK3yaah0txN8VcLjqyQzEhgYckf5ylw1Zx+GOWzcY
+         53HnvvWMVmYNaJuyDNd1df/jMu1KMTGhgXB7LltyKzEvK9H2A8Pa8n7EsjG7JYb2BqFI
+         Fq8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kzUMaQj//ijD7ke16OhicLJLUKJN9vZihXxuPydTGfA=;
+        b=DHa2nPdezV2S7HJtR3+w3aZr2dafkgWWz5g3/n5ga3zGhzPUYKdm9rsHEiSZEH/EqJ
+         aXwLLqh/wfVnnJbBYdqHCpkCSI0UJUHuETw3UMtmIGKyLRFJ88zRD3PJ7tpvkg2MtoP/
+         AD2TN73QGFWUMoC6uDwN97OqI1ZNj8HnJknZfBG8LLHdKNUkTglj1ST24JkL+J2ae5Zm
+         cOh1VJ/HqOg1TQ4Qoq4EYEHJceFROm9+6A0N12xqO2ZlKUGkSmcBs5pb0C2nmHg4UUjh
+         NW6VmWXQC2Zjz8XUFtsQSm0JDmww7jhHMMUf0YQ814+RaUuWHBVrccSXFJFxldgxStNt
+         BkEQ==
+X-Gm-Message-State: AOAM533QDARPvD+0KMS0BHHPe/v8cZWE5rvC6c2rc5bGbHk+tWHbc8K6
+        njWVOu5McgeT8jmcXcw0i1c=
+X-Google-Smtp-Source: ABdhPJwIM9iPDlWfHvaM3fOD8B14B+UiGfECH6cfQCMTTXi9pETGjDfdg7PeOKIrlYXRT+vpAenXbA==
+X-Received: by 2002:a17:902:e84a:b029:e6:d1ee:a1ed with SMTP id t10-20020a170902e84ab02900e6d1eea1edmr15376104plg.78.1616334260402;
+        Sun, 21 Mar 2021 06:44:20 -0700 (PDT)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id e190sm11134611pfh.115.2021.03.21.06.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 06:44:19 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     herbert@gondor.apana.org.au, andy.shevchenko@gmail.com,
+        kuba@kernel.org, linux@roeck-us.net, David.Laight@aculab.com
+Cc:     davem@davemloft.net, dong.menglong@zte.com.cn,
+        viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 net-next 0/2] net: socket: use BIT() for MSG_* and fix MSG_CMSG_COMPAT
+Date:   Sun, 21 Mar 2021 21:43:55 +0800
+Message-Id: <20210321134357.148323-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210320153457.GX4746@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-On 2021/3/20 23:34, Peter Zijlstra wrote:
-> On Fri, Mar 19, 2021 at 04:32:48PM -0400, Joel Fernandes (Google) wrote:
->> @@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->>  	 * We do not migrate tasks that are:
->>  	 * 1) throttled_lb_pair, or
->>  	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
->> -	 * 3) running (obviously), or
->> -	 * 4) are cache-hot on their current CPU.
->> +	 * 3) task's cookie does not match with this CPU's core cookie
->> +	 * 4) running (obviously), or
->> +	 * 5) are cache-hot on their current CPU.
->>  	 */
->>  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
->>  		return 0;
->> @@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->>  		return 0;
->>  	}
->>  
->> +	/*
->> +	 * Don't migrate task if the task's cookie does not match
->> +	 * with the destination CPU's core cookie.
->> +	 */
->> +	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
->> +		return 0;
->> +
->>  	/* Record that we found atleast one task that could run on dst_cpu */
->>  	env->flags &= ~LBF_ALL_PINNED;
->>  
-> 
-> This one is too strong.. persistent imbalance should be able to override
-> it.
-> 
+In the first patch, I use BIT() for MSG_* to make the code tidier.
 
-IIRC, this change can avoid the following scenario:
+Directly use BIT() for MSG_* will be a bit problematic, because
+'msg_flags' is defined as 'int' somewhere, and MSG_CMSG_COMPAT
+will make it become negative, just like what Guenter Roeck
+reported here:
 
-One sysbench cpu thread(cookieA) and sysbench mysql thread(cookieB) running
-on the two siblings of core_1, the other sysbench cpu thread(cookieA) and
-sysbench mysql thread(cookieB) running on the two siblings of core2, which
-causes 50% force idle.
+https://lore.kernel.org/netdev/20210317013758.GA134033@roeck-us.net
 
-This is not an imbalance case.
+So in the second patch, I change MSG_CMSG_COMPAT to BIT(21), as
+David Laight suggested. MSG_CMSG_COMPAT is an internal value,
+which is't used in userspace, so this change works.
 
-Thanks,
--Aubrey
+In version 2, some comment is added in patch 2 to stop people
+from using BIT(31) for MSG_* in the feature, as Herbert Xu
+suggested.
+
+
+Menglong Dong (2):
+  net: socket: use BIT() for MSG_*
+  net: socket: change MSG_CMSG_COMPAT to BIT(21)
+
+ include/linux/socket.h | 75 +++++++++++++++++++++++-------------------
+ 1 file changed, 41 insertions(+), 34 deletions(-)
+
+-- 
+2.31.0
+
