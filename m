@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4508C3431BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB993431BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 09:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhCUI3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 04:29:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhCUI2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 04:28:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A04B6192F;
-        Sun, 21 Mar 2021 08:28:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616315332;
-        bh=Iv6go7i27JUrhyzVdDbwoLLwuIfA0usEsppHcbzNwjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBjjyp9+aGelAw2A/2iwUBbB/Ejw3pPWVlQ9bZZGzqnYr/bZWE+gte+VuM8+KmZtn
-         JQ0ikq97mHEMy39gd7DmzpELb2c/3imOC2XhDdFtqe2HSMXvBuzv4MjmgTQ06KJHVA
-         E/4wgaKKoJfhwd4MGBLlLRKoqy5agL5XRMYvEai2qTXk3iu4yIB4p/tBoSZRf23KdT
-         vu85cZbdm+C2NsMqNoDvrRW9rznzsRgeUEkCOXvE6suIHJNu9nYkWVViyW+xAbigK/
-         13fQICYthOJuACy4fbDp/FScfz35A4q4dohwthn6nQbBfkOoZ0q0emaSRSnuDk2WPU
-         LSuiUs/QGZykg==
-Date:   Sun, 21 Mar 2021 10:28:49 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     davem@davemloft.net, edumazet@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: make unregister netdev warning timeout configurable
-Message-ID: <YFcDwbmecMo0o4na@unreal>
-References: <20210320142851.1328291-1-dvyukov@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320142851.1328291-1-dvyukov@google.com>
+        id S230150AbhCUIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 04:32:41 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:41198 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230105AbhCUIcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 04:32:21 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id NtVMlAZljtpGHNtVSlqmNB; Sun, 21 Mar 2021 09:32:19 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1616315539; bh=m7+hpBIhTRQffrauWC/6lWcMM7xEkn2kEXsVUG+UrKw=;
+        h=From;
+        b=JB16+7MQLmoHWT0UdN8XCTMkUhB2OY0sPrcjqV5eycvy2HqrBJmTOuxaozN6hP8Ja
+         tZvxutQj96NtbcId+RS4d6SdzncCPQ7CoPm4Ixm/6dNH8jU/J+LG0D3h9zXFGax1Rf
+         gIx4zej60rT4D1nhXc7vv1ezv1ifYj+wQLmAJ4+DtoreFvkFH4g9CK2yYV5ni7dMYF
+         f12oNffCYMhvXBn7HuFKMT7UpWzNEZ/iDUqGwYLcJhWystHMIPT/kvsWX+ztBc9gwZ
+         Ruc6JqeZeTIlte8W1bQUbDVonuNcinW2R52YPkrw6TAFJEHcYguER4voLSj+B71ktj
+         VcIW2huQiwe1Q==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60570493 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=avqEcO1kaKR2PiVpUlAA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v2 0/3] drm/tilcdc: fix LCD pixel clock setting
+Date:   Sun, 21 Mar 2021 09:31:50 +0100
+Message-Id: <20210321083153.2810-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfIj4rJm5dms7RpqtK7r6MP7nj4gPez2Gizo+mtaRkNUvghzf3fBHnqPciI+V+HCV4M6uLW010j0FjnoCKzzdw4mIurEqqRYwa2mFEFqK2G9iD5ji90Ha
+ EmxnWwkWR/NPa7mEArjJD39xlosjKRS1JOU8Bq+0yQ3fYCslMdjFjBY5foQNt/wZuExKN5JpBhcyKmD5NMkSeNyH04wlSlw7bq4w1KE5TyFkHhyqBAKaKuNQ
+ fWoJ3r0et9fuD2xIENl7hCn+Vj/OpS9JIW4SiRULuSPYtEBZN6R6YqfKodrtEvQcMvEo2LN39eG4hCe8QwGw6GHb1IpZU4XslyHEe3NZ5ti/p7YYxOw4WLoV
+ 2nhvACNbpeC3yv2M77XxEGG+9BsG2rohmaNVaUpkTWnXn6tl8ZmOMI8R9ggi26u2fFTlFYtb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 03:28:51PM +0100, Dmitry Vyukov wrote:
-> netdev_wait_allrefs() issues a warning if refcount does not drop to 0
-> after 10 seconds. While 10 second wait generally should not happen
-> under normal workload in normal environment, it seems to fire falsely
-> very often during fuzzing and/or in qemu emulation (~10x slower).
-> At least it's not possible to understand if it's really a false
-> positive or not. Automated testing generally bumps all timeouts
-> to very high values to avoid flake failures.
-> Make the timeout configurable for automated testing systems.
-> Lowering the timeout may also be useful for e.g. manual bisection.
-> The default value matches the current behavior.
-> 
-> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-> Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
-> Cc: netdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  net/Kconfig    | 12 ++++++++++++
->  net/core/dev.c |  4 +++-
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
 
-Our verification team would like to see this change too.
+The series was born from a patch to fix the LCD pixel clock setting.
+Two additional patches have been added to this. One renames a misleading
+variable name that was probably the cause of the bug and the other fixes
+a warning message.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+
+Changes in v2:
+- The patch has been added in version 2.
+- Rename clk_div_rate to real_pclk_rate.
+- Provide pixel clock rate to tilcdc_pclk_diff().
+- The patch has been added in version 2.
+
+Dario Binacchi (3):
+  drm/tilcdc: rename req_rate to pclk_rate
+  drm/tilcdc: fix LCD pixel clock setting
+  drm/tilcdc: fix pixel clock setting warning message
+
+ drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+-- 
+2.17.1
+
