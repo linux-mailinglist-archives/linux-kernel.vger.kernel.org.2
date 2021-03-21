@@ -2,245 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2DA3431E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 10:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438693431EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 11:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCUJkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 05:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhCUJjn (ORCPT
+        id S229865AbhCUKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 06:07:34 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:37942 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCUKHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 05:39:43 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741A1C061574;
-        Sun, 21 Mar 2021 02:39:42 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id f8so3243327pgi.9;
-        Sun, 21 Mar 2021 02:39:41 -0700 (PDT)
+        Sun, 21 Mar 2021 06:07:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1616321230; x=1647857230;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nskdP9Ll4AtF/NUF2dJSRqC0X1ZeNr096WvD4G4xhk0=;
+  b=eIJUV/lVVz8lwxrbz8zciEIf5mFV4OhR6A/Pv88HgVdU/zWnd/eHdYcl
+   tSdOdOoW+8UKUxRc9crpeHQY3Ba3PQnD3qNlMzjhu55eTUW3EuxqyZxn2
+   e8K7RiNvRyvilAOivdsKge9ItRrCGA9GnM3ycnP3RwOymlKLfV4rc2ycl
+   6Ci5BrZgXvJYt56R2AxjhCxN5/elEl5OTuJoVJACMfOvpgBMgD7r6yKQ7
+   HF3PNgRjy/rQxrLUJpdaczpMBURpZQrsLJGP636ePFFDithGGa4OcpSN9
+   1z2FL4nBArsa/lxE56Y6/gIB+e7+TgWcmIFeayTMpzvDzXOHPfQ7ojlVW
+   w==;
+IronPort-SDR: qosvtAyAUao7W9XpfOULMK9xETLamlrPeGrLL02X1l8xorSoPuclU6efpKpdUowqCJQghtVvia
+ C/+ZM00BNXv+/XUk2Q/LcXoPs7w6sLGotOIIpMA473BmWNbyWiORtiK/Wy4kec7L7wLp7MOtjs
+ oKnw5UrstYBs+7Q9fDaLbY+UaP5E0IwjfHmzoAe0HlktfPJBYLkIp0SzyNmkRk5gVhuh7e02bL
+ v9gG4K6b8W2KmP2EFlyodbQIVFVUNHu3p29SLSGtVGINWBNh4+ON90jEmusUtS2UtpO6ebDG6y
+ YKU=
+X-IronPort-AV: E=Sophos;i="5.81,266,1610380800"; 
+   d="scan'208";a="267049063"
+Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Mar 2021 18:07:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cX4N4VPaBdehOxytvoXTHqBE5lbfMdiE34rl5NeIKs2R47bMjD1oge3z97PJUhWxvtSZK8YQd1w8t6rFi+aRdlXE6HCgH+lw1GxJxNfS0U2AkJi1rEboYUnJtqgEC4Nly1r//o+Lt86jJ/rSnhC5LtAT5xAU7XNiQU+k4mSFkLeijdkn36tp29w8ksYB6VsJIz4RdPPhdW+8KlAGV03lmPHDcdzTQrfCjv7dsglWjEGcw8XbBV49mwIe6jvc78e/1SQFS33eUCDFEBR9/X49tb5o3CY3JBTCJaOC43ezvniDlLIuZYXx99sG5vfCfCa9xrjnctJVq9knMrWbmch7Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nskdP9Ll4AtF/NUF2dJSRqC0X1ZeNr096WvD4G4xhk0=;
+ b=VoL+dTRUKK2XJjmxXW5jLqgeDPGh2WJkSd7sigwz4mtVzffgdxgBWF4i89EmXVNstTlw4udAMA0zXk+f9dY1xKUD8TGKuuIUlAZF7sLP8vzscbQM2BnPdcyIxEMTTcXAkwgcIYv44Nwirqmec/kWXks2jhN4MR7Z7pjWKbdN8E9835vIZty9eGYCuaQJHtZJ2+N02D8KQcQfkcxXlUaTBbOpcqq+dRf9ADHJgQ8KZ15MAcVeogMl6XrNoV+B4smx16H8uwTLftsQuk8ll3JLt7LHkS14PC1pEhNTfiZw237P+SoTSCUszeB+chjj5OrdvdHVu22ejYDzbj58qv3ogg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qEB2xKGyehuWamIa0Nk18mP9k4IMt9ZA/EgpxbGM3UQ=;
-        b=EMZ2ysgpzNMMyWACMknvDReSa2qVfd3RqQ9XY0n7lit5nXc7V7CEvzEU2g26ywvzFY
-         NG3Wq7Xdpq+Y4GvAImmcUZ9j52FI6Jtesyq6xbRE6PhsG+wfGyWCC5sTu+y/QoIH+no6
-         RaYilyOLdo8p3WWhG+QAk3tj2CfE9j9HolQf0Y5RRW6N1ZyEbSkyVgvFVKHLIsIrxnBk
-         /525ZJkN6hKmTJVsZlw5DMsx5CYvqpELmzFJfd6thYdY6Y9B+NFjQzEAFwEmpELO89IE
-         snpmaPerSfSOPwIuO0G24dggUS2CSs7djc73RqylmSYbLWo2GYM9I4iMSQjca8ZJtaxl
-         Qj2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qEB2xKGyehuWamIa0Nk18mP9k4IMt9ZA/EgpxbGM3UQ=;
-        b=mN1gGYS3FUcP1qHWltCh6dGJSpuPQOaZh2gPyhLzjIdGo2B/kVtwADweOJ7X0/2hqz
-         oyhWhNDIQiFuhXCNzpofVQeQLrUBgCau1GJqCaTPJfTrNiOcOBsgyVDWE2mxSarHkik6
-         363PyWIbKXZOJUUUShXqiS+LAnvNRnUHnF0GMOmWqtBGunsmH5lsae+ZbNwkgPXr1EJ4
-         pesxhW/qQUiFMS5xk4KI6G8XsmGZz1nJHBPyrgldc1azxgQn8fm11lG4kpYotQ6frFBp
-         Tf01YNLaIxxrH4CtN6yWCX9g9GMe4F1ki0N72xhcJF7329XfMT4kULvGqPsLANmaP43+
-         WiuA==
-X-Gm-Message-State: AOAM533KcyAO7XUGil8H9CktPFH9iTf/x1F1BblziO79zAHzKOgYMViR
-        /AbrHP1FdEOniH0un4w4R6l0+Wwhf4Q=
-X-Google-Smtp-Source: ABdhPJyUSsRrw3v6UZdjSwgdAJHcf2z0mRABzxyax2Qc0pICg4oJPeMEdhx/+DsjzgRx3P/ibo9dHg==
-X-Received: by 2002:aa7:8745:0:b029:211:1103:d3e4 with SMTP id g5-20020aa787450000b02902111103d3e4mr14858484pfo.73.1616319580373;
-        Sun, 21 Mar 2021 02:39:40 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:9c26:6181:dc56:dba4])
-        by smtp.gmail.com with ESMTPSA id w17sm9567102pfu.29.2021.03.21.02.39.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 02:39:39 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next v2] net: lapb: Make "lapb_t1timer_running" able to detect an already running timer
-Date:   Sun, 21 Mar 2021 02:39:35 -0700
-Message-Id: <20210321093935.93438-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nskdP9Ll4AtF/NUF2dJSRqC0X1ZeNr096WvD4G4xhk0=;
+ b=zI/D/ySSFIvbTDCeXPjvcdYyTEv3LwYWCE1pnUoL8pg9r3gimKQecnZjGcHk8HjuehldxSvKW1h5o0v8mQA9aI8FiMZn8jWwn1lbe2389CuCCn13+d9h47S7LJmGJWb+N0fummBaKLa46fSc1dDVBq16qJAq4wfspYANUTlnDtA=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB4027.namprd04.prod.outlook.com (2603:10b6:5:ac::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.18; Sun, 21 Mar 2021 10:05:59 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3955.025; Sun, 21 Mar 2021
+ 10:05:59 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: RE: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Topic: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Index: AQHXGTsD7TN1PlWoo0avHHbLGOwa2qqOQBGg
+Date:   Sun, 21 Mar 2021 10:05:59 +0000
+Message-ID: <DM6PR04MB6575DEC175CD1D3895F1AF2BFC669@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
+        <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p8>
+ <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+In-Reply-To: <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 16b69f92-ac90-484e-47bb-08d8ec50ed3b
+x-ms-traffictypediagnostic: DM6PR04MB4027:
+x-microsoft-antispam-prvs: <DM6PR04MB40273470E00D94F38C72B06FFC669@DM6PR04MB4027.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5M/4S9PSE1H332cggvlvj/J+MTfg96jNUwyQE65ppB9knBhkwjiLSjM0nO5Zn6gQ+Dd+SAPbcRatT2poXVeyYXxeQmGPF1/8WVJOJ9N24uNc1PdgqjMdnyxqFdzKgCeLyaoRuoPlaxSZoVjogznUY78vMfi0U5uTfYKktB5ZPJ+q9aeEsoqYDrri5fuMwxO8Dz7hqEnvanc/WhI65d+awukYYWO3s7dlyyOWt+ggPC/8PPHZf2wfXsvbuJuv7Fggcunsr6DLX/iZUI26TCJsZ/J9SmnPZjejnifSPJPd1zix68Zbo35OMqFdt6QPl0hWvrg63Y5dUaKfshKz9ZbIupf4e2Q6d1/z2Cofnu4gjMvoZ8QaSNDRE0eZ3JvDDP2Or3kqf3C4ByD37vKrbOuv9FfZbwYed4Q1Np7aemtq2cqFIn5LciyyOcpJJqsfqDaq9i9TMF7lJKSBg+JIFVQ1jTi1uitnMZNZZMrTAkv/dgzdcz3wrKrjVhNoVoqLpv0WVrk+hvABg8m4nPMztSfBFHgd03AjFYGJwT8SV/Qwg+NCg/cL2I43DDdkFuWxRQQgh9+gliL4yZ13rQDDaLBSn41V8CcKoHCVuFx5yYDS/n/TWH6V/C4ZbTOfr8IY+N6MUglD4HXxmg1MaeW6MKwOtUrXR3F3iG0RFBo7d6F7D8w=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(316002)(54906003)(83380400001)(110136005)(55016002)(66946007)(33656002)(71200400001)(4326008)(7416002)(7696005)(9686003)(8676002)(921005)(66556008)(8936002)(64756008)(5660300002)(86362001)(6506007)(186003)(66446008)(26005)(66476007)(478600001)(76116006)(52536014)(2906002)(38100700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?QWVKbXRqeCs3Z1JyK3R6V2pnS2hZVzlHdjhxNHdkR0JZWGd5b0dOYVJFckpM?=
+ =?utf-8?B?UnEzTzlTSStxVnJhcThKZ2p1bjNpTWNobStyWElmUnl5Nk5CbXlHUVQ1dmFj?=
+ =?utf-8?B?YU0rOW9PWVlzNHpoTHFnb0xUYXlpQkQzbUJhZTBHc1dXOUErZ2h3eXgrNVF5?=
+ =?utf-8?B?eEIyNStPQzdjMUJBcjhqRGl4WXUwSnpWMU92cC9OUHlDMGprY1lJT1k0NU51?=
+ =?utf-8?B?UzI2ZW1zczhrQkpJaVBNdnpoU3N6NGc3Q3ZWcUlRb3dENU15SzFhbVJBSjlY?=
+ =?utf-8?B?cVpzd1dsTm90U0dteCtyS1d1L0ZKSzRNaWhNa21TZDJaT0d4V3hmaVBaRmxQ?=
+ =?utf-8?B?byt4cmh6NGs1ZkpFN2tOQ05BNFZ5RzhqOTUzUVM2N1dPSllZVldoSnNXTVIr?=
+ =?utf-8?B?bDVialQ4TmRpbTY5bGozKzhxTnhxc2x4SDRqWnlYSzJ5WjlnVkZuK1lnd1NP?=
+ =?utf-8?B?alRtdzZBMGNMN1NueE1oekpWNnh2QWMvSlNMMzhTWEFsQXp3bDFkNVNnaDM1?=
+ =?utf-8?B?eDBpM1M4bU9sZ05qS2xtOERQMzhLOCtLYmlibTB3eGpTaEt6QVFsd0kxODZK?=
+ =?utf-8?B?K3VOZmpsZVdUV2w1SVRwR2JZVDcwMmhnakNvN29QdzMrY0pHU1Z6RGwzK1dI?=
+ =?utf-8?B?cHl5VG5NYktVQWZ1YjZKdkxOWFE0bTZQOHZISlBCNXJJSFRERTQvbnZyS2R0?=
+ =?utf-8?B?UXdFNEpRVGh0Ykk0Tk00ZGNkWTExUUpDU3c0dUZnQkRzVjNXUEVqSlFVdUVi?=
+ =?utf-8?B?MFQ3NW1CVi9TOVg2WmNpVmpvQjFEWmtSSjhOb2dsYW4wdzJ2YkVONmJaaXl4?=
+ =?utf-8?B?MTNndXh4WDlPM3IwMVltTUNYQ1VWS3o2TTNHemNUcFFFa3h3VkZYWERBOVBO?=
+ =?utf-8?B?bkV0WWl6VGJNQUljbXV1S2dqUjNLbStXNFNoWUtETDFienkySnpVb2R2ZTZC?=
+ =?utf-8?B?ampUMDZWbXJ6TUR2Q2Q3RXU4YVNYcld1aE4rTHFxRXlCbURMcHdNSzhYY0pZ?=
+ =?utf-8?B?WWY3WUtQMmhoN255a2lrRWsxc0JkamFrM1ovQlFkQVVkTTJRRW1rMUc3RkN6?=
+ =?utf-8?B?NC94T1hkUXlUSmVzczdtRi9OcjZkWjEwSGc0TjRXOUpYcHZRR284OXlCaHp0?=
+ =?utf-8?B?WHZ6NUF1eHBCdm94NUFXTlNBZlRRZm9QTjU2bDJqQ1hJallRRWYxS2l5M2F5?=
+ =?utf-8?B?MkZGdjAxMi8yc2poaWJwU1hJK0d1M0xOd0d1QW5wRHowUFBQNTRxcHdCV1hZ?=
+ =?utf-8?B?R1NhMjJnQ0NUZE5Md2VwTXM4M1ZsM3J2eTZxNEU3Nkg4UWQ2VUU5MVZlaHh1?=
+ =?utf-8?B?ZDZDUmR6alo1UmNkcXJtL0JpVlV6QkVENkRQeWZ5dVE3MVhiL1hRVWx4QWkw?=
+ =?utf-8?B?T1B0M3B6dEJIcStLT1VVS21GU3R4emZaWHRsOExxd3FCby9GRGdKYXpTclYz?=
+ =?utf-8?B?TkVqVDhadDJLNVUyZng3N2FXclFBaDUwVU5qY2gzU09sU0UzNUFMMnF5VlBL?=
+ =?utf-8?B?cFZOVTBwSnpsWDh1bGhPeXd4Z25vWmlnakdXUk41NDBUa2xxaVROQmQyWEJ4?=
+ =?utf-8?B?bWo5ZGVXSlNvSTRCT0NHMVkwaFkvL3FteFFUYTZTVTg0bXU5N0x5ZUxTZ0dt?=
+ =?utf-8?B?TFlyMEIvT3RyaTc2NWwvMFZjTjlPU3pFVVFNMFhTb2F3NmFPQnNHeDdnbHoy?=
+ =?utf-8?B?MVBpZVA5VUtDUEM1ajNGc3hKWUpOcXpZS3RzT0x4L1NEdzJhM1d3Mk1IZHE2?=
+ =?utf-8?Q?lRafbhT+GheH23ypeJs2/MOmtAkASmZjppsF/hF?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16b69f92-ac90-484e-47bb-08d8ec50ed3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2021 10:05:59.3145
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kLI8Whp6zg3dyorSSxlUXyI5ElKtSdU6r32pyKiIymtmp1ar3ofy5BIS7F1UfzxR/relwLl5BgWIKbvswO6hJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
-
-The "lapb_t1timer_running" function in "lapb_timer.c" is used in only
-one place: in the "lapb_kick" function in "lapb_out.c". "lapb_kick" calls
-"lapb_t1timer_running" to check if the timer is already pending, and if
-it is not, schedule it to run.
-
-However, if the timer has already fired and is running, and is waiting to
-get the "lapb->lock" lock, "lapb_t1timer_running" will not detect this,
-and "lapb_kick" will then schedule a new timer. The old timer will then
-abort when it sees a new timer pending.
-
-I think this is not right. The purpose of "lapb_kick" should be ensuring
-that the actual work of the timer function is scheduled to be done.
-If the timer function is already running but waiting for the lock,
-"lapb_kick" should not abort and reschedule it.
-
-Changes made:
-
-I added a new field "t1timer_running" in "struct lapb_cb" for
-"lapb_t1timer_running" to use. "t1timer_running" will accurately reflect
-whether the actual work of the timer is pending. If the timer has fired
-but is still waiting for the lock, "t1timer_running" will still correctly
-reflect whether the actual work is waiting to be done.
-
-The old "t1timer_stop" field, whose only responsibility is to ask a timer
-(that is already running but waiting for the lock) to abort, is no longer
-needed, because the new "t1timer_running" field can fully take over its
-responsibility. Therefore "t1timer_stop" is deleted.
-
-"t1timer_running" is not simply a negation of the old "t1timer_stop".
-At the end of the timer function, if it does not reschedule itself,
-"t1timer_running" is set to false to indicate that the timer is stopped.
-
-For consistency of the code, I also added "t2timer_running" and deleted
-"t2timer_stop".
-
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
-
-Change from v1:
-Small improvement to the commit message.
-
----
- include/net/lapb.h    |  2 +-
- net/lapb/lapb_iface.c |  4 ++--
- net/lapb/lapb_timer.c | 19 ++++++++++++-------
- 3 files changed, 15 insertions(+), 10 deletions(-)
-
-diff --git a/include/net/lapb.h b/include/net/lapb.h
-index eee73442a1ba..124ee122f2c8 100644
---- a/include/net/lapb.h
-+++ b/include/net/lapb.h
-@@ -92,7 +92,7 @@ struct lapb_cb {
- 	unsigned short		n2, n2count;
- 	unsigned short		t1, t2;
- 	struct timer_list	t1timer, t2timer;
--	bool			t1timer_stop, t2timer_stop;
-+	bool			t1timer_running, t2timer_running;
- 
- 	/* Internal control information */
- 	struct sk_buff_head	write_queue;
-diff --git a/net/lapb/lapb_iface.c b/net/lapb/lapb_iface.c
-index 0511bbe4af7b..1078e14f1acf 100644
---- a/net/lapb/lapb_iface.c
-+++ b/net/lapb/lapb_iface.c
-@@ -122,8 +122,8 @@ static struct lapb_cb *lapb_create_cb(void)
- 
- 	timer_setup(&lapb->t1timer, NULL, 0);
- 	timer_setup(&lapb->t2timer, NULL, 0);
--	lapb->t1timer_stop = true;
--	lapb->t2timer_stop = true;
-+	lapb->t1timer_running = false;
-+	lapb->t2timer_running = false;
- 
- 	lapb->t1      = LAPB_DEFAULT_T1;
- 	lapb->t2      = LAPB_DEFAULT_T2;
-diff --git a/net/lapb/lapb_timer.c b/net/lapb/lapb_timer.c
-index 0230b272b7d1..5be68869064d 100644
---- a/net/lapb/lapb_timer.c
-+++ b/net/lapb/lapb_timer.c
-@@ -40,7 +40,7 @@ void lapb_start_t1timer(struct lapb_cb *lapb)
- 	lapb->t1timer.function = lapb_t1timer_expiry;
- 	lapb->t1timer.expires  = jiffies + lapb->t1;
- 
--	lapb->t1timer_stop = false;
-+	lapb->t1timer_running = true;
- 	add_timer(&lapb->t1timer);
- }
- 
-@@ -51,25 +51,25 @@ void lapb_start_t2timer(struct lapb_cb *lapb)
- 	lapb->t2timer.function = lapb_t2timer_expiry;
- 	lapb->t2timer.expires  = jiffies + lapb->t2;
- 
--	lapb->t2timer_stop = false;
-+	lapb->t2timer_running = true;
- 	add_timer(&lapb->t2timer);
- }
- 
- void lapb_stop_t1timer(struct lapb_cb *lapb)
- {
--	lapb->t1timer_stop = true;
-+	lapb->t1timer_running = false;
- 	del_timer(&lapb->t1timer);
- }
- 
- void lapb_stop_t2timer(struct lapb_cb *lapb)
- {
--	lapb->t2timer_stop = true;
-+	lapb->t2timer_running = false;
- 	del_timer(&lapb->t2timer);
- }
- 
- int lapb_t1timer_running(struct lapb_cb *lapb)
- {
--	return timer_pending(&lapb->t1timer);
-+	return lapb->t1timer_running;
- }
- 
- static void lapb_t2timer_expiry(struct timer_list *t)
-@@ -79,13 +79,14 @@ static void lapb_t2timer_expiry(struct timer_list *t)
- 	spin_lock_bh(&lapb->lock);
- 	if (timer_pending(&lapb->t2timer)) /* A new timer has been set up */
- 		goto out;
--	if (lapb->t2timer_stop) /* The timer has been stopped */
-+	if (!lapb->t2timer_running) /* The timer has been stopped */
- 		goto out;
- 
- 	if (lapb->condition & LAPB_ACK_PENDING_CONDITION) {
- 		lapb->condition &= ~LAPB_ACK_PENDING_CONDITION;
- 		lapb_timeout_response(lapb);
- 	}
-+	lapb->t2timer_running = false;
- 
- out:
- 	spin_unlock_bh(&lapb->lock);
-@@ -98,7 +99,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
- 	spin_lock_bh(&lapb->lock);
- 	if (timer_pending(&lapb->t1timer)) /* A new timer has been set up */
- 		goto out;
--	if (lapb->t1timer_stop) /* The timer has been stopped */
-+	if (!lapb->t1timer_running) /* The timer has been stopped */
- 		goto out;
- 
- 	switch (lapb->state) {
-@@ -127,6 +128,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
- 				lapb->state = LAPB_STATE_0;
- 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
- 				lapb_dbg(0, "(%p) S1 -> S0\n", lapb->dev);
-+				lapb->t1timer_running = false;
- 				goto out;
- 			} else {
- 				lapb->n2count++;
-@@ -151,6 +153,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
- 				lapb->state = LAPB_STATE_0;
- 				lapb_disconnect_confirmation(lapb, LAPB_TIMEDOUT);
- 				lapb_dbg(0, "(%p) S2 -> S0\n", lapb->dev);
-+				lapb->t1timer_running = false;
- 				goto out;
- 			} else {
- 				lapb->n2count++;
-@@ -169,6 +172,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
- 				lapb_stop_t2timer(lapb);
- 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
- 				lapb_dbg(0, "(%p) S3 -> S0\n", lapb->dev);
-+				lapb->t1timer_running = false;
- 				goto out;
- 			} else {
- 				lapb->n2count++;
-@@ -186,6 +190,7 @@ static void lapb_t1timer_expiry(struct timer_list *t)
- 				lapb->state = LAPB_STATE_0;
- 				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
- 				lapb_dbg(0, "(%p) S4 -> S0\n", lapb->dev);
-+				lapb->t1timer_running = false;
- 				goto out;
- 			} else {
- 				lapb->n2count++;
--- 
-2.27.0
-
+DQo+ICtzdGF0aWMgaW50IHVmc2hwYl9leGVjdXRlX3VtYXBfcmVxKHN0cnVjdCB1ZnNocGJfbHUg
+KmhwYiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgdWZzaHBi
+X3JlcSAqdW1hcF9yZXEsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ry
+dWN0IHVmc2hwYl9yZWdpb24gKnJnbikNCj4gK3sNCj4gKyAgICAgICBzdHJ1Y3QgcmVxdWVzdCAq
+cmVxOw0KPiArICAgICAgIHN0cnVjdCBzY3NpX3JlcXVlc3QgKnJxOw0KPiArDQo+ICsgICAgICAg
+cmVxID0gdW1hcF9yZXEtPnJlcTsNCj4gKyAgICAgICByZXEtPnRpbWVvdXQgPSAwOw0KPiArICAg
+ICAgIHJlcS0+ZW5kX2lvX2RhdGEgPSAodm9pZCAqKXVtYXBfcmVxOw0KPiArICAgICAgIHJxID0g
+c2NzaV9yZXEocmVxKTsNCj4gKyAgICAgICB1ZnNocGJfc2V0X3VubWFwX2NtZChycS0+Y21kLCBy
+Z24pOw0KPiArICAgICAgIHJxLT5jbWRfbGVuID0gSFBCX1dSSVRFX0JVRkZFUl9DTURfTEVOR1RI
+Ow0KPiArDQo+ICsgICAgICAgYmxrX2V4ZWN1dGVfcnFfbm93YWl0KE5VTEwsIHJlcSwgMSwgdWZz
+aHBiX3VtYXBfcmVxX2NvbXBsX2ZuKTsNClR5cG8/IEZvcmdvdCB0aGUgc3RydWN0IHJlcXVlc3Rf
+cXVldWUgKnE/DQoNCj4gKw0KPiArICAgICAgIHJldHVybiAwOw0KPiArfQ0KPiArDQo+ICBzdGF0
+aWMgaW50IHVmc2hwYl9leGVjdXRlX21hcF9yZXEoc3RydWN0IHVmc2hwYl9sdSAqaHBiLA0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHVmc2hwYl9yZXEgKm1hcF9y
+ZXEsIGJvb2wgbGFzdCkNCj4gIHsNCj4gQEAgLTUzMywxMiArODc4LDEyIEBAIHN0YXRpYyBpbnQg
+dWZzaHBiX2V4ZWN1dGVfbWFwX3JlcShzdHJ1Y3QgdWZzaHBiX2x1DQo+ICpocGIsDQo+IA0KPiAg
+ICAgICAgIHEgPSBocGItPnNkZXZfdWZzX2x1LT5yZXF1ZXN0X3F1ZXVlOw0KPiAgICAgICAgIGZv
+ciAoaSA9IDA7IGkgPCBocGItPnBhZ2VzX3Blcl9zcmduOyBpKyspIHsNCj4gLSAgICAgICAgICAg
+ICAgIHJldCA9IGJpb19hZGRfcGNfcGFnZShxLCBtYXBfcmVxLT5iaW8sIG1hcF9yZXEtPm1jdHgt
+Pm1fcGFnZVtpXSwNCj4gKyAgICAgICAgICAgICAgIHJldCA9IGJpb19hZGRfcGNfcGFnZShxLCBt
+YXBfcmVxLT5iaW8sIG1hcF9yZXEtPnJiLm1jdHgtDQo+ID5tX3BhZ2VbaV0sDQo+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUEFHRV9TSVpFLCAwKTsNCj4gICAgICAgICAg
+ICAgICAgIGlmIChyZXQgIT0gUEFHRV9TSVpFKSB7DQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+IGRldl9lcnIoJmhwYi0+c2Rldl91ZnNfbHUtPnNkZXZfZGV2LA0KPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJiaW9fYWRkX3BjX3BhZ2UgZmFpbCAlZCAtICVkXG4iLA0KPiAt
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1hcF9yZXEtPnJnbl9pZHgsIG1hcF9y
+ZXEtPnNyZ25faWR4KTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtYXBf
+cmVxLT5yYi5yZ25faWR4LCBtYXBfcmVxLT5yYi5zcmduX2lkeCk7DQo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIHJldHVybiByZXQ7DQo+ICAgICAgICAgICAgICAgICB9DQo+ICAgICAgICAgfQ0K
+PiBAQCAtNTU0LDggKzg5OSw4IEBAIHN0YXRpYyBpbnQgdWZzaHBiX2V4ZWN1dGVfbWFwX3JlcShz
+dHJ1Y3QgdWZzaHBiX2x1DQo+ICpocGIsDQo+ICAgICAgICAgaWYgKHVubGlrZWx5KGxhc3QpKQ0K
+PiAgICAgICAgICAgICAgICAgbWVtX3NpemUgPSBocGItPmxhc3Rfc3Jnbl9lbnRyaWVzICogSFBC
+X0VOVFJZX1NJWkU7DQo+IA0KPiAtICAgICAgIHVmc2hwYl9zZXRfcmVhZF9idWZfY21kKHJxLT5j
+bWQsIG1hcF9yZXEtPnJnbl9pZHgsDQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+bWFwX3JlcS0+c3Jnbl9pZHgsIG1lbV9zaXplKTsNCj4gKyAgICAgICB1ZnNocGJfc2V0X3JlYWRf
+YnVmX2NtZChycS0+Y21kLCBtYXBfcmVxLT5yYi5yZ25faWR4LA0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIG1hcF9yZXEtPnJiLnNyZ25faWR4LCBtZW1fc2l6ZSk7DQo+ICAgICAg
+ICAgcnEtPmNtZF9sZW4gPSBIUEJfUkVBRF9CVUZGRVJfQ01EX0xFTkdUSDsNCj4gDQo+ICAgICAg
+ICAgYmxrX2V4ZWN1dGVfcnFfbm93YWl0KE5VTEwsIHJlcSwgMSwgdWZzaHBiX21hcF9yZXFfY29t
+cGxfZm4pOw0KRGl0dG8NCg0KDQpUaGFua3MsDQpBdnJpDQo=
