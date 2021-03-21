@@ -2,167 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C08B3432EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 15:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BC63432F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 15:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhCUOLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 10:11:53 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:42939 "EHLO
+        id S230160AbhCUOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 10:14:00 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59141 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229949AbhCUOLN (ORCPT
+        by vger.kernel.org with ESMTP id S229949AbhCUONd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 10:11:13 -0400
+        Sun, 21 Mar 2021 10:13:33 -0400
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 667625C00FF;
-        Sun, 21 Mar 2021 10:11:13 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id C85A75C0046;
+        Sun, 21 Mar 2021 10:13:32 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 21 Mar 2021 10:11:13 -0400
+  by compute1.internal (MEProxy); Sun, 21 Mar 2021 10:13:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=FUpZqjlOgxXIY
-        s30ynfwBw7aJ5BjzlYIhJyreti8lsQ=; b=J3dobLa5lMB+6VdFeOW7DVK8qno1J
-        zlAFW5hyzccj017ayps3HiwOT0uF9JfZFXi8KYjOayWR11cuAC4w/uA7+1LRxnm0
-        00BaKYkQ+4sOVS/+535OHpVgJXjvYh2gpghPqBWrXXt4lSiQvr9tlzwEFoj88Kzd
-        XVGIYwcMcO6PaCo117Cb1cRDnBfFmVeiDHjIONPjT4mgfeGkx241Tnq4JaDIqcGb
-        SIWn93qyj3UODhD3oekNmdx+IzG9c23xmhQ7yvegVUcCal2eLPSqAYoMQTxU+xp0
-        AIEUtQxrjOGoEBVPTFAl5Ny6voXx4ILCVo7fA0c8exWbhPrtqOyTi5Rhg==
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=0OwfkKfuxQ7vIwVrLbGr1Kj+Dx
+        0aIM+oAp+Ug8phIv8=; b=NVLtx0pZrtEeRU0Uhm/88IAfrcQ5jZlDzS+riglmKh
+        XKTDYdy/rhyeDWAinR5KHUTTH/GqGtxAFAeqEn44e9fyuY8EJ3ymRtOT1VI/16zG
+        1UQAcczjmg5+E0EKRwzgQ9NUNdSQebC5AD2LqcU2G0bN06mIxoEbV8WdR75p7IbD
+        hVrAhyR2MpnTZbdnr1JJ+27J96VTrY6i5t1Z9+tPdU3TWVnBdarwGal5jkT3wV6e
+        6x0/UoxG5KH1H0zEYT1zfhTyIuuYN0VQiP3JI8eZAGFPeFyMXNm4Pw4vxNTi6ZKD
+        z9eDgISc7EJzbcjsfZuLwGe5sEzxI+QYpkmm+g9pmWJg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=FUpZqjlOgxXIYs30ynfwBw7aJ5BjzlYIhJyreti8lsQ=; b=dx+Am8ts
-        49uWGdFJjX8Bnq1EaDh3nrtptzblrRypLP6y00/ORDSGUCM4aKEQi6+PGz13ztog
-        krOmqcmIHcJfd3ehALlKde4gZBWoO8+3wQwTy5PwERFnSuYc+xvxd2PVnxMRYTSw
-        2LCjc1i0ngQhIX3hdCjkp6yHQUcoFL4dy0m/ZgzCMYHctAUDtkeoeYeYGUa/Hfpa
-        hl55vZB85Wortf6mYD84pEV2bNLLWEABTjI6xTrbTtWfKQsthQRZIwoTrDUhsscT
-        1M91zCDXkvVvRK4XbOCWReUI0iQPZuWOtIHsx+U+HTitUBpplOqpHjsyfrTcCu5z
-        DuWY/eGvenG3Kg==
-X-ME-Sender: <xms:AVRXYFkvnH43iFtu35Ew8WEE788aZG-GEkld0GTzb7CYEu0vkHKg6Q>
-    <xme:AVRXYA07DFftrjYJ0M93_-uZSjOiXeYi5MpYwiPoWy_ZYslDbIa1dlB2Jy3oZ0Mxe
-    xJLmqU0Hk90rvUiRuc>
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0OwfkKfuxQ7vIwVrL
+        bGr1Kj+Dx0aIM+oAp+Ug8phIv8=; b=FjQB9MBwlGMIpdLxHV6dHoZDQVICqnGCx
+        DUu1ha+05DqHF+E44u4+YBajdKwfI9igxkvxdruaTS1WPeN9vNKBJF6wUorb7cmS
+        2lseaRvl51GBrGuFKNdro6ny8wo75PjoYTVyL3Ty+A45uPRpEORJQ8r17UrFwsjt
+        bQ4DjkOe8x4iS5JD4wJ7l9hNihBvNyGSvNdsywGt5QBdK43TfEvZqgGkWsduM7fT
+        TM2OWspdt5577PoxEp4fpY+Mf277xKPr6eUcymJJkcsIB9uuADujq8/O/KOcrp0/
+        p5bHsAX08BbYLZ75wmfx5rmEGRBjkUXRL7b7ViNuYsxS8Kifqp1FA==
+X-ME-Sender: <xms:jFRXYP8Ggsw6w8JvyUlSd32dYjxYnfXQ1FjH68hjEdCgHtM9QQEfjg>
+    <xme:jFRXYLswsMLgTrMIWSn5UacuooQFQ3n4TzC-uYJr0TNb-96GLiqHWi5zxXRUhmNq9
+    Ap_cshzr5LEfXKhS7A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegvddgiedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeeggedtteejke
-    eggeeugfehueevudegvdetjeeviedugedvtdekffekhedtteduhfenucfkphepudelfedr
-    vdejrddufedrvdefheenucevlhhushhtvghrufhiiigvpeeinecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:AVRXYLoqn7r8ntNj10Ck55YBHJ1MrT7M9Q-GLVFIrTSJoRV0-lMPnw>
-    <xmx:AVRXYFm5g2roXxasTdy5rSAJU3opOj8aXcSgIsiMm_APBk6MeUfkdA>
-    <xmx:AVRXYD2l6_pBaxsKt1ruFfNSJxLZ3lzJK9Kg9I544nBOFEZTwQwIPw>
-    <xmx:AVRXYExpjlIfstK4ATVGVFrTvK6TBW01xXGAxQGo2tCp7QzU3Y8H7w>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeevieeuudfhveehte
+    elvdfguefhjefgffeijeehtddtffduhfehgeejfeejffelheenucffohhmrghinhepuggv
+    vhhitggvthhrvggvrdhorhhgnecukfhppeduleefrddvjedrudefrddvfeehnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:jFRXYNAZkT6mgF_Csg-ETYaCYDmT5i8euLptOtWYRS_vyQ6iyNmQRA>
+    <xmx:jFRXYLdJnHGkO91HPf9daP0f4KdWxvBzC-KqyFb1xNpqIEWJAENsig>
+    <xmx:jFRXYEORvayLrOljOfqKM3yVAP-5vGKhKl_W7TSpLd5U1nIhiR60vg>
+    <xmx:jFRXYAAqC2jUvv9go1thXrLkN_dvoh5iaJ2MG45N-IoF5a7rc4VflA>
 Received: from ThinkpadX1Yoga3.localdomain (unknown [193.27.13.235])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 780A32400CC;
-        Sun, 21 Mar 2021 10:11:12 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id EA5F8240408;
+        Sun, 21 Mar 2021 10:13:30 -0400 (EDT)
 From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v3 9/9] ARM: dts: imx7d: remarkable2: add wacom digitizer device
-Date:   Sun, 21 Mar 2021 10:10:49 -0400
-Message-Id: <20210321141049.148-10-alistair@alistair23.me>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v3 1/2] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+Date:   Sun, 21 Mar 2021 10:13:21 -0400
+Message-Id: <20210321141322.298-1-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210321141049.148-1-alistair@alistair23.me>
-References: <20210321141049.148-1-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the wacom_i2c touchscreen for the reMarkable2.
+Initial support for the Silergy SY7636A Power Management chip
+and regulator.
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- arch/arm/boot/dts/imx7d-remarkable2.dts | 52 +++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ .../bindings/mfd/silergy,sy7636a.yaml         | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 7ed4eb5b8ea9..aa22b77af440 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -33,6 +33,19 @@ reg_brcm: regulator-brcm {
- 		startup-delay-us = <150>;
- 	};
- 
-+	reg_digitizer: regulator-digitizer {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_3V3_DIGITIZER";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_digitizer_reg>;
-+		pinctrl-1 = <&pinctrl_digitizer_reg>;
-+		gpio = <&gpio1 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		startup-delay-us = <100000>; /* 100 ms */
-+	};
+diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+new file mode 100644
+index 000000000000..f260a8eae226
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -50,6 +63,28 @@ &clks {
- 	assigned-clock-rates = <0>, <32768>;
- };
- 
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
++title: silergy sy7636a PMIC
 +
-+	wacom_digitizer: digitizer@9 {
-+		compatible = "wacom,generic";
-+		reg = <0x09>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wacom>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
-+		flip-tilt-x;
-+		flip-tilt-y;
-+		flip-pos-x;
-+		flip-pos-y;
-+		flip-distance;
-+		vdd-supply = <&reg_digitizer>;
-+	};
-+};
++maintainers:
++  - Alistair Francis <alistair@alistair23.me>
 +
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -123,6 +158,16 @@ pinctrl_digitizer_reg: digitizerreggrp {
- 			MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x14
- 		>;
- 	};
++properties:
++  compatible:
++    const: silergy,sy7636a
 +
-+	pinctrl_wacom: wacomgrp {
-+		fsl,pins = <
-+			/*MX7D_PAD_LPSR_GPIO1_IO05__GPIO1_IO5	0x00000014 /* FWE */
-+			MX7D_PAD_LPSR_GPIO1_IO04__GPIO1_IO4	0x00000074 /* PDCTB */
-+			MX7D_PAD_LPSR_GPIO1_IO01__GPIO1_IO1	0x00000034 /* WACOM INT */
-+			/*MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6	0x00000014 /* WACOM PWR ENABLE */
-+			/*MX7D_PAD_LPSR_GPIO1_IO00__GPIO1_IO0	0x00000074 /* WACOM RESET */
-+		>;
-+	};
- };
- 
- &iomuxc {
-@@ -133,6 +178,13 @@ MX7D_PAD_SAI1_TX_BCLK__GPIO6_IO13	0x14
- 		>;
- 	};
- 
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX7D_PAD_I2C1_SDA__I2C1_SDA		0x4000007f
-+			MX7D_PAD_I2C1_SCL__I2C1_SCL		0x4000007f
-+		>;
-+	};
++  reg:
++    maxItems: 1
 +
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
++  '#thermal-sensor-cells':
++    const: 0
++
++  regulators:
++    type: object
++    $ref: /schemas/regulator/regulator.yaml#
++
++    properties:
++      compatible:
++        const: silergy,sy7636a-regulator
++
++      regulator-name:
++        pattern: "vcom"
++
++required:
++  - compatible
++  - reg
++  - '#thermal-sensor-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      sy7636a@62 {
++        compatible = "silergy,sy7636a";
++        reg = <0x62>;
++        status = "okay";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_epdpmic>;
++        #thermal-sensor-cells = <0>;
++
++        regulators {
++          compatible = "silergy,sy7636a-regulator";
++          reg_epdpmic: vcom {
++            regulator-name = "vcom";
++            regulator-boot-on;
++          };
++        };
++      };
++    };
++...
 -- 
 2.30.1
 
