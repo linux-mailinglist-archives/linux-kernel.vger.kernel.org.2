@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E715343496
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B98B34349B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 21:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhCUUPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 16:15:11 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43654 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230511AbhCUUOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 16:14:42 -0400
-Received: from p508fc3a3.dip0.t-ipconnect.de ([80.143.195.163] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lO4T8-0007Oi-VT; Sun, 21 Mar 2021 21:14:39 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     sboyd@kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        robh+dt@kernel.org, mturquette@baylibre.com
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cl@rock-chips.com,
-        tony.xie@rock-chips.com, finley.xiao@rock-chips.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 0/4] clk: rockchip: add clock controller for rk3568
-Date:   Sun, 21 Mar 2021 21:14:35 +0100
-Message-Id: <161635763247.767241.10092028864316275030.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210315085608.16010-1-zhangqing@rock-chips.com>
-References: <20210315085608.16010-1-zhangqing@rock-chips.com>
+        id S230189AbhCUUUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 16:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhCUUTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 16:19:48 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808FEC061574;
+        Sun, 21 Mar 2021 13:19:47 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id bf3so16913041edb.6;
+        Sun, 21 Mar 2021 13:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8OrTT0saD0tGov5FNdr6kb239PnSO+8Nf5rWUBV4WE4=;
+        b=eijbu2QuScvnFblen4RPksW0zKmVkVkbNftVM9OX1+z3+whKBSdYksKtdnLNH9TYUD
+         ZcAs8n1FSV6Ik8uOS3QfuypEvoyfLTaCVS0cmLNaHxblPrlNlszSoGrDl9TbNQ7844vl
+         jyLVuXouVG9B1ewTqzc3BegC70nHYf7gzxMxmUgT9DRPDhZlWGuCNbRY4onx/UWMQyql
+         1m15MwaznhxQDwAP0fbvCfqhR/PEKPi5osWFafc/01v/k2h/VeUpl8SRk3to6kL+nEDO
+         NiNIbMl3vBcVuCtQ+dNIkhVFOicqhqDnTUL0kPp2GPW4L7PfapOfFcVyhhJukRi7aGUe
+         yLWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8OrTT0saD0tGov5FNdr6kb239PnSO+8Nf5rWUBV4WE4=;
+        b=lcXKKd2QiuCFoJjl48y6/L00EibjV8A1stVMN8ROtc+167YwiF+H1aY33ndRFtEiq5
+         UNkgcrcS9aAL8kjFqItzjGyRrs+rGRhBu4IXQbppQEU8jzNWSRDIyBZ6lhSxbIAH1zju
+         oGB5x44awkERt8LTNO8jLOP5ewHHNaaXLJrSPZQeXjKwmVkwyG6pHf/BKq7B08oqzCfO
+         7hcJDibrPddW1HsDH/KVzVGXR+g6MpfX18t1mk1sXQhkBYcjOF3RtdJbnct1O3pxHLhy
+         SGvLzKrCMcZbbg+Jb0YHdjD8PaDCGGulKFYubGayjnJdfhIl7yz0JRXZUrvx6EaWq533
+         8acQ==
+X-Gm-Message-State: AOAM5318rqtN0wQJi4rbk/qcRKXLBLxn8zB3vcIAcbxr5yXt6DiF0gJV
+        XsXTvhdB+/tYx1vHNW8IVhA=
+X-Google-Smtp-Source: ABdhPJyS4A4hsa8Y60qvZS8mPQfNCewndNG/g8cMjMyMeMfqSeBeHp5tq3Gsp5CvrlnSROGUoRk7Vw==
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr21961647edt.12.1616357986291;
+        Sun, 21 Mar 2021 13:19:46 -0700 (PDT)
+Received: from localhost.localdomain ([176.42.17.204])
+        by smtp.gmail.com with ESMTPSA id gb22sm7623155ejc.78.2021.03.21.13.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 13:19:45 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        julianbraha@gmail.com,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] PM: Kconfig: fix unmet dependency for PM_SLEEP_SMP
+Date:   Sun, 21 Mar 2021 23:18:19 +0300
+Message-Id: <20210321201818.15271-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 16:56:04 +0800, Elaine Zhang wrote:
-> Add the clock tree definition for the new rk3568 SoC.
-> 
-> Change in V5:
-> [PATCH v5 1/4]: No change.
-> [PATCH v5 2/4]: No change.
-> [PATCH v5 3/4]: fix up the warning:
-> 		>> drivers/clk/rockchip/clk-rk3188.c:187:67: warning:
-> 		>> missing braces around initializer [-Wmissing-braces]
-> 		187 | static const struct rockchip_cpuclk_reg_data
-> 		rk3188_cpuclk_data = {
-> [PATCH v5 4/4]: No change.
-> 
-> [...]
+When PM_SLEEP_SMP is enabled and HOTPLUG_CPU is disabled, it results in the
+following Kbuild warning:
 
-Applied, thanks!
+WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+  Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+  Selected by [y]:
+  - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
 
-[1/4] dt-binding: clock: Document rockchip, rk3568-cru bindings
-      commit: 0cd74eec54a3ec34416bab6cc640a88230472078
-[2/4] clk: rockchip: add dt-binding header for rk3568
-      commit: 0865517926660309b796bd9bd5ba6671704733bc
-[3/4] clk: rockchip: support more core div setting
-      commit: a3561e77cf3ca0937227ba13744d84fc46e5eb4b
-[4/4] clk: rockchip: add clock controller for rk3568
-      commit: cf911d89c4c5e225a2a2cfadf1364838154b2202
+The reason is that PM_SLEEP_SMP selects HOTPLUG_CPU without depending on or
+selecting HOTPLUG_CPU's dependencies.
 
-Best regards,
+Let PM_SLEEP_SMP depend on HOTPLUG_CPU instead to avoid Kbuild issues.
+
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ kernel/power/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+index 6bfe3ead10ad..8b53c9b61347 100644
+--- a/kernel/power/Kconfig
++++ b/kernel/power/Kconfig
+@@ -125,7 +125,7 @@ config PM_SLEEP_SMP
+ 	depends on SMP
+ 	depends on ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE
+ 	depends on PM_SLEEP
+-	select HOTPLUG_CPU
++	depends on HOTPLUG_CPU
+ 
+ config PM_SLEEP_SMP_NONZERO_CPU
+ 	def_bool y
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.25.1
+
