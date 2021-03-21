@@ -2,141 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68B234332D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44D834332F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 16:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCUPcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 11:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
+        id S230297AbhCUPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 11:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhCUPcF (ORCPT
+        with ESMTP id S230273AbhCUPdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 11:32:05 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9EEC061574;
-        Sun, 21 Mar 2021 08:32:04 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id d8-20020a1c1d080000b029010f15546281so7645714wmd.4;
-        Sun, 21 Mar 2021 08:32:04 -0700 (PDT)
+        Sun, 21 Mar 2021 11:33:01 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8A3C061574;
+        Sun, 21 Mar 2021 08:33:01 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so7261869pjb.0;
+        Sun, 21 Mar 2021 08:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4UPKjaEvrpSria2zj/MSglJfRqbtMM82kspeNc68FA8=;
-        b=d1rY1snf/S2121UpX8UUm299LhC9oNqFJDi2kTzgMLLm4Nb05F7qhFlS8bRdFa4orb
-         cvu32FFaFySxrd+moVuCTG1NQgkM69P/AsxLm3rgVebc2vjOD4Gy5MDnX5Nyzx9WArdf
-         HrCn/+Eob+68YsWdryq4tuiU44Nc6kkfChQGX7pIi3111sf8xjdPZngxx5qKaGLQAKTp
-         IrPfZY6ecR0nVX0Ht7uf7j+G//J3FmNT5sxIhhaJQq7eeRda3y0mdUvzLPz2Z3O0WlbI
-         YZAdtUuoqN/FwNLxQXYU4kQsClJQn+6Grg5CBaPW5W712DBtnVlm8fGhM40Jd0sXXwJl
-         goqQ==
+        bh=r0U+DE5qJnTQ3kRfYyrwXQg8XIU2gEf2QfD79ym1R0w=;
+        b=jmsLkoprnq3UaqjBElrMeEuK8b4+TsJRFDQRTuxjudHG8ZID8h/sUFgSLHhsUE+dgT
+         aDJy6OGfmHm8O8vrryASEbyTR230Eu/ceEgEF8wBvf4KA9MdDulPIa4RqQX+6jmnkdbf
+         wn+b4uP7sgBa+ai4nY9mSb5qlLNoNrKiNcjDD6pphq8lhmjaCDVQFAFfLHS06GDpctu/
+         bzqDjObi+vSqI2Plsp5B0zsd4JyKxuHP+BCeHI/LNw0PEwHBvMBUGGodcZrLqxEy+f1d
+         YbZhth/fpLtxiXm0p1YDU2YDd+NKoAGOoqdfRDxvqBP7D8+CRw0jECqWe0M7eHzEc49y
+         cLxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4UPKjaEvrpSria2zj/MSglJfRqbtMM82kspeNc68FA8=;
-        b=BH2B06eK64MvFQgDa9T2vK+J06OWEqViVVgO57slj1rkJypf5hMpGmTvthAl7q/eoG
-         wMRGZpsRNuWaCIWAvqYyF87QDYX20NP1PqWhSQw4BF6KG+812VIqMptS5A7vhzpzPnHe
-         O73pFR+Y+rSPx3K/WaA0BmVty0KBgpjV86b41Ik9A/UxIelQXCWH/NmmnjXAxknMLkFk
-         Dk4Yk1KEedeoCCZZdDTH/f5uTzzRvuUZD++EtPjTB+ggUkdyejBG0/e+e0q7cOh8Vlc9
-         ionrLwy2acBKXcydD9SmcGBW0YuPZFa1MJ5+sFthT+JRmKYJsT0ysiQY96qPH/i5+9er
-         nv6w==
-X-Gm-Message-State: AOAM530VpC3ffNop2dw9IbntXW+YlJYhbA9u4b/8vYCQVC+92uKQ6uU+
-        N+kdRHNh59/tJyxJJBz8yaycsOkJiD4=
-X-Google-Smtp-Source: ABdhPJzL6T+axjuQiZw5R84FFzj2NGdE8Semy3hzgwWEPEnH8nfgObndLgQU9pmKz9euLc/o+i/qUA==
-X-Received: by 2002:a05:600c:2102:: with SMTP id u2mr12372092wml.22.1616340722860;
-        Sun, 21 Mar 2021 08:32:02 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2553:a401:cfc6:2039:a9ec:21ff? ([2001:a61:2553:a401:cfc6:2039:a9ec:21ff])
-        by smtp.gmail.com with ESMTPSA id z82sm14096667wmg.19.2021.03.21.08.32.01
+        bh=r0U+DE5qJnTQ3kRfYyrwXQg8XIU2gEf2QfD79ym1R0w=;
+        b=jSGAXPr+AUDSQTAWv4TGpn/v+RUAlo1g2TOq76EFWwg3/KgEjM058s/0XHQgoIxWqL
+         7cHjqc5WZx9BoEtYiQFI7UBV3QSqaHWOWEvGnC55M/c3dWPpsKHpm1RurSvj91KTr0EF
+         n+Ug+ZLCUt4yAzUFjSm8fahpTuthanLJsCuApATOMZ3Jedy6uq++df960YXQiyOk8uaO
+         MtK6Gi9G31K6il8jZFwCe7HkA5XPvlbq1e/M80wh4781gsynLvl6wRWB/cb7cXoNDmIl
+         y8QKIDuBHU9VSAwBavtWKdmqPrso5OfuqpGKgVwRvHOhTYUSXZQggpunFt25BHAeXlA9
+         LqVw==
+X-Gm-Message-State: AOAM5337K556KYlALhirJEC98MdbReThIRbdbEj5K7xYjM49u5Cxlg3q
+        JZMFQK6+BGidynpsP6TwjBfLyQ1xaUWwGZs4
+X-Google-Smtp-Source: ABdhPJy2FjTJgTxZ6mjw3gj3pZU3EwRWc+4AKQqVeap+HoBd1ehxo6/2TdsRbKI/UOdAuBL8dlNxzQ==
+X-Received: by 2002:a17:902:7407:b029:e4:9645:fdf6 with SMTP id g7-20020a1709027407b02900e49645fdf6mr23266820pll.19.1616340780571;
+        Sun, 21 Mar 2021 08:33:00 -0700 (PDT)
+Received: from [0.0.0.0] ([38.84.76.15])
+        by smtp.gmail.com with ESMTPSA id d14sm11184315pji.22.2021.03.21.08.32.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Mar 2021 08:32:02 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Kitt <steve@sk2.org>
-References: <20210123161154.29332-1-steve@sk2.org>
- <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
- <20210128231040.6c85915f@heffalump.sk2.org>
- <20210129100024.m4bil5mz5prry4iq@wittgenstein>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <41461336-2ba0-3f7a-7d37-d4a51bad57ff@gmail.com>
-Date:   Sun, 21 Mar 2021 16:31:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 21 Mar 2021 08:33:00 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] platform/x86: dell-privacy: Add support for Dell
+ hardware privacy
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "pobrn@protonmail.com" <pobrn@protonmail.com>,
+        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210301093753.16300-1-Perry_Yuan@Dell.com>
+ <551e30d2-0211-f3cb-fbb8-ee5b2f22a851@linux.intel.com>
+ <SJ0PR19MB4528E7C88C955D2EE96CE3B484939@SJ0PR19MB4528.namprd19.prod.outlook.com>
+ <ab14a0b2-3f3a-3796-8baf-76e635d82340@linux.intel.com>
+From:   Perry Yuan <perry979106@gmail.com>
+Message-ID: <58d2e2f2-e552-6ecf-b1c3-bf38ad5d2e35@gmail.com>
+Date:   Sun, 21 Mar 2021 23:32:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210129100024.m4bil5mz5prry4iq@wittgenstein>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ab14a0b2-3f3a-3796-8baf-76e635d82340@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen and Christian,
-
-Late follow-up, I'm afraid...
-
-On 1/29/21 11:00 AM, Christian Brauner wrote:
-> On Thu, Jan 28, 2021 at 11:10:40PM +0100, Stephen Kitt wrote:
->> Hello Michael,
->>
->> On Thu, 28 Jan 2021 21:50:23 +0100, "Michael Kerrisk (man-pages)"
->> <mtk.manpages@gmail.com> wrote:
->>> Thanks for your patch revision. I've merged it, and have
->>> done some light editing, but I still have a question:
->>>
->>> On 1/23/21 5:11 PM, Stephen Kitt wrote:
->>>
->>> [...]
->>>
->>>> +.SH ERRORS  
->>>
->>>> +.TP
->>>> +.B EMFILE
->>>> +The per-process limit on the number of open file descriptors has been
->>>> reached +(see the description of
->>>> +.B RLIMIT_NOFILE
->>>> +in
->>>> +.BR getrlimit (2)).  
->>>
->>> I think there was already a question about this error, but
->>> I still have a doubt.
->>>
->>> A glance at the code tells me that indeed EMFILE can occur.
->>> But how can the reason be because the limit on the number
->>> of open file descriptors has been reached? I mean: no new
->>> FDs are being opened, so how can we go over the limit. I think
->>> the cause of this error is something else, but what is it?
->>
->> Here’s how I understand the code that can lead to EMFILE:
->>
->> * in __close_range(), if CLOSE_RANGE_UNSHARE is set, call unshare_fd() with
->>   CLONE_FILES to clone the fd table
->> * unshare_fd() calls dup_fd()
->> * dup_fd() allocates a new fdtable, and if the resulting fdtable ends up
->>   being too small to hold the number of fds calculated by
->>   sane_fdtable_size(), fails with EMFILE
->>
->> I suspect that, given that we’re starting with a valid fdtable, the only way
->> this can happen is if there’s a race with sysctl_nr_open being reduced.
+Hi Pierre:
+Thanks for your review!
+On 2021/3/8 23:59, Pierre-Louis Bossart wrote:
 > 
-> Yes, and sysctls are racy by nature.
+> 
+> 
+>>>>    module_param(force_rfkill, bool, 0444);
+>>>>    MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted
+>>>> models");
+>>>>
+>>>> +
+>>>
+>>> spurious line change
+>> I just want to make them separate with more space .
+>> If it cause concern, I will remote the line in V5.
+> 
+> it's fine to improve spaces/alignment, just do it in a separate patch.
+> 
+>>
+>>>
+>>>>    static const struct dmi_system_id dell_device_table[] __initconst 
+>>>> = {
+>>>>        {
+>>>>            .ident = "Dell laptop",
+>>>> @@ -2205,11 +2209,17 @@ static int __init dell_init(void)
+>>>>        dell_laptop_register_notifier(&dell_laptop_notifier);
+>>>>
+>>>>        if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
+>>>> -        dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
+>>>> -        micmute_led_cdev.brightness =
+>>> ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>>>> -        ret = led_classdev_register(&platform_device->dev,
+>>> &micmute_led_cdev);
+>>>> -        if (ret < 0)
+>>>> -            goto fail_led;
+>>>> +
+>>>     dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
+>>>
+>>> not sure why you changed the alignment?
+>> The previous alignment is a little not correct.
+>> So I adjust it
+>> If it cause concern, will restore it to original shape.
+> 
+> same here, use a different patch.
+> 
+As you suggested,I should add the alignment change in another patch.
+But if i keep the old alignment, the code will be very odd.
+Seems like that I have to change the below code to new alignment in this 
+patch.
 
-Got it, I think. I changed the error text here to:
+if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
+     dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) { <<--- changed back
+	if (!privacy_valid)
+	    	has_privacy = true;
+	else
+	    	has_privacy = false;
+	if (!has_privacy) {
+		micmute_led_cdev.brightness <<----------- new alignment
+		...
+	}
+...
+}
 
-       EMFILE The number of open file descriptors exceeds the limit spec‐
-              ified in /proc/sys/fs/nr_open (see  proc(5)).   This  error
-              can occur in situations where that limit was lowered before
-              a call to close_range() where the CLOSE_RANGE_UNSHARE  flag
-              is specified.
 
-Thanks,
-
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
