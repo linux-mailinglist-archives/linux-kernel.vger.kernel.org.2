@@ -2,77 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6016B343501
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945B7343502
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Mar 2021 22:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCUVSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 17:18:36 -0400
-Received: from ozlabs.org ([203.11.71.1]:56103 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhCUVRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 17:17:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3Vp14Nsbz9sS8;
-        Mon, 22 Mar 2021 08:17:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616361449;
-        bh=k+agQqVxBtQXBT8BgyXCm0llAnynlqY1Ioi1736IMIQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OGDiNRiv+9hgUpDA3ocWZk6pkadZCD+ikvsAK+nYfYmU/X4IMG+63SC7rvfiSxFGG
-         DgdiL7YyD76FPZTOF4bJej+S9ZMW+eoUesqkuN8Uy9dSFH5AgeuhOSdhAVuNBe9edE
-         06uUf18SN4dCiY2Gl5maBKXtA9boO7o4YwSyGrIMM0ax056ZTgqYSJpWIJTfpkLjwZ
-         N6FVKoY334O5neBFTiKqcN3P5zau2eeJonEE3NqWDF4wVku3l9mSpNdc6fm4JTN1z9
-         ys3flE4TiQfhcHGbcRAzLTRUbsExrGzuceCbZRYsflRXKpxb2SWXSfmAVfGD5bE6Zo
-         qB3p3ZMTbKtcg==
-Date:   Mon, 22 Mar 2021 08:17:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the amdgpu tree
-Message-ID: <20210322081728.68875899@canb.auug.org.au>
+        id S231348AbhCUVZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 17:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhCUVZS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 17:25:18 -0400
+Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10265C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 14:25:18 -0700 (PDT)
+Received: by sf.home (Postfix, from userid 1000)
+        id 43C355A22061; Sun, 21 Mar 2021 21:25:07 +0000 (GMT)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sergei Trofimovich <slyfox@gentoo.org>
+Subject: [PATCH] mm: add page_owner_stack=off to make stack collection optional
+Date:   Sun, 21 Mar 2021 21:25:01 +0000
+Message-Id: <20210321212501.2504947-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+Fi0oKBQKUhGtxmFkx_N9sx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+Fi0oKBQKUhGtxmFkx_N9sx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On some architectures (like ia64) stack walking is slow
+and currently requires memory allocation. This causes stack
+collection for page_owner=on to fall into recursion.
 
-Hi all,
+This patch implements a page_owner_stack=off to allow page stats
+collection.
 
-Commits
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+---
+ .../admin-guide/kernel-parameters.txt         |  6 +++++
+ mm/Kconfig.debug                              |  3 ++-
+ mm/page_owner.c                               | 23 +++++++++++++------
+ 3 files changed, 24 insertions(+), 8 deletions(-)
 
-  42b44dbf555c ("drm/amdgpu: Enable VCN/JPEG CG on aldebaran")
-  19eb0ec1d1a2 ("drm/amdgpu: add codes to capture invalid hardware access w=
-hen recovery")
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 04545725f187..3e710c4ab4df 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3518,6 +3518,12 @@
+ 			we can turn it on.
+ 			on: enable the feature
+ 
++	page_owner_stack= [KNL] Boot-time parameter option disabling stack
++			collection of page allocation. Has effect only if
++			"page_owner=on" is set. Useful for cases when stack
++			collection is too slow or not feasible.
++			off: disable the feature
++
+ 	page_poison=	[KNL] Boot-time parameter changing the state of
+ 			poisoning on the buddy allocator, available with
+ 			CONFIG_PAGE_POISONING=y.
+diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
+index 1e73717802f8..c1ecaf066c93 100644
+--- a/mm/Kconfig.debug
++++ b/mm/Kconfig.debug
+@@ -57,7 +57,8 @@ config PAGE_OWNER
+ 	  help to find bare alloc_page(s) leaks. Even if you include this
+ 	  feature on your build, it is disabled in default. You should pass
+ 	  "page_owner=on" to boot parameter in order to enable it. Eats
+-	  a fair amount of memory if enabled. See tools/vm/page_owner_sort.c
++	  a fair amount of memory if enabled. Call chain tracking can be
++	  disabled with "page_owner_stack=off". See tools/vm/page_owner_sort.c
+ 	  for user-space helper.
+ 
+ 	  If unsure, say N.
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index d15c7c4994f5..2cc1113fa28d 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -31,6 +31,7 @@ struct page_owner {
+ };
+ 
+ static bool page_owner_enabled = false;
++static bool page_owner_stack_enabled = true;
+ DEFINE_STATIC_KEY_FALSE(page_owner_inited);
+ 
+ static depot_stack_handle_t dummy_handle;
+@@ -41,21 +42,26 @@ static void init_early_allocated_pages(void);
+ 
+ static int __init early_page_owner_param(char *buf)
+ {
+-	if (!buf)
+-		return -EINVAL;
+-
+-	if (strcmp(buf, "on") == 0)
+-		page_owner_enabled = true;
+-
+-	return 0;
++	return kstrtobool(buf, &page_owner_enabled);
+ }
+ early_param("page_owner", early_page_owner_param);
+ 
++static int __init early_page_owner_stack_param(char *buf)
++{
++	return kstrtobool(buf, &page_owner_stack_enabled);
++}
++early_param("page_owner_stack", early_page_owner_stack_param);
++
+ static bool need_page_owner(void)
+ {
+ 	return page_owner_enabled;
+ }
+ 
++static bool need_page_owner_stack(void)
++{
++	return page_owner_stack_enabled;
++}
++
+ static __always_inline depot_stack_handle_t create_dummy_stack(void)
+ {
+ 	unsigned long entries[4];
+@@ -122,6 +128,9 @@ static noinline depot_stack_handle_t save_stack(gfp_t flags)
+ 	depot_stack_handle_t handle;
+ 	unsigned int nr_entries;
+ 
++	if (!need_page_owner_stack())
++		return failure_handle;
++
+ 	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
+ 
+ 	/*
+-- 
+2.31.0
 
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+Fi0oKBQKUhGtxmFkx_N9sx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBXt+gACgkQAVBC80lX
-0Gwzuwf8CT0eopEwyZ99TJSsJedfutOtpvViU8yhDEgukTs9WU1Q/uFzISWf74jD
-Iwd787Vhw2sqVLmYViUlDcFgYq/B3BRF39ExYCgjfpQ+8uANw1xpbVESP3J6RnVR
-qobmXccABjT8YLfRV/0Br1KyFVRwjVSRNlGqmDGMiC+p+flbczNNvRVBmnJNuQfn
-6kcRGGM4/2jn8hm02J78F0HRSi8D/iMILKmUnK6zuHCvz1hx4kANPpdnAy3ll3I1
-Vp4VITtSUvE5e96o1cokX/5RqVFDKEovhOYejWBH24OG6vYuhY1OdZxmcN+Rk4zc
-oJ7BeUKieyjJqs+vQ0u2NxVFCvchNg==
-=8owB
------END PGP SIGNATURE-----
-
---Sig_/+Fi0oKBQKUhGtxmFkx_N9sx--
