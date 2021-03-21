@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417D93435AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56AB3435AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhCUXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 19:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        id S231303AbhCUXXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 19:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhCUXTc (ORCPT
+        with ESMTP id S230248AbhCUXXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 19:19:32 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEA9C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 16:19:32 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id i9so8868467qka.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 16:19:32 -0700 (PDT)
+        Sun, 21 Mar 2021 19:23:16 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E26BC061574;
+        Sun, 21 Mar 2021 16:23:15 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id f73-20020a9d03cf0000b02901b4d889bce0so14166736otf.12;
+        Sun, 21 Mar 2021 16:23:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uIqf3h/ft4wOq4cykQH7kGKLCaIOsedzdoAuEFmsYSc=;
-        b=evAP+wHMAHNt8Lo9OWoX35orj7Ko4+iSwzMld1X37th2p3vV8+BIKtJltOyVPGj0F3
-         jwUESgM/bdOadptc/YOQ5yQ+nPhxdPkjaSl06zNKG74TB2npXbVcERsdhcEa6I1Bq/dm
-         R8KbD97Ir1GcjaXVqmZn94In9E2Mn8r/S/kFfjWGWwAGpxBNeCjjX8VFiEnrxlIBaOti
-         3PqWrpH7VYhMeFi57KAukZE2dWOSFp70tjnQc7RN7sq27fGAwEy4RcrqNXhGC3AEe5gD
-         dL9btMNaVAm4yxolZZqY2E2AzDXuXD7cA87b0c7hEIWhCflEckMb2U9nbc2fxEUx46aA
-         Ub+Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=B74youK00+gi/xqfb9oTzK7xl7IAxaoNJNt8Y8fsLdA=;
+        b=Oo9j9TVYePGcOsh5RNcAkOrsfmfAXZeTZ+2cu/SkCOQt0g17TN9WI55JwKz/x5hP53
+         JLnHSeoeRhJmeoECSq5eGWV5Pg5ZUMwGZ+D3byoJvLa/a+42uLOkeOjeK+ciPdhyaJm8
+         pgAFSrF02ryJM+nMrd+gn8eZg5DEtPXKhopx7HdncZC387ZrREsB0u+lFpGGAPaoO9xk
+         GSxNsTE/ZSf/MXs1eTXCZVg3dT/RoJgF/svkgXxMSiDdXF9GUEhyBkFv0tGjDUcArBeH
+         EK2m/ySAyWNnoQCJnfCFb8Pigyc8G27ncec5HlBY6aCkQNz7tORkLLs2XFA0ieDacatk
+         kcyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=uIqf3h/ft4wOq4cykQH7kGKLCaIOsedzdoAuEFmsYSc=;
-        b=T+Oplmm5MbTZ0PM0NlP6QBpr8GaGbu6Cdji7JANp/kFBl4jRETqFSfQ5k24JvtC7yb
-         5yf8xrKtlnBk+muvL931Jqx47TsbIHtu7jeFE7axMQ8RHLdXDEG1cRKP1pSU/IH/ocSl
-         612sW/o25xn6wQjJHN1VFgvfbkWGkfUbviWBEbUvTB5rZ8W3oW4WQ9thVBt0vJW/vGx6
-         hPSD76fTYsroylj4E8hee96Strey64toiEpRA43ONCpI3VkuuZ+Ll/m/YCXP4fCySdDt
-         HmwsTfAu0+tDgfAHm9fdalS0jbNRxWGNemyLnllLGW9HfIMjFcSdioFboNj3cqZfJN8g
-         7aKw==
-X-Gm-Message-State: AOAM530K8G26LPPR+gwLnqabeT4bsaxW4BwS7gwY+j6K+rhAAIjBkBRp
-        TvnkuIWWiVc5cOrfxvDx7oo=
-X-Google-Smtp-Source: ABdhPJyRhWgZhN0TXJdpdQLeAkr3LrwuKdDatxsr2+ac68ylTEp6DilSw/v+O8gsQ4pfUOTBJUGNpQ==
-X-Received: by 2002:a37:a5c2:: with SMTP id o185mr8772671qke.428.1616368771261;
-        Sun, 21 Mar 2021 16:19:31 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id c5sm9812346qkg.105.2021.03.21.16.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 16:19:31 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     broonie@kernel.org
-Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH] sound: soc: sh: fix Kconfig dependency on DMADEVICES
-Date:   Sun, 21 Mar 2021 19:19:19 -0400
-Message-Id: <20210321231919.262142-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=B74youK00+gi/xqfb9oTzK7xl7IAxaoNJNt8Y8fsLdA=;
+        b=YBB9BkQutX4QNphCulmrU88bhK4/TVaLfqxox0jJpSVKqAOqlAtg+E5trof/bOxbqR
+         0+IMyM8J9tcFS8Ej/WnVDE8cff2u8WaG/oQ+Z0fa9PMnj7uGX3HFizFeujvhi5C6rFBp
+         fWWru2yhdP5P1zbDWG6BR0jTdC6FLdMtJviDuDEUEq1ux48uWLXfRuQJh6xB+OFiuueA
+         xJaw6H35+knOkhpwOT71bzIizJaRSA7cMcv+r71MY2F1xcSZy9fC52vLHuoRl/T89eHQ
+         XCz87tW+8LlxvTKoqYdemnHBYsK/pOZ4rEWhV2cO8yKITmVvbtcGy4NElfQUNDb1GB4V
+         x7iQ==
+X-Gm-Message-State: AOAM533hORF3VLvIxsx+S4scVbqPvPBc157X7AD5Gb3KkcrJ5GNAbM72
+        sqZQS9iZsRq+u9tjbQ+Jq/SbnSmr7dqbux5Cmgg=
+X-Google-Smtp-Source: ABdhPJxRJba+qeIGPrVGbzJd6p+95y73QrUSIeTO+MVJpzPEq/KtAsbjuBjoOiGOc2UVpyBYSe7fOypcM+rLb9rZqr4=
+X-Received: by 2002:a9d:6949:: with SMTP id p9mr9445538oto.252.1616368994696;
+ Sun, 21 Mar 2021 16:23:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <13aed72.61c7.17853a6a5cd.Coremail.linma@zju.edu.cn> <CABBYNZKwHEXK680Xz+W=2qXdkO2eEzTBu38Hc=5DaxggkaTSsg@mail.gmail.com>
+In-Reply-To: <CABBYNZKwHEXK680Xz+W=2qXdkO2eEzTBu38Hc=5DaxggkaTSsg@mail.gmail.com>
+From:   Emil Lenngren <emil.lenngren@gmail.com>
+Date:   Mon, 22 Mar 2021 00:23:05 +0100
+Message-ID: <CAO1O6sfdpWzULj_Yj1s_GTFiLaZFFjrrj_0RPAVe1hyk3uuSsg@mail.gmail.com>
+Subject: Re: BUG: Out of bounds read in hci_le_ext_adv_report_evt()
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     =?UTF-8?B?6ams6bqf?= <linma@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yajin_zhou@zju.edu.cn, syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SND_SIU_MIGOR is enabled, and DMADEVICES is disabled,
-Kbuild gives the following warning:
+Hi,
 
-WARNING: unmet direct dependencies detected for SND_SOC_SH4_SIU
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (SUPERH [=y] || ARCH_RENESAS || COMPILE_TEST [=n]) && ARCH_SHMOBILE [=y] && HAVE_CLK [=y] && DMADEVICES [=n]
-  Selected by [y]:
-  - SND_SIU_MIGOR [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (SUPERH [=y] || ARCH_RENESAS || COMPILE_TEST [=n]) && SH_MIGOR [=y] && I2C [=y]
+Den m=C3=A5n 22 mars 2021 kl 00:01 skrev Luiz Augusto von Dentz
+<luiz.dentz@gmail.com>:
+> Or we do something like
+> https://lore.kernel.org/linux-bluetooth/20201024002251.1389267-1-luiz.den=
+tz@gmail.com/,
+> that said the reason we didn't applied my patches was that the
+> controller would be the one generating invalid data, but it seems you
+> are reproducing with vhci controller which is only used for emulating
+> a controller and requires root privileges so it is unlikely these
+> conditions would happens with hardware itself, in the other hand as
+> there seems to be more and more reports using vhci to emulate broken
+> events it perhaps more productive to introduce proper checks for all
+> events so we don't have to deal with more reports like this in the
+> future.
 
-This is because SND_SIU_MIGOR selects SND_SOC_SH4_SIU
-without selecting or depending on DMADEVICES,
-despite SND_SOC_SH4_SIU depending on DMADEVICES.
+Keep in mind that when using the H4 uart protocol without any error
+correction (as H5 has), it is possible that random bit errors occur on
+the wire. I wouldn't like my kernel to crash due to this. Bit errors
+happen all the time on RPi 4 for example at the default baud rate if
+you just do some heavy stress testing, or use an application that
+transfers a lot of data over Bluetooth.
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- sound/soc/sh/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 346c806ba390..503ee235e46d 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -60,7 +60,7 @@ config SND_SH7760_AC97
- 
- config SND_SIU_MIGOR
- 	tristate "SIU sound support on Migo-R"
--	depends on SH_MIGOR && I2C
-+	depends on SH_MIGOR && I2C && DMADEVICES
- 	select SND_SOC_SH4_SIU
- 	select SND_SOC_WM8978
- 	help
--- 
-2.25.1
-
+/Emil
