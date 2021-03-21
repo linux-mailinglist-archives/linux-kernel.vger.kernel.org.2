@@ -2,169 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483D03435D2
+	by mail.lfdr.de (Postfix) with ESMTP id 441763435D0
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 00:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCUXwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 19:52:03 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3044 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCUXvj (ORCPT
+        id S230260AbhCUXwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 19:52:07 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:60965 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhCUXvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 19:51:39 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3Z830zb8zWNs2;
-        Mon, 22 Mar 2021 07:48:19 +0800 (CST)
-Received: from dggpemm500011.china.huawei.com (7.185.36.110) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 07:51:26 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm500011.china.huawei.com (7.185.36.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Mar 2021 07:51:26 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Mon, 22 Mar 2021 07:51:26 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        chenjiashang <chenjiashang@huawei.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: =?utf-8?B?UkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8=?=
-Thread-Topic: =?utf-8?B?QSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw==?=
-Thread-Index: AQHXGtwEduPlUZeCNUCbiy3s/+KwAaqHJckAgADDZTCAAA0+AIABZ4Ng//+HOQCAAIduIP//gKoAgACMgPD///biAAC1Z3dw
-Date:   Sun, 21 Mar 2021 23:51:26 +0000
-Message-ID: <ac1e9b4699c4438f80ab771e5fbb4ee9@huawei.com>
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
- <FB4E11A5-84D4-4DAF-889E-FAA1BCD2E66F@gmail.com>
- <6a218e7fe42d41489d02f0b4e3ad2756@huawei.com>
- <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
- <4d1c3bc0418e48b1b9d44799d65ea375@huawei.com>
- <MWHPR11MB18860801196A9319EBD96AF68C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <d7bb4ab26b8542c698926b7a0a3fc12c@huawei.com>
- <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <e5b262c1ee14481ab68074be2a76b9d9@huawei.com>
- <55E334BA-C6D2-4892-9207-32654FBF4360@gmail.com>
-In-Reply-To: <55E334BA-C6D2-4892-9207-32654FBF4360@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 21 Mar 2021 19:51:49 -0400
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C831622172;
+        Mon, 22 Mar 2021 00:51:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1616370707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bRI73FnBBYgYB1kw6tkuk7W1q2a0kQd5Ln970HaJOPc=;
+        b=VoCbSpQebezGTTgzOcvVGeXw/QDLm5MaA0Yc9h6+/594PnEwSwoKA9WTgvXYohwkt8FPxd
+        mfD10HfaJBWJUdNw4jHatg/8cfS2MuIEVhacgJM4pWQElSzLtAqDWI6KiEQWQ2lqazSIhd
+        CM3x92dqeR36hOILYP4GTeopg4zkL3M=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v5 0/3] mtd: spi-nor: OTP support
+Date:   Mon, 22 Mar 2021 00:51:37 +0100
+Message-Id: <20210321235140.8308-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTmFkYXYsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTmFkYXYg
-QW1pdCBbbWFpbHRvOm5hZGF2LmFtaXRAZ21haWwuY29tXQ0KPiBTZW50OiBGcmlkYXksIE1hcmNo
-IDE5LCAyMDIxIDEyOjQ2IEFNDQo+IFRvOiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1
-Y3R1cmUgU2VydmljZSBQcm9kdWN0IERlcHQuKQ0KPiA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+
-IENjOiBUaWFuLCBLZXZpbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+OyBjaGVuamlhc2hhbmcNCj4g
-PGNoZW5qaWFzaGFuZ0BodWF3ZWkuY29tPjsgRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRl
-YWQub3JnPjsNCj4gaW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmc7IExLTUwgPGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Ow0KPiBhbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbTsg
-R29uZ2xlaSAoQXJlaSkgPGFyZWkuZ29uZ2xlaUBodWF3ZWkuY29tPjsNCj4gd2lsbEBrZXJuZWwu
-b3JnDQo+IFN1YmplY3Q6IFJlOiBBIHByb2JsZW0gb2YgSW50ZWwgSU9NTVUgaGFyZHdhcmUg77yf
-DQo+IA0KPiANCj4gDQo+ID4gT24gTWFyIDE4LCAyMDIxLCBhdCAyOjI1IEFNLCBMb25ncGVuZyAo
-TWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUgU2VydmljZQ0KPiBQcm9kdWN0IERlcHQuKSA8bG9u
-Z3BlbmcyQGh1YXdlaS5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4gPg0KPiA+PiAtLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBUaWFuLCBLZXZpbiBbbWFpbHRvOmtldmluLnRp
-YW5AaW50ZWwuY29tXQ0KPiA+PiBTZW50OiBUaHVyc2RheSwgTWFyY2ggMTgsIDIwMjEgNDo1NiBQ
-TQ0KPiA+PiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2Ug
-UHJvZHVjdCBEZXB0LikNCj4gPj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPjsgTmFkYXYgQW1pdCA8
-bmFkYXYuYW1pdEBnbWFpbC5jb20+DQo+ID4+IENjOiBjaGVuamlhc2hhbmcgPGNoZW5qaWFzaGFu
-Z0BodWF3ZWkuY29tPjsgRGF2aWQgV29vZGhvdXNlDQo+ID4+IDxkd213MkBpbmZyYWRlYWQub3Jn
-PjsgaW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmc7IExLTUwNCj4gPj4gPGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBhbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbTsgR29uZ2xl
-aQ0KPiA+PiAoQXJlaSkgPGFyZWkuZ29uZ2xlaUBodWF3ZWkuY29tPjsgd2lsbEBrZXJuZWwub3Jn
-DQo+ID4+IFN1YmplY3Q6IFJFOiBBIHByb2JsZW0gb2YgSW50ZWwgSU9NTVUgaGFyZHdhcmUg77yf
-DQo+ID4+DQo+ID4+PiBGcm9tOiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUg
-U2VydmljZSBQcm9kdWN0IERlcHQuKQ0KPiA+Pj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPg0KPiA+
-Pj4NCj4gPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+Pj4+IEZyb206IFRpYW4s
-IEtldmluIFttYWlsdG86a2V2aW4udGlhbkBpbnRlbC5jb21dDQo+ID4+Pj4gU2VudDogVGh1cnNk
-YXksIE1hcmNoIDE4LCAyMDIxIDQ6MjcgUE0NCj4gPj4+PiBUbzogTG9uZ3BlbmcgKE1pa2UsIENs
-b3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPj4+PiA8bG9uZ3Bl
-bmcyQGh1YXdlaS5jb20+OyBOYWRhdiBBbWl0IDxuYWRhdi5hbWl0QGdtYWlsLmNvbT4NCj4gPj4+
-PiBDYzogY2hlbmppYXNoYW5nIDxjaGVuamlhc2hhbmdAaHVhd2VpLmNvbT47IERhdmlkIFdvb2Ro
-b3VzZQ0KPiA+Pj4+IDxkd213MkBpbmZyYWRlYWQub3JnPjsgaW9tbXVAbGlzdHMubGludXgtZm91
-bmRhdGlvbi5vcmc7IExLTUwNCj4gPj4+PiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47
-IGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tOyBHb25nbGVpDQo+ID4+PiAoQXJlaSkNCj4gPj4+
-PiA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+OyB3aWxsQGtlcm5lbC5vcmcNCj4gPj4+PiBTdWJq
-ZWN0OiBSRTogQSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw0KPiA+Pj4+DQo+
-ID4+Pj4+IEZyb206IGlvbW11IDxpb21tdS1ib3VuY2VzQGxpc3RzLmxpbnV4LWZvdW5kYXRpb24u
-b3JnPiBPbiBCZWhhbGYNCj4gPj4+Pj4gT2YgTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3Ry
-dWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPj4+Pj4NCj4gPj4+Pj4+IDIuIENvbnNp
-ZGVyIGVuc3VyaW5nIHRoYXQgdGhlIHByb2JsZW0gaXMgbm90IHNvbWVob3cgcmVsYXRlZCB0bw0K
-PiA+Pj4+Pj4gcXVldWVkIGludmFsaWRhdGlvbnMuIFRyeSB0byB1c2UgX19pb21tdV9mbHVzaF9p
-b3RsYigpIGluc3RlYWQgb2YNCj4gPj4+PiBxaV9mbHVzaF9pb3RsYigpLg0KPiA+Pj4+Pj4NCj4g
-Pj4+Pj4NCj4gPj4+Pj4gSSB0cmllZCB0byBmb3JjZSB0byB1c2UgX19pb21tdV9mbHVzaF9pb3Rs
-YigpLCBidXQgbWF5YmUgc29tZXRoaW5nDQo+ID4+Pj4+IHdyb25nLCB0aGUgc3lzdGVtIGNyYXNo
-ZWQsIHNvIEkgcHJlZmVyIHRvIGxvd2VyIHRoZSBwcmlvcml0eSBvZg0KPiA+Pj4+PiB0aGlzDQo+
-ID4+PiBvcGVyYXRpb24uDQo+ID4+Pj4+DQo+ID4+Pj4NCj4gPj4+PiBUaGUgVlQtZCBzcGVjIGNs
-ZWFybHkgc2F5cyB0aGF0IHJlZ2lzdGVyLWJhc2VkIGludmFsaWRhdGlvbiBjYW4gYmUNCj4gPj4+
-PiB1c2VkIG9ubHkNCj4gPj4+IHdoZW4NCj4gPj4+PiBxdWV1ZWQtaW52YWxpZGF0aW9ucyBhcmUg
-bm90IGVuYWJsZWQuIEludGVsLUlPTU1VIGRyaXZlciBkb2Vzbid0DQo+ID4+Pj4gcHJvdmlkZQ0K
-PiA+Pj4gYW4NCj4gPj4+PiBvcHRpb24gdG8gZGlzYWJsZSBxdWV1ZWQtaW52YWxpZGF0aW9uIHRo
-b3VnaCwgd2hlbiB0aGUgaGFyZHdhcmUgaXMNCj4gPj4+IGNhcGFibGUuIElmIHlvdQ0KPiA+Pj4+
-IHJlYWxseSB3YW50IHRvIHRyeSwgdHdlYWsgdGhlIGNvZGUgaW4gaW50ZWxfaW9tbXVfaW5pdF9x
-aS4NCj4gPj4+Pg0KPiA+Pj4NCj4gPj4+IEhpIEtldmluLA0KPiA+Pj4NCj4gPj4+IFRoYW5rcyB0
-byBwb2ludCBvdXQgdGhpcy4gRG8geW91IGhhdmUgYW55IGlkZWFzIGFib3V0IHRoaXMgcHJvYmxl
-bSA/DQo+ID4+PiBJIHRyaWVkIHRvIGRlc2NyaXB0IHRoZSBwcm9ibGVtIG11Y2ggY2xlYXIgaW4g
-bXkgcmVwbHkgdG8gQWxleCwgaG9wZQ0KPiA+Pj4geW91IGNvdWxkIGhhdmUgYSBsb29rIGlmIHlv
-dSdyZSBpbnRlcmVzdGVkLg0KPiA+Pj4NCj4gPj4NCj4gPj4gYnR3IEkgc2F3IHlvdSB1c2VkIDQu
-MTgga2VybmVsIGluIHRoaXMgdGVzdC4gV2hhdCBhYm91dCBsYXRlc3Qga2VybmVsPw0KPiA+Pg0K
-PiA+DQo+ID4gTm90IHRlc3QgeWV0LiBJdCdzIGhhcmQgdG8gdXBncmFkZSBrZXJuZWwgaW4gb3Vy
-IGVudmlyb25tZW50Lg0KPiA+DQo+ID4+IEFsc28gb25lIHdheSB0byBzZXBhcmF0ZSBzdy9odyBi
-dWcgaXMgdG8gdHJhY2UgdGhlIGxvdyBsZXZlbA0KPiA+PiBpbnRlcmZhY2UgKGUuZy4sDQo+ID4+
-IHFpX2ZsdXNoX2lvdGxiKSB3aGljaCBhY3R1YWxseSBzZW5kcyBpbnZhbGlkYXRpb24gZGVzY3Jp
-cHRvcnMgdG8gdGhlDQo+ID4+IElPTU1VIGhhcmR3YXJlLiBDaGVjayB0aGUgd2luZG93IGJldHdl
-ZW4gYikgYW5kIGMpIGFuZCBzZWUgd2hldGhlcg0KPiA+PiB0aGUgc29mdHdhcmUgZG9lcyB0aGUg
-cmlnaHQgdGhpbmcgYXMgZXhwZWN0ZWQgdGhlcmUuDQo+ID4+DQo+ID4NCj4gPiBXZSBhZGQgc29t
-ZSBsb2cgaW4gaW9tbXUgZHJpdmVyIHRoZXNlIGRheXMsIHRoZSBzb2Z0d2FyZSBzZWVtcyBmaW5l
-Lg0KPiA+IEJ1dCB3ZSBkaWRuJ3QgbG9vayBpbnNpZGUgdGhlIHFpX3N1Ym1pdF9zeW5jIHlldCwg
-SSdsbCB0cnkgaXQgdG9uaWdodC4NCj4gDQo+IFNvIGhlcmUgaXMgbXkgZ3Vlc3M6DQo+IA0KPiBJ
-bnRlbCBwcm9iYWJseSB1c2VkIGFzIGEgYmFzaXMgZm9yIHRoZSBJT1RMQiBhbiBpbXBsZW1lbnRh
-dGlvbiBvZiBzb21lIG90aGVyDQo+IChyZWd1bGFyKSBUTEIgZGVzaWduLg0KPiANCj4gSW50ZWwg
-U0RNIHNheXMgcmVnYXJkaW5nIFRMQnMgKDQuMTAuNC4yIOKAnFJlY29tbWVuZGVkIEludmFsaWRh
-dGlvbuKAnSk6DQo+IA0KPiAiU29mdHdhcmUgd2lzaGluZyB0byBwcmV2ZW50IHRoaXMgdW5jZXJ0
-YWludHkgc2hvdWxkIG5vdCB3cml0ZSB0byBhDQo+IHBhZ2luZy1zdHJ1Y3R1cmUgZW50cnkgaW4g
-YSB3YXkgdGhhdCB3b3VsZCBjaGFuZ2UsIGZvciBhbnkgbGluZWFyIGFkZHJlc3MsIGJvdGggdGhl
-DQo+IHBhZ2Ugc2l6ZSBhbmQgZWl0aGVyIHRoZSBwYWdlIGZyYW1lLCBhY2Nlc3MgcmlnaHRzLCBv
-ciBvdGhlciBhdHRyaWJ1dGVzLuKAnQ0KPiANCj4gDQo+IE5vdyB0aGUgYWZvcmVtZW50aW9uZWQg
-dW5jZXJ0YWludHkgaXMgYSBiaXQgZGlmZmVyZW50IChtdWx0aXBsZQ0KPiAqdmFsaWQqIHRyYW5z
-bGF0aW9ucyBvZiBhIHNpbmdsZSBhZGRyZXNzKS4gWWV0LCBwZXJoYXBzIHRoaXMgaXMgeWV0IGFu
-b3RoZXIgdGhpbmcgdGhhdA0KPiBtaWdodCBoYXBwZW4uDQo+IA0KPiBGcm9tIGEgYnJpZWYgbG9v
-ayBvbiB0aGUgaGFuZGxpbmcgb2YgTU1VIChub3QgSU9NTVUpIGh1Z2VwYWdlcyBpbiBMaW51eCwg
-aW5kZWVkDQo+IHRoZSBQTUQgaXMgZmlyc3QgY2xlYXJlZCBhbmQgZmx1c2hlZCBiZWZvcmUgYSBu
-ZXcgdmFsaWQgUE1EIGlzIHNldC4gVGhpcyBpcyBwb3NzaWJsZQ0KPiBmb3IgTU1VcyBzaW5jZSB0
-aGV5IGFsbG93IHRoZSBzb2Z0d2FyZSB0byBoYW5kbGUgc3B1cmlvdXMgcGFnZS1mYXVsdHMgZ3Jh
-Y2VmdWxseS4NCj4gVGhpcyBpcyBub3QgdGhlIGNhc2UgZm9yIHRoZSBJT01NVSB0aG91Z2ggKHdp
-dGhvdXQgUFJJKS4NCj4gDQoNCkJ1dCBpbiBteSBjYXNlLCB0aGUgZmx1c2hfaW90bGIgaXMgY2Fs
-bGVkIGFmdGVyIHRoZSByYW5nZSBvZiAoMHgwLCAweGEwMDAwKSBpcyB1bm1hcHBlZCwNCkkndmUg
-bm8gaWRlYSB3aHkgdGhpcyBpbnZhbGlkYXRpb24gaXNuJ3QgZWZmZWN0aXZlIGV4Y2VwdCBJJ3Zl
-IG5vdCBsb29rIGluc2lkZSB0aGUgcWkgeWV0LCBidXQNCnRoZXJlIGlzIG5vIGNvbXBsYWludHMg
-ZnJvbSB0aGUgZHJpdmVyLg0KDQpDb3VsZCB5b3UgcGxlYXNlIHBvaW50IG91dCB0aGUgY29kZSBv
-ZiBNTVUgeW91IG1lbnRpb25lZCBhYm92ZT8gSW4gTU1VIGNvZGUsIGlzIGl0DQpwb3NzaWJsZSB0
-aGF0IGFsbCB0aGUgZW50cmllcyBvZiB0aGUgUFRFIGFyZSBhbGwgbm90LXByZXNlbnQgYnV0IHRo
-ZSBQTUQgZW50cnkgaXMgc3RpbGwgcHJlc2VudD8NCg0KKlBhZ2UgdGFibGUgYWZ0ZXIgKDB4MCwg
-MHhhMDAwMCkgaXMgdW5tYXBwZWQ6DQpQTUw0OiAweCAgICAgIDFhMzRmYmIwMDMNCiAgUERQRTog
-MHggICAgICAxYTM0ZmJiMDAzDQogICBQREU6IDB4ICAgICAgMWEzNGZiZjAwMw0KICAgIFBURTog
-MHggICAgICAgICAgICAgICAwDQoNCipQYWdlIHRhYmxlIGFmdGVyICgweDAsIDB4YzAwMDAwMDAp
-IGlzIG1hcHBlZDoNClBNTDQ6IDB4ICAgICAgMWEzNGZiYjAwMw0KICBQRFBFOiAweCAgICAgIDFh
-MzRmYmIwMDMNCiAgIFBERTogMHggICAgICAgMTVlYzAwODgzDQoNCj4gTm90IHN1cmUgdGhpcyBl
-eHBsYWlucyBldmVyeXRoaW5nIHRob3VnaC4gSWYgdGhhdCBpcyB0aGUgcHJvYmxlbSwgdGhlbiBk
-dXJpbmcgYQ0KPiBtYXBwaW5nIHRoYXQgY2hhbmdlcyBwYWdlLXNpemVzLCBhIFRMQiBmbHVzaCBp
-cyBuZWVkZWQsIHNpbWlsYXJseSB0byB0aGUgb25lDQo+IExvbmdwZW5nIGRpZCBtYW51YWxseS4N
-Cj4gDQoNCg0K
+This patchset implements the MTD OTP functions to allow access to the SPI
+OTP data. Specific support is added for Winbond flash chips.
+
+In the past there was already an attempt by Rahul Bedarkar to add this, but
+there was no response. These patches are slightly based on his work.
+
+https://lore.kernel.org/linux-mtd/1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com/
+
+Changes since v4:
+ - s/u_char/u8/
+ - dropped extra whitespace
+ - moved nor->params->otp.org assignment
+ - moved spi_nor_otp_init() after spi_nor_init()
+ - keep fixups as last property in struct spi_nor_flash_parameter
+ - dropped spi_nor_otp_ops()
+ - use i instead of region
+ - move otp.o to the list of core objects
+
+Changes since v3:
+ - remapped the OTP regions to a contiguous area starting at 0. The
+   chips/cfi_cmdset_000[12].c remap the regions, too.
+ - with that in place, read/write/lock/erase spanning multiple OTP
+   regions are possible
+ - picked up Tudors review remarks
+ - added new erase support as RFC because MTD API/ABI is still missing.
+   Feel free to review, but don't apply it.
+
+Changes since v2:
+ - improved commit messages
+ - add buffer size check in spi_nor_mtd_otp_info(). just to be sure, the
+   buffer is hardcoded to 4k by the mtd subsys
+ - moved all code to otp.c
+ - dropped the patches introduced in v2
+
+Changes since v1:
+ - added methods for Macronix and similar flashes
+ - added patch to cleanup/consolidate code in core.c
+
+Michael Walle (3):
+  mtd: spi-nor: add OTP support
+  mtd: spi-nor: implement OTP support for Winbond and similar flashes
+  mtd: spi-nor: winbond: add OTP support to w25q32fw/jw
+
+ drivers/mtd/spi-nor/Makefile  |   2 +-
+ drivers/mtd/spi-nor/core.c    |   7 +-
+ drivers/mtd/spi-nor/core.h    |  60 ++++++
+ drivers/mtd/spi-nor/otp.c     | 384 ++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/winbond.c |  17 +-
+ include/linux/mtd/spi-nor.h   |   8 +
+ 6 files changed, 474 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/otp.c
+
+-- 
+2.20.1
+
