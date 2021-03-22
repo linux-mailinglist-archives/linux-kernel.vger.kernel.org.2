@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EDF344130
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211A43442A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhCVMb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:31:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        id S231902AbhCVMoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230357AbhCVMad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:30:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 143D7619CA;
-        Mon, 22 Mar 2021 12:30:30 +0000 (UTC)
+        id S231992AbhCVMhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:37:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7AA619A1;
+        Mon, 22 Mar 2021 12:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416231;
-        bh=nugPyNUMDkdt/fH6GUHIwQhF5AC2nqWt3VfotsUcTXQ=;
+        s=korg; t=1616416618;
+        bh=UFD/eA+YxSgr0TsrY7PYKVpcbMXcz9ewaIdpfZb7PR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTV/lo9Iv/eFfHn5Bg20NwEh35u7VdizVvDlbmyS/lmytR/d500pPrEz4C402MnJc
-         TOen4jg3uDJY0H5pSf9ANAjePK+p3f0f9K097EYdCuQQdv8bzigPwcS2hPwoJ3zmMN
-         YeXtSajTN1meXUDqjXTmaZBDkUsKH+I23+FAvMp8=
+        b=pDAeBN6EvW8HaMOVWo0C7Vxz8knW4hCccAVltxLVi8+HbQUHl9W4sUoDxyDDdKV3X
+         xKxW2D0kv1oUFfp8mqJhWwCrtvmIm2Hf6jYf0nK+6cqOz6FADC4TIZ947Nw2W0o5GP
+         cLGtPCx9CMyuO7Mkew2dZQvIjXRq5XLxGnRKdsBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH 5.11 028/120] iommu/amd: Move Stoney Ridge check to detect_ivrs()
-Date:   Mon, 22 Mar 2021 13:26:51 +0100
-Message-Id: <20210322121930.596334252@linuxfoundation.org>
+        stable@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH 5.10 055/157] riscv: Correct SPARSEMEM configuration
+Date:   Mon, 22 Mar 2021 13:26:52 +0100
+Message-Id: <20210322121935.499402986@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-commit 072a03e0a0b1bc22eb5970727877264657c61fd3 upstream.
+commit a5406a7ff56e63376c210b06072aa0ef23473366 upstream.
 
-The AMD IOMMU will not be enabled on AMD Stoney Ridge systems. Bail
-out even earlier and refuse to even detect the IOMMU there.
+There are two issues for RV32,
+1) if use FLATMEM, it is useless to enable SPARSEMEM_STATIC.
+2) if use SPARSMEM, both SPARSEMEM_VMEMMAP and SPARSEMEM_STATIC is enabled.
 
-Cc: stable@vger.kernel.org # v5.11
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20210317091037.31374-2-joro@8bytes.org
-Acked-by: Huang Rui <ray.huang@amd.com>
+Fixes: d95f1a542c3d ("RISC-V: Implement sparsemem")
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iommu/amd/init.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ arch/riscv/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -2712,7 +2712,6 @@ static int __init early_amd_iommu_init(v
- 	struct acpi_table_header *ivrs_base;
- 	acpi_status status;
- 	int i, remap_cache_sz, ret = 0;
--	u32 pci_id;
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -84,7 +84,6 @@ config RISCV
+ 	select PCI_MSI if PCI
+ 	select RISCV_INTC
+ 	select RISCV_TIMER if RISCV_SBI
+-	select SPARSEMEM_STATIC if 32BIT
+ 	select SPARSE_IRQ
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
+@@ -145,7 +144,8 @@ config ARCH_FLATMEM_ENABLE
+ config ARCH_SPARSEMEM_ENABLE
+ 	def_bool y
+ 	depends on MMU
+-	select SPARSEMEM_VMEMMAP_ENABLE
++	select SPARSEMEM_STATIC if 32BIT && SPARSMEM
++	select SPARSEMEM_VMEMMAP_ENABLE if 64BIT
  
- 	if (!amd_iommu_detected)
- 		return -ENODEV;
-@@ -2802,16 +2801,6 @@ static int __init early_amd_iommu_init(v
- 	if (ret)
- 		goto out;
- 
--	/* Disable IOMMU if there's Stoney Ridge graphics */
--	for (i = 0; i < 32; i++) {
--		pci_id = read_pci_config(0, i, 0, 0);
--		if ((pci_id & 0xffff) == 0x1002 && (pci_id >> 16) == 0x98e4) {
--			pr_info("Disable IOMMU on Stoney Ridge\n");
--			amd_iommu_disabled = true;
--			break;
--		}
--	}
--
- 	/* Disable any previously enabled IOMMUs */
- 	if (!is_kdump_kernel() || amd_iommu_disabled)
- 		disable_iommus();
-@@ -2879,6 +2868,7 @@ static bool detect_ivrs(void)
- {
- 	struct acpi_table_header *ivrs_base;
- 	acpi_status status;
-+	int i;
- 
- 	status = acpi_get_table("IVRS", 0, &ivrs_base);
- 	if (status == AE_NOT_FOUND)
-@@ -2891,6 +2881,17 @@ static bool detect_ivrs(void)
- 
- 	acpi_put_table(ivrs_base);
- 
-+	/* Don't use IOMMU if there is Stoney Ridge graphics */
-+	for (i = 0; i < 32; i++) {
-+		u32 pci_id;
-+
-+		pci_id = read_pci_config(0, i, 0, 0);
-+		if ((pci_id & 0xffff) == 0x1002 && (pci_id >> 16) == 0x98e4) {
-+			pr_info("Disable IOMMU on Stoney Ridge\n");
-+			return false;
-+		}
-+	}
-+
- 	/* Make sure ACS will be enabled during PCI probe */
- 	pci_request_acs();
- 
+ config ARCH_SELECT_MEMORY_MODEL
+ 	def_bool ARCH_SPARSEMEM_ENABLE
 
 
