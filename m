@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B2D3442F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA1344527
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhCVMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
+        id S233651AbhCVNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232014AbhCVMjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:39:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D6C61990;
-        Mon, 22 Mar 2021 12:38:18 +0000 (UTC)
+        id S233389AbhCVM6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:58:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF1F660238;
+        Mon, 22 Mar 2021 12:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416698;
-        bh=7dZcc6S4vby2si67XYpff5JV66YSx5XlIYra0L1b5h4=;
+        s=korg; t=1616417909;
+        bh=CmBxmStxjHkSH2Y3V92jrGrXCqzw5r1mA3OiaCfZJPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wfYPCYX6fSDC6Uon1Gmb99R5TgT2g9Zr00kc6QZfMe+SjRfg/yZzRZhmodY/tKAv0
-         04sExNva9RUWiQfsp4xeCY6JAREdaxq+snjyVihkBTUItTm/S+Pwl+HDOngOlFqiDz
-         Cm42zv6Q3fWJWD0MKguSQgTDfG+joYaDM8TwR8j4=
+        b=O+0v3hsxiD4zY4srH+rynl+4PHE2QgXVDGuIhofHa1Vla5FOsysHQMWVmOJPW/TxH
+         ulpiTc54sImayXOfKU1VW4Gh0IwHaAxFaWhMAgvmeGjeh9U7a9uQ0HKGREkZlzptDZ
+         lYnxVuVUrZiLOj7pcEsh0hNxpR2TNd4ljDtDQKE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/157] RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
-Date:   Mon, 22 Mar 2021 13:27:06 +0100
-Message-Id: <20210322121935.954714050@linuxfoundation.org>
+        "Belanger, Martin" <Martin.Belanger@dell.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.11 044/120] nvme-tcp: fix a NULL deref when receiving a 0-length r2t PDU
+Date:   Mon, 22 Mar 2021 13:27:07 +0100
+Message-Id: <20210322121931.134719858@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit f77c4839ee8f4612dcb6601602329096030bd813 ]
+commit fd0823f405090f9f410fc3e3ff7efb52e7b486fa upstream.
 
-The rtrs_iu_free is called in rtrs_iu_alloc if memory is limited, so we
-don't need to free the same iu again.
+When the controller sends us a 0-length r2t PDU we should not attempt to
+try to set up a h2cdata PDU but rather conclude that this is a buggy
+controller (forward progress is not possible) and simply fail it
+immediately.
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-7-jinpu.wang@cloud.ionos.com
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Reported-by: Belanger, Martin <Martin.Belanger@dell.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/nvme/host/tcp.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 0fd2a7f8f9f2..43806180f85e 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -671,7 +671,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
- 			if (!srv_mr->iu) {
- 				err = -ENOMEM;
- 				rtrs_err(ss, "rtrs_iu_alloc(), err: %d\n", err);
--				goto free_iu;
-+				goto dereg_mr;
- 			}
- 		}
- 		/* Eventually dma addr for each chunk can be cached */
-@@ -687,7 +687,6 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
- 			srv_mr = &sess->mrs[mri];
- 			sgt = &srv_mr->sgt;
- 			mr = srv_mr->mr;
--free_iu:
- 			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
- dereg_mr:
- 			ib_dereg_mr(mr);
--- 
-2.30.1
-
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -568,6 +568,13 @@ static int nvme_tcp_setup_h2c_data_pdu(s
+ 	req->pdu_len = le32_to_cpu(pdu->r2t_length);
+ 	req->pdu_sent = 0;
+ 
++	if (unlikely(!req->pdu_len)) {
++		dev_err(queue->ctrl->ctrl.device,
++			"req %d r2t len is %u, probably a bug...\n",
++			rq->tag, req->pdu_len);
++		return -EPROTO;
++	}
++
+ 	if (unlikely(req->data_sent + req->pdu_len > req->data_len)) {
+ 		dev_err(queue->ctrl->ctrl.device,
+ 			"req %d r2t len %u exceeded data len %u (%zu sent)\n",
 
 
