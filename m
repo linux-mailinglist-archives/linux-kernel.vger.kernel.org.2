@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665F4344283
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8086234412B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhCVMm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
+        id S231213AbhCVMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231915AbhCVMhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F10A4619B0;
-        Mon, 22 Mar 2021 12:36:33 +0000 (UTC)
+        id S230509AbhCVMaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D106198D;
+        Mon, 22 Mar 2021 12:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416594;
-        bh=O4s0c9JoysGQ5mVTheWhFvVgaK+FQc/o3HURvt+AD8U=;
+        s=korg; t=1616416215;
+        bh=HIgd6r2F9tcOytPkUeA4KyESwSQr4zlbdk70P5/obBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0Xy3uHO0Oyo3OIeFvYX9enN7sFxOQZWf+LYlFitZ+lb+PQOnHgngPDuzpF7HbtoF
-         PZnM65ZobxM74K18mXv+y26lz+J5Vjgo6giv7l8JOhW6hnPNymVL6EpJ/Sz2EN3V2k
-         Bx9i9gyb+5w6BVOc9ynHEplQz+QWQY0Yqf1KvAww=
+        b=kKSnT+Z/kGwS9slBHmP+GBPYvdYMvNqmrdQ9wfZgpTZsZpNxcp4PCCXGueWXT9ymz
+         bmoaddpqaFNZyTdibmchsq44QV+aNAuOhLqNugFALvhG6wg73Xc3Ew+q4Xooflamhm
+         ONriJY+pH9/j0+TnYljTpFfYSCDPPukszwiG4tgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gautam Dawar <gdawar.xilinx@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.10 047/157] vhost_vdpa: fix the missing irq_bypass_unregister_producer() invocation
-Date:   Mon, 22 Mar 2021 13:26:44 +0100
-Message-Id: <20210322121935.241064318@linuxfoundation.org>
+        stable@vger.kernel.org, lingshan.zhu@intel.com,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH 5.11 022/120] vhost-vdpa: set v->config_ctx to NULL if eventfd_ctx_fdget() fails
+Date:   Mon, 22 Mar 2021 13:26:45 +0100
+Message-Id: <20210322121930.404105125@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gautam Dawar <gdawar.xilinx@gmail.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 4c050286bb202cffd5467c1cba982dff391d62e1 upstream.
+commit 0bde59c1723a29e294765c96dbe5c7fb639c2f96 upstream.
 
-When qemu with vhost-vdpa netdevice is run for the first time,
-it works well. But after the VM is powered off, the next qemu run
-causes kernel panic due to a NULL pointer dereference in
-irq_bypass_register_producer().
+In vhost_vdpa_set_config_call() if eventfd_ctx_fdget() fails the
+'v->config_ctx' contains an error instead of a valid pointer.
 
-When the VM is powered off, vhost_vdpa_clean_irq() misses on calling
-irq_bypass_unregister_producer() for irq 0 because of the existing check.
+Since we consider 'v->config_ctx' valid if it is not NULL, we should
+set it to NULL in this case to avoid to use an invalid pointer in
+other functions such as vhost_vdpa_config_put().
 
-This leaves stale producer nodes, which are reset in
-vhost_vring_call_reset() when vhost_dev_init() is invoked during the
-second qemu run.
-
-As the node member of struct irq_bypass_producer is also initialized
-to zero, traversal on the producers list causes crash due to NULL
-pointer dereference.
-
-Fixes: 2cf1ba9a4d15c ("vhost_vdpa: implement IRQ offloading in vhost_vdpa")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211711
-Signed-off-by: Gautam Dawar <gdawar.xilinx@gmail.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20210224114845.104173-1-gdawar.xilinx@gmail.com
+Fixes: 776f395004d8 ("vhost_vdpa: Support config interrupt in vdpa")
+Cc: lingshan.zhu@intel.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/20210311135257.109460-3-sgarzare@redhat.com
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/vdpa.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/vhost/vdpa.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 --- a/drivers/vhost/vdpa.c
 +++ b/drivers/vhost/vdpa.c
-@@ -910,14 +910,10 @@ err:
+@@ -331,8 +331,12 @@ static long vhost_vdpa_set_config_call(s
+ 	if (!IS_ERR_OR_NULL(ctx))
+ 		eventfd_ctx_put(ctx);
  
- static void vhost_vdpa_clean_irq(struct vhost_vdpa *v)
- {
--	struct vhost_virtqueue *vq;
- 	int i;
+-	if (IS_ERR(v->config_ctx))
+-		return PTR_ERR(v->config_ctx);
++	if (IS_ERR(v->config_ctx)) {
++		long ret = PTR_ERR(v->config_ctx);
++
++		v->config_ctx = NULL;
++		return ret;
++	}
  
--	for (i = 0; i < v->nvqs; i++) {
--		vq = &v->vqs[i];
--		if (vq->call_ctx.producer.irq)
--			irq_bypass_unregister_producer(&vq->call_ctx.producer);
--	}
-+	for (i = 0; i < v->nvqs; i++)
-+		vhost_vdpa_unsetup_vq_irq(v, i);
- }
+ 	v->vdpa->config->set_config_cb(v->vdpa, &cb);
  
- static int vhost_vdpa_release(struct inode *inode, struct file *filep)
 
 
