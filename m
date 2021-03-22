@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC06734510D
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3A434510C
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhCVUoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhCVUn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:43:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D173AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zjw6xHblWwTqInlnqr5esznSG2yRgKtw4cpscwnNITo=; b=OGCKIv7xBGkVve8+JeTApeYnvj
-        3wbmkIqmwFsp3pPdWegP8YPwKY7C/Sc9zG/8ncUNvh9P0laRSC9tvS+O2DiWsx/CmG/8v908i5+bj
-        5/hdhY5wYM5slJzaY/W5TzCMguAeIdIqFFl1UfChi155LO/q5JIJSR09tGLm7sn0mygyM3R7ARn2M
-        j419ArRW2wUZfgnpbil+6iVSMKCijNLGYpb/O56SvUaP0U1BB92Ct57jjSgG+uitNgwfewnYN4e1c
-        n7/Gj+dYkL2Vgk3O6zAir1eynHCFuP/3pTpQbggH5fRCVGkfPyWr8bljXjBGUhZbcAcZVmYzaGaQR
-        8UZ35FTw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOROA-00CWug-ME; Mon, 22 Mar 2021 20:43:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A36C304BAE;
-        Mon, 22 Mar 2021 21:43:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30BB32BEF6765; Mon, 22 Mar 2021 21:43:00 +0100 (CET)
-Date:   Mon, 22 Mar 2021 21:43:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 7/8] hugetlb: add update_and_free_page_no_sleep for
- irq context
-Message-ID: <YFkBVCcu/cmYD/hl@hirez.programming.kicks-ass.net>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-8-mike.kravetz@oracle.com>
- <YFhYHZ9onwdZMeDi@hirez.programming.kicks-ass.net>
- <2383057a-29dc-383b-720f-7cdcdd015e40@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2383057a-29dc-383b-720f-7cdcdd015e40@oracle.com>
+        id S231196AbhCVUoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:44:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6375 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230401AbhCVUnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:43:42 -0400
+IronPort-SDR: pPvnHkauOfHFcap+6f3WR6TVnPbeWyrYRiXRGe8JFZhX2RTqrv69APW0ZzEAPBNQLpzJemnwtk
+ ZJekEp/alsKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190439916"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="190439916"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 13:43:41 -0700
+IronPort-SDR: 7OpqJlrd48XSOrSdb+msx2toQeYW7bM0OKsuOKo8ovXkhgg4AmURcTAP9jvf1G2ER8lB11nUNv
+ F/1GMu2ednXg==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="524577166"
+Received: from zssigmon-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.92.253])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 13:43:38 -0700
+Date:   Tue, 23 Mar 2021 09:43:36 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-Id: <20210323094336.ab622e64594a79d54f55e3d7@intel.com>
+In-Reply-To: <a2e01d7b-255d-bf64-f258-f3b7f211fc2a@redhat.com>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+        <20210322181646.GG6481@zn.tnic>
+        <YFjoZQwB7e3oQW8l@google.com>
+        <a2e01d7b-255d-bf64-f258-f3b7f211fc2a@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:42:23AM -0700, Mike Kravetz wrote:
-> Cc: Roman, Christoph
+On Mon, 22 Mar 2021 20:11:57 +0100 Paolo Bonzini wrote:
+> On 22/03/21 19:56, Sean Christopherson wrote:
+> > EREMOVE can only fail if there's a kernel or hardware bug (or a VMM bug if
+> > running as a guest).  IME, nearly every kernel/KVM bug that I introduced that
+> > led to EREMOVE failure was also quite fatal to SGX, i.e. this is just the canary
+> > in the coal mine.
 > 
-> On 3/22/21 1:41 AM, Peter Zijlstra wrote:
-> > On Fri, Mar 19, 2021 at 03:42:08PM -0700, Mike Kravetz wrote:
-> >> The locks acquired in free_huge_page are irq safe.  However, in certain
-> >> circumstances the routine update_and_free_page could sleep.  Since
-> >> free_huge_page can be called from any context, it can not sleep.
-> >>
-> >> Use a waitqueue to defer freeing of pages if the operation may sleep.  A
-> >> new routine update_and_free_page_no_sleep provides this functionality
-> >> and is only called from free_huge_page.
-> >>
-> >> Note that any 'pages' sent to the workqueue for deferred freeing have
-> >> already been removed from the hugetlb subsystem.  What is actually
-> >> deferred is returning those base pages to the low level allocator.
-> > 
-> > So maybe I'm stupid, but why do you need that work in hugetlb? Afaict it
-> > should be in cma_release().
-> 
-> My thinking (which could be totally wrong) is that cma_release makes no
-> claims about calling context.  From the code, it is pretty clear that it
-> can only be called from task context with no locks held.  Although,
-> there could be code incorrectly calling it today hugetlb does.  Since
-> hugetlb is the only code with this new requirement, it should do the
-> work.
-> 
-> Wait!!!  That made me remember something.
-> Roman had code to create a non-blocking version of cma_release().
-> https://lore.kernel.org/linux-mm/20201022225308.2927890-1-guro@fb.com/
-> 
-> There were no objections, and Christoph even thought there may be
-> problems with callers of dma_free_contiguous.
-> 
-> Perhaps, we should just move forward with Roman's patches to create
-> cma_release_nowait() and avoid this workqueue stuff?
+> That was my recollection as well from previous threads but, to be fair 
+> to Boris, the commit message is a lot more scary (and, which is what 
+> triggers me, puts the blame on KVM).  It just says "KVM does not track 
+> how guest pages are used, which means that SGX virtualization use of 
+> EREMOVE might fail".
 
-Ha!, that basically does as I suggested. Using that page is unfortunate
-in that it will destroy the contig range for allocations until the work
-happens, but I'm not sure I see a nice alternative.
+I don't see the commit msg being scary.  EREMOVE might fail but virtual EPC code
+can handle that.  This is the reason to break out EREMOVE from original
+sgx_free_epc_page(), so virtual EPC code can have its own logic of handling
+EREMOVE failure.
