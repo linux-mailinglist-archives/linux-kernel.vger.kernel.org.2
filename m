@@ -2,77 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB733449E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55623449E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhCVPxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231504AbhCVPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhCVPxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 11:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230509AbhCVPxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E539A619B4;
-        Mon, 22 Mar 2021 15:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616428395;
-        bh=s3XS9YGp3yirmpuzyX0/v+esTxrw11dcDwqSBc2f1fY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f770zkeQAXn33pPTlotkaYXR4dq3UoNrBGol822TLNfm6QcyN3KeZKONRU7Gf6kML
-         sA9nY0EeqoqtVyOIG5sSbPtbTo9om/rkF9aYBd8KsWXnQE9/N4UHWtCu55SjdpGghz
-         4PmhFn+OBk0WB3C+g24C4eJJCUX53B39QCXKL94Crdi1/jTGmwnkuVwDcL4UvnJtU2
-         zrsGjz6dLMepMmv+Rtdj3m61m5/a3M/KcAsCeif7rLLa9+H1PgyaXc5J7ArKN812Mr
-         JuiDuHZUXI5jxWdp5LbPZKWR88NlJmmRgLXB4KVnARtrCDutZRUY5RwEGuHV6Oc3BT
-         9SERgoBbUuylg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lOMs1-0002Zt-7f; Mon, 22 Mar 2021 16:53:33 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 8/8] USB: cdc-acm: do not log successful probe on later errors
-Date:   Mon, 22 Mar 2021 16:53:18 +0100
-Message-Id: <20210322155318.9837-9-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210322155318.9837-1-johan@kernel.org>
-References: <20210322155318.9837-1-johan@kernel.org>
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B32C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:53:44 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id y18so11024989qky.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E5pR4bhxZETSxTpVA3uMOpN6g18ZTkn19HmQ/Nnh+4o=;
+        b=EHV7q9LwYDxGRVPpLfLVmAGUPg55im2cpNJ3+h7ZlJ1Ip9KZXSuVb095YaAk3LoOe/
+         TgStUPZvFQicUOGPKSakFK2kCfiXea14bbW2LFqTMzJHAQ699cVZK8BAkp+LNTaytRUn
+         Xp4dYojRqHJtOPYC1Y+13U+2/rglDmFPvm8uzwDef0JIWnPky/yXvAcfWJVfTw1hGDwY
+         QkFU8zUYaLJLXnZzSQddyAL1Lp/z6sVM4sS/u2Utm0nw571hVtcoCo3bbORJzj5JccAO
+         05Tbf0Ttjbba+BA460+lrwKiAcZ1gqEgq2hUl1t2MsaiTHwbFZ74Gz6I60bixo9cDDrQ
+         GvwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E5pR4bhxZETSxTpVA3uMOpN6g18ZTkn19HmQ/Nnh+4o=;
+        b=W1Z2AfN+PCXmlVUxD3otSZUhbOXRg33O7mQKeQDRPK4f3RJVMaKsDvZ/F4nuH4C6tF
+         GU+sN2VvWs0G9YiiUEYByNiAfen8yNABwibc5vNmfE0WA8pNDR0oNYIoexgCX6NV/t0w
+         T3FBIVjX2l9t9drQ71ExzQ2TvnU5wN/7lIDX5jasgivlOr2WuNxcFjAZG55yTRVa4Tuv
+         90ppv9keD+QLFbg08FNPe9lT9S9n5bLv4BoFK+XvIoAoB+Q/N6Nqzb1e5JKxS/XQtHoF
+         hCJ75lP5lnbkiJO6z+VNig+uskZwMayAyxJ1CV5die3UqAmO7Se1Ph6seDmkvf+b8+84
+         YdZA==
+X-Gm-Message-State: AOAM532vmPJbNdRBgTh4imRsI6AWtJo7nCoJstjt2yfqJyvwToQVgx2a
+        vtKa2XKqoraDMXK0ewjRiNke/A==
+X-Google-Smtp-Source: ABdhPJwOPDa0VeHX2SUaYbWSspS6E9g6n6b7KiPDGxc8+VLv8EfhQeQgWB9cMaa8ljeevDtYUcNFKA==
+X-Received: by 2002:a37:94f:: with SMTP id 76mr760874qkj.222.1616428423644;
+        Mon, 22 Mar 2021 08:53:43 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:b54e])
+        by smtp.gmail.com with ESMTPSA id m3sm10989585qkk.15.2021.03.22.08.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 08:53:43 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 11:53:41 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 2/2] mm: memcontrol: deprecate swapaccounting=0 mode
+Message-ID: <YFi9hVQM9maWyhWv@cmpxchg.org>
+References: <20210319054944.50048-1-hannes@cmpxchg.org>
+ <20210319054944.50048-2-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191633350.1043@eggly.anvils>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2103191633350.1043@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not log the successful-probe message until the tty device has been
-registered.
+On Fri, Mar 19, 2021 at 05:37:05PM -0700, Hugh Dickins wrote:
+> On Fri, 19 Mar 2021, Johannes Weiner wrote:
+> 
+> > The swapaccounting= commandline option already does very little
+> > today. To close a trivial containment failure case, the swap ownership
+> > tracking part of the swap controller has recently become mandatory
+> > (see commit 2d1c498072de ("mm: memcontrol: make swap tracking an
+> > integral part of memory control") for details), which makes up the
+> > majority of the work during swapout, swapin, and the swap slot map.
+> > 
+> > The only thing left under this flag is the page_counter operations and
+> > the visibility of the swap control files in the first place, which are
+> > rather meager savings. There also aren't many scenarios, if any, where
+> > controlling the memory of a cgroup while allowing it unlimited access
+> > to a global swap space is a workable resource isolation stragegy.
+> > 
+> > On the other hand, there have been several bugs and confusion around
+> > the many possible swap controller states (cgroup1 vs cgroup2 behavior,
+> > memory accounting without swap accounting, memcg runtime disabled).
+> > 
+> > This puts the maintenance overhead of retaining the toggle above its
+> > practical benefits. Deprecate it.
+> > 
+> > Suggested-by: Shakeel Butt <shakeelb@google.com>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> This crashes, and needs a fix: see below (plus some nits).
+> 
+> But it's a very welcome cleanup: just getting rid of all those
+> !cgroup_memory_noswap double negatives is a relief in itself.
+> 
+> It does suggest eliminating CONFIG_MEMCG_SWAP altogether (just
+> using #ifdef CONFIG_SWAP instead, in those parts of CONFIG_MEMCG code);
+> but you're right that's a separate cleanup, and not nearly so worthwhile
+> as this one (I notice CONFIG_MEMCG_SWAP in some of the arch defconfigs,
+> and don't know whether whoever removes CONFIG_MEMCG_SWAP would be
+> obligated to remove those too).
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/class/cdc-acm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+2d1c498072de ("mm: memcontrol: make swap tracking an integral part of
+memory control") made it invisible to the user already, I only kept
+the symbol for convenience in the Makefile:
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 914486d0f68c..337ffced9c40 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1473,8 +1473,6 @@ static int acm_probe(struct usb_interface *intf,
- 	acm->nb_index = 0;
- 	acm->nb_size = 0;
- 
--	dev_info(&intf->dev, "ttyACM%d: USB ACM device\n", minor);
--
- 	acm->line.dwDTERate = cpu_to_le32(9600);
- 	acm->line.bDataBits = 8;
- 	acm_set_line(acm, &acm->line);
-@@ -1497,6 +1495,8 @@ static int acm_probe(struct usb_interface *intf,
- 		usb_clear_halt(usb_dev, acm->out);
- 	}
- 
-+	dev_info(&intf->dev, "ttyACM%d: USB ACM device\n", minor);
-+
- 	return 0;
- 
- err_release_data_interface:
--- 
-2.26.3
+obj-$(CONFIG_MEMCG_SWAP) += swap_cgroup.o
 
+But I guess we could replace it with
+
+ifdef CONFIG_SWAP
+obj-$(CONFIG_MEMCG) += swap_cgroup.c
+endif
+
+and I agree, everywhere else it's currently used would be nicer
+without it. I'll send a separate patch.
+
+> > @@ -99,7 +92,11 @@ static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
+> >  /* Whether legacy memory+swap accounting is active */
+> >  static bool do_memsw_account(void)
+> >  {
+> > -	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap;
+> > +	/* cgroup2 doesn't do mem+swap accounting */
+> > +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> > +		return false;
+> > +
+> > +	return true;
+> 
+> Nit: I'm not fond of the "if (boolean()) return true; else return false;"
+> codestyle, and would prefer the straightforward
+> 
+> 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys);
+> 
+> but you've chosen otherwise, so, okay.
+
+I prefer a series of branches if a single expression becomes unwieldy,
+and individual conditions deserve their own comments.
+
+But it's indeed pretty silly in this case, I'll make it a single line.
+
+> > @@ -7124,7 +7121,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+> >  {
+> >  	long nr_swap_pages = get_nr_swap_pages();
+> >  
+> > -	if (cgroup_memory_noswap || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> > +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> 
+> That needs to check mem_cgroup_disabled() where it used to check
+> cgroup_memory_noswap.  The convolutions are confusing (which is
+> precisely why this is such a welcome cleanup), but without a
+> mem_cgroup_disabled() (or NULL memcg) check there, the
+> cgroup_disable=memory case oopses on NULLish pointer dereference
+> when mem_cgroup_get_nr_swap_pages() is called from get_scan_count().
+> 
+> (This little function has been repeatedly troublesome that way.)
+
+Sigh, yes, this will hopefully be the last instance of this bug...
+
+Thanks for catching that, I'll fix it up.
+
+> > @@ -7141,7 +7138,7 @@ bool mem_cgroup_swap_full(struct page *page)
+> >  
+> >  	if (vm_swap_full())
+> >  		return true;
+> > -	if (cgroup_memory_noswap || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> > +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> 
+> Would it now be better to say "if (do_memsw_account())" there?
+
+Yes, I'll change that.
+
+> Or would it be better to eliminate do_memsw_account() altogether,
+> and just use !cgroup_subsys_on_dfl(memory_cgrp_subsys) throughout?
+
+I have found do_memsw_account() useful in the past to find those
+related pieces. The details elude me know but I remember searching for
+this string often during the recent work in this area.
+
+> (Though I don't find "cgroup_subsys_on_dfl" very informative.)
+
+This routinely bothers me as well, but I have not been able to come up
+with a good replacement.
+
+memcg_v1()? memcg_legacy_mode()? memory_cgroup_in_bytes()?
+
+> > @@ -7291,27 +7287,13 @@ static struct cftype memsw_files[] = {
+> >  	{ },	/* terminate */
+> >  };
+> >  
+> > -/*
+> > - * If mem_cgroup_swap_init() is implemented as a subsys_initcall()
+> > - * instead of a core_initcall(), this could mean cgroup_memory_noswap still
+> > - * remains set to false even when memcg is disabled via "cgroup_disable=memory"
+> > - * boot parameter. This may result in premature OOPS inside
+> > - * mem_cgroup_get_nr_swap_pages() function in corner cases.
+> > - */
+> >  static int __init mem_cgroup_swap_init(void)
+> >  {
+> > -	/* No memory control -> no swap control */
+> > -	if (mem_cgroup_disabled())
+> > -		cgroup_memory_noswap = true;
+> > -
+> > -	if (cgroup_memory_noswap)
+> > -		return 0;
+> > -
+> 
+> Shakeel suggested "if (mem_cgroup_disabled()) return 0;" here,
+> and that was the first thing I tried when I got the crash.
+
+It really isn't obviously safe. I'll put it back in.
