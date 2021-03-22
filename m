@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596FF343EC6
+	by mail.lfdr.de (Postfix) with ESMTP id A55BF343EC7
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCVLCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:02:55 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:51935 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhCVLCY (ORCPT
+        id S230173AbhCVLC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:02:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:16948 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhCVLCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:02:24 -0400
-Received: by mail-wm1-f49.google.com with SMTP id p19so9225170wmq.1;
-        Mon, 22 Mar 2021 04:02:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BiMK781eStD+pPVhDiy7PA0LMsxXNJAo0Ygpgg62UGc=;
-        b=YgxXTmNZLa//f+TIt3uDgAHrQGabu77DxS0d9JqN7kyktOq7gbBtkOXyq9wbsmOdMx
-         3+DqawMfRiCr4NecqEjgmsVOhMvOOt1SijF5VUGVhwnIg0ajvooVQQjYtPhRmEjlOYvp
-         gDTb1mKUCPoLw67bKDkGOdocR+rcqRrqYNns8hiOyPZCGYEsEiog8vVNS1Ot4hZWVnna
-         i4GnwXg1FJthio9RKyLsgYnQZ/B6yAUuS7qm1det2HaclbS6G+p3ziTDfWGCO3p39eXu
-         Vl588h5V9kiua/gGw6ufPeGMsTrGG8dRuThQrcEsP4gxDiJgwdTAQkmpcshHjofhGOcH
-         eVDw==
-X-Gm-Message-State: AOAM530HRtTpKHikeuYRNIyUoy11NyIAbLqhGEMXiePJWiq3XtZGO1UG
-        dLw196UaR+hyE385ny46x8wDUUxQTlQ=
-X-Google-Smtp-Source: ABdhPJz64NssYErwjK847VbkVBbj7UBwVEf8zwqFhxxnmXCPfQXBGaIAbQB9YhD1BpOxKDP9nl/wZA==
-X-Received: by 2002:a1c:6309:: with SMTP id x9mr15517329wmb.62.1616410942357;
-        Mon, 22 Mar 2021 04:02:22 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id y16sm19549425wrh.3.2021.03.22.04.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 04:02:21 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 11:02:20 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Xu Yihang <xuyihang@huawei.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        johnny.chenyi@huawei.com
-Subject: Re: [PATCH -next] x86: Fix unused variable 'hi'
-Message-ID: <20210322110220.ovhqoykjdoptu6gr@liuwe-devbox-debian-v2>
-References: <20210318074607.124663-1-xuyihang@huawei.com>
- <20210322035426.71169-1-xuyihang@huawei.com>
- <20210322035426.71169-2-xuyihang@huawei.com>
+        Mon, 22 Mar 2021 07:02:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616410951; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=c2Ecjr3Iz4qTPc2o7wQVldP6f2u2DSZjHJDvRhCW0ks=;
+ b=tpPhX/dKKh2OTUathbAEB1HaQlWbpb/r/f3SZQxN++bdgq/kFhp3imxbsI9LR5VzIr8cXP6t
+ PpQXuFrN8me55DF7oGSz6hAnPPJm8Tqq2SIKgGhHTOTTqa7hT3CI2kQFvzJ8+fU40feB4Y/N
+ dRUESdOYkKDx5SLHVMkPVkhnxrc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60587944e3fca7d0a6ad0fbf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Mar 2021 11:02:28
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F21CC433C6; Mon, 22 Mar 2021 11:02:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CCACC433CA;
+        Mon, 22 Mar 2021 11:02:27 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322035426.71169-2-xuyihang@huawei.com>
+Date:   Mon, 22 Mar 2021 16:32:27 +0530
+From:   rojay@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V2 1/2] soc: qcom-geni-se: Cleanup the code to remove
+ proxy votes
+In-Reply-To: <YFOKQKlI3MjMouEA@google.com>
+References: <20210318111009.30365-1-rojay@codeaurora.org>
+ <20210318111009.30365-2-rojay@codeaurora.org> <YFOKQKlI3MjMouEA@google.com>
+Message-ID: <91db2ee226ceb15a255bf7312a7216c1@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:54:26AM +0800, Xu Yihang wrote:
-> Fixes the following W=1 kernel build warning(s):
-> arch/x86/hyperv/hv_apic.c:58:15: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
+On 2021-03-18 22:43, Matthias Kaehlcke wrote:
+> On Thu, Mar 18, 2021 at 04:40:08PM +0530, Roja Rani Yarubandi wrote:
+>> ICC core and platforms drivers supports sync_state feature, which
+>> ensures that the default ICC BW votes from the bootloader is not
+>> removed until all it's consumers are probes.
+>> 
+>> The proxy votes were needed in case other QUP child drivers
+>> I2C, SPI probes before UART, they can turn off the QUP-CORE clock
+>> which is shared resources for all QUP driver, this causes unclocked
+>> access to HW from earlycon.
+>> 
+>> Given above support from ICC there is no longer need to maintain
+>> proxy votes on QUP-CORE ICC node from QUP wrapper driver for early
+>> console usecase, the default votes won't be removed until real
+>> console is probed.
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
 > 
-> Compiled with CONFIG_HYPERV enabled:
-> make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
-> make W=1 arch/x86/hyperv/hv_apic.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+> I suggest to mention that this is essentially a revert of commit
+> 048eb908a1f2 ("soc: qcom-geni-se: Add interconnect support to fix
+> earlycon crash"). This makes the life of reviewers easier and it's
+> also good to have the reference in the git history.
 > 
-> HV_X64_MSR_EOI stores on bit 31:0 and HV_X64_MSR_TPR stores in bit 7:0, which means higher 32 bits are not really used, therefore __maybe_unused added.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
 
-I slightly modified the commit message and queued it up for hyperv-next.
-Thanks.
+Ok.
 
-Wei.
+> You could also mention commit 7d3b0b0d8184 ("interconnect: qcom:
+> Use icc_sync_state") in the intro.
+> 
+
+Ok.
+
+> I tried to test by first reproducing the original issue without
+> 'sync_state' in the ICC, but wasn't successful, probably something
+> changed in the boot/ICC timing in the meantime ¯\_(ツ)_/¯.
+> 
+
+Need to remove runtime auto suspend support from SPI/I2C as well, as it 
+was
+masking the issue by delaying to turn off the resources by 250ms.
+
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
