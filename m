@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AD23451F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED683451EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCVVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59918 "EHLO mail.kernel.org"
+        id S229962AbhCVVkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhCVVkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:40:33 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E971619A9;
-        Mon, 22 Mar 2021 21:40:33 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1lOSHo-001aPB-Df; Mon, 22 Mar 2021 17:40:32 -0400
-Message-ID: <20210322214032.293992979@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Mon, 22 Mar 2021 17:38:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "John (Warthog9) Hawley" <warthog9@kernel.org>
-Subject: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim users
-References: <20210322213806.089334551@goodmis.org>
+        id S229639AbhCVVkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 17:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28117619A9;
+        Mon, 22 Mar 2021 21:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616449204;
+        bh=ZjEe7Re0RKu002ndI22T8BlfDJ+aY+HHY+t9XvQS7Q8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bJZCpZ5EEGZerp3UrSyvokIM6nH3GPNLIsyJMJB5nyc4Sgnjtzn+OMtjUL2ZBSie+
+         Fi83eey5HsMSKc/9qaD2RuZEeUeUwoE2M6qwk7wrSCjkj4ws8OGv18z8EyYcukmWHT
+         jM35+ir6/srZfSH78DCRwpRXtTCanNR0ouNRk+r0zZqC9uicwbh5Vl6qVN2J0nC7fg
+         yAR8A/u0nDcj41ohiNdL688eDQ2opEHdctaDOmgytVvpFgfvzBz92vFYBp5Nn21+zL
+         vtNIUbcaOAFjelvCYqZ6uXvufN0DecSq4tETddYi+zxgAsQXGrS7YO4xRruhTqWyYj
+         CraMDT8xmXxbw==
+Received: by mail-ot1-f44.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso17476595otq.3;
+        Mon, 22 Mar 2021 14:40:04 -0700 (PDT)
+X-Gm-Message-State: AOAM533FUOhFfO7wq9f+GsWOzKkBqFJJDy1x14lvq359GYXwWaCk6hUk
+        iGNe8yk9vCXFksLX6c2bH7EqB0oZSmM8DFSdmWI=
+X-Google-Smtp-Source: ABdhPJzNzw6/c6SVRTMWeDvzQfOYlqmnHJ7XZUtZKGXGAyd4E2bODGHMqyepsXMnLh1hlMatZvPmNE5xJdhqw6/8ZCE=
+X-Received: by 2002:a9d:316:: with SMTP id 22mr1561463otv.210.1616449203436;
+ Mon, 22 Mar 2021 14:40:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-3-arnd@kernel.org>
+ <20210322202958.GA1955909@gmail.com>
+In-Reply-To: <20210322202958.GA1955909@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 22 Mar 2021 22:39:47 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a10d8hgBiO5W=34oLqw8m22=Xi4C=MxVSY_fGnXZUJ3iA@mail.gmail.com>
+Message-ID: <CAK8P3a10d8hgBiO5W=34oLqw8m22=Xi4C=MxVSY_fGnXZUJ3iA@mail.gmail.com>
+Subject: Re: [PATCH 02/11] x86: tboot: avoid Wstringop-overread-warning
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>,
+        Ning Sun <ning.sun@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        tboot-devel@lists.sourceforge.net,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon, Mar 22, 2021 at 9:29 PM Ingo Molnar <mingo@kernel.org> wrote:
+> * Arnd Bergmann <arnd@kernel.org> wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 
-The tab stop for Perl files is by default (at least in emacs) to be 4
-spaces, where a tab is used for all 8 spaces. Add a local variable comment
-to make vim do the same by default, and this will help keep the file
-consistent in the future when others edit it via vim and not emacs.
+> This is indeed rather ugly - and the other patch that removes a debug
+> check seems counterproductive as well.
+>
+> Do we know how many genuine bugs -Wstringop-overread-warning has
+> caught or is about to catch?
+>
+> I.e. the real workaround might be to turn off the -Wstringop-overread-warning,
+> until GCC-11 gets fixed?
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- scripts/kconfig/streamline_config.pl | 2 ++
- 1 file changed, 2 insertions(+)
+See the [PATCH 0/11] message. The last two patches in the series are for
+code that I suspect may be broken, the others are basically all false positives.
 
-diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
-index 059061b6daef..044829972ba5 100755
---- a/scripts/kconfig/streamline_config.pl
-+++ b/scripts/kconfig/streamline_config.pl
-@@ -702,3 +702,5 @@ foreach my $module (keys(%modules)) {
- 	print STDERR "\n";
-     }
- }
-+
-+# vim: softtabstop=4
--- 
-2.30.1
+As gcc-11 is not released yet, I don't think we have to apply any of the
+patches or disable the warning at the moment, but I posted all the patches
+to get a better understanding on which of them should be addressed in
+the kernel vs gcc.
 
-
+       Arnd
