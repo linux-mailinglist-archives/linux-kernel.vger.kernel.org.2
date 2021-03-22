@@ -2,60 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CD43452A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFCC3452AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhCVW5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:57:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41724 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230055AbhCVW5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:57:00 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lOTTc-00CTuT-8k; Mon, 22 Mar 2021 23:56:48 +0100
-Date:   Mon, 22 Mar 2021 23:56:48 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Leon Romanovsky <leon@kernel.org>, davem@davemloft.net,
-        kuba@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net: ipa: fix IPA validation
-Message-ID: <YFkgsHfldCNkaLSB@lunn.ch>
-References: <20210320141729.1956732-1-elder@linaro.org>
- <20210320141729.1956732-3-elder@linaro.org>
- <YFcCAr19ZXJ9vFQ5@unreal>
- <dd4619e2-f96a-122f-2cf6-ec19445c6a5c@linaro.org>
- <YFdO6UnWsm4DAkwc@unreal>
- <7bc3e7d7-d32f-1454-eecc-661b5dc61aeb@linaro.org>
- <YFg7yHUeYvQZt+/Z@unreal>
- <f152c274-6fe0-37a1-3723-330b7bfe249a@linaro.org>
+        id S229871AbhCVW62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhCVW5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:57:54 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [IPv6:2001:4b98:dc0:41:216:3eff:fe8c:2bda])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E7FDC061574;
+        Mon, 22 Mar 2021 15:57:52 -0700 (PDT)
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 6D803630C2;
+        Mon, 22 Mar 2021 23:57:43 +0100 (CET)
+Date:   Mon, 22 Mar 2021 23:57:47 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v2] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210322225747.GA24562@salvia>
+References: <2a6d8eb6058a6961cfb6439b31dcfadcce9596a8.1616445965.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f152c274-6fe0-37a1-3723-330b7bfe249a@linaro.org>
+In-Reply-To: <2a6d8eb6058a6961cfb6439b31dcfadcce9596a8.1616445965.git.rgb@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The solution is to create a user space tool inside the
-> drivers/net/ipa directory that will link with the kernel
-> source files and will perform all the basic one-time checks
-> I want to make.
+On Mon, Mar 22, 2021 at 04:49:04PM -0400, Richard Guy Briggs wrote:
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index c1eb5cdb3033..42ba44890523 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+[...]
+> @@ -8006,12 +7938,47 @@ static void nft_commit_notify(struct net *net, u32 portid)
+>  	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
+>  }
+>  
+> +void nf_tables_commit_audit_collect(struct list_head *adl,
+> +				    struct nft_trans *trans) {
 
-Hi Alex
+nitpick: curly brace starts in the line.
 
-Have you found any other driver doing this?  Where do they keep there
-code?
+> +	struct nft_audit_data *adp;
+> +
+> +	list_for_each_entry(adp, adl, list) {
+> +		if (adp->table == trans->ctx.table)
+> +			goto found;
+> +	}
+> +	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
 
-Could this be a selftest, put somewhere in tools/testing/selftests.
+        if (!adp)
+                ...
 
-Or can this be a test kernel module. Eg. we have crypt/testmsg.c which
-runs a number of tests on the crypto subsystem,
-./kernel/time/test_udelay.c which runs times on udelay.
+> +	adp->table = trans->ctx.table;
+> +	INIT_LIST_HEAD(&adp->list);
+> +	list_add(&adp->list, adl);
+> +found:
+> +	adp->entries++;
+> +	if (!adp->op || adp->op > trans->msg_type)
+> +		adp->op = trans->msg_type;
+> +}
+> +
+> +#define AUNFTABLENAMELEN (NFT_TABLE_MAXNAMELEN + 22)
+> +
+> +void nf_tables_commit_audit_log(struct list_head *adl, u32 generation) {
+                                                                          ^
+same thing here
 
-Rather than inventing something new, please follow other examples
-already in the kernel.
+> +	struct nft_audit_data *adp, *adn;
+> +	char aubuf[AUNFTABLENAMELEN];
+> +
+> +	list_for_each_entry_safe(adp, adn, adl, list) {
+> +		snprintf(aubuf, AUNFTABLENAMELEN, "%s:%u", adp->table->name,
+> +			 generation);
+> +		audit_log_nfcfg(aubuf, adp->table->family, adp->entries,
+> +				nft2audit_op[adp->op], GFP_KERNEL);
+> +		list_del(&adp->list);
+> +		kfree(adp);
+> +	}
+> +}
+> +
+>  static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+>  {
+>  	struct nft_trans *trans, *next;
+>  	struct nft_trans_elem *te;
+>  	struct nft_chain *chain;
+>  	struct nft_table *table;
+> +	LIST_HEAD(adl);
+>  	int err;
+>  
+>  	if (list_empty(&net->nft.commit_list)) {
+> @@ -8206,12 +8173,15 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+>  			}
+>  			break;
+>  		}
+> +		nf_tables_commit_audit_collect(&adl, trans);
+>  	}
+>  
+>  	nft_commit_notify(net, NETLINK_CB(skb).portid);
+>  	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
+>  	nf_tables_commit_release(net);
+>  
+> +	nf_tables_commit_audit_log(&adl, net->nft.base_seq);
+> +
 
-       Andrew 
+This looks more self-contained and nicer, thanks.
