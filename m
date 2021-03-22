@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD6E343AD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B0E343AD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCVHlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhCVHkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:40:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA2D261973;
-        Mon, 22 Mar 2021 07:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616398824;
-        bh=sOH9HuItd2CUwo03Yj1I8YJQuHTOMD4EULY4jpgfDf8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lf1kPK5PPKldOLTu+NRbryMY0D9//hjH6vR8JTjkMdSvQWXYaYhF4y6JWoX/2SiCC
-         JVc4+UE745Kh42zUTNod9A7GVbEX6oKUfZsQe+V8OyiVw9zoTkBVNCd5e7cm0uaU9o
-         F3JwHKGcr8P8h59BSvYZn66Y7lCjmiA+WnIRz2gQxzN88JcQJeUiORdn7PbDvGKYP2
-         u2RejLLWd3WZ4HzAr68ymG6/+SLHCH/2x8J/sLqBpqtLAZ8U+4T02ac1tK+AoY2u8B
-         5gUtUY/gF107pF/A4k4DBWOs43T/0sxMqQSf6rabG6ojoaWDiSQFIivGpgDHx6bydz
-         jjbUK1Ovg3wkA==
-Date:   Mon, 22 Mar 2021 08:40:18 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: add a subsystem profile documentation
-Message-ID: <20210322084018.6029c292@coco.lan>
-In-Reply-To: <87y2ex5hjn.fsf@meer.lwn.net>
-References: <95af047a293d8209cf80c05be2b31261cf142853.1614862252.git.mchehab+huawei@kernel.org>
-        <87y2ex5hjn.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229764AbhCVHne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:43:34 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13654 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhCVHnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 03:43:17 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3md656z6znV2Z;
+        Mon, 22 Mar 2021 15:40:42 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 22 Mar 2021
+ 15:43:07 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm: khugepaged - fix coding style
+Date:   Mon, 22 Mar 2021 15:40:43 +0800
+Message-ID: <1616398843-29244-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 08 Mar 2021 16:53:16 -0700
-Jonathan Corbet <corbet@lwn.net> escreveu:
+fix checkpatch warning: spaces required around that '+'.
 
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
-> 
-> > Document the basic policies of the media subsystem profile.
-> >
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/driver-api/media/index.rst      |   2 +
-> >  .../media/maintainer-entry-profile.rst        | 206 ++++++++++++++++++
-> >  .../maintainer/maintainer-entry-profile.rst   |   1 +
-> >  3 files changed, 209 insertions(+)
-> >  create mode 100644 Documentation/driver-api/media/maintainer-entry-profile.rst  
-> 
-> This all looks good to me; would you like me to take it or were you
-> going to send it upward yourself?
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+---
+ mm/khugepaged.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I prefer merging it via the media tree, as we're planning to document
-additional guidelines that drivers need to comply to to be upstreamable, 
-such as using V4L2 standard ioctls instead of vendor-specific extensions
-to configure parameters that are handled by V4L2, not requiring a 
-closed-source daemon, etc.
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 67ab391..f648c38 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1236,7 +1236,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 
+ 	memset(khugepaged_node_load, 0, sizeof(khugepaged_node_load));
+ 	pte = pte_offset_map_lock(mm, pmd, address, &ptl);
+-	for (_address = address, _pte = pte; _pte < pte+HPAGE_PMD_NR;
++	for (_address = address, _pte = pte; _pte < pte + HPAGE_PMD_NR;
+ 	     _pte++, _address += PAGE_SIZE) {
+ 		pte_t pteval = *_pte;
+ 		if (is_swap_pte(pteval)) {
+-- 
+2.8.1
 
-> 
-> Thanks,
-> 
-> jon
-
-
-
-Thanks,
-Mauro
