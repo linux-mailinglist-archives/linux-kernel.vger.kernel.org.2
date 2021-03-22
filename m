@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B962344E61
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE2A344E60
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhCVSUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCVSUN (ORCPT
+        id S231961AbhCVSUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:20:51 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:43897 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231462AbhCVSUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:20:13 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0D8C061574;
-        Mon, 22 Mar 2021 11:20:12 -0700 (PDT)
+        Mon, 22 Mar 2021 14:20:14 -0400
 Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DE73822253;
-        Mon, 22 Mar 2021 19:20:07 +0100 (CET)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 58DF322255;
+        Mon, 22 Mar 2021 19:20:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616437208;
+        t=1616437210;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ly/ltM96HKL3LdgK2QYn3SH/X0EmhT5KbbgmWYv46uU=;
-        b=hdYWOGTit3OOOvsID+aU6tkg3/qj3c+sb6BxHOVnDVAcoy9CqpWUT7Ra+DO/lHlmttxKfP
-        h2td37iA9iLD6IiUedxWBXkZEuR2uDWz0VUtD7B1CGigtvPFg/qCMQZUdjZCNuSuN1yqRN
-        ii/QzZwKcOhDKubbVvPfVL3KVemQyFg=
+        bh=9KjLV5Ka9bey5dKJWPzgAenJL/VH5mtWkQstrGXp430=;
+        b=G3z7uufUUt2D4bHIAoA4KFcAr3mhdhx0PHU/l3H/v7it49QhCW3A5oNbPGULPE3Xn0vPOl
+        D1l926b4w4CZVGDh/qOyWXc3pSs6d3t0QBYW+fXaOOmpxIQV/HOe7RNT9AiGwor5oBwNXs
+        G5l1ZAha5g177tWwp/hPEtQdJobYqfg=
 From:   Michael Walle <michael@walle.cc>
 To:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -41,9 +38,9 @@ Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH 3/4] dt-bindings: mtd: add OTP bindings
-Date:   Mon, 22 Mar 2021 19:19:48 +0100
-Message-Id: <20210322181949.2805-4-michael@walle.cc>
+Subject: [RFC PATCH 4/4] mtd: core: add OTP nvmem provider support
+Date:   Mon, 22 Mar 2021 19:19:49 +0100
+Message-Id: <20210322181949.2805-5-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210322181949.2805-1-michael@walle.cc>
 References: <20210322181949.2805-1-michael@walle.cc>
@@ -53,101 +50,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flash devices can have one-time-programmable regions. Add a nvmem
-binding so they can be used as a nvmem provider.
+Flash OTP regions can already be read via user space. Some boards have
+their serial number or MAC addresses stored in the OTP regions. Add
+support for them being a (read-only) nvmem provider.
+
+The API to read the OTP data is already in place. It distinguishes
+between factory and user OTP, thus there are up to two different
+providers.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- .../devicetree/bindings/mtd/mtd.yaml          | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ drivers/mtd/mtdcore.c   | 149 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/mtd.h |   2 +
+ 2 files changed, 151 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index 321259aab0f6..2b852f91a6a9 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -21,6 +21,25 @@ properties:
-       based name) in order to ease flash device identification and/or
-       describe what they are used for.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 432769caae04..300340973561 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -776,6 +776,147 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ 	mutex_init(&mtd->master.chrdev_lock);
+ }
  
-+patternProperties:
-+  "^otp(-[0-9]+)?":
-+    type: object
-+    $ref: ../nvmem/nvmem.yaml#
++static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
++{
++	struct otp_info *info = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	ssize_t size = 0;
++	unsigned int i;
++	size_t retlen;
++	int ret;
 +
-+    description: |
-+      An OTP memory region. Some flashes provide a one-time-programmable
-+      memory whose content can either be programmed by a user or is already
-+      pre-programmed by the factory. Some flashes might provide both.
++	if (is_user)
++		ret = mtd_get_user_prot_info(mtd, PAGE_SIZE, &retlen, info);
++	else
++		ret = mtd_get_fact_prot_info(mtd, PAGE_SIZE, &retlen, info);
++	if (ret)
++		goto err;
 +
-+    properties:
-+      compatible:
-+        enum:
-+          - mtd-user-otp
-+          - mtd-factory-otp
++	for (i = 0; i < retlen / sizeof(*info); i++) {
++		size += info->length;
++		info++;
++	}
 +
-+    required:
-+      - compatible
++	kfree(info);
++	return size;
 +
- additionalProperties: true
++err:
++	kfree(info);
++	return ret;
++}
++
++static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
++						   const char *name, int size,
++						   nvmem_reg_read_t reg_read,
++						   const char *compatible)
++{
++	struct nvmem_device *nvmem = NULL;
++	struct nvmem_config config = {};
++	struct device_node *np;
++
++	/* DT binding is optional */
++	np = of_get_compatible_child(mtd->dev.of_node, compatible);
++
++	/* OTP nvmem will be registered on the physical device */
++	config.dev = mtd->dev.parent;
++	config.name = name;
++	config.id = NVMEM_DEVID_NONE;
++	config.owner = THIS_MODULE;
++	config.type = NVMEM_TYPE_OTP;
++	config.root_only = true;
++	config.reg_read = reg_read;
++	config.size = size;
++	config.of_node = np;
++	config.priv = mtd;
++
++	nvmem = nvmem_register(&config);
++	/* Just ignore if there is no NVMEM support in the kernel */
++	if (IS_ERR(nvmem) && PTR_ERR(nvmem) == -EOPNOTSUPP)
++		nvmem = NULL;
++
++	of_node_put(np);
++
++	return nvmem;
++}
++
++static int mtd_nvmem_user_otp_reg_read(void *priv, unsigned int offset,
++				       void *val, size_t bytes)
++{
++	struct mtd_info *mtd = priv;
++	size_t retlen;
++	int ret;
++
++	ret = mtd_read_user_prot_reg(mtd, offset, bytes, &retlen, val);
++	if (ret)
++		return ret;
++
++	return retlen == bytes ? 0 : -EIO;
++}
++
++static int mtd_nvmem_fact_otp_reg_read(void *priv, unsigned int offset,
++				       void *val, size_t bytes)
++{
++	struct mtd_info *mtd = priv;
++	size_t retlen;
++	int ret;
++
++	ret = mtd_read_fact_prot_reg(mtd, offset, bytes, &retlen, val);
++	if (ret)
++		return ret;
++
++	return retlen == bytes ? 0 : -EIO;
++}
++
++static int mtd_otp_nvmem_add(struct mtd_info *mtd)
++{
++	struct nvmem_device *nvmem;
++	ssize_t size;
++	int err;
++
++	if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
++		size = mtd_otp_size(mtd, true);
++		if (size < 0)
++			return size;
++
++		if (size > 0) {
++			nvmem = mtd_otp_nvmem_register(mtd, "user-otp", size,
++						       mtd_nvmem_user_otp_reg_read,
++						       "mtd-user-otp");
++			if (IS_ERR(nvmem)) {
++				dev_err(&mtd->dev, "Failed to register OTP NVMEM device\n");
++				return PTR_ERR(nvmem);
++			}
++			mtd->otp_user_nvmem = nvmem;
++		}
++	}
++
++	if (mtd->_get_fact_prot_info && mtd->_read_fact_prot_reg) {
++		size = mtd_otp_size(mtd, false);
++		if (size < 0) {
++			err = size;
++			goto err;
++		}
++
++		if (size > 0) {
++			nvmem = mtd_otp_nvmem_register(mtd, "factory-otp", size,
++						       mtd_nvmem_fact_otp_reg_read,
++						       "mtd-factory-otp");
++			if (IS_ERR(nvmem)) {
++				dev_err(&mtd->dev, "Failed to register OTP NVMEM device\n");
++				err = PTR_ERR(nvmem);
++				goto err;
++			}
++			mtd->otp_factory_nvmem = nvmem;
++		}
++	}
++
++	return 0;
++
++err:
++	if (mtd->otp_user_nvmem)
++		nvmem_unregister(mtd->otp_user_nvmem);
++	return err;
++}
++
+ /**
+  * mtd_device_parse_register - parse partitions and register an MTD device.
+  *
+@@ -851,6 +992,8 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+ 		register_reboot_notifier(&mtd->reboot_notifier);
+ 	}
  
- examples:
-@@ -36,4 +55,56 @@ examples:
-         };
-     };
++	ret = mtd_otp_nvmem_add(mtd);
++
+ out:
+ 	if (ret && device_is_registered(&mtd->dev))
+ 		del_mtd_device(mtd);
+@@ -872,6 +1015,12 @@ int mtd_device_unregister(struct mtd_info *master)
+ 	if (master->_reboot)
+ 		unregister_reboot_notifier(&master->reboot_notifier);
  
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++	if (master->otp_user_nvmem)
++		nvmem_unregister(master->otp_user_nvmem);
 +
-+        flash@0 {
-+            reg = <0>;
-+            compatible = "some,flash";
++	if (master->otp_factory_nvmem)
++		nvmem_unregister(master->otp_factory_nvmem);
 +
-+            otp {
-+                compatible = "mtd-user-otp";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                serial-number@0 {
-+                    reg = <0 16>;
-+                };
-+            };
-+        };
-+    };
-+
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        flash@0 {
-+            reg = <0>;
-+            compatible = "some,flash";
-+
-+            otp-1 {
-+                compatible = "mtd-factory-otp";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                electronic-serial-number@0 {
-+                    reg = <0 8>;
-+                };
-+            };
-+
-+            otp-2 {
-+                compatible = "mtd-user-otp";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                mac-address@0 {
-+                    reg = <0 6>;
-+                };
-+            };
-+        };
-+    };
-+
- ...
+ 	err = del_mtd_partitions(master);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 4aac200ca8b5..71e751d18c22 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -379,6 +379,8 @@ struct mtd_info {
+ 	int usecount;
+ 	struct mtd_debug_info dbg;
+ 	struct nvmem_device *nvmem;
++	struct nvmem_device *otp_user_nvmem;
++	struct nvmem_device *otp_factory_nvmem;
+ 
+ 	/*
+ 	 * Parent device from the MTD partition point of view.
 -- 
 2.20.1
 
