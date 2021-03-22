@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFBB344104
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE1F344105
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCVMaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
+        id S230504AbhCVMaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhCVM3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:29:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C3306198E;
-        Mon, 22 Mar 2021 12:29:42 +0000 (UTC)
+        id S230159AbhCVM3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:29:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 184BE6198D;
+        Mon, 22 Mar 2021 12:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416182;
-        bh=85xbLg0N24rYjYG9rU+hPSlW4FE4imDZ2NNfjYfcj2M=;
+        s=korg; t=1616416185;
+        bh=6qDsWRdDrEprk/lwWGwSYooI02SaMRqvmo6OHwXlbKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g+Dj34A36PGRf2wwKkrnmavwB0NePdw7XfUQYmCDxoISsT2G4Ba5WeZtTU1O502H/
-         e8cxYnHiLhcqSXmXCfb1xf+yikoN/k6XiXpxtbJ7BAVhy3XtCIW/CNPe2v7KcJ8JD+
-         iD8W/uhzyAZQkXIV8tV0bo+Wbcmwb+jG2MGHyM50=
+        b=Ot33SFtOUNNEWVERKQE1Z3TCFUomfTPeIclBbfmOzBeOYhlCXzinY/DyF3vp8szYu
+         +TCHmEtfSbxqQSJpb9lVe1ZqIb4swDgAL/bvwmc/ZRdq6wVwKqjol4Vh0L5wMSVmWi
+         y4Z7CaztqJl8Yi5nH59ApSbQrSQA73Jgu5cXdwKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.11 011/120] Revert "PM: runtime: Update device status before letting suppliers suspend"
-Date:   Mon, 22 Mar 2021 13:26:34 +0100
-Message-Id: <20210322121930.033921203@linuxfoundation.org>
+        stable@vger.kernel.org, Sabine Forkel <sabine.forkel@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Subject: [PATCH 5.11 012/120] s390/vtime: fix increased steal time accounting
+Date:   Mon, 22 Mar 2021 13:26:35 +0100
+Message-Id: <20210322121930.070067650@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -40,113 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 
-commit 0cab893f409c53634d0d818fa414641cbcdb0dab upstream.
+commit d54cb7d54877d529bc1e0e1f47a3dd082f73add3 upstream.
 
-Revert commit 44cc89f76464 ("PM: runtime: Update device status
-before letting suppliers suspend") that introduced a race condition
-into __rpm_callback() which allowed a concurrent rpm_resume() to
-run and resume the device prematurely after its status had been
-changed to RPM_SUSPENDED by __rpm_callback().
+Commit 152e9b8676c6e ("s390/vtime: steal time exponential moving average")
+inadvertently changed the input value for account_steal_time() from
+"cputime_to_nsecs(steal)" to just "steal", resulting in broken increased
+steal time accounting.
 
-Fixes: 44cc89f76464 ("PM: runtime: Update device status before letting suppliers suspend")
-Link: https://lore.kernel.org/linux-pm/24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com/
-Reported-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix this by changing it back to "cputime_to_nsecs(steal)".
+
+Fixes: 152e9b8676c6e ("s390/vtime: steal time exponential moving average")
+Cc: <stable@vger.kernel.org> # 5.1
+Reported-by: Sabine Forkel <sabine.forkel@de.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/runtime.c |   62 +++++++++++++++++--------------------------
- 1 file changed, 25 insertions(+), 37 deletions(-)
+ arch/s390/kernel/vtime.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
- static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
- {
--	bool use_links = dev->power.links_count > 0;
--	bool get = false;
- 	int retval, idx;
--	bool put;
-+	bool use_links = dev->power.links_count > 0;
- 
- 	if (dev->power.irq_safe) {
- 		spin_unlock(&dev->power.lock);
--	} else if (!use_links) {
--		spin_unlock_irq(&dev->power.lock);
- 	} else {
--		get = dev->power.runtime_status == RPM_RESUMING;
--
- 		spin_unlock_irq(&dev->power.lock);
- 
--		/* Resume suppliers if necessary. */
--		if (get) {
-+		/*
-+		 * Resume suppliers if necessary.
-+		 *
-+		 * The device's runtime PM status cannot change until this
-+		 * routine returns, so it is safe to read the status outside of
-+		 * the lock.
-+		 */
-+		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
-@@ -355,36 +355,24 @@ static int __rpm_callback(int (*cb)(stru
- 
- 	if (dev->power.irq_safe) {
- 		spin_lock(&dev->power.lock);
--		return retval;
--	}
--
--	spin_lock_irq(&dev->power.lock);
--
--	if (!use_links)
--		return retval;
--
--	/*
--	 * If the device is suspending and the callback has returned success,
--	 * drop the usage counters of the suppliers that have been reference
--	 * counted on its resume.
--	 *
--	 * Do that if the resume fails too.
--	 */
--	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
--	if (put)
--		__update_runtime_status(dev, RPM_SUSPENDED);
--	else
--		put = get && retval;
--
--	if (put) {
--		spin_unlock_irq(&dev->power.lock);
--
--		idx = device_links_read_lock();
-+	} else {
-+		/*
-+		 * If the device is suspending and the callback has returned
-+		 * success, drop the usage counters of the suppliers that have
-+		 * been reference counted on its resume.
-+		 *
-+		 * Do that if resume fails too.
-+		 */
-+		if (use_links
-+		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
-+		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
-+			idx = device_links_read_lock();
- 
--fail:
--		rpm_put_suppliers(dev);
-+ fail:
-+			rpm_put_suppliers(dev);
- 
--		device_links_read_unlock(idx);
-+			device_links_read_unlock(idx);
-+		}
- 
- 		spin_lock_irq(&dev->power.lock);
+--- a/arch/s390/kernel/vtime.c
++++ b/arch/s390/kernel/vtime.c
+@@ -217,7 +217,7 @@ void vtime_flush(struct task_struct *tsk
+ 	avg_steal = S390_lowcore.avg_steal_timer / 2;
+ 	if ((s64) steal > 0) {
+ 		S390_lowcore.steal_timer = 0;
+-		account_steal_time(steal);
++		account_steal_time(cputime_to_nsecs(steal));
+ 		avg_steal += steal;
  	}
+ 	S390_lowcore.avg_steal_timer = avg_steal;
 
 
