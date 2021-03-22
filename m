@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0F234525B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2730E34525D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhCVWTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbhCVWTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:19:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44614C061574;
-        Mon, 22 Mar 2021 15:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NHsFX5MxjeF+VaAwcwyWFoKD78wZlg9OURQbD+OIWjI=; b=lRF/zob9BaEhB0ShW00Zg6tQC4
-        GYTJS0a3vdB87rFIsddE92qBPvZez5JPYt5PPnZhpyZcPWMFw6E6PWJsk8Nll/c5p6M4q3NLH4Dv+
-        iVSaJQjLNW9dbd4gBjHUBlB52OTsTx/lfg8jfOQ0dO+GhlnWwQW4bwsAuBq4nRCuT4IzeH3Q/6Zri
-        zq5tVOo5meCFreI34KxT+59bGXMex4D+q+QV0RoumOPpOCk+OFo5xevvWcpp08LZtVY1cjeoUxDIC
-        Lf9GeU0rjy/X6n6X1etT3+jIowXBTUqzMBOHDl6c8aU8odIlj/QCQNXIwsvOHDgW993Bwbua8mlc7
-        6U3bCzGg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOSsK-009A1r-Qz; Mon, 22 Mar 2021 22:18:28 +0000
-Date:   Mon, 22 Mar 2021 22:18:16 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 1/5] cifsd: add server handler and tranport layers
-Message-ID: <20210322221816.GW1719932@casper.infradead.org>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052204epcas1p1382cadbfe958d156c0ad9f7fcb8532b7@epcas1p1.samsung.com>
- <20210322051344.1706-2-namjae.jeon@samsung.com>
+        id S230131AbhCVWVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:21:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:38558 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229673AbhCVWVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:21:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 651DE1042;
+        Mon, 22 Mar 2021 15:21:11 -0700 (PDT)
+Received: from [10.57.55.187] (unknown [10.57.55.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D35DE3F719;
+        Mon, 22 Mar 2021 15:21:09 -0700 (PDT)
+Subject: Re: [PATCH v4 03/19] kvm: arm64: Hide system instruction access to
+ Trace registers
+To:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-4-suzuki.poulose@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <6b8dbaed-654f-3079-bc38-ef18c0effd79@arm.com>
+Date:   Mon, 22 Mar 2021 22:21:08 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322051344.1706-2-namjae.jeon@samsung.com>
+In-Reply-To: <20210225193543.2920532-4-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:13:40PM +0900, Namjae Jeon wrote:
-> +#define RESPONSE_BUF(w)		((void *)(w)->response_buf)
-> +#define REQUEST_BUF(w)		((void *)(w)->request_buf)
+Will, Catalin,
 
-Why do you do this obfuscation?
+On 25/02/2021 19:35, Suzuki K Poulose wrote:
+> Currently we advertise the ID_AA6DFR0_EL1.TRACEVER for the guest,
+> when the trace register accesses are trapped (CPTR_EL2.TTA == 1).
+> So, the guest will get an undefined instruction, if trusts the
+> ID registers and access one of the trace registers.
+> Lets be nice to the guest and hide the feature to avoid
+> unexpected behavior.
+> 
+> Even though this can be done at KVM sysreg emulation layer,
+> we do this by removing the TRACEVER from the sanitised feature
+> register field. This is fine as long as the ETM drivers
+> can handle the individual trace units separately, even
+> when there are differences among the CPUs.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> New patch
+> ---
+>   arch/arm64/kernel/cpufeature.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 066030717a4c..a4698f09bf32 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -383,7 +383,6 @@ static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+>   	 * of support.
+>   	 */
+>   	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_EXACT, ID_AA64DFR0_PMUVER_SHIFT, 4, 0),
+> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_TRACEVER_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_DEBUGVER_SHIFT, 4, 0x6),
+>   	ARM64_FTR_END,
+>   };
+> 
 
-> +#define RESPONSE_BUF_NEXT(w)	\
-> +	((void *)((w)->response_buf + (w)->next_smb2_rsp_hdr_off))
-> +#define REQUEST_BUF_NEXT(w)	\
-> +	((void *)((w)->request_buf + (w)->next_smb2_rcv_hdr_off))
+Are you happy to pick this patch for 5.12 as a fix ?
 
-These obfuscations aren't even used; delete them
-
-> +#define RESPONSE_SZ(w)		((w)->response_sz)
-> +
-> +#define INIT_AUX_PAYLOAD(w)	((w)->aux_payload_buf = NULL)
-> +#define HAS_AUX_PAYLOAD(w)	((w)->aux_payload_sz != 0)
-
-I mean, do you really find it clearer to write:
-
-	if (HAS_AUX_PAYLOAD(work))
-than
-	if (work->aux_payload_sz)
-
-The unobfuscated version is actually shorter!
-
+Suzuki
