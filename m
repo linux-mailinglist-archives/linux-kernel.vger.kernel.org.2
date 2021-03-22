@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304613443F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4367344210
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbhCVMzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
+        id S231618AbhCVMiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:38:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230220AbhCVMox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:44:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E786188B;
-        Mon, 22 Mar 2021 12:41:59 +0000 (UTC)
+        id S231339AbhCVMd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:33:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B5C61931;
+        Mon, 22 Mar 2021 12:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416920;
-        bh=VJ0Hy3KGMAZvmLIly0o6oiF4S5eiylnw3YSn4zQq1ZI=;
+        s=korg; t=1616416432;
+        bh=4ApCq5kSsG3Vre4qH7LLuIO256H2tdp+EiyoHeMyt/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGith+I72o/U0eUDmIthRZHJb2Vz2zL8en4bm1yQCTqCXvsTGCVRvjHYCM2Pjtqch
-         ZIhz6Myely0ffVnNRFxvUJ/fFaXETCaL1q5017hyUsSO5FVHIdK4pIdSGgVydyErbm
-         C9NZ5AMJCYf1oPHCXTH+M5Ze50lX9ZN1ffHC/S48=
+        b=OYonQ+C+3ojWeQ49vFNLfFCQIfl022vmcKqzCkEP9SKj7DZvBb4AHZdBUthNeeATZ
+         SL6BoYMPyMAQ5/aCqU0cgBocI8bEiuCU7RbY0QJvWI5WGA0zRFyCagXMGidO6u0RyS
+         AJAUVSVRxvgZtvdBOwzEsfC1KtnxKcwdnlNj+9XM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        David Howells <dhowells@redhat.com>,
-        Jeffrey Altman <jaltman@auristor.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org
-Subject: [PATCH 5.4 17/60] afs: Stop listxattr() from listing "afs.*" attributes
-Date:   Mon, 22 Mar 2021 13:28:05 +0100
-Message-Id: <20210322121922.953670150@linuxfoundation.org>
+        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.11 103/120] kernel, fs: Introduce and use set_restart_fn() and arch_set_restart_data()
+Date:   Mon, 22 Mar 2021 13:28:06 +0100
+Message-Id: <20210322121933.115766122@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,133 +39,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Oleg Nesterov <oleg@redhat.com>
 
-commit a7889c6320b9200e3fe415238f546db677310fa9 upstream.
+commit 5abbe51a526253b9f003e9a0a195638dc882d660 upstream.
 
-afs_listxattr() lists all the available special afs xattrs (i.e. those in
-the "afs.*" space), no matter what type of server we're dealing with.  But
-OpenAFS servers, for example, cannot deal with some of the extra-capable
-attributes that AuriStor (YFS) servers provide.  Unfortunately, the
-presence of the afs.yfs.* attributes causes errors[1] for anything that
-tries to read them if the server is of the wrong type.
+Preparation for fixing get_nr_restart_syscall() on X86 for COMPAT.
 
-Fix the problem by removing afs_listxattr() so that none of the special
-xattrs are listed (AFS doesn't support xattrs).  It does mean, however,
-that getfattr won't list them, though they can still be accessed with
-getxattr() and setxattr().
+Add a new helper which sets restart_block->fn and calls a dummy
+arch_set_restart_data() helper.
 
-This can be tested with something like:
-
-	getfattr -d -m ".*" /afs/example.com/path/to/file
-
-With this change, none of the afs.* attributes should be visible.
-
-Changes:
-ver #2:
- - Hide all of the afs.* xattrs, not just the ACL ones.
-
-Fixes: ae46578b963f ("afs: Get YFS ACLs and information through xattrs")
-Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003502.html [1]
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003567.html # v1
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003573.html # v2
+Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210201174641.GA17871@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/dir.c      |    1 -
- fs/afs/file.c     |    1 -
- fs/afs/inode.c    |    1 -
- fs/afs/internal.h |    1 -
- fs/afs/mntpt.c    |    1 -
- fs/afs/xattr.c    |   23 -----------------------
- 6 files changed, 28 deletions(-)
+ fs/select.c                    |   10 ++++------
+ include/linux/thread_info.h    |   13 +++++++++++++
+ kernel/futex.c                 |    3 +--
+ kernel/time/alarmtimer.c       |    2 +-
+ kernel/time/hrtimer.c          |    2 +-
+ kernel/time/posix-cpu-timers.c |    2 +-
+ 6 files changed, 21 insertions(+), 11 deletions(-)
 
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -69,7 +69,6 @@ const struct inode_operations afs_dir_in
- 	.permission	= afs_permission,
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
--	.listxattr	= afs_listxattr,
- };
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -1055,10 +1055,9 @@ static long do_restart_poll(struct resta
  
- const struct address_space_operations afs_dir_aops = {
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -42,7 +42,6 @@ const struct inode_operations afs_file_i
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
- 	.permission	= afs_permission,
--	.listxattr	= afs_listxattr,
- };
+ 	ret = do_sys_poll(ufds, nfds, to);
  
- const struct address_space_operations afs_fs_aops = {
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -27,7 +27,6 @@
+-	if (ret == -ERESTARTNOHAND) {
+-		restart_block->fn = do_restart_poll;
+-		ret = -ERESTART_RESTARTBLOCK;
+-	}
++	if (ret == -ERESTARTNOHAND)
++		ret = set_restart_fn(restart_block, do_restart_poll);
++
+ 	return ret;
+ }
  
- static const struct inode_operations afs_symlink_inode_operations = {
- 	.get_link	= page_get_link,
--	.listxattr	= afs_listxattr,
- };
+@@ -1080,7 +1079,6 @@ SYSCALL_DEFINE3(poll, struct pollfd __us
+ 		struct restart_block *restart_block;
  
- static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *parent_vnode)
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1354,7 +1354,6 @@ extern int afs_launder_page(struct page
-  * xattr.c
-  */
- extern const struct xattr_handler *afs_xattr_handlers[];
--extern ssize_t afs_listxattr(struct dentry *, char *, size_t);
+ 		restart_block = &current->restart_block;
+-		restart_block->fn = do_restart_poll;
+ 		restart_block->poll.ufds = ufds;
+ 		restart_block->poll.nfds = nfds;
  
+@@ -1091,7 +1089,7 @@ SYSCALL_DEFINE3(poll, struct pollfd __us
+ 		} else
+ 			restart_block->poll.has_timeout = 0;
+ 
+-		ret = -ERESTART_RESTARTBLOCK;
++		ret = set_restart_fn(restart_block, do_restart_poll);
+ 	}
+ 	return ret;
+ }
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -11,6 +11,7 @@
+ #include <linux/types.h>
+ #include <linux/bug.h>
+ #include <linux/restart_block.h>
++#include <linux/errno.h>
+ 
+ #ifdef CONFIG_THREAD_INFO_IN_TASK
  /*
-  * yfsclient.c
---- a/fs/afs/mntpt.c
-+++ b/fs/afs/mntpt.c
-@@ -32,7 +32,6 @@ const struct inode_operations afs_mntpt_
- 	.lookup		= afs_mntpt_lookup,
- 	.readlink	= page_readlink,
- 	.getattr	= afs_getattr,
--	.listxattr	= afs_listxattr,
- };
+@@ -59,6 +60,18 @@ enum syscall_work_bit {
  
- const struct inode_operations afs_autocell_inode_operations = {
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -11,29 +11,6 @@
- #include <linux/xattr.h>
- #include "internal.h"
+ #ifdef __KERNEL__
  
--static const char afs_xattr_list[] =
--	"afs.acl\0"
--	"afs.cell\0"
--	"afs.fid\0"
--	"afs.volume\0"
--	"afs.yfs.acl\0"
--	"afs.yfs.acl_inherited\0"
--	"afs.yfs.acl_num_cleaned\0"
--	"afs.yfs.vol_acl";
--
--/*
-- * Retrieve a list of the supported xattrs.
-- */
--ssize_t afs_listxattr(struct dentry *dentry, char *buffer, size_t size)
--{
--	if (size == 0)
--		return sizeof(afs_xattr_list);
--	if (size < sizeof(afs_xattr_list))
--		return -ERANGE;
--	memcpy(buffer, afs_xattr_list, sizeof(afs_xattr_list));
--	return sizeof(afs_xattr_list);
--}
--
- /*
-  * Get a file's ACL.
-  */
++#ifndef arch_set_restart_data
++#define arch_set_restart_data(restart) do { } while (0)
++#endif
++
++static inline long set_restart_fn(struct restart_block *restart,
++					long (*fn)(struct restart_block *))
++{
++	restart->fn = fn;
++	arch_set_restart_data(restart);
++	return -ERESTART_RESTARTBLOCK;
++}
++
+ #ifndef THREAD_ALIGN
+ #define THREAD_ALIGN	THREAD_SIZE
+ #endif
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2728,14 +2728,13 @@ retry:
+ 		goto out;
+ 
+ 	restart = &current->restart_block;
+-	restart->fn = futex_wait_restart;
+ 	restart->futex.uaddr = uaddr;
+ 	restart->futex.val = val;
+ 	restart->futex.time = *abs_time;
+ 	restart->futex.bitset = bitset;
+ 	restart->futex.flags = flags | FLAGS_HAS_TIMEOUT;
+ 
+-	ret = -ERESTART_RESTARTBLOCK;
++	ret = set_restart_fn(restart, futex_wait_restart);
+ 
+ out:
+ 	if (to) {
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -848,9 +848,9 @@ static int alarm_timer_nsleep(const cloc
+ 	if (flags == TIMER_ABSTIME)
+ 		return -ERESTARTNOHAND;
+ 
+-	restart->fn = alarm_timer_nsleep_restart;
+ 	restart->nanosleep.clockid = type;
+ 	restart->nanosleep.expires = exp;
++	set_restart_fn(restart, alarm_timer_nsleep_restart);
+ 	return ret;
+ }
+ 
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1957,9 +1957,9 @@ long hrtimer_nanosleep(ktime_t rqtp, con
+ 	}
+ 
+ 	restart = &current->restart_block;
+-	restart->fn = hrtimer_nanosleep_restart;
+ 	restart->nanosleep.clockid = t.timer.base->clockid;
+ 	restart->nanosleep.expires = hrtimer_get_expires_tv64(&t.timer);
++	set_restart_fn(restart, hrtimer_nanosleep_restart);
+ out:
+ 	destroy_hrtimer_on_stack(&t.timer);
+ 	return ret;
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -1480,8 +1480,8 @@ static int posix_cpu_nsleep(const clocki
+ 		if (flags & TIMER_ABSTIME)
+ 			return -ERESTARTNOHAND;
+ 
+-		restart_block->fn = posix_cpu_nsleep_restart;
+ 		restart_block->nanosleep.clockid = which_clock;
++		set_restart_fn(restart_block, posix_cpu_nsleep_restart);
+ 	}
+ 	return error;
+ }
 
 
