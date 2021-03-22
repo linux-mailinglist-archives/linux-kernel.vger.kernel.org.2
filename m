@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3373442AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F7234414B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhCVMoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58570 "EHLO mail.kernel.org"
+        id S231491AbhCVMce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhCVMhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D287B619B9;
-        Mon, 22 Mar 2021 12:37:02 +0000 (UTC)
+        id S229692AbhCVMbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:31:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7323061992;
+        Mon, 22 Mar 2021 12:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416623;
-        bh=NqauGuUlqs04aDiBlkjrkYv7CLIba4f1hYwFQt9WIHU=;
+        s=korg; t=1616416261;
+        bh=5UMpya4cxfPq6S+8IcJNUKh0ZUsJOpgbphgAA8riqhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ER0lnBpwAMVlEu5Mo8V05w9GTrEMtUlkCM/zTWN++H+U585DYQCfRp6GVRa7PAP2i
-         +JDukNqsNiJkSUa9Sv3jbvLeGSUXZwv80zSrfT+hlG0PSSboXhoPzOWxEOitbXAsmg
-         ODONu3KxkEbZyz8nbhUJw0TbkPORBK2KxZ+jJNiA=
+        b=UyypjqUVL0c9yDVBf893sJjvn82s7vCu4vdTKvhfE+mg3WJtjNuLZEnIwWdrPpI4z
+         xu8HEZD4bor1kD9BpuVbC2FQiN9psCSdY/Nt+h1IxbrAmGaQQnegv6ONcaihZqeQ42
+         xOgoAysuA3cNRA/9bDf27pxdkhuiSVbCx8PpwAcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 057/157] scsi: myrs: Fix a double free in myrs_cleanup()
-Date:   Mon, 22 Mar 2021 13:26:54 +0100
-Message-Id: <20210322121935.559165864@linuxfoundation.org>
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pan Xiuli <xiuli.pan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.11 032/120] ASoC: SOF: intel: fix wrong poll bits in dsp power down
+Date:   Mon, 22 Mar 2021 13:26:55 +0100
+Message-Id: <20210322121930.726763652@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-commit 2bb817712e2f77486d6ee17e7efaf91997a685f8 upstream.
+commit fd8299181995093948ec6ca75432e797b4a39143 upstream.
 
-In myrs_cleanup(), cs->mmio_base will be freed twice by iounmap().
+The ADSPCS_SPA is Set Power Active bit. To check if DSP is powered
+down, we need to check ADSPCS_CPA, the Current Power Active bit.
 
-Link: https://lore.kernel.org/r/20210311063005.9963-1-lyl2019@mail.ustc.edu.cn
-Fixes: 77266186397c ("scsi: myrs: Add Mylex RAID controller (SCSI interface)")
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 747503b1813a3 ("ASoC: SOF: Intel: Add Intel specific HDA DSP HW operations")
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210309004127.4940-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/myrs.c |    2 +-
+ sound/soc/sof/intel/hda-dsp.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/myrs.c
-+++ b/drivers/scsi/myrs.c
-@@ -2274,12 +2274,12 @@ static void myrs_cleanup(struct myrs_hba
- 	if (cs->mmio_base) {
- 		cs->disable_intr(cs);
- 		iounmap(cs->mmio_base);
-+		cs->mmio_base = NULL;
- 	}
- 	if (cs->irq)
- 		free_irq(cs->irq, cs);
- 	if (cs->io_addr)
- 		release_region(cs->io_addr, 0x80);
--	iounmap(cs->mmio_base);
- 	pci_set_drvdata(pdev, NULL);
- 	pci_disable_device(pdev);
- 	scsi_host_put(cs->host);
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -207,7 +207,7 @@ int hda_dsp_core_power_down(struct snd_s
+ 
+ 	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
+ 				HDA_DSP_REG_ADSPCS, adspcs,
+-				!(adspcs & HDA_DSP_ADSPCS_SPA_MASK(core_mask)),
++				!(adspcs & HDA_DSP_ADSPCS_CPA_MASK(core_mask)),
+ 				HDA_DSP_REG_POLL_INTERVAL_US,
+ 				HDA_DSP_PD_TIMEOUT * USEC_PER_MSEC);
+ 	if (ret < 0)
 
 
