@@ -2,155 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8699B3446BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7853446C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCVOIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:08:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48630 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhCVOHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:07:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616422067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CvcYWkfFq9PJh9O1Ss2tX6oEUxfsWFJNOcab7Fz4Fvc=;
-        b=b8uYwC9diI01M+DXE8nWtbMoFcgWQzEns9qXcBZVMvHeX1VhoEtIyMk2q0jSuV/HnPnVuV
-        Rvgw8otzZD6FbVX2TLQH8StF/vmE4DJ2W0M0DcuKB7Wvij30T5mT9X2Dt1GbdE9RuE6N1p
-        TFn1g53iiGJwcseVFMoR3ihB6ucg1Lg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 821B6AC1F;
-        Mon, 22 Mar 2021 14:07:47 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 15:07:41 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
- hugetlb_lock
-Message-ID: <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-3-mike.kravetz@oracle.com>
+        id S230336AbhCVOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhCVOIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:08:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8DCC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:08:23 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lOLE6-0002AP-Q6; Mon, 22 Mar 2021 15:08:14 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lOLE6-0003Fv-4W; Mon, 22 Mar 2021 15:08:14 +0100
+Date:   Mon, 22 Mar 2021 15:08:14 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v3 3/3] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <20210322140814.kp23m4b3xx7bapag@pengutronix.de>
+References: <20210319144509.7627-1-o.rempel@pengutronix.de>
+ <20210319144509.7627-4-o.rempel@pengutronix.de>
+ <CAHp75Vcn=g-3NRXAEd5jEu4uxD_fHbybiDg=t9QiY80TNZuTgQ@mail.gmail.com>
+ <20210322103034.bd6swzn2udpvm66o@pengutronix.de>
+ <CAHp75VeemLnMJWQOHL8qrqaher2kOn1xTye1tK2OPtpSHhwOcA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210319224209.150047-3-mike.kravetz@oracle.com>
+In-Reply-To: <CAHp75VeemLnMJWQOHL8qrqaher2kOn1xTye1tK2OPtpSHhwOcA@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:53:44 up 110 days,  4:00, 42 users,  load average: 0.11, 0.05,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 15:42:03, Mike Kravetz wrote:
-> The routine set_max_huge_pages reduces the number of hugetlb_pages,
-> by calling free_pool_huge_page in a loop.  It does this as long as
-> persistent_huge_pages() is above a calculated min_count value.
-> However, this loop can conditionally drop hugetlb_lock and in some
-> circumstances free_pool_huge_page can drop hugetlb_lock.  If the
-> lock is dropped, counters could change the calculated min_count
-> value may no longer be valid.
-
-OK, this one looks like a real bug fix introduced by 55f67141a8927.
-Unless I am missing something we could release pages which are reserved
-already.
- 
-> The routine try_to_free_low has the same issue.
+On Mon, Mar 22, 2021 at 03:41:22PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 22, 2021 at 12:30 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> > On Fri, Mar 19, 2021 at 07:42:41PM +0200, Andy Shevchenko wrote:
+> > > On Fri, Mar 19, 2021 at 4:45 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 > 
-> Recalculate min_count in each loop iteration as hugetlb_lock may have
-> been dropped.
+> ...
 > 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  mm/hugetlb.c | 25 +++++++++++++++++++++----
->  1 file changed, 21 insertions(+), 4 deletions(-)
+> > > > +static u16 tsc2046_adc_get_value(struct tsc2046_adc_atom *buf)
+> > > > +{
+> > > > +       /* Last 3 bits on the wire are empty */
+> > >
+> > > Last?! You meant Least significant?
+> >
+> > ACK. LSB
+> >
+> > > Also, don't we lose precision if a new compatible chip appears that
+> > > does fill those bits?
+> >
+> > ACK. All of controllers supported by this driver:
+> > drivers/input/touchscreen/ads7846.c:
+> > - ti,tsc2046
+> > - ti,ads7843
+> > - ti,ads7845
+> > - ti,ads7846
+> > - ti,ads7873 (hm, there is no ti,ads7873, is it actually analog devices AD7873?)
+> >
+> > support 8- or 12-bit resolution. Only 12 bit mode is supported by this
+> > driver. It is possible that some one can produce a resistive touchscreen
+> > controller based on X > 12bit ADC, but this will probably not increase precision
+> > of this construction (there is a lot of noise any ways...). With other
+> > words, it is possible, but not probably that some one will really do it.
+> >
+> > > Perhaps define the constant and put a comment why it's like this.
 > 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index d5be25f910e8..c537274c2a38 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -2521,11 +2521,20 @@ static void __init report_hugepages(void)
->  	}
->  }
->  
-> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> +{
-> +	unsigned long min_count;
-> +
-> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
-> +	return max(count, min_count);
-
-Just out of curiousity, is compiler allowed to inline this piece of code
-and then cache the value? In other words do we need to make these
-READ_ONCE or otherwise enforce the no-caching behavior?
-
-> +}
-> +
->  #ifdef CONFIG_HIGHMEM
->  static void try_to_free_low(struct hstate *h, unsigned long count,
->  						nodemask_t *nodes_allowed)
->  {
->  	int i;
-> +	unsigned long min_count = min_hp_count(h, count);
->  
->  	if (hstate_is_gigantic(h))
->  		return;
-> @@ -2534,7 +2543,7 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
->  		struct page *page, *next;
->  		struct list_head *freel = &h->hugepage_freelists[i];
->  		list_for_each_entry_safe(page, next, freel, lru) {
-> -			if (count >= h->nr_huge_pages)
-> +			if (min_count >= h->nr_huge_pages)
->  				return;
->  			if (PageHighMem(page))
->  				continue;
-> @@ -2542,6 +2551,12 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
->  			update_and_free_page(h, page);
->  			h->free_huge_pages--;
->  			h->free_huge_pages_node[page_to_nid(page)]--;
-> +
-> +			/*
-> +			 * update_and_free_page could have dropped lock so
-> +			 * recompute min_count.
-> +			 */
-> +			min_count = min_hp_count(h, count);
->  		}
->  	}
->  }
-> @@ -2695,13 +2710,15 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
->  	 * and won't grow the pool anywhere else. Not until one of the
->  	 * sysctls are changed, or the surplus pages go out of use.
->  	 */
-> -	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
-> -	min_count = max(count, min_count);
-> -	try_to_free_low(h, min_count, nodes_allowed);
-> +	min_count = min_hp_count(h, count);
-> +	try_to_free_low(h, count, nodes_allowed);
->  	while (min_count < persistent_huge_pages(h)) {
->  		if (!free_pool_huge_page(h, nodes_allowed, 0))
->  			break;
->  		cond_resched_lock(&hugetlb_lock);
-> +
-> +		/* Recompute min_count in case hugetlb_lock was dropped */
-> +		min_count = min_hp_count(h, count);
->  	}
->  	while (count < persistent_huge_pages(h)) {
->  		if (!adjust_pool_surplus(h, nodes_allowed, 1))
-> -- 
-> 2.30.2
+> Okay, and what happens here is something like cutting LSBs, but it
+> sounds strange to me. If you get 16 bit values, the MSBs should not be
+> used?
 > 
+> So, a good comment is required to explain the logic behind.
+> 
+> > > > +       return get_unaligned_be16(&buf->data) >> 3;
+> > > > +}
+> 
+> ...
+> 
+> > > > +static size_t tsc2046_adc_group_set_layout(struct tsc2046_adc_priv *priv,
+> > > > +                                          unsigned int group,
+> > > > +                                          unsigned int ch_idx)
+> > > > +{
+> > > > +       struct tsc2046_adc_ch_cfg *ch = &priv->ch_cfg[ch_idx];
+> > > > +       struct tsc2046_adc_group_layout *prev, *cur;
+> > > > +       unsigned int max_count, count_skip;
+> > > > +       unsigned int offset = 0;
+> > > > +
+> > > > +       if (group) {
+> > > > +               prev = &priv->l[group - 1];
+> > > > +               offset = prev->offset + prev->count;
+> > > > +       }
+> > >
+> > > I guess you may easily refactor this by supplying a pointer to the
+> > > current layout + current size.
+> >
+> > Sure, but this will not make code more readable and it will not affect
+> > the performance. Are there any other reason to do it? Just to make one
+> > line instead of two?
+> 
+> It's still N - 1 unneeded checks and code is slightly harder to read.
 
+fixed
+
+> > > > +       cur = &priv->l[group];
+> > >
+> > > Also, can you move it down closer to the (single?) caller.
+> > >
+> > > > +}
+> 
+> ...
+> 
+> > > > +               dev_err_ratelimited(dev, "SPI transfer filed: %pe\n",
+> > > > +                                   ERR_PTR(ret));
+> > >
+> > > One line?
+> >
+> > it will exceed the 80 char rule
+> 
+> It's fine here.
+
+fixed
+
+> ...
+> 
+> > > > +       spin_lock_irqsave(&priv->trig_lock, flags);
+> > > > +
+> > > > +       disable_irq_nosync(priv->spi->irq);
+> > >
+> > > > +       atomic_inc(&priv->trig_more_count);
+> > >
+> > > You already have a spin lock, do you need to use the atomic API?
+> >
+> > I can only pass review comment from my other driver:
+> > Memory locations that are concurrently accessed needs to be
+> > marked as such, otherwise the compiler is allowed to funky stuff:
+> > https://lore.kernel.org/lkml/CAGzjT4ez+gWr3BFQsEr-wma+vs6UZNJ+mRARx_BWoAKEJSsN=w@mail.gmail.com/
+> >
+> > And here is one more link:
+> > https://lwn.net/Articles/793253/#How%20Real%20Is%20All%20This?
+> >
+> > Starting with commit 62e8a3258bda atomic API is using READ/WRITE_ONCE,
+> > so I assume, I do nothing wrong by using it. Correct?
+> 
+> Hmm... What I don't understand here is why you need a second level of
+> atomicity. spin lock already makes this access atomic (at least I have
+> checked couple of places and in both the variable is being accessed
+> under spin lock).
+
+fixed
+
+> > > > +       iio_trigger_poll(priv->trig);
+> > > > +
+> > > > +       spin_unlock_irqrestore(&priv->trig_lock, flags);
+> 
+> ...
+> 
+> > > > +       name = devm_kasprintf(dev, GFP_KERNEL, "%s-%s",
+> > > > +                             TI_TSC2046_NAME, dev_name(dev));
+> > >
+> > > No NULL check?
+> > > Should be added or justified.
+> >
+> > name is set not optionally  by the spi_add_device()->spi_dev_set_name()
+> 
+> I didn't get it.
+> You allocate memory and haven't checked against NULL. Why?
+
+> If the name field is optional and having it's NULL is okay (non-fatal
+> error), put a comment.
+
+ah... I missed the point. You was talking about name == NULL, i was
+thinking about dev_name(dev) == NULL.
+
+fixed
+
+> ...
+> 
+> > > > +       trig->dev.parent = indio_dev->dev.parent;
+> > >
+> > > Don't we have this done by core (some recent patches in upstream)?
+> >
+> > can you please point to the code which is doing it?
+> 
+> I believe it's this one:
+> 
+> commit 970108185a0be29d1dbb25202d8c12d798e1c3a5
+> Author: Gwendal Grignou <gwendal@chromium.org>
+> Date:   Tue Mar 9 11:36:13 2021 -0800
+> 
+>    iio: set default trig->dev.parent
+
+ok, found it on iio/testing and rebased against it..
+
+fixed
+
+Thank you,
+Oleksij
 -- 
-Michal Hocko
-SUSE Labs
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
