@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CAE3451D5
+	by mail.lfdr.de (Postfix) with ESMTP id 69A533451D6
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCVVeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:34:23 -0400
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:33956 "EHLO libero.it"
+        id S229915AbhCVVeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:34:22 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:36980 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229548AbhCVVdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229591AbhCVVdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 17:33:50 -0400
 Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
  ([87.20.116.197])
         by smtp-17.iol.local with ESMTPA
-        id OSB9lKwj3tpGHOSBHlyOiZ; Mon, 22 Mar 2021 22:33:48 +0100
+        id OSB9lKwj3tpGHOSBIlyOij; Mon, 22 Mar 2021 22:33:48 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1616448828; bh=HwDL3lPXwnszf1LwCTHjd7ninm7N98ENSeeKeFboGic=;
+        t=1616448828; bh=RyCES0euy+yDAsc27Yqqlm8eevv6OL5wk0CPEXsf8Ok=;
         h=From;
-        b=XIzPtv4SxZiEDfOsCc7DX90YrGlYtwCZ2rBoj/cEKyUiUSQN77ZUMn2ltwPszBaWw
-         SvhKBR6G325ZXpuFVNYr8KwcHWJM6d7SJrguTGn7MzFcUQfc6AfLbcLkeE0X+39S7N
-         zxrJTbwTtwtGCGqLKjt0Gf1c6MvZSGCcEIl9z5jXTTUO1vOoCNNiCpFww0Iecs2zYu
-         cOt62uEF/yNokkzMudQu1pZpx9SL5X9hYkM8pfac24JyQj+eFQZqNB4jsiqHG9SUT3
-         HZxWG6hFyoft+hYPfLiBR7dg498KgMdvPv9SU/LvnEppdM9KgtCh/LzgMglpNgeYr7
-         am4uHFa3dElMQ==
+        b=i0e9HIL6MQaG5j2X+GTT6DhWw4sOvKrmxStXfRKCM0lPGYbtCu2YCALMWQiOTuPzn
+         lZkwmaz7DEz/17deltFUzL8Z1AyEQ5WhwKv0+0IE1Ib6r1KzrE+cNqrYaUBCQfL7CN
+         e6ud0VbPxaQUIo/N2aukhmpR/UUmbH4WLS2F5XZQ6NWeP+nF9lrRxOnr2W7jJDRtWD
+         wwpNEoVIgIxJg3yEuI6AWQ3hH1w7bMr9/zJHRiNT1coLagIHNZ/nzrEwP7VUsg33Ei
+         ffFGc/++OToKEG5Kt2iMyPrfgSDTJ/uxBNpMlykNmPHlO7wplW1btYl1yl63QWg+Xa
+         ovmPwwQ2QLLCQ==
 X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=60590d3c cx=a_exe
  a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=-grNfQwawjkoE-hAE8wA:9 a=+jEqtf1s3R9VXZ0wqowq2kgwd+I=:19
+ a=OpddqcCamwGiTB6aXU0A:9
 From:   Dario Binacchi <dariobin@libero.it>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dario Binacchi <dariobin@libero.it>,
@@ -36,9 +36,9 @@ Cc:     Dario Binacchi <dariobin@libero.it>,
         Jyri Sarha <jyri.sarha@iki.fi>,
         Tomi Valkeinen <tomba@kernel.org>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 1/3] drm/tilcdc: rename req_rate to pclk_rate
-Date:   Mon, 22 Mar 2021 22:33:35 +0100
-Message-Id: <20210322213337.26667-2-dariobin@libero.it>
+Subject: [PATCH v3 2/3] drm/tilcdc: fix LCD pixel clock setting
+Date:   Mon, 22 Mar 2021 22:33:36 +0100
+Message-Id: <20210322213337.26667-3-dariobin@libero.it>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210322213337.26667-1-dariobin@libero.it>
 References: <20210322213337.26667-1-dariobin@libero.it>
@@ -50,8 +50,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The req_rate name is a little misleading, so let's rename to pclk_rate
-(pixel clock rate).
+The tilcdc_pclk_diff() compares the requested pixel clock rate to the
+real one, so passing it clk_rate instead of clk_rate / clkdiv caused
+it to fail even if the clk_rate was properly set. Adding the
+real_pclk_rate variable makes the code more readable.
 
 Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
@@ -60,56 +62,35 @@ Signed-off-by: Dario Binacchi <dariobin@libero.it>
 (no changes since v2)
 
 Changes in v2:
-- The patch has been added in version 2.
+- Rename clk_div_rate to real_pclk_rate.
+- Provide pixel clock rate to tilcdc_pclk_diff().
 
- drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-index 30213708fc99..aeec5786617d 100644
+index aeec5786617d..ac6228cb04d9 100644
 --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
 +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-@@ -203,18 +203,18 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
+@@ -203,7 +203,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
  	struct drm_device *dev = crtc->dev;
  	struct tilcdc_drm_private *priv = dev->dev_private;
  	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
--	unsigned long clk_rate, real_rate, req_rate;
-+	unsigned long clk_rate, real_rate, pclk_rate;
+-	unsigned long clk_rate, real_rate, pclk_rate;
++	unsigned long clk_rate, real_rate, real_pclk_rate, pclk_rate;
  	unsigned int clkdiv;
  	int ret;
  
- 	clkdiv = 2; /* first try using a standard divider of 2 */
+@@ -214,7 +214,8 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
  
- 	/* mode.clock is in KHz, set_rate wants parameter in Hz */
--	req_rate = crtc->mode.clock * 1000;
-+	pclk_rate = crtc->mode.clock * 1000;
- 
--	ret = clk_set_rate(priv->clk, req_rate * clkdiv);
-+	ret = clk_set_rate(priv->clk, pclk_rate * clkdiv);
+ 	ret = clk_set_rate(priv->clk, pclk_rate * clkdiv);
  	clk_rate = clk_get_rate(priv->clk);
--	if (ret < 0 || tilcdc_pclk_diff(req_rate, clk_rate) > 5) {
-+	if (ret < 0 || tilcdc_pclk_diff(pclk_rate, clk_rate) > 5) {
+-	if (ret < 0 || tilcdc_pclk_diff(pclk_rate, clk_rate) > 5) {
++	real_pclk_rate = clk_rate / clkdiv;
++	if (ret < 0 || tilcdc_pclk_diff(pclk_rate, real_pclk_rate) > 5) {
  		/*
  		 * If we fail to set the clock rate (some architectures don't
  		 * use the common clock framework yet and may not implement
-@@ -229,7 +229,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
- 			return;
- 		}
- 
--		clkdiv = DIV_ROUND_CLOSEST(clk_rate, req_rate);
-+		clkdiv = DIV_ROUND_CLOSEST(clk_rate, pclk_rate);
- 
- 		/*
- 		 * Emit a warning if the real clock rate resulting from the
-@@ -238,7 +238,7 @@ static void tilcdc_crtc_set_clk(struct drm_crtc *crtc)
- 		 * 5% is an arbitrary value - LCDs are usually quite tolerant
- 		 * about pixel clock rates.
- 		 */
--		real_rate = clkdiv * req_rate;
-+		real_rate = clkdiv * pclk_rate;
- 
- 		if (tilcdc_pclk_diff(clk_rate, real_rate) > 5) {
- 			dev_warn(dev->dev,
 -- 
 2.17.1
 
