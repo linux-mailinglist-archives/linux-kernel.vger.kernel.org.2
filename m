@@ -2,123 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4826E345041
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AC734504D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhCVTu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        id S232143AbhCVTvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhCVTtz (ORCPT
+        with ESMTP id S232256AbhCVTvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:49:55 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352F3C061574;
-        Mon, 22 Mar 2021 12:49:55 -0700 (PDT)
-Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lOQYi-0000OW-Up; Mon, 22 Mar 2021 20:49:53 +0100
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        workflows@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAKXUXMw7kHBPov23kF1HUBrW9DL+huqAG8ZRLJwGgU67nCOPeg@mail.gmail.com>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
- focussed on issues/bugs and regressions
-Message-ID: <4dcc2b8e-719e-e171-f236-9b28c8c0bae9@leemhuis.info>
-Date:   Mon, 22 Mar 2021 20:49:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Mar 2021 15:51:23 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A32C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:51:23 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id g15so11931051qkl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MYscncn7bZn1Z+8X1ehgy/OBYdwKEuqCWFhBIrPSGB8=;
+        b=VMPXEo9r7gMHIUNl/uo/+tvolz7ZMWjlds5ONa4oiOL3D2M5pbxh2cSdhSK/DvgBu4
+         28//yMGslr6IvfhBN+ZPSbInADRflacpeVlo+owA2bWU0nviLoueS6FeV3hE332qFjTs
+         rwLFCCEhSjs2DgoIIA4RSjpqybbTexj6g4ZYzMkjWhpXNPYhA+373sPyK805WlOmpg9l
+         3XKE+ImfdnBfTeNRXGa/IkzzDcJff3Y6aOF9IvEuAPtyR/o6bAB6CTD2aaRw4fAoZlwx
+         T1LrkFCU43t176r3DXjNEWFmTuRWN2NKJ6i8cUzK4sClnZVzXJO+FA5F9r/VI9Lyabyi
+         D9NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=MYscncn7bZn1Z+8X1ehgy/OBYdwKEuqCWFhBIrPSGB8=;
+        b=nULz7F5gIPlpuF9Wd1yg8yWvFYeFCVkn/RcXg8H6IxuFsi5OjJtufvaa51qPgbXKbV
+         6txyy0APdR7TNm/yM40OfA0k6DsPKrWEPsPdUfwHscwIap6GlOD9W+/omuVJ+VKHfbWR
+         ceMLQCmZqi2TRYaxJXQLdTvU0MMB8v2k27wULcKMXWze5osr91p7+UfGc+EOyHuGABgd
+         A3gVWPR9T9MPexdwnrn6xuXCN7QoKBNV8CWui/JNq9ZU3szxg4d/AX6uNP6G4kwcokOE
+         aWGSLnD0ABNXYn+vFrsFb5MXqIFonPIO4UPxmApU+TTbI91ulzNBKZ0VyAeVR7lQI5zr
+         Pr7A==
+X-Gm-Message-State: AOAM532ui4WhPm6brgNpH1D7AfyR6tl5RUtToBU8HVukIXPYFxBvRJk9
+        wa8frdU7vacdnx2SIP9tFYg=
+X-Google-Smtp-Source: ABdhPJx5EReLVNQDaaUoPQKOV2t3J3Hsn9rNA/sZzJNjxOuuB8lpkkQKYSapiL/kfM8Lz5XZRZmrPw==
+X-Received: by 2002:a37:d17:: with SMTP id 23mr1760376qkn.191.1616442682424;
+        Mon, 22 Mar 2021 12:51:22 -0700 (PDT)
+Received: from ArchLinux ([138.199.10.68])
+        by smtp.gmail.com with ESMTPSA id f9sm9721890qto.46.2021.03.22.12.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 12:51:20 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 01:21:07 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     vgupta@synopsys.com, akpm@linux-foundation.org,
+        keescook@chromium.org, shorne@gmail.com, walken@google.com,
+        viro@zeniv.linux.org.uk, jhubbard@nvidia.com,
+        daniel.m.jordan@oracle.com, tsbogend@alpha.franken.de,
+        peterx@redhat.com, axboe@kernel.dk,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] arcc/kernel/process: Few mundane typo fixes
+Message-ID: <YFj1KwTBcCNh6xYm@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        vgupta@synopsys.com, akpm@linux-foundation.org,
+        keescook@chromium.org, shorne@gmail.com, walken@google.com,
+        viro@zeniv.linux.org.uk, jhubbard@nvidia.com,
+        daniel.m.jordan@oracle.com, tsbogend@alpha.franken.de,
+        peterx@redhat.com, axboe@kernel.dk,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210322125155.3401540-1-unixbhaskar@gmail.com>
+ <20210322132314.mtky3gx2oqqucoob@wittgenstein>
 MIME-Version: 1.0
-In-Reply-To: <CAKXUXMw7kHBPov23kF1HUBrW9DL+huqAG8ZRLJwGgU67nCOPeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616442595;4e498859;
-X-HE-SMSGID: 1lOQYi-0000OW-Up
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="55xydjBtY3xHGVoL"
+Content-Disposition: inline
+In-Reply-To: <20210322132314.mtky3gx2oqqucoob@wittgenstein>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.03.21 17:55, Lukas Bulwahn wrote:
-> On Mon, Mar 22, 2021 at 4:38 PM Thorsten Leemhuis <linux@leemhuis.info> wrote:
->> Lo! I want to provide users with an easier way to search our multitude
->> of mailing lists for reports about issues (aka bugs), as reporting the
->> same kernel problem multiple times has known downsides for everyone
->> involved. That's why I propose to create this new mailing list:
+
+--55xydjBtY3xHGVoL
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 14:23 Mon 22 Mar 2021, Christian Brauner wrote:
+>On Mon, Mar 22, 2021 at 06:21:55PM +0530, Bhaskar Chowdhury wrote:
+>> s/defintion/definition/
+>> s/succeded/succeeded/
+>> s/commiting/committing/
+>> s/interrutps/interrupts/
 >>
->> linux-issues@lists.linux.dev
->>
->> Developers and users reporting or handling issues then can CC it or
->> search it via lore. But this will only fly if the idea has buy-in from
->> at least the core kernel maintainers, to make sure they and the
->> developers actually use it. That's why I'm looking for feedback with
->> this mail and also CCed ksummit-discuss, as that's the easiest way to
->> make sure maintainers get aware of this idea and can raise their voice.
->>
->>
->> Note, there is a second reason why ksummit-discuss is CCed: another
->> reason why I want to create this new list is making it easier to find
->> and track regressions reported to our various mailing lists (often
->> without LKML in CC, as for some subsystems it's seems to be custom to
->> not CC it). Back on the maintainers summit in 2017 it was agreed to
->> create a dedicated list for this purpose
->> (https://lwn.net/Articles/738216/). I even requested a
->> "linux-regressions@vger.kernel.org" a while later, but didn't hear
->> anything back; and, sadly, about the same time I started having trouble
->> finding spare time for working on regression tracking. :-/
->>
->> But I soon will get back into that area:
->> https://linux-regtracking.leemhuis.info/post/hello-world/ Hence it's a
->> good time to prepare some groundwork for that. But these days I think
->> having something like linux-regressions@lists.linux.dev might be over
->> engineered, at least for now: a linux-issues@lists.linux.dev with a
->> simple "[regressions]" in the subject will suffice, as that tag is
->> something a lot of people are used to already. And if we think we need
->> that list we can still create it in the future. Or what do you folks
->> think about it?
-> 
-> Thorsten, I generally support this initiative. I am just wondering:
-> 
-> What is the definition of an issue for you?
-
-Good question, but that is up to us. But FWIW, here is my stance:
-
-> Just four examples that come to my mind:
-> 
-> - all the warnings that Stephen Rothwell reports on linux-next, such
-> as https://lore.kernel.org/linux-next/20210322170452.726525e8@canb.auug.org.au/
-> or https://lore.kernel.org/linux-next/20210322075108.3967d5d1@canb.auug.org.au/?
-
-I'd have no problem with those, but those are more devel internal issues
-and nothing users would face, so I'm don't think it will buy us anything.
-
-> - all the issues that the kernel test robot reports?
-
-I'd say so, at least those that are regressions, as I want to track them ;-)
-
-> - all the errors and warnings that kernel ci reports? Basically, each
-> "issue" that is already aggregated in this email,
-> https://lore.kernel.org/linux-next/6058787c.1c69fb81.d3f10.8c6d@mx.google.com/?
-> - all the syzbot reports?
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
 >
-> Are you including all those automatic testing and checking efforts as
-> reporting valid "issues"?
+>Since you aim to be mirroring the path arc/kernel/process there's a typo
+>in the patch subject :)
+>s/arcc/arc/
+>
+Thanks, will be careful in the future.
 
-Well, the purpose of that list would be "make it easier to find existing
-reports". Too much noise works against that, so we should try to limit
-it, so maybe those are better left out, unless it's something we known
-users might face.
+>otherwise
+>
+>Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-> Or would you like to keep this list only for
-> reports from single individual human users that need to detect the
-> "issue" without using one of the tools above?
+--55xydjBtY3xHGVoL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Guess something like that might be best strategy.
+-----BEGIN PGP SIGNATURE-----
 
-Ciao, Thorsten
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBY9SsACgkQsjqdtxFL
+KRXF6AgArySyuCmPI1K58rXuFNOJezNjLDKA01ecnzbob7pHvUKiBHV1o6+ulJFv
+fzaXEb9wNOOKH9NGw0t0NcMHRPSNWLZW0cHyKnV1bGOIwzH0YdsFaBIRybernRnu
+hr+xfYBKqQMN2LxcMLFQ+bv0ssWauHvYFWwGKSUveUI6Pcdpb8fkU0jl5jCOVyR+
+cDIs2Rw5mJYhBZJU1dHZCZr6IlXjC79AGdpVnXSjb3u1Wlf6i2zUJCjCp3Ekp+tf
+z7frxqE940UWz1/ccEdsSoy2hhcMnDRFO9xWVI0tdNV0TK7vfig6nKG4ayYfBt79
+p41CGI4rI+cI4OuLSbARnjuP2zB0HQ==
+=8a55
+-----END PGP SIGNATURE-----
+
+--55xydjBtY3xHGVoL--
