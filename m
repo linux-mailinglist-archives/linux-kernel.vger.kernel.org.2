@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC5B344498
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B26C34449B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhCVNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
+        id S233175AbhCVNCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231948AbhCVMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232083AbhCVMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 08:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79D08619D5;
-        Mon, 22 Mar 2021 12:44:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37479619A8;
+        Mon, 22 Mar 2021 12:45:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417098;
-        bh=+oa0bw8yB8OvYJCLX6yIl+AK2NndlJlS3UNmi3Utd48=;
+        s=korg; t=1616417100;
+        bh=0xgfO1qeFQv3RAxKE1v3aL6dOiuZhA5aIl4RJoc/Az8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XTxLJfgDnxIAC0IxBPteowCLhfsq43z8wBXJEJTs6OZVl43tzjqSfDWB5JXqIqAvs
-         bmhw/XlDzZa7bo9e1FnRELV85v64d0SInI8Lkmfg0hslPwcjiSuCI+GIjGhzqd1xFi
-         L1Dti+swosChLnrmXx+f8HrM0wb9y6UtC9iwEL7U=
+        b=wsCq+x5C6SqYGYQO8drbDeWVV6U2YBp9si+DJwUsYDc8ldj+K1ky+IwSERhetJVJl
+         I691j0Ai9v9x9gLNwnrkC0+bxDMdfLHprfdBLKxPhzxuC6Y/orZUUPyVsZpetfVWBH
+         i6GQAarscotlJDJM6FOeMmpJ8MhAlexRzGjBT4HU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stable@vger.kernel.org,
+        stable@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 26/43] iio:adc:stm32-adc: Add HAS_IOMEM dependency
-Date:   Mon, 22 Mar 2021 13:28:40 +0100
-Message-Id: <20210322121920.765904207@linuxfoundation.org>
+Subject: [PATCH 4.19 27/43] iio:adc:qcom-spmi-vadc: add default scale to LR_MUX2_BAT_ID channel
+Date:   Mon, 22 Mar 2021 13:28:41 +0100
+Message-Id: <20210322121920.796277066@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
 References: <20210322121919.936671417@linuxfoundation.org>
@@ -39,34 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
 
-commit 121875b28e3bd7519a675bf8ea2c2e793452c2bd upstream.
+commit 7d200b283aa049fcda0d43dd6e03e9e783d2799c upstream.
 
-Seems that there are config combinations in which this driver gets enabled
-and hence selects the MFD, but with out HAS_IOMEM getting pulled in
-via some other route.  MFD is entirely contained in an
-if HAS_IOMEM block, leading to the build issue in this bugzilla.
+Checking at both msm8909-pm8916.dtsi and msm8916.dtsi from downstream
+it is indicated that "batt_id" channel has to be scaled with the default
+function:
 
-https://bugzilla.kernel.org/show_bug.cgi?id=209889
+	chan@31 {
+		label = "batt_id";
+		reg = <0x31>;
+		qcom,decimation = <0>;
+		qcom,pre-div-channel-scaling = <0>;
+		qcom,calibration-type = "ratiometric";
+		qcom,scale-function = <0>;
+		qcom,hw-settle-time = <0xb>;
+		qcom,fast-avg-setup = <0>;
+	};
 
+Change LR_MUX2_BAT_ID scaling accordingly.
+
+Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 7c271eea7b8a ("iio: adc: spmi-vadc: Changes to support different scaling")
+Link: https://lore.kernel.org/r/20210113151808.4628-2-jonathan.albrieux@gmail.com
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/20210124195034.22576-1-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/qcom-spmi-vadc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -658,6 +658,7 @@ config STM32_ADC_CORE
- 	depends on ARCH_STM32 || COMPILE_TEST
- 	depends on OF
- 	depends on REGULATOR
-+	depends on HAS_IOMEM
- 	select IIO_BUFFER
- 	select MFD_STM32_TIMERS
- 	select IIO_STM32_TIMER_TRIGGER
+--- a/drivers/iio/adc/qcom-spmi-vadc.c
++++ b/drivers/iio/adc/qcom-spmi-vadc.c
+@@ -606,7 +606,7 @@ static const struct vadc_channels vadc_c
+ 	VADC_CHAN_NO_SCALE(P_MUX16_1_3, 1)
+ 
+ 	VADC_CHAN_NO_SCALE(LR_MUX1_BAT_THERM, 0)
+-	VADC_CHAN_NO_SCALE(LR_MUX2_BAT_ID, 0)
++	VADC_CHAN_VOLT(LR_MUX2_BAT_ID, 0, SCALE_DEFAULT)
+ 	VADC_CHAN_NO_SCALE(LR_MUX3_XO_THERM, 0)
+ 	VADC_CHAN_NO_SCALE(LR_MUX4_AMUX_THM1, 0)
+ 	VADC_CHAN_NO_SCALE(LR_MUX5_AMUX_THM2, 0)
 
 
