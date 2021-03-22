@@ -2,59 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19913439FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3DE3439FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCVGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:50:45 -0400
-Received: from verein.lst.de ([213.95.11.211]:53622 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229883AbhCVGuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:50:16 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EE2BA67373; Mon, 22 Mar 2021 07:50:11 +0100 (CET)
-Date:   Mon, 22 Mar 2021 07:50:11 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, colin.king@canonical.com,
-        rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-Message-ID: <20210322065011.GA2909@lst.de>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com> <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com> <20210322051344.1706-3-namjae.jeon@samsung.com> <20210322064712.GD1667@kadam>
+        id S229930AbhCVGvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhCVGvI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:51:08 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E8CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:51:08 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id y5so7995605qkl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ng4QK2W9WiNBsUJfqoNFrl5fepUbDbeAq/WthmkCVkQ=;
+        b=Q1J7T3rGk9TL04wcFRX95DZH+Z4yA8x0wfxg69rFs+BPiDSKGbISiZJQatr41YZc/q
+         fV7psnj5dX8PtgIunvGYDHnLeEUEdX4T4jQSGfU1W79VhrN2eGmEkXrzeOaTDR1kXT1X
+         AOwHuB+CKr8Uqj9HmWcqYN514mDT3tgNq2ca8ofSnyZ4Jh/YFKMIkIlH2F3lc5Bsk2XK
+         Ex7d/HD2zsrXSNvBFGc4U2MKeR2nfRGgCgjYYQZIW/tcMICe+KvmCz9yXtXiFh3EfOT1
+         uGsyUHKD+fSBIEvCRwsy0+0FBmACKT/aIEJylD1prv5sOfpi/LfAevHV/n/IDSLUdiTw
+         dD/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ng4QK2W9WiNBsUJfqoNFrl5fepUbDbeAq/WthmkCVkQ=;
+        b=hUD279NVIOJSAI2//px7pgG1zOQE/ujKKjfVxw4sEoyoqFq1FwXh/i0f8WvF4Mglgs
+         WKxeRc4qjPBo8xQ1SGgesl+mQpuERlxYkuJrjomTMVzg3LFdqT6UfSzIrM3QgKo1aTej
+         A71xoWgTsihucBR1qUe7q6BtF3Prl+w12xrqXKDr0HloNTmEYhryo9tLkYi+tiCwbBav
+         vKpX9bLSztQBoFWszBMaXZPrmrCCckZkUAPIZq4oZL+ova5b1Akf53P9WnpdlhrEEJ1I
+         i7XPF7dYY7cjFh88vCkswYNGrGBwu7MVB4FUL0U+YbQXRGpxOzIhpOysPNitsRnnr6vD
+         0zgg==
+X-Gm-Message-State: AOAM532WZwfVglev7mU4Pn4O2MwviPsyx7BNfSUiQb90d3gFp72dIYSE
+        PhUnAYJWsnfyWpgun2s5Q3A=
+X-Google-Smtp-Source: ABdhPJw0ScfH0xpTyAvRN6k4dC0WByFlK23impzGOK8akmGEwIgcP4P+RfTlkXJ4KIPOoHiRMwRZyA==
+X-Received: by 2002:a05:620a:2108:: with SMTP id l8mr9496087qkl.474.1616395867679;
+        Sun, 21 Mar 2021 23:51:07 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.40])
+        by smtp.gmail.com with ESMTPSA id e3sm8547210qtj.28.2021.03.21.23.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 23:51:07 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        andriy.shevchenko@linux.intel.com, unixbhaskar@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] ASoC: Intel: Fix a typo
+Date:   Mon, 22 Mar 2021 12:20:53 +0530
+Message-Id: <20210322065053.74022-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322064712.GD1667@kadam>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:47:13AM +0300, Dan Carpenter wrote:
-> On Mon, Mar 22, 2021 at 02:13:41PM +0900, Namjae Jeon wrote:
-> > +static unsigned char
-> > +asn1_octet_decode(struct asn1_ctx *ctx, unsigned char *ch)
-> > +{
-> > +	if (ctx->pointer >= ctx->end) {
-> > +		ctx->error = ASN1_ERR_DEC_EMPTY;
-> > +		return 0;
-> > +	}
-> > +	*ch = *(ctx->pointer)++;
-> > +	return 1;
-> > +}
-> 
-> 
-> Make this bool.
->
+s/struture/structure/
 
-More importantly don't add another ANS1 parser, but use the generic
-one in lib/asn1_decoder.c instead.  CIFS should also really use it.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ sound/soc/intel/atom/sst/sst.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+index 4d37d39fd8f4..978bf4255888 100644
+--- a/sound/soc/intel/atom/sst/sst.h
++++ b/sound/soc/intel/atom/sst/sst.h
+@@ -344,7 +344,7 @@ struct sst_fw_save {
+  * @block_lock : spin lock to add block to block_list and assign pvt_id
+  * @rx_msg_lock : spin lock to handle the rx messages from the DSP
+  * @scard_ops : sst card ops
+- * @pci : sst pci device struture
++ * @pci : sst pci device structure
+  * @dev : pointer to current device struct
+  * @sst_lock : sst device lock
+  * @pvt_id : sst private id
+--
+2.31.0
+
