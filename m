@@ -2,135 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872CC343CD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534B3343CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhCVJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:28:09 -0400
-Received: from mail-eopbgr690088.outbound.protection.outlook.com ([40.107.69.88]:10499
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230060AbhCVJ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:27:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JSxLdpusDg4c+eQ8ShMx8ygkenaDl0jfVzx6S2uVIuBR2uxLrLGsW1DSXOK6JYB1lhH+nQe4zvhrNhl9GC9GEYF5d0lLyKR1mwl4RRck7x3VeC6NiieR4w5yCLXQ1Bmj9dR8WGUxCfeg9bPZ6eDz2Ggq2VYmGYaCcsbdrlF80GyMtMV9k0ORqaDUlbWX5CP2aINBbm0Eh/xEG4ZeHyY6cAIBswNUVtwcZpOa6HHZVOGWXXZoMA4FToYm6GnnG1Eqw+x6eOwad6Qm6KopLxLz+57/5ZHi7KcKzF2QpqhxJ7ADxUved96zcE9AFbZtGGh70xWOqTuvrYsUxXF/2NwxYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RQstACXxhRbgfGic/9H1wBzJo+J7NBQEs2uehIvi1pg=;
- b=ZQQpxSkApnIrlsWxLnvNdCEmo3ZaAJqlNiJxSOLvspGcNNOR5ZxHxXKy5qCEafPr3XobXhnsYXcAeVqtQ0pfoYr0VJiI4jW8V3lcgHb60kRR7fUgLLtQBnsdRq2zwix41w7bqnSx24WsC60l9864vu1gganLCshRRvguBGxYmO5Voar/Hdol2DaFR1AQP0nKXb/kknBaG5a/GcpC81bJZ5SX8hEKbp2Ky5tWcCFFqyPhJJ6+ZUdehMx72AP+dMttdNJpcL8dndHyWZ7+zzCmzzSYjcqVl824y22DISFeR/kkEnhDn93Tc9LVcHgT9iW5/6KMBOoYMEM69YnGxIeomw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RQstACXxhRbgfGic/9H1wBzJo+J7NBQEs2uehIvi1pg=;
- b=bINofUd9HjDpToHTpe34LlTWicLpbpI+MsNlI+wczeiIRXb1gwWmTh5bE/FDQWzXEBQAW0fNMIiSw4egcGmINMrYZLXLcmlgy4VB94Nx8Cd6wuNBNijTaoJum1e3f8XlqTa5G032U/CVr4MVizArimVobzUse6rWJ8J0XETfp8xdHCQSIxYMZM7COWkp+Q82E2xlzd4Vt3KinSHBhJ2PzMBYE5mJFJbBQDamfcXiA5/736bqXVY8Ylu9LKqnYNRR8UYy3m1+wZmcjwilje8rREiLw3OhITYylcgprCvVeM6Nr38HQU0wzG92Sjq2gN1Y7jTlquGJZ481aEsbt0GmbQ==
-Received: from BN0PR03CA0013.namprd03.prod.outlook.com (2603:10b6:408:e6::18)
- by DM4PR12MB5200.namprd12.prod.outlook.com (2603:10b6:5:397::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 09:27:39 +0000
-Received: from BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e6:cafe::9f) by BN0PR03CA0013.outlook.office365.com
- (2603:10b6:408:e6::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Mon, 22 Mar 2021 09:27:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT061.mail.protection.outlook.com (10.13.177.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 09:27:38 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
- 2021 09:27:35 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <jgg@nvidia.com>, <daniel@ffwll.ch>,
-        <willy@infradead.org>
-Subject: Re: [PATCH v6 8/8] nouveau/svm: Implement atomic SVM access
-Date:   Mon, 22 Mar 2021 20:27:33 +1100
-Message-ID: <6407817.nLXe9rGL3b@nvdebian>
-In-Reply-To: <20210315075113.GD4136862@infradead.org>
-References: <20210312083851.15981-1-apopple@nvidia.com> <20210312083851.15981-9-apopple@nvidia.com> <20210315075113.GD4136862@infradead.org>
+        id S229872AbhCVJ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:29:22 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:45237 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhCVJ3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:29:14 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M2fDl-1lO0QB2UNL-004CII for <linux-kernel@vger.kernel.org>; Mon, 22 Mar
+ 2021 10:29:12 +0100
+Received: by mail-ot1-f43.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso15246404ott.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:29:12 -0700 (PDT)
+X-Gm-Message-State: AOAM533LnC6qn2uUqUIRD28WRsY8C7fo1/IRwTtW7ahyMgbmeFBgc/WM
+        xI6J5y0yyn0fP2MxEP7Vs06I24PT2FqjqWQq/B0=
+X-Google-Smtp-Source: ABdhPJxeH7jVCKboaCJ5rtKasmB68rqepDL9o94uPYjbqXj/fkPZ6gfV4nIFWazqlXT8yg/fbrL88WwEXBSzhrP13UY=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr10996745otq.305.1616405349381;
+ Mon, 22 Mar 2021 02:29:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f89110f9-433d-47b9-ec2e-08d8ed14bc77
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5200:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5200B43C5D71E47629643337DF659@DM4PR12MB5200.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EYPmVZ8NVK1ujJIBvTl2wbBciwt6o3DmYWe5L3KyicneaumPZl4L1G2My+o+V+YDu/L+2wM2MDiMeXI8EKEUjDookQmr1g/656hqJd6c+xmtO7alvUQXhUVjAWf1lESpq63ncp16mgVeM2GKA5z/QaorVaaeYamoZ2TqpGaon7NJ8klCWuTpjKtRmSEPEZvZ2muPvag/bkoZ4Az9tn02yH2As9CChxRLSBWV5hHPSkH5Xr/eMGbRrhQQHg23KIhKTPHV9QwwHODMXvsSroc44vK0UbhA7MZLjXEI6N3oSrO2UmDhf40cCtlqwswbH9Tzwu2qtJF96bKdlblozePIGoimXSz57Vb9uOs6NcoQDRcZeVOy4lluEkJA4bSn67OMimudrv9LlXB+t/JDwDfxk8k7gImu7O0ua9pjg9CYNAxHeLWpAp1RdaT2eQ9ckwEXS1H/pwMzL5sjEYrW7bzjUTHxlZjphVTRXwqj2/wTamEk7K30vB9lpb8rUCT1aoaebr7N5B+uoqIT1dpYDd/yKz/aTiOVBmmKDFhJxmZX/CfcOWVh6el+OPugBh7gWsmPjIOZfl5kXIV8EWdUXoW4WA0hPO1nw33d9ZfzI1p6XoqJ5zBJe+g5NxC5qIjhjCRfIrH+eWPBx4A2Wn4LwJ555BRDyF3mTg9vUyFWinFKH9mceJXAhCLgTn21YkVHAKnr+qPJQ2j/JJ49F4ClzeAesA==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(46966006)(36840700001)(4326008)(9576002)(16526019)(36906005)(2906002)(186003)(336012)(316002)(8676002)(86362001)(8936002)(47076005)(70206006)(26005)(426003)(7416002)(5660300002)(82310400003)(70586007)(54906003)(82740400003)(36860700001)(478600001)(33716001)(356005)(7636003)(83380400001)(6916009)(9686003)(39026012)(21314003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 09:27:38.8350
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f89110f9-433d-47b9-ec2e-08d8ed14bc77
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5200
+References: <20210321184650.10926-1-krzysztof.kozlowski@canonical.com>
+ <CAK8P3a2mN0stqiGSMqyY7neODfqFv700KkVecaYS0Ck3D7LRnQ@mail.gmail.com> <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
+In-Reply-To: <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 22 Mar 2021 10:28:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3UVqJ+pfFxtKOiTtWUYW+9FBBONz+OwJUamc=N33G8QQ@mail.gmail.com>
+Message-ID: <CAK8P3a3UVqJ+pfFxtKOiTtWUYW+9FBBONz+OwJUamc=N33G8QQ@mail.gmail.com>
+Subject: Re: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Richard Gong <richard.gong@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>, kbuild-all@lists.01.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:oORdNvn5yFGmwEagKXXLUBMPpZ17dLQjqbvXyAaqX2U+y5zhDj2
+ GLJ1rugNuF+2JOczhW1FLA7yPVGpasoosEPFgFSHRieEQHiZvp9AcobQFTL0s3NBibHLmUU
+ kr/vy81aeolRCn5msXwnm93p6HiOoe5Phtksu3J+rBXQWplhkifivOfxCRryPrz5kQKHQW0
+ 95kO1ncuyRhlzQL2OHtUQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:91cfye8siyI=:J53Tr7EkIEoKXIF/ODdMQo
+ MjYaPPKJxIJRkpjKxE4M9P1B+5WDfGItUUaftEiVQpphue+HfDygFf3zW2jexwo1nnkBvZYCO
+ gykhoUfCykoUQYnUhJWpdzjjUfy7wHNAdFLTYVDov/lEgp9DQzsOJshYMwyNWVv/TPeNybYJ5
+ LllsZJekR8kGB8rBkp0ZpnC5K9lXd1D4nUEUky4hFwNge4lKaGjFhtt0n+p1mGENyYtIklIkY
+ SdiK0C0leWHfclwr+gzQoW3FhhC18uFukwfOVk4xUUPZMbEPt/6zLAZ0cXtRhCG636L4LVlmY
+ SlMMBRTbeQjI2Jf384yYpS0K/+ctv0hxqYPtyXdH5hehPj55sdYkdcbQu0mnm10MrjyIb7cu+
+ lgHyxKRagViXpLdplp+Nmx22q/knQZlS04/1909VMPzqOdCgW1iTHP1/Zsc1Yqz6MaTgaVNdh
+ ziS5bRuZCHdJqFSle7W+FZjgYLq7HwirL8CLUxhkTpxv5RjmpJi+IQwb111b6n8ZJZCeZXuMN
+ 5Tjtq4JNGh+RcUnmPHJIiJt9Q6FLQV8/fNOq62B9YLxnp7BQa5TjbvUwGmQXtJaIg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 15 March 2021 6:51:13 PM AEDT Christoph Hellwig wrote:
-> > -	/*XXX: atomic? */
-> > -	return (fa->access == 0 || fa->access == 3) -
-> > -	       (fb->access == 0 || fb->access == 3);
-> > +	/* Atomic access (2) has highest priority */
-> > +	return (-1*(fa->access == 2) + (fa->access == 0 || fa->access == 3)) -
-> > +	       (-1*(fb->access == 2) + (fb->access == 0 || fb->access == 3));
-> 
-> This looks really unreabable.  If the magic values 0, 2 and 3 had names
-> it might become a little more understadable, then factor the duplicated
-> calculation of the priority value into a helper and we'll have code that
-> mere humans can understand..
+On Mon, Mar 22, 2021 at 9:26 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 21/03/2021 22:09, Arnd Bergmann wrote:
+>
+> The SMC has two calling conventions - SMC32/HVC32 and SMC64/HVC64. The
+> Stratix 10 driver uses the 64-bit calling convention (see
+> INTEL_SIP_SMC_FAST_CALL_VAL in
+> include/linux/firmware/intel/stratix10-smc.h), so it should not run in
+> aarch32 (regardless of type of hardware).
+>
+> I think that my patch limiting the support to 64-bit makes sense.
 
-Fair enough, will add some definitions for the magic values.
+I see that this is the only driver in the kernel that doesn't support the
+32-bit calling conventions though, everything else either uses the the 32-bit
+calling conventions unconditionally, or picks the ones matching the
+kernel execution state.
 
-> > +		mutex_lock(&svmm->mutex);
-> > +		if (mmu_interval_read_retry(&notifier->notifier,
-> > +					    notifier_seq)) {
-> > +			mutex_unlock(&svmm->mutex);
-> > +			continue;
-> > +		}
-> > +		break;
-> > +	}
-> 
-> This looks good, why not:
-> 
-> 		mutex_lock(&svmm->mutex);
-> 		if (!mmu_interval_read_retry(&notifier->notifier,
-> 					     notifier_seq))
-> 			break;
-> 		mutex_unlock(&svmm->mutex);
-> 	}
+If the firmware supports both, it would seem best to change the driver
+to work like the other ones and pick the appropriate interface based
+on what kernel it's running on.
 
-I had copied that from nouveau_range_fault() but this suggestion is better. 
-Will update, thanks for looking.
+If the firmware is fundamentally limited to the 64-bit interface, your
+patch does seem correct, but I'd suggest explaining that in the
+changelog.
 
-
-
+         Arnd
