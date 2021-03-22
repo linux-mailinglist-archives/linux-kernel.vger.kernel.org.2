@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9AC3444B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37303444B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCVNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47526 "EHLO mail.kernel.org"
+        id S232817AbhCVNFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhCVMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D8E0619A9;
-        Mon, 22 Mar 2021 12:45:46 +0000 (UTC)
+        id S232048AbhCVMvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 635B0619A1;
+        Mon, 22 Mar 2021 12:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417146;
-        bh=tSUZUQmkYHuJQC7Q0EFW9fCvt0nN3Dgz96VAiF+uOew=;
+        s=korg; t=1616417175;
+        bh=oonXIXs0/g2VhSESrP3W/x2+6zA2q2vtqxWCGuRafpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGWVtxjqUS7Ir7U7P3Lx6Dlsua/5v4J20WnVYhz0oYipyRAN+od7T0S7GotDKCjW0
-         45WdCmRNXCNh8WXhYUPotUmuUFdE8bOkI2nCMRslTaDNpE1XLikQRUcCbfwQdjZBNe
-         zx1OVvpnXwazHkrnPfktbdXMMAXzhwSUeUR3iQ4E=
+        b=lpIKL4BFwfWczgkgq+I5NAMIZQljVLOZTv/RflZHO6WckpaauRIypq34ZkVVJL3li
+         LLckYvckvwsO5LxLIOlEAg6MOigIsresAtUo1uFfZ9Oo4orony2XHv3OWKFYmSzlN9
+         4lf0mQyg13H1IsaqZosdFgOFYgvsfjSTnNaqX9ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.19 43/43] x86/apic/of: Fix CPU devicetree-node lookups
-Date:   Mon, 22 Mar 2021 13:28:57 +0100
-Message-Id: <20210322121921.318099121@linuxfoundation.org>
+        stable@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>,
+        Olof Johansson <olof@lixom.net>
+Subject: [PATCH 4.4 04/14] platform/chrome: cros_ec_dev - Fix security issue
+Date:   Mon, 22 Mar 2021 13:28:58 +0100
+Message-Id: <20210322121919.341638975@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
+References: <20210322121919.202392464@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Gwendal Grignou <gwendal@chromium.org>
 
-commit dd926880da8dbbe409e709c1d3c1620729a94732 upstream.
+commit 5d749d0bbe811c10d9048cde6dfebc761713abfd upstream.
 
-Architectures that describe the CPU topology in devicetree and do not have
-an identity mapping between physical and logical CPU ids must override the
-default implementation of arch_match_cpu_phys_id().
+Prevent memory scribble by checking that ioctl buffer size parameters
+are sane.
+Without this check, on 32 bits system, if .insize = 0xffffffff - 20 and
+.outsize the amount to scribble, we would overflow, allocate a small
+amounts and be able to write outside of the malloc'ed area.
+Adding a hard limit allows argument checking of the ioctl. With the
+current EC, it is expected .insize and .outsize to be at around 512 bytes
+or less.
 
-Failing to do so breaks CPU devicetree-node lookups using of_get_cpu_node()
-and of_cpu_device_node_get() which several drivers rely on. It also causes
-the CPU struct devices exported through sysfs to point to the wrong
-devicetree nodes.
-
-On x86, CPUs are described in devicetree using their APIC ids and those
-do not generally coincide with the logical ids, even if CPU0 typically
-uses APIC id 0.
-
-Add the missing implementation of arch_match_cpu_phys_id() so that CPU-node
-lookups work also with SMP.
-
-Apart from fixing the broken sysfs devicetree-node links this likely does
-not affect current users of mainline kernels on x86.
-
-Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210312092033.26317-1-johan@kernel.org
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+Signed-off-by: Olof Johansson <olof@lixom.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/apic.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/platform/chrome/cros_ec_dev.c   |    4 ++++
+ drivers/platform/chrome/cros_ec_proto.c |    4 ++--
+ include/linux/mfd/cros_ec.h             |    6 ++++--
+ 3 files changed, 10 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2279,6 +2279,11 @@ static int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
+--- a/drivers/platform/chrome/cros_ec_dev.c
++++ b/drivers/platform/chrome/cros_ec_dev.c
+@@ -137,6 +137,10 @@ static long ec_device_ioctl_xcmd(struct
+ 	if (copy_from_user(&u_cmd, arg, sizeof(u_cmd)))
+ 		return -EFAULT;
+ 
++	if ((u_cmd.outsize > EC_MAX_MSG_BYTES) ||
++	    (u_cmd.insize > EC_MAX_MSG_BYTES))
++		return -EINVAL;
++
+ 	s_cmd = kmalloc(sizeof(*s_cmd) + max(u_cmd.outsize, u_cmd.insize),
+ 			GFP_KERNEL);
+ 	if (!s_cmd)
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -311,8 +311,8 @@ int cros_ec_query_all(struct cros_ec_dev
+ 			ec_dev->max_response = EC_PROTO2_MAX_PARAM_SIZE;
+ 			ec_dev->max_passthru = 0;
+ 			ec_dev->pkt_xfer = NULL;
+-			ec_dev->din_size = EC_MSG_BYTES;
+-			ec_dev->dout_size = EC_MSG_BYTES;
++			ec_dev->din_size = EC_PROTO2_MSG_BYTES;
++			ec_dev->dout_size = EC_PROTO2_MSG_BYTES;
+ 		} else {
+ 			/*
+ 			 * It's possible for a test to occur too early when
+--- a/include/linux/mfd/cros_ec.h
++++ b/include/linux/mfd/cros_ec.h
+@@ -50,9 +50,11 @@ enum {
+ 					EC_MSG_TX_TRAILER_BYTES,
+ 	EC_MSG_RX_PROTO_BYTES	= 3,
+ 
+-	/* Max length of messages */
+-	EC_MSG_BYTES		= EC_PROTO2_MAX_PARAM_SIZE +
++	/* Max length of messages for proto 2*/
++	EC_PROTO2_MSG_BYTES		= EC_PROTO2_MAX_PARAM_SIZE +
+ 					EC_MSG_TX_PROTO_BYTES,
++
++	EC_MAX_MSG_BYTES		= 64 * 1024,
  };
  
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == cpuid_to_apicid[cpu];
-+}
-+
- #ifdef CONFIG_SMP
- /**
-  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
+ /*
 
 
