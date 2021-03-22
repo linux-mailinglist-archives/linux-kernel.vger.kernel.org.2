@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF343444A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF313444D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhCVND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:03:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
+        id S232051AbhCVNHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:07:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231324AbhCVMtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:49:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F01F619F1;
-        Mon, 22 Mar 2021 12:45:28 +0000 (UTC)
+        id S232851AbhCVMwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:52:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B3861A03;
+        Mon, 22 Mar 2021 12:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417128;
-        bh=8HRRZOIu42uLIocWktvS2rbIiVEXh1u5HPOrOQVucxc=;
+        s=korg; t=1616417205;
+        bh=03aZ9f2n9CmgO+bgyG7/4vCuGMrZILSbVCMKrrjkEX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=crSzWOsbuIGmxkyb6dN4tJHh8uTNfVGOzupptgCzOuXzmIkDRlXfK3RuhkPwdLzdp
-         UAh863gkk05SNMDw/09riUn+VIJlj1lkzMU14IJ7OP9HLz1Mm/sGS9FsM9JPyMyn1E
-         c4Z01Fdd7+rmSDSstNusNqsFT8UFM/NUwv30XHwc=
+        b=o99jn1UPIC7hixMD98pu2B6prNZW4uheczauWKYphfAp9boeDi8Zgpo8Q5eLx08yG
+         HZ2XFZZd9DFamebbVaLOYdB5FdAsB0eb1iFvq9TwzjYDX/8IIBAFVYEgGgrT9Jqkex
+         6Lsv1N1Ee175FzTAKKNfXvDcwOLvedoyo0ubsAec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.19 37/43] x86: Move TS_COMPAT back to asm/thread_info.h
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.9 01/25] ext4: handle error of ext4_setup_system_zone() on remount
 Date:   Mon, 22 Mar 2021 13:28:51 +0100
-Message-Id: <20210322121921.102891977@linuxfoundation.org>
+Message-Id: <20210322121920.447381451@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,65 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Jan Kara <jack@suse.cz>
 
-commit 66c1b6d74cd7035e85c426f0af4aede19e805c8a upstream.
+commit d176b1f62f242ab259ff665a26fbac69db1aecba upstream.
 
-Move TS_COMPAT back to asm/thread_info.h, close to TS_I386_REGS_POKED.
+ext4_setup_system_zone() can fail. Handle the failure in ext4_remount().
 
-It was moved to asm/processor.h by b9d989c7218a ("x86/asm: Move the
-thread_info::status field to thread_struct"), then later 37a8f7c38339
-("x86/asm: Move 'status' from thread_struct to thread_info") moved the
-'status' field back but TS_COMPAT was forgotten.
-
-Preparatory patch to fix the COMPAT case for get_nr_restart_syscall()
-
-Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210201174649.GA17880@redhat.com
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200728130437.7804-2-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/processor.h   |    9 ---------
- arch/x86/include/asm/thread_info.h |    9 +++++++++
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ fs/ext4/super.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -522,15 +522,6 @@ static inline void arch_thread_struct_wh
- }
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5148,7 +5148,10 @@ static int ext4_remount(struct super_blo
+ 		ext4_register_li_request(sb, first_not_zeroed);
+ 	}
  
- /*
-- * Thread-synchronous status.
-- *
-- * This is different from the flags in that nobody else
-- * ever touches our thread-synchronous status, so we don't
-- * have to worry about atomic accesses.
-- */
--#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
--
--/*
-  * Set IOPL bits in EFLAGS from given mask
-  */
- static inline void native_set_iopl_mask(unsigned mask)
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -227,6 +227,15 @@ static inline int arch_within_stack_fram
- 
- #endif
- 
-+/*
-+ * Thread-synchronous status.
-+ *
-+ * This is different from the flags in that nobody else
-+ * ever touches our thread-synchronous status, so we don't
-+ * have to worry about atomic accesses.
-+ */
-+#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
+-	ext4_setup_system_zone(sb);
++	err = ext4_setup_system_zone(sb);
++	if (err)
++		goto restore_opts;
 +
- #ifdef CONFIG_COMPAT
- #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
- #endif
+ 	if (sbi->s_journal == NULL && !(old_sb_flags & MS_RDONLY))
+ 		ext4_commit_super(sb, 1);
+ 
 
 
