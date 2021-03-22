@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4CB34450C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1918C344530
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhCVNLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:11:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50846 "EHLO mail.kernel.org"
+        id S231400AbhCVNOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:14:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232721AbhCVM4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB5F619BA;
-        Mon, 22 Mar 2021 12:48:44 +0000 (UTC)
+        id S232728AbhCVM4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:56:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9FBB619C8;
+        Mon, 22 Mar 2021 12:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417324;
-        bh=tPetY16AiQmg8h1ZYslYI+vPL7h0XaE/AWhM9p3MhSU=;
+        s=korg; t=1616417327;
+        bh=hAzEg09EFwU1ZixhzKCuCHCQBqpM4KMeIx80ib4xjx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Evud/tKqxI8OvG5zjF5H5Exy1ydfYwHHJQtH6zFOvpZ16GH2tTs52zHZ6IC2lWJ+
-         4gtW1zK70qdnPl/tWnfYad9MRJ6Y+Kjn2Kzt4GGFAEtKGnmOrlGDf6LPTOZyF9YV8A
-         mpEXkJtx6J00WWcqJFplDmG1mmx9BPesGGUAM14I=
+        b=qV17Il+PNqYcv8Ex7RnCSq6lCQeLBhpJQwUBSwjMoKaallUKJKSWMV/DM4HhiaC0x
+         QGIAjHf6tRgr/shOgW4xRE+TDIi5N4mfobCnKlkKoFz3v/A7CKSyXMLqOUf8FReZYa
+         tPWVGEKqjlgUgnm5zPI6s7S19et2G8EcLT6HtZZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 30/43] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
-Date:   Mon, 22 Mar 2021 13:29:11 +0100
-Message-Id: <20210322121920.999100040@linuxfoundation.org>
+Subject: [PATCH 4.14 31/43] iio: hid-sensor-humidity: Fix alignment issue of timestamp channel
+Date:   Mon, 22 Mar 2021 13:29:12 +0100
+Message-Id: <20210322121921.030397102@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
 References: <20210322121920.053255560@linuxfoundation.org>
@@ -41,36 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Ye Xiang <xiang.ye@intel.com>
 
-commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
+commit 37e89e574dc238a4ebe439543c5ab4fbb2f0311b upstream.
 
-There is one regmap_bulk_read() call in mpu3050_trigger_handler
-that we have caught its return value bug lack further handling.
-Check and terminate the execution flow just like the other three
-regmap_bulk_read() calls in this function.
+This patch ensures that, there is sufficient space and correct
+alignment for the timestamp.
 
-Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
+Fixes: d7ed89d5aadf ("iio: hid: Add humidity sensor support")
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210303063615.12130-2-xiang.ye@intel.com
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/gyro/mpu3050-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/humidity/hid-sensor-humidity.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -549,6 +549,8 @@ static irqreturn_t mpu3050_trigger_handl
- 					       MPU3050_FIFO_R,
- 					       &fifo_values[offset],
- 					       toread);
-+			if (ret)
-+				goto out_trigger_unlock;
+--- a/drivers/iio/humidity/hid-sensor-humidity.c
++++ b/drivers/iio/humidity/hid-sensor-humidity.c
+@@ -28,7 +28,10 @@
+ struct hid_humidity_state {
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info humidity_attr;
+-	s32 humidity_data;
++	struct {
++		s32 humidity_data;
++		u64 timestamp __aligned(8);
++	} scan;
+ 	int scale_pre_decml;
+ 	int scale_post_decml;
+ 	int scale_precision;
+@@ -139,9 +142,8 @@ static int humidity_proc_event(struct hi
+ 	struct hid_humidity_state *humid_st = iio_priv(indio_dev);
  
- 			dev_dbg(mpu3050->dev,
- 				"%04x %04x %04x %04x %04x\n",
+ 	if (atomic_read(&humid_st->common_attributes.data_ready))
+-		iio_push_to_buffers_with_timestamp(indio_dev,
+-					&humid_st->humidity_data,
+-					iio_get_time_ns(indio_dev));
++		iio_push_to_buffers_with_timestamp(indio_dev, &humid_st->scan,
++						   iio_get_time_ns(indio_dev));
+ 
+ 	return 0;
+ }
+@@ -156,7 +158,7 @@ static int humidity_capture_sample(struc
+ 
+ 	switch (usage_id) {
+ 	case HID_USAGE_SENSOR_ATMOSPHERIC_HUMIDITY:
+-		humid_st->humidity_data = *(s32 *)raw_data;
++		humid_st->scan.humidity_data = *(s32 *)raw_data;
+ 
+ 		return 0;
+ 	default:
 
 
