@@ -2,162 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B663134465A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FDF344660
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhCVN66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230140AbhCVN6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:58:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 518786196C;
-        Mon, 22 Mar 2021 13:58:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616421514;
-        bh=lVJXeggsx709epOlSGTiBeUB6SScnAKY76cjl4xiPL0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=apaUr9ALgG3ynOkV8CDghXKHHHgB+8faXYxLDMkj2c4slvdNXamS0RRKwOiCj9FTq
-         hT02ftf+ZSDscguWz04Xv6TwV3OSjg9OdCI+zh/MJwzT1ubdOPZKtwtEGalOckLy6A
-         pZ2io8TIVZU6nhgEczaDFosvohq8Cr50U7afoti7Zgpcix+IYM7kJZBin3pXboCgXO
-         pvgrRAp23b15i98z90HecY2FZmNd0PdQW52qLje2WSrQR8GF9Ib4j0xDlQz5NaayRL
-         6ScqB8dOdVnVqrXtKRyH5q5x/1OEIwK64FyHiAwpF0Lm0wpwGE6mIJMO68dpf+H67I
-         NwI/SxpkKYIGg==
-Received: by earth.universe (Postfix, from userid 1000)
-        id F3F993C0C96; Mon, 22 Mar 2021 14:58:31 +0100 (CET)
-Date:   Mon, 22 Mar 2021 14:58:31 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Jian Dong <dj0227@163.com>
-Cc:     milo.kim@ti.com, huyue2@yulong.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongjian <dongjian@yulong.com>
-Subject: Re: [PATCH] power-supply: Use IRQF_ONESHOT
-Message-ID: <20210322135831.b2xly44u3kyhnrzb@earth.universe>
-References: <1616412093-144386-1-git-send-email-dj0227@163.com>
+        id S231174AbhCVN7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230398AbhCVN7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:59:00 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEECAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so4121534ooe.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ycw4kh6uo5mWPlwHrkQbviI/KYMjUPq3rp+uHfdtBN8=;
+        b=WaafIrkRt7VtbLiAqIvMQ7prtR+nbO+j3A/PsAroCb42gPmrFUj0dDALDmw1qiVf4r
+         QZ0NZtKuEHyYU8j4D1oQ4EyDnGSwIY8B6E+FcEACoxi3oYTFnf4gJm+60NHNXcdz8Tuw
+         TGXNA/HE78qtHiS4kXBXalgoxVHD73NaxNxsyfE5QjBGsuJB9E7o1txUYPYC/dCwb2ln
+         FWnHO0cqAzYkjWL7dKD1/snl7HuhXmqqMgnocwz3B0zQ7qy3I8ABnUUb1VB4bfWLsScH
+         e2AowhcZLFchuJ6vl7u6FXEF1vmvTHQ09AdIrv5S5VgJUU1OYCOnXbWgjZA/8pZAH2g+
+         BREw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ycw4kh6uo5mWPlwHrkQbviI/KYMjUPq3rp+uHfdtBN8=;
+        b=Wyit0BkgG+jINZglbi50KA/O6Vz4ShVYJy/a6dhsrEK/zc9LYI0xFxQG3A0hPydpfr
+         E0iYFWa7EIc/KkIVnyEoj75mvvIkaHrKDOqGhEniBlu8kNTox/COJHNDp2MoamKAfnlv
+         BAObAY5GtQ5VLLJbc0zQahuiaXO2YS0Uhv7yu3It9p+8z8u6Q9HKuz54gCVvaJYjlLNU
+         b3xJCkic2zkY1G6hT9V2Rjw0cYaGJ7CfDp29xvprhphyrhoFAuk92SFZDPyhMhGDxHeO
+         nRE7diRHE3cnE2eWtcF6+YixGxMgTkX0hVpohwSNXZMaOOoQyBlFM1QIkoqgOTCu21gg
+         Xf9A==
+X-Gm-Message-State: AOAM53252NgXrVZM3wl7uSULhOfMLytSpdTg+++XIp5KqH2Rhau+J+4H
+        AaqJcVMOnYxqzgCvX7UXe/BLO7Uxj1vOyDCbUZg=
+X-Google-Smtp-Source: ABdhPJxDOzZh9ZxCV6hb/mMM8UpqW475cGLkyoKO6WoioK+ZUYE8oTQejvUEuqG3V1Cq8b3Lbb3PcktRVUC+7Y8yAPo=
+X-Received: by 2002:a4a:8845:: with SMTP id e5mr11120361ooi.90.1616421539106;
+ Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sd4c2gfoiwny77qf"
-Content-Disposition: inline
-In-Reply-To: <1616412093-144386-1-git-send-email-dj0227@163.com>
+References: <20210318202414.10547-1-unixbhaskar@gmail.com> <3cc678f2-36d1-1af1-5759-37aea82f41ea@bombadil.infradead.org>
+In-Reply-To: <3cc678f2-36d1-1af1-5759-37aea82f41ea@bombadil.infradead.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 22 Mar 2021 09:58:48 -0400
+Message-ID: <CADnq5_Muaa7MLsiUL+pyV16_HuhKJg=jwS8FwCSvgWgGH11LvQ@mail.gmail.com>
+Subject: Re: [PATCH V2] drm/amdgpu: Fix a typo
+To:     Randy Dunlap <rdunlap@bombadil.infradead.org>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        "Chen, Guchun" <guchun.chen@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Tao Zhou <tao.zhou1@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Huang Rui <ray.huang@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Jiansong Chen <Jiansong.Chen@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        John Clements <John.Clements@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 20, 2021 at 3:52 AM Randy Dunlap
+<rdunlap@bombadil.infradead.org> wrote:
+>
+>
+>
+> On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
+>
+> > s/traing/training/
+> >
+> > ...Plus the entire sentence construction for better readability.
+> >
+> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> > ---
+> > Changes from V1:
+> >  Alex and Randy's suggestions incorporated.
+> >
+> > drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 8 ++++----
+> > 1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
+> > index c325d6f53a71..bf3857867f51 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
+> > @@ -661,10 +661,10 @@ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
+> >
+> >       if (ops & PSP_MEM_TRAIN_SEND_LONG_MSG) {
+> >               /*
+> > -              * Long traing will encroach certain mount of bottom VRAM,
+> > -              * saving the content of this bottom VRAM to system memory
+> > -              * before training, and restoring it after training to avoid
+> > -              * VRAM corruption.
+> > +              * Long training will encroach a certain amount on the bottom of VRAM;
+> > +                 * save the content from the bottom VRAM to system memory
+> > +                 * before training, and restore it after training to avoid
+> > +                 * VRAM corruption.
+>
+> These 3 new lines are indented with spaces instead of tabs. Oops.  :(
+>
+> (I may be too late with this comment -- sorry about that.)
 
---sd4c2gfoiwny77qf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I fixed that up when I applied it.
 
-Hi,
+Thanks,
 
-On Mon, Mar 22, 2021 at 07:21:33PM +0800, Jian Dong wrote:
-> From: dongjian <dongjian@yulong.com>
->=20
-> Fixes coccicheck error:
->=20
-> drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
-> drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
-> drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
-> drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
->=20
-> Threaded IRQ with no primary handler requested without IRQF_ONESHOT
->=20
-> Signed-off-by: dongjian <dongjian@yulong.com>
-> ---
+Alex
 
-Thanks, queued.
 
--- Sebastian
-
->  drivers/power/supply/lp8788-charger.c   | 2 +-
->  drivers/power/supply/pm2301_charger.c   | 2 +-
->  drivers/power/supply/tps65090-charger.c | 2 +-
->  drivers/power/supply/tps65217_charger.c | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply=
-/lp8788-charger.c
-> index e7931ff..397e5a0 100644
-> --- a/drivers/power/supply/lp8788-charger.c
-> +++ b/drivers/power/supply/lp8788-charger.c
-> @@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pd=
-ev,
-> =20
->  		ret =3D request_threaded_irq(virq, NULL,
->  					lp8788_charger_irq_thread,
-> -					0, name, pchg);
-> +					IRQF_ONESHOT, name, pchg);
->  		if (ret)
->  			break;
->  	}
-> diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply=
-/pm2301_charger.c
-> index ac06ecf..a3bfb96 100644
-> --- a/drivers/power/supply/pm2301_charger.c
-> +++ b/drivers/power/supply/pm2301_charger.c
-> @@ -1089,7 +1089,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_cli=
-ent *i2c_client,
->  	ret =3D request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
->  				NULL,
->  				pm2xxx_charger_irq[0].isr,
-> -				pm2->pdata->irq_type,
-> +				pm2->pdata->irq_type | IRQF_ONESHOT,
->  				pm2xxx_charger_irq[0].name, pm2);
-> =20
->  	if (ret !=3D 0) {
-> diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supp=
-ly/tps65090-charger.c
-> index 6b0098e..0990b2f 100644
-> --- a/drivers/power/supply/tps65090-charger.c
-> +++ b/drivers/power/supply/tps65090-charger.c
-> @@ -301,7 +301,7 @@ static int tps65090_charger_probe(struct platform_dev=
-ice *pdev)
-> =20
->  	if (irq !=3D -ENXIO) {
->  		ret =3D devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> -			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-> +			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
->  		if (ret) {
->  			dev_err(cdata->dev,
->  				"Unable to register irq %d err %d\n", irq,
-> diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supp=
-ly/tps65217_charger.c
-> index 814c2b8..ba33d16 100644
-> --- a/drivers/power/supply/tps65217_charger.c
-> +++ b/drivers/power/supply/tps65217_charger.c
-> @@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_dev=
-ice *pdev)
->  	for (i =3D 0; i < NUM_CHARGER_IRQS; i++) {
->  		ret =3D devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
->  						tps65217_charger_irq,
-> -						0, "tps65217-charger",
-> +						IRQF_ONESHOT, "tps65217-charger",
->  						charger);
->  		if (ret) {
->  			dev_err(charger->dev,
-> --=20
-> 1.9.1
->=20
->=20
-
---sd4c2gfoiwny77qf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBYonwACgkQ2O7X88g7
-+pouyg/8C+DfUdjwrlFMl97dMgfYMT9ZmQ/gyli/WNHr9IOCIwAaaNsiyWeeZV0/
-iRULotftxgnUGP2vq918xfwfrMHTjgQCUmAqlXhUhD2TNCTswm1fup5a2g6hSUuk
-eLtr6AlF3aGFyibw+iPpCrolXhKS33ijYQPi6F6oCXPCAjiYzEYuZuwwbRunE5iG
-ioCMiHybgbRhe+jeKdhVzci3OwuRZp54mFNgBAV1FLeY9zOik8RJM4kHLkPixJli
-ujGWsaW2bxTU5UOkxJqlqrHENBFo9OU6d5JeQuTYnkBsB4eItqhjilQpVHLK1Rbb
-VfsPWBIxCtGg63pplWC15imUZgXWnFSIX44Z1dNtMwqzDxoCbNkarRuh06KVgXLj
-b0btpWCNcuu0bzBPY3ydl8xS+L8rJXJLm++VO8X7qp8avF9hEAx1ivIET0oXtgSM
-32ohiiYGa34rbGUQPq3aIYonxRxrL2DfaU5jfxvbZRVaXAKHisnWpEM56xip0upe
-gOUA16+N7zS51klXlOcVKQESekiO8lKM44zfTyHuPn9SaHcJftB2UPGRvassS2fg
-SW+XSzqhMUuYRN3xNo7IRi/mSKfaTX1CkfQnusvy3X3RxEemu5/JXBTRGLz9eiwT
-11ied89aAqx1K2LaTVe8+2OKeojrWpO3BLbn/XCVaRke9LdQmsg=
-=nP6l
------END PGP SIGNATURE-----
-
---sd4c2gfoiwny77qf--
+>
+> >                */
+> >               sz = GDDR6_MEM_TRAINING_ENCROACHED_SIZE;
+> >
+> > --
+> > 2.26.2
+> >
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
