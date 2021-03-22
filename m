@@ -2,139 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360C2344CCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF83344CD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhCVRHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230258AbhCVRHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:07:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F29736146D;
-        Mon, 22 Mar 2021 17:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616432836;
-        bh=peIWiBD6YyOiuy/e+6IZKWkYGqpzY2VbfDHlDQ1GKXk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IBLzoCdD1FBARnSXkOyUat3DHa/o56FIYaYwfHZn8ZI4jWDucXVaG/EPjCHs3hJ6F
-         dZ0nROw0I3OrWbjmX6X9sOEf+V3gzesMghGF6FSkXKnH3z9kuLws8fTZboc59pt5wl
-         U3ASX2jdp6my3fU276SLPxvmKrL1k1mFM4Zbp+aEk/HWnf3OeiuG0X7w+OQjI/s5KV
-         5kptU59J/rAIKc6YlRw1nw/BLW5pdW/j7rVnTHslbQzKsMMoVM3H1FcW/j4XC/6Bl/
-         lqcfg5W3Gyd8pO26DFZCIrgAY7t+jKiee6yDGoDaO1Oy4SVZ9yVwSma3I4EBkZmBuH
-         VbpOYEIiErUZQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] static_call: fix function type mismatch
-Date:   Mon, 22 Mar 2021 18:06:37 +0100
-Message-Id: <20210322170711.1855115-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232013AbhCVRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:08:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231395AbhCVRHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616432867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wLwToGxEDmc8n5o1OXi9U8H6a1AVaW5DdA44kJP/9pI=;
+        b=Phg7D/qY2CKp8bhVJ3fVDdnP/psm2kRsxa8QpO1cYZu3QfRZFRKTxN+wBeo3ob0kf7npWn
+        z2uYYNR6jI2003E1rbrBxZKp5b/bSmnDhe+LqC0mN8+OyY/NnsCq3sTzPvcDNAnMCYPgdV
+        /leR0UQZCCGzKkzQhEyexTKMx46n8RA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-JhkeyCoUMPurXEwlLsJ25g-1; Mon, 22 Mar 2021 13:07:43 -0400
+X-MC-Unique: JhkeyCoUMPurXEwlLsJ25g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44D7C5B362;
+        Mon, 22 Mar 2021 17:07:41 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.114])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A916614106;
+        Mon, 22 Mar 2021 17:07:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 22 Mar 2021 18:07:40 +0100 (CET)
+Date:   Mon, 22 Mar 2021 18:07:34 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     qianli zhao <zhaoqianligood@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>, christian@brauner.io,
+        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+Message-ID: <20210322170733.GE20390@redhat.com>
+References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
+ <20210317143805.GA5610@redhat.com>
+ <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+ <20210318180450.GA9977@redhat.com>
+ <m1pmzwb7pd.fsf@fess.ebiederm.org>
+ <CAPx_LQGBJGgZ+zzhJ2U4RpoPKt3hvf8LRfACtj2LPD7senub7A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPx_LQGBJGgZ+zzhJ2U4RpoPKt3hvf8LRfACtj2LPD7senub7A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 03/22, qianli zhao wrote:
+>
+> Moving the decrement position should only affect between new and old
+> code position of movement of the decrement of
+> signal->live.
 
-The __static_call_return0() function is declared to return a 'long',
-while it aliases a couple of functions that all return 'int'. When
-building with 'make W=1', gcc warns about this:
+Why do you think so? It can affect _any_ code which runs under
+"if (group_dead)". Again, I don't see anything wrong, but I didn't even
+try to audit these code paths.
 
-kernel/sched/core.c:5420:37: error: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Werror=cast-function-type]
- 5420 |   static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-
-Change the function to return 'int' as well, but remove the cast to
-ensure we get a warning if any of the types ever change.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/static_call.h | 6 +++---
- kernel/sched/core.c         | 6 +++---
- kernel/static_call.c        | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 85ecc789f4ff..3fc2975906ad 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -148,7 +148,7 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void
- extern int static_call_mod_init(struct module *mod);
- extern int static_call_text_reserved(void *start, void *end);
- 
--extern long __static_call_return0(void);
-+extern int __static_call_return0(void);
- 
- #define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
- 	DECLARE_STATIC_CALL(name, _func);				\
-@@ -221,7 +221,7 @@ static inline int static_call_text_reserved(void *start, void *end)
- 	return 0;
- }
- 
--static inline long __static_call_return0(void)
-+static inline int __static_call_return0(void)
- {
- 	return 0;
- }
-@@ -247,7 +247,7 @@ struct static_call_key {
- 	void *func;
- };
- 
--static inline long __static_call_return0(void)
-+static inline int __static_call_return0(void)
- {
- 	return 0;
- }
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3a36f0b0742e..d22c609b9484 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5399,7 +5399,7 @@ static void sched_dynamic_update(int mode)
- 	switch (mode) {
- 	case preempt_dynamic_none:
- 		static_call_update(cond_resched, __cond_resched);
--		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-+		static_call_update(might_resched, __static_call_return0);
- 		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
- 		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
- 		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
-@@ -5416,8 +5416,8 @@ static void sched_dynamic_update(int mode)
- 		break;
- 
- 	case preempt_dynamic_full:
--		static_call_update(cond_resched, (typeof(&__cond_resched)) __static_call_return0);
--		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-+		static_call_update(cond_resched, __static_call_return0);
-+		static_call_update(might_resched, __static_call_return0);
- 		static_call_update(preempt_schedule, __preempt_schedule_func);
- 		static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func);
- 		static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 6906c6ec4c97..11aa4bcee315 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -489,7 +489,7 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
--long __static_call_return0(void)
-+int __static_call_return0(void)
- {
- 	return 0;
- }
--- 
-2.29.2
+Oleg.
 
