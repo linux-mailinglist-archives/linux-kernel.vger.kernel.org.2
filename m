@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E467B344028
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F44344027
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhCVLtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S230252AbhCVLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCVLso (ORCPT
+        with ESMTP id S230209AbhCVLsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:48:44 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79A1C061574;
-        Mon, 22 Mar 2021 04:48:43 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z136so13545220iof.10;
-        Mon, 22 Mar 2021 04:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wyt0l5oKA1RNn55G7F/1OYk1XowasbjdBJAi3unCvdk=;
-        b=nQMxbVhwYlbETH/czbc83Qy5xAFLGJLH3Vo6iP+k653Or1hpIct+QeDqnVGR00gR0p
-         3lSMNW11Z102gbZhHrmsSEjGALOyZZsKukdK5zdrAhPF0rV+FxIRojTCKInHh8vokZYr
-         l5pQovLFDF+03LzkK5NMXQNWeTD/hcfGtDT383MblG9X0gwp+4aDAqbWtdS61/mXsOKV
-         nakNVRemI0g3MLPA1kzuoZ1/1dx3VHX/QkHgIsq16s1+es+Ggr5cDbsO7e5WwGJfAIgd
-         teBEQSIueRdXSow1IRp/1REehmyRzTO2cjp832Sd/IH++xrhhyvPct/zHnAe7GyZgaZU
-         UDQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wyt0l5oKA1RNn55G7F/1OYk1XowasbjdBJAi3unCvdk=;
-        b=DcdwXbd4ng7Lzk0vVK2MKoniIOCdYLvs1vhMstpZx3DjrkbHzQjlvs4jqxvdVJvDNX
-         2/nD8dtpHoDkrP95FSaUJ5aUp17ZdQcyK376SSw1rPk19SgUwF94cH+IEHgE64Dtlby4
-         E8XcAIQmcBGfINMoJ/cnsK89A1k3+UcmoytO6B+VtsigLbKPLyZm42nglAn4yhjsQw9Y
-         a+E1SRri2kzZoHNbhxTRNfQjBzkmEXDbftdLEQzDDCStfWelrWw6iCfETBlzHu8RFEgd
-         KPvPiPnSYFLe8Nq6oqaaKde9/E3I+x2QAJWei8vCa1Dhj9o7RwgohccN3Ncv2Ku5j8qp
-         BpCA==
-X-Gm-Message-State: AOAM533Dy8R9Nvk1+SYzBggfYCvOVG10DvRYZQHd6E3Gsl6P01iMNH1P
-        RxXoboWL+QMx/BbYVvT+LUlBvhON7Myj3pyQd3E=
-X-Google-Smtp-Source: ABdhPJzzRxh6vRkud9pux4kVjb8zSKHOU/4RPPGupEarXMhvkeYwfo0hLlTtioZQcjOnyPyDbhKNMkUeAuwejnar8D8=
-X-Received: by 2002:a02:3085:: with SMTP id q127mr10661879jaq.137.1616413723386;
- Mon, 22 Mar 2021 04:48:43 -0700 (PDT)
+        Mon, 22 Mar 2021 07:48:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDB7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:48:29 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOJ2p-000161-16; Mon, 22 Mar 2021 12:48:27 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOJ2o-0002Vt-LM; Mon, 22 Mar 2021 12:48:26 +0100
+Date:   Mon, 22 Mar 2021 12:48:26 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <20210322114826.ahwhbqxjxfg3nmrf@pengutronix.de>
+References: <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <YFhhGpiHDELxIo9V@orome.fritz.box>
+ <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
+ <20210322112254.5mjkajkq3wnhgnd5@pengutronix.de>
+ <CAHp75VfedZyFF46koLOg13t_TzMbwj5zBYU2zBA52vRRtb202g@mail.gmail.com>
 MIME-Version: 1.0
-References: <1616205383-24114-1-git-send-email-dillon.minfei@gmail.com>
- <1616205383-24114-8-git-send-email-dillon.minfei@gmail.com> <5f95b6ad-ddbe-8394-8599-e78f30c8b62c@foss.st.com>
-In-Reply-To: <5f95b6ad-ddbe-8394-8599-e78f30c8b62c@foss.st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Mon, 22 Mar 2021 19:48:07 +0800
-Message-ID: <CAL9mu0LcwRcr+YOuDcLzqxDVCTUajDNnM9SQTkkKCt-J7BX75Q@mail.gmail.com>
-Subject: Re: [Linux-stm32] [PATCH v4 9/9] dt-bindings: serial: stm32: Use
- 'unevaluatedProperties' instead of 'additionalProperties'
-To:     Valentin CARON - foss <valentin.caron@foss.st.com>,
-        Alexandre TORGUE <Alexandre.torgue@foss.st.com>
-Cc:     "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
-        "afzal.mohd.ma@gmail.com" <afzal.mohd.ma@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5irkqxzmkpzjow3i"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfedZyFF46koLOg13t_TzMbwj5zBYU2zBA52vRRtb202g@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
-Thanks for feedback.
 
-On Mon, Mar 22, 2021 at 7:05 PM Valentin CARON - foss
-<valentin.caron@foss.st.com> wrote:
->
-> Hi Dillon,
->
-> It works for me.
->
-> On 3/20/21 2:56 AM, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
+--5irkqxzmkpzjow3i
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Mar 22, 2021 at 01:40:57PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 22, 2021 at 1:22 PM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > On Mon, Mar 22, 2021 at 11:38:40AM +0200, Andy Shevchenko wrote:
+> > > On Monday, March 22, 2021, Thierry Reding <thierry.reding@gmail.com> =
+wrote:
+> > > > On Fri, Jan 29, 2021 at 09:37:47PM +0100, Clemens Gruber wrote:
+> > > > > Thierry: Would you accept it if we continue to reset the register=
+s in
+> > > > > .probe?
+> > > >
+> > > > Yes, I think it's fine to continue to reset the registers since tha=
+t's
+> > > > basically what the driver already does. It'd be great if you could
+> > > > follow up with a patch that removes the reset and leaves the hardwa=
+re in
+> > > > whatever state the bootloader has set up. Then we can take that pat=
+ch
+> > > > for a ride and see if there are any complains about it breaking. If
+> > > > there are we can always try to fix them, but as a last resort we can
+> > > > also revert, which then may be something we have to live with. But I
+> > > > think we should at least try to make this consistent with how other
+> > > > drivers do this so that people don't stumble over this particular
+> > > > driver's
+> > >
+> > > I guess we may miss (a PCB / silicon design flaw or warm boot case) w=
+hen
+> > > boot loader left device completely untouched and device either in wro=
+ng
+> > > state because if failed reset (saw this on PCA9555 which has a
+> > > corresponding errata), or simply we have done a warm reset of the sys=
+tem.
+> > > So, we also have to understand how to properly exit.
 > >
-> > To use additional properties 'bluetooth', need use unevaluatedProperties
-> > to fix dtbs_check warnings.
+> > I don't think that not resetting is a real problem. My argumentation
+> > goes as follows:
 > >
-> > 'arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800: 'bluetooth'
-> > does not match any of the regexes: 'pinctrl-[0-9]+'
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Fixes: af1c2d81695b ("dt-bindings: serial: Convert STM32 UART to json-schema")
->
-> You can add my:
-> Tested-by: Valentin Caron <valentin.caron@foss.st.com>
-Sure. I will add it to next submit.
->
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> >
-> > v4:
-> > - add Reported-by and Fixes tag
-> > - use unevaluatedProperties: false to fix dtbs_check warrnings instead of
-> >    add 'bluetooth' in st,stm32-uart.yaml
-> >
-> >   Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > index 8631678283f9..305941b1d5a0 100644
-> > --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > @@ -80,7 +80,7 @@ required:
-> >     - interrupts
-> >     - clocks
-> >
-> > -additionalProperties: false
-> > +unevaluatedProperties: false
-> >
-> >   examples:
-> >     - |
->
-> Regards,
-> Valentin
+> > When the PWM driver is loaded and the PWM configuration is invalid, it
+> > was already invalid for the time between power up (or warm start) and
+> > PWM driver load time. Then it doesn't really hurt to keep the PWM
+> > in this invalid state for a little moment longer until the consumer of
+> > the PWM becomes active.
+>=20
+> But this won't work in the cases when we have a chip with a shared
+> settings for period and/or duty cycle. You will never have a user come
+> due to -EBUSY.
+
+That's wrong, the first consumer to enable the PWM (in software) is
+supposed to be able to change the settings.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5irkqxzmkpzjow3i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYhAcACgkQwfwUeK3K
+7Al+/gf+KpevRNoTs82vxuWQJH4jxHJSMxSLY+TsNTxPSRog+bTjOsA7aR0tHs/S
+FyX4mIVRSkD1Gq+0j9Te/C1t7W/q5cHik4gwb3WXQ0Pez02viyy8R6JbAOOjonmL
+mILr0rg77htKLxgb8MXY1QVrsNuqe5tt3npHpW4FCooSrqm0B6M2D5KW53chxoyu
+f7f5uT3cv8VS1ScstW11FjuTcrWeO3V5w653lA1YScp8LHAp52FFSWh30Um8Pe82
+W3PRd0XUbjnrmMWz386ficKkRplWm9TyGGdc8pTBaTiu+NZT6q1ZO08cLlS343j/
+Kf3wCXQOxiEfbSQ/Te0hPEoP7sliOw==
+=Ljaj
+-----END PGP SIGNATURE-----
+
+--5irkqxzmkpzjow3i--
