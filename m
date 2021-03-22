@@ -2,154 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA549345144
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D80345150
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhCVU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:59:00 -0400
-Received: from outbound-smtp16.blacknight.com ([46.22.139.233]:50647 "EHLO
-        outbound-smtp16.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229574AbhCVU6v (ORCPT
+        id S229673AbhCVVBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:01:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231423AbhCVVAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:58:51 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id E99A11C41A1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:58:28 +0000 (GMT)
-Received: (qmail 5808 invoked from network); 22 Mar 2021 20:58:28 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 20:58:28 -0000
-Date:   Mon, 22 Mar 2021 20:58:27 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210322205827.GJ3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
- <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
- <20210322194948.GI3697@techsingularity.net>
- <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+        Mon, 22 Mar 2021 17:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616446836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c6WtZIP3Pv8Sts2xBUJYEw6AY7dI8VFWAi8J8oYd58g=;
+        b=aHAjZepqA7I5BBs6Q5u4Z7d0hYxhzXlhqTusvxNG6+2NutssQADo0dbQ6NrTu6V/bIxjBe
+        G06s/cEpJHTQtoU8EZ14teFNILgCeTUO1q9DREuOHR0eq29CjGvEZ2nhgPrmPeo+QzqyXh
+        caMLr+3RWz94/VtPmfySqrXuLmnye3g=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-CyCJcLYNPxyo0FIP1ckmWA-1; Mon, 22 Mar 2021 17:00:35 -0400
+X-MC-Unique: CyCJcLYNPxyo0FIP1ckmWA-1
+Received: by mail-qv1-f70.google.com with SMTP id s16so292591qvw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:00:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c6WtZIP3Pv8Sts2xBUJYEw6AY7dI8VFWAi8J8oYd58g=;
+        b=UnwoiX7RFR+VHuggxDB83htyq2IDevbu3sBNIMErNqAFPHia0ZZkqG8caxirGX1llO
+         GylO59iby0R1UsJwShLTf9iruSp6TW/HC5O4FBIblhN8PLLqz+Op05Ubm77f63fDTjvr
+         5+KicxyTSrSfwoR/rm8D9dm+ZXmLUSoicDaWe6Lmi5vuLYKNsu1D6GAkruP8lSqU6Vos
+         sqCsN9yQ99Osj8YXwQmPU1l/19bU4PTdTN5unHgvEruQb7y/zVFIrB/wUd1I9Ay0BL0Q
+         8DS+rmXpHvgFQvnjruMbiq/p5NTJxhTB0FL2JlBSklSpBEkiKw8wWmCmKdcGMRMI0Gy2
+         aUlA==
+X-Gm-Message-State: AOAM53083s2+kz6ljryTtORJa9uHMXeaQTNOSdsFld2OQpJUxWpuyZmB
+        oAlDPI+reRvj9o6eTZK1dNjdFmZmAaVCEl2JkQKiSe3kURyLJKvz3OV+Uqbn26pL4RwN0qZhu/3
+        5C4dlpYQGWmgFvngf5MKWyqXv
+X-Received: by 2002:a37:b07:: with SMTP id 7mr1967530qkl.437.1616446834812;
+        Mon, 22 Mar 2021 14:00:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQd0PhyYegD6z3hStlomrWz7fldh8CLfj/9QsIxn62XAVmyQ2p22XQ5XNwdBsS8CuH5dU6Lg==
+X-Received: by 2002:a37:b07:: with SMTP id 7mr1967476qkl.437.1616446834557;
+        Mon, 22 Mar 2021 14:00:34 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id b17sm9688484qtp.73.2021.03.22.14.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 14:00:34 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 17:00:31 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH] userfaultfd/shmem: fix minor fault page leak
+Message-ID: <20210322210031.GH16645@xz-x1>
+References: <20210322204836.1650221-1-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210322204836.1650221-1-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:32:54PM +0000, Chuck Lever III wrote:
-> >> It is returning some confusing (to me) results. I'd like
-> >> to get these resolved before posting any benchmark
-> >> results.
-> >> 
-> >> 1. When it has visited every array element, it returns the
-> >> same value as was passed in @nr_pages. That's the N + 1th
-> >> array element, which shouldn't be touched. Should the
-> >> allocator return nr_pages - 1 in the fully successful case?
-> >> Or should the documentation describe the return value as
-> >> "the number of elements visited" ?
-> >> 
-> > 
-> > I phrased it as "the known number of populated elements in the
-> > page_array".
+On Mon, Mar 22, 2021 at 01:48:35PM -0700, Axel Rasmussen wrote:
+> This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
+> put_page() after getting the page out of the page cache, we leak the
+> reference.
 > 
-> The comment you added states:
+> The fix can be verified by checking /proc/meminfo and running the
+> userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
+> MemAvailable steadily decreasing with each run of the test. With the
+> fix, memory is correctly freed after the test program exits.
 > 
-> + * For lists, nr_pages is the number of pages that should be allocated.
-> + *
-> + * For arrays, only NULL elements are populated with pages and nr_pages
-> + * is the maximum number of pages that will be stored in the array.
-> + *
-> + * Returns the number of pages added to the page_list or the index of the
-> + * last known populated element of page_array.
-> 
-> 
-> > I did not want to write it as "the number of valid elements
-> > in the array" because that is not necessarily the case if an array is
-> > passed in with holes in the middle. I'm open to any suggestions on how
-> > the __alloc_pages_bulk description can be improved.
-> 
-> The comments states that, for the array case, a /count/ of
-> pages is passed in, and an /index/ is returned. If you want
-> to return the same type for lists and arrays, it should be
-> documented as a count in both cases, to match @nr_pages.
-> Consumers will want to compare @nr_pages with the return
-> value to see if they need to call again.
-> 
+> Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Then I'll just say it's the known count of pages in the array. That
-might still be less than the number of requested pages if holes are
-encountered.
-
-> > The definition of the return value as-is makes sense for either a list
-> > or an array. Returning "nr_pages - 1" suits an array because it's the
-> > last valid index but it makes less sense when returning a list.
-> > 
-> >> 2. Frequently the allocator returns a number smaller than
-> >> the total number of elements. As you may recall, sunrpc
-> >> will delay a bit (via a call to schedule_timeout) then call
-> >> again. This is supposed to be a rare event, and the delay
-> >> is substantial. But with the array-based API, a not-fully-
-> >> successful allocator call seems to happen more than half
-> >> the time. Is that expected? I'm calling with GFP_KERNEL,
-> >> seems like the allocator should be trying harder.
-> >> 
-> > 
-> > It's not expected that the array implementation would be worse *unless*
-> > you are passing in arrays with holes in the middle. Otherwise, the success
-> > rate should be similar.
-> 
-> Essentially, sunrpc will always pass an array with a hole.
-> Each RPC consumes the first N elements in the rq_pages array.
-> Sometimes N == ARRAY_SIZE(rq_pages). AFAIK sunrpc will not
-> pass in an array with more than one hole. Typically:
-> 
-> .....PPPP
-> 
-> My results show that, because svc_alloc_arg() ends up calling
-> __alloc_pages_bulk() twice in this case, it ends up being
-> twice as expensive as the list case, on average, for the same
-> workload.
-> 
-
-Ok, so in this case the caller knows that holes are always at the
-start. If the API returns an index that is a valid index and populated,
-it can check the next index and if it is valid then the whole array
-must be populated.
-
-Right now, the implementation checks for populated elements at the *start*
-because it is required for calling prep_new_page starting at the correct
-index and the API cannot make assumptions about the location of the hole.
-
-The patch below would check the rest of the array but note that it's
-slower for the API to do this check because it has to check every element
-while the sunrpc user could check one element. Let me know if a) this
-hunk helps and b) is desired behaviour.
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c83d38dfe936..4bf20650e5f5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5107,6 +5107,9 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	} else {
- 		while (prep_index < nr_populated)
- 			prep_new_page(page_array[prep_index++], 0, gfp, 0);
-+
-+		while (nr_populated < nr_pages && page_array[nr_populated])
-+			nr_populated++;
- 	}
- 
- 	return nr_populated;
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
 -- 
-Mel Gorman
-SUSE Labs
+Peter Xu
+
