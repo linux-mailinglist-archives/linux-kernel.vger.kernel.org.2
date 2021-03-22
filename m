@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9891F344157
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1584B344158
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhCVMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
+        id S231465AbhCVMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231280AbhCVMbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:31:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E51DD60C3D;
-        Mon, 22 Mar 2021 12:31:15 +0000 (UTC)
+        id S231307AbhCVMbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:31:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADEE661992;
+        Mon, 22 Mar 2021 12:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416276;
-        bh=YEsO1KwxtEsjByGqtI4KcOYOwT/lgtdJdpOEwcfhPCM=;
+        s=korg; t=1616416279;
+        bh=Wvt1J5IBOIQddoY64fkJMYE1fhRbMlz0xQt07UHoL8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hVicPMLPQqVPuCz1ptV4qK0xaqIKNZBIZTEcauWQoZIz5JdDc9Gt2lfkOsWtm3638
-         ZIzKF8m5DO2qOrB2of+mkJT4xjrA6+tFDfAu0e4HJG6mRYBbSNPJpQtM8rZjBEh0Lo
-         9VP6f8NovIO13IVk5VqiTVjXq3ZzgCm6R6reQx3Q=
+        b=M3IIo+xJjqppUTjwdScrc24fTpfU0TLwkhI5awImR+2lanmIzzTtcydqbkYqfhS6J
+         3aqnePInjzf6FGbfzZtDPqdBhsfhh7KvmKIAIgErrV1Ax6mIRgBYEFvIeKoSPXUJx2
+         JVifcsPKnubzJ/FF076bf5BRJCMzP4aEMyLSpnTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
         Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.11 046/120] nfsd: Dont keep looking up unhashed files in the nfsd file cache
-Date:   Mon, 22 Mar 2021 13:27:09 +0100
-Message-Id: <20210322121931.210218626@linuxfoundation.org>
+Subject: [PATCH 5.11 047/120] nfsd: dont abort copies early
+Date:   Mon, 22 Mar 2021 13:27:10 +0100
+Message-Id: <20210322121931.244910546@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -40,33 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit d30881f573e565ebb5dbb50b31ed6106b5c81328 upstream.
+commit bfdd89f232aa2de5a4b3fc985cba894148b830a8 upstream.
 
-If a file is unhashed, then we're going to reject it anyway and retry,
-so make sure we skip it when we're doing the RCU lockless lookup.
-This avoids a number of unnecessary nfserr_jukebox returns from
-nfsd_file_acquire()
+The typical result of the backwards comparison here is that the source
+server in a server-to-server copy will return BAD_STATEID within a few
+seconds of the copy starting, instead of giving the copy a full lease
+period, so the copy_file_range() call will end up unnecessarily
+returning a short read.
 
-Fixes: 65294c1f2c5e ("nfsd: add a new struct file caching facility to nfsd")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 624322f1adc5 "NFSD add COPY_NOTIFY operation"
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/filecache.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfsd/nfs4state.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/filecache.c
-+++ b/fs/nfsd/filecache.c
-@@ -898,6 +898,8 @@ nfsd_file_find_locked(struct inode *inod
- 			continue;
- 		if (!nfsd_match_cred(nf->nf_cred, current_cred()))
- 			continue;
-+		if (!test_bit(NFSD_FILE_HASHED, &nf->nf_flags))
-+			continue;
- 		if (nfsd_file_get(nf) != NULL)
- 			return nf;
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -5372,7 +5372,7 @@ nfs4_laundromat(struct nfsd_net *nn)
+ 	idr_for_each_entry(&nn->s2s_cp_stateids, cps_t, i) {
+ 		cps = container_of(cps_t, struct nfs4_cpntf_state, cp_stateid);
+ 		if (cps->cp_stateid.sc_type == NFS4_COPYNOTIFY_STID &&
+-				cps->cpntf_time > cutoff)
++				cps->cpntf_time < cutoff)
+ 			_free_cpntf_state_locked(nn, cps);
  	}
+ 	spin_unlock(&nn->s2s_cp_lock);
 
 
