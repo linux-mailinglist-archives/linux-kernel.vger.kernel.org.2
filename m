@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BD9344775
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0542344785
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhCVOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:36:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40490 "EHLO mx2.suse.de"
+        id S230262AbhCVOip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:38:45 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:58354 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhCVOf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:35:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616423726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ka7o8YzjuihRvqSaAHVBlNM4iZuzXnEWVNYaDHEt30s=;
-        b=GsJ4VZ8ch9CqRDYUamqSvXfTADUchqiUp0ZGbfgY38XyC6G9M+qr/s72nDN88PGa3HNYR5
-        7K9yw3l9nCL2UkCkB2dK+T9geEcMlPuaheGoomXCXjb6umrBmsz6YGbL4+0+Qm81qfsAWY
-        9Hw3Jxm9ZX6Z1dMYd20+UqMQKMlqksc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB4A5AC1F;
-        Mon, 22 Mar 2021 14:35:25 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 15:35:25 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 6/8] hugetlb: make free_huge_page irq safe
-Message-ID: <YFirLYVAQBjA8TVi@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-7-mike.kravetz@oracle.com>
+        id S229865AbhCVOiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:38:11 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 32F73A003E;
+        Mon, 22 Mar 2021 15:38:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 32F73A003E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1616423885; bh=DxfygpitPra5Cpiwi463YlHdOGWgOHeQqjm+lS0lShU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GJZvfhmKnms04+ZSNgkCOh42q886BBqayRTu2vqyYfX3jGYeIryR8NK5UbXX3AOnf
+         +ENS0BARR4vSMmMRapVPUdn1uuSd8fZ1OUFu0DcM9X3c/ekfvKDuaRcOD+SFc7NqZ6
+         JEb59xKL0lUmcdfxY5RxVJpIuZJKqWLFz9bvM76k=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Mon, 22 Mar 2021 15:37:52 +0100 (CET)
+Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control supports
+To:     "Yuan, Perry" <Perry.Yuan@dell.com>,
+        Mark Brown <broonie@kernel.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>
+Cc:     "pobrn@protonmail.com" <pobrn@protonmail.com>,
+        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20210301093834.19524-1-Perry_Yuan@Dell.com>
+ <20210308172409.GF4656@sirena.org.uk>
+ <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <604693cc-08c7-2b5f-632a-58ed537c54a0@perex.cz>
+Date:   Mon, 22 Mar 2021 15:37:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319224209.150047-7-mike.kravetz@oracle.com>
+In-Reply-To: <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 15:42:07, Mike Kravetz wrote:
-> Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in
-> non-task context") was added to address the issue of free_huge_page
-> being called from irq context.  That commit hands off free_huge_page
-> processing to a workqueue if !in_task.  However, as seen in [1] this
-> does not cover all cases.  Instead, make the locks taken in the
-> free_huge_page irq safe.
+Dne 22. 03. 21 v 10:25 Yuan, Perry napsal(a):
+> Hi Mark:
 > 
-> This patch does the following:
-> - Make hugetlb_lock irq safe.  This is mostly a simple process of
->   changing spin_*lock calls to spin_*lock_irq* calls.
-> - Make subpool lock irq safe in a similar manner.
-> - Revert the !in_task check and workqueue handoff.
+>> -----Original Message-----
+>> From: Mark Brown <broonie@kernel.org>
+>> Sent: Tuesday, March 9, 2021 1:24 AM
+>> To: Yuan, Perry
+>> Cc: pobrn@protonmail.com; pierre-louis.bossart@linux.intel.com;
+>> oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+>> hdegoede@redhat.com; mgross@linux.intel.com; Limonciello, Mario;
+>> lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
+>> kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
+>> Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control
+>> supports
+>>
+>> On Mon, Mar 01, 2021 at 05:38:34PM +0800, Perry Yuan wrote:
+>>
+>>> +	/* Micmute LED state changed by muted/unmute switch */
+>>> +	if (mc->invert) {
+>>> +		if (ucontrol->value.integer.value[0] || ucontrol-
+>>> value.integer.value[1]) {
+>>> +			micmute_led = LED_OFF;
+>>> +		} else {
+>>> +			micmute_led = LED_ON;
+>>> +		}
+>>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
+>>> +	}
+>>
+>> These conditionals on inversion seem weird and counterintuitive.  If we're
+>> going with this approach it would probably be clearer to define a custom
+>> operation for the affected controls that wraps the standard one and adds the
+>> LED setting rather than keying off invert like this.
+> 
+> Currently the sof soundwire driver has no generic led control yet.
+> This patch can handle the led control needs for MIC mute LED, definitely the patch is a short term solution.
+> There is a feature request discussion when we started to implement this solution.
+> https://github.com/thesofproject/linux/issues/2496#issuecomment-713892620
+> 
+> The workable way for now is that we put the LED mute control to the codec driver.
+> When there is new and full sound LED solution implemented, this part will be also optimized.
+> The Hardware privacy feature needs this patch to handle the Mic mute led state change.
+> Before that full solution ready in kernel, could we take this as short term solution?
 
-This is not sufficient (and 0day bot has captured that already). You
-cannot call update_and_free_page from the same context.
+Perry, it's about the machine detection. Your code is too much generic even
+for the top-level LED trigger implementation. We need an extra check, if the
+proper LED's are really controlled on the specific hardware. Other hardware
+may use RT715 for a different purpose. Use DMI / ACPI checks to detect this
+hardware and don't misuse the inversion flag to enable this code.
+
+						Jaroslav
 
 -- 
-Michal Hocko
-SUSE Labs
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
