@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8220C345131
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC59345134
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhCVUw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
+        id S229467AbhCVUzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhCVUws (ORCPT
+        with ESMTP id S229526AbhCVUzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:52:48 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3EEC061574;
-        Mon, 22 Mar 2021 13:52:47 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ce10so23529991ejb.6;
-        Mon, 22 Mar 2021 13:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UNF74mju2yKudQM6M90gJOwGUAJxDsKU0rKDDT/5z9c=;
-        b=grU3yVRKT/ol7ZS/+v+2Ri7EqxaAxX79HBuUeyzSPHO0OPFyPNVoxdygLo3S0OzGBP
-         8YrsIMse/sLi4lV/SruZ2XFXJ3LKYJMf+dEfB6YmluQpPVaothogQVX7B7F7cSOQlEUA
-         9OrSq0fBCzHVC5d0ATvm19FrbOK9vFzR8h7Gxjr5tQ3uUm/R38edNry7N7KFEIYqm5yG
-         WB6dVvXqVNxLyF+romR0LQwFT6GA1z6yPbLdDgnp75MUMD/76GZz/DrH5g+YXlwAfpy2
-         k0msSovrinz1J0tuB6VLVG1nq3vz6mvvQU1w7XQMDUTjRpiMV06O7Vj6hL09l3OwjrPm
-         AaWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UNF74mju2yKudQM6M90gJOwGUAJxDsKU0rKDDT/5z9c=;
-        b=q+1HEKc5kncjsnp+LDZKConTgkZyththkqVC+7QtWmh10Nu6k5Y5HKZOJP+R8HssnD
-         lm0NN+Q5wYT2h+nvy/Q3nb/QNmsDKaznVfdG/7mgwI98qd82gwmr/O43jWmJ+BZNdqrD
-         myLbDIK8U3iykjMcG6p7+juqUnV4iI+i4TAJq6N/B8vnHC0lBrOgziHFVpUr5gcv208S
-         ooQhCrIcRAozmC0PDuuSGnvN6Zp+n2FGaENozJeLvh7LJn47oI1lsDMeoISbk+M6DX3b
-         nRewDUwLA6LmqMBWF2CcGOHpfjFMVC/wtnTYIjW95q2ogfZMQCwXgEyhSHtGUSUuR8/G
-         4fxg==
-X-Gm-Message-State: AOAM533EasVUbV3H/JilHN+oFYj5y1tnls040YX7rSgSLFu/VGnJTh5H
-        xaY6HGApN3pOiX5MWZWQQYdp45pPw94=
-X-Google-Smtp-Source: ABdhPJxF0BjsdoPagQhlCHQS7vwmzvCcd9rtPoZNnm+xjhrPY8rAsKPDKV0XbsYaCeTtJNB8mj7wPA==
-X-Received: by 2002:a17:906:f10c:: with SMTP id gv12mr1618910ejb.53.1616446366500;
-        Mon, 22 Mar 2021 13:52:46 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id gn3sm9856283ejc.2.2021.03.22.13.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:52:46 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 22:52:44 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Mon, 22 Mar 2021 16:55:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6D9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=b3Ab64gMwLXEjOKWzRYzhgtkfQ7yGZ0iEhUU73fIUU8=; b=ELAKB/0n1zibeXStmS+wwJQt9x
+        Ixo0pWMKt+9VlcCYoCCeJ3Rc6c5t+sUBRmeKPHLEjZZoFvrFDy0ww5l+S9cj8YZQ/pGAonAL8fxdm
+        ht9K8VzKy5NnhBoG/rBwGljCySo23xjMIMM/qzE9NVY0Dufbwbsh7I9I6krQGQmTppuljG5KpKSSN
+        QfsE2UHL+NoKWQqUgV2ueUYP9Tyej2hCNVO5aIShW5/x3mvDYYWtvzvRHixLaBemXCBIQbiIN3G0G
+        NcUAtZEZiA2c9WXzlPiKG62fPr/xMAruv7CtJxa1/N5KbY3CpxSU1BkIH+LfoYEP54TF/LVSR18yF
+        roeGZsSw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lORZr-0094Ia-Hb; Mon, 22 Mar 2021 20:55:09 +0000
+Subject: Re: [PATCH V2] staging: rtl8723bs: Mundane typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: don't assign an error value to tag_ops
-Message-ID: <20210322205244.qnbyigvyjsniktzz@skbuf>
-References: <20210322202650.45776-1-george.mccollister@gmail.com>
+References: <20210322201648.137317-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <af9c4139-80f4-1003-d484-ee984232869c@infradead.org>
+Date:   Mon, 22 Mar 2021 13:55:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322202650.45776-1-george.mccollister@gmail.com>
+In-Reply-To: <20210322201648.137317-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:26:50PM -0500, George McCollister wrote:
-> Use a temporary variable to hold the return value from
-> dsa_tag_driver_get() instead of assigning it to dst->tag_ops. Leaving
-> an error value in dst->tag_ops can result in deferencing an invalid
-> pointer when a deferred switch configuration happens later.
+On 3/22/21 1:16 PM, Bhaskar Chowdhury wrote:
+> s/stoping/stopping/
+> s/arragement/arrangement/
+> s/eralier/earlier/
 > 
-> Fixes: 357f203bb3b5 ("net: dsa: keep a copy of the tagging protocol in the DSA switch tree")
+> Plus one extra word in the sentence "the" removed.
 > 
-> Signed-off-by: George McCollister <george.mccollister@gmail.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
 > ---
+>   Changes from V1:
+>   Greg,pointed out my mistake of introducing typo to typo , corrected.
+> 
+>  drivers/staging/rtl8723bs/include/hal_com_reg.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/include/hal_com_reg.h b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+> index 37fa59a352d6..b555826760d0 100644
+> --- a/drivers/staging/rtl8723bs/include/hal_com_reg.h
+> +++ b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+> @@ -1002,9 +1002,9 @@ Current IOREG MAP
+>  	/* 		 8192C (TXPAUSE) transmission pause	(Offset 0x522, 8 bits) */
+>  	/*  */
+>  /*  Note: */
+> -/* 	The the bits of stoping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
+> -/* 	the correct arragement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
+> -/* 	8723 and 88E may be not correct either in the eralier version. Confirmed with DD Tim. */
+> +/* 	The  bits of stopping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
+> +/* 	the correct arrangement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
+> +/* 	8723 and 88E may be not correct either in the earlier version. Confirmed with DD Tim. */
+>  /*  By Bruce, 2011-09-22. */
+>  #define StopBecon		BIT6
+>  #define StopHigh			BIT5
+> --
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Just FYI, new lines aren't typically added between the various tags.
+-- 
+~Randy
+
