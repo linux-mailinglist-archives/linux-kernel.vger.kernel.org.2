@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E07344646
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CDE34464A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhCVNyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S230252AbhCVNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhCVNxr (ORCPT
+        with ESMTP id S230241AbhCVNyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:53:47 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC7DC061574;
-        Mon, 22 Mar 2021 06:53:46 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id ce10so21394502ejb.6;
-        Mon, 22 Mar 2021 06:53:46 -0700 (PDT)
+        Mon, 22 Mar 2021 09:54:14 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75C81C061574;
+        Mon, 22 Mar 2021 06:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jX+u5Il9FFhVYVkW7pqj87Zsgj9Bh++s3plZJeOI0WY=;
-        b=hk+rgIeZOPySzG9QtpoGzMDEqiX2FMsNn4x3rUJDuDx5L2WaUSALAlEamYlUEaQlgb
-         122ANDd3eRDzVT0Ts0BLOM7Kvva6Cm5e+WuyM/8bx8PYu7yjkDLnodqUYR9sy2KAdqkv
-         4RC8BV3lJWIfECmh7BjSvJYNiX8+dwm2unJAYl+vj2Fe+yg9gMxTD3U6n2nTnj+gYJoK
-         KCtJ+n7uFUIqqM1LMeXqUqXpO2oTFskbTdFqn2dOd4dFwGlcZOIBO0eJMp5nraY0wWWk
-         7HekceiaqNoc/nduHmntKFQ/MaUqqOmdYumClqvAQhKhjZQlORZPCgMIW3AtqisExNpB
-         /Adw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jX+u5Il9FFhVYVkW7pqj87Zsgj9Bh++s3plZJeOI0WY=;
-        b=jfpl0LBU5EUAb5Jnf1zHV/XtuGU4BjoT4qhYrHaaVHzeKxSFUjuShZHUf9vEuhtsjt
-         TIZrIa5aP1MDGufF7e9u7fuc6shLMbAxZjpgs4z+vWO5i4JqEHhpZXDxUwOidiAdOwdz
-         kIdncX22+DPbfYSemPlKhunmQkgtCB4CFxWyl8BmkAfePetg86OYLZ1GZDMWn7/9lIE9
-         cucmFLuy4ByEi/XyL8fyrwXl7MLylNH9kqEM5gizjCL3DVhijJ4IOkL0lPh92u+WdwTX
-         TsqAc0uXUuecuRGD5wa4yCCAugkIM14sRvL0N8ad3tfXWZi7xfpq4z98md4rgI3NAd4l
-         ccNA==
-X-Gm-Message-State: AOAM533BUm9LJyIvxQkjn2J9LvZ9gbvMWOjVgVn0ZBZFMwV7NQj+iCfH
-        NeRNnhMazPnxw2jp3UTt6P1dNr7fWstSKA+DBKQ=
-X-Google-Smtp-Source: ABdhPJxkeZ7V6qpSEcD74vXBI62+IR3JRYPyq9TL1I8FFDD5uz7YVBVvWyuAMW6uHWzFdj4fWXlZW8S1q927HDHleI4=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr19483582ejq.1.1616421225620;
- Mon, 22 Mar 2021 06:53:45 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ZvmwOEawDG
+        9M5i/TCmUlPJq/nlotbbYqY4IROl3iLcs=; b=MsAu2As48t7p5V+VsuWkAZNDW9
+        CNfx49DqNX7ItZhn+weTD63uPJoK9ZTk9RCg2R3f0Hw+wiXidHJvLE8Ib3pX42ny
+        FUyPusGxKYDRK9B/ACoKf3ys9G9n528aqkD8OP9YL8D20529A3Taja/GadMOfkIe
+        gUtS1+3h8/z+OYP9I=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX36d2oVhglAQOAA--.4840S4;
+        Mon, 22 Mar 2021 21:53:58 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] infiniband: Fix a use after free in isert_connect_request
+Date:   Mon, 22 Mar 2021 06:53:55 -0700
+Message-Id: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210318113233.473329-1-liu.xuzhi@zte.com.cn>
-In-Reply-To: <20210318113233.473329-1-liu.xuzhi@zte.com.cn>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Mon, 22 Mar 2021 22:53:31 +0900
-Message-ID: <CAKFNMo=ME1jw3ZexLjP4MkU3AzHJebjiDB+WhZ_25CTYdm6C8g@mail.gmail.com>
-Subject: Re: [PATCH] fs/nilfs2: fix misspellings using codespell tool
-To:     menglong8.dong@gmail.com
-Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Liu xuzhi <liu.xuzhi@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDX36d2oVhglAQOAA--.4840S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7GF43KrykKFy3tr48Aw18Zrb_yoW8Jry5pF
+        1DAr9YkrWDKr1UGa17ZrWDXFWYga1kAa4DKry2yw1YkFsIya4IyrWUC34Utr1UJr1fGFnr
+        XFWUJa95CF4kJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUjkhLUUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied, thank you.
+The device is got by isert_device_get() with refcount is 1,
+and is assigned to isert_conn by isert_conn->device = device.
+When isert_create_qp() failed, device will be freed with
+isert_device_put().
 
-Ryusuke Konishi
+Later, the device is used in isert_free_login_buf(isert_conn)
+by the isert_conn->device->ib_device statement. My patch
+exchanges the callees order to free the device late.
 
-On Thu, Mar 18, 2021 at 8:32 PM <menglong8.dong@gmail.com> wrote:
->
-> From: Liu xuzhi <liu.xuzhi@zte.com.cn>
->
-> Two typos are found out by codespell tool \
-> in 2217th and 2254th lines of segment.c:
->
-> $ codespell ./fs/nilfs2/
-> ./segment.c:2217 :retured  ==> returned
-> ./segment.c:2254: retured  ==> returned
->
-> Fix two typos found by codespell.
->
-> Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
-> ---
->  fs/nilfs2/segment.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-> index cd4da9535aed..686c8ee7b29c 100644
-> --- a/fs/nilfs2/segment.c
-> +++ b/fs/nilfs2/segment.c
-> @@ -2214,7 +2214,7 @@ static void nilfs_segctor_wakeup(struct nilfs_sc_info *sci, int err)
->   * nilfs_construct_segment - construct a logical segment
->   * @sb: super block
->   *
-> - * Return Value: On success, 0 is retured. On errors, one of the following
-> + * Return Value: On success, 0 is returned. On errors, one of the following
->   * negative error code is returned.
->   *
->   * %-EROFS - Read only filesystem.
-> @@ -2251,7 +2251,7 @@ int nilfs_construct_segment(struct super_block *sb)
->   * @start: start byte offset
->   * @end: end byte offset (inclusive)
->   *
-> - * Return Value: On success, 0 is retured. On errors, one of the following
-> + * Return Value: On success, 0 is returned. On errors, one of the following
->   * negative error code is returned.
->   *
->   * %-EROFS - Read only filesystem.
-> --
-> 2.25.1
->
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 7305ed8976c2..d8a533e346b0 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 
+ out_destroy_qp:
+ 	isert_destroy_qp(isert_conn);
+-out_conn_dev:
+-	isert_device_put(device);
+ out_rsp_dma_map:
+ 	isert_free_login_buf(isert_conn);
++out_conn_dev:
++	isert_device_put(device);
+ out:
+ 	kfree(isert_conn);
+ 	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
+-- 
+2.25.1
+
+
