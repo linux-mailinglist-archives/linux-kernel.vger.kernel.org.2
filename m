@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724613444C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7783444E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhCVNGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
+        id S233690AbhCVNIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232774AbhCVMwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A29261A08;
-        Mon, 22 Mar 2021 12:46:37 +0000 (UTC)
+        id S230290AbhCVMy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75DDE6191A;
+        Mon, 22 Mar 2021 12:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417197;
-        bh=prBGNYi1Jd0ZfGutOJY805ylZAqFRJ3ZB7SFxaU9B/Y=;
+        s=korg; t=1616417264;
+        bh=Tm58TnChNl/jc/aRr3Ps8lOwEZ/u3ovewMnD333AJ3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KxoSwz/GcFpefspD3eErHfZ8DRicnoVD7YDryvm90tOaAawDdlUgeHyPumMkRDyBv
-         2Igu8jJ/NNu88Ge6w88n1NnOuNta5TK12RWxqepKzgYxlZjjEbTmNFMZSZ/oOEKKea
-         BUr4wVr9p2UkxhqaiOCgflpkIDUFhNwF9KS6he3A=
+        b=Np10NnhyNekAQzHlFKFGbC6fLpxO8Cn7EzyrlJBPck9PBvVqyI252G634AvBQXCzf
+         vwnr6k93poY53/Jha8H6WrYCnDj8rfKTiAPLIOc3TVC1VLUJcTpcmmUMhhiwj1O5q1
+         kGO0kr2clKswle/JngwgJ/jq/U5ojvm1SgOkHsOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shijie Luo <luoshijie1@huawei.com>,
-        stable@kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.4 13/14] ext4: fix potential error in ext4_do_update_inode
-Date:   Mon, 22 Mar 2021 13:29:07 +0100
-Message-Id: <20210322121919.606893373@linuxfoundation.org>
+        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 4.9 18/25] perf/x86/intel: Fix a crash caused by zero PEBS status
+Date:   Mon, 22 Mar 2021 13:29:08 +0100
+Message-Id: <20210322121920.972540907@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
-References: <20210322121919.202392464@linuxfoundation.org>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shijie Luo <luoshijie1@huawei.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit 7d8bd3c76da1d94b85e6c9b7007e20e980bfcfe6 upstream.
+commit d88d05a9e0b6d9356e97129d4ff9942d765f46ea upstream.
 
-If set_large_file = 1 and errors occur in ext4_handle_dirty_metadata(),
-the error code will be overridden, go to out_brelse to avoid this
-situation.
+A repeatable crash can be triggered by the perf_fuzzer on some Haswell
+system.
+https://lore.kernel.org/lkml/7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu/
 
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-Link: https://lore.kernel.org/r/20210312065051.36314-1-luoshijie1@huawei.com
-Cc: stable@kernel.org
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+may be mistakenly set to 0. To minimize the impact of the defect, the
+commit was introduced to try to avoid dropping the PEBS record for some
+cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+the local pebs_status accordingly. However, it doesn't correct the PEBS
+status in the PEBS record, which may trigger the crash, especially for
+the large PEBS.
+
+It's possible that all the PEBS records in a large PEBS have the PEBS
+status 0. If so, the first get_next_pebs_record_by_bit() in the
+__intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+PEBS, the 'count' parameter must > 1. The second
+get_next_pebs_record_by_bit() will crash.
+
+Besides the local pebs_status, correct the PEBS status in the PEBS
+record as well.
+
+Fixes: 01330d7288e0 ("perf/x86: Allow zero PEBS status with only single active event")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/1615555298-140216-1-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inode.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/events/intel/ds.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4626,7 +4626,7 @@ static int ext4_do_update_inode(handle_t
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 	struct buffer_head *bh = iloc->bh;
- 	struct super_block *sb = inode->i_sb;
--	int err = 0, rc, block;
-+	int err = 0, block;
- 	int need_datasync = 0, set_large_file = 0;
- 	uid_t i_uid;
- 	gid_t i_gid;
-@@ -4726,9 +4726,9 @@ static int ext4_do_update_inode(handle_t
- 					      bh->b_data);
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1473,7 +1473,7 @@ static void intel_pmu_drain_pebs_nhm(str
+ 		 */
+ 		if (!pebs_status && cpuc->pebs_enabled &&
+ 			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+-			pebs_status = cpuc->pebs_enabled;
++			pebs_status = p->status = cpuc->pebs_enabled;
  
- 	BUFFER_TRACE(bh, "call ext4_handle_dirty_metadata");
--	rc = ext4_handle_dirty_metadata(handle, NULL, bh);
--	if (!err)
--		err = rc;
-+	err = ext4_handle_dirty_metadata(handle, NULL, bh);
-+	if (err)
-+		goto out_brelse;
- 	ext4_clear_inode_state(inode, EXT4_STATE_NEW);
- 	if (set_large_file) {
- 		BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get write access");
+ 		bit = find_first_bit((unsigned long *)&pebs_status,
+ 					x86_pmu.max_pebs_events);
 
 
