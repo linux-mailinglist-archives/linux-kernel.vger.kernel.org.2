@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFD13443ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F8434437B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhCVMzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:55:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
+        id S232097AbhCVMvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhCVMov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2176E619E1;
-        Mon, 22 Mar 2021 12:41:46 +0000 (UTC)
+        id S232329AbhCVMmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:42:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A338460C3D;
+        Mon, 22 Mar 2021 12:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416907;
-        bh=lTSJ6f4pRkDvSE20ESIL6IoNHDrGayBc6W7JSDyigQ0=;
+        s=korg; t=1616416794;
+        bh=LLeOM1RpqA9mOvAYXPpXUzX0CoIVtFrjKnsMUAATMWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qeqCOPl4pYEKD5cRMcBsB8t1K88wWF4v9v+eb+MgAimMxePFMP2zSIh4H1FHHszCc
-         wshlE57EG00GmtSLX3IVg7HgIPILvZhdBfW3taYfDpMUw/Bwe2bspCCfHkgza+8miX
-         eoOe96RBMPgW+trUVCNo3Xx1gy+EZDYmyXq1vEtY=
+        b=vZbz9Nv6w7nUpj7ioPX14CabxkrtDuLfTSiQDsz0wBYjgYxXBpDhn3hu4frY4Mj9E
+         UmgHEYvU0wGQ/9hVe4TVYY06K/NpFe/S1G6/uD3F2aLlAwwsceIaLPBey/RcOzWo5s
+         77diBVo/ZRAfldzVzv0BrH6jctCSUHSmjjOXHdpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 12/60] btrfs: fix slab cache flags for free space tree bitmap
-Date:   Mon, 22 Mar 2021 13:28:00 +0100
-Message-Id: <20210322121922.775391507@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 5.10 124/157] thunderbolt: Increase runtime PM reference count on DP tunnel discovery
+Date:   Mon, 22 Mar 2021 13:28:01 +0100
+Message-Id: <20210322121937.693163691@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-commit 34e49994d0dcdb2d31d4d2908d04f4e9ce57e4d7 upstream.
+commit c94732bda079ee66b5c3904cbb628d0cb218ab39 upstream.
 
-The free space tree bitmap slab cache is created with SLAB_RED_ZONE but
-that's a debugging flag and not always enabled. Also the other slabs are
-created with at least SLAB_MEM_SPREAD that we want as well to average
-the memory placement cost.
+If the driver is unbound and then bound back it goes over the topology
+and figure out the existing tunnels. However, if it finds DP tunnel it
+should make sure the domain does not runtime suspend as otherwise it
+will tear down the DP tunnel unexpectedly.
 
-Reported-by: Vlastimil Babka <vbabka@suse.cz>
-Fixes: 3acd48507dc4 ("btrfs: fix allocation of free space cache v1 bitmap pages")
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 6ac6faee5d7d ("thunderbolt: Add runtime PM for Software CM")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thunderbolt/tb.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9628,7 +9628,7 @@ int __init btrfs_init_cachep(void)
+--- a/drivers/thunderbolt/tb.c
++++ b/drivers/thunderbolt/tb.c
+@@ -138,6 +138,10 @@ static void tb_discover_tunnels(struct t
+ 				parent->boot = true;
+ 				parent = tb_switch_parent(parent);
+ 			}
++		} else if (tb_tunnel_is_dp(tunnel)) {
++			/* Keep the domain from powering down */
++			pm_runtime_get_sync(&tunnel->src_port->sw->dev);
++			pm_runtime_get_sync(&tunnel->dst_port->sw->dev);
+ 		}
  
- 	btrfs_free_space_bitmap_cachep = kmem_cache_create("btrfs_free_space_bitmap",
- 							PAGE_SIZE, PAGE_SIZE,
--							SLAB_RED_ZONE, NULL);
-+							SLAB_MEM_SPREAD, NULL);
- 	if (!btrfs_free_space_bitmap_cachep)
- 		goto fail;
- 
+ 		list_add_tail(&tunnel->list, &tcm->tunnel_list);
 
 
