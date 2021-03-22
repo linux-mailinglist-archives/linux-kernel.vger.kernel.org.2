@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF20B345167
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C25345192
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhCVVJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
+        id S231621AbhCVVMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVVId (ORCPT
+        with ESMTP id S231390AbhCVVLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:08:33 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7170C061574;
-        Mon, 22 Mar 2021 14:08:31 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id j3so21039196edp.11;
-        Mon, 22 Mar 2021 14:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MeMyP6yxpEyI8O18iLMWHARj/2oI4TtzSo5lwW4fJW4=;
-        b=k5ZGdyQ0UwJMm0SwLsEVo76cQvkNMXFAqTOh+dAJ1+3/dwFvDk8Qfk9LlXI+HULT2T
-         LQekvdF2sqsyQDjh23IpBUHLWUwX7c+9LTWKmXmExAqDs5UiaBgBfrmSSFZ07G7k6WNI
-         DVWdl8ZP4p0a7AlAn1c763j8WLiEBQO8tGMwDTQZGwr1YbhM+DsMyUfUyCDNEMBP0Sw0
-         Ly8TglYJLFeUrCKRlMHPzay9ybP6GaWMOMj+lsRvyyH9TWjB5MofI9gG6Ssqif+lrfMi
-         /0SI2Fv/ppGBf8mqqBdNlbnDyOrtNF1GbWowpmAO0vlYeMwRkHWeDICTgJ61ItlzB0gk
-         YQMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=MeMyP6yxpEyI8O18iLMWHARj/2oI4TtzSo5lwW4fJW4=;
-        b=lBm3gQQCavVrg4hQGme67zQV78EWGPTyeXU63XIBOR/HyuoHuA8s9q1IltuRl3+QSX
-         pH+cR4VNDubxxWL/TrYGlwQISM/qLei6jvXNAEpDHdILLsMHGy0J0j9jsfHlkiwlHLNK
-         AFEgQI9nL78toTnZvxnQjgMxes2XCSAjxYwWoKYrlEiSeSDGlEmL83zpsRVZmXZQeWFz
-         baHaYUqQ4D59gaKls8Kn9orqW7NV51QFYfjrONXCdNkXDrWqVLYliws8pO0AWOrXfVMR
-         fNe/j5l6xw2sdtgARcTiImR/7ucj4wPfuF1bNmgaVJ3Rz6DpHqTC3OSD2QScq3y7Ngm1
-         k5lw==
-X-Gm-Message-State: AOAM532yciLPntDDbFHoc0j3mtKRphwnYhIGS02fqugWHmFHal1kd9Qe
-        YzAv2Nw8UKogoaYY0gRMcV4=
-X-Google-Smtp-Source: ABdhPJyJy6b4NgHlWF7ybHfmpOB4WIT/W3vU8jy382mzzp7k6G9l2p2gO8bGRlUepZunXM3MIpJoKg==
-X-Received: by 2002:aa7:cd16:: with SMTP id b22mr1514895edw.357.1616447310498;
-        Mon, 22 Mar 2021 14:08:30 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id v22sm10184101ejj.103.2021.03.22.14.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 14:08:30 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 22 Mar 2021 22:08:28 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Xu Yihang <xuyihang@huawei.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        johnny.chenyi@huawei.com, heying24@huawei.com
-Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
-Message-ID: <20210322210828.GA1961861@gmail.com>
-References: <20210322031713.23853-1-xuyihang@huawei.com>
+        Mon, 22 Mar 2021 17:11:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698FAC061574;
+        Mon, 22 Mar 2021 14:11:38 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 21:11:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616447497;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rojIO89mEGlFRARFePTFk8tEEDNyJO1Urkm/8tbKYOA=;
+        b=xaW/L/9zROQKNGDnLpeOXT530jC14GFlxH6+j9M62JeKnPO+pKUA4y3KFlNIPrRses9DE2
+        N24qSQHtUz84JazaPheJyEmcq4qzxhFEDIP2gD15H2neufEVLkPHGxxZpZd8TYvXAwYlKU
+        F+VOgMK7bR42xZ6yZv+j/9gFPFxbVsYZA3Q7XX28b2pP3e6CXYtaS2OxSpGdjiLT+eKvwM
+        LgKY027dNqn0TMskHyEEZUSphNRyqbgUN8nAoklwkRYaUVKTN8Wp+xV6eAGATMpj9QsHR4
+        dBnNt+WQIqUqi0xzfwJy1ekkoolFd/kDOYZeqkh422yMy6ZuBxeY5nGc9zKuiw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616447497;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rojIO89mEGlFRARFePTFk8tEEDNyJO1Urkm/8tbKYOA=;
+        b=lWHTQyUcAO39ZsiMzXLphckpPmcBzerbK1RcIsCne5AdfbEurUKx9XwaXKZ9iwpfilU2d7
+        txJ3TI+T9/ZFW4Bw==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] lockdep: Address clang -Wformat warning printing for %hd
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210322115531.3987555-1-arnd@kernel.org>
+References: <20210322115531.3987555-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322031713.23853-1-xuyihang@huawei.com>
+Message-ID: <161644749627.398.4415880937638801207.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the perf/urgent branch of tip:
 
-* Xu Yihang <xuyihang@huawei.com> wrote:
+Commit-ID:     6d48b7912cc72275dc7c59ff961c8bac7ef66a92
+Gitweb:        https://git.kernel.org/tip/6d48b7912cc72275dc7c59ff961c8bac7ef66a92
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Mon, 22 Mar 2021 12:55:25 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 22 Mar 2021 22:07:09 +01:00
 
-> Fixes the following W=1 kernel build warning(s):
-> arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable ‘msr_val’ set but not used [-Wunused-but-set-variable]
->   unsigned long msr_val;
-> 
-> As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is necessary, msr_val is not uesed, so __maybe_unused should be added.
-> 
-> Reference:
-> https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
-> ---
->  arch/x86/hyperv/hv_spinlock.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
-> index f3270c1fc48c..67bc15c7752a 100644
-> --- a/arch/x86/hyperv/hv_spinlock.c
-> +++ b/arch/x86/hyperv/hv_spinlock.c
-> @@ -25,7 +25,7 @@ static void hv_qlock_kick(int cpu)
->  
->  static void hv_qlock_wait(u8 *byte, u8 val)
->  {
-> -	unsigned long msr_val;
-> +	unsigned long msr_val __maybe_unused;
->  	unsigned long flags;
+lockdep: Address clang -Wformat warning printing for %hd
 
-Please don't add new __maybe_unused annotations to the x86 tree - 
-improve the flow instead to help GCC recognize the initialization 
-sequence better.
+Clang doesn't like format strings that truncate a 32-bit
+value to something shorter:
 
-Thanks,
+  kernel/locking/lockdep.c:709:4: error: format specifies type 'short' but the argument has type 'int' [-Werror,-Wformat]
 
-	Ingo
+In this case, the warning is a slightly questionable, as it could realize
+that both class->wait_type_outer and class->wait_type_inner are in fact
+8-bit struct members, even though the result of the ?: operator becomes an
+'int'.
+
+However, there is really no point in printing the number as a 16-bit
+'short' rather than either an 8-bit or 32-bit number, so just change
+it to a normal %d.
+
+Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210322115531.3987555-1-arnd@kernel.org
+---
+ kernel/locking/lockdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c30eb88..f160f1c 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -705,7 +705,7 @@ static void print_lock_name(struct lock_class *class)
+ 
+ 	printk(KERN_CONT " (");
+ 	__print_lock_name(class);
+-	printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
++	printk(KERN_CONT "){%s}-{%d:%d}", usage,
+ 			class->wait_type_outer ?: class->wait_type_inner,
+ 			class->wait_type_inner);
+ }
