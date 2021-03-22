@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AFC3446C4
+	by mail.lfdr.de (Postfix) with ESMTP id 723743446C5
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhCVOJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:09:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60776 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230119AbhCVOIa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:08:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616422107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FVgT8cREJNNCZgsvwdo4IVCZkhVlPEV4H/HRfF+vQHs=;
-        b=CHZliN66hPXgCQNWamKXsT2D0mInGwS8uG4hgCmsTfQi5FLDKkc6QSeA1HeoyfwVbZsGef
-        lty5iL/GSY3FJOovgyCFuyKJi3E9xoKDQ+Pchl8Z0C0wm3gw3MyXZ9g6umWnZ1RG9mNorM
-        7MhIcuURK9RTjjX61xkl+oWWx/zWMik=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-eK7cFVmaMW6mdIcgfIuOyA-1; Mon, 22 Mar 2021 10:08:26 -0400
-X-MC-Unique: eK7cFVmaMW6mdIcgfIuOyA-1
-Received: by mail-qt1-f199.google.com with SMTP id t5so31879854qti.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:08:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=FVgT8cREJNNCZgsvwdo4IVCZkhVlPEV4H/HRfF+vQHs=;
-        b=hEjGbwVMCcjigjuStj1nP/eptQVk0gZfvxbBmcY7chrYI3O86jcIhrgOJwoYoLV4zs
-         QluOfF9U18IBKnI749hN5sKJMVajjCQ7yJk0aIImRWHQ/RVXhmMYQDqkgRvBTCyp4ae5
-         q+xcwfxK9jczSPCI++PCvLem6NsJWHjz48iahxljJ9/80BJAW/woXga7M2SGfz56kz6/
-         +SJ3fHg8LWHYDTsmDvtjioLcZyCo8gsuBeHmz0Xmo7gXuowyoeq6y4LyW9hJ97PILlJw
-         Siyhs3XXFRZGcEdwW+Ulf9uTez1BMNSUDmWmuDX6Lf5vSx7+rkYFHvbN+aecAV/SAEWG
-         yheQ==
-X-Gm-Message-State: AOAM532XiXVmclzHFG4XShaKaBzLn0pziuYenBz0g04z6u0/VcCuD0ES
-        yDXSNnYNfcOmjUyDLbC7GsvpgILWhapCN391bKnbUeaX9l/i4KTXK/vP637SYFEiyDXRxR/VZqj
-        d2tqUttqZDMiRRZ1QHjB9vs9j
-X-Received: by 2002:a37:a74e:: with SMTP id q75mr170967qke.165.1616422105589;
-        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrUVuJJE09nrcOBM4NdtiV05nyirk+Tg8pFgeTN9VypOp5y986vzL315hHiWdFn7UBNMA7CQ==
-X-Received: by 2002:a37:a74e:: with SMTP id q75mr170943qke.165.1616422105378;
-        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id z8sm9014413qtn.12.2021.03.22.07.08.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
-Subject: Re: [PATCH] amdgpu: avoid incorrect %hu format string
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Chen Li <chenli@uniontech.com>,
-        Sonny Jiang <sonny.jiang@amd.com>,
-        xinhui pan <xinhui.pan@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210322115458.3961825-1-arnd@kernel.org>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <eefe9a55-4212-4d51-6add-9eb9ead0b5ed@redhat.com>
-Date:   Mon, 22 Mar 2021 07:08:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230285AbhCVOJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229879AbhCVOIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B5E61931;
+        Mon, 22 Mar 2021 14:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616422117;
+        bh=7caE9N26jv0l5ZnLHGx7Et17KdeDOuGVZwE3GJ5eC/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=usfo7ArLyujRxLVN0WQM3dLozR/ZOP84SjTA9R6YfVO2xpnK+ZDCIz2ch+Je60Gr3
+         eQYkHI8j6lqPynZS7H80CmKLsQwBLd2VAzI6ElAo2aRISKmWbVPhq/azgvNzAIeTkZ
+         dqEfoZzl4gJ1UnQ5IymBm3gnNiPO+17s9LndqZGukIzCOmdIjtaBo3MN+gEbwFY2bX
+         hxcDstVLdEf0WZTkn1dIvB9uWpy7C7AayiM/9C1tOaDcq0ttXL0v9GKF/YXZkmxZdb
+         /16IEjozeZLTZNomMswrcNIlZjpMf5HhoXj39yB1RDG5UZVCzdwfxOUy5Wal0RVD0q
+         1cg8bkeEk0wow==
+Received: by earth.universe (Postfix, from userid 1000)
+        id BE9123C0C96; Mon, 22 Mar 2021 15:08:34 +0100 (CET)
+Date:   Mon, 22 Mar 2021 15:08:34 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Jian Dong <dj0227@163.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, dongjian <dongjian@yulong.com>
+Subject: Re: [PATCH] power-supply: use kobj_to_dev()
+Message-ID: <20210322140834.5tcrgo4n76bdcov4@earth.universe>
+References: <1615877652-31829-1-git-send-email-dj0227@163.com>
 MIME-Version: 1.0
-In-Reply-To: <20210322115458.3961825-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iwzobb3xlpjvnd7l"
+Content-Disposition: inline
+In-Reply-To: <1615877652-31829-1-git-send-email-dj0227@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 3/22/21 4:54 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang points out that the %hu format string does not match the type
-> of the variables here:
->
-> drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:263:7: warning: format specifies type 'unsigned short' but the argument has type 'unsigned int' [-Wformat]
->                                   version_major, version_minor);
->                                   ^~~~~~~~~~~~~
-> include/drm/drm_print.h:498:19: note: expanded from macro 'DRM_ERROR'
->         __drm_err(fmt, ##__VA_ARGS__)
->                   ~~~    ^~~~~~~~~~~
->
-> Change it to a regular %u, the same way a previous patch did for
-> another instance of the same warning.
+--iwzobb3xlpjvnd7l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It would be good to explicitly call out the change.
+Hi,
 
-ex/ do you mean mine ?
-
-0b437e64e0af ("drm/amdgpu: remove h from printk format specifier")
-
-This was for a different reason.
-
-imo, you do not need to include what another patch did.
-
-so you could also just remove this bit from the commit log.
-
-
-The change itself looks good.
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
->
-> Fixes: 0b437e64e0af ("drm/amdgpu: remove h from printk format specifier")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 16, 2021 at 02:54:12PM +0800, Jian Dong wrote:
+> From: dongjian <dongjian@yulong.com>
+>=20
+> Use kobj_to_dev() instead of open-coding it
+>=20
+> Signed-off-by: dongjian <dongjian@yulong.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> index e2ed4689118a..c6dbc0801604 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-> @@ -259,7 +259,7 @@ int amdgpu_uvd_sw_init(struct amdgpu_device *adev)
->  		if ((adev->asic_type == CHIP_POLARIS10 ||
->  		     adev->asic_type == CHIP_POLARIS11) &&
->  		    (adev->uvd.fw_version < FW_1_66_16))
-> -			DRM_ERROR("POLARIS10/11 UVD firmware version %hu.%hu is too old.\n",
-> +			DRM_ERROR("POLARIS10/11 UVD firmware version %u.%u is too old.\n",
->  				  version_major, version_minor);
->  	} else {
->  		unsigned int enc_major, enc_minor, dec_minor;
 
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/supply/ds2781_battery.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/ds2781_battery.c b/drivers/power/supply=
+/ds2781_battery.c
+> index 3df3c82..05b859b 100644
+> --- a/drivers/power/supply/ds2781_battery.c
+> +++ b/drivers/power/supply/ds2781_battery.c
+> @@ -626,7 +626,7 @@ static ssize_t ds2781_read_param_eeprom_bin(struct fi=
+le *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2781_device_info *dev_info =3D to_ds2781_device_info(psy);
+> =20
+> @@ -639,7 +639,7 @@ static ssize_t ds2781_write_param_eeprom_bin(struct f=
+ile *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2781_device_info *dev_info =3D to_ds2781_device_info(psy);
+>  	int ret;
+> @@ -671,7 +671,7 @@ static ssize_t ds2781_read_user_eeprom_bin(struct fil=
+e *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2781_device_info *dev_info =3D to_ds2781_device_info(psy);
+> =20
+> @@ -685,7 +685,7 @@ static ssize_t ds2781_write_user_eeprom_bin(struct fi=
+le *filp,
+>  				struct bin_attribute *bin_attr,
+>  				char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D to_power_supply(dev);
+>  	struct ds2781_device_info *dev_info =3D to_ds2781_device_info(psy);
+>  	int ret;
+> --=20
+> 1.9.1
+>=20
+
+--iwzobb3xlpjvnd7l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBYpOIACgkQ2O7X88g7
++pq2eg//Szgo6OaEduFcKvhuFr2h5C/QHthQMKuGOcrVq0xsnhxIiEO6S+jfJDTv
+Y0vzbUekN9x/o2cP6HxxaixWDOK/pVOy+jjWvmbrIAj1viVzEyY4y2Gekw7Rwd42
+SWGbGacg8FxytOX9Ngh85ofjFo4Lx8ivqM0tacEXJqNzv8Ojqf6hsSr/Gnt3Y7L9
+k36f/LKWi/TEL1Hr9Cmmo8qFYyfpGaLFZzPqOzh5K4ehKJAVa/9H07gJXqX/fXs2
+OaeIQgMiFUKMTaomZJmRbGeGV96CzDxOupFYSaAfEnDbQT8ZNdUYxQ8mLGcG3Win
+y0NyEA2eWvQ7s/xMLNWtrp6yeoo+GP3ga7k5Db/D6DeIXj27wnZsiGrRtLO2qd2x
+CkbUa61vzcLiFIaHv/9bHZzf5qQgZSWmxrx1mb5YtrVlNIg9+MEnNcOMRRMaxcsK
+aBicRWFguKnsl9JHnkdHIjUhM8wMeXlUGDFzrgmaVeA916vcOeAjzuZeZqqwOV+w
+0k6YSfuPjbM0ltKJRXk8ukLD2iV61Jh8AxsvPFOLUe8Xv6XNwK2w+GfUl9yO3dLa
+5ojZ5E5JnvKU7zpcjq4PMpPKNKKg2onOUDu09ncNek2QVpVJQudadDTn/jtpHUD2
+b75zEtFpMbw0pI85j4Z+WMFsrUwT4k8Jv81lOPDKwRL2Vzn25yI=
+=j5VT
+-----END PGP SIGNATURE-----
+
+--iwzobb3xlpjvnd7l--
