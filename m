@@ -2,113 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1333D34494F
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD46344950
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhCVPdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:33:36 -0400
-Received: from verein.lst.de ([213.95.11.211]:56320 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230263AbhCVPdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:33:22 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 69F4568BEB; Mon, 22 Mar 2021 16:33:15 +0100 (CET)
-Date:   Mon, 22 Mar 2021 16:33:14 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210322153314.GA3440@lst.de>
-References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de> <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk> <20210322145403.GA30942@lst.de> <20210322151503.GX1463@shell.armlinux.org.uk> <20210322151823.GA2764@lst.de>
+        id S230170AbhCVPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:33:38 -0400
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:56298 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230374AbhCVPdY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:33:24 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 62152CCCD7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:33:22 +0000 (GMT)
+Received: (qmail 30621 invoked from network); 22 Mar 2021 15:33:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 15:33:22 -0000
+Date:   Mon, 22 Mar 2021 15:33:20 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v2] sched/fair: bring back select_idle_smt, but
+ differently
+Message-ID: <20210322153320.GG3697@techsingularity.net>
+References: <20210321150358.71ef52b1@imladris.surriel.com>
+ <20210322110306.GE3697@techsingularity.net>
+ <982f027e3a91b74cfa93e6fa91e2883d6c2f5dfd.camel@surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210322151823.GA2764@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <982f027e3a91b74cfa93e6fa91e2883d6c2f5dfd.camel@surriel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 04:18:23PM +0100, Christoph Hellwig wrote:
-> On Mon, Mar 22, 2021 at 03:15:03PM +0000, Russell King - ARM Linux admin wrote:
-> > It gets worse than that though - due to a change to remove
-> > pcibios_min_io from the generic code, moving it into the ARM
-> > architecture code, this has caused a regression that prevents the
-> > legacy resources being registered against the bus resource. So even
-> > if they are there, they cause probe failures. I haven't found a
-> > reasonable way to solve this yet, but until there is, there is no
-> > way that the PATA driver can be used as the "legacy mode" support
-> > is effectively done via the PCI code assigning virtual IO port
-> > resources.
+On Mon, Mar 22, 2021 at 11:07:47AM -0400, Rik van Riel wrote:
+> > >     The flip side of this is that we see more task migrations
+> > > (about
+> > >     30% more), higher cache misses, higher memory bandwidth
+> > > utilization,
+> > >     and higher CPU use, for the same number of requests/second.
+> > >     
 > > 
-> > I'm quite surprised that the CY82C693 even works on Alpha - I've
-> > asked for a lspci for that last week but nothing has yet been
-> > forthcoming from whoever responded to your patch for Alpha - so I
-> > can't compare what I'm seeing with what's happening with Alpha.
+> > I am having difficulty with this part and whether this patch affects
+> > task
+> > migrations in particular.
 > 
-> That sounds like something we could fix with a quirk for function 2
-> in the PCI resource assignment code.  Can you show what vendor and
-> device ID function 2 has so that I could try to come up with one?
+> Sorry, I should be more clear in the changelog for the
+> next version. Task migrations continue to be high with
+> this patch applied, but memory bandwidth and L2 cache
+> misses go back down, due to better cache locality.
+> 
 
-Something like this:
+That's completely fine and matches what I expected.
 
+> > >     This is most pronounced on a memcache type workload, which saw
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 953f15abc850ac..851918206c4f2d 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1855,7 +1855,7 @@ int pci_setup_device(struct pci_dev *dev)
- 		 * addresses. These are not always echoed in BAR0-3, and
- 		 * BAR0-3 in a few cases contain junk!
- 		 */
--		if (class == PCI_CLASS_STORAGE_IDE) {
-+		if (class == PCI_CLASS_STORAGE_IDE && !dev->no_legacy_ide_bars) {
- 			u8 progif;
- 			pci_read_config_byte(dev, PCI_CLASS_PROG, &progif);
- 			if ((progif & 1) == 0) {
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9ef1..c661462d894a5b 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5612,3 +5612,16 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
- }
- DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
- 			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-+
-+/*
-+ * CY82C693 splits the primary and secondar IDE channels over 2 functions, which
-+ * causes the PCI resource assignment algorithm to assign the legacy IDE I/O
-+ * regions to both of them.  Disable that assignment for function 2 here.
-+ */
-+static void quirk_cy82c693_legacy_resources(struct pci_dev *pdev)
-+{
-+	if (PCI_FUNC(pdev->devfn) == 2)
-+		pdev->no_legacy_ide_bars = 1;
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_CONTAQ, PCI_DEVICE_ID_CONTAQ_82C693,
-+		quirk_cy82c693_legacy_resources);
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 86c799c97b7796..7ca3f5ebbfade7 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -453,6 +453,7 @@ struct pci_dev {
- 	unsigned int	link_active_reporting:1;/* Device capable of reporting link active */
- 	unsigned int	no_vf_scan:1;		/* Don't scan for VFs after IOV enablement */
- 	unsigned int	no_command_memory:1;	/* No PCI_COMMAND_MEMORY */
-+	unsigned int	no_legacy_ide_bars:1;	/* do not assign legacy IDE BARs */
- 	pci_dev_flags_t dev_flags;
- 	atomic_t	enable_cnt;	/* pci_enable_device has been called */
- 
+> > >     a consistent 1-3% increase in total CPU use on the system, due
+> > >     to those increased task migrations leading to higher L2 cache
+> > >     miss numbers, and higher memory utilization. The exclusive L3
+> > >     cache on Skylake does us no favors there.
+> > >     
+> > 
+> > Out of curiousity, what is the load generator for memcache or is this
+> > based on analysis of a production workload? I ask because mutilate
+> > (https://github.com/leverich/mutilate) is allegedly a load generator
+> > that can simulate FaceBook patterns but it is old. I would be
+> > interested
+> > in hearing if mutilate is used and if so, what parameters the load
+> > generator is given.
+> 
+> I had never heard of mutilate, I'll take a look at that.
+> 
+> I am running systems that get real production queries, but
+> at a higher average load than regular production systems.
+> Also, the same queries get replicated out to 3 systems on
+> the A and B side each, which seems to be enough to factor
+> out random noise for this workload.
+> 
+
+If you do look into mutilate and can give it a distribution that
+approximates the production test then then I'd love to hear the
+configuration details so I can put it into mmtests. If that is not feasible
+or it's excessively time consuming, don't worry about it.
+
+> > > <SNIP>
+> > > +	if (!smt && cpus_share_cache(prev, target)) {
+> > > +		/* No idle core. Check if prev has an idle sibling. */
+> > > +		i = select_idle_smt(p, sd, prev);
+> > > +		if ((unsigned int)i < nr_cpumask_bits)
+> > > +			return i;
+> > > +	}
+> > > +
+> > >  	for_each_cpu_wrap(cpu, cpus, target) {
+> > >  		if (smt) {
+> > >  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > 
+> > Please consider moving this block within the SIS_PROP && !smt check
+> > above. It could become something like
+> 
+> I'll try that right now. That is a nice cleanup, and
+> potential optimization.
+> 
+
+Great.
+
+> > Second, select_idle_smt() does not use the cpus mask so consider
+> > moving
+> > the cpus initialisation after select_idle_smt() has been called.
+> > Specifically this initialisation
+> > 
+> > 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > 
+> > Alternatively, clear the bits in the SMT sibling scan to avoid
+> > checking
+> > the siblings twice. It's a tradeoff because initialising and clearing
+> > bits is not free and the cost is wasted if a sibling is free.
+> 
+> If we're doing that, should we also clear "target" and "prev"
+> from the mask?  After all, we might scan those twice with
+> the current code...
+> 
+
+If trying that, I would put that in a separate patch. At one point
+I did play with clearing prev, target and recent but hit problems.
+Initialising the mask and clearing them in select_idle_sibling() hurt
+the fast path and doing it later was not much better. IIRC, the problem
+I hit was that the cost of clearing multiple CPUs before the search was
+not offset by gains from a more efficient search.
+
+If I had to guess, simply initialising cpumask after calling
+select_idle_smt() will be faster for your particular case because you
+have a reasonable expectation that prev's SMT sibling is idle when there
+are no idle cores. Checking if prev's sibling is free when there are no
+idle cores is fairly cheap in comparison to a cpumask initialisation and
+partial clearing.
+
+If you have the testing capacity and time, test both.
+
+> > A third concern, although it is mild, is that the SMT scan ignores
+> > the
+> > SIS_PROP limits on the depth search. This patch may increase the scan
+> > depth as a result. It's only a mild concern as limiting the depth of
+> > a
+> > search is a magic number anyway. 
+> 
+> Agreed, placing the search inside the SIS_PROP block is
+> going to clip the search differently than placing it
+> outside, too.
+> 
+> Probably no big deal, but I'll push a kernel with
+> that change into the tests, anyway :)
+> 
+
+Best plan because select_idle_sibling is always surprising :)
+
+-- 
+Mel Gorman
+SUSE Labs
