@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9F734373C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD0734374B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCVDOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:14:38 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45040 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229915AbhCVDOD (ORCPT
+        id S230166AbhCVDOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:14:51 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52576 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229731AbhCVDOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:14:03 -0400
-X-UUID: 6f51fecbc2ee47cc91f7c74096f57d74-20210322
-X-UUID: 6f51fecbc2ee47cc91f7c74096f57d74-20210322
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        Sun, 21 Mar 2021 23:14:04 -0400
+X-UUID: 49e0188548234e19a553ff1a12a7b97c-20210322
+X-UUID: 49e0188548234e19a553ff1a12a7b97c-20210322
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1130908866; Mon, 22 Mar 2021 11:13:58 +0800
+        with ESMTP id 725828777; Mon, 22 Mar 2021 11:14:00 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
  mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 22 Mar 2021 11:13:57 +0800
+ 15.0.1497.2; Mon, 22 Mar 2021 11:13:58 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 22 Mar 2021 11:13:56 +0800
+ Transport; Mon, 22 Mar 2021 11:13:57 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -36,63 +36,76 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-kernel@vger.kernel.org>,
         Eddie Hung <eddie.hung@mediatek.com>,
         Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCH 05/13] usb: xhci-mtk: support quirk to disable usb2 lpm
-Date:   Mon, 22 Mar 2021 11:13:44 +0800
-Message-ID: <1616382832-28450-5-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH 06/13] usb: xhci-mtk: support ip-sleep wakeup for MT8183
+Date:   Mon, 22 Mar 2021 11:13:45 +0800
+Message-ID: <1616382832-28450-6-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 2CB57E9ACFCCB4B097C478130F42E0491A86FC2A697D0352FA5832B486FFF1E22000:8
+X-TM-SNTS-SMTP: 6EF3D7988EB64D1FF9FB50FC423859349FBBCE5198CE49F5DF494E4A7A419C3C2000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The xHCI driver support usb2 HW LPM by default, here add support
-XHCI_HW_LPM_DISABLE quirk, then we can disable usb2 lpm when
-need it.
+Add support ip-sleep wakeup for MT8183, it's similar to MT8173,
+and it's also a specific one, but not follow IPM rule.
+Due to the index 2 already used by many DTS, it's better to keep
+it unchanged for backward compatible, treat specific ones without
+following IPM rule as revision 1.x, meanwhile reserve 3~10 for
+later revision that follows the IPM rule.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/host/xhci-mtk.c | 3 +++
- drivers/usb/host/xhci-mtk.h | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/usb/host/xhci-mtk.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
-index 1b9f10048fe0..09f2ddbfe8b9 100644
+index 09f2ddbfe8b9..8ba1f914cb75 100644
 --- a/drivers/usb/host/xhci-mtk.c
 +++ b/drivers/usb/host/xhci-mtk.c
-@@ -388,6 +388,8 @@ static void xhci_mtk_quirks(struct device *dev, struct xhci_hcd *xhci)
- 	xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
- 	if (mtk->lpm_support)
- 		xhci->quirks |= XHCI_LPM_SUPPORT;
-+	if (mtk->u2_lpm_disable)
-+		xhci->quirks |= XHCI_HW_LPM_DISABLE;
+@@ -57,12 +57,19 @@
+ #define CTRL_U2_FORCE_PLL_STB	BIT(28)
  
- 	/*
- 	 * MTK xHCI 0.96: PSA is 1 by default even if doesn't support stream,
-@@ -470,6 +472,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
- 		return ret;
+ /* usb remote wakeup registers in syscon */
++
+ /* mt8173 etc */
+ #define PERI_WK_CTRL1	0x4
+ #define WC1_IS_C(x)	(((x) & 0xf) << 26)  /* cycle debounce */
+ #define WC1_IS_EN	BIT(25)
+ #define WC1_IS_P	BIT(6)  /* polarity for ip sleep */
  
- 	mtk->lpm_support = of_property_read_bool(node, "usb3-lpm-capable");
-+	mtk->u2_lpm_disable = of_property_read_bool(node, "usb2-lpm-disable");
- 	/* optional property, ignore the error if it does not exist */
- 	of_property_read_u32(node, "mediatek,u3p-dis-msk",
- 			     &mtk->u3p_dis_msk);
-diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-index 621ec1a85009..4ccd08e20a15 100644
---- a/drivers/usb/host/xhci-mtk.h
-+++ b/drivers/usb/host/xhci-mtk.h
-@@ -149,6 +149,7 @@ struct xhci_hcd_mtk {
- 	struct phy **phys;
- 	int num_phys;
- 	bool lpm_support;
-+	bool u2_lpm_disable;
- 	/* usb remote wakeup */
- 	bool uwk_en;
- 	struct regmap *uwk;
++/* mt8183 */
++#define PERI_WK_CTRL0	0x0
++#define WC0_IS_C(x)	(((x) & 0xf) << 28)  /* cycle debounce */
++#define WC0_IS_P	BIT(12)	/* polarity */
++#define WC0_IS_EN	BIT(6)
++
+ /* mt2712 etc */
+ #define PERI_SSUSB_SPM_CTRL	0x0
+ #define SSC_IP_SLEEP_EN	BIT(4)
+@@ -71,6 +78,7 @@
+ enum ssusb_uwk_vers {
+ 	SSUSB_UWK_V1 = 1,
+ 	SSUSB_UWK_V2,
++	SSUSB_UWK_V11 = 11,	/* specific revision 1.1 */
+ };
+ 
+ static int xhci_mtk_host_enable(struct xhci_hcd_mtk *mtk)
+@@ -300,6 +308,11 @@ static void usb_wakeup_ip_sleep_set(struct xhci_hcd_mtk *mtk, bool enable)
+ 		msk = WC1_IS_EN | WC1_IS_C(0xf) | WC1_IS_P;
+ 		val = enable ? (WC1_IS_EN | WC1_IS_C(0x8)) : 0;
+ 		break;
++	case SSUSB_UWK_V11:
++		reg = mtk->uwk_reg_base + PERI_WK_CTRL0;
++		msk = WC0_IS_EN | WC0_IS_C(0xf) | WC0_IS_P;
++		val = enable ? (WC0_IS_EN | WC0_IS_C(0x8)) : 0;
++		break;
+ 	case SSUSB_UWK_V2:
+ 		reg = mtk->uwk_reg_base + PERI_SSUSB_SPM_CTRL;
+ 		msk = SSC_IP_SLEEP_EN | SSC_SPM_INT_EN;
 -- 
 2.18.0
 
