@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12ED34437C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC5034437D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhCVMv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:51:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
+        id S232289AbhCVMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232341AbhCVMmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:42:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1B24619B3;
-        Mon, 22 Mar 2021 12:39:58 +0000 (UTC)
+        id S232358AbhCVMm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:42:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A342619AF;
+        Mon, 22 Mar 2021 12:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416799;
-        bh=UJHtBs8vtxO77pjJFBEnrU/VMMrYWuoFF0eQunXUOgs=;
+        s=korg; t=1616416802;
+        bh=Cf6gnvZayp1/BGswoa0l0qqhfBryeqMKpVvLyc7Q+80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JXMLKLI2WHhz/BQc/W10Uo4cGLKsKrkb/fyQK33MbsFlL078KKgu1AiJYg8iLRfkL
-         6QdVtGHT/EESAAt73iw6kvXZBwDJUIQxdGdXBoR8DPXWgBU+K+gKCPPazAIWq5dhkp
-         YRPrCyjtOPwCFJP8InLs0cZflVDQydlxrlgi4wW0=
+        b=KaX3KCExCrWBEZTUE/sQZGx4ZaCWevEWHl8C1MSrbX/DoR97IgQyXrw0UaJ8GA6a/
+         C0RofMQ6gjEsbqTLkMRR+HAnMmpgoqTvOLdakZhvX85Hq4cbo0yl+osCfvgOJReefw
+         RzDHb4GPV6puKRaNp5+uVAd93IFtg+fg07LlLYMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 126/157] iio:adc:qcom-spmi-vadc: add default scale to LR_MUX2_BAT_ID channel
-Date:   Mon, 22 Mar 2021 13:28:03 +0100
-Message-Id: <20210322121937.754699553@linuxfoundation.org>
+Subject: [PATCH 5.10 127/157] iio: adis16400: Fix an error code in adis16400_initial_setup()
+Date:   Mon, 22 Mar 2021 13:28:04 +0100
+Message-Id: <20210322121937.783034920@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
 References: <20210322121933.746237845@linuxfoundation.org>
@@ -42,48 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 7d200b283aa049fcda0d43dd6e03e9e783d2799c upstream.
+commit a71266e454b5df10d019b06f5ebacd579f76be28 upstream.
 
-Checking at both msm8909-pm8916.dtsi and msm8916.dtsi from downstream
-it is indicated that "batt_id" channel has to be scaled with the default
-function:
+This is to silence a new Smatch warning:
 
-	chan@31 {
-		label = "batt_id";
-		reg = <0x31>;
-		qcom,decimation = <0>;
-		qcom,pre-div-channel-scaling = <0>;
-		qcom,calibration-type = "ratiometric";
-		qcom,scale-function = <0>;
-		qcom,hw-settle-time = <0xb>;
-		qcom,fast-avg-setup = <0>;
-	};
+    drivers/iio/imu/adis16400.c:492 adis16400_initial_setup()
+    warn: sscanf doesn't return error codes
 
-Change LR_MUX2_BAT_ID scaling accordingly.
+If the condition "if (st->variant->flags & ADIS16400_HAS_SLOW_MODE) {"
+is false then we return 1 instead of returning 0 and probe will fail.
 
-Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Fixes: 7c271eea7b8a ("iio: adc: spmi-vadc: Changes to support different scaling")
-Link: https://lore.kernel.org/r/20210113151808.4628-2-jonathan.albrieux@gmail.com
+Fixes: 72a868b38bdd ("iio: imu: check sscanf return value")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YCwgFb3JVG6qrlQ+@mwanda
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/qcom-spmi-vadc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/imu/adis16400.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/iio/adc/qcom-spmi-vadc.c
-+++ b/drivers/iio/adc/qcom-spmi-vadc.c
-@@ -598,7 +598,7 @@ static const struct vadc_channels vadc_c
- 	VADC_CHAN_NO_SCALE(P_MUX16_1_3, 1)
+--- a/drivers/iio/imu/adis16400.c
++++ b/drivers/iio/imu/adis16400.c
+@@ -462,8 +462,7 @@ static int adis16400_initial_setup(struc
+ 		if (ret)
+ 			goto err_ret;
  
- 	VADC_CHAN_NO_SCALE(LR_MUX1_BAT_THERM, 0)
--	VADC_CHAN_NO_SCALE(LR_MUX2_BAT_ID, 0)
-+	VADC_CHAN_VOLT(LR_MUX2_BAT_ID, 0, SCALE_DEFAULT)
- 	VADC_CHAN_NO_SCALE(LR_MUX3_XO_THERM, 0)
- 	VADC_CHAN_NO_SCALE(LR_MUX4_AMUX_THM1, 0)
- 	VADC_CHAN_NO_SCALE(LR_MUX5_AMUX_THM2, 0)
+-		ret = sscanf(indio_dev->name, "adis%u\n", &device_id);
+-		if (ret != 1) {
++		if (sscanf(indio_dev->name, "adis%u\n", &device_id) != 1) {
+ 			ret = -EINVAL;
+ 			goto err_ret;
+ 		}
 
 
