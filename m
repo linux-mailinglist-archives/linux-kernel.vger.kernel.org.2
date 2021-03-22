@@ -2,73 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4924D343BC6
+	by mail.lfdr.de (Postfix) with ESMTP id 95BE4343BC7
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCVI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:27:44 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48756 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCVI1Q (ORCPT
+        id S230166AbhCVI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCVI1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:27:16 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12M8QxH3066698;
-        Mon, 22 Mar 2021 03:26:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616401619;
-        bh=oqlxDFGonXvP4tV/XAURfQ9JGny2MxY7Ck9WN/YVIKw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=GO6xsfixOESX66InyqfZyYz01o1rQZa4NofHz9S7X7Ae/fKBAFpUsuGhWP8Jhs5mz
-         qYXZieS/bLCnO2cHNdSNxqeOdrDYh5IlOf42rG9mqT170kbYYPHJe/mtyp8Uq/txFX
-         nTdn81UUaHsyv7CYfeT5Y8H410uwvBp+NF6vYh44=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12M8Qxuu116401
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Mar 2021 03:26:59 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
- Mar 2021 03:26:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 22 Mar 2021 03:26:59 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12M8QwKX032960;
-        Mon, 22 Mar 2021 03:26:58 -0500
-Date:   Mon, 22 Mar 2021 13:56:57 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <vigneshr@ti.com>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Move Software Write Protection
- logic out of the core
-Message-ID: <20210322082655.rfoncl6zeuve73pw@ti.com>
-References: <20210322075131.45093-1-tudor.ambarus@microchip.com>
- <20210322075131.45093-2-tudor.ambarus@microchip.com>
+        Mon, 22 Mar 2021 04:27:17 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150AFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:27:17 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l4so19742995ejc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l+BDFfhmpfMChR10QeWibz7ivIzCkn0HHk1zDvsRjuU=;
+        b=w8/LRQezNhY7NHzEHNuQvuRraZtak1c8qIn64pmC7wePGHY6zGPRfyg8no1YiLF6L9
+         +52YtLp4Gjdx+ZKf+zchO/mIggVFhhNfb8BV1tLzuyNIMwpd5Oh4j05TpgWLTyQI6t9r
+         gvqe3mjKPJsaN93RceTQxpDnHt2rF1jF0ze3kLV0ycdfDI65wpN5BWOpjQSVG6AZujMv
+         LQq62TsPpvXGxQ5abw36pWBL9e9H+aCuWQ2TPMQOWl47cfgjexzN52FobNIdCvrXJuqm
+         XIj/1Trxkq2wTCvxlkmrhfxqySn+XMLGjC7rN2ILXjX7DhsKhQ3zaEWEhTVxdtgBPxDl
+         4Yaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l+BDFfhmpfMChR10QeWibz7ivIzCkn0HHk1zDvsRjuU=;
+        b=EIkX5Zl6mL47k2JEDjyriOQ+B1V7BdLQdQyyjmmVnf/74u8ekIOxYcgQ0V9J6Ai9za
+         FgS2CzopsL6eCGprgnKJogDjeqTQpJiuhhWhJNxpmeGr/oyXkY1Ngb9B5PvDkgSUOdxw
+         7d/jAPRE4VZhJh1gReCAn8cwF/QftRioZDGKo2vFtOb18/cucBYcWAeLo0ym8pC+5kyF
+         QQbBPEYWmfoltIx93kTt8N40o2QU+HobYDhtrmYrcKqdKtmFzGLd9+8qAfst832QM3TH
+         W3j99V9o9v92+kvCKv9K6n7kh4zgNpFolA8PcDIQzW4kd4f+EvihOIFGXzqvztzPv1/a
+         HfQA==
+X-Gm-Message-State: AOAM531LogKWk4vRZPENZaf9pNmNWXJyIdT/+ONyCb85ddt2LnZxl/7M
+        efa4r3G7R/fAevO6Y0SBcNiI/xMBnz+TIx76
+X-Google-Smtp-Source: ABdhPJynowhp3kkQu29v2ax+Wf/v1MD51JPfJ9narj7A9SNgkBqdC3//LaICAT1myzO1RnmBxnYkdQ==
+X-Received: by 2002:a17:906:39cf:: with SMTP id i15mr18035901eje.534.1616401635823;
+        Mon, 22 Mar 2021 01:27:15 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id gj26sm9225323ejb.67.2021.03.22.01.27.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:27:15 -0700 (PDT)
+Subject: Re: [PATCH] microblaze: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210319045323.21241-1-unixbhaskar@gmail.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <4afbe9f6-4be0-d02f-3c63-899f10c13972@monstr.eu>
+Date:   Mon, 22 Mar 2021 09:27:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210322075131.45093-2-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210319045323.21241-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/03/21 09:51AM, Tudor Ambarus wrote:
-> It makes the core file a bit smaller and provides better separation
-> between the Software Write Protection features and the core logic.
-> All the next generic software write protection features (e.g. Individual
-> Block Protection) will reside in swp.c.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
+
+On 3/19/21 5:53 AM, Bhaskar Chowdhury wrote:
+> 
+> s/storign/storing/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  arch/microblaze/lib/uaccess_old.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/lib/uaccess_old.S b/arch/microblaze/lib/uaccess_old.S
+> index 0e8cc2710c27..eca290090038 100644
+> --- a/arch/microblaze/lib/uaccess_old.S
+> +++ b/arch/microblaze/lib/uaccess_old.S
+> @@ -188,7 +188,7 @@ w2:	sw	r4, r5, r3
+>  	.text
+> 
+>  .align 4 /* Alignment is important to keep icache happy */
+> -page:	/* Create room on stack and save registers for storign values */
+> +page:	/* Create room on stack and save registers for storing values */
+>  	addik   r1, r1, -40
+>  	swi	r5, r1, 0
+>  	swi	r6, r1, 4
+> --
+> 2.26.2
+> 
+
+Applied.
+M
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
