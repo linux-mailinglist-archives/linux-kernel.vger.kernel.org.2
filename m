@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18AE345018
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4D534500C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhCVTky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S232369AbhCVTiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhCVTkc (ORCPT
+        with ESMTP id S232090AbhCVTic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:40:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B11CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:40:32 -0700 (PDT)
+        Mon, 22 Mar 2021 15:38:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3B8C061574;
+        Mon, 22 Mar 2021 12:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=bbKq2TN24ehai17x54FTajuPZY8Y2HOgf1z2a1oFDYM=; b=eMBWqZNOQwUsdB2mgz/CqQEgf6
-        Z8B5Ij5hAWqr/XbEBV16kSiKqeqe3tqD/86ydgEeERKsgX4ghr2/RC+Uekt4Zf+jyx4/anr7uMWHy
-        uuG2dH+HtfRtuCNC7KbFBv5lNeK4jE6NvfmlUYSrw0m80uSoKEIS2mayvdDC+nzPIj4qUJqV6d6QG
-        pRMOagFX+7TbAo+u2IoaqosO1ipVWUR9Thd9bmwFHc4gipggu0l0Qvfkuf9JwqrsTEg5T6bJTRMc3
-        k2ghvKCazeq7g6ZFagydv8ZlPMMcaY7dA/L46Xp9wJszaHmngZ1QQYNnfk2dO0LPvOEGcpepEtqZ3
-        XhLChCng==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOQNw-008yqi-BF; Mon, 22 Mar 2021 19:38:51 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 2/2] mm/vmalloc: Use kvmalloc to allocate the table of pages
-Date:   Mon, 22 Mar 2021 19:38:20 +0000
-Message-Id: <20210322193820.2140045-2-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210322193820.2140045-1-willy@infradead.org>
-References: <20210322193820.2140045-1-willy@infradead.org>
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Wg1p1SlksmUzSxx9om/IR8uOZYlyIdBFyKryY0n4pZg=; b=i2rcNXlaQXxsrwUwpw6rYTsgfH
+        FyE5TPFGEUtYNHelROfrGON6sG0jtux4JoTe0ZoKzQbNAB/7dAaLkI3kK8dbq/vaPUDSPllhRjQVd
+        Jbhe95fTN+zAQ3nXjlifmMXBAmjvzGwcgWdlqrIK5MXnjsBz24d33h8i3RMuxbiJyAVr2GuMFMZab
+        n52abNad05YOkfHEhRipA9eGh1ksnIDR7YVfr1+0MdJQVO8/1WJ9Ioqq/ydtriJzGLJlgU1OU4q0f
+        oovmjLr5ZhIUbWhn+ZXqlDUI4L9JfnkrlgVGWzyore6gs9ZasXqygnOzuqHU/OCWsO2iRknYrcvq/
+        DIrkYwFA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOQNg-00CRV7-28; Mon, 22 Mar 2021 19:38:28 +0000
+Subject: Re: [PATCH] net: l2tp: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, tparkin@katalix.com,
+        mschiffer@universe-factory.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210322122155.2420640-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <80dcf150-dafd-9ba7-24f3-2232fdc11942@infradead.org>
+Date:   Mon, 22 Mar 2021 12:38:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322122155.2420640-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we're trying to allocate 4MB of memory, the table will be 8KiB in size
-(1024 pointers * 8 bytes per pointer), which can usually be satisfied
-by a kmalloc (which is significantly faster).  Instead of changing this
-open-coded implementation, just use kvmalloc().
+On 3/22/21 5:21 AM, Bhaskar Chowdhury wrote:
+> 
+> s/verifed/verified/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/vmalloc.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 96444d64129a..32b640a84250 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2802,13 +2802,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		gfp_mask |= __GFP_HIGHMEM;
- 
- 	/* Please note that the recursion is strictly bounded. */
--	if (array_size > PAGE_SIZE) {
--		pages = __vmalloc_node(array_size, 1, nested_gfp, node,
-+	pages = kvmalloc_node_caller(array_size, nested_gfp, node,
- 					area->caller);
--	} else {
--		pages = kmalloc_node(array_size, nested_gfp, node);
--	}
--
- 	if (!pages) {
- 		free_vm_area(area);
- 		return NULL;
+> ---
+>  net/l2tp/l2tp_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+> index 203890e378cb..2ee20743cb41 100644
+> --- a/net/l2tp/l2tp_core.c
+> +++ b/net/l2tp/l2tp_core.c
+> @@ -802,7 +802,7 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
+>  	u16 version;
+>  	int length;
+> 
+> -	/* UDP has verifed checksum */
+> +	/* UDP has verified checksum */
+> 
+>  	/* UDP always verifies the packet length. */
+>  	__skb_pull(skb, sizeof(struct udphdr));
+> --
+
+
 -- 
-2.30.2
+~Randy
 
