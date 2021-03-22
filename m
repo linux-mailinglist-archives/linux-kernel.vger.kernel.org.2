@@ -2,208 +2,704 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2250E3452BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E5F3452C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCVXF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:05:57 -0400
-Received: from mail-bn7nam10on2079.outbound.protection.outlook.com ([40.107.92.79]:28032
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229871AbhCVXFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:05:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mfyxMNgh4VuGd4Nim2GgRASwHtHtiXvdA+0Su+z6ua9Azfv9eagY4dXe0JrP5aCF4vlfFGlEWJCJVBWJmJnMQ9Jm34fa483sonuwRVz7u7U7EBknL7xGaRxSa5v4UDtUEQ9aa5Ol/sfURjB1hu4SgPVv1QETRgWM1lripXS8YX7wfbCfPCGsqKrr+3IvUWJqn9dzZqjklZ8170Hpdo71MIpCOXWtm1hapEE1eXY6OSyopXDf3oELbHc5eIjXMaS+NvQxp/xpo0O17AO9pi7BDxhrrlzuXmGA50a2hELw1DkT4Nto2a9xDlAeyqDK2NZp81Ns4/2BOw05bGNHSQIArQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nm3HaCRZlr+MfOJbJ56T+KtdcGJjtCj+80AJUa7WsIw=;
- b=Osv2Y8i514aVZNRbCwxIcbw/JvZKZ4tYxP0ckScv3voCO7bZe6CobTp53Ui2o7WtMZjmQI8OzORXduVojFLXKsn87X5gY1oFu/xpNRRiJK9ifOUtHPjAyGFPtL2fRXFr4TAElhm0+SPuqhH6rII+17IVbyXdkVctsjREdyaWfWOhuFQcRi3JiTaOeamFMNZPebXXl69odLVRxNV1q0SVw4/AQ/nFvW2I1oM4SPqCvgdr3luMpIFbFdz4VxPwLITSCLDwQMo+bRQTZUkDX2JBPVnbGD+9Abl0D2EEVBCjm02zPGtLGA10u1Y0D1D6Nma/tCbSzMGuRXtWsrWNP4AQXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nm3HaCRZlr+MfOJbJ56T+KtdcGJjtCj+80AJUa7WsIw=;
- b=mA3g2+UDFzdiC9kM+uEtzjnBipIzdkNJn8kxLfAkK8FD41k0Y4O2SzSzxksmlslqFXHxrhVf0Dg4El0lMX5RqdFqGVoUC5zi16MlipMpy8vxBg8GhGyLWG+wpwfaitCnHmRkwTesmKSbUSmXKvig5RWFOaJI+9oX2Nr8Os1QIk4ETYxUjN1XdSTvzQGH5qEAW+1WdwK/p/hgwuzzmiCo9mblpgJD31h2DglmTiWtYVKUrg2n+1JKbZdzL0v7YonkAtLHK9iPI3amYN5aYorsUBuWUa8mRmaSSK2J8hEqgWaGc8FbXmY2BDsONMd8N8BI/jpi7y55rSN6gz5gCON4sw==
-Received: from MN2PR12MB3616.namprd12.prod.outlook.com (2603:10b6:208:cc::25)
- by MN2PR12MB2973.namprd12.prod.outlook.com (2603:10b6:208:cc::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 23:05:47 +0000
-Received: from MN2PR12MB3616.namprd12.prod.outlook.com
- ([fe80::75d0:71c6:68b7:d971]) by MN2PR12MB3616.namprd12.prod.outlook.com
- ([fe80::75d0:71c6:68b7:d971%6]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
- 23:05:47 +0000
-From:   Khalil Blaiech <kblaiech@nvidia.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>
-CC:     Robert Foss <robert.foss@linaro.org>,
-        Wolfram Sang <wsa@the-dreams.de>
-Subject: RE: [PATCH v1 1/1] i2c: drivers: Use generic definitions for bus
- frequencies (part 2)
-Thread-Topic: [PATCH v1 1/1] i2c: drivers: Use generic definitions for bus
- frequencies (part 2)
-Thread-Index: AQHXHzv5BmB2lqJv0Eas3SF/QSU/B6qQoNyA
-Date:   Mon, 22 Mar 2021 23:05:46 +0000
-Message-ID: <MN2PR12MB3616832982345406F6289CB4AB659@MN2PR12MB3616.namprd12.prod.outlook.com>
-References: <20210322165405.44980-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210322165405.44980-1-andriy.shevchenko@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [108.20.133.69]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 77283a95-7f96-44ed-06d5-08d8ed870734
-x-ms-traffictypediagnostic: MN2PR12MB2973:
-x-microsoft-antispam-prvs: <MN2PR12MB297316D879A61FFC36F8B5CDAB659@MN2PR12MB2973.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qjf8qrvqRjjZY5xAdoDjaak5DkcSvuA2LB2gswr9wokJO1N2AGcj/enLYUZbt5Op1ixhFWYDxUy+kWAia7Ws6TrV/Xa3/hnrwarboJwP7N0UNOlemJ/PRwov+9y6BqZ8u5gI5hd1hC4FB70g17V+aLwZlfBzix0STDNyuloiDj7ODNFV1LzNHZAdF62uxg9Kj+CbuPqwjCUZwgBXMavoy+avjWz/qf/B0/uZpjT0U8uMhySjxmp+SBUmlNrOQWjNwm/Qftrh2ce7ZeNodT1XRCTPk1szXdhNKDlK7QWIE3NTBgR0CULzFQ65K8eTi96ylr+Wq4SnpXoD8VEmrwjSXfq3zQ92P/8TSSJhoyvS0qEOZbJy8/aARq7x77M7PyYR7rCjl3zKMePObC3juWdkKeZ3ydk67k3QVxV2g5/g8Ib47ZU6L9wnprlbS3KfmzO1PCs4DNoFI77ZpQD6E3k/rS5CiHwu+XKKpWWMJLK63hA/giLSZwmBoZMYLnjQLJ8VwvvR6/weBS6W4xihGNJJaP1j4qs6WB1bvD4d0KRu5jJk/csg07plNF7iJlLYm5cwkHUzw85Z4mMcB9LzhXn18iWBqsr8eN6dwYf/aNTMODACT8LeZ30i4Op+5qBjHUxP+YjzgJtoGR5ValYmIVCgKLdrSXSA85CG4rhdkkJheAn5WVg8tZC/fSl5q8OnLgut
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3616.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(33656002)(4326008)(110136005)(8676002)(52536014)(316002)(9686003)(5660300002)(54906003)(83380400001)(55016002)(71200400001)(8936002)(2906002)(478600001)(26005)(66476007)(6506007)(38100700001)(53546011)(66946007)(86362001)(64756008)(186003)(76116006)(7696005)(66446008)(66556008)(41533002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ow56ndLdAtiNyldPe9qiy39GnQu5Q/s7F2q5JnAipJRLMiJ1kPTM52hrEjha?=
- =?us-ascii?Q?BxUX66UhLPJQf2BZeBKJSVAtX02pcr9xYxJMNYWSXRUL4nvWLAetSBVerBC+?=
- =?us-ascii?Q?7vJ5la+QWJ/9pr7jcJKUNHkY4CB+EWm/0JjV9NvJCA5w/UePL32/pSK9Gzss?=
- =?us-ascii?Q?yUpvpNZ81X7nSwA9GOjxFfi3yYG5dUUw87+k+eRGzr9JVDz8pj6+53M8jvyG?=
- =?us-ascii?Q?hSwpLGaNk46WN78yFMRWWAkaLLv3B4vG2gWkJwPecbV1wNuYYqDPTNZe+HU3?=
- =?us-ascii?Q?i3i8ZaIOJomt4n7p8t60+xnip3aZoNhRnIxV1GBBdqTJQIWOF2tJKbkXZRPO?=
- =?us-ascii?Q?8JUmhUeyvyrtCt06+U2SgZZ43YDp67Sy+naLV3MuzZY6unse/ZAsxI9J3Mh0?=
- =?us-ascii?Q?NdtAolwqfBJQxDuZYEGpE7wkPkXGZ2h+koLVM5yIJmAnlQj2wqHKcE9LWLQG?=
- =?us-ascii?Q?rXG35ZEpEDemrSWMWV8YY6IhoavOvzB2r0CczaPZebP2bMj7btIMfsZICn9y?=
- =?us-ascii?Q?LxuVKwHtY44LsjoMCAtACGnuif2gh1Mt7NBV56oGIZkYPtGGNN5JAZ/TRblc?=
- =?us-ascii?Q?gkCo6o1LydKmUlYzls3itz+0DcNgOydnZbAEvXOCRAiX1METrYO/ruMXzPi2?=
- =?us-ascii?Q?xv2xNuOjI4F4/z2GpbuP5gAOBKIhPfhxz4CRC3ZgBdaUYL2UsoNU2Ua1G3G/?=
- =?us-ascii?Q?dGOXdaAJpqY64TYVOQb4uyYVx2GHUrqjWxNtGIY0Ua3sKfZdG/DZHPzknhPq?=
- =?us-ascii?Q?74fs05ChV9V/WYXZyn/MnESEgtc9X9+Uy2QoOv5Qknp7opYDtU9exwUNXIwf?=
- =?us-ascii?Q?NWtQjZYz/7fNj5LsVSM8c5fBduBYAhwzUMhJwVSg1inwc6pj8ir3Nlf4W/sl?=
- =?us-ascii?Q?q0LmGcfmojNBIkhzJsFeHH6wius2RNVZyyRaWMeB+wAGmXAI6tbrRvIkZAp9?=
- =?us-ascii?Q?LFdonQixOHFseBkFpsTX06WKztDzKdsg7X43j0vak1dpnA4R7D1vFZcGhLTj?=
- =?us-ascii?Q?cmRg3PpU/i6KjZClewWTX1Rqp6x1JibmIjTENMcgBxWxxHxXDDH8EgIjbakV?=
- =?us-ascii?Q?SJgT6qPcs4fzE5EH2Scn4EV6wz4DBQsTrw0x3zn3hJV9cqdJpIVeFhlY66zh?=
- =?us-ascii?Q?f6ceoOLtTMG5PBraDUNFvYrH0KUhEUgOHv6eb6JCb3ASFBz/z9XDtvPMjH7I?=
- =?us-ascii?Q?O8v+snjQkQ4VeM9NF9ZGP3uRUtbsNxzdTTWMHg34Oc09H5ss/jDUO0ADG5rZ?=
- =?us-ascii?Q?WCzHUNb1UdV1zWud/s0oO0uQ8BU8vvs5uZNtJTenEx7ft1BCEk7k1yKNXg7e?=
- =?us-ascii?Q?pp9EVgiU0WtsnhhLmJURWt8s?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230174AbhCVXHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhCVXHN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:07:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E731BC061574;
+        Mon, 22 Mar 2021 16:07:12 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 23:07:06 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616454429;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=4+wTAUXefXbQj/iP2/lwWR+ApPoyb996Eu08WrXJybk=;
+        b=OYW8h4ui1miwCP++fC2pLMzTXTq9Y/fgk9f/MZhu51m6mz8JygfDQFItAdgabbkIGikLWj
+        PVdBUPNBny8nfRR7EmE8SdjeiQERhNwfVfTZBKmPMaDzdkpHOFj4k5tB4KYKkr1EOLCowf
+        uFH0Smx2hz5PJ7bQonUE01IKjz2p/zelOvTpT+kY7RSsKTGYlL+LO/vb5bYMMATNey5wxD
+        pGm2+I1nKMhcmpJfc3LQzHguLRmLQ5lBlLXuhuZQHOy7lplMW+PEgeQa9TWw3fMs6A8gHw
+        ncQllbMwS0SXmaFcE0mPp3oE2TT+trSMZ1Sw5L8+wuYCfgdUrQZlfUTPMc/vgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616454429;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=4+wTAUXefXbQj/iP2/lwWR+ApPoyb996Eu08WrXJybk=;
+        b=jRN2smbvFB5e+9Tw85pmj4e1gjBJT207UI3I27BUCwhhyIxUBr9T3AqV0gwyMRbtKaB/WG
+        33YuSY0iZ3K5oBBw==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timekeeping, clocksource: Fix various typos in comments
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3616.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77283a95-7f96-44ed-06d5-08d8ed870734
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 23:05:46.9073
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xfv+NRYnxTxGEbQ6L03nDP/HxuLJqyWUPt5KR9SMKHvT5aeoLn+LjQ7nhD3mxH3/nctg4BZDra6RN95xjk97rQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2973
+Message-ID: <161645442689.398.5576455713253194712.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks.
-Acked-by: Khalil Blaiech <kblaiech@nvidia.com>
+The following commit has been merged into the timers/core branch of tip:
 
-> -----Original Message-----
-> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Sent: Monday, March 22, 2021 12:54 PM
-> To: Wolfram Sang <wsa@kernel.org>; Khalil Blaiech <kblaiech@nvidia.com>;
-> Loic Poulain <loic.poulain@linaro.org>; linux-i2c@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-arm-msm@vger.kernel.org
-> Cc: Robert Foss <robert.foss@linaro.org>; Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com>; Wolfram Sang <wsa@the-
-> dreams.de>
-> Subject: [PATCH v1 1/1] i2c: drivers: Use generic definitions for bus
-> frequencies (part 2)
->=20
-> Since we have generic definitions for bus frequencies, let's use them.
->=20
-> Cc: Wolfram Sang <wsa@the-dreams.de>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/i2c/busses/i2c-mlxbf.c    | 14 ++++----------
->  drivers/i2c/busses/i2c-qcom-cci.c |  4 ++--
->  2 files changed, 6 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxb=
-f.c
-> index 2fb0532d8a16..80ab831df349 100644
-> --- a/drivers/i2c/busses/i2c-mlxbf.c
-> +++ b/drivers/i2c/busses/i2c-mlxbf.c
-> @@ -172,12 +172,6 @@
->  #define MLXBF_I2C_SMBUS_THIGH_MAX_TBUF            0x14
->  #define MLXBF_I2C_SMBUS_SCL_LOW_TIMEOUT           0x18
->=20
-> -enum {
-> -	MLXBF_I2C_TIMING_100KHZ =3D 100000,
-> -	MLXBF_I2C_TIMING_400KHZ =3D 400000,
-> -	MLXBF_I2C_TIMING_1000KHZ =3D 1000000,
-> -};
-> -
->  /*
->   * Defines SMBus operating frequency and core clock frequency.
->   * According to ADB files, default values are compliant to 100KHz SMBus
-> @@ -1202,7 +1196,7 @@ static int mlxbf_i2c_init_timings(struct
-> platform_device *pdev,
->=20
->  	ret =3D device_property_read_u32(dev, "clock-frequency",
-> &config_khz);
->  	if (ret < 0)
-> -		config_khz =3D MLXBF_I2C_TIMING_100KHZ;
-> +		config_khz =3D I2C_MAX_STANDARD_MODE_FREQ;
->=20
->  	switch (config_khz) {
->  	default:
-> @@ -1210,15 +1204,15 @@ static int mlxbf_i2c_init_timings(struct
-> platform_device *pdev,
->  		pr_warn("Illegal value %d: defaulting to 100 KHz\n",
->  			config_khz);
->  		fallthrough;
-> -	case MLXBF_I2C_TIMING_100KHZ:
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
->  		config_idx =3D MLXBF_I2C_TIMING_CONFIG_100KHZ;
->  		break;
->=20
-> -	case MLXBF_I2C_TIMING_400KHZ:
-> +	case I2C_MAX_FAST_MODE_FREQ:
->  		config_idx =3D MLXBF_I2C_TIMING_CONFIG_400KHZ;
->  		break;
->=20
-> -	case MLXBF_I2C_TIMING_1000KHZ:
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
->  		config_idx =3D MLXBF_I2C_TIMING_CONFIG_1000KHZ;
->  		break;
->  	}
-> diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-q=
-com-
-> cci.c
-> index 1c259b5188de..c63d5545fc2a 100644
-> --- a/drivers/i2c/busses/i2c-qcom-cci.c
-> +++ b/drivers/i2c/busses/i2c-qcom-cci.c
-> @@ -569,9 +569,9 @@ static int cci_probe(struct platform_device *pdev)
->  		cci->master[idx].mode =3D I2C_MODE_STANDARD;
->  		ret =3D of_property_read_u32(child, "clock-frequency", &val);
->  		if (!ret) {
-> -			if (val =3D=3D 400000)
-> +			if (val =3D=3D I2C_MAX_FAST_MODE_FREQ)
->  				cci->master[idx].mode =3D I2C_MODE_FAST;
-> -			else if (val =3D=3D 1000000)
-> +			else if (val =3D=3D I2C_MAX_FAST_MODE_PLUS_FREQ)
->  				cci->master[idx].mode =3D
-> I2C_MODE_FAST_PLUS;
->  		}
->=20
-> --
-> 2.30.2
+Commit-ID:     4bf07f6562a01a488877e05267808da7147f44a5
+Gitweb:        https://git.kernel.org/tip/4bf07f6562a01a488877e05267808da7147f44a5
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Mon, 22 Mar 2021 22:39:03 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 22 Mar 2021 23:06:48 +01:00
 
+timekeeping, clocksource: Fix various typos in comments
+
+Fix ~56 single-word typos in timekeeping & clocksource code comments.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/clocksource/clksrc-dbx500-prcmu.c           |  8 ++---
+ drivers/clocksource/dw_apb_timer_of.c               |  2 +-
+ drivers/clocksource/hyperv_timer.c                  |  2 +-
+ drivers/clocksource/timer-atmel-tcb.c               |  4 +--
+ drivers/clocksource/timer-fsl-ftm.c                 |  2 +-
+ drivers/clocksource/timer-microchip-pit64b.c        |  2 +-
+ drivers/clocksource/timer-of.c                      |  4 +--
+ drivers/clocksource/timer-ti-dm-systimer.c          |  2 +-
+ drivers/clocksource/timer-vf-pit.c                  |  2 +-
+ include/linux/clocksource.h                         |  2 +-
+ include/linux/timex.h                               |  2 +-
+ kernel/time/alarmtimer.c                            |  6 ++--
+ kernel/time/clocksource.c                           |  4 +--
+ kernel/time/hrtimer.c                               | 18 ++++++------
+ kernel/time/jiffies.c                               |  2 +-
+ kernel/time/ntp.c                                   |  2 +-
+ kernel/time/posix-cpu-timers.c                      |  6 ++--
+ kernel/time/tick-broadcast-hrtimer.c                |  2 +-
+ kernel/time/tick-broadcast.c                        |  4 +--
+ kernel/time/tick-oneshot.c                          |  2 +-
+ kernel/time/tick-sched.c                            |  2 +-
+ kernel/time/tick-sched.h                            |  2 +-
+ kernel/time/time.c                                  |  2 +-
+ kernel/time/timekeeping.c                           | 10 +++----
+ kernel/time/timer.c                                 |  4 +--
+ kernel/time/vsyscall.c                              |  2 +-
+ tools/testing/selftests/timers/clocksource-switch.c |  4 +--
+ tools/testing/selftests/timers/leap-a-day.c         |  2 +-
+ tools/testing/selftests/timers/leapcrash.c          |  4 +--
+ tools/testing/selftests/timers/threadtest.c         |  2 +-
+ 30 files changed, 56 insertions(+), 56 deletions(-)
+
+diff --git a/drivers/clocksource/clksrc-dbx500-prcmu.c b/drivers/clocksource/clksrc-dbx500-prcmu.c
+index 996900d..2fc93e4 100644
+--- a/drivers/clocksource/clksrc-dbx500-prcmu.c
++++ b/drivers/clocksource/clksrc-dbx500-prcmu.c
+@@ -18,7 +18,7 @@
+ 
+ #define RATE_32K		32768
+ 
+-#define TIMER_MODE_CONTINOUS	0x1
++#define TIMER_MODE_CONTINUOUS	0x1
+ #define TIMER_DOWNCOUNT_VAL	0xffffffff
+ 
+ #define PRCMU_TIMER_REF		0
+@@ -55,13 +55,13 @@ static int __init clksrc_dbx500_prcmu_init(struct device_node *node)
+ 
+ 	/*
+ 	 * The A9 sub system expects the timer to be configured as
+-	 * a continous looping timer.
++	 * a continuous looping timer.
+ 	 * The PRCMU should configure it but if it for some reason
+ 	 * don't we do it here.
+ 	 */
+ 	if (readl(clksrc_dbx500_timer_base + PRCMU_TIMER_MODE) !=
+-	    TIMER_MODE_CONTINOUS) {
+-		writel(TIMER_MODE_CONTINOUS,
++	    TIMER_MODE_CONTINUOUS) {
++		writel(TIMER_MODE_CONTINUOUS,
+ 		       clksrc_dbx500_timer_base + PRCMU_TIMER_MODE);
+ 		writel(TIMER_DOWNCOUNT_VAL,
+ 		       clksrc_dbx500_timer_base + PRCMU_TIMER_REF);
+diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
+index 42e7e43..2b2c3b5 100644
+--- a/drivers/clocksource/dw_apb_timer_of.c
++++ b/drivers/clocksource/dw_apb_timer_of.c
+@@ -38,7 +38,7 @@ static int __init timer_get_base_and_rate(struct device_node *np,
+ 	}
+ 
+ 	/*
+-	 * Not all implementations use a periphal clock, so don't panic
++	 * Not all implementations use a peripheral clock, so don't panic
+ 	 * if it's not present
+ 	 */
+ 	pclk = of_clk_get_by_name(np, "pclk");
+diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+index 269a691..a02b0a2 100644
+--- a/drivers/clocksource/hyperv_timer.c
++++ b/drivers/clocksource/hyperv_timer.c
+@@ -457,7 +457,7 @@ void __init hv_init_clocksource(void)
+ {
+ 	/*
+ 	 * Try to set up the TSC page clocksource. If it succeeds, we're
+-	 * done. Otherwise, set up the MSR clocksoruce.  At least one of
++	 * done. Otherwise, set up the MSR clocksource.  At least one of
+ 	 * these will always be available except on very old versions of
+ 	 * Hyper-V on x86.  In that case we won't have a Hyper-V
+ 	 * clocksource, but Linux will still run with a clocksource based
+diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
+index 787dbeb..27af17c 100644
+--- a/drivers/clocksource/timer-atmel-tcb.c
++++ b/drivers/clocksource/timer-atmel-tcb.c
+@@ -455,9 +455,9 @@ static int __init tcb_clksrc_init(struct device_node *node)
+ 	tcaddr = tc.regs;
+ 
+ 	if (bits == 32) {
+-		/* use apropriate function to read 32 bit counter */
++		/* use appropriate function to read 32 bit counter */
+ 		clksrc.read = tc_get_cycles32;
+-		/* setup ony channel 0 */
++		/* setup only channel 0 */
+ 		tcb_setup_single_chan(&tc, best_divisor_idx);
+ 		tc_sched_clock = tc_sched_clock_read32;
+ 		tc_delay_timer.read_current_timer = tc_delay_timer_read32;
+diff --git a/drivers/clocksource/timer-fsl-ftm.c b/drivers/clocksource/timer-fsl-ftm.c
+index 12a2ed7..93f336e 100644
+--- a/drivers/clocksource/timer-fsl-ftm.c
++++ b/drivers/clocksource/timer-fsl-ftm.c
+@@ -116,7 +116,7 @@ static int ftm_set_next_event(unsigned long delta,
+ 	 * to the MOD register latches the value into a buffer. The MOD
+ 	 * register is updated with the value of its write buffer with
+ 	 * the following scenario:
+-	 * a, the counter source clock is diabled.
++	 * a, the counter source clock is disabled.
+ 	 */
+ 	ftm_counter_disable(priv->clkevt_base);
+ 
+diff --git a/drivers/clocksource/timer-microchip-pit64b.c b/drivers/clocksource/timer-microchip-pit64b.c
+index ab623b2..cfa4ec7 100644
+--- a/drivers/clocksource/timer-microchip-pit64b.c
++++ b/drivers/clocksource/timer-microchip-pit64b.c
+@@ -237,7 +237,7 @@ static void __init mchp_pit64b_pres_compute(u32 *pres, u32 clk_rate,
+ 			break;
+ 	}
+ 
+-	/* Use the bigest prescaler if we didn't match one. */
++	/* Use the biggest prescaler if we didn't match one. */
+ 	if (*pres == MCHP_PIT64B_PRES_MAX)
+ 		*pres = MCHP_PIT64B_PRES_MAX - 1;
+ }
+diff --git a/drivers/clocksource/timer-of.c b/drivers/clocksource/timer-of.c
+index 572da47..529cc6a 100644
+--- a/drivers/clocksource/timer-of.c
++++ b/drivers/clocksource/timer-of.c
+@@ -211,10 +211,10 @@ out_fail:
+ }
+ 
+ /**
+- * timer_of_cleanup - release timer_of ressources
++ * timer_of_cleanup - release timer_of resources
+  * @to: timer_of structure
+  *
+- * Release the ressources that has been used in timer_of_init().
++ * Release the resources that has been used in timer_of_init().
+  * This function should be called in init error cases
+  */
+ void __init timer_of_cleanup(struct timer_of *to)
+diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
+index 33b3e8a..614c838 100644
+--- a/drivers/clocksource/timer-ti-dm-systimer.c
++++ b/drivers/clocksource/timer-ti-dm-systimer.c
+@@ -589,7 +589,7 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
+ 		"always-on " : "", t->rate, np->parent);
+ 
+ 	clockevents_config_and_register(dev, t->rate,
+-					3, /* Timer internal resynch latency */
++					3, /* Timer internal resync latency */
+ 					0xffffffff);
+ 
+ 	if (of_machine_is_compatible("ti,am33xx") ||
+diff --git a/drivers/clocksource/timer-vf-pit.c b/drivers/clocksource/timer-vf-pit.c
+index 1a86a4e..911c921 100644
+--- a/drivers/clocksource/timer-vf-pit.c
++++ b/drivers/clocksource/timer-vf-pit.c
+@@ -136,7 +136,7 @@ static int __init pit_clockevent_init(unsigned long rate, int irq)
+ 	/*
+ 	 * The value for the LDVAL register trigger is calculated as:
+ 	 * LDVAL trigger = (period / clock period) - 1
+-	 * The pit is a 32-bit down count timer, when the conter value
++	 * The pit is a 32-bit down count timer, when the counter value
+ 	 * reaches 0, it will generate an interrupt, thus the minimal
+ 	 * LDVAL trigger value is 1. And then the min_delta is
+ 	 * minimal LDVAL trigger value + 1, and the max_delta is full 32-bit.
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 86d143d..a247b08 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -70,7 +70,7 @@ struct module;
+  * @mark_unstable:	Optional function to inform the clocksource driver that
+  *			the watchdog marked the clocksource unstable
+  * @tick_stable:        Optional function called periodically from the watchdog
+- *			code to provide stable syncrhonization points
++ *			code to provide stable synchronization points
+  * @wd_list:		List head to enqueue into the watchdog list (internal)
+  * @cs_last:		Last clocksource value for clocksource watchdog
+  * @wd_last:		Last watchdog value corresponding to @cs_last
+diff --git a/include/linux/timex.h b/include/linux/timex.h
+index 9c2e54f..059b18e 100644
+--- a/include/linux/timex.h
++++ b/include/linux/timex.h
+@@ -133,7 +133,7 @@
+ 
+ /*
+  * kernel variables
+- * Note: maximum error = NTP synch distance = dispersion + delay / 2;
++ * Note: maximum error = NTP sync distance = dispersion + delay / 2;
+  * estimated error = NTP dispersion.
+  */
+ extern unsigned long tick_usec;		/* USER_HZ period (usec) */
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index 98d7a15..e9af8fa 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -2,13 +2,13 @@
+ /*
+  * Alarmtimer interface
+  *
+- * This interface provides a timer which is similarto hrtimers,
++ * This interface provides a timer which is similar to hrtimers,
+  * but triggers a RTC alarm if the box is suspend.
+  *
+  * This interface is influenced by the Android RTC Alarm timer
+  * interface.
+  *
+- * Copyright (C) 2010 IBM Corperation
++ * Copyright (C) 2010 IBM Corporation
+  *
+  * Author: John Stultz <john.stultz@linaro.org>
+  */
+@@ -811,7 +811,7 @@ static long __sched alarm_timer_nsleep_restart(struct restart_block *restart)
+ /**
+  * alarm_timer_nsleep - alarmtimer nanosleep
+  * @which_clock: clockid
+- * @flags: determins abstime or relative
++ * @flags: determines abstime or relative
+  * @tsreq: requested sleep time (abs or rel)
+  *
+  * Handles clock_nanosleep calls against _ALARM clockids
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..1d1a613 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -38,7 +38,7 @@
+  * calculated mult and shift factors. This guarantees that no 64bit
+  * overflow happens when the input value of the conversion is
+  * multiplied with the calculated mult factor. Larger ranges may
+- * reduce the conversion accuracy by chosing smaller mult and shift
++ * reduce the conversion accuracy by choosing smaller mult and shift
+  * factors.
+  */
+ void
+@@ -518,7 +518,7 @@ static void clocksource_suspend_select(bool fallback)
+  * the suspend time when resuming system.
+  *
+  * This function is called late in the suspend process from timekeeping_suspend(),
+- * that means processes are freezed, non-boot cpus and interrupts are disabled
++ * that means processes are frozen, non-boot cpus and interrupts are disabled
+  * now. It is therefore possible to start the suspend timer without taking the
+  * clocksource mutex.
+  */
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 788b9d1..30b356c 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -683,7 +683,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ 	 * T1 is removed, so this code is called and would reprogram
+ 	 * the hardware to 5s from now. Any hrtimer_start after that
+ 	 * will not reprogram the hardware due to hang_detected being
+-	 * set. So we'd effectivly block all timers until the T2 event
++	 * set. So we'd effectively block all timers until the T2 event
+ 	 * fires.
+ 	 */
+ 	if (!__hrtimer_hres_active(cpu_base) || cpu_base->hang_detected)
+@@ -1019,7 +1019,7 @@ static void __remove_hrtimer(struct hrtimer *timer,
+ 	 * cpu_base->next_timer. This happens when we remove the first
+ 	 * timer on a remote cpu. No harm as we never dereference
+ 	 * cpu_base->next_timer. So the worst thing what can happen is
+-	 * an superflous call to hrtimer_force_reprogram() on the
++	 * an superfluous call to hrtimer_force_reprogram() on the
+ 	 * remote cpu later on if the same timer gets enqueued again.
+ 	 */
+ 	if (reprogram && timer == cpu_base->next_timer)
+@@ -1212,7 +1212,7 @@ static void hrtimer_cpu_base_unlock_expiry(struct hrtimer_cpu_base *base)
+  * The counterpart to hrtimer_cancel_wait_running().
+  *
+  * If there is a waiter for cpu_base->expiry_lock, then it was waiting for
+- * the timer callback to finish. Drop expiry_lock and reaquire it. That
++ * the timer callback to finish. Drop expiry_lock and reacquire it. That
+  * allows the waiter to acquire the lock and make progress.
+  */
+ static void hrtimer_sync_wait_running(struct hrtimer_cpu_base *cpu_base,
+@@ -1398,7 +1398,7 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
+ 	int base;
+ 
+ 	/*
+-	 * On PREEMPT_RT enabled kernels hrtimers which are not explicitely
++	 * On PREEMPT_RT enabled kernels hrtimers which are not explicitly
+ 	 * marked for hard interrupt expiry mode are moved into soft
+ 	 * interrupt context for latency reasons and because the callbacks
+ 	 * can invoke functions which might sleep on RT, e.g. spin_lock().
+@@ -1430,7 +1430,7 @@ static void __hrtimer_init(struct hrtimer *timer, clockid_t clock_id,
+  * hrtimer_init - initialize a timer to the given clock
+  * @timer:	the timer to be initialized
+  * @clock_id:	the clock to be used
+- * @mode:       The modes which are relevant for intitialization:
++ * @mode:       The modes which are relevant for initialization:
+  *              HRTIMER_MODE_ABS, HRTIMER_MODE_REL, HRTIMER_MODE_ABS_SOFT,
+  *              HRTIMER_MODE_REL_SOFT
+  *
+@@ -1487,7 +1487,7 @@ EXPORT_SYMBOL_GPL(hrtimer_active);
+  * insufficient for that.
+  *
+  * The sequence numbers are required because otherwise we could still observe
+- * a false negative if the read side got smeared over multiple consequtive
++ * a false negative if the read side got smeared over multiple consecutive
+  * __run_hrtimer() invocations.
+  */
+ 
+@@ -1588,7 +1588,7 @@ static void __hrtimer_run_queues(struct hrtimer_cpu_base *cpu_base, ktime_t now,
+ 			 * minimizing wakeups, not running timers at the
+ 			 * earliest interrupt after their soft expiration.
+ 			 * This allows us to avoid using a Priority Search
+-			 * Tree, which can answer a stabbing querry for
++			 * Tree, which can answer a stabbing query for
+ 			 * overlapping intervals and instead use the simple
+ 			 * BST we already have.
+ 			 * We don't add extra wakeups by delaying timers that
+@@ -1822,7 +1822,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
+ 				   clockid_t clock_id, enum hrtimer_mode mode)
+ {
+ 	/*
+-	 * On PREEMPT_RT enabled kernels hrtimers which are not explicitely
++	 * On PREEMPT_RT enabled kernels hrtimers which are not explicitly
+ 	 * marked for hard interrupt expiry mode are moved into soft
+ 	 * interrupt context either for latency reasons or because the
+ 	 * hrtimer callback takes regular spinlocks or invokes other
+@@ -1835,7 +1835,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
+ 	 * the same CPU. That causes a latency spike due to the wakeup of
+ 	 * a gazillion threads.
+ 	 *
+-	 * OTOH, priviledged real-time user space applications rely on the
++	 * OTOH, privileged real-time user space applications rely on the
+ 	 * low latency of hard interrupt wakeups. If the current task is in
+ 	 * a real-time scheduling class, mark the mode for hard interrupt
+ 	 * expiry.
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index a5cffe2..a492e4d 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -44,7 +44,7 @@ static u64 jiffies_read(struct clocksource *cs)
+  * the timer interrupt frequency HZ and it suffers
+  * inaccuracies caused by missed or lost timer
+  * interrupts and the inability for the timer
+- * interrupt hardware to accuratly tick at the
++ * interrupt hardware to accurately tick at the
+  * requested HZ value. It is also not recommended
+  * for "tick-less" systems.
+  */
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 5247afd..406dccb 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -544,7 +544,7 @@ static inline bool rtc_tv_nsec_ok(unsigned long set_offset_nsec,
+ 				  struct timespec64 *to_set,
+ 				  const struct timespec64 *now)
+ {
+-	/* Allowed error in tv_nsec, arbitarily set to 5 jiffies in ns. */
++	/* Allowed error in tv_nsec, arbitrarily set to 5 jiffies in ns. */
+ 	const unsigned long TIME_SET_NSEC_FUZZ = TICK_NSEC * 5;
+ 	struct timespec64 delay = {.tv_sec = -1,
+ 				   .tv_nsec = set_offset_nsec};
+diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+index a71758e..b145e68 100644
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -279,7 +279,7 @@ void thread_group_sample_cputime(struct task_struct *tsk, u64 *samples)
+  * @tsk:	Task for which cputime needs to be started
+  * @samples:	Storage for time samples
+  *
+- * The thread group cputime accouting is avoided when there are no posix
++ * The thread group cputime accounting is avoided when there are no posix
+  * CPU timers armed. Before starting a timer it's required to check whether
+  * the time accounting is active. If not, a full update of the atomic
+  * accounting store needs to be done and the accounting enabled.
+@@ -390,7 +390,7 @@ static int posix_cpu_timer_create(struct k_itimer *new_timer)
+ 	/*
+ 	 * If posix timer expiry is handled in task work context then
+ 	 * timer::it_lock can be taken without disabling interrupts as all
+-	 * other locking happens in task context. This requires a seperate
++	 * other locking happens in task context. This requires a separate
+ 	 * lock class key otherwise regular posix timer expiry would record
+ 	 * the lock class being taken in interrupt context and generate a
+ 	 * false positive warning.
+@@ -1216,7 +1216,7 @@ static void handle_posix_cpu_timers(struct task_struct *tsk)
+ 		check_process_timers(tsk, &firing);
+ 
+ 		/*
+-		 * The above timer checks have updated the exipry cache and
++		 * The above timer checks have updated the expiry cache and
+ 		 * because nothing can have queued or modified timers after
+ 		 * sighand lock was taken above it is guaranteed to be
+ 		 * consistent. So the next timer interrupt fastpath check
+diff --git a/kernel/time/tick-broadcast-hrtimer.c b/kernel/time/tick-broadcast-hrtimer.c
+index b5a65e2..797eb93 100644
+--- a/kernel/time/tick-broadcast-hrtimer.c
++++ b/kernel/time/tick-broadcast-hrtimer.c
+@@ -53,7 +53,7 @@ static int bc_set_next(ktime_t expires, struct clock_event_device *bc)
+ 	 * reasons.
+ 	 *
+ 	 * Each caller tries to arm the hrtimer on its own CPU, but if the
+-	 * hrtimer callbback function is currently running, then
++	 * hrtimer callback function is currently running, then
+ 	 * hrtimer_start() cannot move it and the timer stays on the CPU on
+ 	 * which it is assigned at the moment.
+ 	 *
+diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
+index 5a23829..6ec7855 100644
+--- a/kernel/time/tick-broadcast.c
++++ b/kernel/time/tick-broadcast.c
+@@ -157,7 +157,7 @@ static void tick_device_setup_broadcast_func(struct clock_event_device *dev)
+ }
+ 
+ /*
+- * Check, if the device is disfunctional and a place holder, which
++ * Check, if the device is dysfunctional and a placeholder, which
+  * needs to be handled by the broadcast device.
+  */
+ int tick_device_uses_broadcast(struct clock_event_device *dev, int cpu)
+@@ -391,7 +391,7 @@ void tick_broadcast_control(enum tick_broadcast_mode mode)
+ 			 * - the broadcast device exists
+ 			 * - the broadcast device is not a hrtimer based one
+ 			 * - the broadcast device is in periodic mode to
+-			 *   avoid a hickup during switch to oneshot mode
++			 *   avoid a hiccup during switch to oneshot mode
+ 			 */
+ 			if (bc && !(bc->features & CLOCK_EVT_FEAT_HRTIMER) &&
+ 			    tick_broadcast_device.mode == TICKDEV_MODE_PERIODIC)
+diff --git a/kernel/time/tick-oneshot.c b/kernel/time/tick-oneshot.c
+index f9745d4..475ecce 100644
+--- a/kernel/time/tick-oneshot.c
++++ b/kernel/time/tick-oneshot.c
+@@ -45,7 +45,7 @@ int tick_program_event(ktime_t expires, int force)
+ }
+ 
+ /**
+- * tick_resume_onshot - resume oneshot mode
++ * tick_resume_oneshot - resume oneshot mode
+  */
+ void tick_resume_oneshot(void)
+ {
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index e10a4af..128735e 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -751,7 +751,7 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+ 	 * Aside of that check whether the local timer softirq is
+ 	 * pending. If so its a bad idea to call get_next_timer_interrupt()
+ 	 * because there is an already expired timer, so it will request
+-	 * immeditate expiry, which rearms the hardware timer with a
++	 * immediate expiry, which rearms the hardware timer with a
+ 	 * minimal delta which brings us back to this place
+ 	 * immediately. Lather, rinse and repeat...
+ 	 */
+diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
+index 4fb0652..d952ae3 100644
+--- a/kernel/time/tick-sched.h
++++ b/kernel/time/tick-sched.h
+@@ -29,7 +29,7 @@ enum tick_nohz_mode {
+  * @inidle:		Indicator that the CPU is in the tick idle mode
+  * @tick_stopped:	Indicator that the idle tick has been stopped
+  * @idle_active:	Indicator that the CPU is actively in the tick idle mode;
+- *			it is resetted during irq handling phases.
++ *			it is reset during irq handling phases.
+  * @do_timer_lst:	CPU was the last one doing do_timer before going idle
+  * @got_idle_tick:	Tick timer function has run with @inidle set
+  * @last_tick:		Store the last tick expiry time when the tick
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index 3985b2b..29923b2 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -571,7 +571,7 @@ EXPORT_SYMBOL(__usecs_to_jiffies);
+ /*
+  * The TICK_NSEC - 1 rounds up the value to the next resolution.  Note
+  * that a remainder subtract here would not do the right thing as the
+- * resolution values don't fall on second boundries.  I.e. the line:
++ * resolution values don't fall on second boundaries.  I.e. the line:
+  * nsec -= nsec % TICK_NSEC; is NOT a correct resolution rounding.
+  * Note that due to the small error in the multiplier here, this
+  * rounding is incorrect for sufficiently large values of tv_nsec, but
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 6aee576..77bafd8 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -596,14 +596,14 @@ EXPORT_SYMBOL_GPL(ktime_get_real_fast_ns);
+  * careful cache layout of the timekeeper because the sequence count and
+  * struct tk_read_base would then need two cache lines instead of one.
+  *
+- * Access to the time keeper clock source is disabled accross the innermost
++ * Access to the time keeper clock source is disabled across the innermost
+  * steps of suspend/resume. The accessors still work, but the timestamps
+  * are frozen until time keeping is resumed which happens very early.
+  *
+  * For regular suspend/resume there is no observable difference vs. sched
+  * clock, but it might affect some of the nasty low level debug printks.
+  *
+- * OTOH, access to sched clock is not guaranteed accross suspend/resume on
++ * OTOH, access to sched clock is not guaranteed across suspend/resume on
+  * all systems either so it depends on the hardware in use.
+  *
+  * If that turns out to be a real problem then this could be mitigated by
+@@ -899,7 +899,7 @@ ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs)
+ EXPORT_SYMBOL_GPL(ktime_get_coarse_with_offset);
+ 
+ /**
+- * ktime_mono_to_any() - convert mononotic time to any other time
++ * ktime_mono_to_any() - convert monotonic time to any other time
+  * @tmono:	time to convert.
+  * @offs:	which offset to use
+  */
+@@ -1948,7 +1948,7 @@ static __always_inline void timekeeping_apply_adjustment(struct timekeeper *tk,
+ 	 *	xtime_nsec_1 = offset + xtime_nsec_2
+ 	 * Which gives us:
+ 	 *	xtime_nsec_2 = xtime_nsec_1 - offset
+-	 * Which simplfies to:
++	 * Which simplifies to:
+ 	 *	xtime_nsec -= offset
+ 	 */
+ 	if ((mult_adj > 0) && (tk->tkr_mono.mult + mult_adj < mult_adj)) {
+@@ -2336,7 +2336,7 @@ static int timekeeping_validate_timex(const struct __kernel_timex *txc)
+ 
+ 		/*
+ 		 * Validate if a timespec/timeval used to inject a time
+-		 * offset is valid.  Offsets can be postive or negative, so
++		 * offset is valid.  Offsets can be positive or negative, so
+ 		 * we don't check tv_sec. The value of the timeval/timespec
+ 		 * is the sum of its fields,but *NOTE*:
+ 		 * The field tv_usec/tv_nsec must always be non-negative and
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index f475f1a..d111adf 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -894,7 +894,7 @@ static inline void forward_timer_base(struct timer_base *base)
+ 	/*
+ 	 * No need to forward if we are close enough below jiffies.
+ 	 * Also while executing timers, base->clk is 1 offset ahead
+-	 * of jiffies to avoid endless requeuing to current jffies.
++	 * of jiffies to avoid endless requeuing to current jiffies.
+ 	 */
+ 	if ((long)(jnow - base->clk) < 1)
+ 		return;
+@@ -1271,7 +1271,7 @@ static inline void timer_base_unlock_expiry(struct timer_base *base)
+  * The counterpart to del_timer_wait_running().
+  *
+  * If there is a waiter for base->expiry_lock, then it was waiting for the
+- * timer callback to finish. Drop expiry_lock and reaquire it. That allows
++ * timer callback to finish. Drop expiry_lock and reacquire it. That allows
+  * the waiter to acquire the lock and make progress.
+  */
+ static void timer_sync_wait_running(struct timer_base *base)
+diff --git a/kernel/time/vsyscall.c b/kernel/time/vsyscall.c
+index 88e6b8e..f0d5062 100644
+--- a/kernel/time/vsyscall.c
++++ b/kernel/time/vsyscall.c
+@@ -108,7 +108,7 @@ void update_vsyscall(struct timekeeper *tk)
+ 
+ 	/*
+ 	 * If the current clocksource is not VDSO capable, then spare the
+-	 * update of the high reolution parts.
++	 * update of the high resolution parts.
+ 	 */
+ 	if (clock_mode != VDSO_CLOCKMODE_NONE)
+ 		update_vdso_data(vdata, tk);
+diff --git a/tools/testing/selftests/timers/clocksource-switch.c b/tools/testing/selftests/timers/clocksource-switch.c
+index bfc974b..ef8eb36 100644
+--- a/tools/testing/selftests/timers/clocksource-switch.c
++++ b/tools/testing/selftests/timers/clocksource-switch.c
+@@ -3,7 +3,7 @@
+  *		(C) Copyright IBM 2012
+  *		Licensed under the GPLv2
+  *
+- *  NOTE: This is a meta-test which quickly changes the clocksourc and
++ *  NOTE: This is a meta-test which quickly changes the clocksource and
+  *  then uses other tests to detect problems. Thus this test requires
+  *  that the inconsistency-check and nanosleep tests be present in the
+  *  same directory it is run from.
+@@ -134,7 +134,7 @@ int main(int argv, char **argc)
+ 		return -1;
+ 	}
+ 
+-	/* Check everything is sane before we start switching asyncrhonously */
++	/* Check everything is sane before we start switching asynchronously */
+ 	for (i = 0; i < count; i++) {
+ 		printf("Validating clocksource %s\n", clocksource_list[i]);
+ 		if (change_clocksource(clocksource_list[i])) {
+diff --git a/tools/testing/selftests/timers/leap-a-day.c b/tools/testing/selftests/timers/leap-a-day.c
+index 19e46ed..23eb398 100644
+--- a/tools/testing/selftests/timers/leap-a-day.c
++++ b/tools/testing/selftests/timers/leap-a-day.c
+@@ -5,7 +5,7 @@
+  *              Licensed under the GPLv2
+  *
+  *  This test signals the kernel to insert a leap second
+- *  every day at midnight GMT. This allows for stessing the
++ *  every day at midnight GMT. This allows for stressing the
+  *  kernel's leap-second behavior, as well as how well applications
+  *  handle the leap-second discontinuity.
+  *
+diff --git a/tools/testing/selftests/timers/leapcrash.c b/tools/testing/selftests/timers/leapcrash.c
+index dc80728..f70802c 100644
+--- a/tools/testing/selftests/timers/leapcrash.c
++++ b/tools/testing/selftests/timers/leapcrash.c
+@@ -4,10 +4,10 @@
+  *              (C) Copyright 2013, 2015 Linaro Limited
+  *              Licensed under the GPL
+  *
+- * This test demonstrates leapsecond deadlock that is possibe
++ * This test demonstrates leapsecond deadlock that is possible
+  * on kernels from 2.6.26 to 3.3.
+  *
+- * WARNING: THIS WILL LIKELY HARDHANG SYSTEMS AND MAY LOSE DATA
++ * WARNING: THIS WILL LIKELY HARD HANG SYSTEMS AND MAY LOSE DATA
+  * RUN AT YOUR OWN RISK!
+  *  To build:
+  *	$ gcc leapcrash.c -o leapcrash -lrt
+diff --git a/tools/testing/selftests/timers/threadtest.c b/tools/testing/selftests/timers/threadtest.c
+index cf3e489..80aed4b 100644
+--- a/tools/testing/selftests/timers/threadtest.c
++++ b/tools/testing/selftests/timers/threadtest.c
+@@ -76,7 +76,7 @@ void checklist(struct timespec *list, int size)
+ 
+ /* The shared thread shares a global list
+  * that each thread fills while holding the lock.
+- * This stresses clock syncronization across cpus.
++ * This stresses clock synchronization across cpus.
+  */
+ void *shared_thread(void *arg)
+ {
