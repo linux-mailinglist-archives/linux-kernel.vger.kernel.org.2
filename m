@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7318A343DAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61740343DB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhCVKYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230022AbhCVKXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:23:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 538ED6198D;
-        Mon, 22 Mar 2021 10:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616408622;
-        bh=PolohzF88aaUXjrAtz/IbqRVrmQCd7br4yDbMlmgpCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FPBJ/NXJDU/0d4NUpa2FI+0Yrkialh6Abq1d/yy+CUfb2LGZbDcBkPqCjXKKTvQeJ
-         lGa/n1DebXDE8HN+9soDKmvY+7IHG025pGS1LSNlq6dKTVtd49V+v2ebaQxQhUqB8s
-         t6cEa7/ksq3ZligFlZ+hHeaZR0wPIpl7WXAujByKGKuqu3kKHIkCuiULYkCfF7rMsB
-         p+DV4K2W9brgCSH5vzRE63RIwH8jdeK7LJ5ftX+Xtr6mYjCG8SiCip6pgXG6XCaNPS
-         RG32nh5vjBDb+VsR+yhnqwASfPGfnvuLEebjAL/ubTTP5iZWIRwasvFBWhN8sMir2s
-         3yQWS6H7dTIMg==
-Date:   Mon, 22 Mar 2021 12:23:35 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH] userfaultfd: Write protect when virtual memory range has
- no page table entry
-Message-ID: <YFhwJ+ftD6UURkDL@kernel.org>
-References: <20210319152428.52683-1-minhquangbui99@gmail.com>
- <YFhuDf6L7nkUoT7q@dhcp22.suse.cz>
+        id S229829AbhCVKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhCVKYy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:24:54 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92597C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:24:53 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 184so20312780ljf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=Wecwnopc86KzaaAOKv3X7oG8HgwPY9eS80QiSLYB0eM=;
+        b=o9gsBfuKJWDHOxBZKihm/vEqdDWAXNrVhlxycxZQy37pipJyW6ONJLOzKcmRQ7Gbv7
+         20vv+UH8W6QiL92d9C03a9mGmq+d3WJtH8UTQK6cC2JXyhHfIw52FegIVpNGOSGKh/YI
+         GjY9n5N9xGsur6m/KKgcl7dSP/flaS44MD/wNnhm6nwrKa+LvnXRMZQTRn3TEfZmgKLO
+         ctd8p1gnGt6gpwYqBW9V8pL41/4m/xFURw+aUyScIQol/mcO23KMYVuisAxzHcMpIchQ
+         mcDpDqn9s335ondAHMjhHolvXGBPHbKeGjsS9TEHiDezPTDTPkiUiwN6qlrlgA6Q3NZa
+         iWnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Wecwnopc86KzaaAOKv3X7oG8HgwPY9eS80QiSLYB0eM=;
+        b=qYpDOizyAH5ptu922H8mkAVvx9RTSD/FQfNmxuPbVaYbOUZJwG9blLYoQwXkzEQ0XR
+         D8g/4CAe8dLW6oL2elN1fdGPAXesU5foNUQYwQI/Gnj00MZ+Bf8Gx/3ZO7K12pPmAqvQ
+         cu1Bz8TiIJiugbD7/pQjWknRetUV2KPYduu8aMe8xwQtq4VGgKT5YoDpQr1yvRq3jzKq
+         WOtc79xl+egb8HzG3lHDs3h+o+AomFQFBmHLqQPwcV3qJyzCFurT7MLSmZfjpzEqV/Vj
+         fkQVPiSYDbQ3yICcMKM937Y/EoAnKY8ualgZANY0aAxO8igcDYmGmOpfDznrFiJG8Mub
+         /ItA==
+X-Gm-Message-State: AOAM530GCUBnfr/+LJgZKcl5ad7VoO1YXh1VpeX5WsY5ZgUrmGBGVj+G
+        jO3aRH09tcpTP7bHuA21H3vCaQ==
+X-Google-Smtp-Source: ABdhPJzsmd+NyeqccDbrblkBWBsQe0ffnkHfCmbHXOn/TJZBCABBdJ8Ef6kPsWWYQtRBB5tf2BaQfw==
+X-Received: by 2002:a05:651c:50f:: with SMTP id o15mr9209716ljp.389.1616408690762;
+        Mon, 22 Mar 2021 03:24:50 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id r15sm1904337ljj.88.2021.03.22.03.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 03:24:50 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 01/16] net: dsa: call dsa_port_bridge_join when joining a LAG that is already in a bridge
+In-Reply-To: <20210318231829.3892920-2-olteanv@gmail.com>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-2-olteanv@gmail.com>
+Date:   Mon, 22 Mar 2021 11:24:49 +0100
+Message-ID: <87eeg7o58u.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFhuDf6L7nkUoT7q@dhcp22.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Peter
+On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>
+> DSA can properly detect and offload this sequence of operations:
+>
+> ip link add br0 type bridge
+> ip link add bond0 type bond
+> ip link set swp0 master bond0
+> ip link set bond0 master br0
+>
+> But not this one:
+>
+> ip link add br0 type bridge
+> ip link add bond0 type bond
+> ip link set bond0 master br0
+> ip link set swp0 master bond0
+>
+> Actually the second one is more complicated, due to the elapsed time
+> between the enslavement of bond0 and the offloading of it via swp0, a
+> lot of things could have happened to the bond0 bridge port in terms of
+> switchdev objects (host MDBs, VLANs, altered STP state etc). So this is
+> a bit of a can of worms, and making sure that the DSA port's state is in
+> sync with this already existing bridge port is handled in the next
+> patches.
+>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
 
-On Mon, Mar 22, 2021 at 11:14:37AM +0100, Michal Hocko wrote:
-> Le'ts Andrea and Mike
-> 
-> On Fri 19-03-21 22:24:28, Bui Quang Minh wrote:
-> > userfaultfd_writeprotect() use change_protection() to clear write bit in
-> > page table entries (pte/pmd). So, later write to this virtual address
-> > range causes a page fault, which is then handled by userspace program.
-> > However, change_protection() has no effect when there is no page table
-> > entries associated with that virtual memory range (a newly mapped memory
-> > range). As a result, later access to that memory range causes allocating a
-> > page table entry with write bit still set (due to VM_WRITE flag in
-> > vma->vm_flags).
-> > 
-> > Add checks for VM_UFFD_WP in vma->vm_flags when allocating new page table
-> > entry in missing page table entry page fault path.
-> 
-> From the above it is not really clear whether this is a usability
-> problem or a bug of the interface.
-> 
-> > Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-> > ---
-> >  mm/huge_memory.c | 12 ++++++++++++
-> >  mm/memory.c      | 10 ++++++++++
-> >  2 files changed, 22 insertions(+)
-> > 
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index ae907a9c2050..9bb16a55a48c 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -636,6 +636,11 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-> >  
-> >  		entry = mk_huge_pmd(page, vma->vm_page_prot);
-> >  		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
-> > +		if (userfaultfd_wp(vma)) {
-> > +			entry = pmd_wrprotect(entry);
-> > +			entry = pmd_mkuffd_wp(entry);
-> > +		}
-> > +
-> >  		page_add_new_anon_rmap(page, vma, haddr, true);
-> >  		lru_cache_add_inactive_or_unevictable(page, vma);
-> >  		pgtable_trans_huge_deposit(vma->vm_mm, vmf->pmd, pgtable);
-> > @@ -643,6 +648,13 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-> >  		update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
-> >  		add_mm_counter(vma->vm_mm, MM_ANONPAGES, HPAGE_PMD_NR);
-> >  		mm_inc_nr_ptes(vma->vm_mm);
-> > +
-> > +		if (userfaultfd_huge_pmd_wp(vma, *vmf->pmd)) {
-> > +			spin_unlock(vmf->ptl);
-> > +			count_vm_event(THP_FAULT_ALLOC);
-> > +			count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
-> > +			return handle_userfault(vmf, VM_UFFD_WP);
-> > +		}
-> >  		spin_unlock(vmf->ptl);
-> >  		count_vm_event(THP_FAULT_ALLOC);
-> >  		count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 5efa07fb6cdc..b835746545bf 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -3564,6 +3564,11 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
-> >  	if (vma->vm_flags & VM_WRITE)
-> >  		entry = pte_mkwrite(pte_mkdirty(entry));
-> >  
-> > +	if (userfaultfd_wp(vma)) {
-> > +		entry = pte_wrprotect(entry);
-> > +		entry = pte_mkuffd_wp(entry);
-> > +	}
-> > +
-> >  	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
-> >  			&vmf->ptl);
-> >  	if (!pte_none(*vmf->pte)) {
-> > @@ -3590,6 +3595,11 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
-> >  
-> >  	/* No need to invalidate - it was non-present before */
-> >  	update_mmu_cache(vma, vmf->address, vmf->pte);
-> > +
-> > +	if (userfaultfd_pte_wp(vma, *vmf->pte)) {
-> > +		pte_unmap_unlock(vmf->pte, vmf->ptl);
-> > +		return handle_userfault(vmf, VM_UFFD_WP);
-> > +	}
-> >  unlock:
-> >  	pte_unmap_unlock(vmf->pte, vmf->ptl);
-> >  	return ret;
-> > -- 
-> > 2.25.1
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
-
--- 
-Sincerely yours,
-Mike.
+Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
