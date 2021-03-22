@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF16634442A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED06F34449E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhCVM6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S233264AbhCVNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhCVMrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5FC0619C8;
-        Mon, 22 Mar 2021 12:43:35 +0000 (UTC)
+        id S230221AbhCVMtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E869619D3;
+        Mon, 22 Mar 2021 12:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417016;
-        bh=wlaBpyqgQ3urhn6fWh/I/9CbPTkk/7zmhnJwHuRQbMc=;
+        s=korg; t=1616417108;
+        bh=tPetY16AiQmg8h1ZYslYI+vPL7h0XaE/AWhM9p3MhSU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WbM3DfRg5jfy0QAEt+gAGqdNQhrYuRjBpcqh+AykGJt22uONW7NYi5klPAo4BXxGU
-         PgHD6A70A8ZGDcMcB/qBlRuvO7dOou+tK6KCjG5lyBgzixQHLhRviOCww2eZ7IwZ/V
-         HlmzNg5FjbJmKTQONLTyUaKxmov+WhGQPIg+6/i8=
+        b=kNW0W6uRkVkWf43UweEueQk2WOJa87mtHRsMLb/CnJ6rK0GmLm6TXEFMOhpDaNQfp
+         zo/VqhOM8+8wdxQa7rpE+28c8ItHeHu7/gaC/JrL0mkTDxo/lUnSfk3XgHxS74vOpe
+         vFQbyZ1uvBQyWFNl7R6WBt5Vvo1r74fsR7Lrhw8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 54/60] ext4: find old entry again if failed to rename whiteout
-Date:   Mon, 22 Mar 2021 13:28:42 +0100
-Message-Id: <20210322121924.162238740@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 29/43] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
+Date:   Mon, 22 Mar 2021 13:28:43 +0100
+Message-Id: <20210322121920.860832881@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit b7ff91fd030dc9d72ed91b1aab36e445a003af4f upstream.
+commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
 
-If we failed to add new entry on rename whiteout, we cannot reset the
-old->de entry directly, because the old->de could have moved from under
-us during make indexed dir. So find the old entry again before reset is
-needed, otherwise it may corrupt the filesystem as below.
+There is one regmap_bulk_read() call in mpu3050_trigger_handler
+that we have caught its return value bug lack further handling.
+Check and terminate the execution flow just like the other three
+regmap_bulk_read() calls in this function.
 
-  /dev/sda: Entry '00000001' in ??? (12) has deleted/unused inode 15. CLEARED.
-  /dev/sda: Unattached inode 75
-  /dev/sda: UNEXPECTED INCONSISTENCY; RUN fsck MANUALLY.
-
-Fixes: 6b4b8e6b4ad ("ext4: fix bug for rename with RENAME_WHITEOUT")
-Cc: stable@vger.kernel.org
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20210303131703.330415-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/namei.c |   29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ drivers/iio/gyro/mpu3050-core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3547,6 +3547,31 @@ static int ext4_setent(handle_t *handle,
- 	return 0;
- }
+--- a/drivers/iio/gyro/mpu3050-core.c
++++ b/drivers/iio/gyro/mpu3050-core.c
+@@ -549,6 +549,8 @@ static irqreturn_t mpu3050_trigger_handl
+ 					       MPU3050_FIFO_R,
+ 					       &fifo_values[offset],
+ 					       toread);
++			if (ret)
++				goto out_trigger_unlock;
  
-+static void ext4_resetent(handle_t *handle, struct ext4_renament *ent,
-+			  unsigned ino, unsigned file_type)
-+{
-+	struct ext4_renament old = *ent;
-+	int retval = 0;
-+
-+	/*
-+	 * old->de could have moved from under us during make indexed dir,
-+	 * so the old->de may no longer valid and need to find it again
-+	 * before reset old inode info.
-+	 */
-+	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de, NULL);
-+	if (IS_ERR(old.bh))
-+		retval = PTR_ERR(old.bh);
-+	if (!old.bh)
-+		retval = -ENOENT;
-+	if (retval) {
-+		ext4_std_error(old.dir->i_sb, retval);
-+		return;
-+	}
-+
-+	ext4_setent(handle, &old, ino, file_type);
-+	brelse(old.bh);
-+}
-+
- static int ext4_find_delete_entry(handle_t *handle, struct inode *dir,
- 				  const struct qstr *d_name)
- {
-@@ -3843,8 +3868,8 @@ static int ext4_rename(struct inode *old
- end_rename:
- 	if (whiteout) {
- 		if (retval) {
--			ext4_setent(handle, &old,
--				old.inode->i_ino, old_file_type);
-+			ext4_resetent(handle, &old,
-+				      old.inode->i_ino, old_file_type);
- 			drop_nlink(whiteout);
- 		}
- 		unlock_new_inode(whiteout);
+ 			dev_dbg(mpu3050->dev,
+ 				"%04x %04x %04x %04x %04x\n",
 
 
