@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2174344D0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3F3344D19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhCVRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        id S232153AbhCVRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbhCVRP1 (ORCPT
+        with ESMTP id S232154AbhCVRRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:15:27 -0400
+        Mon, 22 Mar 2021 13:17:09 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB240C061574;
-        Mon, 22 Mar 2021 10:15:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA7EC061574;
+        Mon, 22 Mar 2021 10:17:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
         :Reply-To:Content-ID:Content-Description;
-        bh=ALxpnIbdgwKGvYkCqePRJ4vCsE0PnfX/ZLHTWQ+BL/s=; b=lEd7EDNdly8b1md0i3XZkQA1SI
-        W5o0Sj2W7RS3edUrPdN9tVQzgarXA9xHkWUsolYlh5DkBff4py6222RkWQRhz4EHKhGCDM4Q5+pAI
-        CQeLedNNQI/zTGEKNYXtFDHrrC0rXgSYmfnty0HCDQDh4nzWPj/Gg+1xUlky/nUdw4F6hCjlmmCPN
-        GC2fcs4Sst6o1r6vB63gnWcMFjKeOYosWF9y5PzGrCNAhAUKH6aYduS9RJO9GbZf50VtD210Czewf
-        t/jtILBYdQt2a8haNPMMpDmNSBtA23FRHA0nPE4k4c0K/oFwjSbU6NIZY62cqPi6nXQ0zbhxXEoUz
-        V3hq/k6A==;
+        bh=lUaoQEVmOtyqsF9DcikK2Frfj8zPoup60J3e8MKVBxw=; b=IsVPi9jJSbwLH3OFCpQgFYAqeN
+        xbySqHSbx103kN5qUjuCSWjjpm0WHlgTDB++a+ZmSSashbln46ZCUpVdaeyBaWfu9IU7sXN8xvFh3
+        iWjl5uP8eu+nAYta3dixGjphUOaOUH+9rTj/lX7rMNiMJStSK6QvkCR1q+7MNpjcR1tXOI4uIryVL
+        8OfqNzpqDTdsYqRHkulIwZOoZMQpautIqacqN9eM9RPvVCptBvjI8SDWbOK0fQidQ3HaqRXZR0dGP
+        1Ml2k9egJ/8NMbSddF21VGE41qDiDLAgp5DyLxwjtjlf9RL378RLZ510EO4vlINc5efF9FAyCQFdJ
+        LY5wzORQ==;
 Received: from [2601:1c0:6280:3f0::3ba4]
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOO91-008pWu-Cr; Mon, 22 Mar 2021 17:15:15 +0000
-Subject: Re: [PATCH v5 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <Perry.Yuan@dell.com>, pobrn@protonmail.com,
-        pierre-louis.bossart@linux.intel.com, oder_chiou@realtek.com,
-        perex@perex.cz, tiwai@suse.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, Mario.Limonciello@dell.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20210322093841.11840-1-Perry_Yuan@Dell.com>
+        id 1lOOAH-008pbw-BN; Mon, 22 Mar 2021 17:16:34 +0000
+Subject: Re: linux-next: Tree for Mar 22 (net/ipa)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alex Elder <elder@kernel.org>
+References: <20210322185251.66566cfd@canb.auug.org.au>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a1bdec21-efd9-ebf5-1b45-c0a364e0914c@infradead.org>
-Date:   Mon, 22 Mar 2021 10:15:07 -0700
+Message-ID: <83366bbc-af28-4ffd-2a25-f688a52f9239@infradead.org>
+Date:   Mon, 22 Mar 2021 10:16:26 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210322093841.11840-1-Perry_Yuan@Dell.com>
+In-Reply-To: <20210322185251.66566cfd@canb.auug.org.au>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -52,46 +49,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 2:38 AM, Perry Yuan wrote:
-> From: Perry Yuan <perry_yuan@dell.com>
+On 3/22/21 12:52 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Warning: Some of the branches in linux-next may still based on v5.12-rc1,
+> so please be careful if you are trying to bisect a bug.
+> 
+> News: if your -next included tree is based on Linus' tree tag
+> v5.12-rc1{,-dontuse} (or somewhere between v5.11 and that tag), please
+> consider rebasing it onto v5.12-rc2. Also, please check any branches
+> merged into your branch.
+> 
+> Changes since 20210319:
 > 
 
-> diff --git a/drivers/platform/x86/dell/Kconfig b/drivers/platform/x86/dell/Kconfig
-> index e0a55337f51a..0e0f1eb35bd6 100644
-> --- a/drivers/platform/x86/dell/Kconfig
-> +++ b/drivers/platform/x86/dell/Kconfig
-> @@ -204,4 +204,20 @@ config DELL_WMI_SYSMAN
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called dell-wmi-sysman.
->  
-> +config DELL_PRIVACY
-> +	tristate "Dell Hardware Privacy Support"
-> +	depends on ACPI
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-> +	depends on DELL_LAPTOP
-> +	depends on LEDS_TRIGGER_AUDIO
-> +	select DELL_WMI
-> +	help
-> +	  This driver provides support for the "Dell Hardware Privacy" feature
-> +	  of Dell laptops.
-> +	  Support for a micmute and camera mute privacy will be provided as
 
-better:
-	                                                are provided as
+on i386:
 
-> +	  hardware button Ctrl+F4 and Ctrl+F9 hotkey.
+ld: drivers/net/ipa/gsi.o: in function `gsi_ring_alloc':
+gsi.c:(.text+0x926): undefined reference to `__umoddi3'
 
-Does that say that Ctrl+F4 is a hardware button
-and that Ctrl+F9 is a hotkey?
-If so, what's the difference? and why?  Are they different
-hardware implementations?  Does the user care?
 
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called dell_privacy.
->  endif # X86_PLATFORM_DRIVERS_DELL
-thanks.
 -- 
 ~Randy
-
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
