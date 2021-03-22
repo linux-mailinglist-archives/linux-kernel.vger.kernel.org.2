@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B28D3442DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643AB344144
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbhCVMqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34112 "EHLO mail.kernel.org"
+        id S231410AbhCVMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231689AbhCVMiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83E15619B2;
-        Mon, 22 Mar 2021 12:37:31 +0000 (UTC)
+        id S231206AbhCVMaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 013F961990;
+        Mon, 22 Mar 2021 12:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416652;
-        bh=3iSwuQS17vR/pELboJm0Hl9EfUZ6e7jum/23SXCimB8=;
+        s=korg; t=1616416252;
+        bh=YeR17+U8In999M2NfIAYjFnJsPk40ofL5D0qrCRVTSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vVMfE0D32PwWbk2ydbrjFwYD5SWYll00rFRMG4Dylt7ekGSgEaoQji6a/LD7ae+Oi
-         9/AZ6pC4qZYzXYKZfwOkcWnxW9P7/pkRX9s9VyBdi4sbvD2X5A8q69top0kUAi/nJE
-         vCY4fLc9Cz4RXWUHCA1S+7IB4PLJHWAyju89ICgY=
+        b=MUJI7NhlRJoC50+kPw/Zqy5R7H5Iivvov3+oHW2Z72e8ADdJlx/NDR0dZsIndv4zA
+         CU4QrD8fnov4Y57rdK2L/4o3n/yD/CM7mSDMYsF/UIBKPVZI5H4R7FPXDkjoW0curB
+         e8RbQX0wFizXJ6u/pIqp2fG34Bm1Ds71h/SWrgKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jeffrey Altman <jaltman@auristor.com>,
-        linux-afs@lists.infradead.org
-Subject: [PATCH 5.10 033/157] afs: Fix accessing YFS xattrs on a non-YFS server
-Date:   Mon, 22 Mar 2021 13:26:30 +0100
-Message-Id: <20210322121934.812515367@linuxfoundation.org>
+        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 008/120] ALSA: hda/realtek: fix mute/micmute LEDs for HP 840 G8
+Date:   Mon, 22 Mar 2021 13:26:31 +0100
+Message-Id: <20210322121929.935372280@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,111 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Jeremy Szu <jeremy.szu@canonical.com>
 
-commit 64fcbb6158ecc684d84c64424830a9c37c77c5b9 upstream.
+commit ca6883393f0fa7f13ec8b860dbcef423a759c4a2 upstream.
 
-If someone attempts to access YFS-related xattrs (e.g. afs.yfs.acl) on a
-file on a non-YFS AFS server (such as OpenAFS), then the kernel will jump
-to a NULL function pointer because the afs_fetch_acl_operation descriptor
-doesn't point to a function for issuing an operation on a non-YFS
-server[1].
+The HP EliteBook 840 G8 Notebook PC is using ALC285 codec which is
+using 0x04 to control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-Fix this by making afs_wait_for_operation() check that the issue_afs_rpc
-method is set before jumping to it and setting -ENOTSUPP if not.  This fix
-also covers other potential operations that also only exist on YFS servers.
-
-afs_xattr_get/set_yfs() then need to translate -ENOTSUPP to -ENODATA as the
-former error is internal to the kernel.
-
-The bug shows up as an oops like the following:
-
-	BUG: kernel NULL pointer dereference, address: 0000000000000000
-	[...]
-	Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-	[...]
-	Call Trace:
-	 afs_wait_for_operation+0x83/0x1b0 [kafs]
-	 afs_xattr_get_yfs+0xe6/0x270 [kafs]
-	 __vfs_getxattr+0x59/0x80
-	 vfs_getxattr+0x11c/0x140
-	 getxattr+0x181/0x250
-	 ? __check_object_size+0x13f/0x150
-	 ? __fput+0x16d/0x250
-	 __x64_sys_fgetxattr+0x64/0xb0
-	 do_syscall_64+0x49/0xc0
-	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-	RIP: 0033:0x7fb120a9defe
-
-This was triggered with "cp -a" which attempts to copy xattrs, including
-afs ones, but is easier to reproduce with getfattr, e.g.:
-
-	getfattr -d -m ".*" /afs/openafs.org/
-
-Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
-Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003498.html [1]
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003566.html # v1
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003572.html # v2
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210316065452.75659-1-jeremy.szu@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/fs_operation.c |    7 +++++--
- fs/afs/xattr.c        |    8 +++++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/afs/fs_operation.c
-+++ b/fs/afs/fs_operation.c
-@@ -181,10 +181,13 @@ void afs_wait_for_operation(struct afs_o
- 		if (test_bit(AFS_SERVER_FL_IS_YFS, &op->server->flags) &&
- 		    op->ops->issue_yfs_rpc)
- 			op->ops->issue_yfs_rpc(op);
--		else
-+		else if (op->ops->issue_afs_rpc)
- 			op->ops->issue_afs_rpc(op);
-+		else
-+			op->ac.error = -ENOTSUPP;
- 
--		op->error = afs_wait_for_call_to_complete(op->call, &op->ac);
-+		if (op->call)
-+			op->error = afs_wait_for_call_to_complete(op->call, &op->ac);
- 	}
- 
- 	switch (op->error) {
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -230,6 +230,8 @@ static int afs_xattr_get_yfs(const struc
- 			else
- 				ret = -ERANGE;
- 		}
-+	} else if (ret == -ENOTSUPP) {
-+		ret = -ENODATA;
- 	}
- 
- error_yacl:
-@@ -254,6 +256,7 @@ static int afs_xattr_set_yfs(const struc
- {
- 	struct afs_operation *op;
- 	struct afs_vnode *vnode = AFS_FS_I(inode);
-+	int ret;
- 
- 	if (flags == XATTR_CREATE ||
- 	    strcmp(name, "acl") != 0)
-@@ -268,7 +271,10 @@ static int afs_xattr_set_yfs(const struc
- 		return afs_put_operation(op);
- 
- 	op->ops = &yfs_store_opaque_acl2_operation;
--	return afs_do_sync_operation(op);
-+	ret = afs_do_sync_operation(op);
-+	if (ret == -ENOTSUPP)
-+		ret = -ENODATA;
-+	return ret;
- }
- 
- static const struct xattr_handler afs_xattr_yfs_handler = {
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8048,6 +8048,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 
 
