@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09373442ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8312934427E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhCVMqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:46:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
+        id S232406AbhCVMmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:42:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhCVMib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D604A6199F;
-        Mon, 22 Mar 2021 12:37:45 +0000 (UTC)
+        id S230325AbhCVMgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:36:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD3661931;
+        Mon, 22 Mar 2021 12:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416666;
-        bh=oXE1iUftqQGBVpvJSf3ey9Cgm92izoSfFtkaZ/CNuuc=;
+        s=korg; t=1616416572;
+        bh=yTayAIBKuIJn+gV5lv0TS3Hk7EPo/GlQvUqJXS22suA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wlCactbPv8wJpiCYWcJM8zuW40DAYwWdEzsOE70CWpGkU/JaLJuNK6PIcjfN56azk
-         0V4PdLcp9fM1NNHUn3lG3bqBOS0n9dfR/RHDCkbV30nfwlPsG0X9OtFP1JbViPXXih
-         AMnHpxyHKC+QDsWrvF6WkraxgZRgqizg6cJNZNBE=
+        b=uZedSgFFW30N8C3Y/7txioztRtX+JNCDE8BdmRL4pou2azOC48Hn8WRkZWxzuI0Zn
+         Gk06TYvrDPewIP80jUXhkLIQZlPc3YNyJOMTqnHEpFfZ3mS53JqBoefmpV+vwBJR3T
+         9Ttp0amNswfbg023wPVFjVqJ6rg12Y5YRD+06u/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 029/157] ASoC: qcom: sdm845: Fix array out of range on rx slim channels
-Date:   Mon, 22 Mar 2021 13:26:26 +0100
-Message-Id: <20210322121934.689829319@linuxfoundation.org>
+Subject: [PATCH 5.10 030/157] ASoC: codecs: wcd934x: add a sanity check in set channel map
+Date:   Mon, 22 Mar 2021 13:26:27 +0100
+Message-Id: <20210322121934.718868730@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
 References: <20210322121933.746237845@linuxfoundation.org>
@@ -42,33 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit 4800fe6ea1022eb240215b1743d2541adad8efc7 upstream.
+commit 3bb4852d598f0275ed5996a059df55be7318ac2f upstream.
 
-WCD934x has only 13 RX SLIM ports however we are setting it as 16
-in set_channel_map, this will lead to array out of bounds error!
+set channel map can be passed with a channel maps, however if
+the number of channels that are passed are more than the actual
+supported channels then we would be accessing array out of bounds.
 
-Orignally caught by enabling USBAN array out of bounds check:
+So add a sanity check to validate these numbers!
 
-Fixes: 5caf64c633a3 ("ASoC: qcom: sdm845: add support to DB845c and Lenovo Yoga")
+Fixes: a61f3b4f476e ("ASoC: wcd934x: add support to wcd9340/wcd9341 codec")
 Reported-by: John Stultz <john.stultz@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210309142129.14182-3-srinivas.kandagatla@linaro.org
+Link: https://lore.kernel.org/r/20210309142129.14182-4-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/qcom/sdm845.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wcd934x.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -27,7 +27,7 @@
- #define SPK_TDM_RX_MASK         0x03
- #define NUM_TDM_SLOTS           8
- #define SLIM_MAX_TX_PORTS 16
--#define SLIM_MAX_RX_PORTS 16
-+#define SLIM_MAX_RX_PORTS 13
- #define WCD934X_DEFAULT_MCLK_RATE	9600000
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -1873,6 +1873,12 @@ static int wcd934x_set_channel_map(struc
  
- struct sdm845_snd_data {
+ 	wcd = snd_soc_component_get_drvdata(dai->component);
+ 
++	if (tx_num > WCD934X_TX_MAX || rx_num > WCD934X_RX_MAX) {
++		dev_err(wcd->dev, "Invalid tx %d or rx %d channel count\n",
++			tx_num, rx_num);
++		return -EINVAL;
++	}
++
+ 	if (!tx_slot || !rx_slot) {
+ 		dev_err(wcd->dev, "Invalid tx_slot=%p, rx_slot=%p\n",
+ 			tx_slot, rx_slot);
 
 
