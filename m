@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6728A343A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6501343A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCVH2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbhCVH2V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:28:21 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD20C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:28:20 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 30so8154159qva.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:28:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9CvJ6rom7YY2JxgL5QXExmKWi8Tr3HhiQ2VBpZ1icLU=;
-        b=SiQfXqrqlzmrCUMHKASQWt/0u6+96Y5/LcPlFGCMf8Cab17PPKKdPQvfumg5aZTlCy
-         8/JbezXtuqAGbDZxDRl/G7oXcoseIcf1TtRJGH5Ix/3ZEs1rHNuEahrvh6VI1mx8o6Mv
-         6sY+5kB2p1hLdCYcbqN0srYlz72HMT2H82bvqe0s0z9pI/YaRp3xCpDeIVoD1tZOQXJa
-         kpsvU6Zizo4MYMMckPRsmgAH4A4GLdDzFw+SD2ag+vRWCxTzKfrRF9qBvidoxcAODlmG
-         LW7fbkPR34t6mUB54pOn6G3R8wMmtGiwOLT+y7tiRzWYxcLh/cGk/JkKd4NNiufPsFdj
-         sGuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9CvJ6rom7YY2JxgL5QXExmKWi8Tr3HhiQ2VBpZ1icLU=;
-        b=p0Ov3wIoBt4MRLXjciIyT5mmRWB400TYe8ZQN7Swv+DTyM+MHiQiPqczf1WqL0/AvK
-         8eer9ZrI+Pqsnl54BLtjJ/IN7OyUqUD8lAjx72lzfKShgrjCOD1YWJ0pM/GXkzmKBxuT
-         mBpzNDQxK1HpVvAlhtxrTiAzYAysowZ5PVi7v82JQjr3T7DccfXdcN4hyGSMboyNvYTX
-         5bhbSqvFqAWbt42qSzwvoPk8tx+ML5z2nJFNS5NZcx+gG48Q2M3uFyv5Jqguy/GaUjTl
-         k+i2tXnsi/XxEt58Hwp0GbN8kYpd73UlddSD+/2ujF3wNJqE5zi82Nl+sJemJN/WRBbd
-         KjuQ==
-X-Gm-Message-State: AOAM532pbtKto9j/Iqpzi3A2wEYuqcW990Ov25bmC5k0UMdeBA24TO7j
-        1AkyzEcOzUjT2bqEp4XoJzk=
-X-Google-Smtp-Source: ABdhPJzmvIxJ+RmsW2s9tucclxBW8v59ePG5gdZ/syrVIxFipW+9lPVSWodnmVlgakaE+QknBpyqWg==
-X-Received: by 2002:ad4:57a5:: with SMTP id g5mr20239805qvx.60.1616398100037;
-        Mon, 22 Mar 2021 00:28:20 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.221])
-        by smtp.gmail.com with ESMTPSA id d68sm10258251qkf.93.2021.03.22.00.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 00:28:19 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     gregkh@linuxfoundation.org, unixbhaskar@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] staging: rtl8723bs: Mundane typo fixes
-Date:   Mon, 22 Mar 2021 12:58:08 +0530
-Message-Id: <20210322072808.996970-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        id S229930AbhCVH2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229760AbhCVH2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 03:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEF0360295;
+        Mon, 22 Mar 2021 07:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616398096;
+        bh=v3NQpuyUOFyoh1J3JjoW6o0s74XJekrXBvKE0fvhocc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=eqlkm/tcuo0eWlw3ChgW957jCzm4qOpwnw6ZALW/pTCb4zcWkUZB+MT4Ad4KJrcvX
+         iX//alfSjXRMM4YTE3Ve1wQ7B0SeaDGHzepkygJbO6PuBx7uEWxtzOkNsEkE5Fj8jt
+         AZF7kDkazEfFi8iw2L0x+ohQGrSi/jNgwzn6LnA8wzOlhSDDssCTzohFJXw/ZnJ0s+
+         Lgf5lAWQhUsXWkcfVssafROaxZEBooossAJw6Rg9gmdqo2Ra7d04Zu8WIS3dqOAaK1
+         qhfoxjBBusETohQhxq4+lbLgWlzyPbAJyn1jMvha56gSLT3D9eMaUnFcNZ/u0EDe38
+         OkD3t5b292chg==
+Subject: Re: [PATCH v2 0/3] drm/tilcdc: fix LCD pixel clock setting
+To:     Jyri Sarha <jyri.sarha@iki.fi>, Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+References: <20210321083153.2810-1-dariobin@libero.it>
+ <87d9ed919351d46ba914e16fc24ee77e@iki.fi>
+From:   Tomi Valkeinen <tomba@kernel.org>
+Message-ID: <93551019-e3d2-0fbd-5953-422bdee1d5b7@kernel.org>
+Date:   Mon, 22 Mar 2021 09:28:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87d9ed919351d46ba914e16fc24ee77e@iki.fi>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/03/2021 21:08, Jyri Sarha wrote:
+> On 2021-03-21 10:31, Dario Binacchi wrote:
+>> The series was born from a patch to fix the LCD pixel clock setting.
+>> Two additional patches have been added to this. One renames a misleading
+>> variable name that was probably the cause of the bug and the other fixes
+>> a warning message.
+>>
+> 
+> Thanks you,
+> 
+> I think this looks good now.
+> 
+> Reviewed-by: Jyri Sarha <jyri.sarha@iki.fi>
+> 
+> For the series.
+> 
+> I'll wait a day or two if Tomi has something more to say and merge this 
+> to drm-misc-next.
 
-s/stoping/stooping/
-s/arragement/arrangement/
-s/eralier/earlier/
+I had one comment about the print, but otherwise:
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/staging/rtl8723bs/include/hal_com_reg.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-diff --git a/drivers/staging/rtl8723bs/include/hal_com_reg.h b/drivers/staging/rtl8723bs/include/hal_com_reg.h
-index 37fa59a352d6..0a01a216d572 100644
---- a/drivers/staging/rtl8723bs/include/hal_com_reg.h
-+++ b/drivers/staging/rtl8723bs/include/hal_com_reg.h
-@@ -1002,9 +1002,9 @@ Current IOREG MAP
- 	/* 		 8192C (TXPAUSE) transmission pause	(Offset 0x522, 8 bits) */
- 	/*  */
- /*  Note: */
--/* 	The the bits of stoping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
--/* 	the correct arragement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
--/* 	8723 and 88E may be not correct either in the eralier version. Confirmed with DD Tim. */
-+/* 	The the bits of stooping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
-+/* 	the correct arrangement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
-+/* 	8723 and 88E may be not correct either in the earlier version. Confirmed with DD Tim. */
- /*  By Bruce, 2011-09-22. */
- #define StopBecon		BIT6
- #define StopHigh			BIT5
---
-2.31.0
-
+  Tomi
