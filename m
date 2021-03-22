@@ -2,117 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2723436B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3813436BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCVCkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 22:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCVCjo (ORCPT
+        id S229875AbhCVCoA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Mar 2021 22:44:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3314 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCVCne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:39:44 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E4FC061574;
-        Sun, 21 Mar 2021 19:39:44 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id a11so11339216qto.2;
-        Sun, 21 Mar 2021 19:39:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zrGbWW5ihzie1YOtZ70z+RLlEehxlrDgp3vUW4wEyPk=;
-        b=aeXv2i7HQiAF48R8uFxYvWESW5PT1T6dIV/sv0C2qaGHYWS1y0p9Fz4wPQXo11rGqp
-         zg84h1NSkT92rKq/MMoRBpNiZ03BbU0d2BGHfaxQc+KnHgyy+2zDgsfdy6evmSoaKqzE
-         Xfqkhg+TFNHfKttrQrHk6OtIloif32CwE+90+MlkPFBvtMm4rAVqRTQZaJ/qZ6YNIfcI
-         WpamscgHZG2pBAxbYEG/V0XpXhbQN9JKNy8vdbZyreP/lIXy+T1cq2ZFb5XLweVmxvmo
-         15BYqsXGVFXdpzo96n0/2cYKiBhDJ/LLv2h0rl620V3YdTPpLWkT5tho6HE61j+UC4mt
-         w1PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zrGbWW5ihzie1YOtZ70z+RLlEehxlrDgp3vUW4wEyPk=;
-        b=ZRv0r2kwP3hLpNyzlkgnjzQIV0wfjn/wBDz6M1UxrueE3AyGu8hvwiGrGEedP3Zjxa
-         KPQTwqjlQhQrmuMMZUzLxKH+QL9ijOMH+OYgxSVJG8lLUgxtfpX8pvWuerkeWvqI0Bl8
-         TFRpoiWmWwFQnxsIDiv0PadBWA2zVmlJ8xw5XD1p58lPsvooWpvYjGP7x9db4U6cX8HN
-         djqGbSbmK9YSnyu3ur7JeriSr1eptHgb6gwiQSUUNcUoOhIyNZgClGHSlP+Yaa2KiO+j
-         ZFp1dQdjyt8THchfGbVXQMetAfHXnnBUGqiFB4I/oKONbOdCrgQvSFPMBp2bG1YCYzm2
-         L8ZA==
-X-Gm-Message-State: AOAM530DCJ/sxVtDO7eY0hzSRRbFLi6UOjZigHxUtcfzwzRDQV/+6Urq
-        epvmrX9V70JhtFdB+7YS45A=
-X-Google-Smtp-Source: ABdhPJx0Z6yE+Vhatg987uyoZj8KYbflUMK5hBlSWOBY6MxkHyLpW6B1GVBImSm+oKRu4CczHdi3Aw==
-X-Received: by 2002:a05:622a:3cf:: with SMTP id k15mr7633811qtx.282.1616380783476;
-        Sun, 21 Mar 2021 19:39:43 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id j3sm9934506qki.84.2021.03.21.19.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 19:39:43 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] s390: dasd: Mundane spelling fixes
-Date:   Mon, 22 Mar 2021 08:09:30 +0530
-Message-Id: <20210322023930.376358-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Sun, 21 Mar 2021 22:43:34 -0400
+Received: from dggeme708-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F3dyW52nkz147QC;
+        Mon, 22 Mar 2021 10:40:19 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggeme708-chm.china.huawei.com (10.1.199.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 22 Mar 2021 10:43:27 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
+ Mon, 22 Mar 2021 10:43:27 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        oulijun <oulijun@huawei.com>,
+        "huwei87@hisilicon.com" <huwei87@hisilicon.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "dt@kernel.org" <dt@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "rdunlap@infradead.org" <rdunlap@infradead.org>
+Subject: Re: [PATCH] IB/hns: Fix a spelling
+Thread-Topic: [PATCH] IB/hns: Fix a spelling
+Thread-Index: AQHXHsMDqemTdt75o0mxIdrXWvWfRQ==
+Date:   Mon, 22 Mar 2021 02:43:27 +0000
+Message-ID: <5d404e23725a4c62b06c4a00875c7312@huawei.com>
+References: <20210322022751.4137205-1-unixbhaskar@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/3/22 10:28, Bhaskar Chowdhury wrote:
+> 
+> s/wubsytem/subsystem/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  .../devicetree/bindings/infiniband/hisilicon-hns-roce.txt       | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> index 84f1a1b505d2..c57e09099bcb 100644
+> --- a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> +++ b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> @@ -1,7 +1,7 @@
+>  Hisilicon RoCE DT description
+> 
+>  Hisilicon RoCE engine is a part of network subsystem.
+> -It works depending on other part of network wubsytem, such as, gmac and
+> +It works depending on other part of network subsystem, such as, gmac and
+>  dsa fabric.
+> 
+>  Additional properties are described here:
+> --
+> 2.31.0
+> 
+> 
 
-s/Subssystem/Subsystem/ ......two different places
-s/reportet/reported/
-s/managemnet/management/
+Thank you.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/s390/block/dasd_eckd.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/s390/block/dasd_eckd.h b/drivers/s390/block/dasd_eckd.h
-index ca24a78a256e..73651211789f 100644
---- a/drivers/s390/block/dasd_eckd.h
-+++ b/drivers/s390/block/dasd_eckd.h
-@@ -52,7 +52,7 @@
- #define DASD_ECKD_CCW_RCD		 0xFA
- #define DASD_ECKD_CCW_DSO		 0xF7
-
--/* Define Subssystem Function / Orders */
-+/* Define Subsystem Function / Orders */
- #define DSO_ORDER_RAS			 0x81
-
- /*
-@@ -110,7 +110,7 @@
- #define DASD_ECKD_PG_GROUPED		 0x10
-
- /*
-- * Size that is reportet for large volumes in the old 16-bit no_cyl field
-+ * Size that is reported for large volumes in the old 16-bit no_cyl field
-  */
- #define LV_COMPAT_CYL 0xFFFE
-
-@@ -555,7 +555,7 @@ struct dasd_dso_ras_ext_range {
- } __packed;
-
- /*
-- * Define Subsytem Operation - Release Allocated Space
-+ * Define Subsystem Operation - Release Allocated Space
-  */
- struct dasd_dso_ras_data {
- 	__u8 order;
-@@ -676,7 +676,7 @@ struct dasd_eckd_private {
- 	struct dasd_ext_pool_sum eps;
- 	u32 real_cyl;
-
--	/* alias managemnet */
-+	/* alias management */
- 	struct dasd_uid uid;
- 	struct alias_pav_group *pavgroup;
- 	struct alias_lcu *lcu;
---
-2.31.0
-
+Acked-by: Weihang Li <liweihang@huawei.com>
