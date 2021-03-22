@@ -2,89 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61F0343E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B8A343E9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhCVK5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:57:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30989 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229547AbhCVK4k (ORCPT
+        id S230452AbhCVK5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230292AbhCVK5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:56:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616410600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QWqNRl3St0myqfYb/YgoRI1vcQ7ggUTH0MpgdoanYXM=;
-        b=VTADArVRRmxEB/XIq6kpUwXnmrPXLrNwqbUEfXXz3FKCgi/Rdb2S5+qdMEElk26U0EB73J
-        55MmzAb06XgP/aCOhmwa3eKsYD+qz2Cq+IbJmjX0dWe0qre6eBE8w8CeYPdrW+NLytxz8b
-        rpaeAsE3m8aVHU+SJnjx+Ih7EEdajjI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-FCLoq-t8N6KUPH3xmAXDmQ-1; Mon, 22 Mar 2021 06:56:36 -0400
-X-MC-Unique: FCLoq-t8N6KUPH3xmAXDmQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34BE081622;
-        Mon, 22 Mar 2021 10:56:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7152A54478;
-        Mon, 22 Mar 2021 10:56:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210321105309.GG3420@casper.infradead.org>
-References: <20210321105309.GG3420@casper.infradead.org> <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk> <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
+        Mon, 22 Mar 2021 06:57:24 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792FBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:57:23 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id b83so20520034lfd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cVr1sX6u9OvOpr4j5MVGPdeMSVsRDw26Oh3Yu5epGx0=;
+        b=ow55ypOvBq7E09U12yfhRBcRicdeKkGdFg8cXxMbuaLfv5/KuKTp6sw6xiZAyAaqd8
+         Jo7YZ+mzz7iPBNJWzffewsliAV9XY1EnmLgyyNRkIrXWlOz0d1z/iXI5POBSPu83hNEu
+         mgVBs2wOYrssur4t2FpRZKnaiLpCNaI9drlSZlPZcN+k7muGp7jIe/qx4n07o/qMR3bs
+         uj2fpJ6vHTvAJYOHwOK7yM+q56Ifz89dKALXekBVxkV74irPrXhpe6mXkAP3yfSpmtbD
+         1Fbw8b3Khqu4HNPVGB14/JbGLb6gneHV4LZEm+qiRgD7stgdaeqg1p4D/+Cvp6abiVWC
+         D8kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cVr1sX6u9OvOpr4j5MVGPdeMSVsRDw26Oh3Yu5epGx0=;
+        b=JdQdWSAdaGgiaywrcfMH8vgaLySPS57bcVOx6GT6zQoiO0orX1e6/m38caG/YqTDOx
+         3mKAcEtYyl1cP6mwS5PAMLVgTdh952fR5yCIGU6IysdV5JQDMUGVfLzsFkY1m5++PdhU
+         +rH9Hr3Z7CqdqOrVNMjmkBtsJFQTuS90UxBslrqf4vmiIbzci+oC0rX8oUe/SADZPE3+
+         5aExVUd7H/Gn4SajQAwyTMlK6UlEu3nUm9GSxBwuvYZbWdl/H9kNQEEbN5JfTOaa0mJS
+         HjhgK18h9rTSgj8WifxN6/1osq1Ui5v0cgeCBT5ugT57Z1cXExI0j6wzA2x1MLY1H7+k
+         YX5g==
+X-Gm-Message-State: AOAM530kwDt1THGmh/c6eO/460G8WEu7IBabImkCfNF+ehNnUJB2b+Mx
+        FJF8OIcPFfoACDF+KMy244CFpQ==
+X-Google-Smtp-Source: ABdhPJzmQMsz7WtlL2kKU9WbwE31eqU1Nt4u/UUp1SHPGJjOfkOYnfU7tZTIeNg6TnAa9jMh5ZQnYQ==
+X-Received: by 2002:ac2:5974:: with SMTP id h20mr8866285lfp.554.1616410642003;
+        Mon, 22 Mar 2021 03:57:22 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id n5sm1539209lfh.173.2021.03.22.03.57.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 03:57:21 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 19A76101DEB; Mon, 22 Mar 2021 13:57:29 +0300 (+03)
+Date:   Mon, 22 Mar 2021 13:57:29 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 18/28] mm/mmap: Add shadow stack pages to memory
+ accounting
+Message-ID: <20210322105729.24rt4nwc3blipxsr@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-19-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1885295.1616410586.1@warthog.procyon.org.uk>
-Date:   Mon, 22 Mar 2021 10:56:26 +0000
-Message-ID: <1885296.1616410586@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-19-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Mar 16, 2021 at 08:10:44AM -0700, Yu-cheng Yu wrote:
+> Account shadow stack pages to stack memory.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/mm/pgtable.c   |  7 +++++++
+>  include/linux/pgtable.h | 11 +++++++++++
+>  mm/mmap.c               |  5 +++++
+>  3 files changed, 23 insertions(+)
+> 
+> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+> index 0f4fbf51a9fc..948d28c29964 100644
+> --- a/arch/x86/mm/pgtable.c
+> +++ b/arch/x86/mm/pgtable.c
+> @@ -895,3 +895,10 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>  
+>  #endif /* CONFIG_X86_64 */
+>  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> +
+> +#ifdef CONFIG_ARCH_HAS_SHADOW_STACK
+> +bool arch_shadow_stack_mapping(vm_flags_t vm_flags)
+> +{
+> +	return (vm_flags & VM_SHSTK);
+> +}
+> +#endif
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index cbd98484c4f1..487c08df4365 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -1470,6 +1470,17 @@ static inline pmd_t arch_maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma
+>  #endif /* CONFIG_ARCH_MAYBE_MKWRITE */
+>  #endif /* CONFIG_MMU */
+>  
+> +#ifdef CONFIG_MMU
+> +#ifdef CONFIG_ARCH_HAS_SHADOW_STACK
+> +bool arch_shadow_stack_mapping(vm_flags_t vm_flags);
+> +#else
+> +static inline bool arch_shadow_stack_mapping(vm_flags_t vm_flags)
+> +{
+> +	return false;
+> +}
+> +#endif /* CONFIG_ARCH_HAS_SHADOW_STACK */
+> +#endif /* CONFIG_MMU */
+> +
+>  /*
+>   * Architecture PAGE_KERNEL_* fallbacks
+>   *
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 3f287599a7a3..2ac67882ace2 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1718,6 +1718,9 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
+>  	if (file && is_file_hugepages(file))
+>  		return 0;
+>  
+> +	if (arch_shadow_stack_mapping(vm_flags))
+> +		return 1;
+> +
 
-> That also brings up that there is no set_page_private_2().  I think
-> that's OK -- you only set PageFsCache() immediately after reading the
-> page from the server.  But I feel this "unlock_page_private_2" is actually
-> "clear_page_private_2" -- ie it's equivalent to writeback, not to lock.
+What's wrong with testing (vm_flags & VM_SHSTK) here? VM_SHSTK is 0 on
+non-x86.
 
-How about I do the following:
+>  	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
+>  }
+>  
+> @@ -3387,6 +3390,8 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+>  		mm->stack_vm += npages;
+>  	else if (is_data_mapping(flags))
+>  		mm->data_vm += npages;
+> +	else if (arch_shadow_stack_mapping(flags))
+> +		mm->stack_vm += npages;
 
- (1) Add set_page_private_2() or mark_page_private_2() to set the PG_fscache_2
-     bit.  It could take a ref on the page here.
+Ditto.
 
- (2) Rename unlock_page_private_2() to end_page_private_2().  It could drop
-     the ref on the page here, but that then means I can't use
-     pagevec_release().
+>  }
+>  
+>  static vm_fault_t special_mapping_fault(struct vm_fault *vmf);
+> -- 
+> 2.21.0
+> 
 
- (3) Add wait_on_page_private_2() an analogue of wait_on_page_writeback()
-     rather than wait_on_page_locked().
-
- (4) Provide fscache synonyms of the above.
-
-David
-
+-- 
+ Kirill A. Shutemov
