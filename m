@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC60C3444EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E431B34449C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbhCVNIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:08:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47776 "EHLO mail.kernel.org"
+        id S233206AbhCVNCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232381AbhCVMys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:54:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F5CA619AA;
-        Mon, 22 Mar 2021 12:47:51 +0000 (UTC)
+        id S231172AbhCVMtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D84EC619EB;
+        Mon, 22 Mar 2021 12:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417271;
-        bh=+yP/XlJwKDV4rqE6GbjPU5hhu4y10mbB/2mUCrsWpOg=;
+        s=korg; t=1616417106;
+        bh=5sppupOWfMhTGCdAJeoS+79+ZmNuabC4TOrs9JOgtdU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QLQQVqow9Rjkjo/jFjiamOrIFRt9ZCR1KQtVuvn4zNGqjcIndAdcPDUxVnitvMOe5
-         6c8w6eEPQKuFsaAzBWIq7W4q/hsJXqwWWT2kVeLaQphMTdvs+ihmZMiClQf/7R+L43
-         ylug3ThlGybMAcT4VhlRfPiLWU3QIGpOnmilfX8M=
+        b=1aQ9/v6gA1xPR+cupPcAls4jtusSLeJqt6ETFo0t6uw9+4Vjl1RQJyFczOur/un8W
+         HT4/A3hSLtUeBootFc4P0+Z9ST9116z6U+mRZqHx8s1E1fMg2NzZ+kEpTCqO0Acyms
+         40DBp49LPXyvwd73UKq4aRBOZTK+kBvBwATma4q4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.14 01/43] ext4: handle error of ext4_setup_system_zone() on remount
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 28/43] iio: adis16400: Fix an error code in adis16400_initial_setup()
 Date:   Mon, 22 Mar 2021 13:28:42 +0100
-Message-Id: <20210322121920.107421668@linuxfoundation.org>
+Message-Id: <20210322121920.824250607@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,34 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit d176b1f62f242ab259ff665a26fbac69db1aecba upstream.
+commit a71266e454b5df10d019b06f5ebacd579f76be28 upstream.
 
-ext4_setup_system_zone() can fail. Handle the failure in ext4_remount().
+This is to silence a new Smatch warning:
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200728130437.7804-2-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+    drivers/iio/imu/adis16400.c:492 adis16400_initial_setup()
+    warn: sscanf doesn't return error codes
+
+If the condition "if (st->variant->flags & ADIS16400_HAS_SLOW_MODE) {"
+is false then we return 1 instead of returning 0 and probe will fail.
+
+Fixes: 72a868b38bdd ("iio: imu: check sscanf return value")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YCwgFb3JVG6qrlQ+@mwanda
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ext4/super.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5364,7 +5364,10 @@ static int ext4_remount(struct super_blo
- 		ext4_register_li_request(sb, first_not_zeroed);
- 	}
+---
+ drivers/iio/imu/adis16400_core.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/drivers/iio/imu/adis16400_core.c
++++ b/drivers/iio/imu/adis16400_core.c
+@@ -288,8 +288,7 @@ static int adis16400_initial_setup(struc
+ 		if (ret)
+ 			goto err_ret;
  
--	ext4_setup_system_zone(sb);
-+	err = ext4_setup_system_zone(sb);
-+	if (err)
-+		goto restore_opts;
-+
- 	if (sbi->s_journal == NULL && !(old_sb_flags & MS_RDONLY))
- 		ext4_commit_super(sb, 1);
- 
+-		ret = sscanf(indio_dev->name, "adis%u\n", &device_id);
+-		if (ret != 1) {
++		if (sscanf(indio_dev->name, "adis%u\n", &device_id) != 1) {
+ 			ret = -EINVAL;
+ 			goto err_ret;
+ 		}
 
 
