@@ -2,326 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E0F344B30
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CAE344B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhCVQZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:25:15 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.25]:22522 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhCVQY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:24:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616430283; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JsgLVy7hX7SvJZBACqksoXLXZwZKTjzOE80jODI7f4lQMXLy+KZEJFeZvdLgYWwZnE
-    i2Lpct3FVeSc+qQZE8DIpN0x3g7BmMazNzTa11+Lf2Lm+7RgR9GzBMfAYZSaqmF+O5Tq
-    YFzCEq8TPTZDntMOsFFGdLkGDR0jVNRS7Amhi9P+PSakxuWqJtwxCRCzRxCsqhyFhHKP
-    oQmCNv+HldymXTS5Al2L0zAY+PDl3Q/Za2L24/jzq0Udwgpp1E0ovETiv5uNxNSg/zGM
-    7XHISZalMASQfVoB9BlQmsGskttyIdwrInHwamV0zRhe4L286eZ/vbk3PJZRphtUytcj
-    lnng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616430283;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=fNSPOvAcXJaGwOFbee0eesJYwvcfj3mVkyRH4eS4iOg=;
-    b=lLGpcH0r1zxv6DvLjuiAZhPci+8ZWlhn4vg/mnVGfazYU+j/Y1hdJFI5B/ikyxWu3K
-    ZIBSS0G+xTeSyqHV3r+b9eQEtW4FOrAXCL6xUB2gSfHst53L+O05nYtKVCgYKxnc/7xE
-    z1tDXFkv9rubxV5bsDKFD2O1MJQnZ0yex7UHnNBPTzEFu8F/VCsjRSVa6aF3cRnS+1UZ
-    9gIablcKFsp2bsQWOB3Ban/Uw3DAqEnO0bF1zSqEQZJm7LNEXHk/mPJPxBPMnRKBY73q
-    +BxvdH0GiZcq2JStOd0D9uLbk9e8mI6p0UX/9iRcaQ6vPBxzmxOlI5e/CNJeEFa4P1XQ
-    NO0Q==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616430283;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=fNSPOvAcXJaGwOFbee0eesJYwvcfj3mVkyRH4eS4iOg=;
-    b=dZTSxhUCRXaurYltWQj9o4RvqePC+AoYkOn0ifZqCQqb+39aLNpEWXRWcq4o4o6LMf
-    /8Xc0ckBldZhaxhCQBp9BKaUShrlIpihaJM0067kcVS0V2C/B/eTVJWgsAtopBe5noAo
-    l9gQ3B1yKvZbLe/4qhwvrwpLla6U3F3qoL/QTrAbw6nRin3qEs3LGMZ04R/A1uOlfSXp
-    x1+YxFyqBG+cK6aayodhJnYA4cvyr7c3zcffYEtIu177nrId643CKLdwNs9n8BbMy0Qb
-    bfOzcQZnBi63tjaT4cvK+GjCaML9Rugk5PZCWvBLRze3n2D7Qk4YC5B9STyd1OUR29rA
-    +UlQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTGVNiOMpjpw=="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
-    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
-    with ESMTPSA id R01debx2MGOgCwc
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 22 Mar 2021 17:24:42 +0100 (CET)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
-Date:   Mon, 22 Mar 2021 17:24:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231799AbhCVQ01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231807AbhCVQ0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:26:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A448D61923;
+        Mon, 22 Mar 2021 16:26:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616430362;
+        bh=ceQ5NOwJb9FM/epRVuKXnXy9KZ3kKLgrUadTmgZr2Nk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XQ4OnlKCgYf2qA8cha/7tibsbD3VcoMYzhKL5Lf38Y3CHx2XWKqHvppccXKaPGmTW
+         td4U1Th95B0qy1EC9R2ZBOAxsS1aTZxM5M00htG6bkjsVOmGd8jpFg/eXyEnhB/QsK
+         RcL7oJN9nUwuFO+1b2nSvkkmywyH9DuftEgS5fGbj7zpWql43hi1histS4PPXU9omk
+         t4KJG+GD8no22EGODQRQfktSYPKDYuuwAaMLqWQ0JhmXQ9BP74+RVZcfpqTFezYCGp
+         1VHxVg5d2Rjpjq0Fzz/LfNg5uUyRCYJp2WhocWWwCrkovhkRlPWWnsxaIXIhse/Vml
+         WhLWPbAdhry6A==
+Received: by mail-ed1-f53.google.com with SMTP id dm8so20123902edb.2;
+        Mon, 22 Mar 2021 09:26:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532KmTd8ixaf4Ud618nivEF7RPakY2GuwmumCPWClMxRtYFiqDnI
+        0KB2sGTfKrygI6K4hWfgmcXA+JhMC+pCg7rkPQ==
+X-Google-Smtp-Source: ABdhPJwuPn8U7kIVUhCfwZoxyYPPdZcXFdxetHAglstyF75ep9cAElEhNjBTsVpxYryDcJzvlZY0sdWXj7LXFY54zpA=
+X-Received: by 2002:aa7:d385:: with SMTP id x5mr353341edq.289.1616430361296;
+ Mon, 22 Mar 2021 09:26:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210317134904.80737-1-sebastian.reichel@collabora.com>
+In-Reply-To: <20210317134904.80737-1-sebastian.reichel@collabora.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 22 Mar 2021 10:25:49 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLASixNRTf712201w1nghxdaB28HsN7fdsjeogsoA=oQg@mail.gmail.com>
+Message-ID: <CAL_JsqLASixNRTf712201w1nghxdaB28HsN7fdsjeogsoA=oQg@mail.gmail.com>
+Subject: Re: [PATCHv2 00/38] Convert power-supply DT bindings to YAML
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rong,
+On Wed, Mar 17, 2021 at 7:49 AM Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Hi,
+>
+> I keep getting patches for existing drivers, that modify DT behaviour
+> without updating the binding file. Let's move everything to DT schema
+> files, so that this can easily be cached automatically by dtbs_check.
+>
+> After this series only three bindings are left unconverted:
+>
+> 1. max8925_battery.txt
+>    This describes a node below the PMIC, which does not have its own
+>    compatible value. It needs to be described in the PMIC binding
+>    file, which has not yet been converted.
+>
+> 2. stericsson,ab8500-battery.txt
+>    This also describes a node below the PMIC, which does not have
+>    its own compatible value. The same applies.
+>
+> 3. charger-manager.txt
+>    This is far more complex to convert than the other files, due
+>    to the 'cm-regulator-name' / "<>-supply" thing. I skipped it
+>    for now.
+>
+> I tested the series using dt-validate 2021.3.dev6+g38efe3f and nothing
+> is reported when running dtbs_check like this:
+>
+> make -s -j100 dtbs_check DT_SCHEMA_FILES="Documentation/devicetree/bindings/power/supply/*.yaml"
+>
+> Also nothing is reported when checking the power-supply binding files
+> like this:
+>
+> for file in Documentation/devicetree/bindings/power/supply/*yaml ; do
+>     make -s -j42 dt_binding_check DT_SCHEMA_FILES=$file ;
+> done
+>
+> This is also available as 'psy-yaml-binding' branch from my repository:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+>
+> Changes since PATCHv1:
+> [1] https://lore.kernel.org/linux-devicetree/20210312154357.1561730-1-sebastian.reichel@collabora.com/
+>  * Drop #gpio-cells/gpio-controller dependency (inherited from standard binding)
+>  * Drop $ref for properties with standard suffix
+>  * ti,bq24735: Add $ref property for poll-interval
+>  * ti,lp8727: Combine usb and ac property information using patternProperties
+>
+> Thanks for reviewing it,
+>
+> -- Sebastian
+>
+> Sebastian Reichel (38):
+>   ARM: dts: motorola-cpcap-mapphone: Prepare for dtbs_check parsing
+>   dt-bindings: power: supply: cpcap-battery: Convert to DT schema format
+>   dt-bindings: power: supply: cpcap-charger: Convert to DT schema format
+>   dt-bindings: power: supply: bq25890: Convert to DT schema format
+>   dt-bindings: power: supply: bq24257: Convert to DT schema format
+>   dt-bindings: power: supply: bq24190: Convert to DT schema format
+>   dt-bindings: power: supply: bq2415x: Convert to DT schema format
+>   dt-bindings: power: supply: bq24735: Convert to DT schema format
+>   dt-bindings: power: supply: isp1704: Convert to DT schema format
+>   dt-bindings: power: supply: sbs-charger: Convert to DT schema format
+>   dt-bindings: power: supply: sbs-manager: Convert to DT schema format
+>   dt-bindings: power: supply: ds2760: Convert to DT schema format
+>   dt-bindings: power: supply: sc27xx-fg: Convert to DT schema format
+>   dt-bindings: power: supply: sc2731-charger: Convert to DT schema
+>     format
+>   dt-bindings: power: supply: tps65090: Convert to DT schema format
+>   dt-bindings: power: supply: tps65217: Convert to DT schema format
+>   dt-bindings: power: supply: twl4030: Convert to DT schema format
+>   dt-bindings: power: supply: n900-battery: Convert to DT schema format
+>   dt-bindings: power: supply: lego-ev3-battery: Convert to DT schema
+>     format
+>   dt-bindings: power: supply: max17040: Convert to DT schema format
+>   dt-bindings: power: supply: max14656: Convert to DT schema format
+>   dt-bindings: power: supply: max17042: Convert to DT schema format
+>   dt-bindings: power: supply: max8903: Convert to DT schema format
+>   dt-bindings: power: supply: ucs1002: Convert to DT schema format
+>   dt-bindings: power: supply: pm8941-charger: Convert to DT schema
+>     format
+>   dt-bindings: power: supply: pm8941-coincell: Convert to DT schema
+>     format
+>   dt-bindings: power: supply: act8945a: Convert to DT schema format
+>   dt-bindings: power: supply: axp20x: Convert to DT schema format
+>   dt-bindings: power: supply: da9150: Convert to DT schema format
+>   dt-bindings: power: supply: lp8727: Convert to DT schema format
+>   dt-bindings: power: supply: lt3651: Convert to DT schema format
+>   dt-bindings: power: supply: ltc294x: Convert to DT schema format
+>   dt-bindings: power: supply: rt9455: Convert to DT schema format
+>   dt-bindings: power: supply: olpc-battery: Convert to DT schema format
+>   dt-bindings: power: supply: ab8500: Convert to DT schema format
+>   dt-bindings: power: supply: sbs-battery: Fix dtbs_check
+>   dt-bindings: power: supply: Fix remaining battery.txt links
+>   dt-bindings: power: supply: Drop power_supply.txt
 
-On 22.03.21 09:52, Rong Chen wrote:
+Thanks! For the series:
 
-> On 3/21/21 10:19 PM, Oliver Hartkopp wrote:
->> Two reminders in two days? ;-)
->>
->> Did you check my answer here?
->> https://lore.kernel.org/lkml/afffeb73-ba4c-ca2c-75d0-9e7899e5cbe1@hartkopp.net/ 
->>
->>
->> And did you try the partly revert?
-> 
-> Hi Oliver,
-> 
-> Sorry for the delay, we tried the revert patch and the problem still 
-> exists,
-> we also found that commit c7b74967 changed the error message which 
-> triggered
-> the report.
-> 
-> The problem is that offsetof(struct can_frame, data) != offsetof(struct 
-> canfd_frame, data)
-> the following struct layout shows that the offset has been changed by 
-> union:
-> 
-> struct can_frame {
->          canid_t                    can_id;               /* 0     4 */
->          union {
->                  __u8               len;                  /* 4     1 */
->                  __u8               can_dlc;              /* 4     1 */
->          };                                               /* 4     4 */
-
-Ugh! Why did the compiler extend the space for the union to 4 bytes?!?
-
->          __u8                       __pad;                /* 8     1 */
->          __u8                       __res0;               /* 9     1 */
->          __u8                       len8_dlc;             /* 10     1 */
-> 
->          /* XXX 5 bytes hole, try to pack */
-> 
->          __u8                       data[8] 
-> __attribute__((__aligned__(8))); /*    16     8 */
-> 
->          /* size: 24, cachelines: 1, members: 6 */
->          /* sum members: 19, holes: 1, sum holes: 5 */
->          /* forced alignments: 1, forced holes: 1, sum forced holes: 5 */
->          /* last cacheline: 24 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> struct canfd_frame {
->          canid_t                    can_id;               /* 0     4 */
->          __u8                       len;                  /* 4     1 */
->          __u8                       flags;                /* 5     1 */
->          __u8                       __res0;               /* 6     1 */
->          __u8                       __res1;               /* 7     1 */
->          __u8                       data[64] 
-> __attribute__((__aligned__(8))); /*     8    64 */
-> 
->          /* size: 72, cachelines: 2, members: 6 */
->          /* forced alignments: 1 */
->          /* last cacheline: 8 bytes */
-> } __attribute__((__aligned__(8)))
-> 
-> 
-> and I tried to add "__attribute__((packed))" to the union, the issue is 
-> gone:
-> 
-> diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
-> index f75238ac6dce..9842bb55ffd9 100644
-> --- a/include/uapi/linux/can.h
-> +++ b/include/uapi/linux/can.h
-> @@ -113,7 +113,7 @@ struct can_frame {
->                   */
->                  __u8 len;
->                  __u8 can_dlc; /* deprecated */
-> -       };
-> +       } __attribute__((packed));
->          __u8 __pad; /* padding */
->          __u8 __res0; /* reserved / padding */
->          __u8 len8_dlc; /* optional DLC for 8 byte payload length (9 .. 
-> 15) */
-
-This is pretty strange!
-
-pahole on my x86_64 machine shows the correct data structure layout:
-
-struct can_frame {
-         canid_t                    can_id;               /*     0     4 */
-         union {
-                 __u8               len;                  /*     4     1 */
-                 __u8               can_dlc;              /*     4     1 */
-         };                                               /*     4     1 */
-         __u8                       __pad;                /*     5     1 */
-         __u8                       __res0;               /*     6     1 */
-         __u8                       len8_dlc;             /*     7     1 */
-         __u8                       data[8] 
-__attribute__((__aligned__(8))); /*     8     8 */
-
-         /* size: 16, cachelines: 1, members: 6 */
-         /* forced alignments: 1 */
-         /* last cacheline: 16 bytes */
-} __attribute__((__aligned__(8)));
-
-Target: x86_64-linux-gnu
-gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-Linux 5.12.0-rc3-00070-g8b12a62a4e3e x86_64 GNU/Linux
-
-So it looks like your compiler does not behave correctly - and I wonder 
-if it would be the correct approach to add the __packed() attribute or 
-better fix/change the (ARM) compiler.
-
-At least I'm very happy that the BUILD_BUG_ON() triggered correctly - so 
-it was worth to have it ;-)
-
-Best regards,
-Oliver
-
-
->>
->> Maybe there's a mismatch in include files - or BUILD_BUG_ON() 
->> generally does not work with unions on ARM as assumed here:
->>
->> https://lore.kernel.org/lkml/6e57d5d2-9b88-aee6-fb7a-82e24144d179@hartkopp.net/ 
->>
->>
->> In both cases I can not really fix the issue.
->> When the partly revert (suggested above) works, this would be a hack too.
->>
->> Best,
->> Oliver
->>
->> On 20.03.21 21:43, kernel test robot wrote:
->>> Hi Oliver,
->>>
->>> FYI, the error/warning still remains.
->>>
->>> tree: 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
->>> master
->>> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
->>> commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace can_dlc 
->>> as variable/element for payload length
->>> date:   4 months ago
->>> config: arm-randconfig-r016-20210321 (attached as .config)
->>> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>          wget 
->>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->>> -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7b74967799b1af52b3045d69d4c26836b2d41de 
->>>
->>>          git remote add linus 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout c7b74967799b1af52b3045d69d4c26836b2d41de
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
->>> make.cross ARCH=arm
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     In file included from <command-line>:
->>>     net/can/af_can.c: In function 'can_init':
->>>>> include/linux/compiler_types.h:315:38: error: call to 
->>>>> '__compiletime_assert_536' declared with attribute error: 
->>>>> BUILD_BUG_ON failed: offsetof(struct can_frame, len) != 
->>>>> offsetof(struct canfd_frame, len) || offsetof(struct can_frame, 
->>>>> data) != offsetof(struct canfd_frame, data)
->>>       315 |  _compiletime_assert(condition, msg, 
->>> __compiletime_assert_, __COUNTER__)
->>>           |                                      ^
->>>     include/linux/compiler_types.h:296:4: note: in definition of 
->>> macro '__compiletime_assert'
->>>       296 |    prefix ## suffix();    \
->>>           |    ^~~~~~
->>>     include/linux/compiler_types.h:315:2: note: in expansion of macro 
->>> '_compiletime_assert'
->>>       315 |  _compiletime_assert(condition, msg, 
->>> __compiletime_assert_, __COUNTER__)
->>>           |  ^~~~~~~~~~~~~~~~~~~
->>>     include/linux/build_bug.h:39:37: note: in expansion of macro 
->>> 'compiletime_assert'
->>>        39 | #define BUILD_BUG_ON_MSG(cond, msg) 
->>> compiletime_assert(!(cond), msg)
->>>           | ^~~~~~~~~~~~~~~~~~
->>>     include/linux/build_bug.h:50:2: note: in expansion of macro 
->>> 'BUILD_BUG_ON_MSG'
->>>        50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " 
->>> #condition)
->>>           |  ^~~~~~~~~~~~~~~~
->>>     net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
->>>       891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
->>>           |  ^~~~~~~~~~~~
->>>
->>>
->>> vim +/__compiletime_assert_536 +315 include/linux/compiler_types.h
->>>
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  301
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define 
->>> _compiletime_assert(condition, msg, prefix, suffix) \
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  303 
->>> __compiletime_assert(condition, msg, prefix, suffix)
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  304
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert - 
->>> break build and emit msg if condition is false
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a 
->>> compile-time constant condition to check
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a message 
->>> to emit if condition is false
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of POSIX 
->>> assert, this macro will break the build if the
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition is 
->>> *false*, emitting the supplied error message if the
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support 
->>> to do so.
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define 
->>> compiletime_assert(condition, msg) \
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315 
->>> _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316
->>>
->>> :::::: The code at line 315 was first introduced by commit
->>> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move 
->>> compiletime_assert() macros into compiler_types.h
->>>
->>> :::::: TO: Will Deacon <will@kernel.org>
->>> :::::: CC: Will Deacon <will@kernel.org>
->>>
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>
->> _______________________________________________
->> kbuild-all mailing list -- kbuild-all@lists.01.org
->> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
