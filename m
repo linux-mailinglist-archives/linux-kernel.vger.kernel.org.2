@@ -2,122 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A25345278
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2965B34527B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCVWhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:37:32 -0400
-Received: from mga18.intel.com ([134.134.136.126]:18634 "EHLO mga18.intel.com"
+        id S230194AbhCVWiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:38:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45096 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhCVWhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:37:19 -0400
-IronPort-SDR: T/9HIdfDrsVD+s4Jp9jAH5m0rq0KRIMpey52Focs4I33puibqvXSOZWg9F6oDuwMKQMZxC4R1T
- 4id4q0RThJeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="177931446"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="177931446"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:37:18 -0700
-IronPort-SDR: Si1cn9/mw61E5b43SV8P9iAVsPKB4uH1cGQHiNmmPVYZwUUrne71NvU0wRoob2GCsROWoFBwEz
- EL7caK5LYoiQ==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="414681347"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:37:17 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Youquan Song <youquan.song@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH] x86/mce: Add Skylake quirk for patrol scrub reported errors
-Date:   Mon, 22 Mar 2021 15:37:10 -0700
-Message-Id: <20210322223710.307123-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S230085AbhCVWh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:37:29 -0400
+Received: from zn.tnic (p200300ec2f0667002652a408eb3f04d7.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:2652:a408:eb3f:4d7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4154E1EC04CC;
+        Mon, 22 Mar 2021 23:37:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616452647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=I5j1MrJxhYiK7aTHBv0DWa/0nzDcq41qkrI2RFK3e0g=;
+        b=CrQWkEpbEGeGXpL6WYamSLHVQN9X3aQPxuy0u29xCCQopbdW6F63oetAPTxD6srynhR5Mf
+        tHFyChN1PHJr4GILxf7FjGlvtiDo4LMoMHiLaUt4qBYM0d10hWPBSO32rPj+NogBxUkwud
+        /jil8TqUQhTXBt4qZ/O5fnrvv/C0lN4=
+Date:   Mon, 22 Mar 2021 23:37:26 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <20210322223726.GJ6481@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+ <20210322181646.GG6481@zn.tnic>
+ <YFjoZQwB7e3oQW8l@google.com>
+ <20210322191540.GH6481@zn.tnic>
+ <YFjx3vixDURClgcb@google.com>
+ <20210322210645.GI6481@zn.tnic>
+ <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Youquan Song <youquan.song@intel.com>
+On Tue, Mar 23, 2021 at 11:06:43AM +1300, Kai Huang wrote:
+> This path is called by host SGX driver only, so yes this leaking is done by
+> host enclaves only.
 
-Skylake has a mode where the system administrator can use a BIOS setup
-option to request that the memory controller report uncorrected errors
-found by the patrol scrubber as corrected.  This results in them being
-signalled using CMCI, which is less disruptive than a machine check.
+Yes, so I was told.
 
-Add a quirk to detect that a "corrected" error is actually a downgraded
-uncorrected error with model specific checks for the "MSCOD" signature in
-MCi_STATUS and that the error was reported from a memory controller bank.
+> This patch is purpose is to break EREMOVE out of sgx_free_epc_page() so virtual
+> EPC code can use sgx_free_epc_page(), and handle EREMOVE logic differently.
+> This patch doesn't have intention to bring functional change.  I changed the
+> error msg because Dave said it worth to give a message saying EPC page is
+> leaked, and I thought this minor change won't break anything.
 
-Adjust the severity to MCE_AO_SEVERITY so that Linux will try to take
-the affected page offline.
+I read that already - you don't have to repeat it.
 
-[Tony: Wordsmith commit comment]
+> btw, currently virtual EPC code (patch 5) handles in similar way: There's one
+> EREMOVE error is expected and virtual EPC code can handle, but for other
+> errors, it means kernel bug, and virtual EPC code gives a WARN(), and that EPC
+> page is leaked too:
+> 
+> +		WARN_ONCE(ret != SGX_CHILD_PRESENT,
+> +			  "EREMOVE (EPC page 0x%lx): unexpected error: %d\n",
+> +			  sgx_get_epc_phys_addr(epc_page), ret);
+> +		return ret;
+> 
+> So to me they are just WARN() to catch kernel bug.
 
-Signed-off-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+You don't care about users, do you? Because when that error happens,
+they won't come crying to you to fix it.
 
----
-Repost ... looks like this got lost somewhere.
+Lemme save you some trouble: we don't take half-baked code into the
+kernel until stuff has been discussed and analyzed properly. So instead
+of trying to downplay this, try answering my questions.
 
-V2:
-Boris:	Don't optimize with pointer to quirk function. Just do
- 	the vendor/family/model check in the adjust_mce_log()
-	function
-Tony:	Add check for stepping >= 4
----
- arch/x86/kernel/cpu/mce/core.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Here's another one: when does EREMOVE fail?
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index e9265e2f28c9..2d5fe23adf29 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -673,6 +673,35 @@ static void mce_read_aux(struct mce *m, int i)
- 	}
- }
- 
-+/*
-+ * Skylake family CPUs have a mode where the user can request that
-+ * the memory controller report uncorrected errors found by the patrol
-+ * scrubber as corrected (MCI_STATUS_UC == 0). This results in them being
-+ * signalled using CMCI, which is less disruptive that a machine check.
-+ * The following quirk detects such errors and adjusts the severity.
-+ */
-+
-+#define MSCOD_UCE_SCRUB	(0x0010 << 16) /* UnCorrected Patrol Scrub Error */
-+#define MSCOD_MASK	GENMASK_ULL(31, 16)
-+
-+static void adjust_mce_log(struct mce *m)
-+{
-+	struct cpuinfo_x86 *c = &boot_cpu_data;
-+
-+	if (c->x86_vendor == X86_VENDOR_INTEL && c->x86 == 6 &&
-+	    c->x86_model == INTEL_FAM6_SKYLAKE_X && c->x86_stepping >= 4) {
-+		/*
-+		 * Check the error code to see if this is an uncorrected patrol
-+		 * scrub error from one of the memory controller banks. If so,
-+		 * then adjust the severity level to MCE_AO_SEVERITY
-+		 */
-+		if (((m->status & MCACOD_SCRUBMSK) == MCACOD_SCRUB) &&
-+		    ((m->status & MSCOD_MASK) == MSCOD_UCE_SCRUB) &&
-+		    m->bank >= 13 && m->bank <= 18)
-+			m->severity = MCE_AO_SEVERITY;
-+	}
-+}
-+
- DEFINE_PER_CPU(unsigned, mce_poll_count);
- 
- /*
-@@ -772,6 +801,7 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
- 		if (mca_cfg.dont_log_ce && !mce_usable_address(&m))
- 			goto clear_it;
- 
-+		adjust_mce_log(&m);
- 		mce_log(&m);
- 
- clear_it:
+/me goes and looks it up
+
+"The instruction fails if the operand is not properly aligned or does
+not refer to an EPC page or the page is in use by another thread, or
+other threads are running in the enclave to which the page belongs. In
+addition the instruction fails if the operand refers to an SECS with
+associations."
+
+And I guess those conditions will become more in the future.
+
+Now, let's play. I'm the cloud admin and you're cloud OS customer
+support. I say:
+
+"I got this scary error message while running enclaves on my server
+
+"EREMOVE returned ... .  EPC page leaked.  Reboot required to retrieve leaked pages."
+
+but I cannot reboot that machine because there are guests running on it
+and I'm getting paid for those guests and I might get sued if I do?"
+
+Your turn, go wild.
+
 -- 
-2.21.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
