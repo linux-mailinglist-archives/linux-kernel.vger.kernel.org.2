@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82273442D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42554344147
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhCVMpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:45:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57028 "EHLO mail.kernel.org"
+        id S231433AbhCVMcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:32:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231695AbhCVMiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EDF619B3;
-        Mon, 22 Mar 2021 12:37:33 +0000 (UTC)
+        id S231220AbhCVMaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF59561992;
+        Mon, 22 Mar 2021 12:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416654;
-        bh=1ylKi/Lb+2JkUHWnkoK3imsOcMQ9ujRfr+jFa2LfkeA=;
+        s=korg; t=1616416255;
+        bh=tqq9JwqXgGMotbJi3i+45/cW/J9KnaK1MkEIhhPC9EE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pwrMBzmKrzwyllCm/Fe+aw7f+zqHosv7UKc2H3C5EyF1o7mSwUsE566y9PdMxBpnb
-         9V0mPmZo21JlMe50G9TS3RGnrbLZa1x4TtXNHqEX4Oo5tP341R3byvbUIE4veKChiB
-         QFEIDHyTeEFkgThZxhWNmZ5obAYwFzg8QwMwS0V4=
+        b=DTi6ecXlH1+EJiikfo10bnl8x+KysPPN2id04AKv9V4dXDfBIc2z7uIltDc9qfaTs
+         uIeMPlA+S4wSkDseKqAVqkS9mO0yAvnadHLCR6Mg3j9Ft0QOZ6ywFzSXq3ocnYMlS2
+         q5qWtaN6GbddfxbSt4RoDQN1XlNVLObanAqqRKn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>,
-        David Howells <dhowells@redhat.com>,
-        Jeffrey Altman <jaltman@auristor.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org
-Subject: [PATCH 5.10 034/157] afs: Stop listxattr() from listing "afs.*" attributes
-Date:   Mon, 22 Mar 2021 13:26:31 +0100
-Message-Id: <20210322121934.842515669@linuxfoundation.org>
+        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 009/120] ALSA: hda/realtek: fix mute/micmute LEDs for HP 440 G8
+Date:   Mon, 22 Mar 2021 13:26:32 +0100
+Message-Id: <20210322121929.973536180@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,133 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Jeremy Szu <jeremy.szu@canonical.com>
 
-commit a7889c6320b9200e3fe415238f546db677310fa9 upstream.
+commit e7d66cf799390166e90f9a5715f2eede4fe06d51 upstream.
 
-afs_listxattr() lists all the available special afs xattrs (i.e. those in
-the "afs.*" space), no matter what type of server we're dealing with.  But
-OpenAFS servers, for example, cannot deal with some of the extra-capable
-attributes that AuriStor (YFS) servers provide.  Unfortunately, the
-presence of the afs.yfs.* attributes causes errors[1] for anything that
-tries to read them if the server is of the wrong type.
+The HP EliteBook 840 G8 Notebook PC is using ALC236 codec which is
+using 0x02 to control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-Fix the problem by removing afs_listxattr() so that none of the special
-xattrs are listed (AFS doesn't support xattrs).  It does mean, however,
-that getfattr won't list them, though they can still be accessed with
-getxattr() and setxattr().
-
-This can be tested with something like:
-
-	getfattr -d -m ".*" /afs/example.com/path/to/file
-
-With this change, none of the afs.* attributes should be visible.
-
-Changes:
-ver #2:
- - Hide all of the afs.* xattrs, not just the ACL ones.
-
-Fixes: ae46578b963f ("afs: Get YFS ACLs and information through xattrs")
-Reported-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Gaja Sophie Peters <gaja.peters@math.uni-hamburg.de>
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003502.html [1]
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003567.html # v1
-Link: http://lists.infradead.org/pipermail/linux-afs/2021-March/003573.html # v2
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210316074626.79895-1-jeremy.szu@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/dir.c      |    1 -
- fs/afs/file.c     |    1 -
- fs/afs/inode.c    |    1 -
- fs/afs/internal.h |    1 -
- fs/afs/mntpt.c    |    1 -
- fs/afs/xattr.c    |   23 -----------------------
- 6 files changed, 28 deletions(-)
+ sound/pci/hda/patch_realtek.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -69,7 +69,6 @@ const struct inode_operations afs_dir_in
- 	.permission	= afs_permission,
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
--	.listxattr	= afs_listxattr,
- };
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4225,6 +4225,12 @@ static void alc_fixup_hp_gpio_led(struct
+ 	}
+ }
  
- const struct address_space_operations afs_dir_aops = {
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -43,7 +43,6 @@ const struct inode_operations afs_file_i
- 	.getattr	= afs_getattr,
- 	.setattr	= afs_setattr,
- 	.permission	= afs_permission,
--	.listxattr	= afs_listxattr,
- };
- 
- const struct address_space_operations afs_fs_aops = {
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -27,7 +27,6 @@
- 
- static const struct inode_operations afs_symlink_inode_operations = {
- 	.get_link	= page_get_link,
--	.listxattr	= afs_listxattr,
- };
- 
- static noinline void dump_vnode(struct afs_vnode *vnode, struct afs_vnode *parent_vnode)
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1508,7 +1508,6 @@ extern int afs_launder_page(struct page
-  * xattr.c
-  */
- extern const struct xattr_handler *afs_xattr_handlers[];
--extern ssize_t afs_listxattr(struct dentry *, char *, size_t);
- 
- /*
-  * yfsclient.c
---- a/fs/afs/mntpt.c
-+++ b/fs/afs/mntpt.c
-@@ -32,7 +32,6 @@ const struct inode_operations afs_mntpt_
- 	.lookup		= afs_mntpt_lookup,
- 	.readlink	= page_readlink,
- 	.getattr	= afs_getattr,
--	.listxattr	= afs_listxattr,
- };
- 
- const struct inode_operations afs_autocell_inode_operations = {
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -11,29 +11,6 @@
- #include <linux/xattr.h>
- #include "internal.h"
- 
--static const char afs_xattr_list[] =
--	"afs.acl\0"
--	"afs.cell\0"
--	"afs.fid\0"
--	"afs.volume\0"
--	"afs.yfs.acl\0"
--	"afs.yfs.acl_inherited\0"
--	"afs.yfs.acl_num_cleaned\0"
--	"afs.yfs.vol_acl";
--
--/*
-- * Retrieve a list of the supported xattrs.
-- */
--ssize_t afs_listxattr(struct dentry *dentry, char *buffer, size_t size)
--{
--	if (size == 0)
--		return sizeof(afs_xattr_list);
--	if (size < sizeof(afs_xattr_list))
--		return -ERANGE;
--	memcpy(buffer, afs_xattr_list, sizeof(afs_xattr_list));
--	return sizeof(afs_xattr_list);
--}
--
- /*
-  * Deal with the result of a successful fetch ACL operation.
-  */
++static void alc236_fixup_hp_gpio_led(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	alc_fixup_hp_gpio_led(codec, action, 0x02, 0x01);
++}
++
+ static void alc269_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -6381,6 +6387,7 @@ enum {
+ 	ALC294_FIXUP_ASUS_GX502_VERBS,
+ 	ALC285_FIXUP_HP_GPIO_LED,
+ 	ALC285_FIXUP_HP_MUTE_LED,
++	ALC236_FIXUP_HP_GPIO_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED,
+ 	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
+ 	ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
+@@ -7616,6 +7623,10 @@ static const struct hda_fixup alc269_fix
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_hp_mute_led,
+ 	},
++	[ALC236_FIXUP_HP_GPIO_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc236_fixup_hp_gpio_led,
++	},
+ 	[ALC236_FIXUP_HP_MUTE_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc236_fixup_hp_mute_led,
+@@ -8045,6 +8056,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
+ 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
 
 
