@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273EE344389
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695DA344212
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhCVMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:51:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
+        id S231378AbhCVMih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232417AbhCVMmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:42:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC35D619C2;
-        Mon, 22 Mar 2021 12:40:14 +0000 (UTC)
+        id S231628AbhCVMeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:34:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A35A061998;
+        Mon, 22 Mar 2021 12:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416815;
-        bh=csRO1uHA+ebS1cA/uKv9E8bjpUz3v4a+1scjtSwj9/k=;
+        s=korg; t=1616416440;
+        bh=ft9Lb4MR6Vk8OXPD4zVw5IuZdRbUn+8SmoXMMeTeq2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oWNPvUbpralb3B33IaK1yXHnenK2cEM4HGdoHuCeCVR1nWb1fR2JnTIXmX6cZxi/i
-         u4gDIFVlnYpLaOxFgG2j6g79+04oR3fzsMDAqX64NzXUP7zkxNBSS+zs7/Surc3D6H
-         IToXg3rE2CxUxv58k2TGroKe3I8ALPD8wu70f3Lg=
+        b=gGs3WrlDtGeb0YmPbdm6l+UdK5/FUSeuH0XHZccM/9eN0ibu9RQRweIK7Xb9i0+RF
+         EmcPLZKUmEYOKlkDoTNPJ6D0XCHDK7SyMeMtRf8cBb1VCjM7c0pmhtUOgYApxdjCf6
+         wha7Zseoj9mwubwGz5T54u+T7wmi2tSUdBSsbF98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 132/157] iio: hid-sensor-humidity: Fix alignment issue of timestamp channel
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.11 106/120] efivars: respect EFI_UNSUPPORTED return from firmware
 Date:   Mon, 22 Mar 2021 13:28:09 +0100
-Message-Id: <20210322121937.945310194@linuxfoundation.org>
+Message-Id: <20210322121933.205331003@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Xiang <xiang.ye@intel.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-commit 37e89e574dc238a4ebe439543c5ab4fbb2f0311b upstream.
+commit 483028edacab374060d93955382b4865a9e07cba upstream.
 
-This patch ensures that, there is sufficient space and correct
-alignment for the timestamp.
+As per UEFI spec 2.8B section 8.2, EFI_UNSUPPORTED may be returned by
+EFI variable runtime services if no variable storage is supported by
+firmware.  In this case, there is no point for kernel to continue
+efivars initialization.  That said, efivar_init() should fail by
+returning an error code, so that efivarfs will not be mounted on
+/sys/firmware/efi/efivars at all.  Otherwise, user space like efibootmgr
+will be confused by the EFIVARFS_MAGIC seen there, while EFI variable
+calls cannot be made successfully.
 
-Fixes: d7ed89d5aadf ("iio: hid: Add humidity sensor support")
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303063615.12130-2-xiang.ye@intel.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/humidity/hid-sensor-humidity.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/vars.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/iio/humidity/hid-sensor-humidity.c
-+++ b/drivers/iio/humidity/hid-sensor-humidity.c
-@@ -15,7 +15,10 @@
- struct hid_humidity_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info humidity_attr;
--	s32 humidity_data;
-+	struct {
-+		s32 humidity_data;
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
-@@ -125,9 +128,8 @@ static int humidity_proc_event(struct hi
- 	struct hid_humidity_state *humid_st = iio_priv(indio_dev);
+--- a/drivers/firmware/efi/vars.c
++++ b/drivers/firmware/efi/vars.c
+@@ -485,6 +485,10 @@ int efivar_init(int (*func)(efi_char16_t
+ 			}
  
- 	if (atomic_read(&humid_st->common_attributes.data_ready))
--		iio_push_to_buffers_with_timestamp(indio_dev,
--					&humid_st->humidity_data,
--					iio_get_time_ns(indio_dev));
-+		iio_push_to_buffers_with_timestamp(indio_dev, &humid_st->scan,
-+						   iio_get_time_ns(indio_dev));
- 
- 	return 0;
- }
-@@ -142,7 +144,7 @@ static int humidity_capture_sample(struc
- 
- 	switch (usage_id) {
- 	case HID_USAGE_SENSOR_ATMOSPHERIC_HUMIDITY:
--		humid_st->humidity_data = *(s32 *)raw_data;
-+		humid_st->scan.humidity_data = *(s32 *)raw_data;
- 
- 		return 0;
- 	default:
+ 			break;
++		case EFI_UNSUPPORTED:
++			err = -EOPNOTSUPP;
++			status = EFI_NOT_FOUND;
++			break;
+ 		case EFI_NOT_FOUND:
+ 			break;
+ 		default:
 
 
