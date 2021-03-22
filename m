@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1543441B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691F2344313
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhCVMfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:35:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55518 "EHLO mail.kernel.org"
+        id S231244AbhCVMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:48:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhCVMcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 428E5619A2;
-        Mon, 22 Mar 2021 12:32:41 +0000 (UTC)
+        id S231586AbhCVMkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:40:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB8C460238;
+        Mon, 22 Mar 2021 12:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416361;
-        bh=70DLq73q6UI4LCgVXa81q17CNFdeyeVDpQpHZ4G/API=;
+        s=korg; t=1616416729;
+        bh=7f2g5FZMTBHVQwI8OzxkML0cXz8BHG7/wCDSRSZQRDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QVkQCLWMlsal6JelsS63+KUGrmm3veYgTyz95eDZ2n/J8VZQ0qFgHB+3jt6CuAoVM
-         fbzIHJHW2f0voBBHb+/P1oUdo+ilUmr5Vwt9nwXMHM5bft7CdyQwlInQFTICfBa0F7
-         wKOQdwZ6pb45bljYQBbkiJbS4PgG7OL/mKDyxhHg=
+        b=X8lnRNjXjqkt1EJN7aPLUu/MHW4cS2R6s62txVGKJwW0kOUsxWZY1cfREh226dWnV
+         BUK9ND9OGdRaHTzBA7ZM+3OQEAxfQY3zigG0TjKKU8IgcfqsyKmwqT3r+pyVI79Hme
+         /rtoy6mIH1vWaMYOgXLNWrZjpTRTPVl/xT7LWl2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 070/120] ASoC: codecs: lpass-va-macro: mute/unmute all active decimators
-Date:   Mon, 22 Mar 2021 13:27:33 +0100
-Message-Id: <20210322121932.019509347@linuxfoundation.org>
+Subject: [PATCH 5.10 097/157] mptcp: reduce the arguments of mptcp_sendmsg_frag
+Date:   Mon, 22 Mar 2021 13:27:34 +0100
+Message-Id: <20210322121936.855497305@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,83 +40,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 5346f0e80b7160c91fb599d4545fd12560c286ed ]
+[ Upstream commit caf971df01b86f33f151bcfa61b4385cf5e43822 ]
 
-An interface can have multiple decimators enabled, so loop over all active
-decimators. Otherwise only one channel will be unmuted, and other channels
-will be zero. This fixes recording from dual DMIC as a single two channel
-stream.
+The current argument list is pretty long and quite unreadable,
+move many of them into a specific struct. Later patches
+will add more stuff to such struct.
 
-Also remove the now unused "active_decimator" field.
+Additionally drop the 'timeo' argument, now unused.
 
-Fixes: 908e6b1df26e ("ASoC: codecs: lpass-va-macro: Add support to VA Macro")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210304215646.17956-1-jonathan@marek.ca
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/lpass-va-macro.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ net/mptcp/protocol.c | 53 ++++++++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 91e6890d6efc..3d6976a3d9e4 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -189,7 +189,6 @@ struct va_macro {
- 	struct device *dev;
- 	unsigned long active_ch_mask[VA_MACRO_MAX_DAIS];
- 	unsigned long active_ch_cnt[VA_MACRO_MAX_DAIS];
--	unsigned long active_decimator[VA_MACRO_MAX_DAIS];
- 	u16 dmic_clk_div;
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 0504a5f13c2a..888eb6a86dad 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -886,12 +886,16 @@ mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
+ 	return dfrag;
+ }
  
- 	int dec_mode[VA_MACRO_NUM_DECIMATORS];
-@@ -549,11 +548,9 @@ static int va_macro_tx_mixer_put(struct snd_kcontrol *kcontrol,
- 	if (enable) {
- 		set_bit(dec_id, &va->active_ch_mask[dai_id]);
- 		va->active_ch_cnt[dai_id]++;
--		va->active_decimator[dai_id] = dec_id;
- 	} else {
- 		clear_bit(dec_id, &va->active_ch_mask[dai_id]);
- 		va->active_ch_cnt[dai_id]--;
--		va->active_decimator[dai_id] = -1;
++struct mptcp_sendmsg_info {
++	int mss_now;
++	int size_goal;
++};
++
+ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
+ 			      struct msghdr *msg, struct mptcp_data_frag *dfrag,
+-			      long *timeo, int *pmss_now,
+-			      int *ps_goal)
++			      struct mptcp_sendmsg_info *info)
+ {
+-	int mss_now, avail_size, size_goal, offset, ret, frag_truesize = 0;
++	int avail_size, offset, ret, frag_truesize = 0;
+ 	bool dfrag_collapsed, can_collapse = false;
+ 	struct mptcp_sock *msk = mptcp_sk(sk);
+ 	struct mptcp_ext *mpext = NULL;
+@@ -917,10 +921,8 @@ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
  	}
  
- 	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, update);
-@@ -880,18 +877,19 @@ static int va_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
- 	struct va_macro *va = snd_soc_component_get_drvdata(component);
- 	u16 tx_vol_ctl_reg, decimator;
+ 	/* compute copy limit */
+-	mss_now = tcp_send_mss(ssk, &size_goal, msg->msg_flags);
+-	*pmss_now = mss_now;
+-	*ps_goal = size_goal;
+-	avail_size = size_goal;
++	info->mss_now = tcp_send_mss(ssk, &info->size_goal, msg->msg_flags);
++	avail_size = info->size_goal;
+ 	skb = tcp_write_queue_tail(ssk);
+ 	if (skb) {
+ 		mpext = skb_ext_find(skb, SKB_EXT_MPTCP);
+@@ -931,12 +933,12 @@ static int mptcp_sendmsg_frag(struct sock *sk, struct sock *ssk,
+ 		 * queue management operation, to avoid breaking the ext <->
+ 		 * SSN association set here
+ 		 */
+-		can_collapse = (size_goal - skb->len > 0) &&
++		can_collapse = (info->size_goal - skb->len > 0) &&
+ 			      mptcp_skb_can_collapse_to(*write_seq, skb, mpext);
+ 		if (!can_collapse)
+ 			TCP_SKB_CB(skb)->eor = 1;
+ 		else
+-			avail_size = size_goal - skb->len;
++			avail_size = info->size_goal - skb->len;
+ 	}
  
--	decimator = va->active_decimator[dai->id];
--
--	tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
--				VA_MACRO_TX_PATH_OFFSET * decimator;
--	if (mute)
--		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
--					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
--					      CDC_VA_TX_PATH_PGA_MUTE_EN);
--	else
--		snd_soc_component_update_bits(component, tx_vol_ctl_reg,
--					      CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
--					      CDC_VA_TX_PATH_PGA_MUTE_DISABLE);
-+	for_each_set_bit(decimator, &va->active_ch_mask[dai->id],
-+			 VA_MACRO_DEC_MAX) {
-+		tx_vol_ctl_reg = CDC_VA_TX0_TX_PATH_CTL +
-+					VA_MACRO_TX_PATH_OFFSET * decimator;
-+		if (mute)
-+			snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-+					CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-+					CDC_VA_TX_PATH_PGA_MUTE_EN);
-+		else
-+			snd_soc_component_update_bits(component, tx_vol_ctl_reg,
-+					CDC_VA_TX_PATH_PGA_MUTE_EN_MASK,
-+					CDC_VA_TX_PATH_PGA_MUTE_DISABLE);
-+	}
+ 	if (!retransmission) {
+@@ -1168,11 +1170,15 @@ static void ssk_check_wmem(struct mptcp_sock *msk)
  
- 	return 0;
- }
+ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ {
+-	int mss_now = 0, size_goal = 0, ret = 0;
+ 	struct mptcp_sock *msk = mptcp_sk(sk);
++	struct mptcp_sendmsg_info info = {
++		.mss_now = 0,
++		.size_goal = 0,
++	};
+ 	struct page_frag *pfrag;
+ 	size_t copied = 0;
+ 	struct sock *ssk;
++	int ret = 0;
+ 	u32 sndbuf;
+ 	bool tx_ok;
+ 	long timeo;
+@@ -1241,8 +1247,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 	lock_sock(ssk);
+ 	tx_ok = msg_data_left(msg);
+ 	while (tx_ok) {
+-		ret = mptcp_sendmsg_frag(sk, ssk, msg, NULL, &timeo, &mss_now,
+-					 &size_goal);
++		ret = mptcp_sendmsg_frag(sk, ssk, msg, NULL, &info);
+ 		if (ret < 0) {
+ 			if (ret == -EAGAIN && timeo > 0) {
+ 				mptcp_set_timeout(sk, ssk);
+@@ -1265,8 +1270,8 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 		if (!sk_stream_memory_free(ssk) ||
+ 		    !mptcp_page_frag_refill(ssk, pfrag) ||
+ 		    !mptcp_ext_cache_refill(msk)) {
+-			tcp_push(ssk, msg->msg_flags, mss_now,
+-				 tcp_sk(ssk)->nonagle, size_goal);
++			tcp_push(ssk, msg->msg_flags, info.mss_now,
++				 tcp_sk(ssk)->nonagle, info.size_goal);
+ 			mptcp_set_timeout(sk, ssk);
+ 			release_sock(ssk);
+ 			goto restart;
+@@ -1286,8 +1291,8 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 		 * limits before we send more data.
+ 		 */
+ 		if (unlikely(!sk_stream_memory_free(sk))) {
+-			tcp_push(ssk, msg->msg_flags, mss_now,
+-				 tcp_sk(ssk)->nonagle, size_goal);
++			tcp_push(ssk, msg->msg_flags, info.mss_now,
++				 tcp_sk(ssk)->nonagle, info.size_goal);
+ 			mptcp_clean_una(sk);
+ 			if (!sk_stream_memory_free(sk)) {
+ 				/* can't send more for now, need to wait for
+@@ -1304,8 +1309,8 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 
+ 	mptcp_set_timeout(sk, ssk);
+ 	if (copied) {
+-		tcp_push(ssk, msg->msg_flags, mss_now, tcp_sk(ssk)->nonagle,
+-			 size_goal);
++		tcp_push(ssk, msg->msg_flags, info.mss_now,
++			 tcp_sk(ssk)->nonagle, info.size_goal);
+ 
+ 		/* start the timer, if it's not pending */
+ 		if (!mptcp_timer_pending(sk))
+@@ -1747,14 +1752,15 @@ static void mptcp_worker(struct work_struct *work)
+ {
+ 	struct mptcp_sock *msk = container_of(work, struct mptcp_sock, work);
+ 	struct sock *ssk, *sk = &msk->sk.icsk_inet.sk;
+-	int orig_len, orig_offset, mss_now = 0, size_goal = 0;
++	struct mptcp_sendmsg_info info = {};
+ 	struct mptcp_data_frag *dfrag;
++	int orig_len, orig_offset;
+ 	u64 orig_write_seq;
+ 	size_t copied = 0;
+ 	struct msghdr msg = {
+ 		.msg_flags = MSG_DONTWAIT,
+ 	};
+-	long timeo = 0;
++	int ret;
+ 
+ 	lock_sock(sk);
+ 	mptcp_clean_una_wakeup(sk);
+@@ -1793,8 +1799,7 @@ static void mptcp_worker(struct work_struct *work)
+ 	orig_offset = dfrag->offset;
+ 	orig_write_seq = dfrag->data_seq;
+ 	while (dfrag->data_len > 0) {
+-		int ret = mptcp_sendmsg_frag(sk, ssk, &msg, dfrag, &timeo,
+-					     &mss_now, &size_goal);
++		ret = mptcp_sendmsg_frag(sk, ssk, &msg, dfrag, &info);
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -1807,8 +1812,8 @@ static void mptcp_worker(struct work_struct *work)
+ 			break;
+ 	}
+ 	if (copied)
+-		tcp_push(ssk, msg.msg_flags, mss_now, tcp_sk(ssk)->nonagle,
+-			 size_goal);
++		tcp_push(ssk, 0, info.mss_now, tcp_sk(ssk)->nonagle,
++			 info.size_goal);
+ 
+ 	dfrag->data_seq = orig_write_seq;
+ 	dfrag->offset = orig_offset;
 -- 
 2.30.1
 
