@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A923437BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542F23437C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVEDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 00:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
+        id S229893AbhCVEDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 00:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhCVEDB (ORCPT
+        with ESMTP id S229866AbhCVEDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 00:03:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6120EC061574;
-        Sun, 21 Mar 2021 21:03:01 -0700 (PDT)
+        Mon, 22 Mar 2021 00:03:05 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4473BC061574;
+        Sun, 21 Mar 2021 21:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4a8nm0y32xGcaD9mUxGj3UqgnqgFCog9eP1Pm0kruoE=; b=D1yb5vAfC65DA6Scf6UDfXp3Hg
-        bJwJEzQQlnkqpppVA9nXFzhVJgywKbMbgvXmpolHqR8Cnve3nYh3KeR+15Q0LI2UeVjCd+67HukE9
-        u92apkX5aeCUjXhwWGv9RbyvUeJHBDbb6j+A8mIL6G1e5SzULhk9iE0QV6Y0vjK09vrFDQCQV8ASl
-        g+meAeSyPDQesa5xkv7MVTE5RzbziOn4DXYJP2jZ6Pe7Zu8GPAHXpyIIKbvTuZNehDI0caG1FqqXC
-        p20DGWH+zWN90q/wzNrOF+HK4t+aZe+EsWA/LV0wBhXr4afuTu+ToAnkJfpvX2JDOKzHaZIxYgFoD
-        5KkqfQ3A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOBle-007xoQ-SW; Mon, 22 Mar 2021 04:02:19 +0000
-Date:   Mon, 22 Mar 2021 04:02:14 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, corbet@lwn.net,
-        sir@cmpwn.com, gregkh@linuxfoundation.org, lee.jones@linaro.org,
-        bp@alien8.de, huawei@kernel.org, krzk@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] docs: submitting-patches Fix a typo
-Message-ID: <20210322040214.GG1719932@casper.infradead.org>
-References: <20210322033000.2523887-1-unixbhaskar@gmail.com>
- <20210322034459.GE1719932@casper.infradead.org>
- <YFgTkhA+IOvNVxEn@ArchLinux>
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=qkxewrQlJK5/shxaPgCG1PvVmFC3aSiTWgp0bhbRIoI=; b=FwBJQP8/Abo91fpN2ZDsfgh3l6
+        +vNEe4Pe8fosCMV4hhlvTI0L281mKpLbIwznBh48xyO9ZmJFgdAM3+3Iv5qwkVwbfCGxJIYTZa3uB
+        6+Kniiz90VSvvt4h9HdedxK0BP6c/NdHo2kXwpoTfojKKCshazEUZJtCorCURxIZvzhHt3Q0/ty1v
+        KNoE3WjLtKD/pMYRGw5aYicaK83RSnfslZ3fyQ7ojOmpJ6AuBxxbdTZ7DD/308sCeV8sod5Oq7SK3
+        0Zp6STclBZ0t2w8VvHs8Q6BWg91H71gDtaF9224vhobgS+fMfAisQNYTtqHeLjJ0jwpej8VTcVamN
+        JtwdVoGg==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOBmR-00Aq4e-5j; Mon, 22 Mar 2021 04:03:03 +0000
+Subject: Re: [PATCH V2] xfs: Rudimentary spelling fix
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210322034538.3022189-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <77c33126-ad02-0054-d563-c067d887b267@infradead.org>
+Date:   Sun, 21 Mar 2021 21:03:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFgTkhA+IOvNVxEn@ArchLinux>
+In-Reply-To: <20210322034538.3022189-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:18:34AM +0530, Bhaskar Chowdhury wrote:
-> On 03:44 Mon 22 Mar 2021, Matthew Wilcox wrote:
-> > On Mon, Mar 22, 2021 at 09:00:00AM +0530, Bhaskar Chowdhury wrote:
-> > > 
-> > > s/mesages/messages/
-> > 
-> > did you test the build afterwards?  you forgot to do something.
-> > 
-> What are you talking about??? It is going over my head...why the build
-> reqired?? A spello needs a rebuild???? Wondering....
+On 3/21/21 8:45 PM, Bhaskar Chowdhury wrote:
+> s/sytemcall/syscall/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-don't argue with me.  just type 'make htmldocs' and find out.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>   Changes from V1:
+>    Randy's suggestion incorporated.
+> 
+>  fs/xfs/xfs_inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index f93370bd7b1e..3087d03a6863 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -2870,7 +2870,7 @@ xfs_finish_rename(
+>  /*
+>   * xfs_cross_rename()
+>   *
+> - * responsible for handling RENAME_EXCHANGE flag in renameat2() sytemcall
+> + * responsible for handling RENAME_EXCHANGE flag in renameat2() syscall
+>   */
+>  STATIC int
+>  xfs_cross_rename(
+> --
+
+
+-- 
+~Randy
 
