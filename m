@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E930344274
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B07344132
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhCVMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57028 "EHLO mail.kernel.org"
+        id S231367AbhCVMb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:31:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231151AbhCVMgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:36:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B180E619A4;
-        Mon, 22 Mar 2021 12:35:48 +0000 (UTC)
+        id S230433AbhCVMah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B04E6198D;
+        Mon, 22 Mar 2021 12:30:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416549;
-        bh=mA6n9q3KDXJcFo/kEYdcN1dVGe5Dx/XAbgn+TiqxXgI=;
+        s=korg; t=1616416237;
+        bh=s61fcqChpRmIDZQfoVuhuZBpj2wXAuozfm8Mz7MOXIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oOOnKVRaSPzyM0oCDERieQ2f1GJngh13lCBUWTNZtdMTWBgiedXiDC6rg13ZfxAy
-         IzZ5cmw2zOTrKF7mk4qpY0fiJcZNTMNSN2/trYgPRapVR63MWUvUPBQzbuRHsFjQoQ
-         NVGBpDlimY1iT4XlVgyigqM7lV1BcQdz3ntbXzaQ=
+        b=swnwn68ciTuQJ/+NzOIJGBL7YTcWofMYNchdghGt0BnpGY4IsZWtTsXLBKlIQdvA+
+         QGY6I6HUkK9x/QmOlWCxSPZ/YPVNsgh3Dif3TGosoMrJVF0sz+BQ3EumoL6N+Wa6/R
+         qa135kvGs6WnlreHiUFZPTRd2w3ksKuI5448Y8yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 028/157] ASoC: qcom: sdm845: Fix array out of bounds access
-Date:   Mon, 22 Mar 2021 13:26:25 +0100
-Message-Id: <20210322121934.657333988@linuxfoundation.org>
+Subject: [PATCH 5.11 003/120] spi: cadence: set cqspi to the driver_data field of struct device
+Date:   Mon, 22 Mar 2021 13:26:26 +0100
+Message-Id: <20210322121929.781902327@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Meng Li <Meng.Li@windriver.com>
 
-commit 1c668e1c0a0f74472469cd514f40c9012b324c31 upstream.
+commit ea94191e584b146878f0b7fd4b767500d7aae870 upstream.
 
-Static analysis Coverity had detected a potential array out-of-bounds
-write issue due to the fact that MAX AFE port Id was set to 16 instead
-of using AFE_PORT_MAX macro.
+When initialize cadence qspi controller, it is need to set cqspi
+to the driver_data field of struct device, because it will be
+used in function cqspi_remove/suspend/resume(). Otherwise, there
+will be a crash trace as below when invoking these finctions.
 
-Fix this by properly using AFE_PORT_MAX macro.
-
-Fixes: 1b93a8843147 ("ASoC: qcom: sdm845: handle soundwire stream")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210309142129.14182-2-srinivas.kandagatla@linaro.org
+Fixes: 31fb632b5d43 ("spi: Move cadence-quadspi driver to drivers/spi/")
+Cc: stable@vger.kernel.org
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Link: https://lore.kernel.org/r/20210311091220.3615-1-Meng.Li@windriver.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/qcom/sdm845.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi-cadence-quadspi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -33,12 +33,12 @@
- struct sdm845_snd_data {
- 	struct snd_soc_jack jack;
- 	bool jack_setup;
--	bool stream_prepared[SLIM_MAX_RX_PORTS];
-+	bool stream_prepared[AFE_PORT_MAX];
- 	struct snd_soc_card *card;
- 	uint32_t pri_mi2s_clk_count;
- 	uint32_t sec_mi2s_clk_count;
- 	uint32_t quat_tdm_clk_count;
--	struct sdw_stream_runtime *sruntime[SLIM_MAX_RX_PORTS];
-+	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
- };
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1198,6 +1198,7 @@ static int cqspi_probe(struct platform_d
+ 	cqspi = spi_master_get_devdata(master);
  
- static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
+ 	cqspi->pdev = pdev;
++	platform_set_drvdata(pdev, cqspi);
+ 
+ 	/* Obtain configuration from OF. */
+ 	ret = cqspi_of_get_pdata(cqspi);
 
 
