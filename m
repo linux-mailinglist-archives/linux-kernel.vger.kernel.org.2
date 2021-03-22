@@ -2,482 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927A03440C8
+	by mail.lfdr.de (Postfix) with ESMTP id DFB603440C9
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhCVMVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:21:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:58498 "EHLO foss.arm.com"
+        id S230181AbhCVMVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:21:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhCVMVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:21:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B881063;
-        Mon, 22 Mar 2021 05:21:09 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD5103F718;
-        Mon, 22 Mar 2021 05:21:06 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 12:21:00 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>, michal.simek@xilinx.com
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 03/13] PCI: xilinx: Convert to MSI domains
-Message-ID: <20210322122100.GA11469@e121166-lin.cambridge.arm.com>
-References: <20210225151023.3642391-1-maz@kernel.org>
- <20210225151023.3642391-4-maz@kernel.org>
+        id S229933AbhCVMVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:21:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40A946198B;
+        Mon, 22 Mar 2021 12:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616415672;
+        bh=80YmYN0VUetsLlX0A6XnYg0BZUOx/dDSaKDFcZNaPIk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=uO6hhPAT4jI4T/qNpf5oeiDmvPtzp6dukZAVQuqcKxq9u3yC72wSr/VzFR84LZdZQ
+         s/gbrGvs+u4vxXiUgJ/XVLKmE9FvF4GGYwoF9EhIcWb3WDvdLtIRE19mk4K77Mlpjx
+         +6L9xRsQNeEKfJG7xGQB9L+2sdubxxey9SJqEthkXc5LeNKeqjanJizRsWdk9VXi9e
+         8ohrz5LfbQ2jqfcNyo8sA9TAHeS5OLjo7ML67wEtyxcOaprc8kiBeTbQu0ju5s0oJ8
+         0tQObfU50dezX8hgsvo1sTlEpyaReD/qFEYmhxaYGTmyBg9rNjZEsuPD05jnyL9E1a
+         FVdh7O83oHNDQ==
+Subject: Re: drivers/clocksource/dw_apb_timer_of.c:66
+ timer_get_base_and_rate() warn: 'timer_clk' not released on lines: 64.
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
+        lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <20210222062151.GL2087@kadam>
+ <abe304b5-bd65-d8d1-509a-b1a58ffc9816@linaro.org>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <644a72b7-72de-8286-a977-b46aae36dc72@kernel.org>
+Date:   Mon, 22 Mar 2021 07:21:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225151023.3642391-4-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <abe304b5-bd65-d8d1-509a-b1a58ffc9816@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 03:10:13PM +0000, Marc Zyngier wrote:
-> In anticipation of the removal of the msi_controller structure, convert
-> the ancient xilinx host controller driver to MSI domains.
-> 
-> We end-up with the usual two domain structure, the top one being a
-> generic PCI/MSI domain, the bottom one being xilinx-specific and handling
-> the actual HW interrupt allocation.
-> 
-> This allows us to fix some of the most appaling MSI programming, where
-> the message programmed in the device is the virtual IRQ number instead
-> of the allocated vector number. The allocator is also made safe with
-> a mutex. This should allow support for MultiMSI, but I decided not to
-> even try, since I cannot test it.
-> 
-> Also take the opportunity to get rid of the cargo-culted memory allocation
-> for the MSI capture address. *ANY* sufficiently aligned address should
-> be good enough, so use the physical address of the xilinx_pcie_host
-> structure instead.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/pci/controller/Kconfig       |   2 +-
->  drivers/pci/controller/pcie-xilinx.c | 238 +++++++++++----------------
->  2 files changed, 96 insertions(+), 144 deletions(-)
+Hi Daniel,
 
-Michal,
-
-can you please test these changes or make sure someone does and report
-back on the mailing list please ?
-
-I would like to merge this series for v5.13.
-
-Thanks,
-Lorenzo
-
+2/21 4:58 AM, Daniel Lezcano wrote:
 > 
-> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> index ccbf034512d6..049c60016904 100644
-> --- a/drivers/pci/controller/Kconfig
-> +++ b/drivers/pci/controller/Kconfig
-> @@ -95,7 +95,7 @@ config PCI_HOST_GENERIC
->  config PCIE_XILINX
->  	bool "Xilinx AXI PCIe host bridge support"
->  	depends on OF || COMPILE_TEST
-> -	select PCI_MSI_ARCH_FALLBACKS
-> +	depends on PCI_MSI_IRQ_DOMAIN
->  	help
->  	  Say 'Y' here if you want kernel to support the Xilinx AXI PCIe
->  	  Host Bridge driver.
-> diff --git a/drivers/pci/controller/pcie-xilinx.c b/drivers/pci/controller/pcie-xilinx.c
-> index fa5baeb82653..ad9abf405167 100644
-> --- a/drivers/pci/controller/pcie-xilinx.c
-> +++ b/drivers/pci/controller/pcie-xilinx.c
-> @@ -93,25 +93,23 @@
->  /**
->   * struct xilinx_pcie_port - PCIe port information
->   * @reg_base: IO Mapped Register Base
-> - * @irq: Interrupt number
-> - * @msi_pages: MSI pages
->   * @dev: Device pointer
-> + * @msi_map: Bitmap of allocated MSIs
-> + * @map_lock: Mutex protecting the MSI allocation
->   * @msi_domain: MSI IRQ domain pointer
->   * @leg_domain: Legacy IRQ domain pointer
->   * @resources: Bus Resources
->   */
->  struct xilinx_pcie_port {
->  	void __iomem *reg_base;
-> -	u32 irq;
-> -	unsigned long msi_pages;
->  	struct device *dev;
-> +	unsigned long msi_map[BITS_TO_LONGS(XILINX_NUM_MSI_IRQS)];
-> +	struct mutex map_lock;
->  	struct irq_domain *msi_domain;
->  	struct irq_domain *leg_domain;
->  	struct list_head resources;
->  };
->  
-> -static DECLARE_BITMAP(msi_irq_in_use, XILINX_NUM_MSI_IRQS);
-> -
->  static inline u32 pcie_read(struct xilinx_pcie_port *port, u32 reg)
->  {
->  	return readl(port->reg_base + reg);
-> @@ -196,151 +194,108 @@ static struct pci_ops xilinx_pcie_ops = {
->  
->  /* MSI functions */
->  
-> -/**
-> - * xilinx_pcie_destroy_msi - Free MSI number
-> - * @irq: IRQ to be freed
-> - */
-> -static void xilinx_pcie_destroy_msi(unsigned int irq)
-> +static struct irq_chip xilinx_msi_top_chip = {
-> +	.name		= "PCIe MSI",
-> +};
-> +
-> +static int xilinx_msi_set_affinity(struct irq_data *d, const struct cpumask *mask, bool force)
->  {
-> -	struct msi_desc *msi;
-> -	struct xilinx_pcie_port *port;
-> -	struct irq_data *d = irq_get_irq_data(irq);
-> -	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-> -
-> -	if (!test_bit(hwirq, msi_irq_in_use)) {
-> -		msi = irq_get_msi_desc(irq);
-> -		port = msi_desc_to_pci_sysdata(msi);
-> -		dev_err(port->dev, "Trying to free unused MSI#%d\n", irq);
-> -	} else {
-> -		clear_bit(hwirq, msi_irq_in_use);
-> -	}
-> +	return -EINVAL;
->  }
->  
-> -/**
-> - * xilinx_pcie_assign_msi - Allocate MSI number
-> - *
-> - * Return: A valid IRQ on success and error value on failure.
-> - */
-> -static int xilinx_pcie_assign_msi(void)
-> +static void xilinx_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
->  {
-> -	int pos;
-> +	struct xilinx_pcie_port *pcie = irq_data_get_irq_chip_data(data);
-> +	phys_addr_t pa = virt_to_phys(pcie);
->  
-> -	pos = find_first_zero_bit(msi_irq_in_use, XILINX_NUM_MSI_IRQS);
-> -	if (pos < XILINX_NUM_MSI_IRQS)
-> -		set_bit(pos, msi_irq_in_use);
-> -	else
-> -		return -ENOSPC;
-> -
-> -	return pos;
-> +	msg->address_lo = lower_32_bits(pa);
-> +	msg->address_hi = upper_32_bits(pa);
-> +	msg->data = data->hwirq;
->  }
->  
-> -/**
-> - * xilinx_msi_teardown_irq - Destroy the MSI
-> - * @chip: MSI Chip descriptor
-> - * @irq: MSI IRQ to destroy
-> - */
-> -static void xilinx_msi_teardown_irq(struct msi_controller *chip,
-> -				    unsigned int irq)
-> -{
-> -	xilinx_pcie_destroy_msi(irq);
-> -	irq_dispose_mapping(irq);
-> -}
-> +static struct irq_chip xilinx_msi_bottom_chip = {
-> +	.name			= "Xilinx MSI",
-> +	.irq_set_affinity 	= xilinx_msi_set_affinity,
-> +	.irq_compose_msi_msg	= xilinx_compose_msi_msg,
-> +};
->  
-> -/**
-> - * xilinx_pcie_msi_setup_irq - Setup MSI request
-> - * @chip: MSI chip pointer
-> - * @pdev: PCIe device pointer
-> - * @desc: MSI descriptor pointer
-> - *
-> - * Return: '0' on success and error value on failure
-> - */
-> -static int xilinx_pcie_msi_setup_irq(struct msi_controller *chip,
-> -				     struct pci_dev *pdev,
-> -				     struct msi_desc *desc)
-> +static int xilinx_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
-> +				  unsigned int nr_irqs, void *args)
->  {
-> -	struct xilinx_pcie_port *port = pdev->bus->sysdata;
-> -	unsigned int irq;
-> -	int hwirq;
-> -	struct msi_msg msg;
-> -	phys_addr_t msg_addr;
-> +	struct xilinx_pcie_port *port = domain->host_data;
-> +	int hwirq, i;
->  
-> -	hwirq = xilinx_pcie_assign_msi();
-> -	if (hwirq < 0)
-> -		return hwirq;
-> -
-> -	irq = irq_create_mapping(port->msi_domain, hwirq);
-> -	if (!irq)
-> -		return -EINVAL;
-> +	mutex_lock(&port->map_lock);
->  
-> -	irq_set_msi_desc(irq, desc);
-> +	hwirq = bitmap_find_free_region(port->msi_map, XILINX_NUM_MSI_IRQS, order_base_2(nr_irqs));
->  
-> -	msg_addr = virt_to_phys((void *)port->msi_pages);
-> +	mutex_unlock(&port->map_lock);
->  
-> -	msg.address_hi = 0;
-> -	msg.address_lo = msg_addr;
-> -	msg.data = irq;
-> +	if (hwirq < 0)
-> +		return -ENOSPC;
->  
-> -	pci_write_msi_msg(irq, &msg);
-> +	for (i = 0; i < nr_irqs; i++)
-> +		irq_domain_set_info(domain, virq + i, hwirq + i,
-> +				    &xilinx_msi_bottom_chip, domain->host_data,
-> +				    handle_edge_irq, NULL, NULL);
->  
->  	return 0;
->  }
->  
-> -/* MSI Chip Descriptor */
-> -static struct msi_controller xilinx_pcie_msi_chip = {
-> -	.setup_irq = xilinx_pcie_msi_setup_irq,
-> -	.teardown_irq = xilinx_msi_teardown_irq,
-> -};
-> +static void xilinx_msi_domain_free(struct irq_domain *domain, unsigned int virq,
-> +				  unsigned int nr_irqs)
-> +{
-> +	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
-> +	struct xilinx_pcie_port *port = domain->host_data;
->  
-> -/* HW Interrupt Chip Descriptor */
-> -static struct irq_chip xilinx_msi_irq_chip = {
-> -	.name = "Xilinx PCIe MSI",
-> -	.irq_enable = pci_msi_unmask_irq,
-> -	.irq_disable = pci_msi_mask_irq,
-> -	.irq_mask = pci_msi_mask_irq,
-> -	.irq_unmask = pci_msi_unmask_irq,
-> -};
-> +	mutex_lock(&port->map_lock);
->  
-> -/**
-> - * xilinx_pcie_msi_map - Set the handler for the MSI and mark IRQ as valid
-> - * @domain: IRQ domain
-> - * @irq: Virtual IRQ number
-> - * @hwirq: HW interrupt number
-> - *
-> - * Return: Always returns 0.
-> - */
-> -static int xilinx_pcie_msi_map(struct irq_domain *domain, unsigned int irq,
-> -			       irq_hw_number_t hwirq)
-> -{
-> -	irq_set_chip_and_handler(irq, &xilinx_msi_irq_chip, handle_simple_irq);
-> -	irq_set_chip_data(irq, domain->host_data);
-> +	bitmap_release_region(port->msi_map, d->hwirq, order_base_2(nr_irqs));
->  
-> -	return 0;
-> +	mutex_unlock(&port->map_lock);
->  }
->  
-> -/* IRQ Domain operations */
-> -static const struct irq_domain_ops msi_domain_ops = {
-> -	.map = xilinx_pcie_msi_map,
-> +static const struct irq_domain_ops xilinx_msi_domain_ops = {
-> +	.alloc	= xilinx_msi_domain_alloc,
-> +	.free	= xilinx_msi_domain_free,
->  };
->  
-> -/**
-> - * xilinx_pcie_enable_msi - Enable MSI support
-> - * @port: PCIe port information
-> - */
-> -static int xilinx_pcie_enable_msi(struct xilinx_pcie_port *port)
-> +static struct msi_domain_info xilinx_msi_info = {
-> +	.flags	= (MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS),
-> +	.chip	= &xilinx_msi_top_chip,
-> +};
-> +
-> +static int xilinx_allocate_msi_domains(struct xilinx_pcie_port *pcie)
->  {
-> -	phys_addr_t msg_addr;
-> +	struct fwnode_handle *fwnode = dev_fwnode(pcie->dev);
-> +	struct irq_domain *parent;
->  
-> -	port->msi_pages = __get_free_pages(GFP_KERNEL, 0);
-> -	if (!port->msi_pages)
-> +	parent = irq_domain_create_linear(fwnode, XILINX_NUM_MSI_IRQS,
-> +					  &xilinx_msi_domain_ops, pcie);
-> +	if (!parent) {
-> +		dev_err(pcie->dev, "failed to create IRQ domain\n");
->  		return -ENOMEM;
-> +	}
-> +	irq_domain_update_bus_token(parent, DOMAIN_BUS_NEXUS);
->  
-> -	msg_addr = virt_to_phys((void *)port->msi_pages);
-> -	pcie_write(port, 0x0, XILINX_PCIE_REG_MSIBASE1);
-> -	pcie_write(port, msg_addr, XILINX_PCIE_REG_MSIBASE2);
-> +	pcie->msi_domain = pci_msi_create_irq_domain(fwnode, &xilinx_msi_info, parent);
-> +	if (!pcie->msi_domain) {
-> +		dev_err(pcie->dev, "failed to create MSI domain\n");
-> +		irq_domain_remove(parent);
-> +		return -ENOMEM;
-> +	}
->  
->  	return 0;
->  }
->  
-> +static void xilinx_free_msi_domains(struct xilinx_pcie_port *pcie)
-> +{
-> +	struct irq_domain *parent = pcie->msi_domain->parent;
-> +
-> +	irq_domain_remove(pcie->msi_domain);
-> +	irq_domain_remove(parent);
-> +}
-> +
->  /* INTx Functions */
->  
->  /**
-> @@ -420,6 +375,8 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
->  	}
->  
->  	if (status & (XILINX_PCIE_INTR_INTX | XILINX_PCIE_INTR_MSI)) {
-> +		unsigned int irq;
-> +
->  		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
->  
->  		/* Check whether interrupt valid */
-> @@ -432,20 +389,19 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
->  		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
->  			val = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
->  				XILINX_PCIE_RPIFR2_MSG_DATA;
-> +			irq = irq_find_mapping(port->msi_domain->parent, val);
->  		} else {
->  			val = (val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
->  				XILINX_PCIE_RPIFR1_INTR_SHIFT;
-> -			val = irq_find_mapping(port->leg_domain, val);
-> +			irq = irq_find_mapping(port->leg_domain, val);
->  		}
->  
->  		/* Clear interrupt FIFO register 1 */
->  		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
->  			   XILINX_PCIE_REG_RPIFR1);
->  
-> -		/* Handle the interrupt */
-> -		if (IS_ENABLED(CONFIG_PCI_MSI) ||
-> -		    !(val & XILINX_PCIE_RPIFR1_MSI_INTR))
-> -			generic_handle_irq(val);
-> +		if (irq)
-> +			generic_handle_irq(irq);
->  	}
->  
->  	if (status & XILINX_PCIE_INTR_SLV_UNSUPP)
-> @@ -491,12 +447,11 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
->  static int xilinx_pcie_init_irq_domain(struct xilinx_pcie_port *port)
->  {
->  	struct device *dev = port->dev;
-> -	struct device_node *node = dev->of_node;
->  	struct device_node *pcie_intc_node;
->  	int ret;
->  
->  	/* Setup INTx */
-> -	pcie_intc_node = of_get_next_child(node, NULL);
-> +	pcie_intc_node = of_get_next_child(dev->of_node, NULL);
->  	if (!pcie_intc_node) {
->  		dev_err(dev, "No PCIe Intc node found\n");
->  		return -ENODEV;
-> @@ -513,18 +468,14 @@ static int xilinx_pcie_init_irq_domain(struct xilinx_pcie_port *port)
->  
->  	/* Setup MSI */
->  	if (IS_ENABLED(CONFIG_PCI_MSI)) {
-> -		port->msi_domain = irq_domain_add_linear(node,
-> -							 XILINX_NUM_MSI_IRQS,
-> -							 &msi_domain_ops,
-> -							 &xilinx_pcie_msi_chip);
-> -		if (!port->msi_domain) {
-> -			dev_err(dev, "Failed to get a MSI IRQ domain\n");
-> -			return -ENODEV;
-> -		}
-> +		phys_addr_t pa = virt_to_phys(port);
->  
-> -		ret = xilinx_pcie_enable_msi(port);
-> +		ret = xilinx_allocate_msi_domains(port);
->  		if (ret)
->  			return ret;
-> +
-> +		pcie_write(port, upper_32_bits(pa), XILINX_PCIE_REG_MSIBASE1);
-> +		pcie_write(port, lower_32_bits(pa), XILINX_PCIE_REG_MSIBASE2);
->  	}
->  
->  	return 0;
-> @@ -572,6 +523,7 @@ static int xilinx_pcie_parse_dt(struct xilinx_pcie_port *port)
->  	struct device *dev = port->dev;
->  	struct device_node *node = dev->of_node;
->  	struct resource regs;
-> +	unsigned int irq;
->  	int err;
->  
->  	err = of_address_to_resource(node, 0, &regs);
-> @@ -584,12 +536,12 @@ static int xilinx_pcie_parse_dt(struct xilinx_pcie_port *port)
->  	if (IS_ERR(port->reg_base))
->  		return PTR_ERR(port->reg_base);
->  
-> -	port->irq = irq_of_parse_and_map(node, 0);
-> -	err = devm_request_irq(dev, port->irq, xilinx_pcie_intr_handler,
-> +	irq = irq_of_parse_and_map(node, 0);
-> +	err = devm_request_irq(dev, irq, xilinx_pcie_intr_handler,
->  			       IRQF_SHARED | IRQF_NO_THREAD,
->  			       "xilinx-pcie", port);
->  	if (err) {
-> -		dev_err(dev, "unable to request irq %d\n", port->irq);
-> +		dev_err(dev, "unable to request irq %d\n", irq);
->  		return err;
->  	}
->  
-> @@ -617,7 +569,7 @@ static int xilinx_pcie_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  
->  	port = pci_host_bridge_priv(bridge);
-> -
-> +	mutex_init(&port->map_lock);
->  	port->dev = dev;
->  
->  	err = xilinx_pcie_parse_dt(port);
-> @@ -637,11 +589,11 @@ static int xilinx_pcie_probe(struct platform_device *pdev)
->  	bridge->sysdata = port;
->  	bridge->ops = &xilinx_pcie_ops;
->  
-> -#ifdef CONFIG_PCI_MSI
-> -	xilinx_pcie_msi_chip.dev = dev;
-> -	bridge->msi = &xilinx_pcie_msi_chip;
-> -#endif
-> -	return pci_host_probe(bridge);
-> +	err = pci_host_probe(bridge);
-> +	if (err)
-> +		xilinx_free_msi_domains(port);
-> +
-> +	return err;
->  }
->  
->  static const struct of_device_id xilinx_pcie_of_match[] = {
-> -- 
-> 2.29.2
+> Dinh,
+> 
+> is it possible to have a look at this issue?
+> 
+> Thanks
+> 
+
+Sorry, but somehow I missed cc'ing you when I first sent the patch.
+
+I've resent it just now.
+
+Dinh
+
+> On 22/02/2021 07:21, Dan Carpenter wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   55f62bc873477dae2c45bbbc30b86cf3e0982f3b
+>> commit: 5d9814df0aec56a638bbf20795abb4cfaf3cd331 clocksource/drivers/dw_apb_timer_of: Add error handling if no clock available
+>> config: arm64-randconfig-m031-20210221 (attached as .config)
+>> compiler: aarch64-linux-gcc (GCC) 9.3.0
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>
+>> New smatch warnings:
+>> drivers/clocksource/dw_apb_timer_of.c:66 timer_get_base_and_rate() warn: 'timer_clk' not released on lines: 64.
+>>
+>> Old smatch warnings:
+>> drivers/clocksource/dw_apb_timer_of.c:66 timer_get_base_and_rate() warn: '*base' not released on lines: 56,64.
+>>
+>> vim +/timer_clk +66 drivers/clocksource/dw_apb_timer_of.c
+>>
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  17  static int __init timer_get_base_and_rate(struct device_node *np,
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  18  				    void __iomem **base, u32 *rate)
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  19  {
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  20  	struct clk *timer_clk;
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  21  	struct clk *pclk;
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  22  	struct reset_control *rstc;
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  23  	int ret;
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  24
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  25  	*base = of_iomap(np, 0);
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  26
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  27  	if (!*base)
+>> 2a4849d2674b96 drivers/clocksource/dw_apb_timer_of.c Rob Herring    2018-08-27  28  		panic("Unable to map regs for %pOFn", np);
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  29
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  30  	/*
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  31  	 * Reset the timer if the reset control is available, wiping
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  32  	 * out the state the firmware may have left it
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  33  	 */
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  34  	rstc = of_reset_control_get(np, NULL);
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  35  	if (!IS_ERR(rstc)) {
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  36  		reset_control_assert(rstc);
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  37  		reset_control_deassert(rstc);
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  38  	}
+>> 1f174a1a2cdebc drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2018-09-17  39
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  40  	/*
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  41  	 * Not all implementations use a periphal clock, so don't panic
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  42  	 * if it's not present
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  43  	 */
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  44  	pclk = of_clk_get_by_name(np, "pclk");
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  45  	if (!IS_ERR(pclk))
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  46  		if (clk_prepare_enable(pclk))
+>> 2a4849d2674b96 drivers/clocksource/dw_apb_timer_of.c Rob Herring    2018-08-27  47  			pr_warn("pclk for %pOFn is present, but could not be activated\n",
+>> 2a4849d2674b96 drivers/clocksource/dw_apb_timer_of.c Rob Herring    2018-08-27  48  				np);
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  49
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  50  	if (!of_property_read_u32(np, "clock-freq", rate) &&
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  51  	    !of_property_read_u32(np, "clock-frequency", rate))
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  52  		return 0;
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  53
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  54  	timer_clk = of_clk_get_by_name(np, "timer");
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  55  	if (IS_ERR(timer_clk))
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  56  		return PTR_ERR(timer_clk);
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  57
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  58  	ret = clk_prepare_enable(timer_clk);
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  59  	if (ret)
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  60  		return ret;
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  61
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  62  	*rate = clk_get_rate(timer_clk);
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  63  	if (!(*rate))
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05  64  		return -EINVAL;
+>>
+>> disable timer_clk if clk_get_rate() fails?
+>>
+>> a8b447f2bbbba7 drivers/clocksource/dw_apb_timer_of.c Heiko Stuebner 2013-06-04  65
+>> 5d9814df0aec56 drivers/clocksource/dw_apb_timer_of.c Dinh Nguyen    2020-12-05 @66  	return 0;
+>> af75655c066621 arch/arm/mach-picoxcell/time.c        Jamie Iles     2011-07-25  67  }
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>
+> 
 > 
