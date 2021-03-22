@@ -2,35 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA5E344471
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A75344244
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhCVNAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43066 "EHLO mail.kernel.org"
+        id S231658AbhCVMjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:39:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhCVMr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59442619DF;
-        Mon, 22 Mar 2021 12:43:56 +0000 (UTC)
+        id S230195AbhCVMe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5AAE61994;
+        Mon, 22 Mar 2021 12:34:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417036;
-        bh=HlC3nQXPKVbRKjrW/7j773KcMLB1/X+Uv1hUXrjv6jI=;
+        s=korg; t=1616416487;
+        bh=eFgDG8jrJe3csEPIkOtUCqvNqVZ6BGdi99gwMmRN5tQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMiWFkikW5n1vVnjX5DpcHNupA4UXZKIWwfFuWSu6H4KpQWvlp3cYbItOQns3HuZa
-         0owRVxAaz99Kp/82UGk7rY5B10qldvv14b7gF+DKupdfkjkxj+fbhmNMADDba+YJk/
-         tqcbJfH4wuoW8FzmCbWfwLx6MXfUFqlmbKMa3hzE=
+        b=ZQX0W53fAMnsSNgcDhMbdx7icUIjnAPVh7b3sC4kSGRtr87NgoGLZN8fWMFVW5SGr
+         Z5C0tM1zjWwaHGgb9zS9eTUjr5ErNWS0o8XsSeDHWzMftE/UwPuRiG66ntIap2xNIm
+         DTUd7pEUY20bmIXED6OJJzrV8r1jKZfwkCap3spY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.4 29/60] riscv: Correct SPARSEMEM configuration
+        stable@vger.kernel.org, Martyn Welch <martyn@welchs.me.uk>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: [PATCH 5.11 114/120] MAINTAINERS: move some real subsystems off of the staging mailing list
 Date:   Mon, 22 Mar 2021 13:28:17 +0100
-Message-Id: <20210322121923.347547133@linuxfoundation.org>
+Message-Id: <20210322121933.465772363@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +47,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit a5406a7ff56e63376c210b06072aa0ef23473366 upstream.
+commit f8d70fd6a5a7a38a95eb8021e00d2e547f88efec upstream.
 
-There are two issues for RV32,
-1) if use FLATMEM, it is useless to enable SPARSEMEM_STATIC.
-2) if use SPARSMEM, both SPARSEMEM_VMEMMAP and SPARSEMEM_STATIC is enabled.
+The VME and Android drivers still have their MAINTAINERS entries
+pointing to the "driverdevel" mailing list, due to them having their
+codebase move out of the drivers/staging/ directory, but no one
+remembered to change the mailing list entries.
 
-Fixes: d95f1a542c3d ("RISC-V: Implement sparsemem")
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Move them both to linux-kernel for lack of a more specific place at the
+moment.  These are both low-volume areas of the kernel, so this
+shouldn't be an issue.
+
+Cc: Martyn Welch <martyn@welchs.me.uk>
+Cc: Manohar Vanga <manohar.vanga@gmail.com>
+Cc: Arve Hjønnevåg <arve@android.com>
+Cc: Todd Kjos <tkjos@android.com>
+Cc: Martijn Coenen <maco@android.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Christian Brauner <christian@brauner.io>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Reported-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Link: https://lore.kernel.org/r/YEzE6u6U1jkBatmr@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/Kconfig |    4 ++--
+ MAINTAINERS |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -58,7 +58,6 @@ config RISCV
- 	select EDAC_SUPPORT
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
--	select SPARSEMEM_STATIC if 32BIT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_COPY_THREAD_TLS
-@@ -102,7 +101,8 @@ config ARCH_FLATMEM_ENABLE
- config ARCH_SPARSEMEM_ENABLE
- 	def_bool y
- 	depends on MMU
--	select SPARSEMEM_VMEMMAP_ENABLE
-+	select SPARSEMEM_STATIC if 32BIT && SPARSMEM
-+	select SPARSEMEM_VMEMMAP_ENABLE if 64BIT
- 
- config ARCH_SELECT_MEMORY_MODEL
- 	def_bool ARCH_SPARSEMEM_ENABLE
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1169,7 +1169,7 @@ M:	Joel Fernandes <joel@joelfernandes.or
+ M:	Christian Brauner <christian@brauner.io>
+ M:	Hridya Valsaraju <hridya@google.com>
+ M:	Suren Baghdasaryan <surenb@google.com>
+-L:	devel@driverdev.osuosl.org
++L:	linux-kernel@vger.kernel.org
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+ F:	drivers/android/
+@@ -18993,7 +18993,7 @@ VME SUBSYSTEM
+ M:	Martyn Welch <martyn@welchs.me.uk>
+ M:	Manohar Vanga <manohar.vanga@gmail.com>
+ M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+-L:	devel@driverdev.osuosl.org
++L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
+ F:	Documentation/driver-api/vme.rst
 
 
