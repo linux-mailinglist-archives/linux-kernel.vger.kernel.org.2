@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E873449A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDD83449B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCVPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S230294AbhCVPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCVPsf (ORCPT
+        with ESMTP id S230237AbhCVPuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:48:35 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3318C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:48:33 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 10DB722235;
-        Mon, 22 Mar 2021 16:48:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616428112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T3qa2pPQdTQJVJwKBRlFL0u42AQ4SJ4FARdq7h1EuZw=;
-        b=lO1d6jyaMhQtRpC6Q6rpr/+nNMsVXAO9o+/jwg8BoCnK0jSFGoDbUpi0wFrfJ4Tg+CqLbW
-        /mEzwKUBCNEFCcm0/ElK9GSWpTIorKFrfWkzfH4Aixo+U4UJn8La/QGrY8twqtB/qH8EbT
-        rJtzF07IrJcNF0FARrPEGSjTf0j2TxQ=
+        Mon, 22 Mar 2021 11:50:19 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDF76C061574;
+        Mon, 22 Mar 2021 08:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=B0ELw+2/oqVlbvetG9oyAxWdkWFaLg0RFz7I
+        skwvx+Y=; b=ujz8WXh+sWpvABpb7lhBK/TgN3E++Laya6PIlPgoMO3hd/8zxxba
+        Bs0qK1PpYn5PfVXnNmpxHLeXmn/087ADxO3NNo6QWaYcfLUwdkMwR8Yg7hW2R8Cd
+        4kB/Oz6g6CPzJAVZx42zHViychSmt4EnsAnufPXm8t3lc/sJyeHQfDs=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 22 Mar
+ 2021 23:50:05 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 22 Mar 2021 23:50:05 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: [PATCH] infiniband: Fix a use after free in
+ isert_connect_request
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <YFi4PKJLjMkIXmas@unreal>
+References: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+ <YFipRTHpr8Xqho4V@unreal>
+ <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
+ <YFi4PKJLjMkIXmas@unreal>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Mar 2021 16:48:31 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
-In-Reply-To: <0efba47de8737059b4f3c593c26297bf@walle.cc>
-References: <20210318092406.5340-1-michael@walle.cc>
- <20210318092406.5340-2-michael@walle.cc>
- <20210322142141.pd7ondg6l76idz7d@ti.com>
- <0efba47de8737059b4f3c593c26297bf@walle.cc>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <9690ceb44cb1a09c03e2ac16569f3c6d@walle.cc>
-X-Sender: michael@walle.cc
+Message-ID: <748dce35.b904.1785aa104b1.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygA3P6etvFhgLpsOAA--.3W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsIBlQhn5UKXQADsv
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-22 16:32, schrieb Michael Walle:
->>> +
->>> +	sfdp->num_dwords = DIV_ROUND_UP(sfdp_size, sizeof(*sfdp->dwords));
->> 
->> The SFDP spec says that Parameter Table Pointer should be DWORD 
->> aligned
->> and Parameter Table length is specified in number of DWORDs. So,
->> sfdp_size should always be a multiple of 4. Any SFDP table where this 
->> is
->> not true is an invalid one.
->> 
->> Also, the spec says "Device behavior when the Read SFDP command 
->> crosses
->> the SFDP structure boundary is not defined".
->> 
->> So I think this should be a check for alignment instead of a round-up.
-> 
-> Well, that woundn't help for debugging. I.e. you also want the SFDP 
-> data
-> in cases like this. IMHO we should try hard enough to actually get a
-> reasonable dump.
-> 
-> OTOH we also rely on the header and the pointers in the header. Any
-> other ideas, but just to chicken out?
-
-Oh, forgot to mention, sfdp_size is used to read the data. I just want
-to make sure, the allocated area is large enough. We shouldn't hit the
-undefined behavior by reading past the SFDP.
-
-Maybe that check should be part of the parsing code.
-
--michael
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5v
+dnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTIyIDIzOjMx
+OjA4ICjmmJ/mnJ/kuIApDQo+IOaUtuS7tuS6ujogbHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuDQo+
+IOaKhOmAgTogc2FnaUBncmltYmVyZy5tZSwgZGxlZGZvcmRAcmVkaGF0LmNvbSwgamdnQHppZXBl
+LmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgdGFyZ2V0LWRldmVsQHZnZXIua2VybmVs
+Lm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBSZTogW1BB
+VENIXSBpbmZpbmliYW5kOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBpc2VydF9jb25uZWN0X3Jl
+cXVlc3QNCj4gDQo+IE9uIE1vbiwgTWFyIDIyLCAyMDIxIGF0IDEwOjUxOjM1UE0gKzA4MDAsIGx5
+bDIwMTlAbWFpbC51c3RjLmVkdS5jbiB3cm90ZToNCj4gPiANCj4gPiANCj4gPiANCj4gPiA+IC0t
+LS0t5Y6f5aeL6YKu5Lu2LS0tLS0NCj4gPiA+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5vdnNreSIg
+PGxlb25Aa2VybmVsLm9yZz4NCj4gPiA+IOWPkemAgeaXtumXtDogMjAyMS0wMy0yMiAyMjoyNzox
+NyAo5pif5pyf5LiAKQ0KPiA+ID4g5pS25Lu25Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlAbWFp
+bC51c3RjLmVkdS5jbj4NCj4gPiA+IOaKhOmAgTogc2FnaUBncmltYmVyZy5tZSwgZGxlZGZvcmRA
+cmVkaGF0LmNvbSwgamdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgdGFy
+Z2V0LWRldmVsQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiA+ID4g5Li76aKYOiBSZTogW1BBVENIXSBpbmZpbmliYW5kOiBGaXggYSB1c2UgYWZ0ZXIgZnJl
+ZSBpbiBpc2VydF9jb25uZWN0X3JlcXVlc3QNCj4gPiA+IA0KPiA+ID4gT24gTW9uLCBNYXIgMjIs
+IDIwMjEgYXQgMDY6NTM6NTVBTSAtMDcwMCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiA+ID4gVGhl
+IGRldmljZSBpcyBnb3QgYnkgaXNlcnRfZGV2aWNlX2dldCgpIHdpdGggcmVmY291bnQgaXMgMSwN
+Cj4gPiA+ID4gYW5kIGlzIGFzc2lnbmVkIHRvIGlzZXJ0X2Nvbm4gYnkgaXNlcnRfY29ubi0+ZGV2
+aWNlID0gZGV2aWNlLg0KPiA+ID4gPiBXaGVuIGlzZXJ0X2NyZWF0ZV9xcCgpIGZhaWxlZCwgZGV2
+aWNlIHdpbGwgYmUgZnJlZWQgd2l0aA0KPiA+ID4gPiBpc2VydF9kZXZpY2VfcHV0KCkuDQo+ID4g
+PiA+IA0KPiA+ID4gPiBMYXRlciwgdGhlIGRldmljZSBpcyB1c2VkIGluIGlzZXJ0X2ZyZWVfbG9n
+aW5fYnVmKGlzZXJ0X2Nvbm4pDQo+ID4gPiA+IGJ5IHRoZSBpc2VydF9jb25uLT5kZXZpY2UtPmli
+X2RldmljZSBzdGF0ZW1lbnQuIE15IHBhdGNoDQo+ID4gPiA+IGV4Y2hhbmdlcyB0aGUgY2FsbGVl
+cyBvcmRlciB0byBmcmVlIHRoZSBkZXZpY2UgbGF0ZS4NCj4gPiA+ID4gDQo+ID4gPiA+IFNpZ25l
+ZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4gPiA+ID4g
+LS0tDQo+ID4gPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvdWxwL2lzZXJ0L2liX2lzZXJ0LmMgfCA0
+ICsrLS0NCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRp
+b25zKC0pDQo+ID4gPiANCj4gPiA+IFRoZSBmaXggbmVlZHMgdG8gYmUgY2hhbmdlIG9mIGlzZXJ0
+X2ZyZWVfbG9naW5fYnVmKCkgZnJvbQ0KPiA+ID4gaXNlcnRfZnJlZV9sb2dpbl9idWYoaXNlcnRf
+Y29ubikgdG8gYmUgaXNlcnRfZnJlZV9sb2dpbl9idWYoaXNlcnRfY29ubiwgY21hX2lkLT5kZXZp
+Y2UpDQo+ID4gPiANCj4gPiA+IFRoYW5rcw0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jIGIvZHJpdmVy
+cy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gPiA+IGluZGV4IDczMDVlZDg5
+NzZjMi4uZDhhNTMzZTM0NmIwIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2luZmluaWJh
+bmQvdWxwL2lzZXJ0L2liX2lzZXJ0LmMNCj4gPiA+ID4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5k
+L3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gPiA+IEBAIC00NzMsMTAgKzQ3MywxMCBAQCBpc2Vy
+dF9jb25uZWN0X3JlcXVlc3Qoc3RydWN0IHJkbWFfY21faWQgKmNtYV9pZCwgc3RydWN0IHJkbWFf
+Y21fZXZlbnQgKmV2ZW50KQ0KPiA+ID4gPiAgDQo+ID4gPiA+ICBvdXRfZGVzdHJveV9xcDoNCj4g
+PiA+ID4gIAlpc2VydF9kZXN0cm95X3FwKGlzZXJ0X2Nvbm4pOw0KPiA+ID4gPiAtb3V0X2Nvbm5f
+ZGV2Og0KPiA+ID4gPiAtCWlzZXJ0X2RldmljZV9wdXQoZGV2aWNlKTsNCj4gPiA+ID4gIG91dF9y
+c3BfZG1hX21hcDoNCj4gPiA+ID4gIAlpc2VydF9mcmVlX2xvZ2luX2J1Zihpc2VydF9jb25uKTsN
+Cj4gPiA+ID4gK291dF9jb25uX2RldjoNCj4gPiA+ID4gKwlpc2VydF9kZXZpY2VfcHV0KGRldmlj
+ZSk7DQo+ID4gPiA+ICBvdXQ6DQo+ID4gPiA+ICAJa2ZyZWUoaXNlcnRfY29ubik7DQo+ID4gPiA+
+ICAJcmRtYV9yZWplY3QoY21hX2lkLCBOVUxMLCAwLCBJQl9DTV9SRUpfQ09OU1VNRVJfREVGSU5F
+RCk7DQo+ID4gPiA+IC0tIA0KPiA+ID4gPiAyLjI1LjENCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+
+IA0KPiA+IEkgc2VlIHRoYXQgZnVuY3Rpb24gaXNlcnRfZnJlZV9sb2dpbl9idWYoc3RydWN0IGlz
+ZXJ0X2Nvbm4gKmlzZXJ0X2Nvbm4pIGhhcyBvbmx5DQo+ID4gYSBwYXJhbWV0ZXIsICBkbyB5b3Ug
+bWVhbiBpIG5lZWQgY2hhbmdlIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBpc2VydF9mcmVlX2xvZ2lu
+X2J1Zj8NCj4gPiANCj4gPiBJJ20gc29ycnkgdG8gc2F5IHRoYXQgaSBhbSB1bmZhbWlsYXIgd2l0
+aCB0aGlzIG1vZHVsZSBhbmQgYWZyYWlkIG9mIG1ha2luZyBtb3JlIG1pc3Rha2VzLA0KPiA+IGJl
+Y2F1c2UgdGhpcyBmdW5jdGlvbiBpcyBiZWluZyBjYWxsZWQgZWxzZXdoZXJlIGFzIHdlbGwuDQo+
+ID4gQ291bGQgeW91IGhlbHAgbWUgdG8gZml4IHRoaXMgaXNzdWU/IE9yIGp1c3QgZml4IGl0IGFu
+ZCB0ZWxsIG1lIHlvdXIgY29tbWl0IG51bWJlcj8NCj4gDQo+IEFmdGVyIGNoZWNraW5nIGhvdyBp
+c2VydF9jb25uZWN0X3JlbGVhc2UoKSBpcyBpbXBsZW1lbnRlZCwgaXQgbG9va3MgbGlrZQ0KPiB0
+aGlzIHdpbGwgZml4Og0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC91bHAv
+aXNlcnQvaWJfaXNlcnQuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC91bHAvaXNlcnQvaWJfaXNlcnQu
+Yw0KPiBpbmRleCA3MzA1ZWQ4OTc2YzIuLjE4MjY2ZjA3YzU4ZCAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ICsrKyBiL2RyaXZlcnMvaW5m
+aW5pYmFuZC91bHAvaXNlcnQvaWJfaXNlcnQuYw0KPiBAQCAtNDM4LDIzICs0MzgsMjMgQEAgaXNl
+cnRfY29ubmVjdF9yZXF1ZXN0KHN0cnVjdCByZG1hX2NtX2lkICpjbWFfaWQsIHN0cnVjdCByZG1h
+X2NtX2V2ZW50ICpldmVudCkNCj4gIAlpc2VydF9pbml0X2Nvbm4oaXNlcnRfY29ubik7DQo+ICAJ
+aXNlcnRfY29ubi0+Y21faWQgPSBjbWFfaWQ7DQo+ICANCj4gLQlyZXQgPSBpc2VydF9hbGxvY19s
+b2dpbl9idWYoaXNlcnRfY29ubiwgY21hX2lkLT5kZXZpY2UpOw0KPiAtCWlmIChyZXQpDQo+IC0J
+CWdvdG8gb3V0Ow0KPiAtDQo+ICAJZGV2aWNlID0gaXNlcnRfZGV2aWNlX2dldChjbWFfaWQpOw0K
+PiAgCWlmIChJU19FUlIoZGV2aWNlKSkgew0KPiAgCQlyZXQgPSBQVFJfRVJSKGRldmljZSk7DQo+
+IC0JCWdvdG8gb3V0X3JzcF9kbWFfbWFwOw0KPiArCQlnb3RvIG91dDsNCj4gIAl9DQo+ICAJaXNl
+cnRfY29ubi0+ZGV2aWNlID0gZGV2aWNlOw0KPiAgDQo+ICsJcmV0ID0gaXNlcnRfYWxsb2NfbG9n
+aW5fYnVmKGlzZXJ0X2Nvbm4sIGNtYV9pZC0+ZGV2aWNlKTsNCj4gKwlpZiAocmV0KQ0KPiArCQln
+b3RvIG91dF9jb25uX2RldjsNCj4gKw0KPiAgCWlzZXJ0X3NldF9uZWdvX3BhcmFtcyhpc2VydF9j
+b25uLCAmZXZlbnQtPnBhcmFtLmNvbm4pOw0KPiAgDQo+ICAJaXNlcnRfY29ubi0+cXAgPSBpc2Vy
+dF9jcmVhdGVfcXAoaXNlcnRfY29ubiwgY21hX2lkKTsNCj4gIAlpZiAoSVNfRVJSKGlzZXJ0X2Nv
+bm4tPnFwKSkgew0KPiAgCQlyZXQgPSBQVFJfRVJSKGlzZXJ0X2Nvbm4tPnFwKTsNCj4gLQkJZ290
+byBvdXRfY29ubl9kZXY7DQo+ICsJCWdvdG8gb3V0X3JzcF9kbWFfbWFwOw0KPiAgCX0NCj4gIA0K
+PiAgCXJldCA9IGlzZXJ0X2xvZ2luX3Bvc3RfcmVjdihpc2VydF9jb25uKTsNCj4gQEAgLTQ3Mywx
+MCArNDczLDEwIEBAIGlzZXJ0X2Nvbm5lY3RfcmVxdWVzdChzdHJ1Y3QgcmRtYV9jbV9pZCAqY21h
+X2lkLCBzdHJ1Y3QgcmRtYV9jbV9ldmVudCAqZXZlbnQpDQo+ICANCj4gIG91dF9kZXN0cm95X3Fw
+Og0KPiAgCWlzZXJ0X2Rlc3Ryb3lfcXAoaXNlcnRfY29ubik7DQo+IC1vdXRfY29ubl9kZXY6DQo+
+IC0JaXNlcnRfZGV2aWNlX3B1dChkZXZpY2UpOw0KPiAgb3V0X3JzcF9kbWFfbWFwOg0KPiAgCWlz
+ZXJ0X2ZyZWVfbG9naW5fYnVmKGlzZXJ0X2Nvbm4pOw0KPiArb3V0X2Nvbm5fZGV2Og0KPiArCWlz
+ZXJ0X2RldmljZV9wdXQoZGV2aWNlKTsNCj4gIG91dDoNCj4gIAlrZnJlZShpc2VydF9jb25uKTsN
+Cj4gIAlyZG1hX3JlamVjdChjbWFfaWQsIE5VTEwsIDAsIElCX0NNX1JFSl9DT05TVU1FUl9ERUZJ
+TkVEKTsNCg0KT2ssIGkgdGhpbmsgdGhpcyBmaXhlcyB0aGlzIGlzc3VlLiANCg0KSSB3aWxsIGNv
+bW1pdCBhIFBBVENIIHYyIGxhdGVyLiBUaGFuayB5b3UgdmVyeSBtdWNoLg0K
