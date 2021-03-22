@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A8E34451A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F22C43444C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhCVNMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
+        id S232906AbhCVNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233018AbhCVM5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:57:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33F25619CF;
-        Mon, 22 Mar 2021 12:49:10 +0000 (UTC)
+        id S231664AbhCVMvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7F8619B7;
+        Mon, 22 Mar 2021 12:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417350;
-        bh=PyZgO9cDYiJZB3/2m16k9a+GAUwlRspMj0k+QtB8ZRs=;
+        s=korg; t=1616417190;
+        bh=tuDwqJSVaxAyHAeSHBnhsVr6A6uaxFYVqJWuuRxSIx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=awS0eQa+mFV6e3U58+HUvF68oWa+SITlIBYmJf6g0ELIlItgZ+NXFklAa7Ic25PYk
-         ZylFpx9FgIo/AE97el714VZRDfEvps0zzKAjyq3+vYdIcvNWX7jggu7vzszFo0DA89
-         2VBV6NwoCozDMTB96o3yhXw9PDXoyL1bWGvmoc/w=
+        b=mJ0F2r5KCDJ//BLtbkxolIvx7l7ajaia4cBq/+n8g83b5vJA6qcP8HhRRvfAciRRM
+         Dq5eBIXaXHtrnDqjbBu4Lu/OPgBZnijWVwpkPrzpQdm44Cz+Lk+V6bHysM5tCyiqYK
+         T0GZbVMA+VIlDIBy90Q6/Gva8puZ0yyrlHutw7dI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 22/43] scsi: lpfc: Fix some error codes in debugfs
-Date:   Mon, 22 Mar 2021 13:29:03 +0100
-Message-Id: <20210322121920.751580384@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.4 10/14] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+Date:   Mon, 22 Mar 2021 13:29:04 +0100
+Message-Id: <20210322121919.518280922@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
+References: <20210322121919.202392464@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit 19f1bc7edf0f97186810e13a88f5b62069d89097 upstream.
+commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
 
-If copy_from_user() or kstrtoull() fail then the correct behavior is to
-return a negative error code.
+Both add_slot_store() and remove_slot_store() try to fix up the
+drc_name copied from the store buffer by placing a NUL terminator at
+nbyte + 1 or in place of a '\n' if present. However, the static buffer
+that we copy the drc_name data into is not zeroed and can contain
+anything past the n-th byte.
 
-Link: https://lore.kernel.org/r/YEsbU/UxYypVrC7/@mwanda
-Fixes: f9bb2da11db8 ("[SCSI] lpfc 8.3.27: T10 additions for SLI4")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+This is problematic if a '\n' byte appears in that buffer after nbytes
+and the string copied into the store buffer was not NUL terminated to
+start with as the strchr() search for a '\n' byte will mark this
+incorrectly as the end of the drc_name string resulting in a drc_name
+string that contains garbage data after the n-th byte.
+
+Additionally it will cause us to overwrite that '\n' byte on the stack
+with NUL, potentially corrupting data on the stack.
+
+The following debugging shows an example of the drmgr utility writing
+"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
+logging a corrupted string value.
+
+  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+
+Fix this by using strscpy() instead of memcpy() to ensure the string
+is NUL terminated when copied into the static drc_name buffer.
+Further, since the string is now NUL terminated the code only needs to
+change '\n' to '\0' when present.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+[mpe: Reformat change log and add mention of possible stack corruption]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/lpfc/lpfc_debugfs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -1753,7 +1753,7 @@ lpfc_debugfs_dif_err_write(struct file *
- 	memset(dstbuf, 0, 33);
- 	size = (nbytes < 32) ? nbytes : 32;
- 	if (copy_from_user(dstbuf, buf, size))
--		return 0;
-+		return -EFAULT;
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -39,12 +39,11 @@ static ssize_t add_slot_store(struct kob
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
  
- 	if (dent == phba->debug_InjErrLBA) {
- 		if ((buf[0] == 'o') && (buf[1] == 'f') && (buf[2] == 'f'))
-@@ -1761,7 +1761,7 @@ lpfc_debugfs_dif_err_write(struct file *
- 	}
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
  
- 	if ((tmp == 0) && (kstrtoull(dstbuf, 0, &tmp)))
--		return 0;
-+		return -EINVAL;
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
  
- 	if (dent == phba->debug_writeGuard)
- 		phba->lpfc_injerr_wgrd_cnt = (uint32_t)tmp;
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -70,12 +69,11 @@ static ssize_t remove_slot_store(struct
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
+ 
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
 
