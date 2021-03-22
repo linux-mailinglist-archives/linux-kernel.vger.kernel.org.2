@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678FF3441F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C91E3443F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbhCVMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
+        id S231289AbhCVMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:55:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhCVMdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 210AA619B4;
-        Mon, 22 Mar 2021 12:33:40 +0000 (UTC)
+        id S230224AbhCVMox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:44:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46F36619E4;
+        Mon, 22 Mar 2021 12:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416421;
-        bh=+N/vEXPFA2h7Hs+Xp+Ysnyf4OFcbKK4iAvPi5aDZgn0=;
+        s=korg; t=1616416912;
+        bh=Q8I8+U6SRpU7LOtQziTRjGxzbANWJ45dGYHJ5jydt40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H3ln04TnIKL3LtxTnm7z2CebpAzwIZwrncb4n0ITXfB3ilMYCI1davu9A04tPLMlE
-         i/UhLhpe5Ha6GQ9YxfaILZYr0ICi9KktNmL8+MOhpUOQIXnsFozWRX5mzLWwotEhPI
-         PRpSkWFohOE3iODovGiVoo4NqQU2sGrDZ9nj2bvg=
+        b=q2O2Tq8Vl7jAlxGCO6jB0zrlgXZlDCun24TTxWTBGmsIg+Xp3p2fV3RsQHyT62vra
+         SdRnBHajIbU9vGC/uFU+0GPg/1x6qWK7zELHl4Fx8t77eE8rSDFL4BueReqMqZL+Zs
+         0inyEFWFvUJ/XzLK6zqfyNHXT0zw5WktDeyErjOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.11 099/120] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+        stable@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 14/60] ASoC: SOF: Intel: unregister DMIC device on probe error
 Date:   Mon, 22 Mar 2021 13:28:02 +0100
-Message-Id: <20210322121932.993988366@linuxfoundation.org>
+Message-Id: <20210322121922.846716562@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
+commit 5bb0ecddb2a7f638d65e457f3da9fa334c967b14 upstream.
 
-Both add_slot_store() and remove_slot_store() try to fix up the
-drc_name copied from the store buffer by placing a NUL terminator at
-nbyte + 1 or in place of a '\n' if present. However, the static buffer
-that we copy the drc_name data into is not zeroed and can contain
-anything past the n-th byte.
+We only unregister the platform device during the .remove operation,
+but if the probe fails we will never reach this sequence.
 
-This is problematic if a '\n' byte appears in that buffer after nbytes
-and the string copied into the store buffer was not NUL terminated to
-start with as the strchr() search for a '\n' byte will mark this
-incorrectly as the end of the drc_name string resulting in a drc_name
-string that contains garbage data after the n-th byte.
-
-Additionally it will cause us to overwrite that '\n' byte on the stack
-with NUL, potentially corrupting data on the stack.
-
-The following debugging shows an example of the drmgr utility writing
-"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
-logging a corrupted string value.
-
-  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
-  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
-
-Fix this by using strscpy() instead of memcpy() to ensure the string
-is NUL terminated when copied into the static drc_name buffer.
-Further, since the string is now NUL terminated the code only needs to
-change '\n' to '\0' when present.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-[mpe: Reformat change log and add mention of possible stack corruption]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
+Suggested-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Fixes: dd96daca6c83e ("ASoC: SOF: Intel: Add APL/CNL HW DSP support")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Link: https://lore.kernel.org/r/20210302003410.1178535-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/hda.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/hotplug/rpadlpar_sysfs.c
-+++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
-@@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kob
- 	if (nbytes >= MAX_DRC_NAME_LEN)
- 		return 0;
- 
--	memcpy(drc_name, buf, nbytes);
-+	strscpy(drc_name, buf, nbytes + 1);
- 
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_add_slot(drc_name);
- 	if (rc)
-@@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct
- 	if (nbytes >= MAX_DRC_NAME_LEN)
- 		return 0;
- 
--	memcpy(drc_name, buf, nbytes);
-+	strscpy(drc_name, buf, nbytes + 1);
- 
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_remove_slot(drc_name);
- 	if (rc)
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -672,6 +672,7 @@ free_streams:
+ /* dsp_unmap: not currently used */
+ 	iounmap(sdev->bar[HDA_DSP_BAR]);
+ hdac_bus_unmap:
++	platform_device_unregister(hdev->dmic_dev);
+ 	iounmap(bus->remap_addr);
+ err:
+ 	return ret;
 
 
