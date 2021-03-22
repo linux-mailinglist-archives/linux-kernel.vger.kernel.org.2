@@ -2,147 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B136B344547
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6765344506
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbhCVNPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:15:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
+        id S232381AbhCVNKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhCVNCG (ORCPT
+        with ESMTP id S230136AbhCVM42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:02:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04101C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VX78hMnVs57uUoMMLxteoeKe2tLkRLpBILM111S4zWs=; b=NrXCz+i8RaXMCmVQuF2ej6wSlh
-        UG+1EotIaUE/eRFHO0lHzpr2MBdiZUEDl/DEFzQDzVlb7uRRAsD6+OMBgco9/pLbyfwDDhvGMoEig
-        yJUvfBKkgRrPF93HAYQaY/8jwgfF8K9pZ89M1N2g4YWy884jx+9R3I10b0sI5dO+HGfEjqJoHsg0m
-        wbH6SzqXfw5NVM4+oq9oAw/BoDkCiDWMPVSMedNdJqieA8ecbzl0AjozWvmaZwlpebElTcw9H4TAi
-        Gwn5tFYGgzZIFOJ8YhK4AcyNnBLCZtm4G8KYviLK4iI6R60v8iXX7JYurAwFXOhzxKlxCUl/pCHcD
-        4MLRKDEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOK6I-008Wny-CB; Mon, 22 Mar 2021 12:56:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 713E4307A52;
-        Mon, 22 Mar 2021 13:56:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F5C02029F864; Mon, 22 Mar 2021 13:56:03 +0100 (CET)
-Date:   Mon, 22 Mar 2021 13:56:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [PATCH 1/6] sched: migration changes for core scheduling
-Message-ID: <YFiT4/mmisnBFJ96@hirez.programming.kicks-ass.net>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-2-joel@joelfernandes.org>
- <20210320153457.GX4746@worktop.programming.kicks-ass.net>
- <28e13609-c526-c6ee-22a3-898652aed5e6@linux.intel.com>
- <YFhL4CMPB+Pfo965@hirez.programming.kicks-ass.net>
- <af3f6ea6-2c71-233f-fc6b-af039b004923@linux.intel.com>
- <YFhcD/jz7kC8jaXa@hirez.programming.kicks-ass.net>
- <bb075bed-150c-8ea0-3035-0a8c3c98e572@linux.intel.com>
+        Mon, 22 Mar 2021 08:56:28 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA775C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:56:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b16so19205836eds.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zs+ZH9HXMqh8babYlbIqR838NjF1riAx4sjNseIdfRw=;
+        b=x2vM4o/6Wsn/lSI0D6O95oh5osrTnZAFWch/RKQYjcEcMbGvRb6sl6JzQ+FX6nBR2T
+         pwD1Vq/9wzTxLEa1u03ucukGMKAa1u4VmX9kUkRGL7i5L58Ahq33fR6f5QvAeizXzJgk
+         6avDopOGNoPGpvr51XvV8pkzb383P5BHX/Z7xOUV0JdMMdoTSPGfLBvdIP6GB6j7cw/J
+         q2lduXjS32g9R44Q6LkaXLTJBe0jO0Wegftyi2e+qoaL5/hAkHXtQq9XwE3PYvcYAXX5
+         uIzMZ4+5DKGYEAIWsPUaG3Z7Szq57rq3FnQbkkGlgXaypfRHJWtsFrCprdFNeKIcitMN
+         myjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zs+ZH9HXMqh8babYlbIqR838NjF1riAx4sjNseIdfRw=;
+        b=MNQ5dJqP4CdfEMY9hz1mTUQrmWIHoWg3MHS7N4q5fJmjsjz2t/oV8/Pkl+tADAy8eO
+         5iaT14U9z1f2xmQXhzKJ1HBvH547gPh9XQmBOvnGr5QjFJPdYw3P6yucH7U6aVdvW8+d
+         SvzHI5lOLQudbHigp6gbH7hUOANEmIY6k3xpLvmbdPo7xzJ7DoH/Uc8tUKlGAKsJSCO8
+         zeAs6gdpmvVuvNcVDrk7jvK4UouFvF80RiXE02ixVHmiZmed+7T9+wq7WcPjXbE7YUoX
+         GjDwwgh222N1m0rcaVZE2sbiGN2k2lieTXfh+CT/Rwd2Lp3yVgb6/dhFfJz08HLK0Pnc
+         edbA==
+X-Gm-Message-State: AOAM533rSf3ZqlExI9Hjft/J+8B4ZmLlq/f3fXG1YesT2a/rHp4L5TJ4
+        GZmKiNEmqBcVE7O1VTT9LknCug==
+X-Google-Smtp-Source: ABdhPJx0f4ywhsWqQWmPcKkaeoHZsJanVj6wLKqLHWXx1SQoOjZVxgaafrESVD8ugBzylZ4RVVcgXg==
+X-Received: by 2002:a05:6402:9:: with SMTP id d9mr25375592edu.67.1616417784029;
+        Mon, 22 Mar 2021 05:56:24 -0700 (PDT)
+Received: from [192.168.1.54] (hst-221-58.medicom.bg. [84.238.221.58])
+        by smtp.googlemail.com with ESMTPSA id q19sm1849796ejy.50.2021.03.22.05.56.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 05:56:23 -0700 (PDT)
+Subject: Re: [PATCH v5 3/5] v4l: Add HDR10 static metadata controls
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
+ <20210209162425.3970393-4-stanimir.varbanov@linaro.org>
+ <77ac3b63-9995-e08f-9e6e-7a7d75c64ec1@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <444bb318-169f-6d30-2b7c-31d19d98a548@linaro.org>
+Date:   Mon, 22 Mar 2021 14:56:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb075bed-150c-8ea0-3035-0a8c3c98e572@linux.intel.com>
+In-Reply-To: <77ac3b63-9995-e08f-9e6e-7a7d75c64ec1@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:31:09PM +0800, Li, Aubrey wrote:
-> Please let me know if I put cookie match check at the right position
-> in task_hot(), if so, I'll obtain some performance data of it.
+Hi Hans,
+
+On 3/16/21 2:16 PM, Hans Verkuil wrote:
+> On 09/02/2021 17:24, Stanimir Varbanov wrote:
+>> Introduce Content light level and Mastering display colour
+>> volume Colorimetry compound controls with relevant payload
+>> structures and validation.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/v4l2-core/v4l2-ctrls.c | 67 ++++++++++++++++++++++++++++
+>>  include/media/v4l2-ctrls.h           |  4 ++
+>>  include/uapi/linux/v4l2-controls.h   | 31 +++++++++++++
+>>  include/uapi/linux/videodev2.h       |  3 ++
+>>  4 files changed, 105 insertions(+)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> index 335cf354f51b..8bd3cf0e1e4f 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> @@ -1205,6 +1205,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>  	/* Colorimetry controls */
+>>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+>>  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+>> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
+>> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
+>>  	default:
+>>  		return NULL;
+>>  	}
+>> @@ -1491,6 +1493,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>  		*type = V4L2_CTRL_TYPE_AREA;
+>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>>  		break;
+>> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
+>> +		*type = V4L2_CTRL_TYPE_HDR10_CLL_INFO;
+>> +		break;
+>> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+>> +		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+>> +		break;
+>>  	default:
+>>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>>  		break;
+>> @@ -1786,6 +1794,12 @@ static void std_log(const struct v4l2_ctrl *ctrl)
+>>  	case V4L2_CTRL_TYPE_FWHT_PARAMS:
+>>  		pr_cont("FWHT_PARAMS");
+>>  		break;
+>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>> +		pr_cont("HDR10_CLL_INFO");
+>> +		break;
+>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>> +		pr_cont("HDR10_MASTERING_DISPLAY");
+>> +		break;
+>>  	default:
+>>  		pr_cont("unknown type %d", ctrl->type);
+>>  		break;
+>> @@ -1838,6 +1852,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>>  	struct v4l2_area *area;
+>>  	void *p = ptr.p + idx * ctrl->elem_size;
+>>  	unsigned int i;
+>> @@ -2133,6 +2148,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>  		zero_padding(*p_hevc_slice_params);
+>>  		break;
+>>  
+>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>> +		break;
+>> +
+>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>> +		p_hdr10_mastering = p;
+>> +
+>> +		for (i = 0; i < 3; ++i) {
+>> +			if (p_hdr10_mastering->display_primaries_x[i] <
+>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_LOW ||
+>> +			    p_hdr10_mastering->display_primaries_x[i] >
+>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH ||
+>> +			    p_hdr10_mastering->display_primaries_y[i] <
+>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW ||
+>> +			    p_hdr10_mastering->display_primaries_y[i] >
+>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH)
+>> +				return -EINVAL;
+>> +		}
+>> +
+>> +		if (p_hdr10_mastering->white_point_x <
+>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW ||
+>> +		    p_hdr10_mastering->white_point_x >
+>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH ||
+>> +		    p_hdr10_mastering->white_point_y <
+>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW ||
+>> +		    p_hdr10_mastering->white_point_y >
+>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH)
+>> +			return -EINVAL;
+>> +
+>> +		if (p_hdr10_mastering->max_display_mastering_luminance <
+>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW ||
+>> +		    p_hdr10_mastering->max_display_mastering_luminance >
+>> +			V4L2_HDR10_MASTERING_MAX_LUMA_HIGH ||
+>> +		    p_hdr10_mastering->min_display_mastering_luminance <
+>> +			V4L2_HDR10_MASTERING_MIN_LUMA_LOW ||
+>> +		    p_hdr10_mastering->min_display_mastering_luminance >
+>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+>> +			return -EINVAL;
+>> +
+>> +		if (p_hdr10_mastering->max_display_mastering_luminance ==
+>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW &&
+>> +		    p_hdr10_mastering->min_display_mastering_luminance ==
+>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
 > 
-> Thanks,
-> -Aubrey
+> I had to think about this one :-)
 > 
-> =======================================================
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 7f2fb08..d4bdcf9 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1912,6 +1912,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
->  		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
->  			continue;
->  
-> +		/*
-> +		 * Skip this cpu if source task's cookie does not match
-> +		 * with CPU's core cookie.
-> +		 */
-> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
-> +			continue;
-> +
->  		env->dst_cpu = cpu;
->  		if (task_numa_compare(env, taskimp, groupimp, maymove))
->  			break;
+> Isn't it clearer to write:
+> 
+> 		if (p_hdr10_mastering->min_display_mastering_luminance >=
+> 		    p_hdr10_mastering->max_display_mastering_luminance)
+> 
+> (even though it can't be >, but >= is probably more robust and future proof)
+> 
+> And is it indeed invalid if both are the same?
 
-This one might need a little help too, I've not fully considered NUMA
-balancing though.
+This what the ITU-T Rec. H.265 spec says:
 
-> @@ -6109,7 +6120,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  	for_each_cpu_wrap(cpu, cpus, target) {
->  		if (!--nr)
->  			return -1;
-> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> +
-> +		if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
-> +		    sched_cpu_cookie_match(cpu_rq(cpu), p))
->  			break;
->  	}
->  
+"When max_display_mastering_luminance is equal to 50 000,
+min_display_mastering_luminance shall not be equal to 50 000."
 
-This doesn't even apply... That code has changed.
 
-> @@ -7427,6 +7440,14 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
->  
->  	if (sysctl_sched_migration_cost == -1)
->  		return 1;
-> +
-> +	/*
-> +	 * Don't migrate task if the task's cookie does not match
-> +	 * with the destination CPU's core cookie.
-> +	 */
-> +	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
-> +		return 1;
-> +
->  	if (sysctl_sched_migration_cost == 0)
->  		return 0;
->  
-
-Should work I think, but you've put it in a weird spot for breaking up
-that sysctl_sched_migration_cost thing. I'd have put it either in front
-or after that other SMT thing we have there.
-
+-- 
+regards,
+Stan
