@@ -2,131 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8B6344560
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84221344569
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhCVNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhCVNLw (ORCPT
+        id S230039AbhCVNSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:18:41 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43692 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231499AbhCVNOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:11:52 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E4EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:11:52 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id y1so20928237ljm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=THXO5+mjXh1wGkFTexS2PYltIzJKCCGh8lFumPrqIUY=;
-        b=V3NLN9AF7s5KHxwHc8zstJJRA3ykdhSnxEDgxe3WMgNzeRnF423817353hONJNttBt
-         IipdJOsfIG8B74RBK7vEBWA8NjXegBGPcFFshSF6RtBDZYXY8g/+BEuUHCmdhBg8PBcu
-         GWLDSgNX+lM5Iw6oQ2LtCLigAaCIf0gJc6yqPXCz7jJQxaL5XPQKAsuD2KS1sVkBIyfJ
-         0Fw3ynmBI/1BHRLOINoThu+fkeg08RVu5S2IEMDWXlcMPHjahTG21ixlx9q8gJueuA13
-         baqsv5uWiL9u0gV3hxc/W4SBGDOmQzYh2Yy4EyJP8vsqpgCyxQSwmn7UeNyODsGK3qw8
-         t2OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=THXO5+mjXh1wGkFTexS2PYltIzJKCCGh8lFumPrqIUY=;
-        b=h+OOxDSxmT3n36L006aqYW0lG44GM3UhC4xrgOKhGwVFiVYm1cOlhK3V5/TPQIeUQn
-         1NdnpdhRaBXTuJaq2bv+XkFRTWRCOS6LwJJQHD/M7MZbgaVYqqEYc2tasuRFIkLWKkJj
-         NWL19OQQPyYJ97fjPeLDfx55ORHB2wPTYmfi/mSThRN8J9g20MW3/ZS60AAnwI7KQ0R+
-         PjRJSTDwyM6ZhN9qkViSbHxY0RhAoEx5eZoaO9/UbPqjI/JIMre/hw4hBJSytgvjsdT5
-         DZyRFhbbmhn44rRdyhvEuWmyhgezoIrhZ0Pkd0UUDA48vsz0gj/zuEyTC3ccGG3V8U4W
-         BEgw==
-X-Gm-Message-State: AOAM5312y10StHly1EEeAZ1xNtWKAnZzV0dks6YSRxSYH+2oEXMnC3vt
-        HiH2VDYaWoZqA2NbCuqE5LNho8LAaxcPsuMoWge+ztP16jo=
-X-Google-Smtp-Source: ABdhPJz16JNIGQBV7CTW00f/Xrkuu51V8tB5htHWVkMZgSlN0DgeAVtgBo8MdX20BkyJVz4NDLMTzFFdflAQpS3lAsE=
-X-Received: by 2002:a2e:96c3:: with SMTP id d3mr9982514ljj.284.1616418710743;
- Mon, 22 Mar 2021 06:11:50 -0700 (PDT)
+        Mon, 22 Mar 2021 09:14:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12MDCC3B107997;
+        Mon, 22 Mar 2021 08:12:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616418732;
+        bh=l2YfGOt4N3cRC8aCOZDj34h1G6XMGtZe96eVBpMvhSc=;
+        h=From:To:CC:Subject:Date;
+        b=IYDAcy9v5UoI62XLGD4GrtbKOnnwC+J5OOz1cn7A/2cd/txdtysFsC6ri2ipNdg5n
+         /4khwGwSEgbwdkMPfkOiPldsGun6KjZ6nuKEbwSfspmqHdmGYcVh6mfKf4Hh790Zju
+         qgrplLGDCyaw+k2TMu9dnUeAezMNJxOUyKT+egkc=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12MDCBbD029249
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Mar 2021 08:12:11 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
+ Mar 2021 08:12:11 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 22 Mar 2021 08:12:11 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12MDC8Nr074875;
+        Mon, 22 Mar 2021 08:12:08 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 0/3] J7200: Add support for GPIO and higher speed modes in MMCSD subsystems
+Date:   Mon, 22 Mar 2021 18:42:03 +0530
+Message-ID: <20210322131206.24887-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210320221432.924-1-song.bao.hua@hisilicon.com>
-In-Reply-To: <20210320221432.924-1-song.bao.hua@hisilicon.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 22 Mar 2021 14:11:38 +0100
-Message-ID: <CAKfTPtA8GibaRWB_=i3ycR8xT2iFkAn337k_cwrAQOshAi=VGA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: remove redundant test_idle_cores for non-smt
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Guodong Xu <guodong.xu@linaro.org>, yangyicong@huawei.com,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        linuxarm@openeuler.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 at 23:21, Barry Song <song.bao.hua@hisilicon.com> wrote:
->
-> update_idle_core() is only done for the case of sched_smt_present.
-> but test_idle_cores() is done for all machines even those without
-> smt.
-> this could contribute to up 8%+ hackbench performance loss on a
-> machine like kunpeng 920 which has no smt. this patch removes the
-> redundant test_idle_cores() for non-smt machines.
->
-> we run the below hackbench with different -g parameter from 2 to
-> 14, for each different g, we run the command 10 times and get the
-> average time:
-> $ numactl -N 0 hackbench -p -T -l 20000 -g $1
->
-> hackbench will report the time which is needed to complete a certain
-> number of messages transmissions between a certain number of tasks,
-> for example:
-> $ numactl -N 0 hackbench -p -T -l 20000 -g 10
-> Running in threaded mode with 10 groups using 40 file descriptors each
-> (== 400 tasks)
-> Each sender will pass 20000 messages of 100 bytes
->
-> The below is the result of hackbench w/ and w/o this patch:
-> g=    2      4     6       8      10     12      14
-> w/o: 1.8151 3.8499 5.5142 7.2491 9.0340 10.7345 12.0929
-> w/ : 1.8428 3.7436 5.4501 6.9522 8.2882  9.9535 11.3367
->                           +4.1%  +8.3%  +7.3%   +6.3%
->
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+The following series of patches
+- Add support for GPIO subsystem in main and wakeup domains.
+- Add voltage regulator device tree nodes and their corresponding pinmux
+  to support power cycle and voltage switch required for UHS-I modes
+- sets respective tags in sdhci0 node to support higher speeds
+- remove no-1-8-v tag from sdhci1 node to support UHS-I modes
+- Update delay values for various speed modes supported.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-> ---
->  kernel/sched/fair.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 2e2ab1e..de42a32 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6038,9 +6038,11 @@ static inline bool test_idle_cores(int cpu, bool def)
->  {
->         struct sched_domain_shared *sds;
->
-> -       sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-> -       if (sds)
-> -               return READ_ONCE(sds->has_idle_cores);
-> +       if (static_branch_likely(&sched_smt_present)) {
-> +               sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-> +               if (sds)
-> +                       return READ_ONCE(sds->has_idle_cores);
-> +       }
->
->         return def;
->  }
-> --
-> 1.8.3.1
->
+test logs
+- eMMC HS400 speed mode
+https://pastebin.ubuntu.com/p/xqZt34mRWf/
+
+- SD SDR104 speed mode
+https://pastebin.ubuntu.com/p/qM2H85SQvX/
+
+- GPIO logs
+https://pastebin.ubuntu.com/p/7WXdRxxdWz/
+
+Changes since v6:
+- Corrected the node name from vdd_sd_dv_pins_default to
+  vdd-sd-dv-pins-default
+
+Changes since v5:
+- Corrected the link in patch 3 as it broken.
+- Added the version number for the references used in patch 3.
+- picked up reviewed-by from grygorii for patches 1 and 2.
+
+Changes since v4:
+- Added main_i2c0 pinmux required for doing power cycles to MMCSD1
+  subsystem
+- Updated delay values for various speed modes supported
+- Corrected the ti,ngpio property to indicate highest gpio lines that
+  can be accessed.
+- Reran the performace tests
+
+Changes since v3:
+- Removed patch (1 in v3).
+- Rebased and included patches that add support for GPIO from series [1].
+- Re-ran the performace tests for SD and eMMC.
+
+Changes since v2:
+- Added main_gpio0 DT node
+- Added voltage regulator device tree nodes required to support UHS-I modes
+
+Changes since v1:
+- squashed the two patches into one
+- added performance logs for the above mentioned speed modes
+
+
+Aswath Govindraju (1):
+  arm64: dts: ti: k3-j7200: Add support for higher speed modes and
+    update delay select values for MMCSD subsystems
+
+Faiz Abbas (2):
+  arm64: dts: ti: k3-j7200: Add gpio nodes
+  arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio
+    modules
+
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 58 +++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 86 ++++++++++++++++++-
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 34 ++++++++
+ 3 files changed, 176 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
