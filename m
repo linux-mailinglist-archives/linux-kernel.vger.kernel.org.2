@@ -2,178 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C46344DF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD54344DF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhCVR7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhCVR73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:59:29 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BE4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id q9so9096370qvm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3tW5FS73Z71P6K0t+SWrxwMHeSjJgqydDxKdhSwwjsI=;
-        b=OduhdWT/vuj5dcpPd9VCBbWHY+tZNB+b78Fy/1QK7HB2OfeTj+uFop5G8r+Me8Raaq
-         rEbomPKeULAj2SO8TB2UOjYFEyOpnopkQEB8/JXX3cfq037JoW5O6b8+DAugLgKCXEmw
-         pspEx0r8wXUxhRqVw/kTUpRNDeAwdJLG7M+nYrfjU5DMPu96zA7RtmpdC4s0MiDl6BnA
-         0IxG5fqS2WSkDcecl8K4CrzZNJXHyN4mI/+6jC7k6p1VydjOsDndV8t44hM9FmXX3iIf
-         xQhHYpd1jEvoWn9OjKC8Svo3DTrvGYLu5z6czSN9PRJRxA8o3yx8bXAPEYVxfCHDXbIV
-         mjNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3tW5FS73Z71P6K0t+SWrxwMHeSjJgqydDxKdhSwwjsI=;
-        b=msNq3CRYF1rYYnK9UgeKN/IBC8YZ1pDFWKfuFRLyS4ArNlP0hqUcUNdoTuJ/vjbySw
-         75/zG/ZAM9LFgOUpoK6VBA8SX03Jb1Rco2KYmobJziZMWga5wTT3smatPIM2ipkcAFfY
-         Hipdzb1D+zdUjD2Wr/2OPf3Bi+40JsQz4cK4YWispJniwtcDprydVr/JrO2BIgVlJk6z
-         Dy8WX1+cEzPF2LTu4PmVt6+iOLLN0EESx3JFzOY4BdMwCSUSWUWFvCalbWWbRKYkrHf2
-         K+DuRgB9qEYO3TZlG+W8GcN6fIswgvPhBVxX1FZdFjlsR0e1KIlbxp+zESrfUe1A7sbQ
-         Nq3w==
-X-Gm-Message-State: AOAM533ll5heQUV07bqZrYGe0ooVsyf6LbI8wdK/lY0RNVBNpkLX0FDE
-        LTdA68JfJw0GSAMhm2/OS68zTQ==
-X-Google-Smtp-Source: ABdhPJzoBehbHbQuiCGVnZz0UStxWXiZmLz4h7BLRs4yncS1FgXzNF2X65GrLZMvZblfqSGPbGw/UQ==
-X-Received: by 2002:a0c:9ad7:: with SMTP id k23mr958345qvf.52.1616435966072;
-        Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:b54e])
-        by smtp.gmail.com with ESMTPSA id h8sm11266266qkk.116.2021.03.22.10.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 10:59:25 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 13:59:24 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 00/27] Memory Folios
-Message-ID: <YFja/LRC1NI6quL6@cmpxchg.org>
-References: <20210320054104.1300774-1-willy@infradead.org>
+        id S229991AbhCVR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:59:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:25948 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230286AbhCVR7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:59:51 -0400
+IronPort-SDR: xvk7sYD/qsvS2Thd09+oLQfikzgIkWAR3sg+eDEjtD6/nWYQdrsti5JGXtuulYGSnr5SjJHnfp
+ 7mMqkPLb3wyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189722300"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="189722300"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 10:59:50 -0700
+IronPort-SDR: mAz3amYDh3HKIIJHrUx/MuDWbIDqisqn4/5jmkHGwmQD4D2HmKnIRW8vOjLc7bQD1z7+7MU9Qb
+ yIUBBnBekqnw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="407931760"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Mar 2021 10:59:48 -0700
+Subject: Re: [PATCH 1/2] mmc: block: Issue flush only if allowed
+To:     Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Brendan Peter <bpeter@lytx.com>
+References: <20210322133645.4901-1-avri.altman@wdc.com>
+ <20210322133645.4901-2-avri.altman@wdc.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <546a878b-f19a-ab6d-369c-aebf2941f024@intel.com>
+Date:   Mon, 22 Mar 2021 20:00:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320054104.1300774-1-willy@infradead.org>
+In-Reply-To: <20210322133645.4901-2-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 05:40:37AM +0000, Matthew Wilcox (Oracle) wrote:
-> Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
-> exist which show the benefits of a larger "page size".  As an example,
-> an earlier iteration of this idea which used compound pages got a 7%
-> performance boost when compiling the kernel using kernbench without any
-> particular tuning.
+On 22/03/21 3:36 pm, Avri Altman wrote:
+> The cache may be flushed to the nonvolatile storage by writing to
+> FLUSH_CACHE byte (EXT_CSD byte [32]). When in command queueing mode, the
+> cache may be flushed by issuing a CMDQ_TASK_ DEV_MGMT (CMD48) with a
+> FLUSH_CACHE op-code.  Either way, verify that The cache function is
+> turned ON before doing so.
 > 
-> Using compound pages or THPs exposes a serious weakness in our type
-> system.  Functions are often unprepared for compound pages to be passed
-> to them, and may only act on PAGE_SIZE chunks.  Even functions which are
-> aware of compound pages may expect a head page, and do the wrong thing
-> if passed a tail page.
+> fixes: 1e8e55b67030 (mmc: block: Add CQE support)
 > 
-> There have been efforts to label function parameters as 'head' instead
-> of 'page' to indicate that the function expects a head page, but this
-> leaves us with runtime assertions instead of using the compiler to prove
-> that nobody has mistakenly passed a tail page.  Calling a struct page
-> 'head' is also inaccurate as they will work perfectly well on base pages.
-> The term 'nottail' has not proven popular.
+> Reported-by: Brendan Peter <bpeter@lytx.com>
+> Tested-by: Brendan Peter <bpeter@lytx.com>
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/mmc/core/block.c   | 3 +++
+>  drivers/mmc/core/mmc_ops.c | 4 +---
+>  drivers/mmc/core/mmc_ops.h | 5 +++++
+>  3 files changed, 9 insertions(+), 3 deletions(-)
 > 
-> We also waste a lot of instructions ensuring that we're not looking at
-> a tail page.  Almost every call to PageFoo() contains one or more hidden
-> calls to compound_head().  This also happens for get_page(), put_page()
-> and many more functions.  There does not appear to be a way to tell gcc
-> that it can cache the result of compound_head(), nor is there a way to
-> tell it that compound_head() is idempotent.
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 42e27a298218..a93c66aa91db 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -1473,6 +1473,9 @@ static int mmc_blk_cqe_issue_flush(struct mmc_queue *mq, struct request *req)
+>  	struct mmc_queue_req *mqrq = req_to_mmc_queue_req(req);
+>  	struct mmc_request *mrq = mmc_blk_cqe_prep_dcmd(mqrq, req);
+>  
+> +	if (mmc_card_mmc(mq->card) && !mmc_flush_allowed(mq->card))
+> +		return 0;
+
+Returning 0 means the flush was issued successfully. i.e. it is in
+flight.
+
+Instead, a call to blk_mq_end_request(req, BLK_STS_OK) is needed,
+and mmc_blk_mq_issue_rq() must be amended so that it will return
+MMC_REQ_DONE for this case.
+
+> +
+>  	mrq->cmd->opcode = MMC_SWITCH;
+>  	mrq->cmd->arg = (MMC_SWITCH_MODE_WRITE_BYTE << 24) |
+>  			(EXT_CSD_FLUSH_CACHE << 16) |
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index baa6314f69b4..b8a0c9ac8a20 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -988,9 +988,7 @@ int mmc_flush_cache(struct mmc_card *card)
+>  {
+>  	int err = 0;
+>  
+> -	if (mmc_card_mmc(card) &&
+> -			(card->ext_csd.cache_size > 0) &&
+> -			(card->ext_csd.cache_ctrl & 1)) {
+> +	if (mmc_card_mmc(card) && mmc_flush_allowed(card)) {
+>  		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+>  				 EXT_CSD_FLUSH_CACHE, 1,
+>  				 MMC_CACHE_FLUSH_TIMEOUT_MS);
+> diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+> index 632009260e51..bf2b315addd7 100644
+> --- a/drivers/mmc/core/mmc_ops.h
+> +++ b/drivers/mmc/core/mmc_ops.h
+> @@ -19,6 +19,11 @@ enum mmc_busy_cmd {
+>  struct mmc_host;
+>  struct mmc_card;
+>  
+> +static inline bool mmc_flush_allowed(struct mmc_card *card)
+> +{
+> +	return card->ext_csd.cache_size > 0 && (card->ext_csd.cache_ctrl & 1);
+> +}
+> +
+>  int mmc_select_card(struct mmc_card *card);
+>  int mmc_deselect_cards(struct mmc_host *host);
+>  int mmc_set_dsr(struct mmc_host *host);
 > 
-> This series introduces the 'struct folio' as a replacement for
-> head-or-base pages.  This initial set reduces the kernel size by
-> approximately 6kB, although its real purpose is adding infrastructure
-> to enable further use of the folio.
-> 
-> The intent is to convert all filesystems and some device drivers to work
-> in terms of folios.  This series contains a lot of explicit conversions,
-> but it's important to realise it's removing a lot of implicit conversions
-> in some relatively hot paths.  There will be very few conversions from
-> folios when this work is completed; filesystems, the page cache, the
-> LRU and so on will generally only deal with folios.
 
-If that is the case, shouldn't there in the long term only be very
-few, easy to review instances of things like compound_head(),
-PAGE_SIZE etc. deep in the heart of MM? And everybody else should 1)
-never see tail pages and 2) never assume a compile-time page size?
-
-What are the higher-level places that in the long-term should be
-dealing with tail pages at all? Are there legit ones besides the page
-allocator, THP splitting internals & pte-mapped compound pages?
-
-I do agree that the current confusion around which layer sees which
-types of pages is a problem. But I also think a lot of it is the
-result of us being in a transitional period where we've added THP in
-more places but not all code and data structures are or were fully
-native yet, and so we had things leak out or into where maybe they
-shouldn't be to make things work in the short term.
-
-But this part is already getting better, and has gotten better, with
-the page cache (largely?) going native for example.
-
-Some compound_head() that are currently in the codebase are already
-unnecessary. Like the one in activate_page().
-
-And looking at grep, I wouldn't be surprised if only the page table
-walkers need the page_compound() that mark_page_accessed() does. We
-would be better off if they did the translation once and explicitly in
-the outer scope, where it's clear they're dealing with a pte-mapped
-compound page, instead of having a series of rather low level helpers
-(page flags testing, refcount operations, LRU operations, stat
-accounting) all trying to be clever but really just obscuring things
-and imposing unnecessary costs on the vast majority of cases.
-
-So I fully agree with the motivation behind this patch. But I do
-wonder why it's special-casing the commmon case instead of the rare
-case. It comes at a huge cost. Short term, the churn of replacing
-'page' with 'folio' in pretty much all instances is enormous.
-
-And longer term, I'm not convinced folio is the abstraction we want
-throughout the kernel. If nobody should be dealing with tail pages in
-the first place, why are we making everybody think in 'folios'? Why
-does a filesystem care that huge pages are composed of multiple base
-pages internally? This feels like an implementation detail leaking out
-of the MM code. The vast majority of places should be thinking 'page'
-with a size of 'page_size()'. Including most parts of the MM itself.
-
-The compile-time check is nice, but I'm not sure it would be that much
-more effective at catching things than a few centrally placed warns
-inside PageFoo(), get_page() etc. and other things that should not
-encounter tail pages in the first place (with __helpers for the few
-instances that do). And given the invasiveness of this change, they
-ought to be very drastically better at it, and obviously so, IMO.
-
->  Documentation/core-api/mm-api.rst |   7 +
->  fs/afs/write.c                    |   3 +-
->  fs/cachefiles/rdwr.c              |  19 ++-
->  fs/io_uring.c                     |   2 +-
->  include/linux/memcontrol.h        |  21 +++
->  include/linux/mm.h                | 156 +++++++++++++++----
->  include/linux/mm_types.h          |  52 +++++++
->  include/linux/mmdebug.h           |  20 +++
->  include/linux/netfs.h             |   2 +-
->  include/linux/page-flags.h        | 120 +++++++++++---
->  include/linux/pagemap.h           | 249 ++++++++++++++++++++++--------
->  include/linux/swap.h              |   6 +
->  include/linux/vmstat.h            | 107 +++++++++++++
->  mm/Makefile                       |   2 +-
->  mm/filemap.c                      | 237 ++++++++++++++--------------
->  mm/folio-compat.c                 |  37 +++++
->  mm/memory.c                       |   8 +-
->  mm/page-writeback.c               |  62 ++++++--
->  mm/swapfile.c                     |   8 +-
->  mm/util.c                         |  30 ++--
->  20 files changed, 857 insertions(+), 291 deletions(-)
->  create mode 100644 mm/folio-compat.c
