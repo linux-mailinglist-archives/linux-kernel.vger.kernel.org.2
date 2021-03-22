@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1343443D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 092EF3444AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhCVMyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:54:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
+        id S230373AbhCVNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231782AbhCVMoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:44:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C6861A02;
-        Mon, 22 Mar 2021 12:41:26 +0000 (UTC)
+        id S231859AbhCVMvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3FDA619F8;
+        Mon, 22 Mar 2021 12:45:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416887;
-        bh=k9bI/KXpltgmng6rpQsDXHAlWRwG0xWsmDQ/Qb57jPI=;
+        s=korg; t=1616417149;
+        bh=miuYuv8x/RclV8csCE/IHKBZe6fNoHNyAMWT38U3CsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Azrt+bTSyZQO9iINtaJJ8YF+GLD3ruEVzib3tpm3BQj1Lx1shm5pjgxqviuy5K62o
-         Kmng77vjtt8ejNDoTL7TsZr5qH2h0Mk0KeoC27d3yk/6xqn/mgLL3v4+rmIc9XOmxA
-         gh2x4ufhUltZTESBwAcsKEiDjrd2WFtrHAAwAtrQ=
+        b=oPZZmjiwjDlCzvccrzEnzco3Box47BcPtyfmgEzkbz9H5hgpPlLxGfHeBJSecvxqg
+         6TKOIeGiBKylQHuXnEcz5rjBvpif7kZCRI59Az3qnbRG+oM7vFmdeSp+9yujLTgB+Z
+         t4EBNECI2jde+1zya27k1D8VcFw0erMwjxh4LIUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com,
-        stable@kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 148/157] ext4: do not try to set xattr into ea_inode if value is empty
-Date:   Mon, 22 Mar 2021 13:28:25 +0100
-Message-Id: <20210322121938.439408001@linuxfoundation.org>
+        stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 12/43] btrfs: fix slab cache flags for free space tree bitmap
+Date:   Mon, 22 Mar 2021 13:28:26 +0100
+Message-Id: <20210322121920.326860594@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: David Sterba <dsterba@suse.com>
 
-commit 6b22489911b726eebbf169caee52fea52013fbdd upstream.
+commit 34e49994d0dcdb2d31d4d2908d04f4e9ce57e4d7 upstream.
 
-Syzbot report a warning that ext4 may create an empty ea_inode if set
-an empty extent attribute to a file on the file system which is no free
-blocks left.
+The free space tree bitmap slab cache is created with SLAB_RED_ZONE but
+that's a debugging flag and not always enabled. Also the other slabs are
+created with at least SLAB_MEM_SPREAD that we want as well to average
+the memory placement cost.
 
-  WARNING: CPU: 6 PID: 10667 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x10f8/0x1114 fs/ext4/xattr.c:1640
-  ...
-  Call trace:
-   ext4_xattr_set_entry+0x10f8/0x1114 fs/ext4/xattr.c:1640
-   ext4_xattr_block_set+0x1d0/0x1b1c fs/ext4/xattr.c:1942
-   ext4_xattr_set_handle+0x8a0/0xf1c fs/ext4/xattr.c:2390
-   ext4_xattr_set+0x120/0x1f0 fs/ext4/xattr.c:2491
-   ext4_xattr_trusted_set+0x48/0x5c fs/ext4/xattr_trusted.c:37
-   __vfs_setxattr+0x208/0x23c fs/xattr.c:177
-  ...
-
-Now, ext4 try to store extent attribute into an external inode if
-ext4_xattr_block_set() return -ENOSPC, but for the case of store an
-empty extent attribute, store the extent entry into the extent
-attribute block is enough. A simple reproduce below.
-
-  fallocate test.img -l 1M
-  mkfs.ext4 -F -b 2048 -O ea_inode test.img
-  mount test.img /mnt
-  dd if=/dev/zero of=/mnt/foo bs=2048 count=500
-  setfattr -n "user.test" /mnt/foo
-
-Reported-by: syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com
-Fixes: 9c6e7853c531 ("ext4: reserve space for xattr entries/names")
-Cc: stable@kernel.org
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20210305120508.298465-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reported-by: Vlastimil Babka <vbabka@suse.cz>
+Fixes: 3acd48507dc4 ("btrfs: fix allocation of free space cache v1 bitmap pages")
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/xattr.c |    2 +-
+ fs/btrfs/inode.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2398,7 +2398,7 @@ retry_inode:
- 				 * external inode if possible.
- 				 */
- 				if (ext4_has_feature_ea_inode(inode->i_sb) &&
--				    !i.in_inode) {
-+				    i.value_len && !i.in_inode) {
- 					i.in_inode = 1;
- 					goto retry_inode;
- 				}
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9472,7 +9472,7 @@ int __init btrfs_init_cachep(void)
+ 
+ 	btrfs_free_space_bitmap_cachep = kmem_cache_create("btrfs_free_space_bitmap",
+ 							PAGE_SIZE, PAGE_SIZE,
+-							SLAB_RED_ZONE, NULL);
++							SLAB_MEM_SPREAD, NULL);
+ 	if (!btrfs_free_space_bitmap_cachep)
+ 		goto fail;
+ 
 
 
