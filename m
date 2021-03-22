@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B800344181
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64303442F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhCVMdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
+        id S232359AbhCVMr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhCVMb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:31:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79203619A0;
-        Mon, 22 Mar 2021 12:31:48 +0000 (UTC)
+        id S231545AbhCVMjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:39:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB7F619CB;
+        Mon, 22 Mar 2021 12:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416309;
-        bh=M+QC5G0V9HXNj4mcKbiKhkpNuj8vw++9JcRtLGNS1D0=;
+        s=korg; t=1616416691;
+        bh=zAGqR+nadHG26JLV94frWz1Nu0aeYWONwhogctd/RiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nBGjtyYiWdHC4hsDiac/EOGgaaFiPyQyV0RFnGZTTH7lqKRsIleL7TB5vLknH90+W
-         50sPGvJ0G8u9XRm5MYVdVkkyL2x55lRiGJcS80CqVCqKvPDRM8mkrcZsI10XIuL0FV
-         X4Qw9dwZO75olsCMfbbtN4Jht0J7p7+bGwUx7aXc=
+        b=ZHI6hpafZ3vNrz7hvd4Si8KQy8mpElXmluZPaMKj1uzxt2qDxQS+f5DdjZ+a152+E
+         3LbnTp98Qriqojkt3QCv84kH/FzFK7DsKGVIvolUIo17wELTdcras0MT28nypCfI96
+         Ld0dnFGa4oKMbsmEMeJPtGkVscO5EoAEy/kGvloU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+fb5458330b4442f2090d@syzkaller.appspotmail.com,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.11 057/120] io_uring: ensure that SQPOLL thread is started for exit
-Date:   Mon, 22 Mar 2021 13:27:20 +0100
-Message-Id: <20210322121931.586233426@linuxfoundation.org>
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 084/157] scsi: isci: Pass gfp_t flags in isci_port_bc_change_received()
+Date:   Mon, 22 Mar 2021 13:27:21 +0100
+Message-Id: <20210322121936.456414680@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,101 +43,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-commit 3ebba796fa251d042be42b929a2d916ee5c34a49 upstream.
+[ Upstream commit 71dca5539fcf977aead0c9ea1962e70e78484b8e ]
 
-If we create it in a disabled state because IORING_SETUP_R_DISABLED is
-set on ring creation, we need to ensure that we've kicked the thread if
-we're exiting before it's been explicitly disabled. Otherwise we can run
-into a deadlock where exit is waiting go park the SQPOLL thread, but the
-SQPOLL thread itself is waiting to get a signal to start.
+Use the new libsas event notifiers API, which requires callers to
+explicitly pass the gfp_t memory allocation flags.
 
-That results in the below trace of both tasks hung, waiting on each other:
+libsas sas_notify_port_event() is called from
+isci_port_bc_change_received(). Below is the context analysis for all of
+its call chains:
 
-INFO: task syz-executor458:8401 blocked for more than 143 seconds.
-      Not tainted 5.11.0-next-20210226-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor458 state:D stack:27536 pid: 8401 ppid:  8400 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4324 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
- schedule+0xcf/0x270 kernel/sched/core.c:5154
- schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
- io_sq_thread_park fs/io_uring.c:7115 [inline]
- io_sq_thread_park+0xd5/0x130 fs/io_uring.c:7103
- io_uring_cancel_task_requests+0x24c/0xd90 fs/io_uring.c:8745
- __io_uring_files_cancel+0x110/0x230 fs/io_uring.c:8840
- io_uring_files_cancel include/linux/io_uring.h:47 [inline]
- do_exit+0x299/0x2a60 kernel/exit.c:780
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43e899
-RSP: 002b:00007ffe89376d48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004af2f0 RCX: 000000000043e899
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000010000000
-R10: 0000000000008011 R11: 0000000000000246 R12: 00000000004af2f0
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-INFO: task iou-sqp-8401:8402 can't die for more than 143 seconds.
-task:iou-sqp-8401    state:D stack:30272 pid: 8402 ppid:  8400 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4324 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
- schedule+0xcf/0x270 kernel/sched/core.c:5154
- schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
- io_sq_thread+0x27d/0x1ae0 fs/io_uring.c:6717
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task iou-sqp-8401:8402 blocked for more than 143 seconds.
+host.c: sci_controller_error_handler(): atomic, irq handler     (*)
+OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
+  -> sci_controller_process_completions()
+    -> sci_controller_event_completion()
+      -> phy.c: sci_phy_event_handler()
+        -> port.c: sci_port_broadcast_change_received()
+          -> isci_port_bc_change_received()
 
-Reported-by: syzbot+fb5458330b4442f2090d@syzkaller.appspotmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+host.c: isci_host_init()                                        (@)
+spin_lock_irq(isci_host::scic_lock)
+  -> sci_controller_initialize(), atomic                        (*)
+    -> port_config.c: sci_port_configuration_agent_initialize()
+      -> sci_mpc_agent_validate_phy_configuration()
+        -> port.c: sci_port_add_phy()
+          -> sci_port_set_phy()
+            -> phy.c: sci_phy_set_port()
+              -> port.c: sci_port_broadcast_change_received()
+                -> isci_port_bc_change_received()
+
+port_config.c: apc_agent_timeout(), atomic, timer callback      (*)
+  -> sci_apc_agent_configure_ports()
+    -> port.c: sci_port_add_phy()
+      -> sci_port_set_phy()
+        -> phy.c: sci_phy_set_port()
+          -> port.c: sci_port_broadcast_change_received()
+            -> isci_port_bc_change_received()
+
+phy.c: enter SCI state: *SCI_PHY_STOPPED*                       # Cont. from [1]
+  -> sci_phy_stopped_state_enter()
+    -> host.c: sci_controller_link_down()
+      -> ->link_down_handler()
+      == port_config.c: sci_apc_agent_link_down()
+        -> port.c: sci_port_remove_phy()
+          -> sci_port_clear_phy()
+            -> phy.c: sci_phy_set_port()
+              -> port.c: sci_port_broadcast_change_received()
+                -> isci_port_bc_change_received()
+
+phy.c: enter SCI state: *SCI_PHY_STARTING*                      # Cont. from [2]
+  -> sci_phy_starting_state_enter()
+    -> host.c: sci_controller_link_down()
+      -> ->link_down_handler()
+      == port_config.c: sci_apc_agent_link_down()
+        -> port.c: sci_port_remove_phy()
+          -> sci_port_clear_phy()
+            -> phy.c: sci_phy_set_port()
+              -> port.c: sci_port_broadcast_change_received()
+                -> isci_port_bc_change_received()
+
+[1] Call chains for entering state: *SCI_PHY_STOPPED*
+-----------------------------------------------------
+
+host.c: isci_host_init()                                        (@)
+spin_lock_irq(isci_host::scic_lock)
+  -> sci_controller_initialize(), atomic                        (*)
+      -> phy.c: sci_phy_initialize()
+        -> phy.c: sci_phy_link_layer_initialization()
+          -> phy.c: sci_change_state(SCI_PHY_STOPPED)
+
+init.c: PCI ->remove() || PM_OPS ->suspend,  process context    (+)
+  -> host.c: isci_host_deinit()
+    -> sci_controller_stop_phys()
+      -> phy.c: sci_phy_stop()
+	-> sci_change_state(SCI_PHY_STOPPED)
+
+phy.c: isci_phy_control()
+spin_lock_irqsave(isci_host::scic_lock, )
+  -> sci_phy_stop(), atomic                                     (*)
+    -> sci_change_state(SCI_PHY_STOPPED)
+
+[2] Call chains for entering state: *SCI_PHY_STARTING*
+------------------------------------------------------
+
+phy.c: phy_sata_timeout(), atimer, timer callback               (*)
+spin_lock_irqsave(isci_host::scic_lock, )
+  -> sci_change_state(SCI_PHY_STARTING)
+
+host.c: phy_startup_timeout(), atomic, timer callback           (*)
+spin_lock_irqsave(isci_host::scic_lock, )
+  -> sci_controller_start_next_phy()
+    -> sci_phy_start()
+      -> sci_change_state(SCI_PHY_STARTING)
+
+host.c: isci_host_start()                                       (@)
+spin_lock_irq(isci_host::scic_lock)
+  -> sci_controller_start(), atomic                             (*)
+    -> sci_controller_start_next_phy()
+      -> sci_phy_start()
+        -> sci_change_state(SCI_PHY_STARTING)
+
+phy.c: Enter SCI state *SCI_PHY_SUB_FINAL*                      # Cont. from [2A]
+  -> sci_change_state(SCI_PHY_SUB_FINAL)
+    -> sci_phy_starting_final_substate_enter()
+      -> sci_change_state(SCI_PHY_READY)
+        -> Enter SCI state: *SCI_PHY_READY*
+          -> sci_phy_ready_state_enter()
+            -> host.c: sci_controller_link_up()
+              -> sci_controller_start_next_phy()
+                -> sci_phy_start()
+                  -> sci_change_state(SCI_PHY_STARTING)
+
+phy.c: sci_phy_event_handler(), atomic, discussed earlier       (*)
+  -> sci_change_state(SCI_PHY_STARTING), 11 instances
+
+port.c: isci_port_perform_hard_reset()
+spin_lock_irqsave(isci_host::scic_lock, )
+  -> port.c: sci_port_hard_reset(), atomic                      (*)
+    -> phy.c: sci_phy_reset()
+      -> sci_change_state(SCI_PHY_RESETTING)
+        -> enter SCI PHY state: *SCI_PHY_RESETTING*
+          -> sci_phy_resetting_state_enter()
+            -> sci_change_state(SCI_PHY_STARTING)
+
+[2A] Call chains for entering SCI state: *SCI_PHY_SUB_FINAL*
+------------------------------------------------------------
+
+host.c: power_control_timeout(), atomic, timer callback         (*)
+spin_lock_irqsave(isci_host::scic_lock, )
+  -> phy.c: sci_phy_consume_power_handler()
+    -> phy.c: sci_change_state(SCI_PHY_SUB_FINAL)
+
+host.c: sci_controller_error_handler(): atomic, irq handler     (*)
+OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
+  -> sci_controller_process_completions()
+    -> sci_controller_unsolicited_frame()
+      -> phy.c: sci_phy_frame_handler()
+        -> sci_change_state(SCI_PHY_SUB_AWAIT_SAS_POWER)
+          -> sci_phy_starting_await_sas_power_substate_enter()
+            -> host.c: sci_controller_power_control_queue_insert()
+              -> phy.c: sci_phy_consume_power_handler()
+                -> sci_change_state(SCI_PHY_SUB_FINAL)
+        -> sci_change_state(SCI_PHY_SUB_FINAL)
+    -> sci_controller_event_completion()
+      -> phy.c: sci_phy_event_handler()
+        -> sci_phy_start_sata_link_training()
+          -> sci_change_state(SCI_PHY_SUB_AWAIT_SATA_POWER)
+            -> sci_phy_starting_await_sata_power_substate_enter
+              -> host.c: sci_controller_power_control_queue_insert()
+                -> phy.c: sci_phy_consume_power_handler()
+                  -> sci_change_state(SCI_PHY_SUB_FINAL)
+
+As can be seen from the "(*)" markers above, almost all the call-chains are
+atomic. The only exception, marked with "(+)", is a PCI ->remove() and
+PM_OPS ->suspend() cold path. Thus, pass GFP_ATOMIC to the libsas port
+event notifier.
+
+Note, the now-replaced libsas APIs used in_interrupt() to implicitly decide
+which memory allocation type to use.  This was only partially correct, as
+it fails to choose the correct GFP flags when just preemption or interrupts
+are disabled. Such buggy code paths are marked with "(@)" in the call
+chains above.
+
+Link: https://lore.kernel.org/r/20210118100955.1761652-8-a.darwish@linutronix.de
+Fixes: 1c393b970e0f ("scsi: libsas: Use dynamic alloced work to avoid sas event lost")
+Cc: Artur Paszkiewicz <artur.paszkiewicz@intel.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/isci/port.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2221,6 +2221,7 @@ static void __io_req_task_submit(struct
- 		__io_req_task_cancel(req, -EFAULT);
- 	mutex_unlock(&ctx->uring_lock);
+diff --git a/drivers/scsi/isci/port.c b/drivers/scsi/isci/port.c
+index 10136ae466e2..e50c3b0deeb3 100644
+--- a/drivers/scsi/isci/port.c
++++ b/drivers/scsi/isci/port.c
+@@ -164,7 +164,8 @@ static void isci_port_bc_change_received(struct isci_host *ihost,
+ 		"%s: isci_phy = %p, sas_phy = %p\n",
+ 		__func__, iphy, &iphy->sas_phy);
  
-+	ctx->flags &= ~IORING_SETUP_R_DISABLED;
- 	if (ctx->flags & IORING_SETUP_SQPOLL)
- 		io_sq_thread_drop_mm_files();
- }
-@@ -8965,6 +8966,8 @@ static void io_disable_sqo_submit(struct
- {
- 	mutex_lock(&ctx->uring_lock);
- 	ctx->sqo_dead = 1;
-+	if (ctx->flags & IORING_SETUP_R_DISABLED)
-+		io_sq_offload_start(ctx);
- 	mutex_unlock(&ctx->uring_lock);
- 
- 	/* make sure callers enter the ring to get error */
-@@ -9980,10 +9983,7 @@ static int io_register_enable_rings(stru
- 	if (ctx->restrictions.registered)
- 		ctx->restricted = 1;
- 
--	ctx->flags &= ~IORING_SETUP_R_DISABLED;
--
- 	io_sq_offload_start(ctx);
--
- 	return 0;
+-	sas_notify_port_event(&iphy->sas_phy, PORTE_BROADCAST_RCVD);
++	sas_notify_port_event_gfp(&iphy->sas_phy,
++				  PORTE_BROADCAST_RCVD, GFP_ATOMIC);
+ 	sci_port_bcn_enable(iport);
  }
  
+-- 
+2.30.1
+
 
 
