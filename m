@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9672C344347
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9891F344157
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhCVMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:49:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
+        id S231441AbhCVMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231925AbhCVMkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:40:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F254619B1;
-        Mon, 22 Mar 2021 12:39:08 +0000 (UTC)
+        id S231280AbhCVMbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:31:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E51DD60C3D;
+        Mon, 22 Mar 2021 12:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416749;
-        bh=rUU2feMyCLViLaHjhWKUKmRoiINpJ8rNpKOrHctVM30=;
+        s=korg; t=1616416276;
+        bh=YEsO1KwxtEsjByGqtI4KcOYOwT/lgtdJdpOEwcfhPCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e4Gqt/V0t3Yxr/gyGxfHKLIhssRDW0coksrwzIf0K6h6f3GdOsuZ6u/cqsGeZsYgb
-         hKvLLoepkP4y22heUisRrlHirf+/Tr+EfqzHtM0pMNREh/lVAoEk/AF6Dsv9Dw8VbN
-         2phCvJKCI2F2oTx/7Ee0B7D/a6eS+gLN/89zcm4M=
+        b=hVicPMLPQqVPuCz1ptV4qK0xaqIKNZBIZTEcauWQoZIz5JdDc9Gt2lfkOsWtm3638
+         ZIzKF8m5DO2qOrB2of+mkJT4xjrA6+tFDfAu0e4HJG6mRYBbSNPJpQtM8rZjBEh0Lo
+         9VP6f8NovIO13IVk5VqiTVjXq3ZzgCm6R6reQx3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 072/157] module: merge repetitive strings in module_sig_check()
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 5.11 046/120] nfsd: Dont keep looking up unhashed files in the nfsd file cache
 Date:   Mon, 22 Mar 2021 13:27:09 +0100
-Message-Id: <20210322121936.046321514@linuxfoundation.org>
+Message-Id: <20210322121931.210218626@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 705e9195187d85249fbb0eaa844b1604a98fbc9a ]
+commit d30881f573e565ebb5dbb50b31ed6106b5c81328 upstream.
 
-The 'reason' variable in module_sig_check() points to 3 strings across
-the *switch* statement, all needlessly starting with the same text.
-Let's put the starting text into the pr_notice() call -- it saves 21
-bytes of the object code (x86 gcc 10.2.1).
+If a file is unhashed, then we're going to reject it anyway and retry,
+so make sure we skip it when we're doing the RCU lockless lookup.
+This avoids a number of unnecessary nfserr_jukebox returns from
+nfsd_file_acquire()
 
-Suggested-by: Joe Perches <joe@perches.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 65294c1f2c5e ("nfsd: add a new struct file caching facility to nfsd")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/module.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/nfsd/filecache.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 94f926473e35..3b6dd8200d3d 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2922,16 +2922,17 @@ static int module_sig_check(struct load_info *info, int flags)
- 		 * enforcing, certain errors are non-fatal.
- 		 */
- 	case -ENODATA:
--		reason = "Loading of unsigned module";
-+		reason = "unsigned module";
- 		goto decide;
- 	case -ENOPKG:
--		reason = "Loading of module with unsupported crypto";
-+		reason = "module with unsupported crypto";
- 		goto decide;
- 	case -ENOKEY:
--		reason = "Loading of module with unavailable key";
-+		reason = "module with unavailable key";
- 	decide:
- 		if (is_module_sig_enforced()) {
--			pr_notice("%s: %s is rejected\n", info->name, reason);
-+			pr_notice("%s: loading of %s is rejected\n",
-+				  info->name, reason);
- 			return -EKEYREJECTED;
- 		}
- 
--- 
-2.30.1
-
+--- a/fs/nfsd/filecache.c
++++ b/fs/nfsd/filecache.c
+@@ -898,6 +898,8 @@ nfsd_file_find_locked(struct inode *inod
+ 			continue;
+ 		if (!nfsd_match_cred(nf->nf_cred, current_cred()))
+ 			continue;
++		if (!test_bit(NFSD_FILE_HASHED, &nf->nf_flags))
++			continue;
+ 		if (nfsd_file_get(nf) != NULL)
+ 			return nf;
+ 	}
 
 
