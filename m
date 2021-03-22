@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C714334436F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42745344412
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhCVMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:50:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37228 "EHLO mail.kernel.org"
+        id S232777AbhCVM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhCVMlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:41:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 935B6619C9;
-        Mon, 22 Mar 2021 12:39:33 +0000 (UTC)
+        id S231147AbhCVMqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD71B6198E;
+        Mon, 22 Mar 2021 12:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416774;
-        bh=1Ab42TiqY+7mhON/x0PDzE+X0KpbTXlLhtRYBRHphuA=;
+        s=korg; t=1616416953;
+        bh=85xbLg0N24rYjYG9rU+hPSlW4FE4imDZ2NNfjYfcj2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UBu4jNcXORn20eTnOZTCZTx6R+Z03jTu/MvHRqgELUOz9hzJcFuX9dQ4oMy4sKmCM
-         Q9I+JtaPWPcgyuMD+4nUZSfvV6xK9hoXxTwehSLv1ql7GtyDcxKQNcAB6bBI8rdlE8
-         Dxf8yNbv0Ia/XOup2Fe2E0JSmdqtU5tO/5FP3Rno=
+        b=W3XATeiUiNn/mDkcsOoBquZ5dOjEJjDqYwkmh8iqbGJj3HW+BFALWcP3KoQjf1y0K
+         OsR5UK7XIa0I4gfMYl03hJ/5Ob1+WmsEoXTtCPEEA8r2l2O5Q6kHyF0AchMnffyVgw
+         8Y4NfpYXru6U7BtnyOPHXooK1JLHVU/4feHhFkrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH 5.10 117/157] usbip: Fix incorrect double assignment to udc->ud.tcp_rx
-Date:   Mon, 22 Mar 2021 13:27:54 +0100
-Message-Id: <20210322121937.479243347@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 07/60] Revert "PM: runtime: Update device status before letting suppliers suspend"
+Date:   Mon, 22 Mar 2021 13:27:55 +0100
+Message-Id: <20210322121922.615018815@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 9858af27e69247c5d04c3b093190a93ca365f33d upstream.
+commit 0cab893f409c53634d0d818fa414641cbcdb0dab upstream.
 
-Currently udc->ud.tcp_rx is being assigned twice, the second assignment
-is incorrect, it should be to udc->ud.tcp_tx instead of rx. Fix this.
+Revert commit 44cc89f76464 ("PM: runtime: Update device status
+before letting suppliers suspend") that introduced a race condition
+into __rpm_callback() which allowed a concurrent rpm_resume() to
+run and resume the device prematurely after its status had been
+changed to RPM_SUSPENDED by __rpm_callback().
 
-Fixes: 46613c9dfa96 ("usbip: fix vudc usbip_sockfd_store races leading to gpf")
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Cc: stable <stable@vger.kernel.org>
-Addresses-Coverity: ("Unused value")
-Link: https://lore.kernel.org/r/20210311104445.7811-1-colin.king@canonical.com
+Fixes: 44cc89f76464 ("PM: runtime: Update device status before letting suppliers suspend")
+Link: https://lore.kernel.org/linux-pm/24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com/
+Reported-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/power/runtime.c |   62 +++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 37 deletions(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -174,7 +174,7 @@ static ssize_t usbip_sockfd_store(struct
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
+ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
+ {
+-	bool use_links = dev->power.links_count > 0;
+-	bool get = false;
+ 	int retval, idx;
+-	bool put;
++	bool use_links = dev->power.links_count > 0;
  
- 		udc->ud.tcp_socket = socket;
- 		udc->ud.tcp_rx = tcp_rx;
--		udc->ud.tcp_rx = tcp_tx;
-+		udc->ud.tcp_tx = tcp_tx;
- 		udc->ud.status = SDEV_ST_USED;
+ 	if (dev->power.irq_safe) {
+ 		spin_unlock(&dev->power.lock);
+-	} else if (!use_links) {
+-		spin_unlock_irq(&dev->power.lock);
+ 	} else {
+-		get = dev->power.runtime_status == RPM_RESUMING;
+-
+ 		spin_unlock_irq(&dev->power.lock);
  
- 		spin_unlock_irq(&udc->ud.lock);
+-		/* Resume suppliers if necessary. */
+-		if (get) {
++		/*
++		 * Resume suppliers if necessary.
++		 *
++		 * The device's runtime PM status cannot change until this
++		 * routine returns, so it is safe to read the status outside of
++		 * the lock.
++		 */
++		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
+ 			idx = device_links_read_lock();
+ 
+ 			retval = rpm_get_suppliers(dev);
+@@ -355,36 +355,24 @@ static int __rpm_callback(int (*cb)(stru
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_lock(&dev->power.lock);
+-		return retval;
+-	}
+-
+-	spin_lock_irq(&dev->power.lock);
+-
+-	if (!use_links)
+-		return retval;
+-
+-	/*
+-	 * If the device is suspending and the callback has returned success,
+-	 * drop the usage counters of the suppliers that have been reference
+-	 * counted on its resume.
+-	 *
+-	 * Do that if the resume fails too.
+-	 */
+-	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
+-	if (put)
+-		__update_runtime_status(dev, RPM_SUSPENDED);
+-	else
+-		put = get && retval;
+-
+-	if (put) {
+-		spin_unlock_irq(&dev->power.lock);
+-
+-		idx = device_links_read_lock();
++	} else {
++		/*
++		 * If the device is suspending and the callback has returned
++		 * success, drop the usage counters of the suppliers that have
++		 * been reference counted on its resume.
++		 *
++		 * Do that if resume fails too.
++		 */
++		if (use_links
++		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
++		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
++			idx = device_links_read_lock();
+ 
+-fail:
+-		rpm_put_suppliers(dev);
++ fail:
++			rpm_put_suppliers(dev);
+ 
+-		device_links_read_unlock(idx);
++			device_links_read_unlock(idx);
++		}
+ 
+ 		spin_lock_irq(&dev->power.lock);
+ 	}
 
 
