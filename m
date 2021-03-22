@@ -2,128 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086EC343BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24804343BC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCVI0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:26:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36340 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVI0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:26:04 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lOFsx-0002Ge-28
-        for linux-kernel@vger.kernel.org; Mon, 22 Mar 2021 08:26:03 +0000
-Received: by mail-ed1-f69.google.com with SMTP id p6so26867207edq.21
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:26:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f3ajaOD5lL9Dzu+yQf9pDJLTE6UsAearV7ZvHqe+8So=;
-        b=LycNytw26jw/gUs37GdGz3bBXwdAxIin8laoKO3ISgjh4JOGuv0DCq9G2GGR7PeaGd
-         iH1EheVi49ENi39ZK+esxA3syJdPiWF09FZLACWEHDRhkS/Cp9H8H2A1RX34+gQp/66C
-         TZNSBzkLFuELYctWQQ8KW+ulR7TFoFHs5lj0T9NNz08VdYX4hxF3vyEeGra1a4wJwBTw
-         Rl0OhJfBkbabk/KllkL2ZdnQZLEXsWkLRy5eikZvFNbar8vQWS5GNWU0yccfABxqNpmq
-         LOXsV/QIxqSjdaRy2yMHUjzaIQVlrUTdgTum69lNz1rax7A/x3k+cuLa122TpxmrDkmo
-         0W7A==
-X-Gm-Message-State: AOAM532oOu2XGFQRH3g/h/a7LqomMbbiE/kut/rz3fYsXUttJJH67hy4
-        3HkYzH/jMb5NQrWRO2Dbqy/Eu9EHoFLF1CxpH4VhRgBQusNtOdCdQorAnqARd/RFK34IPHiCeGU
-        AC/1QfzWH9AvTTe6jjmZgI42chdTcqnIVEabgRFjwhg==
-X-Received: by 2002:a17:906:f6ce:: with SMTP id jo14mr18423079ejb.476.1616401562790;
-        Mon, 22 Mar 2021 01:26:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxFpElIxJ/j6sAJw2hDqrBneVlXz8k8RQWHDkmZ5+nhpflxfZCiwxQC4tNObYjje+0gO3L5Q==
-X-Received: by 2002:a17:906:f6ce:: with SMTP id jo14mr18423070ejb.476.1616401562649;
-        Mon, 22 Mar 2021 01:26:02 -0700 (PDT)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id a2sm9228987ejy.108.2021.03.22.01.26.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 01:26:02 -0700 (PDT)
-Subject: Re: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Richard Gong <richard.gong@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>, kbuild-all@lists.01.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-References: <20210321184650.10926-1-krzysztof.kozlowski@canonical.com>
- <CAK8P3a2mN0stqiGSMqyY7neODfqFv700KkVecaYS0Ck3D7LRnQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
-Date:   Mon, 22 Mar 2021 09:26:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230113AbhCVI1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:27:33 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:38714 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhCVI1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 04:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616401624;
+  x=1647937624;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tz3c8vEg+YhUyImT/Omf8T6K+ChEbg7v/T3Ay+6ePXU=;
+  b=KFsyXAvMjNlc73duWg5Ddz5dhx0mRO0NMRws11IfRYgCGwnAQemSisbJ
+   aL1c5s3kNwfANhqWegb5NvT0c2/Gnjn/AXDyCBeCeu3uUkHgJCXsx3vTm
+   eSBHiOoDxzqRoQHbYfRLCS5uPLC/w/DudJ/kdmZ7rUrxQ5r2f+XlT0RFL
+   BL7OVaFM3dkWJeb9kPOZR02rk8IDE/3ZEw8Ww9084DNNzK2Kw7l3QQn4q
+   iOa6Ql2IXhGV4zjjFzAGkJeno0AolmLETzteE7JxYe6bY9jGWmPsro6N6
+   qzvCPMBVxbyZR/CT3OiuI8R/kTDeUsfSFK9pghAntnzV/66FKKvbd6rWC
+   g==;
+From:   Hermes Zhang <chenhui.zhang@axis.com>
+To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>
+CC:     <kernel@axis.com>, Hermes Zhang <chenhuiz@axis.com>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
+Subject: [PATCH] leds: leds-multi-gpio: Add multiple GPIOs LED driver
+Date:   Mon, 22 Mar 2021 16:26:27 +0800
+Message-ID: <20210322082628.10371-1-chenhui.zhang@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2mN0stqiGSMqyY7neODfqFv700KkVecaYS0Ck3D7LRnQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hermes Zhang <chenhuiz@axis.com>
 
-On 21/03/2021 22:09, Arnd Bergmann wrote:
-> On Sun, Mar 21, 2021 at 7:46 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> The Stratix10 service layer and RCU drivers are useful only on
->> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
->> fails:
->>
->>   drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
->>   include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
->>     declared with attribute error: FIELD_GET: type of reg too small for mask
->>     _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>   ...
->>   drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
->>     priv->status.version = FIELD_GET(RSU_VERSION_MASK,
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> While I agree that one shouldn't run 32-bit kernels on this, we should also try
-> to write drivers portably, and in theory any SoC that can run a 64-bit
-> Arm kernel
-> should also be able to run a 32-bit kernel if you include the same drivers.
-> 
-> It seems that the problem here is in the smccc definition
-> 
-> struct arm_smccc_res {
->         unsigned long a0;
->         unsigned long a1;
->         unsigned long a2;
->         unsigned long a3;
-> };
-> 
-> so the result of
-> 
-> #define RSU_VERSION_MASK                GENMASK_ULL(63, 32)
->           priv->status.version = FIELD_GET(RSU_VERSION_MASK, res->a2);
-> 
-> tries to access bits that are just not returned by the firmware here,
-> which indicates that it probably won't work in this case.
-> 
-> What I'm not entirely sure about is whether this is a problem in
-> the Intel firmware implementation requiring the smccc caller to
-> run in a 64-bit context, or if it's a mistake in the way the driver
-> extracts the information if the firmware can actually pass it down
-> correctly.
+Introduce a new multiple GPIOs LED driver. This LED will made of
+multiple GPIOs (up to 8) and will map different brightness to different
+GPIOs states which defined in dts file.
 
-The SMC has two calling conventions - SMC32/HVC32 and SMC64/HVC64. The
-Stratix 10 driver uses the 64-bit calling convention (see
-INTEL_SIP_SMC_FAST_CALL_VAL in
-include/linux/firmware/intel/stratix10-smc.h), so it should not run in
-aarch32 (regardless of type of hardware).
+Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+---
+ drivers/leds/Kconfig           |  12 +++
+ drivers/leds/Makefile          |   1 +
+ drivers/leds/leds-multi-gpio.c | 140 +++++++++++++++++++++++++++++++++
+ 3 files changed, 153 insertions(+)
+ create mode 100644 drivers/leds/leds-multi-gpio.c
 
-I think that my patch limiting the support to 64-bit makes sense.
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index b6742b4231bf..e3ff84080192 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -370,6 +370,18 @@ config LEDS_GPIO
+ 	  defined as platform devices and/or OpenFirmware platform devices.
+ 	  The code to use these bindings can be selected below.
+ 
++config LEDS_MULTI_GPIO
++	tristate "LED Support for multiple GPIOs LED"
++	depends on LEDS_CLASS
++	depends on GPIOLIB
++	help
++	  This option enables support for a multiple GPIOs LED. Such LED is made
++	  of multiple GPIOs and could change the brightness by setting different
++	  states of the GPIOs.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called leds-multi-gpio.
++
+ config LEDS_LP3944
+ 	tristate "LED Support for N.S. LP3944 (Fun Light) I2C chip"
+ 	depends on LEDS_CLASS
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index 2a698df9da57..984201ec5375 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -30,6 +30,7 @@ obj-$(CONFIG_LEDS_DA903X)		+= leds-da903x.o
+ obj-$(CONFIG_LEDS_DA9052)		+= leds-da9052.o
+ obj-$(CONFIG_LEDS_FSG)			+= leds-fsg.o
+ obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
++obj-$(CONFIG_LEDS_MULTI_GPIO)		+= leds-multi-gpio.o
+ obj-$(CONFIG_LEDS_GPIO_REGISTER)	+= leds-gpio-register.o
+ obj-$(CONFIG_LEDS_HP6XX)		+= leds-hp6xx.o
+ obj-$(CONFIG_LEDS_INTEL_SS4200)		+= leds-ss4200.o
+diff --git a/drivers/leds/leds-multi-gpio.c b/drivers/leds/leds-multi-gpio.c
+new file mode 100644
+index 000000000000..54d92c81a476
+--- /dev/null
++++ b/drivers/leds/leds-multi-gpio.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Axis Communications AB
++ */
++
++#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/kernel.h>
++#include <linux/leds.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
++#include <linux/slab.h>
++
++#define MAX_GPIO_NUM  8
++
++struct multi_gpio_led_priv {
++	struct led_classdev cdev;
++
++	struct gpio_descs *gpios;
++
++	u8 *states;
++	int nr_states;
++};
++
++
++static void multi_gpio_led_set(struct led_classdev *led_cdev,
++	enum led_brightness value)
++{
++	struct multi_gpio_led_priv *priv;
++	int idx;
++
++	DECLARE_BITMAP(values, MAX_GPIO_NUM);
++
++	priv = container_of(led_cdev, struct multi_gpio_led_priv, cdev);
++
++	idx = (value - LED_OFF) * priv->nr_states / (LED_FULL + 1);
++
++	values[0] = priv->states[idx];
++
++	gpiod_set_array_value(priv->gpios->ndescs, priv->gpios->desc,
++	    priv->gpios->info, values);
++}
++
++static int multi_gpio_led_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *node = dev->of_node;
++	struct multi_gpio_led_priv *priv = NULL;
++	int ret;
++	const char *state = NULL;
++	struct led_init_data init_data = {};
++
++	priv = devm_kzalloc(dev, sizeof(struct multi_gpio_led_priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->gpios = devm_gpiod_get_array(dev, "led", GPIOD_OUT_LOW);
++	if (IS_ERR(priv->gpios))
++		return PTR_ERR(priv->gpios);
++
++	if (priv->gpios->ndescs >= MAX_GPIO_NUM) {
++		dev_err(dev, "Too many GPIOs\n");
++		return -EINVAL;
++	}
++
++	ret = of_property_count_u8_elems(node, "led-states");
++	if (ret < 0)
++		return ret;
++
++	priv->nr_states = ret;
++	priv->states = devm_kzalloc(dev, sizeof(*priv->states) * priv->nr_states, GFP_KERNEL);
++	if (!priv->states)
++		return -ENOMEM;
++
++	ret = of_property_read_u8_array(node, "led-states", priv->states, priv->nr_states);
++	if (ret)
++		return ret;
++
++	priv->cdev.max_brightness = LED_FULL;
++	priv->cdev.default_trigger = of_get_property(node, "linux,default-trigger", NULL);
++	priv->cdev.brightness_set = multi_gpio_led_set;
++
++	init_data.fwnode = of_fwnode_handle(node);
++
++	ret = devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
++	if (ret < 0)
++		return ret;
++
++	of_property_read_string(node, "default-state", &state);
++	if (!strcmp(state, "on"))
++		multi_gpio_led_set(&priv->cdev, LED_FULL);
++	else
++		multi_gpio_led_set(&priv->cdev, LED_OFF);
++
++	platform_set_drvdata(pdev, priv);
++
++	return 0;
++}
++
++static void multi_gpio_led_shutdown(struct platform_device *pdev)
++{
++	struct multi_gpio_led_priv *priv = platform_get_drvdata(pdev);
++
++	multi_gpio_led_set(&priv->cdev, LED_OFF);
++}
++
++static int multi_gpio_led_remove(struct platform_device *pdev)
++{
++	multi_gpio_led_shutdown(pdev);
++
++	return 0;
++}
++
++static const struct of_device_id of_multi_gpio_led_match[] = {
++	{ .compatible = "multi-gpio-led", },
++	{},
++};
++
++MODULE_DEVICE_TABLE(of, of_multi_gpio_led_match);
++
++static struct platform_driver multi_gpio_led_driver = {
++	.probe		= multi_gpio_led_probe,
++	.remove		= multi_gpio_led_remove,
++	.shutdown	= multi_gpio_led_shutdown,
++	.driver		= {
++		.name	= "multi-gpio-led",
++		.of_match_table = of_multi_gpio_led_match,
++	},
++};
++
++module_platform_driver(multi_gpio_led_driver);
++
++MODULE_AUTHOR("Hermes Zhang <chenhui.zhang@axis.com>");
++MODULE_DESCRIPTION("Multiple GPIOs LED driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:leds-multi-gpio");
+-- 
+2.20.1
 
-Best regards,
-Krzysztof
