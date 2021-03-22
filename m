@@ -2,1454 +2,1105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F4D343A17
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8EC343A18
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhCVGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:55:39 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:60311 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhCVGzJ (ORCPT
+        id S230051AbhCVGzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:55:40 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:47021 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhCVGzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:55:09 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210322065508epoutp045e73819a572aa28fe20edf291ec74f71~ul7JDrL7N2525825258epoutp04Z
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:55:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210322065508epoutp045e73819a572aa28fe20edf291ec74f71~ul7JDrL7N2525825258epoutp04Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616396108;
-        bh=sb8JxSxfLTZk+sHWmDuujvnnUwRR2/tT3kiYgT1DqBk=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=k9G7yOX14cKcb3W5AmU8hP0GSGOMd+Uc+eD1+fRLnCmTuMoFUWvIGlBRmlQYiqr9l
-         fc8RAbRuln1DoAUhZrqRvagtw7WtkVLBLvtcLPlGFjCuQn0sjh4WjvO34rwQ3wWc2G
-         J4jds+28bEwroaWyEJW2dWq5nekJigmoS9k93+Y0=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210322065507epcas2p4c183a75cbca65dd1dcf8d2dba140140b~ul7ILaRqJ3113831138epcas2p4X;
-        Mon, 22 Mar 2021 06:55:07 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4F3lcS5Dm8z4x9Pw; Mon, 22 Mar
-        2021 06:55:04 +0000 (GMT)
-X-AuditID: b6c32a47-b97ff7000000148e-e0-60583f48a7f8
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F2.E7.05262.84F38506; Mon, 22 Mar 2021 15:55:04 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v31 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210322065504epcms2p698791fed570484f8de2688d238dff4c6@epcms2p6>
-Date:   Mon, 22 Mar 2021 15:55:04 +0900
-X-CMS-MailID: 20210322065504epcms2p698791fed570484f8de2688d238dff4c6
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGJsWRmVeSWpSXmKPExsWy7bCmqa6HfUSCweb/qhYP5m1js9jbdoLd
-        4uXPq2wW0z78ZLb4tH4Zq8XLQ5oWuw4eZLNY9SDconnxejaLOWcbmCx6+7eyWWw+uIHZ4vGd
-        z+wWi25sY7Lo/9fOYrHts6DF8ZPvGC0u75rDZtF9fQebxfLj/5gslm69yWjROX0Ni4OYx+Ur
-        3h6X+3qZPHbOusvuMWHRAUaP/XPXsHu0nNzP4vHx6S0Wj74tqxg9Pm+S82g/0M0UwBWVY5OR
-        mpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkD9KaSQlliTilQ
-        KCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8DQsECvODG3uDQvXS85P9fK0MDAyBSoMiEn41rD
-        G7aCfSeYKv70dTI3MK7pYepi5OSQEDCRmLb4OBuILSSwg1Fi+0WrLkYODl4BQYm/O4RBTGEB
-        c4kFl6shKpQk1l+cxQ5iCwvoSdx6uIYRxGYT0JGYfuI+WFxE4Aq7xPQ+LYjpvBIz2p+yQNjS
-        EtuXbwWr5xTwk9jQeIMdIq4h8WNZLzOELSpxc/Vbdhj7/bH5jBC2iETrvbNQNYISD37uhopL
-        Shzb/QHqk3qJrXd+AcW5gOweRonDO2+xQiT0Ja51bAQ7glfAV+LlpH6wZhYBVYm+7kaooS4S
-        zbemgNnMAvIS29/OYQb5nVlAU2L9Ln0QU0JAWeLILRaYtxo2/mZHZzML8El0HP4LF98x7wnU
-        aWoS636uZ4IYIyNxax7jBEalWYhgnoVk7SyEtQsYmVcxiqUWFOempxYbFRgjR+0mRnCC13Lf
-        wTjj7Qe9Q4xMHIyHGCU4mJVEeE8khyQI8aYkVlalFuXHF5XmpBYfYjQFengis5Rocj4wx+SV
-        xBuaGpmZGViaWpiaGVkoifMWGzyIFxJITyxJzU5NLUgtgulj4uCUamCaudXmhNL3P1d2aK8U
-        e+z1lKFLe3qnL5vMxZ8WX27Wm55gmdysNOVCtp/HbNu9MxbGdHy/lWrGmWjz+rBI7Q3el6Uq
-        5RzzVh51LpnwWnTC7L+1akvmt6rlnfv5KLpwc1PGvXWXJ6n4fVRcuDfic0VT083Pk5o3LFjD
-        pzp5jWXwG99Nu3W+H79xQeSdYrD12oPaaoUdeSH3sqYrPM0xNH49paEhu3PenylrhNyZr7u1
-        Tt28NCTinvWZNdZTA67dk1I9vs1ZsvX3HK/mkviJzV+vnJcSd1TjTvnSdL7b6EHbp6DLcd1V
-        0sfnsPflJt02jJwlzbXzbp3qraM/fM6siz9R6r9q78sQfrXHkt+09K+fUWIpzkg01GIuKk4E
-        ANLfTkl5BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860
-References: <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
-        <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p6>
+        Mon, 22 Mar 2021 02:55:22 -0400
+X-Originating-IP: 81.185.162.37
+Received: from [192.168.43.237] (37.162.185.81.rev.sfr.net [81.185.162.37])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A3AA120003;
+        Mon, 22 Mar 2021 06:55:19 +0000 (UTC)
+From:   Alex Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH v5] RISC-V: enable XIP
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Anup Patel <anup@brainfault.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>
+References: <20210310092234.10501-1-vitaly.wool@konsulko.com>
+ <82a05081-5662-c787-44e4-d480774ce31c@ghiti.fr>
+ <CAM4kBBKU_qq=3An-nCbT-+AqsfAJhA=J8eocwNckVu8se001YA@mail.gmail.com>
+Message-ID: <acb297b7-6efd-8eec-e50d-4ff2c3494e7d@ghiti.fr>
+Date:   Mon, 22 Mar 2021 02:55:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAM4kBBKU_qq=3An-nCbT-+AqsfAJhA=J8eocwNckVu8se001YA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch supports the HPB 2.0.
+Le 3/21/21 à 2:06 PM, Vitaly Wool a écrit :
+> Hey Alex,
+> 
+> On Sun, Mar 21, 2021 at 4:11 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi Vitaly,
+>>
+>> Le 3/10/21 à 4:22 AM, Vitaly Wool a écrit :
+>>> Introduce XIP (eXecute In Place) support for RISC-V platforms.
+>>> It allows code to be executed directly from non-volatile storage
+>>> directly addressable by the CPU, such as QSPI NOR flash which can
+>>> be found on many RISC-V platforms. This makes way for significant
+>>> optimization of RAM footprint. The XIP kernel is not compressed
+>>> since it has to run directly from flash, so it will occupy more
+>>> space on the non-volatile storage to The physical flash address
+>>
+>> There seems to be missing something here.
+> 
+> 
+> Hmmm... strange indeed. I'll come up with a respin shortly and will
+> double check.
+>>
+>>
+>>> used to link the kernel object files and for storing it has to
+>>> be known at compile time and is represented by a Kconfig option.
+>>>
+>>> XIP on RISC-V will currently only work on MMU-enabled kernels.
+>>>
+>>> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+>>
+>>
+>> This fails to boot on current for-next with the following panic.
+>> This is because dtb_early_va points to an address that is not mapped in
+>> swapper_pg_dir: using __va(dtb_early_pa) instead works fine.
+> 
+> Is it with CONFIG_BUILTIN_DTB or without?
 
-The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
-In the case of Read (<= 32KB) is supported as single HPB read.
-In the case of Read (36KB ~ 512KB) is supported by as a combination of
-write buffer command and HPB read command to deliver more PPN.
-The write buffer commands may not be issued immediately due to busy tags.
-To use HPB read more aggressively, the driver can requeue the write buffer
-command. The requeue threshold is implemented as timeout and can be
-modified with requeue_timeout_ms entry in sysfs.
+It is without CONFIG_BUILTIN_DTB enabled.
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  47 +-
- drivers/scsi/ufs/ufs-sysfs.c               |   4 +
- drivers/scsi/ufs/ufs.h                     |   3 +-
- drivers/scsi/ufs/ufshcd.c                  |  25 +-
- drivers/scsi/ufs/ufshcd.h                  |   7 +
- drivers/scsi/ufs/ufshpb.c                  | 626 +++++++++++++++++++--
- drivers/scsi/ufs/ufshpb.h                  |  67 ++-
- 7 files changed, 698 insertions(+), 81 deletions(-)
+And I noticed I can't link a XIP_KERNEL either:
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 528bf89fc98b..419adf450b89 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1253,14 +1253,14 @@ Description:	This entry shows the number of HPB pinned regions assigned to
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/hit_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/hit_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of reads that changed to HPB read.
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/miss_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/miss_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of reads that cannot be changed to
-@@ -1268,7 +1268,7 @@ Description:	This entry shows the number of reads that cannot be changed to
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/rb_noti_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_noti_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of response UPIUs that has
-@@ -1276,7 +1276,7 @@ Description:	This entry shows the number of response UPIUs that has
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/rb_active_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_active_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of active sub-regions recommended by
-@@ -1284,7 +1284,7 @@ Description:	This entry shows the number of active sub-regions recommended by
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/rb_inactive_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_inactive_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of inactive regions recommended by
-@@ -1292,10 +1292,45 @@ Description:	This entry shows the number of inactive regions recommended by
- 
- 		The file is read only.
- 
--What:		/sys/class/scsi_device/*/device/hpb_sysfs/map_req_cnt
-+What:		/sys/class/scsi_device/*/device/hpb_stat_sysfs/map_req_cnt
- Date:		March 2021
- Contact:	Daejun Park <daejun7.park@samsung.com>
- Description:	This entry shows the number of read buffer commands for
- 		activating sub-regions recommended by response UPIUs.
- 
- 		The file is read only.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/requeue_timeout_ms
-+Date:		March 2021
-+Contact:	Daejun Park <daejun7.park@samsung.com>
-+Description:	This entry shows the requeue timeout threshold for write buffer
-+		command in ms. This value can be changed by writing proper integer to
-+		this entry.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/attributes/max_data_size_hpb_single_cmd
-+Date:		March 2021
-+Contact:	Daejun Park <daejun7.park@samsung.com>
-+Description:	This entry shows the maximum HPB data size for using single HPB
-+		command.
-+
-+		===  ========
-+		00h  4KB
-+		01h  8KB
-+		02h  12KB
-+		...
-+		FFh  1024KB
-+		===  ========
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/flags/wb_enable
-+Date:		March 2021
-+Contact:	Daejun Park <daejun7.park@samsung.com>
-+Description:	This entry shows the status of HPB.
-+
-+		== ============================
-+		0  HPB is not enabled.
-+		1  HPB is enabled
-+		== ============================
-+
-+		The file is read only.
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 2546e7a1ac4f..92a883866e12 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -782,6 +782,7 @@ UFS_FLAG(disable_fw_update, _PERMANENTLY_DISABLE_FW_UPDATE);
- UFS_FLAG(wb_enable, _WB_EN);
- UFS_FLAG(wb_flush_en, _WB_BUFF_FLUSH_EN);
- UFS_FLAG(wb_flush_during_h8, _WB_BUFF_FLUSH_DURING_HIBERN8);
-+UFS_FLAG(hpb_enable, _HPB_EN);
- 
- static struct attribute *ufs_sysfs_device_flags[] = {
- 	&dev_attr_device_init.attr,
-@@ -795,6 +796,7 @@ static struct attribute *ufs_sysfs_device_flags[] = {
- 	&dev_attr_wb_enable.attr,
- 	&dev_attr_wb_flush_en.attr,
- 	&dev_attr_wb_flush_during_h8.attr,
-+	&dev_attr_hpb_enable.attr,
- 	NULL,
- };
- 
-@@ -841,6 +843,7 @@ out:									\
- static DEVICE_ATTR_RO(_name)
- 
- UFS_ATTRIBUTE(boot_lun_enabled, _BOOT_LU_EN);
-+UFS_ATTRIBUTE(max_data_size_hpb_single_cmd, _MAX_HPB_SINGLE_CMD);
- UFS_ATTRIBUTE(current_power_mode, _POWER_MODE);
- UFS_ATTRIBUTE(active_icc_level, _ACTIVE_ICC_LVL);
- UFS_ATTRIBUTE(ooo_data_enabled, _OOO_DATA_EN);
-@@ -864,6 +867,7 @@ UFS_ATTRIBUTE(wb_cur_buf, _CURR_WB_BUFF_SIZE);
- 
- static struct attribute *ufs_sysfs_attributes[] = {
- 	&dev_attr_boot_lun_enabled.attr,
-+	&dev_attr_max_data_size_hpb_single_cmd.attr,
- 	&dev_attr_current_power_mode.attr,
- 	&dev_attr_active_icc_level.attr,
- 	&dev_attr_ooo_data_enabled.attr,
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index bfb84d2ba990..8c6b38b1b142 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -123,12 +123,13 @@ enum flag_idn {
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
- 	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
-+	QUERY_FLAG_IDN_HPB_EN				= 0x12,
- };
- 
- /* Attribute idn for Query requests */
- enum attr_idn {
- 	QUERY_ATTR_IDN_BOOT_LU_EN		= 0x00,
--	QUERY_ATTR_IDN_RESERVED			= 0x01,
-+	QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD	= 0x01,
- 	QUERY_ATTR_IDN_POWER_MODE		= 0x02,
- 	QUERY_ATTR_IDN_ACTIVE_ICC_LVL		= 0x03,
- 	QUERY_ATTR_IDN_OOO_DATA_EN		= 0x04,
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index a7cf9278965c..1653c7a7b066 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2653,7 +2653,12 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 
- 	lrbp->req_abort_skip = false;
- 
--	ufshpb_prep(hba, lrbp);
-+	err = ufshpb_prep(hba, lrbp);
-+	if (err == -EAGAIN) {
-+		lrbp->cmd = NULL;
-+		ufshcd_release(hba);
-+		goto out;
-+	}
- 
- 	ufshcd_comp_scsi_upiu(hba, lrbp);
- 
-@@ -3107,7 +3112,7 @@ int ufshcd_query_attr(struct ufs_hba *hba, enum query_opcode opcode,
-  *
-  * Returns 0 for success, non-zero in case of failure
- */
--static int ufshcd_query_attr_retry(struct ufs_hba *hba,
-+int ufshcd_query_attr_retry(struct ufs_hba *hba,
- 	enum query_opcode opcode, enum attr_idn idn, u8 index, u8 selector,
- 	u32 *attr_val)
- {
-@@ -4862,7 +4867,8 @@ static int ufshcd_change_queue_depth(struct scsi_device *sdev, int depth)
- static void ufshcd_hpb_destroy(struct ufs_hba *hba, struct scsi_device *sdev)
- {
- 	/* skip well-known LU */
--	if ((sdev->lun >= UFS_UPIU_MAX_UNIT_NUM_ID) || !ufshpb_is_allowed(hba))
-+	if ((sdev->lun >= UFS_UPIU_MAX_UNIT_NUM_ID) ||
-+	    !(hba->dev_info.hpb_enabled) || !ufshpb_is_allowed(hba))
- 		return;
- 
- 	ufshpb_destroy_lu(hba, sdev);
-@@ -7454,8 +7460,18 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
- 
- 	if (dev_info->wspecversion >= UFS_DEV_HPB_SUPPORT_VERSION &&
- 	    (b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
--		dev_info->hpb_enabled = true;
-+		bool hpb_en = false;
-+
- 		ufshpb_get_dev_info(hba, desc_buf);
-+
-+		if (!ufshpb_is_legacy(hba))
-+			err = ufshcd_query_flag_retry(hba,
-+						      UPIU_QUERY_OPCODE_READ_FLAG,
-+						      QUERY_FLAG_IDN_HPB_EN, 0,
-+						      &hpb_en);
-+
-+		if (ufshpb_is_legacy(hba) || (!err && hpb_en))
-+			dev_info->hpb_enabled = true;
- 	}
- 
- 	err = ufshcd_read_string_desc(hba, model_index,
-@@ -8028,6 +8044,7 @@ static const struct attribute_group *ufshcd_driver_groups[] = {
- 	&ufs_sysfs_lun_attributes_group,
- #ifdef CONFIG_SCSI_UFS_HPB
- 	&ufs_sysfs_hpb_stat_group,
-+	&ufs_sysfs_hpb_param_group,
- #endif
- 	NULL,
- };
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 008a5f7146c0..8aca8f327981 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -654,6 +654,8 @@ struct ufs_hba_variant_params {
-  * @srgn_size: device reported HPB sub-region size
-  * @slave_conf_cnt: counter to check all lu finished initialization
-  * @hpb_disabled: flag to check if HPB is disabled
-+ * @max_hpb_single_cmd: maximum size of single HPB command
-+ * @is_legacy: flag to check HPB 1.0
-  */
- struct ufshpb_dev_info {
- 	int num_lu;
-@@ -661,6 +663,8 @@ struct ufshpb_dev_info {
- 	int srgn_size;
- 	atomic_t slave_conf_cnt;
- 	bool hpb_disabled;
-+	int max_hpb_single_cmd;
-+	bool is_legacy;
- };
- #endif
- 
-@@ -1096,6 +1100,9 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
- 			   u8 param_offset,
- 			   u8 *param_read_buf,
- 			   u8 param_size);
-+int ufshcd_query_attr_retry(struct ufs_hba *hba, enum query_opcode opcode,
-+			    enum attr_idn idn, u8 index, u8 selector,
-+			    u32 *attr_val);
- int ufshcd_query_attr(struct ufs_hba *hba, enum query_opcode opcode,
- 		      enum attr_idn idn, u8 index, u8 selector, u32 *attr_val);
- int ufshcd_query_flag(struct ufs_hba *hba, enum query_opcode opcode,
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index f789339f68d9..3ac8b0a9e8d3 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -31,6 +31,11 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
- 	return !(hba->ufshpb_dev.hpb_disabled);
- }
- 
-+bool ufshpb_is_legacy(struct ufs_hba *hba)
-+{
-+	return hba->ufshpb_dev.is_legacy;
-+}
-+
- static struct ufshpb_lu *ufshpb_get_hpb_data(struct scsi_device *sdev)
- {
- 	return sdev->hostdata;
-@@ -64,9 +69,19 @@ static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
- 	       op_is_discard(req_op(cmd->request));
- }
- 
--static bool ufshpb_is_support_chunk(int transfer_len)
-+static bool ufshpb_is_support_chunk(struct ufshpb_lu *hpb, int transfer_len)
- {
--	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-+	return transfer_len <= hpb->pre_req_max_tr_len;
-+}
-+
-+/*
-+ * In this driver, WRITE_BUFFER CMD support 36KB (len=9) ~ 512KB (len=128) as
-+ * default. It is possible to change range of transfer_len through sysfs.
-+ */
-+static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int len)
-+{
-+	return (len > hpb->pre_req_min_tr_len &&
-+		len <= hpb->pre_req_max_tr_len);
- }
- 
- static bool ufshpb_is_general_lun(int lun)
-@@ -74,8 +89,7 @@ static bool ufshpb_is_general_lun(int lun)
- 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
- }
- 
--static bool
--ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
-+static bool ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
- {
- 	if (hpb->lu_pinned_end != PINNED_NOT_SET &&
- 	    rgn_idx >= hpb->lu_pinned_start &&
-@@ -264,7 +278,8 @@ ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
- 
- static void
- ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
--			    u32 lpn, u64 ppn, unsigned int transfer_len)
-+			    u32 lpn, u64 ppn, unsigned int transfer_len,
-+			    int read_id)
- {
- 	unsigned char *cdb = lrbp->cmd->cmnd;
- 
-@@ -273,15 +288,261 @@ ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
- 	/* ppn value is stored as big-endian in the host memory */
- 	memcpy(&cdb[6], &ppn, sizeof(u64));
- 	cdb[14] = transfer_len;
-+	cdb[15] = read_id;
- 
- 	lrbp->cmd->cmd_len = UFS_CDB_SIZE;
- }
- 
-+static inline void ufshpb_set_write_buf_cmd(unsigned char *cdb,
-+					    unsigned long lpn, unsigned int len,
-+					    int read_id)
-+{
-+	cdb[0] = UFSHPB_WRITE_BUFFER;
-+	cdb[1] = UFSHPB_WRITE_BUFFER_PREFETCH_ID;
-+
-+	put_unaligned_be32(lpn, &cdb[2]);
-+	cdb[6] = read_id;
-+	put_unaligned_be16(len * HPB_ENTRY_SIZE, &cdb[7]);
-+
-+	cdb[9] = 0x00;	/* Control = 0x00 */
-+}
-+
-+static struct ufshpb_req *ufshpb_get_pre_req(struct ufshpb_lu *hpb)
-+{
-+	struct ufshpb_req *pre_req;
-+
-+	if (hpb->num_inflight_pre_req >= hpb->throttle_pre_req) {
-+		dev_info(&hpb->sdev_ufs_lu->sdev_dev,
-+			 "pre_req throttle. inflight %d throttle %d",
-+			 hpb->num_inflight_pre_req, hpb->throttle_pre_req);
-+		return NULL;
-+	}
-+
-+	pre_req = list_first_entry_or_null(&hpb->lh_pre_req_free,
-+					   struct ufshpb_req, list_req);
-+	if (!pre_req) {
-+		dev_info(&hpb->sdev_ufs_lu->sdev_dev, "There is no pre_req");
-+		return NULL;
-+	}
-+
-+	list_del_init(&pre_req->list_req);
-+	hpb->num_inflight_pre_req++;
-+
-+	return pre_req;
-+}
-+
-+static inline void ufshpb_put_pre_req(struct ufshpb_lu *hpb,
-+				      struct ufshpb_req *pre_req)
-+{
-+	pre_req->req = NULL;
-+	bio_reset(pre_req->bio);
-+	list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
-+	hpb->num_inflight_pre_req--;
-+}
-+
-+static void ufshpb_pre_req_compl_fn(struct request *req, blk_status_t error)
-+{
-+	struct ufshpb_req *pre_req = (struct ufshpb_req *)req->end_io_data;
-+	struct ufshpb_lu *hpb = pre_req->hpb;
-+	unsigned long flags;
-+
-+	if (error) {
-+		struct scsi_request *rq = scsi_req(req);
-+		struct scsi_sense_hdr sshdr;
-+
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev, "block status %d", error);
-+		scsi_normalize_sense(rq->sense, SCSI_SENSE_BUFFERSIZE,
-+				     &sshdr);
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"code %x sense_key %x asc %x ascq %x",
-+			sshdr.response_code,
-+			sshdr.sense_key, sshdr.asc, sshdr.ascq);
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"byte4 %x byte5 %x byte6 %x additional_len %x",
-+			sshdr.byte4, sshdr.byte5,
-+			sshdr.byte6, sshdr.additional_length);
-+	}
-+
-+	blk_mq_free_request(req);
-+	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-+	ufshpb_put_pre_req(pre_req->hpb, pre_req);
-+	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+}
-+
-+static int ufshpb_prep_entry(struct ufshpb_req *pre_req, struct page *page)
-+{
-+	struct ufshpb_lu *hpb = pre_req->hpb;
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	u64 *addr;
-+	int offset = 0;
-+	int copied;
-+	unsigned long lpn = pre_req->wb.lpn;
-+	int rgn_idx, srgn_idx, srgn_offset;
-+	unsigned long flags;
-+
-+	addr = page_address(page);
-+	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-+
-+	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-+
-+next_offset:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if (!ufshpb_is_valid_srgn(rgn, srgn))
-+		goto mctx_error;
-+
-+	if (!srgn->mctx)
-+		goto mctx_error;
-+
-+	copied = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset,
-+					   pre_req->wb.len - offset,
-+					   &addr[offset]);
-+
-+	if (copied < 0)
-+		goto mctx_error;
-+
-+	offset += copied;
-+	srgn_offset += copied;
-+
-+	if (srgn_offset == hpb->entries_per_srgn) {
-+		srgn_offset = 0;
-+
-+		if (++srgn_idx == hpb->srgns_per_rgn) {
-+			srgn_idx = 0;
-+			rgn_idx++;
-+		}
-+	}
-+
-+	if (offset < pre_req->wb.len)
-+		goto next_offset;
-+
-+	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+	return 0;
-+mctx_error:
-+	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+	return -ENOMEM;
-+}
-+
-+static int ufshpb_pre_req_add_bio_page(struct ufshpb_lu *hpb,
-+				       struct request_queue *q,
-+				       struct ufshpb_req *pre_req)
-+{
-+	struct page *page = pre_req->wb.m_page;
-+	struct bio *bio = pre_req->bio;
-+	int entries_bytes, ret;
-+
-+	if (!page)
-+		return -ENOMEM;
-+
-+	if (ufshpb_prep_entry(pre_req, page))
-+		return -ENOMEM;
-+
-+	entries_bytes = pre_req->wb.len * sizeof(u64);
-+
-+	ret = bio_add_pc_page(q, bio, page, entries_bytes, 0);
-+	if (ret != entries_bytes) {
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"bio_add_pc_page fail: %d", ret);
-+		return -ENOMEM;
-+	}
-+	return 0;
-+}
-+
-+static inline int ufshpb_get_read_id(struct ufshpb_lu *hpb)
-+{
-+	if (++hpb->cur_read_id >= MAX_HPB_READ_ID)
-+		hpb->cur_read_id = 1;
-+	return hpb->cur_read_id;
-+}
-+
-+static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
-+				  struct ufshpb_req *pre_req, int read_id)
-+{
-+	struct scsi_device *sdev = cmd->device;
-+	struct request_queue *q = sdev->request_queue;
-+	struct request *req;
-+	struct scsi_request *rq;
-+	struct bio *bio = pre_req->bio;
-+
-+	pre_req->hpb = hpb;
-+	pre_req->wb.lpn = sectors_to_logical(cmd->device,
-+					     blk_rq_pos(cmd->request));
-+	pre_req->wb.len = sectors_to_logical(cmd->device,
-+					     blk_rq_sectors(cmd->request));
-+	if (ufshpb_pre_req_add_bio_page(hpb, q, pre_req))
-+		return -ENOMEM;
-+
-+	req = pre_req->req;
-+
-+	/* 1. request setup */
-+	blk_rq_append_bio(req, &bio);
-+	req->rq_disk = NULL;
-+	req->end_io_data = (void *)pre_req;
-+	req->end_io = ufshpb_pre_req_compl_fn;
-+
-+	/* 2. scsi_request setup */
-+	rq = scsi_req(req);
-+	rq->retries = 1;
-+
-+	ufshpb_set_write_buf_cmd(rq->cmd, pre_req->wb.lpn, pre_req->wb.len,
-+				 read_id);
-+	rq->cmd_len = scsi_command_size(rq->cmd);
-+
-+	if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-+		return -EAGAIN;
-+
-+	hpb->stats.pre_req_cnt++;
-+
-+	return 0;
-+}
-+
-+static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
-+				int *read_id)
-+{
-+	struct ufshpb_req *pre_req;
-+	struct request *req = NULL;
-+	unsigned long flags;
-+	int _read_id;
-+	int ret = 0;
-+
-+	req = blk_get_request(cmd->device->request_queue,
-+			      REQ_OP_SCSI_OUT | REQ_SYNC, BLK_MQ_REQ_NOWAIT);
-+	if (IS_ERR(req))
-+		return -EAGAIN;
-+
-+	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-+	pre_req = ufshpb_get_pre_req(hpb);
-+	if (!pre_req) {
-+		ret = -EAGAIN;
-+		goto unlock_out;
-+	}
-+	_read_id = ufshpb_get_read_id(hpb);
-+	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+
-+	pre_req->req = req;
-+
-+	ret = ufshpb_execute_pre_req(hpb, cmd, pre_req, _read_id);
-+	if (ret)
-+		goto free_pre_req;
-+
-+	*read_id = _read_id;
-+
-+	return ret;
-+free_pre_req:
-+	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-+	ufshpb_put_pre_req(hpb, pre_req);
-+unlock_out:
-+	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+	blk_put_request(req);
-+	return ret;
-+}
-+
- /*
-  * This function will set up HPB read command using host-side L2P map data.
-- * In HPB v1.0, maximum size of HPB read command is 4KB.
-  */
--void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-+int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- {
- 	struct ufshpb_lu *hpb;
- 	struct ufshpb_region *rgn;
-@@ -291,19 +552,20 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 	u64 ppn;
- 	unsigned long flags;
- 	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-+	int read_id = 0;
- 	int err = 0;
- 
- 	hpb = ufshpb_get_hpb_data(cmd->device);
- 	if (!hpb)
--		return;
-+		return -ENODEV;
- 
- 	if (ufshpb_get_state(hpb) == HPB_INIT)
--		return;
-+		return -ENODEV;
- 
- 	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
- 		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
- 			   "%s: ufshpb state is not PRESENT", __func__);
--		return;
-+		return -ENODEV;
- 	}
- 
- 	if (blk_rq_is_scsi(cmd->request) ||
-@@ -314,7 +576,7 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 	transfer_len = sectors_to_logical(cmd->device,
- 					  blk_rq_sectors(cmd->request));
- 	if (unlikely(!transfer_len))
--		return;
-+		return 0;
- 
- 	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
- 	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-@@ -327,18 +589,18 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
- 				 transfer_len);
- 		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
--		return;
-+		return 0;
- 	}
- 
--	if (!ufshpb_is_support_chunk(transfer_len))
--		return;
-+	if (!ufshpb_is_support_chunk(hpb, transfer_len))
-+		return 0;
- 
- 	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
- 	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
- 				   transfer_len)) {
- 		hpb->stats.miss_cnt++;
- 		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
--		return;
-+		return 0;
- 	}
- 
- 	err = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset, 1, &ppn);
-@@ -351,64 +613,101 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		 * active state.
- 		 */
- 		dev_err(hba->dev, "get ppn failed. err %d\n", err);
--		return;
-+		return err;
-+	}
-+	if (!ufshpb_is_legacy(hba) &&
-+	    ufshpb_is_required_wb(hpb, transfer_len)) {
-+		err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-+		if (err) {
-+			unsigned long timeout;
-+
-+			timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
-+				  hpb->params.requeue_timeout_ms);
-+
-+			if (time_before(jiffies, timeout))
-+				return -EAGAIN;
-+
-+			hpb->stats.miss_cnt++;
-+			return 0;
-+		}
- 	}
- 
--	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-+	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len, read_id);
- 
- 	hpb->stats.hit_cnt++;
-+	return 0;
- }
--static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
--					     struct ufshpb_subregion *srgn)
-+
-+static struct ufshpb_req *ufshpb_get_req(struct ufshpb_lu *hpb,
-+					 int rgn_idx, enum req_opf dir,
-+					 bool atomic)
- {
--	struct ufshpb_req *map_req;
-+	struct ufshpb_req *rq;
- 	struct request *req;
--	struct bio *bio;
- 	int retries = HPB_MAP_REQ_RETRIES;
- 
--	map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
--	if (!map_req)
-+	rq = kmem_cache_alloc(hpb->map_req_cache, GFP_ATOMIC);
-+	if (!rq)
- 		return NULL;
- 
- retry:
--	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
--			      REQ_OP_SCSI_IN, BLK_MQ_REQ_NOWAIT);
-+	req = blk_get_request(hpb->sdev_ufs_lu->request_queue, dir,
-+			      BLK_MQ_REQ_NOWAIT);
- 
--	if ((PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
-+	if (!atomic && (PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
- 		usleep_range(3000, 3100);
- 		goto retry;
- 	}
- 
- 	if (IS_ERR(req))
--		goto free_map_req;
-+		goto free_rq;
-+
-+	rq->hpb = hpb;
-+	rq->req = req;
-+	rq->rb.rgn_idx = rgn_idx;
-+
-+	return rq;
-+
-+free_rq:
-+	kmem_cache_free(hpb->map_req_cache, rq);
-+	return NULL;
-+}
-+
-+static void ufshpb_put_req(struct ufshpb_lu *hpb, struct ufshpb_req *rq)
-+{
-+	blk_put_request(rq->req);
-+	kmem_cache_free(hpb->map_req_cache, rq);
-+}
-+
-+static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
-+					     struct ufshpb_subregion *srgn)
-+{
-+	struct ufshpb_req *map_req;
-+	struct bio *bio;
-+
-+	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN, false);
-+	if (!map_req)
-+		return NULL;
- 
- 	bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
- 	if (!bio) {
--		blk_put_request(req);
--		goto free_map_req;
-+		ufshpb_put_req(hpb, map_req);
-+		return NULL;
- 	}
- 
--	map_req->hpb = hpb;
--	map_req->req = req;
- 	map_req->bio = bio;
- 
--	map_req->rgn_idx = srgn->rgn_idx;
--	map_req->srgn_idx = srgn->srgn_idx;
--	map_req->mctx = srgn->mctx;
-+	map_req->rb.srgn_idx = srgn->srgn_idx;
-+	map_req->rb.mctx = srgn->mctx;
- 
- 	return map_req;
--
--free_map_req:
--	kmem_cache_free(hpb->map_req_cache, map_req);
--	return NULL;
- }
- 
- static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
- 			       struct ufshpb_req *map_req)
- {
- 	bio_put(map_req->bio);
--	blk_put_request(map_req->req);
--	kmem_cache_free(hpb->map_req_cache, map_req);
-+	ufshpb_put_req(hpb, map_req);
- }
- 
- static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
-@@ -491,6 +790,13 @@ static void ufshpb_activate_subregion(struct ufshpb_lu *hpb,
- 	srgn->srgn_state = HPB_SRGN_VALID;
- }
- 
-+static void ufshpb_umap_req_compl_fn(struct request *req, blk_status_t error)
-+{
-+	struct ufshpb_req *umap_req = (struct ufshpb_req *)req->end_io_data;
-+
-+	ufshpb_put_req(umap_req->hpb, umap_req);
-+}
-+
- static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
- {
- 	struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
-@@ -498,8 +804,8 @@ static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
- 	struct ufshpb_subregion *srgn;
- 	unsigned long flags;
- 
--	srgn = hpb->rgn_tbl[map_req->rgn_idx].srgn_tbl +
--		map_req->srgn_idx;
-+	srgn = hpb->rgn_tbl[map_req->rb.rgn_idx].srgn_tbl +
-+		map_req->rb.srgn_idx;
- 
- 	ufshpb_clear_dirty_bitmap(hpb, srgn);
- 	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-@@ -509,6 +815,16 @@ static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
- 	ufshpb_put_map_req(map_req->hpb, map_req);
- }
- 
-+static void ufshpb_set_unmap_cmd(unsigned char *cdb, struct ufshpb_region *rgn)
-+{
-+	cdb[0] = UFSHPB_WRITE_BUFFER;
-+	cdb[1] = rgn ? UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID :
-+			  UFSHPB_WRITE_BUFFER_INACT_ALL_ID;
-+	if (rgn)
-+		put_unaligned_be16(rgn->rgn_idx, &cdb[2]);
-+	cdb[9] = 0x00;
-+}
-+
- static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
- 				    int srgn_idx, int srgn_mem_size)
- {
-@@ -522,6 +838,25 @@ static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
- 	cdb[9] = 0x00;
- }
- 
-+static int ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
-+				   struct ufshpb_req *umap_req,
-+				   struct ufshpb_region *rgn)
-+{
-+	struct request *req;
-+	struct scsi_request *rq;
-+
-+	req = umap_req->req;
-+	req->timeout = 0;
-+	req->end_io_data = (void *)umap_req;
-+	rq = scsi_req(req);
-+	ufshpb_set_unmap_cmd(rq->cmd, rgn);
-+	rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
-+
-+	blk_execute_rq_nowait(NULL, req, 1, ufshpb_umap_req_compl_fn);
-+
-+	return 0;
-+}
-+
- static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
- 				  struct ufshpb_req *map_req, bool last)
- {
-@@ -534,12 +869,12 @@ static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
- 
- 	q = hpb->sdev_ufs_lu->request_queue;
- 	for (i = 0; i < hpb->pages_per_srgn; i++) {
--		ret = bio_add_pc_page(q, map_req->bio, map_req->mctx->m_page[i],
-+		ret = bio_add_pc_page(q, map_req->bio, map_req->rb.mctx->m_page[i],
- 				      PAGE_SIZE, 0);
- 		if (ret != PAGE_SIZE) {
- 			dev_err(&hpb->sdev_ufs_lu->sdev_dev,
- 				   "bio_add_pc_page fail %d - %d\n",
--				   map_req->rgn_idx, map_req->srgn_idx);
-+				   map_req->rb.rgn_idx, map_req->rb.srgn_idx);
- 			return ret;
- 		}
- 	}
-@@ -555,8 +890,8 @@ static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
- 	if (unlikely(last))
- 		mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
- 
--	ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
--				map_req->srgn_idx, mem_size);
-+	ufshpb_set_read_buf_cmd(rq->cmd, map_req->rb.rgn_idx,
-+				map_req->rb.srgn_idx, mem_size);
- 	rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
- 
- 	blk_execute_rq_nowait(NULL, req, 1, ufshpb_map_req_compl_fn);
-@@ -688,6 +1023,31 @@ static void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
- 	}
- }
- 
-+static int ufshpb_issue_umap_req(struct ufshpb_lu *hpb,
-+				 struct ufshpb_region *rgn, bool atomic)
-+{
-+	struct ufshpb_req *umap_req;
-+	int rgn_idx = rgn ? rgn->rgn_idx : 0;
-+
-+	umap_req = ufshpb_get_req(hpb, rgn_idx, REQ_OP_SCSI_OUT, atomic);
-+	if (!umap_req)
-+		return -ENOMEM;
-+
-+	if (ufshpb_execute_umap_req(hpb, umap_req, rgn))
-+		goto free_umap_req;
-+
-+	return 0;
-+
-+free_umap_req:
-+	ufshpb_put_req(hpb, umap_req);
-+	return -EAGAIN;
-+}
-+
-+static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
-+{
-+	return ufshpb_issue_umap_req(hpb, NULL, false);
-+}
-+
- static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
- 				  struct ufshpb_region *rgn)
- {
-@@ -1210,6 +1570,17 @@ static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
- 	u32 entries_per_rgn;
- 	u64 rgn_mem_size, tmp;
- 
-+	/* for pre_req */
-+	hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
-+
-+	if (ufshpb_is_legacy(hba))
-+		hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
-+	else
-+		hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
-+					      hpb->pre_req_min_tr_len);
-+
-+	hpb->cur_read_id = 0;
-+
- 	hpb->lu_pinned_start = hpb_lu_info->pinned_start;
- 	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
- 		(hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
-@@ -1357,7 +1728,7 @@ ufshpb_sysfs_attr_show_func(rb_active_cnt);
- ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
- ufshpb_sysfs_attr_show_func(map_req_cnt);
- 
--static struct attribute *hpb_dev_attrs[] = {
-+static struct attribute *hpb_dev_stat_attrs[] = {
- 	&dev_attr_hit_cnt.attr,
- 	&dev_attr_miss_cnt.attr,
- 	&dev_attr_rb_noti_cnt.attr,
-@@ -1368,10 +1739,118 @@ static struct attribute *hpb_dev_attrs[] = {
- };
- 
- struct attribute_group ufs_sysfs_hpb_stat_group = {
--	.name = "hpb_sysfs",
--	.attrs = hpb_dev_attrs,
-+	.name = "hpb_stat_sysfs",
-+	.attrs = hpb_dev_stat_attrs,
- };
- 
-+/* SYSFS functions */
-+#define ufshpb_sysfs_param_show_func(__name)				\
-+static ssize_t __name##_show(struct device *dev,			\
-+	struct device_attribute *attr, char *buf)			\
-+{									\
-+	struct scsi_device *sdev = to_scsi_device(dev);			\
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);		\
-+	if (!hpb)							\
-+		return -ENODEV;						\
-+									\
-+	return sysfs_emit(buf, "%d\n", hpb->params.__name);		\
-+}
-+
-+ufshpb_sysfs_param_show_func(requeue_timeout_ms);
-+static ssize_t
-+requeue_timeout_ms_store(struct device *dev, struct device_attribute *attr,
-+			 const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val < 0)
-+		return -EINVAL;
-+
-+	hpb->params.requeue_timeout_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(requeue_timeout_ms);
-+
-+static struct attribute *hpb_dev_param_attrs[] = {
-+	&dev_attr_requeue_timeout_ms.attr,
-+	NULL,
-+};
-+
-+struct attribute_group ufs_sysfs_hpb_param_group = {
-+	.name = "hpb_param_sysfs",
-+	.attrs = hpb_dev_param_attrs,
-+};
-+
-+static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
-+{
-+	struct ufshpb_req *pre_req = NULL, *t;
-+	int qd = hpb->sdev_ufs_lu->queue_depth / 2;
-+	int i;
-+
-+	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
-+
-+	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
-+	hpb->throttle_pre_req = qd;
-+	hpb->num_inflight_pre_req = 0;
-+
-+	if (!hpb->pre_req)
-+		goto release_mem;
-+
-+	for (i = 0; i < qd; i++) {
-+		pre_req = hpb->pre_req + i;
-+		INIT_LIST_HEAD(&pre_req->list_req);
-+		pre_req->req = NULL;
-+
-+		pre_req->bio = bio_alloc(GFP_KERNEL, 1);
-+		if (!pre_req->bio)
-+			goto release_mem;
-+
-+		pre_req->wb.m_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+		if (!pre_req->wb.m_page) {
-+			bio_put(pre_req->bio);
-+			goto release_mem;
-+		}
-+
-+		list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
-+	}
-+
-+	return 0;
-+release_mem:
-+	list_for_each_entry_safe(pre_req, t, &hpb->lh_pre_req_free, list_req) {
-+		list_del_init(&pre_req->list_req);
-+		bio_put(pre_req->bio);
-+		__free_page(pre_req->wb.m_page);
-+	}
-+
-+	kfree(hpb->pre_req);
-+	return -ENOMEM;
-+}
-+
-+static void ufshpb_pre_req_mempool_destroy(struct ufshpb_lu *hpb)
-+{
-+	struct ufshpb_req *pre_req = NULL;
-+	int i;
-+
-+	for (i = 0; i < hpb->throttle_pre_req; i++) {
-+		pre_req = hpb->pre_req + i;
-+		bio_put(hpb->pre_req[i].bio);
-+		if (!pre_req->wb.m_page)
-+			__free_page(hpb->pre_req[i].wb.m_page);
-+		list_del_init(&pre_req->list_req);
-+	}
-+
-+	kfree(hpb->pre_req);
-+}
-+
- static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- {
- 	hpb->stats.hit_cnt = 0;
-@@ -1382,6 +1861,11 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- 	hpb->stats.map_req_cnt = 0;
- }
- 
-+static void ufshpb_param_init(struct ufshpb_lu *hpb)
-+{
-+	hpb->params.requeue_timeout_ms = HPB_REQUEUE_TIME_MS;
-+}
-+
- static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- {
- 	int ret;
-@@ -1414,14 +1898,24 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 		goto release_req_cache;
- 	}
- 
-+	ret = ufshpb_pre_req_mempool_init(hpb);
-+	if (ret) {
-+		dev_err(hba->dev, "ufshpb(%d) pre_req_mempool init fail",
-+			hpb->lun);
-+		goto release_m_page_cache;
-+	}
-+
- 	ret = ufshpb_alloc_region_tbl(hba, hpb);
- 	if (ret)
--		goto release_m_page_cache;
-+		goto release_pre_req_mempool;
- 
- 	ufshpb_stat_init(hpb);
-+	ufshpb_param_init(hpb);
- 
- 	return 0;
- 
-+release_pre_req_mempool:
-+	ufshpb_pre_req_mempool_destroy(hpb);
- release_m_page_cache:
- 	kmem_cache_destroy(hpb->m_page_cache);
- release_req_cache:
-@@ -1430,7 +1924,7 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- }
- 
- static struct ufshpb_lu *
--ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
-+ufshpb_alloc_hpb_lu(struct ufs_hba *hba, struct scsi_device *sdev,
- 		    struct ufshpb_dev_info *hpb_dev_info,
- 		    struct ufshpb_lu_info *hpb_lu_info)
- {
-@@ -1441,7 +1935,8 @@ ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
- 	if (!hpb)
- 		return NULL;
- 
--	hpb->lun = lun;
-+	hpb->lun = sdev->lun;
-+	hpb->sdev_ufs_lu = sdev;
- 
- 	ufshpb_lu_parameter_init(hba, hpb, hpb_dev_info, hpb_lu_info);
- 
-@@ -1451,6 +1946,7 @@ ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
- 		goto release_hpb;
- 	}
- 
-+	sdev->hostdata = hpb;
- 	return hpb;
- 
- release_hpb:
-@@ -1653,6 +2149,7 @@ void ufshpb_destroy_lu(struct ufs_hba *hba, struct scsi_device *sdev)
- 
- 	ufshpb_cancel_jobs(hpb);
- 
-+	ufshpb_pre_req_mempool_destroy(hpb);
- 	ufshpb_destroy_region_tbl(hpb);
- 
- 	kmem_cache_destroy(hpb->map_req_cache);
-@@ -1692,6 +2189,7 @@ static void ufshpb_hpb_lu_prepared(struct ufs_hba *hba)
- 			ufshpb_set_state(hpb, HPB_PRESENT);
- 			if ((hpb->lu_pinned_end - hpb->lu_pinned_start) > 0)
- 				queue_work(ufshpb_wq, &hpb->map_work);
-+			ufshpb_issue_umap_all_req(hpb);
- 		} else {
- 			dev_err(hba->dev, "destroy HPB lu %d\n", hpb->lun);
- 			ufshpb_destroy_lu(hba, sdev);
-@@ -1716,7 +2214,7 @@ void ufshpb_init_hpb_lu(struct ufs_hba *hba, struct scsi_device *sdev)
- 	if (ret)
- 		goto out;
- 
--	hpb = ufshpb_alloc_hpb_lu(hba, lun, &hba->ufshpb_dev,
-+	hpb = ufshpb_alloc_hpb_lu(hba, sdev, &hba->ufshpb_dev,
- 				  &hpb_lu_info);
- 	if (!hpb)
- 		goto out;
-@@ -1724,9 +2222,6 @@ void ufshpb_init_hpb_lu(struct ufs_hba *hba, struct scsi_device *sdev)
- 	tot_active_srgn_pages += hpb_lu_info.max_active_rgns *
- 			hpb->srgns_per_rgn * hpb->pages_per_srgn;
- 
--	hpb->sdev_ufs_lu = sdev;
--	sdev->hostdata = hpb;
--
- out:
- 	/* All LUs are initialized */
- 	if (atomic_dec_and_test(&hba->ufshpb_dev.slave_conf_cnt))
-@@ -1813,8 +2308,9 @@ void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf)
- void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- {
- 	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
--	int version;
-+	int version, ret;
- 	u8 hpb_mode;
-+	u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
- 
- 	hpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
- 	if (hpb_mode == HPB_HOST_CONTROL) {
-@@ -1825,13 +2321,27 @@ void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
- 	}
- 
- 	version = get_unaligned_be16(desc_buf + DEVICE_DESC_PARAM_HPB_VER);
--	if (version != HPB_SUPPORT_VERSION) {
-+	if ((version != HPB_SUPPORT_VERSION) &&
-+	    (version != HPB_SUPPORT_LEGACY_VERSION)) {
- 		dev_err(hba->dev, "%s: HPB %x version is not supported.\n",
- 			__func__, version);
- 		hpb_dev_info->hpb_disabled = true;
- 		return;
- 	}
- 
-+	if (version == HPB_SUPPORT_LEGACY_VERSION)
-+		hpb_dev_info->is_legacy = true;
-+
-+	pm_runtime_get_sync(hba->dev);
-+	ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-+		QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
-+	pm_runtime_put_sync(hba->dev);
-+
-+	if (ret)
-+		dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query request failed",
-+			__func__);
-+	hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
-+
- 	/*
- 	 * Get the number of user logical unit to check whether all
- 	 * scsi_device finish initialization
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index 6e6a0252dc15..b1128b0ce486 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -30,19 +30,29 @@
- #define PINNED_NOT_SET				U32_MAX
- 
- /* hpb support chunk size */
--#define HPB_MULTI_CHUNK_HIGH			1
-+#define HPB_LEGACY_CHUNK_HIGH			1
-+#define HPB_MULTI_CHUNK_LOW			7
-+#define HPB_MULTI_CHUNK_HIGH			128
- 
- /* hpb vender defined opcode */
- #define UFSHPB_READ				0xF8
- #define UFSHPB_READ_BUFFER			0xF9
- #define UFSHPB_READ_BUFFER_ID			0x01
-+#define UFSHPB_WRITE_BUFFER			0xFA
-+#define UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID	0x01
-+#define UFSHPB_WRITE_BUFFER_PREFETCH_ID		0x02
-+#define UFSHPB_WRITE_BUFFER_INACT_ALL_ID	0x03
-+#define HPB_WRITE_BUFFER_CMD_LENGTH		10
-+#define MAX_HPB_READ_ID				0x7F
- #define HPB_READ_BUFFER_CMD_LENGTH		10
- #define LU_ENABLED_HPB_FUNC			0x02
- 
- #define HPB_RESET_REQ_RETRIES			10
- #define HPB_MAP_REQ_RETRIES			5
-+#define HPB_REQUEUE_TIME_MS			0
- 
--#define HPB_SUPPORT_VERSION			0x100
-+#define HPB_SUPPORT_VERSION			0x200
-+#define HPB_SUPPORT_LEGACY_VERSION		0x100
- 
- enum UFSHPB_MODE {
- 	HPB_HOST_CONTROL,
-@@ -119,23 +129,38 @@ struct ufshpb_region {
- 	     (i)++)
- 
- /**
-- * struct ufshpb_req - UFSHPB READ BUFFER (for caching map) request structure
-- * @req: block layer request for READ BUFFER
-- * @bio: bio for holding map page
-- * @hpb: ufshpb_lu structure that related to the L2P map
-+ * struct ufshpb_req - HPB related request structure (write/read buffer)
-+ * @req: block layer request structure
-+ * @bio: bio for this request
-+ * @hpb: ufshpb_lu structure that related to
-+ * @list_req: ufshpb_req mempool list
-+ * @sense: store its sense data
-  * @mctx: L2P map information
-  * @rgn_idx: target region index
-  * @srgn_idx: target sub-region index
-  * @lun: target logical unit number
-+ * @m_page: L2P map information data for pre-request
-+ * @len: length of host-side cached L2P map in m_page
-+ * @lpn: start LPN of L2P map in m_page
-  */
- struct ufshpb_req {
- 	struct request *req;
- 	struct bio *bio;
- 	struct ufshpb_lu *hpb;
--	struct ufshpb_map_ctx *mctx;
--
--	unsigned int rgn_idx;
--	unsigned int srgn_idx;
-+	struct list_head list_req;
-+	union {
-+		struct {
-+			struct ufshpb_map_ctx *mctx;
-+			unsigned int rgn_idx;
-+			unsigned int srgn_idx;
-+			unsigned int lun;
-+		} rb;
-+		struct {
-+			struct page *m_page;
-+			unsigned int len;
-+			unsigned long lpn;
-+		} wb;
-+	};
- };
- 
- struct victim_select_info {
-@@ -144,6 +169,10 @@ struct victim_select_info {
- 	atomic_t active_cnt;
- };
- 
-+struct ufshpb_params {
-+	unsigned int requeue_timeout_ms;
-+};
-+
- struct ufshpb_stats {
- 	u64 hit_cnt;
- 	u64 miss_cnt;
-@@ -151,6 +180,7 @@ struct ufshpb_stats {
- 	u64 rb_active_cnt;
- 	u64 rb_inactive_cnt;
- 	u64 map_req_cnt;
-+	u64 pre_req_cnt;
- };
- 
- struct ufshpb_lu {
-@@ -166,6 +196,15 @@ struct ufshpb_lu {
- 	struct list_head lh_act_srgn; /* hold rsp_list_lock */
- 	struct list_head lh_inact_rgn; /* hold rsp_list_lock */
- 
-+	/* pre request information */
-+	struct ufshpb_req *pre_req;
-+	int num_inflight_pre_req;
-+	int throttle_pre_req;
-+	struct list_head lh_pre_req_free;
-+	int cur_read_id;
-+	int pre_req_min_tr_len;
-+	int pre_req_max_tr_len;
-+
- 	/* cached L2P map management worker */
- 	struct work_struct map_work;
- 
-@@ -190,6 +229,7 @@ struct ufshpb_lu {
- 	u32 pages_per_srgn;
- 
- 	struct ufshpb_stats stats;
-+	struct ufshpb_params params;
- 
- 	struct kmem_cache *map_req_cache;
- 	struct kmem_cache *m_page_cache;
-@@ -201,7 +241,7 @@ struct ufs_hba;
- struct ufshcd_lrb;
- 
- #ifndef CONFIG_SCSI_UFS_HPB
--static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
-+static int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) { return 0; }
- static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
- static void ufshpb_resume(struct ufs_hba *hba) {}
- static void ufshpb_suspend(struct ufs_hba *hba) {}
-@@ -214,8 +254,9 @@ static void ufshpb_remove(struct ufs_hba *hba) {}
- static bool ufshpb_is_allowed(struct ufs_hba *hba) { return false; }
- static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
- static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
-+static bool ufshpb_is_legacy(struct ufs_hba *hba) { return false; }
- #else
--void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-+int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_resume(struct ufs_hba *hba);
- void ufshpb_suspend(struct ufs_hba *hba);
-@@ -228,7 +269,9 @@ void ufshpb_remove(struct ufs_hba *hba);
- bool ufshpb_is_allowed(struct ufs_hba *hba);
- void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf);
- void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf);
-+bool ufshpb_is_legacy(struct ufs_hba *hba);
- extern struct attribute_group ufs_sysfs_hpb_stat_group;
-+extern struct attribute_group ufs_sysfs_hpb_param_group;
- #endif
- 
- #endif /* End of Header */
--- 
-2.25.1
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+section .data LMA [0000000000800000,00000000008cd77f] overlaps section 
+.rodata LMA [00000000006f61c0,00000000008499a7]
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+section .pci_fixup LMA [00000000008499a8,000000000084cfd7] overlaps 
+section .data LMA [0000000000800000,00000000008cd77f]
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+arch/riscv/mm/init.o: in function `.L138':
+init.c:(.text+0x232): undefined reference to `__init_text_begin'
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+arch/riscv/mm/init.o: in function `protect_kernel_text_data':
+init.c:(.text+0x23a): undefined reference to `__init_data_begin'
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+init.c:(.text+0x28c): undefined reference to `__init_text_begin'
+/home/alex/wip/lpc/buildroot/build_rv64/host/bin/riscv64-buildroot-linux-gnu-ld: 
+init.c:(.text+0x2a0): undefined reference to `__init_data_begin'
+make[2]: *** [Makefile:1197: vmlinux] Error 1
+make[1]: *** [package/pkg-generic.mk:250: 
+/home/alex/wip/lpc/buildroot/build_rv64/build/linux-custom/.stamp_built] 
+Error 2
+make: *** [Makefile:23: _all] Error 2
 
+The 2 missing symbols are not defined in vmlinux-xip.lds.S and are 
+required for CONFIG_STRICT_KERNEL_RWX, I don't think both configs are 
+exclusive ? I added them in linker script and that works.
+
+But then I'm still blocked with the overlaps, any idea ?
+
+> 
+>>
+>> And as this likely needs another version, I'm going to add my comments
+>> below.
+>>
+>> [    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
+>> [    0.000000] Machine model: riscv-virtio,qemu
+>> [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+>> [    0.000000] printk: bootconsole [sbi0] enabled
+>> [    0.000000] efi: UEFI not found.
+>> [    0.000000] Unable to handle kernel paging request at virtual address
+>> 0000000040000001
+>> [    0.000000] Oops [#1]
+>> [    0.000000] Modules linked in:
+>> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.12.0-rc2 #155
+>> [    0.000000] Hardware name: riscv-virtio,qemu (DT)
+>> [    0.000000] epc : fdt_check_header+0x0/0x1fc
+>> [    0.000000]  ra : early_init_dt_verify+0x16/0x6e
+>> [    0.000000] epc : ffffffe0002b955e ra : ffffffe00082100c sp :
+>> ffffffe001203f10
+>> [    0.000000]  gp : ffffffe0012e40b8 tp : ffffffe00120bd80 t0 :
+>> ffffffe23fdf7000
+>> [    0.000000]  t1 : 0000000000000000 t2 : 0000000000000000 s0 :
+>> ffffffe001203f30
+>> [    0.000000]  s1 : 0000000040000000 a0 : 0000000040000000 a1 :
+>> 00000002bfffffff
+>> [    0.000000]  a2 : ffffffe23fdf6f00 a3 : 0000000000000001 a4 :
+>> 0000000000000018
+>> [    0.000000]  a5 : ffffffe000a0b5e8 a6 : ffffffe23fdf6ef0 a7 :
+>> 0000000000000018
+>> [    0.000000]  s2 : 0000000080000200 s3 : 0000000000000fff s4 :
+>> ffffffe000a0a958
+>> [    0.000000]  s5 : 0000000000000005 s6 : 0000000000000140 s7 :
+>> ffffffe23fdf6ec0
+>> [    0.000000]  s8 : 0000000081000200 s9 : 0000000080000200 s10:
+>> ffffffe000a01000
+>> [    0.000000]  s11: 0000000000000fff t3 : ffffffffbfff7000 t4 :
+>> ffffffffffffffff
+>> [    0.000000]  t5 : 0000000080e00000 t6 : 0000000080202000
+>> [    0.000000] status: 0000000000000100 badaddr: 0000000040000001 cause:
+>> 000000000000000d
+>> [    0.000000] Call Trace:
+>> [    0.000000] [<ffffffe0002b955e>] fdt_check_header+0x0/0x1fc
+>> [    0.000000] [<ffffffe000802af2>] setup_arch+0x3a6/0x412
+>> [    0.000000] [<ffffffe0008006ea>] start_kernel+0x7e/0x580
+>> [    0.000000] random: get_random_bytes called from
+>> print_oops_end_marker+0x22/0x44 with crng_init=0
+>> [    0.000000] ---[ end trace 0000000000000000 ]---
+>> [    0.000000] Kernel panic - not syncing: Fatal exception
+>> [    0.000000] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>>
+>>>
+>>> ---
+>>> Changes in v2:
+>>> - dedicated macro for XIP address fixup when MMU is not enabled yet
+>>>     o both for 32-bit and 64-bit RISC-V
+>>> - SP is explicitly set to a safe place in RAM before __copy_data call
+>>> - removed redundant alignment requirements in vmlinux-xip.lds.S
+>>> - changed long -> uintptr_t typecast in __XIP_FIXUP macro.
+>>> Changes in v3:
+>>> - rebased against latest for-next
+>>> - XIP address fixup macro now takes an argument
+>>> - SMP related fixes
+>>> Changes in v4:
+>>> - rebased against the current for-next
+>>> - less #ifdef's in C/ASM code
+>>> - dedicated XIP_FIXUP_OFFSET assembler macro in head.S
+>>> - C-specific definitions moved into #ifndef __ASSEMBLY__
+>>> - Fixed multi-core boot
+>>> Changes in v5:
+>>> - fixed build error for non-XIP kernels
+>>>
+>>>    arch/riscv/Kconfig                  |  44 +++++++++-
+>>>    arch/riscv/Makefile                 |   8 +-
+>>>    arch/riscv/boot/Makefile            |  13 +++
+>>>    arch/riscv/include/asm/pgtable.h    |  65 ++++++++++++--
+>>>    arch/riscv/kernel/cpu_ops_sbi.c     |  12 ++-
+>>>    arch/riscv/kernel/head.S            |  59 ++++++++++++-
+>>>    arch/riscv/kernel/head.h            |   3 +
+>>>    arch/riscv/kernel/setup.c           |   8 +-
+>>>    arch/riscv/kernel/vmlinux-xip.lds.S | 132 ++++++++++++++++++++++++++++
+>>>    arch/riscv/kernel/vmlinux.lds.S     |   6 ++
+>>>    arch/riscv/mm/init.c                | 100 +++++++++++++++++++--
+>>>    11 files changed, 432 insertions(+), 18 deletions(-)
+>>>    create mode 100644 arch/riscv/kernel/vmlinux-xip.lds.S
+>>>
+>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>> index 85d626b8ce5e..59fb945a900e 100644
+>>> --- a/arch/riscv/Kconfig
+>>> +++ b/arch/riscv/Kconfig
+>>> @@ -438,7 +438,7 @@ config EFI_STUB
+>>>
+>>>    config EFI
+>>>        bool "UEFI runtime support"
+>>> -     depends on OF
+>>> +     depends on OF && !XIP_KERNEL
+>>>        select LIBFDT
+>>>        select UCS2_STRING
+>>>        select EFI_PARAMS_FROM_FDT
+>>> @@ -462,11 +462,51 @@ config STACKPROTECTOR_PER_TASK
+>>>        def_bool y
+>>>        depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
+>>>
+>>> +config XIP_KERNEL
+>>> +     bool "Kernel Execute-In-Place from ROM"
+>>> +     depends on MMU
+>>> +     help
+>>> +       Execute-In-Place allows the kernel to run from non-volatile storage
+>>> +       directly addressable by the CPU, such as NOR flash. This saves RAM
+>>> +       space since the text section of the kernel is not loaded from flash
+>>> +       to RAM.  Read-write sections, such as the data section and stack,
+>>> +       are still copied to RAM.  The XIP kernel is not compressed since
+>>> +       it has to run directly from flash, so it will take more space to
+>>> +       store it.  The flash address used to link the kernel object files,
+>>> +       and for storing it, is configuration dependent. Therefore, if you
+>>> +       say Y here, you must know the proper physical address where to
+>>> +       store the kernel image depending on your own flash memory usage.
+>>> +
+>>> +       Also note that the make target becomes "make xipImage" rather than
+>>> +       "make zImage" or "make Image".  The final kernel binary to put in
+>>> +       ROM memory will be arch/riscv/boot/xipImage.
+>>> +
+>>> +       If unsure, say N.
+>>> +
+>>> +config XIP_PHYS_ADDR
+>>> +     hex "XIP Kernel Physical Location"
+>>> +     depends on XIP_KERNEL
+>>> +     default "0x21000000"
+>>> +     help
+>>> +       This is the physical address in your flash memory the kernel will
+>>> +       be linked for and stored to.  This address is dependent on your
+>>> +       own flash usage.
+>>> +
+>>> +config XIP_PHYS_RAM_BASE
+>>> +     hex "Platform Physical RAM address"
+>>> +     depends on XIP_KERNEL
+>>> +     default "0x80000000"
+>>> +     help
+>>> +       This is the physical address of RAM in the system. It has to be
+>>> +       explicitly specified to run early relocations of read-write data
+>>> +       from flash to RAM.
+>>
+>> This is not XIP specific and this is something I considered to add in
+>> order to map the linear mapping with hugepages, maybe simply rename this
+>> without XIP_ prefix.
+> 
+> Sure, let's just go with PHYS_RAM_BASE. I was reluctant to add yet
+> another constant at first but having to derive it in runtime led to
+> overly complicated calculations which could not be compile time
+> optimized, so here it came.
+> 
+>>> +
+>>>    endmenu
+>>>
+>>>    config BUILTIN_DTB
+>>> -     def_bool n
+>>> +     bool
+>>>        depends on OF
+>>> +     default y if XIP_KERNEL
+>>>
+>>>    menu "Power management options"
+>>>
+>>> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+>>> index 1368d943f1f3..8fcbec03974d 100644
+>>> --- a/arch/riscv/Makefile
+>>> +++ b/arch/riscv/Makefile
+>>> @@ -82,7 +82,11 @@ CHECKFLAGS += -D__riscv -D__riscv_xlen=$(BITS)
+>>>
+>>>    # Default target when executing plain make
+>>>    boot                := arch/riscv/boot
+>>> +ifeq ($(CONFIG_XIP_KERNEL),y)
+>>> +KBUILD_IMAGE := $(boot)/xipImage
+>>> +else
+>>>    KBUILD_IMAGE        := $(boot)/Image.gz
+>>> +endif
+>>>
+>>>    head-y := arch/riscv/kernel/head.o
+>>>
+>>> @@ -95,12 +99,14 @@ PHONY += vdso_install
+>>>    vdso_install:
+>>>        $(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+>>>
+>>> +ifneq ($(CONFIG_XIP_KERNEL),y)
+>>>    ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+>>>    KBUILD_IMAGE := $(boot)/loader.bin
+>>>    else
+>>>    KBUILD_IMAGE := $(boot)/Image.gz
+>>>    endif
+>>> -BOOT_TARGETS := Image Image.gz loader loader.bin
+>>> +endif
+>>> +BOOT_TARGETS := Image Image.gz loader loader.bin xipImage
+>>>
+>>>    all:        $(notdir $(KBUILD_IMAGE))
+>>>
+>>> diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+>>> index 03404c84f971..6bf299f70c27 100644
+>>> --- a/arch/riscv/boot/Makefile
+>>> +++ b/arch/riscv/boot/Makefile
+>>> @@ -17,8 +17,21 @@
+>>>    KCOV_INSTRUMENT := n
+>>>
+>>>    OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+>>> +OBJCOPYFLAGS_xipImage :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+>>>
+>>>    targets := Image Image.* loader loader.o loader.lds loader.bin
+>>> +targets := Image Image.* loader loader.o loader.lds loader.bin xipImage
+>>> +
+>>> +ifeq ($(CONFIG_XIP_KERNEL),y)
+>>> +
+>>> +quiet_cmd_mkxip = $(quiet_cmd_objcopy)
+>>> +cmd_mkxip = $(cmd_objcopy)
+>>> +
+>>> +$(obj)/xipImage: vmlinux FORCE
+>>> +     $(call if_changed,mkxip)
+>>> +     @$(kecho) '  Physical Address of xipImage: $(CONFIG_XIP_PHYS_ADDR)'
+>>> +
+>>> +endif
+>>>
+>>>    $(obj)/Image: vmlinux FORCE
+>>>        $(call if_changed,objcopy)
+>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>>> index ebf817c1bdf4..4c2e6902f2b8 100644
+>>> --- a/arch/riscv/include/asm/pgtable.h
+>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>> @@ -11,6 +11,33 @@
+>>>
+>>>    #include <asm/pgtable-bits.h>
+>>>
+>>> +#ifdef CONFIG_MMU
+>>> +
+>>> +#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>>> +
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#define VMALLOC_SIZE     ((KERN_VIRT_SIZE >> 1) - SZ_16M)
+>>> +#define VMALLOC_END      (PAGE_OFFSET - SZ_16M - 1)
+>>> +
+>>> +#define XIP_OFFSET           SZ_8M
+>>> +#define XIP_MASK             (SZ_8M - 1)
+>>> +#define XIP_VIRT_ADDR(physaddr)      \
+>>> +     (PAGE_OFFSET - XIP_OFFSET + ((physaddr) & XIP_MASK))
+>>> +
+>>> +#else
+>>> +
+>>> +#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>>> +#define VMALLOC_END      (PAGE_OFFSET - 1)
+>>> +
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>> +#else
+>>> +
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#define XIP_VIRT_ADDR(physaddr) (physaddr)
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +#endif /* CONFIG_MMU */
+>>> +
+>>>    #ifndef __ASSEMBLY__
+>>>
+>>>    /* Page Upper Directory not used in RISC-V */
+>>> @@ -21,9 +48,25 @@
+>>>
+>>>    #ifdef CONFIG_MMU
+>>>
+>>> -#define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>>> -#define VMALLOC_END      (PAGE_OFFSET - 1)
+>>> -#define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +/*
+>>> + * Since we use sections to map it, this macro replaces the physical address
+>>> + * with its virtual address while keeping offset from the base section.
+>>
+>> It seems the comment should be the other way around: "this macro
+>> replaces the *virtual* address...etc".
+
+Isn't there an issue with the comment here ?
+
+>>
+>>> + */
+>>> +#define XIP_PHYS_ADDR(va)     \
+>>> +     ((uintptr_t)(va) - PAGE_OFFSET + XIP_OFFSET + CONFIG_XIP_PHYS_ADDR)
+>>> +
+>>> +#define XIP_VIRT_ADDR_START  XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+>>> +#define __PHRAM_BASE         CONFIG_XIP_PHYS_RAM_BASE
+>>
+>> I don't think that it is necessary to define this intermediate
+>> __PHRAM_BASE.
+> 
+> That was for the sake of keeping shorter lines. :)
+> 
+>>> +
+>>> +#define XIP_FIXUP(addr)              \
+>>> +     (((uintptr_t)(addr) >= CONFIG_XIP_PHYS_ADDR && \
+>>> +       (uintptr_t)(addr) <= CONFIG_XIP_PHYS_ADDR + SZ_16M) ? \
+>>
+>> That should be < CONFIG_XIP_PHYS_ADDR + SZ_16M, not <=.
+> 
+> Thanks, will fix.
+> 
+>>> +     (uintptr_t)(addr) - CONFIG_XIP_PHYS_ADDR + __PHRAM_BASE - XIP_OFFSET : \
+>>> +     (uintptr_t)(addr))
+>>
+>> There are possible side-effects in this macro definition, consider using
+>> a temporary variable for addr.
+> 
+> This is an internal definition so I didn't care much but FWIW it's
+> better to change it as you suggest, thanks.
+> 
+>>> +#else
+>>> +#define XIP_FIXUP(addr)              (addr)
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>>
+>>>    #define BPF_JIT_REGION_SIZE (SZ_128M)
+>>>    #define BPF_JIT_REGION_START        (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>>> @@ -484,8 +527,20 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>>>
+>>>    #define kern_addr_valid(addr)   (1) /* FIXME */
+>>>
+>>> -extern void *dtb_early_va;
+>>> -extern uintptr_t dtb_early_pa;
+>>> +extern void *_dtb_early_va;
+>>> +extern uintptr_t _dtb_early_pa;
+>>> +#if defined(CONFIG_XIP_KERNEL) && defined(CONFIG_MMU)
+>>
+>> CONFIG_XIP_KERNEL already depends on CONFIG_MMU. And maybe we could
+>> handle XIP_KERNEL and !XIP_KERNEL in XIP_FIXUP to avoid those ifdefs ?
+> 
+> This is a temporary dependence, we are working on the non-MMU case too
+> so I would not like to go that path.
+> 
+>>> +
+>>> +#define dtb_early_va (*(void **)XIP_FIXUP(&_dtb_early_va))
+>>> +#define dtb_early_pa (*(uintptr_t *)XIP_FIXUP(&_dtb_early_pa))
+>>> +
+>>> +#else
+>>> +
+>>> +#define dtb_early_va _dtb_early_va
+>>> +#define dtb_early_pa _dtb_early_pa
+>>> +
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>>    void setup_bootmem(void);
+>>>    void paging_init(void);
+>>>    void misc_mem_init(void);
+>>> diff --git a/arch/riscv/kernel/cpu_ops_sbi.c b/arch/riscv/kernel/cpu_ops_sbi.c
+>>> index 685fae72b7f5..7d368bc656ff 100644
+>>> --- a/arch/riscv/kernel/cpu_ops_sbi.c
+>>> +++ b/arch/riscv/kernel/cpu_ops_sbi.c
+>>> @@ -53,10 +53,20 @@ static int sbi_hsm_hart_get_status(unsigned long hartid)
+>>>    }
+>>>    #endif
+>>>
+>>> +static inline unsigned long get_secondary_start_phys(void)
+>>> +{
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     return XIP_PHYS_ADDR(secondary_start_sbi);
+>>> +#else
+>>> +     return __pa_symbol(secondary_start_sbi);
+>>> +#endif
+>>> +}
+>>> +
+>>> +
+>>
+>> There are 2 newlines here.
+>>
+>>>    static int sbi_cpu_start(unsigned int cpuid, struct task_struct *tidle)
+>>>    {
+>>>        int rc;
+>>> -     unsigned long boot_addr = __pa_symbol(secondary_start_sbi);
+>>> +     unsigned long boot_addr = get_secondary_start_phys();
+>>>        int hartid = cpuid_to_hartid_map(cpuid);
+>>>
+>>>        cpu_update_secondary_bootdata(cpuid, tidle);
+>>> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+>>> index f5a9bad86e58..17ecf6095209 100644
+>>> --- a/arch/riscv/kernel/head.S
+>>> +++ b/arch/riscv/kernel/head.S
+>>> @@ -9,11 +9,33 @@
+>>>    #include <linux/linkage.h>
+>>>    #include <asm/thread_info.h>
+>>>    #include <asm/page.h>
+>>> +#include <asm/pgtable.h>
+>>>    #include <asm/csr.h>
+>>>    #include <asm/hwcap.h>
+>>>    #include <asm/image.h>
+>>>    #include "efi-header.S"
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +.macro XIP_FIXUP_OFFSET reg
+>>> +#ifdef CONFIG_64BIT
+>>> +             ld t0, _xip_fixup
+>>> +#else
+>>> +             lw t0, _xip_fixup
+>>> +#endif
+>>
+>> Use REG_L here.
+> 
+> Will do, thanks.
+> 
+>>> +             add \reg, \reg, t0
+>>> +.endm
+>>> +
+>>> +_xip_fixup:
+>>> +#ifdef CONFIG_64BIT
+>>> +     .dword CONFIG_XIP_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_OFFSET
+>>> +#else
+>>> +     .word CONFIG_XIP_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_OFFSET
+>>> +#endif
+>>> +#else
+>>> +.macro XIP_FIXUP_OFFSET reg
+>>> +.endm
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>>    __HEAD
+>>>    ENTRY(_start)
+>>>        /*
+>>> @@ -69,7 +91,11 @@ pe_head_start:
+>>>    #ifdef CONFIG_MMU
+>>>    relocate:
+>>>        /* Relocate return address */
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     li a1, XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+>>> +#else
+>>>        li a1, PAGE_OFFSET
+>>> +#endif
+>>>        la a2, _start
+>>>        sub a1, a1, a2
+>>>        add ra, ra, a1
+>>> @@ -91,6 +117,7 @@ relocate:
+>>>         * to ensure the new translations are in use.
+>>>         */
+>>>        la a0, trampoline_pg_dir
+>>> +     XIP_FIXUP_OFFSET a0
+>>
+>>
+>> For all those pairs of la aX...; XIP_FIXUP_OFFSET aX...; maybe introduce
+>> a macro that does both ?
+> 
+> I can do that but wouldn't it obscure the operations too much?
+> 
+
+IMHO, this would avoid to break XIP_KERNEL if we don't have to worry 
+about those fixup, because as this adds a new kernel, I'm a bit worried 
+we break it over time easily.
+
+>>>        srl a0, a0, PAGE_SHIFT
+>>>        or a0, a0, a1
+>>>        sfence.vma
+>>> @@ -144,7 +171,9 @@ secondary_start_sbi:
+>>>
+>>>        slli a3, a0, LGREG
+>>>        la a4, __cpu_up_stack_pointer
+>>> +     XIP_FIXUP_OFFSET a4
+>>>        la a5, __cpu_up_task_pointer
+>>> +     XIP_FIXUP_OFFSET a5
+>>>        add a4, a3, a4
+>>>        add a5, a3, a5
+>>>        REG_L sp, (a4)
+>>> @@ -156,6 +185,7 @@ secondary_start_common:
+>>>    #ifdef CONFIG_MMU
+>>>        /* Enable virtual memory and relocate to virtual address */
+>>>        la a0, swapper_pg_dir
+>>> +     XIP_FIXUP_OFFSET a0
+>>>        call relocate
+>>>    #endif
+>>>        call setup_trap_vector
+>>> @@ -236,12 +266,33 @@ pmp_done:
+>>>    .Lgood_cores:
+>>>    #endif
+>>>
+>>> +#ifndef CONFIG_XIP_KERNEL
+>>>        /* Pick one hart to run the main boot sequence */
+>>>        la a3, hart_lottery
+>>>        li a2, 1
+>>>        amoadd.w a3, a2, (a3)
+>>>        bnez a3, .Lsecondary_start
+>>>
+>>> +#else
+>>> +     /* hart_lottery in flash contains a magic number */
+>>> +     la a3, hart_lottery
+>>> +     mv a2, a3
+>>> +     XIP_FIXUP_OFFSET a2
+>>> +     lw t1, (a3)
+>>> +     amoswap.w t0, t1, (a2)
+>>> +     /* first time here if hart_lottery in RAM is not set */
+>>> +     beq t0, t1, .Lsecondary_start
+>>> +
+>>> +     la sp, _end + THREAD_SIZE
+>>> +     XIP_FIXUP_OFFSET sp
+>>> +     mv s0, a0
+>>> +     call __copy_data
+>>> +
+>>> +     /* Restore a0 copy */
+>>> +     mv a0, s0
+>>> +#endif
+>>> +
+>>> +#ifndef CONFIG_XIP_KERNEL
+>>>        /* Clear BSS for flat non-ELF images */
+>>>        la a3, __bss_start
+>>>        la a4, __bss_stop
+>>> @@ -251,15 +302,18 @@ clear_bss:
+>>>        add a3, a3, RISCV_SZPTR
+>>>        blt a3, a4, clear_bss
+>>>    clear_bss_done:
+>>> -
+>>> +#endif
+>>>        /* Save hart ID and DTB physical address */
+>>>        mv s0, a0
+>>>        mv s1, a1
+>>> +
+>>>        la a2, boot_cpu_hartid
+>>> +     XIP_FIXUP_OFFSET a2
+>>>        REG_S a0, (a2)
+>>>
+>>>        /* Initialize page tables and relocate to virtual addresses */
+>>>        la sp, init_thread_union + THREAD_SIZE
+>>> +     XIP_FIXUP_OFFSET sp
+>>>    #ifdef CONFIG_BUILTIN_DTB
+>>>        la a0, __dtb_start
+>>>    #else
+>>> @@ -268,6 +322,7 @@ clear_bss_done:
+>>>        call setup_vm
+>>>    #ifdef CONFIG_MMU
+>>>        la a0, early_pg_dir
+>>> +     XIP_FIXUP_OFFSET a0
+>>>        call relocate
+>>>    #endif /* CONFIG_MMU */
+>>>
+>>> @@ -292,7 +347,9 @@ clear_bss_done:
+>>>
+>>>        slli a3, a0, LGREG
+>>>        la a1, __cpu_up_stack_pointer
+>>> +     XIP_FIXUP_OFFSET a1
+>>>        la a2, __cpu_up_task_pointer
+>>> +     XIP_FIXUP_OFFSET a2
+>>>        add a1, a3, a1
+>>>        add a2, a3, a2
+>>>
+>>> diff --git a/arch/riscv/kernel/head.h b/arch/riscv/kernel/head.h
+>>> index b48dda3d04f6..aabbc3ac3e48 100644
+>>> --- a/arch/riscv/kernel/head.h
+>>> +++ b/arch/riscv/kernel/head.h
+>>> @@ -12,6 +12,9 @@ extern atomic_t hart_lottery;
+>>>
+>>>    asmlinkage void do_page_fault(struct pt_regs *regs);
+>>>    asmlinkage void __init setup_vm(uintptr_t dtb_pa);
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +asmlinkage void __init __copy_data(void);
+>>> +#endif
+>>>
+>>>    extern void *__cpu_up_stack_pointer[];
+>>>    extern void *__cpu_up_task_pointer[];
+>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+>>> index e85bacff1b50..29956c41a9cc 100644
+>>> --- a/arch/riscv/kernel/setup.c
+>>> +++ b/arch/riscv/kernel/setup.c
+>>> @@ -50,7 +50,11 @@ struct screen_info screen_info __section(".data") = {
+>>>     * This is used before the kernel initializes the BSS so it can't be in the
+>>>     * BSS.
+>>>     */
+>>> -atomic_t hart_lottery __section(".sdata");
+>>> +atomic_t hart_lottery __section(".sdata")
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> += ATOMIC_INIT(0xC001BEEF)
+>>> +#endif
+>>> +;
+>>>    unsigned long boot_cpu_hartid;
+>>>    static DEFINE_PER_CPU(struct cpu, cpu_devices);
+>>>
+>>> @@ -254,7 +258,7 @@ void __init setup_arch(char **cmdline_p)
+>>>    #if IS_ENABLED(CONFIG_BUILTIN_DTB)
+>>>        unflatten_and_copy_device_tree();
+>>>    #else
+>>> -     if (early_init_dt_verify(__va(dtb_early_pa)))
+>>> +     if (early_init_dt_verify(dtb_early_va))
+>>>                unflatten_device_tree();
+>>>        else
+>>>                pr_err("No DTB found in kernel mappings\n");
+>>> diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
+>>> new file mode 100644
+>>> index 000000000000..9f0f08c34cd3
+>>> --- /dev/null
+>>> +++ b/arch/riscv/kernel/vmlinux-xip.lds.S
+>>> @@ -0,0 +1,132 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +/*
+>>> + * Copyright (C) 2012 Regents of the University of California
+>>> + * Copyright (C) 2017 SiFive
+>>> + * Copyright (C) 2020 Vitaly Wool, Konsulko AB
+>>> + */
+>>> +
+>>> +#define LOAD_OFFSET XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+>>> +/* No __ro_after_init data in the .rodata section - which will always be ro */
+>>> +#define RO_AFTER_INIT_DATA
+>>> +
+>>> +#include <asm/vmlinux.lds.h>
+>>> +#include <asm/page.h>
+>>> +#include <asm/pgtable.h>
+>>> +#include <asm/cache.h>
+>>> +#include <asm/thread_info.h>
+>>> +
+>>> +OUTPUT_ARCH(riscv)
+>>> +ENTRY(_start)
+>>> +
+>>> +jiffies = jiffies_64;
+>>> +
+>>> +SECTIONS
+>>> +{
+>>> +     /* Beginning of code and text segment */
+>>> +     . = XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR);
+>>> +     _xiprom = .;
+>>> +     _start = .;
+>>> +     HEAD_TEXT_SECTION
+>>> +     INIT_TEXT_SECTION(PAGE_SIZE)
+>>> +     /* we have to discard exit text and such at runtime, not link time */
+>>> +     .exit.text :
+>>> +     {
+>>> +             EXIT_TEXT
+>>> +     }
+>>> +
+>>> +     .text : {
+>>> +             _text = .;
+>>> +             _stext = .;
+>>> +             TEXT_TEXT
+>>> +             SCHED_TEXT
+>>> +             CPUIDLE_TEXT
+>>> +             LOCK_TEXT
+>>> +             KPROBES_TEXT
+>>> +             ENTRY_TEXT
+>>> +             IRQENTRY_TEXT
+>>> +             SOFTIRQENTRY_TEXT
+>>> +             *(.fixup)
+>>> +             _etext = .;
+>>> +     }
+>>> +     RO_DATA(L1_CACHE_BYTES)
+>>> +     .srodata : {
+>>> +             *(.srodata*)
+>>> +     }
+>>> +     .init.rodata : {
+>>> +             INIT_SETUP(16)
+>>> +             INIT_CALLS
+>>> +             CON_INITCALL
+>>> +             INIT_RAM_FS
+>>> +     }
+>>> +     _exiprom = .;                   /* End of XIP ROM area */
+>>> +
+>>> +
+>>> +/*
+>>> + * From this point, stuff is considered writable and will be copied to RAM
+>>> + */
+>>> +     __data_loc = ALIGN(16);         /* location in file */
+>>> +     . = PAGE_OFFSET;                /* location in memory */
+>>> +
+>>> +     _sdata = .;                     /* Start of data section */
+>>> +     _data = .;
+>>> +     RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
+>>> +     _edata = .;
+>>> +     __start_ro_after_init = .;
+>>> +     .data.ro_after_init : AT(ADDR(.data.ro_after_init) - LOAD_OFFSET) {
+>>> +             *(.data..ro_after_init)
+>>> +     }
+>>> +     __end_ro_after_init = .;
+>>> +
+>>> +     . = ALIGN(PAGE_SIZE);
+>>> +     __init_begin = .;
+>>> +     .init.data : {
+>>> +             INIT_DATA
+>>> +     }
+>>> +     .exit.data : {
+>>> +             EXIT_DATA
+>>> +     }
+>>> +     . = ALIGN(8);
+>>> +     __soc_early_init_table : {
+>>> +             __soc_early_init_table_start = .;
+>>> +             KEEP(*(__soc_early_init_table))
+>>> +             __soc_early_init_table_end = .;
+>>> +     }
+>>> +     __soc_builtin_dtb_table : {
+>>> +             __soc_builtin_dtb_table_start = .;
+>>> +             KEEP(*(__soc_builtin_dtb_table))
+>>> +             __soc_builtin_dtb_table_end = .;
+>>> +     }
+>>> +     PERCPU_SECTION(L1_CACHE_BYTES)
+>>> +
+>>> +     . = ALIGN(PAGE_SIZE);
+>>> +     __init_end = .;
+>>> +
+>>> +     .sdata : {
+>>> +             __global_pointer$ = . + 0x800;
+>>> +             *(.sdata*)
+>>> +             *(.sbss*)
+>>> +     }
+>>> +
+>>> +     BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
+>>> +     EXCEPTION_TABLE(0x10)
+>>> +
+>>> +     .rel.dyn : AT(ADDR(.rel.dyn) - LOAD_OFFSET) {
+>>> +             *(.rel.dyn*)
+>>> +     }
+>>> +
+>>> +     /*
+>>> +      * End of copied data. We need a dummy section to get its LMA.
+>>> +      * Also located before final ALIGN() as trailing padding is not stored
+>>> +      * in the resulting binary file and useless to copy.
+>>> +      */
+>>> +     .data.endmark : AT(ADDR(.data.endmark) - LOAD_OFFSET) { }
+>>> +     _edata_loc = LOADADDR(.data.endmark);
+>>> +
+>>> +     . = ALIGN(PAGE_SIZE);
+>>> +     _end = .;
+>>> +
+>>> +     STABS_DEBUG
+>>> +     DWARF_DEBUG
+>>> +
+>>> +     DISCARDS
+>>> +}
+>>> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+>>> index de03cb22d0e9..6745ec325930 100644
+>>> --- a/arch/riscv/kernel/vmlinux.lds.S
+>>> +++ b/arch/riscv/kernel/vmlinux.lds.S
+>>> @@ -4,7 +4,12 @@
+>>>     * Copyright (C) 2017 SiFive
+>>>     */
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#include "vmlinux-xip.lds.S"
+>>> +#else
+>>> +
+>>>    #define LOAD_OFFSET PAGE_OFFSET
+>>> +
+>>>    #include <asm/vmlinux.lds.h>
+>>>    #include <asm/page.h>
+>>>    #include <asm/cache.h>
+>>> @@ -132,3 +137,4 @@ SECTIONS
+>>>
+>>>        DISCARDS
+>>>    }
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>> index 067583ab1bd7..b5ac455cb159 100644
+>>> --- a/arch/riscv/mm/init.c
+>>> +++ b/arch/riscv/mm/init.c
+>>> @@ -31,8 +31,8 @@ EXPORT_SYMBOL(empty_zero_page);
+>>>
+>>>    extern char _start[];
+>>>    #define DTB_EARLY_BASE_VA      PGDIR_SIZE
+>>> -void *dtb_early_va __initdata;
+>>> -uintptr_t dtb_early_pa __initdata;
+>>> +void *_dtb_early_va __initdata;
+>>> +uintptr_t _dtb_early_pa __initdata;
+>>>
+>>>    struct pt_alloc_ops {
+>>>        pte_t *(*get_pte_virt)(phys_addr_t pa);
+>>> @@ -88,6 +88,10 @@ static void print_vm_layout(void)
+>>>                  (unsigned long)VMALLOC_END);
+>>>        print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+>>>                  (unsigned long)high_memory);
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     print_mlm("xip", (unsigned long)XIP_VIRT_ADDR_START,
+>>> +               (unsigned long)XIP_VIRT_ADDR_START + SZ_16M);
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>>    }
+>>>    #else
+>>>    static void print_vm_layout(void) { }
+>>> @@ -113,6 +117,10 @@ void __init setup_bootmem(void)
+>>>        phys_addr_t dram_end = memblock_end_of_DRAM();
+>>>        phys_addr_t max_mapped_addr = __pa(~(ulong)0);
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     vmlinux_start = __pa_symbol(&_sdata);
+>>> +#endif
+>>
+>> Nit: I would use IS_ENABLED(CONFIG_XIP_KERNEL) to avoid double
+>> assignment in case CONFIG_XIP_KERNEL is set.
+>>
+>>> +
+>>>        /* The maximal physical memory size is -PAGE_OFFSET. */
+>>>        memblock_enforce_memory_limit(-PAGE_OFFSET);
+>>>
+>>> @@ -148,11 +156,27 @@ void __init setup_bootmem(void)
+>>>        memblock_allow_resize();
+>>>    }
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +
+>>> +extern char _xiprom[], _exiprom[];
+>>> +extern char _sdata[], _edata[];
+>>> +
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>>    #ifdef CONFIG_MMU
+>>> -static struct pt_alloc_ops pt_ops;
+>>> +static struct pt_alloc_ops _pt_ops;
+>>> +
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
+>>> +#else
+>>> +#define pt_ops       _pt_ops
+>>> +#endif
+>>>
+>>>    unsigned long va_pa_offset;
+>>>    EXPORT_SYMBOL(va_pa_offset);
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#define va_pa_offset (*((unsigned long *)XIP_FIXUP(&va_pa_offset)))
+>>> +#endif
+>>>    unsigned long pfn_base;
+>>>    EXPORT_SYMBOL(pfn_base);
+>>>
+>>> @@ -162,6 +186,12 @@ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>>>
+>>>    pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +#define trampoline_pg_dir    ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
+>>> +#define fixmap_pte           ((pte_t *)XIP_FIXUP(fixmap_pte))
+>>> +#define early_pg_dir         ((pgd_t *)XIP_FIXUP(early_pg_dir))
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>>    void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+>>>    {
+>>>        unsigned long addr = __fix_to_virt(idx);
+>>> @@ -237,6 +267,15 @@ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>>>    pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>>>    pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +pmd_t xip_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>>> +
+>>> +#define trampoline_pmd       ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+>>> +#define fixmap_pmd   ((pmd_t *)XIP_FIXUP(fixmap_pmd))
+>>> +#define xip_pmd              ((pmd_t *)XIP_FIXUP(xip_pmd))
+>>> +#define early_pmd    ((pmd_t *)XIP_FIXUP(early_pmd))
+>>> +#endif /* CONFIG_XIP_KERNEL */
+>>> +
+>>>    static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+>>>    {
+>>>        /* Before MMU is enabled */
+>>> @@ -353,6 +392,19 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
+>>>        return PMD_SIZE;
+>>>    }
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +/* called from head.S with MMU off */
+>>> +asmlinkage void __init __copy_data(void)
+>>> +{
+>>> +     void *from = (void *)(&_sdata);
+>>> +     void *end = (void *)(&_end);
+>>> +     void *to = (void *)CONFIG_XIP_PHYS_RAM_BASE;
+>>> +     size_t sz = (size_t)(end - from);
+>>> +
+>>> +     memcpy(to, from, sz);
+>>> +}
+>>> +#endif
+>>> +
+>>>    /*
+>>>     * setup_vm() is called from head.S with MMU-off.
+>>>     *
+>>> @@ -373,7 +425,8 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
+>>>
+>>>    asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>    {
+>>> -     uintptr_t va, pa, end_va;
+>>> +     uintptr_t va, end_va;
+>>> +     uintptr_t __maybe_unused pa;
+>>>        uintptr_t load_pa = (uintptr_t)(&_start);
+>>>        uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+>>>        uintptr_t map_size;
+>>> @@ -381,6 +434,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>        pmd_t fix_bmap_spmd, fix_bmap_epmd;
+>>>    #endif
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     uintptr_t xiprom = (uintptr_t)CONFIG_XIP_PHYS_ADDR;
+>>> +     uintptr_t xiprom_sz = (uintptr_t)(&_exiprom) - (uintptr_t)(&_xiprom);
+>>> +
+>>> +     load_pa = (uintptr_t)CONFIG_XIP_PHYS_RAM_BASE;
+>>> +     load_sz = (uintptr_t)(&_end) - (uintptr_t)(&_sdata);
+>>> +#endif
+>>>        va_pa_offset = PAGE_OFFSET - load_pa;
+>>>        pfn_base = PFN_DOWN(load_pa);
+>>>
+>>> @@ -419,6 +479,21 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>                           load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+>>>    #endif
+>>>
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     create_pgd_mapping(trampoline_pg_dir, XIP_VIRT_ADDR_START,
+>>> +                        (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
+>>> +     for (va = XIP_VIRT_ADDR_START;
+>>> +          va < XIP_VIRT_ADDR_START + xiprom_sz;
+>>> +          va += PMD_SIZE) {
+>>> +             create_pmd_mapping(xip_pmd, va,
+>>> +                                xiprom + (va - XIP_VIRT_ADDR_START),
+>>> +                                PMD_SIZE, PAGE_KERNEL_EXEC);
+>>> +     }
+>>> +
+>>> +     create_pgd_mapping(early_pg_dir, XIP_VIRT_ADDR_START,
+>>> +                        (uintptr_t)xip_pmd, PGDIR_SIZE, PAGE_TABLE);
+>>> +#endif
+>>> +
+>>>        /*
+>>>         * Setup early PGD covering entire kernel which will allows
+>>>         * us to reach paging_init(). We map all memory banks later
+>>> @@ -443,7 +518,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>                           pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
+>>>        dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
+>>>    #else /* CONFIG_BUILTIN_DTB */
+>>> -     dtb_early_va = __va(dtb_pa);
+>>> +     dtb_early_va = __va(XIP_FIXUP(dtb_pa));
+>>>    #endif /* CONFIG_BUILTIN_DTB */
+>>>    #else
+>>>    #ifndef CONFIG_BUILTIN_DTB
+>>> @@ -455,7 +530,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>>                           pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
+>>>        dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
+>>>    #else /* CONFIG_BUILTIN_DTB */
+>>> -     dtb_early_va = __va(dtb_pa);
+>>> +     dtb_early_va = __va(XIP_FIXUP(dtb_pa));
+>>>    #endif /* CONFIG_BUILTIN_DTB */
+>>>    #endif
+>>>        dtb_early_pa = dtb_pa;
+>>> @@ -496,6 +571,9 @@ static void __init setup_vm_final(void)
+>>>        uintptr_t va, map_size;
+>>>        phys_addr_t pa, start, end;
+>>>        u64 i;
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     uintptr_t xiprom_sz = (uintptr_t)(&_exiprom) - (uintptr_t)(&_xiprom);
+>>> +#endif
+>>>
+>>>        /**
+>>>         * MMU is enabled at this point. But page table setup is not complete yet.
+>>> @@ -527,6 +605,16 @@ static void __init setup_vm_final(void)
+>>>                                           map_size, PAGE_KERNEL_EXEC);
+>>>                }
+>>>        }
+>>> +#ifdef CONFIG_XIP_KERNEL
+>>> +     map_size = best_map_size(CONFIG_XIP_PHYS_ADDR, xiprom_sz);
+>>> +     for (va = XIP_VIRT_ADDR_START;
+>>> +          va < XIP_VIRT_ADDR_START + xiprom_sz;
+>>> +          va += map_size)
+>>> +             create_pgd_mapping(swapper_pg_dir, va,
+>>> +                                CONFIG_XIP_PHYS_ADDR + (va - XIP_VIRT_ADDR_START),
+>>> +                                map_size, PAGE_KERNEL_EXEC);
+>>> +
+>>> +#endif
+>>>
+>>>        /* Clear fixmap PTE and PMD mappings */
+>>>        clear_fixmap(FIX_PTE);
+>>>
+>>
+>> And I'm not sure I understand which variables are required to be fixup,
+>> can you explain it a bit more please ?
+> 
+> On a high level, all the RW sections are copied to RAM but while the
+> MMU is not enabled, we are dealing with the addresses in the NOR flash
+> all the way. To read and modify the RAM versions of variables we do
+> this XIP_FIXUP thing.
+
+Ok thanks, we'll need to be extra careful when touching the pre-mmu zone 
+then.
+
+> 
+> Please come back if this explanation is not clear enough.
+> 
+>> And finally, how can we try XIP_KERNEL on qemu ?
+> 
+> It works with Polarfire Icicle emulation. I'm using the folllowing
+> command line for testing it:
+> qemu-system-riscv64 -M microchip-icicle-kit -bios
+> work/hart-software-services/hss.bin -smp 5 -drive
+> if=sd,format=raw,file=sd1.img -nic user,model=cadence_gem -display
+> none -serial null -chardev
+> socket,id=serial1,path=/tmp/serial1.sock,server -serial
+> chardev:serial1 -device loader,addr=0x21000000,file=xipImage -D
+> qemu.log -monitor stdio
+> 
+
+Thanks for the qemu command line !
+
+> Thanks a lot for the review,
+> 
+> Best regards,
+>     Vitaly
+
+Thanks,
+
+Alex
+
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
