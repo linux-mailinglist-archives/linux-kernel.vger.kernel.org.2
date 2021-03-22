@@ -2,203 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F51D344572
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109FB344575
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhCVNT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:19:26 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47329 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhCVNQr (ORCPT
+        id S232661AbhCVNT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhCVNQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:16:47 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 29B1B5C013A;
-        Mon, 22 Mar 2021 09:16:47 -0400 (EDT)
-Received: from imap8 ([10.202.2.58])
-  by compute1.internal (MEProxy); Mon, 22 Mar 2021 09:16:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm3; bh=Q3lhQzUVNRpT0WVcy0osqEdXHCEu
-        JqKRN3r8YPhYJwc=; b=dy2RzWeAsdsTMUAAyE0U2TQJGAPMmJ6EYS6gxLJje1ZN
-        SGb0LZsJlhzlp3SUVYyKfMlkuj68Ku3hxlHE+LgShM9RihaZc0TJedgs3aeJmfzm
-        imkx9Er02ypDqLOsUdorkZd81jDcomO+RLO0jqxRKp0iIUjxg8mFxWCUaoKkOVnY
-        34Uu3s4d2OoAKxUcxeSYIufaIAO01SBbR+wR6qhG90MBCTxogx5mKUejdpzAPpaU
-        hzdErJ8fksUS9BQOs2JgvlHySkB6zAC3sY7N7jyLYyU0/3aDy6ZGyismYPf9R4Fc
-        Hrsr35HojCg6YYe6AzKMb+7a6/GGfK4E6knM6usrGA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Q3lhQz
-        UVNRpT0WVcy0osqEdXHCEuJqKRN3r8YPhYJwc=; b=LRkKODN2PtIs7T5fZkLaTR
-        UhcjcjjgvJzvF5LaKsFfz8uP6CLh5uQaGhjbztgkFhr2fJmg8R0/WUpD79Y8OTBd
-        DDSR/YHL3GmNK9SsYlqY/BOsK3G+UgFQ9Bl+ZhThpilrPkxVRezPBzr0MtCf9NRC
-        YIdwAEIQepcL2CartsR1hRlYw8cBmEbR5pwTIFnMGTe9vPxcan7rUfxBe0Vqt450
-        m0ZCafiZQ3ZUvMqGm0BgXOcCgXWiZPh6IrUGrBddwb0kUu7Rhk0/5WH5z0QFH4X4
-        n1ATk5XFKuUepeq+B3f9/z7kiUhhkqbqdHA8LK6u8GjFGYHq33z6eWtO0amAogtA
-        ==
-X-ME-Sender: <xms:v5hYYE6DkQijIz-Dwfdy0cgnHas_zhzux5zy1lllhyIpCIYtyqNmtg>
-    <xme:v5hYYF4Yy1k3okQf_lWeC-Ez2BjxbLuCpqm-RyaiELNKyaVo_pt1u-JlGbf_wfd2H
-    5HKDGfZ1s8cRpT29is>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomheptehlihhs
-    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
-    htthgvrhhnpeeuffekveehjeeltdeuveeikeelkeejhfejheduhfdtgfdtgfejjeekvdev
-    jeevueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:v5hYYDcsZqWFTTn_L1DDlbVqjXAk1SXi6T4OjYHd1zk0blm71BDgcw>
-    <xmx:v5hYYJKp0fGdQFaCHmpx3i8CQZh7Ds9gGWTeH_NEJ1Db_J2vtLwKHw>
-    <xmx:v5hYYIIjen-oZNxwc7k5QONKIV_coVOBRLDt6vMWYPGRdAYUOmpeZA>
-    <xmx:v5hYYPm4qg73hz__KM-NawU9I5V8ntqS8NkjL-uL1e78GCefkUbFJA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 01DB13A0721; Mon, 22 Mar 2021 09:16:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-271-g88286cf463-fm-20210318.001-g88286cf4
-Mime-Version: 1.0
-Message-Id: <efb0d63c-3d4a-4571-a988-e981f21a6628@www.fastmail.com>
-In-Reply-To: <20210321220043.318239-2-dmitry.torokhov@gmail.com>
-References: <20210321220043.318239-1-dmitry.torokhov@gmail.com>
- <20210321220043.318239-2-dmitry.torokhov@gmail.com>
-Date:   Mon, 22 Mar 2021 09:14:57 -0400
-From:   Alistair <alistair@alistair23.me>
-To:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] Input: wacom_i2c - switch to using managed resources
-Content-Type: text/plain
+        Mon, 22 Mar 2021 09:16:55 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5ADAC061762;
+        Mon, 22 Mar 2021 06:16:54 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id g1so6551710plg.7;
+        Mon, 22 Mar 2021 06:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K57hes70Y9glf2q1uih1lFr//oeCaWquhrG1a8vl7tI=;
+        b=mLWf2rrM1KV5IhBtwlUucUCUuYornZ/N+fY1RoIERa/PpHBE57T/K3VvYiWDiRgnus
+         A51FzDkevuiQANz0BSteAH+2lJ8pbisqzMDtPSEUXlOfeaCPr3RuQ3kumFhrAAISof7/
+         iwqmWnDrnM4hsLxzW8yZrRQBnF4DM8KG9b7F9KYW4NCxxt6Waywed5V45Yeq0Bhg/9bi
+         PPPREBF2sQOqz31zHDMgDQ4i2o4O+WS5dtbaI8GrxF4dVdY9JljFOZBW1ZQSSWh88E/e
+         G+wyb9PsQr7BGnflhew/BDVglX15SjJhOM4HXk+bQAbaaOYy1efTkNCZpik4teJq/oqj
+         JxnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K57hes70Y9glf2q1uih1lFr//oeCaWquhrG1a8vl7tI=;
+        b=cpYKQpBgnQGrctUyH77zo/tavQKFi+1ZK/2aAG/49mMdfq74qQluTjSCD0HgKryvpV
+         hv64JO0kkyc2fNXZ2UXfdFt0olzUQl8Uo/XxmhQisaHT66UlYV+iM1w5NDhy1OfttHeH
+         Y0+8lzXaH8TMujdLT3WRL0jxEt31+LnkvWL01iFm4hlpxYTe6EQOls11FQZz4fQ4yzkX
+         AF9ECW4We34V1ZyB3WAftwLxyaran9QKNWL9xJmy+lfQ43jgxyHKhvxYjTEe+vavAn4B
+         cw0sAzvRhWz4uYRx/9up9pnmrZH4/+C0ZQw89bPSzbHs7cLAqe6bpeKobqhX67ENy3s+
+         GiOg==
+X-Gm-Message-State: AOAM531wQ4iaypj4yFjp8/ml6NVwetip+5Dy84mjnIBpZzjuvkxIKdBG
+        CZaWb22uo/Wdy4MV6uK4ewlCFcQ8FLzM29zAIRs=
+X-Google-Smtp-Source: ABdhPJyAaZ/6vVR0qPPoyWiz0yovB0VUvK5knKjOMHb4y4dSFPQXoGgB/EjSzR2pwMmCQpM9xXZ0EExloxsRHGNVW6s=
+X-Received: by 2002:a17:902:c808:b029:e6:4204:f62f with SMTP id
+ u8-20020a170902c808b02900e64204f62fmr27505252plx.0.1616419014403; Mon, 22 Mar
+ 2021 06:16:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210315082339.9787-1-sander@svanheule.net> <20210315190806.66762-1-sander@svanheule.net>
+ <20210315190806.66762-3-sander@svanheule.net> <CAHp75Vc6aaDhVN7LzvLNQjuOPguz+nbfmfpZ7TZHK=fNjCRz8w@mail.gmail.com>
+ <a7d410216d35ed2b3015bfdd8e21dafd9c42d9d4.camel@svanheule.net>
+ <CAHp75VdrqE0kBwzK9Jk7pZGjyfFnhatfa8UY0z-3T1w1PrbAbw@mail.gmail.com>
+ <9d736f272aae42b154a4fdfbcadc1572ee82f516.camel@svanheule.net>
+ <CAHp75Vf=-WdJ3U6o1G-Xi4W7tkCzyij0FD3MNY1q0x6bkimxow@mail.gmail.com> <e89125c1ffb56f64c7c2037192e490d56ab12492.camel@svanheule.net>
+In-Reply-To: <e89125c1ffb56f64c7c2037192e490d56ab12492.camel@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 22 Mar 2021 15:16:38 +0200
+Message-ID: <CAHp75VdPro54q9_hhdi8m+GkwYDqyvsUthBGjksk2LTkHeYJgA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] gpio: Add Realtek Otto GPIO support
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bert Vermeulen <bert@biot.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021, at 6:00 PM, Dmitry Torokhov wrote:
-> This simplifies error unwinding path and allows us to get rid of
-> remove() method.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com <mailto:dmitry.torokhov%40gmail.com>>
+On Fri, Mar 19, 2021 at 11:48 PM Sander Vanheule <sander@svanheule.net> wrote:
+> On Fri, 2021-03-19 at 23:24 +0200, Andy Shevchenko wrote:
+> > On Fri, Mar 19, 2021 at 11:20 PM Sander Vanheule <
+> > sander@svanheule.net> wrote:
+> > > On Fri, 2021-03-19 at 19:57 +0200, Andy Shevchenko wrote:
 
-Reviewed-by: Alistair Francis <alistair@alistair23.me>
+...
 
-Alistair
+> > > The point I was trying to make, is that it isn't an endianess issue.
+> > > I
+> > > shouldn't have used a register with single byte values to try to
+> > > illustrate that.
+> > >
+> > > Consider instead the interrupt masking registers. To write the IMR
+> > > bits
+> > > for port A (GPIO 0-7), a 16-bit value must be written. This value
+> > > (e.g.
+> > > u16 port_a_imr) is always BE, independent of the packing order of the
+> > > ports in the registers:
+> > >
+> > >    // On RTL8380: port A is in the upper word
+> > >    writew(port_a_imr, base + OFFSET_IMR_AB);
+> > >
+> > >    // On RTL9300: port A is in the lower word
+> > >    writew(port_a_imr, base + OFFSET_IMR_AB + 2);
+> > >
+> > > I want the low GPIO lines to be in the lower half-word, so I can
+> > > manipulate GPIO lines 0-15 with simple mask and shift operations.
+> > >
+> > > It just so happens, that all registers needed by bgpio_init contain
+> > > single-byte values. With BGPIO_BIG_ENDIAN_BYTE_ORDER  the port order
+> > > is
+> > > reversed as required, but it's a bit of a misnomer here.
+> >
+> > How many registers (per GPIO / port) do you have?
+> > Can you list them and show endianess of the data for each of them and
+> > for old and new hardware (something like a 3 column table)?
+>
+> Each GPIO bank, with 32 GPIO lines, consists of four 8-line ports.
+> There are seven registers per port, but only five are used:
+>
+>        |        | Data    | RTL8380    | RTL9300
+> Reg    | Offset | type    | byte order | byte order
+> -------+--------+---------+------------+-----------
+> DIR    | 0x08   | 4 * u8  | A-B-C-D    | D-C-B-A
+> DATA   | 0x0C   | 4 * u8  | A-B-C-D    | D-C-B-A
+> ISR    | 0x10   | 4 * u8  | A-B-C-D    | D-C-B-A
+> IMR_AB | 0x14   | 2 * u16 | A-A-B-B    | B-B-A-A
+> IMR_CD | 0x18   | 2 * u16 | C-C-D-D    | D-D-C-C
+>
+> The unused other registers are all 4*u8.
 
-> ---
-> drivers/input/touchscreen/wacom_i2c.c | 55 +++++++++------------------
-> 1 file changed, 17 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 609ff84e7693..22826c387da5 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -145,15 +145,16 @@ static void wacom_i2c_close(struct input_dev *dev)
-> }
->  
-> static int wacom_i2c_probe(struct i2c_client *client,
-> -      const struct i2c_device_id *id)
-> +    const struct i2c_device_id *id)
-> {
-> + struct device *dev = &client->dev;
-> struct wacom_i2c *wac_i2c;
-> struct input_dev *input;
-> struct wacom_features features = { 0 };
-> int error;
->  
-> if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-> - dev_err(&client->dev, "i2c_check_functionality error\n");
-> + dev_err(dev, "i2c_check_functionality error\n");
-> return -EIO;
-> }
->  
-> @@ -161,21 +162,22 @@ static int wacom_i2c_probe(struct i2c_client *client,
-> if (error)
-> return error;
->  
-> - wac_i2c = kzalloc(sizeof(*wac_i2c), GFP_KERNEL);
-> - input = input_allocate_device();
-> - if (!wac_i2c || !input) {
-> - error = -ENOMEM;
-> - goto err_free_mem;
-> - }
-> + wac_i2c = devm_kzalloc(dev, sizeof(*wac_i2c), GFP_KERNEL);
-> + if (!wac_i2c)
-> + return -ENOMEM;
->  
-> wac_i2c->client = client;
-> +
-> + input = devm_input_allocate_device(dev);
-> + if (!input)
-> + return -ENOMEM;
-> +
-> wac_i2c->input = input;
->  
-> input->name = "Wacom I2C Digitizer";
-> input->id.bustype = BUS_I2C;
-> input->id.vendor = 0x56a;
-> input->id.version = features.fw_version;
-> - input->dev.parent = &client->dev;
-> input->open = wacom_i2c_open;
-> input->close = wacom_i2c_close;
->  
-> @@ -194,12 +196,11 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  
-> input_set_drvdata(input, wac_i2c);
->  
-> - error = request_threaded_irq(client->irq, NULL, wacom_i2c_irq,
-> -      IRQF_ONESHOT, "wacom_i2c", wac_i2c);
-> + error = devm_request_threaded_irq(dev, client->irq, NULL, wacom_i2c_irq,
-> +   IRQF_ONESHOT, "wacom_i2c", wac_i2c);
-> if (error) {
-> - dev_err(&client->dev,
-> - "Failed to enable IRQ, error: %d\n", error);
-> - goto err_free_mem;
-> + dev_err(dev, "Failed to request IRQ: %d\n", error);
-> + return error;
-> }
->  
-> /* Disable the IRQ, we'll enable it in wac_i2c_open() */
-> @@ -207,31 +208,10 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  
-> error = input_register_device(wac_i2c->input);
-> if (error) {
-> - dev_err(&client->dev,
-> - "Failed to register input device, error: %d\n", error);
-> - goto err_free_irq;
-> + dev_err(dev, "Failed to register input device: %d\n", error);
-> + return error;
-> }
->  
-> - i2c_set_clientdata(client, wac_i2c);
-> - return 0;
-> -
-> -err_free_irq:
-> - free_irq(client->irq, wac_i2c);
-> -err_free_mem:
-> - input_free_device(input);
-> - kfree(wac_i2c);
-> -
-> - return error;
-> -}
-> -
-> -static int wacom_i2c_remove(struct i2c_client *client)
-> -{
-> - struct wacom_i2c *wac_i2c = i2c_get_clientdata(client);
-> -
-> - free_irq(client->irq, wac_i2c);
-> - input_unregister_device(wac_i2c->input);
-> - kfree(wac_i2c);
-> -
-> return 0;
-> }
->  
-> @@ -268,7 +248,6 @@ static struct i2c_driver wacom_i2c_driver = {
-> },
->  
-> .probe = wacom_i2c_probe,
-> - .remove = wacom_i2c_remove,
-> .id_table = wacom_i2c_id,
-> };
-> module_i2c_driver(wacom_i2c_driver);
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
-> 
+You mean that they are following the same rules as DIR/DATA/ISR. right?
+
+> A-B-C-D means:  (A << 24) | (B << 16) | (C << 8) | D
+> A-A-B-B means:  (A << 16) | B
+
+If the above is true for unused registers, it's clearly hardware endianness.
+
+You need special treatment for IMR, but in general it follows the
+logic behind the others.
+
+So, you need some kind of I/O accessors like
+ read_u8_reg()
+ write_u8_reg()
+ read_u16_reg()
+ write_u16_reg()
+
+And depending on endianess of hardware to call proper set of them.
+
+-- 
+With Best Regards,
+Andy Shevchenko
