@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657DB345017
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BAA34501E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhCVTkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        id S231553AbhCVTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232370AbhCVTkZ (ORCPT
+        with ESMTP id S230337AbhCVTmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:40:25 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CFAC061574;
-        Mon, 22 Mar 2021 12:40:25 -0700 (PDT)
+        Mon, 22 Mar 2021 15:42:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05434C061574;
+        Mon, 22 Mar 2021 12:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=lZV1Q08Gt9KcwF0VrymmjoQBEVGQpCTheMonie5ZjV0=; b=cVhy76GkuquX1eEbjZdNcAYQqR
-        +Hv0YTy9rXkeLRg19RxmchipTPQQWxj1iuszTYWLxA7KEvJMzyI1sUQWeex7n4Cmfzg/u6knfJaBd
-        D4f9Ne8pJwFLW6feOR8UoLBMKEsmTX6sOLHqO5CWtnFvUIGMz1FBHJ20tMEQD8vtfHCaaS3igEwc4
-        8acdKymN8uuWY4IDSmcyZWqF90a+fEc3Nv0W+zR9BStfdcRvINmPrNppM7sW7fkgH2ZgbkOLJMy5u
-        VF0IQAuN2nzr6uRFDwFWiN86w1LayuXXyG05usUTVRvY34ybTHnlOAmsaiiECBjHuZCtvyH9ElJ2Y
-        3xCZPcnQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOQPX-00CRe7-AQ; Mon, 22 Mar 2021 19:40:23 +0000
-Subject: Re: [PATCH] scsi: bnx2fc: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, skashyap@marvell.com,
-        jhasan@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210322063530.3588282-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <342e394a-b7f6-a84c-3635-2ddd239e4c39@infradead.org>
-Date:   Mon, 22 Mar 2021 12:40:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a+s43F3dBXNbso9NPwsCMVQdm9PWJMB9D0uiyUFUfTM=; b=pLdjFDiH/whGlVLwqeQ/HEzf5W
+        AENF9SXNQmhq6Xz5TMPLGu//ryRv24iA/gKFuwXXU+HuEThL0BP2lqt2EVxjFU8mYOVGXVmET6m1s
+        HvF3wTT0kbojHxEktZtcV/ToN9krn9Udt8eysCQ//do1Re7PDdu6uGO5pUHUgx/Xmzl4mBk9uBTro
+        +y1samCBFOh4XUbqfywQGIyPz7H9bRvsT90gjyLZRWTdeK00OWspMpeLTlqj4ctQKzGTHMYogdS5f
+        W2qDvOHSGSAV51724svy9mB+MKCnllOPOpKT4gjghOWhwbKwDVDKMdCcHhhOWrEO21outVjZxjpVS
+        diVkiCCQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOQQV-008z4C-Vw; Mon, 22 Mar 2021 19:41:40 +0000
+Date:   Mon, 22 Mar 2021 19:41:23 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 03/27] afs: Use wait_on_page_writeback_killable
+Message-ID: <20210322194123.GV1719932@casper.infradead.org>
+References: <20210320054104.1300774-4-willy@infradead.org>
+ <20210320054104.1300774-1-willy@infradead.org>
+ <1878264.1616405246@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210322063530.3588282-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1878264.1616405246@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 11:35 PM, Bhaskar Chowdhury wrote:
+On Mon, Mar 22, 2021 at 09:27:26AM +0000, David Howells wrote:
+> Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
 > 
-> s/struture/structure/
+> > Open-coding this function meant it missed out on the recent bugfix
+> > for waiters being woken by a delayed wake event from a previous
+> > instantiation of the page.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Acked-and-tested-by: David Howells <dhowells@redhat.com>
 > 
-> diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> index 16bb6d2f98de..8863a74e6c57 100644
-> --- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> +++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> @@ -1796,7 +1796,7 @@ static void bnx2fc_unbind_pcidev(struct bnx2fc_hba *hba)
->  /**
->   * bnx2fc_ulp_get_stats - cnic callback to populate FCoE stats
->   *
-> - * @handle:    transport handle pointing to adapter struture
-> + * @handle:    transport handle pointing to adapter structure
->   */
->  static int bnx2fc_ulp_get_stats(void *handle)
->  {
-> --
+> Should this be pushed upstream now as well if it's missing out on a bugfix?
 
-
--- 
-~Randy
-
+I would be delighted for you to take these first three patches through
+your tree and push them for, say, -rc5.
