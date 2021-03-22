@@ -2,195 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDA3343E8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61F0343E99
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhCVKz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhCVKzZ (ORCPT
+        id S230433AbhCVK5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:57:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30989 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229547AbhCVK4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:55:25 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D745C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:55:24 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 16so20395476ljc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D+PcY8fizKyI1pa8vyAaI0Fu5ahvlZoOnbR8AqNaIGM=;
-        b=cNdFZe9aFiClr44vhnMkdDn4A4PRwCmXoJ8KEm1xluKWbN8IGn8mR3MlZg3J6rbUh5
-         pw68llA/oheOVpyvb+bbJ0sh4EVoe/nmWmGnzNtopCABnUJ7EQgOPtQSFTwM0Kzx8k+M
-         +1mtp/2DwiZq5luOFZ3V/g01ge3sXb9SouwkCD0JH2lHd7gq1I7t86xU+J19KJyHmhmH
-         LYNjOzP/9DVag/uyi8sMESQt8u8P6n+9arqOVmypRXuc6uC+TA53JscZSw5Cedl0Skih
-         Uj5uIS/3Q3i8PmxUzCy71C2yDXfONCcAgKBAsNjfZlR3dTNNB6tHQ8+1nQKyAoEnlb/S
-         6OWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D+PcY8fizKyI1pa8vyAaI0Fu5ahvlZoOnbR8AqNaIGM=;
-        b=uiAvSn2U8YBUo9zmNutneZGAAZmer8F6SvOuGDoQEhSkux6tYGx58dOsovZ74w8b/l
-         yWsvAS40Qm3KKp7TUFhVdjkxrJaw1D1pWkTecICy7si0QUuJogf3/k2Dw2Wluyj8Lok1
-         EUwNWYA6VzifiHk9tJCKAa5FGvIkdvgfAH3/1VKp7nj5b1/zztDAYgtaEC1/vr5imQXB
-         Y0tnvGI946sVzvNFrNodiGXdJEipLXNNWNyAOy3cobylrI7qy4mtV9IrZgVD9c6O+/1K
-         FHJRoibofDnp5h1XE7jqUgD7mRI3fsvA0eZJfqM2PP1sqpkYkHzMmHgTwi1spIZmWc93
-         PqQg==
-X-Gm-Message-State: AOAM531JdNMQoIin+1azIscjg1FzY6QrCfId7Rq80R+iK7nui+BwSp2/
-        3XsjJhWtoj1ZMzyzAla3js7K3A==
-X-Google-Smtp-Source: ABdhPJxf/OAQj9ADevnB8ESViQBvohbq91TGiPa/7o4CoF/N6TtVkgXQQlUwXU07vQ7ubVRc+vrblQ==
-X-Received: by 2002:a2e:2a44:: with SMTP id q65mr9601149ljq.238.1616410523121;
-        Mon, 22 Mar 2021 03:55:23 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id e9sm1905215ljj.52.2021.03.22.03.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:55:22 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 36E96101DEB; Mon, 22 Mar 2021 13:55:30 +0300 (+03)
-Date:   Mon, 22 Mar 2021 13:55:30 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 17/28] mm: Add guard pages around a shadow stack.
-Message-ID: <20210322105530.pbmfrg6rhywct5ft@box>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-18-yu-cheng.yu@intel.com>
+        Mon, 22 Mar 2021 06:56:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616410600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QWqNRl3St0myqfYb/YgoRI1vcQ7ggUTH0MpgdoanYXM=;
+        b=VTADArVRRmxEB/XIq6kpUwXnmrPXLrNwqbUEfXXz3FKCgi/Rdb2S5+qdMEElk26U0EB73J
+        55MmzAb06XgP/aCOhmwa3eKsYD+qz2Cq+IbJmjX0dWe0qre6eBE8w8CeYPdrW+NLytxz8b
+        rpaeAsE3m8aVHU+SJnjx+Ih7EEdajjI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-FCLoq-t8N6KUPH3xmAXDmQ-1; Mon, 22 Mar 2021 06:56:36 -0400
+X-MC-Unique: FCLoq-t8N6KUPH3xmAXDmQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34BE081622;
+        Mon, 22 Mar 2021 10:56:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7152A54478;
+        Mon, 22 Mar 2021 10:56:27 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210321105309.GG3420@casper.infradead.org>
+References: <20210321105309.GG3420@casper.infradead.org> <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk> <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316151054.5405-18-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1885295.1616410586.1@warthog.procyon.org.uk>
+Date:   Mon, 22 Mar 2021 10:56:26 +0000
+Message-ID: <1885296.1616410586@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:10:43AM -0700, Yu-cheng Yu wrote:
-> INCSSP(Q/D) increments shadow stack pointer and 'pops and discards' the
-> first and the last elements in the range, effectively touches those memory
-> areas.
-> 
-> The maximum moving distance by INCSSPQ is 255 * 8 = 2040 bytes and
-> 255 * 4 = 1020 bytes by INCSSPD.  Both ranges are far from PAGE_SIZE.
-> Thus, putting a gap page on both ends of a shadow stack prevents INCSSP,
-> CALL, and RET from going beyond.
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/x86/include/asm/page_64_types.h | 10 ++++++++++
->  include/linux/mm.h                   | 24 ++++++++++++++++++++----
->  2 files changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
-> index 64297eabad63..23e3d880ce6c 100644
-> --- a/arch/x86/include/asm/page_64_types.h
-> +++ b/arch/x86/include/asm/page_64_types.h
-> @@ -115,4 +115,14 @@
->  #define KERNEL_IMAGE_SIZE	(512 * 1024 * 1024)
->  #endif
->  
-> +/*
-> + * Shadow stack pointer is moved by CALL, RET, and INCSSP(Q/D).  INCSSPQ
-> + * moves shadow stack pointer up to 255 * 8 = ~2 KB (~1KB for INCSSPD) and
-> + * touches the first and the last element in the range, which triggers a
-> + * page fault if the range is not in a shadow stack.  Because of this,
-> + * creating 4-KB guard pages around a shadow stack prevents these
-> + * instructions from going beyond.
-> + */
-> +#define ARCH_SHADOW_STACK_GUARD_GAP PAGE_SIZE
-> +
->  #endif /* _ASM_X86_PAGE_64_DEFS_H */
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index af805ffde48e..9890e9f5a5e0 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2619,6 +2619,10 @@ extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
->  int __must_check write_one_page(struct page *page);
->  void task_dirty_inc(struct task_struct *tsk);
->  
-> +#ifndef ARCH_SHADOW_STACK_GUARD_GAP
-> +#define ARCH_SHADOW_STACK_GUARD_GAP 0
-> +#endif
-> +
->  extern unsigned long stack_guard_gap;
->  /* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
->  extern int expand_stack(struct vm_area_struct *vma, unsigned long address);
-> @@ -2651,9 +2655,15 @@ static inline struct vm_area_struct * find_vma_intersection(struct mm_struct * m
->  static inline unsigned long vm_start_gap(struct vm_area_struct *vma)
->  {
->  	unsigned long vm_start = vma->vm_start;
-> +	unsigned long gap = 0;
->  
-> -	if (vma->vm_flags & VM_GROWSDOWN) {
-> -		vm_start -= stack_guard_gap;
-> +	if (vma->vm_flags & VM_GROWSDOWN)
-> +		gap = stack_guard_gap;
-> +	else if (vma->vm_flags & VM_SHSTK)
-> +		gap = ARCH_SHADOW_STACK_GUARD_GAP;
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Looks too x86-centric for generic code.
+> That also brings up that there is no set_page_private_2().  I think
+> that's OK -- you only set PageFsCache() immediately after reading the
+> page from the server.  But I feel this "unlock_page_private_2" is actually
+> "clear_page_private_2" -- ie it's equivalent to writeback, not to lock.
 
-Maybe we can have a helper that would return gap for the given VMA?
-The generic version of the helper would only return stack_guard_gap for
-VM_GROWSDOWN. Arch code would override it to handle VM_SHSTK case too.
+How about I do the following:
 
-Similar can be done in vm_end_gap().
+ (1) Add set_page_private_2() or mark_page_private_2() to set the PG_fscache_2
+     bit.  It could take a ref on the page here.
 
-> +
-> +	if (gap != 0) {
-> +		vm_start -= gap;
->  		if (vm_start > vma->vm_start)
->  			vm_start = 0;
->  	}
-> @@ -2663,9 +2673,15 @@ static inline unsigned long vm_start_gap(struct vm_area_struct *vma)
->  static inline unsigned long vm_end_gap(struct vm_area_struct *vma)
->  {
->  	unsigned long vm_end = vma->vm_end;
-> +	unsigned long gap = 0;
-> +
-> +	if (vma->vm_flags & VM_GROWSUP)
-> +		gap = stack_guard_gap;
-> +	else if (vma->vm_flags & VM_SHSTK)
-> +		gap = ARCH_SHADOW_STACK_GUARD_GAP;
->  
-> -	if (vma->vm_flags & VM_GROWSUP) {
-> -		vm_end += stack_guard_gap;
-> +	if (gap != 0) {
-> +		vm_end += gap;
->  		if (vm_end < vma->vm_end)
->  			vm_end = -PAGE_SIZE;
->  	}
-> -- 
-> 2.21.0
-> 
+ (2) Rename unlock_page_private_2() to end_page_private_2().  It could drop
+     the ref on the page here, but that then means I can't use
+     pagevec_release().
 
--- 
- Kirill A. Shutemov
+ (3) Add wait_on_page_private_2() an analogue of wait_on_page_writeback()
+     rather than wait_on_page_locked().
+
+ (4) Provide fscache synonyms of the above.
+
+David
+
