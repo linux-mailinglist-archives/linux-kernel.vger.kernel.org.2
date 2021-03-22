@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483C1344822
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDBF344825
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhCVOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:51:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28702 "EHLO
+        id S231636AbhCVOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:52:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50641 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230220AbhCVOtj (ORCPT
+        by vger.kernel.org with ESMTP id S231236AbhCVOtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:49:39 -0400
+        Mon, 22 Mar 2021 10:49:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616424578;
+        s=mimecast20190719; t=1616424579;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gR1g+wrmq8CNGMHC9HF+FPFW3/Mbla9HvLt7skHdCM8=;
-        b=DI1amX7CsIOHlo/uCx0aTR2XKK882d9bw7/n6jrPgQcPrAAYb9JEImj3SuA/fzKorA7xql
-        7yXgLsR3paaNLmyHB+GEjf8AagjzpRSchbcNIxTBPYT1nLdlcw3UclMzxgkWthWJIbmBU+
-        SMsf3redvyy2zIRObWcMKdTsB16SG6o=
+        bh=69DYhwT5xB2HAhx/Tr5I8TuWYr5//KxtYgUgHfgI45Y=;
+        b=I8Sv/u52g6Of6Fy6UYSPFxiVeCrrAGNyV21VFyniFV9TPIwro6KrYVOtYdyzCMWGZuVKDb
+        UCCGxQ/NjjNBK64VC10vfDe1RvyQV/3XsKgbFHb9oirKxPCt09UP0j936fcvLEQUoBcYZ4
+        4RRLn08+1rTMBe4LLQVwgU5BDe4r3qI=
 Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
  [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-7SEi0hipPIO6EtibDOOzEg-1; Mon, 22 Mar 2021 10:49:36 -0400
-X-MC-Unique: 7SEi0hipPIO6EtibDOOzEg-1
-Received: by mail-ej1-f71.google.com with SMTP id si4so20099067ejb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:36 -0700 (PDT)
+ us-mta-103-oVIC5-VpOZu8ei-grXyA6g-1; Mon, 22 Mar 2021 10:49:37 -0400
+X-MC-Unique: oVIC5-VpOZu8ei-grXyA6g-1
+Received: by mail-ej1-f71.google.com with SMTP id si4so20099091ejb.23
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gR1g+wrmq8CNGMHC9HF+FPFW3/Mbla9HvLt7skHdCM8=;
-        b=lQxTGPDVxdSJEjMR/5IUVgmX58hjlNEcW+uWW+E3aCCgFvIPHa9K6Fcu9ATWkpykvc
-         dvP5ZpJ1edwwUVTKzHooo+YyhfyIPGfxI5h9g9oNaHwXM+7Ao0A6j0n3zZVqvqSCuEMf
-         3oSghnprIbPhQ/Q7VEelAYDKSwULw8Iz+Sk+JgWARYEcHRnywbhkA/a8M7Eq98LCrk8b
-         JeoedeZx97gn2rlc4g/4bwx1IIPD6EUjGPoJg/4ay7VmSS7ok44XVpHbJb4VbISxr3/k
-         ASeFOscTTyG6naKmt987hGAVpNr/UilWSQbgaIhRWAGXC447Q9BoxEdlrGxvybFW5gTd
-         /jMA==
-X-Gm-Message-State: AOAM530WF7hzrFF90CSgey8pdyQdof4mIQO0TfAn/7mLKduRRxhgYOXe
-        QeTviDHigFsk3b+xJyEUvGR3MSoCW05qU1fkv9fnlaGNJIBd2wNT8YaM1KcEu97nAibVJN5P4X3
-        GaCkM5/LYpjAhA/oi8mR925GI
-X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr99791ejc.199.1616424575545;
-        Mon, 22 Mar 2021 07:49:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztIBTmpouYG8EVNmhdgk36jXeOwcmhhqjfU++DaRsUQo8mOQ4U/Zmdf5dp8EDtGvu++grrMg==
-X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr99776ejc.199.1616424575417;
-        Mon, 22 Mar 2021 07:49:35 -0700 (PDT)
+        bh=69DYhwT5xB2HAhx/Tr5I8TuWYr5//KxtYgUgHfgI45Y=;
+        b=Zq12d7cC4h/tXa9x5oQgV5XIrEccuu0g9GWvLKyJNl5KlWTSNkWAaGGGScxpHB4SDr
+         l8tlhrVXn7Qj6VjZtFfGGEQ/S27fWeyCjpWFKPBOpugd+2KBkTQB6VF+CzZJeRilrhzS
+         uJnRu4H9E6q/V1ImL5w4KFpeXo/bhLOdxgTC1kBFxlp9+U+dgg87ONZ0nc/jTXYEPwbp
+         muNygdAoCd9cD4BJ8lgrOrEp49MbbRg6prGKZILw/v3JIfzPdFDbts/1HziEJXhZqk+y
+         owPfUa5/SPSa4TQ6H9NwYkr6x37pmiqVCxvwBD1eVTDNK50CkRijLIaY/XPpTJ2t89XD
+         3vWw==
+X-Gm-Message-State: AOAM5327W2uQNWwoD3xO4G+zW+ZHAGG0FOG5efi5aafkcI/fZV6PRhIY
+        tXZbNE+681NRIl2QyLdAJDpctLb6rwDH9fqQlPBgrlIgIczwMcNoDW1hehkr7iCzDclR38IIyKX
+        zOdoo2nMDVbTAMBn0ibR95AIL
+X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr62696ejb.503.1616424576672;
+        Mon, 22 Mar 2021 07:49:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgxjDgf0jKR6n6QloHOiLhHT0Iw1VMJEHAtI03b7e6ceDKVUlWEgSWmP2nFfv9p3fyHPIWlA==
+X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr62683ejb.503.1616424576527;
+        Mon, 22 Mar 2021 07:49:36 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.34
+        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:49:34 -0700 (PDT)
+        Mon, 22 Mar 2021 07:49:36 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
         Christoph Hellwig <hch@lst.de>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Subject: [PATCH v2 14/18] nilfs2: convert to miscattr
-Date:   Mon, 22 Mar 2021 15:49:12 +0100
-Message-Id: <20210322144916.137245-15-mszeredi@redhat.com>
+        Joel Becker <jlbec@evilplan.org>
+Subject: [PATCH v2 15/18] ocfs2: convert to miscattr
+Date:   Mon, 22 Mar 2021 15:49:13 +0100
+Message-Id: <20210322144916.137245-16-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210322144916.137245-1-mszeredi@redhat.com>
 References: <20210322144916.137245-1-mszeredi@redhat.com>
@@ -72,171 +72,218 @@ Use the miscattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Joel Becker <jlbec@evilplan.org>
 ---
- fs/nilfs2/file.c  |  2 ++
- fs/nilfs2/ioctl.c | 61 ++++++++++++++---------------------------------
- fs/nilfs2/namei.c |  2 ++
- fs/nilfs2/nilfs.h |  3 +++
- 4 files changed, 25 insertions(+), 43 deletions(-)
+ fs/ocfs2/file.c        |  2 ++
+ fs/ocfs2/ioctl.c       | 59 ++++++++++++++----------------------------
+ fs/ocfs2/ioctl.h       |  3 +++
+ fs/ocfs2/namei.c       |  3 +++
+ fs/ocfs2/ocfs2_ioctl.h |  8 ------
+ 5 files changed, 27 insertions(+), 48 deletions(-)
 
-diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
-index e1bd592ce700..e2716ce4b95e 100644
---- a/fs/nilfs2/file.c
-+++ b/fs/nilfs2/file.c
-@@ -148,6 +148,8 @@ const struct inode_operations nilfs_file_inode_operations = {
- 	.setattr	= nilfs_setattr,
- 	.permission     = nilfs_permission,
- 	.fiemap		= nilfs_fiemap,
-+	.miscattr_get	= nilfs_miscattr_get,
-+	.miscattr_set	= nilfs_miscattr_set,
+diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+index 6611c64ca0be..fa92629ff285 100644
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -2645,6 +2645,8 @@ const struct inode_operations ocfs2_file_iops = {
+ 	.fiemap		= ocfs2_fiemap,
+ 	.get_acl	= ocfs2_iop_get_acl,
+ 	.set_acl	= ocfs2_iop_set_acl,
++	.miscattr_get	= ocfs2_miscattr_get,
++	.miscattr_set	= ocfs2_miscattr_set,
  };
  
- /* end of file */
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index b053b40315bf..4bb5f09b6efa 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -16,6 +16,7 @@
- #include <linux/compat.h>	/* compat_ptr() */
- #include <linux/mount.h>	/* mnt_want_write_file(), mnt_drop_write_file() */
- #include <linux/buffer_head.h>
+ const struct inode_operations ocfs2_special_file_iops = {
+diff --git a/fs/ocfs2/ioctl.c b/fs/ocfs2/ioctl.c
+index 50c9b30ee9f6..34ea3cde01bb 100644
+--- a/fs/ocfs2/ioctl.c
++++ b/fs/ocfs2/ioctl.c
+@@ -10,6 +10,7 @@
+ #include <linux/mount.h>
+ #include <linux/blkdev.h>
+ #include <linux/compat.h>
 +#include <linux/miscattr.h>
- #include "nilfs.h"
- #include "segment.h"
- #include "bmap.h"
-@@ -113,51 +114,39 @@ static int nilfs_ioctl_wrap_copy(struct the_nilfs *nilfs,
+ 
+ #include <cluster/masklog.h>
+ 
+@@ -61,8 +62,10 @@ static inline int o2info_coherent(struct ocfs2_info_request *req)
+ 	return (!(req->ir_flags & OCFS2_INFO_FL_NON_COHERENT));
  }
  
- /**
-- * nilfs_ioctl_getflags - ioctl to support lsattr
-+ * nilfs_miscattr_get - ioctl to support lsattr
-  */
--static int nilfs_ioctl_getflags(struct inode *inode, void __user *argp)
-+int nilfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+-static int ocfs2_get_inode_attr(struct inode *inode, unsigned *flags)
++int ocfs2_miscattr_get(struct dentry *dentry, struct miscattr *ma)
  {
--	unsigned int flags = NILFS_I(inode)->i_flags & FS_FL_USER_VISIBLE;
 +	struct inode *inode = d_inode(dentry);
++	unsigned int flags;
+ 	int status;
  
--	return put_user(flags, (int __user *)argp);
-+	miscattr_fill_flags(ma, NILFS_I(inode)->i_flags & FS_FL_USER_VISIBLE);
+ 	status = ocfs2_inode_lock(inode, NULL, 0);
+@@ -71,15 +74,19 @@ static int ocfs2_get_inode_attr(struct inode *inode, unsigned *flags)
+ 		return status;
+ 	}
+ 	ocfs2_get_inode_flags(OCFS2_I(inode));
+-	*flags = OCFS2_I(inode)->ip_attr;
++	flags = OCFS2_I(inode)->ip_attr;
+ 	ocfs2_inode_unlock(inode, 0);
+ 
++	miscattr_fill_flags(ma, flags & OCFS2_FL_VISIBLE);
 +
-+	return 0;
+ 	return status;
  }
  
- /**
-- * nilfs_ioctl_setflags - ioctl to support chattr
-+ * nilfs_miscattr_set - ioctl to support chattr
-  */
--static int nilfs_ioctl_setflags(struct inode *inode, struct file *filp,
--				void __user *argp)
-+int nilfs_miscattr_set(struct user_namespace *mnt_userns,
+-static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
+-				unsigned mask)
++int ocfs2_miscattr_set(struct user_namespace *mnt_userns,
 +		       struct dentry *dentry, struct miscattr *ma)
  {
 +	struct inode *inode = d_inode(dentry);
- 	struct nilfs_transaction_info ti;
- 	unsigned int flags, oldflags;
- 	int ret;
++	unsigned int flags = ma->flags;
+ 	struct ocfs2_inode_info *ocfs2_inode = OCFS2_I(inode);
+ 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+ 	handle_t *handle = NULL;
+@@ -87,7 +94,8 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
+ 	unsigned oldflags;
+ 	int status;
  
--	if (!inode_owner_or_capable(&init_user_ns, inode))
--		return -EACCES;
--
--	if (get_user(flags, (int __user *)argp))
--		return -EFAULT;
--
--	ret = mnt_want_write_file(filp);
--	if (ret)
--		return ret;
--
--	flags = nilfs_mask_flags(inode->i_mode, flags);
--
 -	inode_lock(inode);
--
--	oldflags = NILFS_I(inode)->i_flags;
 +	if (miscattr_has_xattr(ma))
 +		return -EOPNOTSUPP;
  
--	ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
--	if (ret)
--		goto out;
-+	flags = nilfs_mask_flags(inode->i_mode, ma->flags);
+ 	status = ocfs2_inode_lock(inode, &bh, 1);
+ 	if (status < 0) {
+@@ -95,19 +103,17 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
+ 		goto bail;
+ 	}
  
- 	ret = nilfs_transaction_begin(inode->i_sb, &ti, 0);
- 	if (ret)
--		goto out;
-+		return ret;
+-	status = -EACCES;
+-	if (!inode_owner_or_capable(&init_user_ns, inode))
+-		goto bail_unlock;
+-
+ 	if (!S_ISDIR(inode->i_mode))
+ 		flags &= ~OCFS2_DIRSYNC_FL;
  
--	NILFS_I(inode)->i_flags = (oldflags & ~FS_FL_USER_MODIFIABLE) |
--		(flags & FS_FL_USER_MODIFIABLE);
-+	oldflags = NILFS_I(inode)->i_flags & ~FS_FL_USER_MODIFIABLE;
-+	NILFS_I(inode)->i_flags = oldflags | (flags & FS_FL_USER_MODIFIABLE);
+ 	oldflags = ocfs2_inode->ip_attr;
+-	flags = flags & mask;
+-	flags |= oldflags & ~mask;
++	flags = flags & OCFS2_FL_MODIFIABLE;
++	flags |= oldflags & ~OCFS2_FL_MODIFIABLE;
  
- 	nilfs_set_inode_flags(inode);
- 	inode->i_ctime = current_time(inode);
-@@ -165,11 +154,7 @@ static int nilfs_ioctl_setflags(struct inode *inode, struct file *filp,
- 		nilfs_set_transaction_flag(NILFS_TI_SYNC);
+-	status = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	if (status)
++	/* Check already done by VFS, but repeat with ocfs lock */
++	status = -EPERM;
++	if ((flags ^ oldflags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
++	    !capable(CAP_LINUX_IMMUTABLE))
+ 		goto bail_unlock;
  
- 	nilfs_mark_inode_dirty(inode);
--	ret = nilfs_transaction_commit(inode->i_sb);
--out:
+ 	handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS);
+@@ -129,8 +135,6 @@ static int ocfs2_set_inode_attr(struct inode *inode, unsigned flags,
+ bail_unlock:
+ 	ocfs2_inode_unlock(inode, 1);
+ bail:
 -	inode_unlock(inode);
--	mnt_drop_write_file(filp);
--	return ret;
-+	return nilfs_transaction_commit(inode->i_sb);
- }
+-
+ 	brelse(bh);
  
- /**
-@@ -1282,10 +1267,6 @@ long nilfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	return status;
+@@ -836,7 +840,6 @@ static int ocfs2_info_handle(struct inode *inode, struct ocfs2_info *info,
+ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	struct inode *inode = file_inode(filp);
+-	unsigned int flags;
+ 	int new_clusters;
+ 	int status;
+ 	struct ocfs2_space_resv sr;
+@@ -849,24 +852,6 @@ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
  	void __user *argp = (void __user *)arg;
  
  	switch (cmd) {
--	case FS_IOC_GETFLAGS:
--		return nilfs_ioctl_getflags(inode, argp);
--	case FS_IOC_SETFLAGS:
--		return nilfs_ioctl_setflags(inode, filp, argp);
- 	case FS_IOC_GETVERSION:
- 		return nilfs_ioctl_getversion(inode, argp);
- 	case NILFS_IOCTL_CHANGE_CPMODE:
-@@ -1331,12 +1312,6 @@ long nilfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- long nilfs_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
+-	case OCFS2_IOC_GETFLAGS:
+-		status = ocfs2_get_inode_attr(inode, &flags);
+-		if (status < 0)
+-			return status;
+-
+-		flags &= OCFS2_FL_VISIBLE;
+-		return put_user(flags, (int __user *) arg);
+-	case OCFS2_IOC_SETFLAGS:
+-		if (get_user(flags, (int __user *) arg))
+-			return -EFAULT;
+-
+-		status = mnt_want_write_file(filp);
+-		if (status)
+-			return status;
+-		status = ocfs2_set_inode_attr(inode, flags,
+-			OCFS2_FL_MODIFIABLE);
+-		mnt_drop_write_file(filp);
+-		return status;
+ 	case OCFS2_IOC_RESVSP:
+ 	case OCFS2_IOC_RESVSP64:
+ 	case OCFS2_IOC_UNRESVSP:
+@@ -959,12 +944,6 @@ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ 	void __user *argp = (void __user *)arg;
+ 
  	switch (cmd) {
--	case FS_IOC32_GETFLAGS:
--		cmd = FS_IOC_GETFLAGS;
+-	case OCFS2_IOC32_GETFLAGS:
+-		cmd = OCFS2_IOC_GETFLAGS;
 -		break;
--	case FS_IOC32_SETFLAGS:
--		cmd = FS_IOC_SETFLAGS;
+-	case OCFS2_IOC32_SETFLAGS:
+-		cmd = OCFS2_IOC_SETFLAGS;
 -		break;
- 	case FS_IOC32_GETVERSION:
- 		cmd = FS_IOC_GETVERSION;
- 		break;
-diff --git a/fs/nilfs2/namei.c b/fs/nilfs2/namei.c
-index ecace5f96a95..5ed4b824a8fa 100644
---- a/fs/nilfs2/namei.c
-+++ b/fs/nilfs2/namei.c
-@@ -552,6 +552,8 @@ const struct inode_operations nilfs_dir_inode_operations = {
- 	.setattr	= nilfs_setattr,
- 	.permission	= nilfs_permission,
- 	.fiemap		= nilfs_fiemap,
-+	.miscattr_get	= nilfs_miscattr_get,
-+	.miscattr_set	= nilfs_miscattr_set,
- };
+ 	case OCFS2_IOC_RESVSP:
+ 	case OCFS2_IOC_RESVSP64:
+ 	case OCFS2_IOC_UNRESVSP:
+diff --git a/fs/ocfs2/ioctl.h b/fs/ocfs2/ioctl.h
+index 9f5e4d95e37f..575e754b7d16 100644
+--- a/fs/ocfs2/ioctl.h
++++ b/fs/ocfs2/ioctl.h
+@@ -11,6 +11,9 @@
+ #ifndef OCFS2_IOCTL_PROTO_H
+ #define OCFS2_IOCTL_PROTO_H
  
- const struct inode_operations nilfs_special_inode_operations = {
-diff --git a/fs/nilfs2/nilfs.h b/fs/nilfs2/nilfs.h
-index c4a45a081ade..03184ea11287 100644
---- a/fs/nilfs2/nilfs.h
-+++ b/fs/nilfs2/nilfs.h
-@@ -243,6 +243,9 @@ extern void nilfs_set_link(struct inode *, struct nilfs_dir_entry *,
- extern int nilfs_sync_file(struct file *, loff_t, loff_t, int);
- 
- /* ioctl.c */
-+int nilfs_miscattr_get(struct dentry *dentry, struct miscattr *m);
-+int nilfs_miscattr_set(struct user_namespace *mnt_userns,
++int ocfs2_miscattr_get(struct dentry *dentry, struct miscattr *ma);
++int ocfs2_miscattr_set(struct user_namespace *mnt_userns,
 +		       struct dentry *dentry, struct miscattr *ma);
- long nilfs_ioctl(struct file *, unsigned int, unsigned long);
- long nilfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- int nilfs_ioctl_prepare_clean_segments(struct the_nilfs *, struct nilfs_argv *,
+ long ocfs2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
+ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg);
+ 
+diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+index 3abdd36da2e2..ec8c3b813532 100644
+--- a/fs/ocfs2/namei.c
++++ b/fs/ocfs2/namei.c
+@@ -50,6 +50,7 @@
+ #include "xattr.h"
+ #include "acl.h"
+ #include "ocfs2_trace.h"
++#include "ioctl.h"
+ 
+ #include "buffer_head_io.h"
+ 
+@@ -2918,4 +2919,6 @@ const struct inode_operations ocfs2_dir_iops = {
+ 	.fiemap         = ocfs2_fiemap,
+ 	.get_acl	= ocfs2_iop_get_acl,
+ 	.set_acl	= ocfs2_iop_set_acl,
++	.miscattr_get	= ocfs2_miscattr_get,
++	.miscattr_set	= ocfs2_miscattr_set,
+ };
+diff --git a/fs/ocfs2/ocfs2_ioctl.h b/fs/ocfs2/ocfs2_ioctl.h
+index d7b31734f6be..273616bd4f19 100644
+--- a/fs/ocfs2/ocfs2_ioctl.h
++++ b/fs/ocfs2/ocfs2_ioctl.h
+@@ -12,14 +12,6 @@
+ #ifndef OCFS2_IOCTL_H
+ #define OCFS2_IOCTL_H
+ 
+-/*
+- * ioctl commands
+- */
+-#define OCFS2_IOC_GETFLAGS	FS_IOC_GETFLAGS
+-#define OCFS2_IOC_SETFLAGS	FS_IOC_SETFLAGS
+-#define OCFS2_IOC32_GETFLAGS	FS_IOC32_GETFLAGS
+-#define OCFS2_IOC32_SETFLAGS	FS_IOC32_SETFLAGS
+-
+ /*
+  * Space reservation / allocation / free ioctls and argument structure
+  * are designed to be compatible with XFS.
 -- 
 2.30.2
 
