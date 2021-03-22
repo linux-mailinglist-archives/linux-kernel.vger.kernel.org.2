@@ -2,134 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B3D344B38
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27F5344B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhCVQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhCVQ0E (ORCPT
+        id S231157AbhCVQ1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:27:53 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:28406 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231142AbhCVQ1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:26:04 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD9CC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:26:04 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id h20so6864980plr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LdoGx5oDl8gk5x9p4tYOogHfvxPqQ4lONZ8abnnWI5s=;
-        b=CXHsrE0Ycxw/IfmXoMWR4BugaH4HPKEnfCCZL0DyKEpKpPERuTUkAaILqb3tg2zqwH
-         xowcxFSgq0w8E9eafAxpCLw+7nS5Ee9fsfQbBub1XF6M6B7juALdmPNis8pmoF1ouoHh
-         nesbXKk1Xtb6BFEf6NOBPjtk04Z5zfDVFEMsc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LdoGx5oDl8gk5x9p4tYOogHfvxPqQ4lONZ8abnnWI5s=;
-        b=Mr5rizYX+nBvolCWAT7rNXm/wqyZH6WjX1DvAi5ZzDD2y7OiKcXQpRXiFo4fw8odwd
-         ijhvMV744Sdlt8gGy7N3TQ8rkCZK/ZOxkZGVaxILfpkGaQNLO0D69GQZlK3+bXZYpnQL
-         mui4CNLJNDgCbpadkg8iWHYKnS285gXhGPLHFyIiMV5mqYi9mUUe7J/59xuO7T6V/pbt
-         nxoKrM3QSjpjZeyhECu1La2yToqhStnUGqQBemOwtQxMFq7KQGLz8hO1AQ7yPswy1v28
-         VyMiao+WNPNEPZn381MDllq+lx4Mdluwa0DOOjkGrh2FKQ3udWii518U+hS8keTW7I9N
-         /cSA==
-X-Gm-Message-State: AOAM530YF2+kjTTpmhLGz2+/L6tnCSaCdHAs1iNGU0hOE42sJ+BdnTc2
-        LyJ3dqKZglyLrgZ7lxjgI0QLFMCsigw+4Q==
-X-Google-Smtp-Source: ABdhPJy7SFdYJZMBr+cLAhIFydT26KK7t0PO36o7RilHCUXk20IMO6kcI9wziE53YpcwYc5b6MeBKQ==
-X-Received: by 2002:a17:902:be0c:b029:e6:f0b:91ab with SMTP id r12-20020a170902be0cb02900e60f0b91abmr492009pls.2.1616430363930;
-        Mon, 22 Mar 2021 09:26:03 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:90a9:b908:f93a:2f78])
-        by smtp.gmail.com with UTF8SMTPSA id 12sm13106117pgw.18.2021.03.22.09.26.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 09:26:03 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 09:26:01 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] arm64: dts: qcom: sc7180: Add pompom rev3
-Message-ID: <YFjFGbFdiS5gARhs@google.com>
-References: <20210316011516.1314686-1-mka@chromium.org>
- <20210315181509.v3.2.I4138c3edee23d1efa637eef51e841d9d2e266659@changeid>
- <CAD=FV=XxTuFSosYFcpvbTUMfrAkaLbg3QvqBwhrt4niVzDRN9w@mail.gmail.com>
+        Mon, 22 Mar 2021 12:27:24 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MGMvHv030099;
+        Mon, 22 Mar 2021 17:26:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=njz669Z3QQdJ4hJbI1GB/Wc42/9Usg2LVkptUBbrEb8=;
+ b=MdBh1N8DA+ERt5yhkcx2EsANla4WZlgG9g+QuHzgyiqdyoYihOJYXeM4iHHO0yIPxmjI
+ CNzJk/q/a9A16fjbcjCkJKaOAX4V3pA6F8f43PHPdq3gwl9LrsD18dyEx2Tf5Vtn3CI8
+ U7eLFQweUr2gHgp6lrWW3tpnfGjn9W8F1qqFvUFQiMpA7mkZ9p0zk0Kg8pGr1WMzbHso
+ yPtQYipKRMbEx/da5cD8hNK/bPnLJobr+9XfRocx787f8UXd4vHmrf/teURKfN2iEycL
+ MADYk7qIi7CrI1LiQU4+/biKlDSTYwblMlfB3jDzcdl5SrNjEbSOQzlRcR4IfTp4boT+ Yg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37d72djsft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 17:26:18 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BCEA810002A;
+        Mon, 22 Mar 2021 17:26:17 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AB4EE22F114;
+        Mon, 22 Mar 2021 17:26:17 +0100 (CET)
+Received: from [10.211.8.180] (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
+ 2021 17:26:16 +0100
+Subject: Re: [Linux-stm32] [PATCH v10 18/33] counter: Return error code on
+ invalid modes
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
+CC:     <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
+        <david@lechnology.com>, <linux-iio@vger.kernel.org>,
+        <patrick.havelange@essensium.com>, <alexandre.belloni@bootlin.com>,
+        <mcoquelin.stm32@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <o.rempel@pengutronix.de>, <kernel@pengutronix.de>,
+        <fabrice.gasnier@st.com>, <syednwaris@gmail.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <alexandre.torgue@st.com>
+References: <cover.1616150619.git.vilhelm.gray@gmail.com>
+ <e1dd9e43f713ccaa29e1c05d7b21d86bff02ab34.1616150619.git.vilhelm.gray@gmail.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <91f41020-d042-e69a-e1e8-ef4a0ebe4bf8@foss.st.com>
+Date:   Mon, 22 Mar 2021 17:26:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=XxTuFSosYFcpvbTUMfrAkaLbg3QvqBwhrt4niVzDRN9w@mail.gmail.com>
+In-Reply-To: <e1dd9e43f713ccaa29e1c05d7b21d86bff02ab34.1616150619.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_08:2021-03-22,2021-03-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:12:40AM -0700, Doug Anderson wrote:
-> Hi,
+On 3/19/21 12:00 PM, William Breathitt Gray wrote:
+> Only a select set of modes (function, action, etc.) are valid for a
+> given device configuration. This patch ensures that invalid modes result
+> in a return -EINVAL. Such a situation should never occur in reality, but
+> it's good to define a default switch cases for the sake of making the
+> intent of the code clear.
 > 
-> On Mon, Mar 15, 2021 at 6:15 PM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > The only kernel visible change with respect to rev2 is that pompom
-> > rev3 changed the charger thermistor from a 47k to a 100k NTC to use
-> > a thermistor which is supported by the PM6150 ADC driver.
-> >
-> > Disable the charger thermal zone for pompom rev1 and rev2 to avoid
-> > the use of bogus temperature values from the unsupported thermistor.
-> >
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> >
-> > Changes in v3:
-> > - don't add LOCK key
-> >
-> > Changes in v2:
-> > - moved keyboard definition to sc7180-trogdor-pompom.dtsi instead
-> >   of duplicating it, use cros-ec keyboard for rev1
-> > - squashed with 'arm64: dts: qcom: sc7180: pompom: Disable charger
-> >   thermal zone for rev1 and rev2'
-> >
-> >  arch/arm64/boot/dts/qcom/Makefile             |  2 +
-> >  .../dts/qcom/sc7180-trogdor-pompom-r1.dts     | 12 ++++++
-> >  .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
-> >  .../dts/qcom/sc7180-trogdor-pompom-r2.dts     | 38 +++++--------------
-> >  .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 +++++++
-> >  .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 15 ++++++++
-> >  .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 29 ++++++++++++++
-> >  7 files changed, 83 insertions(+), 31 deletions(-)
-> >  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
-> >  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> > index a81966d59cf7..11aa83ca798f 100644
-> > --- a/arch/arm64/boot/dts/qcom/Makefile
-> > +++ b/arch/arm64/boot/dts/qcom/Makefile
-> > @@ -49,6 +49,8 @@ dtb-$(CONFIG_ARCH_QCOM)       += sc7180-trogdor-pompom-r1.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r1-lte.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r2.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r2-lte.dtb
-> > +dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r3.dtb
-> > +dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-pompom-r3-lte.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-r1.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sc7180-trogdor-r1-lte.dtb
-> >  dtb-$(CONFIG_ARCH_QCOM)        += sdm630-sony-xperia-ganges-kirin.dtb
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-> > index e720e7bd0d70..7f87877408c5 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
-> > @@ -9,11 +9,23 @@
-> >
-> >  #include "sc7180-trogdor-pompom.dtsi"
-> >
-> > +/delete-node/ keyboard_controller;
-> 
-> So I just tried to compile your patch and I found that it doesn't
-> compile. :( The above needs to be:
-> 
-> /delete-node/ &keyboard_controller;
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Cc: David Lechner <david@lechnology.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
+>  drivers/counter/104-quad-8.c            | 20 +++++++----
+>  drivers/counter/microchip-tcb-capture.c |  6 ++++
+>  drivers/counter/stm32-lptimer-cnt.c     | 10 +++---
 
-I swear I did a test build, it seems I did that build in another
-kernel tree :/
+Hi William,
+
+Fro the STM32 driver, You can add my:
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+
+Thanks,
+Fabrice
+
+
+>  drivers/counter/ti-eqep.c               | 45 +++++++++++--------------
+>  4 files changed, 46 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 09d779544969..b7d6c1c43655 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -273,6 +273,10 @@ static int quad8_function_set(struct counter_device *counter,
+>  			*scale = 2;
+>  			mode_cfg |= QUAD8_CMR_QUADRATURE_X4;
+>  			break;
+> +		default:
+> +			/* should never reach this path */
+> +			mutex_unlock(&priv->lock);
+> +			return -EINVAL;
+>  		}
+>  	}
+>  
+> @@ -349,7 +353,7 @@ static int quad8_action_get(struct counter_device *counter,
+>  	case QUAD8_COUNT_FUNCTION_PULSE_DIRECTION:
+>  		if (synapse->signal->id == signal_a_id)
+>  			*action = QUAD8_SYNAPSE_ACTION_RISING_EDGE;
+> -		break;
+> +		return 0;
+>  	case QUAD8_COUNT_FUNCTION_QUADRATURE_X1:
+>  		if (synapse->signal->id == signal_a_id) {
+>  			quad8_direction_get(counter, count, &direction);
+> @@ -359,17 +363,18 @@ static int quad8_action_get(struct counter_device *counter,
+>  			else
+>  				*action = QUAD8_SYNAPSE_ACTION_FALLING_EDGE;
+>  		}
+> -		break;
+> +		return 0;
+>  	case QUAD8_COUNT_FUNCTION_QUADRATURE_X2:
+>  		if (synapse->signal->id == signal_a_id)
+>  			*action = QUAD8_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		return 0;
+>  	case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
+>  		*action = QUAD8_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static const struct counter_ops quad8_ops = {
+> @@ -529,6 +534,9 @@ static int quad8_count_mode_set(struct counter_device *counter,
+>  	case COUNTER_COUNT_MODE_MODULO_N:
+>  		cnt_mode = 3;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	mutex_lock(&priv->lock);
+> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+> index 51b8af80f98b..0c9a61962911 100644
+> --- a/drivers/counter/microchip-tcb-capture.c
+> +++ b/drivers/counter/microchip-tcb-capture.c
+> @@ -133,6 +133,9 @@ static int mchp_tc_count_function_set(struct counter_device *counter,
+>  		bmr |= ATMEL_TC_QDEN | ATMEL_TC_POSEN;
+>  		cmr |= ATMEL_TC_ETRGEDG_RISING | ATMEL_TC_ABETRG | ATMEL_TC_XC0;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	regmap_write(priv->regmap, ATMEL_TC_BMR, bmr);
+> @@ -226,6 +229,9 @@ static int mchp_tc_count_action_set(struct counter_device *counter,
+>  	case MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE:
+>  		edge = ATMEL_TC_ETRGEDG_BOTH;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	return regmap_write_bits(priv->regmap,
+> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
+> index c19d998df5ba..78f383b77bd2 100644
+> --- a/drivers/counter/stm32-lptimer-cnt.c
+> +++ b/drivers/counter/stm32-lptimer-cnt.c
+> @@ -206,9 +206,10 @@ static int stm32_lptim_cnt_function_set(struct counter_device *counter,
+>  		priv->quadrature_mode = 1;
+>  		priv->polarity = STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES;
+>  		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static ssize_t stm32_lptim_cnt_enable_read(struct counter_device *counter,
+> @@ -326,9 +327,10 @@ static int stm32_lptim_cnt_action_get(struct counter_device *counter,
+>  	case STM32_LPTIM_ENCODER_BOTH_EDGE:
+>  		*action = priv->polarity;
+>  		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static int stm32_lptim_cnt_action_set(struct counter_device *counter,
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index 65df9ef5b5bc..878725c2f010 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -157,44 +157,39 @@ static int ti_eqep_action_get(struct counter_device *counter,
+>  		 * QEPA and QEPB trigger QCLK.
+>  		 */
+>  		*action = TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		return 0;
+>  	case TI_EQEP_COUNT_FUNC_DIR_COUNT:
+>  		/* In direction-count mode only rising edge of QEPA is counted
+>  		 * and QEPB gives direction.
+>  		 */
+> -		switch (synapse->signal->id) {
+> -		case TI_EQEP_SIGNAL_QEPA:
+> -			*action = TI_EQEP_SYNAPSE_ACTION_RISING_EDGE;
+> -			break;
+> -		default:
+> +		if (synapse->signal->id == TI_EQEP_SIGNAL_QEPB)
+>  			*action = TI_EQEP_SYNAPSE_ACTION_NONE;
+> -			break;
+> -		}
+> -		break;
+> +		else
+> +			*action = TI_EQEP_SYNAPSE_ACTION_RISING_EDGE;
+> +		return 0;
+>  	case TI_EQEP_COUNT_FUNC_UP_COUNT:
+>  	case TI_EQEP_COUNT_FUNC_DOWN_COUNT:
+>  		/* In up/down-count modes only QEPA is counted and QEPB is not
+>  		 * used.
+>  		 */
+> -		switch (synapse->signal->id) {
+> -		case TI_EQEP_SIGNAL_QEPA:
+> -			err = regmap_read(priv->regmap16, QDECCTL, &qdecctl);
+> -			if (err)
+> -				return err;
+> -
+> -			if (qdecctl & QDECCTL_XCR)
+> -				*action = TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES;
+> -			else
+> -				*action = TI_EQEP_SYNAPSE_ACTION_RISING_EDGE;
+> -			break;
+> -		default:
+> +		if (synapse->signal->id == TI_EQEP_SIGNAL_QEPB) {
+>  			*action = TI_EQEP_SYNAPSE_ACTION_NONE;
+> -			break;
+> +			return 0;
+>  		}
+> -		break;
+> -	}
+>  
+> -	return 0;
+> +		err = regmap_read(priv->regmap16, QDECCTL, &qdecctl);
+> +		if (err)
+> +			return err;
+> +
+> +		if (qdecctl & QDECCTL_XCR)
+> +			*action = TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES;
+> +		else
+> +			*action = TI_EQEP_SYNAPSE_ACTION_RISING_EDGE;
+> +		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+> +	}
+>  }
+>  
+>  static const struct counter_ops ti_eqep_counter_ops = {
+> 
