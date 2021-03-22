@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC673441FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C57344213
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhCVMhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:37:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
+        id S231614AbhCVMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:38:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231334AbhCVMdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BB20619AA;
-        Mon, 22 Mar 2021 12:33:38 +0000 (UTC)
+        id S231643AbhCVMeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:34:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29C2A6199F;
+        Mon, 22 Mar 2021 12:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416419;
-        bh=a2Ra/mksqsGTGh+WCV68awS7xaExptq72GPvHAF62G0=;
+        s=korg; t=1616416442;
+        bh=N40+fZ3YNOp4uPZiFC1mNZfL5mBEIhSqyr+K9hCmHuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FD6yfLlpjBPLWdGsHYMKtrElbXuY9uNcZt7aKU9hkR9J4YOrzXqs31irzvoOD7T7W
-         gmZw7Y4bjeaniU92H/QciuNWEM6SuCCJpN4W+9nx6ZtVVucc5v0YNkExFZmxl4Zr/e
-         tt8bj+FRoXlOydqhwiWTt5+uWS0Yaljg3qRd+t+A=
+        b=qsw8DBfkw37M/szzFaLZn4B2aGR+/8kYFndz3tp2sgdUT3CaYQL1zfQ+MuAr2d/r8
+         k67dFxLrGxBlcoavJXVqbITCreCEoGZEvQq0gbDo6Qk/oJU6l/6f1R1TET3uLvvy4X
+         lVGaATcuzPRdxNHJo6PbKb2ceXZaHPvzCcFF4f2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 072/120] powerpc/vdso32: Add missing _restgpr_31_x to fix build failure
-Date:   Mon, 22 Mar 2021 13:27:35 +0100
-Message-Id: <20210322121932.079625552@linuxfoundation.org>
+Subject: [PATCH 5.11 073/120] drm/ttm: Warn on pinning without holding a reference
+Date:   Mon, 22 Mar 2021 13:27:36 +0100
+Message-Id: <20210322121932.109281887@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -41,49 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-[ Upstream commit 08c18b63d9656e0389087d1956d2b37fd7019172 ]
+[ Upstream commit 57fcd550eb15bce14a7154736379dfd4ed60ae81 ]
 
-With some defconfig including CONFIG_CC_OPTIMIZE_FOR_SIZE,
-(for instance mvme5100_defconfig and ps3_defconfig), gcc 5
-generates a call to _restgpr_31_x.
+Not technically a problem for ttm, but very likely a driver bug and
+pretty big time confusing for reviewing code.
 
-Until recently it went unnoticed, but
-commit 42ed6d56ade2 ("powerpc/vdso: Block R_PPC_REL24 relocations")
-made it rise to the surface.
+So warn about it, both at cleanup time (so we catch these for sure)
+and at pin/unpin time (so we know who's the culprit).
 
-Provide that function (copied from lib/crtsavres.S) in
-gettimeofday.S
-
-Fixes: ab037dd87a2f ("powerpc/vdso: Switch VDSO to generic C implementation.")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/a7aa198a88bcd33c6e35e99f70f86c7b7f2f9440.1615270757.git.christophe.leroy@csgroup.eu
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201028113120.3641237-1-daniel.vetter@ffwll.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vdso32/gettimeofday.S | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/gpu/drm/ttm/ttm_bo.c | 2 +-
+ include/drm/ttm/ttm_bo_api.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/vdso32/gettimeofday.S b/arch/powerpc/kernel/vdso32/gettimeofday.S
-index a6e29f880e0e..d21d08140a5e 100644
---- a/arch/powerpc/kernel/vdso32/gettimeofday.S
-+++ b/arch/powerpc/kernel/vdso32/gettimeofday.S
-@@ -65,3 +65,14 @@ V_FUNCTION_END(__kernel_clock_getres)
- V_FUNCTION_BEGIN(__kernel_time)
- 	cvdso_call_time __c_kernel_time
- V_FUNCTION_END(__kernel_time)
-+
-+/* Routines for restoring integer registers, called by the compiler.  */
-+/* Called with r11 pointing to the stack header word of the caller of the */
-+/* function, just beyond the end of the integer restore area.  */
-+_GLOBAL(_restgpr_31_x)
-+_GLOBAL(_rest32gpr_31_x)
-+	lwz	r0,4(r11)
-+	lwz	r31,-4(r11)
-+	mtlr	r0
-+	mr	r1,r11
-+	blr
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 22073e77fdf9..a76eb2c14e8c 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -514,7 +514,7 @@ static void ttm_bo_release(struct kref *kref)
+ 		 * shrinkers, now that they are queued for
+ 		 * destruction.
+ 		 */
+-		if (bo->pin_count) {
++		if (WARN_ON(bo->pin_count)) {
+ 			bo->pin_count = 0;
+ 			ttm_bo_del_from_lru(bo);
+ 			ttm_bo_add_mem_to_lru(bo, &bo->mem);
+diff --git a/include/drm/ttm/ttm_bo_api.h b/include/drm/ttm/ttm_bo_api.h
+index 2564e66e67d7..79b9367e0ffd 100644
+--- a/include/drm/ttm/ttm_bo_api.h
++++ b/include/drm/ttm/ttm_bo_api.h
+@@ -600,6 +600,7 @@ static inline bool ttm_bo_uses_embedded_gem_object(struct ttm_buffer_object *bo)
+ static inline void ttm_bo_pin(struct ttm_buffer_object *bo)
+ {
+ 	dma_resv_assert_held(bo->base.resv);
++	WARN_ON_ONCE(!kref_read(&bo->kref));
+ 	++bo->pin_count;
+ }
+ 
+@@ -613,6 +614,7 @@ static inline void ttm_bo_unpin(struct ttm_buffer_object *bo)
+ {
+ 	dma_resv_assert_held(bo->base.resv);
+ 	WARN_ON_ONCE(!bo->pin_count);
++	WARN_ON_ONCE(!kref_read(&bo->kref));
+ 	--bo->pin_count;
+ }
+ 
 -- 
 2.30.1
 
