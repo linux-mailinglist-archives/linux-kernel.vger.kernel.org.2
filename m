@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A572A344EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45637344EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhCVSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
+        id S230079AbhCVSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232158AbhCVSmH (ORCPT
+        with ESMTP id S231728AbhCVSnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:42:07 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14951C061574;
-        Mon, 22 Mar 2021 11:42:07 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id o16so18262924wrn.0;
-        Mon, 22 Mar 2021 11:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=NDKS9bjDkSd8pyAADwHG0veM+Jj9ek5ktbAJaPyPQgc=;
-        b=emIMhnyCmYiLn4PObMyhcg2fhCLigz+fBkhgy0+aFcI3EPJ3FRvS7C4UHcIdwVxtuM
-         Hynhkh/RozexhQ9rnv8mDb8nFZF+99Gpf66DTi3VANzzZadiVk5DRMshYKacz/7aWvmr
-         kigEp1Dia7ZVb7btg371ph4jCCacQqnPq7mnIlTVfj+CbKCIGiTTrpFROod2gPHryY1t
-         DgQONC+TEshODeDBdfd6E1dUviDOuqcGCxCMP8KQMaIMqnrn9KLUp/fFZW+B5cwdQqBM
-         3q300E0NWGRWozZRHaJDh6y5PN6s/Lnk3UWMyd2+QEA52VxPeeBng1UC6dbj7nB+U2wF
-         9BjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NDKS9bjDkSd8pyAADwHG0veM+Jj9ek5ktbAJaPyPQgc=;
-        b=G+D6VnSHAbp13ZauKZcgLI4BSW2KvzcoY++8PjizhU6pq07LG5MII27bcQwnrd2OzR
-         Z7WsJu3sspnvqU98rvm+i3OmrwtXJ5RGW+chSIdgE3RzfnFo0HiyOyMImIfFMW2ZdRcc
-         X/fUgD2uc3UF6Fj8MY2r6+TzvoPtR3OrhbvYtrTw6ooxHMVE5M2VP/w+UdEbtRVYKF+i
-         icmnaBoZBqoafWY1NIiJeKoYSTlThB81UsL9hxiftVDtwFyL3vKQqf61+YusyhqkP6ZL
-         tfLglNtvXP9Th2Hz3Oy1aWNFTELH4zoJwcN206vVVA9T4GmeN87sM/fG6wvXXyF7asm8
-         LTXg==
-X-Gm-Message-State: AOAM533AD4hFbIG/XJynQEXCwtTNvr+8NEw9K7zEJX+iRaOSvmwesa1c
-        p7zHuv/pv5CTU7v+lRwGT9s=
-X-Google-Smtp-Source: ABdhPJwuVapglcJc4ltYexF/7Sif9Q08VJfCe1k1gPwDscYvvPZJHxzLANP0CG8UOT8s73OkKojbyw==
-X-Received: by 2002:adf:fbcc:: with SMTP id d12mr897295wrs.151.1616438525814;
-        Mon, 22 Mar 2021 11:42:05 -0700 (PDT)
-Received: from LEGION ([111.119.187.31])
-        by smtp.gmail.com with ESMTPSA id g5sm21178867wrq.30.2021.03.22.11.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 11:42:05 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 23:41:58 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] io_uring: Initialize variable before use
-Message-ID: <20210322184158.GA2095479@LEGION>
+        Mon, 22 Mar 2021 14:43:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45520C061574;
+        Mon, 22 Mar 2021 11:43:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=eEhKa3fl9PM/rzBKsCj+1kZDKtxZalyhtzpfFhEyDXo=; b=ZHc/I2djlDRHSdVw/rZq5eKEEW
+        8hG5E3PeLyc2qaFPN/dEcPW2lTKSFCcEfzNEqEbDL9EqiqVxhZRlVAVMZPFapknckwD32dwSPdvJN
+        vbMC8/syhTnGdthLC/ANZUt2pbjmNykB5fNyFBhsmD/a9KTC2O9Y39LzlcMuXRG/m93w3sgyxPby4
+        X3di1Beu+Lbwxdu6/MsLIO9paz2ce2C1zJbzUh+QHCWEdKNVDCvqZLPhKn9Nxc1wZX9TtLbN8cASl
+        TR/pkCbELUb3SkVxsAZ/6HTrxzWOk7O26e3zxzeqG23snYbmgBUDbWTWDE9CC1VXdqr+n9zocAqbN
+        tjvSNKEw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOPVH-008vkn-7i; Mon, 22 Mar 2021 18:42:23 +0000
+Subject: Re: [PATCH] s390/crc32-vx: Couple of typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210322130533.3805976-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <62cbcb85-2120-cde2-80a3-41586b097141@infradead.org>
+Date:   Mon, 22 Mar 2021 11:42:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210322130533.3805976-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1) Initialize the struct msghdr msg in the start of the function
-2) Uninitialized variable msg.msg_flags can get used if branch happens to
-out_free before initialization.
+On 3/22/21 6:05 AM, Bhaskar Chowdhury wrote:
+> 
+> s/defintions/definitions/
+> s/intermedate/intermediate/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-So initialize variable in question in the start of the function for
-simplicity in logic and use.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Addresses-Coverity: ("Uninitialized variable")
-Addresses-Coverity: ("Uninitialized variable read")
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- fs/io_uring.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+> ---
+>  arch/s390/crypto/crc32be-vx.S | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/crypto/crc32be-vx.S b/arch/s390/crypto/crc32be-vx.S
+> index 0099044e2c86..6b3d1009c392 100644
+> --- a/arch/s390/crypto/crc32be-vx.S
+> +++ b/arch/s390/crypto/crc32be-vx.S
+> @@ -32,7 +32,7 @@
+>   * process particular chunks of the input data stream in parallel.
+>   *
+>   * For the CRC-32 variants, the constants are precomputed according to
+> - * these defintions:
+> + * these definitions:
+>   *
+>   *	R1 = x4*128+64 mod P(x)
+>   *	R2 = x4*128    mod P(x)
+> @@ -189,7 +189,7 @@ ENTRY(crc32_be_vgfm_16)
+>  	 * Note: To compensate the division by x^32, use the vector unpack
+>  	 * instruction to move the leftmost word into the leftmost doubleword
+>  	 * of the vector register.  The rightmost doubleword is multiplied
+> -	 * with zero to not contribute to the intermedate results.
+> +	 * with zero to not contribute to the intermediate results.
+>  	 */
+> 
+>  	/* T1(x) = floor( R(x) / x^32 ) GF2MUL u */
+> --
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index bba74631954b..d5f83326abff 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4677,7 +4677,8 @@ static int io_recv(struct io_kiocb *req, unsigned int issue_flags)
- {
- 	struct io_buffer *kbuf;
- 	struct io_sr_msg *sr = &req->sr_msg;
--	struct msghdr msg;
-+	struct msghdr msg = {.msg_name = NULL, .msg_control = NULL, .msg_controllen = 0,
-+			     .msg_namelen = 0, .msg_iocb = NULL, .msg_flags = 0};
- 	void __user *buf = sr->buf;
- 	struct socket *sock;
- 	struct iovec iov;
-@@ -4701,13 +4702,6 @@ static int io_recv(struct io_kiocb *req, unsigned int issue_flags)
- 	if (unlikely(ret))
- 		goto out_free;
- 
--	msg.msg_name = NULL;
--	msg.msg_control = NULL;
--	msg.msg_controllen = 0;
--	msg.msg_namelen = 0;
--	msg.msg_iocb = NULL;
--	msg.msg_flags = 0;
--
- 	flags = req->sr_msg.msg_flags | MSG_NOSIGNAL;
- 	if (flags & MSG_DONTWAIT)
- 		req->flags |= REQ_F_NOWAIT;
+
 -- 
-2.25.1
+~Randy
 
