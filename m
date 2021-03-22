@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDD9343B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482AB343AF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCVHzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhCVHyd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:54:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8911EC061574;
-        Mon, 22 Mar 2021 00:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xrt2R+R/QcWWdbizw9P2yOnC4GYX4QH6HtSqRJOKuZM=; b=JlT9qfBWh/cDHYRV0U74X7AcQ/
-        Fojxb2Cia/vWUn71j1RocbeEEJ3oulDvZRs/RVoGdNkXbNt5wN7VYRzV3hyrwj67DsVuT668nJJ3U
-        DFNkCkq3aBU8+z7jxTzdkbrTIZGBa/0HUnBmzEEtn0+r9Uk7rw4fnQR5Zw2IHbq+2s7Ef1L9sYJiC
-        UAKPTViaKDjbNJJqXJNY+eX2yuiu6jISQ+2eR8gQ65JBfwpf1WIbfV06R61bIl+eWQh6K7yumxJ+y
-        wcqP38P68WQYQOl3wNcmJV/iZkpLl4ViVyZN0d3yp6JXtv/XbA+382zuwW+vyiA+M4tnAwyC2HX09
-        Xk3xB1Ow==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOFN8-008Ai8-D3; Mon, 22 Mar 2021 07:53:21 +0000
-Date:   Mon, 22 Mar 2021 07:53:10 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] Document that PF_KTHREAD _is_ ABI
-Message-ID: <20210322075310.GA1946905@infradead.org>
-References: <YFYjOB1jpbqyNPAp@localhost.localdomain>
- <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
+        id S230010AbhCVHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229951AbhCVHx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 03:53:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D2660238;
+        Mon, 22 Mar 2021 07:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616399606;
+        bh=44p/Ueld9vCVM5Ylo7zNfq3Lvw0y7S7unPop8elIUvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HWwsuVJjhfSVheX4h3l8MaLd/ilqA+MacNTjsVkrRk7FruD8bHUITkJFSb6Fu+Teq
+         +pNHLLWaOuTX2EbQ5a2n7R8tzMmMkBvRA191B8FM9pcdlGGkOQ1mMpLBSJ+ivs7Lxf
+         X7L6uy8y+Dnu0rRh7vcVtt4GW3ATp5lb6pbZlNqs=
+Date:   Mon, 22 Mar 2021 08:53:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     dev.dragon@bk.ru
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] Staging: wimax: i2400m: fixed a space coding style issue.
+Message-ID: <YFhM9BA3fiBNaQbr@kroah.com>
+References: <20210321182602.13793-1-dev.dragon@bk.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrUPAvUOr8V5db0gu5RKVftKFwbBEkh6Aob57v+D-xdEig@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210321182602.13793-1-dev.dragon@bk.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 10:23:12AM -0700, Andy Lutomirski wrote:
-> > https://github.com/systemd/systemd/blob/main/src/basic/process-util.c#L354
-> > src/basic/process-util.c:is_kernel_thread()
+On Sun, Mar 21, 2021 at 09:26:02PM +0300, dev.dragon@bk.ru wrote:
+> From: Dmitrii Wolf <dev.dragon@bk.ru>
 > 
-> Eww.
+> Fixed a coding style.
 > 
-> Could we fix it differently and more permanently by modifying the proc
-> code to display the values systemd expects?
+> Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
+> ---
+>  drivers/staging/wimax/i2400m/debugfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wimax/i2400m/debugfs.c b/drivers/staging/wimax/i2400m/debugfs.c
+> index 1c640b41ea4c..4e6e1e3f015e 100644
+> --- a/drivers/staging/wimax/i2400m/debugfs.c
+> +++ b/drivers/staging/wimax/i2400m/debugfs.c
+> @@ -170,7 +170,7 @@ int debugfs_i2400m_reset_set(void *data, u64 val)
+>  	int result;
+>  	struct i2400m *i2400m = data;
+>  	enum i2400m_reset_type rt = val;
+> -	switch(rt) {
+> +	switch (rt) {
+>  	case I2400M_RT_WARM:
+>  	case I2400M_RT_COLD:
+>  	case I2400M_RT_BUS:
+> -- 
+> 2.25.1
+> 
 
-Yes, do_task_stat needs a mapping from kernel flags to UABI flags.  And
-we should already discard everything we think we can from the UABI
-now, and only add the ones back that are required to not break
-userspace.
+Sorry, but this file is now gone from my tree and from linux-next:
+	    https://lore.kernel.org/r/20210318093315.694404-1-gregkh@linuxfoundation.org
 
+greg k-h
