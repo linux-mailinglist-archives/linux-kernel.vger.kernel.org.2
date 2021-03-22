@@ -2,155 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D0F34469F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742D13446AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhCVOGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhCVOFr (ORCPT
+        id S229865AbhCVOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:06:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38830 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230497AbhCVOGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:05:47 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C614AC061574;
-        Mon, 22 Mar 2021 07:05:47 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id i81so11672117oif.6;
-        Mon, 22 Mar 2021 07:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+FYCyq3yVRRWigPORZ/Gk/MLSscCfpNWgxFGt1gPo90=;
-        b=ZUYY10TC+TlwDOFGJ6iv9ppI1m8JGLq19C6eFEMUJro3PH2P80bkHrhIoea2kO2531
-         gTH4Hett1ZDVmlKMw2d3FV6mhUwYFBiQMvxGUZ1YQTQUjR7Y6xJBYXiDAxl6mMg7FgmC
-         6rOtbcgEbFIb15avd0q8f3EUgNLoYCZYmiaS+OACAjLIsrARNFFXP7Qb1Z5Naf4Bw4Sk
-         VBmJrGIkg9o9Nl13ly7zEwzk2c8jclbucXn58QAwL9FnYz8xEbVYhaSUpQrOLesow4Iu
-         v5Yloxgs0gFbP/hvtyVb1zlsnKR8+el+SmIR/xfGJBk9+Jmp00YIlJv/C3FIiUsZIcG/
-         +6VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+FYCyq3yVRRWigPORZ/Gk/MLSscCfpNWgxFGt1gPo90=;
-        b=MEbdPrb/pTJRNPRiTFxJVRU+Q27Vd4yCGHuyFIe7huAH4ZIu57fh+w5L6nQpGdIp+l
-         2tazhrjCIHAlMf2DgwDfBl3XVfwnRLWm1UaqTteCf94D26lh169HTzJEJvio+aV5rYSd
-         2C3h53gv/WHCY0uqTXkIj43e0ZHxSv13+Db6i0T9ktI/gPncgzUPe7O4KaYFkmYd2Wg8
-         wcdP/+4vOOZw5jOoldzMsEJStUNebAIFvhm+paCt0ZtKoFx38eMgM4TuYHXcr+w9QcWo
-         aAsVeWQTHKXUhTnvAjKYhOfMRIf2BMmJKKIfOPJBOE9U+Af+FdF7kxOrloA9cPfqmkQL
-         hP2Q==
-X-Gm-Message-State: AOAM5333WngsScBLIw87OEiEwv4mmfva3doQvO3Yv4G1K2Y167wg5OJU
-        R2mwxr5EKxXjnjVQHaSQSaA=
-X-Google-Smtp-Source: ABdhPJzW8zlJ/lt0Af8cSFLLUVOvxfeVa+Ho+kwr0XNueiHstG8DmnL8VOVVXRIpuVbNTBTAsPr3RA==
-X-Received: by 2002:aca:4d8f:: with SMTP id a137mr9919970oib.132.1616421947266;
-        Mon, 22 Mar 2021 07:05:47 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f8sm3123176oij.4.2021.03.22.07.05.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Mar 2021 07:05:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 22 Mar 2021 07:05:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [RFC RESEND PATCH v2 8/8] watchdog: retu_wdt: Clean-up by using
- managed work init
-Message-ID: <20210322140545.GC140507@roeck-us.net>
-References: <cover.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
- <5f1a80d6f88d12b23dbb864e3201fe720cd9bb74.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 22 Mar 2021 10:06:12 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12ME3J3i036725;
+        Mon, 22 Mar 2021 10:06:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=pnANhrdarCwpxEDW4R3cclyoLFe42MpHeORvJNjndw4=;
+ b=b2brCyiOCVgd9E4AVSWlcHV793fsQ5cbC3cZfXLRUihclpW2p44ylChmVxm6aiizUnhR
+ QPFXynML482QmRw+eZ3nMbD6vHmYkfH03xmeOGsThDWn3pZKT8C/lvHwcMkcYejg6gO1
+ 1mgAgWM01Ot3z9VUTI0zx17m6vTrwCXEwPFOTkuP0mNCu2bBbBZfKP+2HRjACIFccRt1
+ NZ8S85BpYjfzF1Fs/vl85Y9td4Bm76SYsZf4TYnpyZ+60eSrQfoJYs39SplS/Jn7+bK3
+ qqv1PHjweXLuWDao72VVBOz6ZPdrrDuKHfUXamlMz+lNkGsEaXVWv5zqBMv/IWNCn/1h Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37e03f0jbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 10:06:12 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12ME3cwT038627;
+        Mon, 22 Mar 2021 10:06:12 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37e03f0j81-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 10:06:11 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12ME2V0b004761;
+        Mon, 22 Mar 2021 14:06:03 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 37d9by987f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 14:06:03 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12ME60q641419176
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 14:06:00 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 489CB4C04A;
+        Mon, 22 Mar 2021 14:06:00 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7F6D4C050;
+        Mon, 22 Mar 2021 14:05:59 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.2.56])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Mar 2021 14:05:59 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH v2 0/2] s390/kvm: VSIE: fix prefixing and MSO for MVPG
+Date:   Mon, 22 Mar 2021 15:05:57 +0100
+Message-Id: <20210322140559.500716-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f1a80d6f88d12b23dbb864e3201fe720cd9bb74.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_07:2021-03-22,2021-03-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103220103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:38:37AM +0200, Matti Vaittinen wrote:
-> Few drivers implement remove call-back only for ensuring a delayed
-> work gets cancelled prior driver removal. Clean-up these by switching
-> to use devm_delayed_work_autocancel() instead.
-> 
-> This change is compile-tested only. All testing is appreciated.
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+The guest real address needs to pass through prefixing in order to yield
+the absolute address.
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+The absolute address needs to be offset by the MSO in order to get the
+host virtual address.
 
-> ---
->  drivers/watchdog/retu_wdt.c | 22 ++++++----------------
->  1 file changed, 6 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/watchdog/retu_wdt.c b/drivers/watchdog/retu_wdt.c
-> index 258dfcf9cbda..2b9017e1cd91 100644
-> --- a/drivers/watchdog/retu_wdt.c
-> +++ b/drivers/watchdog/retu_wdt.c
-> @@ -8,6 +8,7 @@
->   * Rewritten by Aaro Koskinen.
->   */
->  
-> +#include <linux/devm-helpers.h>
->  #include <linux/slab.h>
->  #include <linux/errno.h>
->  #include <linux/device.h>
-> @@ -127,9 +128,12 @@ static int retu_wdt_probe(struct platform_device *pdev)
->  	wdev->rdev		= rdev;
->  	wdev->dev		= &pdev->dev;
->  
-> -	INIT_DELAYED_WORK(&wdev->ping_work, retu_wdt_ping_work);
-> +	ret = devm_delayed_work_autocancel(&pdev->dev, &wdev->ping_work,
-> +					   retu_wdt_ping_work);
-> +	if (ret)
-> +		return ret;
->  
-> -	ret = watchdog_register_device(retu_wdt);
-> +	ret = devm_watchdog_register_device(&pdev->dev, retu_wdt);
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -138,25 +142,11 @@ static int retu_wdt_probe(struct platform_device *pdev)
->  	else
->  		retu_wdt_ping_enable(wdev);
->  
-> -	platform_set_drvdata(pdev, retu_wdt);
-> -
-> -	return 0;
-> -}
-> -
-> -static int retu_wdt_remove(struct platform_device *pdev)
-> -{
-> -	struct watchdog_device *wdog = platform_get_drvdata(pdev);
-> -	struct retu_wdt_dev *wdev = watchdog_get_drvdata(wdog);
-> -
-> -	watchdog_unregister_device(wdog);
-> -	cancel_delayed_work_sync(&wdev->ping_work);
-> -
->  	return 0;
->  }
->  
->  static struct platform_driver retu_wdt_driver = {
->  	.probe		= retu_wdt_probe,
-> -	.remove		= retu_wdt_remove,
->  	.driver		= {
->  		.name	= "retu-wdt",
->  	},
-> -- 
-> 2.25.4
-> 
-> 
-> -- 
-> Matti Vaittinen, Linux device drivers
-> ROHM Semiconductors, Finland SWDC
-> Kiviharjunlenkki 1E
-> 90220 OULU
-> FINLAND
-> 
-> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-> Simon says - in Latin please.
-> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> Thanks to Simon Glass for the translation =] 
+v1->v2
+* use the MSO from the shadow SIE page instead of the original one
+* reuse src and dest variabled to improve readability
+
+Claudio Imbrenda (2):
+  s390/kvm: split kvm_s390_real_to_abs
+  s390/kvm: VSIE: fix MVPG handling for prefixing and MSO
+
+ arch/s390/kvm/gaccess.h | 23 +++++++++++++++++------
+ arch/s390/kvm/vsie.c    |  6 +++++-
+ 2 files changed, 22 insertions(+), 7 deletions(-)
+
+-- 
+2.26.2
+
