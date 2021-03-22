@@ -2,276 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3501A343C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EF4343C49
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhCVJGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:06:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24764 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229893AbhCVJGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:06:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616403974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ceXm904oOVw8lrZ113tpWQUHaEaaD5aBF7KgDgfkeB8=;
-        b=E8sfazosg2hef8PTRiXOHHnwJ839dqOseEbHI5Vmwjigmzx4yLawkEk44aszBt5tRF4r8Q
-        TgdzkHyo1NLABS/86jTcKaSWQWAK+EvSTUKf+xt8vlsEyz5WtVPyUfKLGeRVqgrV3HWFBu
-        R6Pj+6RAUG+gkIoZZ6Upx8Iq4kgAuRc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-bRF2cYJsOoCFt0j80lMxGA-1; Mon, 22 Mar 2021 05:06:10 -0400
-X-MC-Unique: bRF2cYJsOoCFt0j80lMxGA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C80B31009456;
-        Mon, 22 Mar 2021 09:06:07 +0000 (UTC)
-Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C019A62A6F;
-        Mon, 22 Mar 2021 09:05:58 +0000 (UTC)
-Subject: Re: [Linuxarm] Re: [PATCH v14 07/13] iommu/smmuv3: Implement
- cache_invalidate
-To:     "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
-        tn@semihalf.com, zhukeqian1@huawei.com
-Cc:     jean-philippe@linaro.org, wangxingang5@huawei.com,
-        lushenming@huawei.com, jiangkunkun@huawei.com,
-        vivek.gautam@arm.com, vsethi@nvidia.com, zhangfei.gao@linaro.org,
-        linuxarm@openeuler.org
-References: <20210223205634.604221-1-eric.auger@redhat.com>
- <20210223205634.604221-8-eric.auger@redhat.com>
- <c10c6405-5efe-5a41-2b3a-f3af85a528ba@hisilicon.com>
- <d5dcb7fe-2e09-b1fb-24d6-36249f047632@redhat.com>
- <1cf3fa95-45c6-5846-e1c2-12c222ebed46@hisilicon.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <a691418f-5aa8-1d02-3519-732b39cd91cb@redhat.com>
-Date:   Mon, 22 Mar 2021 10:05:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1cf3fa95-45c6-5846-e1c2-12c222ebed46@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
+        id S229715AbhCVJHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:07:09 -0400
+Received: from mail-eopbgr140070.outbound.protection.outlook.com ([40.107.14.70]:47877
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229912AbhCVJGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:06:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZiMXV6anau7G6xHi3h7pxJtD+b9y+Ku5nRifcC1/NVeK41cchRm5aoDf+mcX0+XThqRbkJ2/Vtc/dDuzUZhTgQse2BOIAk8r1mFZgFR4TRB7ewtmcpSleJ+PqmvnWuqVO/YL1arlDsMzaX6A1Pid3EzfxKpIzdttAsBCasuNpXeIjCI81YweSL8scjVE73bLGcWDkOKFFv5HUz5FMKs6dLyjJs3PUXvA9i/ur6qPEIv6bfkB4Au2V77tDW/undM8HJ4tuwvugANPuyskK9WtsoYUSfyb7uHeuJNG/yYHwBOXHrXgQhBQbe6Xf/fTRePkFQj3/blJCS6++B+oxKZp/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zvgRJmF9rCN1sHOHZICRAJvNdjA1t476T6yuPDqXAAM=;
+ b=K6WUFf/dbj8JXQwJZxXbk1UMCCz3+7gJUpNdszy6AInIJaIOOTNcyMv3doCZ+qWtg1D8vrfO2PXMKPY7AAcqHMHODd59Iyj83qHBY8IGFClWlFA6pocogjeb8XM1UmKiY0Ay/XBdxl1b7zPvF93yah3WwqMaK/Tph6J4ckSIhS7YOos6PRR2l+lmw2SUAJ2QO71D9mMkJ3p2lndWl1bnY6z/yUx+8GuP6cQzn0CLpVXUpPhfCQ7u6lod/p6pGEVcmPbD52kLq4Aelhq40d9Xd/ceihToEUzgOYAiWfMpvSGpOPc40ebjCilb9NW35MNpEsg3gpGm10/SONCmyA5J4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zvgRJmF9rCN1sHOHZICRAJvNdjA1t476T6yuPDqXAAM=;
+ b=TxWxpj+c5GigpqzLSHjJXfvLS6lprp843smWp0ZLBEMkBXmOURDIFu+uaeQNnjiazgzjxAZ0ZCmNQXyDFq0cQ2UQY+z7cJmmPMUab4l+8APbNW0dfSW4g5aaetvGfYJG1pANorNNjY0J/3NqV1YdiFgnic0X6FaDw7+mqIh8u5w=
+Received: from VI1PR04MB5853.eurprd04.prod.outlook.com (2603:10a6:803:e3::25)
+ by VE1PR04MB7327.eurprd04.prod.outlook.com (2603:10a6:800:1ac::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
+ 2021 09:06:31 +0000
+Received: from VI1PR04MB5853.eurprd04.prod.outlook.com
+ ([fe80::8116:97ef:2fd7:251f]) by VI1PR04MB5853.eurprd04.prod.outlook.com
+ ([fe80::8116:97ef:2fd7:251f%7]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
+ 09:06:30 +0000
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "kw@linux.com" <kw@linux.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: RE: Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the imx8mq pcie
+ phy voltage
+Thread-Topic: Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the imx8mq pcie
+ phy voltage
+Thread-Index: Adce+pY+Mc9xWuxGRMWwLYe0hhD02w==
+Date:   Mon, 22 Mar 2021 09:06:30 +0000
+Message-ID: <VI1PR04MB585364FC420972C538281F2B8C659@VI1PR04MB5853.eurprd04.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 30e7112d-f1c0-4bf5-f79f-08d8ed11c8a9
+x-ms-traffictypediagnostic: VE1PR04MB7327:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB7327D574F7F9F5B6C5F47E4F8C659@VE1PR04MB7327.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ln8ntVEK/hkhrLyLcKYt4iOhgr+s5sgsYtTzfZbnMZTRP8BS/vpgxuqeRCxDQ3mFF73BZhFTfA1SQgEOuvQU8G+3hFRdhrdVSSfKlXJNEhKQieHKLHDqSBNSUrYlGgeR49YFqr8xnYChAweKmVkpqd+TTDXdUNXZ+I90Tc2vGD0RDjuw4wb/vLPVYBgoNfY1SxDuFT9BvvM3t5hDfGs7JPD/06jlzXADCTtAJPsz86hAMvO8z1DPz70cd3Gfrz2GVsfcIJkeEfSsUi1w22/wyUC3wosMIoB54VL1tgbdbZqZfvWutvnpdN4/oKhh12cCkeTTkmMUYujuWM7VdiSO3QKHWWFiR/Hjra6ao74SemFSvOQXffCVoUQEECzNt6JW3BfT0TfA4ocVcPZtdPZ7q8oc1YKP2GpgEx/+mJS8HHHXEKWSG/MVm84Ry2yDys4ydAtJ58HzVbKyNwRwmeryuBvH4QUjRcLWze5i5cRxR8ORN0EVO7q+v8Rv74g2fi9DS4PYK4kBiUIuoBiFQVJfwKooVTxseDXMQ14EmLHIhVrecoB+RC66pWSkvPsznVmtWnMZRU67dFhkKA3suYO0bn4mgD40JbuLP9PIQlxi9GesHZd0JOxIK1iRAbZ852huR65gIh87VxFBHQoHN1mNvBIKOLhkxjdtcQPP4MCWHKvrGKs/LyuL2Hfh2IzSg1FW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5853.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(186003)(4326008)(52536014)(2906002)(26005)(66446008)(7416002)(66476007)(64756008)(66556008)(8676002)(316002)(86362001)(8936002)(5660300002)(66946007)(7696005)(9686003)(76116006)(54906003)(110136005)(478600001)(55016002)(6506007)(33656002)(83380400001)(38100700001)(71200400001)(53546011)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Wkp6cFI3ZGdicStEaW5xcWovS0FhRkZKdjVtOXFPUFlFam9TaVVTUXNyVWw4?=
+ =?utf-8?B?MEhoaGxNck54MkRrUk5rczhONENaZkkwVzJ1WXJUekNhRUI3ZWNoNlM0RnRX?=
+ =?utf-8?B?bE5mOXBuSlhMNHhFNU1JNmdDNlB0VUlHZ1ZacGZpV3lsWVM4eGVxYWRGaTZZ?=
+ =?utf-8?B?TVladHNEWmtIc1cxRDF0aHpQYjN6aWFxRmE2aW1zOGwydmRTTWk3U0JSZVUz?=
+ =?utf-8?B?WnJhajM3VXVidmpabG9hSUJQTVowcUJyTUQ0QXJWa3d1OEpWajAxN1k0RTRw?=
+ =?utf-8?B?enMrOXQ3WkhWNzI5ZnpHYXRmV2JlTmFMV2xqMW5kQnppYlB3L1A1SW9wUXdK?=
+ =?utf-8?B?elkzMjQ1SkszRjdXQkMyQ1pZTVdFOU5HQ0JIY1IzTTNZbEJhUkJpRlpGNk5W?=
+ =?utf-8?B?dHJSeDI5NklVRkMzZFp2UXJrYlRjc2NQSnF4L3BsQ3hINzE3ZW5pSnZoa1lW?=
+ =?utf-8?B?SkcxbnAzd3BaU3V0S3BoanVPTE14ZWZheVJQbnNCYmhucVFwcFdZb2tQd2VI?=
+ =?utf-8?B?TzAwYjB2MTZ1bHc3WGhKNWNTNnZsZWtZaCt1M2wwcUg5eUFyZ1V6SmxVcFRF?=
+ =?utf-8?B?ejVoTE1pZmR3UU9LcnZyY1Z1OExhazRIRThMbGxlUndSUFVkWDNrOUtFNFBK?=
+ =?utf-8?B?V3hLN3VTaGVhVEZnTk5XMCs4L0lmT1NJQ3lYYkVEemxlam01eXQveDhEeGZn?=
+ =?utf-8?B?Z1I3aEZLUGVLM2FWMldYclk4QlhZQXBOQ1U0aUZHSDAydnY0MkZ5aTZxeEM0?=
+ =?utf-8?B?dkx3RVcvU2phMTRPYklid1V1RExUZjE4dGVMVG9NcGJEMHVseS9QQXExTUI0?=
+ =?utf-8?B?dHY4bU00bVRjKzY4WFhPV1dFNWhGdURUMFkzTTVEM1dxZGJaT2YxWE9QTGZq?=
+ =?utf-8?B?L3ZFcGFIMWI2UmxMVTBmR0pZYnpjRUo1czZ1Smd5WWJEeFd3c1ovckF3YTlZ?=
+ =?utf-8?B?YnB0R3pJelZ2VFg0ZHNmaGkxRlpYV0t3WVBsMUVEZTZTbU5ZK2hCZHpaZjd6?=
+ =?utf-8?B?cjRBUENOamxEMGNhcWZhV0hWQk9tR1ovWmdXWHQrTHhoT09Mb003cUc5Rklu?=
+ =?utf-8?B?MXkySWlYOHZRUHN5UWNPUDBNbUhOZGhkcEtudHl5a0ZhclpFdVJJZnpuWW5E?=
+ =?utf-8?B?WkJBQXJLRm8zQWtzY0txQVpYZExlUjVBYXJySnk0VFdxckExWVMwZjQvTlRz?=
+ =?utf-8?B?cmRSOXdDVXlXeXIvL0xHUHJiOWJONWtGM0tOSVdsYVJQN2NjU1VtdEFOMFZZ?=
+ =?utf-8?B?cVpycE1vNU9aaXJ6WS9lUldpc0ZaQU5XWnZRTXBOdjBZUjRuclo1aVU3QVNG?=
+ =?utf-8?B?dCt5OTBPVklpWnY5cTFUdmR3TUtRM1BYV0ljZ2lqekNnaDVaenNUNy9jSXJs?=
+ =?utf-8?B?U3Uvck13MjZsZmNsQkxEd3NDMVp1Vm5obGNSdEVaVnRmUmIrOXNtZ1AybWZH?=
+ =?utf-8?B?ZU9uSDlFM1JyaTE2NytmaE1jM2o2d0ErWlFXWGgwVEZzOW5qNXNjaGg2bXIx?=
+ =?utf-8?B?YXowQWNoKzJ1d0hIeHJUckNGcEZJUkFNaGN2WFdFQkpHU2k4dUJmbVNkWlA4?=
+ =?utf-8?B?VzRxTk02N0Q5eFR2V21XR2hNaVZUZlErekMvODJrUzYxaUUyVm5LRFJiMlRH?=
+ =?utf-8?B?VzVzWnVsQm5XYW83bmg5ZE9ibWt6VGEzdUVLd2JuM0tpQUFuekxZM0hBZkRZ?=
+ =?utf-8?B?Y0FoYVp2cUE4TFBlc3VoTWdrZlF6MElHTEJiNEdPdnRuNElRQTVtYVc0MDZC?=
+ =?utf-8?Q?/wEQwQgvtGXL06GgkZ+FwZd+3Ep+Jegq4Z/6UW0?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5853.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30e7112d-f1c0-4bf5-f79f-08d8ed11c8a9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 09:06:30.8884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gw8dFbXYpzYbkOrWQrwFnuo1lUUkPtbPAosPPVdP4wxTmuRGYiXXC0Pom3UAipGL8oqIlHtvA8xZhqLuNhGWsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7327
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chenxiang,
-
-On 3/22/21 7:40 AM, chenxiang (M) wrote:
-> Hi Eric,
-> 
-> 
-> 在 2021/3/20 1:36, Auger Eric 写道:
->> Hi Chenxiang,
->>
->> On 3/4/21 8:55 AM, chenxiang (M) wrote:
->>> Hi Eric,
->>>
->>>
->>> 在 2021/2/24 4:56, Eric Auger 写道:
->>>> Implement domain-selective, pasid selective and page-selective
->>>> IOTLB invalidations.
->>>>
->>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>>>
->>>> ---
->>>>
->>>> v13 -> v14:
->>>> - Add domain invalidation
->>>> - do global inval when asid is not provided with addr
->>>>    granularity
->>>>
->>>> v7 -> v8:
->>>> - ASID based invalidation using iommu_inv_pasid_info
->>>> - check ARCHID/PASID flags in addr based invalidation
->>>> - use __arm_smmu_tlb_inv_context and __arm_smmu_tlb_inv_range_nosync
->>>>
->>>> v6 -> v7
->>>> - check the uapi version
->>>>
->>>> v3 -> v4:
->>>> - adapt to changes in the uapi
->>>> - add support for leaf parameter
->>>> - do not use arm_smmu_tlb_inv_range_nosync or arm_smmu_tlb_inv_context
->>>>    anymore
->>>>
->>>> v2 -> v3:
->>>> - replace __arm_smmu_tlb_sync by arm_smmu_cmdq_issue_sync
->>>>
->>>> v1 -> v2:
->>>> - properly pass the asid
->>>> ---
->>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 74
->>>> +++++++++++++++++++++
->>>>   1 file changed, 74 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> index 4c19a1114de4..df3adc49111c 100644
->>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>>> @@ -2949,6 +2949,79 @@ static void
->>>> arm_smmu_detach_pasid_table(struct iommu_domain *domain)
->>>>       mutex_unlock(&smmu_domain->init_mutex);
->>>>   }
->>>>   +static int
->>>> +arm_smmu_cache_invalidate(struct iommu_domain *domain, struct
->>>> device *dev,
->>>> +              struct iommu_cache_invalidate_info *inv_info)
->>>> +{
->>>> +    struct arm_smmu_cmdq_ent cmd = {.opcode = CMDQ_OP_TLBI_NSNH_ALL};
->>>> +    struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->>>> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
->>>> +
->>>> +    if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (!smmu)
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (inv_info->cache & IOMMU_CACHE_INV_TYPE_PASID ||
->>>> +        inv_info->cache & IOMMU_CACHE_INV_TYPE_DEV_IOTLB) {
->>>> +        return -ENOENT;
->>>> +    }
->>>> +
->>>> +    if (!(inv_info->cache & IOMMU_CACHE_INV_TYPE_IOTLB))
->>>> +        return -EINVAL;
->>>> +
->>>> +    /* IOTLB invalidation */
->>>> +
->>>> +    switch (inv_info->granularity) {
->>>> +    case IOMMU_INV_GRANU_PASID:
->>>> +    {
->>>> +        struct iommu_inv_pasid_info *info =
->>>> +            &inv_info->granu.pasid_info;
->>>> +
->>>> +        if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
->>>> +            return -ENOENT;
->>>> +        if (!(info->flags & IOMMU_INV_PASID_FLAGS_ARCHID))
->>>> +            return -EINVAL;
->>>> +
->>>> +        __arm_smmu_tlb_inv_context(smmu_domain, info->archid);
->>>> +        return 0;
->>>> +    }
->>>> +    case IOMMU_INV_GRANU_ADDR:
->>>> +    {
->>>> +        struct iommu_inv_addr_info *info = &inv_info->granu.addr_info;
->>>> +        size_t size = info->nb_granules * info->granule_size;
->>>> +        bool leaf = info->flags & IOMMU_INV_ADDR_FLAGS_LEAF;
->>>> +
->>>> +        if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
->>>> +            return -ENOENT;
->>>> +
->>>> +        if (!(info->flags & IOMMU_INV_ADDR_FLAGS_ARCHID))
->>>> +            break;
->>>> +
->>>> +        arm_smmu_tlb_inv_range_domain(info->addr, size,
->>>> +                          info->granule_size, leaf,
->>>> +                          info->archid, smmu_domain);
->>> Is it possible to add a check before the function to make sure that
->>> info->granule_size can be recognized by SMMU?
->>> There is a scenario which will cause TLBI issue: RIL feature is enabled
->>> on guest but is disabled on host, and then on
->>> host it just invalidate 4K/2M/1G once a time, but from QEMU,
->>> info->nb_granules is always 1 and info->granule_size = size,
->>> if size is not equal to 4K or 2M or 1G (for example size = granule_size
->>> is 5M), it will only part of the size it wants to invalidate.
-> 
-> Do you have any idea about this issue?
-
-At the QEMU VFIO notifier level, when I fill the struct
-iommu_cache_invalidate_info, I currently miss the granule info, hence
-this weird choice of setting setting info->nb_granules is always 1 and
-info->granule_size = size. I think in arm_smmu_cache_invalidate() I need
-to convert this info back to a the leaf page size, in case the host does
-not support RIL. Just as it is done in  __arm_smmu_tlb_inv_range if RIL
-is supported.
-
-Does it makes sense to you?
-
-Thank you for spotting the issue.
-
-Eric
-> 
->>>
->>> I think maybe we can add a check here: if RIL is not enabled and also
->>> size is not the granule_size (4K/2M/1G) supported by
->>> SMMU hardware, can we just simply use the smallest granule_size
->>> supported by hardware all the time?
->>>
->>>> +
->>>> +        arm_smmu_cmdq_issue_sync(smmu);
->>>> +        return 0;
->>>> +    }
->>>> +    case IOMMU_INV_GRANU_DOMAIN:
->>>> +        break;
->>> I check the qemu code
->>> (https://github.com/eauger/qemu/tree/v5.2.0-2stage-rfcv8), for opcode
->>> CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL from guest OS
->>> it calls smmu_inv_notifiers_all() to unamp all notifiers of all mr's,
->>> but it seems not set event.entry.granularity which i think it should set
->>> IOMMU_INV_GRAN_ADDR.
->> this is because IOMMU_INV_GRAN_ADDR = 0. But for clarity I should rather
->> set it explicitly ;-)
-> 
-> ok
-> 
->>> BTW, for opcode CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL, it needs to unmap
->>> size = 0x1000000000000 on 48bit system (it may spend much time),  maybe
->>> it is better
->>> to set it as IOMMU_INV_GRANU_DOMAIN, then in host OS, send TLBI_NH_ALL
->>> directly when IOMMU_INV_GRANU_DOMAIN.
->> Yes you're right. If the host does not support RIL then it is an issue.
->> This is going to be fixed in the next version.
-> 
-> Great
-> 
->>
->> Thank you for the report!
->>
->> Best Regards
->>
->> Eric
->>>
->>>> +    default:
->>>> +        return -EINVAL;
->>>> +    }
->>>> +
->>>> +    /* Global S1 invalidation */
->>>> +    cmd.tlbi.vmid   = smmu_domain->s2_cfg.vmid;
->>>> +    arm_smmu_cmdq_issue_cmd(smmu, &cmd);
->>>> +    arm_smmu_cmdq_issue_sync(smmu);
->>>> +    return 0;
->>>> +}
->>>> +
->>>>   static bool arm_smmu_dev_has_feature(struct device *dev,
->>>>                        enum iommu_dev_features feat)
->>>>   {
->>>> @@ -3048,6 +3121,7 @@ static struct iommu_ops arm_smmu_ops = {
->>>>       .put_resv_regions    = generic_iommu_put_resv_regions,
->>>>       .attach_pasid_table    = arm_smmu_attach_pasid_table,
->>>>       .detach_pasid_table    = arm_smmu_detach_pasid_table,
->>>> +    .cache_invalidate    = arm_smmu_cache_invalidate,
->>>>       .dev_has_feat        = arm_smmu_dev_has_feature,
->>>>       .dev_feat_enabled    = arm_smmu_dev_feature_enabled,
->>>>       .dev_enable_feat    = arm_smmu_dev_enable_feature,
->> _______________________________________________
->> Linuxarm mailing list -- linuxarm@openeuler.org
->> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
-> 
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEx1Y2FzIFN0YWNoIDxsLnN0
+YWNoQHBlbmd1dHJvbml4LmRlPg0KPiBTZW50OiBGcmlkYXksIE1hcmNoIDE5LCAyMDIxIDU6NDkg
+UE0NCj4gVG86IFJpY2hhcmQgWmh1IDxob25neGluZy56aHVAbnhwLmNvbT47IGFuZHJldy5zbWly
+bm92QGdtYWlsLmNvbTsNCj4gc2hhd25ndW9Aa2VybmVsLm9yZzsga3dAbGludXguY29tOyBiaGVs
+Z2Fhc0Bnb29nbGUuY29tOw0KPiBzdGVmYW5AYWduZXIuY2g7IGxvcmVuem8ucGllcmFsaXNpQGFy
+bS5jb20NCj4gQ2M6IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteCA8bGlu
+dXgtaW14QG54cC5jb20+Ow0KPiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IGtlcm5lbEBwZW5ndXRyb25peC5kZQ0K
+PiBTdWJqZWN0OiBbRVhUXSBSZTogW1BBVENIIDEvM10gZHQtYmluZGluZ3M6IGlteDZxLXBjaWU6
+IHNwZWNpZnkgdGhlIGlteDhtcQ0KPiBwY2llIHBoeSB2b2x0YWdlDQo+IEFtIEZyZWl0YWcsIGRl
+bSAxOS4wMy4yMDIxIHVtIDE2OjI0ICswODAwIHNjaHJpZWIgUmljaGFyZCBaaHU6DQo+ID4gQm90
+aCAxLjh2IGFuZCAzLjN2IHBvd2VyIHN1cHBsaWVzIGNhbiBiZSBmZWVkZWQgdG8gaS5NWDhNUSBQ
+Q0llIFBIWS4NCj4gPiBJbiBkZWZhdWx0LCB0aGUgUENJRV9WUEggdm9sdGFnZSBpcyBzdWdnZXN0
+ZWQgdG8gYmUgMS44diByZWZlciB0byBkYXRhDQo+ID4gc2hlZXQuIFdoZW4gUENJRV9WUEggaXMg
+c3VwcGxpZWQgYnkgMy4zdiBpbiB0aGUgSFcgc2NoZW1hdGljIGRlc2lnbiwNCj4gPiB0aGUgVlJF
+R19CWVBBU1MgYml0cyBvZiBHUFIgcmVnaXN0ZXJzIHNob3VsZCBiZSBjbGVhcmVkIGZyb20gZGVm
+YXVsdA0KPiA+IHZhbHVlIDFiJzEgdG8gMWInMC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJp
+Y2hhcmQgWmh1IDxob25neGluZy56aHVAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9mc2wsaW14NnEtcGNpZS50eHQgfCA0ICsrKysN
+Cj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLGlteDZxLXBjaWUu
+dHh0DQo+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL2ZzbCxpbXg2
+cS1wY2llLnR4dA0KPiA+IGluZGV4IGRlNGIyYmFmOTFlOC4uMjNlZmJhZDllODA0IDEwMDY0NA0K
+PiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLGlteDZx
+LXBjaWUudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bj
+aS9mc2wsaW14NnEtcGNpZS50eHQNCj4gPiBAQCAtNTksNiArNTksMTAgQEAgQWRkaXRpb25hbCBy
+ZXF1aXJlZCBwcm9wZXJ0aWVzIGZvciBpbXg3ZC1wY2llIGFuZA0KPiBpbXg4bXEtcGNpZToNCj4g
+PiAgQWRkaXRpb25hbCByZXF1aXJlZCBwcm9wZXJ0aWVzIGZvciBpbXg4bXEtcGNpZToNCj4gPiAg
+LSBjbG9jay1uYW1lczogTXVzdCBpbmNsdWRlIHRoZSBmb2xsb3dpbmcgYWRkaXRpb25hbCBlbnRy
+aWVzOg0KPiA+ICAgICAgIC0gInBjaWVfYXV4Ig0KPiA+ICstIHBjaWUtdnBoLTN2MzogSWYgcHJl
+c2VudCB0aGVuIFBDSUVfVlBIIGlzIGZlZWRlZCBieSAzLjN2IGluIHRoZSBIVw0KPiA+ICsgIHNj
+aGVtYXRpYyBkZXNpZ24uIFRoZSBQQ0lFX1ZQSCBpcyBzdWdnZXN0ZWQgdG8gYmUgMS44diByZWZl
+ciB0byB0aGUNCj4gPiArICBkYXRhIHNoZWV0LiBJZiB0aGUgUENJRV9WUEggaXMgc3VwcGxpZWQg
+YnkgMy4zViwgdGhlIFZSRUdfQllQQVNTDQo+ID4gKyAgc2hvdWxkIGJlIGNsZWFyZWQgdG8gemVy
+byBhY2NvcmRpbmdseS4NCj4gDQo+IFVobSwgbm8uIFBsZWFzZSBkb24ndCBhZGQgYm9vbGVhbiBE
+VCBwcm9wZXJ0aWVzIGZvciByYW5kb20gcGFydHMgb2YgdGhlDQo+IGJvYXJkIGRlc2lnbi4NCj4g
+DQo+IElmIHdlIG5lZWQgdG8ga25vdyB0aGUgdm9sdGFnZSBvZiBQQ0lFX1ZQSCwgd2Ugc2hvdWxk
+IHJlYWxseSBhZGQgdGhlIFZQSA0KPiByZWd1bGF0b3IgYXMgYSBzdXBwbHkgdG8gdGhlIFBDSWUg
+Y29udHJvbGxlciBub2RlLCB0aGVuIHdvcmsgb3V0IHRoZSB2b2x0YWdlDQo+IHRoZSB1c3VhbCB3
+YXkgYnkgdXNpbmcgdGhlIExpbnV4IHJlZ3VsYXRvciBBUEkuDQo+IA0KW1JpY2hhcmQgWmh1XSBI
+aSBMdWNhczoNClRoYW5rcyBmb3IgeW91ciBjb21tZW50cy4gU2luY2UgdGhlIHZnZW41X3JlZyBp
+cyB1c2VkIHRvIHBvd2VyIHVwIFBDSWUgUEhZIG9uIGkuTVg4TVEgRVZLIGJvYXJkLA0KIGFuZCBp
+dCdzIHNldCB0byBiZSAicmVndWxhdG9yLWFsd2F5cy1vbjsiLg0KRGlkIG9ubHkgdGhlIHJlZ3Vs
+YXRvcl9nZXRfdm9sdGFnZSBvciBjb21iaW5lZCB3aXRoIHJlZ3VsYXRvcl9lbmFibGUvcmVndWxh
+dG9yX2Rpc2FibGUgY2FuIGJlIHVzZWQgaW4gdGhlIGRyaXZlcj8NCg0KQmVzdCBSZWdhcmRzDQpS
+aWNoYXJkIFpodQ0KDQo+IFJlZ2FyZHMsDQo+IEx1Y2FzDQoNCg==
