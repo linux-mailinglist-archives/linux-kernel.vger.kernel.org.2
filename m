@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1990C3442BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00498344164
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhCVMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55354 "EHLO mail.kernel.org"
+        id S231470AbhCVMdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:33:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232012AbhCVMhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 591CD619A5;
-        Mon, 22 Mar 2021 12:37:05 +0000 (UTC)
+        id S231373AbhCVMba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6577260C3D;
+        Mon, 22 Mar 2021 12:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416625;
-        bh=i79ZghL5uzfZhM46bDTvgwmNqDCj6BC4tNNwJsEtxrE=;
+        s=korg; t=1616416289;
+        bh=mA6n9q3KDXJcFo/kEYdcN1dVGe5Dx/XAbgn+TiqxXgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLNPryD/Lr3cH+Wf0EZ7cDcsdRkE1lGgFmzO+SB94feHrHORSwayA3gu29dkSzn5P
-         xvrIC/Is9pwQsJPjcDJKdFS8u+Tq30izLcV047u1DQkRHCzvWin6M+lLGQfbjry9LU
-         W8yQEmbLTEQsNHrGKFtCeB3EDZnmyNebyQvMWm7w=
+        b=HA/3qnXCjRnZsjNQ6a5R4E20Fd9j/u33s/I3ZcTK29OLXZMGy+Xv93MU63zosgwtE
+         zTnJEhYgpAUWidttY4utb5eQGJzN7c4rKLWqopNASbDkufIMPOQ91raVl/MoGHOMAu
+         0VvqlD2AwAUjfEccYkgGJ8MyMSRAWN5WkwWySKn0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        dongjian <dongjian@yulong.com>, Yue Hu <huyue2@yulong.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 058/157] scsi: ufs: ufs-mediatek: Correct operator & -> &&
-Date:   Mon, 22 Mar 2021 13:26:55 +0100
-Message-Id: <20210322121935.590470655@linuxfoundation.org>
+        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.11 033/120] ASoC: qcom: sdm845: Fix array out of bounds access
+Date:   Mon, 22 Mar 2021 13:26:56 +0100
+Message-Id: <20210322121930.763557603@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongjian <dongjian@yulong.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit 0fdc7d5d8f3719950478cca452cf7f0f1355be10 upstream.
+commit 1c668e1c0a0f74472469cd514f40c9012b324c31 upstream.
 
-The "lpm" and "->enabled" are all boolean. We should be using &&
-rather than the bit operator.
+Static analysis Coverity had detected a potential array out-of-bounds
+write issue due to the fact that MAX AFE port Id was set to 16 instead
+of using AFE_PORT_MAX macro.
 
-Link: https://lore.kernel.org/r/1615896915-148864-1-git-send-email-dj0227@163.com
-Fixes: 488edafb1120 ("scsi: ufs-mediatek: Introduce low-power mode for device power supply")
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: dongjian <dongjian@yulong.com>
-Signed-off-by: Yue Hu <huyue2@yulong.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fix this by properly using AFE_PORT_MAX macro.
+
+Fixes: 1b93a8843147 ("ASoC: qcom: sdm845: handle soundwire stream")
+Reported-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210309142129.14182-2-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufs-mediatek.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/sdm845.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -813,7 +813,7 @@ static void ufs_mtk_vreg_set_lpm(struct
- 	if (!hba->vreg_info.vccq2 || !hba->vreg_info.vcc)
- 		return;
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -33,12 +33,12 @@
+ struct sdm845_snd_data {
+ 	struct snd_soc_jack jack;
+ 	bool jack_setup;
+-	bool stream_prepared[SLIM_MAX_RX_PORTS];
++	bool stream_prepared[AFE_PORT_MAX];
+ 	struct snd_soc_card *card;
+ 	uint32_t pri_mi2s_clk_count;
+ 	uint32_t sec_mi2s_clk_count;
+ 	uint32_t quat_tdm_clk_count;
+-	struct sdw_stream_runtime *sruntime[SLIM_MAX_RX_PORTS];
++	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
+ };
  
--	if (lpm & !hba->vreg_info.vcc->enabled)
-+	if (lpm && !hba->vreg_info.vcc->enabled)
- 		regulator_set_mode(hba->vreg_info.vccq2->reg,
- 				   REGULATOR_MODE_IDLE);
- 	else if (!lpm)
+ static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
 
 
