@@ -2,243 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5C9344E62
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB22344E66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhCVSU6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 14:20:58 -0400
-Received: from aposti.net ([89.234.176.197]:59450 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231459AbhCVSUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:20:31 -0400
-Date:   Mon, 22 Mar 2021 18:20:13 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 07/10] pinctrl: Ingenic: Add pinctrl driver for JZ4750.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <PXUDQQ.WI3R8L8RS0751@crapouillou.net>
-In-Reply-To: <1615975084-68203-8-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615975084-68203-8-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231354AbhCVSVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:21:51 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:55758 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231700AbhCVSVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:21:41 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AAFwshKryPEGuYf2qPkxu++4aV5sAKNV00zAX?=
+ =?us-ascii?q?/kB9WHVpW+SivYSHgOkb2RjoiDwYRXEnnpS6NLOdRG7HnKQFnLU5FYyJGC3ron?=
+ =?us-ascii?q?GhIo0n14vtxDX8Bzbzn9Qtr5tIW5NVTOf9BV0St7eA3CCRGdwt2cTC1aiui/vX?=
+ =?us-ascii?q?wXsFd3AiV4hJ9A15ChmWHwlfWWB9dM8EPbKB+8tKoCehc3wLbsK9QkIIRfTHus?=
+ =?us-ascii?q?ejruOBXTctARk75A6SyRah77DnGxaVty1uGw9n67Ek7GTDjkjF/a2lqf620Vvx?=
+ =?us-ascii?q?0GXU4pRQlrLau/p+LeaLjdUYLSiptxawaO1aKpO/lR0WgMXq0lYll9HQvwwtVv?=
+ =?us-ascii?q?4YhAKsQkiZqQbgsjOQpQoGxnPmyUCVmnfv5fH+LQhaN+NsnpleaQGc1kxIhqBd?=
+ =?us-ascii?q?7ItlxGSc3qAnfC/ovCO43NTQUgEvq0zcmwtVrcc3j2ZDFaMEYr5QsoB3xjJ+LL?=
+ =?us-ascii?q?4kHDjmrKEqFfAGNrDx2N9ycUmGK1DV11Mf6OCEe3QoA1O+RFIe0/bl/gR+uXBi?=
+ =?us-ascii?q?0g8j2McElGwB/55Vcehq283gMr500I1IVNMcd6hnBOwMKPHHIVDlZTLpHCasLU?=
+ =?us-ascii?q?/8FKcBUki986LfxLku/umldNgp4fIJ6eD8eWpCuWQ/dk7oA8Hm5uxjzjn3TG+w?=
+ =?us-ascii?q?XSvgx6hljvAT1t2MPcuSQFLzNmwGqMeur+4SBcfWQZ+ISeVrKsXuKmbjAu9yri?=
+ =?us-ascii?q?7DcqNPInoTWtB9gKduZ3uyo9nGIoCvluvXfOe7HsueLR8YW3jyCnZGYT7rJM8o?=
+ =?us-ascii?q?1DHZZlbEhnHqKgPQU3261p59F5Xa8/MeobJ9YbFkg0wwsxCU98uLITpNvugdZ0?=
+ =?us-ascii?q?1lOo7qlau9uC2f4XvIx38BAGsGMm9lpJHbF19arw4DNE35NZwZvc+ERGxU1Hyb?=
+ =?us-ascii?q?YjdiUsLtFhJFrVgfw9PrE7WggQQZT/63OGOTiHUe4FiQSY0Hp6GF7cD5PrQ1E4?=
+ =?us-ascii?q?ghQ640MQnQDRR6lUJLpQ54GVM5b36aMgmrpbSujZQSCu2aXcJ7mh2XLcldrm+a?=
+ =?us-ascii?q?ul6boc0pW3sHTz+jWcOamm8VNmRpr2w015VarKuLmD6pJ2d6qv8/KkdwZGOeB6?=
+ =?us-ascii?q?8DDAntXvQEppnbPCVLCUuajz2TjB8+PkDw8V8Ju2DnJSqIPfXCAl9XvGFEwr/n?=
+ =?us-ascii?q?mWkEJlm1TgZVUDRXoId9HWPJtjJYyumQfJe+1GOXdx8F2eESMDbMZDMIOQNwz9?=
+ =?us-ascii?q?Wr1BqY8QzySkkO99ELBKjwHb4je7bc1jeGM4uTj5wLGPdS4dJ4Ltz0q/QKVuie?=
+ =?us-ascii?q?YgeRKzv9B4oSql+oj0dgHBMxhGgvkPvu1hGg0XOx22QnB+HOZH58QasAHt2a52?=
+ =?us-ascii?q?/4ZvqB3Zljl+gpte+oPmiZUK/V9YjnKxp4bjLauyqfUvwho5E8h9N4iJJDW73g?=
+ =?us-ascii?q?FQbu+F4C9hMkN8vwnF4ZW81Akfr8E74qW8QTfile7x4NlNOCRXFHjiXGRss3fV?=
+ =?us-ascii?q?Qoh3ieAN+T+brPrtMUcxu8jTq1H0Ke/S1b9/KAYi3r79AnIpN1B39XZkg64Gll?=
+ =?us-ascii?q?58WYeeTreV6XXtAGxkOzNjuTdbdSIZL1e4k4n1JB+tmN28qaaCb8sTqg2QdTE+?=
+ =?us-ascii?q?Z16m6iBfm5BhmBcNQ4luCSCBC3m6OvpPSvhCrqU1KAGiMlrLwASkwKct4GsDMr?=
+ =?us-ascii?q?i4o630GJO8/Ki0o4jlpT5ixmnFbx2o6gpHzWB11CLBexuOQaYRBDdnePlsjL6u?=
+ =?us-ascii?q?6eyTD05yVEw4DKEANKcshJAMV4dPmxEw5+bcwRtqWv5awhn2BKZwovFXc1jFnG?=
+ =?us-ascii?q?rqZb9Kb83PXZQOv5D3j0fVoH5D5eH4Zx2igms3tJfcT77ZWzZGwsZ6o1Kup64o?=
+ =?us-ascii?q?BdizRyrFfvq1UachV2rwQtkpjXMUaPBQU9KYH+2Y/txBQIrqmL7FNj4H1Wh1O8?=
+ =?us-ascii?q?kVmZ/1z4hdy8tXY4p3DUxzUX75m1VX80mmJUpwRnyatuPj6WXWngTWiMPVn3wK?=
+ =?us-ascii?q?ErUEcVS1wH2qEull7OPqMLnpexwy54tjw9GDE32KzuGWDFSzmefOeAdQyCBZCw?=
+ =?us-ascii?q?Gpp1bPlQMGZYcCLzOxTAh5gqThXHPN1mzQ6hn38SBa6IfqOqCTjtQqUl7egVIe?=
+ =?us-ascii?q?jrRYXbmMLFkg5e/HsWp5jgiXOEkOlxhPnrZTJUoJY4aexxJgyu/C1kydOdUgLE?=
+ =?us-ascii?q?IpgP7Eju3iPcwDUdIMVT3h8czkYbrzoBAS+kB9u8QUd6uT4NoqWZBREw2IKGUt?=
+ =?us-ascii?q?ZasWDIvF6ntj3XLWmvQQWRZ4E=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,269,1610406000"; 
+   d="scan'208";a="499336039"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 19:21:39 +0100
+Date:   Mon, 22 Mar 2021 19:21:39 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+Subject: [PATCH] of: overlay: fix for_each_child.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: kernel test robot <lkp@intel.com>
 
+Function "for_each_child_of_node" should have of_node_put() before goto.
 
-Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add support for probing the pinctrl-ingenic driver on the
-> JZ4750 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
-> 
-> Notes:
->     v3:
->     New patch.
-> 
->  drivers/pinctrl/pinctrl-ingenic.c | 137 
-> ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 137 insertions(+)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 25458d6..d98767b 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -85,6 +85,7 @@ enum jz_version {
->  	ID_JZ4730,
->  	ID_JZ4740,
->  	ID_JZ4725B,
-> +	ID_JZ4750,
->  	ID_JZ4760,
->  	ID_JZ4770,
->  	ID_JZ4780,
-> @@ -424,6 +425,138 @@ static const struct ingenic_chip_info 
-> jz4725b_chip_info = {
->  	.pull_downs = jz4740_pull_downs,
->  };
-> 
-> +static const u32 jz4750_pull_ups[6] = {
-> +	0xffffffff, 0xffffffff, 0x3fffffff, 0x7fffffff, 0x1fff3fff, 
-> 0x00ffffff,
-> +};
-> +
-> +static const u32 jz4750_pull_downs[6] = {
-> +	0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 
-> 0x00000000,
-> +};
-> +
-> +static int jz4750_uart0_data_pins[] = { 0xa4, 0xa5, };
-> +static int jz4750_uart0_hwflow_pins[] = { 0xa6, 0xa7, };
-> +static int jz4750_uart1_data_pins[] = { 0x90, 0x91, };
-> +static int jz4750_uart1_hwflow_pins[] = { 0x92, 0x93, };
-> +static int jz4750_uart2_data_pins[] = { 0x9b, 0x9a, };
-> +static int jz4750_uart3_data_pins[] = { 0xb0, 0xb1, };
-> +static int jz4750_uart3_hwflow_pins[] = { 0xb2, 0xb3, };
-> +static int jz4750_mmc0_1bit_pins[] = { 0xa8, 0xa9, 0xa0, };
-> +static int jz4750_mmc0_4bit_pins[] = { 0xa1, 0xa2, 0xa3, };
-> +static int jz4750_mmc0_8bit_pins[] = { 0xa4, 0xa5, 0xa6, 0xa7, };
-> +static int jz4750_mmc1_1bit_pins[] = { 0xae, 0xaf, 0xaa, };
-> +static int jz4750_mmc1_4bit_pins[] = { 0xab, 0xac, 0xad, };
-> +static int jz4750_i2c_pins[] = { 0x8c, 0x8d, };
-> +static int jz4750_cim_pins[] = {
-> +	0x89, 0x8b, 0x8a, 0x88,
-> +	0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
-> +};
-> +static int jz4750_lcd_8bit_pins[] = {
-> +	0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x72, 0x73, 0x74,
-> +};
-> +static int jz4750_lcd_16bit_pins[] = {
-> +	0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x75,
-> +};
-> +static int jz4750_lcd_18bit_pins[] = { 0x70, 0x71, };
-> +static int jz4750_lcd_18bit_tft_pins[] = { 0x78, 0x79, 0x76, 0x77, };
-> +static int jz4750_nand_cs1_pins[] = { 0x55, };
-> +static int jz4750_nand_cs2_pins[] = { 0x56, };
-> +static int jz4750_nand_cs3_pins[] = { 0x57, };
-> +static int jz4750_nand_cs4_pins[] = { 0x58, };
-> +static int jz4750_nand_fre_fwe_pins[] = { 0x5c, 0x5d, };
-> +static int jz4750_pwm_pwm0_pins[] = { 0x94, };
-> +static int jz4750_pwm_pwm1_pins[] = { 0x95, };
-> +static int jz4750_pwm_pwm2_pins[] = { 0x96, };
-> +static int jz4750_pwm_pwm3_pins[] = { 0x97, };
-> +static int jz4750_pwm_pwm4_pins[] = { 0x98, };
-> +static int jz4750_pwm_pwm5_pins[] = { 0x99, };
-> +
-> +static const struct group_desc jz4750_groups[] = {
-> +	INGENIC_PIN_GROUP("uart0-data", jz4750_uart0_data, 1),
-> +	INGENIC_PIN_GROUP("uart0-hwflow", jz4750_uart0_hwflow, 1),
-> +	INGENIC_PIN_GROUP("uart1-data", jz4750_uart1_data, 0),
-> +	INGENIC_PIN_GROUP("uart1-hwflow", jz4750_uart1_hwflow, 0),
-> +	INGENIC_PIN_GROUP("uart2-data", jz4750_uart2_data, 1),
-> +	INGENIC_PIN_GROUP("uart3-data", jz4750_uart3_data, 0),
-> +	INGENIC_PIN_GROUP("uart3-hwflow", jz4750_uart3_hwflow, 0),
-> +	INGENIC_PIN_GROUP("mmc0-1bit", jz4750_mmc0_1bit, 0),
-> +	INGENIC_PIN_GROUP("mmc0-4bit", jz4750_mmc0_4bit, 0),
-> +	INGENIC_PIN_GROUP("mmc0-8bit", jz4750_mmc0_8bit, 0),
-> +	INGENIC_PIN_GROUP("mmc1-1bit", jz4750_mmc1_1bit, 0),
-> +	INGENIC_PIN_GROUP("mmc1-4bit", jz4750_mmc1_4bit, 0),
-> +	INGENIC_PIN_GROUP("i2c-data", jz4750_i2c, 0),
-> +	INGENIC_PIN_GROUP("cim-data", jz4750_cim, 0),
-> +	INGENIC_PIN_GROUP("lcd-8bit", jz4750_lcd_8bit, 0),
-> +	INGENIC_PIN_GROUP("lcd-16bit", jz4750_lcd_16bit, 0),
-> +	INGENIC_PIN_GROUP("lcd-18bit", jz4750_lcd_18bit, 0),
-> +	INGENIC_PIN_GROUP("lcd-18bit-tft", jz4750_lcd_18bit_tft, 0),
-> +	{ "lcd-no-pins", },
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
-Please drop "lcd-no-pins" from your patches, it is pointless.
+Fixes: 82c2d81361ec ("coccinelle: iterators: Add for_each_child.cocci script")
+CC: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-Cheers,
--Paul
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   812da4d39463a060738008a46cfc9f775e4bfcf6
+commit: 82c2d81361ecd142a54e84a9da1e287113314a4f coccinelle: iterators: Add for_each_child.cocci script
+:::::: branch date: 13 hours ago
+:::::: commit date: 5 months ago
 
-> +	INGENIC_PIN_GROUP("nand-cs1", jz4750_nand_cs1, 0),
-> +	INGENIC_PIN_GROUP("nand-cs2", jz4750_nand_cs2, 0),
-> +	INGENIC_PIN_GROUP("nand-cs3", jz4750_nand_cs3, 0),
-> +	INGENIC_PIN_GROUP("nand-cs4", jz4750_nand_cs4, 0),
-> +	INGENIC_PIN_GROUP("nand-fre-fwe", jz4750_nand_fre_fwe, 0),
-> +	INGENIC_PIN_GROUP("pwm0", jz4750_pwm_pwm0, 0),
-> +	INGENIC_PIN_GROUP("pwm1", jz4750_pwm_pwm1, 0),
-> +	INGENIC_PIN_GROUP("pwm2", jz4750_pwm_pwm2, 0),
-> +	INGENIC_PIN_GROUP("pwm3", jz4750_pwm_pwm3, 0),
-> +	INGENIC_PIN_GROUP("pwm4", jz4750_pwm_pwm4, 0),
-> +	INGENIC_PIN_GROUP("pwm5", jz4750_pwm_pwm5, 0),
-> +};
-> +
-> +static const char *jz4750_uart0_groups[] = { "uart0-data", 
-> "uart0-hwflow", };
-> +static const char *jz4750_uart1_groups[] = { "uart1-data", 
-> "uart1-hwflow", };
-> +static const char *jz4750_uart2_groups[] = { "uart2-data", };
-> +static const char *jz4750_uart3_groups[] = { "uart3-data", 
-> "uart3-hwflow", };
-> +static const char *jz4750_mmc0_groups[] = {
-> +	"mmc0-1bit", "mmc0-4bit", "mmc0-8bit",
-> +};
-> +static const char *jz4750_mmc1_groups[] = { "mmc0-1bit", 
-> "mmc0-4bit", };
-> +static const char *jz4750_i2c_groups[] = { "i2c-data", };
-> +static const char *jz4750_cim_groups[] = { "cim-data", };
-> +static const char *jz4750_lcd_groups[] = {
-> +	"lcd-8bit", "lcd-16bit", "lcd-18bit", "lcd-18bit-tft", 
-> "lcd-no-pins",
-> +};
-> +static const char *jz4750_nand_groups[] = {
-> +	"nand-cs1", "nand-cs2", "nand-cs3", "nand-cs4", "nand-fre-fwe",
-> +};
-> +static const char *jz4750_pwm0_groups[] = { "pwm0", };
-> +static const char *jz4750_pwm1_groups[] = { "pwm1", };
-> +static const char *jz4750_pwm2_groups[] = { "pwm2", };
-> +static const char *jz4750_pwm3_groups[] = { "pwm3", };
-> +static const char *jz4750_pwm4_groups[] = { "pwm4", };
-> +static const char *jz4750_pwm5_groups[] = { "pwm5", };
-> +
-> +static const struct function_desc jz4750_functions[] = {
-> +	{ "uart0", jz4750_uart0_groups, ARRAY_SIZE(jz4750_uart0_groups), },
-> +	{ "uart1", jz4750_uart1_groups, ARRAY_SIZE(jz4750_uart1_groups), },
-> +	{ "uart2", jz4750_uart2_groups, ARRAY_SIZE(jz4750_uart2_groups), },
-> +	{ "uart3", jz4750_uart3_groups, ARRAY_SIZE(jz4750_uart3_groups), },
-> +	{ "mmc0", jz4750_mmc0_groups, ARRAY_SIZE(jz4750_mmc0_groups), },
-> +	{ "mmc1", jz4750_mmc1_groups, ARRAY_SIZE(jz4750_mmc1_groups), },
-> +	{ "i2c", jz4750_i2c_groups, ARRAY_SIZE(jz4750_i2c_groups), },
-> +	{ "cim", jz4750_cim_groups, ARRAY_SIZE(jz4750_cim_groups), },
-> +	{ "lcd", jz4750_lcd_groups, ARRAY_SIZE(jz4750_lcd_groups), },
-> +	{ "nand", jz4750_nand_groups, ARRAY_SIZE(jz4750_nand_groups), },
-> +	{ "pwm0", jz4750_pwm0_groups, ARRAY_SIZE(jz4750_pwm0_groups), },
-> +	{ "pwm1", jz4750_pwm1_groups, ARRAY_SIZE(jz4750_pwm1_groups), },
-> +	{ "pwm2", jz4750_pwm2_groups, ARRAY_SIZE(jz4750_pwm2_groups), },
-> +	{ "pwm3", jz4750_pwm3_groups, ARRAY_SIZE(jz4750_pwm3_groups), },
-> +	{ "pwm4", jz4750_pwm4_groups, ARRAY_SIZE(jz4750_pwm4_groups), },
-> +	{ "pwm5", jz4750_pwm5_groups, ARRAY_SIZE(jz4750_pwm5_groups), },
-> +};
-> +
-> +static const struct ingenic_chip_info jz4750_chip_info = {
-> +	.num_chips = 6,
-> +	.reg_offset = 0x100,
-> +	.version = ID_JZ4750,
-> +	.groups = jz4750_groups,
-> +	.num_groups = ARRAY_SIZE(jz4750_groups),
-> +	.functions = jz4750_functions,
-> +	.num_functions = ARRAY_SIZE(jz4750_functions),
-> +	.pull_ups = jz4750_pull_ups,
-> +	.pull_downs = jz4750_pull_downs,
-> +};
-> +
->  static const u32 jz4760_pull_ups[6] = {
->  	0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 
-> 0xfffff00f,
->  };
-> @@ -2512,6 +2645,7 @@ static const struct of_device_id 
-> ingenic_gpio_of_match[] __initconst = {
->  	{ .compatible = "ingenic,jz4730-gpio", },
->  	{ .compatible = "ingenic,jz4740-gpio", },
->  	{ .compatible = "ingenic,jz4725b-gpio", },
-> +	{ .compatible = "ingenic,jz4750-gpio", },
->  	{ .compatible = "ingenic,jz4760-gpio", },
->  	{ .compatible = "ingenic,jz4770-gpio", },
->  	{ .compatible = "ingenic,jz4780-gpio", },
-> @@ -2716,6 +2850,9 @@ static const struct of_device_id 
-> ingenic_pinctrl_of_match[] = {
->  		.data = IF_ENABLED(CONFIG_MACH_JZ4725B, &jz4725b_chip_info)
->  	},
->  	{
-> +		.compatible = "ingenic,jz4750-pinctrl",
-> +		.data = IF_ENABLED(CONFIG_MACH_JZ4750, &jz4750_chip_info)
-> +	},
->  		.compatible = "ingenic,jz4760-pinctrl",
->  		.data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
->  	},
-> --
-> 2.7.4
-> 
+ overlay.c |    1 +
+ 1 file changed, 1 insertion(+)
 
+--- a/drivers/of/overlay.c
++++ b/drivers/of/overlay.c
+@@ -796,6 +796,7 @@ static int init_overlay_changeset(struct
+ 		if (!fragment->target) {
+ 			of_node_put(fragment->overlay);
+ 			ret = -EINVAL;
++			of_node_put(node);
+ 			goto err_free_fragments;
+ 		}
 
