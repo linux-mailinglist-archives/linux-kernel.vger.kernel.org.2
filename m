@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BB6343CD5
+	by mail.lfdr.de (Postfix) with ESMTP id E39EC343CD6
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhCVJ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        id S230012AbhCVJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCVJ2k (ORCPT
+        with ESMTP id S229871AbhCVJ2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:28:40 -0400
+        Mon, 22 Mar 2021 05:28:41 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08138C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:28:39 -0700 (PDT)
-Message-Id: <20210322091941.909544288@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:28:40 -0700 (PDT)
+Message-Id: <20210322092258.898677147@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616405318;
+        s=2020; t=1616405319;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qR0W/jXbda6i28OXgK5oBUBx673pBiRJdHCHkVstEOQ=;
-        b=wSC71/U1tnN25a//L2XfG5V3FcEHEb3SxD19bBimjqSekcYK7CoU+qnv3yi4CvTwzPW/hD
-        Pax9ibl/2YlPi+CbbyLtJGUqPJeQnoCk6Kb7mBhz8zgjK0T1lcgLmvvtDSCeu5SNMzPrCm
-        8Gok3wq9O6s3cr3XHfNGvc6kiZF/K3MXjj/ZgG8TdVlSgudy8escVgEUYBo24zpevvKuPc
-        ENKxGSUQuNTvUoaJsAgWXO+YXpqggzcHlcCn5c86hRwGWBojYT/kWNSQvN4VG4yIyW4m8r
-        El5OIDlY4zlElQ6kjNi39FU+b1vyplxjCiQaJ+jiqJw1rkWsnNDTvd6NpX2H/w==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=SqTHQ9A3FGkP/7czdHAUfMbvQp7ls004iQE9zc8VZx8=;
+        b=OtC/phBrkTBpJlHB79LWzD9ps3YjG1NdT3y4hzD2w9Ne6JNh9w5PtCo1CTeaijK7N/lef1
+        PIJAaaHZ3pozjl7yWqIT4NaXt+bcFthp3Ju+LwlycUBNj+Xknzv+5D2rU6V0RAb6RaNJZr
+        ycdtZHoDp4mX78n+qsYe22BWvpHmOfDSOzFJ/CT5xG/SRLe2GYCPP9e2+ytWRzHAAoI/cH
+        nd+WAP1LJjIhQjP1+f8vrbNQiS9qQP/j4MF2Ahw7PJKygxrTOi6pCMJCqHMGQubYK+txHY
+        ssLIWCjtaJUkS83YpCEflufL7xiRuv/Ety6JQSIF0weSulf3mB7xzT7OKHNMpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616405318;
+        s=2020e; t=1616405319;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qR0W/jXbda6i28OXgK5oBUBx673pBiRJdHCHkVstEOQ=;
-        b=lJ7sK3MIDKbSFvRgzNWaxrX6yNuWQjD6nsAVmgKokS9x644fAMNRi6xBgQpnkbwCtqv9AC
-        igu+e0okWqtMm2AA==
-Date:   Mon, 22 Mar 2021 10:19:41 +0100
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=SqTHQ9A3FGkP/7czdHAUfMbvQp7ls004iQE9zc8VZx8=;
+        b=QE2ktIAVixaBZE5jPHMB53YicBIoORpEfyI4sp/reg1gnndQWBaaot2fyiBxobjetpW0cv
+        c0fAugDWCWh3EPCg==
+Date:   Mon, 22 Mar 2021 10:19:42 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
@@ -50,38 +50,79 @@ Cc:     Oleg Nesterov <oleg@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Matt Fleming <matt@codeblueprint.co.uk>,
         "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [patch V4 0/2] signals: Allow caching one sigqueue object per task
+Subject: [patch V4 1/2] signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()
+References: <20210322091941.909544288@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGUgVjIvVjMgc3VibWlzc2lvbiB3aGljaCBjYW4gYmUg
-Zm91bmQgaGVyZToKCiAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMDMxMTEzMjAzNi4y
-Mjg1NDI1NDBAbGludXRyb25peC5kZQoKU2lnbmFsIHNlbmRpbmcgcmVxdWlyZXMgYSBrbWVtIGNh
-Y2hlIGFsbG9jYXRpb24gYXQgdGhlIHNlbmRlciBzaWRlIGFuZCB0aGUKcmVjZWl2ZXIgaGFuZHMg
-aXQgYmFjayB0byB0aGUga21lbSBjYWNoZSB3aGVuIGNvbnN1bWluZyB0aGUgc2lnbmFsLgoKVGhp
-cyB3b3JrcyBwcmV0dHkgd2VsbCBldmVuIGZvciByZWFsdGltZSB3b3JrbG9hZHMgZXhjZXB0IGZv
-ciB0aGUgY2FzZSB3aGVuCnRoZSBrbWVtIGNhY2hlIGFsbG9jYXRpb24gaGFzIHRvIGdvIGludG8g
-dGhlIHNsb3cgcGF0aCB3aGljaCBpcyByYXJlIGJ1dApoYXBwZW5zLgoKUHJlZW1wdC1SVCBjYXJy
-aWVzIGEgcGF0Y2ggd2hpY2ggYWxsb3dzIGNhY2hpbmcgb2Ygb25lIHNpZ3F1ZXVlIG9iamVjdCBw
-ZXIKdGFzay4gVGhlIG9iamVjdCBpcyBub3QgcHJlYWxsb2NhdGVkLiBJdCdzIGNhY2hlZCB3aGVu
-IHRoZSB0YXNrIHJlY2VpdmVzIGEKc2lnbmFsLiBUaGUgY2FjaGUgaXMgZnJlZWQgd2hlbiB0aGUg
-dGFzayBleGl0cy4KClRoZSBtZW1vcnkgb3ZlcmhlYWQgZm9yIGEgc3RhbmRhcmQgZGlzdHJvIHNl
-dHVwIGlzIHByZXR0eSBzbWFsbC4gQWZ0ZXIgYm9vdAp0aGVyZSBhcmUgbGVzcyB0aGFuIDEwIG9i
-amVjdHMgY2FjaGVkIGluIGFib3V0IDE1MDAgdGFza3MuIFRoZSBzcGVlZHVwIGZvcgpzZW5kaW5n
-IGEgc2lnbmFsIGZyb20gYSBjYWNoZWQgc2lncXVldWUgb2JqZWN0IGlzIHNtYWxsICh+M3VzKSBw
-ZXIgc2lnbmFsCmFuZCBhbG1vc3QgaW52aXNpYmxlLCBidXQgZm9yIHNpZ25hbCBoZWF2eSB3b3Jr
-bG9hZHMgaXQncyBkZWZpbml0ZWx5Cm1lYXN1cmFibGUgYW5kIGZvciB0aGUgdGFyZ2V0ZWQgcmVh
-bHRpbWUgd29ya2xvYWRzIGl0J3Mgc29sdmluZyBhIHJlYWwKd29ybGQgbGF0ZW5jeSBpc3N1ZS4K
-CkNoYW5nZXMgdnMgVjIvMzoKCiAgIC0gRHJvcCB0aGUgcHJldmlvdXMgd3JhcHBlciBmdW5jdGlv
-biBhbmQgZXhwbGljaXRseSBkcm9wCiAgICAgdGhlIHNpZ3F1ZXVlIGNhY2hlIGF0IHRoZSBlbmQg
-b2YgX19leGl0X3NpZ25hbHMoKSB0bwogICAgIGhhbmRsZSB0aGUgc2VsZiByZWFwaW5nIGNhc2Ug
-Y29ycmVjdGx5CgpUaGFua3MsCgoJdGdseAotLS0KIGluY2x1ZGUvbGludXgvc2NoZWQuaCAgfCAg
-ICAxIAogaW5jbHVkZS9saW51eC9zaWduYWwuaCB8ICAgIDEgCiBrZXJuZWwvZXhpdC5jICAgICAg
-ICAgIHwgICAgMSAKIGtlcm5lbC9mb3JrLmMgICAgICAgICAgfCAgICAxIAoga2VybmVsL3NpZ25h
-bC5jICAgICAgICB8ICAgNTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLQogNSBmaWxlcyBjaGFuZ2VkLCA0OCBpbnNlcnRpb25zKCspLCAxMSBkZWxldGlv
-bnMoLSkKCg==
+There is no point in having the conditional at the callsite.
+
+Just hand in the allocation mode flag to __sigqueue_alloc() and use it to
+initialize sigqueue::flags.
+
+No functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/signal.c |   17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
+
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -410,7 +410,8 @@ void task_join_group_stop(struct task_st
+  *   appropriate lock must be held to stop the target task from exiting
+  */
+ static struct sigqueue *
+-__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimit)
++__sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
++		 int override_rlimit, const unsigned int sigqueue_flags)
+ {
+ 	struct sigqueue *q = NULL;
+ 	struct user_struct *user;
+@@ -432,7 +433,7 @@ static struct sigqueue *
+ 	rcu_read_unlock();
+ 
+ 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+-		q = kmem_cache_alloc(sigqueue_cachep, flags);
++		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
+ 	} else {
+ 		print_dropped_signal(sig);
+ 	}
+@@ -442,7 +443,7 @@ static struct sigqueue *
+ 			free_uid(user);
+ 	} else {
+ 		INIT_LIST_HEAD(&q->list);
+-		q->flags = 0;
++		q->flags = sigqueue_flags;
+ 		q->user = user;
+ 	}
+ 
+@@ -1113,7 +1114,8 @@ static int __send_signal(int sig, struct
+ 	else
+ 		override_rlimit = 0;
+ 
+-	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit);
++	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit, 0);
++
+ 	if (q) {
+ 		list_add_tail(&q->list, &pending->list);
+ 		switch ((unsigned long) info) {
+@@ -1807,12 +1809,7 @@ EXPORT_SYMBOL(kill_pid);
+  */
+ struct sigqueue *sigqueue_alloc(void)
+ {
+-	struct sigqueue *q = __sigqueue_alloc(-1, current, GFP_KERNEL, 0);
+-
+-	if (q)
+-		q->flags |= SIGQUEUE_PREALLOC;
+-
+-	return q;
++	return __sigqueue_alloc(-1, current, GFP_KERNEL, 0, SIGQUEUE_PREALLOC);
+ }
+ 
+ void sigqueue_free(struct sigqueue *q)
+
