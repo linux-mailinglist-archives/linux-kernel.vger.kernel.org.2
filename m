@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924DF344285
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCECA34412C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhCVMnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
+        id S231265AbhCVMbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:31:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231964AbhCVMhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE1D76199E;
-        Mon, 22 Mar 2021 12:36:41 +0000 (UTC)
+        id S231148AbhCVMaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F91360C3D;
+        Mon, 22 Mar 2021 12:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416602;
-        bh=JwzP+HzkP+VUc+W0OHBCz9YDEO7F+XEdhZ9PsRuR/RI=;
+        s=korg; t=1616416220;
+        bh=tsxQnpDRffd3gBbNueiaQHMMdRXQEbgd2XCUXstZ2vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cbp43RwXLY0YDNYxuSbVsUiOYB63p7iWXqOvaDymoFnujW+fOvk6tXk3yMA5xjoVB
-         yq5Spbg7StZ9yQaMSj4+US3FqwDOvyHnqWlfyoCTTa03QNqAHMY7WCE6IhHcEWmItv
-         QkHycwWZ3d6N7lRr5AIokJIMAs+KINtGQ2HGjsEE=
+        b=b9ZPCYUmUi/opocvfVUDKukD799AQIUKBNAYb7TcoiCveUis2I7sGfB6O/IaN7vx4
+         SKu6v45DDdLIiQ76KfXtU8xVK4SlQnQJFffP/WFOkjyYPPauZpBbIeH2GDhAFF1k5w
+         vhWzOmiIn2EdFiZ96OWlWZ/kLFPT/v5zOGxmhJK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.10 049/157] i915/perf: Start hrtimer only if sampling the OA buffer
-Date:   Mon, 22 Mar 2021 13:26:46 +0100
-Message-Id: <20210322121935.303438112@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Calvin Hou <Calvin.Hou@amd.com>, Jun Lei <Jun.Lei@amd.com>,
+        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Solomon Chiu <solomon.chiu@amd.com>,
+        Vladimir Stempen <Vladimir.Stempen@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 024/120] drm/amd/display: Correct algorithm for reversed gamma
+Date:   Mon, 22 Mar 2021 13:26:47 +0100
+Message-Id: <20210322121930.466921565@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,101 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
+From: Calvin Hou <Calvin.Hou@amd.com>
 
-commit 6a77c6bb7260bd5000f95df454d9f8cdb1af7132 upstream.
+commit 34fa493a565cc6fcee6919787c11e264f55603c6 upstream.
 
-SAMPLE_OA parameter enables sampling of OA buffer and results in a call
-to init the OA buffer which initializes the OA unit head/tail pointers.
-The OA_EXPONENT parameter controls the periodicity of the OA reports in
-the OA buffer and results in starting a hrtimer.
+[Why]
+DCN30 needs to correctly program reversed gamma curve, which DCN20
+already has.
+Also needs to fix a bug that 252-255 values are clipped.
 
-Before gen12, all use cases required the use of the OA buffer and i915
-enforced this setting when vetting out the parameters passed. In these
-platforms the hrtimer was enabled if OA_EXPONENT was passed. This worked
-fine since it was implied that SAMPLE_OA is always passed.
+[How]
+Apply two fixes into DCN30.
 
-With gen12, this changed. Users can use perf without enabling the OA
-buffer as in OAR use cases. While an OAR use case should ideally not
-start the hrtimer, we see that passing an OA_EXPONENT parameter will
-start the hrtimer even though SAMPLE_OA is not specified. This results
-in an uninitialized OA buffer, so the head/tail pointers used to track
-the buffer are zero.
-
-This itself does not fail, but if we ran a use-case that SAMPLED the OA
-buffer previously, then the OA_TAIL register is still pointing to an old
-value. When the timer callback runs, it ends up calculating a
-wrong/large number of available reports. Since we do a spinlock_irq_save
-and start processing a large number of reports, NMI watchdog fires and
-causes a crash.
-
-Start the timer only if SAMPLE_OA is specified.
-
-v2:
-- Drop SAMPLE OA check when appending samples (Ashutosh)
-- Prevent read if OA buffer is not being sampled
-
-Fixes: 00a7f0d7155c ("drm/i915/tgl: Add perf support on TGL")
-Signed-off-by: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-Reviewed-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
-Signed-off-by: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210305210947.58751-1-umesh.nerlige.ramappa@intel.com
-(cherry picked from commit be0bdd67fda9468156c733976688f6487d0c42f7)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1513
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Calvin Hou <Calvin.Hou@amd.com>
+Reviewed-by: Jun Lei <Jun.Lei@amd.com>
+Reviewed-by: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
+Acked-by: Solomon Chiu <solomon.chiu@amd.com>
+Acked-by: Vladimir Stempen <Vladimir.Stempen@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/i915_perf.c |   13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_cm_common.c |   26 +++++++++++------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
---- a/drivers/gpu/drm/i915/i915_perf.c
-+++ b/drivers/gpu/drm/i915/i915_perf.c
-@@ -600,7 +600,6 @@ static int append_oa_sample(struct i915_
- {
- 	int report_size = stream->oa_buffer.format_size;
- 	struct drm_i915_perf_record_header header;
--	u32 sample_flags = stream->sample_flags;
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_cm_common.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_cm_common.c
+@@ -113,6 +113,7 @@ bool cm3_helper_translate_curve_to_hw_fo
+ 	struct pwl_result_data *rgb_resulted;
+ 	struct pwl_result_data *rgb;
+ 	struct pwl_result_data *rgb_plus_1;
++	struct pwl_result_data *rgb_minus_1;
+ 	struct fixed31_32 end_value;
  
- 	header.type = DRM_I915_PERF_RECORD_SAMPLE;
- 	header.pad = 0;
-@@ -614,10 +613,8 @@ static int append_oa_sample(struct i915_
- 		return -EFAULT;
- 	buf += sizeof(header);
+ 	int32_t region_start, region_end;
+@@ -140,7 +141,7 @@ bool cm3_helper_translate_curve_to_hw_fo
+ 		region_start = -MAX_LOW_POINT;
+ 		region_end   = NUMBER_REGIONS - MAX_LOW_POINT;
+ 	} else {
+-		/* 10 segments
++		/* 11 segments
+ 		 * segment is from 2^-10 to 2^0
+ 		 * There are less than 256 points, for optimization
+ 		 */
+@@ -154,9 +155,10 @@ bool cm3_helper_translate_curve_to_hw_fo
+ 		seg_distr[7] = 4;
+ 		seg_distr[8] = 4;
+ 		seg_distr[9] = 4;
++		seg_distr[10] = 1;
  
--	if (sample_flags & SAMPLE_OA_REPORT) {
--		if (copy_to_user(buf, report, report_size))
--			return -EFAULT;
--	}
-+	if (copy_to_user(buf, report, report_size))
-+		return -EFAULT;
+ 		region_start = -10;
+-		region_end = 0;
++		region_end = 1;
+ 	}
  
- 	(*offset) += header.size;
+ 	for (i = region_end - region_start; i < MAX_REGIONS_NUMBER ; i++)
+@@ -189,6 +191,10 @@ bool cm3_helper_translate_curve_to_hw_fo
+ 	rgb_resulted[hw_points - 1].green = output_tf->tf_pts.green[start_index];
+ 	rgb_resulted[hw_points - 1].blue = output_tf->tf_pts.blue[start_index];
  
-@@ -2676,7 +2673,7 @@ static void i915_oa_stream_enable(struct
++	rgb_resulted[hw_points].red = rgb_resulted[hw_points - 1].red;
++	rgb_resulted[hw_points].green = rgb_resulted[hw_points - 1].green;
++	rgb_resulted[hw_points].blue = rgb_resulted[hw_points - 1].blue;
++
+ 	// All 3 color channels have same x
+ 	corner_points[0].red.x = dc_fixpt_pow(dc_fixpt_from_int(2),
+ 					     dc_fixpt_from_int(region_start));
+@@ -259,15 +265,18 @@ bool cm3_helper_translate_curve_to_hw_fo
  
- 	stream->perf->ops.oa_enable(stream);
+ 	rgb = rgb_resulted;
+ 	rgb_plus_1 = rgb_resulted + 1;
++	rgb_minus_1 = rgb;
  
--	if (stream->periodic)
-+	if (stream->sample_flags & SAMPLE_OA_REPORT)
- 		hrtimer_start(&stream->poll_check_timer,
- 			      ns_to_ktime(stream->poll_oa_period),
- 			      HRTIMER_MODE_REL_PINNED);
-@@ -2739,7 +2736,7 @@ static void i915_oa_stream_disable(struc
- {
- 	stream->perf->ops.oa_disable(stream);
+ 	i = 1;
+ 	while (i != hw_points + 1) {
+-		if (dc_fixpt_lt(rgb_plus_1->red, rgb->red))
+-			rgb_plus_1->red = rgb->red;
+-		if (dc_fixpt_lt(rgb_plus_1->green, rgb->green))
+-			rgb_plus_1->green = rgb->green;
+-		if (dc_fixpt_lt(rgb_plus_1->blue, rgb->blue))
+-			rgb_plus_1->blue = rgb->blue;
++		if (i >= hw_points - 1) {
++			if (dc_fixpt_lt(rgb_plus_1->red, rgb->red))
++				rgb_plus_1->red = dc_fixpt_add(rgb->red, rgb_minus_1->delta_red);
++			if (dc_fixpt_lt(rgb_plus_1->green, rgb->green))
++				rgb_plus_1->green = dc_fixpt_add(rgb->green, rgb_minus_1->delta_green);
++			if (dc_fixpt_lt(rgb_plus_1->blue, rgb->blue))
++				rgb_plus_1->blue = dc_fixpt_add(rgb->blue, rgb_minus_1->delta_blue);
++		}
  
--	if (stream->periodic)
-+	if (stream->sample_flags & SAMPLE_OA_REPORT)
- 		hrtimer_cancel(&stream->poll_check_timer);
- }
+ 		rgb->delta_red   = dc_fixpt_sub(rgb_plus_1->red,   rgb->red);
+ 		rgb->delta_green = dc_fixpt_sub(rgb_plus_1->green, rgb->green);
+@@ -283,6 +292,7 @@ bool cm3_helper_translate_curve_to_hw_fo
+ 		}
  
-@@ -3022,7 +3019,7 @@ static ssize_t i915_perf_read(struct fil
- 	 * disabled stream as an error. In particular it might otherwise lead
- 	 * to a deadlock for blocking file descriptors...
- 	 */
--	if (!stream->enabled)
-+	if (!stream->enabled || !(stream->sample_flags & SAMPLE_OA_REPORT))
- 		return -EIO;
- 
- 	if (!(file->f_flags & O_NONBLOCK)) {
+ 		++rgb_plus_1;
++		rgb_minus_1 = rgb;
+ 		++rgb;
+ 		++i;
+ 	}
 
 
