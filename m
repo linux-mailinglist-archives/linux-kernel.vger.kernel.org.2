@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD223445C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE323445CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCVNbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCVNau (ORCPT
+        id S230136AbhCVNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:32:50 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41728 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhCVNcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:30:50 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94F58C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=Q83FapeUZM
-        ksG2KVMf8gbgQd7rcobSRZOvC7hnjIPqM=; b=Siao5FVfD9Rp6WlPJfq2wPeqoD
-        f8ZCme+qtzG4fFttq4WdTyvEkgI7TBomQRYe2zjSTrWysBeKIycWBBbz24E2hLaJ
-        MZok48avdGaGjlWOdeFuBHfg5O6hUqDdfJ2oCPHaTOfB5MAK17vicvGuWif+qQVd
-        I8WhhPJv0zRpJ3stY=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3vaUCnFhgcegNAA--.4695S4;
-        Mon, 22 Mar 2021 21:30:42 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] firmware/dmi-sysfs: Fix a double free in dmi_sysfs_register_handle
-Date:   Mon, 22 Mar 2021 06:30:39 -0700
-Message-Id: <20210322133039.4740-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Mar 2021 09:32:42 -0400
+Received: by mail-oi1-f176.google.com with SMTP id z15so13035602oic.8;
+        Mon, 22 Mar 2021 06:32:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wr1SI0TL4EHWYS5BZNgIxSW5Ww590y/QRaEpzzFSZ2s=;
+        b=rfdxamLeBHSwrUonHQ0ojaDV7eJ6oaH9DXXEDmTy2Ln8TnTD+GAd9Iy5WjpscHtOWI
+         hiHs6UeIAIDMts2h6MHwbHbBpbdy7q/Ne3TyYQFop0Kpzi8rvj7JXLJ0v7yM6sJaFBcC
+         ds9FY5nQ8cuRZXxoCeAVuMG+4Gse4MEhRcpGdJUOWrHN/xdIq9NIl0lNwg/4PjilVQz7
+         wuSkSuLY5RvcHOmz8SDeX3U7pzXZ5uu82iA6hIG+ODId1gJF+1LoeRCruJ0xbdZoiDg7
+         DYAIEO9Wg6bF03sH3ilHT+u1B7hJ4vu2hCezMdaFIdn9IFMXWzSHgBi53bDLOlWWX77H
+         yIcQ==
+X-Gm-Message-State: AOAM532VU1I3h9vjqR9L1FwB5m7ZdujdG2+TcqFUevJm1+G7DMhKfduS
+        /mCAjwfzgcRCNaqAjp7Q04zNF47jxuyzhVcNW8Q=
+X-Google-Smtp-Source: ABdhPJwmYah6xhBmpTTkzua8+uROxwaMkuwp5QTUXoR4ZzqUuujkXaSLHlcUQFRTn0BjZDxXFvvHGGaz0Wrt6L97+Qo=
+X-Received: by 2002:a05:6808:24b:: with SMTP id m11mr10022819oie.157.1616419961613;
+ Mon, 22 Mar 2021 06:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygC3vaUCnFhgcegNAA--.4695S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF1rur18GrW3WryrJrW3GFg_yoWkXwc_Cr
-        yvqryFgw48KFWUKFsxAw1a9ry3KFWkX3s7Xr4SyF1ayr9xXw4rur4jgr17Zr13Wry8KF4D
-        Cr1Dury8Crs7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUzHqxUUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <20210321201818.15271-1-fazilyildiran@gmail.com>
+In-Reply-To: <20210321201818.15271-1-fazilyildiran@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 22 Mar 2021 14:32:26 +0100
+Message-ID: <CAJZ5v0gYxpzNUzSbkH1mJZuFB464JHMSQ-KeP-raJAPb=3mo=A@mail.gmail.com>
+Subject: Re: [PATCH] PM: Kconfig: fix unmet dependency for PM_SLEEP_SMP
+To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        paul@pgazz.com, jeho@cs.utexas.edu, julianbraha@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of DMI_ENTRY_SYSTEM_EVENT_LOG, it calls
-dmi_system_event_log(entry). If dmi_system_event_log()
-failed, it will free the entry->child and return err.
+On Sun, Mar 21, 2021 at 9:20 PM Necip Fazil Yildiran
+<fazilyildiran@gmail.com> wrote:
+>
+> When PM_SLEEP_SMP is enabled and HOTPLUG_CPU is disabled, it results in the
+> following Kbuild warning:
+>
+> WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+>   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+>   Selected by [y]:
+>   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
+>
+> The reason is that PM_SLEEP_SMP selects HOTPLUG_CPU without depending on or
+> selecting HOTPLUG_CPU's dependencies.
 
-But in the out_err branch, the entry->child will be freed
-again. My patch adds a new label "out_err1" to avoid freeing
-entry->child twice.
+This needs to be fixed.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/firmware/dmi-sysfs.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+HOTPLUG_CPU needs to be selected automatically by PM_SLEEP_SMP as it is now.
 
-diff --git a/drivers/firmware/dmi-sysfs.c b/drivers/firmware/dmi-sysfs.c
-index 8b8127fa8955..fd498f2037a8 100644
---- a/drivers/firmware/dmi-sysfs.c
-+++ b/drivers/firmware/dmi-sysfs.c
-@@ -622,16 +622,17 @@ static void __init dmi_sysfs_register_handle(const struct dmi_header *dh,
- 		break;
- 	}
- 	if (*ret)
--		goto out_err;
-+		goto out_err1;
- 
- 	/* Create the raw binary file to access the entry */
- 	*ret = sysfs_create_bin_file(&entry->kobj, &dmi_entry_raw_attr);
- 	if (*ret)
--		goto out_err;
-+		goto out_err2;
- 
- 	return;
--out_err:
-+out_err2:
- 	kobject_put(entry->child);
-+out_err1:
- 	kobject_put(&entry->kobj);
- 	return;
- }
--- 
-2.25.1
-
-
+> Let PM_SLEEP_SMP depend on HOTPLUG_CPU instead to avoid Kbuild issues.
+>
+> Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+> ---
+>  kernel/power/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> index 6bfe3ead10ad..8b53c9b61347 100644
+> --- a/kernel/power/Kconfig
+> +++ b/kernel/power/Kconfig
+> @@ -125,7 +125,7 @@ config PM_SLEEP_SMP
+>         depends on SMP
+>         depends on ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE
+>         depends on PM_SLEEP
+> -       select HOTPLUG_CPU
+> +       depends on HOTPLUG_CPU
+>
+>  config PM_SLEEP_SMP_NONZERO_CPU
+>         def_bool y
+> --
+> 2.25.1
+>
