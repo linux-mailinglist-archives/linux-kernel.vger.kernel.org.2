@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B5C344D74
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA49344D7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhCVRer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhCVReR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:34:17 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95EBC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:34:16 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id b7so22664056ejv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=itvxu6pseNvAArTXkxBUqpwVqMnWpn85hJGn4Cdpwhg=;
-        b=uNTiuiHb//r+7s512XtcPzPyLF04pqLQ3NrFXgaoxYNR2RU0pDoYy1ZNFTfKaRBx3R
-         qUpdSxsLmTiozn+u05mEF/2mOns8JJqI3whi5eUsFhPYQd4a/eGXutlrOs1KdMC5vKXZ
-         D5NfmKie5T8TXOEpLX3eqXPKF/2ibqi+auQ3HJUAWhdl0PiQcmhIE+gj58H/w7T4dyTb
-         KY/Ex9Y+BtG5FhKLOWVluiKYgNltP/jhOs8Abi1ZipK2VPfsg0P3Rx5+52mA6aIxLF5Q
-         D+A7SD93d2c23HV9ByoiID4u+zWDyy2KubD1XKv/mr87//jjBOOUc3lGWiUyiBSMvn7b
-         dSLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=itvxu6pseNvAArTXkxBUqpwVqMnWpn85hJGn4Cdpwhg=;
-        b=sBDUAoUsxP92n7+EQ8LNmIggc0XKMbv1+xR3J0Kh6Atvk2tcA8OBTmFT07AcXaDv50
-         GWvijTeVOzqDbBhhwQHB7q8RmijLV/AC+1KE8VbKZMDRgvCctiL+gvHr1748n5S7pMMo
-         XNsQlyrE0h+kEGeY2m+HlvDcfXYWUZ4z3KKDB1e6WAVMai44w3fUUT5LDtazPbaayycv
-         CwiABW7bP8DmIS7WfaEBllSz+7Wk2F0fTo3DAcjw4y2SNGgx3ZU94MPDwJQER6kqV4QT
-         QJvJe+/8jy7KqClaV1BlTnWKMNW8unzCv6I1UZdzyhwrJ4wJIrBLgESHVWmL9M/QZ7us
-         ODeQ==
-X-Gm-Message-State: AOAM53256iO1iymyIIzsx9daI1AhKYSp2DXl843Ict/lxF+4AXJolkk3
-        6G+f75G4nrc7PqZG7G8MlxUe7g==
-X-Google-Smtp-Source: ABdhPJw9FtwQ6aO2ECGVnHO58EnkDcEQ+fGQM9CFtqdocU6sXQqPcqwjPD5Dl/pLvT5flLaGRSP8fw==
-X-Received: by 2002:a17:906:340d:: with SMTP id c13mr934869ejb.29.1616434455577;
-        Mon, 22 Mar 2021 10:34:15 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id n3sm9867573ejj.113.2021.03.22.10.34.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 10:34:15 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 17:34:13 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kiran Gunda <kgunda@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
-        daniel.thompson@linaro.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH V5 1/2] backlight: qcom-wled: Fix FSC update issue for
- WLED5
-Message-ID: <20210322173413.GC2916463@dell>
-References: <1616071180-24493-1-git-send-email-kgunda@codeaurora.org>
- <1616071180-24493-2-git-send-email-kgunda@codeaurora.org>
+        id S231593AbhCVRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231365AbhCVRgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0770361994;
+        Mon, 22 Mar 2021 17:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616434575;
+        bh=VdW4om2AyPCfqy4wAovCR7HUVEe2frovxQ0Cc8nEk7s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mh9yoSTNMWrpBFxp7mRAqgfTfZOlph3dYZnhso+XBF99dtzEHkgBu1YOy2DccLzzn
+         fUylSmXKjiXNkdvZx/WKnjEV+5GnHZAVRPf8FAuQ+FX2zNlEFwMnVuBx3/7QcHBGRR
+         VmCt4+L4cInUjBNq78zxXp4FBDQOleC4/KxA9aQVsnHM3Zt5q+sPQ+9++fOCLAChGA
+         ZrbBCoyVviPqoFFBHsivxNrK5fArDQmqAhFcrkwkX3XZuyzri6iX5TjfgUyKO2BGWn
+         +jNA3cIftCwjS8BGd8BxZpoBiA5+h4IHlX0hKg0akAFueiGgUW8oqUusCrgeyLdw+R
+         NAjf6bEHS7S5w==
+Received: by mail-ed1-f45.google.com with SMTP id z1so20406691edb.8;
+        Mon, 22 Mar 2021 10:36:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531IT0C8EmZXdUdl2/O0RfqM2n+Belt7+onRvizq6QDIQphW2JSP
+        Rz4HTlybecblpmqZzlLW4FYCCmlGZgWGlIDeSg==
+X-Google-Smtp-Source: ABdhPJx2NmuQG0Y5DzdS5+450riDgemRYrFCSvVWhwcs0YPSA/NP54tZmFoCyKBJEdQ1WhL/o13t1FITdk/T511dQts=
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr718221edq.137.1616434573540;
+ Mon, 22 Mar 2021 10:36:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1616071180-24493-2-git-send-email-kgunda@codeaurora.org>
+References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
+ <1599734644-4791-3-git-send-email-sagar.kadam@sifive.com> <20200922203429.GA3188204@bogus>
+ <CAMuHMdXPG-+EOCrQZi1deKv1yYMBtohprUVYW_-Shdp_gfQs5Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdXPG-+EOCrQZi1deKv1yYMBtohprUVYW_-Shdp_gfQs5Q@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 22 Mar 2021 11:36:01 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJSF=p657tdvm4CW_LYi93t6vG0aOmQxUmYYW3_5h5UHQ@mail.gmail.com>
+Message-ID: <CAL_JsqJSF=p657tdvm4CW_LYi93t6vG0aOmQxUmYYW3_5h5UHQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: riscv: convert plic bindings to json-schema
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Sagar Kadam <sagar.kadam@sifive.com>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yash Shah <yash.shah@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021, Kiran Gunda wrote:
+On Mon, Mar 22, 2021 at 9:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Sagar, Rob,
+>
+> (replying to an old email, as this one seems to be the most appropriate)
+>
+> On Tue, Sep 22, 2020 at 10:34 PM Rob Herring <robh@kernel.org> wrote:
+> > On Thu, Sep 10, 2020 at 04:14:03PM +0530, Sagar Kadam wrote:
+> > > Convert device tree bindings for SiFive's PLIC to YAML format
+> > >
+> > > Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+>
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+>
+> > > +
+> > > +  '#address-cells':
+> > > +    const: 0
+> > > +    description: Should be <0> or more.
+> >
+> > Drop. 'or more' is wrong. If there's a case with more, it will need to
+> > be documented.
+>
+> Why do we have the "'#address-cells': const: 0" at all...
+>
+> > > +required:
+> > > +  - compatible
+> > > +  - '#address-cells'
+>
+> ... and why is it required?
 
-> Currently, for WLED5, the FSC (Full scale current) setting is not
-> updated properly due to driver toggling the wrong register after
-> an FSC update.
-> 
-> On WLED5 we should only toggle the MOD_SYNC bit after a brightness
-> update. For an FSC update we need to toggle the SYNC bits instead.
-> 
-> Fix it by adopting the common wled3_sync_toggle() for WLED5 and
-> introducing new code to the brightness update path to compensate.
-> 
-> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
-> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->  drivers/video/backlight/qcom-wled.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
+It is only required if an 'interrupt-map' points to this node.
+Currently dtc is warning if it is missing always, but there are plans
+to relax dtc to only warn when 'interrupt-map' is present. Of course,
+if you had 'interrupt-map' in an overlay, you'd want #address-cells in
+the base dt and there's no other way to check that than making it
+required.
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Rob
