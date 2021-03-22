@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB693444E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E075F344521
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233650AbhCVNIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:08:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49508 "EHLO mail.kernel.org"
+        id S233379AbhCVNMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:12:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231286AbhCVMyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:54:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2AFB6198E;
-        Mon, 22 Mar 2021 12:47:40 +0000 (UTC)
+        id S233139AbhCVM5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:57:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A2BD619CE;
+        Mon, 22 Mar 2021 12:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417261;
-        bh=tuDwqJSVaxAyHAeSHBnhsVr6A6uaxFYVqJWuuRxSIx4=;
+        s=korg; t=1616417372;
+        bh=4pFxx4rMxuBoUPuVMrFp0AgtI8un1hBGqp/YItu6Fzg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GbKHoJ5jueD8j4gCJEKshYLs6NGFR5Pj0So5IbgZd0eUzSSPCPJL5yNBRgdtGXhVS
-         oLppIxzwD2mO033llZUaVnctHqb1yYnwwutfOWnS7BN12eQqwOPnauox/jM8kMKArh
-         85UcloBVOJ5pdxr+JlgEoR7PGcl4tUeWT7Zb/fbQ=
+        b=rB7wgB2rNZAOkobn9shqPzaAEy6TaCH5OZvtmSXXXamp5AMha+9LJjZlrIXAzKaZx
+         +iFpPCBdsXB5jeasiRACVGJ2vRHxcTEqhDoMTyTxF+R1m2akXO7e3uY+6IJI62lEZn
+         tEKosEcDPpq7ERTFKYFr4u8VegoF36OpAdgaeu44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.9 17/25] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+        stable@vger.kernel.org, Jim Lin <jilin@nvidia.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 4.14 26/43] usb: gadget: configfs: Fix KASAN use-after-free
 Date:   Mon, 22 Mar 2021 13:29:07 +0100
-Message-Id: <20210322121920.943207169@linuxfoundation.org>
+Message-Id: <20210322121920.875820228@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
-References: <20210322121920.399826335@linuxfoundation.org>
+In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
+References: <20210322121920.053255560@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Jim Lin <jilin@nvidia.com>
 
-commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
+commit 98f153a10da403ddd5e9d98a3c8c2bb54bb5a0b6 upstream.
 
-Both add_slot_store() and remove_slot_store() try to fix up the
-drc_name copied from the store buffer by placing a NUL terminator at
-nbyte + 1 or in place of a '\n' if present. However, the static buffer
-that we copy the drc_name data into is not zeroed and can contain
-anything past the n-th byte.
+When gadget is disconnected, running sequence is like this.
+. composite_disconnect
+. Call trace:
+  usb_string_copy+0xd0/0x128
+  gadget_config_name_configuration_store+0x4
+  gadget_config_name_attr_store+0x40/0x50
+  configfs_write_file+0x198/0x1f4
+  vfs_write+0x100/0x220
+  SyS_write+0x58/0xa8
+. configfs_composite_unbind
+. configfs_composite_bind
 
-This is problematic if a '\n' byte appears in that buffer after nbytes
-and the string copied into the store buffer was not NUL terminated to
-start with as the strchr() search for a '\n' byte will mark this
-incorrectly as the end of the drc_name string resulting in a drc_name
-string that contains garbage data after the n-th byte.
+In configfs_composite_bind, it has
+"cn->strings.s = cn->configuration;"
 
-Additionally it will cause us to overwrite that '\n' byte on the stack
-with NUL, potentially corrupting data on the stack.
+When usb_string_copy is invoked. it would
+allocate memory, copy input string, release previous pointed memory space,
+and use new allocated memory.
 
-The following debugging shows an example of the drmgr utility writing
-"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
-logging a corrupted string value.
+When gadget is connected, host sends down request to get information.
+Call trace:
+  usb_gadget_get_string+0xec/0x168
+  lookup_string+0x64/0x98
+  composite_setup+0xa34/0x1ee8
 
-  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
-  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+If gadget is disconnected and connected quickly, in the failed case,
+cn->configuration memory has been released by usb_string_copy kfree but
+configfs_composite_bind hasn't been run in time to assign new allocated
+"cn->configuration" pointer to "cn->strings.s".
 
-Fix this by using strscpy() instead of memcpy() to ensure the string
-is NUL terminated when copied into the static drc_name buffer.
-Further, since the string is now NUL terminated the code only needs to
-change '\n' to '\0' when present.
+When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
+memory is accessed, "BUG: KASAN: use-after-free" error occurs.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-[mpe: Reformat change log and add mention of possible stack corruption]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
+Signed-off-by: Jim Lin <jilin@nvidia.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Link: https://lore.kernel.org/r/1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/usb/gadget/configfs.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/pci/hotplug/rpadlpar_sysfs.c
-+++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
-@@ -39,12 +39,11 @@ static ssize_t add_slot_store(struct kob
- 	if (nbytes >= MAX_DRC_NAME_LEN)
- 		return 0;
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -108,6 +108,8 @@ struct gadget_config_name {
+ 	struct list_head list;
+ };
  
--	memcpy(drc_name, buf, nbytes);
-+	strscpy(drc_name, buf, nbytes + 1);
++#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
++
+ static int usb_string_copy(const char *s, char **s_copy)
+ {
+ 	int ret;
+@@ -117,12 +119,16 @@ static int usb_string_copy(const char *s
+ 	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
  
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_add_slot(drc_name);
- 	if (rc)
-@@ -70,12 +69,11 @@ static ssize_t remove_slot_store(struct
- 	if (nbytes >= MAX_DRC_NAME_LEN)
- 		return 0;
- 
--	memcpy(drc_name, buf, nbytes);
-+	strscpy(drc_name, buf, nbytes + 1);
- 
- 	end = strchr(drc_name, '\n');
--	if (!end)
--		end = &drc_name[nbytes];
--	*end = '\0';
-+	if (end)
-+		*end = '\0';
- 
- 	rc = dlpar_remove_slot(drc_name);
- 	if (rc)
+-	str = kstrdup(s, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	if (copy) {
++		str = copy;
++	} else {
++		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
++		if (!str)
++			return -ENOMEM;
++	}
++	strcpy(str, s);
+ 	if (str[ret - 1] == '\n')
+ 		str[ret - 1] = '\0';
+-	kfree(copy);
+ 	*s_copy = str;
+ 	return 0;
+ }
 
 
