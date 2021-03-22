@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF084343ADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219AB343ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCVHoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:44:05 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:46611 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCVHnx (ORCPT
+        id S229870AbhCVHpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCVHpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:43:53 -0400
-Received: by mail-vk1-f171.google.com with SMTP id u144so3569940vkb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:43:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8d1jAgckfxjuuMFamou6Yc9DxlDdKTJfg01fu8kdwVM=;
-        b=C/zaU99K+tpbjEkwA2BhGgbyJSB9dIAlRjrFAcBb5Ia4xLHCbRSxgXo0g2hy3oAC35
-         QZ/SwOe4xH7LA/LYoZ6wsPqNbAEb7GWrKFu1oXU8fNitan74fUuuSmb680NHE0fOWENv
-         RUacKzrJwhb5PQ+2p4tgrc2vz5cx7XjXx1BiSwIPRHoNQIhCQaXCwETRssEzaVijeJCq
-         cQr6v5l6+hJfMUDRgzOvWEq3QGsKY6ty+JU9zvequFIffyHxCxfOFoacCD/5nLxSpLzb
-         L7VUa7iDpIb42lB86CsUoVUgDfoBPk3gHKWcT53I41YfGWvjC7c6c190LTbB24Z6IMDB
-         gApQ==
-X-Gm-Message-State: AOAM531DILPzejtY8fd8y4gPUpVYXrZTh7LfrO/J/j0UCPRG6jaihd1U
-        LchBYPnf3PyLt/qkYRttIH+NpryUcVK+JctZ5RM=
-X-Google-Smtp-Source: ABdhPJzwW47Lke10n/3zmeOGwi15oQx4I9WGpf3VORxfc4Mkpasxcl4E1RNdLrp3G8BH6u4OMvYrr+etK7C2/sLvf7A=
-X-Received: by 2002:ac5:cbee:: with SMTP id i14mr7962732vkn.1.1616399032462;
- Mon, 22 Mar 2021 00:43:52 -0700 (PDT)
+        Mon, 22 Mar 2021 03:45:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0F4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a4V0ZQVQps4nQLfsOVFZP2e8Pz9X+P/+CA8XJe4x7Yo=; b=c/uasegkc7omW3rWyYnu0TKByD
+        JRmNtabOpMxwDKVYsIve3iMq8RF8WSfDzM0JZ+di7njstLLmb4VQ0ihxGIQ28BOdAk8c9/xyo8gW3
+        OeOd/b7pVIMNucscoPis58wW+RrqdHzmmc+z1qDS2909IOnsS39XvmvRM8XhR8Ip/iiutLssVMCcS
+        HM915rD9cOxWkH63U/1Dbv2pLQTY4YAfEZ98DNEiedS4AyNDS3LyWy5cgPy11MV7j8XJGmqL1Gub2
+        DKcbhydT2P3JIcLfHvpaYEDDqbY3hrgnz93+ncnYCKvWByB9Cz+hBafP3s8htDNZlNSsXoAJAL6Tc
+        UCTtQ90g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOFFR-00B6Fz-83; Mon, 22 Mar 2021 07:45:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5744A301A32;
+        Mon, 22 Mar 2021 08:45:12 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3B0512CF553EB; Mon, 22 Mar 2021 08:45:12 +0100 (CET)
+Date:   Mon, 22 Mar 2021 08:45:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] psi: reduce calls to sched_clock() in psi
+Message-ID: <YFhLCPzKlE2uk46k@hirez.programming.kicks-ass.net>
+References: <20210321205156.4186483-1-shakeelb@google.com>
 MIME-Version: 1.0
-References: <20210320001518.93149-1-julianbraha@gmail.com> <CAMuHMdW1YVmKd4+MJEZvpF0iovP3b8ukh4ExpFdDUR6+UXf6WQ@mail.gmail.com>
- <2439979.pz5sKB06L4@ubuntu-mate-laptop>
-In-Reply-To: <2439979.pz5sKB06L4@ubuntu-mate-laptop>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Mar 2021 08:43:41 +0100
-Message-ID: <CAMuHMdVyiAQC9G_-jMOU7Wk7CU9EWjCg3k71cwW1wHMi3=oy6A@mail.gmail.com>
-Subject: Re: [PATCH] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210321205156.4186483-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Julian,
+On Sun, Mar 21, 2021 at 01:51:56PM -0700, Shakeel Butt wrote:
+> We noticed that the cost of psi increases with the increase in the
+> levels of the cgroups. Particularly the cost of cpu_clock() sticks out
+> as the kernel calls it multiple times as it traverses up the cgroup
+> tree. This patch reduces the calls to cpu_clock().
+> 
+> Performed perf bench on Intel Broadwell with 3 levels of cgroup.
+> 
+> Before the patch:
+> 
+> $ perf bench sched all
+>  # Running sched/messaging benchmark...
+>  # 20 sender and receiver processes per group
+>  # 10 groups == 400 processes run
+> 
+>      Total time: 0.747 [sec]
+> 
+>  # Running sched/pipe benchmark...
+>  # Executed 1000000 pipe operations between two processes
+> 
+>      Total time: 3.516 [sec]
+> 
+>        3.516689 usecs/op
+>          284358 ops/sec
+> 
+> After the patch:
+> 
+> $ perf bench sched all
+>  # Running sched/messaging benchmark...
+>  # 20 sender and receiver processes per group
+>  # 10 groups == 400 processes run
+> 
+>      Total time: 0.640 [sec]
+> 
+>  # Running sched/pipe benchmark...
+>  # Executed 1000000 pipe operations between two processes
+> 
+>      Total time: 3.329 [sec]
+> 
+>        3.329820 usecs/op
+>          300316 ops/sec
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-On Sun, Mar 21, 2021 at 11:40 PM Julian Braha <julianbraha@gmail.com> wrote:
-> On Sunday, March 21, 2021 2:28:43 PM EDT you wrote:
-> > On Sat, Mar 20, 2021 at 1:17 AM Julian Braha <julianbraha@gmail.com> wrote:
-> > > When LATENCYTOP is enabled and ARCH_WANT_FRAME_POINTERS
-> > > is disabled, Kbuild gives the following warning:
-> > >
-> > > WARNING: unmet direct dependencies detected for FRAME_POINTER
-> > >   Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
-> > >   Selected by [y]:
-> > >   - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-> > >
-> > > This is because LATENCYTOP selects FRAME_POINTER,
-> > > without selecting or depending on ARCH_WANT_FRAME_POINTERS,
-> > > despite FRAME_POINTER depending on ARCH_WANT_FRAME_POINTERS.
-> > >
-> > > Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/lib/Kconfig.debug
-> > > +++ b/lib/Kconfig.debug
-> > > @@ -1675,6 +1675,7 @@ config LATENCYTOP
-> > >         depends on DEBUG_KERNEL
-> > >         depends on STACKTRACE_SUPPORT
-> > >         depends on PROC_FS
-> > > +       select ARCH_WANT_FRAME_POINTERS if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-> >
-> > ARCH_WANT_FRAME_POINTERS is a symbol that is only to be selected by
-> > architecture-specific configuration, and must not be overridden:
-> >
-> >     # Select this config option from the architecture Kconfig, if it
-> >     # is preferred to always offer frame pointers as a config
-> >     # option on the architecture (regardless of KERNEL_DEBUG):
-> >
-> > Probably this should be turned into a depends instead?
-> >
-> > >         select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-> > >         select KALLSYMS
-> > >         select KALLSYMS_ALL
-
-> Making this a 'depends' causes a recursive dependency error.
-> Any other ideas?
-
-What about
-
-    -select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE &&
-!ARM && !ARC && !X86
-    +depends on FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE
-&& !ARM && !ARC && !X86
-
-?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks!
