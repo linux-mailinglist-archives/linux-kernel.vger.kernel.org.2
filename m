@@ -2,342 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964863439AB
+	by mail.lfdr.de (Postfix) with ESMTP id E1DAF3439AC
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCVGko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:40:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230027AbhCVGkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:40:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D69C6195D;
-        Mon, 22 Mar 2021 06:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616395224;
-        bh=+4EmNUqdJWP56LqWJMexLYGYsOE1auRLj9RaYGlSxKs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IKfxpE/19RnIG46pOE4xlfRfuAqUA6ADtLdgD859TIn4Gi5EwcsBm+GQV1uhNnF4i
-         /CfPFMAKVQXY/+yeSADF8qGWIIuaDBjhZcbSFvTmAjfWTb2nwq5ntSJWslJiwLTUUY
-         wUIyh6v9L/iQIBWOC1+2a5JGlBfGRkjIafTAK77F8QzVjUxP9Jqd6V73uSjyOjM5gk
-         NQk2l8rGL7gBJk8buYCbCt5X/kI6nsvrGiq6kYdA62L7PQTfSEyxsuP858rw1B20uq
-         DKoh9BRQ1nFEYpZluwrSC7rX6cymLJxFW/PojUjXPDixZPXpktJawqEnaI9trijy1a
-         UKOGJLyE9xIoQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: [PATCH -tip v4 03/12] kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
-Date:   Mon, 22 Mar 2021 15:40:18 +0900
-Message-Id: <161639521870.895304.18081138109939857491.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161639518354.895304.15627519393073806809.stgit@devnote2>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S230156AbhCVGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhCVGk2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:40:28 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B426C061574;
+        Sun, 21 Mar 2021 23:40:27 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3lHX2qYkz9sS8;
+        Mon, 22 Mar 2021 17:40:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616395225;
+        bh=1nixCOUzlIxfcWyrKNO05b2wI9KlMHWHaMpD+huHV50=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ceQiKo4JilnACfC/u2LG8c6c06QATLMBMBRYNz+eYb7hc2x4fRT3CrfNe9AQX6/Ux
+         Hy2WWCe9ENY+6yiD88oWJvRA1uazzuuM3ELuIMbu1DwddT/F7PlzqurPwqSGCXLIJr
+         FLThTA5oZaVhIgVIHUMRZRc/6nc5waz0oSj/uQL6w2mjFdQNJcMwRC2ZJNmURCw2Zd
+         ahns8TN5dj1JE+p5IvvNCYcandRnJn2N16quCsboS5Az4cf2UDD0Pp8FvPcha+7PpW
+         zKlSMaYURw/7cwx9h3sdGDtxAGPEF9wJfKA+WRKfkKFS/drDz6TV9NNMjbmdasDm5L
+         rRdb7MajAAwsw==
+Date:   Mon, 22 Mar 2021 17:40:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: linux-next: manual merge of the akpm tree with the arm64 tree
+Message-ID: <20210322174023.602a110b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/gF60RUGOCeApvhNL8GKktWw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove trampoline_address from kretprobe_trampoline_handler().
-Instead of passing the address, kretprobe_trampoline_handler()
-can use new kretprobe_trampoline_addr().
+--Sig_/gF60RUGOCeApvhNL8GKktWw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v3:
-   - Remove wrong kretprobe_trampoline declaration from
-     arch/x86/include/asm/kprobes.h.
- Changes in v2:
-   - Remove arch_deref_entry_point() from comment.
----
- arch/arc/kernel/kprobes.c          |    2 +-
- arch/arm/probes/kprobes/core.c     |    3 +--
- arch/arm64/kernel/probes/kprobes.c |    3 +--
- arch/csky/kernel/probes/kprobes.c  |    2 +-
- arch/ia64/kernel/kprobes.c         |    5 ++---
- arch/mips/kernel/kprobes.c         |    3 +--
- arch/parisc/kernel/kprobes.c       |    4 ++--
- arch/powerpc/kernel/kprobes.c      |    2 +-
- arch/riscv/kernel/probes/kprobes.c |    2 +-
- arch/s390/kernel/kprobes.c         |    2 +-
- arch/sh/kernel/kprobes.c           |    2 +-
- arch/sparc/kernel/kprobes.c        |    2 +-
- arch/x86/include/asm/kprobes.h     |    1 -
- arch/x86/kernel/kprobes/core.c     |    2 +-
- include/linux/kprobes.h            |   18 +++++++++++++-----
- kernel/kprobes.c                   |    3 +--
- 16 files changed, 29 insertions(+), 27 deletions(-)
+Hi all,
 
-diff --git a/arch/arc/kernel/kprobes.c b/arch/arc/kernel/kprobes.c
-index cabef45f11df..3ae01bb5820c 100644
---- a/arch/arc/kernel/kprobes.c
-+++ b/arch/arc/kernel/kprobes.c
-@@ -397,7 +397,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
- static int __kprobes trampoline_probe_handler(struct kprobe *p,
- 					      struct pt_regs *regs)
- {
--	regs->ret = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	regs->ret = __kretprobe_trampoline_handler(regs, NULL);
- 
- 	/* By returning a non zero value, we are telling the kprobe handler
- 	 * that we don't want the post_handler to run
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index a9653117ca0d..1782b41df095 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -413,8 +413,7 @@ void __naked __kprobes kretprobe_trampoline(void)
- /* Called from kretprobe_trampoline */
- static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
- {
--	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
--						    (void *)regs->ARM_fp);
-+	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->ARM_fp);
- }
- 
- void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 66aac2881ba8..fce681fdfce6 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -412,8 +412,7 @@ int __init arch_populate_kprobe_blacklist(void)
- 
- void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
- {
--	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
--					(void *)kernel_stack_pointer(regs));
-+	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
- }
- 
- void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
-index 589f090f48b9..cc589bc11904 100644
---- a/arch/csky/kernel/probes/kprobes.c
-+++ b/arch/csky/kernel/probes/kprobes.c
-@@ -404,7 +404,7 @@ int __init arch_populate_kprobe_blacklist(void)
- 
- void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
- {
--	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	return (void *)kretprobe_trampoline_handler(regs, NULL);
- }
- 
- void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
-index 15871eb170c0..a008df8e7203 100644
---- a/arch/ia64/kernel/kprobes.c
-+++ b/arch/ia64/kernel/kprobes.c
-@@ -392,14 +392,13 @@ static void __kprobes set_current_kprobe(struct kprobe *p,
- 	__this_cpu_write(current_kprobe, p);
- }
- 
--static void kretprobe_trampoline(void)
-+void kretprobe_trampoline(void)
- {
- }
- 
- int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
--	regs->cr_iip = __kretprobe_trampoline_handler(regs,
--		dereference_function_descriptor(kretprobe_trampoline), NULL);
-+	regs->cr_iip = __kretprobe_trampoline_handler(regs, NULL);
- 	/*
- 	 * By returning a non-zero value, we are telling
- 	 * kprobe_handler() that we don't want the post_handler
-diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
-index 54dfba8fa77c..001a2f07ef44 100644
---- a/arch/mips/kernel/kprobes.c
-+++ b/arch/mips/kernel/kprobes.c
-@@ -489,8 +489,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
- static int __kprobes trampoline_probe_handler(struct kprobe *p,
- 						struct pt_regs *regs)
- {
--	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs,
--						kretprobe_trampoline, NULL);
-+	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs, NULL);
- 	/*
- 	 * By returning a non-zero value, we are telling
- 	 * kprobe_handler() that we don't want the post_handler
-diff --git a/arch/parisc/kernel/kprobes.c b/arch/parisc/kernel/kprobes.c
-index 6d21a515eea5..4a35ac6e2ca2 100644
---- a/arch/parisc/kernel/kprobes.c
-+++ b/arch/parisc/kernel/kprobes.c
-@@ -175,7 +175,7 @@ int __kprobes parisc_kprobe_ss_handler(struct pt_regs *regs)
- 	return 1;
- }
- 
--static inline void kretprobe_trampoline(void)
-+void kretprobe_trampoline(void)
- {
- 	asm volatile("nop");
- 	asm volatile("nop");
-@@ -193,7 +193,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
- {
- 	unsigned long orig_ret_address;
- 
--	orig_ret_address = __kretprobe_trampoline_handler(regs, trampoline_p.addr, NULL);
-+	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
- 	instruction_pointer_set(regs, orig_ret_address);
- 
- 	return 1;
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index eb0460949e1b..dfd532c43525 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -399,7 +399,7 @@ static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
- 	unsigned long orig_ret_address;
- 
--	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
- 	/*
- 	 * We get here through one of two paths:
- 	 * 1. by taking a trap -> kprobe_handler() -> here
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index a2ec18662fee..619339f1d3ba 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -376,7 +376,7 @@ int __init arch_populate_kprobe_blacklist(void)
- 
- void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
- {
--	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	return (void *)kretprobe_trampoline_handler(regs, NULL);
- }
- 
- void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
-index aae24dc75df6..b149e9169709 100644
---- a/arch/s390/kernel/kprobes.c
-+++ b/arch/s390/kernel/kprobes.c
-@@ -351,7 +351,7 @@ static void __used kretprobe_trampoline_holder(void)
-  */
- static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
--	regs->psw.addr = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	regs->psw.addr = __kretprobe_trampoline_handler(regs, NULL);
- 	/*
- 	 * By returning a non-zero value, we are telling
- 	 * kprobe_handler() that we don't want the post_handler
-diff --git a/arch/sh/kernel/kprobes.c b/arch/sh/kernel/kprobes.c
-index 756100b01e84..48356e81836a 100644
---- a/arch/sh/kernel/kprobes.c
-+++ b/arch/sh/kernel/kprobes.c
-@@ -303,7 +303,7 @@ static void __used kretprobe_trampoline_holder(void)
-  */
- int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
- {
--	regs->pc = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	regs->pc = __kretprobe_trampoline_handler(regs, NULL);
- 
- 	return 1;
- }
-diff --git a/arch/sparc/kernel/kprobes.c b/arch/sparc/kernel/kprobes.c
-index 217c21a6986a..fa30f9dadff8 100644
---- a/arch/sparc/kernel/kprobes.c
-+++ b/arch/sparc/kernel/kprobes.c
-@@ -468,7 +468,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
- {
- 	unsigned long orig_ret_address = 0;
- 
--	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
-+	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
- 	regs->tpc = orig_ret_address;
- 	regs->tnpc = orig_ret_address + 4;
- 
-diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-index d20a3d6be36e..bec07252a0a3 100644
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -49,7 +49,6 @@ extern __visible kprobe_opcode_t optprobe_template_end[];
- extern const int kretprobe_blacklist_size;
- 
- void arch_remove_kprobe(struct kprobe *p);
--asmlinkage void kretprobe_trampoline(void);
- 
- extern void arch_kprobe_override_function(struct pt_regs *regs);
- 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 71e91f16720c..427d648fffcd 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -811,7 +811,7 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
- 	regs->ip = (unsigned long)&kretprobe_trampoline;
- 	regs->orig_ax = ~0UL;
- 
--	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, &regs->sp);
-+	return (void *)kretprobe_trampoline_handler(regs, &regs->sp);
- }
- NOKPROBE_SYMBOL(trampoline_handler);
- 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index d65c041b5c22..65dadd4238a2 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+void kretprobe_trampoline(void);
-+/*
-+ * Since some architecture uses structured function pointer,
-+ * use dereference_function_descriptor() to get real function address.
-+ */
-+static nokprobe_inline void *kretprobe_trampoline_addr(void)
-+{
-+	return dereference_function_descriptor(kretprobe_trampoline);
-+}
-+
- /* If the trampoline handler called from a kprobe, use this version */
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
--				void *trampoline_address,
--				void *frame_pointer);
-+					     void *frame_pointer);
- 
- static nokprobe_inline
- unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
--				void *trampoline_address,
--				void *frame_pointer)
-+					   void *frame_pointer)
- {
- 	unsigned long ret;
- 	/*
-@@ -222,7 +230,7 @@ unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
- 	 * be running at this point.
- 	 */
- 	kprobe_busy_begin();
--	ret = __kretprobe_trampoline_handler(regs, trampoline_address, frame_pointer);
-+	ret = __kretprobe_trampoline_handler(regs, frame_pointer);
- 	kprobe_busy_end();
- 
- 	return ret;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 2913de07f4a3..75c0a58c19c2 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1859,7 +1859,6 @@ static struct notifier_block kprobe_exceptions_nb = {
- #ifdef CONFIG_KRETPROBES
- 
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
--					     void *trampoline_address,
- 					     void *frame_pointer)
- {
- 	kprobe_opcode_t *correct_ret_addr = NULL;
-@@ -1874,7 +1873,7 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 
- 		BUG_ON(ri->fp != frame_pointer);
- 
--		if (ri->ret_addr != trampoline_address) {
-+		if (ri->ret_addr != kretprobe_trampoline_addr()) {
- 			correct_ret_addr = ri->ret_addr;
- 			/*
- 			 * This is the real return address. Any other
+Today's linux-next merge of the akpm tree got a conflict in:
 
+  arch/arm64/mm/mmu.c
+
+between commit:
+
+  87143f404f33 ("arm64: mm: use XN table mapping attributes for the linear =
+region")
+
+from the arm64 tree and commit:
+
+  0a2634348ef8 ("set_memory: allow querying whether set_direct_map_*() is a=
+ctually enabled")
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/mm/mmu.c
+index 4c2305cca6d2,fb675069a3b7..000000000000
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@@ -503,20 -490,11 +504,20 @@@ static void __init map_mem(pgd_t *pgdp
+  	phys_addr_t kernel_start =3D __pa_symbol(_stext);
+  	phys_addr_t kernel_end =3D __pa_symbol(__init_begin);
+  	phys_addr_t start, end;
+ -	int flags =3D 0;
+ +	int flags =3D NO_EXEC_MAPPINGS;
+  	u64 i;
+ =20
+ +	/*
+ +	 * Setting hierarchical PXNTable attributes on table entries covering
+ +	 * the linear region is only possible if it is guaranteed that no table
+ +	 * entries at any level are being shared between the linear region and
+ +	 * the vmalloc region. Check whether this is true for the PGD level, in
+ +	 * which case it is guaranteed to be true for all other levels as well.
+ +	 */
+ +	BUILD_BUG_ON(pgd_index(direct_map_end - 1) =3D=3D pgd_index(direct_map_e=
+nd));
+ +
+- 	if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
++ 	if (can_set_direct_map() || crash_mem_map)
+ -		flags =3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ +		flags |=3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ =20
+  	/*
+  	 * Take care not to create a writable alias for the
+@@@ -1468,9 -1446,8 +1469,8 @@@ int arch_add_memory(int nid, u64 start
+  	 * KFENCE requires linear map to be mapped at page granularity, so that
+  	 * it is possible to protect/unprotect single pages in the KFENCE pool.
+  	 */
+- 	if (rodata_full || debug_pagealloc_enabled() ||
+- 	    IS_ENABLED(CONFIG_KFENCE))
++ 	if (can_set_direct_map() || IS_ENABLED(CONFIG_KFENCE))
+ -		flags =3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ +		flags |=3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ =20
+  	__create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
+  			     size, params->pgprot, __pgd_pgtable_alloc,
+
+--Sig_/gF60RUGOCeApvhNL8GKktWw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBYO9cACgkQAVBC80lX
+0GzopQgAkFk4g2CloXVbQ7aGEuYVvztOWu0M6JXZe742iQPibykojvIKMk0Kc0GK
+o0cNm8ZM8ekUpf3pLfpipIJzCcF2e4Di4mW9/c9JzC74Klv6re5L+XlyrzkZRjv6
+Ij3bwor6pz5zmUwvEIq6E2Dav+mLp/qF0Q5DUbMx0YRf4iznA0SoMhxJHwuGxGNx
+Ei+MoKAEWD22QWk2fBD6KCszGKN0ZhUcP0kzaj7lN9ls8NxomYJfuVGFv4glZkk+
+SSY2l7VMLI8DP5yqa6+T/BCM8e1pkna276WuPdQ3QrcNr/BsFcTnH+OBZSGlFgPS
+xh5r2rRr3+rmL01FdQyVnfn+2Z0heA==
+=KAyZ
+-----END PGP SIGNATURE-----
+
+--Sig_/gF60RUGOCeApvhNL8GKktWw--
