@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F8C3441E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34DE344411
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhCVMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:36:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56196 "EHLO mail.kernel.org"
+        id S232330AbhCVM46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:56:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231488AbhCVMdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D5B61990;
-        Mon, 22 Mar 2021 12:33:14 +0000 (UTC)
+        id S230347AbhCVMqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5392160238;
+        Mon, 22 Mar 2021 12:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416395;
-        bh=Thj2BLnJy/B5q8Mr7PuHRR4CrJMZD4dBO5VAgv42dNU=;
+        s=korg; t=1616416950;
+        bh=4K/7u2IFNftLVH6Fhu8Ra0glW9wB6xNfXSyxvLWfE44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWgUPeM782tjnX8PnrmYBzlDgoIYY17h/g2bHSbutzkYxZb4FxrWYeH5KlTxEN6li
-         lWMZ0yLAMd09P/ZzcFnPDrowZXnRV1KEl8VS/wHS4H/szNBlwn71mjAwn+jplhhzuv
-         r0S0xvdvawvQdv+ncB9jgGxKCSDHEpUVIpIbldDo=
+        b=LZNI/WxbFxEycOxROHgNwbjwaqWmh1fC4uXIQxtKsvqfrGpveykcY7uEAZnY9hBoD
+         Af6pu8XNAI+HerlyWknEUxzK/19RQK0mIW6kkJSqthd2se4h0t3bO3bZwjL6jRQitK
+         ffwN+34xjUEmWZFM2d+IJmtJA8caw9HsYust5bRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.11 090/120] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
-Date:   Mon, 22 Mar 2021 13:27:53 +0100
-Message-Id: <20210322121932.687859713@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoliang Yu <yxl_22@outlook.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 06/60] ALSA: hda/realtek: Apply headset-mic quirks for Xiaomi Redmibook Air
+Date:   Mon, 22 Mar 2021 13:27:54 +0100
+Message-Id: <20210322121922.575451697@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Xiaoliang Yu <yxl_22@outlook.com>
 
-commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
+commit e1c86210fe27428399643861b81b080eccd79f87 upstream.
 
-There is one regmap_bulk_read() call in mpu3050_trigger_handler
-that we have caught its return value bug lack further handling.
-Check and terminate the execution flow just like the other three
-regmap_bulk_read() calls in this function.
+There is another fix for headset-mic problem on Redmibook (1d72:1602),
+it also works on Redmibook Air (1d72:1947), which has the same issue.
 
-Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Xiaoliang Yu <yxl_22@outlook.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/TYBP286MB02856DC016849DEA0F9B6A37EE6F9@TYBP286MB0285.JPNP286.PROD.OUTLOOK.COM
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/gyro/mpu3050-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -551,6 +551,8 @@ static irqreturn_t mpu3050_trigger_handl
- 					       MPU3050_FIFO_R,
- 					       &fifo_values[offset],
- 					       toread);
-+			if (ret)
-+				goto out_trigger_unlock;
- 
- 			dev_dbg(mpu3050->dev,
- 				"%04x %04x %04x %04x %04x\n",
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8104,6 +8104,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1701, "XiaomiNotebook Pro", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
 
 
