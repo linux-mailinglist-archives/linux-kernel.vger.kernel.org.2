@@ -2,115 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0542344785
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C95344786
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhCVOip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:38:45 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:58354 "EHLO mail1.perex.cz"
+        id S230340AbhCVOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:38:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229865AbhCVOiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:38:11 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 32F73A003E;
-        Mon, 22 Mar 2021 15:38:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 32F73A003E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1616423885; bh=DxfygpitPra5Cpiwi463YlHdOGWgOHeQqjm+lS0lShU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GJZvfhmKnms04+ZSNgkCOh42q886BBqayRTu2vqyYfX3jGYeIryR8NK5UbXX3AOnf
-         +ENS0BARR4vSMmMRapVPUdn1uuSd8fZ1OUFu0DcM9X3c/ekfvKDuaRcOD+SFc7NqZ6
-         JEb59xKL0lUmcdfxY5RxVJpIuZJKqWLFz9bvM76k=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Mon, 22 Mar 2021 15:37:52 +0100 (CET)
-Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control supports
-To:     "Yuan, Perry" <Perry.Yuan@dell.com>,
-        Mark Brown <broonie@kernel.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>
-Cc:     "pobrn@protonmail.com" <pobrn@protonmail.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20210301093834.19524-1-Perry_Yuan@Dell.com>
- <20210308172409.GF4656@sirena.org.uk>
- <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <604693cc-08c7-2b5f-632a-58ed537c54a0@perex.cz>
-Date:   Mon, 22 Mar 2021 15:37:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229972AbhCVOiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:38:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE326197F;
+        Mon, 22 Mar 2021 14:38:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616423897;
+        bh=zLCBqyxs8ZnqWYtBIbw1rx4A/T40oK8uTCij+mkv4zA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BWwGML3g/r4wcFVLMnpxLiNGNnQwMHk+IIV00sW2aO0GR3LuD+L8x9obCgAa1TzsG
+         9NbEl1n4B+zxUwsBg+UDROqe7Bw420BtVIwCcMyzd6YzqJDR8VMIek4dBxLqA4SM3i
+         Sll2xiquNlYT8am3gvyXKosTdAs16M0p/3hoCwyUURQjx+H81BohfcmrLUFEKtjIO8
+         8BOwxcImz1T+gGHo6BudvM9fPVLy5FuCC03bQKYSsVLW7jlRaD+/+WxPfvT55R8+7e
+         SXpYuB1OzYPw+UTRmEwd3PFworcfaX4M7LO3M6/WJNQgDTN5cci9xxA6DiYhogENZn
+         wiGRxdthiJ5Qw==
+Received: by mail-ot1-f42.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so16148957ota.0;
+        Mon, 22 Mar 2021 07:38:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532emE5Vj9dvr2hhc0JnxNIvB7RiWp/IQrQh37biQxXV9jwIQ99b
+        DkjqrMQ3h2SLW8btSFaDIoUtf0DTzdLRL0/INy4=
+X-Google-Smtp-Source: ABdhPJyD2TKuKk6FRxgPFeFRM5z/aHMnocQOgJEpVO8jyolW16oFTYSTTc6QNuxZg6X8/RTWR7AM9q63bBX27fdLH6M=
+X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr205798otq.251.1616423896385;
+ Mon, 22 Mar 2021 07:38:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210322121453.653228-1-arnd@kernel.org> <YFiihvb1TLFaAZdH@unreal>
+In-Reply-To: <YFiihvb1TLFaAZdH@unreal>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 22 Mar 2021 15:37:58 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2HyDPF9-=wo=Yk0k8GWqOY94obFSwpeZFCwViJzRw_8g@mail.gmail.com>
+Message-ID: <CAK8P3a2HyDPF9-=wo=Yk0k8GWqOY94obFSwpeZFCwViJzRw_8g@mail.gmail.com>
+Subject: Re: [PATCH net-next] [v2] misdn: avoid -Wempty-body warning
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 22. 03. 21 v 10:25 Yuan, Perry napsal(a):
-> Hi Mark:
-> 
->> -----Original Message-----
->> From: Mark Brown <broonie@kernel.org>
->> Sent: Tuesday, March 9, 2021 1:24 AM
->> To: Yuan, Perry
->> Cc: pobrn@protonmail.com; pierre-louis.bossart@linux.intel.com;
->> oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
->> hdegoede@redhat.com; mgross@linux.intel.com; Limonciello, Mario;
->> lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
->> kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
->> Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control
->> supports
->>
->> On Mon, Mar 01, 2021 at 05:38:34PM +0800, Perry Yuan wrote:
->>
->>> +	/* Micmute LED state changed by muted/unmute switch */
->>> +	if (mc->invert) {
->>> +		if (ucontrol->value.integer.value[0] || ucontrol-
->>> value.integer.value[1]) {
->>> +			micmute_led = LED_OFF;
->>> +		} else {
->>> +			micmute_led = LED_ON;
->>> +		}
->>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
->>> +	}
->>
->> These conditionals on inversion seem weird and counterintuitive.  If we're
->> going with this approach it would probably be clearer to define a custom
->> operation for the affected controls that wraps the standard one and adds the
->> LED setting rather than keying off invert like this.
-> 
-> Currently the sof soundwire driver has no generic led control yet.
-> This patch can handle the led control needs for MIC mute LED, definitely the patch is a short term solution.
-> There is a feature request discussion when we started to implement this solution.
-> https://github.com/thesofproject/linux/issues/2496#issuecomment-713892620
-> 
-> The workable way for now is that we put the LED mute control to the codec driver.
-> When there is new and full sound LED solution implemented, this part will be also optimized.
-> The Hardware privacy feature needs this patch to handle the Mic mute led state change.
-> Before that full solution ready in kernel, could we take this as short term solution?
+On Mon, Mar 22, 2021 at 2:58 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> Thanks, interesting when we will delete whole drivers/isdn :)
+>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 
-Perry, it's about the machine detection. Your code is too much generic even
-for the top-level LED trigger implementation. We need an extra check, if the
-proper LED's are really controlled on the specific hardware. Other hardware
-may use RT715 for a different purpose. Use DMI / ACPI checks to detect this
-hardware and don't misuse the inversion flag to enable this code.
+Not any time soon I think, Harald Welte mentioned that Osmocom
+still relies on mISDN.
 
-						Jaroslav
+The CAPI stuff only remains because of net/bluetooth/cmtp/ though.
+I don't think there are any users, but Marcel wanted to keep cmtp
+since it is not really hardware specific. We could probably move
+drivers/isdn/capi/* to net/bluetooth/cmtp/ if there was a good reason.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+         Arnd
