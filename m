@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2756343B18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4371C343B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhCVH66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCVH6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:58:24 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9C4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:58:24 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id t20so6109472plr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sGf+kwZW/wFP+9L+f/Acn8ft874BxO79I+2RdR2Ljro=;
-        b=zYOBtMnDt3uvZ32hAu89RQU4ZZsrmM60m26MQ4CUJ7FsZE28fioehItLrKUI/cVcX9
-         n4dft/MaV2jLEONuV59lCXv2Qw8E1Pb4KjmRECmU0uNnDZsCjEa3+B3VBUUxXtuO63zv
-         HJhdwxgZJrWu/0naL93G7rJvl1n0sLc6ECynFYmlUjXBXdr9Z9ntKakESU55rMuP1NzL
-         fDtD1d7V3U3ldcPmpqlJwCzk8CYc0QtQPFvuigF6pB1DYLMAM/WLRkSOFlmFRGi+eVkt
-         nhOu2psV51aRVVgfBs0HNkWh6Yg3ica4wbnQ9PVlm93vTl+/pFw0VyairmnLC7Tt863C
-         zUbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sGf+kwZW/wFP+9L+f/Acn8ft874BxO79I+2RdR2Ljro=;
-        b=sgUHZd3ryEXUJWK2+nmCvVuqnWQ7tBn6st1/oX/hn/lWd1h4TUq8OKWhbc90QwjW4P
-         bzcGYJZEcKjOujSrHmOrGJ/WO9MNoh6WPmh6mqX+5CoaZFBf2Cdo3SJYHNn2ZW3T9dSl
-         QJVeQ5ObOpSk8RG8V3kHdggyPyib8OH3enV1jxN35ru59HbGNaeuNpD9K5rhpHEQ17m8
-         bSXsoe4dxVdSzJ5U9KQHWNroDaHyfdxwcXy4CkqLpYJfh6kAfBlt+a77YTaeEp5XsuYq
-         B5LRaUjdwP4zrzWmDSdtlq9sBchOxjwV3Z9VoOahnQBnCecCPF1/dAEzfrifbskStj2o
-         PaYA==
-X-Gm-Message-State: AOAM533nHHf9POY6Ltr6ZPd/xxP1IXj+B/SS31OIcyyPEraHMTBriiBj
-        SB/pZxxsyKSBqNpy5yRtysLB3w==
-X-Google-Smtp-Source: ABdhPJxouYQ82LCmVrc8wz5uT/zuSts5pJLavO1ID85yMTnE8nEYY23D6RDb7vIT3duJwog//o52yA==
-X-Received: by 2002:a17:902:834a:b029:e6:b6bc:f58c with SMTP id z10-20020a170902834ab02900e6b6bcf58cmr26215016pln.85.1616399904057;
-        Mon, 22 Mar 2021 00:58:24 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id z4sm11601770pgv.73.2021.03.22.00.58.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Mar 2021 00:58:23 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 13:28:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v9] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210322075821.x6firpcpnuohf6y2@vireshk-i7>
-References: <e09c07532f5456816eb91ef4176bf910284df4ff.1616418890.git.jie.deng@intel.com>
- <20210322064144.y6kpajolwh2kd3lj@vireshk-i7>
- <dbb5dfe9-8ee6-e3f8-3681-d0ec83282930@intel.com>
+        id S229992AbhCVH7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:59:01 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:60831 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229870AbhCVH6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 03:58:46 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12M7wYCD021043
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 08:58:35 +0100
+Received: from [167.87.37.70] ([167.87.37.70])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12M7wY2u002040;
+        Mon, 22 Mar 2021 08:58:34 +0100
+Subject: Re: [PATCH] of/fdt: Make sure no-map does not remove already reserved
+ regions
+To:     Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ian Campbell <ian.campbell@citrix.com>,
+        Grant Likely <grant.likely@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <20190703050827.173284-1-drinkcat@chromium.org>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <12b02977-d038-8fc7-d61e-e694a6b90f7b@siemens.com>
+Date:   Mon, 22 Mar 2021 08:58:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbb5dfe9-8ee6-e3f8-3681-d0ec83282930@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20190703050827.173284-1-drinkcat@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-03-21, 15:53, Jie Deng wrote:
-> I think your optimization has problems...
+On 03.07.19 07:08, Nicolas Boichat wrote:
+> If the device tree is incorrectly configured, and attempts to
+> define a "no-map" reserved memory that overlaps with the kernel
+> data/code, the kernel would crash quickly after boot, with no
+> obvious clue about the nature of the issue.
 > 
+> For example, this would happen if we have the kernel mapped at
+> these addresses (from /proc/iomem):
+> 40000000-41ffffff : System RAM
+>   40080000-40dfffff : Kernel code
+>   40e00000-411fffff : reserved
+>   41200000-413e0fff : Kernel data
 > 
-> > 	bool err_found = timeout;
+> And we declare a no-map shared-dma-pool region at a fixed address
+> within that range:
+> mem_reserved: mem_region {
+> 	compatible = "shared-dma-pool";
+> 	reg = <0 0x40000000 0 0x01A00000>;
+> 	no-map;
+> };
+> 
+> To fix this, when removing memory regions at early boot (which is
+> what "no-map" regions do), we need to make sure that the memory
+> is not already reserved. If we do, __reserved_mem_reserve_reg
+> will throw an error:
+> [    0.000000] OF: fdt: Reserved memory: failed to reserve memory
+>    for node 'mem_region': base 0x0000000040000000, size 26 MiB
+> and the code that will try to use the region should also fail,
+> later on.
+> 
+> We do not do anything for non-"no-map" regions, as memblock
+> explicitly allows reserved regions to overlap, and the commit
+> that this fixes removed the check for that precise reason.
+> 
+> Fixes: 094cb98179f19b7 ("of/fdt: memblock_reserve /memreserve/ regions in the case of partial overlap")
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+>  drivers/of/fdt.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index cd17dc62a71980a..a1ded43fc332d0c 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -1138,8 +1138,16 @@ int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
+>  int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+>  					phys_addr_t size, bool nomap)
+>  {
+> -	if (nomap)
+> +	if (nomap) {
+> +		/*
+> +		 * If the memory is already reserved (by another region), we
+> +		 * should not allow it to be removed altogether.
+> +		 */
+> +		if (memblock_is_region_reserved(base, size))
+> +			return -EBUSY;
+> +
+>  		return memblock_remove(base, size);
+> +	}
+>  	return memblock_reserve(base, size);
+>  }
+>  
+> 
 
-While at it, see if you want to rename this variable as well to something
-smaller, like "failed". I didn't touch it as it is a matter of personal choice,
-so leaving it to you..
+Likely the wrong patch to blame but hopefully the right audience:
+
+I'm trying to migrate my RPi4 setup to mainline, and this commit breaks 
+booting with TF-A (current master) in the loop. Error:
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd083]                                                                                                                                                                        
+[    0.000000] Linux version 5.10.24+ (jan@md1f2u6c) (aarch64-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 9.2.1 20191025, GNU ld (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)1
+[    0.000000] Machine model: Raspberry Pi 4 Model B Rev 1.1                                                                                                                                                                                  
+[    0.000000] efi: UEFI not found.                                                                                                                                                                                                           
+[    0.000000] OF: fdt: Reserved memory: failed to reserve memory for node 'atf@0': base 0x0000000000000000, size 0 MiB                                                                                                                       
+
+And then we hang later on when Linux does start to use that memory and 
+seems to trigger an exception.
+
+Is there a bug in the upstream RPi4 DT?
+
+Jan
 
 -- 
-viresh
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
