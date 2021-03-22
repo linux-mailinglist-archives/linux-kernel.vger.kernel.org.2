@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF8034450F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FC5344531
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhCVNLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:11:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51028 "EHLO mail.kernel.org"
+        id S232750AbhCVNOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:14:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231626AbhCVM4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3DBF619F6;
-        Mon, 22 Mar 2021 12:48:51 +0000 (UTC)
+        id S232184AbhCVM4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:56:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90F91619C9;
+        Mon, 22 Mar 2021 12:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417332;
-        bh=ie1pAtHb/f7YbK5XLUU7uTgShb7so576qyEM6AKcDCk=;
+        s=korg; t=1616417335;
+        bh=tuDwqJSVaxAyHAeSHBnhsVr6A6uaxFYVqJWuuRxSIx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uKEhr49ndr9bEKBArsJUmnuXuvNaUvFcJWC292ZbgriCvH5pVUr8aiMfmMJVd5GLb
-         fwHsUZZt3lqv62uJE6ETI91HqnrinuIC3dlTDZ5F1H/IT32QsgP39kw8Znwi+aGxaC
-         Wv4LzXB2MsReZ+S3g1SBRm2St9GRsciEMbFaih/0=
+        b=AiFEcA3UpKnz9du6T0Rz1V0u0Z7st61pXgg5W4aMk8ABhBWxMV1rFNAqBVD4H4t9T
+         Nk+QZwkfIvR0IZjYowT6Stre83Kxy7hJKny0ph+rKwlhH6wYH8USRapDVwfPQBAKxF
+         mi/M1R9cllOPOwC4BekQh8r1qwkR37M7bns0lFcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 33/43] iio: hid-sensor-temperature: Fix issues of timestamp channel
-Date:   Mon, 22 Mar 2021 13:29:14 +0100
-Message-Id: <20210322121921.094677689@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.14 34/43] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+Date:   Mon, 22 Mar 2021 13:29:15 +0100
+Message-Id: <20210322121921.124615433@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
 References: <20210322121920.053255560@linuxfoundation.org>
@@ -40,68 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Xiang <xiang.ye@intel.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit 141e7633aa4d2838d1f6ad5c74cccc53547c16ac upstream.
+commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
 
-This patch fixes 2 issues of timestamp channel:
-1. This patch ensures that there is sufficient space and correct
-alignment for the timestamp.
-2. Correct the timestamp channel scan index.
+Both add_slot_store() and remove_slot_store() try to fix up the
+drc_name copied from the store buffer by placing a NUL terminator at
+nbyte + 1 or in place of a '\n' if present. However, the static buffer
+that we copy the drc_name data into is not zeroed and can contain
+anything past the n-th byte.
 
-Fixes: 59d0f2da3569 ("iio: hid: Add temperature sensor support")
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303063615.12130-4-xiang.ye@intel.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This is problematic if a '\n' byte appears in that buffer after nbytes
+and the string copied into the store buffer was not NUL terminated to
+start with as the strchr() search for a '\n' byte will mark this
+incorrectly as the end of the drc_name string resulting in a drc_name
+string that contains garbage data after the n-th byte.
+
+Additionally it will cause us to overwrite that '\n' byte on the stack
+with NUL, potentially corrupting data on the stack.
+
+The following debugging shows an example of the drmgr utility writing
+"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
+logging a corrupted string value.
+
+  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+
+Fix this by using strscpy() instead of memcpy() to ensure the string
+is NUL terminated when copied into the static drc_name buffer.
+Further, since the string is now NUL terminated the code only needs to
+change '\n' to '\0' when present.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+[mpe: Reformat change log and add mention of possible stack corruption]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/temperature/hid-sensor-temperature.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/drivers/iio/temperature/hid-sensor-temperature.c
-+++ b/drivers/iio/temperature/hid-sensor-temperature.c
-@@ -28,7 +28,10 @@
- struct temperature_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info temperature_attr;
--	s32 temperature_data;
-+	struct {
-+		s32 temperature_data;
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
-@@ -45,7 +48,7 @@ static const struct iio_chan_spec temper
- 			BIT(IIO_CHAN_INFO_SAMP_FREQ) |
- 			BIT(IIO_CHAN_INFO_HYSTERESIS),
- 	},
--	IIO_CHAN_SOFT_TIMESTAMP(3),
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
- };
- 
- /* Adjust channel real bits based on report descriptor */
-@@ -137,9 +140,8 @@ static int temperature_proc_event(struct
- 	struct temperature_state *temp_st = iio_priv(indio_dev);
- 
- 	if (atomic_read(&temp_st->common_attributes.data_ready))
--		iio_push_to_buffers_with_timestamp(indio_dev,
--				&temp_st->temperature_data,
--				iio_get_time_ns(indio_dev));
-+		iio_push_to_buffers_with_timestamp(indio_dev, &temp_st->scan,
-+						   iio_get_time_ns(indio_dev));
- 
- 	return 0;
- }
-@@ -154,7 +156,7 @@ static int temperature_capture_sample(st
- 
- 	switch (usage_id) {
- 	case HID_USAGE_SENSOR_DATA_ENVIRONMENTAL_TEMPERATURE:
--		temp_st->temperature_data = *(s32 *)raw_data;
-+		temp_st->scan.temperature_data = *(s32 *)raw_data;
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -39,12 +39,11 @@ static ssize_t add_slot_store(struct kob
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
  		return 0;
- 	default:
- 		return -EINVAL;
+ 
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -70,12 +69,11 @@ static ssize_t remove_slot_store(struct
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
+ 
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
 
