@@ -2,166 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670033444B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AB93444C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhCVNE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:04:56 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:60287 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhCVMvS (ORCPT
+        id S232932AbhCVNGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232444AbhCVMwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:51:18 -0400
-X-Originating-IP: 82.63.7.72
-Received: from uno.localdomain (host-82-63-7-72.business.telecomitalia.it [82.63.7.72])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1D170E0010;
-        Mon, 22 Mar 2021 12:51:12 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 13:51:44 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 05/19] media: v4l2-subdev: De-deprecate init() subdev
- op
-Message-ID: <20210322125144.xd4yky6jmaw56x4a@uno.localdomain>
-References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
- <20210319164148.199192-6-jacopo+renesas@jmondi.org>
- <YFYX1KHi74XPEWLi@pendragon.ideasonboard.com>
- <20210321205256.GE3@valkosipuli.retiisi.eu>
+        Mon, 22 Mar 2021 08:52:12 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1DEC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:52:11 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id q3so10316570qkq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJJD01tKKHGwSq/RyO3i2VNi7aZ6O60d02h5t2JdLww=;
+        b=ctkvP4qSg3b7bZi2RuNxQkHC2ontOgWxN/PZdkTrfmXCjjUrtMt2jxGWfEf6HR5JeJ
+         qske3nMolGcxeVXgFzapg3ZuE6be7On7HHfs5ff+H3qQwWlp7TVeYCK1XC2oZdKQ2Um3
+         A+gpxhsro7nEfIgzzUiH7hxagiy5tbKSA1GPT3dmB/ip08emiJ9SNk6CABGdyZpc2t3a
+         9+NKPZ4agmPp2iYjI6mLxCr1v1TS285oC7rzSnd3983f2Paj9vWt/5QrqrSD301XKRlj
+         iaa6q4wzINY1vrLqP3E+fBYAikUShfe+Pro9EckrrCweBTGLVwExuGYq9CmfGDJ4ANI3
+         xxaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJJD01tKKHGwSq/RyO3i2VNi7aZ6O60d02h5t2JdLww=;
+        b=WTOa7UuOXe5aNTPrQE4dVjHmOIhL1UBVt5ouU6R/fbgTJecNpg59iR+Y5e+h2xntVL
+         qyh3S8N0LewDSFfBxLQP6XTAG3Iq+GsCi6SQAb7Dzypat5dzBnEviZ0oafzWq0BHTtJX
+         K4wgqzMLI85ckvfRag8B2RlpJ4NJeSnzNzrbTQZzDCvxhcb6a5YTvf/GI66hjvAKoxFP
+         k+WDWfRevvb+QsC9AH9XCjuntvByrY37ZgvjujirWJlol2f4e1I78LzennB+vrE+5ml4
+         VYN2eTVWOB4QoCLhy2ZFXRUsrWqQxW5PKURBhq2VTtts+R0V0iIShu55E6+G/b4JQfRJ
+         Gzig==
+X-Gm-Message-State: AOAM533sjWg8SqfAN2pAGhE7Te0fvSKI913qBpyXhXcFDa8N0wZgmgx8
+        tGWND1qamU7QNlKH59s4qw4=
+X-Google-Smtp-Source: ABdhPJzFU9ONJdHx5oNRCXpSIHtepFav5vGfW8b0sQrQuDnzSUppBMX0RshK+2DYFpWMEEIk1YD81A==
+X-Received: by 2002:a05:620a:13ac:: with SMTP id m12mr10754596qki.458.1616417530808;
+        Mon, 22 Mar 2021 05:52:10 -0700 (PDT)
+Received: from localhost.localdomain ([143.244.44.200])
+        by smtp.gmail.com with ESMTPSA id r17sm8847291qtn.25.2021.03.22.05.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 05:52:10 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     vgupta@synopsys.com, unixbhaskar@gmail.com,
+        akpm@linux-foundation.org, christian.brauner@ubuntu.com,
+        keescook@chromium.org, shorne@gmail.com, walken@google.com,
+        viro@zeniv.linux.org.uk, jhubbard@nvidia.com,
+        daniel.m.jordan@oracle.com, tsbogend@alpha.franken.de,
+        peterx@redhat.com, axboe@kernel.dk,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] arcc/kernel/process: Few mundane typo fixes
+Date:   Mon, 22 Mar 2021 18:21:55 +0530
+Message-Id: <20210322125155.3401540-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210321205256.GE3@valkosipuli.retiisi.eu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+s/defintion/definition/
+s/succeded/succeeded/
+s/commiting/committing/
+s/interrutps/interrupts/
 
-On Sun, Mar 21, 2021 at 10:52:56PM +0200, Sakari Ailus wrote:
-> Hi Laurent and Jacopo,
->
-> Thanks for cc'ing me.
->
-> On Sat, Mar 20, 2021 at 05:42:12PM +0200, Laurent Pinchart wrote:
-> > Hi Jacopo,
-> >
-> > Thank you for the patch.
-> >
-> > CC'ing Sakari on v3 to get feedback.
-> >
-> > On Fri, Mar 19, 2021 at 05:41:34PM +0100, Jacopo Mondi wrote:
-> > > The init() subdev core operation is deemed to be deprecated for new
-> > > subdevice drivers. However it could prove useful for complex
-> > > architectures to defer operation that require access to the
-> > > communication bus if said bus is not available (or fully configured)
-> > > at the time when the subdevice probe() function is run.
-> > >
-> > > As an example, the GMSL architecture requires the GMSL configuration
-> > > link to be configured on the host side after the remote subdevice
-> > > has completed its probe function. After the configuration on the host
-> > > side has been performed, the subdevice registers can be accessed through
-> > > the communication bus.
->
-> What does the remote device's probe do that needs to be done before bus
-> config on the host side?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+diff --git a/arch/arc/kernel/process.c b/arch/arc/kernel/process.c
+index d838d0d57696..3793876f42d9 100644
+--- a/arch/arc/kernel/process.c
++++ b/arch/arc/kernel/process.c
+@@ -50,14 +50,14 @@ SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
+ 	int ret;
 
-A few lines here below:
+ 	/*
+-	 * This is only for old cores lacking LLOCK/SCOND, which by defintion
++	 * This is only for old cores lacking LLOCK/SCOND, which by definition
+ 	 * can't possibly be SMP. Thus doesn't need to be SMP safe.
+ 	 * And this also helps reduce the overhead for serializing in
+ 	 * the UP case
+ 	 */
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_SMP));
 
- In the GMSL use case the bus configuration requires the enablement of the
- noise immunity threshold on the remote side which ensures reliability
- of communications in electrically noisy environments. After the subdevice
- has enabled the threshold at the end of its probe() sequence the host
- side shall compensate it with an higher signal amplitude. Once this
- sequence has completed the bus can be accessed with noise protection
- enabled and all the operations that require a considerable number of
- transactions on the bus (such as the image sensor configuration
- sequence) are run in the subdevice init() operation implementation.
+-	/* Z indicates to userspace if operation succeded */
++	/* Z indicates to userspace if operation succeeded */
+ 	regs->status32 &= ~STATUS_Z_MASK;
 
->
-> Alternatively, could the remote init() work be done at the time streaming
-> is started?
+ 	ret = access_ok(uaddr, sizeof(*uaddr));
+@@ -107,7 +107,7 @@ SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
 
-That would require programing the sensor, the embedded ISP at s_stream
-time which would take some time.
+ void arch_cpu_idle(void)
+ {
+-	/* Re-enable interrupts <= default irq priority before commiting SLEEP */
++	/* Re-enable interrupts <= default irq priority before committing SLEEP */
+ 	const unsigned int arg = 0x10 | ARCV2_IRQ_DEF_PRIO;
 
-I'll take this suggestion into account though and run some more tests.
+ 	__asm__ __volatile__(
+@@ -120,7 +120,7 @@ void arch_cpu_idle(void)
 
-Thanks
-  j
+ void arch_cpu_idle(void)
+ {
+-	/* sleep, but enable both set E1/E2 (levels of interrutps) before committing */
++	/* sleep, but enable both set E1/E2 (levels of interrupts) before committing */
+ 	__asm__ __volatile__("sleep 0x3	\n");
+ }
 
->
-> > >
-> > > In particular:
-> > >
-> > > 	HOST			REMOTE
-> > >
-> > > 	probe()
-> > > 	   |
-> > > 	   ---------------------> |
-> > > 				  probe() {
-> > > 				     bus config()
-> > > 				  }
-> > > 	   |<--------------------|
-> > > 	v4l2 async bound {
-> > > 	    bus config()
-> > > 	    call subdev init()
-> > > 	   |-------------------->|
-> > > 				 init() {
-> > > 				     access register on the bus()
-> > > 				}
-> > > 	   |<-------------------
-> > > 	}
-> > >
-> > > In the GMSL use case the bus configuration requires the enablement of the
-> > > noise immunity threshold on the remote side which ensures reliability
-> > > of communications in electrically noisy environments. After the subdevice
-> > > has enabled the threshold at the end of its probe() sequence the host
-> > > side shall compensate it with an higher signal amplitude. Once this
-> > > sequence has completed the bus can be accessed with noise protection
-> > > enabled and all the operations that require a considerable number of
-> > > transactions on the bus (such as the image sensor configuration
-> > > sequence) are run in the subdevice init() operation implementation.
-> > >
-> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > ---
-> > >  include/media/v4l2-subdev.h | 15 ++++++++++++---
-> > >  1 file changed, 12 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> > > index d0e9a5bdb08b..3068d9940669 100644
-> > > --- a/include/media/v4l2-subdev.h
-> > > +++ b/include/media/v4l2-subdev.h
-> > > @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
-> > >   *	each pin being configured.  This function could be called at times
-> > >   *	other than just subdevice initialization.
-> > >   *
-> > > - * @init: initialize the sensor registers to some sort of reasonable default
-> > > - *	values. Do not use for new drivers and should be removed in existing
-> > > - *	drivers.
-> > > + * @init: initialize the subdevice registers to some sort of reasonable default
-> > > + *	values. Do not use for new drivers (and should be removed in existing
-> > > + *	ones) for regular architectures where the image sensor is connected to
-> > > + *	the host receiver. For more complex architectures where the subdevice
-> > > + *	initialization should be deferred to the completion of the probe
-> > > + *	sequence of some intermediate component, or the communication bus
-> > > + *	requires configurations on the host side that depend on the completion
-> > > + *	of the probe sequence of the remote subdevices, the usage of this
-> > > + *	operation could be considered to allow the devices along the pipeline to
-> > > + *	probe and register in the media graph and to defer any operation that
-> > > + *	require actual access to the communication bus to their init() function
-> > > + *	implementation.
-> > >   *
-> > >   * @load_fw: load firmware.
-> > >   *
->
-> --
-> Kind regards,
->
-> Sakari Ailus
+--
+2.31.0
+
