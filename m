@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89467344DE2
+	by mail.lfdr.de (Postfix) with ESMTP id D5B58344DE4
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhCVR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:57:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51342 "EHLO mail.kernel.org"
+        id S231197AbhCVR5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230231AbhCVR4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:56:47 -0400
+        id S230228AbhCVR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:56:46 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A81EC6198E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 83F9961983;
         Mon, 22 Mar 2021 17:56:46 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1lOOnE-0038Fj-5q; Mon, 22 Mar 2021 17:56:44 +0000
+        id 1lOOnE-0038Fj-Qd; Mon, 22 Mar 2021 17:56:44 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     Quentin Perret <qperret@google.com>
 Cc:     catalin.marinas@arm.com, james.morse@arm.com,
@@ -30,9 +30,9 @@ Cc:     catalin.marinas@arm.com, james.morse@arm.com,
         kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
         tabba@google.com, ardb@kernel.org, mark.rutland@arm.com,
         dbrazdil@google.com
-Subject: [PATCH v2 2/3] KVM: arm64: Generate final CTR_EL0 value when running in Protected mode
-Date:   Mon, 22 Mar 2021 17:56:38 +0000
-Message-Id: <20210322175639.801566-3-maz@kernel.org>
+Subject: [PATCH v2 3/3] KVM: arm64: Drop the CPU_FTR_REG_HYP_COPY infrastructure
+Date:   Mon, 22 Mar 2021 17:56:39 +0000
+Message-Id: <20210322175639.801566-4-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210322175639.801566-1-maz@kernel.org>
 References: <20210322175639.801566-1-maz@kernel.org>
@@ -46,70 +46,250 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In protected mode, late CPUs are not allowed to boot (enforced by
-the PSCI relay). We can thus specialise the read_ctr macro to
-always return a pre-computed, sanitised value.
+Now that the read_ctr macro has been specialised for nVHE,
+the whole CPU_FTR_REG_HYP_COPY infrastrcture looks completely
+overengineered.
+
+Simplify it by populating the two u64 quantities (MMFR0 and 1)
+that the hypervisor need.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/include/asm/assembler.h | 9 +++++++++
- arch/arm64/kernel/image-vars.h     | 1 +
- arch/arm64/kvm/va_layout.c         | 7 +++++++
- 3 files changed, 17 insertions(+)
+ arch/arm64/include/asm/cpufeature.h     |  1 -
+ arch/arm64/include/asm/kvm_cpufeature.h | 26 -------------------------
+ arch/arm64/include/asm/kvm_host.h       |  4 ----
+ arch/arm64/include/asm/kvm_hyp.h        |  3 +++
+ arch/arm64/kernel/cpufeature.c          | 13 -------------
+ arch/arm64/kvm/arm.c                    |  3 +++
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c       |  8 --------
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c   | 16 ++++++++-------
+ arch/arm64/kvm/sys_regs.c               | 22 ---------------------
+ 9 files changed, 15 insertions(+), 81 deletions(-)
+ delete mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index fb651c1f26e9..1a4cee7eb3c9 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -270,12 +270,21 @@ alternative_endif
-  * provide the system wide safe value from arm64_ftr_reg_ctrel0.sys_val
-  */
- 	.macro	read_ctr, reg
-+#ifndef __KVM_NVHE_HYPERVISOR__
- alternative_if_not ARM64_MISMATCHED_CACHE_TYPE
- 	mrs	\reg, ctr_el0			// read CTR
- 	nop
- alternative_else
- 	ldr_l	\reg, arm64_ftr_reg_ctrel0 + ARM64_FTR_SYSVAL
- alternative_endif
-+#else
-+alternative_cb kvm_compute_final_ctr_el0
-+	movz	\reg, #0
-+	movk	\reg, #0, lsl #16
-+	movk	\reg, #0, lsl #32
-+	movk	\reg, #0, lsl #48
-+alternative_cb_end
-+#endif
- 	.endm
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index a85cea2cac57..61177bac49fa 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -607,7 +607,6 @@ void check_local_cpu_capabilities(void);
  
+ u64 read_sanitised_ftr_reg(u32 id);
+ u64 __read_sysreg_by_encoding(u32 sys_id);
+-int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst);
  
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index d5dc2b792651..fdd60cd1d7e8 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -65,6 +65,7 @@ __efistub__ctype		= _ctype;
- KVM_NVHE_ALIAS(kvm_patch_vector_branch);
- KVM_NVHE_ALIAS(kvm_update_va_mask);
- KVM_NVHE_ALIAS(kvm_get_kimage_voffset);
-+KVM_NVHE_ALIAS(kvm_compute_final_ctr_el0);
- 
- /* Global kernel state accessed by nVHE hyp code. */
- KVM_NVHE_ALIAS(kvm_vgic_global_state);
-diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-index 978301392d67..acdb7b3cc97d 100644
---- a/arch/arm64/kvm/va_layout.c
-+++ b/arch/arm64/kvm/va_layout.c
-@@ -288,3 +288,10 @@ void kvm_get_kimage_voffset(struct alt_instr *alt,
+ static inline bool cpu_supports_mixed_endian_el0(void)
  {
- 	generate_mov_q(kimage_voffset, origptr, updptr, nr_inst);
- }
+diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
+deleted file mode 100644
+index ff302d15e840..000000000000
+--- a/arch/arm64/include/asm/kvm_cpufeature.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2020 - Google LLC
+- * Author: Quentin Perret <qperret@google.com>
+- */
+-
+-#ifndef __ARM64_KVM_CPUFEATURE_H__
+-#define __ARM64_KVM_CPUFEATURE_H__
+-
+-#include <asm/cpufeature.h>
+-
+-#include <linux/build_bug.h>
+-
+-#if defined(__KVM_NVHE_HYPERVISOR__)
+-#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg name
+-#define DEFINE_KVM_HYP_CPU_FTR_REG(name) struct arm64_ftr_reg name
+-#else
+-#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg kvm_nvhe_sym(name)
+-#define DEFINE_KVM_HYP_CPU_FTR_REG(name) BUILD_BUG()
+-#endif
+-
+-DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
+-DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
+-DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
+-
+-#endif
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 4859c9de75d7..09979cdec28b 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -740,13 +740,9 @@ void kvm_clr_pmu_events(u32 clr);
+ 
+ void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
+ void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
+-
+-void setup_kvm_el2_caps(void);
+ #else
+ static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+ static inline void kvm_clr_pmu_events(u32 clr) {}
+-
+-static inline void setup_kvm_el2_caps(void) {}
+ #endif
+ 
+ void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
+diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+index de40a565d7e5..8ef9d88826d4 100644
+--- a/arch/arm64/include/asm/kvm_hyp.h
++++ b/arch/arm64/include/asm/kvm_hyp.h
+@@ -116,4 +116,7 @@ int __pkvm_init(phys_addr_t phys, unsigned long size, unsigned long nr_cpus,
+ void __noreturn __host_enter(struct kvm_cpu_context *host_ctxt);
+ #endif
+ 
++extern u64 kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val);
++extern u64 kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val);
 +
-+void kvm_compute_final_ctr_el0(struct alt_instr *alt,
-+			       __le32 *origptr, __le32 *updptr, int nr_inst)
-+{
-+	generate_mov_q(read_sanitised_ftr_reg(SYS_CTR_EL0),
-+		       origptr, updptr, nr_inst);
-+}
+ #endif /* __ARM64_KVM_HYP_H__ */
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 6252476e4e73..066030717a4c 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1154,18 +1154,6 @@ u64 read_sanitised_ftr_reg(u32 id)
+ }
+ EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
+ 
+-int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
+-{
+-	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
+-
+-	if (!regp)
+-		return -EINVAL;
+-
+-	*dst = *regp;
+-
+-	return 0;
+-}
+-
+ #define read_sysreg_case(r)	\
+ 	case r:		val = read_sysreg_s(r); break;
+ 
+@@ -2785,7 +2773,6 @@ void __init setup_cpu_features(void)
+ 
+ 	setup_system_capabilities();
+ 	setup_elf_hwcaps(arm64_elf_hwcaps);
+-	setup_kvm_el2_caps();
+ 
+ 	if (system_supports_32bit_el0())
+ 		setup_elf_hwcaps(compat_elf_hwcaps);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 368159021dee..2835400fd298 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1730,6 +1730,9 @@ static int kvm_hyp_init_protection(u32 hyp_va_bits)
+ 	void *addr = phys_to_virt(hyp_mem_base);
+ 	int ret;
+ 
++	kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
++	kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
++
+ 	ret = create_hyp_mappings(addr, addr + hyp_mem_size, PAGE_HYP);
+ 	if (ret)
+ 		return ret;
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+index 17ad1b3a9530..879559057dee 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+@@ -5,17 +5,9 @@
+  */
+ 
+ #include <asm/kvm_asm.h>
+-#include <asm/kvm_cpufeature.h>
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+ 
+-/*
+- * Copies of the host's CPU features registers holding sanitized values.
+- */
+-DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
+-DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
+-DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
+-
+ /*
+  * nVHE copy of data structures tracking available CPU cores.
+  * Only entries for CPUs that were online at KVM init are populated.
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index 808e2471091b..f4f364aa3282 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -5,7 +5,6 @@
+  */
+ 
+ #include <linux/kvm_host.h>
+-#include <asm/kvm_cpufeature.h>
+ #include <asm/kvm_emulate.h>
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+@@ -27,6 +26,12 @@ struct host_kvm host_kvm;
+ struct hyp_pool host_s2_mem;
+ struct hyp_pool host_s2_dev;
+ 
++/*
++ * Copies of the host's CPU features registers holding sanitized values.
++ */
++u64 id_aa64mmfr0_el1_sys_val;
++u64 id_aa64mmfr1_el1_sys_val;
++
+ static const u8 pkvm_hyp_id = 1;
+ 
+ static void *host_s2_zalloc_pages_exact(size_t size)
+@@ -72,16 +77,13 @@ static int prepare_s2_pools(void *mem_pgt_pool, void *dev_pgt_pool)
+ static void prepare_host_vtcr(void)
+ {
+ 	u32 parange, phys_shift;
+-	u64 mmfr0, mmfr1;
+-
+-	mmfr0 = arm64_ftr_reg_id_aa64mmfr0_el1.sys_val;
+-	mmfr1 = arm64_ftr_reg_id_aa64mmfr1_el1.sys_val;
+ 
+ 	/* The host stage 2 is id-mapped, so use parange for T0SZ */
+-	parange = kvm_get_parange(mmfr0);
++	parange = kvm_get_parange(id_aa64mmfr0_el1_sys_val);
+ 	phys_shift = id_aa64mmfr0_parange_to_phys_shift(parange);
+ 
+-	host_kvm.arch.vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
++	host_kvm.arch.vtcr = kvm_get_vtcr(id_aa64mmfr0_el1_sys_val,
++					  id_aa64mmfr1_el1_sys_val, phys_shift);
+ }
+ 
+ int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool)
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index dfb3b4f9ca84..4f2f1e3145de 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -21,7 +21,6 @@
+ #include <asm/debug-monitors.h>
+ #include <asm/esr.h>
+ #include <asm/kvm_arm.h>
+-#include <asm/kvm_cpufeature.h>
+ #include <asm/kvm_emulate.h>
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+@@ -2776,24 +2775,3 @@ void kvm_sys_reg_table_init(void)
+ 	/* Clear all higher bits. */
+ 	cache_levels &= (1 << (i*3))-1;
+ }
+-
+-#define CPU_FTR_REG_HYP_COPY(id, name) \
+-	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) }
+-struct __ftr_reg_copy_entry {
+-	u32			sys_id;
+-	struct arm64_ftr_reg	*dst;
+-} hyp_ftr_regs[] __initdata = {
+-	CPU_FTR_REG_HYP_COPY(SYS_CTR_EL0, arm64_ftr_reg_ctrel0),
+-	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR0_EL1, arm64_ftr_reg_id_aa64mmfr0_el1),
+-	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR1_EL1, arm64_ftr_reg_id_aa64mmfr1_el1),
+-};
+-
+-void __init setup_kvm_el2_caps(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(hyp_ftr_regs); i++) {
+-		WARN(copy_ftr_reg(hyp_ftr_regs[i].sys_id, hyp_ftr_regs[i].dst),
+-		     "%u feature register not found\n", hyp_ftr_regs[i].sys_id);
+-	}
+-}
 -- 
 2.29.2
 
