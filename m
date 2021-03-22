@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2D9344792
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CCA344795
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCVOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCVOlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:41:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C0FC061574;
-        Mon, 22 Mar 2021 07:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RaCtvaHwo/TZn625kVRWBgdSA5no54J7WgYPxjdoG7E=; b=SBc/ON5tkAeoJz8M87KOQ19vrw
-        pnuWSCSN/BuNgJ+CWCe/pwoQtp6ETfywBh/717fidsZmO2NyhCTYf/NJv13xHd/PjtpgrNamKbVFH
-        vlEZfh31D8qSobxBbpQG5m9Tiw1nuMFjPL+s+3qreV7lYaAW6refD51xr+hOOL8PPZiNkLtfOqIfw
-        cCU+1LbS6gcak/jVmi4WDUUnPCn7apvJvyX/AX7xO9oT9rSq29/O9rlZt0i5XRL6cRBVBF5In3p4E
-        nWiJaLsxIR7N/PXp9+jpOQtWHBdMQySi1wiYvoEfTXTUpiaMPUpF1VILs3rDuGGGtaxmWsqWxxfJ1
-        2gbarSiQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOLjW-008epC-Iy; Mon, 22 Mar 2021 14:40:43 +0000
-Date:   Mon, 22 Mar 2021 14:40:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        hyc.lee@gmail.com, viro@zeniv.linux.org.uk, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 3/5] cifsd: add file operations
-Message-ID: <20210322144042.GO1719932@casper.infradead.org>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052207epcas1p3f0a5bdfd2c994a849a67b465479d0721@epcas1p3.samsung.com>
- <20210322051344.1706-4-namjae.jeon@samsung.com>
- <20210322081512.GI1719932@casper.infradead.org>
- <YFhdWeedjQQgJdbi@google.com>
- <20210322135718.GA28451@lst.de>
+        id S230097AbhCVOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:42:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45364 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230356AbhCVOm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:42:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616424147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qE0A1N7/F7ncLf984ovqgJKYsAY3yE04wS+vinpzFio=;
+        b=r2N4CanunEnJFd1mm3gd/ItVBlnWonx5pC0IRjlo/fHZvc5DU9RITCU5X+6U+D5tL2gpj3
+        6u7stEgpGh0zbOmfbJGnJHPslt4ZCskJ04e16QDYxQxHiRPuNVqlXoYOVckRykomSLgWnf
+        36rOF0eVyh6c+Yr9f8HeuLcefZ9h+Ns=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9E22FAD4A;
+        Mon, 22 Mar 2021 14:42:27 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 15:42:26 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 7/8] hugetlb: add update_and_free_page_no_sleep for
+ irq context
+Message-ID: <YFis0mIbkTWaX7tM@dhcp22.suse.cz>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-8-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322135718.GA28451@lst.de>
+In-Reply-To: <20210319224209.150047-8-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:57:18PM +0100, Christoph Hellwig wrote:
-> On Mon, Mar 22, 2021 at 06:03:21PM +0900, Sergey Senozhatsky wrote:
-> > On (21/03/22 08:15), Matthew Wilcox wrote:
-> > > 
-> > > What's the scenario for which your allocator performs better than slub
-> > > 
-> > 
-> > IIRC request and reply buffers can be up to 4M in size. So this stuff
-> > just allocates a number of fat buffers and keeps them around so that
-> > it doesn't have to vmalloc(4M) for every request and every response.
+On Fri 19-03-21 15:42:08, Mike Kravetz wrote:
+> The locks acquired in free_huge_page are irq safe.  However, in certain
+> circumstances the routine update_and_free_page could sleep.  Since
+> free_huge_page can be called from any context, it can not sleep.
 > 
-> Do we have any data suggesting it is faster than vmalloc?
+> Use a waitqueue to defer freeing of pages if the operation may sleep.  A
+> new routine update_and_free_page_no_sleep provides this functionality
+> and is only called from free_huge_page.
+> 
+> Note that any 'pages' sent to the workqueue for deferred freeing have
+> already been removed from the hugetlb subsystem.  What is actually
+> deferred is returning those base pages to the low level allocator.
 
-Oh, I have no trouble believing it's faster than vmalloc.  Here's
-the fast(!) path that always has memory available, never does retries.
-I'm calling out the things I perceive as expensive on the right hand side.
-Also, I'm taking the 4MB size as the example.
+This patch or its alternative would need to be applied prior to patch 6
+which makes the whole context IRQ safe.
 
-vmalloc()
-  __vmalloc_node()
-    __vmalloc_node_range()
-      __get_vm_area_node()
-				[allocates vm_struct]
-	alloc_vmap_area()
-				[allocates vmap_area]
-				[takes free_vmap_area_lock]
-	  __alloc_vmap_area()
-	    find_vmap_lowest_match
-				[walks free_vmap_area_root]
-				[takes vmap_area_lock]
-      __vmalloc_area_node()
-				... array_size is 8KiB, we call __vmalloc_node
-	__vmalloc_node
-				[everything we did above, all over again,
-				 two more allocations, two more lock acquire]
-	alloc_pages_node(), 1024 times
-	vmap_pages_range_noflush()
-	  vmap_range_noflush()
-				[allocate at least two pages for PTEs]
+Besides that the changelog doesn't really say anything about changed
+user visible behavior change. Now if somebody decreases the GB huge pool
+from the userspace the real effect on the freed up memory will be
+postponed to some later time. That "later" is unpredictable as it
+depends on WQ utilization. We definitely need some sort of
+wait_for_inflight pages. One way to do that would be to have a dedicated
+WQ and schedule a sync work item after the pool has been shrunk and wait
+for that item.
 
-There's definitely some low handling fruit here.  __vmalloc_area_node()
-should probably call kvmalloc_node() instead of __vmalloc_node() for
-table sizes > 4KiB.  But a lot of this is inherent to how vmalloc works,
-and we need to put a cache in front of it.  Just not this one.
+-- 
+Michal Hocko
+SUSE Labs
