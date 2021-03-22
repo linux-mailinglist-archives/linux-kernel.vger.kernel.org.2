@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB82F345096
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1683A3450A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhCVURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S232290AbhCVUUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232299AbhCVURH (ORCPT
+        with ESMTP id S231331AbhCVUUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:17:07 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218A7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:17:06 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id x16so9340806qvk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:17:06 -0700 (PDT)
+        Mon, 22 Mar 2021 16:20:33 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC329C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id z9so16059730ilb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tcS5dQnvT0EiMWmTQeHKxUtGPVRxLUYjS83TJVzvx+k=;
-        b=MDK780PDa68smMWy8dlBgBO1PT8Mm/nclrmBTOUsf+/+6uS2UU4D7XjM1CKAoBMCNI
-         m+hTtLDuF6QSo4iSwAamrGHUvBE1m21GD1FKUqdhKgGRm3R2WM6ToZK2sur0Xv+ZGIf0
-         lBmP/KyGYi/HW2XADCxat3UK3LYGnfdbr0a0NqOw5heZABYTzS5papkYBDEJD94CUUwm
-         tUU9DG42JoWdlTzMSQBEiZ6ORiJD6FPOOQ6F95zSHzXM9Iw16VQBtenrGUxa5A9p9oas
-         010SKR0FoPRb7nGby+ifI51atFOkIWkoRjo1Lma+k6z+DlRvf2KlwGHbKGJqBzoIJHXW
-         S6wg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g19ekQhwWPSUVgeDRJ0qV8y1izdmXO7LuQ/4SsoZHq0=;
+        b=ejKUkIApjaWRL7dUZPBW3gdjkQxA0z+5LeJYdtHdOcPvTHkv6dxcYuQs/T9Eb549L2
+         JScgJ7XI1WwOwMqtzTcgqD2YkkvkhoyUx7XbQd2WEziLlKNurf/V2PssbH7Z0pYUk9Xc
+         AfuyvCVCu87UqeDab3IMz2K5LcAmHfd2Gj1U0b1SW3/USf84H2jS/h68st6GKZ/a0Dpd
+         kAvRpJOh1tzto7ukWq9t2ntk/DJ70L2EKrjb4YjTDoqAEnmmYitvwov1m8ogzr2becKU
+         IDClAL/p18aqeNvZXUviMX//5bqgYdGV6bK4wymFOe3DTdgdnmEOLjQsDUSEd3ccK8Hs
+         l27Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tcS5dQnvT0EiMWmTQeHKxUtGPVRxLUYjS83TJVzvx+k=;
-        b=Tv3WmFvqtnh8opbO7hwgmylhbIMRGOWm3eXQjtG53nGT2t2E+7q8/HNMLoPHIp4wIn
-         uRcmXkpV1UbxGIttCe4ILQxDw7RJJ0NvTI8WB0T3gHO+WljdtYWV9spuzWf9Hll//NBH
-         mql6eoWn/yaHOiLdDO2ocstNXTcNR9M6Hz+j7SnH16BuAwYuDdAgiCTP8adUWZaOuuHm
-         z3LG7FLUJ57h1FW8RRkfL51Q06nIEMuryxdzoz76uGryZSpzgOgzCfXUY7PaJ6jBliIl
-         eKu+oCjNi3adDsoimax8T20EpEmATu3ZDQDu7Mdx4qZbdXLaCL0Q3VWR71A/IuKfevmZ
-         8PpA==
-X-Gm-Message-State: AOAM533DWLAlIllB7k7UM/5aftt7F0VofXz0bmy0s83cbMwF8sFfRo8M
-        bWLKCXIbV1Kkv1bj3l5H6Tw=
-X-Google-Smtp-Source: ABdhPJxWjJ772wUsSBvj273tJJK9LFsIcXBnimb0hW8Ojb6Lm03STXD2Twf4k5u4V3OXiK336FQPvg==
-X-Received: by 2002:a0c:908d:: with SMTP id p13mr1450243qvp.11.1616444225007;
-        Mon, 22 Mar 2021 13:17:05 -0700 (PDT)
-Received: from localhost.localdomain ([138.199.10.68])
-        by smtp.gmail.com with ESMTPSA id y9sm11530620qkm.19.2021.03.22.13.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:17:04 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     gregkh@linuxfoundation.org, unixbhaskar@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH V2] staging: rtl8723bs: Mundane typo fixes
-Date:   Tue, 23 Mar 2021 01:46:48 +0530
-Message-Id: <20210322201648.137317-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g19ekQhwWPSUVgeDRJ0qV8y1izdmXO7LuQ/4SsoZHq0=;
+        b=Cd6bPkaZNW2bokonsXPoGGiWmdwJCTKgbSezFmVq5SP1Vf5KMnWsJQVXkWw6cXFFm/
+         itA2+wJuG1QzjIwXvw1oBidAoQp6fGGTSf9l+FMcUi13u7E3JJ7q1XU2O8hfK1gmeu3t
+         1/7/e8iLysUd4CbIgXZqSFdwYpRVlwYxxSlVULUDyDr6y9ZK6qegCAgDGDhV1tHj/2vH
+         SRIK1VkFWMq2IoVLWMmizm1rkNEHE3llBKa4TzZFNtXH6OdM9j1GqwEoKGHVCNEXjabQ
+         viRXoDKkycvZFK6jvIB9uASmYOL+MEHtmrwEy81BushZFzl47dddavdya3K6UJrErQia
+         9twA==
+X-Gm-Message-State: AOAM532HlzcPizygcMUkpOCEOwdvaP8qXOJmBpIpSkCMqJtk+QOlYpwB
+        XzrNWZeBh0GOIb4XBzDJa6jkarvcYL5y89zRovMCAQ==
+X-Google-Smtp-Source: ABdhPJyDgPKhS2+tkfjzlXTtW3qCalDvZvWrOxXVsbJUcAbzzVu6aTdx240urDCi4J5764OzK5M9/G1/tTXR4uoFGBk=
+X-Received: by 2002:a92:c561:: with SMTP id b1mr1542272ilj.165.1616444428175;
+ Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210322175132.36659-1-peterx@redhat.com>
+In-Reply-To: <20210322175132.36659-1-peterx@redhat.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Mon, 22 Mar 2021 13:19:50 -0700
+Message-ID: <CAJHvVcjAqv3S1CTr4MrFVgLSQzsL-4HK69w77aQ_J989oQ5+=w@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd/hugetlbfs: Fix minor fault page leak
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/stoping/stopping/
-s/arragement/arrangement/
-s/eralier/earlier/
+On Mon, Mar 22, 2021 at 10:51 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> When uffd-minor enabled, we need to put the page cache before handling the
+> userfault in hugetlb_no_page(), otherwise the page refcount got leaked.
+>
+> This can be reproduced by running userfaultfd selftest with hugetlb_shared
+> mode, then cat /proc/meminfo.
+>
+> Cc: Axel Rasmussen <axelrasmussen@google.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Fixes: f2bf15fb0969 ("userfaultfd: add minor fault registration mode")
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  mm/hugetlb.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 408dbc08298a..56b78a206913 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -4449,6 +4449,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+>                 /* Check for page in userfault range. */
+>                 if (userfaultfd_minor(vma)) {
+>                         unlock_page(page);
+> +                       put_page(page);
+>                         ret = hugetlb_handle_userfault(vma, mapping, idx,
+>                                                        flags, haddr,
+>                                                        VM_UFFD_MINOR);
+> --
+> 2.26.2
+>
 
-Plus one extra word in the sentence "the" removed.
+Thanks for the fix, Peter! I applied the patch and verified it does
+indeed fix the issue.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-  Changes from V1:
-  Greg,pointed out my mistake of introducing typo to typo , corrected.
-
- drivers/staging/rtl8723bs/include/hal_com_reg.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/include/hal_com_reg.h b/drivers/staging/rtl8723bs/include/hal_com_reg.h
-index 37fa59a352d6..b555826760d0 100644
---- a/drivers/staging/rtl8723bs/include/hal_com_reg.h
-+++ b/drivers/staging/rtl8723bs/include/hal_com_reg.h
-@@ -1002,9 +1002,9 @@ Current IOREG MAP
- 	/* 		 8192C (TXPAUSE) transmission pause	(Offset 0x522, 8 bits) */
- 	/*  */
- /*  Note: */
--/* 	The the bits of stoping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
--/* 	the correct arragement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
--/* 	8723 and 88E may be not correct either in the eralier version. Confirmed with DD Tim. */
-+/* 	The  bits of stopping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
-+/* 	the correct arrangement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
-+/* 	8723 and 88E may be not correct either in the earlier version. Confirmed with DD Tim. */
- /*  By Bruce, 2011-09-22. */
- #define StopBecon		BIT6
- #define StopHigh			BIT5
---
-2.31.0
-
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
