@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4120C3442C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E52534413E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhCVMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
+        id S231253AbhCVMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhCVMhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F01DE619AE;
-        Mon, 22 Mar 2021 12:37:07 +0000 (UTC)
+        id S231191AbhCVMau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A36A61992;
+        Mon, 22 Mar 2021 12:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416628;
-        bh=hvrnbfS4nOx/L3MlJrKfQRHaw3x9igwyNNF23FUJdeI=;
+        s=korg; t=1616416250;
+        bh=lJG0aVXlpNMjdURxjsf78D5fKtazSFVu+RGzcuiByd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RI/dRvX6jCg8Lv0NAx48vHD9zfg4ahUpdfTphYNQX1PBNNItn+N6zZOSkFiREKsp2
-         1Xchk6azEJXAzRqIUDVlwMekEMuiuTyIjt6aEKSCdaXVsVvmLvIIkDW0LB0TVXDN7v
-         ZkTsBtEPNXkYFG92z2eDych0Fv1OjuWDu52yinOM=
+        b=O2Tq8p85H3c5pL6OoyUskH/7w2WLfrpER1RuzfEEYpDfr1BlktqKGbYMLCKd+SH0u
+         7T+n1tghN3rBrlLHBjcw+/Mm1pzp1kKTbhOBnbMqwrx0g7NMiwSCoy5aiMPWjFYcH3
+         h1MIKojpj4ost1C5T/bS3tqO86ZQu9xDv+dLmi6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Mark Brown <broonie@kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 5.10 032/157] ASoC: simple-card-utils: Do not handle device clock
-Date:   Mon, 22 Mar 2021 13:26:29 +0100
-Message-Id: <20210322121934.783045168@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoliang Yu <yxl_22@outlook.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 007/120] ALSA: hda/realtek: Apply headset-mic quirks for Xiaomi Redmibook Air
+Date:   Mon, 22 Mar 2021 13:26:30 +0100
+Message-Id: <20210322121929.906212080@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sameer Pujar <spujar@nvidia.com>
+From: Xiaoliang Yu <yxl_22@outlook.com>
 
-commit 8ca88d53351cc58d535b2bfc7386835378fb0db2 upstream.
+commit e1c86210fe27428399643861b81b080eccd79f87 upstream.
 
-This reverts commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device
-module clock"). The original patch ended up breaking following platform,
-which depends on set_sysclk() to configure internal PLL on wm8904 codec
-and expects simple-card-utils to not update the MCLK rate.
- - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
+There is another fix for headset-mic problem on Redmibook (1d72:1602),
+it also works on Redmibook Air (1d72:1947), which has the same issue.
 
-It would be best if codec takes care of setting MCLK clock via DAI
-set_sysclk() callback.
-
-Reported-by: Michael Walle <michael@walle.cc>
-Suggested-by: Mark Brown <broonie@kernel.org>
-Suggested-by: Michael Walle <michael@walle.cc>
-Fixes: 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Tested-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/1615829492-8972-2-git-send-email-spujar@nvidia.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Xiaoliang Yu <yxl_22@outlook.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/TYBP286MB02856DC016849DEA0F9B6A37EE6F9@TYBP286MB0285.JPNP286.PROD.OUTLOOK.COM
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/generic/simple-card-utils.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -172,15 +172,16 @@ int asoc_simple_parse_clk(struct device
- 	 *  or device's module clock.
- 	 */
- 	clk = devm_get_clk_from_child(dev, node, NULL);
--	if (IS_ERR(clk))
--		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
--
- 	if (!IS_ERR(clk)) {
--		simple_dai->clk = clk;
- 		simple_dai->sysclk = clk_get_rate(clk);
--	} else if (!of_property_read_u32(node, "system-clock-frequency",
--					 &val)) {
-+
-+		simple_dai->clk = clk;
-+	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
- 		simple_dai->sysclk = val;
-+	} else {
-+		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
-+		if (!IS_ERR(clk))
-+			simple_dai->sysclk = clk_get_rate(clk);
- 	}
- 
- 	if (of_property_read_bool(node, "system-clock-direction-out"))
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8244,6 +8244,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1d72, 0x1602, "RedmiBook", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1701, "XiaomiNotebook Pro", ALC298_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x118c, "Medion EE4254 MD62100", ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
 
 
