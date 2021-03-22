@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB4C344429
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC5B344498
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbhCVM6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:58:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42630 "EHLO mail.kernel.org"
+        id S233077AbhCVNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232496AbhCVMru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB658619F6;
-        Mon, 22 Mar 2021 12:43:30 +0000 (UTC)
+        id S231948AbhCVMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79D08619D5;
+        Mon, 22 Mar 2021 12:44:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417011;
-        bh=6+ZW8c8ttsYE5hxDerezfxOHm/0zFzGT+VjHosH8zCw=;
+        s=korg; t=1616417098;
+        bh=+oa0bw8yB8OvYJCLX6yIl+AK2NndlJlS3UNmi3Utd48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uDt58DHuZRl/FhiUoXVUI7fXtD1qYhgib2C02DgJQMY8m8ndVKLtYSkTn9fzfXEZ6
-         6PhN1UBdtBaurdMZaPJJqi67uWaflWh49TUmkx/Z7IMNiUtzm0ZI3tBhnFHbCC/fRJ
-         R+1djtxE1fv5JkNmlr7LNfw9HtrbAEMlfkX3fLrs=
+        b=XTxLJfgDnxIAC0IxBPteowCLhfsq43z8wBXJEJTs6OZVl43tzjqSfDWB5JXqIqAvs
+         bmhw/XlDzZa7bo9e1FnRELV85v64d0SInI8Lkmfg0hslPwcjiSuCI+GIjGhzqd1xFi
+         L1Dti+swosChLnrmXx+f8HrM0wb9y6UtC9iwEL7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.4 52/60] x86: Move TS_COMPAT back to asm/thread_info.h
+        stable@vger.kernel.org, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 26/43] iio:adc:stm32-adc: Add HAS_IOMEM dependency
 Date:   Mon, 22 Mar 2021 13:28:40 +0100
-Message-Id: <20210322121924.099609477@linuxfoundation.org>
+Message-Id: <20210322121920.765904207@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 66c1b6d74cd7035e85c426f0af4aede19e805c8a upstream.
+commit 121875b28e3bd7519a675bf8ea2c2e793452c2bd upstream.
 
-Move TS_COMPAT back to asm/thread_info.h, close to TS_I386_REGS_POKED.
+Seems that there are config combinations in which this driver gets enabled
+and hence selects the MFD, but with out HAS_IOMEM getting pulled in
+via some other route.  MFD is entirely contained in an
+if HAS_IOMEM block, leading to the build issue in this bugzilla.
 
-It was moved to asm/processor.h by b9d989c7218a ("x86/asm: Move the
-thread_info::status field to thread_struct"), then later 37a8f7c38339
-("x86/asm: Move 'status' from thread_struct to thread_info") moved the
-'status' field back but TS_COMPAT was forgotten.
+https://bugzilla.kernel.org/show_bug.cgi?id=209889
 
-Preparatory patch to fix the COMPAT case for get_nr_restart_syscall()
-
-Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210201174649.GA17880@redhat.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Link: https://lore.kernel.org/r/20210124195034.22576-1-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/processor.h   |    9 ---------
- arch/x86/include/asm/thread_info.h |    9 +++++++++
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/iio/adc/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -507,15 +507,6 @@ static inline void arch_thread_struct_wh
- }
- 
- /*
-- * Thread-synchronous status.
-- *
-- * This is different from the flags in that nobody else
-- * ever touches our thread-synchronous status, so we don't
-- * have to worry about atomic accesses.
-- */
--#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
--
--/*
-  * Set IOPL bits in EFLAGS from given mask
-  */
- static inline void native_set_iopl_mask(unsigned mask)
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -221,6 +221,15 @@ static inline int arch_within_stack_fram
- 
- #endif
- 
-+/*
-+ * Thread-synchronous status.
-+ *
-+ * This is different from the flags in that nobody else
-+ * ever touches our thread-synchronous status, so we don't
-+ * have to worry about atomic accesses.
-+ */
-+#define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
-+
- #ifdef CONFIG_COMPAT
- #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
- #endif
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -658,6 +658,7 @@ config STM32_ADC_CORE
+ 	depends on ARCH_STM32 || COMPILE_TEST
+ 	depends on OF
+ 	depends on REGULATOR
++	depends on HAS_IOMEM
+ 	select IIO_BUFFER
+ 	select MFD_STM32_TIMERS
+ 	select IIO_STM32_TIMER_TRIGGER
 
 
