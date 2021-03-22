@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A5D343FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C312343FF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhCVLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:34:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:58026 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhCVLeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:34:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B83C81063;
-        Mon, 22 Mar 2021 04:33:59 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B9493F718;
-        Mon, 22 Mar 2021 04:33:58 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 11:33:53 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Tom Saeger <tom.saeger@oracle.com>
-Cc:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Thomas Tai <thomas.tai@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Al Stone <al.stone@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: arm64/acpi : clarify arm64 support of IBFT
-Message-ID: <20210322113353.GA10630@e121166-lin.cambridge.arm.com>
-References: <9efc652df2b8d6b53d9acb170eb7c9ca3938dfef.1615920441.git.tom.saeger@oracle.com>
+        id S230226AbhCVLeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhCVLeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:34:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE46C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:34:07 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOIot-0007Tu-H6; Mon, 22 Mar 2021 12:34:03 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOIos-000101-Qy; Mon, 22 Mar 2021 12:34:02 +0100
+Date:   Mon, 22 Mar 2021 12:34:02 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wf6me76eh66ksbak"
 Content-Disposition: inline
-In-Reply-To: <9efc652df2b8d6b53d9acb170eb7c9ca3938dfef.1615920441.git.tom.saeger@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210322111036.31966-1-johan@kernel.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:50:41PM -0600, Tom Saeger wrote:
-> In commit 94bccc340710 ("iscsi_ibft: make ISCSI_IBFT dependson ACPI instead
-> of ISCSI_IBFT_FIND") Kconfig was disentangled to make ISCSI_IBFT selection
-> not depend on x86.
-> 
-> Update arm64 acpi documentation, changing IBFT support status from
-> "Not Supported" to "Optional".
-> Opportunistically re-flow paragraph for changed lines.
-> 
-> Link: https://lore.kernel.org/lkml/1563475054-10680-1-git-send-email-thomas.tai@oracle.com/
-> 
-> Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
-> ---
->  Documentation/arm64/acpi_object_usage.rst | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
 
-Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+--wf6me76eh66ksbak
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/Documentation/arm64/acpi_object_usage.rst b/Documentation/arm64/acpi_object_usage.rst
-> index 377e9d224db0..0609da73970b 100644
-> --- a/Documentation/arm64/acpi_object_usage.rst
-> +++ b/Documentation/arm64/acpi_object_usage.rst
-> @@ -17,12 +17,12 @@ For ACPI on arm64, tables also fall into the following categories:
->  
->         -  Recommended: BERT, EINJ, ERST, HEST, PCCT, SSDT
->  
-> -       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IORT,
-> -          MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT, STAO,
-> -	  TCPA, TPM2, UEFI, XENV
-> +       -  Optional: BGRT, CPEP, CSRT, DBG2, DRTM, ECDT, FACS, FPDT, IBFT,
-> +          IORT, MCHI, MPST, MSCT, NFIT, PMTT, RASF, SBST, SLIT, SPMI, SRAT,
-> +          STAO, TCPA, TPM2, UEFI, XENV
->  
-> -       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IBFT, IVRS, LPIT,
-> -          MSDM, OEMx, PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
-> +       -  Not supported: BOOT, DBGP, DMAR, ETDT, HPET, IVRS, LPIT, MSDM, OEMx,
-> +          PSDT, RSDT, SLIC, WAET, WDAT, WDRT, WPBT
->  
->  ====== ========================================================================
->  Table  Usage for ARMv8 Linux
-> -- 
-> 2.31.0
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
+> Force-threaded interrupt handlers used to run with interrupts enabled,
+> something which could lead to deadlocks in case a threaded handler
+> shared a lock with code running in hard interrupt context (e.g. timer
+> callbacks) and did not explicitly disable interrupts.
+>=20
+> This was specifically the case for serial drivers that take the port
+> lock in their console write path as printk can be called from hard
+> interrupt context also with forced threading ("threadirqs").
+>=20
+> Since commit 81e2073c175b ("genirq: Disable interrupts for force
+> threaded handlers") interrupt handlers always run with interrupts
+> disabled on non-RT so that drivers no longer need to do handle this.
+
+So we're breaking RT knowingly here? If this is the case I'm not happy
+with your change. (And if RT is not affected a different wording would
+be good.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--wf6me76eh66ksbak
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYgKcACgkQwfwUeK3K
+7AmnFAf/UTf0HIa8YjVOJLVTqlkCdbExe8cENZWveMj7/3CZDflNU9S+cayKynL1
+nDnyZOhtIer1yGqpmWURc7dNuyuIPRUbt3hLlDDjqXwTVHYQ+UokZrceSRw0HFJg
+IGpTVsGhJFZ5eNP8VfL4dCpaJ3Ztw/j/xJZecZAuvzrsdMsYKcDFPtTtCahy05nK
+Z0mnTqFcJ5uyclx/djBPWwIAOPVTWKq3O7Adarq7O+kooBQ9364v5VFusumHnKlo
+rIdK516Zb1HJWTds/wpggmceBbuPUNbsbqAV6+VKufxWnOkjuHn7jCP/C/HCXain
+yBxZHl/ID0hqYBR6iYi102kA+sb7GA==
+=4pb6
+-----END PGP SIGNATURE-----
+
+--wf6me76eh66ksbak--
