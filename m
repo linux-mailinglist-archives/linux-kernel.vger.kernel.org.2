@@ -2,157 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4264343D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0F9343D3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCVJpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:45:55 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:20637 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhCVJpl (ORCPT
+        id S229761AbhCVJvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCVJvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:45:41 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210322094538epoutp0152bbabfd0025d71429fbcfb3a9cff609~uoQAyP6vK0289402894epoutp01e
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:45:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210322094538epoutp0152bbabfd0025d71429fbcfb3a9cff609~uoQAyP6vK0289402894epoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616406338;
-        bh=7dGuIZecdaBruMcYMM8KkjPLba2vJ5qoLGcy5+CwqwI=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=illUY39ddH1ocboKjAwf+8RaWXQD0uetK7M1CPONK0QU9WN217O3XUCY+6twgJpqR
-         OFQF+XcieXvANtLFxFw/v/BPc0JuQ+i9EgfWMZwES8C9vqp4+bS1u1MapjY6/2YVrW
-         0oscd5Of0PFX8h/Fw0mBzfZplEsOReDzBiy66oqc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210322094537epcas2p16586f412839dc719e4af12d377deb4ce~uoP-8fvai0799307993epcas2p1r;
-        Mon, 22 Mar 2021 09:45:37 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.184]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4F3qPC30X7z4x9Q8; Mon, 22 Mar
-        2021 09:45:35 +0000 (GMT)
-X-AuditID: b6c32a46-1efff7000000dbf8-6b-6058673fac5b
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.40.56312.F3768506; Mon, 22 Mar 2021 18:45:35 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210322094534epcms2p5b2c0e5b18307f98a17bb385ee64bdc2c@epcms2p5>
-Date:   Mon, 22 Mar 2021 18:45:34 +0900
-X-CMS-MailID: 20210322094534epcms2p5b2c0e5b18307f98a17bb385ee64bdc2c
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrALsWRmVeSWpSXmKPExsWy7bCmua59ekSCwfVlwhYP5m1js9jbdoLd
-        4uXPq2wW0z78ZLb4tH4Zq8XLQ5oWuw4eZLNY9SDconnxejaLOWcbmCx6+7eyWWw+uIHZ4vGd
-        z+wWi25sY7Lo/9fOYrHts6DF8ZPvGC0u75rDZtF9fQebxfLj/5gslm69yWjROX0Ni4OYx+Ur
-        3h6X+3qZPHbOusvuMWHRAUaP/XPXsHu0nNzP4vHx6S0Wj74tqxg9Pm+S82g/0M0UwBXVwGiT
-        WJSckVmWqpCal5yfkpmXbqsUGuKma6GkkJFfXGKrFG1oYaRnaGmqZ2KpZ2Qea2VoYGBkqqSQ
-        l5ibaqtUoQvVraRQlFwAVF2SWlxSlJqcChQqciguSUxP1StOzC0uzUvXS87PVVIoS8wpBepT
-        0rezyUhNTEktUkh4wpjRsHYbS8F03oply1axNDB+5exi5OCQEDCRaDgU1sXIxSEksINR4tWd
-        v8wgcV4BQYm/O4S7GDk5hAW8Jf5cmMoGYgsJKEmsvziLHSKuJ3Hr4RpGEJtNQEdi+on77CBz
-        RAROskv8fnufCSQhIcArMaP9KQuELS2xfflWRpD5nALuEg+faEOENSR+LOtlhrBFJW6ufssO
-        Y78/Np8RwhaRaL13FqpGUOLBz91QcUmJY7s/QK2ql9h65xcjyA0SAj2MEod33mKFSOhLXOvY
-        CHYDr4CvRNOy7WALWARUJTb3f4Ua6iKx6tNCMJtZQFti2cLX4HBgFtCUWL9LHxJUyhJHbrHA
-        fNWw8Tc7OptZgE+i4/BfuPiOeU+gTlOTWPdzPRPEGBmJW/MYJzAqzUKE8ywka2chrF3AyLyK
-        USy1oDg3PbXYqMAIOZY3MYJzgZbbDsYpbz/oHWJk4mA8xCjBwawkwtsSHpEgxJuSWFmVWpQf
-        X1Sak1p8iLEK6OGJzFKiyfnAbJRXEm9oZmBkZmpsYmxsamJKtrCpkZmZgaWphamZkYWSOG+x
-        wYN4IYH0xJLU7NTUgtQimOVMHJxSDUxyNWtvCk3WNFS1y1X7EejGrnEwoeaW1LSou7kl/swf
-        t+fXB/eynQiPPepcmnfg2vf9x3eb2W50KljFs3J/2M2wUl6P5er156fNzL/783ucxpyWOx0b
-        Gr0CJWVv88Zn3zmpGVL9VMjE7YsMO2elc9qRsOXWs7vZ2R3Ofjwy2dirtuhop3TLlX1J5ndb
-        tMLlt0W8qXHe/+/h9+5jXVppJaHFiYeOz/SRjj73pPzwzO+cAr/PnK3nexMS0WYrceLf4fDk
-        cEZ+gTt+lWlOrIwalmvZXZWd/hhyfWxUXvafZWHHwk+KTT4bOp/e/3C8oz/+cd/fN1tqL58r
-        /L7wlZjJ8zpRIZO16911Uo5tbiu+rsRSnJFoqMVcVJwIACWzs0LTBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860
-References: <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
-        <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
-        <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
-        <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+        Mon, 22 Mar 2021 05:51:21 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FD1C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:51:21 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id l22so7112386vsr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F5tfs4RKe7DyMwZ1/CPo5NhF9TOT1gu2YypsLp/MLgM=;
+        b=jZZakAEjYi6mGXYPe0pKVcHGkM6m9obfR4McVCvd1b8MDvhbComsZMn2j9W3A1uPUB
+         xbFxhnWbBDtCIMzbFR9DylYiJoQhglwob5eYglSrvATADskf/+PtWLTuFiGDbnWbCWhz
+         gfvbZD33GhPFnR3OVw1Ane+UhOnOpQ2dkt2yMtrbDRz8SIpDYOFM+G9YUaIsv6KmSY8m
+         ep3coz3/NEt+bwNT+kM8Otxf+IVjVirPfiTuz2K0hy0PX+Y2gwSkNUdarA+Y/cUULyHd
+         MmMStPABEqN40vuNsLCSmxb38hr86z8n06ROg8K4AV2WEG0wg4ANLGuzDpnsrhJAe1kb
+         m24Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F5tfs4RKe7DyMwZ1/CPo5NhF9TOT1gu2YypsLp/MLgM=;
+        b=VTcW7ngZkcXKemMm+4O/S4z9VFykizrS4t3KSa2e//sCko1PvfJT0MIBVhK9ctn6Bd
+         G+mlBe22E1mrPS4AQy+7v0VXwNftyexJOwSdNsIwAmhiyvdbERthhFFAzU9o38Rh1sA3
+         cINWE1B0lvHw2cdtzUth6GiYTBKWxKEo9CUMWIqHvtBpdqPL2JI85QI8EsIitOK2Clvl
+         sbzwBwEg5F+RqGSiKwXVPLBTAkoxM3hM96Eeuo2Y/34wiHyh1IxEt+ddbd+Uo6bR5Xkp
+         GKHZZF4RzmPVQbhrIpHpiLVef9fI/+8TiyKSCSgezqu2j7r/3TgYfXZKfgEtWbwPeumh
+         mwOg==
+X-Gm-Message-State: AOAM530+uBQx//0RVn2Hk+gFRBKv8+wGBg6lsarFwaFxPcyhluwPFFq5
+        C/SaNV0d3EHkBL4q5baRRMUceaUrSnY2JMSpJBNDScX47GxDNcql
+X-Google-Smtp-Source: ABdhPJxSmVWQ+VNhvjr6kPnEiAv0MfbblHS8tcCuFWZqQUooRb9bxb7ZDa9Mq0coPqO9X5cqHB3AsAG3JqeXC5dQPns=
+X-Received: by 2002:a67:77c1:: with SMTP id s184mr8018900vsc.55.1616406680551;
+ Mon, 22 Mar 2021 02:51:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+ <1615936797-245197-1-git-send-email-limings@nvidia.com> <CAPDyKFpvuKU50T1UXfo-H5=gesOwqH4rW4sok4sYOZBgFijt2g@mail.gmail.com>
+ <BN8PR12MB3556CA0C1635FFFD50390CDED3689@BN8PR12MB3556.namprd12.prod.outlook.com>
+In-Reply-To: <BN8PR12MB3556CA0C1635FFFD50390CDED3689@BN8PR12MB3556.namprd12.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 22 Mar 2021 10:50:44 +0100
+Message-ID: <CAPDyKFqnUDCOmJe0aH7USXrAwktB1-GYz-MAr04dHF7iEG10DA@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-of-dwcmshc: add ACPI support for
+ BlueField-3 SoC
+To:     Liming Sun <limings@nvidia.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Khalil Blaiech <kblaiech@nvidia.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bean,
+On Fri, 19 Mar 2021 at 21:23, Liming Sun <limings@nvidia.com> wrote:
+>
+> Uffe,
+>
+> Can I confirm whether you meant the 'master' branch or some other branch?
+> I did a rebase of master and didn't see Shawn Lin's changes in the sdhci-of-dwcmshc.c
 
->On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
->> +       switch (rsp_field->hpb_op) =7B
->>=20
->> +       case HPB_RSP_REQ_REGION_UPDATE:
->>=20
->> +               if (data_seg_len =21=3D DEV_DATA_SEG_LEN)
->>=20
->> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>=20
->> +                                =22%s: data seg length is not
->> same.=5Cn=22,
->>=20
->> +                                __func__);
->>=20
->> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
->>=20
->> +               break;
->>=20
->> +       case HPB_RSP_DEV_RESET:
->>=20
->> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>=20
->> +                        =22UFS device lost HPB information during
->> PM.=5Cn=22);
->>=20
->> +               break;
->=20
->Hi Deajun,
->This series looks good to me. Just here I have one question. You didn't
+git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git next
 
-Thanks.
+[...]
 
->handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how to
->handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
->reset host side HPB entry as well or what else?
-
-In the JEDEC HPB spec, it as follows:
-
-When the device is powered off by the host, the device may restore L2P map
-data upon power up or build from the host=E2=80=99s=20HPB=20READ=20command.=
-=0D=0A=0D=0ASo=20I=20think=20there=20is=20nothing=20to=20do,=20because=20UF=
-S=20can=20build=20from=20host's=0D=0Acommand.=20Moreover,=20in=20the=20case=
-=20of=20the=20HPB=20read=20with=20invalid=20information=20by=0D=0Adev=20res=
-et,=20it=20just=20processed=20as=20normal=20read.=0D=0A=0D=0AThanks,=0D=0AD=
-aejun=0D=0A>=20=0D=0A>=20=0D=0A>Bean=0D=0A>=20=0D=0A>=20=0D=0A>=20=0D=0A>=
-=20=20
+Kind regards
+Uffe
