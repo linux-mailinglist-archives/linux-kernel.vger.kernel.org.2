@@ -2,153 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFDD345264
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50176345266
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhCVWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59870 "EHLO mail.kernel.org"
+        id S230286AbhCVWXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:23:47 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4942 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhCVWXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:23:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDC5619A3;
-        Mon, 22 Mar 2021 22:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616451783;
-        bh=9TOm/vUdTVgkLrEcvTO6xa6y15f8WUxq5hs+UGMAt0w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U0iFIjhulmjOHIH4ZCHGXKBTlk4hg5aK/NBUps8Mp8OdMncu+JsfhCVHc7Fy3mjMN
-         v5dLlyafisbAoZ8bJQoxyZnlOYisXMLnrd9/ZIM78JjzH+AN9ftQHRa2Xf233ycVwI
-         BVwvGUEBoJJCDGnMeh4GCYDVHEGKBMraxikxVROOKW27S8ShtH/HbOsUp/rQQIxn28
-         YjnDkmRrGWFYvA08QXRjzGxJRX742mBWY5tmsSxZgcIEVYdyMAH+Qal1CA+pnkv7d+
-         ljAMmRoEzgEP06BBkCm3ndmMb3Qgxj09+pxbrlwhqkM4k0YHn2ujTtAoY2q8MEUAt6
-         T/XvKWUgQgG6A==
-Received: by mail-ej1-f49.google.com with SMTP id e14so5640164ejz.11;
-        Mon, 22 Mar 2021 15:23:02 -0700 (PDT)
-X-Gm-Message-State: AOAM5330Ufdgf6tRqDczHDez93+Fm9OxshlyUk4PN1aqi63/hogG5m9a
-        I4GYE0oMM293hW9CH3X/oPzxe5457yGKLi4RlA==
-X-Google-Smtp-Source: ABdhPJx3z7wXtL8KQ3NRS45wE2EUgPtOjsUMqBUiolC7/JCPmaRaai1z8yHmFPME7Qtf+AsOQ2F81DUULd1XRtw/K00=
-X-Received: by 2002:a17:906:d153:: with SMTP id br19mr1849046ejb.360.1616451781529;
- Mon, 22 Mar 2021 15:23:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210318104036.3175910-1-lee.jones@linaro.org>
-In-Reply-To: <20210318104036.3175910-1-lee.jones@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 22 Mar 2021 16:22:49 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
-Message-ID: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] Rid W=1 warnings from OF
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colin Cross <ccross@android.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Josh Cartwright <joshc@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        netdev <netdev@vger.kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229962AbhCVWXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:23:12 -0400
+IronPort-SDR: KoGGHElcLEMSDWFiyLRHLHdoNkrczk9RJmhIO4d2S0RskR9HbDWl51nUAuKJ6cHkvE3WY2fzih
+ li6MRsg6zOoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190385783"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="190385783"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:23:10 -0700
+IronPort-SDR: 3jsiOqLOE4m5ve2B6I2lRNLY4iIVViTRm52ah8zfS5lW31FxyyIUtvOScKaGtuY7PfJmOm70lV
+ Fw0cnDmRZu6Q==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="381133556"
+Received: from rmarinax-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.143.198])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:23:06 -0700
+Date:   Tue, 23 Mar 2021 11:23:03 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-Id: <20210323112303.5eddd954ee601fca00b37aa3@intel.com>
+In-Reply-To: <20210322210645.GI6481@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+        <20210322181646.GG6481@zn.tnic>
+        <YFjoZQwB7e3oQW8l@google.com>
+        <20210322191540.GH6481@zn.tnic>
+        <YFjx3vixDURClgcb@google.com>
+        <20210322210645.GI6481@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 4:40 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
->
-> v2:
->  - Provided some descriptions to exported functions
->
-> Lee Jones (10):
->   of: device: Fix function name in header and provide missing
->     descriptions
->   of: dynamic: Fix incorrect parameter name and provide missing
->     descriptions
->   of: platform: Demote kernel-doc abuse
->   of: base: Fix some formatting issues and provide missing descriptions
->   of: property: Provide missing member description and remove excess
->     param
->   of: address: Provide descriptions for 'of_address_to_resource's params
->   of: fdt: Demote kernel-doc abuses and fix function naming
->   of: of_net: Provide function name and param description
->   of: overlay: Fix function name disparity
->   of: of_reserved_mem: Demote kernel-doc abuses
->
->  drivers/of/address.c         |  3 +++
->  drivers/of/base.c            | 16 +++++++++++-----
->  drivers/of/device.c          |  7 ++++++-
->  drivers/of/dynamic.c         |  4 +++-
->  drivers/of/fdt.c             | 23 ++++++++++++-----------
->  drivers/of/of_net.c          |  3 +++
->  drivers/of/of_reserved_mem.c |  6 +++---
->  drivers/of/overlay.c         |  2 +-
->  drivers/of/platform.c        |  2 +-
->  drivers/of/property.c        |  2 +-
->  10 files changed, 44 insertions(+), 24 deletions(-)
 
-I still see some warnings (note this is with DT files added to doc
-build). Can you send follow-up patches:
+> 
+> Btw, I probably have seen this and forgotten again so pls remind me,
+> is the amount of pages available for SGX use static and limited by,
+> I believe BIOS, or can a leakage in EPC pages cause system memory
+> shortage?
+> 
 
-../include/linux/of.h:1193: warning: Function parameter or member
-'output' not described in 'of_property_read_string_index'
-../include/linux/of.h:1193: warning: Excess function parameter
-'out_string' description in 'of_property_read_string_index'
-../include/linux/of.h:1461: warning: cannot understand function
-prototype: 'enum of_overlay_notify_action '
-../drivers/of/base.c:1781: warning: Excess function parameter 'prob'
-description in '__of_add_property'
-../drivers/of/base.c:1804: warning: Excess function parameter 'prob'
-description in 'of_add_property'
-../drivers/of/base.c:1855: warning: Function parameter or member
-'prop' not described in 'of_remove_property'
-../drivers/of/base.c:1855: warning: Excess function parameter 'prob'
-description in 'of_remove_property'
-
-BTW, there some more which I guess W=1 doesn't find:
-
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:906: WARNING: Block quote ends without a blank
-line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1465: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1469: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1473: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1517: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1521: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1526: WARNING: Unexpected indentation.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1528: WARNING: Block quote ends without a blank
-line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1529: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1533: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-../drivers/of/base.c:1705: WARNING: Definition list ends without a
-blank line; unexpected unindent.
-/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:49:
-../drivers/of/overlay.c:1183: WARNING: Inline emphasis start-string
-without end-string.
-
-Rob
+Yes EPC size is fixed and configured in BIOS. Leaking EPC pages may cause EPC
+shortage, but not system memory.
