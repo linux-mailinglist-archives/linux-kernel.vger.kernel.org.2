@@ -2,144 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E8C344577
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4233934457F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhCVNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233684AbhCVNSC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:18:02 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB6AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:18:02 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k8so13858195iop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CaLl8WYyGhEv/zKl6xwrPBBULyyeZrNEf1aCYBb15Ng=;
-        b=FEJ5F5rThAMlyVkPFnTgWR9VaDTkQ4Zha07gqhlb2MnPeqkFGTtf7rY3g2eU1JZgpZ
-         WNOcLUYPcxi6+xmmGOhO2Y2OxuTu+F1kLZ3nMC6WVjR6ucXIz/xIchW5vWg0BgmlxjE2
-         kkOI5xyDRP7r1szJssUvnJ8tbNLXNLyLxANpQAHOTvYsuaGJzuQLc6zhZ4U5076qZ4zW
-         eqw/+NjnG7tUcT1Vz98+EHGpiPHLUrOZnE61ApegXsRSJydd/0Eei1H+i3lvqARpW+Mx
-         ASjIOQv/FPoFEChR4XKE60dCZyJPq/rN5/XWF4zRYMd3Rf2NVbivnfLZwozoSuy6Zn9+
-         t35w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CaLl8WYyGhEv/zKl6xwrPBBULyyeZrNEf1aCYBb15Ng=;
-        b=ZhuISbHDnwJFf+R/SgxqBijrKLLm6q8bvl+TwBYDIfrz9fswswpXDxMA3Se+Y2oRSb
-         gUUAElFl4LBNsVxmU4557nPLKfqlmOaM2eOLz1Zi8PjMCEskH8sst7qvvWZJogFFAIsW
-         XtiHufDZI/sBv/WDlLjeU083GDtR9b6wbZXyTnxoWTTilUL79mm2m3XrVWTjzE4xKYn2
-         PSzVAQPklKzByxT9fZwH3kyLqwg2/X4xzn74DGSYNzcB1mS9UKc4lpSIzcgGs63HsuU/
-         ii2qObk62HvMXcik8uqkKDK862ol0Nm9kY9JcW4luIurnQPJLjlDrHJSpJMK0/ciMg4l
-         sNYQ==
-X-Gm-Message-State: AOAM532SlTzq6dTvbWFJn+jpr0nQ+X/05yfsMoEZ7F/J5UEVSAXqq8wi
-        3s3IKgh53uyzRWyXbJznj49vvZHU7SBdFbWP
-X-Google-Smtp-Source: ABdhPJxWECBZRbIVVehzNPNIjC9vslsXeO2NI2qJuOhWSVFcfy7S2/V6bQPJeEKnrl29rgNrIYo4Cw==
-X-Received: by 2002:a02:9382:: with SMTP id z2mr11415974jah.120.1616419081107;
-        Mon, 22 Mar 2021 06:18:01 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id r15sm7625997iot.5.2021.03.22.06.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 06:18:00 -0700 (PDT)
-Subject: Re: [PATCH net-next v2 2/2] net: ipa: fix IPA validation
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210320141729.1956732-1-elder@linaro.org>
- <20210320141729.1956732-3-elder@linaro.org> <YFcCAr19ZXJ9vFQ5@unreal>
- <dd4619e2-f96a-122f-2cf6-ec19445c6a5c@linaro.org> <YFdO6UnWsm4DAkwc@unreal>
- <7bc3e7d7-d32f-1454-eecc-661b5dc61aeb@linaro.org> <YFg7yHUeYvQZt+/Z@unreal>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <f152c274-6fe0-37a1-3723-330b7bfe249a@linaro.org>
-Date:   Mon, 22 Mar 2021 08:17:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232384AbhCVNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:21:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31014 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232348AbhCVNTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:19:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616419154; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Q/r41fIqJ2Y9Toafnn95hP48WRb+YnexiUA7BrVZA/o=;
+ b=LMw98UzCoLHWtk6hMdfC8wNLboVxNJPvGH714mSVKFMXq8OxtuvmRp5sv7cDwAYXYlWaGDMQ
+ j7Z2DcGaa6AQHFQy5mNPNy6FAoH89mC38MmCfKeHlCAv2t8ypPTsW6nUVITObtlqAXBtD6HW
+ vr/p4pfzfqfQnHoyw5uD19vMmwE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 605899354db3bb6801285cb6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Mar 2021 13:18:45
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D44EEC4347C; Mon, 22 Mar 2021 13:18:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66DEEC4347C;
+        Mon, 22 Mar 2021 13:18:43 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YFg7yHUeYvQZt+/Z@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Mar 2021 18:48:43 +0530
+From:   skakit@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add PMIC peripherals for SC7280
+In-Reply-To: <YEumre0+KKxZ0p6Z@builder.lan>
+References: <1615459229-27573-1-git-send-email-skakit@codeaurora.org>
+ <YEumre0+KKxZ0p6Z@builder.lan>
+Message-ID: <d1b8925da8197424d73cb9ac0a60b6ac@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 1:40 AM, Leon Romanovsky wrote:
->> I'd like to suggest a plan so I can begin to make progress,
->> but do so in a way you/others think is satisfactory.
->> - I would first like to fix the existing bugs, namely that
->>    if IPA_VALIDATION is defined there are build errors, and
->>    that IPA_VALIDATION is not consistently used.  That is
->>    this 2-patch series.
-> The thing is that IPA_VALIDATION is not defined in the upstream kernel.
-> There is nothing to be fixed in netdev repository
+Hi Bjorn,
+
+On 2021-03-12 23:06, Bjorn Andersson wrote:
+> On Thu 11 Mar 04:40 CST 2021, satya priya wrote:
 > 
->> - I assure you that my goal is to simplify the code that
->>    does this sort of checking.  So here are some specific
->>    things I can implement in the coming weeks toward that:
->>      - Anything that can be checked at build time, will
->>        be checked with BUILD_BUG_ON().
-> +1
+>> Add PM7325/PM8350C/PMK8350/PMR735A peripherals such as PON,
+>> GPIOs, RTC and other PMIC infra modules for SC7280.
+>> 
 > 
->>      - Anything checked with BUILD_BUG_ON() will*not*
->>        be conditional.  I.e. it won't be inside an
->>        #ifdef IPA_VALIDATION block.
->>      - I will review all remaining VALIDATION code (which
->>        can't--or can't always--be checked at build time),
->>        If it looks prudent to make it*always*  be checked,
->>        I will make it always be checked (not conditional
->>        on IPA_VALIDATION).
-> +1
+> Overall this looks good, just two small things below.
 > 
->> The result should clearly separate checks that can be done
->> at build time from those that can't.
->>
->> And with what's left (especially on that third sub-bullet)
->> I might have some better examples with which to argue
->> for something different.  Or I might just concede that
->> you were right all along.
-> I hope so.
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> ---
+>> This patch depends on base DT and board files for SC7280 to merge 
+>> first
+>> https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+>> 
+>>  arch/arm64/boot/dts/qcom/pm7325.dtsi  |  60 ++++++++++++++++++++
+>>  arch/arm64/boot/dts/qcom/pm8350c.dtsi |  60 ++++++++++++++++++++
+>>  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 104 
+>> ++++++++++++++++++++++++++++++++++
+>>  arch/arm64/boot/dts/qcom/pmr735a.dtsi |  60 ++++++++++++++++++++
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi  |   8 +++
+>>  5 files changed, 292 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+>>  create mode 100644 arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>>  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>>  create mode 100644 arch/arm64/boot/dts/qcom/pmr735a.dtsi
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi 
+>> b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> new file mode 100644
+>> index 0000000..393b256
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> @@ -0,0 +1,60 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+>> +
+>> +#include <dt-bindings/interrupt-controller/irq.h>
+>> +#include <dt-bindings/spmi/spmi.h>
+>> +
+>> +&spmi_bus {
+>> +	pm7325: pmic@1 {
+>> +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
+>> +		reg = <0x1 SPMI_USID>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +
+>> +		pm7325_tz: temp-alarm@a00 {
+>> +			compatible = "qcom,spmi-temp-alarm";
+>> +			reg = <0xa00>;
+>> +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
+>> +			#thermal-sensor-cells = <0>;
+>> +		};
+>> +
+>> +		pm7325_gpios: gpios@8800 {
+>> +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
+>> +			reg = <0x8800>;
+>> +			gpio-controller;
+>> +			gpio-ranges = <&pm7325_gpios 0 0 10>;
+>> +			#gpio-cells = <2>;
+>> +			interrupt-controller;
+>> +			#interrupt-cells = <2>;
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&thermal_zones {
+>> +	pm7325_temp_alarm: pm7325_tz {
+> 
+> '_' is not allowed to be used in node names, there's a few of these
+> sprinkled through the patch. Please replace them with '-'.
+> 
 
-I came up with a solution last night that I'm going to try
-to implement.  I will still do the things I mention above.
+Okay, will replace them.
 
-The solution is to create a user space tool inside the
-drivers/net/ipa directory that will link with the kernel
-source files and will perform all the basic one-time checks
-I want to make.
+>> +		polling-delay-passive = <100>;
+>> +		polling-delay = <0>;
+>> +		thermal-governor = "step_wise";
+>> +		thermal-sensors = <&pm7325_tz>;
+>> +
+>> +		trips {
+>> +			pm7325_trip0: trip0 {
+>> +				temperature = <95000>;
+>> +				hysteresis = <0>;
+>> +				type = "passive";
+>> +			};
+>> +
+>> +			pm7325_trip1: trip1 {
+>> +				temperature = <115000>;
+>> +				hysteresis = <0>;
+>> +				type = "critical";
+>> +			};
+>> +
+>> +			pm7325_trip2: trip2 {
+>> +				temperature = <145000>;
+>> +				hysteresis = <0>;
+>> +				type = "critical";
+>> +			};
+>> +		};
+>> +	};
+>> +};
+> [..]
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 8af6d77..25402d4 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -606,4 +606,12 @@
+>>  			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
+>>  			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
+>>  	};
+>> +
+>> +	thermal_zones: thermal-zones {
+>> +	};
+>>  };
+>> +
+>> +#include "pm7325.dtsi"
+>> +#include "pm8350c.dtsi"
+>> +#include "pmk8350.dtsi"
+>> +#include "pmr735a.dtsi"
+> 
+> Is there any particular reason for you including these at the end of
+> sc7270.dtsi, rather than the top like we do in other platforms?
+> 
+> Also, are all SC7280 devices always coming with this quartet? We've 
+> seen
+> variations of this in the past and therefor typically include them from
+> the board dts instead.
+> 
 
-Building, and then running that tool will be a build
-dependency for the driver.  If it fails, the driver build
-will fail.  If it passes, all the one-time checks will
-have been satisfied and the driver will be built, but it
-will not have all of these silly checks littered
-throughout.  And all checks (even those that aren't
-constant) will be made at build time.
+No specific reason, will add them in board dts file.
 
-I don't know if that passes your "casual developer"
-criterion, but at least it will not be part of the
-kernel code proper.
+> Regards,
+> Bjorn
 
-I'm going to withdraw this two-patch series, and post
-it again along with others, so I the whole set of changes
-can be done as a complete series.
-
-It isn't easy to have something you value be rejected.
-But I understand your concerns, and accept the reasoning
-about non-standard coding patterns making it harder for
-a casual reader to comprehend.  As I said, cleaning up
-this validation code was already my goal, but I'll be
-doing it differently now.  In the end, I might like the
-new result better, which is always a nice outcome from
-discussion during review.  Thank you.
-
-					-Alex
+Thanks,
+Satya Priya
