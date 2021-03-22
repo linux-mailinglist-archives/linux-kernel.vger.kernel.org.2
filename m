@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9F9344812
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D226344816
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhCVOu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:50:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39265 "EHLO
+        id S231552AbhCVOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:51:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44190 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230507AbhCVOt1 (ORCPT
+        by vger.kernel.org with ESMTP id S230511AbhCVOt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:49:27 -0400
+        Mon, 22 Mar 2021 10:49:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616424566;
+        s=mimecast20190719; t=1616424568;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NiR4kCL1vxhhgSeZhWIAluTciOjNo4o2vBMlvjqiGuM=;
-        b=PcD0P4b/Gqm4Ecf7IPaemtAWjTOuuAZIm0/P4RLW9sMZUeK7wPtA87EOlXIJ69G3bH8KBc
-        qtvDFW06twh7AqNk+y7ULzPwQWz6igHXI+lLoLryOsYjVwEXEYLfLwyiPrDvw8+bVjLYM3
-        wT9shasdhUTc6J9YrdFwVT+BxR8/WMg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-1_g3_nPlNWWzHPWrCezQ1A-1; Mon, 22 Mar 2021 10:49:25 -0400
-X-MC-Unique: 1_g3_nPlNWWzHPWrCezQ1A-1
-Received: by mail-ej1-f71.google.com with SMTP id si4so20098785ejb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:24 -0700 (PDT)
+        bh=5u9SppafS3lTo/ie9QXPmsGSZMKkK44cjZgzUVYcroI=;
+        b=P4XOGpPNE7WbGeAcSx6P6UmAvCSVUEQajMk5Pu5K01Wlh//d0KfhHYjKTnzaZGpzjLgLCd
+        T8UF/u/rU6+hBCRChV+KVNJfeRTml84W7NNjBDr7kXBouA725yslYzNNyNqyGXoFYmLxcH
+        X8EsdwsYcWhfh8HGblxb0A2PKJyj2dg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-4YDro30cMzmX2D84Slb1JA-1; Mon, 22 Mar 2021 10:49:26 -0400
+X-MC-Unique: 4YDro30cMzmX2D84Slb1JA-1
+Received: by mail-ed1-f72.google.com with SMTP id w16so27574631edc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NiR4kCL1vxhhgSeZhWIAluTciOjNo4o2vBMlvjqiGuM=;
-        b=NKjTwa74YQD3TMOlH+08Fh+KhO2Zpp0Z77449nZQyVQomDvTbzE7YDVSHTAs0+ffks
-         yErJuItaGetb4ADdUSjgdDjLk0jD8ppdK8iLcg2akp986DXwslUZ+vU7ASR12tGe5ZQg
-         qtcTwpFDyyh2FEOeKyQLODg8buUud7fbafJV5yjzKVVe72OejvsQH5p7iZefeRoY13wm
-         h3DOdsCMnMr0dPg15k2pzBlZ6gTgPDCv30DHLtQYkYjoTx+qNi6+hwFl96iFXO+DGpHO
-         ErpTAW16HyCLLbq+A1sIX8Fay56lijDxINm7qc18sL3YfeVSwSJNE3w0ess0ZOPcHPU1
-         bjrQ==
-X-Gm-Message-State: AOAM533lyFg+lyaI1D84MocByoT96eSaEg1V6LQzr/Opn0TYHVtkacGv
-        YjAXxHltXNetZmaaKzOBFj8+Jp175HAdxzwoHLuPymmIAShZCYkfv/pitCGIb37EqBumH0qRk7S
-        hjA19xZWzsPVQCJcgi9wHvLcH
-X-Received: by 2002:a17:906:6c93:: with SMTP id s19mr100456ejr.151.1616424563798;
-        Mon, 22 Mar 2021 07:49:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNCSOpbDxbwtV+2VfwBblXUo3YrAcDoEaE30kGY+hW/OY8M7Lff1NVzsrhmgRDVaufXbTDww==
-X-Received: by 2002:a17:906:6c93:: with SMTP id s19mr100440ejr.151.1616424563553;
-        Mon, 22 Mar 2021 07:49:23 -0700 (PDT)
+        bh=5u9SppafS3lTo/ie9QXPmsGSZMKkK44cjZgzUVYcroI=;
+        b=WKWaWfcp2wtQHYvZRkMsfwKjQ3sLoncOtNNMCK58ygF6pDuqYfH0plv6dnGmCacgk1
+         iYO0LWdkCExa9+yYeOjbWNMEfJxoUBjjShUcN24vyaWkQUrjnaRsH5VRyXqKWUhq4Pxp
+         JbrTQ8TFBdtICGX9DBhSYqtvILVkXgmb1dTT01vYliDGRGoK8y5BaVH4w2jLia9Gf5RA
+         ZEu5LYsXE3ossVm714kjVgyDaSq0lFkYVSzYo/aq/yLQCUp826qr6vu07r1X8aaYZtCC
+         6BilEiN/awSc/qflhQInkCty8jYmQ99CUTUHC6aRvb5Vi835NeksqD6HY+rUPewI4zrt
+         DYQw==
+X-Gm-Message-State: AOAM530P8bU3qfvNgT1XePBHM4KzGK8Wgrh9PNNTjbqith4NMxAIsIfh
+        ZArXrJKMWrUIERfKbU0XuSykmwdOqbjXNUVFayNxRlaU69sRsONifxYqqQi2ZAiuZ1qMJIFwgej
+        cocatTmsQqylEQOSAujEcRITu
+X-Received: by 2002:a17:907:7684:: with SMTP id jv4mr92162ejc.231.1616424565058;
+        Mon, 22 Mar 2021 07:49:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYAiu8PvvALtGPtq/A7nK6wwCGYCNDiiqLXYXy9QiYeyDoQytSdKjdcHqPHnUrG3yYlgtjtQ==
+X-Received: by 2002:a17:907:7684:: with SMTP id jv4mr92149ejc.231.1616424564916;
+        Mon, 22 Mar 2021 07:49:24 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.22
+        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:49:23 -0700 (PDT)
+        Mon, 22 Mar 2021 07:49:24 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>
-Subject: [PATCH v2 04/18] btrfs: convert to miscattr
-Date:   Mon, 22 Mar 2021 15:49:02 +0100
-Message-Id: <20210322144916.137245-5-mszeredi@redhat.com>
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
+Subject: [PATCH v2 05/18] ext2: convert to miscattr
+Date:   Mon, 22 Mar 2021 15:49:03 +0100
+Message-Id: <20210322144916.137245-6-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210322144916.137245-1-mszeredi@redhat.com>
 References: <20210322144916.137245-1-mszeredi@redhat.com>
@@ -71,397 +71,189 @@ Use the miscattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: David Sterba <dsterba@suse.com>
+Cc: Jan Kara <jack@suse.cz>
 ---
- fs/btrfs/ctree.h |   3 +
- fs/btrfs/inode.c |   4 +
- fs/btrfs/ioctl.c | 249 +++++++++--------------------------------------
- 3 files changed, 52 insertions(+), 204 deletions(-)
+ fs/ext2/ext2.h  |  7 ++--
+ fs/ext2/file.c  |  2 ++
+ fs/ext2/ioctl.c | 88 ++++++++++++++++++-------------------------------
+ fs/ext2/namei.c |  2 ++
+ 4 files changed, 39 insertions(+), 60 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index bd659354d043..c79886675c16 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3184,6 +3184,9 @@ void btrfs_update_inode_bytes(struct btrfs_inode *inode,
- /* ioctl.c */
- long btrfs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- long btrfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
-+int btrfs_miscattr_get(struct dentry *dentry, struct miscattr *ma);
-+int btrfs_miscattr_set(struct user_namespace *mnt_userns,
-+		       struct dentry *dentry, struct miscattr *ma);
- int btrfs_ioctl_get_supported_features(void __user *arg);
- void btrfs_sync_inode_flags_to_i_flags(struct inode *inode);
- int __pure btrfs_is_empty_uuid(u8 *uuid);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2e1c282c202d..e21642f17396 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10556,6 +10556,8 @@ static const struct inode_operations btrfs_dir_inode_operations = {
- 	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
- 	.tmpfile        = btrfs_tmpfile,
-+	.miscattr_get	= btrfs_miscattr_get,
-+	.miscattr_set	= btrfs_miscattr_set,
- };
- 
- static const struct file_operations btrfs_dir_file_operations = {
-@@ -10609,6 +10611,8 @@ static const struct inode_operations btrfs_file_inode_operations = {
- 	.get_acl	= btrfs_get_acl,
- 	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
-+	.miscattr_get	= btrfs_miscattr_get,
-+	.miscattr_set	= btrfs_miscattr_set,
- };
- static const struct inode_operations btrfs_special_inode_operations = {
- 	.getattr	= btrfs_getattr,
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 072e77726e94..5ce445a9a331 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -26,6 +26,7 @@
- #include <linux/btrfs.h>
- #include <linux/uaccess.h>
- #include <linux/iversion.h>
-+#include <linux/miscattr.h>
- #include "ctree.h"
- #include "disk-io.h"
- #include "export.h"
-@@ -153,16 +154,6 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode)
- 		      new_fl);
- }
- 
--static int btrfs_ioctl_getflags(struct file *file, void __user *arg)
--{
--	struct btrfs_inode *binode = BTRFS_I(file_inode(file));
--	unsigned int flags = btrfs_inode_flags_to_fsflags(binode->flags);
--
--	if (copy_to_user(arg, &flags, sizeof(flags)))
--		return -EFAULT;
--	return 0;
--}
--
+diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+index 3309fb2d327a..b58f27b1412b 100644
+--- a/fs/ext2/ext2.h
++++ b/fs/ext2/ext2.h
+@@ -283,8 +283,6 @@ static inline __u32 ext2_mask_flags(umode_t mode, __u32 flags)
  /*
-  * Check if @flags are a supported and valid set of FS_*_FL flags and that
-  * the old and new flags are not conflicting
-@@ -201,9 +192,34 @@ static int check_fsflags_compatible(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
+  * ioctl commands
+  */
+-#define	EXT2_IOC_GETFLAGS		FS_IOC_GETFLAGS
+-#define	EXT2_IOC_SETFLAGS		FS_IOC_SETFLAGS
+ #define	EXT2_IOC_GETVERSION		FS_IOC_GETVERSION
+ #define	EXT2_IOC_SETVERSION		FS_IOC_SETVERSION
+ #define	EXT2_IOC_GETRSVSZ		_IOR('f', 5, long)
+@@ -293,8 +291,6 @@ static inline __u32 ext2_mask_flags(umode_t mode, __u32 flags)
+ /*
+  * ioctl commands in 32 bit emulation
+  */
+-#define EXT2_IOC32_GETFLAGS		FS_IOC32_GETFLAGS
+-#define EXT2_IOC32_SETFLAGS		FS_IOC32_SETFLAGS
+ #define EXT2_IOC32_GETVERSION		FS_IOC32_GETVERSION
+ #define EXT2_IOC32_SETVERSION		FS_IOC32_SETVERSION
  
--static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
-+bool btrfs_exclop_start(struct btrfs_fs_info *fs_info,
-+			enum btrfs_exclusive_operation type)
+@@ -772,6 +768,9 @@ extern int ext2_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		       u64 start, u64 len);
+ 
+ /* ioctl.c */
++extern int ext2_miscattr_get(struct dentry *dentry, struct miscattr *ma);
++extern int ext2_miscattr_set(struct user_namespace *mnt_userns,
++			     struct dentry *dentry, struct miscattr *ma);
+ extern long ext2_ioctl(struct file *, unsigned int, unsigned long);
+ extern long ext2_compat_ioctl(struct file *, unsigned int, unsigned long);
+ 
+diff --git a/fs/ext2/file.c b/fs/ext2/file.c
+index 96044f5dbc0e..096c03612129 100644
+--- a/fs/ext2/file.c
++++ b/fs/ext2/file.c
+@@ -204,4 +204,6 @@ const struct inode_operations ext2_file_inode_operations = {
+ 	.get_acl	= ext2_get_acl,
+ 	.set_acl	= ext2_set_acl,
+ 	.fiemap		= ext2_fiemap,
++	.miscattr_get	= ext2_miscattr_get,
++	.miscattr_set	= ext2_miscattr_set,
+ };
+diff --git a/fs/ext2/ioctl.c b/fs/ext2/ioctl.c
+index b399cbb7022d..f841d4439c62 100644
+--- a/fs/ext2/ioctl.c
++++ b/fs/ext2/ioctl.c
+@@ -16,69 +16,51 @@
+ #include <linux/mount.h>
+ #include <asm/current.h>
+ #include <linux/uaccess.h>
++#include <linux/miscattr.h>
+ 
+-
+-long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++int ext2_miscattr_get(struct dentry *dentry, struct miscattr *ma)
  {
--	struct inode *inode = file_inode(file);
-+	return !cmpxchg(&fs_info->exclusive_operation, BTRFS_EXCLOP_NONE, type);
-+}
-+
-+void btrfs_exclop_finish(struct btrfs_fs_info *fs_info)
-+{
-+	WRITE_ONCE(fs_info->exclusive_operation, BTRFS_EXCLOP_NONE);
-+	sysfs_notify(&fs_info->fs_devices->fsid_kobj, NULL, "exclusive_operation");
-+}
-+
-+/*
-+ * Set flags/xflags from the internal inode flags. The remaining items of
-+ * fsxattr are zeroed.
-+ */
-+int btrfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
-+{
-+	struct btrfs_inode *binode = BTRFS_I(d_inode(dentry));
-+
-+	miscattr_fill_flags(ma, btrfs_inode_flags_to_fsflags(binode->flags));
+-	struct inode *inode = file_inode(filp);
+-	struct ext2_inode_info *ei = EXT2_I(inode);
+-	unsigned int flags;
+-	unsigned short rsv_window_size;
+-	int ret;
++	struct ext2_inode_info *ei = EXT2_I(d_inode(dentry));
+ 
+-	ext2_debug ("cmd = %u, arg = %lu\n", cmd, arg);
++	miscattr_fill_flags(ma, ei->i_flags & EXT2_FL_USER_VISIBLE);
+ 
+-	switch (cmd) {
+-	case EXT2_IOC_GETFLAGS:
+-		flags = ei->i_flags & EXT2_FL_USER_VISIBLE;
+-		return put_user(flags, (int __user *) arg);
+-	case EXT2_IOC_SETFLAGS: {
+-		unsigned int oldflags;
 +	return 0;
 +}
-+
-+int btrfs_miscattr_set(struct user_namespace *mnt_userns,
-+		       struct dentry *dentry, struct miscattr *ma)
+ 
+-		ret = mnt_want_write_file(filp);
+-		if (ret)
+-			return ret;
++int ext2_miscattr_set(struct user_namespace *mnt_userns,
++		      struct dentry *dentry, struct miscattr *ma)
 +{
 +	struct inode *inode = d_inode(dentry);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_inode *binode = BTRFS_I(inode);
- 	struct btrfs_root *root = binode->root;
-@@ -213,34 +229,21 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
- 	const char *comp = NULL;
- 	u32 binode_flags;
++	struct ext2_inode_info *ei = EXT2_I(inode);
  
--	if (!inode_owner_or_capable(&init_user_ns, inode))
--		return -EPERM;
--
- 	if (btrfs_root_readonly(root))
- 		return -EROFS;
- 
--	if (copy_from_user(&fsflags, arg, sizeof(fsflags)))
--		return -EFAULT;
--
--	ret = mnt_want_write_file(file);
--	if (ret)
--		return ret;
+-		if (!inode_owner_or_capable(&init_user_ns, inode)) {
+-			ret = -EACCES;
+-			goto setflags_out;
+-		}
 +	if (miscattr_has_xattr(ma))
 +		return -EOPNOTSUPP;
  
--	inode_lock(inode);
--	fsflags = btrfs_mask_fsflags_for_type(inode, fsflags);
-+	fsflags = btrfs_mask_fsflags_for_type(inode, ma->flags);
- 	old_fsflags = btrfs_inode_flags_to_fsflags(binode->flags);
--
--	ret = vfs_ioc_setflags_prepare(inode, old_fsflags, fsflags);
--	if (ret)
--		goto out_unlock;
--
- 	ret = check_fsflags(old_fsflags, fsflags);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
- 
- 	ret = check_fsflags_compatible(fs_info, fsflags);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
- 
- 	binode_flags = binode->flags;
- 	if (fsflags & FS_SYNC_FL)
-@@ -263,6 +266,13 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
- 		binode_flags |= BTRFS_INODE_NOATIME;
- 	else
- 		binode_flags &= ~BTRFS_INODE_NOATIME;
-+
-+	/* if coming from FS_IOC_FSSETXATTR then skip unconverted flags */
-+	if (!ma->flags_valid) {
-+		trans = btrfs_start_transaction(root, 1);
-+		goto update_flags;
-+	}
-+
- 	if (fsflags & FS_DIRSYNC_FL)
- 		binode_flags |= BTRFS_INODE_DIRSYNC;
- 	else
-@@ -303,10 +313,8 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
- 		binode_flags |= BTRFS_INODE_NOCOMPRESS;
- 	} else if (fsflags & FS_COMPR_FL) {
- 
--		if (IS_SWAPFILE(inode)) {
--			ret = -ETXTBSY;
--			goto out_unlock;
+-		if (get_user(flags, (int __user *) arg)) {
+-			ret = -EFAULT;
+-			goto setflags_out;
 -		}
-+		if (IS_SWAPFILE(inode))
-+			return -ETXTBSY;
++	/* Is it quota file? Do not allow user to mess with it */
++	if (IS_NOQUOTA(inode))
++		return -EPERM;
  
- 		binode_flags |= BTRFS_INODE_COMPRESS;
- 		binode_flags &= ~BTRFS_INODE_NOCOMPRESS;
-@@ -323,10 +331,8 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
- 	 * 2 for properties
- 	 */
- 	trans = btrfs_start_transaction(root, 3);
--	if (IS_ERR(trans)) {
--		ret = PTR_ERR(trans);
--		goto out_unlock;
--	}
-+	if (IS_ERR(trans))
-+		return PTR_ERR(trans);
+-		flags = ext2_mask_flags(inode->i_mode, flags);
++	ei->i_flags = (ei->i_flags & ~EXT2_FL_USER_MODIFIABLE) |
++		(ma->flags & EXT2_FL_USER_MODIFIABLE);
  
- 	if (comp) {
- 		ret = btrfs_set_prop(trans, inode, "btrfs.compression", comp,
-@@ -344,6 +350,7 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
- 		}
- 	}
+-		inode_lock(inode);
+-		/* Is it quota file? Do not allow user to mess with it */
+-		if (IS_NOQUOTA(inode)) {
+-			inode_unlock(inode);
+-			ret = -EPERM;
+-			goto setflags_out;
+-		}
+-		oldflags = ei->i_flags;
++	ext2_set_inode_flags(inode);
++	inode->i_ctime = current_time(inode);
++	mark_inode_dirty(inode);
  
-+update_flags:
- 	binode->flags = binode_flags;
- 	btrfs_sync_inode_flags_to_i_flags(inode);
- 	inode_inc_iversion(inode);
-@@ -352,158 +359,6 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
+-		ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-		if (ret) {
+-			inode_unlock(inode);
+-			goto setflags_out;
+-		}
++	return 0;
++}
  
-  out_end_trans:
- 	btrfs_end_transaction(trans);
-- out_unlock:
--	inode_unlock(inode);
--	mnt_drop_write_file(file);
--	return ret;
--}
--
--/*
-- * Translate btrfs internal inode flags to xflags as expected by the
-- * FS_IOC_FSGETXATT ioctl. Filter only the supported ones, unknown flags are
-- * silently dropped.
-- */
--static unsigned int btrfs_inode_flags_to_xflags(unsigned int flags)
--{
--	unsigned int xflags = 0;
--
--	if (flags & BTRFS_INODE_APPEND)
--		xflags |= FS_XFLAG_APPEND;
--	if (flags & BTRFS_INODE_IMMUTABLE)
--		xflags |= FS_XFLAG_IMMUTABLE;
--	if (flags & BTRFS_INODE_NOATIME)
--		xflags |= FS_XFLAG_NOATIME;
--	if (flags & BTRFS_INODE_NODUMP)
--		xflags |= FS_XFLAG_NODUMP;
--	if (flags & BTRFS_INODE_SYNC)
--		xflags |= FS_XFLAG_SYNC;
--
--	return xflags;
--}
--
--/* Check if @flags are a supported and valid set of FS_XFLAGS_* flags */
--static int check_xflags(unsigned int flags)
--{
--	if (flags & ~(FS_XFLAG_APPEND | FS_XFLAG_IMMUTABLE | FS_XFLAG_NOATIME |
--		      FS_XFLAG_NODUMP | FS_XFLAG_SYNC))
--		return -EOPNOTSUPP;
--	return 0;
--}
--
--bool btrfs_exclop_start(struct btrfs_fs_info *fs_info,
--			enum btrfs_exclusive_operation type)
--{
--	return !cmpxchg(&fs_info->exclusive_operation, BTRFS_EXCLOP_NONE, type);
--}
--
--void btrfs_exclop_finish(struct btrfs_fs_info *fs_info)
--{
--	WRITE_ONCE(fs_info->exclusive_operation, BTRFS_EXCLOP_NONE);
--	sysfs_notify(&fs_info->fs_devices->fsid_kobj, NULL, "exclusive_operation");
--}
--
--/*
-- * Set the xflags from the internal inode flags. The remaining items of fsxattr
-- * are zeroed.
-- */
--static int btrfs_ioctl_fsgetxattr(struct file *file, void __user *arg)
--{
--	struct btrfs_inode *binode = BTRFS_I(file_inode(file));
--	struct fsxattr fa;
--
--	simple_fill_fsxattr(&fa, btrfs_inode_flags_to_xflags(binode->flags));
--	if (copy_to_user(arg, &fa, sizeof(fa)))
--		return -EFAULT;
--
--	return 0;
--}
--
--static int btrfs_ioctl_fssetxattr(struct file *file, void __user *arg)
--{
--	struct inode *inode = file_inode(file);
--	struct btrfs_inode *binode = BTRFS_I(inode);
--	struct btrfs_root *root = binode->root;
--	struct btrfs_trans_handle *trans;
--	struct fsxattr fa, old_fa;
--	unsigned old_flags;
--	unsigned old_i_flags;
--	int ret = 0;
--
--	if (!inode_owner_or_capable(&init_user_ns, inode))
--		return -EPERM;
--
--	if (btrfs_root_readonly(root))
--		return -EROFS;
--
--	if (copy_from_user(&fa, arg, sizeof(fa)))
--		return -EFAULT;
--
--	ret = check_xflags(fa.fsx_xflags);
--	if (ret)
+-		flags = flags & EXT2_FL_USER_MODIFIABLE;
+-		flags |= oldflags & ~EXT2_FL_USER_MODIFIABLE;
+-		ei->i_flags = flags;
+ 
+-		ext2_set_inode_flags(inode);
+-		inode->i_ctime = current_time(inode);
+-		inode_unlock(inode);
++long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	struct inode *inode = file_inode(filp);
++	struct ext2_inode_info *ei = EXT2_I(inode);
++	unsigned short rsv_window_size;
++	int ret;
+ 
+-		mark_inode_dirty(inode);
+-setflags_out:
+-		mnt_drop_write_file(filp);
 -		return ret;
--
--	if (fa.fsx_extsize != 0 || fa.fsx_projid != 0 || fa.fsx_cowextsize != 0)
--		return -EOPNOTSUPP;
--
--	ret = mnt_want_write_file(file);
--	if (ret)
--		return ret;
--
--	inode_lock(inode);
--
--	old_flags = binode->flags;
--	old_i_flags = inode->i_flags;
--
--	simple_fill_fsxattr(&old_fa,
--			    btrfs_inode_flags_to_xflags(binode->flags));
--	ret = vfs_ioc_fssetxattr_check(inode, &old_fa, &fa);
--	if (ret)
--		goto out_unlock;
--
--	if (fa.fsx_xflags & FS_XFLAG_SYNC)
--		binode->flags |= BTRFS_INODE_SYNC;
--	else
--		binode->flags &= ~BTRFS_INODE_SYNC;
--	if (fa.fsx_xflags & FS_XFLAG_IMMUTABLE)
--		binode->flags |= BTRFS_INODE_IMMUTABLE;
--	else
--		binode->flags &= ~BTRFS_INODE_IMMUTABLE;
--	if (fa.fsx_xflags & FS_XFLAG_APPEND)
--		binode->flags |= BTRFS_INODE_APPEND;
--	else
--		binode->flags &= ~BTRFS_INODE_APPEND;
--	if (fa.fsx_xflags & FS_XFLAG_NODUMP)
--		binode->flags |= BTRFS_INODE_NODUMP;
--	else
--		binode->flags &= ~BTRFS_INODE_NODUMP;
--	if (fa.fsx_xflags & FS_XFLAG_NOATIME)
--		binode->flags |= BTRFS_INODE_NOATIME;
--	else
--		binode->flags &= ~BTRFS_INODE_NOATIME;
--
--	/* 1 item for the inode */
--	trans = btrfs_start_transaction(root, 1);
--	if (IS_ERR(trans)) {
--		ret = PTR_ERR(trans);
--		goto out_unlock;
 -	}
--
--	btrfs_sync_inode_flags_to_i_flags(inode);
--	inode_inc_iversion(inode);
--	inode->i_ctime = current_time(inode);
--	ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
--
--	btrfs_end_transaction(trans);
--
--out_unlock:
--	if (ret) {
--		binode->flags = old_flags;
--		inode->i_flags = old_i_flags;
--	}
--
--	inode_unlock(inode);
--	mnt_drop_write_file(file);
--
- 	return ret;
- }
- 
-@@ -4898,10 +4753,6 @@ long btrfs_ioctl(struct file *file, unsigned int
- 	void __user *argp = (void __user *)arg;
- 
++	ext2_debug ("cmd = %u, arg = %lu\n", cmd, arg);
++
++	switch (cmd) {
+ 	case EXT2_IOC_GETVERSION:
+ 		return put_user(inode->i_generation, (int __user *) arg);
+ 	case EXT2_IOC_SETVERSION: {
+@@ -163,12 +145,6 @@ long ext2_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	/* These are just misnamed, they actually get/put from/to user an int */
  	switch (cmd) {
--	case FS_IOC_GETFLAGS:
--		return btrfs_ioctl_getflags(file, argp);
--	case FS_IOC_SETFLAGS:
--		return btrfs_ioctl_setflags(file, argp);
- 	case FS_IOC_GETVERSION:
- 		return btrfs_ioctl_getversion(file, argp);
- 	case FS_IOC_GETFSLABEL:
-@@ -5027,10 +4878,6 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return btrfs_ioctl_get_features(fs_info, argp);
- 	case BTRFS_IOC_SET_FEATURES:
- 		return btrfs_ioctl_set_features(file, argp);
--	case FS_IOC_FSGETXATTR:
--		return btrfs_ioctl_fsgetxattr(file, argp);
--	case FS_IOC_FSSETXATTR:
--		return btrfs_ioctl_fssetxattr(file, argp);
- 	case BTRFS_IOC_GET_SUBVOL_INFO:
- 		return btrfs_ioctl_get_subvol_info(file, argp);
- 	case BTRFS_IOC_GET_SUBVOL_ROOTREF:
-@@ -5050,12 +4897,6 @@ long btrfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	 * handling is necessary.
- 	 */
- 	switch (cmd) {
--	case FS_IOC32_GETFLAGS:
--		cmd = FS_IOC_GETFLAGS;
+-	case EXT2_IOC32_GETFLAGS:
+-		cmd = EXT2_IOC_GETFLAGS;
 -		break;
--	case FS_IOC32_SETFLAGS:
--		cmd = FS_IOC_SETFLAGS;
+-	case EXT2_IOC32_SETFLAGS:
+-		cmd = EXT2_IOC_SETFLAGS;
 -		break;
- 	case FS_IOC32_GETVERSION:
- 		cmd = FS_IOC_GETVERSION;
+ 	case EXT2_IOC32_GETVERSION:
+ 		cmd = EXT2_IOC_GETVERSION;
  		break;
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index 3367384d344d..c0fd2e025d49 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -427,6 +427,8 @@ const struct inode_operations ext2_dir_inode_operations = {
+ 	.get_acl	= ext2_get_acl,
+ 	.set_acl	= ext2_set_acl,
+ 	.tmpfile	= ext2_tmpfile,
++	.miscattr_get	= ext2_miscattr_get,
++	.miscattr_set	= ext2_miscattr_set,
+ };
+ 
+ const struct inode_operations ext2_special_inode_operations = {
 -- 
 2.30.2
 
