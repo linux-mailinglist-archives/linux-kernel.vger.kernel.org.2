@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B065D34447F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E0334438F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhCVNAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
+        id S232519AbhCVMw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:52:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhCVMsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42D3A619A2;
-        Mon, 22 Mar 2021 12:44:12 +0000 (UTC)
+        id S232429AbhCVMmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F36161998;
+        Mon, 22 Mar 2021 12:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417052;
-        bh=d+GzcK6TgYw3Xx8UcYKbOHfid1fVg+Z1p3hoRBKFwrQ=;
+        s=korg; t=1616416827;
+        bh=J0Y3sIMV2n/Y1OuK3iAET8+O3YG9ezdpmXSxTGcPkOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tF+B//OftljrLJqPCmqTruza+mEfeN02JiHAscU7WWWnMdAZncZWJDz8vrHvafh1X
-         qgW4gYno7T7kOJ35Prre+0okoGZ2b4gG33fJRTz6ceAX/nkkmkCo0PwE4VRCInTKqu
-         GaPm6M/ZkBpOB7XtmwPX9AH0Hka8oIJ8ZWqkJxn0=
+        b=yzesrRCN1WCQ5SVz+rfcoCXf/oyvzB3c7Jc4BJEC6ser/BrTS9JyR/P4e+b5RRVk3
+         /bxjk0HiW6DgDdkjYsUaXK+MH+EmQOJ3FvnGiP6bPZ2NacFLMef7H4CDMedPS0NKjH
+         IWqKYALMBG51vsqrK3fY1fNRP5EXnqPIJeUY+B2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: [PATCH 5.4 25/60] vfio: IOMMU_API should be selected
+        stable@vger.kernel.org,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.10 136/157] counter: stm32-timer-cnt: fix ceiling miss-alignment with reload register
 Date:   Mon, 22 Mar 2021 13:28:13 +0100
-Message-Id: <20210322121923.211557234@linuxfoundation.org>
+Message-Id: <20210322121938.068069851@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-commit 179209fa12709a3df8888c323b37315da2683c24 upstream.
+commit b14d72ac731753708a7c1a6b3657b9312b6f0042 upstream.
 
-As IOMMU_API is a kconfig without a description (eg does not show in the
-menu) the correct operator is select not 'depends on'. Using 'depends on'
-for this kind of symbol means VFIO is not selectable unless some other
-random kconfig has already enabled IOMMU_API for it.
+Ceiling value may be miss-aligned with what's actually configured into the
+ARR register. This is seen after probe as currently the ARR value is zero,
+whereas ceiling value is set to the maximum. So:
+- reading ceiling reports zero
+- in case the counter gets enabled without any prior configuration,
+  it won't count.
+- in case the function gets set by the user 1st, (priv->ceiling) is used.
 
-Fixes: cba3345cc494 ("vfio: VFIO core")
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Message-Id: <1-v1-df057e0f92c3+91-vfio_arm_compile_test_jgg@nvidia.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fix it by getting rid of the cached "priv->ceiling" variable. Rather use
+the ARR register value directly by using regmap read or write when needed.
+There should be no drawback on performance as priv->ceiling isn't used in
+performance critical path.
+There's also no point in writing ARR while setting function (sms), so
+it can be safely removed.
+
+Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+Suggested-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1614793789-10346-1-git-send-email-fabrice.gasnier@foss.st.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vfio/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/counter/stm32-timer-cnt.c |   11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
---- a/drivers/vfio/Kconfig
-+++ b/drivers/vfio/Kconfig
-@@ -21,7 +21,7 @@ config VFIO_VIRQFD
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -31,7 +31,6 @@ struct stm32_timer_cnt {
+ 	struct counter_device counter;
+ 	struct regmap *regmap;
+ 	struct clk *clk;
+-	u32 ceiling;
+ 	u32 max_arr;
+ 	bool enabled;
+ 	struct stm32_timer_regs bak;
+@@ -75,8 +74,10 @@ static int stm32_count_write(struct coun
+ 			     const unsigned long val)
+ {
+ 	struct stm32_timer_cnt *const priv = counter->priv;
++	u32 ceiling;
  
- menuconfig VFIO
- 	tristate "VFIO Non-Privileged userspace driver framework"
--	depends on IOMMU_API
-+	select IOMMU_API
- 	select VFIO_IOMMU_TYPE1 if (X86 || S390 || ARM || ARM64)
- 	help
- 	  VFIO provides a framework for secure userspace device drivers.
+-	if (val > priv->ceiling)
++	regmap_read(priv->regmap, TIM_ARR, &ceiling);
++	if (val > ceiling)
+ 		return -EINVAL;
+ 
+ 	return regmap_write(priv->regmap, TIM_CNT, val);
+@@ -138,10 +139,6 @@ static int stm32_count_function_set(stru
+ 
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_CEN, 0);
+ 
+-	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
+-	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+-	regmap_write(priv->regmap, TIM_ARR, priv->ceiling);
+-
+ 	regmap_update_bits(priv->regmap, TIM_SMCR, TIM_SMCR_SMS, sms);
+ 
+ 	/* Make sure that registers are updated */
+@@ -199,7 +196,6 @@ static ssize_t stm32_count_ceiling_write
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+ 	regmap_write(priv->regmap, TIM_ARR, ceiling);
+ 
+-	priv->ceiling = ceiling;
+ 	return len;
+ }
+ 
+@@ -374,7 +370,6 @@ static int stm32_timer_cnt_probe(struct
+ 
+ 	priv->regmap = ddata->regmap;
+ 	priv->clk = ddata->clk;
+-	priv->ceiling = ddata->max_arr;
+ 	priv->max_arr = ddata->max_arr;
+ 
+ 	priv->counter.name = dev_name(dev);
 
 
