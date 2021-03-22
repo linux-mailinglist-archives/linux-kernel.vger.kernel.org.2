@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF37345365
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017A9345368
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhCVXxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhCVXw7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:52:59 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F39C061574;
-        Mon, 22 Mar 2021 16:52:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4BBr4sYlz9sW1;
-        Tue, 23 Mar 2021 10:52:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616457173;
-        bh=MJi017oQotYoOildABLQeMibodaWQ4ZO3V5ZD6wZvrA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jC4hbi9EMy1UH1hRO7SyE4CZTq5A/KA7y+Tes6VSkuBH53ZoZZhlYsxj6rNwwg3AE
-         VI9O5Vg2OReyyHFIQf/3HUlH45u2Qbz2/WdreNMBWAPUr7+aZZGOGLpEiwkCgIvjVB
-         WL+YhuRMIfmfKcE0kqjyc8mgbzuFYfRnrN96l9zZYLjSsAySB642m4tyzXBOuIX6Bo
-         6TIOL8GPO9BM4EFvziNeqPrDpPdIXCqBUIWAokQvh2RHZx47y2XaJmnGBXbG/3VL2M
-         ntZahBAWhM3xFl83TQLx4aeh/dGf0w5r0pChpg36vKkC7Fc5Tetqc0U1HJQJ9YsFpv
-         BxA6MmYbZkuiw==
-Date:   Tue, 23 Mar 2021 10:52:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jonas Malaco <jonas@protocubo.io>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>
-Subject: linux-next: manual merge of the v4l-dvb tree with the hwmon-staging
- tree
-Message-ID: <20210323105251.3532acea@canb.auug.org.au>
+        id S230095AbhCVX4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229658AbhCVXzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:55:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C5CC619AA;
+        Mon, 22 Mar 2021 23:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616457335;
+        bh=VpDFohQxZdeFwzTLulapaQ9fKZPYsThIcB9QTDxJKwU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QjJkDa1ggtnBvgZYRVevMK5DtzMSwdnqcL2IKwZNwVfebXPzXeq9bh5HrmauMIZe8
+         mcpJ7h1wQ0QtVr1jaT0DnvTITGyr8fywLW3VM8C4i6QW5DhWU0t2SWeCVR0r4gukWU
+         9/17UjRe8DYBqbSDpZfn4SqYrJoLgOkl04B/FvlY0QiVd6X5tFbgN7L2oD4ARXGiqQ
+         WtgLk2AwqjVl1Ml0zSLMa3uTottJk1yldu7BM2jyTNnG+tibj/vSd53fJHXjvGWp4u
+         1tLmi3b75wXhCSsF8ttTGxmdaoZEznXWc3HV/ORwpC5KUHm4Qlk762BzsmTW5pl1dY
+         SAoZsLAPI9QwQ==
+Received: by mail-lj1-f176.google.com with SMTP id f16so23338361ljm.1;
+        Mon, 22 Mar 2021 16:55:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531xTjZOBhahIGgkkWP+SNdsfd/q2gFvoliQHQ4OLK/JcC0jnVqP
+        ysx7x6BRz2DeD5Q1K5MM85M+EPT/e1EWbnEOj84=
+X-Google-Smtp-Source: ABdhPJzeuDx4meNjAF010eIArHffcCcwi/lqemEghn1bNqVX2DsgrA2WhfpeQE44SL87Y1AtRWN2vRbBH+tikm56WU8=
+X-Received: by 2002:a05:651c:200b:: with SMTP id s11mr1143822ljo.177.1616457333463;
+ Mon, 22 Mar 2021 16:55:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P15woK9_pXrb171nAFb+RFk";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210322215823.962758-1-cfijalkovich@google.com>
+In-Reply-To: <20210322215823.962758-1-cfijalkovich@google.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 22 Mar 2021 16:55:22 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4RK9-yWrFmoUzi09bquxr_K16LqeZBYWoJXM0t=qo+Gw@mail.gmail.com>
+Message-ID: <CAPhsuW4RK9-yWrFmoUzi09bquxr_K16LqeZBYWoJXM0t=qo+Gw@mail.gmail.com>
+Subject: Re: [PATCH] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
+To:     Collin Fijalkovich <cfijalkovich@google.com>
+Cc:     Song Liu <songliubraving@fb.com>, surenb@google.com,
+        hridya@google.com, kaleshsingh@google.com,
+        Hugh Dickins <hughd@google.com>, timmurray@google.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P15woK9_pXrb171nAFb+RFk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 22, 2021 at 3:00 PM Collin Fijalkovich
+<cfijalkovich@google.com> wrote:
+>
+> Transparent huge pages are supported for read-only non-shmem filesystems,
+> but are only used for vmas with VM_DENYWRITE. This condition ensures that
+> file THPs are protected from writes while an application is running
+> (ETXTBSY).  Any existing file THPs are then dropped from the page cache
+> when a file is opened for write in do_dentry_open(). Since sys_mmap
+> ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
+> produced by execve().
+>
+> Systems that make heavy use of shared libraries (e.g. Android) are unable
+> to apply VM_DENYWRITE through the dynamic linker, preventing them from
+> benefiting from the resultant reduced contention on the TLB.
+>
+> This patch reduces the constraint on file THPs allowing use with any
+> executable mapping from a file not opened for write (see
+> inode_is_open_for_write()). It also introduces additional conditions to
+> ensure that files opened for write will never be backed by file THPs.
 
-Hi all,
+Thanks for working on this. We could also use this in many data center
+workloads.
 
-Today's linux-next merge of the v4l-dvb tree got a conflict in:
+Question: when we use this on shared library, the library is still
+writable. When the
+shared library is opened for write, these pages will refault in as 4kB
+pages, right?
 
-  MAINTAINERS
-
-between commit:
-
-  38f15506d965 ("hwmon: add driver for NZXT Kraken X42/X52/X62/X72")
-
-from the hwmon-staging tree and commit:
-
-  be157db0a3d8 ("media: Add maintainer for IMX jpeg v4l2 driver")
-
-from the v4l-dvb tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index dda782e9e578,04e6df934eb0..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -12941,13 -12910,14 +12941,21 @@@ L:	linux-nfc@lists.01.org (moderated =
-fo
-  S:	Supported
-  F:	drivers/nfc/nxp-nci
- =20
-+ NXP i.MX 8QXP/8QM JPEG V4L2 DRIVER
-+ M:	Mirela Rabulea <mirela.rabulea@nxp.com>
-+ R:	NXP Linux Team <linux-imx@nxp.com>
-+ L:	linux-media@vger.kernel.org
-+ S:	Maintained
-+ F:	Documentation/devicetree/bindings/media/imx8-jpeg.yaml
-+ F:	drivers/media/platform/imx-jpeg
-+=20
- +NZXT-KRAKEN2 HARDWARE MONITORING DRIVER
- +M:	Jonas Malaco <jonas@protocubo.io>
- +L:	linux-hwmon@vger.kernel.org
- +S:	Maintained
- +F:	Documentation/hwmon/nzxt-kraken2.rst
- +F:	drivers/hwmon/nzxt-kraken2.c
- +
-  OBJAGG
-  M:	Jiri Pirko <jiri@nvidia.com>
-  L:	netdev@vger.kernel.org
-
---Sig_/P15woK9_pXrb171nAFb+RFk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZLdMACgkQAVBC80lX
-0GyYQAf/RygOCF8VnQJtn7NxjWMGYO14vMKBJW7MAYQ4jNC6wb827QqVSHTiXdmL
-UBqHn2N0bAPHtIZ/8VXVqs5DKokwQ+ou7dFXEKzTEhDBuTc2rB0eA0o2J5uwR7I9
-LhlBUJqGaI5zziOu6xuIM4hy5iPcEvxkwaWdkhFnq7M6S0+6+twwzV5hTjzJB4s/
-f2veS+oMy2aKHG/YTpOBUCiVWzG9NUckW19ZVKEJkHlj7Cs319q5rfKAbhE7aWqI
-weXLD7ZBSm+PTqqs2tSshKc4wBbGXl1dWTBByKOKOuwG+ffeZb+D17W5+IIPukVB
-pH7lJEnwukzssWt6bc52sKrxErZkgg==
-=XYet
------END PGP SIGNATURE-----
-
---Sig_/P15woK9_pXrb171nAFb+RFk--
+Thanks,
+Song
