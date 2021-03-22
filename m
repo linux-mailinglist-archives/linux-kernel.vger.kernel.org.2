@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C05A344897
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535BB3448A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhCVPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbhCVPFB (ORCPT
+        id S231562AbhCVPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:05:47 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:39750 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231440AbhCVPFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:05:01 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60A1C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:05:00 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id e72so2168797vsc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:05:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WzcaGF7w6W11GdLHn3ihyHrWcDJilQZIx3XWKEsGk6M=;
-        b=lNOubS+ftCZhU5QS64oOu76U6ggSOiePJ3vmTdHoSpR3/0cuM84KSzX+NqbZa8GerK
-         zEFeTVdbT2Aq7JMcb/v2EoeZCMzstzCI1zQumKG7s5UWIMctYaNsELkraDs90bQLWWqI
-         MF0d1EWuSU6mCl7dCB8QJoJFy7MOtgzMrnXNs=
+        Mon, 22 Mar 2021 11:05:20 -0400
+Received: by mail-ua1-f53.google.com with SMTP id x8so5636144ual.6;
+        Mon, 22 Mar 2021 08:05:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WzcaGF7w6W11GdLHn3ihyHrWcDJilQZIx3XWKEsGk6M=;
-        b=fmPVs5HnAn9NeB8D82sM7YcGyME5Ogyn45y+hSo/k/RVlLsJdDkYiOoAQaSgEerRMo
-         bBRbjVnScipeFTvCexvMUoSRTW7OrDTnLZBvavst591fe28+HFEQ+4SRgUB8N1dmN0Ki
-         Hwqpe8QbKC72Sqzke50NH5/RhkGjf8qbmsuhPPzeWRWRGcGzaErOKpmwCuqaEwbDIIDZ
-         LG56a+Vn+vJ+zrGzocpLG7oJKxZ8NG0PzOPRp5Il3Jy0E7QMwvEAU7JtD2s2jj+ZNsrX
-         U2tgQRR7ruxFjE9q6gBh0z5feR8w6l4r+tSghAetWLIHIogUqL3snRWHZJKAcDl10O84
-         TG7A==
-X-Gm-Message-State: AOAM53286NIfLT3scvR62zdvP2S7nP8KnG5xo7cZKTTe+FakdqVWhAVG
-        2PZ14KOlNJ8CJe6VWnvhIms9assCwIXxVoB4SCrdLw==
-X-Google-Smtp-Source: ABdhPJxMQEao5pR626XzTPCcUeMDFXi5Gr5QpKTbxJatunHz1CTfdOzSnt3WU3AVODHXsiuOu45niZuCVGLIeiTTc20=
-X-Received: by 2002:a05:6102:323b:: with SMTP id x27mr284884vsf.0.1616425499866;
- Mon, 22 Mar 2021 08:04:59 -0700 (PDT)
+        bh=QKcelu+NmBcULRnt/75BGuY/1w8xytannxFSZVcT4b8=;
+        b=llZv96kktIHOjydl5JKy5J7X51A5MZAfTFYcE5gFCr7w/DL63KuWPDv/0Umj6vzCKm
+         XPcsXX4UjBfu2ojyJeU1qsi3e5jq6/oRfWiUJwC/EmVT8RkPPHhPzEcJ6mUM5OrWFs8r
+         IDMxuqoQCh46TY07DYfFTGIoeQh2vOgfUXRd9en/7bY6DPXzIldE5ZcycgIc8qIlKdZs
+         6PdgEs17lqNIdj0C4glClTNki80e6PqIPU9LDopbwl9X+5iJP2jZTruwKT5/1PoZfSGP
+         GNWEgXF8+l6BkBfTNYhHFhR60Mj4Q7UHxvGVZaXabdaaj73B/MmnUzeXvJev5OW4zDgO
+         MQQA==
+X-Gm-Message-State: AOAM530tnN6KVmvpCh8NMR9ekq7Tz+eDvYIWYc6+GB9wGatvgUwedPeH
+        8J0IlWfAHaVxs0QnHRoHpjSTxNgnz+jNHJ0/Sy60r6eC
+X-Google-Smtp-Source: ABdhPJz0b1s1oTOxCucwqAxWp5R67A8XGklstumBCcjoVt+uAGLhQvuzSA30ih2KS6v8elIzwhSfkW8ymWhFpvRQgjg=
+X-Received: by 2002:ab0:30b3:: with SMTP id b19mr307821uam.58.1616425518872;
+ Mon, 22 Mar 2021 08:05:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319150514.1315985-1-balsini@android.com>
-In-Reply-To: <20210319150514.1315985-1-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 22 Mar 2021 16:04:48 +0100
-Message-ID: <CAJfpegsovR6i6tVOzTPP8V8Y9PxmtRx5M+=2Z9oKMcpYO3Dd2Q@mail.gmail.com>
-Subject: Re: [PATCH] fs/fuse: Fix matching of FUSE_DEV_IOC_CLONE command
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210322105307.1291840-1-arnd@kernel.org>
+In-Reply-To: <20210322105307.1291840-1-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Mar 2021 16:05:07 +0100
+Message-ID: <CAMuHMdUrALGRaxgrOMUjhEzYUrHataDDNaMr8qs+EMwjrr9hfg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fbdev: omapfb: avoid -Wempty-body warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 4:06 PM Alessio Balsini <balsini@android.com> wrote:
+On Mon, Mar 22, 2021 at 11:54 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> With commit f8425c939663 ("fuse: 32-bit user space ioctl compat for fuse
-> device") the matching constraints for the FUSE_DEV_IOC_CLONE ioctl
-> command are relaxed, limited to the testing of command type and number.
-> As Arnd noticed, this is wrong as it wouldn't ensure the correctness of
-> the data size or direction for the received FUSE device ioctl.
+> Building with 'make W=1' shows a few harmless warnings:
 >
-> Fix by bringing back the comparison of the ioctl received by the FUSE
-> device to the originally generated FUSE_DEV_IOC_CLONE.
+> drivers/video/fbdev/omap2/omapfb/omapfb-main.c: In function 'omapfb_calc_addr':
+> drivers/video/fbdev/omap2/omapfb/omapfb-main.c:823:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   823 |                     var->xoffset, var->yoffset, offset);
+>       |                                                        ^
+> drivers/video/fbdev/omap2/omapfb/omapfb-ioctl.c: In function 'omapfb_ioctl':
+> drivers/video/fbdev/omap2/omapfb/omapfb-ioctl.c:911:45: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   911 |                 DBG("ioctl failed: %d\n", r);
 >
-> Fixes: f8425c939663 ("fuse: 32-bit user space ioctl compat for fuse device")
-> Reported-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Alessio Balsini <balsini@android.com>
+> Avoid these by using no_printk(), which adds format string checking as
+> well.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thanks, applied.   I'm holding this till the 5.13 merge window unless
-a more series fuse issue emerges in the meantime
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Thanks,
-Miklos
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
