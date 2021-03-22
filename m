@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36D5344DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E023344DD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhCVRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
+        id S231395AbhCVRyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbhCVRxf (ORCPT
+        with ESMTP id S230231AbhCVRxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:53:35 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189F3C061574;
-        Mon, 22 Mar 2021 10:53:35 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id i9so7474347ybp.4;
-        Mon, 22 Mar 2021 10:53:35 -0700 (PDT)
+        Mon, 22 Mar 2021 13:53:41 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D8EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:53:41 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id l23-20020a05683004b7b02901b529d1a2fdso16806250otd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LDxueTAdL2AWLL01bMdPUnnD4HpNdzZ8wxBaFyudbww=;
-        b=GD0yghqnscxyOcEfRGbu64M3NgeRrenUULJiEi5bCLXNE3wNB54a0uKIwAzyRLE79Q
-         i7Psp/g1lRRzYuPcpO1EYWr6pPnrDf8CYcbLJZXFAyhlMZPs20msacukrWM+V8klkGBn
-         S7GEp+0D24bDkhJjS/7j7nsC4HJUVPutq8aobGVCiGcQRiMDsENSWwK3nZiakusrfzNh
-         StTlo3VkkAAojKRwNXTB/lHkD8xigej+brwiTtfDoiWMwAiEIEboHv1vNEriHsBi7lFw
-         U9Xc5vGW7AODw0+EPj2Iq3WFH5teenIb5l0iSeGD3aYFHD6lQ0fUd9OR52Bn3n16zcq0
-         takQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=c3qfNW7pReBN9uBBNYPS1RAciUjVnYBp+hSQCW1pI1Q=;
+        b=Lxa+rLTcucBEpGfAPeWBuJDwXfZqE7TDWVw4jUPu2KFKWFft0FZpUG/G+pF+Yf+yyy
+         +/TUa5IgcC3zCyGXXpuTYomkYtOYCM2eOr7OQCJ3Q6NP1JMrBajfHsa7s8XgdCpDENKK
+         Rz60juy/XNiLqx4Zy1EBi+kh8lnokFWNGcv2w4JOmTrPPxhKpMW6/griviLoKAwlSYj4
+         F/js7fGxYUrpfNt/QkGZ3912Uhcuoacj+YF3v//ueJSvfz71UVlmfm5hquUYp8AiQIDp
+         onajRySfcOZl07bcs2GTLDnUBvEo4Icdd1QJzoAiE68CsO4vAskskcHiFdmFpBhaAyLo
+         evZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LDxueTAdL2AWLL01bMdPUnnD4HpNdzZ8wxBaFyudbww=;
-        b=b/030+WTK/JV3CkKrVA+U64CdzkWsWPn9+EnFAaEkmSgrPUeiszxZp3PBNCsy2fLw3
-         zbBnyTlZb9rAeYPewzEETX9KE8aWmy2S7gGVu9fIphWBWZAXW3CDiKbZMybr252k4euS
-         HnIR0k+QSDupno1nQIb9G66Hc6gE3T0q28hqwop2OVrFO0dlP5HHy+5Q9P4W1X3HkES6
-         B6otT0JwJ8gvv6swDC5Myf2g+2rueBlnCBjdFRD64K6JvyH/lrdO2ncX+bdf+KvivgZ7
-         +X522YuCJniWt+TfeKiAbwsMlLQ/Swx9h2lz6ldEXanCmdsE6rszdNQUHAaa1uTxQzU8
-         KTxA==
-X-Gm-Message-State: AOAM531hkLT9LYORzmdhPkQb1/DuuN7i80IfG+9C5N+yOO5HoewdhHHG
-        5t5tddzHenkJKdak+NfiT+Xb0WUyZysTELXyKas=
-X-Google-Smtp-Source: ABdhPJzfCsjWCQu7sHhVGimfTT+JwVEP97RTB0MeZGcbm/du73/RGc8gfc2AFNRyR0lZZU+NaCM++NpLD/IRCN5iUdc=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr838725ybc.425.1616435614417;
- Mon, 22 Mar 2021 10:53:34 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c3qfNW7pReBN9uBBNYPS1RAciUjVnYBp+hSQCW1pI1Q=;
+        b=fUX2r9Iazb/2NgPE9c9KOVZ8h5KNryoOrIZ1L2PRLjqht90X0QqaMAmJV44pYjP+JA
+         0obuKgJAaZ7J3D/MouCFqRX6wcvBDREn8JBNZxn9PQX3sneG8e4shHReYYigJPGWBWO/
+         zNO41SJm2mW9wFqDh4Gh+E0KDxa0Ra2C2mkGyWlkNj8Zsd6uYbU4r84U4sudVk7TU9oA
+         Zko/9ot/B6BevQkJpEHz1nTjvsimbL7LuKRRyyMCXd17vjrqvIGzPpDbTYU+jFsYdc/5
+         vmXLiXEwydx0kYpA0aQuf2XHYmMWtPi/2LHwrHLmpMtz2Zr6KWdmgPHh3FwAnED7EEKd
+         ak1Q==
+X-Gm-Message-State: AOAM531M9vT4rAQbw7aNJeapow2iHZ2DMYLPjM0L7tnJSfP6GrKrJ2wi
+        0IdP4sVuZTkQ8F58xId/I6c=
+X-Google-Smtp-Source: ABdhPJzWGRJWgsj2bonwStCoRaX4vDQ62Bt7L4AIICdVvrsusLy0YrT6gK8SKLwubEmAVUhRnK0tQA==
+X-Received: by 2002:a9d:628d:: with SMTP id x13mr844535otk.19.1616435620934;
+        Mon, 22 Mar 2021 10:53:40 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u23sm3136949oof.17.2021.03.22.10.53.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Mar 2021 10:53:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 22 Mar 2021 10:53:38 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Subject: Re: [PATCH v2 1/4] iommu/vt-d: Enable write protect for supervisor
+ SVM
+Message-ID: <20210322175338.GA24424@roeck-us.net>
+References: <1614680040-1989-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1614680040-1989-2-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Mar 2021 10:53:23 -0700
-Message-ID: <CAEf4BzZjNK_La1t5FGyie02FCABBieZJod49rW4=WtMs7ELLSw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/8] Implement EBPF on powerpc32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614680040-1989-2-git-send-email-jacob.jun.pan@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 9:37 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> This series implements extended BPF on powerpc32. For the implementation
-> details, see the patch before the last.
->
-> The following operations are not implemented:
->
->                 case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
->                 case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
->                 case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
->
-> The following operations are only implemented for power of two constants:
->
->                 case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %= imm */
->                 case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
->
-> Below are the results on a powerpc 885:
-> - with the patch, with and without bpf_jit_enable
-> - without the patch, with bpf_jit_enable (ie with CBPF)
->
-> With the patch, with bpf_jit_enable = 1 :
->
-> [   60.826529] test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'ed]
-> [   60.832505] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
->
-> With the patch, with bpf_jit_enable = 0 :
->
-> [   75.186337] test_bpf: Summary: 378 PASSED, 0 FAILED, [0/366 JIT'ed]
-> [   75.192325] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
->
-> Without the patch, with bpf_jit_enable = 1 :
->
-> [  186.112429] test_bpf: Summary: 371 PASSED, 7 FAILED, [119/366 JIT'ed]
->
-> Couldn't run test_progs because it doesn't build (clang 11 crashes during the build).
+On Tue, Mar 02, 2021 at 02:13:57AM -0800, Jacob Pan wrote:
+> Write protect bit, when set, inhibits supervisor writes to the read-only
+> pages. In supervisor shared virtual addressing (SVA), where page tables
+> are shared between CPU and DMA, IOMMU PASID entry WPE bit should match
+> CR0.WP bit in the CPU.
+> This patch sets WPE bit for supervisor PASIDs if CR0.WP is set.
+> 
+> Signed-off-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
 
-Can you please try checking out the latest clang from sources and use
-that one instead?
+ia64:defconfig:
 
->
-> Changes in v2:
-> - Simplify 16 bits swap
-> - Rework tailcall, use stack for tailcall counter
-> - Fix handling of BPF_REG_FP:
->   - must be handler like any other register allthough only the lower 32 bits part is used as a pointer.
->   - r18 was TMP_REG, r17/r18 become de BPF_REG_FP
->   - r31 was BPF_REG_FP, it is now TMP_REG
-> - removed bpf_jit32.h
-> - Reorder register allocation dynamically to use the volatile registers as much as possible when not doing function calls (last patch - new)
->
-> Christophe Leroy (8):
->   powerpc/bpf: Remove classical BPF support for PPC32
->   powerpc/bpf: Change register numbering for bpf_set/is_seen_register()
->   powerpc/bpf: Move common helpers into bpf_jit.h
->   powerpc/bpf: Move common functions into bpf_jit_comp.c
->   powerpc/bpf: Change values of SEEN_ flags
->   powerpc/asm: Add some opcodes in asm/ppc-opcode.h for PPC32 eBPF
->   powerpc/bpf: Implement extended BPF on PPC32
->   powerpc/bpf: Reallocate BPF registers to volatile registers when
->     possible on PPC32
->
->  Documentation/admin-guide/sysctl/net.rst |    2 +-
->  arch/powerpc/Kconfig                     |    3 +-
->  arch/powerpc/include/asm/ppc-opcode.h    |   12 +
->  arch/powerpc/net/Makefile                |    6 +-
->  arch/powerpc/net/bpf_jit.h               |   61 ++
->  arch/powerpc/net/bpf_jit32.h             |  139 ---
->  arch/powerpc/net/bpf_jit64.h             |   21 +-
->  arch/powerpc/net/bpf_jit_asm.S           |  226 -----
->  arch/powerpc/net/bpf_jit_comp.c          |  782 ++++-----------
->  arch/powerpc/net/bpf_jit_comp32.c        | 1095 ++++++++++++++++++++++
->  arch/powerpc/net/bpf_jit_comp64.c        |  295 +-----
->  11 files changed, 1372 insertions(+), 1270 deletions(-)
->  delete mode 100644 arch/powerpc/net/bpf_jit32.h
->  delete mode 100644 arch/powerpc/net/bpf_jit_asm.S
->  create mode 100644 arch/powerpc/net/bpf_jit_comp32.c
->
-> --
-> 2.25.0
->
+drivers/iommu/intel/pasid.c: In function 'pasid_enable_wpe':
+drivers/iommu/intel/pasid.c:536:22: error: implicit declaration of function 'read_cr0'
+drivers/iommu/intel/pasid.c:539:23: error: 'X86_CR0_WP' undeclared
+
+Maybe it _is_ time to retire ia64 ?
+
+Guenter
