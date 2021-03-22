@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65D3436CC
+	by mail.lfdr.de (Postfix) with ESMTP id 7F69F3436CD
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCVCu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 22:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVCuK (ORCPT
+        id S229941AbhCVCub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 22:50:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56270 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229731AbhCVCuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:50:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6C2C061574;
-        Sun, 21 Mar 2021 19:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=mpHndGB3+9Mow3KD4ja1xykikgNIMh47D/6m5Cx+egM=; b=K4J0rMOlNv9PE36E8mk1JaonoL
-        zh7ennjhaP+qR6NWnXeKPloDapPI9qvuDrOpW2PxkT53e33/1BM0ORKpZxCCLPU31K5EIx/c/NIRy
-        kyneZ0TF1xQOFZKioxXWi+T2AjRV4I0cjiDcpSZP2+kWDu4id/6Tx5dMVWZy5jW6xHtix3C0W/zIM
-        4UtKWg64NrQ1lPwfJr0qgZskbR9GA1p8ErTYroj/q52FeCL+R4KoCRHzxCsXabfetCMUBSPv3pMgI
-        /m+XuSnmtz9433yRKSqjFzx+hDb88gHJb0XZdYffeklJJuchezoLSuNrLxC6iCH+awqUvTwxWv/f4
-        lMdr8a4A==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOAdZ-00AjN6-Jh; Mon, 22 Mar 2021 02:50:01 +0000
-Subject: Re: [PATCH] dt-bindings: display: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch, dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210322022953.40901-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7dcd0f8d-0337-e557-492d-973f89ffde14@infradead.org>
-Date:   Sun, 21 Mar 2021 19:49:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 21 Mar 2021 22:50:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616381418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=VjX07ZbhlhI+8MjhLml7rCwP/VgEHcwbPYVTLJX166Q=;
+        b=bPAC4S+I6/qZwXJedSuzbT8oioD7FEM8hEg3oysh7AugF9dfim1/92Y6YYj/i8X6BMnTYG
+        1T3rG7cwiNOMZqImK4FXDhaG7SezVGsBQBm6sjT7FXlpsaNJEWTWhxn97K7y0nNReEG3GW
+        0+gTRqJsRIbljOilrJagwI0T7L8p6cE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-df3rL3VLOwSLtoNmAXisFQ-1; Sun, 21 Mar 2021 22:50:13 -0400
+X-MC-Unique: df3rL3VLOwSLtoNmAXisFQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0B271007476;
+        Mon, 22 Mar 2021 02:50:11 +0000 (UTC)
+Received: from lclaudio.dyndns.org (ovpn-117-44.rdu2.redhat.com [10.10.117.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2DF166C353;
+        Mon, 22 Mar 2021 02:50:11 +0000 (UTC)
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id 61AB43C1752; Sun, 21 Mar 2021 23:50:09 -0300 (-03)
+Date:   Sun, 21 Mar 2021 23:50:09 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.9.258-rt172
+Message-ID: <161637899106.442154.4932837797391662221@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210322022953.40901-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 7:29 PM, Bhaskar Chowdhury wrote:
-> 
-> s/Subsytem/Subsystem/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Documentation/devicetree/bindings/display/msm/mdp5.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/msm/mdp5.txt b/Documentation/devicetree/bindings/display/msm/mdp5.txt
-> index 43d11279c925..4b335baa3fd2 100644
-> --- a/Documentation/devicetree/bindings/display/msm/mdp5.txt
-> +++ b/Documentation/devicetree/bindings/display/msm/mdp5.txt
-> @@ -2,7 +2,7 @@ Qualcomm adreno/snapdragon MDP5 display controller
-> 
->  Description:
-> 
-> -This is the bindings documentation for the Mobile Display Subsytem(MDSS) that
-> +This is the bindings documentation for the Mobile Display Subsystem(MDSS) that
+Hello RT-list!
 
-add a space:                                                 Subsystem (MDSS) that
+I'm pleased to announce the 4.9.258-rt172 stable release.
 
->  encapsulates sub-blocks like MDP5, DSI, HDMI, eDP etc, and the MDP5 display
->  controller found in SoCs like MSM8974, APQ8084, MSM8916, MSM8994 and MSM8996.
-> 
-> --
+Note that there was a futex/mutex code collision during the merge of v4.9-257
+and another one with the merge of v4.9.258. Even though I believe that it's
+fixed correctly, anyone with suspicions about futex/rtmutex behavior in these
+releases should consider starting investigating there.
 
+You can get this release via the git tree at:
 
--- 
-~Randy
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.9-rt
+  Head SHA1: 417c1df254de98957caae5f4e31337cdd6ae063e
+
+Or to build 4.9.258-rt172 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.258.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.258-rt172.patch.xz
+
+Enjoy!
+Luis
 
