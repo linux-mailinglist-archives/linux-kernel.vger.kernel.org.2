@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41A4343650
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B29343651
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhCVBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230011AbhCVBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 21 Mar 2021 21:34:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14836 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCVBeB (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhCVBeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:34:01 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F3cRj36j2z927r;
-        Mon, 22 Mar 2021 09:32:01 +0800 (CST)
-Received: from [10.174.176.202] (10.174.176.202) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 09:33:55 +0800
-Subject: Re: [GIT PULL] ext4 fixes for v5.12
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>
-CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-References: <YFeQ9eBFn5JELyYo@mit.edu>
- <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
-Date:   Mon, 22 Mar 2021 09:33:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Sun, 21 Mar 2021 21:34:05 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7BBC061574;
+        Sun, 21 Mar 2021 18:34:05 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id t5so7959518qvs.5;
+        Sun, 21 Mar 2021 18:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D0VAsMBx9s6m1EfahMT+VBysZ6Gxa9IY/nOLkqBzFhk=;
+        b=eBaaTkLUCus7nTvlLiatH03Odbq9DQ+K5k3ne4E6gdVCDVggflDcqRM/jTRnR2e9Xo
+         /vQWuVOr8zK3Zfa4p74CgsWshUUJpqi/3smRun/4Pjjl3Jj/h6GYZmMWne5bQdJqtn6J
+         AODeDpdwrWYFKD7XW/1351AByKR2Xxnn2ZqYabGi+cEJ2DVRX4RnRT9vmSYDnWLcn0tM
+         EYzKX7DqSzRVvf/n9P3NznFYXppSkJjUMS1P2moT8xdvUUFAcH1MvFYTQJDn9z+FFrKQ
+         Aex4uXpfgLfynHi24LxPlKaGJSKBxoKw1c60BbJFe9szR0k7NkXqtMTdXuxIYYFt++mI
+         JzkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=D0VAsMBx9s6m1EfahMT+VBysZ6Gxa9IY/nOLkqBzFhk=;
+        b=XVCpJLHl7UXv8DC/SCItzHg2DJ5IPkKQ54GSTzdPTJv/xx8JYD/TYNQXNQa/N8dgW7
+         frbOdixPgPe7zOT8eNt+fea75+s2osFfnzpo+ReYraSTdXJ7qT8axsQEA27nhWCFi2Rc
+         bJpnWHzxIaM5FsLfMnsGBSrT6n8l6Zg1xLXcoquX13rQFJXmQlhcF0vSVcFE5CF6Str6
+         jD1RVdkKbd1MirCpi3V1BIFuhJ+28E4KcSKqGQLZJ7sCIYok9CjyQdlpaZCqMhsQbWEj
+         gTUbmQDfHPDbSTOjXOmSFvA97RCWrMlGTrn9lK2ipnyQzOOOamO13EIQLzEZtQqALjox
+         /ghA==
+X-Gm-Message-State: AOAM531fp8CKEXW6d6UVLKZfFR1w3zsUrByvhhQUnSCdvO/SHY3e2eW8
+        Kystwp54XXJCqm++buc8lCY=
+X-Google-Smtp-Source: ABdhPJzDPBHuVxDpqyKT1JgQJ1757/8uz6T/nnATCSXJ/aKaZnJMtQdzYC6hUL6z9eD5J1ot3Yae+w==
+X-Received: by 2002:ad4:4904:: with SMTP id bh4mr18953829qvb.53.1616376844461;
+        Sun, 21 Mar 2021 18:34:04 -0700 (PDT)
+Received: from ArchLinux ([156.146.54.190])
+        by smtp.gmail.com with ESMTPSA id c19sm9571055qkl.78.2021.03.21.18.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 18:34:03 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 07:03:54 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Bluetooth: hci_qca: Mundane typo fix
+Message-ID: <YFf0AmJN0fz5Z3Og@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210322010051.483622-1-unixbhaskar@gmail.com>
+ <b1867efb-afcc-1f9e-fbab-75a7793a2649@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.202]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f+1bav2gwg7CE5Fk"
+Content-Disposition: inline
+In-Reply-To: <b1867efb-afcc-1f9e-fbab-75a7793a2649@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/22 6:23, Linus Torvalds wrote:
-> On Sun, Mar 21, 2021 at 11:31 AM Theodore Ts'o <tytso@mit.edu> wrote:
+
+--f+1bav2gwg7CE5Fk
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 18:30 Sun 21 Mar 2021, Randy Dunlap wrote:
+>On 3/21/21 6:00 PM, Bhaskar Chowdhury wrote:
 >>
->> zhangyi (F) (3):
->>       ext4: find old entry again if failed to rename whiteout
->>       ext4: do not iput inode under running transaction in ext4_rename()
->>       ext4: do not try to set xattr into ea_inode if value is empty
-> 
-> Side note: this is obviously entirely up to the author, but I think it
-> would be nice if we would encourage people to use their native names
-> if/when they want to.
-> 
-> Maybe this "zhangyi (F)" is how they _want_ to write their name in the
-> kernel, and that's obviously fine if so.
-> 
-> But at the same time, coming from Finland, I remember how people who
-> had the "odd" characters (åäö) in their name ended up replacing them
-> with the US-ASCII version (generally "aa" "ae" and "oe"), and it
-> always just looked bad to a native speaker. Particularly annoying in
-> public contexts.
-> 
-> At the same time, for the same reason, I can also understand people
-> not wanting to even expose those characters at all, because then
-> non-native speakers invariably messed it up even worse...
-> 
-> Anyway, I think and hope that we have the infrastructure to do it
-> right not just for Latin1, but the more complex non-Western character
-> sets too.
-> 
-> And as a result should possibly encourage people to use their native
-> names if they want to. At least make people aware that it _should_
-> work.
-> 
-> Again, maybe I'm barking up the wrong tree, and in this case "zhangyi
-> (F) <yi.zhang@huawei.com>" is just what zhangyi prefers simply because
-> it's easier/more convenient.
-> 
-> But I just wanted to mention it, because we _do_ have examples of it
-> working. Not many, but some:
-> 
->     git log --pretty="%an" --since=2.years | sort -u | tail
-> 
-> including examples of having the Westernized name in parenthesis for
-> the "use that one if you can't do the real one" case..
-> 
-Hi, Linus.
+>> s/packat/packet/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  drivers/bluetooth/hci_qca.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+>> index de36af63e182..f2eee9112e41 100644
+>> --- a/drivers/bluetooth/hci_qca.c
+>> +++ b/drivers/bluetooth/hci_qca.c
+>> @@ -1066,7 +1066,7 @@ static void qca_controller_memdump(struct work_struct *work)
+>>  		 * packets in the buffer.
+>>  		 */
+>>  		/* For QCA6390, controller does not lost packets but
+>
+>		                                    lose
+>
+>> -		 * sequence number field of packat sometimes has error
+>> +		 * sequence number field of packet sometimes has error
+>>  		 * bits, so skip this checking for missing packet.
+>>  		 */
+>>  		while ((seq_no > qca_memdump->current_seq_no + 1) &&
+>> --
+>
+>As Ingo said, please try to fix more than one thing at a time.
+>
+Okay.
+>--
+>~Randy
 
-I will use my real name "Yi Zhang" next time.
+--f+1bav2gwg7CE5Fk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Yi.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBX9AIACgkQsjqdtxFL
+KRVCogf/dBPIjlC1CpUjwXJHOylINjrXf7sBL7Mqfr85DLz6lyUGSj0rYo2JES4x
+OJFM0HkyFOoipZH1a36M2ajTrW0lGCOsYOPjZjqN2hXW4oxU8og+3nlcX6Dddoy3
+lLkO3/Reo9iB9mVXLPFJvGSVpPMw4Wk4hzyeNrVHugDjN9xi1/sbzEhp0ZCKjh2G
+P34si32rpjts2idzSi/GZmwlArsTl2UpOFXAU3p/npaAL375hBX3AC2ks/kCRG+D
+FHu50pbvC4Awbiah8kUkfSYvuW9rZ+mgehBv8m/RDh2H2IMJZBtC8GHxV8thqB6M
+VhV5U6ZQJHh7jT8Tt4Ze8tCwT21BbA==
+=xyPK
+-----END PGP SIGNATURE-----
+
+--f+1bav2gwg7CE5Fk--
