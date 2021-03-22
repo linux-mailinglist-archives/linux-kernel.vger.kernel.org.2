@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE421344B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3038A344B74
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhCVQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:33:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:34914 "EHLO foss.arm.com"
+        id S230315AbhCVQe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:34:27 -0400
+Received: from muru.com ([72.249.23.125]:45702 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCVQcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:32:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EA3D1042;
-        Mon, 22 Mar 2021 09:32:52 -0700 (PDT)
-Received: from e107158-lin (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58F993F719;
-        Mon, 22 Mar 2021 09:32:51 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 16:32:48 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-Message-ID: <20210322163248.id7qplbk6och6kuw@e107158-lin>
-References: <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
- <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
- <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
- <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
- <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
- <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
- <134e1a2c-daac-7b00-c170-bcca434d08df@gmail.com>
- <20210314220217.4mexdide7sqjfved@e107158-lin>
- <20210321190611.d6a3hbqabts3qq5v@e107158-lin>
- <20210322110106.2bed3d50@gandalf.local.home>
+        id S230330AbhCVQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:33:47 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 47C59804C;
+        Mon, 22 Mar 2021 16:34:39 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 18:33:40 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Keerthy <j-keerthy@ti.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Tero Kristo <kristo@kernel.org>
+Subject: Re: [PATCH 1/2] clocksource/drivers/timer-ti-dm: Prepare to handle
+ dra7 timer wrap issue
+Message-ID: <YFjG5IsHExuaixN9@atomide.com>
+References: <20210304073737.15810-1-tony@atomide.com>
+ <20210304073737.15810-2-tony@atomide.com>
+ <556d55af-0b30-8751-6aef-2e1bb9db1a76@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322110106.2bed3d50@gandalf.local.home>
+In-Reply-To: <556d55af-0b30-8751-6aef-2e1bb9db1a76@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/22/21 11:01, Steven Rostedt wrote:
-> On Sun, 21 Mar 2021 19:06:11 +0000
-> Qais Yousef <qais.yousef@arm.com> wrote:
+Hi,
+
+* Daniel Lezcano <daniel.lezcano@linaro.org> [210322 15:56]:
+> On 04/03/2021 08:37, Tony Lindgren wrote:
+> > There is a timer wrap issue on dra7 for the ARM architected timer.
+> > In a typical clock configuration the timer fails to wrap after 388 days.
+> > 
+> > To work around the issue, we need to use timer-ti-dm timers instead.
+> > 
+> > Let's prepare for adding support for percpu timers by adding a common
+> > dmtimer_clkevt_init_common() and call it from dmtimer_clockevent_init().
+> > This patch makes no intentional functional changes.
+> > 
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > ---
 > 
-> >  #ifdef CONFIG_DYNAMIC_FTRACE
-> >  struct dyn_arch_ftrace {
-> > -#ifdef CONFIG_ARM_MODULE_PLTS
-> >  	struct module *mod;
-> > -#endif
-> >  };
+> [ ... ]
+> 
+> > @@ -575,33 +574,60 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
+> >  	 */
+> >  	writel_relaxed(OMAP_TIMER_CTRL_POSTED, t->base + t->ifctrl);
 > >  
+> > +	if (dev->cpumask == cpu_possible_mask)
+> > +		irqflags = IRQF_TIMER;
+> > +	else
+> > +		irqflags = IRQF_TIMER | IRQF_NOBALANCING;
 > 
-> I know you want to reduce the "ifdefery", but please note that the
-> dyn_arch_ftrace is defined once for every function that can be traced. If
-> you have 40,000 functions that can be traced, that pointer is created
-> 40,000 times. Thus, you really only want fields in the struct
-> dyn_arch_ftrace if you really need them, otherwise, that's a lot of memory
-> that is wasted.
+> Can you explain the reasoning behind the test above ?
 
-Yes you're right. I was a bit optimistic on CONFIG_DYNAMIC_FTRACE will imply
-CONFIG_ARM_MODULE_PLTS is enabled too.
+In the per cpu case we assign one dmtimer per cpu, and we want the
+interrupt handling on the assigned CPU. In the per cpu case we have
+the cpu specified with dev->cpumask unlike for the normal clockevent
+case.
 
-It only has an impact on reducing ifdefery when calling
+In the per cpu dmtimer case the interrupt line is not wired per cpu
+though, so I don't think we want to add IRQF_PERCPU here.
 
-	ftrace_call_replace_mod(rec->arch.mod, ...)
+Or do you have some better suggestion for the flags to use here? :)
 
-Should be easy to wrap rec->arch.mod with its own accessor that will return
-NULL if !CONFIG_ARM_MODULE_PLTS or just ifdef the functions.
+Regards,
 
-Up to Alexander to pick what he prefers :-)
-
-Thanks
-
---
-Qais Yousef
+Tony
