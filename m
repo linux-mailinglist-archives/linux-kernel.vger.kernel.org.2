@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC38344DC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A463344DC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCVRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:51:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230071AbhCVRvi (ORCPT
+        id S230095AbhCVRvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:51:55 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:33670 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhCVRvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:51:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616435497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3sv2VL5jzl43MssQXHzJqdRATLzbsdNryCBU0FqXXE4=;
-        b=Zf4QmhhzWWp4/+b/ljUxT+DbqQQVD1os0rUTmCnsJpSuDyFTSaICwZrZ12CZFE9IVVWEqH
-        AP/OIp6kwsvU8rg5Lus2HAiqiLi4aZs6M8EuHkk923TqDPeNiqYVrrN+roUM3oXaAUEmyU
-        T+L/9gzbufv/JpoBM0HYxRGUw6Y+O2g=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-qhBfNzZ5MdGvUOFh21cAqg-1; Mon, 22 Mar 2021 13:51:35 -0400
-X-MC-Unique: qhBfNzZ5MdGvUOFh21cAqg-1
-Received: by mail-qt1-f200.google.com with SMTP id 11so13052865qtz.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:51:35 -0700 (PDT)
+        Mon, 22 Mar 2021 13:51:44 -0400
+Received: by mail-ua1-f50.google.com with SMTP id h5so1865546uaw.0;
+        Mon, 22 Mar 2021 10:51:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3sv2VL5jzl43MssQXHzJqdRATLzbsdNryCBU0FqXXE4=;
-        b=fHWMVo5hOqKfS6QpA9fA/k0VJPjFApEcf3JvEPEXz2lMw1Dowo9MvTcKx9i1uWMfWD
-         KSlvn5Z8x5vM5epypRGoRCneAb8m+fauVwuBt2lNFYskGSUPuhrvfxoz6K/BIX8KClc5
-         CWUvwHiNBChAWsn53faJGjRkmv+F2T9J4EXXOQlN0ywvUeyvgpqbDFHwL2M1BWi88DEI
-         IXNmZPbl+1eoTi68NmfsQ47RasuLK0uSWQv7FNpLY6C3G4848QiUn+LgPVrsWrsLQELr
-         u75WNmAWupqMG0q+O1NDf+yWJ5Wg+YBNFg3t8oxe8g6vcpnHj5FWlGiTKCaIL+2IUckg
-         O6VA==
-X-Gm-Message-State: AOAM532ZOAQNM850TmOIY9SvfyooalqW9jlNcXKDIkogDFPF7Qy+ZL/j
-        TiQzNdFnHZYF1Fffke/IUmqHNHeo00xU+LJDRoENlLkgEF/fbzkkWw6y8BiqSV0F6MYqtw15AL6
-        uFqnfQDFZ8FBhEC5ev7TLxkMp
-X-Received: by 2002:a05:620a:1292:: with SMTP id w18mr1184697qki.400.1616435495384;
-        Mon, 22 Mar 2021 10:51:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuB+/kei1bAz1c4Jk2mymH+0CIIyij9CrmBXu26SxRX4WsPXOOt7e4pDsLHAq0e7+JMC9sPw==
-X-Received: by 2002:a05:620a:1292:: with SMTP id w18mr1184675qki.400.1616435495103;
-        Mon, 22 Mar 2021 10:51:35 -0700 (PDT)
-Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id e14sm11272584qka.56.2021.03.22.10.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 10:51:34 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH] userfaultfd/hugetlbfs: Fix minor fault page leak
-Date:   Mon, 22 Mar 2021 13:51:32 -0400
-Message-Id: <20210322175132.36659-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R0q69RlwrnHwvmn0kwWgXbeTi/kWGjbwa2T7nZwSfRI=;
+        b=e8K5yHxTW0GfwXp0bvyWpbgnkmCxq6K84/SsCiJwG6EtCJ+szKS5+23n5s8ZsjL2yE
+         e0M1qD6WCFU4pJ+XTOJCFLS+R89vKQSHRspoBWQ9gmuTyqCtah1zrVNLo+7OuKZUw4vD
+         e1wnmxwYvMwXrcvGfrgmdQtGdKcKYL4n+4tFQ9Xgliu5u6GWGK7ZgmkIXGUufl7WSjbc
+         z6f+AulClnJruLTKn+RHIMkDZbVE+XoTMjAUOnalYoNTcml1U3PKm7JVB+IaH5ElHzNt
+         md1s6hDSrKTkX7j9i+ZmTDq9LSjon7QbgaV6klm14xMeZ897WCVihn3W165p2cNUlDGx
+         93Fg==
+X-Gm-Message-State: AOAM533aWEJmAZ5JCJpDiCSGfnIrR1qSamPJTx6UbORuZdodHYzl6f+r
+        0JduR8rCsFS1u6BSy9PINUzVdGTotw6p60iCyMmzS/Xm
+X-Google-Smtp-Source: ABdhPJzcSTTwbSmzXa4uAWaIkZpkhYccxFid3E9uvKEp+10qAcxzJUuD1a9e8gobpDPFGna1x4iMOG2Xg4395m2lgSk=
+X-Received: by 2002:ab0:64cf:: with SMTP id j15mr975994uaq.4.1616435503853;
+ Mon, 22 Mar 2021 10:51:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-2-geert@linux-m68k.org> <CANiq72nL=BRz8XE_mSUvOMZg8ssJ6jO43QoVD5SyLsiqgQpDEg@mail.gmail.com>
+In-Reply-To: <CANiq72nL=BRz8XE_mSUvOMZg8ssJ6jO43QoVD5SyLsiqgQpDEg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Mar 2021 18:51:32 +0100
+Message-ID: <CAMuHMdXaiQ2sKUffQJqCxvUuTb+JL5WuzJnzKgKg4W-qtvC8UQ@mail.gmail.com>
+Subject: Re: [PATCH 01/17] uapi: Add <linux/map_to_14segment.h>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When uffd-minor enabled, we need to put the page cache before handling the
-userfault in hugetlb_no_page(), otherwise the page refcount got leaked.
+Hi Miguel,
 
-This can be reproduced by running userfaultfd selftest with hugetlb_shared
-mode, then cat /proc/meminfo.
+On Mon, Mar 22, 2021 at 6:05 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Mon, Mar 22, 2021 at 3:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > You can find an image of the full character set at
+> > https://drive.google.com/file/d/1h3EYFBWHIjh8B_cwPA5ocAD-lFYipRie/view
+>
+> Should we put it in e.g. the Docs or just alongside this file?
 
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Fixes: f2bf15fb0969 ("userfaultfd: add minor fault registration mode")
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/hugetlb.c | 1 +
- 1 file changed, 1 insertion(+)
+I don't know.  We don't have the image for the 7-segment display mapping
+in the docs either.
+Perhaps I should push the programs I wrote to create the images (for
+7-seg and 14-seg) to github?
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 408dbc08298a..56b78a206913 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4449,6 +4449,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
- 		/* Check for page in userfault range. */
- 		if (userfaultfd_minor(vma)) {
- 			unlock_page(page);
-+			put_page(page);
- 			ret = hugetlb_handle_userfault(vma, mapping, idx,
- 						       flags, haddr,
- 						       VM_UFFD_MINOR);
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
