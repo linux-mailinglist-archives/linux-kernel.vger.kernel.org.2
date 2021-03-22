@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939A1343F4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38C5343F52
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhCVLK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34560 "EHLO mail.kernel.org"
+        id S230080AbhCVLMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhCVLKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:10:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC17261984;
-        Mon, 22 Mar 2021 11:10:35 +0000 (UTC)
+        id S229639AbhCVLLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:11:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7D16198C;
+        Mon, 22 Mar 2021 11:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616411436;
-        bh=NC+1ODaAxS8f4l6Eky4fpzsmBqnrxmry+8HRa0Mpy8o=;
+        s=k20201202; t=1616411491;
+        bh=PIATEq0u/wSjiMEG6090auCWmWeUTwMBz/84iBJJ1gg=;
         h=From:To:Cc:Subject:Date:From;
-        b=NvRmCNKpAkCtzMTEP6Rzoy6JWrrZ12TJlT9QM+GnoV4xCS1FuCCvOguKOtUZ4WY7A
-         Y73NqI7LaXWIrYydNoNrqYb1fOefqzrA1ibq1+QnamTKh4OswTK1T0LNS/BLTvWmdz
-         JySHq+PdhTZvFWgwwNvYILdycaUuB36y5u8polW6CLm9dJ5BJaBqzpfhjXx7zWm4uc
-         HO0DWxKsKorlS56AUE+VjidXEadxek7fJV6nvvaPLgl2bblaUZb4vQWlF38wX63jAQ
-         nNE1qljzVM6JBFFeW2nPkilZ0P6ckt0qD9XzVfp7M0POTkhO036WTZ3ahGAN/IXIU8
-         LX8LSSek2gBqQ==
+        b=Ts8IRIei1uCjGHkY2kksQPEPY3wyhG535du+Zod2UJmWQk0VSliHxkQLTiGWBiHR1
+         jnwovHv0AnpJLOJ8UqEjKi3T7nb+WZl6far7JqjDV0paoQK3g+sn+3SNO5yKTTWDvl
+         uQBjMqKpxRIb2ALwc8XqtZiBhQyGM3E6mi05JTNj4+nwnvLYK0bvoDEdAZb309fShy
+         NcW/9tNQbktldNjHIf+bn6jHkSq974UoUfKYlN7hRSEuM1sl9r2p7OHKqtJiCTN3Xp
+         PEWa9pO1AzOMPNxM4b6fy+TV8vXzpbsNlUQh6kuCaaF2RZlPpfGypYr167xBzW4AFM
+         hNjsKJlG9/6nA==
 Received: from johan by xi with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lOISS-0008KL-A9; Mon, 22 Mar 2021 12:10:53 +0100
+        id 1lOITM-0008Ll-G6; Mon, 22 Mar 2021 12:11:48 +0100
 From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Johan Hovold <johan@kernel.org>,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bart Van Assche <bart.vanassche@sandisk.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] serial: imx: drop workaround for forced irq threading
-Date:   Mon, 22 Mar 2021 12:10:36 +0100
-Message-Id: <20210322111036.31966-1-johan@kernel.org>
+Subject: [PATCH] USB: xhci: drop workaround for forced irq threading
+Date:   Mon, 22 Mar 2021 12:11:40 +0100
+Message-Id: <20210322111140.32056-1-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,53 +51,48 @@ something which could lead to deadlocks in case a threaded handler
 shared a lock with code running in hard interrupt context (e.g. timer
 callbacks) and did not explicitly disable interrupts.
 
-This was specifically the case for serial drivers that take the port
-lock in their console write path as printk can be called from hard
-interrupt context also with forced threading ("threadirqs").
-
 Since commit 81e2073c175b ("genirq: Disable interrupts for force
 threaded handlers") interrupt handlers always run with interrupts
-disabled on non-RT so that drivers no longer need to do handle this.
+disabled on non-RT so that drivers no longer need to do handle forced
+threading ("threadirqs").
 
-Drop the now obsolete workaround added by commit 33f16855dcb9 ("tty:
-serial: imx: fix potential deadlock").
+Drop the now obsolete workaround added by commit 63aea0dbab90 ("USB:
+xhci: fix lock-inversion problem").
 
-Cc: Sam Nobs <samuel.nobs@taitradio.com>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Bart Van Assche <bart.vanassche@sandisk.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/imx.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/usb/host/xhci-ring.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 8257597d034d..cca730fc2b0b 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -922,14 +922,8 @@ static irqreturn_t imx_uart_int(int irq, void *dev_id)
- 	struct imx_port *sport = dev_id;
- 	unsigned int usr1, usr2, ucr1, ucr2, ucr3, ucr4;
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index ce38076901e2..20f5ded29b3b 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -3015,12 +3015,11 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+ 	union xhci_trb *event_ring_deq;
  	irqreturn_t ret = IRQ_NONE;
--	unsigned long flags = 0;
+-	unsigned long flags;
+ 	u64 temp_64;
+ 	u32 status;
+ 	int event_loop = 0;
  
--	/*
--	 * IRQs might not be disabled upon entering this interrupt handler,
--	 * e.g. when interrupt handlers are forced to be threaded. To support
--	 * this scenario as well, disable IRQs when acquiring the spinlock.
--	 */
--	spin_lock_irqsave(&sport->port.lock, flags);
-+	spin_lock(&sport->port.lock);
+-	spin_lock_irqsave(&xhci->lock, flags);
++	spin_lock(&xhci->lock);
+ 	/* Check if the xHC generated the interrupt, or the irq is shared */
+ 	status = readl(&xhci->op_regs->status);
+ 	if (status == ~(u32)0) {
+@@ -3083,7 +3082,7 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
+ 	ret = IRQ_HANDLED;
  
- 	usr1 = imx_uart_readl(sport, USR1);
- 	usr2 = imx_uart_readl(sport, USR2);
-@@ -999,7 +993,7 @@ static irqreturn_t imx_uart_int(int irq, void *dev_id)
- 		ret = IRQ_HANDLED;
- 	}
- 
--	spin_unlock_irqrestore(&sport->port.lock, flags);
-+	spin_unlock(&sport->port.lock);
+ out:
+-	spin_unlock_irqrestore(&xhci->lock, flags);
++	spin_unlock(&xhci->lock);
  
  	return ret;
  }
