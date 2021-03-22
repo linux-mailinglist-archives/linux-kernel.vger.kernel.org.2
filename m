@@ -2,245 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5C73438C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C45413438C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCVFog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 01:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCVFo2 (ORCPT
+        id S229771AbhCVFr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 01:47:58 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:28110 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229696AbhCVFrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 01:44:28 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C21C061574;
-        Sun, 21 Mar 2021 22:44:27 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id ay2so5953696plb.3;
-        Sun, 21 Mar 2021 22:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j3wC49uIyVrfJgyWVynqmzHUtHk/JAsouFEaf2/Gji4=;
-        b=L/FRQ36YeHcU9e7rpbofKUpXk2+gOqwjfat1hy2OCA7a/0Jkhl+L+K9ilPvV4kj52Q
-         JzeZ2GYnsEni0nt3RtFm9zJwaWyQM1aI5xKsua5Zxifhc6rNu6R2PuDNTzKASn0q5/zf
-         GBp5aeu379kfNpWz/sFWIoCUnUh7WmOSkTj3ogfUQtlIkYVkMvS50WgLqiza1pYVS3W2
-         yf5Rwp/9DyZ03NliL4rFYI7NXG8PBrklN+d+NpuSMq+UkqX2oYmmwHj0JZ+KlkI3KGCI
-         Gqls5dCwSpur/uMXiNTM97WdH5mM1ZtGxJxWmiLxUoJeTnosxJRbFb0RA8kJ4XA6Qgl4
-         594Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j3wC49uIyVrfJgyWVynqmzHUtHk/JAsouFEaf2/Gji4=;
-        b=EgJM7p339ujwtIrDeqnGvtyWYvM0EMADgyDG54V9Q7XWEAUpVVF5SXDq/26xAJWMco
-         9wM9G0poClLvnNjf3iMhqx7bgdqiMXxByZXoxMQvFBzEAjGyUGYCI76eGcHpgqqzIbYi
-         KTtId7fGIcegngFabXaP1f0irH22PzQZdNjcbabycgcZceM2bvewsouAft/0Gn7WedvQ
-         OuthXdN35Qw+1N7upm9kzLpV1WEAfkoY0+dxEC5G6EqZpILDuEiPKOgnkWmNSAlQYWEZ
-         NTle/IJxiBlLFY/gpDMQFdpgmJfM6n1WvS+eXI3Eloq7h/aTU+w49CqSoVlbkhqTVAYC
-         JPoA==
-X-Gm-Message-State: AOAM530omsRC3uWN7hoxS5fHxEVokuP+xY16/HbNJk/TS/lXJcO+unhQ
-        cQsJLKQk+aPC7pVCYc6T0/FOtc33qrw=
-X-Google-Smtp-Source: ABdhPJzAvFQBTkW7+6ZxpeOwnyaVKBeDJlVeVZZFVl//I/KD/WVNeag7Xn3Yj3+ymIvG9pD96ed3Tw==
-X-Received: by 2002:a17:90a:901:: with SMTP id n1mr11495416pjn.147.1616391866983;
-        Sun, 21 Mar 2021 22:44:26 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id w203sm12163646pfc.188.2021.03.21.22.44.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Mar 2021 22:44:26 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 00/11] bfq: introduce bfq.ioprio for cgroup
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1615517202.git.brookxu@tencent.com>
- <F64D5CC8-E650-4AE6-8452-7FA0C1976271@linaro.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <d240e781-09d4-9831-482e-d2f628e9c463@gmail.com>
-Date:   Mon, 22 Mar 2021 13:44:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 22 Mar 2021 01:47:47 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12M5gxSm018910;
+        Sun, 21 Mar 2021 22:47:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=MK2tO58IR+pfrQl3V5IK2JsPcUaOeELpFQC2HCpAc8s=;
+ b=BURqGlS0EmiTTCMsfeTbVNAqDzpBbMHEaOOY7B5zjFShdflpMK8JhAdMpzRzdoiIZjQp
+ qyy3FitZkH4fgqhCrEeht7hRcUBtwSAd4PPdLS5c0ct7SWPUfut8NgyQkfLCPIjZhVye
+ O5fIkof71vMmH/WcxhB6tPEQjDWEJaRRe2vi8Nue7hd0yV19y7GT0THIkDr+piCwqnc3
+ OaWobBamq8eN2F0d/5riCxM9zeKeMCP+0S81U4lR0CegLx2vUI4CiP1LX+Y//eeKcK8m
+ sZud+9L5mzIun/d9UMWMigCx2Ho0KVovkTBI/8omKwDVIBFh5r67pZigVJodwm4fnm8S sw== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 37ddkxc40y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Mar 2021 22:47:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HQJFAQIk1iTJuRQ4t0LY8ra4pJN57q3tvtvWwT2udnBJcxGjhOVJyBQ/YV1qRQxGEsYXdHYn4sJ6R+/fTe26UGRv20b9VEu1j67u9lngwByDICqcsmb9SFJ3eVV8fUpEHeY3IsoKGeAQqFfBtndEmo9bYtUH+uLRfgZgaLoNLzx5gEbr0Tv/4wcUHEep5rGjMGdUuy2Vyz0saVCRga2XXoCfLyBsZ1yiutytU4fWJIq+rlqkXu+GY21bg9iD1hXAqPmdtHoEaDrECPSnV7bWMF/P9TdKjkMK4V4eW9HWM010UJ1i+Ev0b9sYRluC24lR97ohvKGf83SPuIXQiydKuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MK2tO58IR+pfrQl3V5IK2JsPcUaOeELpFQC2HCpAc8s=;
+ b=IrHUUpxd6OSHqZwfzV3YX1Wm4ea6yzkVJ2quT6LpRLGyMYE0Jf0MCPmEFqZsdVdfyoGt7MLt/nplKBo3xdFYzqTi47wy9NKtK6QPJHjlnZOT8bCI+uGKRX/kZBbomyKKxbj1sh6NbLu0mKnnbzw8pWZiX24TtF3dVPi3oMAbc6SaEuggskEgpCsp0lwyNhWfnpDmqB8i95k5TMjkBKn5Qc+4kwNRP4HicTbhF0uD14195BWXTez/uyoyItCXNbR12wzG/92yLmuvCh/j3waHhWExSzIdRRE/vfeGsn7UX7ICsiLRY7kStbaCbbALN4RVtTZy9MdMaaU+evEiJavS2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.148) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=cadence.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=cadence.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MK2tO58IR+pfrQl3V5IK2JsPcUaOeELpFQC2HCpAc8s=;
+ b=oqvTdBlx83vmgh0GNdkcRj19UaapDpUuCqctPL79SwOReHvDg3qrcZ1lb72FoNkCiuTHlhcPJDgIa1Z51DMmyUWClyws1A2PVCWYkzloX1ouypgakCm7u0sEcgNKoRVMDbIRzwOcB6q2cMWEq9u26qKkxAj8MCzqrSSa828/550=
+Received: from DM6PR06CA0002.namprd06.prod.outlook.com (2603:10b6:5:120::15)
+ by BYAPR07MB4328.namprd07.prod.outlook.com (2603:10b6:a02:bf::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Mon, 22 Mar
+ 2021 05:47:35 +0000
+Received: from DM6NAM12FT017.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:120:cafe::52) by DM6PR06CA0002.outlook.office365.com
+ (2603:10b6:5:120::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Mon, 22 Mar 2021 05:47:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
+ smtp.mailfrom=cadence.com; linuxfoundation.org; dkim=none (message not
+ signed) header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
+Received: from sjmaillnx2.cadence.com (158.140.1.148) by
+ DM6NAM12FT017.mail.protection.outlook.com (10.13.178.65) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.10 via Frontend Transport; Mon, 22 Mar 2021 05:47:35 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 12M5lWX8017496
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 21 Mar 2021 22:47:33 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 22 Mar 2021 06:47:32 +0100
+Received: from gli-login.cadence.com (10.187.128.100) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 22 Mar 2021 06:47:31 +0100
+Received: from gli-login.cadence.com (localhost [127.0.0.1])
+        by gli-login.cadence.com (8.14.4/8.14.4) with ESMTP id 12M5lVtS047929;
+        Mon, 22 Mar 2021 06:47:31 +0100
+Received: (from pawell@localhost)
+        by gli-login.cadence.com (8.14.4/8.14.4/Submit) id 12M5lUar047927;
+        Mon, 22 Mar 2021 06:47:30 +0100
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     <peter.chen@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
+        <sfr@canb.auug.org.au>, Pawel Laszczak <pawell@cadence.com>
+Subject: [PATCH v2] usb: cdnsp: Fixes issue with dequeuing requests after disabling endpoint
+Date:   Mon, 22 Mar 2021 06:47:14 +0100
+Message-ID: <20210322054714.47151-1-pawell@gli-login.cadence.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <F64D5CC8-E650-4AE6-8452-7FA0C1976271@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6908059e-3623-4269-8a22-08d8ecf5fe64
+X-MS-TrafficTypeDiagnostic: BYAPR07MB4328:
+X-Microsoft-Antispam-PRVS: <BYAPR07MB43287DE4676416092D34D17ADD659@BYAPR07MB4328.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l5Ga7RcDbna0kmyVlzBNnpGwzmwUffd4EDCra9bNPJsaAruNUflSSsAHLA4ZZdrMSOt3rv99Fp9I3udrwGONNh3FCRiivnKMxR8iieb10JCZLuuAqp2RYwSR8bogWameLs0o42/HfNJzHfvT4UWsLiN4FjbiWHoG2DKX1mIAP2RNHHLalR9qBEKim9NP4D/kAUHajbQuIX9tz2Er7KGyOxpL+PVMFxRlqItiWsRbMGRD174yJNlqIKAmSL9d8ITocSkLPxxg9XS1qYSmm3ltAZVBzHTD/gabSkwGkSzTNTzi4wnd8UahRrkeqkvf/Ec0EpEqbsjCyCHs675W6Z1cmn+Y5psSdniiI6uyw7MG8qAinbvrCyX0Ei6JrP+fq8odBmXzvUu4ZeE6XUkfZym463OXeNQjo6zN0jXWgIC7+yyVEJ5Ly0i0phP/wsmTjxuED+O8lXpGHHeEU3GaaJVE/sAwxm1Q4nn/7MDqszHfiWtSXOrQuXH7BoqTUsRVa4yQF6DKtFdhd/zgDp87MJiyT/3IdMErfYv+a8ke1X4RMkYFgxKlLfvxlXf0/g42c8R7FJGtLllEXJZZd/fXYZbJKnsvELTPJ5R5QWfVj7RaRWopDYSfQ1M/9mhb3zdi5vV24iWXKTuWblQ90C6CzVi004w4S0MfaOA7mx2yQG8Ar1kkk3z37bjBm8w8M20zshZJ
+X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(36092001)(46966006)(36840700001)(8936002)(36906005)(54906003)(70586007)(6666004)(478600001)(26005)(86362001)(5660300002)(83380400001)(336012)(8676002)(42186006)(70206006)(6916009)(356005)(4326008)(316002)(426003)(7636003)(36860700001)(107886003)(2906002)(186003)(82740400003)(82310400003)(1076003)(47076005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 05:47:35.1020
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6908059e-3623-4269-8a22-08d8ecf5fe64
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT017.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB4328
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_02:2021-03-22,2021-03-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ phishscore=0 mlxlogscore=598 clxscore=1011 impostorscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103220045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Pawel Laszczak <pawell@cadence.com>
 
+Patch fixes the bug:
+BUG: kernel NULL pointer dereference, address: 0000000000000050
+PGD 0 P4D 0
+Oops: 0002 [#1] SMP PTI
+CPU: 0 PID: 4137 Comm: uvc-gadget Tainted: G           OE     5.10.0-next-20201214+ #3
+Hardware name: ASUS All Series/Q87T, BIOS 0908 07/22/2014
+RIP: 0010:cdnsp_remove_request+0xe9/0x530 [cdnsp_udc_pci]
+Code: 01 00 00 31 f6 48 89 df e8 64 d4 ff ff 48 8b 43 08 48 8b 13 45 31 f6 48 89 42 08 48 89 10 b8 98 ff ff ff 48 89 1b 48 89 5b 08 <41> 83 6d 50 01 41 83 af d0 00 00 00 01 41 f6 84 24 78 20 00 00 08
+RSP: 0018:ffffb68d00d07b60 EFLAGS: 00010046
+RAX: 00000000ffffff98 RBX: ffff9d29c57fbf00 RCX: 0000000000001400
+RDX: ffff9d29c57fbf00 RSI: 0000000000000000 RDI: ffff9d29c57fbf00
+RBP: ffffb68d00d07bb0 R08: ffff9d2ad9510a00 R09: ffff9d2ac011c000
+R10: ffff9d2a12b6e760 R11: 0000000000000000 R12: ffff9d29d3fb8000
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff9d29d3fb88c0
+FS:  0000000000000000(0000) GS:ffff9d2adba00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000050 CR3: 0000000102164005 CR4: 00000000001706f0
+Call Trace:
+ cdnsp_ep_dequeue+0x3c/0x90 [cdnsp_udc_pci]
+ cdnsp_gadget_ep_dequeue+0x3f/0x80 [cdnsp_udc_pci]
+ usb_ep_dequeue+0x21/0x70 [udc_core]
+ uvcg_video_enable+0x19d/0x220 [usb_f_uvc]
+ uvc_v4l2_release+0x49/0x90 [usb_f_uvc]
+ v4l2_release+0xa5/0x100 [videodev]
+ __fput+0x99/0x250
+ ____fput+0xe/0x10
+ task_work_run+0x75/0xb0
+ do_exit+0x370/0xb80
+ do_group_exit+0x43/0xa0
+ get_signal+0x12d/0x820
+ arch_do_signal_or_restart+0xb2/0x870
+ ? __switch_to_asm+0x36/0x70
+ ? kern_select+0xc6/0x100
+ exit_to_user_mode_prepare+0xfc/0x170
+ syscall_exit_to_user_mode+0x2a/0x40
+ do_syscall_64+0x43/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fe969cf5dd7
+Code: Unable to access opcode bytes at RIP 0x7fe969cf5dad.
 
-Paolo Valente wrote on 2021/3/21 19:04:
-> 
-> 
->> Il giorno 12 mar 2021, alle ore 12:08, brookxu <brookxu.cn@gmail.com> ha scritto:
->>
->> From: Chunguang Xu <brookxu@tencent.com>
->>
-> 
-> Hi Chunguang,
-> 
->> Tasks in the production environment can be roughly divided into
->> three categories: emergency tasks, ordinary tasks and offline
->> tasks. Emergency tasks need to be scheduled in real time, such
->> as system agents. Offline tasks do not need to guarantee QoS,
->> but can improve system resource utilization during system idle
->> periods, such as background tasks. The above requirements need
->> to achieve IO preemption. At present, we can use weights to
->> simulate IO preemption, but since weights are more of a shared
->> concept, they cannot be simulated well. For example, the weights
->> of emergency tasks and ordinary tasks cannot be determined well,
->> offline tasks (with the same weight) actually occupy different
->> resources on disks with different performance, and the tail
->> latency caused by offline tasks cannot be well controlled. Using
->> ioprio's concept of preemption, we can solve the above problems
->> very well. Since ioprio will eventually be converted to weight,
->> using ioprio alone can also achieve weight isolation within the
->> same class. But we can still use bfq.weight to control resource,
->> achieving better IO Qos control.
->>
->> However, currently the class of bfq_group is always be class, and
->> the ioprio class of the task can only be reflected in a single
->> cgroup. We cannot guarantee that real-time tasks in a cgroup are
->> scheduled in time. Therefore, we introduce bfq.ioprio, which
->> allows us to configure ioprio class for cgroup. In this way, we
->> can ensure that the real-time tasks of a cgroup can be scheduled
->> in time. Similarly, the processing of offline task groups can
->> also be simpler.
->>
-> 
-> I find this contribution very interesting.  Anyway, given the
-> relevance of such a contribution, I'd like to hear from relevant
-> people (Jens, Tejun, ...?), before revising individual patches.
-> 
-> Yet I already have a general question.  How does this mechanism comply
-> with per-process ioprios and ioprio classes?  For example, what
-> happens if a process belongs to BE-class group according to your
-> mechanism, but to a RT class according to its ioprio?  Does the
-> pre-group class dominate the per-process class?  Is all clean and
-> predictable?
-Hi Paolo, thanks for your precious time. This is a good question. Now
-the pre-group class dominate the per-process class. But thinking about
-it in depth now, there seems to be a problem in the container scene,
-because the tasks inside the container may have different ioprio class
-and ioprio. Maybe Bfq.ioprio should only affects the scheduling of the
-group? which can be better compatible with the actual production
-environment.
+Problem occurs for UVC class. During disconnecting the UVC class disable
+endpoints and then start dequeuing all requests. This leads to situation
+where requests are removed twice. The first one in
+cdnsp_gadget_ep_disable and the second in cdnsp_gadget_ep_dequeue
+function.
+Patch adds condition in cdnsp_gadget_ep_dequeue function which allows
+dequeue requests only from enabled endpoint.
 
->> The bfq.ioprio interface now is available for cgroup v1 and cgroup
->> v2. Users can configure the ioprio for cgroup through this interface,
->> as shown below:
->>
->> echo "1 2"> blkio.bfq.ioprio
-> 
-> Wouldn't it be nicer to have acronyms for classes (RT, BE, IDLE),
-> instead of numbers?
+Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 
-As ioprio is a number, so the ioprio class also uses a number form.
-But your suggestion is good. If necessary, I will modify it later.
+---
+Changelog:
+v2:
+- removed unexpected 'commit' word from fixes tag
 
-> 
-> Thank you very much for this improvement proposal,
+ drivers/usb/cdns3/cdnsp-gadget.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-More discussions are welcome, Thanks.
+diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
+index f2ebbacd932e..d7d4bdd57f46 100644
+--- a/drivers/usb/cdns3/cdnsp-gadget.c
++++ b/drivers/usb/cdns3/cdnsp-gadget.c
+@@ -1128,6 +1128,10 @@ static int cdnsp_gadget_ep_dequeue(struct usb_ep *ep,
+ 		return -ESHUTDOWN;
+ 	}
+ 
++	/* Requests has been dequeued during disabling endpoint. */
++	if (!(pep->ep_state & EP_ENABLED))
++		return 0;
++
+ 	spin_lock_irqsave(&pdev->lock, flags);
+ 	ret = cdnsp_ep_dequeue(pep, to_cdnsp_request(request));
+ 	spin_unlock_irqrestore(&pdev->lock, flags);
+-- 
+2.25.1
 
-> Paolo
-> 
->>
->> The above two values respectively represent the values of ioprio
->> class and ioprio for cgroup. The ioprio of tasks within the cgroup
->> is uniformly equal to the ioprio of the cgroup. If the ioprio of
->> the cgroup is disabled, the ioprio of the task remains the same,
->> usually from io_context.
->>
->> When testing, using fio and fio_generate_plots we can clearly see
->> that the IO delay of the task satisfies RT> BE> IDLE. When RT is
->> running, BE and IDLE are guaranteed minimum bandwidth. When used
->> with bfq.weight, we can also isolate the resource within the same
->> class.
->>
->> The test process is as follows:
->> # prepare data disk
->> mount /dev/sdb /data1
->>
->> # create cgroup v1 hierarchy
->> cd /sys/fs/cgroup/blkio
->> mkdir rt be idle
->> echo "1 0" > rt/blkio.bfq.ioprio
->> echo "2 0" > be/blkio.bfq.ioprio
->> echo "3 0" > idle/blkio.bfq.ioprio
->>
->> # run fio test
->> fio fio.ini
->>
->> # generate svg graph
->> fio_generate_plots res
->>
->> The contents of fio.ini are as follows:
->> [global]
->> ioengine=libaio
->> group_reporting=1
->> log_avg_msec=500
->> direct=1
->> time_based=1
->> iodepth=16
->> size=100M
->> rw=write
->> bs=1M
->> [rt]
->> name=rt
->> write_bw_log=rt
->> write_lat_log=rt
->> write_iops_log=rt
->> filename=/data1/rt.bin
->> cgroup=rt
->> runtime=30s
->> nice=-10
->> [be]
->> name=be
->> new_group
->> write_bw_log=be
->> write_lat_log=be
->> write_iops_log=be
->> filename=/data1/be.bin
->> cgroup=be
->> runtime=60s
->> [idle]
->> name=idle
->> new_group
->> write_bw_log=idle
->> write_lat_log=idle
->> write_iops_log=idle
->> filename=/data1/idle.bin
->> cgroup=idle
->> runtime=90s
->>
->> V2:
->> 1. Optmise bfq_select_next_class().
->> 2. Introduce bfq_group [] to track the number of groups for each CLASS.
->> 3. Optimse IO injection, EMQ and Idle mechanism for CLASS_RT.
->>
->> Chunguang Xu (11):
->>  bfq: introduce bfq_entity_to_bfqg helper method
->>  bfq: limit the IO depth of idle_class to 1
->>  bfq: keep the minimun bandwidth for be_class
->>  bfq: expire other class if CLASS_RT is waiting
->>  bfq: optimse IO injection for CLASS_RT
->>  bfq: disallow idle if CLASS_RT waiting for service
->>  bfq: disallow merge CLASS_RT with other class
->>  bfq: introduce bfq.ioprio for cgroup
->>  bfq: convert the type of bfq_group.bfqd to bfq_data*
->>  bfq: remove unnecessary initialization logic
->>  bfq: optimize the calculation of bfq_weight_to_ioprio()
->>
->> block/bfq-cgroup.c  |  99 +++++++++++++++++++++++++++++++----
->> block/bfq-iosched.c |  47 ++++++++++++++---
->> block/bfq-iosched.h |  28 ++++++++--
->> block/bfq-wf2q.c    | 124 +++++++++++++++++++++++++++++++++-----------
->> 4 files changed, 244 insertions(+), 54 deletions(-)
->>
->> -- 
->> 2.30.0
->>
-> 
