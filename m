@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49BE344E43
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB744344E33
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhCVSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:17:37 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54263 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229746AbhCVSRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:17:10 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B21EC580832;
-        Mon, 22 Mar 2021 14:17:09 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Mon, 22 Mar 2021 14:17:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=ai83ObAamB4LrMOc3G4nVgW5/sy+
-        gIqBJIYzf+pgCMY=; b=DuFuR/KwjaKcHaXXBMn2JqyE1eTkT0Sa5EnZ7VumbIz9
-        v0dWSGDrGOjsDGDU3kqYGB96ystm8c3PUOsr5A/aUSYEO5zaYd0pebE9GIo8WkDd
-        IkOxpgnpq8/Fg0E+/D4w0Kkg0fM7dWqyLAhh+m+Cexmiq2hvM32qcHMxIAAJ+L1G
-        setMVvh5n2Kjr33DuXwf4JEb+a/WpjR/nplHw9A8SkVkbCdfnKmTSbj7SdHQbEsc
-        ZF1ggZw8YELFIqL7b0pGudPOsZSIcsbdNRAfUSYSBxxRHjnz9PH7V3FUYaDqRQei
-        g8YVafRhbn9IkWKuhwZWjsgf1RmSycTMZo7kIvSWNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ai83Ob
-        AamB4LrMOc3G4nVgW5/sy+gIqBJIYzf+pgCMY=; b=eZrFgoCxaH62cG8QlWk8eg
-        pKZ40WJFfQSMIOV9zoFyuBS7LM27UXZE26C4y/bsgxya2LZeilAxB5UFDRuKWTYC
-        sVZMd91BRzjpUHK1mFsqTNdz8tlYGQEwaCPry6sbCKD4VdoqEjQRhWfOsRCN0nzY
-        Wyuh90UZIIV9UJ7g2x3xvfWLFCNqLWITbFZ26uNiEmNUZImRSZs/N8239+gfJlgq
-        +VxRA0J0+VDu/hpd8b4O4jYL0jLa5/VGh39f5m1wP/OfXoyQ1bhFO+eIltwXIe0c
-        O9COzT2p0qkKqX6jSkegg9kxzt8awNDSRFxiWIiLzGlEI5ZO+ec5q/n8s8Sj8HXg
-        ==
-X-ME-Sender: <xms:I99YYI9tjTasK_ZhXTuE4FaqxkRXRpnr6GVrP23ei15cHQLcaD0HRg>
-    <xme:I99YYAs8cJS7jG3WP7ET5nBCQASRjlVsZVl2oONNFowMZXL4ybHOv4lO8qzVxwcMK
-    5Auino15NbeGA4mQlM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:I99YYODKP-UhuA3X3vZ4UMwQD-ACxt4NsPP9FePDaH0ezkSa3yWp8A>
-    <xmx:I99YYIcN0ndJcxpPmCq1q-Cll4e7a37dAoo8rlVlGwquxYrAz0AlfQ>
-    <xmx:I99YYNPQToM0YWuNtD7nFQfx-0GqXRe7-QSNZ5j6k0dEJBYgllmM4Q>
-    <xmx:Jd9YYBnmKRQeOt2B0vl8-yha0HHOuF-cMHUXIKYiDXDNRWl8xmIrJtoPEEE>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CFA9E51C005E; Mon, 22 Mar 2021 14:17:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-271-g88286cf463-fm-20210318.001-g88286cf4
-Mime-Version: 1.0
-Message-Id: <957e0f84-efcf-43f1-90b7-ef85a854d463@www.fastmail.com>
-In-Reply-To: <1616372137.246877.1475028.nullmailer@robh.at.kernel.org>
-References: <20210320151903.60759-1-sven@svenpeter.dev>
- <20210320151903.60759-3-sven@svenpeter.dev>
- <1616372137.246877.1475028.nullmailer@robh.at.kernel.org>
-Date:   Mon, 22 Mar 2021 19:16:25 +0100
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Rob Herring" <robh@kernel.org>
-Cc:     "Hector Martin" <marcan@marcan.st>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Stan Skowronek" <stan@corellium.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, "Joerg Roedel" <joro@8bytes.org>,
-        "Rob Herring" <robh+dt@kernel.org>, "Will Deacon" <will@kernel.org>
-Subject: Re: [PATCH 2/3] dt-bindings: iommu: add DART iommu bindings
-Content-Type: text/plain
+        id S230460AbhCVSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:17:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34438 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhCVSQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:16:50 -0400
+Received: from zn.tnic (p200300ec2f066700d1873920611831f8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:d187:3920:6118:31f8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 59C821EC030E;
+        Mon, 22 Mar 2021 19:16:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616437008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3sq6YdCU8BJZWUhxdT9joEhe9PvoQnzQQ2RK2v1z+H8=;
+        b=MoGcW+JDPtktaezfhT++xmj2lP8G5368TPMntW8qBgd6Sg5cnyKC89vcO88q8oR947Fq77
+        TJn8olrWVfII8AgT1V6ZcEWU7V9+iXkS/qd+Ljh5T8ks4vu1ybVGvmEXHSNCOKkOcDjLcd
+        dSOB057xAfY8CmwzZ/y9v7i4Je+5gTY=
+Date:   Mon, 22 Mar 2021 19:16:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <20210322181646.GG6481@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Fri, Mar 19, 2021 at 08:22:19PM +1300, Kai Huang wrote:
+> +/**
+> + * sgx_encl_free_epc_page - free EPC page assigned to an enclave
+> + * @page:	EPC page to be freed
+> + *
+> + * Free EPC page assigned to an enclave.  It does EREMOVE for the page, and
+> + * only upon success, it puts the page back to free page list.  Otherwise, it
+> + * gives a WARNING to indicate page is leaked, and require reboot to retrieve
+> + * leaked pages.
+> + */
+> +void sgx_encl_free_epc_page(struct sgx_epc_page *page)
+> +{
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
+> +
+> +	/*
+> +	 * Give a message to remind EPC page is leaked when EREMOVE fails,
+> +	 * and requires machine reboot to get leaked pages back. This can
+> +	 * be improved in future by adding stats of leaked pages, etc.
+> +	 */
+> +#define EREMOVE_ERROR_MESSAGE \
+> +	"EREMOVE returned %d (0x%x).  EPC page leaked.  Reboot required to retrieve leaked pages."
 
-On Mon, Mar 22, 2021, at 01:15, Rob Herring wrote:
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
+A reboot? Seriously? Why?
 
-Sorry about that! It looks like I didn't have yamllint installed.
-I have fixed the issues and will re-submit.
+How are you going to explain to cloud people that they need to reboot
+their fat server? The same cloud people who want to make sure Intel
+supports late microcode loading no matter the effort just so to avoid
+rebooting the machine.
 
+But now all of a sudden, if they wanna have SGX enclaves in guests, they
+need to get prepared for potential rebooting.
 
-Thanks,
+I sure hope I'm missing something...
 
-Sven
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
