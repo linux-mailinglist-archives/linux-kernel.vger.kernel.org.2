@@ -2,122 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D088345070
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52DE34506F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhCVUGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbhCVUG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:06:26 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF82CC061574;
-        Mon, 22 Mar 2021 13:06:25 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id x14so11961811qki.10;
-        Mon, 22 Mar 2021 13:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kiurOswEq0GN7tcOLD9gh5qyGXjZcTeq6DYVN7DeEus=;
-        b=L9FJPXr7qr4q0/utyiCMEmo2cPprgQVoYGME5DWjmtJt9O/5Lf2Pi6V3SEnb9jY0RZ
-         WAfQcPSVEoD6kx2RKQ+L5sHxLaLDSJMWIYG6DfSZd6ffmr1c13hFpDl6+skib9NtlZWq
-         SqVzrJflaRA6dSEaB/b3D+AON39v4J+vusItqzizL0Qjey9mzn9M6AKmRIRR496QBmE0
-         xT3i5CvAzZCtf06c2ac8Wk7bvcb1Yut/RecrglW04GUw27gSrwxHaWSq4m9ddYAxSdiT
-         I54ia+/L1L6sjimRQgNK7JwW+axrxmezmuEdLG47/ArzsrRWmNRE1/G2LRYPM0rCCYmY
-         d4dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=kiurOswEq0GN7tcOLD9gh5qyGXjZcTeq6DYVN7DeEus=;
-        b=lPB0lcfgayDQtpQSMMzQ8YuCoF65PSUPxpzHVe31v67HQDnTfQRTlk68AxJXXu4fHZ
-         fp+nW7Glwrwl9ZcMBqGiCbcdsq6enCbdxTGppEgFmRLT4zC4hj3dESMnmYZstVJZXEtQ
-         Hw5imS4/NRQE3MkIBFV0l9MpqOAHWOIxEmUCVKBXL0kU5CXf9yApKhlphrVk+IThpFkt
-         FJq1MDVvg56CzhChsLU3+lEGSz3qPItz262hSZsxB0OFCMBCgi8w/7oKASNcdE6zic6G
-         ilXcRJo0e4HqRkYui65FQBwKaSbgZKwsZ5uw8Cg+QWbYI4UMlKJiaKiFwmfzA/+w+U9w
-         sl9Q==
-X-Gm-Message-State: AOAM532DVXyARr0T3yHOLid5N9FvI9rPYWOyIRhN+MvHLtu/QBqHtuaZ
-        GQy7rFhA6LSGy3lukIQ9DEx6y69diBKXlK2b
-X-Google-Smtp-Source: ABdhPJyCAgQslt5NV7qj8KLmSsBunyeirrlNrcFaUKACHj0Ghoc2d72FPFMy8adEH7EKZeC5fjhFMQ==
-X-Received: by 2002:a05:620a:c0e:: with SMTP id l14mr1747425qki.91.1616443584977;
-        Mon, 22 Mar 2021 13:06:24 -0700 (PDT)
-Received: from ArchLinux ([138.199.10.68])
-        by smtp.gmail.com with ESMTPSA id e18sm9562126qtr.52.2021.03.22.13.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:06:24 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 01:36:11 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Matthew Wilcox <willy@infradead.org>, sir@cmpwn.com,
-        gregkh@linuxfoundation.org, lee.jones@linaro.org, bp@alien8.de,
-        huawei@kernel.org, krzk@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] docs: submitting-patches Fix a typo
-Message-ID: <YFj4s6ZPh2QFd9oS@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>, sir@cmpwn.com,
-        gregkh@linuxfoundation.org, lee.jones@linaro.org, bp@alien8.de,
-        huawei@kernel.org, krzk@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210322033000.2523887-1-unixbhaskar@gmail.com>
- <20210322034459.GE1719932@casper.infradead.org>
- <YFgTkhA+IOvNVxEn@ArchLinux>
- <87ft0nl31i.fsf@meer.lwn.net>
+        id S231461AbhCVUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:06:40 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36123 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhCVUGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:06:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616443580; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=vv0v6NJmTLIZNDt8MH4F4BHNlSRRS0JrKCQ7jSldjvk=; b=BAwWLuQ8U+a2OrVCRi+a+V6a/bvDwJWqPe7ZyBnafx7h7VNdWv76oa8xX2e7aPLZ2CcvzQFv
+ 5Tv6ZtkRyoT5Z8rK0pEZkQvw5hD2Np2CUGuR47EX5tlkiXA2Ryo9p4eb0e67ZO0EM1Y96t2g
+ xMrIoBmCFw4rqXiLwgL2nEBE4k8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6058f8b96dc1045b7d05c44c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Mar 2021 20:06:16
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2023EC43461; Mon, 22 Mar 2021 20:06:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.91.149] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 701ECC433C6;
+        Mon, 22 Mar 2021 20:06:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 701ECC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping
+ transfers
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+References: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
+ <CAHp75VfUVCB4gzgOWf=bUpCjfyerQLPN_p-vOnVfxUKHi1WJkg@mail.gmail.com>
+ <716dca12-2bfc-789f-ca74-5555852e4c8b@codeaurora.org>
+ <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <39fdd3c8-9682-6109-f47d-7f7bffc4b85e@codeaurora.org>
+Date:   Mon, 22 Mar 2021 13:06:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wSxl/1aNd87rzlEU"
-Content-Disposition: inline
-In-Reply-To: <87ft0nl31i.fsf@meer.lwn.net>
+In-Reply-To: <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
 
---wSxl/1aNd87rzlEU
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 07:40 Mon 22 Mar 2021, Jonathan Corbet wrote:
->Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
->
->> On 03:44 Mon 22 Mar 2021, Matthew Wilcox wrote:
->>>On Mon, Mar 22, 2021 at 09:00:00AM +0530, Bhaskar Chowdhury wrote:
+On 3/22/2021 12:34 PM, Andy Shevchenko wrote:
+> On Mon, Mar 22, 2021 at 8:49 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>>
+>> Hi Andy,
+>>
+>> On 3/22/2021 5:48 AM, Andy Shevchenko wrote:
+>>> On Fri, Mar 12, 2021 at 2:01 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
 >>>>
->>>> s/mesages/messages/
+>>>> In the situations where the DWC3 gadget stops active transfers, once
+>>>> calling the dwc3_gadget_giveback(), there is a chance where a function
+>>>> driver can queue a new USB request in between the time where the dwc3
+>>>> lock has been released and re-aquired.  This occurs after we've already
+>>>> issued an ENDXFER command.  When the stop active transfers continues
+>>>> to remove USB requests from all dep lists, the newly added request will
+>>>> also be removed, while controller still has an active TRB for it.
+>>>> This can lead to the controller accessing an unmapped memory address.
+>>>>
+>>>> Fix this by ensuring parameters to prevent EP queuing are set before
+>>>> calling the stop active transfers API.
 >>>
->>>did you test the build afterwards?  you forgot to do something.
 >>>
->> What are you talking about??? It is going over my head...why the build
->> reqired?? A spello needs a rebuild???? Wondering....
->
->Willy is pointing out that you have introduced an error into the docs
->build.  A few minutes of your time to learn the basics of RST are likely
->to prove more helpful then typing lots of question marks...
->
-Meh ...wish people learn to more explicit be in the first place ..heck..
+>>> commit f09ddcfcb8c569675066337adac2ac205113471f
+>>> Author: Wesley Cheng <wcheng@codeaurora.org>
+>>> Date:   Thu Mar 11 15:59:02 2021 -0800
+>>>
+>>>    usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+>>>
+>>> effectively broke my gadget setup.
+>>>
+>>> The output of the kernel (followed by non responsive state of USB controller):
+>>>
+>>> [  195.228586] using random self ethernet address
+>>> [  195.233104] using random host ethernet address
+>>> [  195.245306] usb0: HOST MAC aa:bb:cc:dd:ee:f2
+>>> [  195.249732] usb0: MAC aa:bb:cc:dd:ee:f1
+>>> # [  195.773594] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
+>>> [  195.780585] ------------[ cut here ]------------
+>>> [  195.785217] dwc3 dwc3.0.auto: No resource for ep2in
+>>> [  195.790162] WARNING: CPU: 0 PID: 217 at
+>>> drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x4b9/0x670
+>>> [  195.799760] Modules linked in: usb_f_eem u_ether libcomposite
+>>> brcmfmac brcmutil mmc_block pwm_lpss_pci pwm_lps
+>>> s snd_sof_pci_intel_tng snd_sof_pci snd_sof_acpi_intel_byt
+>>> snd_sof_intel_ipc snd_sof_acpi snd_sof snd_sof_nocodec
+>>> spi_pxa2xx_platform snd_sof_xtensa_dsp spi_pxa2xx_pci
+>>> extcon_intel_mrfld intel_mrfld_adc sdhci_pci cqhci sdhci m
+>>> mc_core intel_mrfld_pwrbtn intel_soc_pmic_mrfld hci_uart btbcm btintel
+>>> [  195.835604] CPU: 0 PID: 217 Comm: irq/16-dwc3 Not tainted 5.12.0-rc4+ #60
+>>> [  195.842403] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+>>> BIOS 542 2015.01.21:18.19.48
+>>> [  195.851191] RIP: 0010:dwc3_send_gadget_ep_cmd+0x4b9/0x670
+>>> [  195.856608] Code: cd 00 00 00 44 89 44 24 20 48 89 4c 24 18 e8 ee
+>>> f7 e4 ff 48 8b 4c 24 18 4c 89 f2 48 c7 c7 b9
+>>> ed 4f a0 48 89 c6 e8 ef 24 43 00 <0f> 0b 41 be ea ff ff ff 44 8b 44 24
+>>> 20 e9 80 fc ff ff 41 83 fe 92
+>>> [  195.875381] RSP: 0000:ffffa53c00373ba8 EFLAGS: 00010086
+>>> [  195.880617] RAX: 0000000000000000 RBX: 0000000000001387 RCX: 00000000ffffdfff
+>>> [  195.887755] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000000
+>>> [  195.894893] RBP: ffff9ce8c8f2b028 R08: ffffffffa0732288 R09: 0000000000009ffb
+>>> [  195.902034] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000041006
+>>> [  195.909170] R13: ffffa53c00373c24 R14: ffff9ce8c11dadb0 R15: ffff9ce8c2861700
+>>> [  195.916310] FS:  0000000000000000(0000) GS:ffff9ce8fe200000(0000)
+>>> knlGS:0000000000000000
+>>> [  195.924409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [  195.930161] CR2: 00000000f7f694a0 CR3: 0000000038e0c000 CR4: 00000000001006f0
+>>> [  195.937300] Call Trace:
+>>> [  195.939755]  __dwc3_gadget_ep_enable+0x2d4/0x4e0
+>>> [  195.944393]  ? dwc3_remove_requests.constprop.0+0x86/0x170
+>>
+>> Odd that this change would affect the USB enablment path, as they were
+>> focused on the pullup disable path.  Would you happen to have any
+>> downstream changes on top of v5.12-rc4 we could review to see if they
+>> are still required? (ie where is the dwc3_remove_requests() coming from
+>> during ep enable)
+> 
+> You may check my branch [1] on GH. Basically you may be interested in
+> the commit:
+> 0f86df1294ee7523060cc16eafaf4898c693eab0 REVERTME: usb: dwc3: gadget:
+> skip endpoints ep[18]{in,out}
+> Otherwise it's a clean v5.12-rc4 with a revert and another USB PHY
+> suspend fix (which also shouldn't affect this).
 
->Thanks,
->
->jon
+Can you link your GH reference?
 
---wSxl/1aNd87rzlEU
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> But I don't believe it should have affected this.
+> 
+>>> [  195.949897]  dwc3_gadget_ep_enable+0x5d/0x120
+>>> [  195.954274]  usb_ep_enable+0x27/0x80
+>>> [  195.957869]  gether_connect+0x32/0x1f0 [u_ether]
+>>> [  195.962512]  eem_set_alt+0x6d/0x140 [usb_f_eem]
+>>> [  195.967061]  composite_setup+0x224/0x1ba0 [libcomposite]
+>>> [  195.972405]  ? debug_dma_unmap_page+0x79/0x80
+>>> [  195.976782]  ? configfs_composite_setup+0x6b/0x90 [libcomposite]
+>>> [  195.982811]  configfs_composite_setup+0x6b/0x90 [libcomposite]
+>>> [  195.988668]  dwc3_ep0_interrupt+0x459/0xa50
+>>> [  195.992869]  dwc3_thread_interrupt+0x8e2/0xee0
+>>> [  195.997327]  ? __schedule+0x237/0x6d0
+>>> [  196.001005]  ? disable_irq_nosync+0x10/0x10
+>>> [  196.005200]  irq_thread_fn+0x1b/0x60
+>>> [  196.008789]  irq_thread+0xd6/0x170
+>>> [  196.012202]  ? irq_thread_check_affinity+0x70/0x70
+>>> [  196.017004]  ? irq_forced_thread_fn+0x70/0x70
+>>> [  196.021373]  kthread+0x116/0x130
+>>> [  196.024617]  ? kthread_create_worker_on_cpu+0x60/0x60
+>>> [  196.029680]  ret_from_fork+0x22/0x30
+>>> [  196.033272] ---[ end trace 8dd104a950d8d248 ]---
+>>>
+>>>
+>> Also, as I mentioned above, the changes should affect the pullup disable
+>> path, so when you 'echo "" > UDC' or something similar to that
+>> operation, did you see any errors?
+> 
+> After your patch I see a warning as above. Before — no errors or warnings.
+> 
+>> Can you provide a ftrace output w/
+>> the DWC3 tracing enabled once removing the UDC?
+> 
+> Can you provide step-by-step instructions what should I do?
+> 
+Let me try with your kernel, and steps below first.
 
------BEGIN PGP SIGNATURE-----
+Thanks
+Wesley Cheng
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBY+LMACgkQsjqdtxFL
-KRU8gwf8CjOVtyGTusYj/yFpoWjb19VBlULpxb58a03elGUSN9gabxPQHBR3+quE
-LBb8GczvkiDonsaj12Bp/FqJWQzIlXiXcOf5fAzjpbCMNuneqEZ3g0Nk7x9dpIjd
-7A0oo8A66R3qqGgga+DNubKMbWOruIaGCVXaiB4DhkCrQI+tgOnCd34C1lzLj3hR
-7pyWe0iUxBi/DgLJiCMTheIaRoM4fAcXT9b6Uf9c5oICEAbXSdOocr6beQXc0QP3
-GedYFsK++Qe68ccQE0u6kaO+T1lBCZNJiy5lZlr4vL/4kS1ehpf/hn9YBAa3K9v1
-CAqLp6Vj3RGabyrIPtStBz1R0Fv0xA==
-=l+T8
------END PGP SIGNATURE-----
+>>> Revert helps (I'm on v5.12-rc4 now with a revert).
+>>>
+>>> The script to enable gadget:
+>>>
+>>> #!/bin/sh -efu
+>>>
+>>> # Mounting CONFIGFS
+>>> grep -q -w /sys/kernel/config /proc/mounts || mount -t configfs none
+>>> /sys/kernel/config
+>>>
+>>> # Addresses and files
+>>> readonly GADGET_BASE_DIR="/sys/kernel/config/usb_gadget/g1"
+>>> readonly DEV_ETH_ADDR="aa:bb:cc:dd:ee:f1"
+>>> readonly HOST_ETH_ADDR="aa:bb:cc:dd:ee:f2"
+>>> readonly USBDISK="/usbdisk.img"
+>>>
+>>> # Insert modules
+>>> modprobe libcomposite
+>>>
+>>> # Create directory structure
+>>> mkdir "${GADGET_BASE_DIR}"
+>>> cd "${GADGET_BASE_DIR}"
+>>> mkdir -p configs/c.1/strings/0x409
+>>> mkdir -p strings/0x409
+>>>
+>>> # Ethernet device
+>>> mkdir functions/eem.usb0
+>>> echo "${DEV_ETH_ADDR}" > functions/eem.usb0/dev_addr
+>>> echo "${HOST_ETH_ADDR}" > functions/eem.usb0/host_addr
+>>> ln -s functions/eem.usb0 configs/c.1/
+>>>
+>>> # Composite Gadget Setup
+>>> echo 0x1d6b > idVendor          # Linux Foundation
+>>> echo 0x0104 > idProduct         # Multifunction Composite Gadget
+>>> echo 0x0100 > bcdDevice         # v1.0.0
+>>> echo 0x0200 > bcdUSB            # USB2
+>>> echo "0123456789abcdef" > strings/0x409/serialnumber
+>>> echo "USBArmory"        > strings/0x409/manufacturer
+>>> echo "USBArmory Gadget" > strings/0x409/product
+>>> echo "Conf1"            > configs/c.1/strings/0x409/configuration
+>>> echo 120                > configs/c.1/MaxPower
+>>>
+>>> # Activate gadgets
+>>> echo dwc3.0.auto > UDC
+>>>
+>>> Please, tell me how to fix this, otherwise I will have to send a revert.
+>>>
+>> This also fixes a potential SMMU fault on targets with that enabled.  It
+>> causes the controller to access a stale TRB DMA address after it has
+>> already been unmapped.  I think we should figure out what is causing the
+>> issue on your set up instead of reverting the entire change.
+> 
+> If we find a cause and have a fix during this week, otherwise it's
+> rc5:ish timing when we may not have more time to play.
+> 
 
---wSxl/1aNd87rzlEU--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
