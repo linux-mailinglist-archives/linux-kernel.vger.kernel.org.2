@@ -2,134 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705C23437AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE9E3437AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhCVDyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S229991AbhCVDyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhCVDxo (ORCPT
+        with ESMTP id S229866AbhCVDye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:53:44 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4379C061574;
-        Sun, 21 Mar 2021 20:53:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id o2so5839232plg.1;
-        Sun, 21 Mar 2021 20:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3Ufi0jzK1QTqOk3lxQWPXZ3q8d2AUcWGXV7scJ/HqnE=;
-        b=tOor6UtxMGEMkVXErCwo73HRCp9bMB5iz5QbhQZGaYkvavoapR7f2D2gu41OORhrx4
-         Raz4bs+tUw6UAQ/J5zQunEVcUH+Ik1nJDI5aYWyeZenaM5bTnDN4HzGgRN7wvLCbuOjW
-         kyRREtfvncPA8iedHqT5ID2bVuBuFHbwAy4RXj96l4vuR6TD+feei5qyxwBXfzAc8siy
-         fLuuEcPRMGs7EhdBuYcL+cN5m8Fs+FeMLWTmg11oIJNWx2q50n0fSmqhiV2UJMgU/9HZ
-         xQAFV4QJxD3inK9b9jUjG5QNFASgIXlyq+1V/ui0C+GCFgm+JuW7/mwioiInVN0z0l64
-         M+bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3Ufi0jzK1QTqOk3lxQWPXZ3q8d2AUcWGXV7scJ/HqnE=;
-        b=boAdcYKvFIICmQAV75WXouvbfGHBXzVjG871kEpDVKX3EK0CDKb5HewA3GBweHskbP
-         U9yTW/68KBzOBhoLZwuqYunFZEmHMLvyxGCl1k0IYWcfEQjYJLMT8vjyfOcN23kxIMpw
-         L+QzxMC1eM4AyRGfUTYqX0YpmGT7q9lOLIuGyIX96S581skO4MTczmGWkDuxFqv3nT5k
-         pdbAnPcOvZkAXTSYbyQXt3LVI4tDufZRtlpQ18yjViontzSv05a/OjH6SwimpN5hrsvX
-         cGYYnjEKfcn7ExIxKc0pOFIQPRHY5HtSRBgKZS3RZATed1YmkwdErO4mqB5MCorLz+KK
-         iNCA==
-X-Gm-Message-State: AOAM5326LGsUpYM3WKvbITzmkK7ylpD2KF2BsaRkREVAcL+++FpmgcSr
-        ISlQLmnpM99nuoIKIfTJ2T2uuDa8CM4=
-X-Google-Smtp-Source: ABdhPJzuJtvnKd4bLPPWtJGao+aXEqJr4SwiqRunr75pE8Aeode2gHazhv67BpvqXqDkFet0XSuyNw==
-X-Received: by 2002:a17:902:e80a:b029:e6:c4c4:1f05 with SMTP id u10-20020a170902e80ab02900e6c4c41f05mr25320543plg.33.1616385223569;
-        Sun, 21 Mar 2021 20:53:43 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
-        by smtp.gmail.com with ESMTPSA id x1sm11759217pfj.209.2021.03.21.20.53.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 20:53:42 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 20:53:40 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: serio - make write method mandatory
-Message-ID: <YFgUxG/TljMuVeQ3@google.com>
+        Sun, 21 Mar 2021 23:54:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80215C061574;
+        Sun, 21 Mar 2021 20:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OLtU7Po7VDleXiwD97Raw3xEmeFq1dvrerQKytpuzyI=; b=j8ZYytoWWkgXlT3z1roEGsgEli
+        X8fmlr/of840tbaO/jZpc2gZP06Ecym1Zhug/4i/qUs+3rDAEmRcT0cGCkwNliyn7MxBftcvmQ49D
+        FcVsViHszMUACH5uW1YoCXUkwvX3xvzKuVsbjNA3HGeNgRIUPGKSWGWcqEWxyX9IpZrr3u96u6G3I
+        HMaAsHz1MqkmoCm02b1TCdVMTin1nuzF8FxE2gu2+800xhcFZhkTSIhNkTRGDpe8wQ2KUzXP1wsss
+        s5b2BFqqO4CmvreJskvLORGpSNR3uU0h4Ys9LqvKr0oVq76Gr6FvDYJpD/pk4AKy4mVDazyKykhMi
+        qYKChQFg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOBe1-007xJI-Kw; Mon, 22 Mar 2021 03:54:25 +0000
+Date:   Mon, 22 Mar 2021 03:54:21 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Balbir Singh <bsingharora@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 01/25] mm: Introduce struct folio
+Message-ID: <20210322035421.GF1719932@casper.infradead.org>
+References: <20210305041901.2396498-1-willy@infradead.org>
+ <20210305041901.2396498-2-willy@infradead.org>
+ <20210318235645.GB3346@balbir-desktop>
+ <20210319012527.GX3420@casper.infradead.org>
+ <1616381339.fjexi9aqhl.astroid@bobo.none>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1616381339.fjexi9aqhl.astroid@bobo.none>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given that all serio drivers except one implement write() method
-let's make it mandatory to avoid testing for its presence whenever
-we attempt to use it.
+On Mon, Mar 22, 2021 at 12:52:40PM +1000, Nicholas Piggin wrote:
+> Excerpts from Matthew Wilcox's message of March 19, 2021 11:25 am:
+> > On Fri, Mar 19, 2021 at 10:56:45AM +1100, Balbir Singh wrote:
+> >> On Fri, Mar 05, 2021 at 04:18:37AM +0000, Matthew Wilcox (Oracle) wrote:
+> >> > A struct folio refers to an entire (possibly compound) page.  A function
+> >> > which takes a struct folio argument declares that it will operate on the
+> >> > entire compound page, not just PAGE_SIZE bytes.  In return, the caller
+> >> > guarantees that the pointer it is passing does not point to a tail page.
+> >> >
+> >> 
+> >> Is this a part of a larger use case or general cleanup/refactor where
+> >> the split between page and folio simplify programming?
+> > 
+> > The goal here is to manage memory in larger chunks.  Pages are now too
+> > small for just about every workload.  Even compiling the kernel sees a 7%
+> > performance improvement just by doing readahead using relatively small
+> > THPs (16k-256k).  You can see that work here:
+> > https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/master
+> 
+> The 7% improvement comes from cache cold kbuild by improving IO
+> patterns?
+> 
+> Just wondering what kind of readahead is enabled by this that can't
+> be done with base page size.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/serio/ams_delta_serio.c | 6 ++++++
- drivers/input/serio/serio.c           | 5 +++++
- include/linux/serio.h                 | 5 +----
- 3 files changed, 12 insertions(+), 4 deletions(-)
+I see my explanation earlier was confusing.  What I meant to say
+was that the only way in that patch set to create larger pages was
+at readahead time.  Writes were incapable of creating larger pages.
+Once pages were in the page cache, they got managed at that granularity
+unless they got split by a truncate/holepunch/io-error/...
 
-diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-index 1c0be299f179..a1c314897951 100644
---- a/drivers/input/serio/ams_delta_serio.c
-+++ b/drivers/input/serio/ams_delta_serio.c
-@@ -89,6 +89,11 @@ static irqreturn_t ams_delta_serio_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
-+static int ams_delta_serio_write(struct serio *serio, u8 data)
-+{
-+	return -EINVAL;
-+}
-+
- static int ams_delta_serio_open(struct serio *serio)
- {
- 	struct ams_delta_serio *priv = serio->port_data;
-@@ -157,6 +162,7 @@ static int ams_delta_serio_init(struct platform_device *pdev)
- 	priv->serio = serio;
- 
- 	serio->id.type = SERIO_8042;
-+	serio->write = ams_delta_serio_write;
- 	serio->open = ams_delta_serio_open;
- 	serio->close = ams_delta_serio_close;
- 	strlcpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
-diff --git a/drivers/input/serio/serio.c b/drivers/input/serio/serio.c
-index 29f491082926..8d229a11bb6b 100644
---- a/drivers/input/serio/serio.c
-+++ b/drivers/input/serio/serio.c
-@@ -694,6 +694,11 @@ EXPORT_SYMBOL(serio_reconnect);
-  */
- void __serio_register_port(struct serio *serio, struct module *owner)
- {
-+	if (!serio->write) {
-+		pr_err("%s: refusing to register %s without write method\n",
-+		       __func__, serio->name);
-+		return;
-+	}
- 	serio_init_port(serio);
- 	serio_queue_event(serio, owner, SERIO_REGISTER_PORT);
- }
-diff --git a/include/linux/serio.h b/include/linux/serio.h
-index 6c27d413da92..075f1b8d76fa 100644
---- a/include/linux/serio.h
-+++ b/include/linux/serio.h
-@@ -121,10 +121,7 @@ void serio_unregister_driver(struct serio_driver *drv);
- 
- static inline int serio_write(struct serio *serio, unsigned char data)
- {
--	if (serio->write)
--		return serio->write(serio, data);
--	else
--		return -1;
-+	return serio->write(serio, data);
- }
- 
- static inline void serio_drv_write_wakeup(struct serio *serio)
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
-
--- 
-Dmitry
+I don't have good perf runs of kernbench to say exactly where we got the
+benefit.  My assumption is that because we're managing an entire, say,
+256kB page as a single unit on the LRU list, we benefit from lower LRU
+lock contention.  There's also the benefit of batching, eg, allocating
+a single 256kB page from the page allocator may well be more effective
+than allocating 64 4kB pages.
