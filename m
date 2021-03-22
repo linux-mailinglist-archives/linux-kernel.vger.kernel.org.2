@@ -2,151 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC0E344986
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD8434498C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhCVPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:43:47 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:60717 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbhCVPnO (ORCPT
+        id S230273AbhCVPp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhCVPop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:43:14 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M6lxY-1lJOMY3ila-008Kw4 for <linux-kernel@vger.kernel.org>; Mon, 22 Mar
- 2021 16:43:13 +0100
-Received: by mail-ot1-f44.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so16348695ota.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:43:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530y2QApd+oo1tBMD8b3GoyXgFpY6bjnA7QThEVIKpdxiHjGLnUG
-        wpFDy5xOgrDyWStVyiWSpaqYvFfksKpqUm2YhJw=
-X-Google-Smtp-Source: ABdhPJwWNPEJuaMEZd8pIQV9l7n7UkrBbBEBeXH7l5ey8sIMjBmiFNOwitwEz/Yn8XRlHflfgzUwdqIgvpVDd75yQvY=
-X-Received: by 2002:a9d:316:: with SMTP id 22mr470096otv.210.1616427791533;
- Mon, 22 Mar 2021 08:43:11 -0700 (PDT)
+        Mon, 22 Mar 2021 11:44:45 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1B0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:44:44 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id o10so22002619lfb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=/Ace+TqkoceKwGzTakCDUPQSg5WHLL/3NqzonMEWOW8=;
+        b=Ylmm5UptUOeJe/83/kzLRIvpZQRyzUweCvhm/IjphAp1QwCHEZommi51jORuYiIZYA
+         3IbIU5FVyS+k2G7EC8OYRBjocirU9/AqobHznZBTUD47jJ1YOTj6QZnD8QtcCnwyq9QS
+         LQ5XRA8HPO0DZKX6k+H9hCMVTmoo1g8gEeTDNfNEtq0d4fh/TcH5IipHB1qWt/W4Sqwo
+         PFmyTsQ5i2mKvV5HN7m8JK5zZ5tNXPOi/dkJbKyeOFJ4DgHGggnW1vTUYJJpr5g/HYSf
+         T5UTCNHUmi6xGNwwxqeQkjpKeBl0t79MIRglgxD/UC9+cSfMgDqsfcOCRDgH9KlVq1A5
+         CMLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=/Ace+TqkoceKwGzTakCDUPQSg5WHLL/3NqzonMEWOW8=;
+        b=rjQSFQXblootaep6rgKEhI93X1y6QSp0ke/KeIbRRf7R0Xmia4VW7tKDKHkn0zFnUJ
+         SbWcIETd07KCj4KvG6dIbx8ZSO/AskgmX7j50gRssY1vKmFYJk6iuANEBJNURmmf4EIB
+         ipPb7xgG0ZoGQSPeTii/qXlLvE5hhAmTLJk2ZumU06MTm3ckEscgMuzfU/zpmDwA4TTW
+         4OWgMjW4kBz0zF774G2ZaqNHZRd0CvG04p5UyMZnZGXZ88uulOUIxGBl/hEQPR5GAPHt
+         qj0/L4gS7tnnl6wJIBiz/cyf9lCPyA6UWLFALXUHasbi9SQRZm+YSAXB64wRMfIFBUDJ
+         UsAg==
+X-Gm-Message-State: AOAM530ZQYHUwG1qJlnOJ5xP4Q+ctPioe2A6RYQOVblS3CWheCKbagWC
+        Y7MNX+4ljD+mG20iRnjGmHt/fA==
+X-Google-Smtp-Source: ABdhPJyfgG9pUdaudab2jTwcOXFJ5SOBeP6A/DCX28jm7W1o4K5yvDG9yD2j553DPBAoPq+ohmZhVA==
+X-Received: by 2002:a05:6512:c2a:: with SMTP id z42mr20386lfu.630.1616427883066;
+        Mon, 22 Mar 2021 08:44:43 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id g3sm1141549lfb.94.2021.03.22.08.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 08:44:42 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 09/16] net: dsa: replay port and local fdb entries when joining the bridge
+In-Reply-To: <20210318231829.3892920-10-olteanv@gmail.com>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-10-olteanv@gmail.com>
+Date:   Mon, 22 Mar 2021 16:44:41 +0100
+Message-ID: <87wntzmbva.fsf@waldekranz.com>
 MIME-Version: 1.0
-References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
- <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
- <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
- <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
- <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
- <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
- <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
- <CAK8P3a26dWjbS8CjGwc7S5S0M4SonWh4afqdxpoa8Q9vQhC0TA@mail.gmail.com> <CAFEAcA-oH=9RLdzhsLcSTxNLBLcyEcJtO4L5EqRSiGWHdApgqA@mail.gmail.com>
-In-Reply-To: <CAFEAcA-oH=9RLdzhsLcSTxNLBLcyEcJtO4L5EqRSiGWHdApgqA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 22 Mar 2021 16:42:55 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2aQ0C7M2p3DBwjvK5mGyg2_8PQK2=FnkPFp3bVmt_xMw@mail.gmail.com>
-Message-ID: <CAK8P3a2aQ0C7M2p3DBwjvK5mGyg2_8PQK2=FnkPFp3bVmt_xMw@mail.gmail.com>
-Subject: Re: arm64 syzbot instances
-To:     Peter Maydell <peter.maydell@linaro.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:LT7wnUnrQ0twKagV6NI+TbEYlbAXBcULaEpkOLb8rRzTH3knYBl
- uAlOwrHmsYDqKLh0TSCXdwp0OYxPOyNRCARcSERHmWR89SC6PwEALtX9EllRfBTOlPjbzwu
- QpVssjZMCS3vCkyMAHhbWW0GtEGqR/aRNgkqiMX+cDne69cFNttqsJPcWHEe98n2ABx4aoZ
- oC/w7hpB+wkd+hhi3oA4w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i3WaBeHP4nc=:GGy+t7lW0MZXBdtjbYgoLt
- X/s2PRZqTfpca4z73MwKMd5w0Kw0seU/cDoLg0kpYvQJncL2utyTRU22ySvlRkMIHcW/v7hEL
- spytwFtTpyqUnd7mMy9mXnD8r/DsHN/YlybObNnONnrlP3kLYV3S4HXKOFOrMYD3kuuu9jojV
- FGndS2mA0IEKGK1s3vAsG1dO9JUA8uKTlWbqqHPRShcGTHi6EmZcyUgIRPU0HHs8GbWG7Q31v
- 5DYkNj1PGQEUwh/uJ8C7KlJBQAW8++8Xkcyr2nRaQG1GbqXyLBys8KWStb8eEP9PpOMnsKG21
- 9oOrlgMa1R7pDXF6YC5Vp6aQ4TkF4KCUTm18ge8kia5yFKAFwaNWfhTXYUBikG9AeVfPgv605
- 0+4vTeAYuZy7ql+v7rZ+D8ig7bx/1JxMCa3qXT6dAwb0nBRRcMWcceVIwQlEkGey7gyMiNWiW
- N42MxwP+XUzh9HcatT8fZ/BZhVGAMn34x+S5lQsAbb3KFdyPOLhCPNzI5Aozt5d5s5/LFtZt4
- PFr5wNSXK1ovMNIX+VsMlJ9GNcss9n7coN6pYS0FlZFuVlAQCwhwofaH0GJ5Ti3QA==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 2:53 PM Peter Maydell <peter.maydell@linaro.org> wrote:
-> On Sun, 21 Mar 2021 at 19:00, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Sat, Mar 20, 2021 at 9:43 PM Peter Maydell <peter.maydell@linaro.org> wrote:
-> > > On Fri, 12 Mar 2021 at 09:16, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > > So it's probably qemu that triggers the 'synchronous external
-> > > > abort' when accessing the PCI I/O space, which in turn hints
-> > > > towards a bug in qemu. Presumably it only returns data from
-> > > > I/O ports that are actually mapped to a device when real hardware
-> > > > is supposed to return 0xffffffff when reading from unused I/O ports.
-> > >
-> > > Do you have a reference to the bit of the PCI spec that mandates
-> > > this -1/discard behaviour for attempted access to places where
-> > > there isn't actually a PCI device mapped ? The spec is pretty
-> > > long and hard to read...
-> > >
-> > > (Knowing to what extent this behaviour is mandatory for all
-> > > PCI systems/host controllers vs just "it would be nice if the
-> > > gpex host controller worked this way" would help in figuring
-> > > out where in QEMU to change.)
-> >
-> > I spent some more time looking at both really old PCI specifications,
-> > and new ones.
-> > The old PCI specs seem to just leave this bit as out of scope because
-> > it does not concern transactions on the bus. The PCI host controller
-> > can either report a 'master abort' to the CPU, or ignore it, and each
-> > bridge can decide to turn master aborts on reads into all 1s.
-> > We do have support some SoCs in Linux that trigger a CPU exception,
-> > but we tend to deal with those with an ugly hack that just ignores
-> > all exceptions from the CPU. Most host bridges fortunately behave
-> > like an x86 PC though, and do not trigger an exception here.
+On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 >
-> There's apparently a bit in the PCI spec that reads:
->         The host bus bridge, in PC compatible systems, must return all
->         1's on a read transaction and discard data on a write transaction
->         when terminated with Master-Abort.
+> When a DSA port joins a LAG that already had an FDB entry pointing to it:
 >
-> which obviously applies only to "PC compatible systems".
-
-Right. As far as I can tell, all ARMv8 and most ARMv7 based SoCs
-do this to be more compatible with PC style operating systems like
-Linux, but you are right that the specification here does not
-mandate that, and the older ARMv5 SoCs seem to be compliant
-as well based on this.
-
-> > Linux has a driver for DPC, which apparently configures it to
-> > cause an interrupt to log the event, but it does not hook up the
-> > CPU exception handler to this. I don't see an implementation of DPC
-> > in qemu, which I take as an indication that it should use the
-> > default behavior and cause neither an interrupt nor a CPU exception.
+> ip link set bond0 master br0
+> bridge fdb add dev bond0 00:01:02:03:04:05 master static
+> ip link set swp0 master bond0
 >
-> Hmm, maybe. We should probably also implement -1/discard just because
-> we're not intending to have 'surprising' behaviour.
+> the DSA port will have no idea that this FDB entry is there, because it
+> missed the switchdev event emitted at its creation.
 >
-> TBH I'm having difficulty seeing why the kernel should be doing
-> this at all, though. The device tree tells you you have a PCI
-> controller; PCI supports enumeration of devices; you know exactly
-> where everything is mapped because the BARs tell you that.
-> I don't see anything that justifies the kernel in randomly
-> dereferencing areas of the IO or memory windows where it hasn't
-> mapped anything. You shouldn't be probing for legacy ISA-port
-> devices unless you're on a system which might actually have them
-> (eg an x86 PC).
+> Ido Schimmel pointed this out during a discussion about challenges with
+> switchdev offloading of stacked interfaces between the physical port and
+> the bridge, and recommended to just catch that condition and deny the
+> CHANGEUPPER event:
+> https://lore.kernel.org/netdev/20210210105949.GB287766@shredder.lan/
+>
+> But in fact, we might need to deal with the hard thing anyway, which is
+> to replay all FDB addresses relevant to this port, because it isn't just
+> static FDB entries, but also local addresses (ones that are not
+> forwarded but terminated by the bridge). There, we can't just say 'oh
+> yeah, there was an upper already so I'm not joining that'.
+>
+> So, similar to the logic for replaying MDB entries, add a function that
+> must be called by individual switchdev drivers and replays local FDB
+> entries as well as ones pointing towards a bridge port. This time, we
+> use the atomic switchdev notifier block, since that's what FDB entries
+> expect for some reason.
+>
+> Reported-by: Ido Schimmel <idosch@idosch.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+>  include/linux/if_bridge.h |  9 +++++++
+>  include/net/switchdev.h   |  1 +
+>  net/bridge/br_fdb.c       | 52 +++++++++++++++++++++++++++++++++++++++
+>  net/dsa/dsa_priv.h        |  1 +
+>  net/dsa/port.c            |  4 +++
+>  net/dsa/slave.c           |  2 +-
+>  6 files changed, 68 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
+> index 4c25dafb013d..89596134e88f 100644
+> --- a/include/linux/if_bridge.h
+> +++ b/include/linux/if_bridge.h
+> @@ -147,6 +147,8 @@ void br_fdb_clear_offload(const struct net_device *dev, u16 vid);
+>  bool br_port_flag_is_set(const struct net_device *dev, unsigned long flag);
+>  u8 br_port_get_stp_state(const struct net_device *dev);
+>  clock_t br_get_ageing_time(struct net_device *br_dev);
+> +int br_fdb_replay(struct net_device *br_dev, struct net_device *dev,
+> +		  struct notifier_block *nb);
+>  #else
+>  static inline struct net_device *
+>  br_fdb_find_port(const struct net_device *br_dev,
+> @@ -175,6 +177,13 @@ static inline clock_t br_get_ageing_time(struct net_device *br_dev)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline int br_fdb_replay(struct net_device *br_dev,
+> +				struct net_device *dev,
+> +				struct notifier_block *nb)
+> +{
+> +	return -EINVAL;
+> +}
+>  #endif
+>  
+>  #endif
+> diff --git a/include/net/switchdev.h b/include/net/switchdev.h
+> index b7fc7d0f54e2..7688ec572757 100644
+> --- a/include/net/switchdev.h
+> +++ b/include/net/switchdev.h
+> @@ -205,6 +205,7 @@ struct switchdev_notifier_info {
+>  
+>  struct switchdev_notifier_fdb_info {
+>  	struct switchdev_notifier_info info; /* must be first */
+> +	struct list_head list;
+>  	const unsigned char *addr;
+>  	u16 vid;
+>  	u8 added_by_user:1,
+> diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+> index b7490237f3fc..49125cc196ac 100644
+> --- a/net/bridge/br_fdb.c
+> +++ b/net/bridge/br_fdb.c
+> @@ -726,6 +726,58 @@ static inline size_t fdb_nlmsg_size(void)
+>  		+ nla_total_size(sizeof(u8)); /* NFEA_ACTIVITY_NOTIFY */
+>  }
+>  
+> +static int br_fdb_replay_one(struct notifier_block *nb,
+> +			     struct net_bridge_fdb_entry *fdb,
+> +			     struct net_device *dev)
+> +{
+> +	struct switchdev_notifier_fdb_info item;
+> +	int err;
+> +
+> +	item.addr = fdb->key.addr.addr;
+> +	item.vid = fdb->key.vlan_id;
+> +	item.added_by_user = test_bit(BR_FDB_ADDED_BY_USER, &fdb->flags);
+> +	item.offloaded = test_bit(BR_FDB_OFFLOADED, &fdb->flags);
+> +	item.info.dev = dev;
+> +
+> +	err = nb->notifier_call(nb, SWITCHDEV_FDB_ADD_TO_DEVICE, &item);
+> +	return notifier_to_errno(err);
+> +}
+> +
+> +int br_fdb_replay(struct net_device *br_dev, struct net_device *dev,
+> +		  struct notifier_block *nb)
+> +{
+> +	struct net_bridge_fdb_entry *fdb;
+> +	struct net_bridge *br;
+> +	int err = 0;
+> +
+> +	if (!netif_is_bridge_master(br_dev))
+> +		return -EINVAL;
+> +
+> +	if (!netif_is_bridge_port(dev))
+> +		return -EINVAL;
+> +
+> +	br = netdev_priv(br_dev);
+> +
+> +	rcu_read_lock();
+> +
+> +	hlist_for_each_entry_rcu(fdb, &br->fdb_list, fdb_node) {
+> +		struct net_device *dst_dev;
+> +
+> +		dst_dev = fdb->dst ? fdb->dst->dev : br->dev;
+> +		if (dst_dev != br_dev && dst_dev != dev)
+> +			continue;
+> +
 
-It only happened in this case because there is also a bug in
-the 8250 serial port driver that is configured to assume four ports
-exist at port zero. On real arm64 hardware, this is apparently
-harmless because the driver has coped with this for 30 years ;-)
+I do not know if it is a problem or not, more of an observation: This is
+not guaranteed to be an exact replay of the events that the bridge port
+(i.e. bond0 or whatever) has received since, in fdb_insert, we exit
+early when adding local entries if that address is already in the
+database.
 
-There are a few other drivers that assume hardware is accessible
-at the legacy addresses, and applications can also still open /dev/ioport
-(if that is enabled at compile time) for the same purpose. Examples
-could be PC-style mouse/keyboard (emulated by a server BMC),
-PATA/SATA controllers in pre-AHCI mode, VGA console, and a
-couple of industrial I/O drivers that have ISA devices behind a
-PCI bridge.
+Do we have to guard against this somehow? Or maybe we should consider
+the current behavior a bug and make sure to always send the event in the
+first place?
 
-Most other actual ISA add-on card drivers can only be enabled
-on kernels that support machines with real slots, so you could
-get them on an i386 kernel running a virtualized x86_64 machine,
-but not on ARMv6 or later kernels, and you can't run pre-ARMv7
-kernels on ARMv8 hardware.
-
-        Arnd
+> +		err = br_fdb_replay_one(nb, fdb, dst_dev);
+> +		if (err)
+> +			break;
+> +	}
+> +
+> +	rcu_read_unlock();
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL(br_fdb_replay);
+> +
+>  static void fdb_notify(struct net_bridge *br,
+>  		       const struct net_bridge_fdb_entry *fdb, int type,
+>  		       bool swdev_notify)
+> diff --git a/net/dsa/dsa_priv.h b/net/dsa/dsa_priv.h
+> index b14c43cb88bb..92282de54230 100644
+> --- a/net/dsa/dsa_priv.h
+> +++ b/net/dsa/dsa_priv.h
+> @@ -262,6 +262,7 @@ static inline bool dsa_tree_offloads_bridge_port(struct dsa_switch_tree *dst,
+>  
+>  /* slave.c */
+>  extern const struct dsa_device_ops notag_netdev_ops;
+> +extern struct notifier_block dsa_slave_switchdev_notifier;
+>  extern struct notifier_block dsa_slave_switchdev_blocking_notifier;
+>  
+>  void dsa_slave_mii_bus_init(struct dsa_switch *ds);
+> diff --git a/net/dsa/port.c b/net/dsa/port.c
+> index 6670612f96c6..9850051071f2 100644
+> --- a/net/dsa/port.c
+> +++ b/net/dsa/port.c
+> @@ -205,6 +205,10 @@ static int dsa_port_switchdev_sync(struct dsa_port *dp,
+>  	if (err && err != -EOPNOTSUPP)
+>  		return err;
+>  
+> +	err = br_fdb_replay(br, brport_dev, &dsa_slave_switchdev_notifier);
+> +	if (err && err != -EOPNOTSUPP)
+> +		return err;
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+> index b974d8f84a2e..c51e52418a62 100644
+> --- a/net/dsa/slave.c
+> +++ b/net/dsa/slave.c
+> @@ -2392,7 +2392,7 @@ static struct notifier_block dsa_slave_nb __read_mostly = {
+>  	.notifier_call  = dsa_slave_netdevice_event,
+>  };
+>  
+> -static struct notifier_block dsa_slave_switchdev_notifier = {
+> +struct notifier_block dsa_slave_switchdev_notifier = {
+>  	.notifier_call = dsa_slave_switchdev_event,
+>  };
+>  
+> -- 
+> 2.25.1
