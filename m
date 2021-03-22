@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C8D343720
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C937E343726
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhCVDHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:07:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230015AbhCVDGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616382412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qGSGyikb+edIn7bTwEsdqdkd00y7AOsinPPrODeBW6o=;
-        b=AHkrUGrhGJTBka3e7Y4OcLCPwcSSdlYbnEnhlrg7tV8vcOPstp1MsPfmH+yRuCeIcFs31A
-        k8IQcL82hfFNwD9x8P6LslGFkYo0pK1e59ahkkYYkR6AaBWNw1QA7XfKVnyEp1K0Nea0C+
-        6orqgts0yOwtb0GNX/nHBIh9FAMuRc0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-ZmxVymkNMxi4D3AF6oeFog-1; Sun, 21 Mar 2021 23:06:48 -0400
-X-MC-Unique: ZmxVymkNMxi4D3AF6oeFog-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0BF5107ACCA;
-        Mon, 22 Mar 2021 03:06:46 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-188.pek2.redhat.com [10.72.13.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D441E1001B2C;
-        Mon, 22 Mar 2021 03:06:41 +0000 (UTC)
-Subject: Re: vDPA: explain in Kconfig what vDPA is, capitalise it consistenly
-To:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210321163421.GA27314@amd>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <2739f8ce-70d2-337d-d952-fd8b6b26f8d8@redhat.com>
-Date:   Mon, 22 Mar 2021 11:06:40 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S229871AbhCVDLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:11:47 -0400
+Received: from mout.gmx.net ([212.227.15.19]:42709 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhCVDLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 23:11:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616382629;
+        bh=6536XVc/gAsAd4F91AEn9O913I3emGi3sMYtABF4XeA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=aXnCTS4oMV/L/EtQZsXG/6fKyWNfib/1QggeSay+rJIEoINolTlG7+HpM8koKMnNr
+         CdGtxFUitFuBJLnqGa4ChhryouX2Jep9LCkjw84TahF6+vawW+bIvWBBoKG+6/CPPW
+         rqPJVNnP2g5qSFbYpkL9CThVrb81eaH5jPK9MMTg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.146.50.88]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mn2W5-1m8GwM2BR1-00k4Bh; Mon, 22
+ Mar 2021 04:10:29 +0100
+Message-ID: <e984000bf56be980f87c39bf644e139e4c39ddbf.camel@gmx.de>
+Subject: Re: [ANNOUNCE] v5.12-rc3-rt3
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Mon, 22 Mar 2021 04:10:28 +0100
+In-Reply-To: <e2e51e78094d14f6795221734c2fc8d66d6455a7.camel@gmx.de>
+References: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
+         <1f63f1fcea10fc179881384cd838b1c9e5207b82.camel@gmx.de>
+         <e2e51e78094d14f6795221734c2fc8d66d6455a7.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20210321163421.GA27314@amd>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1EPMaBemTID/QUu9iSqWFTAcUiGWdtA00gXZXFw6vHORXYh2VW3
+ CxEpNvCXOjyTIWxvB3XYqIUnqBCGy21nGxkrGsh+ziWSxhQZdskUq7CFapTcLWkP8k63rvT
+ MWQ1HfSTd564tIV42bN3Cpq6AiUqb8IwD/J5VgcOvfbRJglDKuW/keBjeJ/Ca6tYiGacLWu
+ OY4DvhDDyT4IdD3NPb8CA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tiPYwmK+iZU=:9uJ9o/pGnFspcJ7Z0utlMm
+ qmmkh0qo/Fdh7h5KC4itJRTQA4fVdrSjCBYDs1srRzAHsQqoEtyk+mKN6GwirlnRhZ7pg/7F6
+ kt1BthpI9927JC758dzDvLRZLKLlxq44W3xuWoWYFytrw+Ni50mbxeNtk7MiHtfNhKwl54Mf7
+ hyrbbrMKGsxFh4zn59GMhkkDNGX7l038ahcf3NaFKvpuq2Sttu/9hFdqCeQWMRd1l93BK2Dov
+ /ku6xhtz1qxK2hKvHtFARX1NzeAlxVEQg8EGAumNu7GxHbcvt5KzpY8uZ0n9/njJhlyvDId2K
+ bi71Q7mFLrUwd/iXfz4pv7y4OvAvnZnn4rWt8Fmmbe6ItudTW9waIs5X1Wqi6Lb8DiVIoPtuO
+ yak3PjIRdZZla/1eFpJxiO92yBR4Bf8RPKsHQbMQv2y2IDDDNZjPHuUan6xGHhM22qFOKT+5W
+ IqsXgAqQslwG5W9mIGprCoEFJH6JV0vx/EZmO6C79LJvmtfxjDxBMJ6NOOATUp9y0BWIcCves
+ 2VBBtRnK8r7GRWClK5rtqx7NoiN7ATmIUlEsFXRmSWZ04T2Ai6e4rhbSDAxGwkDOzUv6iymWc
+ z609dcwS+OF3+3bPEbB/d84K/HzeCtpfCDXsdXoBvGXuThjxkXSgdY0gGZ0D/qpWaokyAp+4M
+ 7TokhIi93RLXQHaQZzxp2Lkw9pIS8du51jmo4nKwGrnyVQzf4izbmfut5d/sq5x7YQDblANgZ
+ hD9gVMHdyBS8KJPri3rKroP84OdyFbXconwBVIShn4Ef6C8uPSbH3cnhlVloDW4mD0U+hQ3Fb
+ RynH/93s6L0dWyFf/u26wSSjo6OPim1SK2XqH6gOGKKrD82p+UdncfXTjMWXjr2nGJr7GfE7F
+ YGpHTRFkqjwkBLYcs+0w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/3/22 上午12:34, Pavel Machek 写道:
-> Not everyone knows what vDPA stands for, explain it in Kconfig.
+On Sun, 2021-03-21 at 08:46 +0100, Mike Galbraith wrote:
+> On Sat, 2021-03-20 at 09:18 +0100, Mike Galbraith wrote:
+> > On Fri, 2021-03-19 at 23:33 +0100, Sebastian Andrzej Siewior wrote:
+> > > Dear RT folks!
+> > >
+> > > I'm pleased to announce the v5.12-rc3-rt3 patch set.
+> >
+> > My little rpi4b is fairly unhappy with 5.12-rt, whereas 5.11-rt works
+> > fine on it.  The below spew is endless, making boot endless.  I turned
+> > it into a WARN_ON_ONCE to see if the thing would finish boot, and
+> > surprisingly, it seems perfectly fine with that bad idea. Having not
+> > the foggiest clue what I'm doing down in arm arch-land, bug is in no
+> > immediate danger :)
 >
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
->
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index ffd1e098bfd2..8cb37b3dd279 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -3,9 +3,9 @@ menuconfig VDPA
->   	tristate "vDPA drivers"
->   	depends on NET
->   	help
-> -	  Enable this module to support vDPA device that uses a
-> -	  datapath which complies with virtio specifications with
-> -	  vendor specific control path.
-> +	  Enable this module to support Virtual Data Path Acceleration
+> Actually, it looks like a defenseless little buglet, and this gripe
+> simply wants to be disabled for RT.
 
+Or completely removed instead.
 
-My understading is that "v" is short for "virtio" here.
+It's entirely possible I'm missing something obvious to arm experts,
+but I don't _think_ the register read needs protection, leaving me
+wondering why arch_faults_on_old_pte() was born with that warning.
 
-Thanks
-
-
-> +	  (vDPA) device that uses a datapath which complies with
-> +	  virtio specifications with vendor specific control path.
->   
->   if VDPA
->   
-> @@ -38,8 +38,8 @@ config MLX5_VDPA
->   	bool
->   	select VHOST_IOTLB
->   	help
-> -	  Support library for Mellanox VDPA drivers. Provides code that is
-> -	  common for all types of VDPA drivers. The following drivers are planned:
-> +	  Support library for Mellanox vDPA drivers. Provides code that is
-> +	  common for all types of vDPA drivers. The following drivers are planned:
->   	  net, block.
->   
->   config MLX5_VDPA_NET
-> @@ -47,7 +47,7 @@ config MLX5_VDPA_NET
->   	select MLX5_VDPA
->   	depends on MLX5_CORE
->   	help
-> -	  VDPA network driver for ConnectX6 and newer. Provides offloading
-> +	  vDPA network driver for ConnectX6 and newer. Provides offloading
->   	  of virtio net datapath such that descriptors put on the ring will
->   	  be executed by the hardware. It also supports a variety of stateless
->   	  offloads depending on the actual device used and firmware version.
->
+	-Mike
 
