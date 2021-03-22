@@ -2,68 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660DD344F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B51344F1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhCVSuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S230101AbhCVSwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhCVSuQ (ORCPT
+        with ESMTP id S230517AbhCVSvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:50:16 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEF3C061574;
-        Mon, 22 Mar 2021 11:50:16 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e33so9247665pgm.13;
-        Mon, 22 Mar 2021 11:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=spKaPRG7iOmLzAUB6je6o6gX4eqaT8kjVDB+IMEVQ0Q=;
-        b=V7u2H7sYkaHcgWoK4gspoi0nCKDEJuPSit/RSI0MY5NXy9w4O6eCCdUvzoTpRRdMxw
-         pF8laUfLP3T1AxinpW+WK7gzHVIrdp5MKdFCw2tfwxdEqZstM9M2S7mLFC0VumMMJRvT
-         dSAc0txqKdoO5U7mGeJmELfJ+jwJNv+brn/L9xWA5m01PXSmZPA67UQbuM+bxwZ+LACk
-         XaszW9kAAeO904KZGRPzpxQVJLZbhSlB4PMt2Nt2Qlvd8OJQDWze0d7OkqfKl+QRRFFY
-         6Qpem/GJh0CLVGd31h3EV78tK7uem+f2DPnA1ZLd3+58V93aklBVmb5S4u5KmyYRECyx
-         vUww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=spKaPRG7iOmLzAUB6je6o6gX4eqaT8kjVDB+IMEVQ0Q=;
-        b=gMOcymr1ZgOuW1V1WnP8ekJujEc8bSIeRaYF8e3sQ8IaDpE0lpYQCmEFEzT5zA8Z94
-         OrLlcaFvDthpYKP9A2fvBP1VhvcxMsCV+Ngzdxg12ScFt7HN8ftRsG26+aYzMmzXVAh4
-         w9rtoE1c1FWYANr3URf799RQZYdo4si+oIWXkeJW+YHuihhKw6jgfCiAa7c6LUVwnqSZ
-         gutUPGZBMv+2onBN86jAgE6GsWhuuxU6GvuQFLUdhSajz8N2jYViTxmTWOmJKeHo4cZp
-         U52Zpw307p2kH7j/91flCDotiumyFAaTRDSjV0m6QzE1og4Fx0/SZX1Bc/3QbIaXoGtl
-         z3sg==
-X-Gm-Message-State: AOAM531elRwT/WJeDhywk2RZO1CoAjrzwuUNh29LOoUihuHA7Tkkj5rg
-        jzY6q5mOhES4A2MUA8pqawyVFP/KO8w=
-X-Google-Smtp-Source: ABdhPJxSXHngCTvHJ5/G7nnKH66ax9qQr13Glij5x+I8H3lvgoQCBEMO+JUGznxFllTBw+7UdfECLw==
-X-Received: by 2002:a17:902:f68c:b029:e5:ca30:8657 with SMTP id l12-20020a170902f68cb02900e5ca308657mr956968plg.78.1616439015001;
-        Mon, 22 Mar 2021 11:50:15 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 192sm14829205pfa.122.2021.03.22.11.50.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 11:50:14 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mon, 22 Mar 2021 14:51:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F74BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=KqWlvhAGgyStdJLBW78wBFkvyCWpxBzSVDDJlh/HL90=; b=ZVhuah8QLyHaRfi5DaIMP+8KR3
+        Rqz0HEJy5GOMs+GeP5oX15a2ApgBEEtJ5l/Xcpa2ohrvqfCk77QvwTgYfH3nwC3Q9vGzsBAlim8Fn
+        3Z3Ose0MR0e11E9FdlpoEXmMdX4/56dhDC29xFgo7rDnzJG0eyFxoupZq9EwKo68A49zvT+JZLWoc
+        W1nGwUIeAOW5GBJ+GppY4UIkVVa1UpTvZgbNLGRxezMu88Vc1epNpO6Qju9IGJsvyexskEWiDEWer
+        9bg5+Qo71NGFCsToH24ewMwFMThUrKK1Xb79QfOnyLoFmb9hZXLCCWxQLbe8a/zZ0pju4QwhUgOh3
+        cLem4M2Q==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOPdX-008wJa-Pl; Mon, 22 Mar 2021 18:51:07 +0000
+Subject: Re: [PATCH] powerpc: kernel: Trivial spelling fixes throughout the
+ file head_fsl_booke.S
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, rppt@kernel.org,
+        akpm@linux-foundation.org, christophe.leroy@csgroup.eu,
+        oss@buserror.net, npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210322151845.637893645@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a076a64c-6da8-e25d-98b9-3666ce957862@gmail.com>
-Date:   Mon, 22 Mar 2021 11:50:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+References: <20210315033732.4173500-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3b2e038c-6c17-0b53-0b96-8795ee32c09b@infradead.org>
+Date:   Mon, 22 Mar 2021 11:50:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210322151845.637893645@linuxfoundation.org>
+In-Reply-To: <20210315033732.4173500-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,29 +50,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/14/21 8:37 PM, Bhaskar Chowdhury wrote:
+> s/virutal/virtual/
+> s/mismach/mismatch/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  As Randy pointed out I was changing the predefined macro name,so, reverted
+>  or leave it alone.
+>  Michael,sorry to run down a cold weave in your spine with my stupdity,this is
+>  okay.
+> 
+>  arch/powerpc/kernel/head_fsl_booke.S | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+> index 3f4a40cccef5..a955403247f1 100644
+> --- a/arch/powerpc/kernel/head_fsl_booke.S
+> +++ b/arch/powerpc/kernel/head_fsl_booke.S
+> @@ -113,7 +113,7 @@ _ENTRY(_start);
+> 
+>  1:
+>  	/*
+> -	 * We have the runtime (virutal) address of our base.
+> +	 * We have the runtime (virtual) address of our base.
+>  	 * We calculate our shift of offset from a 64M page.
+>  	 * We could map the 64M page we belong to at PAGE_OFFSET and
+>  	 * get going from there.
+> @@ -497,7 +497,7 @@ END_BTB_FLUSH_SECTION
+>  #endif
+>  #endif
+> 
+> -	bne	2f			/* Bail if permission/valid mismach */
+> +	bne	2f			/* Bail if permission/valid mismatch */
+> 
+>  	/* Jump to common tlb load */
+>  	b	finish_tlb_load
+> @@ -592,7 +592,7 @@ END_BTB_FLUSH_SECTION
+>  #endif
+>  #endif
+> 
+> -	bne	2f			/* Bail if permission mismach */
+> +	bne	2f			/* Bail if permission mismatch */
+> 
+>  	/* Jump to common TLB load point */
+>  	b	finish_tlb_load
+> --
+> 2.30.2
+> 
 
 
-On 3/22/2021 8:19 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.26 release.
-> There are 156 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Florian
+~Randy
+
