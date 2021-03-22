@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26D4343ED0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FA7343EE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhCVLFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:05:04 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:40623 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCVLEk (ORCPT
+        id S230478AbhCVLGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:06:12 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40512 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230384AbhCVLFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:04:40 -0400
-Received: by mail-wr1-f41.google.com with SMTP id v11so16180455wro.7;
-        Mon, 22 Mar 2021 04:04:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PWWnDHWb0f6VWpKB3JAHyffSxPdrHA0WVJJCPyw/usc=;
-        b=QS2i0VBc4msizGZn7kO+qmqW9uznZiSbxTvFXR+hQgYUksI7r8WIOqOXsthwm0mx4m
-         qWEsTdOZWsliU28pBheKpSr5bVyCcWhmWOIcyeel+ac+2LXeyQuaBLFVm1f7Ku1/5VNx
-         fQQZJ09n8pC/D2J1PKgEdtO2R8U1h3GULwa7OWM/S/JIuJ/YhMQguyoU9CDnzCZODW9M
-         pbRkqkIvsmXIDpaI+JkrJ6MjwzOe9xSrZRyWuyP8VKm6gLp4zRIeLG3wlyR+lTCHmN7Z
-         D+YIjRhN8Zg6uMowv9s2Vd4FRt8Q5K631ITelNrf6U8DxUVaWuHMHWOitic0fftuP7tp
-         r7Yg==
-X-Gm-Message-State: AOAM533CO2nDLsleGyalQOzaRuepH/DI56bd1bRROA+16DZvD7G/d1pW
-        KmLlL9WG8vr/U/Heeo86zp0=
-X-Google-Smtp-Source: ABdhPJzKfjNAAKkmny4+JhoyXbchQN4iBJ4d38/Ts+iZPYS2nOZ6TZ1yCyjmRv54v+IbOzZa76na4Q==
-X-Received: by 2002:a5d:6412:: with SMTP id z18mr17733482wru.214.1616411078811;
-        Mon, 22 Mar 2021 04:04:38 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s83sm16562582wms.16.2021.03.22.04.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 04:04:38 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 11:04:37 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Xu Yihang <xuyihang@huawei.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        johnny.chenyi@huawei.com, heying24@huawei.com,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
-Message-ID: <20210322110437.ei3vfove4xqky3h5@liuwe-devbox-debian-v2>
-References: <20210322031713.23853-1-xuyihang@huawei.com>
+        Mon, 22 Mar 2021 07:05:35 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MAudE4013707;
+        Mon, 22 Mar 2021 12:05:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=selector1;
+ bh=Pymfk/EgZE9Sai/go/LCUbW5Sj5kXKwBZSorsF6E/JM=;
+ b=AS1MsmI1/uy4Sqoh816U7Rf3Y4jB9++nFcdz5kCsetmSk2Iey3fDSAJZWiUPA8dmOsan
+ cg1qUuooc9ceCD1crogkfyUqwd7vOUTAmK4ul6KOWPoiephnLdt88q8+Uh68SLUEsmVt
+ FqBo76MwbFm7NEuC0Al0+j1GsRNXc8j89xjU4BK1CbkbRAtnP1jgdK6qLJSx9xxxEK0E
+ 9MPtSVMMKqxiJ6cimeucoxj0T4rBVpJddbanKv+r8pCWWRAatphwWnGEcq5MXjAzC0lk
+ Mv9/0lymVBMCXAur+C/5mrNwpfWb+0AsyR/6BZSByxKWhOFsmRuygl8gnSBDLHL+Lpku lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37d9968xhu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 12:05:06 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4829C10002A;
+        Mon, 22 Mar 2021 12:05:04 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1B8BF2463CD;
+        Mon, 22 Mar 2021 12:05:04 +0100 (CET)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
+ 2021 12:05:03 +0100
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1497.012; Mon, 22 Mar 2021 12:05:03 +0100
+From:   Valentin CARON - foss <valentin.caron@foss.st.com>
+To:     "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
+        "Alexandre TORGUE - foss" <alexandre.torgue@foss.st.com>,
+        "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
+        "afzal.mohd.ma@gmail.com" <afzal.mohd.ma@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Erwan LE-RAY - foss" <erwan.leray@foss.st.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "lkp@intel.com" <lkp@intel.com>
+Subject: Re: [Linux-stm32] [PATCH v4 9/9] dt-bindings: serial: stm32: Use
+ 'unevaluatedProperties' instead of 'additionalProperties'
+Thread-Topic: [Linux-stm32] [PATCH v4 9/9] dt-bindings: serial: stm32: Use
+ 'unevaluatedProperties' instead of 'additionalProperties'
+Thread-Index: AQHXHws10grT1ARp1UKFub73w++Z4Q==
+Date:   Mon, 22 Mar 2021 11:05:03 +0000
+Message-ID: <5f95b6ad-ddbe-8394-8599-e78f30c8b62c@foss.st.com>
+References: <1616205383-24114-1-git-send-email-dillon.minfei@gmail.com>
+ <1616205383-24114-8-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1616205383-24114-8-git-send-email-dillon.minfei@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.48]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3C33FA9F1EEDA74F9DCE468962861821@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322031713.23853-1-xuyihang@huawei.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_04:2021-03-22,2021-03-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:17:13AM +0800, Xu Yihang wrote:
-> Fixes the following W=1 kernel build warning(s):
-> arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable ‘msr_val’ set but not used [-Wunused-but-set-variable]
->   unsigned long msr_val;
-> 
-> As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is necessary, msr_val is not uesed, so __maybe_unused should be added.
-> 
-> Reference:
-> https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
-
-I modified the commit message a bit and queued this up for hyperv-next.
-Thanks.
-
-Wei.
+SGkgRGlsbG9uLA0KDQpJdCB3b3JrcyBmb3IgbWUuDQoNCk9uIDMvMjAvMjEgMjo1NiBBTSwgZGls
+bG9uLm1pbmZlaUBnbWFpbC5jb20gd3JvdGU6DQo+IEZyb206IGRpbGxvbiBtaW4gPGRpbGxvbi5t
+aW5mZWlAZ21haWwuY29tPg0KPg0KPiBUbyB1c2UgYWRkaXRpb25hbCBwcm9wZXJ0aWVzICdibHVl
+dG9vdGgnLCBuZWVkIHVzZSB1bmV2YWx1YXRlZFByb3BlcnRpZXMNCj4gdG8gZml4IGR0YnNfY2hl
+Y2sgd2FybmluZ3MuDQo+DQo+ICdhcmNoL2FybS9ib290L2R0cy9zdG0zMmg3NTBpLWFydC1waS5k
+dC55YW1sOiBzZXJpYWxANDAwMDQ4MDA6ICdibHVldG9vdGgnDQo+IGRvZXMgbm90IG1hdGNoIGFu
+eSBvZiB0aGUgcmVnZXhlczogJ3BpbmN0cmwtWzAtOV0rJw0KPg0KPiBSZXBvcnRlZC1ieToga2Vy
+bmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+IEZpeGVzOiBhZjFjMmQ4MTY5NWIgKCJk
+dC1iaW5kaW5nczogc2VyaWFsOiBDb252ZXJ0IFNUTTMyIFVBUlQgdG8ganNvbi1zY2hlbWEiKQ0K
+DQpZb3UgY2FuIGFkZCBteToNClRlc3RlZC1ieTogVmFsZW50aW4gQ2Fyb24gPHZhbGVudGluLmNh
+cm9uQGZvc3Muc3QuY29tPg0KDQo+IFNpZ25lZC1vZmYtYnk6IGRpbGxvbiBtaW4gPGRpbGxvbi5t
+aW5mZWlAZ21haWwuY29tPg0KPiAtLS0NCj4NCj4gdjQ6DQo+IC0gYWRkIFJlcG9ydGVkLWJ5IGFu
+ZCBGaXhlcyB0YWcNCj4gLSB1c2UgdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZSB0byBmaXgg
+ZHRic19jaGVjayB3YXJybmluZ3MgaW5zdGVhZCBvZg0KPiAgICBhZGQgJ2JsdWV0b290aCcgaW4g
+c3Qsc3RtMzItdWFydC55YW1sDQo+DQo+ICAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3NlcmlhbC9zdCxzdG0zMi11YXJ0LnlhbWwgfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQueWFtbCBiL0Rv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zZXJpYWwvc3Qsc3RtMzItdWFydC55YW1s
+DQo+IGluZGV4IDg2MzE2NzgyODNmOS4uMzA1OTQxYjFkNWEwIDEwMDY0NA0KPiAtLS0gYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQueWFtbA0K
+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMy
+LXVhcnQueWFtbA0KPiBAQCAtODAsNyArODAsNyBAQCByZXF1aXJlZDoNCj4gICAgIC0gaW50ZXJy
+dXB0cw0KPiAgICAgLSBjbG9ja3MNCj4gICANCj4gLWFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxz
+ZQ0KPiArdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZQ0KPiAgIA0KPiAgIGV4YW1wbGVzOg0K
+PiAgICAgLSB8DQoNClJlZ2FyZHMsDQpWYWxlbnRpbg0K
