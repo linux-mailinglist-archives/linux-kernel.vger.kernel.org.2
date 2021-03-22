@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BA0344468
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B003444B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhCVM7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:59:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
+        id S232592AbhCVNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhCVMqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:46:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51CAE61931;
-        Mon, 22 Mar 2021 12:42:55 +0000 (UTC)
+        id S231895AbhCVMvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2919619FB;
+        Mon, 22 Mar 2021 12:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416975;
-        bh=WY4sWTTMexjbTrir0+pS6HfDGw0FuA0CN4tmBwApz60=;
+        s=korg; t=1616417152;
+        bh=aoYiavtlJP2pJskaK6NkDrKcbc5G/xS+wV15QxO6LxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rpsrMHFSZt7qGgSXAQ8+LJQKMf4cb9Xmah+fcxICjGx06xGbZdtcqz0L7WdfQHFqP
-         RSliMyqlTZGPGBcsOe0ZuV4M4Ae0cPUBUSpKMYJ0Ni1TzCbyOEb0Y6F/z8cs/Jifb4
-         0P7qOQ974IVmhlCAWnSTM1c0UbKaPLSlLx3rXOgE=
+        b=xShEBqx/wkzH+RTOsgrDJTgSUSGtoX/NvUF7WyOKw/Wcfe8yjBz9FWSHx6q5dd54j
+         s4LG/QuozKysYFrncglTftuUs4A04OTLNc1eJe9RZOtyQkBiZDyNO1YBUrKAiNLcwT
+         GIjUwemHmzpWaE13KxXr/f40g8Md29QeR6wKp/9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 39/60] iio:adc:stm32-adc: Add HAS_IOMEM dependency
+        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 13/43] ASoC: fsl_ssi: Fix TDM slot setup for I2S mode
 Date:   Mon, 22 Mar 2021 13:28:27 +0100
-Message-Id: <20210322121923.680324140@linuxfoundation.org>
+Message-Id: <20210322121920.356271653@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Alexander Shiyan <shc_work@mail.ru>
 
-commit 121875b28e3bd7519a675bf8ea2c2e793452c2bd upstream.
+commit 87263968516fb9507d6215d53f44052627fae8d8 upstream.
 
-Seems that there are config combinations in which this driver gets enabled
-and hence selects the MFD, but with out HAS_IOMEM getting pulled in
-via some other route.  MFD is entirely contained in an
-if HAS_IOMEM block, leading to the build issue in this bugzilla.
+When using the driver in I2S TDM mode, the _fsl_ssi_set_dai_fmt()
+function rewrites the number of slots previously set by the
+fsl_ssi_set_dai_tdm_slot() function to 2 by default.
+To fix this, let's use the saved slot count value or, if TDM
+is not used and the slot count is not set, proceed as before.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=209889
-
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Link: https://lore.kernel.org/r/20210124195034.22576-1-jic23@kernel.org
+Fixes: 4f14f5c11db1 ("ASoC: fsl_ssi: Fix number of words per frame for I2S-slave mode")
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20210216114221.26635-1-shc_work@mail.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/fsl_ssi.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -784,6 +784,7 @@ config STM32_ADC_CORE
- 	depends on ARCH_STM32 || COMPILE_TEST
- 	depends on OF
- 	depends on REGULATOR
-+	depends on HAS_IOMEM
- 	select IIO_BUFFER
- 	select MFD_STM32_TIMERS
- 	select IIO_STM32_TIMER_TRIGGER
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -873,6 +873,7 @@ static int fsl_ssi_hw_free(struct snd_pc
+ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
+ {
+ 	u32 strcr = 0, scr = 0, stcr, srcr, mask;
++	unsigned int slots;
+ 
+ 	ssi->dai_fmt = fmt;
+ 
+@@ -904,10 +905,11 @@ static int _fsl_ssi_set_dai_fmt(struct f
+ 			return -EINVAL;
+ 		}
+ 
++		slots = ssi->slots ? : 2;
+ 		regmap_update_bits(ssi->regs, REG_SSI_STCCR,
+-				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
++				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
+ 		regmap_update_bits(ssi->regs, REG_SSI_SRCCR,
+-				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
++				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
+ 
+ 		/* Data on rising edge of bclk, frame low, 1clk before data */
+ 		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP | SSI_STCR_TEFS;
 
 
