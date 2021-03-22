@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AC5344231
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB03344234
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhCVMjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:39:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
+        id S230452AbhCVMjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231574AbhCVMee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE33F619AE;
-        Mon, 22 Mar 2021 12:34:33 +0000 (UTC)
+        id S231211AbhCVMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:34:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 382BB619B2;
+        Mon, 22 Mar 2021 12:34:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416474;
-        bh=wE3n+IR1vhmM+m6NJuHoxgemHOou6C5HiMro205IsxE=;
+        s=korg; t=1616416476;
+        bh=g4lkjncvI2nanrsITxlMSkVUfRCqCMm6DzaYr3J7jM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pCqloe9bnngxvcA/RhQZKI9v1JydfQDFxwbS6MKrg1R5PBXls8KM3wm6wANARMXF6
-         8aK4sghC0cH8DlUuopNXdqsvRmUW+OJ3s31ljlwqmbtTrmXq0xZmEMTTx5fQxvYqYz
-         p/jBpBcKePU8uySCq/DAeAnwcTJuqqqkW8/Wj0lY=
+        b=btrxkXZ42oZc8nwGaPC545tLH05zjkXQn/qaSxaJe/idPV2t0SEG9sTkweGN9jhWb
+         5ANwrfzCQStPrEZWUBMQ/1QCnARHDmoyGOERXUJGptEgTn7sEjlGp2EUEy82RrsV6N
+         5Uq62TF5+eRUZxK+AYUpKd36qHP4Kk8+/W24uzbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        stable@kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        stable@vger.kernel.org,
+        syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com,
+        stable@kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
         Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.11 109/120] ext4: stop inode update before return
-Date:   Mon, 22 Mar 2021 13:28:12 +0100
-Message-Id: <20210322121933.297319814@linuxfoundation.org>
+Subject: [PATCH 5.11 110/120] ext4: do not try to set xattr into ea_inode if value is empty
+Date:   Mon, 22 Mar 2021 13:28:13 +0100
+Message-Id: <20210322121933.335773101@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -41,36 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-commit 512c15ef05d73a04f1aef18a3bc61a8bb516f323 upstream.
+commit 6b22489911b726eebbf169caee52fea52013fbdd upstream.
 
-The inode update should be stopped before returing the error code.
+Syzbot report a warning that ext4 may create an empty ea_inode if set
+an empty extent attribute to a file on the file system which is no free
+blocks left.
 
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210117085732.93788-1-bianpan2016@163.com
-Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
+  WARNING: CPU: 6 PID: 10667 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x10f8/0x1114 fs/ext4/xattr.c:1640
+  ...
+  Call trace:
+   ext4_xattr_set_entry+0x10f8/0x1114 fs/ext4/xattr.c:1640
+   ext4_xattr_block_set+0x1d0/0x1b1c fs/ext4/xattr.c:1942
+   ext4_xattr_set_handle+0x8a0/0xf1c fs/ext4/xattr.c:2390
+   ext4_xattr_set+0x120/0x1f0 fs/ext4/xattr.c:2491
+   ext4_xattr_trusted_set+0x48/0x5c fs/ext4/xattr_trusted.c:37
+   __vfs_setxattr+0x208/0x23c fs/xattr.c:177
+  ...
+
+Now, ext4 try to store extent attribute into an external inode if
+ext4_xattr_block_set() return -ENOSPC, but for the case of store an
+empty extent attribute, store the extent entry into the extent
+attribute block is enough. A simple reproduce below.
+
+  fallocate test.img -l 1M
+  mkfs.ext4 -F -b 2048 -O ea_inode test.img
+  mount test.img /mnt
+  dd if=/dev/zero of=/mnt/foo bs=2048 count=500
+  setfattr -n "user.test" /mnt/foo
+
+Reported-by: syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com
+Fixes: 9c6e7853c531 ("ext4: reserve space for xattr entries/names")
 Cc: stable@kernel.org
-Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Link: https://lore.kernel.org/r/20210305120508.298465-1-yi.zhang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inode.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext4/xattr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5389,8 +5389,10 @@ int ext4_setattr(struct dentry *dentry,
- 			inode->i_gid = attr->ia_gid;
- 		error = ext4_mark_inode_dirty(handle, inode);
- 		ext4_journal_stop(handle);
--		if (unlikely(error))
-+		if (unlikely(error)) {
-+			ext4_fc_stop_update(inode);
- 			return error;
-+		}
- 	}
- 
- 	if (attr->ia_valid & ATTR_SIZE) {
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -2400,7 +2400,7 @@ retry_inode:
+ 				 * external inode if possible.
+ 				 */
+ 				if (ext4_has_feature_ea_inode(inode->i_sb) &&
+-				    !i.in_inode) {
++				    i.value_len && !i.in_inode) {
+ 					i.in_inode = 1;
+ 					goto retry_inode;
+ 				}
 
 
