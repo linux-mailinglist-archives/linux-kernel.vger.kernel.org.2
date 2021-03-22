@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B3D34377C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA0734377E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCVDcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhCVDcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:32:16 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96A7C061574;
-        Sun, 21 Mar 2021 20:32:14 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id h25so7726064pgm.3;
-        Sun, 21 Mar 2021 20:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G0S6I+wZVHttbgypjBTTF0KD1XSkQLNQ+OX8HCc5mYs=;
-        b=EpjRBVIsNNDdZh7lEDsX325eaA1omJOeh0zGSAmpHKYE0Q4cEcIS/tr+q63ZHtvXs6
-         HpQHFbV+pJN/7fR3Pd3HSih1bGLKHQvxphlabX3+OCzr02iLqbT3YsbWSnPwDcXyPM9n
-         brozHxVS1dmcZCz15XecQy4fZcrNRwE5Sr9IZUEtyqYDt2T5qSjeJk1mHS0BM97Ra0l+
-         pXxtydxcgTJHGayzmKI2umfwPxtgy1C8ih3XWMOTBUxVyVbb/GtTYEZB1n9sP/gcv9Wy
-         XlrcBbKHrG5OFFbjmMnosCI9i8wDM1+8c4LHNrh0rlI7A7JMMb7ND/Vu3dHMJb2FeGsy
-         +cXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G0S6I+wZVHttbgypjBTTF0KD1XSkQLNQ+OX8HCc5mYs=;
-        b=n71xMTGh/HbP5+Zhnv7z/jUoYNuK3ByAv32E8TszGp+TAR1YVg3E8IRTO3OlWC7shs
-         V4qyt15MGesu6vD1mxpss+tZa52JxdQJYzT+GuFNTSkL2K4cw0yJmZPDoneZswSTppfx
-         qurnvEfxuY6pUPnGAcqbMeUgYsyhEZu+MzIO1awGgjabso9vZaOAykCRUiCkEWF62h69
-         5SWciqFcm+d9mv4k/dmdt+Sg4P5ifab6Jvteisheh5oVyC5hAL6yY45xnQEEBPWI1rKB
-         07XyWbKsOLTHmD3cM+TN2EVb3dtVv6u9QQNu6eVswGhlILXLvfsUKtxSoCC8XmLNuggK
-         ovvw==
-X-Gm-Message-State: AOAM530yBuths45Z8zEyjL6ASw1Pv1oFoc5rhR/vPsa7TVwgJ76W7rbJ
-        pHxhfl4feXwBc/IuyVnQ2/0=
-X-Google-Smtp-Source: ABdhPJyJSu0dRtQKqoI+CFuPsSKDj+pwfBiW93J4i+STXYkh0WtUyXrI9GS4OaIJ4zcRARYJO8Bv8A==
-X-Received: by 2002:aa7:8145:0:b029:20f:58e6:9c17 with SMTP id d5-20020aa781450000b029020f58e69c17mr19736108pfn.52.1616383934434;
-        Sun, 21 Mar 2021 20:32:14 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
-        by smtp.gmail.com with ESMTPSA id s17sm5129205pjn.44.2021.03.21.20.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 20:32:13 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 20:32:11 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     hdegoede@redhat.com, rydberg@bitmath.org,
-        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] Input: Fix a typo
-Message-ID: <YFgPu7YZSv8j1Vuz@google.com>
-References: <20210322022030.3857089-1-unixbhaskar@gmail.com>
+        id S229865AbhCVDda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhCVDdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 23:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E622D6192C;
+        Mon, 22 Mar 2021 03:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616383999;
+        bh=8efzq305bKAuepxX8cRM4PLqKaZpRvdF6+L7IL/UlqQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cg+4efioNY9XeGAvmccgKBMO48+7ZOVQWwJHzKjXnYbTyEuALI7xRYdh1eou6S7ff
+         DTS3Q0FZazND11CHsGSTdMBLXJ2sS2YWFQn2s+b6NJAX++W2KxwL4mJhP/K2AFEiSX
+         NOVxBo0DckjMSXqu/hXjuBs7MG1PBWLBAn/hYL3uGa5Sx7lhv7XJqLhEdaDZUpy2dn
+         EUx9VKeYwaLRcBThxOwk/dOrAu48l7cm3FpuF9UdswZevCuOxZMMlY1hwNfwdxHtt8
+         4cFvX7pxTPgYwF7u48zOnoi/yCJtulpf8dZWzwh5c7Nhbs9hYW8wdu3IMq3bSJmaer
+         7MiUgqN7FUnHA==
+Date:   Sun, 21 Mar 2021 20:33:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xfs: Rudimentary spelling fix
+Message-ID: <20210322033316.GB22100@magnolia>
+References: <20210322024619.714927-1-unixbhaskar@gmail.com>
+ <6d410ec3-438d-9510-d599-bb8b825a6d3e@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322022030.3857089-1-unixbhaskar@gmail.com>
+In-Reply-To: <6d410ec3-438d-9510-d599-bb8b825a6d3e@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 07:50:30AM +0530, Bhaskar Chowdhury wrote:
+On Sun, Mar 21, 2021 at 07:52:41PM -0700, Randy Dunlap wrote:
+> On 3/21/21 7:46 PM, Bhaskar Chowdhury wrote:
+> > 
+> > s/sytemcall/systemcall/
+> > 
+> > 
+> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> > ---
+> >  fs/xfs/xfs_inode.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> > index f93370bd7b1e..b5eef9f09c00 100644
+> > --- a/fs/xfs/xfs_inode.c
+> > +++ b/fs/xfs/xfs_inode.c
+> > @@ -2870,7 +2870,7 @@ xfs_finish_rename(
+> >  /*
+> >   * xfs_cross_rename()
+> >   *
+> > - * responsible for handling RENAME_EXCHANGE flag in renameat2() sytemcall
+> > + * responsible for handling RENAME_EXCHANGE flag in renameat2() systemcall
+> >   */
+> >  STATIC int
+> >  xfs_cross_rename(
+> > --
 > 
-> s/subsytem/subsystem/
+> I'll leave it up to Darrick or someone else.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> To me it's "syscall" or "system call".
 
-Applied, thank you.
+Agreed; could you change it to one of Randy's suggestions, please?
 
--- 
-Dmitry
+--D
+
+> -- 
+> ~Randy
+> 
