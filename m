@@ -2,201 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E134343C4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE787343C66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVJJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:09:15 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14053 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCVJIr (ORCPT
+        id S229746AbhCVJL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhCVJLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:08:47 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F3pWp2nqgzNnNp;
-        Mon, 22 Mar 2021 17:06:14 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 17:08:39 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>
-Subject: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
-Date:   Mon, 22 Mar 2021 17:09:16 +0800
-Message-ID: <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
-References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
+        Mon, 22 Mar 2021 05:11:51 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDCAC061574;
+        Mon, 22 Mar 2021 02:11:51 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id l18so10148811edc.9;
+        Mon, 22 Mar 2021 02:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=rt8sUmmGg6DRuuy6vkqqcgcTqYqiVw67z58kK2mPk5k=;
+        b=OatXRRt/5h2y97MmXC+3D/inte/KkcWSBr6mitISgSZTerBDbKFrna0w3LK3+9je9m
+         SN/aekaNnGmfoiNCW/u5OtsBccwoZN5m9snV8cIXVqvOigyJk5ut6BDlXr7SsgRr1okY
+         Upnp6Lheh8GNI/qBiL7z/4HZYxaKTZZHEEp6Bd3mh1k0+3HqMg3Hb5ijJ+Rq+7uGeAzZ
+         tA0zb2eHD2QDPLFixOk3qk/rCDSZms7q4MvCHMjPVVkW1L//T5mQ8rjj7/Ov3FFmw7px
+         X21pgC6rh8Cwowi3zrz3GYn9YkaAXYi6mq/0BxMAxo5KMqQYZMsq4dQrj7H2FRjfbI1l
+         oR5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=rt8sUmmGg6DRuuy6vkqqcgcTqYqiVw67z58kK2mPk5k=;
+        b=pcvQN2v6j7HdFCgB3eYl9sbokHdv4GRoHQaCLwhp9k00j54fLW5eAKx8+Ez1Y5k0IL
+         ODjGbRsXnDKdJ0cPdnhL0beKohCeTYBntSiwFkUBktXKYX7lYMDa5C8N+YIdy+APVIDp
+         tMBijRzKMW45u1xj0TKv+UNv0eOxyRbWI9/rSmbBqPS4JW520PT1d9Q4uB0wyxN0iqjc
+         hiTAq38YyZEEMgtU8W6gS8r6aBzYKC6ier0VGTErfKOjyYHnGhrdzai5TtQmhyQ3p3MJ
+         uZjAN4G9vqOefeYIbm1n/dVjokeJtFt2GFYSNzajS/XkFEImAQ8M5UVcFA7ar/cKOwgP
+         GnNQ==
+X-Gm-Message-State: AOAM533i4bpcWdKVsQa3S3PeVUJRkyueJYP+ioywdavQLgpALqA7q9VJ
+        n+4DBsrdseQBFOCLh1shDIo=
+X-Google-Smtp-Source: ABdhPJxbY7BWtWRsIpMstJfo2w4ibAysqWUtc+AlKq05EqWMM+k8lOjhI3T1DzmcPV1qyDuQ9MtBOA==
+X-Received: by 2002:a05:6402:484:: with SMTP id k4mr24154841edv.321.1616404309849;
+        Mon, 22 Mar 2021 02:11:49 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id cb17sm11095458edb.10.2021.03.22.02.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:11:49 -0700 (PDT)
+Message-ID: <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Date:   Mon, 22 Mar 2021 10:11:47 +0100
+In-Reply-To: <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+References: <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+         <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p4>
+         <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-flag set, but queue discipline by-pass does not work for lockless
-qdisc because skb is always enqueued to qdisc even when the qdisc
-is empty, see __dev_xmit_skb().
+On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
+> +       switch (rsp_field->hpb_op) {
+> 
+> +       case HPB_RSP_REQ_REGION_UPDATE:
+> 
+> +               if (data_seg_len != DEV_DATA_SEG_LEN)
+> 
+> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+> 
+> +                                "%s: data seg length is not
+> same.\n",
+> 
+> +                                __func__);
+> 
+> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
+> 
+> +               break;
+> 
+> +       case HPB_RSP_DEV_RESET:
+> 
+> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+> 
+> +                        "UFS device lost HPB information during
+> PM.\n");
+> 
+> +               break;
 
-This patch calls sch_direct_xmit() to transmit the skb directly
-to the driver for empty lockless qdisc too, which aviod enqueuing
-and dequeuing operation. qdisc->empty is set to false whenever a
-skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
-skb dequeuing return NULL, see pfifo_fast_dequeue().
+Hi Deajun,
+This series looks good to me. Just here I have one question. You didn't
+handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how to
+handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
+reset host side HPB entry as well or what else?
 
-There is a data race between enqueue/dequeue and qdisc->empty
-setting, qdisc->empty is only used as a hint, so we need to call
-sch_may_need_requeuing() to see if the queue is really empty and if
-there is requeued skb, which has higher priority than the current
-skb.
 
-The performance for ip_forward test increases about 10% with this
-patch.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-Hi, Vladimir and Ahmad
-	Please give it a test to see if there is any out of order
-packet for this patch, which has removed the priv->lock added in
-RFC v2.
-
-There is a data race as below:
-
-      CPU1                                   CPU2
-qdisc_run_begin(q)                            .
-        .                                q->enqueue()
-sch_may_need_requeuing()                      .
-    return true                               .
-        .                                     .
-        .                                     .
-    q->enqueue()                              .
-
-When above happen, the skb enqueued by CPU1 is dequeued after the
-skb enqueued by CPU2 because sch_may_need_requeuing() return true.
-If there is not qdisc bypass, the CPU1 has better chance to queue
-the skb quicker than CPU2.
-
-This patch does not take care of the above data race, because I
-view this as similar as below:
-
-Even at the same time CPU1 and CPU2 write the skb to two socket
-which both heading to the same qdisc, there is no guarantee that
-which skb will hit the qdisc first, becuase there is a lot of
-factor like interrupt/softirq/cache miss/scheduling afffecting
-that.
-
-So I hope the above data race will not cause problem for Vladimir
-and Ahmad.
----
- include/net/pkt_sched.h   |  1 +
- include/net/sch_generic.h |  1 -
- net/core/dev.c            | 22 ++++++++++++++++++++++
- net/sched/sch_generic.c   | 11 +++++++++++
- 4 files changed, 34 insertions(+), 1 deletion(-)
-
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index f5c1bee..5715ddf 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -122,6 +122,7 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
- bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
- 		     struct net_device *dev, struct netdev_queue *txq,
- 		     spinlock_t *root_lock, bool validate);
-+bool sch_may_need_requeuing(struct Qdisc *q);
- 
- void __qdisc_run(struct Qdisc *q);
- 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index f7a6e14..e08cc77 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		if (!spin_trylock(&qdisc->seqlock))
- 			return false;
--		WRITE_ONCE(qdisc->empty, false);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
- 	}
-diff --git a/net/core/dev.c b/net/core/dev.c
-index be941ed..317180a 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3796,9 +3796,31 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 	qdisc_calculate_pkt_len(skb, q);
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
-+		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
-+		    qdisc_run_begin(q)) {
-+			if (sch_may_need_requeuing(q)) {
-+				rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-+				__qdisc_run(q);
-+				qdisc_run_end(q);
-+
-+				goto no_lock_out;
-+			}
-+
-+			qdisc_bstats_cpu_update(q, skb);
-+
-+			if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
-+			    !READ_ONCE(q->empty))
-+				__qdisc_run(q);
-+
-+			qdisc_run_end(q);
-+			return NET_XMIT_SUCCESS;
-+		}
-+
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-+		WRITE_ONCE(q->empty, false);
- 		qdisc_run(q);
- 
-+no_lock_out:
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
- 		return rc;
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 44991ea..2145fdad 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -146,6 +146,8 @@ static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
- 	}
- 	if (lock)
- 		spin_unlock(lock);
-+
-+	WRITE_ONCE(q->empty, false);
- 	__netif_schedule(q);
- }
- 
-@@ -273,6 +275,15 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 	return skb;
- }
- 
-+bool sch_may_need_requeuing(struct Qdisc *q)
-+{
-+	if (likely(skb_queue_empty(&q->gso_skb) &&
-+		   !q->ops->peek(q)))
-+		return false;
-+
-+	return true;
-+}
-+
- /*
-  * Transmit possibly several skbs, and handle the return status as
-  * required. Owning running seqcount bit guarantees that
--- 
-2.7.4
+Bean
 
