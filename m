@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC5034437D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D153443FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhCVMvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35450 "EHLO mail.kernel.org"
+        id S231234AbhCVM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232358AbhCVMm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:42:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A342619AF;
-        Mon, 22 Mar 2021 12:40:01 +0000 (UTC)
+        id S229647AbhCVMox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:44:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73277619F4;
+        Mon, 22 Mar 2021 12:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416802;
-        bh=Cf6gnvZayp1/BGswoa0l0qqhfBryeqMKpVvLyc7Q+80=;
+        s=korg; t=1616416917;
+        bh=hvrnbfS4nOx/L3MlJrKfQRHaw3x9igwyNNF23FUJdeI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KaX3KCExCrWBEZTUE/sQZGx4ZaCWevEWHl8C1MSrbX/DoR97IgQyXrw0UaJ8GA6a/
-         C0RofMQ6gjEsbqTLkMRR+HAnMmpgoqTvOLdakZhvX85Hq4cbo0yl+osCfvgOJReefw
-         RzDHb4GPV6puKRaNp5+uVAd93IFtg+fg07LlLYMg=
+        b=J34rJs8pF7Mfc+N9H6Y0utZRX5RFnDJgxN7aHGNNVhl6crwr/4vstpe34RdIAWArO
+         mhD3rKtqpi2RKl5E42111UC3CwFGpEinJ1WKAWzWb1a93lkiZwTygT9gknQNEYZ/uT
+         a3uGQz3lwh2qxDMt23h8O6cuwdeLfUPU2dq530b8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 127/157] iio: adis16400: Fix an error code in adis16400_initial_setup()
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Mark Brown <broonie@kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 5.4 16/60] ASoC: simple-card-utils: Do not handle device clock
 Date:   Mon, 22 Mar 2021 13:28:04 +0100
-Message-Id: <20210322121937.783034920@linuxfoundation.org>
+Message-Id: <20210322121922.915601769@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-commit a71266e454b5df10d019b06f5ebacd579f76be28 upstream.
+commit 8ca88d53351cc58d535b2bfc7386835378fb0db2 upstream.
 
-This is to silence a new Smatch warning:
+This reverts commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device
+module clock"). The original patch ended up breaking following platform,
+which depends on set_sysclk() to configure internal PLL on wm8904 codec
+and expects simple-card-utils to not update the MCLK rate.
+ - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
 
-    drivers/iio/imu/adis16400.c:492 adis16400_initial_setup()
-    warn: sscanf doesn't return error codes
+It would be best if codec takes care of setting MCLK clock via DAI
+set_sysclk() callback.
 
-If the condition "if (st->variant->flags & ADIS16400_HAS_SLOW_MODE) {"
-is false then we return 1 instead of returning 0 and probe will fail.
-
-Fixes: 72a868b38bdd ("iio: imu: check sscanf return value")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/YCwgFb3JVG6qrlQ+@mwanda
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reported-by: Michael Walle <michael@walle.cc>
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Michael Walle <michael@walle.cc>
+Fixes: 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Tested-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/1615829492-8972-2-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/imu/adis16400.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/generic/simple-card-utils.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/drivers/iio/imu/adis16400.c
-+++ b/drivers/iio/imu/adis16400.c
-@@ -462,8 +462,7 @@ static int adis16400_initial_setup(struc
- 		if (ret)
- 			goto err_ret;
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -172,15 +172,16 @@ int asoc_simple_parse_clk(struct device
+ 	 *  or device's module clock.
+ 	 */
+ 	clk = devm_get_clk_from_child(dev, node, NULL);
+-	if (IS_ERR(clk))
+-		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
+-
+ 	if (!IS_ERR(clk)) {
+-		simple_dai->clk = clk;
+ 		simple_dai->sysclk = clk_get_rate(clk);
+-	} else if (!of_property_read_u32(node, "system-clock-frequency",
+-					 &val)) {
++
++		simple_dai->clk = clk;
++	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
+ 		simple_dai->sysclk = val;
++	} else {
++		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
++		if (!IS_ERR(clk))
++			simple_dai->sysclk = clk_get_rate(clk);
+ 	}
  
--		ret = sscanf(indio_dev->name, "adis%u\n", &device_id);
--		if (ret != 1) {
-+		if (sscanf(indio_dev->name, "adis%u\n", &device_id) != 1) {
- 			ret = -EINVAL;
- 			goto err_ret;
- 		}
+ 	if (of_property_read_bool(node, "system-clock-direction-out"))
 
 
