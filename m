@@ -2,119 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A5034420E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94333442C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhCVMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhCVMdx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:53 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE3FC0613D9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:30 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h13so19100113eds.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bFXSCk7jXzi1oDqUKnupFbkdc1ED5SojZj7S5YlWylo=;
-        b=Nb6vq2/ii4Uu5XEatx9s0w0vyMHBFNdJ9XkyhRXQRTYCa2DlOgNpuMLBtGI32mU4LR
-         mM7dCOyOsSQiBYx78D9Tou6WPJCLVJK2++P19JKJpLnY6jpQoN++z2bIdKzEKPwiTfB8
-         flKUIx/jPAbEh+WGHPcfHxffQaeLfuKX6yZiKFKqfDTbAz9SFCQqpEeOUdO2QyBtYKaB
-         Oaywbong+u/EvIZ1Ewmyy2wctKFSPqSSpRnb2lmoQ1pHGjZFL4kuL558WSZeqj9KAhZv
-         uvC/l92Hw9hGqb+CsWq5oYBUh8+QoyxagBJkBo5OWb8T+4+67ScVqWdqIvHbdZ1sM5Rt
-         FeCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bFXSCk7jXzi1oDqUKnupFbkdc1ED5SojZj7S5YlWylo=;
-        b=srq91BlvifjWL/dUc0sopV/0NZTiqXJ6G12z+14Dhxkgajm/kAoq0WyHm/O3B414Ar
-         x/yS6vluVQsOPM6uSxvlkjW0DhIQhuIVKRgeDY2u0Hk2rPvnRiRIUbkFx/lcjZpPHVxY
-         Vipfher3fB78P+eA9PLDZSNzl2x8OQxSnI00b6bUePbT30zGMdokzpfwoIQiwfXF8wmw
-         wIAxiTLGuGknVTtD680cTjbBNKfhJC8d401VPuTqQbKbhre+0WJ9oWRiPlQTEi69ZoEX
-         2iaRFxp61T4ZnyUj91WOR6neXsZulsbbSX+un++Xz1L3JCIELKi8nRtakfFeB7lbbdDW
-         K0dg==
-X-Gm-Message-State: AOAM532KrxhqmIMFX9iEMDSQrGtHkhJY+okz9Z3IS17B0VDtQtqy3ndV
-        DU35uOL4PL/9TxJfyPORlwmNTGm1S3QlslsQ
-X-Google-Smtp-Source: ABdhPJxjAmo2ovKlm60IvoJxky+iKUF6BuDJdKXWp1pzrvgmxzgCNEarFOfUlp+DzNDRON+cPs/jug==
-X-Received: by 2002:a50:fc94:: with SMTP id f20mr25432235edq.370.1616416409440;
-        Mon, 22 Mar 2021 05:33:29 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
-        by smtp.gmail.com with ESMTPSA id q10sm11247181eds.67.2021.03.22.05.33.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 05:33:29 -0700 (PDT)
-Subject: Re: [PATCH 03/13] PCI: xilinx: Convert to MSI domains
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-References: <20210225151023.3642391-1-maz@kernel.org>
- <20210225151023.3642391-4-maz@kernel.org>
- <20210322122315.GB11469@e121166-lin.cambridge.arm.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <a9fee2d4-5810-7a16-78bc-4b192e1123dc@monstr.eu>
-Date:   Mon, 22 Mar 2021 13:33:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230080AbhCVMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229692AbhCVMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B228619B1;
+        Mon, 22 Mar 2021 12:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616416633;
+        bh=2l6rVO3mWThw0cnnqLKMHgT4wVnMf+2Jd8waAnFXn8k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m24jh1cGUbqLywhutLaMjrdVvu34FkdywLSI3gBFrxn+J5NckaCQQclp0Qwr9yDwI
+         QAgb51vca8+rIrQwaY+JQO/EegzzvMlrGIlQYtfQLa54t57BTMx398EerhdWzYaAt9
+         LovFlXP0EQk5qAkw36joqtEuP5bVxUGm+8SlBakukT3axKmdfTACUxEcd20DQAgdk5
+         PFTXAfGwtMp3ZUjrhAyYYdNYiUI39+ShuHamRc/fOx2fLNK+KUFBKpnE5Wqk1JTNTN
+         z6+QbTt+AaoUw6I+nGwjUTknAsINSj1ZkIButjUV6ML0qAeRfgnQ0TjUGteGq/d1+/
+         EWSvScn1Cro2w==
+Date:   Mon, 22 Mar 2021 12:37:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
+Message-ID: <20210322123707.GB4681@sirena.org.uk>
+References: <YFf2RD931nq3RudJ@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210322122315.GB11469@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1UWUbFP1cBYEclgG"
+Content-Disposition: inline
+In-Reply-To: <YFf2RD931nq3RudJ@google.com>
+X-Cookie: A friend in need is a pest indeed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--1UWUbFP1cBYEclgG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/22/21 1:23 PM, Lorenzo Pieralisi wrote:
-> On Thu, Feb 25, 2021 at 03:10:13PM +0000, Marc Zyngier wrote:
->> In anticipation of the removal of the msi_controller structure, convert
->> the ancient xilinx host controller driver to MSI domains.
->>
->> We end-up with the usual two domain structure, the top one being a
->> generic PCI/MSI domain, the bottom one being xilinx-specific and handling
->> the actual HW interrupt allocation.
->>
->> This allows us to fix some of the most appaling MSI programming, where
->> the message programmed in the device is the virtual IRQ number instead
->> of the allocated vector number. The allocator is also made safe with
->> a mutex. This should allow support for MultiMSI, but I decided not to
->> even try, since I cannot test it.
->>
->> Also take the opportunity to get rid of the cargo-culted memory allocation
->> for the MSI capture address. *ANY* sufficiently aligned address should
->> be good enough, so use the physical address of the xilinx_pcie_host
->> structure instead.
-> 
-> I'd agree with Bjorn that the MSI doorbell change is better split into
-> a separate patch, I can do it myself at merge if you agree.
+On Sun, Mar 21, 2021 at 06:43:32PM -0700, Dmitry Torokhov wrote:
 
-Thank you for doing it.
+> Note that this is not SPI-specific issue. I already send a similar
+> patch for I2C and will be sending more.
 
-Thanks,
-Michal
+This feels like it might make sense to push up to the driver core level
+then rather than doing in individual buses?
+
+--1UWUbFP1cBYEclgG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBYj3MACgkQJNaLcl1U
+h9CrkQf/UETgb5x1iLO0DKe44AggifFZVyrHWKjAAM0dcdTy/lgsg8OjXlyg1nAX
+a1/aKWMP4x/BOcIuc9aqSvvcdabFUzX6zqtjAYKAW/dcrbTZKIJuS+b+i9zk7jCI
+E63I/3H9zf2zxs6OWqFNg6qI0tajYlYj6Hleiad1xIur3IuavR+0ILA8N42x4tHh
+cWKst/QHxkYLRYsvr8MkjW9oIsZfBoXGGeT5RmWilQURGx3HsnluRrRJYFEBatRb
+sF12FvwFLjtWJ0pNwAuT6YinOrEp/UB0IQgHf053/GoFq7bUahLiDpupqiPmIuUr
+rfg+jBS2JeGxHCxWxyP5LBY1v73zUw==
+=hsLc
+-----END PGP SIGNATURE-----
+
+--1UWUbFP1cBYEclgG--
