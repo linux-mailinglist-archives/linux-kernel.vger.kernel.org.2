@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB623436D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDAD3436DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCVCyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 22:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
+        id S229931AbhCVCyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 22:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhCVCxl (ORCPT
+        with ESMTP id S229840AbhCVCyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:53:41 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76661C061574;
-        Sun, 21 Mar 2021 19:53:41 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w18so17548291edc.0;
-        Sun, 21 Mar 2021 19:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZC8K3XIqR0qeKqh/0Uh8gjLXCIPAa36nU6xewLZaFSQ=;
-        b=G1jqedd35PYvVEwlQId42fXLpbNAPyWhXkJFsAxf21pEqhKPaqavPeX+Zet1JRdOB/
-         rgY4HcMcY55jB3zRN8TdiWpTD31EQ1zvb5oC6RqceDLvRkd5KjZZC8bqLM78Me2CmR/1
-         o18m6KOLNoKJjjF/W+GffqcoqWkPZMSaK0lf8BhGmv09C813le7uSZ64bxu9FB8U+I1G
-         PRB+1XZCiZBF0s79fDGTpwC2Zr7cv6vmfwLQGQIAq7wZYwRHRcmP3DizaJ00xfrVyLyG
-         DCYg1klkceWOR6ytroKbOBEKwo0pGcnYqXsPIssrZIy39ZlgmhNn6ZsArPJx/si3CePo
-         jDeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZC8K3XIqR0qeKqh/0Uh8gjLXCIPAa36nU6xewLZaFSQ=;
-        b=MqSZAtcUR47+wvrvPk75LbiUMX6itRNLMnVlWhpE4QSv15XuY73eJyRiMeBBMNLCt4
-         xiGg8J/NwsPTIXHtt4PjAlZWlUk2TNbcaQDNA4cSto74nFBdHf8SU9MMY5FLanYhSbwv
-         B6dj9vERrGw34htxWVZcXRaxTepr/k2aQtAm3cVZy5EkVo+n3XwiKtMX+8LtlMSZcEtU
-         ZgourIiiPqQFxscMvCe+AS1QeE1QVdkNCHzido/6fnaWbJW18ulIgI5oi/HDT1fNULpv
-         rxQ1saq6V5ETIQEnxZbF6UaQ9KWq/lN/xDBl1Ciai74i34jXGFWgfqGMY8myvLxw48WR
-         GcXQ==
-X-Gm-Message-State: AOAM533Ogjf2ShHoot61CGe56VT0PZmwrMtWFWLlXR8hXe3QTGLbJyuj
-        c33ZioS6Wmmhjj6z7uQLsbGmmPI5aQlDr8d3ZPzAmzyepQx0Aw==
-X-Google-Smtp-Source: ABdhPJyw9pQg53ScmPhD+PV9bMRTqbsDgaZ8vQYgXApw6mwuEiiODlW5XEK0iyK3RserMgeI9D4xfvynzVQgFILnAGM=
-X-Received: by 2002:a05:6402:4407:: with SMTP id y7mr23438720eda.247.1616381618864;
- Sun, 21 Mar 2021 19:53:38 -0700 (PDT)
+        Sun, 21 Mar 2021 22:54:19 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86166C061574;
+        Sun, 21 Mar 2021 19:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=LchtIFk89xU4+bvTjczihlQeS2+A0oDJIO4T86TI7/c=; b=RZ/s6ksgaYtj7p+TO5f9seCcQG
+        BMq4dpCNgALtQVBROU5goabiQotB2mVRNwp2ImlFVmh3L1idMsAMG4bP3qScTy6lD5UwT6Bay29Nc
+        PstMsP+uYeNcePvahbCfgWy9+aLuDv96qseFVXrAfC+iarvImt9lZmnjHdeR+40aX3HEpIM9+fdxu
+        h3n+6A5d/yRAN4ddclbxesB4Hk8mo9RRcn4ZcYctt3VK4MSiJOn2zF6vmhdwvC5+b6dsW70wbRaYN
+        0VMKCxAI6bzE2yij7ZqUWjTZTMeVdmltI9wMs4SmhHOi9SHvXt3jLOk/d2dPSP+PhNRHBEEAXvAyJ
+        YUF3pzdg==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOAhm-00AjUJ-BA; Mon, 22 Mar 2021 02:54:13 +0000
+Subject: Re: [PATCH] IB/hns: Fix a spelling
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, oulijun@huawei.com,
+        huwei87@hisilicon.com, liweihang@huawei.com, dledford@redhat.com,
+        jgg@ziepe.ca, dt@kernel.org, linux-rdma@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210322022751.4137205-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d29400f4-32fd-d479-9d8e-7dd91499cce5@infradead.org>
+Date:   Sun, 21 Mar 2021 19:54:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <CAMmOe3SaBn9+XzjhZC8QxmZnHQkvB0R=nV4NaRRyMRF6EfcvvA@mail.gmail.com>
- <CANiq72m=kDd97+n1Zxwi5+7M8cwreoq1P_u5YZ25Dcyx40jNdA@mail.gmail.com>
-In-Reply-To: <CANiq72m=kDd97+n1Zxwi5+7M8cwreoq1P_u5YZ25Dcyx40jNdA@mail.gmail.com>
-From:   Joshua Abraham <j.abraham1776@gmail.com>
-Date:   Sun, 21 Mar 2021 21:53:27 -0500
-Message-ID: <CAMmOe3TNt2vgX=fp77yvOx7s3+CeDonkd=Unb-y2hau66M-fsg@mail.gmail.com>
-Subject: Re: drivers/char/rust_example fails to load
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        rust-for-linux@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210322022751.4137205-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Miguel,
+On 3/21/21 7:27 PM, Bhaskar Chowdhury wrote:
+> 
+> s/wubsytem/subsystem/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  .../devicetree/bindings/infiniband/hisilicon-hns-roce.txt       | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> index 84f1a1b505d2..c57e09099bcb 100644
+> --- a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> +++ b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+> @@ -1,7 +1,7 @@
+>  Hisilicon RoCE DT description
+> 
+>  Hisilicon RoCE engine is a part of network subsystem.
+> -It works depending on other part of network wubsytem, such as, gmac and
+> +It works depending on other part of network subsystem, such as, gmac and
 
-> Please give a go to the nightly from a month ago, i.e. 2021-02-20.
+No comma after "such as".
 
-Cheers, using rustc 1.52.0-nightly (9b471a3f5 2021-02-19) fixed the
-issue. Interesting that the newer nightly compiler creates these new
-relocations for the code!
+>  dsa fabric.
+> 
+>  Additional properties are described here:
+> --
+
 
 -- 
-Respectfully,
-Josh Abraham
+~Randy
+
