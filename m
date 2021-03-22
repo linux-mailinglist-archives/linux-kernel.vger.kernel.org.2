@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50A33446E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77403446EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCVOQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:16:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54324 "EHLO mx2.suse.de"
+        id S230293AbhCVOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:16:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhCVOPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:15:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616422544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=duDDEf2Xm5uPkuZN+qB6EpLuAaJtGoQSQbHz8dth7zA=;
-        b=XNAfDnvmGf3UeHuucC72Nsq8TCB7iDCUBGB8qBvQyljEkitmgXtNfcuqpBMKSfNrfczCHH
-        IfLDHoiOXncEK4w57k7cqUlbVqSQGeU2Oj63ZWZrk2Sadvm1XmL/mVJimUkq98i3QmWTIo
-        NgD+mSAjDEqNFsWobtwHbZusVYd6864=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B508ACA8;
-        Mon, 22 Mar 2021 14:15:44 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 15:15:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 3/8] hugetlb: create remove_hugetlb_page() to
- separate functionality
-Message-ID: <YFimj4UGBat8Tp/C@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-4-mike.kravetz@oracle.com>
+        id S230076AbhCVOQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:16:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5343F6196C;
+        Mon, 22 Mar 2021 14:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616422566;
+        bh=1fKgyeYVl0YYfrA/uXu1vWP9qkb3DsOxrdvd8EqUZ8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LgMtFZ+reDWcLnsq8NzV6JvsNSwKyMPT0ayuq4Wrov0chkbVm4noZX6f4GxbZ7NpS
+         njkjBsFUBd+3NA3I1ISMznkpAvFZdbSmIdyT05FQjRUnSVYEVJJGNR1M0dPCNMpiXd
+         HNYOZqpRBuwm3a5IynPuu2Db5pUcGeGN9ncZ1D2wuunbokvpgmZO6AlUHqudo3pzyI
+         HsoBGIJHn+iaxTFYXDejnrmETAFdUupTXkO2RBVqEM+YnX/4Lq1tpsSbRVrgzb0a3Q
+         vbbzNlGXDWoDgBuiB7PfXKp+Cxt1HTa7+jVMb2eS1Y28eRBeEiFz4wLnxgX9vwINUD
+         bJhV+vGN9WV9Q==
+Date:   Mon, 22 Mar 2021 16:16:02 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/2] net: ipa: fix validation
+Message-ID: <YFimooGgT1pIRe/G@unreal>
+References: <20210320141729.1956732-1-elder@linaro.org>
+ <f1b719d3-c7f2-1815-9cfe-19ea23944cce@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319224209.150047-4-mike.kravetz@oracle.com>
+In-Reply-To: <f1b719d3-c7f2-1815-9cfe-19ea23944cce@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 15:42:04, Mike Kravetz wrote:
-> The new remove_hugetlb_page() routine is designed to remove a hugetlb
-> page from hugetlbfs processing.  It will remove the page from the active
-> or free list, update global counters and set the compound page
-> destructor to NULL so that PageHuge() will return false for the 'page'.
-> After this call, the 'page' can be treated as a normal compound page or
-> a collection of base size pages.
+On Mon, Mar 22, 2021 at 08:22:20AM -0500, Alex Elder wrote:
+> On 3/20/21 9:17 AM, Alex Elder wrote:
+> > There is sanity checking code in the IPA driver that's meant to be
+> > enabled only during development.  This allows the driver to make
+> > certain assumptions, but not have to verify those assumptions are
+> > true at (operational) runtime.  This code is built conditional on
+> > IPA_VALIDATION, set (if desired) inside the IPA makefile.
+> > 
+> > Unfortunately, this validation code has some errors.  First, there
+> > are some mismatched arguments supplied to some dev_err() calls in
+> > ipa_cmd_table_valid() and ipa_cmd_header_valid(), and these are
+> > exposed if validation is enabled.  Second, the tag that enables
+> > this conditional code isn't used consistently (it's IPA_VALIDATE
+> > in some spots and IPA_VALIDATION in others).
+> > 
+> > This series fixes those two problems with the conditional validation
+> > code.
 > 
-> remove_hugetlb_page is to be called with the hugetlb_lock held.
+> After much back-and-forth with Leon Romanovsky:
 > 
-> Creating this routine and separating functionality is in preparation for
-> restructuring code to reduce lock hold times.
-
-I like this! Counters handling both in __free_huge_page and
-update_and_free_page is really confusing.
-
-
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  mm/hugetlb.c | 70 ++++++++++++++++++++++++++++++++++------------------
->  1 file changed, 46 insertions(+), 24 deletions(-)
+> 	--> I retract this series <--
 > 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index c537274c2a38..ae185d3315e0 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1306,6 +1306,46 @@ static inline void destroy_compound_gigantic_page(struct page *page,
->  						unsigned int order) { }
->  #endif
->  
-> +/*
-> + * Remove hugetlb page from lists, and update dtor so that page appears
-> + * as just a compound page.  A reference is held on the page.
-> + * NOTE: hugetlb specific page flags stored in page->private are not
-> + *	 automatically cleared.  These flags may be used in routines
-> + *	 which operate on the resulting compound page.
-> + *
-> + * Must be called with hugetlb lock held.
-> + */
-> +static void remove_hugetlb_page(struct hstate *h, struct page *page,
-> +							bool adjust_surplus)
-> +{
-> +	int nid = page_to_nid(page);
-> +
+> I will include these patches in a future series that will
+> do cleanup of this validation code more completely.
 
-I think we want lockdep_assert_held here. Lockdep asserts are not used
-in this code but now that you are touching it then it is probably better
-to start adding them. What do you think?
+Thanks a lot.
 
-> +	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> +		return;
-> +
-> +	list_del(&page->lru);
-> +
-> +	if (HPageFreed(page)) {
-> +		h->free_huge_pages--;
-> +		h->free_huge_pages_node[nid]--;
-> +		ClearHPageFreed(page);
-> +	}
-> +	if (adjust_surplus) {
-> +		h->surplus_huge_pages--;
-> +		h->surplus_huge_pages_node[nid]--;
-> +	}
-> +
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> +
-> +	ClearHPageTemporary(page);
-> +	set_page_refcounted(page);
-> +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> +
-> +	h->nr_huge_pages--;
-> +	h->nr_huge_pages_node[nid]--;
-> +}
-
--- 
-Michal Hocko
-SUSE Labs
+> 
+> Thanks.
+> 
+> 					-Alex
+> 
+> > Version 2 removes the two patches that introduced ipa_assert().  It
+> > also modifies the description in the first patch so that it mentions
+> > the changes made to ipa_cmd_table_valid().
+> > 
+> > 					-Alex
+> > 
+> > Alex Elder (2):
+> >    net: ipa: fix init header command validation
+> >    net: ipa: fix IPA validation
+> > 
+> >   drivers/net/ipa/Makefile       |  2 +-
+> >   drivers/net/ipa/gsi_trans.c    |  8 ++---
+> >   drivers/net/ipa/ipa_cmd.c      | 54 ++++++++++++++++++++++------------
+> >   drivers/net/ipa/ipa_cmd.h      |  6 ++--
+> >   drivers/net/ipa/ipa_endpoint.c |  6 ++--
+> >   drivers/net/ipa/ipa_main.c     |  6 ++--
+> >   drivers/net/ipa/ipa_mem.c      |  6 ++--
+> >   drivers/net/ipa/ipa_table.c    |  6 ++--
+> >   drivers/net/ipa/ipa_table.h    |  6 ++--
+> >   9 files changed, 58 insertions(+), 42 deletions(-)
+> > 
+> 
