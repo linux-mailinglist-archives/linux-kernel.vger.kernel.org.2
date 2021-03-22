@@ -2,59 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEBC343E8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDA3343E8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhCVK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:56:02 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:41625 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhCVKz2 (ORCPT
+        id S230397AbhCVKz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhCVKzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:55:28 -0400
-Received: by mail-wm1-f43.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso9005021wmi.0;
-        Mon, 22 Mar 2021 03:55:27 -0700 (PDT)
+        Mon, 22 Mar 2021 06:55:25 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D745C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:55:24 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 16so20395476ljc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D+PcY8fizKyI1pa8vyAaI0Fu5ahvlZoOnbR8AqNaIGM=;
+        b=cNdFZe9aFiClr44vhnMkdDn4A4PRwCmXoJ8KEm1xluKWbN8IGn8mR3MlZg3J6rbUh5
+         pw68llA/oheOVpyvb+bbJ0sh4EVoe/nmWmGnzNtopCABnUJ7EQgOPtQSFTwM0Kzx8k+M
+         +1mtp/2DwiZq5luOFZ3V/g01ge3sXb9SouwkCD0JH2lHd7gq1I7t86xU+J19KJyHmhmH
+         LYNjOzP/9DVag/uyi8sMESQt8u8P6n+9arqOVmypRXuc6uC+TA53JscZSw5Cedl0Skih
+         Uj5uIS/3Q3i8PmxUzCy71C2yDXfONCcAgKBAsNjfZlR3dTNNB6tHQ8+1nQKyAoEnlb/S
+         6OWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Sxl+KhjjK3uZP0v/Sih9iAH77v3CqskINxPgqG3H8RU=;
-        b=r4s5lpykuH+PObWEJ+uITzXlCs9YHRyup7IGW5OG+eht3beqIcXXS8A9XBoeZHgwSA
-         q4GlpwGakYBoasFe67awKr7jTcyM7K3jrtV6DTMdVNdk94+acveuwOs6Y9VL/5olJZCd
-         m3FDwzaZjYnZNfVBazg83wUDO5nySezNf0tewwEFIWKBaKqp6c0eYeY2LrpARdsVVDSn
-         l/4cFo8vSs+4LC3OBT1GidPWUBqU9jPK/VAfFkhYu2ATDbyBopWbOqWpLtyxqW7oxz3j
-         LI0w8DWBQve9KbowZDgZRYh6zCTWlMqyjBZ9PjDEclUlLBWWq3d0CI7w2BNiMXcqGBy4
-         X/bA==
-X-Gm-Message-State: AOAM532k4LY8aVuKOsClazzbmmjrIj4oRoXeq7lyPt6FFBECsjvx9goS
-        bBQBbI42asGY8jb6oQyLbGJ8LJObmok=
-X-Google-Smtp-Source: ABdhPJzyQ/XGrWkXDs90neNJnuA6zwtgOoAwoR+haufQGoHdCD4cJVgvJffBhhLQEy6Xf+Wp/g6MWQ==
-X-Received: by 2002:a05:600c:4151:: with SMTP id h17mr15499497wmm.68.1616410526726;
-        Mon, 22 Mar 2021 03:55:26 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id p18sm18963388wrs.68.2021.03.22.03.55.26
+        bh=D+PcY8fizKyI1pa8vyAaI0Fu5ahvlZoOnbR8AqNaIGM=;
+        b=uiAvSn2U8YBUo9zmNutneZGAAZmer8F6SvOuGDoQEhSkux6tYGx58dOsovZ74w8b/l
+         yWsvAS40Qm3KKp7TUFhVdjkxrJaw1D1pWkTecICy7si0QUuJogf3/k2Dw2Wluyj8Lok1
+         EUwNWYA6VzifiHk9tJCKAa5FGvIkdvgfAH3/1VKp7nj5b1/zztDAYgtaEC1/vr5imQXB
+         Y0tnvGI946sVzvNFrNodiGXdJEipLXNNWNyAOy3cobylrI7qy4mtV9IrZgVD9c6O+/1K
+         FHJRoibofDnp5h1XE7jqUgD7mRI3fsvA0eZJfqM2PP1sqpkYkHzMmHgTwi1spIZmWc93
+         PqQg==
+X-Gm-Message-State: AOAM531JdNMQoIin+1azIscjg1FzY6QrCfId7Rq80R+iK7nui+BwSp2/
+        3XsjJhWtoj1ZMzyzAla3js7K3A==
+X-Google-Smtp-Source: ABdhPJxf/OAQj9ADevnB8ESViQBvohbq91TGiPa/7o4CoF/N6TtVkgXQQlUwXU07vQ7ubVRc+vrblQ==
+X-Received: by 2002:a2e:2a44:: with SMTP id q65mr9601149ljq.238.1616410523121;
+        Mon, 22 Mar 2021 03:55:23 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id e9sm1905215ljj.52.2021.03.22.03.55.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:55:26 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:55:24 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vasanth <vasanth3g@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drivers: hv: Fix EXPORT_SYMBOL and tab spaces issue
-Message-ID: <20210322105524.ulrqtriygzqy6lq2@liuwe-devbox-debian-v2>
-References: <20210310052155.39460-1-vasanth3g@gmail.com>
+        Mon, 22 Mar 2021 03:55:22 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 36E96101DEB; Mon, 22 Mar 2021 13:55:30 +0300 (+03)
+Date:   Mon, 22 Mar 2021 13:55:30 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 17/28] mm: Add guard pages around a shadow stack.
+Message-ID: <20210322105530.pbmfrg6rhywct5ft@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-18-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210310052155.39460-1-vasanth3g@gmail.com>
+In-Reply-To: <20210316151054.5405-18-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:51:55AM +0530, Vasanth wrote:
-> 1.Fixed EXPORT_SYMBOL should be follow immediately function/variable.
-> 2.Fixed code tab spaces issue.
+On Tue, Mar 16, 2021 at 08:10:43AM -0700, Yu-cheng Yu wrote:
+> INCSSP(Q/D) increments shadow stack pointer and 'pops and discards' the
+> first and the last elements in the range, effectively touches those memory
+> areas.
 > 
-> Signed-off-by: Vasanth M <vasanth3g@gmail.com>
+> The maximum moving distance by INCSSPQ is 255 * 8 = 2040 bytes and
+> 255 * 4 = 1020 bytes by INCSSPD.  Both ranges are far from PAGE_SIZE.
+> Thus, putting a gap page on both ends of a shadow stack prevents INCSSP,
+> CALL, and RET from going beyond.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/include/asm/page_64_types.h | 10 ++++++++++
+>  include/linux/mm.h                   | 24 ++++++++++++++++++++----
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+> index 64297eabad63..23e3d880ce6c 100644
+> --- a/arch/x86/include/asm/page_64_types.h
+> +++ b/arch/x86/include/asm/page_64_types.h
+> @@ -115,4 +115,14 @@
+>  #define KERNEL_IMAGE_SIZE	(512 * 1024 * 1024)
+>  #endif
+>  
+> +/*
+> + * Shadow stack pointer is moved by CALL, RET, and INCSSP(Q/D).  INCSSPQ
+> + * moves shadow stack pointer up to 255 * 8 = ~2 KB (~1KB for INCSSPD) and
+> + * touches the first and the last element in the range, which triggers a
+> + * page fault if the range is not in a shadow stack.  Because of this,
+> + * creating 4-KB guard pages around a shadow stack prevents these
+> + * instructions from going beyond.
+> + */
+> +#define ARCH_SHADOW_STACK_GUARD_GAP PAGE_SIZE
+> +
+>  #endif /* _ASM_X86_PAGE_64_DEFS_H */
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index af805ffde48e..9890e9f5a5e0 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2619,6 +2619,10 @@ extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
+>  int __must_check write_one_page(struct page *page);
+>  void task_dirty_inc(struct task_struct *tsk);
+>  
+> +#ifndef ARCH_SHADOW_STACK_GUARD_GAP
+> +#define ARCH_SHADOW_STACK_GUARD_GAP 0
+> +#endif
+> +
+>  extern unsigned long stack_guard_gap;
+>  /* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
+>  extern int expand_stack(struct vm_area_struct *vma, unsigned long address);
+> @@ -2651,9 +2655,15 @@ static inline struct vm_area_struct * find_vma_intersection(struct mm_struct * m
+>  static inline unsigned long vm_start_gap(struct vm_area_struct *vma)
+>  {
+>  	unsigned long vm_start = vma->vm_start;
+> +	unsigned long gap = 0;
+>  
+> -	if (vma->vm_flags & VM_GROWSDOWN) {
+> -		vm_start -= stack_guard_gap;
+> +	if (vma->vm_flags & VM_GROWSDOWN)
+> +		gap = stack_guard_gap;
+> +	else if (vma->vm_flags & VM_SHSTK)
+> +		gap = ARCH_SHADOW_STACK_GUARD_GAP;
 
-Applied to hyperv-next.
+Looks too x86-centric for generic code.
+
+Maybe we can have a helper that would return gap for the given VMA?
+The generic version of the helper would only return stack_guard_gap for
+VM_GROWSDOWN. Arch code would override it to handle VM_SHSTK case too.
+
+Similar can be done in vm_end_gap().
+
+> +
+> +	if (gap != 0) {
+> +		vm_start -= gap;
+>  		if (vm_start > vma->vm_start)
+>  			vm_start = 0;
+>  	}
+> @@ -2663,9 +2673,15 @@ static inline unsigned long vm_start_gap(struct vm_area_struct *vma)
+>  static inline unsigned long vm_end_gap(struct vm_area_struct *vma)
+>  {
+>  	unsigned long vm_end = vma->vm_end;
+> +	unsigned long gap = 0;
+> +
+> +	if (vma->vm_flags & VM_GROWSUP)
+> +		gap = stack_guard_gap;
+> +	else if (vma->vm_flags & VM_SHSTK)
+> +		gap = ARCH_SHADOW_STACK_GUARD_GAP;
+>  
+> -	if (vma->vm_flags & VM_GROWSUP) {
+> -		vm_end += stack_guard_gap;
+> +	if (gap != 0) {
+> +		vm_end += gap;
+>  		if (vm_end < vma->vm_end)
+>  			vm_end = -PAGE_SIZE;
+>  	}
+> -- 
+> 2.21.0
+> 
+
+-- 
+ Kirill A. Shutemov
