@@ -2,73 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF83344CD4
+	by mail.lfdr.de (Postfix) with ESMTP id 797AB344CD5
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhCVRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:08:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29132 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231395AbhCVRHs (ORCPT
+        id S231534AbhCVRIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhCVRHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:07:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616432867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wLwToGxEDmc8n5o1OXi9U8H6a1AVaW5DdA44kJP/9pI=;
-        b=Phg7D/qY2CKp8bhVJ3fVDdnP/psm2kRsxa8QpO1cYZu3QfRZFRKTxN+wBeo3ob0kf7npWn
-        z2uYYNR6jI2003E1rbrBxZKp5b/bSmnDhe+LqC0mN8+OyY/NnsCq3sTzPvcDNAnMCYPgdV
-        /leR0UQZCCGzKkzQhEyexTKMx46n8RA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-JhkeyCoUMPurXEwlLsJ25g-1; Mon, 22 Mar 2021 13:07:43 -0400
-X-MC-Unique: JhkeyCoUMPurXEwlLsJ25g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44D7C5B362;
-        Mon, 22 Mar 2021 17:07:41 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A916614106;
-        Mon, 22 Mar 2021 17:07:38 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 22 Mar 2021 18:07:40 +0100 (CET)
-Date:   Mon, 22 Mar 2021 18:07:34 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     qianli zhao <zhaoqianligood@gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>, christian@brauner.io,
-        axboe@kernel.dk, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-Message-ID: <20210322170733.GE20390@redhat.com>
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com>
- <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com>
- <m1pmzwb7pd.fsf@fess.ebiederm.org>
- <CAPx_LQGBJGgZ+zzhJ2U4RpoPKt3hvf8LRfACtj2LPD7senub7A@mail.gmail.com>
+        Mon, 22 Mar 2021 13:07:54 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED97DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:07:53 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id b14so9178385lfv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=3DoZwa5x+3AmTQG1D9ca3y+5ISDftdNt6INufB/gADo=;
+        b=H0Ywt+r41tHc2qfoU18LLna2Wm9Dsmc9/z/YqBiKjdcy6o/k51jIFYxSJV/VEg+ETY
+         PltU2ohqNu/rMEbfG9p1akmItBxPp9PSMpuGOLGcx/eqpHxJN6JbfYGL4gRcIwOSQ52h
+         we7FpuGtvd6QAq2DNv5rq1Srh06m0HGb/SIaYKuk29Bzq25ChMOlEJZoix4lASJmaKbU
+         Op6lRr+pJwJDMiBf5gapsDdtyD7jnc+fSiKKTlnL1RBExU0XoC6kPnz1ZsOOnV/xqQLF
+         PzucskiN2yxzUk7GcyJHMFGV0LZWXNwCcaSH31UYMpiekb7dqv6+8PwBrg//fkSxwbiP
+         RsiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=3DoZwa5x+3AmTQG1D9ca3y+5ISDftdNt6INufB/gADo=;
+        b=sHtJsOr895ODqnyr4ewJ0BijkXDaqZmRpNK0QZ5bgXebr6ceHkLNlykhNsPLx8P493
+         5Mf2W8611TtN9B5den323SqhyjpjCDabTg0nb2wddbSw3tlZF9ukf8QrQrwGofoKY3CT
+         pYikLw3d3WuaZ66maGjkNKNH8mnTtUfSPDOT9PGpQ/OOvzm+XnNEo60WxPNM63jmyOU2
+         o5vLyJQnhvbTbyMpkHHkTSA/DA7PTZIGcmfn+XfHsyPjfFsICPaqyWXVwsNpq5mv7K0T
+         IseLfOqZTp4qImavQMTX3kkAR6rJlqmGOL+e0+K1/WJyQ7HfjRuFpMOMErk+wm8aJUxY
+         3PRg==
+X-Gm-Message-State: AOAM530QVR+AGdHUZLglAbsxlKiuAHqd0Xn7j0KDBCZAHkv8m7x0FUx0
+        RCZN5/WgJu8J3u6mI9i8dKtfPQ==
+X-Google-Smtp-Source: ABdhPJzTmbhqot8hiZviyTd/P8TwxH05WWTd1+hWif5o8JathO6VRyWaKqzBAFK2ca6XO7pkCmtFCQ==
+X-Received: by 2002:ac2:51b4:: with SMTP id f20mr183621lfk.509.1616432872417;
+        Mon, 22 Mar 2021 10:07:52 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id y17sm1615698lfb.132.2021.03.22.10.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:07:52 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 09/16] net: dsa: replay port and local fdb entries when joining the bridge
+In-Reply-To: <20210322161955.c3slrmbtofswrqiz@skbuf>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-10-olteanv@gmail.com> <87wntzmbva.fsf@waldekranz.com> <20210322161955.c3slrmbtofswrqiz@skbuf>
+Date:   Mon, 22 Mar 2021 18:07:51 +0100
+Message-ID: <87o8fbm80o.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPx_LQGBJGgZ+zzhJ2U4RpoPKt3hvf8LRfACtj2LPD7senub7A@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/22, qianli zhao wrote:
+On Mon, Mar 22, 2021 at 18:19, Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Mon, Mar 22, 2021 at 04:44:41PM +0100, Tobias Waldekranz wrote:
+>> I do not know if it is a problem or not, more of an observation: This is
+>> not guaranteed to be an exact replay of the events that the bridge port
+>> (i.e. bond0 or whatever) has received since, in fdb_insert, we exit
+>> early when adding local entries if that address is already in the
+>> database.
+>> 
+>> Do we have to guard against this somehow? Or maybe we should consider
+>> the current behavior a bug and make sure to always send the event in the
+>> first place?
 >
-> Moving the decrement position should only affect between new and old
-> code position of movement of the decrement of
-> signal->live.
+> I don't really understand what you're saying.
+> fdb_insert has:
+>
+> 	fdb = br_fdb_find(br, addr, vid);
+> 	if (fdb) {
+> 		/* it is okay to have multiple ports with same
+> 		 * address, just use the first one.
+> 		 */
+> 		if (test_bit(BR_FDB_LOCAL, &fdb->flags))
+> 			return 0;
+> 		br_warn(br, "adding interface %s with same address as a received packet (addr:%pM, vlan:%u)\n",
+> 		       source ? source->dev->name : br->dev->name, addr, vid);
+> 		fdb_delete(br, fdb, true);
+> 	}
+>
+> 	fdb = fdb_create(br, source, addr, vid,
+> 			 BIT(BR_FDB_LOCAL) | BIT(BR_FDB_STATIC));
+>
+> Basically, if the {addr, vid} pair already exists in the fdb, and it
+> points to a local entry, fdb_create is bypassed.
+>
+> Whereas my br_fdb_replay() function iterates over br->fdb_list, which is
+> exactly where fdb_create() also lays its eggs. That is to say, unless
+> I'm missing something, that duplicate local FDB entries that skipped the
+> fdb_create() call in fdb_insert() because they were for already-existing
+> local FDB entries will also be skipped by br_fdb_replay(), because it
+> iterates over a br->fdb_list which contains unique local addresses.
+> Where am I wrong?
 
-Why do you think so? It can affect _any_ code which runs under
-"if (group_dead)". Again, I don't see anything wrong, but I didn't even
-try to audit these code paths.
+No you are right. I was thinking back to my attempt of offloading local
+addresses and I distinctly remembered that local addresses could be
+added without a notification being sent.
 
-Oleg.
-
+But that is not what is happening. It is just already inserted on
+another port. So the notification would reach DSA, or not, depending on
+ordering the of events. But there will be no discrepancy between that
+and the replay.
