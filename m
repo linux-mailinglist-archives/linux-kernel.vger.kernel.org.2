@@ -2,59 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7080A343D61
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2448E343D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhCVKBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:01:01 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50747 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229472AbhCVKAs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:00:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0USuX3L7_1616407241;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USuX3L7_1616407241)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Mar 2021 18:00:46 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     dan.j.williams@intel.com
-Cc:     vishal.l.verma@intel.com, dave.jiang@intel.com,
-        ira.weiny@intel.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] ndtest: Remove redundant NULL check
-Date:   Mon, 22 Mar 2021 18:00:40 +0800
-Message-Id: <1616407240-114077-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229870AbhCVKDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:03:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26041 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhCVKDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:03:36 -0400
+IronPort-SDR: ETFuzQAPFEbSVhWJXxB9Y+w0LR3VAz12wz8wQbF5A1yY+yeK58LVphG6wIiZ285574EQt/kepR
+ 4RJC0Fcuy6Fg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="251593999"
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="251593999"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 03:03:35 -0700
+IronPort-SDR: +bT4eNAUlnvHiNxoIKm/o8CmhiCLdRep513I5wu/BZ7FyMAwZWhP2mmsdhM9BXLoDS1EJ5psj+
+ QTEbNajHwycQ==
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="414423453"
+Received: from zssigmon-mobl.amr.corp.intel.com ([10.254.92.253])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 03:03:30 -0700
+Message-ID: <d876e5abb1a7e4fce160bfcb217bf3ab675f44a8.camel@intel.com>
+Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        jethro@fortanix.com, b.thiel@posteo.de, jmattson@google.com,
+        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        corbet@lwn.net
+Date:   Mon, 22 Mar 2021 23:03:28 +1300
+In-Reply-To: <YFS6kTe1SuAjiMFN@kernel.org>
+References: <cover.1616136307.git.kai.huang@intel.com>
+         <YFS6kTe1SuAjiMFN@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+> 
+> I just say add my ack to SGX specific patches where it is missing.
+> Good enough.
+> 
+> /Jarkko
 
-./tools/testing/nvdimm/test/ndtest.c:491:2-7: WARNING: NULL check before
-some freeing functions is not needed.
+Thank you Jarkko!
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/nvdimm/test/ndtest.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Hi Boris,
 
-diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
-index 6862915..98b4a43 100644
---- a/tools/testing/nvdimm/test/ndtest.c
-+++ b/tools/testing/nvdimm/test/ndtest.c
-@@ -487,8 +487,7 @@ static void *ndtest_alloc_resource(struct ndtest_priv *p, size_t size,
- buf_err:
- 	if (__dma && size >= DIMM_SIZE)
- 		gen_pool_free(ndtest_pool, __dma, size);
--	if (buf)
--		vfree(buf);
-+	vfree(buf);
- 	kfree(res);
- 
- 	return NULL;
--- 
-1.8.3.1
+If there's no other comments, should I send another version adding Jarkko's Acked-by
+for the x86 SGX patches that don't have it (patch 2, 5, 6, 7, 8, 13 -- in which patch
+2 and 6 are changes to generic x86)?
+
 
