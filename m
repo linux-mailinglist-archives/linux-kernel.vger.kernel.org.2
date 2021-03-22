@@ -2,64 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF187344963
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEFB344969
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhCVPgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhCVPgl (ORCPT
+        id S230357AbhCVPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:38:24 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:39817 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhCVPiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:36:41 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77105C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:36:41 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so16355932otr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=oeh0vT/3kLIW0pyqjEcZobVLjR+/NSV8zmSmof/Ywbc=;
-        b=Y73IDIb3k1oh7JZnYUp0iFdCjv0gzPXvvWqNYZFoRJtBadBP6y2vjkwBHaeLUljfh0
-         JehVAASrtGJTsGAtZRoiElirPwJbiLAnUTipx48IehZZdJqwvWGRJoyBDSLeqKth1k4x
-         wgJ0yU346IB2aD4fIQtoCInaQ9Sdxvdf6Bsya+spnkwpkKCbQzYahxSuTb7fhASPiSn1
-         G66b2Q83Jr5atoPKBgEEvD0mc1QtOqCmMatXrPKQU8bWqyEV64whg9lCaP15L1o+g4PK
-         Ykw7en1VFlHvaGCoDDNhNk32CjAQ0JwSORSB7ltWQjTyBHyn3GgannRolCb8hCZoD6aC
-         KxEg==
+        Mon, 22 Mar 2021 11:38:16 -0400
+Received: by mail-vs1-f46.google.com with SMTP id e72so2232004vsc.6;
+        Mon, 22 Mar 2021 08:38:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=oeh0vT/3kLIW0pyqjEcZobVLjR+/NSV8zmSmof/Ywbc=;
-        b=OZU5WcGDuv/vqQi/B1kC2D1TOkc+EJ6dMrYYGsZbiCFxBs5fAYaeKSFqXDyl2czeC1
-         U15h/Yg1hbMdEjOIONX+7oWcmgwnBCbjdqtMocLbsB7Wx948s/9M6oOq9tph87mwZ2lv
-         UPF9N8T8Vb7wI8t0NqcGLaBzfYbOrGs5oWdIj12F1SEei1DaW6VxvHqXo49SO6n7Y+FM
-         1xgr5Mt9ZpyM/RJgWeKek7DVumXvue8FO3eNEf8H1xF1F7Dnx3jEYMGfCGa/DXaDPS+E
-         1BdolGZ0Bb+DYLzKVaoiM4m+EXq+HIbEYsN07gkjaiIpQ6MyiktWytjvDB6wcolIzEyq
-         SH4A==
-X-Gm-Message-State: AOAM533lFuEsz/Ehyrv6v1gcR/0ciW8sr3wPHbZUMHxOoFny1frLV4PS
-        XsrpD2qulmOrzJbDKyIYzKBeie43IdCX55wPDS1gSm2EFKw=
-X-Google-Smtp-Source: ABdhPJyPtNPzexkd940bDQFvLs1aEKk0+h2mvUuK1x3uEMnaOxzvnYtDR2y/8fiJIV73wvbmeRFKMkkhYI0GGYs15xc=
-X-Received: by 2002:a9d:5c8:: with SMTP id 66mr437184otd.39.1616427400710;
- Mon, 22 Mar 2021 08:36:40 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HeaWu7NQhqTg67+28QJCmBXaQRsdudr3ZwUMLAQvMow=;
+        b=pxJp6kwcs2WRp/H7USwaqjME4s4abgdyDbFEL0aZTRRWtWMwwWPca8sq8JjFDUouMF
+         mP3PhHoUu6jpj2G6rja5KTcJNXGashBWBJQo2mvNmtGFp8ZXa9vnjruHzzwa0YeIlEFo
+         w8br3x8E47ceHueurHwui310Ro2R51xUIe7L/dz8mY21EmWS3wqjQRi6D70HZhZETW8j
+         EaJlHPRRMXE62uPp4MKGeG67SxAXDyv3c7eXosARVXk2LRRL8sQxhaaJc+jhLwm+i2op
+         lxXVkzTYPE9aIsk2ad9tCArTkYPgyIq4KULkE86xxBkvZb2/V4tr21kPC0SIpB9ugRI0
+         P3YQ==
+X-Gm-Message-State: AOAM533I+WX2zMqHD/JKmigePgZYo4r+RtLm1rgWg4Y6zf2cEihb/1LB
+        U63vdtubpwR6IfJ7XNXgnuzv6L43rUtqPTnj1DE=
+X-Google-Smtp-Source: ABdhPJxNe+DMTZdB2lWgUCE5StB9yp5TTZKT2HloywUXMNLbDmvZ6gW30OxDfaCQ8FunvzXfxRMyQk6bPYmPn8SKULg=
+X-Received: by 2002:a67:8883:: with SMTP id k125mr515895vsd.18.1616427495528;
+ Mon, 22 Mar 2021 08:38:15 -0700 (PDT)
 MIME-Version: 1.0
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Mon, 22 Mar 2021 21:06:29 +0530
-Message-ID: <CAHhAz+jC7kJfJRT6AB15xFBTSGpQs6VmufN8J9=gRZuwxZPpjA@mail.gmail.com>
-Subject: kernel projects for students
-To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel@vger.kernel.org
+References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
+ <1599734644-4791-3-git-send-email-sagar.kadam@sifive.com> <20200922203429.GA3188204@bogus>
+In-Reply-To: <20200922203429.GA3188204@bogus>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Mar 2021 16:38:04 +0100
+Message-ID: <CAMuHMdXPG-+EOCrQZi1deKv1yYMBtohprUVYW_-Shdp_gfQs5Q@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: riscv: convert plic bindings to json-schema
+To:     Sagar Kadam <sagar.kadam@sifive.com>, Rob Herring <robh@kernel.org>
+Cc:     Linux PWM List <linux-pwm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yash Shah <yash.shah@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Sagar, Rob,
 
-What are some good Linux projects in kernel space for final year
-computer.science engineering students?
-Could someone help and share your ideas on this please.
+(replying to an old email, as this one seems to be the most appropriate)
 
--- 
-Thanks,
-Sekhar
+On Tue, Sep 22, 2020 at 10:34 PM Rob Herring <robh@kernel.org> wrote:
+> On Thu, Sep 10, 2020 at 04:14:03PM +0530, Sagar Kadam wrote:
+> > Convert device tree bindings for SiFive's PLIC to YAML format
+> >
+> > Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+
+> > +
+> > +  '#address-cells':
+> > +    const: 0
+> > +    description: Should be <0> or more.
+>
+> Drop. 'or more' is wrong. If there's a case with more, it will need to
+> be documented.
+
+Why do we have the "'#address-cells': const: 0" at all...
+
+> > +required:
+> > +  - compatible
+> > +  - '#address-cells'
+
+... and why is it required?
+
+> > +  - '#interrupt-cells'
+> > +  - interrupt-controller
+> > +  - reg
+> > +  - interrupts-extended
+> > +  - riscv,ndev
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    plic: interrupt-controller@c000000 {
+> > +      #address-cells = <0>;
+> > +      #interrupt-cells = <1>;
+> > +      compatible = "sifive,plic-1.0.0", "sifive,fu540-c000-plic";
+> > +      interrupt-controller;
+> > +      interrupts-extended = <
+> > +        &cpu0_intc 11
+> > +        &cpu1_intc 11 &cpu1_intc 9
+> > +        &cpu2_intc 11 &cpu2_intc 9
+> > +        &cpu3_intc 11 &cpu3_intc 9
+> > +        &cpu4_intc 11 &cpu4_intc 9>;
+> > +      reg = <0xc000000 0x4000000>;
+> > +      riscv,ndev = <10>;
+> > +    };
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
