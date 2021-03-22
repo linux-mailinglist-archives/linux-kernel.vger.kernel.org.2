@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC09534519A
+	by mail.lfdr.de (Postfix) with ESMTP id 409BC345199
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhCVVMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:12:25 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11980 "EHLO mga06.intel.com"
+        id S231949AbhCVVMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:12:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:18052 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhCVVLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230056AbhCVVLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 17:11:44 -0400
-IronPort-SDR: Vnj1v1MEDgER03XVQQooig2GRuefWXUc8kN4NOzfexyyb/RjHhSh7W7bdN22mggnf3Nb8wwU7+
- hF4Ny3nimjaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="251703778"
+IronPort-SDR: 2wDh9Rc94p8VUZ9J2O3V83ihF7HBQj4lJoIRFEN3JO6xUAVOFBdOCo0QwhSsmORtHLeoF0FSEY
+ uAWcOM/MXZOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="275450703"
 X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="251703778"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 14:11:43 -0700
-IronPort-SDR: cu7FV9JPSSrvfnA7KF4jd9cbxwa9O9bJ14iJNB8GBbvWPDwyISdb+o+VuwNf9hHcHdAdl/FAtD
- FN61i+TTX2tg==
+   d="scan'208";a="275450703"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 14:11:43 -0700
+IronPort-SDR: iJMv8inoGyqydLUXoyzd2GJrF6DyX6qR34EOH16BdVTH43BngjEIGQMZTl7Eb7wFqg2CroWqeB
+ Fsn4sErDq4zQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="390624893"
+   d="scan'208";a="413163039"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 22 Mar 2021 14:11:41 -0700
+  by orsmga007.jf.intel.com with ESMTP; 22 Mar 2021 14:11:41 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 46E3747A; Mon, 22 Mar 2021 23:11:55 +0200 (EET)
+        id 4F6DA49E; Mon, 22 Mar 2021 23:11:55 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 4/6] usb: gadget: pch_udc: Move pch_udc_init() to satisfy kernel doc
-Date:   Mon, 22 Mar 2021 23:11:47 +0200
-Message-Id: <20210322211149.6658-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 5/6] usb: gadget: pch_udc: Initialize device pointer before use
+Date:   Mon, 22 Mar 2021 23:11:48 +0200
+Message-Id: <20210322211149.6658-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
 References: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
@@ -45,36 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel doc and the content described by it shouldn't be teared apart.
-Otherwise validator is not happy:
+During conversion to use GPIO descriptors the device pointer,
+which is applied to devm_gpiod_get(), is not yet initialized.
 
-.../pch_udc.c:573: warning: expecting prototype for pch_udc_reconnect(). Prototype was for pch_udc_init() instead
+Move initialization in the ->probe() in order to have it set before use.
 
-Fixes: 1c575d2d2e3f ("usb: gadget: pch_udc: Fix usb/gadget/pch_udc: Fix ether gadget connect/disconnect issue")
+Fixes: e20849a8c883 ("usb: gadget: pch_udc: Convert to use GPIO descriptors")
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/usb/gadget/udc/pch_udc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/udc/pch_udc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
-index 5421075df01c..984c9299d2c6 100644
+index 984c9299d2c6..1c8c1070eb28 100644
 --- a/drivers/usb/gadget/udc/pch_udc.c
 +++ b/drivers/usb/gadget/udc/pch_udc.c
-@@ -563,12 +563,13 @@ static void pch_udc_clear_disconnect(struct pch_udc_dev *dev)
- 	pch_udc_bit_clr(dev, UDC_DEVCTL_ADDR, UDC_DEVCTL_RES);
- }
- 
-+static void pch_udc_init(struct pch_udc_dev *dev);
-+
- /**
-  * pch_udc_reconnect() - This API initializes usb device controller,
-  *						and clear the disconnect status.
-  * @dev:		Reference to pch_udc_regs structure
+@@ -1370,6 +1370,7 @@ static irqreturn_t pch_vbus_gpio_irq(int irq, void *data)
   */
--static void pch_udc_init(struct pch_udc_dev *dev);
- static void pch_udc_reconnect(struct pch_udc_dev *dev)
+ static int pch_vbus_gpio_init(struct pch_udc_dev *dev)
  {
- 	pch_udc_init(dev);
++	struct device *d = &dev->pdev->dev;
+ 	int err;
+ 	int irq_num = 0;
+ 	struct gpio_desc *gpiod;
+@@ -1378,7 +1379,7 @@ static int pch_vbus_gpio_init(struct pch_udc_dev *dev)
+ 	dev->vbus_gpio.intr = 0;
+ 
+ 	/* Retrieve the GPIO line from the USB gadget device */
+-	gpiod = devm_gpiod_get(dev->gadget.dev.parent, NULL, GPIOD_IN);
++	gpiod = devm_gpiod_get(d, NULL, GPIOD_IN);
+ 	if (IS_ERR(gpiod))
+ 		return PTR_ERR(gpiod);
+ 	gpiod_set_consumer_name(gpiod, "pch_vbus");
+@@ -3081,6 +3082,7 @@ static int pch_udc_probe(struct pci_dev *pdev,
+ 	if (retval)
+ 		return retval;
+ 
++	dev->pdev = pdev;
+ 	pci_set_drvdata(pdev, dev);
+ 
+ 	/* Determine BAR based on PCI ID */
+@@ -3122,7 +3124,6 @@ static int pch_udc_probe(struct pci_dev *pdev,
+ 
+ 	/* device struct setup */
+ 	spin_lock_init(&dev->lock);
+-	dev->pdev = pdev;
+ 	dev->gadget.ops = &pch_udc_ops;
+ 
+ 	retval = init_dma_pools(dev);
 -- 
 2.30.2
 
