@@ -2,56 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA6F3437FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4256C343807
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVErK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 00:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCVEq7 (ORCPT
+        id S230031AbhCVEry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 00:47:54 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47031 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhCVErL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 00:46:59 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B803C061756;
-        Sun, 21 Mar 2021 21:46:59 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id DE2F992009C; Mon, 22 Mar 2021 05:46:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id D0FA392009B;
-        Mon, 22 Mar 2021 05:46:56 +0100 (CET)
-Date:   Mon, 22 Mar 2021 05:46:56 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS
- again
-In-Reply-To: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
-Message-ID: <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
-References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 22 Mar 2021 00:47:11 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 32AC2581B0D;
+        Mon, 22 Mar 2021 00:47:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 22 Mar 2021 00:47:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=LfE/ugdalA0RX2yyD9H37azMsf
+        8cwA7ptPgiuuL5JmU=; b=lQarjjN2wgFdPqezoGm7BLBnmDIEyNbWmDI9JIC58j
+        cHbRs9/OFy6fZBcmod+5881f1xGWEhftM3YEvIycByw9fKOZmqxPxkQic+6/rvJT
+        Pmp4UwuONtgjksENwFuU2lMHSYGn7llqI8lyERHqt6r45h2KRCNZ5J+3ynBA9Ip/
+        8eqPZOpyeEzCIWKC6KWvBozyUGrVbU1uWj9bdta5eVrMag8TsUuSQbJftUHqIBPx
+        v7C8+iPnenJr/epuBt09vI7eestaBBwNh55eqxaRYknIPUm3iAolJFe/9Mfydgcy
+        iimUDDAzpASBiM28I70aOioBx1Njcosv+Hv/S8Ta24LQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LfE/ugdalA0RX2yyD
+        9H37azMsf8cwA7ptPgiuuL5JmU=; b=XtbmemrvCrQK8I1GXs4aoWkjh43mXkGuJ
+        FI13sqKj+CQ1RjMF/r6dIrVqXQV9BGclBoRFwQ2pNEeYYsmhXU57gZHR+aLK7Ei4
+        TqdLSGFFfd+7WuUc7ahobNGpMIVqV9103+UIVv63TYJMWvIhwa+AjTSvj6jjd/Xb
+        X70WwQFvC/ISrYWOCgEyJCQBgPerbifO+k2D028FQOWhEF/uoBUcVIj43INNrIVQ
+        0l+tMfRhfl/Tb9uBSEVdgkdlqinDcaXBl6xHtLca7nSLEnijUua5Ba1cpRc1ElMQ
+        AoWlJAQdpHr8u5jKkHoLJw8zCVtueyCnck5He0LBRfsGZOA12BLwQ==
+X-ME-Sender: <xms:TCFYYEGOSmNfc7Drb0scRZDPEgOA0Rl1hVKMaeDzmvUe1BAyOGv7fA>
+    <xme:TCFYYNUTbwzKv3H5NUy3HOhQeb4GIPFJAtdJuZnyK6B7dt-PH9t1RZ13hBmOaDO90
+    JRRkuyy_2vtBI7hdw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegfedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:TSFYYOIn2Qwf2C0SRfRxW6-yHINC7C-XwH-AzEjYg1FA_Brapm0JiQ>
+    <xmx:TSFYYGFzhpdCbPNv1Bwga-FyIJcpORiinXDKie9VvADkTXwP4P-kbA>
+    <xmx:TSFYYKUKmAdPTmXJibUaeTYX0zRkwK4aYbrksxqQG39SIb7e7pyjyQ>
+    <xmx:TyFYYDOQ2mDG8orsI_TeJtgSBsQzef6HW7ssl7-tEbA7Mh6Igy67GA>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 77899108005C;
+        Mon, 22 Mar 2021 00:47:08 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v2 0/5] arm64: sunxi: Enable the sun4i timer
+Date:   Sun, 21 Mar 2021 23:47:02 -0500
+Message-Id: <20210322044707.19479-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021, Tiezhu Yang wrote:
+In preparation for adding CPU idle states, hook up the sun4i timer.
+Having a non-c3stop clockevent source available is necessary for all
+CPUs to simultaneously enter a local-timer-stop idle state.
 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 160b3a8..4b94ec7 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -6,6 +6,7 @@ config MIPS
->  	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
->  	select ARCH_HAS_FORTIFY_SOURCE
->  	select ARCH_HAS_KCOV
-> +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+Changes from v1:
+  - Removed H616 changes (depends on an unmerged patch set)
+  - Reworded the patch 4-5 commit messages for clarity
+  - Added Acked-by tags
 
- Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather 
-scarce, but based on my guess shouldn't this be "if !EVA"?
+Samuel Holland (5):
+  dt-bindings: timer: Simplify conditional expressions
+  dt-bindings: timer: Add compatibles for sun50i timers
+  arm64: dts: allwinner: a64: Sort watchdog node
+  arm64: dts: allwinner: Add sun4i MMIO timer nodes
+  arm64: sunxi: Build the sun4i timer driver
 
-  Maciej
+ .../timer/allwinner,sun4i-a10-timer.yaml      | 42 +++++++++----------
+ arch/arm64/Kconfig.platforms                  |  1 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 25 +++++++----
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  9 ++++
+ 4 files changed, 46 insertions(+), 31 deletions(-)
+
+-- 
+2.26.2
+
