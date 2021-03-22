@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729C0343DAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D491343DAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCVKWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50448 "EHLO mail.kernel.org"
+        id S229994AbhCVKW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:22:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47364 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCVKV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:21:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A529861983;
-        Mon, 22 Mar 2021 10:21:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616408518;
-        bh=1ZXyAEoZvbRkXxlNGub3IZewOHt3TvQOb2jwwjEpWeM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rA5K7PCyEEcmeyp55RFIMDxdQy0/ANqGgaPGtNK1StpdpjgqXSi/FNbm0XeNt7KsV
-         XlV08phrHIHwm6+TIqXIjjaWTUFpa6hAdYuHXdtxlxTiieSdb71hzvZiyW1GKWvh7D
-         +2p8BE4RVoyZIvs/OptjiCqKMCtIlRY/bo36IDVEv2RbC3MFGVVjQKIzW1IrvNHtI9
-         rKIEeKv3Auyu+vFvsKk9v842cJKOXz8fOb4XL9H0rGywlGLxCMheaXSu81BLhhFtb0
-         V8EQfATahNNBlRGYt56x2bmrMfeR0AfnjJHy+0uQYCfM48LKPE+PtjOKQ5s4j5UnmG
-         5cii+5nnKy11A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Mauricio Faria de Oliveira <mfo@canonical.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
-        Hui Su <sh_def@163.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] jbd2: avoid -Wempty-body warnings
-Date:   Mon, 22 Mar 2021 11:21:38 +0100
-Message-Id: <20210322102152.95684-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S229508AbhCVKWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:22:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B37DAD71;
+        Mon, 22 Mar 2021 10:22:44 +0000 (UTC)
+Subject: Re: [PATCH v4 1/3] mm/slub: Introduce two counters for partial
+ objects
+To:     Shu Ming <sming56@gmail.com>,
+        Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     Christoph Lameter <cl@linux.com>, Christoph Lameter <cl@gentwo.de>,
+        Pekka Enberg <penberg@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        James Wang <jnwang@linux.alibaba.com>
+References: <1615967692-80524-1-git-send-email-xlpang@linux.alibaba.com>
+ <1615967692-80524-2-git-send-email-xlpang@linux.alibaba.com>
+ <42b5dba7-f89f-ae43-3b93-f6e4868e1573@suse.cz>
+ <34a07677-3afe-465c-933e-dc9503e9634d@linux.alibaba.com>
+ <CANt8P=vwbshvNntPLAkEQFrRfeSHfd1bkxLUhmRXNS2CD_mO_w@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <2ad0539f-2c38-714e-330e-7709bb07ebac@suse.cz>
+Date:   Mon, 22 Mar 2021 11:22:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANt8P=vwbshvNntPLAkEQFrRfeSHfd1bkxLUhmRXNS2CD_mO_w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 3/22/21 2:46 AM, Shu Ming wrote:
+> More precisely, ss will count partial objects like denty objects with
+> "/sys/kernel/slab/dentry/partial"   whose number can become huge.
 
-Building with 'make W=1' shows a harmless -Wempty-body warning:
+Uh, that's interesting. Would you know what exactly it uses the value for? I can
+think of several reasons why it might be misleading.
 
-fs/jbd2/recovery.c: In function 'fc_do_one_pass':
-fs/jbd2/recovery.c:267:75: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  267 |                 jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
-      |                                                                           ^
-
-Change the empty dprintk() macros to no_printk(), which avoids this
-warning and adds format string checking.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/jbd2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 99d3cd051ac3..232e6285536a 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -61,7 +61,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
- #define jbd_debug(n, fmt, a...) \
- 	__jbd2_debug((n), __FILE__, __func__, __LINE__, (fmt), ##a)
- #else
--#define jbd_debug(n, fmt, a...)    /**/
-+#define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
- #endif
- 
- extern void *jbd2_alloc(size_t size, gfp_t flags);
--- 
-2.29.2
+> On Thu, Mar 18, 2021 at 8:56 PM Xunlei Pang <xlpang@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 3/18/21 8:18 PM, Vlastimil Babka wrote:
+>> > On 3/17/21 8:54 AM, Xunlei Pang wrote:
+>> >> The node list_lock in count_partial() spends long time iterating
+>> >> in case of large amount of partial page lists, which can cause
+>> >> thunder herd effect to the list_lock contention.
+>> >>
+>> >> We have HSF RT(High-speed Service Framework Response-Time) monitors,
+>> >> the RT figures fluctuated randomly, then we deployed a tool detecting
+>> >> "irq off" and "preempt off" to dump the culprit's calltrace, capturing
+>> >> the list_lock cost nearly 100ms with irq off issued by "ss", this also
+>> >> caused network timeouts.
+>> >
+>> > I forgot to ask, how does "ss" come into this? It displays network connections
+>> > AFAIK. Does it read any SLUB counters or slabinfo?
+>> >
+>>
+>> ss may access /proc/slabinfo to acquire network related slab statistics.
+> 
 
