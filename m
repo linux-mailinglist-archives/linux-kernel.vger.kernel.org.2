@@ -2,133 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8743F344C5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2A7344C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhCVQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:53:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:35392 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230214AbhCVQxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:53:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A56551063;
-        Mon, 22 Mar 2021 09:53:18 -0700 (PDT)
-Received: from [10.57.55.187] (unknown [10.57.55.187])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D4EF3F719;
-        Mon, 22 Mar 2021 09:53:17 -0700 (PDT)
-Subject: Re: [PATCH v4 15/19] dts: bindings: Document device tree bindings for
- ETE
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        anshuman.khandual@arm.com, leo.yan@linaro.org,
-        devicetree@vger.kernel.org
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-16-suzuki.poulose@arm.com>
- <20210306210627.GA1207387@robh.at.kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <f69ad530-baec-2e73-827a-b5a5a6df3d23@arm.com>
-Date:   Mon, 22 Mar 2021 16:53:15 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S230434AbhCVQyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhCVQyX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:54:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3F8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VAtX5/PSZBpHdx4o/M2SW17GNefrFYOFyvVs60qWgBk=; b=XH52/sDRPASnsmUK9dlh3D9jfU
+        AlKwJJ3jtZmv1cZu5ptbV3ib9huMU/RseW9LG6JSvWXdc9tP88lFEm9/2b65eWc8Z9bKQyXVb2nnQ
+        QKrvZwmXy+IZLSOS3/qgHgQn5NNx9Vr1sQlFUptMD8fzpg2C5XraAxtxXkg7D9kgUeSCENl9O5fNS
+        QOVV1uJYuXxRSqnoeBCcPRB0oyP8oE/VylIEcT3hvmWUaZJKV3mfsuBZhZn7DR43qgRC4Y2LVWwaV
+        KoZpoJP7+zM1HT5ZhCp4K6NIqVuxfSs40NICZmevHLhO2K9myc9n/nd16G9nlk0OYdrD2AnJXcGML
+        x/wdRFDA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lONoX-00C6Cc-LU; Mon, 22 Mar 2021 16:54:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 715593003E1;
+        Mon, 22 Mar 2021 17:54:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5958D2007DF02; Mon, 22 Mar 2021 17:54:00 +0100 (CET)
+Date:   Mon, 22 Mar 2021 17:54:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
+        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
+Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
+Message-ID: <YFjLqKV9GxGSXcAr@hirez.programming.kicks-ass.net>
+References: <20210318113156.407406787@infradead.org>
+ <20210318113610.739542434@infradead.org>
+ <20210318161308.vu3dhezp2lczch6f@treble>
+ <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
+ <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
+ <20210319140005.7ececb11@gandalf.local.home>
+ <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
+ <20210319165749.0f3c8281@gandalf.local.home>
+ <YFiuphGw0RKehWsQ@gunter>
 MIME-Version: 1.0
-In-Reply-To: <20210306210627.GA1207387@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFiuphGw0RKehWsQ@gunter>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob
+On Mon, Mar 22, 2021 at 03:50:14PM +0100, Jessica Yu wrote:
 
-On 06/03/2021 21:06, Rob Herring wrote:
-> On Thu, Feb 25, 2021 at 07:35:39PM +0000, Suzuki K Poulose wrote:
->> Document the device tree bindings for Embedded Trace Extensions.
->> ETE can be connected to legacy coresight components and thus
->> could optionally contain a connection graph as described by
->> the CoreSight bindings.
->>
->> Cc: devicetree@vger.kernel.org
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Rob Herring <robh@kernel.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->> Changes:
->>   - Fix out-ports defintion
->> ---
->>   .../devicetree/bindings/arm/ete.yaml          | 71 +++++++++++++++++++
->>   1 file changed, 71 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
->> new file mode 100644
->> index 000000000000..35a42d92bf97
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
->> @@ -0,0 +1,71 @@
->> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
->> +# Copyright 2021, Arm Ltd
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: ARM Embedded Trace Extensions
->> +
->> +maintainers:
->> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
->> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
->> +
->> +description: |
->> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
->> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
->> +  architecture and has extended support for future architecture changes.
->> +  The trace generated by the ETE could be stored via legacy CoreSight
->> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
->> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
->> +  legacy CoreSight components, a node must be listed per instance, along
->> +  with any optional connection graph as per the coresight bindings.
->> +  See bindings/arm/coresight.txt.
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^ete([0-9a-f]+)$"
->> +  compatible:
->> +    items:
->> +      - const: arm,embedded-trace-extension
->> +
->> +  cpu:
->> +    description: |
->> +      Handle to the cpu this ETE is bound to.
->> +    $ref: /schemas/types.yaml#/definitions/phandle
->> +
->> +  out-ports:
->> +    description: |
->> +      Output connections from the ETE to legacy CoreSight trace bus.
->> +    $ref: /schemas/graph.yaml#/properties/port
+> It should be doable. If you want the exit sections to be treated the same as
+> module init, the following patch should stuff any exit sections into the module
+> init "region" (completely untested). Hence it should be freed together with the
+> init sections and it would identify as init through within_module_init(). Let
+> me know if this works for you.
+
+That does indeed seem to DTRT from a quick scan of module.c. Very nice
+tidy patch. I was afraid it'd be much worse.
+
+Assuming it actually works; for your Changelog:
+
+"Dynamic code patching (alternatives, jump_label and static_call) can
+have sites in __exit code, even it __exit is never executed. Therefore
+__exit must be present at runtime, at least for as long as __init code
+is.
+
+Additionally, for jump_label and static_call, the __exit sites must also
+identify as within_module_init(), such that the infrastructure is aware
+to never touch them after module init -- alternatives are only ran once
+at init and hence don't have this particular constraint.
+
+By making __exit identify as __init for UNLOAD_MODULE, the above is
+satisfied."
+
+Thanks!
+
+> ---
 > 
-> s/port/ports/
-
-Ok.
-
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 30479355ab85..1c3396a9dd8b 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -2802,7 +2802,11 @@ void * __weak module_alloc(unsigned long size)
 > 
-> And then you need:
+>  bool __weak module_init_section(const char *name)
+>  {
+> -       return strstarts(name, ".init");
+> +#ifndef CONFIG_UNLOAD_MODULE
+> +       return strstarts(name, ".init") || module_exit_section(name);
+> +#else
+> +       return strstarts(name, ".init")
+> +#endif
+>  }
 > 
->         properties:
->           port:
->             description: what this port is
->             $ref: /schemas/graph.yaml#/properties/port
-
-Isn't this already covered by the definition of ports ? There are no 
-fixed connections for ETE. It is optional and could be connected to
-any legacy CoreSight component. i.e, a "ports" object can have port
-objects inside.
-
-Given we have defined out-ports as an object "confirming to the ports"
-do we need to describe the individual port nodes ?
-
-Cheers
-Suzuki
+>  bool __weak module_exit_section(const char *name)
+> @@ -3116,11 +3120,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
+>                  */
+>                 shdr->sh_addr = (size_t)info->hdr + shdr->sh_offset;
+> 
+> -#ifndef CONFIG_MODULE_UNLOAD
+> -               /* Don't load .exit sections */
+> -               if (module_exit_section(info->secstrings+shdr->sh_name))
+> -                       shdr->sh_flags &= ~(unsigned long)SHF_ALLOC;
+> -#endif
+>         }
+> 
+>         /* Track but don't keep modinfo and version sections. */
+> 
