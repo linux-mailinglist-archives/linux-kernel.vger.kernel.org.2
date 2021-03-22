@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AB1344DEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D88F344DF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhCVR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:58:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231249AbhCVR6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:58:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616435914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DxP0GIfbRmVMNqia/UkYOYfywTCnzVTGK716pBxi6aM=;
-        b=MC98qlx6SLXJnPotvdFsscJRN7gDq5rDr/0xNUkojbK2oXRrCaCQDaiApqmdy/WT17Kfx2
-        fdsV2KS/0nMdCEYN/v4qI8M64HJDM5YBS0cYsXYyT0zPhxxuM1btJ3N6RSRkt0pTJTfRDK
-        34fB1V/GsN4agxFNwdmyxJm68+wuK4Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-8yY8mH_kM86_phDvTxLw9w-1; Mon, 22 Mar 2021 13:58:32 -0400
-X-MC-Unique: 8yY8mH_kM86_phDvTxLw9w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F00C38030D6;
-        Mon, 22 Mar 2021 17:58:30 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32BC11002388;
-        Mon, 22 Mar 2021 17:58:24 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 13:58:21 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        Jules Irenge <jbi.octave@gmail.com>, linux-audit@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] audit: avoid -Wempty-body warning
-Message-ID: <20210322175821.GO3141668@madcap2.tricolour.ca>
-References: <20210322114536.3517661-1-arnd@kernel.org>
- <20210322143344.GN3141668@madcap2.tricolour.ca>
- <CAK8P3a2NkB7COUetdq65cSNjVe7-96c44=4JE5BXkBwXG-5nyQ@mail.gmail.com>
+        id S230021AbhCVR7W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 13:59:22 -0400
+Received: from aposti.net ([89.234.176.197]:55844 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231249AbhCVR7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:59:02 -0400
+Date:   Mon, 22 Mar 2021 17:58:46 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 02/10] pinctrl: Ingenic: Add support for read the pin
+ configuration of X1830.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com
+Message-Id: <YXTDQQ.OYIQVLSUOAPB3@crapouillou.net>
+In-Reply-To: <1615975084-68203-3-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1615975084-68203-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2NkB7COUetdq65cSNjVe7-96c44=4JE5BXkBwXG-5nyQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 17:28, Arnd Bergmann wrote:
-> On Mon, Mar 22, 2021 at 3:33 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > Change the macros to use the usual "do { } while (0)" instead, and change a
-> > > few more that were (void)0, for consistency.
-> >
-> > So what about audit_put_watch() and audit_get_watch() which are set to
-> > {}?   (And all of include/linux/audit.h that uses the latter...)  Does
-> > this only matter if they are the only action called in an if or loop?
+
+
+Le mer. 17 mars 2021 à 17:57, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> Add X1830 support in "ingenic_pinconf_get()", so that it can read the
+> configuration of X1830 SoC correctly.
 > 
-> I missed those, thanks for pointing it out. I sent a v2 patch now.
+> Fixes: d7da2a1e4e08 ("pinctrl: Ingenic: Add pinctrl driver for 
+> X1830.")
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>     v2:
+>     New patch.
+> 
+>     v2->v3:
+>     1.Add fixes tag.
+>     2.Adjust the code, simplify the ingenic_pinconf_get() function.
+> 
+>  drivers/pinctrl/pinctrl-ingenic.c | 38 
+> ++++++++++++++++++++++++++++++--------
+>  1 file changed, 30 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+> b/drivers/pinctrl/pinctrl-ingenic.c
+> index 05dfa0a..1d43b98 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -2109,26 +2109,48 @@ static int ingenic_pinconf_get(struct 
+> pinctrl_dev *pctldev,
+>  	enum pin_config_param param = pinconf_to_config_param(*config);
+>  	unsigned int idx = pin % PINS_PER_GPIO_CHIP;
+>  	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
+> -	bool pull;
+> +	unsigned int bias;
+> +	bool pull, pullup, pulldown;
+> 
+> -	if (jzpc->info->version >= ID_JZ4770)
+> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
+> -	else
+> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
+> +	if (jzpc->info->version >= ID_X1830) {
+> +		unsigned int half = PINS_PER_GPIO_CHIP / 2;
+> +		unsigned int idxh = pin % half * 2;
 
-Ok, cool, that looks more consistent.  Can you answer my question about
-include/linux/audit.h and exactly what conditions require
-"do { } while (0)" over "{ }"?
+I had to look up operator precedence in C, '*' and '%' have the same 
+priority so this reads left-to-right.
 
->          Arnd
+I'd suggest adding parentheses around the '%' to make it more obvious.
 
-- RGB
+With that:
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> +
+> +		if (idx < half)
+> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
+> +					X1830_GPIO_PEL, &bias);
+> +		else
+> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
+> +					X1830_GPIO_PEH, &bias);
+> +
+> +		bias = (bias >> idxh) & (GPIO_PULL_UP | GPIO_PULL_DOWN);
+> +
+> +		pullup = (bias == GPIO_PULL_UP) && (jzpc->info->pull_ups[offt] & 
+> BIT(idx));
+> +		pulldown = (bias == GPIO_PULL_DOWN) && 
+> (jzpc->info->pull_downs[offt] & BIT(idx));
+> +
+> +	} else {
+> +		if (jzpc->info->version >= ID_JZ4770)
+> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
+> +		else
+> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
+> +
+> +		pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
+> +		pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
+> +	}
+> 
+>  	switch (param) {
+>  	case PIN_CONFIG_BIAS_DISABLE:
+> -		if (pull)
+> +		if (pullup || pulldown)
+>  			return -EINVAL;
+>  		break;
+> 
+>  	case PIN_CONFIG_BIAS_PULL_UP:
+> -		if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
+> +		if (!pullup)
+>  			return -EINVAL;
+>  		break;
+> 
+>  	case PIN_CONFIG_BIAS_PULL_DOWN:
+> -		if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
+> +		if (!pulldown)
+>  			return -EINVAL;
+>  		break;
+> 
+> --
+> 2.7.4
+> 
+
 
