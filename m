@@ -2,161 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D69D343853
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953DE34382D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhCVFXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 01:23:01 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:34427 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhCVFWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 01:22:13 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210322052211epoutp013836acfc9d37554b5a8f6b66e445b98a~ukp-vyhMu3034230342epoutp01H
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:22:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210322052211epoutp013836acfc9d37554b5a8f6b66e445b98a~ukp-vyhMu3034230342epoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616390531;
-        bh=xsBknzlDxmSfXAIXNzGrnEmNwCb0KAIpNYMKuTCtwZ0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X6sFXbpnj1iY3SfhQapGtD0+FzUcN+6+lj1aIAqwdkeg2rLUd77QO9yLvHwSqrf6S
-         8N6ykn1MiNlZLY8gSEDWTRxrjRLJzBTUhiypNqGboFZOf9qscveTGN0VgLn2IJI9U6
-         YbiCjljlAVY4c4Yc5VS7IMmHkhZQXpW/BUTgfvTM=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210322052211epcas1p2fc3e4af73fcc7fc31996c050b55110a5~ukp-NOHkL2684726847epcas1p2r;
-        Mon, 22 Mar 2021 05:22:11 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F3jYG1nh1z4x9Q1; Mon, 22 Mar
-        2021 05:22:10 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        18.DF.22618.28928506; Mon, 22 Mar 2021 14:22:10 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210322052209epcas1p377f1542bcc9ec50219d2e57aa92d944b~ukp9rpaMl0477604776epcas1p3X;
-        Mon, 22 Mar 2021 05:22:09 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210322052209epsmtrp153afb827eaea1817ae1c2c99913b6e44~ukp9qt53K2013120131epsmtrp1T;
-        Mon, 22 Mar 2021 05:22:09 +0000 (GMT)
-X-AuditID: b6c32a38-e63ff7000001585a-3b-605829820f92
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.36.08745.18928506; Mon, 22 Mar 2021 14:22:09 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.88.103.87]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210322052209epsmtip1a469f00e6d3c195cfe07048c77f689b8~ukp9XpxpF1778317783epsmtip1Z;
-        Mon, 22 Mar 2021 05:22:09 +0000 (GMT)
-From:   Namjae Jeon <namjae.jeon@samsung.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org
-Cc:     linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5/5] MAINTAINERS: add cifsd kernel server
-Date:   Mon, 22 Mar 2021 14:13:44 +0900
-Message-Id: <20210322051344.1706-6-namjae.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210322051344.1706-1-namjae.jeon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMJsWRmVeSWpSXmKPExsWy7bCmrm6TZkSCwc4WNovGt6dZLI6//stu
-        8Xt1L5vF63/TWSxOT1jEZLFy9VEmi2v337NbvPi/i9ni5//vjBZ79p5ksbi8aw6bxY/p9RZv
-        7wDV9vZ9YrVovaJlsXvjIjaLtZ8fs1u8eXGYzeLWxPlsFuf/Hmd1EPGY1dDL5jG74SKLx85Z
-        d9k9Nq/Q8ti94DOTx+6bDWwerTv+snt8fHqLxaNvyypGjy2LHzJ5rN9ylcXj8yY5j01P3jIF
-        8Ebl2GSkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAPauk
-        UJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTA0KNArTswtLs1L10vOz7UyNDAwMgWq
-        TMjJ+Pd8JWvBBu6K1dMnsDYwPubsYuTkkBAwkZh+6g5bFyMXh5DADkaJ/R/+MkM4nxgl1j38
-        yQThfGaUmNXynwmmZWfzQxaIxC5Gife/FiK03Fo5B6iKg4NNQFvizxZRkAYRgViJGzteg9Uw
-        C1xjlji+YCYjSEJYwFLi6bQnLCA2i4CqxKV5fWwgNq+AtcSr0y8YIbbJS6zecIAZxOYUsJGY
-        trwTbLOEwAMOidXLbrFAFLlInJi4mB3CFpZ4dXwLlC0l8bK/jR3kIAmBaomP+5khwh2MEi++
-        20LYxhI3129gBSlhFtCUWL9LHyKsKLHz91ywE5gF+CTefe1hhZjCK9HRJgRRoirRd+kwNEyk
-        JbraP0At9ZBY8uYZNHz6GSV+b3jPNIFRbhbChgWMjKsYxVILinPTU4sNC0yQY2wTIzg1a1ns
-        YJz79oPeIUYmDsZDjBIczEoivCeSQxKEeFMSK6tSi/Lji0pzUosPMZoCw24is5Rocj4wO+SV
-        xBuaGhkbG1uYmJmbmRorifMmGTyIFxJITyxJzU5NLUgtgulj4uCUamCa/CF+tlDl1S3HmLy+
-        hdVsrBecO/1LVUXXyr/BP8XUTLtZJl3K7XS7/aQ6fkfLBcm6ykuNb8MPRLV++544YdPlotCM
-        uStm9a9er3bo+MzVZxqnBIYoBk6+Luz967/BweMqD7q/iTmds/jE2r4rapPR0qlM6/dq7a28
-        tKqnota53IQ/x/3OAXdfI49LrbfmfwgMvxLLoqFwaEkrp4txd4xzcceUqXsW8jO84HESY0tt
-        tfvwPs4pbPIT51zJd/s78r8zThBbFR2rMWlx3zdnD80/tt7Powo3TbZSXxZo9J7l3hzTqpwn
-        QYsatslU2VrtmFqRU8t2/HiOsKiadsucRRp5K7v2P3Yq3PX0wDdbFkElluKMREMt5qLiRACq
-        301iVgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsWy7bCSnG6jZkSCwalpchaNb0+zWBx//Zfd
-        4vfqXjaL1/+ms1icnrCIyWLl6qNMFtfuv2e3ePF/F7PFz//fGS327D3JYnF51xw2ix/T6y3e
-        3gGq7e37xGrRekXLYvfGRWwWaz8/Zrd48+Iwm8WtifPZLM7/Pc7qIOIxq6GXzWN2w0UWj52z
-        7rJ7bF6h5bF7wWcmj903G9g8Wnf8Zff4+PQWi0ffllWMHlsWP2TyWL/lKovH501yHpuevGUK
-        4I3isklJzcksSy3St0vgyvj3fCVrwQbuitXTJ7A2MD7m7GLk5JAQMJHY2fyQpYuRi0NIYAej
-        xJmmuYwQCWmJYyfOMHcxcgDZwhKHDxdD1HxglDjR38gCEmcT0Jb4s0UUpFxEIF7iZsNtsDnM
-        Aq+YJVatPc0EkhAWsJR4Ou0JC4jNIqAqcWleHxuIzStgLfHq9AuoXfISqzccYAaxOQVsJKYt
-        7wSrFwKqmdl6n2kCI98CRoZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBEaSltYNx
-        z6oPeocYmTgYDzFKcDArifCeSA5JEOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJ
-        anZqakFqEUyWiYNTqoHpjK/1nItl27R8cm/aMRgvNK08felmoFxWW91FwzwrT80372Nq1kws
-        UP0oWmO56CD7V7aNe5dzxCldaz1Xor3faoXO9lqlpU3l+blf1db/77vxYvPGkKDdN73Pm63J
-        371iu9u1FwkWukt4jap22W3d4PJ+gsWjAJkJvh8F9l3MvGT52XeXkseTaaVTxQNn/6+zSHZr
-        jLwStP7LDtvsjiNsU0J3Pp2fc/m2rSrr8SZVUf1NwjWn1m0//F3CdlrlDXmm9JmzZyee6d+j
-        f2jDrxtBRwKzXWekN6W694TaLzdf+jRZ2lWZlXlSRvPq9rmWXK2KMhlbb1ztdfSzOMJcsT1v
-        vTKv26IKa6kJq7el7JZQYinOSDTUYi4qTgQAi4piJA8DAAA=
-X-CMS-MailID: 20210322052209epcas1p377f1542bcc9ec50219d2e57aa92d944b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322052209epcas1p377f1542bcc9ec50219d2e57aa92d944b
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
-        <CGME20210322052209epcas1p377f1542bcc9ec50219d2e57aa92d944b@epcas1p3.samsung.com>
+        id S229728AbhCVFOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 01:14:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhCVFN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 01:13:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAA5561930;
+        Mon, 22 Mar 2021 05:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616390036;
+        bh=swuzV5EcaNZWS3RrTQ3X/7Hc8ZdWHJlVaGVOm4GrSVg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BqLzlYPtWWJqI9Vh+X/fgywOFGwaoqqxGWUiA+ziLU5+fkuf+EK5ZEkHHQM+zZrn0
+         OFaCj5Pabg5gX6yDwuB7iwu+4vBKzinAHeznBt/S2Kps9B/DVH2Wvw3BV6+sfxtQCx
+         3/lQQzsED+KSFuViY1Nt/xICJUMtFME9TyzJ6brd2l6Kjy8nNi22Bv0lZlCem+6Si1
+         X6Si0jjR3TTSaDewjuy9rcM0/ZEAXsn0mJx6BxJsoYIjFa9/Z3EZXTzLP9KoHKmYDH
+         kVwywfTLCMiHqNvM2xijxxTf0fuXjlJrW4dOWavmqju9noTXAIQNGkX/6feqk1Q3xm
+         puT14p6BuVahQ==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH RESEND] random: initialize ChaCha20 constants with correct endianness
+Date:   Sun, 21 Mar 2021 22:13:47 -0700
+Message-Id: <20210322051347.266831-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.31.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself, Steve French, Sergey Senozhatsky and Hyunchul Lee
-as cifsd maintainer.
+From: Eric Biggers <ebiggers@google.com>
 
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Hyunchul Lee <hyc.lee@gmail.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+On big endian CPUs, the ChaCha20-based CRNG is using the wrong
+endianness for the ChaCha20 constants.
+
+This doesn't matter cryptographically, but technically it means it's not
+ChaCha20 anymore.  Fix it to always use the standard constants.
+
+Cc: linux-crypto@vger.kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- MAINTAINERS | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/char/random.c   | 4 ++--
+ include/crypto/chacha.h | 9 +++++++--
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa84121c5611..30f678f8b4d3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4434,7 +4434,7 @@ F:	include/linux/clk/
- F:	include/linux/of_clk.h
- X:	drivers/clk/clkdev.c
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 0fe9e200e4c84..5d6acfecd919b 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -819,7 +819,7 @@ static bool __init crng_init_try_arch_early(struct crng_state *crng)
  
--COMMON INTERNET FILE SYSTEM (CIFS)
-+COMMON INTERNET FILE SYSTEM CLIENT (CIFS)
- M:	Steve French <sfrench@samba.org>
- L:	linux-cifs@vger.kernel.org
- L:	samba-technical@lists.samba.org (moderated for non-subscribers)
-@@ -4444,6 +4444,16 @@ T:	git git://git.samba.org/sfrench/cifs-2.6.git
- F:	Documentation/admin-guide/cifs/
- F:	fs/cifs/
+ static void __maybe_unused crng_initialize_secondary(struct crng_state *crng)
+ {
+-	memcpy(&crng->state[0], "expand 32-byte k", 16);
++	chacha_init_consts(crng->state);
+ 	_get_random_bytes(&crng->state[4], sizeof(__u32) * 12);
+ 	crng_init_try_arch(crng);
+ 	crng->init_time = jiffies - CRNG_RESEED_INTERVAL - 1;
+@@ -827,7 +827,7 @@ static void __maybe_unused crng_initialize_secondary(struct crng_state *crng)
  
-+COMMON INTERNET FILE SYSTEM SERVER (CIFSD)
-+M:	Namjae Jeon <namjae.jeon@samsung.com>
-+M:	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-+M:	Steve French <sfrench@samba.org>
-+M:	Hyunchul Lee <hyc.lee@gmail.com>
-+L:	linux-cifs@vger.kernel.org
-+L:	linux-cifsd-devel@lists.sourceforge.net
-+S:	Maintained
-+F:	fs/cifsd/
+ static void __init crng_initialize_primary(struct crng_state *crng)
+ {
+-	memcpy(&crng->state[0], "expand 32-byte k", 16);
++	chacha_init_consts(crng->state);
+ 	_extract_entropy(&input_pool, &crng->state[4], sizeof(__u32) * 12, 0);
+ 	if (crng_init_try_arch_early(crng) && trust_cpu) {
+ 		invalidate_batched_entropy();
+diff --git a/include/crypto/chacha.h b/include/crypto/chacha.h
+index 3a1c72fdb7cf5..dabaee6987186 100644
+--- a/include/crypto/chacha.h
++++ b/include/crypto/chacha.h
+@@ -47,13 +47,18 @@ static inline void hchacha_block(const u32 *state, u32 *out, int nrounds)
+ 		hchacha_block_generic(state, out, nrounds);
+ }
+ 
+-void chacha_init_arch(u32 *state, const u32 *key, const u8 *iv);
+-static inline void chacha_init_generic(u32 *state, const u32 *key, const u8 *iv)
++static inline void chacha_init_consts(u32 *state)
+ {
+ 	state[0]  = 0x61707865; /* "expa" */
+ 	state[1]  = 0x3320646e; /* "nd 3" */
+ 	state[2]  = 0x79622d32; /* "2-by" */
+ 	state[3]  = 0x6b206574; /* "te k" */
++}
 +
- COMPACTPCI HOTPLUG CORE
- M:	Scott Murray <scott@spiteful.org>
- L:	linux-pci@vger.kernel.org
++void chacha_init_arch(u32 *state, const u32 *key, const u8 *iv);
++static inline void chacha_init_generic(u32 *state, const u32 *key, const u8 *iv)
++{
++	chacha_init_consts(state);
+ 	state[4]  = key[0];
+ 	state[5]  = key[1];
+ 	state[6]  = key[2];
 -- 
-2.17.1
+2.31.0
 
