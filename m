@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25545345121
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DBB345120
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231600AbhCVUtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhCVUsz (ORCPT
+        id S231388AbhCVUtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:49:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56276 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhCVUsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:48:55 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E9AC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:48:55 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id m11so117980qtx.19
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=qLtE7Q7O336Jr0xZrje9a6J8mVVfCsw4DlLIJJKkdv8=;
-        b=qhnxD7UOUyW2EyGJrUhKII5iqbLDIC0i63t3PapQiA28sK5rBwE+j7RIaM2f0S1LXa
-         0zzFB/if4Hn5zXCLfxYIwCMKqzTmjc+DR/Y99e/w6V56JM7+bL6XkIl3d4raLenafKKe
-         XGlFYlfznWFJWE/zUzXuAAM8G+jU/tKjkNpuFb8XvMycK3+MlwuzOCK+LtXuAB2Ofs7d
-         pvSYDfM4ApnwE+GTaX2th2gnll9nZYCPKPTyI3gnmqFwpcPoQr0zUWLGhuTF2Lq21FlC
-         +f95/vtfOiCHQamP3P435yVYxIm/RKM9FlMZmNELc0hzVB34+10mMaq8uFvlJdyqTrbJ
-         CVWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=qLtE7Q7O336Jr0xZrje9a6J8mVVfCsw4DlLIJJKkdv8=;
-        b=ALg0GjMwdpg/aV7e6Xqdzh45Ovkax31Zm684EolEnSioOVZKpZ5SKncoiJFNoRFgQh
-         h9+fpU7lSZj1ZEmnW6O/cVii2dK1lzpjVmcD03c8rgSW4pzlRpPvnmxhob9zrIYZ8Q+7
-         mqjNeyE6Ggahsg3imgEaakSkd1nU2sziAuxQKMr3FtMxakBhGhw/PmQkEwwI6E9X2iNj
-         I66UW47IbtYHCwcGKbzQmoGuAExGrsfjEFtTonQyFAJA1I3ODpFIQZi4Y+V279YTRzF9
-         vf8A4bdcK7IxnBOyzFO4uCibKpiQ4fiCbA3drAuwgScf+jHGu18A5RtGw1+s+Hlm6oKp
-         Xv+A==
-X-Gm-Message-State: AOAM531HDWnxjxJ9FjnwVQB+iKPhIUYX5z7NpnAc8AdphOkNKTo+GBGi
-        wFLBe5MFZtuzmizhQHsEuyVMZVgX44xxkB9XmoF/
-X-Google-Smtp-Source: ABdhPJwWMDOeA+n+91jwJi4YMPmlBexpd3rTePiPuanO5jlXlCFfbUZAzUxKXMfWUSyqODoOyan+18PMKUY4TmLpvV7U
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:d23:3b75:1338:2e4e])
- (user=axelrasmussen job=sendgmr) by 2002:ad4:59c6:: with SMTP id
- el6mr1615660qvb.15.1616446134063; Mon, 22 Mar 2021 13:48:54 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 13:48:35 -0700
-Message-Id: <20210322204836.1650221-1-axelrasmussen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] userfaultfd/shmem: fix minor fault page leak
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Mar 2021 16:48:39 -0400
+Date:   Mon, 22 Mar 2021 21:48:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616446117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oJ7SnGL63YNzmUIoNkN5uWafCnvlDUpQmFZmeX30mvs=;
+        b=KobXtScO8ZGUPKCdmYD0WZVsPNnSy81JhTUFmLHrLEJxgrYU2X0BFhfaJQvg2PZM/BF6hU
+        /wm4e1hXB2Yj96sSLvgAS/s1IRTgcfX9oYtUnfIO8jjQsaSW04yXKxhKIrOnHK1IcV4fdX
+        823brl2EtOeg26SQFg6achSoDr/m2Ba+DdKPbFjlCGAGau+yYovFvY2rtnel4CwsXoCN0J
+        RPLIHVYZanjxBHpJ159da+Aiolp4XV6Uuv2j/gt9XKjv+6JoxGeRukSeD2F+01H+Pm6ply
+        L4nqIv+nIyH4Edkm4McvAP2G/EaCu+muN/ry/olXzRRJsXJidSq/u93V5NadgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616446117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oJ7SnGL63YNzmUIoNkN5uWafCnvlDUpQmFZmeX30mvs=;
+        b=dxC5Bdd4q9/wLuu3RhPSwlhjBqTjc6vHbhPrwkT8TrBLdwXmj6Ptyr3xWvayUoFNMpd2Tq
+        RjrzFLfn/yBFuABQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
+ <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+ <20210322113918.ze52gq54cpsspgej@linutronix.de>
+ <20210322115536.knkea7i6vrfpotol@pengutronix.de>
+ <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
+ <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
-put_page() after getting the page out of the page cache, we leak the
-reference.
+On 2021-03-22 14:40:32 [+0100], Uwe Kleine-K=C3=B6nig wrote:
+> From a strictly logically point of view you indeed cannot. But if you go
+> to the street and say to people there that they can park their car in
+> this street free of charge between Monday and Friday, I expect that most
+> of them will assume that they have to pay for parking on weekends.
 
-The fix can be verified by checking /proc/meminfo and running the
-userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
-MemAvailable steadily decreasing with each run of the test. With the
-fix, memory is correctly freed after the test program exits.
+If I hear that parking is free on weekdays and on paid on weekends, I
+expect it to be a scam.
 
-Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- mm/shmem.c | 1 +
- 1 file changed, 1 insertion(+)
+Uwe, the patch reverts a change which was needed for !RT + threadirqs.
+The commit message claims that since the referenced commit "=E2=80=A6 inter=
+rupt
+handlers always run with interrupts disabled on non-RT=E2=80=A6 ". This has
+nothing to do with _this_ change. It argues why the workaround is not
+needed.
+If the referenced commit breaks RT then this is another story.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index ef8c9f5e92fc..d2e0e81b7d2e 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 
- 	if (page && vma && userfaultfd_minor(vma)) {
- 		unlock_page(page);
-+		put_page(page);
- 		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
- 		return 0;
- 	}
--- 
-2.31.0.rc2.261.g7f71774620-goog
+> So when you said that on on-RT the reason why it used to need a
+> workaround is gone made me wonder what that implies for RT.
 
+There was never reason (or a lockdep splat) for it on RT. If so you
+should have seen it, right?
+
+Sebastian
