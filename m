@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC3934391F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC3934390E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCVGD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:03:29 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14122 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhCVGCo (ORCPT
+        id S230015AbhCVGCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhCVGCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:02:44 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3kPn19bLz19GH0;
-        Mon, 22 Mar 2021 14:00:45 +0800 (CST)
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.184.135) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 14:02:33 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Eric Auger <eric.auger@redhat.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [PATCH v5 6/6] KVM: arm64: GICv4.1: Give a chance to save VLPI state
-Date:   Mon, 22 Mar 2021 14:01:58 +0800
-Message-ID: <20210322060158.1584-7-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-In-Reply-To: <20210322060158.1584-1-lushenming@huawei.com>
-References: <20210322060158.1584-1-lushenming@huawei.com>
-MIME-Version: 1.0
+        Mon, 22 Mar 2021 02:02:21 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998FFC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:02:21 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k189so20225655ybb.17
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:02:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=w4n6Y6TRgjyD9SHfdO058vXR1r4LRwmUmHS4TxN0IUQ=;
+        b=VvvFYSfyRxpvJOTLwaDhC7q5by4hb3byrVlKjP5CT/9X60WGM6qnHuYV8DfJmC/Z+7
+         o8pZFJ7UEM1RhFbr9o5LQo/t5qgl3Or+rnmqF4MY5tCf0kNH81N+1rEYvkXcV02DDao4
+         U8BVCCGXj2lPmZB3SB0JUBCdiIidnIFo6XUJUj1G+DDRyeAmOG8oCoDJxxTvQ8wBV1uq
+         Wf/CCelq59jPEaaVT2Mynjon5YFSWCuOXnSsWG/yLXXNoPhlm36NB68yD6Zmd6k+BOBj
+         XP8j0F2L9cUeX7Ws4iip+JqRFY+8cU44AL6a9BX1/vOpXomx/y5KxmCKtsGzFqL8i73M
+         p0vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=w4n6Y6TRgjyD9SHfdO058vXR1r4LRwmUmHS4TxN0IUQ=;
+        b=CKW4mLYPQu5Sex5PmvPvHubOS+Fd62yHlZ9Vl9bNbsYhzAf8Aahp677y9ZKLVQQHjH
+         nCTY2yejFKlBj/EhTuJj8kZqxie1A/ujk5lR5LlF2kU2Sy4V1mujGCeCS1W8WegMR6e3
+         ecjg+oC7hRPWU5gSh0M0OhS4ETbpQlPP/yaYe8krOlCxQICsXCrQ3CDUWouM2pg5xy8L
+         2FPUQJAUoCd89T7VY5Gne7FMMHtANv7Yk7HEAkfM+UjugDRvR+3X6TCrl9iBV36astsV
+         y07JAUVUr6pp55x97wENQoe17WYfMc9j2Khv5isYZ7PGVfwWgClSvwTB7YdtZXicvlUz
+         AWxQ==
+X-Gm-Message-State: AOAM533ZgGGq1sRU+DAEevXce5p74WGXCaLpZ5OsMjP6qYFgUamgTw3y
+        V42iGBrKK0lzx5IvOqITYxExcWE7X2ya
+X-Google-Smtp-Source: ABdhPJz18QXc98nJNotAJXH1w16tomxxC41Sm171H6xFFCDRDaArBTvl2SSZayQp3Fzd2/rQeafanaLF0jHr
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:fdf3:9f7d:e4e3:ccad])
+ (user=apusaka job=sendgmr) by 2002:a25:b0f:: with SMTP id 15mr22845240ybl.467.1616392940803;
+ Sun, 21 Mar 2021 23:02:20 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 14:02:15 +0800
+Message-Id: <20210322140154.1.I2ce9acd6cc6766e6789fc5742951b21b7ab27067@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] Bluetooth: Set CONF_NOT_COMPLETE as l2cap_chan default
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        syzbot+338f014a98367a08a114@syzkaller.appspotmail.com,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.135]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before GICv4.1, we don't have direct access to the VLPI state. So
-we simply let it fail early when encountering any VLPI in saving.
+From: Archie Pusaka <apusaka@chromium.org>
 
-But now we don't have to return -EACCES directly if on GICv4.1. Let’s
-change the hard code and give a chance to save the VLPI state (and
-preserve the UAPI).
+Currently l2cap_chan_set_defaults() reset chan->conf_state to zero.
+However, there is a flag CONF_NOT_COMPLETE which is set when
+creating the l2cap_chan. It is suggested that the flag should be
+cleared when l2cap_chan is ready, but when l2cap_chan_set_defaults()
+is called, l2cap_chan is not yet ready. Therefore, we must set this
+flag as the default.
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
+Example crash call trace:
+__dump_stack lib/dump_stack.c:15 [inline]
+dump_stack+0xc4/0x118 lib/dump_stack.c:56
+panic+0x1c6/0x38b kernel/panic.c:117
+__warn+0x170/0x1b9 kernel/panic.c:471
+warn_slowpath_fmt+0xc7/0xf8 kernel/panic.c:494
+debug_print_object+0x175/0x193 lib/debugobjects.c:260
+debug_object_assert_init+0x171/0x1bf lib/debugobjects.c:614
+debug_timer_assert_init kernel/time/timer.c:629 [inline]
+debug_assert_init kernel/time/timer.c:677 [inline]
+del_timer+0x7c/0x179 kernel/time/timer.c:1034
+try_to_grab_pending+0x81/0x2e5 kernel/workqueue.c:1230
+cancel_delayed_work+0x7c/0x1c4 kernel/workqueue.c:2929
+l2cap_clear_timer+0x1e/0x41 include/net/bluetooth/l2cap.h:834
+l2cap_chan_del+0x2d8/0x37e net/bluetooth/l2cap_core.c:640
+l2cap_chan_close+0x532/0x5d8 net/bluetooth/l2cap_core.c:756
+l2cap_sock_shutdown+0x806/0x969 net/bluetooth/l2cap_sock.c:1174
+l2cap_sock_release+0x64/0x14d net/bluetooth/l2cap_sock.c:1217
+__sock_release+0xda/0x217 net/socket.c:580
+sock_close+0x1b/0x1f net/socket.c:1039
+__fput+0x322/0x55c fs/file_table.c:208
+____fput+0x17/0x19 fs/file_table.c:244
+task_work_run+0x19b/0x1d3 kernel/task_work.c:115
+exit_task_work include/linux/task_work.h:21 [inline]
+do_exit+0xe4c/0x204a kernel/exit.c:766
+do_group_exit+0x291/0x291 kernel/exit.c:891
+get_signal+0x749/0x1093 kernel/signal.c:2396
+do_signal+0xa5/0xcdb arch/x86/kernel/signal.c:737
+exit_to_usermode_loop arch/x86/entry/common.c:243 [inline]
+prepare_exit_to_usermode+0xed/0x235 arch/x86/entry/common.c:277
+syscall_return_slowpath+0x3a7/0x3b3 arch/x86/entry/common.c:348
+int_ret_from_sys_call+0x25/0xa3
+
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reported-by: syzbot+338f014a98367a08a114@syzkaller.appspotmail.com
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
 ---
- Documentation/virt/kvm/devices/arm-vgic-its.rst | 2 +-
- arch/arm64/kvm/vgic/vgic-its.c                  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/virt/kvm/devices/arm-vgic-its.rst b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-index 6c304fd2b1b4..d257eddbae29 100644
---- a/Documentation/virt/kvm/devices/arm-vgic-its.rst
-+++ b/Documentation/virt/kvm/devices/arm-vgic-its.rst
-@@ -80,7 +80,7 @@ KVM_DEV_ARM_VGIC_GRP_CTRL
-     -EFAULT  Invalid guest ram access
-     -EBUSY   One or more VCPUS are running
-     -EACCES  The virtual ITS is backed by a physical GICv4 ITS, and the
--	     state is not available
-+	     state is not available without GICv4.1
-     =======  ==========================================================
+ net/bluetooth/l2cap_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 374cc32d7138..59ab9689b37d 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -516,7 +516,9 @@ void l2cap_chan_set_defaults(struct l2cap_chan *chan)
+ 	chan->flush_to = L2CAP_DEFAULT_FLUSH_TO;
+ 	chan->retrans_timeout = L2CAP_DEFAULT_RETRANS_TO;
+ 	chan->monitor_timeout = L2CAP_DEFAULT_MONITOR_TO;
++
+ 	chan->conf_state = 0;
++	set_bit(CONF_NOT_COMPLETE, &chan->conf_state);
  
- KVM_DEV_ARM_VGIC_GRP_ITS_REGS
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index 40cbaca81333..ec7543a9617c 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -2218,10 +2218,10 @@ static int vgic_its_save_itt(struct vgic_its *its, struct its_device *device)
- 		/*
- 		 * If an LPI carries the HW bit, this means that this
- 		 * interrupt is controlled by GICv4, and we do not
--		 * have direct access to that state. Let's simply fail
--		 * the save operation...
-+		 * have direct access to that state without GICv4.1.
-+		 * Let's simply fail the save operation...
- 		 */
--		if (ite->irq->hw)
-+		if (ite->irq->hw && !kvm_vgic_global_state.has_gicv4_1)
- 			return -EACCES;
- 
- 		ret = vgic_its_save_ite(its, device, ite, gpa, ite_esz);
+ 	set_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+ }
 -- 
-2.19.1
+2.31.0.rc2.261.g7f71774620-goog
 
