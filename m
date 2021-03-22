@@ -2,150 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED410345283
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D344345284
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhCVWpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:45:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:14973 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhCVWor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:44:47 -0400
-IronPort-SDR: 3XVnfYDZQ/siAJEUhSG2SPDz5ZYwXlecDBlAHHrpIi0qDlSYjR8dbQs7aau3XWGjID99ntvjyM
- ZryPIg430LvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190456249"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="190456249"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:44:46 -0700
-IronPort-SDR: Cs90cP332n3ZwIZ+y9pl7057fKYog23Iah6j7pRk3RlXtypyIKmOoS8gd8Dobj3vdvqWv+XFt4
- NCdy85z+Y8mQ==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="408012774"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:44:46 -0700
-Date:   Mon, 22 Mar 2021 15:44:46 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH V4 06/10] x86/fault: Adjust WARN_ON for PKey fault
-Message-ID: <20210322224446.GQ3014244@iweiny-DESK2.sc.intel.com>
-References: <20210322053020.2287058-1-ira.weiny@intel.com>
- <20210322053020.2287058-7-ira.weiny@intel.com>
- <YFjAV44u7i9t1TDL@google.com>
+        id S230227AbhCVWph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhCVWpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:45:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3C4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=JsR7VWSm0T9gUi7PShJLjaTO/6YuAo/dscGaXeBiyKw=; b=wYjxPQZC1U9KOj9wXWjZupKzaL
+        ybPrsoKILXI/tFnt3yMV0oWY4DgJZJlJPvguenZv+EIqhD+r3DlPKypAsCXF2sMd59nNg9/Ncz7Fm
+        kvbKxQ3UbAvSt/KeeM/4luZUebyCg6Y837WIfw8ym5ygP9Hs8Kmt/b3/5BkVlqGkisi3mgQPSpzjA
+        sFOiYOdvWqyMbXbXfRARc/I/tF3yFrmFmv+Oj5i/6hr5JundoAbfAIgsTal0KUb1cz7rNizqgtaqC
+        i3GfMwSpo9DM7SwkBRY7zStw+MIMnc3nrDr8Gf9OJpLHNR6KfW4F2w2jAt2E7ZqAt0JhNODtAJvjw
+        Ihhb2v9Q==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOTI7-009BWk-4p; Mon, 22 Mar 2021 22:45:01 +0000
+Subject: Re: [PATCH] drm/amd: Fix a typo in two different sentences
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, evan.quan@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20210322210612.1786322-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9696cd2a-bac2-15ba-c8e4-434df7b5cee0@infradead.org>
+Date:   Mon, 22 Mar 2021 15:44:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFjAV44u7i9t1TDL@google.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20210322210612.1786322-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:05:43AM -0700, Sean Christopherson wrote:
-> On Sun, Mar 21, 2021, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > PKey faults may now happen on kernel mappings if the feature is enabled.
-> > Remove the warning in the fault path if PKS is enabled.
+On 3/22/21 2:06 PM, Bhaskar Chowdhury wrote:
 > 
-> When/why can they happen?  I read through all the changelogs, as well as the
-> cover letters for v1 and the RFC, and didn't see any explicit statement about
-> why pkey faults on supervisor accesses are now "legal".
-
-Ok, I have to admit I did not think about documenting this detail...  I'll
-update the commit message a bit more.
-
-Prior to this series pkeys were only supported on user page mappings.
-Therefore seeing a X86_PF_PK error in this path was completely unexpected and
-warranted the extra WARN_ON to indicate that something went very wrong.
-
-> Explaining what happens
-> later in the page fault handler would also be helpful, e.g. is the flag simply
-> ignored?
-
-Ok I'll do this.  But the behavior does not change.  The fault is unhandled and
-results in an Ooops.  The only difference is that if PKS is enabled and
-configured on a kernel mapping the oops is to be expected.
-
-> Does it lead directly to OOPS?
-
-Yes, the series concludes with it being an ooops unless the test code is
-running.  The behavior does not change from before.  I'll more clearly document
-that...
-
+> s/defintion/definition/ .....two different places.
 > 
-> Documenting what happens on a PKS #PF in the API patch would be nice to have, too.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Ok, yes, good idea.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
+> ---
+>  drivers/gpu/drm/amd/include/atombios.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  arch/x86/mm/fault.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> > index a73347e2cdfc..731ec90ed413 100644
-> > --- a/arch/x86/mm/fault.c
-> > +++ b/arch/x86/mm/fault.c
-> > @@ -1141,11 +1141,12 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
-> >  		   unsigned long address)
-> >  {
-> >  	/*
-> > -	 * Protection keys exceptions only happen on user pages.  We
-> > -	 * have no user pages in the kernel portion of the address
-> > -	 * space, so do not expect them here.
-> > +	 * PF_PK is expected on kernel addresses when supervisor pkeys are
-> 
-> "is expected" can be misinterpreted as "PF is expected on all kernel addresses...".
+> diff --git a/drivers/gpu/drm/amd/include/atombios.h b/drivers/gpu/drm/amd/include/atombios.h
+> index c1d7b1d0b952..47eb84598b96 100644
+> --- a/drivers/gpu/drm/amd/include/atombios.h
+> +++ b/drivers/gpu/drm/amd/include/atombios.h
+> @@ -1987,9 +1987,9 @@ typedef struct _PIXEL_CLOCK_PARAMETERS_V6
+>  #define PIXEL_CLOCK_V6_MISC_HDMI_BPP_MASK           0x0c
+>  #define PIXEL_CLOCK_V6_MISC_HDMI_24BPP              0x00
+>  #define PIXEL_CLOCK_V6_MISC_HDMI_36BPP              0x04
+> -#define PIXEL_CLOCK_V6_MISC_HDMI_36BPP_V6           0x08    //for V6, the correct defintion for 36bpp should be 2 for 36bpp(2:1)
+> +#define PIXEL_CLOCK_V6_MISC_HDMI_36BPP_V6           0x08    //for V6, the correct definition for 36bpp should be 2 for 36bpp(2:1)
+>  #define PIXEL_CLOCK_V6_MISC_HDMI_30BPP              0x08
+> -#define PIXEL_CLOCK_V6_MISC_HDMI_30BPP_V6           0x04    //for V6, the correct defintion for 30bpp should be 1 for 36bpp(5:4)
+> +#define PIXEL_CLOCK_V6_MISC_HDMI_30BPP_V6           0x04    //for V6, the correct definition for 30bpp should be 1 for 36bpp(5:4)
+>  #define PIXEL_CLOCK_V6_MISC_HDMI_48BPP              0x0c
+>  #define PIXEL_CLOCK_V6_MISC_REF_DIV_SRC             0x10
+>  #define PIXEL_CLOCK_V6_MISC_GEN_DPREFCLK            0x40
+> --
 
-Yes the commit message was more clear by using 'may'.
 
-> 
-> This ties in with the lack of an explanation in the changelog.
-> 
-> > +	 * enabled.
-> 
-> It'd be helpful to spell out "Protection keys exceptions" so that random readers
-> don't need to search for PF_PK to understand what's up.  Maybe even use it as an
-> opportunity to introduce "pkeys", e.g.
-> 
-> 	/* Protection keys (pkeys) exceptions are ... */
+-- 
+~Randy
 
-Fair enough.  Will do.  I've changed this to:
-
-        /*
-         * X86_PF_PK (Protection key exceptions) may occur on kernel addresses
-         * when PKS (PKeys Supervisor) are enabled.
-         *
-         * If PKS is not enabled an exception should only happen on user pages.
-         * Because, we have no user pages in the kernel portion of the address
-         * space something must have gone very wrong and we should WARN.
-         */
-
-> 
-> >  	 */
-> > -	WARN_ON_ONCE(hw_error_code & X86_PF_PK);
-> > +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> > +		WARN_ON_ONCE(hw_error_code & X86_PF_PK);
-> 
-> Does this generate the same code if the whole thing is thrown in the WARN?  E.g.
-> 
-> 	WARN_ON_ONCE(!cpu_feature_enabled(X86_FEATURE_PKS) &&
-> 		     (hw_error_code & X86_PF_PK));
-
-I don't know in the general case.  But if CONFIG_BUG=n this would be better.
-
-I've changed it.
-
-Thanks!
-Ira
