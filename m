@@ -2,290 +2,698 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB38344B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB62344B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCVQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S231903AbhCVQbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhCVQ3x (ORCPT
+        with ESMTP id S231828AbhCVQa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:29:53 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BDAC061574;
-        Mon, 22 Mar 2021 09:29:51 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id e7so20048616edu.10;
-        Mon, 22 Mar 2021 09:29:51 -0700 (PDT)
+        Mon, 22 Mar 2021 12:30:56 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3140C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:30:55 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id w37so22227720lfu.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:30:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+yQvc43S8r83HTfxyOEbHMJvrQICL6Aq5HxThzdm6Ks=;
-        b=a2GjEUZ1xP95PzLsG5fmHkO4GpwMpY7HUMMd4ayLoTo9cG/yg09LhITO4tawX3Gh2O
-         S7N+ryWZy5GouSEmtD1mb8SThKNuqs8Z9yN3ngdtTwDlYUEwij8RGRgLq1b5TWRGEUd1
-         lpEatp3TPzJo9OY97sCLpWhy9nfDF53L/h2iUXWniqZhnx142PstGYIRivRSbYwGo8Kg
-         r9rWKcxnIt5xc3nKSVK8Z7oVtV74FsmAfOQ+zP3tJthYvxIRZt7w6HZ5+SZiVyVUS3XS
-         fhbD029+04jfjdSQ9ATm5PtDSDdmIvSM8qmjNX3LIHLyZKFk8FWZuN6z7jV3s0P8r+kv
-         T80Q==
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=ihVWaRMknIL1KL00sk8EMCErMuB9CbNtCCSB1imJeHQ=;
+        b=vgSpur4WkreytqaglErCzb23V3y6h/kZZWTIw1LXocZsDvxRN85L27VYmoKeEnzkFF
+         x8t6R3ttLPg2x6r9NiosDUNdOLa5j6VFfGNcPvz0ctmV3UvB2fKPz5F0GrW85dDQmtpJ
+         hvg+0pl8y09EH6iT1xfFDKCXjuev69iCK8vLe0xPHXlwLfHrL1iIMAMZWxb/8nd3XrUE
+         PKGlyGRyEskPAq8fSJczUCKBKCk6XzWK8sjaBhLxXUU31O2sMlqPRdgwcyXGRVlcSSK7
+         Hjyc0WTbi0m7fiIrkQ9GufrRPDIYgtF0YkJYDka3OGMYJVO2tG9u1gwB8iLNeebMd/Q+
+         dpdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+yQvc43S8r83HTfxyOEbHMJvrQICL6Aq5HxThzdm6Ks=;
-        b=a56FoD21xO2pcrsouJlrk53frtqZGuW16YhpuNXRMaYmh2f+qUE66q5XnB7MHokMFx
-         HuMU2tmxNldtqO1STsv9GPCrdpRuMeghKPerzhTdMVmzTd427fKJufJD8uehRS5gRDz3
-         XpRWe/5hYVRFoNPDQehkhigi3h3LRcbne273jZIN9gYaiVIbZYjZAhAsOLtec+anXyQ1
-         wT10dS754di2HmkSB1L/jj0IK7FC9LkaPa2IWWpC0BEulzax0fw3uZoLap3/ijuYyt5v
-         DBp5BiDmib3oItHwb/a7/a5qi36kHXi3HzD3+6HjCK83UcUSOqJ/E8nrCVRtCda0mHkh
-         xaoA==
-X-Gm-Message-State: AOAM531MkV2kFgD71d2wO7ZYKH14dDLziuV5kVyf8+qpjiBEPlu9ugmt
-        bA5vd/B3tkeb/VDegmE1Jfyk76G6MjHvcXj8Xwf2fK2h
-X-Google-Smtp-Source: ABdhPJw/98e78zuT8+5qNEOuBX8v/LXRegZluDS1c2KWIdAv/JnGkF+H8KcV3lYGkdIQsLlPNh9FOV8aUahW5xm10/M=
-X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr363560edd.313.1616430590270;
- Mon, 22 Mar 2021 09:29:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ihVWaRMknIL1KL00sk8EMCErMuB9CbNtCCSB1imJeHQ=;
+        b=E4hDeHOn2b2RFbXtESNf5hiK2p6NjsEDQv6XTYhCFL08r4N8t4rk0EHecdYUL2qqVx
+         Kjxn8msqxKFPcJYtEhodIHWJOsiX5SCGjAI+o26Zxl6rkznwXD24Nt97MtyNqMEABrgv
+         CTuAOfMBlCx3aP4cn6AhjgKZWnqSeTznlXZWXL8wd1Yb0pTmdDUwv5fgglkhNGWIzSg6
+         dwaYHA9dArMq/0BHfrtU+PgvBwOuPMJceHkX3Mqh00LaeU3DKg8xSoDLSTPdA9JkAsum
+         wqUNnv4vKTixvTmlRLa/Gz2yx4xFXoNq7dbRVszxr4tXEkTg0Tm8fzzr8TKGGYhNfhPh
+         bvog==
+X-Gm-Message-State: AOAM531pBZ/0rzm5Wcef1F+bXybzQNtlzi59I/nSuF366HLi5GCIiuiB
+        tnu+ScdHGa/yQQGyVVLBsKbY2Q==
+X-Google-Smtp-Source: ABdhPJzubooapePJZRwuhJWt+mjW0PNsERwvHH6cixfbjHEdro4whff5ngkqxVnygopLjtNFlBBTMw==
+X-Received: by 2002:a19:7905:: with SMTP id u5mr113762lfc.648.1616430653998;
+        Mon, 22 Mar 2021 09:30:53 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id e25sm2002515ljo.113.2021.03.22.09.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 09:30:53 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 16/16] net: bridge: switchdev: let drivers inform which bridge ports are offloaded
+In-Reply-To: <20210318231829.3892920-17-olteanv@gmail.com>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-17-olteanv@gmail.com>
+Date:   Mon, 22 Mar 2021 17:30:52 +0100
+Message-ID: <87r1k7m9qb.fsf@waldekranz.com>
 MIME-Version: 1.0
-References: <20210319005219.13595-1-zi.yan@sent.com> <CAHbLzkrys2K0A9uae+P5WqxfAMRCzurp9M-Rc3459808GAh_yg@mail.gmail.com>
- <176A4DF5-B5B9-47E2-9B9D-CD82989AC466@nvidia.com>
-In-Reply-To: <176A4DF5-B5B9-47E2-9B9D-CD82989AC466@nvidia.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 22 Mar 2021 09:29:38 -0700
-Message-ID: <CAHbLzkrnfC8xcXhbgFpN4azZm5zEr0WO_JaBR-OTMsOT4QC4JA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] mm: huge_memory: a new debugfs interface for
- splitting THP tests.
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mika Penttila <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 7:11 PM Zi Yan <ziy@nvidia.com> wrote:
+On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 >
-> On 19 Mar 2021, at 19:37, Yang Shi wrote:
+> On reception of an skb, the bridge checks if it was marked as 'already
+> forwarded in hardware' (checks if skb->offload_fwd_mark == 1), and if it
+> is, it puts a mark of its own on that skb, with the switchdev mark of
+> the ingress port. Then during forwarding, it enforces that the egress
+> port must have a different switchdev mark than the ingress one (this is
+> done in nbp_switchdev_allowed_egress).
 >
-> > On Thu, Mar 18, 2021 at 5:52 PM Zi Yan <zi.yan@sent.com> wrote:
-> >>
-> >> From: Zi Yan <ziy@nvidia.com>
-> >>
-> >> We did not have a direct user interface of splitting the compound page
-> >> backing a THP and there is no need unless we want to expose the THP
-> >> implementation details to users. Make <debugfs>/split_huge_pages accept
-> >> a new command to do that.
-> >>
-> >> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
-> >> <debugfs>/split_huge_pages, THPs within the given virtual address range
-> >> from the process with the given pid are split. It is used to test
-> >> split_huge_page function. In addition, a selftest program is added to
-> >> tools/testing/selftests/vm to utilize the interface by splitting
-> >> PMD THPs and PTE-mapped THPs.
-> >>
-> >> This does not change the old behavior, i.e., writing 1 to the interface
-> >> to split all THPs in the system.
-> >>
-> >> Changelog:
-> >>
-> >> From v5:
-> >> 1. Skipped special VMAs and other fixes. (suggested by Yang Shi)
-> >
-> > Looks good to me. Reviewed-by: Yang Shi <shy828301@gmail.com>
-> >
-> > Some nits below:
-> >
-> >>
-> >> From v4:
-> >> 1. Fixed the error code return issue, spotted by kernel test robot
-> >>    <lkp@intel.com>.
-> >>
-> >> From v3:
-> >> 1. Factored out split huge pages in the given pid code to a separate
-> >>    function.
-> >> 2. Added the missing put_page for not split pages.
-> >> 3. pr_debug -> pr_info, make reading results simpler.
-> >>
-> >> From v2:
-> >> 1. Reused existing <debugfs>/split_huge_pages interface. (suggested by
-> >>    Yang Shi)
-> >>
-> >> From v1:
-> >> 1. Removed unnecessary calling to vma_migratable, spotted by kernel test
-> >>    robot <lkp@intel.com>.
-> >> 2. Dropped the use of find_mm_struct and code it directly, since there
-> >>    is no need for the permission check in that function and the function
-> >>    is only available when migration is on.
-> >> 3. Added some comments in the selftest program to clarify how PTE-mapped
-> >>    THPs are formed.
-> >>
-> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> >> ---
-> >>  mm/huge_memory.c                              | 143 +++++++-
-> >>  tools/testing/selftests/vm/.gitignore         |   1 +
-> >>  tools/testing/selftests/vm/Makefile           |   1 +
-> >>  .../selftests/vm/split_huge_page_test.c       | 318 ++++++++++++++++++
-> >>  4 files changed, 456 insertions(+), 7 deletions(-)
-> >>  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
-> >>
-> >> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> >> index bff92dea5ab3..9bf9bc489228 100644
-> >> --- a/mm/huge_memory.c
-> >> +++ b/mm/huge_memory.c
-> >> @@ -7,6 +7,7 @@
-> >>
-> >>  #include <linux/mm.h>
-> >>  #include <linux/sched.h>
-> >> +#include <linux/sched/mm.h>
-> >>  #include <linux/sched/coredump.h>
-> >>  #include <linux/sched/numa_balancing.h>
-> >>  #include <linux/highmem.h>
-> >> @@ -2922,16 +2923,14 @@ static struct shrinker deferred_split_shrinker = {
-> >>  };
-> >>
-> >>  #ifdef CONFIG_DEBUG_FS
-> >> -static int split_huge_pages_set(void *data, u64 val)
-> >> +static void split_huge_pages_all(void)
-> >>  {
-> >>         struct zone *zone;
-> >>         struct page *page;
-> >>         unsigned long pfn, max_zone_pfn;
-> >>         unsigned long total = 0, split = 0;
-> >>
-> >> -       if (val != 1)
-> >> -               return -EINVAL;
-> >> -
-> >> +       pr_info("Split all THPs\n");
-> >>         for_each_populated_zone(zone) {
-> >>                 max_zone_pfn = zone_end_pfn(zone);
-> >>                 for (pfn = zone->zone_start_pfn; pfn < max_zone_pfn; pfn++) {
-> >> @@ -2959,11 +2958,141 @@ static int split_huge_pages_set(void *data, u64 val)
-> >>         }
-> >>
-> >>         pr_info("%lu of %lu THP split\n", split, total);
-> >> +}
-> >>
-> >> -       return 0;
-> >> +static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
-> >> +                               unsigned long vaddr_end)
-> >> +{
-> >> +       int ret = 0;
-> >> +       struct task_struct *task;
-> >> +       struct mm_struct *mm;
-> >> +       unsigned long total = 0, split = 0;
-> >> +       unsigned long addr;
-> >> +
-> >> +       vaddr_start &= PAGE_MASK;
-> >> +       vaddr_end &= PAGE_MASK;
-> >> +
-> >> +       /* Find the task_struct from pid */
-> >> +       rcu_read_lock();
-> >> +       task = find_task_by_vpid(pid);
-> >> +       if (!task) {
-> >> +               rcu_read_unlock();
-> >> +               ret = -ESRCH;
-> >> +               goto out;
-> >> +       }
-> >> +       get_task_struct(task);
-> >> +       rcu_read_unlock();
-> >> +
-> >> +       /* Find the mm_struct */
-> >> +       mm = get_task_mm(task);
-> >> +       put_task_struct(task);
-> >> +
-> >> +       if (!mm) {
-> >> +               ret = -EINVAL;
-> >> +               goto out;
-> >> +       }
-> >> +
-> >> +       pr_info("Split huge pages in pid: %d, vaddr: [0x%lx - 0x%lx]\n",
-> >> +                pid, vaddr_start, vaddr_end);
-> >> +
-> >> +       mmap_read_lock(mm);
-> >> +       /*
-> >> +        * always increase addr by PAGE_SIZE, since we could have a PTE page
-> >> +        * table filled with PTE-mapped THPs, each of which is distinct.
-> >> +        */
-> >> +       for (addr = vaddr_start; addr < vaddr_end; addr += PAGE_SIZE) {
-> >> +               struct vm_area_struct *vma = find_vma(mm, addr);
-> >> +               unsigned int follflags;
-> >> +               struct page *page;
-> >> +
-> >> +               if (!vma || addr < vma->vm_start)
-> >> +                       break;
-> >> +
-> >> +               /* skip special VMA and hugetlb VMA */
-> >> +               if (vma_is_special_huge(vma) || is_vm_hugetlb_page(vma)) {
-> >
-> > VM_IO vma should be skipped as well. And you may extract this into a helper?
+> Non-switchdev drivers don't report any physical switch id (neither
+> through devlink nor .ndo_get_port_parent_id), therefore the bridge
+> assigns them a switchdev mark of 0, and packets coming from them will
+> always have skb->offload_fwd_mark = 0. So there aren't any restrictions.
 >
-> Sure. Any name suggestion? :)
+> Problems appear due to the fact that DSA would like to perform software
+> fallback for bonding and team interfaces that the physical switch cannot
+> offload.
+>
+>          +-- br0 -+
+>         /   / |    \
+>        /   /  |     \
+>       /   /   |      \
+>      /   /    |       \
+>     /   /     |        \
+>    /    |     |       bond0
+>   /     |     |      /    \
+>  swp0  swp1  swp2  swp3  swp4
+>
+> There, it is desirable that the presence of swp3 and swp4 under a
+> non-offloaded LAG does not preclude us from doing hardware bridging
+> beteen swp0, swp1 and swp2. The bandwidth of the CPU is often times high
+> enough that software bridging between {swp0,swp1,swp2} and bond0 is not
+> impractical.
+>
+> But this creates an impossible paradox given the current way in which
+> port switchdev marks are assigned. When the driver receives a packet
+> from swp0 (say, due to flooding), it must set skb->offload_fwd_mark to
+> something.
+>
+> - If we set it to 0, then the bridge will forward it towards swp1, swp2
+>   and bond0. But the switch has already forwarded it towards swp1 and
+>   swp2 (not to bond0, remember, that isn't offloaded, so as far as the
+>   switch is concerned, ports swp3 and swp4 are not looking up the FDB,
+>   and the entire bond0 is a destination that is strictly behind the
+>   CPU). But we don't want duplicated traffic towards swp1 and swp2, so
+>   it's not ok to set skb->offload_fwd_mark = 0.
+>
+> - If we set it to 1, then the bridge will not forward the skb towards
+>   the ports with the same switchdev mark, i.e. not to swp1, swp2 and
+>   bond0. Towards swp1 and swp2 that's ok, but towards bond0? It should
+>   have forwarded the skb there.
+>
+> So the real issue is that bond0 will be assigned the same switchdev mark
+> as {swp0,swp1,swp2}, because the function that assigns switchdev marks
+> to bridge ports, nbp_switchdev_mark_set, recurses through bond0's lower
+> interfaces until it finds something that implements devlink.
+>
+> A solution is to give the bridge explicit hints as to what switchdev
+> mark it should use for each port.
+>
+> Currently, the bridging offload is very 'silent': a driver registers a
+> netdevice notifier, which is put on the netns's notifier chain, and
+> which sniffs around for NETDEV_CHANGEUPPER events where the upper is a
+> bridge, and the lower is an interface it knows about (one registered by
+> this driver, normally). Then, from within that notifier, it does a bunch
+> of stuff behind the bridge's back, without the bridge necessarily
+> knowing that there's somebody offloading that port. It looks like this:
+>
+>      ip link set swp0 master br0
+>                   |
+>                   v
+>    bridge calls netdev_master_upper_dev_link
+>                   |
+>                   v
+>         call_netdevice_notifiers
+>                   |
+>                   v
+>        dsa_slave_netdevice_event
+>                   |
+>                   v
+>         oh, hey! it's for me!
+>                   |
+>                   v
+>            .port_bridge_join
+>
+> What we do to solve the conundrum is to be less silent, and emit a
+> notification back. Something like this:
+>
+>      ip link set swp0 master br0
+>                   |
+>                   v
+>    bridge calls netdev_master_upper_dev_link
+>                   |
+>                   v                    bridge: Aye! I'll use this
+>         call_netdevice_notifiers           ^  ppid as the
+>                   |                        |  switchdev mark for
+>                   v                        |  this port, and zero
+>        dsa_slave_netdevice_event           |  if I got nothing.
+>                   |                        |
+>                   v                        |
+>         oh, hey! it's for me!              |
+>                   |                        |
+>                   v                        |
+>            .port_bridge_join               |
+>                   |                        |
+>                   +------------------------+
+>              switchdev_bridge_port_offload(swp0)
+>
+> Then stacked interfaces (like bond0 on top of swp3/swp4) would be
+> treated differently in DSA, depending on whether we can or cannot
+> offload them.
+>
+> The offload case:
+>
+>     ip link set bond0 master br0
+>                   |
+>                   v
+>    bridge calls netdev_master_upper_dev_link
+>                   |
+>                   v                    bridge: Aye! I'll use this
+>         call_netdevice_notifiers           ^  ppid as the
+>                   |                        |  switchdev mark for
+>                   v                        |        bond0.
+>        dsa_slave_netdevice_event           | Coincidentally (or not),
+>                   |                        | bond0 and swp0, swp1, swp2
+>                   v                        | all have the same switchdev
+>         hmm, it's not quite for me,        | mark now, since the ASIC
+>          but my driver has already         | is able to forward towards
+>            called .port_lag_join           | all these ports in hw.
+>           for it, because I have           |
+>       a port with dp->lag_dev == bond0.    |
+>                   |                        |
+>                   v                        |
+>            .port_bridge_join               |
+>            for swp3 and swp4               |
+>                   |                        |
+>                   +------------------------+
+>             switchdev_bridge_port_offload(bond0)
+>
+> And the non-offload case:
+>
+>     ip link set bond0 master br0
+>                   |
+>                   v
+>    bridge calls netdev_master_upper_dev_link
+>                   |
+>                   v                    bridge waiting:
+>         call_netdevice_notifiers           ^  huh, switchdev_bridge_port_offload
+>                   |                        |  wasn't called, okay, I'll use a
+>                   v                        |  switchdev mark of zero for this one.
+>        dsa_slave_netdevice_event           :  Then packets received on swp0 will
+>                   |                        :  not be forwarded towards swp1, but
+>                   v                        :  they will towards bond0.
+>          it's not for me, but
+>        bond0 is an upper of swp3
+>       and swp4, but their dp->lag_dev
+>        is NULL because they couldn't
+>             offload it.
+>
+> Basically we can draw the conclusion that the lowers of a bridge port
+> can come and go, so depending on the configuration of lowers for a
+> bridge port, it can dynamically toggle between offloaded and unoffloaded.
+> Therefore, we need an equivalent switchdev_bridge_port_unoffload too.
+>
+> This patch changes the way any switchdev driver interacts with the
+> bridge. From now on, everybody needs to call switchdev_bridge_port_offload,
+> otherwise the bridge will treat the port as non-offloaded and allow
+> software flooding to other ports from the same ASIC.
+>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+>  .../ethernet/freescale/dpaa2/dpaa2-switch.c   |  4 +-
+>  .../marvell/prestera/prestera_switchdev.c     |  7 ++
+>  .../mellanox/mlxsw/spectrum_switchdev.c       |  4 +-
+>  drivers/net/ethernet/mscc/ocelot_net.c        |  4 +-
+>  drivers/net/ethernet/rocker/rocker_ofdpa.c    |  8 +-
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  7 +-
+>  drivers/net/ethernet/ti/cpsw_new.c            |  6 +-
 
-How's about not_suitable_for_split() or suitable_for_split()?
+Why is not net/dsa included in this change?
 
+>  include/linux/if_bridge.h                     | 16 ++++
+>  net/bridge/br_if.c                            | 11 +--
+>  net/bridge/br_private.h                       |  8 +-
+>  net/bridge/br_switchdev.c                     | 94 ++++++++++++++++---
+>  11 files changed, 138 insertions(+), 31 deletions(-)
 >
->
-> >> +                       addr = vma->vm_end;
-> >> +                       continue;
-> >> +               }
-> >> +
-> >> +               /* FOLL_DUMP to ignore special (like zero) pages */
-> >> +               follflags = FOLL_GET | FOLL_DUMP;
-> >> +               page = follow_page(vma, addr, follflags);
-> >> +
-> >> +               if (IS_ERR(page))
-> >> +                       continue;
-> >> +               if (!page)
-> >> +                       continue;
-> >> +
-> >> +               if (!is_transparent_hugepage(page))
-> >> +                       goto next;
-> >> +
-> >> +               total++;
-> >> +               if (!can_split_huge_page(compound_head(page), NULL))
-> >> +                       goto next;
-> >> +
-> >> +               if (!trylock_page(page))
-> >> +                       goto next;
-> >> +
-> >> +               if (!split_huge_page(page))
-> >> +                       split++;
-> >> +
-> >> +               unlock_page(page);
-> >> +next:
-> >> +               put_page(page);
-> >> +       }
-> >> +       mmap_read_unlock(mm);
-> >> +       mmput(mm);
-> >> +
-> >> +       pr_info("%lu of %lu THP split\n", split, total);
-> >> +
-> >> +out:
-> >> +       return ret;
-> >>  }
-> >> -DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
-> >> -               "%llu\n");
-> >> +
-> >> +static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
-> >> +                               size_t count, loff_t *ppops)
-> >> +{
-> >> +       static DEFINE_MUTEX(split_debug_mutex);
-> >> +       ssize_t ret;
-> >> +       char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
-> >
-> > Why not move buf len macro in the following patch to this patch? Then
-> > you don't have to change the length again.
->
-> Sure.
->
-> Thanks for the comments.
->
-> --
-> Best Regards,
-> Yan Zi
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
+> index 2fd05dd18d46..f20556178e33 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
+> @@ -1518,7 +1518,7 @@ static int dpaa2_switch_port_bridge_join(struct net_device *netdev,
+>  	if (err)
+>  		goto err_egress_flood;
+>  
+> -	return 0;
+> +	return switchdev_bridge_port_offload(netdev, NULL);
+>  
+>  err_egress_flood:
+>  	dpaa2_switch_port_set_fdb(port_priv, NULL);
+> @@ -1552,6 +1552,8 @@ static int dpaa2_switch_port_bridge_leave(struct net_device *netdev)
+>  	struct ethsw_core *ethsw = port_priv->ethsw_data;
+>  	int err;
+>  
+> +	switchdev_bridge_port_unoffload(netdev);
+> +
+>  	/* First of all, fast age any learn FDB addresses on this switch port */
+>  	dpaa2_switch_port_fast_age(port_priv);
+>  
+> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> index 49e052273f30..0b0d5db7b85b 100644
+> --- a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> +++ b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> @@ -443,6 +443,10 @@ static int prestera_port_bridge_join(struct prestera_port *port,
+>  		goto err_brport_create;
+>  	}
+>  
+> +	err = switchdev_bridge_port_offload(port->dev, NULL);
+> +	if (err)
+> +		goto err_brport_offload;
+> +
+>  	if (bridge->vlan_enabled)
+>  		return 0;
+>  
+> @@ -453,6 +457,7 @@ static int prestera_port_bridge_join(struct prestera_port *port,
+>  	return 0;
+>  
+>  err_port_join:
+> +err_brport_offload:
+>  	prestera_bridge_port_put(br_port);
+>  err_brport_create:
+>  	prestera_bridge_put(bridge);
+> @@ -520,6 +525,8 @@ static void prestera_port_bridge_leave(struct prestera_port *port,
+>  	if (!br_port)
+>  		return;
+>  
+> +	switchdev_bridge_port_unoffload(port->dev);
+> +
+>  	bridge = br_port->bridge;
+>  
+>  	if (bridge->vlan_enabled)
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> index 23b7e8d6386b..7fa0b3653819 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> @@ -2326,7 +2326,7 @@ int mlxsw_sp_port_bridge_join(struct mlxsw_sp_port *mlxsw_sp_port,
+>  	if (err)
+>  		goto err_port_join;
+>  
+> -	return 0;
+> +	return switchdev_bridge_port_offload(brport_dev, extack);
+>  
+>  err_port_join:
+>  	mlxsw_sp_bridge_port_put(mlxsw_sp->bridge, bridge_port);
+> @@ -2348,6 +2348,8 @@ void mlxsw_sp_port_bridge_leave(struct mlxsw_sp_port *mlxsw_sp_port,
+>  	if (!bridge_port)
+>  		return;
+>  
+> +	switchdev_bridge_port_unoffload(brport_dev);
+> +
+>  	bridge_device->ops->port_leave(bridge_device, bridge_port,
+>  				       mlxsw_sp_port);
+>  	mlxsw_sp_bridge_port_put(mlxsw_sp->bridge, bridge_port);
+> diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+> index d38ffc7cf5f0..b917d9dd8a6a 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_net.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_net.c
+> @@ -1213,7 +1213,7 @@ static int ocelot_netdevice_bridge_join(struct net_device *dev,
+>  	if (err)
+>  		goto err_switchdev_sync;
+>  
+> -	return 0;
+> +	return switchdev_bridge_port_offload(brport_dev, extack);
+>  
+>  err_switchdev_sync:
+>  	ocelot_port_bridge_leave(ocelot, port, bridge);
+> @@ -1234,6 +1234,8 @@ static int ocelot_netdevice_bridge_leave(struct net_device *dev,
+>  	if (err)
+>  		return err;
+>  
+> +	switchdev_bridge_port_unoffload(brport_dev);
+> +
+>  	ocelot_port_bridge_leave(ocelot, port, bridge);
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/rocker/rocker_ofdpa.c b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> index 967a634ee9ac..9b6d7cac112b 100644
+> --- a/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> +++ b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> @@ -2592,13 +2592,19 @@ static int ofdpa_port_bridge_join(struct ofdpa_port *ofdpa_port,
+>  
+>  	ofdpa_port->bridge_dev = bridge;
+>  
+> -	return ofdpa_port_vlan_add(ofdpa_port, OFDPA_UNTAGGED_VID, 0);
+> +	err = ofdpa_port_vlan_add(ofdpa_port, OFDPA_UNTAGGED_VID, 0);
+> +	if (err)
+> +		return err;
+> +
+> +	return switchdev_bridge_port_offload(ofdpa_port->dev, NULL);
+>  }
+>  
+>  static int ofdpa_port_bridge_leave(struct ofdpa_port *ofdpa_port)
+>  {
+>  	int err;
+>  
+> +	switchdev_bridge_port_unoffload(ofdpa_port->dev);
+> +
+>  	err = ofdpa_port_vlan_del(ofdpa_port, OFDPA_UNTAGGED_VID, 0);
+>  	if (err)
+>  		return err;
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index 638d7b03be4b..fe2e38971acc 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/clk.h>
+>  #include <linux/etherdevice.h>
+> +#include <linux/if_bridge.h>
+>  #include <linux/if_vlan.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/kernel.h>
+> @@ -2082,6 +2083,7 @@ static int am65_cpsw_netdevice_port_link(struct net_device *ndev, struct net_dev
+>  {
+>  	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
+>  	struct am65_cpsw_ndev_priv *priv = am65_ndev_to_priv(ndev);
+> +	int err;
+>  
+>  	if (!common->br_members) {
+>  		common->hw_bridge_dev = br_ndev;
+> @@ -2097,7 +2099,8 @@ static int am65_cpsw_netdevice_port_link(struct net_device *ndev, struct net_dev
+>  
+>  	am65_cpsw_port_offload_fwd_mark_update(common);
+>  
+> -	return NOTIFY_DONE;
+> +	err = switchdev_bridge_port_offload(ndev, NULL);
+> +	return notifier_to_errno(err);
+>  }
+>  
+>  static void am65_cpsw_netdevice_port_unlink(struct net_device *ndev)
+> @@ -2105,6 +2108,8 @@ static void am65_cpsw_netdevice_port_unlink(struct net_device *ndev)
+>  	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
+>  	struct am65_cpsw_ndev_priv *priv = am65_ndev_to_priv(ndev);
+>  
+> +	switchdev_bridge_port_unoffload(ndev);
+> +
+>  	common->br_members &= ~BIT(priv->port->port_id);
+>  
+>  	am65_cpsw_port_offload_fwd_mark_update(common);
+> diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
+> index 58a64313ac00..6347532fb39d 100644
+> --- a/drivers/net/ethernet/ti/cpsw_new.c
+> +++ b/drivers/net/ethernet/ti/cpsw_new.c
+> @@ -1508,6 +1508,7 @@ static int cpsw_netdevice_port_link(struct net_device *ndev,
+>  {
+>  	struct cpsw_priv *priv = netdev_priv(ndev);
+>  	struct cpsw_common *cpsw = priv->cpsw;
+> +	int err;
+>  
+>  	if (!cpsw->br_members) {
+>  		cpsw->hw_bridge_dev = br_ndev;
+> @@ -1523,7 +1524,8 @@ static int cpsw_netdevice_port_link(struct net_device *ndev,
+>  
+>  	cpsw_port_offload_fwd_mark_update(cpsw);
+>  
+> -	return NOTIFY_DONE;
+> +	err = switchdev_bridge_port_offload(ndev, NULL);
+> +	return notifier_to_errno(err);
+>  }
+>  
+>  static void cpsw_netdevice_port_unlink(struct net_device *ndev)
+> @@ -1531,6 +1533,8 @@ static void cpsw_netdevice_port_unlink(struct net_device *ndev)
+>  	struct cpsw_priv *priv = netdev_priv(ndev);
+>  	struct cpsw_common *cpsw = priv->cpsw;
+>  
+> +	switchdev_bridge_port_unoffload(ndev);
+> +
+>  	cpsw->br_members &= ~BIT(priv->emac_port);
+>  
+>  	cpsw_port_offload_fwd_mark_update(cpsw);
+> diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
+> index ea176c508c0d..4fbee6d5fc16 100644
+> --- a/include/linux/if_bridge.h
+> +++ b/include/linux/if_bridge.h
+> @@ -196,4 +196,20 @@ static inline int br_fdb_replay(struct net_device *br_dev,
+>  }
+>  #endif
+>  
+> +#if IS_ENABLED(CONFIG_BRIDGE) && IS_ENABLED(CONFIG_NET_SWITCHDEV)
+> +int switchdev_bridge_port_offload(struct net_device *dev,
+> +				  struct netlink_ext_ack *extack);
+> +int switchdev_bridge_port_unoffload(struct net_device *dev);
+> +#else
+> +int switchdev_bridge_port_offload(struct net_device *dev,
+> +				  struct netlink_ext_ack *extack)
+> +{
+> +	return 0;
+> +}
+> +
+> +int switchdev_bridge_port_unoffload(struct net_device *dev)
+> +{
+> +}
+> +#endif
+> +
+>  #endif
+> diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+> index f7d2f472ae24..930a09f27e0d 100644
+> --- a/net/bridge/br_if.c
+> +++ b/net/bridge/br_if.c
+> @@ -643,10 +643,6 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+>  	if (err)
+>  		goto err5;
+>  
+> -	err = nbp_switchdev_mark_set(p);
+> -	if (err)
+> -		goto err6;
+> -
+>  	dev_disable_lro(dev);
+>  
+>  	list_add_rcu(&p->list, &br->port_list);
+> @@ -671,13 +667,13 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+>  		 */
+>  		err = dev_pre_changeaddr_notify(br->dev, dev->dev_addr, extack);
+>  		if (err)
+> -			goto err7;
+> +			goto err6;
+>  	}
+>  
+>  	err = nbp_vlan_init(p, extack);
+>  	if (err) {
+>  		netdev_err(dev, "failed to initialize vlan filtering on this port\n");
+> -		goto err7;
+> +		goto err6;
+>  	}
+>  
+>  	spin_lock_bh(&br->lock);
+> @@ -700,11 +696,10 @@ int br_add_if(struct net_bridge *br, struct net_device *dev,
+>  
+>  	return 0;
+>  
+> -err7:
+> +err6:
+>  	list_del_rcu(&p->list);
+>  	br_fdb_delete_by_port(br, p, 0, 1);
+>  	nbp_update_port_count(br);
+> -err6:
+>  	netdev_upper_dev_unlink(dev, br->dev);
+>  err5:
+>  	dev->priv_flags &= ~IFF_BRIDGE_PORT;
+> diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
+> index d7d167e10b70..1982b5887d0f 100644
+> --- a/net/bridge/br_private.h
+> +++ b/net/bridge/br_private.h
+> @@ -326,8 +326,10 @@ struct net_bridge_port {
+>  #ifdef CONFIG_NET_POLL_CONTROLLER
+>  	struct netpoll			*np;
+>  #endif
+> +	int				offload_count;
+
+Should this be conditional on CONFIG_NET_SWITCHDEV?
+
+>  #ifdef CONFIG_NET_SWITCHDEV
+>  	int				offload_fwd_mark;
+> +	struct netdev_phys_item_id	ppid;
+>  #endif
+>  	u16				group_fwd_mask;
+>  	u16				backup_redirected_cnt;
+> @@ -1572,7 +1574,6 @@ static inline void br_sysfs_delbr(struct net_device *dev) { return; }
+>  
+>  /* br_switchdev.c */
+>  #ifdef CONFIG_NET_SWITCHDEV
+> -int nbp_switchdev_mark_set(struct net_bridge_port *p);
+>  void nbp_switchdev_frame_mark(const struct net_bridge_port *p,
+>  			      struct sk_buff *skb);
+>  bool nbp_switchdev_allowed_egress(const struct net_bridge_port *p,
+> @@ -1592,11 +1593,6 @@ static inline void br_switchdev_frame_unmark(struct sk_buff *skb)
+>  	skb->offload_fwd_mark = 0;
+>  }
+>  #else
+> -static inline int nbp_switchdev_mark_set(struct net_bridge_port *p)
+> -{
+> -	return 0;
+> -}
+> -
+>  static inline void nbp_switchdev_frame_mark(const struct net_bridge_port *p,
+>  					    struct sk_buff *skb)
+>  {
+> diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
+> index b89503832fcc..4cf7902f056c 100644
+> --- a/net/bridge/br_switchdev.c
+> +++ b/net/bridge/br_switchdev.c
+> @@ -8,37 +8,109 @@
+>  
+>  #include "br_private.h"
+>  
+> -static int br_switchdev_mark_get(struct net_bridge *br, struct net_device *dev)
+> +static int br_switchdev_mark_get(struct net_bridge *br,
+> +				 struct net_bridge_port *new_nbp)
+>  {
+>  	struct net_bridge_port *p;
+>  
+>  	/* dev is yet to be added to the port list. */
+>  	list_for_each_entry(p, &br->port_list, list) {
+> -		if (netdev_port_same_parent_id(dev, p->dev))
+> +		if (!p->offload_count)
+> +			continue;
+> +
+> +		if (netdev_phys_item_id_same(&p->ppid, &new_nbp->ppid))
+>  			return p->offload_fwd_mark;
+>  	}
+>  
+>  	return ++br->offload_fwd_mark;
+>  }
+>  
+> -int nbp_switchdev_mark_set(struct net_bridge_port *p)
+> +static int nbp_switchdev_mark_set(struct net_bridge_port *p,
+> +				  struct netdev_phys_item_id ppid,
+> +				  struct netlink_ext_ack *extack)
+> +{
+> +	if (p->offload_count) {
+> +		/* Prevent unsupported configurations such as a bridge port
+> +		 * which is a bonding interface, and the member ports are from
+> +		 * different hardware switches.
+> +		 */
+> +		if (!netdev_phys_item_id_same(&p->ppid, &ppid)) {
+> +			NL_SET_ERR_MSG_MOD(extack,
+> +					   "Same bridge port cannot be offloaded by two physical switches");
+> +			return -EBUSY;
+> +		}
+> +		/* Be tolerant with drivers that call SWITCHDEV_BRPORT_OFFLOADED
+> +		 * more than once for the same bridge port, such as when the
+> +		 * bridge port is an offloaded bonding/team interface.
+> +		 */
+> +		p->offload_count++;
+> +		return 0;
+> +	}
+> +
+> +	p->ppid = ppid;
+> +	p->offload_count = 1;
+> +	p->offload_fwd_mark = br_switchdev_mark_get(p->br, p);
+> +
+> +	return 0;
+> +}
+> +
+> +static void nbp_switchdev_mark_clear(struct net_bridge_port *p,
+> +				     struct netdev_phys_item_id ppid)
+> +{
+> +	if (WARN_ON(!netdev_phys_item_id_same(&p->ppid, &ppid)))
+> +		return;
+> +	if (WARN_ON(!p->offload_count))
+> +		return;
+> +
+> +	p->offload_count--;
+> +	if (p->offload_count)
+> +		return;
+> +
+> +	p->offload_fwd_mark = 0;
+> +}
+> +
+> +/* Let the bridge know that this port is offloaded, so that it can use
+> + * the port parent id obtained by recursion to determine the bridge
+> + * port's switchdev mark.
+> + */
+> +int switchdev_bridge_port_offload(struct net_device *dev,
+> +				  struct netlink_ext_ack *extack)
+>  {
+> -	struct netdev_phys_item_id ppid = { };
+> +	struct netdev_phys_item_id ppid;
+> +	struct net_bridge_port *p;
+>  	int err;
+>  
+> -	ASSERT_RTNL();
+> +	p = br_port_get_rtnl(dev);
+> +	if (!p)
+> +		return -ENODEV;
+>  
+> -	err = dev_get_port_parent_id(p->dev, &ppid, true);
+> -	if (err) {
+> -		if (err == -EOPNOTSUPP)
+> -			return 0;
+> +	err = dev_get_port_parent_id(dev, &ppid, true);
+> +	if (err)
+> +		return err;
+> +
+> +	return nbp_switchdev_mark_set(p, ppid, extack);
+> +}
+> +EXPORT_SYMBOL_GPL(switchdev_bridge_port_offload);
+> +
+> +int switchdev_bridge_port_unoffload(struct net_device *dev)
+> +{
+> +	struct netdev_phys_item_id ppid;
+> +	struct net_bridge_port *p;
+> +	int err;
+> +
+
+Should we ASSERT_RTNL here as well?
+
+> +	p = br_port_get_rtnl(dev);
+> +	if (!p)
+> +		return -ENODEV;
+> +
+> +	err = dev_get_port_parent_id(dev, &ppid, true);
+> +	if (err)
+>  		return err;
+> -	}
+>  
+> -	p->offload_fwd_mark = br_switchdev_mark_get(p->br, p->dev);
+> +	nbp_switchdev_mark_clear(p, ppid);
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(switchdev_bridge_port_unoffload);
+>  
+>  void nbp_switchdev_frame_mark(const struct net_bridge_port *p,
+>  			      struct sk_buff *skb)
+> -- 
+> 2.25.1
