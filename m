@@ -2,58 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC195343762
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4639E343769
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCVD0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVDZu (ORCPT
+        id S229829AbhCVD3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:29:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51232 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCVD2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:25:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9821BC061574;
-        Sun, 21 Mar 2021 20:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P72qzGDKAlZd08W3lP8UYDEYbOwiROYYMfl9MNHa8u0=; b=hjfkcSn0/SSn274T0yvdeKLsd3
-        GfQiDVlf2WSNKe6S4ojs8lcQ242XLIqaXbNfYR7jkr8eD9UWH5Lw824MJRGixpkbqPkW9Xa6SHwrn
-        6AWAa4CjIEiisZdaN0z0At/lWbyKzLooWH6x8rqPHH1ZY1cF7qAiS2FLfkFC7kPrD2dDulJlrQl2f
-        rA/MA1eQMkPOj2g6XS1dkDoaeAqgee+FeEZKBCn8XKLL0up3bBe+xDK2lrBaeZk/24EPAA7pu/vfS
-        xA51Wi9YY4+rdPJCdJq3qLiFGXIl6oO/SFptJ/AyqHRfvCPfajVwTC59xGQe73bLXq5kcIHRa6c5I
-        Mqle4zWA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOBBu-007vD1-0H; Mon, 22 Mar 2021 03:25:26 +0000
-Date:   Mon, 22 Mar 2021 03:25:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 00/27] Memory Folios
-Message-ID: <20210322032517.GC1719932@casper.infradead.org>
-References: <20210320054104.1300774-1-willy@infradead.org>
+        Sun, 21 Mar 2021 23:28:55 -0400
+Date:   Mon, 22 Mar 2021 03:28:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616383734;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=DTBRHVpM41husgGn1OzRT6VaeJlpH8WrfLjesvzsWXs=;
+        b=cNFOTBvuSQbRlZILqF4NdSeBYhWTOfdpwLZTljjYmymc03q+OElIJ+V4ut2r8/go3fHlVt
+        ddjGX6tF6tbvw7L63ZHb7eU3DZl3Dr2CPX6HaxSGPxunASIgOQm4Si6EzG5eWO4AR0o4ZV
+        Y2x1biU55X+3yAckQEfE9oEcOVn7CD4OrW13RD6I6LLVD+EZbtCoKb1dEYaH/sCYYVkxMt
+        TKI0/CX9JQlhBATi6hIGhY0i02dLJr6UbD8nZb0cqbNuH1yEdR67Iu7b0i76BMMaefn5y6
+        tm4/LtNbi+uf0NI/Ba7MaCmnk7s5TuDjCbnh8luAnwqHkxQeZ0XPMN4U+ezWcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616383734;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=DTBRHVpM41husgGn1OzRT6VaeJlpH8WrfLjesvzsWXs=;
+        b=xzvDb0kXok/FTCAzF2gSAEPpQPiGNCZWDSrnKlEoI4r3zZ51jqqH21lapbkIcr66s65Xad
+        P7z3788e6IVrCYCQ==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry: Fix typos in comments
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320054104.1300774-1-willy@infradead.org>
+Message-ID: <161638373388.398.674620674336249442.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 05:40:37AM +0000, Matthew Wilcox (Oracle) wrote:
-> Current tree at:
-> https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
-> 
-> (contains another ~100 patches on top of this batch, not all of which are
-> in good shape for submission)
+The following commit has been merged into the core/entry branch of tip:
 
-I've fixed the two buildbot bugs.  I also resplit the docs work, and
-did a bunch of other things to the patches that I haven't posted yet.
+Commit-ID:     97258ce902d1e1c396a4d7c38f6ae7085adb73c5
+Gitweb:        https://git.kernel.org/tip/97258ce902d1e1c396a4d7c38f6ae7085adb73c5
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Mon, 22 Mar 2021 03:55:50 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 22 Mar 2021 03:57:39 +01:00
 
-I'll send the first three patches as a separate series tomorrow,
-and then the next four as their own series, then I'll repost the
-rest (up to and including "Convert page wait queues to be folios")
-later in the week.
+entry: Fix typos in comments
+
+Fix 3 single-word typos in the generic syscall entry code.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/entry-common.h | 4 ++--
+ kernel/entry/common.c        | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index 883acef..2e2b8d6 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -360,7 +360,7 @@ void syscall_exit_to_user_mode_work(struct pt_regs *regs);
+  *
+  * This is a combination of syscall_exit_to_user_mode_work() (1,2) and
+  * exit_to_user_mode(). This function is preferred unless there is a
+- * compelling architectural reason to use the seperate functions.
++ * compelling architectural reason to use the separate functions.
+  */
+ void syscall_exit_to_user_mode(struct pt_regs *regs);
+ 
+@@ -381,7 +381,7 @@ void irqentry_enter_from_user_mode(struct pt_regs *regs);
+  * irqentry_exit_to_user_mode - Interrupt exit work
+  * @regs:	Pointer to current's pt_regs
+  *
+- * Invoked with interrupts disbled and fully valid regs. Returns with all
++ * Invoked with interrupts disabled and fully valid regs. Returns with all
+  * work handled, interrupts disabled such that the caller can immediately
+  * switch to user mode. Called from architecture specific interrupt
+  * handling code.
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 8442e5c..8d996dd 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -341,7 +341,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * Checking for rcu_is_watching() here would prevent the nesting
+ 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
+ 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
+-	 * assume that it is the first interupt and eventually claim
++	 * assume that it is the first interrupt and eventually claim
+ 	 * quiescent state and end grace periods prematurely.
+ 	 *
+ 	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
