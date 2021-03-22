@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A12A343653
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5A7343656
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCVBhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 21:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhCVBhJ (ORCPT
+        id S230041AbhCVBhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 21:37:55 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3493 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhCVBhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:37:09 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D4DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 18:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=PeFKywclNnynK3PkK2KbFgcceqz0rhw+gZ/xqsuy7V4=; b=CoLFIbj8NE5TVurjY88m32BZtj
-        T+K2i/96ZLIcdICZQ/Fv/vtYa1ohxn9bkoWFW1Og+eSeO3YbSVEz8Z4w8oAcoR5VXuNT3qs7o8aso
-        GM840PVa32U7oMoYB00NAnb84ub0WniKLZ6o/u8DM0p7AO2yxkmGbLUsMb1L25tknkScWhEoIuAJr
-        ASbT1xrFlR4YNbaaXCYtxN5Mq/Ha4pruGeMQOQ6YZtJ1inmieZsuNQReH6AGoxYKFBHZ938QXMjBe
-        HTg6NCRkMWOn0nbaGu8X3hreOV1AH+1l7oVX9zET3FX1LLo1Gnz47jMRhNsiJk8YblUIUlr2kMSFn
-        pa5Xso9Q==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lO9V4-00AfX1-Lw; Mon, 22 Mar 2021 01:36:59 +0000
-Subject: Re: [PATCH] ipc/shm.c: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, liao.pingfang@zte.com.cn,
-        daniel.m.jordan@oracle.com, vbabka@suse.cz, gustavoars@kernel.org,
-        yanaijie@huawei.com, walken@google.com, 0x7f454c46@gmail.com,
-        adobriyan@gmail.com, linux-kernel@vger.kernel.org
-References: <20210322013223.1930159-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <88e3a572-1326-c4d9-b873-01b38bb72c28@infradead.org>
-Date:   Sun, 21 Mar 2021 18:36:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 21 Mar 2021 21:37:32 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F3cWx3nwFzRSjD;
+        Mon, 22 Mar 2021 09:35:41 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Mar 2021 09:37:25 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 22 Mar
+ 2021 09:37:25 +0800
+Subject: Re: [Linuxarm] [PATCH net] net: sched: fix packet stuck problem for
+ lockless qdisc
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        Josh Hunt <johunt@akamai.com>,
+        "Jike Song" <albcamus@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
+ <e5c2d82c-0158-3997-80b6-4aab56c61367@huawei.com>
+ <CAM_iQpV4HX5L1b8ofUig-bi3r_MDdsjThqaxfoRCd=02XZBprQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <383f1c9b-016f-0aaa-def3-9d8786d40b01@huawei.com>
+Date:   Mon, 22 Mar 2021 09:37:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210322013223.1930159-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAM_iQpV4HX5L1b8ofUig-bi3r_MDdsjThqaxfoRCd=02XZBprQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 6:32 PM, Bhaskar Chowdhury wrote:
+On 2021/3/20 3:45, Cong Wang wrote:
+> On Fri, Mar 19, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>> I had done some performance test to see if there is value to
+>> fix the packet stuck problem and support lockless qdisc bypass,
+>> here is some result using pktgen in 'queue_xmit' mode on a dummy
+>> device as Paolo Abeni had done in [1], and using pfifo_fast qdisc:
+>>
+>> threads  vanilla    locked-qdisc    vanilla+this_patch
+>>    1     2.6Mpps      2.9Mpps            2.5Mpps
+>>    2     3.9Mpps      4.8Mpps            3.6Mpps
+>>    4     5.6Mpps      3.0Mpps            4.7Mpps
+>>    8     2.7Mpps      1.6Mpps            2.8Mpps
+>>    16    2.2Mpps      1.3Mpps            2.3Mpps
+>>
+>> locked-qdisc: test by removing the "TCQ_F_NOLOCK | TCQ_F_CPUSTATS".
 > 
-> s/exit\'ed/exited/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  ipc/shm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/ipc/shm.c b/ipc/shm.c
-> index febd88daba8c..07fb04c20d8c 100644
-> --- a/ipc/shm.c
-> +++ b/ipc/shm.c
-> @@ -357,7 +357,7 @@ static int shm_try_destroy_orphaned(int id, void *p, void *data)
-> 
->  	/*
->  	 * We want to destroy segments without users and with already
-> -	 * exit'ed originating process.
-> +	 * exited originating process.
->  	 *
->  	 * As shp->* are changed under rwsem, it's safe to skip shp locking.
->  	 */
-> --
+> I read this as this patch introduces somehow a performance
+> regression for -net, as the lockless bypass patch you submitted is
+> for -net-next.
 
-I think this one could go either way.
-It's referring to the exit() library call or syscall,
-so it's not so bad is it currently is.
+Yes, right now there is performance regression for fixing this bug,
+but the problem is that if we can not fix the above data race without
+any performance regression, do you prefer to send this patch to
+-net, or to -net-next with the lockless bypass patch?
 
-I.e., I'll leave it up to someone else if they want to merge it.
+Any idea to fix this with less performance regression?
 
--- 
-~Randy
+> 
+> Thanks.
+> 
+> .
+> 
 
