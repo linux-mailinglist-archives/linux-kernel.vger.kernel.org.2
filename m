@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833F5344840
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8F7344841
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhCVOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:54:44 -0400
-Received: from verein.lst.de ([213.95.11.211]:56129 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhCVOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:54:08 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A32F268BEB; Mon, 22 Mar 2021 15:54:03 +0100 (CET)
-Date:   Mon, 22 Mar 2021 15:54:03 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210322145403.GA30942@lst.de>
-References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de> <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk>
+        id S231184AbhCVOyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhCVOy2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:54:28 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6EDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:54:28 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v11so17330052wro.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3adB6sKudon1MuX58WU4P9T9cyOQ2k59HLNzNYzg43U=;
+        b=UUS0OB7Q/kVZJ/eSjJoXtBfRIEqj8hJCWQyYQES5Psg/RYv415R2AI5fAJIdRmsWpI
+         h+jz+opJL7agweiYA2QlBGhahu/Aq0cLSnL0bZjmuVzkyv9b5NQp81KC8MxyogwEq04y
+         1UXCYUKoHYvYPHLZg0PwZeANCuQfKCdfvClh9jcafX6SGocrkeR2ZTrWnHMsC5NJE3OL
+         gaA8e/OodElr0lE+BK5SNTVS7oWepJSf1hSvFrkneD2QxpodRL5e8Xh3UIUDei1f+ElB
+         6XpZ3nMR2oqKt2lfGsJY2fSWCi47wj2ky2rjZ+Q1ZV1Y6rxsiDLIzrh1G61OrnWXtNGn
+         XorQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3adB6sKudon1MuX58WU4P9T9cyOQ2k59HLNzNYzg43U=;
+        b=Si7Jc+8mBvA2o8xgRSu3yG/hLrLlAYaUEHNheUU0dnuwt1FJRRLS8c8WpgKwTSvzFx
+         h4NkCbZEiMwGksrFoqGBS5i2EV7cLWLf/xre7W7dep2GLmbaT3JB6GPjeilsD34UxbeU
+         V6wojEm0C/gC8M1vQ91/RsrQ5U/gm5WnKjIEB2t2iedEJeNmMtgrrkp3+5UyOM0TZXME
+         T3Cip9vNRSfTBxVBkfQooPKeMS8TRL4Ns8WJDS5cUjbtDiBTEDSuALx8pnGT41XBF4mC
+         hyUj736i1cDi+g1hkhVdOl5EXjuiH8EnNdnDffeGbXFCkFL54q+UOL+InsUszffPudvS
+         AFFQ==
+X-Gm-Message-State: AOAM532D9K1wa2mmdNkSSA4ZAk0MyvYsFUuxBsjLd9nyGb75CvW1JgHO
+        9AJhCeGLJjt9St6k0EpgpCR/GeK+xlo=
+X-Google-Smtp-Source: ABdhPJzTckCXlBm4qT48HJQihFL/HxV0lDad4PR+4UYNNM4UyVuAdOKT/7X+ft7f5LUOOGDmd01UvQ==
+X-Received: by 2002:a5d:5904:: with SMTP id v4mr18677170wrd.261.1616424866551;
+        Mon, 22 Mar 2021 07:54:26 -0700 (PDT)
+Received: from LEGION ([111.119.187.56])
+        by smtp.gmail.com with ESMTPSA id j26sm20246626wrh.57.2021.03.22.07.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 07:54:26 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 19:54:20 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        dvyukov@google.com
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] media: em28xx: fix memory leak
+Message-ID: <20210322145420.GA2063636@LEGION>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319175311.GW1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:53:12PM +0000, Russell King - ARM Linux admin wrote:
-> If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
-> actually are not present on the CY82C693) then the IDE driver works
-> for me, but the PATA driver does not:
-> 
-> cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
-> cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
-> legacy IDE will be removed in 2021, please switch to libata
-> Report any missing HW support to linux-ide@vger.kernel.org
->     ide0: BM-DMA at 0x1080-0x1087
->     ide1: BM-DMA at 0x1088-0x108f
-> Probing IDE interface ide0...
-> hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
-> hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
-> ...
-> 
-> (unbind Cypress_IDE and try binding pata_cypress)
-> 
-> pata_cypress 0000:00:06.1: no available native port
+If some error occurs, URB buffers should also be freed. If they aren't
+freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
+buffers as dvb is set to NULL. The function in which error occurs should
+do all the cleanup for the allocations it had done.
 
-This comes from ata_pci_sff_init_host when it tails to initialize
-a port.  There are three cases why it can't initialize the port:
+Tested the patch with the reproducer provided by syzbot. This patch
+fixes the memleak.
 
- 1) because it is marked as dummy, which is the case for the second
-    port of the cypress controller, but you're not using that even
-    with the old ide driver, and we'd still not get that message just
-    because of that second port.
- 2) when ata_resources_present returns false because the BAR has
-    a zero start or length
- 3) because pcim_iomap_regions() fails.  This prints a warning to the
-    log ("failed to request/iomap BARs for port %d (errno=%d)") that you
-    should have seen
+Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-So the problem here has to be number two.  The legacy ide driver OTOH
-seems to lack a lot of these checks, although I'm not sure how it
-manages to actually work without those.
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 526424279637..471bd74667e3 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+ 	return result;
+ 
+ out_free:
++	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
+ 	kfree(dvb);
+ 	dev->dvb = NULL;
+ 	goto ret;
+-- 
+2.25.1
 
-Can you show how the BAR assignment for the device looks using lscpi
-or a tool of your choice?
