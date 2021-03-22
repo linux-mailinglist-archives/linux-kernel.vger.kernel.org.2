@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53ACD343DA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729C0343DAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCVKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        id S229904AbhCVKWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:22:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCVKUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:20:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5D56197F;
-        Mon, 22 Mar 2021 10:20:05 +0000 (UTC)
+        id S229508AbhCVKV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:21:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A529861983;
+        Mon, 22 Mar 2021 10:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616408407;
-        bh=xUPvoccOHTqaMWLwk7M/QzM3U8CIOa5zv4qejCYM16A=;
+        s=k20201202; t=1616408518;
+        bh=1ZXyAEoZvbRkXxlNGub3IZewOHt3TvQOb2jwwjEpWeM=;
         h=From:To:Cc:Subject:Date:From;
-        b=Y2iAO8QMhT5MnhRvYEnLa8p9FndyFg3/Y938bWLCYBay+4xlNQ7+CVqi4BCtSyDBY
-         lfvFRpadkBQgcW4wcV2mJVQNHGY60bpUn16Q5HE/80KY/UpzC64SVE3Nht2SdWboI3
-         TBeMNMaYTZDaE7t15vCrMLATEmEruSLnb7LDRXIlqcksFWyfi1Br5a0f/ZhejAIisg
-         YJmXQ94BTwePUTKx4yH8l3mA0tIM1hZiFV8q36fcvYPuHaAKBqvf7H3fFA5PZULID4
-         Gz8A33DR9lD/uXk087HIk2W+ho+p1SpoaE5W37MSeLVYzBLNNWcM7+7Y1h2DcChVdw
-         BeMWD31BQWFXw==
+        b=rA5K7PCyEEcmeyp55RFIMDxdQy0/ANqGgaPGtNK1StpdpjgqXSi/FNbm0XeNt7KsV
+         XlV08phrHIHwm6+TIqXIjjaWTUFpa6hAdYuHXdtxlxTiieSdb71hzvZiyW1GKWvh7D
+         +2p8BE4RVoyZIvs/OptjiCqKMCtIlRY/bo36IDVEv2RbC3MFGVVjQKIzW1IrvNHtI9
+         rKIEeKv3Auyu+vFvsKk9v842cJKOXz8fOb4XL9H0rGywlGLxCMheaXSu81BLhhFtb0
+         V8EQfATahNNBlRGYt56x2bmrMfeR0AfnjJHy+0uQYCfM48LKPE+PtjOKQ5s4j5UnmG
+         5cii+5nnKy11A==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] devcoredump: avoid -Wempty-body warnings
-Date:   Mon, 22 Mar 2021 11:19:53 +0100
-Message-Id: <20210322102002.28990-1-arnd@kernel.org>
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Mauricio Faria de Oliveira <mfo@canonical.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>,
+        Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
+        Hui Su <sh_def@163.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] jbd2: avoid -Wempty-body warnings
+Date:   Mon, 22 Mar 2021 11:21:38 +0100
+Message-Id: <20210322102152.95684-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,58 +46,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Cleaning out the last -Wempty-body warnings found some interesting
-cases with empty macros, along with harmless warnings like this one:
+Building with 'make W=1' shows a harmless -Wempty-body warning:
 
-drivers/base/devcoredump.c: In function 'dev_coredumpm':
-drivers/base/devcoredump.c:297:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  297 |                 /* nothing - symlink will be missing */;
-      |                                                        ^
-drivers/base/devcoredump.c:301:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-  301 |                 /* nothing - symlink will be missing */;
-      |                                                        ^
+fs/jbd2/recovery.c: In function 'fc_do_one_pass':
+fs/jbd2/recovery.c:267:75: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  267 |                 jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
+      |                                                                           ^
 
-Randy tried addressing this one before, and there were multiple
-other ideas in that thread.
+Change the empty dprintk() macros to no_printk(), which avoids this
+warning and adds format string checking.
 
-Pick up the one that Matthew Wilcox suggested by adding a
-WARN_ON_ONCE() and a comment.
-
-Link: https://lore.kernel.org/lkml/20200418184111.13401-8-rdunlap@infradead.org/
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/base/devcoredump.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ include/linux/jbd2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index 9243468e2c99..88e0d931439e 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -292,13 +292,16 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 	if (device_add(&devcd->devcd_dev))
- 		goto put_device;
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 99d3cd051ac3..232e6285536a 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -61,7 +61,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
+ #define jbd_debug(n, fmt, a...) \
+ 	__jbd2_debug((n), __FILE__, __func__, __LINE__, (fmt), ##a)
+ #else
+-#define jbd_debug(n, fmt, a...)    /**/
++#define jbd_debug(n, fmt, a...)  no_printk(fmt, ##a)
+ #endif
  
--	if (sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
--			      "failing_device"))
--		/* nothing - symlink will be missing */;
-+	/*
-+	 * These should normally not fail, but there is no problem
-+	 * continuing without the links, so just warn instead of
-+	 * failing.
-+	 */
-+	WARN_ON_ONCE(sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
-+				       "failing_device"));
- 
--	if (sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
--			      "devcoredump"))
--		/* nothing - symlink will be missing */;
-+	WARN_ON_ONCE(sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
-+				       "devcoredump"));
- 
- 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
- 	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
+ extern void *jbd2_alloc(size_t size, gfp_t flags);
 -- 
 2.29.2
 
