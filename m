@@ -2,52 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02E0344532
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF203443FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhCVNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:14:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:59574 "EHLO foss.arm.com"
+        id S231944AbhCVM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:56:22 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27268 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233296AbhCVM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:58:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A1141042;
-        Mon, 22 Mar 2021 05:58:07 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.55.31])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0615D3F719;
-        Mon, 22 Mar 2021 05:58:05 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Jingoo Han <jingoohan1@gmail.com>
-Subject: Re: [PATCH] PCI: tegra: Constify static structs
-Date:   Mon, 22 Mar 2021 12:57:57 +0000
-Message-Id: <161641785574.526.7300746340083499342.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210207221604.48910-1-rikard.falkeborn@gmail.com>
-References: <20210207221604.48910-1-rikard.falkeborn@gmail.com>
+        id S229786AbhCVMpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:45:12 -0400
+IronPort-SDR: 7SEbucVxbgex2/jMHx9fLYjhKcFdFKlKiHoujLEOgi8T6EhcjUHy0EWKht3wUbhUXMlODGpNOf
+ c+kZ/YUXaLPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="210328167"
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="210328167"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 05:38:30 -0700
+IronPort-SDR: ws/NYUrdF9RDhSUtWKuljteG3WLbdgnXUNDdqCezp7/dqCqStpBygn6tF9hLGX3ogxpF0gDjC/
+ vK96jcytVz0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="441154134"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Mar 2021 05:38:29 -0700
+Subject: Re: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>, kbuild-all@lists.01.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+References: <20210321184650.10926-1-krzysztof.kozlowski@canonical.com>
+ <CAK8P3a2mN0stqiGSMqyY7neODfqFv700KkVecaYS0Ck3D7LRnQ@mail.gmail.com>
+ <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <26fe4358-4ebd-7346-8944-13b13da75c6f@linux.intel.com>
+Date:   Mon, 22 Mar 2021 07:58:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Feb 2021 23:16:04 +0100, Rikard Falkeborn wrote:
-> The only usage of them is to assign their address to the 'ops' field in
-> the pcie_port and the dw_pcie_ep structs, both which are pointers to
-> const. Make them const to allow the compiler to put them in read-only
-> memory.
 
-Applied to pci/tegra, thanks!
 
-[1/1] PCI: tegra: Constify static structs
-      https://git.kernel.org/lpieralisi/pci/c/d895ce7030
+On 3/22/21 3:26 AM, Krzysztof Kozlowski wrote:
+> 
+> On 21/03/2021 22:09, Arnd Bergmann wrote:
+>> On Sun, Mar 21, 2021 at 7:46 PM Krzysztof Kozlowski
+>> <krzysztof.kozlowski@canonical.com> wrote:
+>>>
+>>> The Stratix10 service layer and RCU drivers are useful only on
+>>> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
+>>> fails:
+>>>
+>>>    drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
+>>>    include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
+>>>      declared with attribute error: FIELD_GET: type of reg too small for mask
+>>>      _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>>>    ...
+>>>    drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
+>>>      priv->status.version = FIELD_GET(RSU_VERSION_MASK,
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> While I agree that one shouldn't run 32-bit kernels on this, we should also try
+>> to write drivers portably, and in theory any SoC that can run a 64-bit
+>> Arm kernel
+>> should also be able to run a 32-bit kernel if you include the same drivers.
+>>
+>> It seems that the problem here is in the smccc definition
+>>
+>> struct arm_smccc_res {
+>>          unsigned long a0;
+>>          unsigned long a1;
+>>          unsigned long a2;
+>>          unsigned long a3;
+>> };
+>>
+>> so the result of
+>>
+>> #define RSU_VERSION_MASK                GENMASK_ULL(63, 32)
+>>            priv->status.version = FIELD_GET(RSU_VERSION_MASK, res->a2);
+>>
+>> tries to access bits that are just not returned by the firmware here,
+>> which indicates that it probably won't work in this case.
+>>
+>> What I'm not entirely sure about is whether this is a problem in
+>> the Intel firmware implementation requiring the smccc caller to
+>> run in a 64-bit context, or if it's a mistake in the way the driver
+>> extracts the information if the firmware can actually pass it down
+>> correctly.
+> 
+> The SMC has two calling conventions - SMC32/HVC32 and SMC64/HVC64. The
+> Stratix 10 driver uses the 64-bit calling convention (see
+> INTEL_SIP_SMC_FAST_CALL_VAL in
+> include/linux/firmware/intel/stratix10-smc.h), so it should not run in
+> aarch32 (regardless of type of hardware).
+> 
+> I think that my patch limiting the support to 64-bit makes sense.
+> 
 
-Thanks,
-Lorenzo
+The stratix10 service layer and RSU driver are only used in Intel 64-bit 
+SoCFPGA platforms.
+
+> Best regards,
+> Krzysztof
+> 
