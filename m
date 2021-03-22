@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A912234527F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED410345283
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCVWnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhCVWnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:43:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A911FC061574;
-        Mon, 22 Mar 2021 15:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=9YTzv0k/0bqNaGXA3Rty/m7xcWWiXCK/jySxxAF8xE8=; b=nJzak8UpA+b/ADMuG7IP1dMbb9
-        x+pFVQM3dVMUps/rCCi18MlVTl26xTJ89QgD8tu6gML3aihBncnVqWa2EMxbXj5OxtB49tCSVMeKG
-        fOZz8kMq7IaVjVH4RV0SUM0Jv7Ly5TmkdJNadFGPSZvttXTTwcPtmRuaQbRSbZbQFlfLxK/oWN7uQ
-        HbNWK+nrHt+Wk7ggpN09mnNhCnLECb8/uECujxRbMRt41oRGKE/0oq6Ja6h+hgdQXyW5wU2LrXils
-        6pC06at4t9tsZPpNbgH9OeIxfG4Kj3jAFTLCckJavfIBVWqHQ4brv5gH/LfEsADfZ7XOp320Rzy2B
-        UdDoDzQA==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOTGK-009BPM-Cx; Mon, 22 Mar 2021 22:43:07 +0000
-Subject: Re: [PATCH] scsi: bfa: Fix a typo in two places
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        anil.gurumurthy@qlogic.com, sudarsana.kalluru@qlogic.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210322205821.1449844-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d9f3d7e5-4a52-6f93-1db4-6ef9cf93b736@infradead.org>
-Date:   Mon, 22 Mar 2021 15:43:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230138AbhCVWpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:45:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:14973 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhCVWor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:44:47 -0400
+IronPort-SDR: 3XVnfYDZQ/siAJEUhSG2SPDz5ZYwXlecDBlAHHrpIi0qDlSYjR8dbQs7aau3XWGjID99ntvjyM
+ ZryPIg430LvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190456249"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="190456249"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:44:46 -0700
+IronPort-SDR: Cs90cP332n3ZwIZ+y9pl7057fKYog23Iah6j7pRk3RlXtypyIKmOoS8gd8Dobj3vdvqWv+XFt4
+ NCdy85z+Y8mQ==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="408012774"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 15:44:46 -0700
+Date:   Mon, 22 Mar 2021 15:44:46 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH V4 06/10] x86/fault: Adjust WARN_ON for PKey fault
+Message-ID: <20210322224446.GQ3014244@iweiny-DESK2.sc.intel.com>
+References: <20210322053020.2287058-1-ira.weiny@intel.com>
+ <20210322053020.2287058-7-ira.weiny@intel.com>
+ <YFjAV44u7i9t1TDL@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210322205821.1449844-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFjAV44u7i9t1TDL@google.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 1:58 PM, Bhaskar Chowdhury wrote:
+On Mon, Mar 22, 2021 at 09:05:43AM -0700, Sean Christopherson wrote:
+> On Sun, Mar 21, 2021, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > PKey faults may now happen on kernel mappings if the feature is enabled.
+> > Remove the warning in the fault path if PKS is enabled.
 > 
-> s/defintions/definitions/  ....two different places.
+> When/why can they happen?  I read through all the changelogs, as well as the
+> cover letters for v1 and the RFC, and didn't see any explicit statement about
+> why pkey faults on supervisor accesses are now "legal".
+
+Ok, I have to admit I did not think about documenting this detail...  I'll
+update the commit message a bit more.
+
+Prior to this series pkeys were only supported on user page mappings.
+Therefore seeing a X86_PF_PK error in this path was completely unexpected and
+warranted the extra WARN_ON to indicate that something went very wrong.
+
+> Explaining what happens
+> later in the page fault handler would also be helpful, e.g. is the flag simply
+> ignored?
+
+Ok I'll do this.  But the behavior does not change.  The fault is unhandled and
+results in an Ooops.  The only difference is that if PKS is enabled and
+configured on a kernel mapping the oops is to be expected.
+
+> Does it lead directly to OOPS?
+
+Yes, the series concludes with it being an ooops unless the test code is
+running.  The behavior does not change from before.  I'll more clearly document
+that...
+
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Documenting what happens on a PKS #PF in the API patch would be nice to have, too.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Ok, yes, good idea.
 
-> ---
->  drivers/scsi/bfa/bfa_fc.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/scsi/bfa/bfa_fc.h b/drivers/scsi/bfa/bfa_fc.h
-> index d536270bbe9f..0314e4b9e1fb 100644
-> --- a/drivers/scsi/bfa/bfa_fc.h
-> +++ b/drivers/scsi/bfa/bfa_fc.h
-> @@ -1193,7 +1193,7 @@ enum {
->  };
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  arch/x86/mm/fault.c | 9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> > index a73347e2cdfc..731ec90ed413 100644
+> > --- a/arch/x86/mm/fault.c
+> > +++ b/arch/x86/mm/fault.c
+> > @@ -1141,11 +1141,12 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
+> >  		   unsigned long address)
+> >  {
+> >  	/*
+> > -	 * Protection keys exceptions only happen on user pages.  We
+> > -	 * have no user pages in the kernel portion of the address
+> > -	 * space, so do not expect them here.
+> > +	 * PF_PK is expected on kernel addresses when supervisor pkeys are
 > 
->  /*
-> - * defintions for CT reason code
-> + * definitions for CT reason code
->   */
->  enum {
->  	CT_RSN_INV_CMD		= 0x01,
-> @@ -1240,7 +1240,7 @@ enum {
->  };
+> "is expected" can be misinterpreted as "PF is expected on all kernel addresses...".
+
+Yes the commit message was more clear by using 'may'.
+
 > 
->  /*
-> - * defintions for the explanation code for all servers
-> + * definitions for the explanation code for all servers
->   */
->  enum {
->  	CT_EXP_AUTH_EXCEPTION		= 0xF1,
-> --
+> This ties in with the lack of an explanation in the changelog.
+> 
+> > +	 * enabled.
+> 
+> It'd be helpful to spell out "Protection keys exceptions" so that random readers
+> don't need to search for PF_PK to understand what's up.  Maybe even use it as an
+> opportunity to introduce "pkeys", e.g.
+> 
+> 	/* Protection keys (pkeys) exceptions are ... */
 
+Fair enough.  Will do.  I've changed this to:
 
--- 
-~Randy
+        /*
+         * X86_PF_PK (Protection key exceptions) may occur on kernel addresses
+         * when PKS (PKeys Supervisor) are enabled.
+         *
+         * If PKS is not enabled an exception should only happen on user pages.
+         * Because, we have no user pages in the kernel portion of the address
+         * space something must have gone very wrong and we should WARN.
+         */
 
+> 
+> >  	 */
+> > -	WARN_ON_ONCE(hw_error_code & X86_PF_PK);
+> > +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
+> > +		WARN_ON_ONCE(hw_error_code & X86_PF_PK);
+> 
+> Does this generate the same code if the whole thing is thrown in the WARN?  E.g.
+> 
+> 	WARN_ON_ONCE(!cpu_feature_enabled(X86_FEATURE_PKS) &&
+> 		     (hw_error_code & X86_PF_PK));
+
+I don't know in the general case.  But if CONFIG_BUG=n this would be better.
+
+I've changed it.
+
+Thanks!
+Ira
