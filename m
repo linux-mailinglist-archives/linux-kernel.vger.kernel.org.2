@@ -2,182 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8133445B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1564C3445B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhCVN0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbhCVNZn (ORCPT
+        id S230448AbhCVN17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:27:59 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:45845 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhCVN1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:25:43 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74CEC061574;
-        Mon, 22 Mar 2021 06:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=2pTAH7EZAdLSAE5R2Xy8ywDt2Dc8ZTDLeumutAH0RKU=; b=F7YPZX3VvyRxSNzrKKb6ys3K0F
-        g+79KJDZCDh/WBu0TgwYzmdi2Nm+16fysh9gkcNlk9X6ZbJ9XHL/6KoUcFJIO3Mlw/M5Dd+pnqxmZ
-        wFi2LHPqy7D1kWTpHOvlJkzVYHx6eXIG1Dd3qmQm5nZf4hyIAdccTP4tWwmEBGRyVX0fyw7ZUMskC
-        X2aInc0n9a47I0H9A+Td2IpUQdgtWPJaswlqPYvA8KF6hEz61yZ0Kbc7G3440uwUjA+vYDcFJo6xZ
-        bIwkgpQTHOl+87LLFfANc7pO1zW/obLuA6t+wnIjW+agrMLgMqelSn4n8qTIcHyS8O47cBJ+PPaSg
-        HNNyY/077ThHBATQl3YhRxPimrc5LxT03J04G57L9mKP99/OeJTnmqGRx1w0IfOij2hQ45Ss5CSYl
-        ksytvPiVXaIN48IFTFpR8OXpH7nBZsqo2mbzQWeg7oLiQBH6JpBjhRE3FJiG1zmd/Qu7oGg8NKItA
-        kDRcB2xL2ccLwYcNVC/9yBiR;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lOKYq-0003UK-Bn; Mon, 22 Mar 2021 13:25:36 +0000
-To:     Christoph Hellwig <hch@lst.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-cifs@vger.kernel.org, aurelien.aptel@gmail.com,
-        linux-cifsd-devel@lists.sourceforge.net, senozhatsky@chromium.org,
-        rdunlap@infradead.org, sandeen@sandeen.net,
-        linux-kernel@vger.kernel.org, aaptel@suse.com, hch@infradead.org,
-        viro@zeniv.linux.org.uk, ronniesahlberg@gmail.com,
-        linux-fsdevel@vger.kernel.org, colin.king@canonical.com,
-        Steve French <stfrench@microsoft.com>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com> <20210322064712.GD1667@kadam>
- <20210322065011.GA2909@lst.de>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [Linux-cifsd-devel] [PATCH 2/5] cifsd: add server-side procedures
- for SMB3
-Message-ID: <7894be19-54f6-4c2c-daaa-1db03141e87c@samba.org>
-Date:   Mon, 22 Mar 2021 14:25:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 22 Mar 2021 09:27:39 -0400
+Received: by mail-ot1-f49.google.com with SMTP id f73-20020a9d03cf0000b02901b4d889bce0so15873924otf.12;
+        Mon, 22 Mar 2021 06:27:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x7NLjzCmdc7lqJFi0FRfh6j8DYgTAI55Gdto//+9wfc=;
+        b=bQEZUFzsnn7oZSlfiqd0oUo1Q1iFV/OZqdAmJXOeheDb6pXOm8RV/GPXsL7A5MWuN6
+         qyLYpsqOS44mGl+huZ97hPa953tEL1XxtajDhUone9UkftHCUYAw2wdd9F9odyohAsW7
+         0H/pxtxUXmm39W7U4iRcV6TudEsBf2olOQJ8BF42vBmjkyEqH/ZrDSXMt/wnUItgE8Nd
+         ooO1Fc4JoXEfPIr8K749u5CH2+YZn6dmIm/OoCzvD1E2a9vx3SFyaCY0u8BXZBfgfE1k
+         d22/yNu7lGHFCAgLHhDCU/G1aFDFEK6HGZB/V3hYpehValFUQ/tgS1cXD2Y8SCXo2yJL
+         HpTQ==
+X-Gm-Message-State: AOAM533HMhuvZ5Oa8vrQq9Gx+AYF9wcpiFo1pEzUH6paehqJClcczHsl
+        uNbFt5WZf773WBLnNfowTxxSz2EdvK+EIs/FFMM=
+X-Google-Smtp-Source: ABdhPJwoZAbuzFvJN4AM4LX7CnRAX3/NRAdpDKl5lAPXhxKPAOZcq+So6bIupxyrfvzrZJd0xZ/j8HVZpcO3HoDgHCk=
+X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr12036047otr.321.1616419658585;
+ Mon, 22 Mar 2021 06:27:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322065011.GA2909@lst.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="6UnFxiyjAB23kM2930rUzzDEuwXWMZy9h"
+References: <20210322105805.1498602-1-arnd@kernel.org>
+In-Reply-To: <20210322105805.1498602-1-arnd@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 22 Mar 2021 14:27:23 +0100
+Message-ID: <CAJZ5v0jbKmkWxV0CFpQ+3q5GOJVVx5QfzLVu-Mvo-subYdjuPA@mail.gmail.com>
+Subject: Re: [PATCH] acpi: avoid -Wempty-body warnings
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Robert Moore <robert.moore@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6UnFxiyjAB23kM2930rUzzDEuwXWMZy9h
-Content-Type: multipart/mixed; boundary="4qSVWlLiwZ2A06gYey0rbvw7kWnkj4pov";
- protected-headers="v1"
-From: Stefan Metzmacher <metze@samba.org>
-To: Christoph Hellwig <hch@lst.de>, Dan Carpenter <dan.carpenter@oracle.com>
-Cc: linux-cifs@vger.kernel.org, aurelien.aptel@gmail.com,
- linux-cifsd-devel@lists.sourceforge.net, senozhatsky@chromium.org,
- rdunlap@infradead.org, sandeen@sandeen.net, linux-kernel@vger.kernel.org,
- aaptel@suse.com, hch@infradead.org, viro@zeniv.linux.org.uk,
- ronniesahlberg@gmail.com, linux-fsdevel@vger.kernel.org,
- colin.king@canonical.com, Steve French <stfrench@microsoft.com>
-Message-ID: <7894be19-54f6-4c2c-daaa-1db03141e87c@samba.org>
-Subject: Re: [Linux-cifsd-devel] [PATCH 2/5] cifsd: add server-side procedures
- for SMB3
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com> <20210322064712.GD1667@kadam>
- <20210322065011.GA2909@lst.de>
-In-Reply-To: <20210322065011.GA2909@lst.de>
+On Mon, Mar 22, 2021 at 11:59 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The acpi drivers produce a number of avoidable warnings for empty macros
+> when building with 'make W=1':
+>
+> drivers/acpi/acpi_processor.c: In function 'acpi_processor_errata_piix4':
+> drivers/acpi/acpi_processor.c:133:95: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   133 |                                   "Bus master activity detection (BM-IDE) erratum enabled\n"));
+>       |                                                                                               ^
+> drivers/acpi/acpi_processor.c:136:82: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   136 |                                   "Type-F DMA livelock erratum (C3 disabled)\n"));
+>       |                                                                                  ^
+> drivers/acpi/acpi_processor.c: In function 'acpi_processor_get_info':
+> drivers/acpi/acpi_processor.c:251:77: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
+>   251 |                                   "No bus mastering arbitration control\n"));
+>       |                                                                             ^
+> drivers/acpi/processor_pdc.c: In function 'acpi_processor_eval_pdc':
+> drivers/acpi/processor_pdc.c:136:79: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   136 |                     "Could not evaluate _PDC, using legacy perf. control.\n"));
+>       |                                                                               ^
+>
+> I tried making these call no_printk() instead, which would add proper
+> format string checking, but that turned out to be a rather invasive
+> change, so just shut up the warning by turning the macros into empty
+> "do {} while (0)" statements.
 
---4qSVWlLiwZ2A06gYey0rbvw7kWnkj4pov
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-Am 22.03.21 um 07:50 schrieb Christoph Hellwig:
-> On Mon, Mar 22, 2021 at 09:47:13AM +0300, Dan Carpenter wrote:
->> On Mon, Mar 22, 2021 at 02:13:41PM +0900, Namjae Jeon wrote:
->>> +static unsigned char
->>> +asn1_octet_decode(struct asn1_ctx *ctx, unsigned char *ch)
->>> +{
->>> +	if (ctx->pointer >=3D ctx->end) {
->>> +		ctx->error =3D ASN1_ERR_DEC_EMPTY;
->>> +		return 0;
->>> +	}
->>> +	*ch =3D *(ctx->pointer)++;
->>> +	return 1;
->>> +}
->>
->>
->> Make this bool.
->>
->=20
-> More importantly don't add another ANS1 parser, but use the generic
-> one in lib/asn1_decoder.c instead.  CIFS should also really use it.
-
-I think the best would be to avoid asn1 completely in the kernel
-and do the whole authentication in userspace.
-
-The kernel can only deal this blobs here, I don't there's need to
-look inside the blobs.
-
-1. ksmbd-mount would provide a fixed initial blob that's always
-   the same and will be returned in the
-   "2.2.4 SMB2 NEGOTIATE Response" PDU as SecurityBuffer
-
-2. The kernel just blindly forwards the SecurityBuffer
-   of "2.2.5 SMB2 SESSION_SETUP Request" to userspace
-   together with the client provided SessionId (from
-   2.2.1.2 SMB2 Packet Header - SYNC) as well as
-   negotiated signing and encryption algorithm ids
-   and the latest preauth hash.
-
-3. Userspace passes a NTSTATUS together with SecurityBuffer blob for the
-   2.2.6 SMB2 SESSION_SETUP Response back to the kernel:
-
-   - NT_STATUS_MORE_PROCESSING_REQUIRED (more authentication legs are req=
-uired)
-     SecurityBuffer is most likely a non empty buffer
-
-   - NT_STATUS_OK - The authentication is complete:
-     SecurityBuffer might be empty or not
-     It also pass a channel signing key, a decryption and encrytion key
-     as well as the unix token ( I guess in the current form it's only ui=
-d/gid)
-     down to the kernel
-
-   - Any other status means the authentication failed, which is a hard er=
-ror for the client
-
-The PDU definitions are defined here:
-https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/6eaf=
-6e75-9c23-4eda-be99-c9223c60b181
-
-I think everything else belongs to userspace.
-
-Such a "simple" design for the kernel part, would mean that ksmbd-mount w=
-ould do what the
-kernel part is currently doing, but it also means it will be trivial to p=
-lug the userspace
-part to samba's winbindd in future order to get domain wide authenticatio=
-n.
-
-metze
+This is part of ACPICA, so handing it to Erik and Bob.
 
 
---4qSVWlLiwZ2A06gYey0rbvw7kWnkj4pov--
-
---6UnFxiyjAB23kM2930rUzzDEuwXWMZy9h
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEfFbGo3YXpfgryIw9DbX1YShpvVYFAmBYmsQACgkQDbX1YShp
-vVYCDA/9HKKADvAj1r/udNzjMzn+kT+4lpHFRzQltPBVe7JMdFry6XDgGe1DG8Gs
-EHzPQpIOI2xJgOM+DnyIXM0DHnSrgjsYHsnQXikDYUw5gZMAx9djJI55ncFZrIj5
-cvbM4zmflCwErzMBVu2535fUmKoMgv0ny5nYoL5wzqlD5kaAz3l30Nzlul7HwH6X
-R7cZFrrKmO1h9Of5JOIicok5CieJgOq/1dcmilEJQ6P2sc9qYhnVlf2vnTSRWPbo
-XtaIB7kawTE3QrCCdUu6FYQe5h6yxwl9bOKHVZ1IQ8d8JHszi0OHCF5Z3PcJLg5Q
-n3vKFNMpeAeMjy813zSDvh6CDkgHsU/zkJnQeCu54Pe407NwoW9KSaDFG6PFZsyV
-cGuHyShF7YRP5PScFsM5YSR29T6pzQDbLocsIcxoMawu7Ls3wYAa2W1fqH9ZmtgN
-vyOQrP924JFkuxfpTlDygvYT/bnnos93tVBlX6Hq70LUcI5i1Thd6fQFEYcQ74zt
-xxFx0bwXZxwPgaAWxySEegYBHnV8dxxj336e7LhRcMyBmn/tQo3Pjb+Lv2866wee
-yqSMVDQX9sCXd7XIwewEN9fhZ3zvRmSNgPIdC82ge59LhT8oiYH/f2XHMc5/B/vY
-+6wBng+/T/CNYdle2y1TCY4hRV58X0IdHDopdvxWogEG5Fvyx3w=
-=n0tH
------END PGP SIGNATURE-----
-
---6UnFxiyjAB23kM2930rUzzDEuwXWMZy9h--
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/acpi/acoutput.h | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
+> index 1538a6853822..b5484ef31f27 100644
+> --- a/include/acpi/acoutput.h
+> +++ b/include/acpi/acoutput.h
+> @@ -433,23 +433,23 @@
+>   * This is the non-debug case -- make everything go away,
+>   * leaving no executable debug code!
+>   */
+> -#define ACPI_DEBUG_PRINT(pl)
+> -#define ACPI_DEBUG_PRINT_RAW(pl)
+> -#define ACPI_DEBUG_EXEC(a)
+> -#define ACPI_DEBUG_ONLY_MEMBERS(a)
+> -#define ACPI_FUNCTION_NAME(a)
+> -#define ACPI_FUNCTION_TRACE(a)
+> -#define ACPI_FUNCTION_TRACE_PTR(a, b)
+> -#define ACPI_FUNCTION_TRACE_U32(a, b)
+> -#define ACPI_FUNCTION_TRACE_STR(a, b)
+> -#define ACPI_FUNCTION_ENTRY()
+> -#define ACPI_DUMP_STACK_ENTRY(a)
+> -#define ACPI_DUMP_OPERANDS(a, b, c)
+> -#define ACPI_DUMP_ENTRY(a, b)
+> -#define ACPI_DUMP_PATHNAME(a, b, c, d)
+> -#define ACPI_DUMP_BUFFER(a, b)
+> +#define ACPI_DEBUG_PRINT(pl)                   do { } while (0)
+> +#define ACPI_DEBUG_PRINT_RAW(pl)               do { } while (0)
+> +#define ACPI_DEBUG_EXEC(a)                     do { } while (0)
+> +#define ACPI_DEBUG_ONLY_MEMBERS(a)             do { } while (0)
+> +#define ACPI_FUNCTION_NAME(a)                  do { } while (0)
+> +#define ACPI_FUNCTION_TRACE(a)                 do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_PTR(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_U32(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_TRACE_STR(a, b)          do { } while (0)
+> +#define ACPI_FUNCTION_ENTRY()                  do { } while (0)
+> +#define ACPI_DUMP_STACK_ENTRY(a)               do { } while (0)
+> +#define ACPI_DUMP_OPERANDS(a, b, c)            do { } while (0)
+> +#define ACPI_DUMP_ENTRY(a, b)                  do { } while (0)
+> +#define ACPI_DUMP_PATHNAME(a, b, c, d)         do { } while (0)
+> +#define ACPI_DUMP_BUFFER(a, b)                 do { } while (0)
+>  #define ACPI_IS_DEBUG_ENABLED(level, component) 0
+> -#define ACPI_TRACE_POINT(a, b, c, d)
+> +#define ACPI_TRACE_POINT(a, b, c, d)           do { } while (0)
+>
+>  /* Return macros must have a return statement at the minimum */
+>
+> --
+> 2.29.2
+>
