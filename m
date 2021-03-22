@@ -2,159 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A511A343BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233B0343BFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhCVIko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:40:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13655 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCVIkm (ORCPT
+        id S229771AbhCVIlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhCVIlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:40:42 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3nvM1KDtznV3M;
-        Mon, 22 Mar 2021 16:38:07 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Mon, 22 Mar 2021
- 16:40:26 +0800
-Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as
- NODATA
-To:     John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        "Jolly Shah" <jollys@google.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <a.darwish@linutronix.de>,
-        <dan.carpenter@oracle.com>, <b.zolnierkie@samsung.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210318225632.2481291-1-jollys@google.com>
- <5e7ea537-86ab-f654-1df4-765364116e18@huawei.com>
- <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
-Date:   Mon, 22 Mar 2021 16:40:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Mon, 22 Mar 2021 04:41:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FC3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=11+UFgsBMO5aIIt0nyFMZFMoj2kZkZa2BFIWC1a/WoM=; b=lV8HIkXzu0t34CZyUyWjYUlW1B
+        p91isxG3kwk5Bp3ePNYJJohdUvAsHlifP2q3uAK4GHOLjPo3MVVgSEX60wHv4WCZrlg+MyKtEQ7rN
+        S3UCYNKBoivSNroKkqQY2QT4eoP+D/0FfoDM9EE4q1qKgi9umPBtU4AKnZ6RZ5AUeZJMeZT4BihaX
+        9Q6ebwb7mU/ckMvLohB2zVYNNii3S1jdJfW5iHQOnA6MD81ZIf31Hn3jneezHCgmW8+84LZtV/WPs
+        9smOMK1kWXdDHMtTf3+QZAvRsNNFOv5dOsjqf1ruzuv6JbNlTJtozfDKGyHa8SSzW5OgnQi59OpR8
+        nbMqtWGQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOG7S-00BC0d-ND; Mon, 22 Mar 2021 08:41:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58B8E30377D;
+        Mon, 22 Mar 2021 09:41:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1FDCE2CE3915C; Mon, 22 Mar 2021 09:41:01 +0100 (CET)
+Date:   Mon, 22 Mar 2021 09:41:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 7/8] hugetlb: add update_and_free_page_no_sleep for
+ irq context
+Message-ID: <YFhYHZ9onwdZMeDi@hirez.programming.kicks-ass.net>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-8-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319224209.150047-8-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 03:42:08PM -0700, Mike Kravetz wrote:
+> The locks acquired in free_huge_page are irq safe.  However, in certain
+> circumstances the routine update_and_free_page could sleep.  Since
+> free_huge_page can be called from any context, it can not sleep.
+> 
+> Use a waitqueue to defer freeing of pages if the operation may sleep.  A
+> new routine update_and_free_page_no_sleep provides this functionality
+> and is only called from free_huge_page.
+> 
+> Note that any 'pages' sent to the workqueue for deferred freeing have
+> already been removed from the hugetlb subsystem.  What is actually
+> deferred is returning those base pages to the low level allocator.
 
-On 2021/3/20 20:14, John Garry wrote:
-> On 19/03/2021 01:43, Jason Yan wrote:
->>
->>
->> 在 2021/3/19 6:56, Jolly Shah 写道:
->>> When the cache_type for the scsi device is changed, the scsi layer
->>> issues a MODE_SELECT command. The caching mode details are communicated
->>> via a request buffer associated with the scsi command with data
->>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
->>> reaches the libata layer, as a part of generic initial setup, libata
->>> layer sets up the scatterlist for the command using the scsi command
->>> (ata_scsi_qc_new). This command is then translated by the libata layer
->>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
->>> treats this as a non data command (ata_mselect_caching), since it only
->>> needs an ata taskfile to pass the caching on/off information to the
->>> device. It does not need the scatterlist that has been setup, so it 
->>> does
->>> not perform dma_map_sg on the scatterlist (ata_qc_issue). 
->>> Unfortunately,
->>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
->>> layer sees it as a non data command with a scatterlist. It cannot
->>> extract the correct dma length, since the scatterlist has not been
->>> mapped with dma_map_sg for a DMA operation. When this partially
->>> constructed SAS task reaches pm80xx LLDD, it results in below warning.
->>>
->>> "pm80xx_chip_sata_req 6058: The sg list address
->>> start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
->>> end_addr_low=0xffffffff has crossed 4G boundary"
->>>
->>> This patch updates code to handle ata non data commands separately so
->>> num_scatter and total_xfer_len remain 0.
->>>
->>> Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if 
->>> libata marks qc as NODATA")
->>> Signed-off-by: Jolly Shah <jollys@google.com>
->
-> Reviewed-by: John Garry <john.garry@huawei.com>
->
-> @luojiaxing, can you please test this?
+So maybe I'm stupid, but why do you need that work in hugetlb? Afaict it
+should be in cma_release().
 
+Also, afaict cma_release() does free_contig_range() *first*, and then
+does the 'difficult' bits. So how about you re-order
+free_gigantic_page() a bit to make it unconditionally do
+free_contig_range() and *then* call into CMA, which can then do a
+workqueue thingy if it feels like it.
 
-Sure, let me take a look, and reply the test result here later
-
-
-Thanks
-
-Jiaxing
-
-
->
->>> ---
->>> v2:
->>> - reorganized code to avoid setting num_scatter twice
->>>
->>>   drivers/scsi/libsas/sas_ata.c | 9 ++++-----
->>>   1 file changed, 4 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/scsi/libsas/sas_ata.c 
->>> b/drivers/scsi/libsas/sas_ata.c
->>> index 024e5a550759..8b9a39077dba 100644
->>> --- a/drivers/scsi/libsas/sas_ata.c
->>> +++ b/drivers/scsi/libsas/sas_ata.c
->>> @@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct 
->>> ata_queued_cmd *qc)
->>>           memcpy(task->ata_task.atapi_packet, qc->cdb, 
->>> qc->dev->cdb_len);
->>>           task->total_xfer_len = qc->nbytes;
->>>           task->num_scatter = qc->n_elem;
->>> +        task->data_dir = qc->dma_dir;
->>> +    } else if (qc->tf.protocol == ATA_PROT_NODATA) {
->>> +        task->data_dir = DMA_NONE;
->>
->> Hi Jolly & John,
->>
->> We only set DMA_NONE for ATA_PROT_NODATA, I'm curious about why 
->> ATA_PROT_NCQ_NODATA and ATAPI_PROT_NODATA do not need to set DMA_NONE?
->
-> So we can see something like atapi_eh_tur() -> ata_exec_internal(), 
-> which is a ATAPI NONDATA and has DMA_NONE, so should be ok.
->
-> Other cases, like those using the xlate function on the qc for 
-> ATA_PROT_NCQ_NODATA, could be checked further.
->
-> For now, we're just trying to fix the fix.
->
->>
->> Thanks,
->> Jason
->>
->>
->>>       } else {
->>>           for_each_sg(qc->sg, sg, qc->n_elem, si)
->>>               xfer += sg_dma_len(sg);
->>>           task->total_xfer_len = xfer;
->>>           task->num_scatter = si;
->>> -    }
->>> -
->>> -    if (qc->tf.protocol == ATA_PROT_NODATA)
->>> -        task->data_dir = DMA_NONE;
->>> -    else
->>>           task->data_dir = qc->dma_dir;
->>> +    }
->>>       task->scatter = qc->sg;
->>>       task->ata_task.retry_count = 1;
->>>       task->task_state_flags = SAS_TASK_STATE_PENDING;
->>>
->> .
->
->
-> .
->
-
+That way none of the hugetlb accounting is delayed, and only CMA gets to
+suffer.
