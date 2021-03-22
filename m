@@ -2,274 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941C5344508
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52372344470
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhCVNLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:11:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50788 "EHLO mail.kernel.org"
+        id S232603AbhCVNAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231919AbhCVM4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E7D619C5;
-        Mon, 22 Mar 2021 12:48:39 +0000 (UTC)
+        id S232536AbhCVMrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F9EB619C7;
+        Mon, 22 Mar 2021 12:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417319;
-        bh=/+kwekPzX9xiZF6E7NytHPPriFP61gk+N1c/ybzjNS8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oEvnKkHZaEc3cAizD/8BJDnG2b9JoQAp22dNph9ggqSNLcHRYaVjcQBy+xYTjCXqy
-         6iIg9Xj/A86cA8lJX0QRJ0YW5K+cVscOTZtka27vZuFGzZQ7zQBZ/TBr+DXFl7vL/Y
-         lrwa3iPPY4Jc5mv/B2ch6TlsnX2XQXYH+af7X0DA=
+        s=korg; t=1616417013;
+        bh=7TYWO2DYYGkdCZLiL/HtUWeNph0Fcnic+INA869WmSQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Zcq6s14e6KStECSysA1cOIYDuvrYJYq7X9yc7tvIiwk8sJ6GakKaU2gCRblGGB5Ya
+         jWXHGu/YDV0vwcnlHX1W++FlWPoN0BqoXbTPZMHmEK5WTcs+SnHYiFmw39xxoUzPY1
+         fipq0TApxWhqnIVGqmlSMKKbZjG2cI6SPKTfmZGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/43] 4.14.227-rc1 review
+        stable@vger.kernel.org, Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 53/60] x86: Introduce TS_COMPAT_RESTART to fix get_nr_restart_syscall()
 Date:   Mon, 22 Mar 2021 13:28:41 +0100
-Message-Id: <20210322121920.053255560@linuxfoundation.org>
+Message-Id: <20210322121924.132178818@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-MIME-Version: 1.0
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.227-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.227-rc1
-X-KernelTest-Deadline: 2021-03-24T12:19+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.227 release.
-There are 43 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Oleg Nesterov <oleg@redhat.com>
 
-Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-Anything received after that time might be too late.
+commit 8c150ba2fb5995c84a7a43848250d444a3329a7d upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.227-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+The comment in get_nr_restart_syscall() says:
 
-thanks,
+	 * The problem is that we can get here when ptrace pokes
+	 * syscall-like values into regs even if we're not in a syscall
+	 * at all.
 
-greg k-h
+Yes, but if not in a syscall then the
 
--------------
-Pseudo-Shortlog of commits:
+	status & (TS_COMPAT|TS_I386_REGS_POKED)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.227-rc1
+check below can't really help:
 
-Thomas Gleixner <tglx@linutronix.de>
-    genirq: Disable interrupts for force threaded handlers
+	- TS_COMPAT can't be set
 
-Shijie Luo <luoshijie1@huawei.com>
-    ext4: fix potential error in ext4_do_update_inode
+	- TS_I386_REGS_POKED is only set if regs->orig_ax was changed by
+	  32bit debugger; and even in this case get_nr_restart_syscall()
+	  is only correct if the tracee is 32bit too.
 
-zhangyi (F) <yi.zhang@huawei.com>
-    ext4: do not try to set xattr into ea_inode if value is empty
+Suppose that a 64bit debugger plays with a 32bit tracee and
 
-zhangyi (F) <yi.zhang@huawei.com>
-    ext4: find old entry again if failed to rename whiteout
+	* Tracee calls sleep(2)	// TS_COMPAT is set
+	* User interrupts the tracee by CTRL-C after 1 sec and does
+	  "(gdb) call func()"
+	* gdb saves the regs by PTRACE_GETREGS
+	* does PTRACE_SETREGS to set %rip='func' and %orig_rax=-1
+	* PTRACE_CONT		// TS_COMPAT is cleared
+	* func() hits int3.
+	* Debugger catches SIGTRAP.
+	* Restore original regs by PTRACE_SETREGS.
+	* PTRACE_CONT
 
-Oleg Nesterov <oleg@redhat.com>
-    x86: Introduce TS_COMPAT_RESTART to fix get_nr_restart_syscall()
+get_nr_restart_syscall() wrongly returns __NR_restart_syscall==219, the
+tracee calls ia32_sys_call_table[219] == sys_madvise.
 
-Oleg Nesterov <oleg@redhat.com>
-    x86: Move TS_COMPAT back to asm/thread_info.h
+Add the sticky TS_COMPAT_RESTART flag which survives after return to user
+mode. It's going to be removed in the next step again by storing the
+information in the restart block. As a further cleanup it might be possible
+to remove also TS_I386_REGS_POKED with that.
 
-Oleg Nesterov <oleg@redhat.com>
-    kernel, fs: Introduce and use set_restart_fn() and arch_set_restart_data()
+Test-case:
 
-Thomas Gleixner <tglx@linutronix.de>
-    x86/ioapic: Ignore IRQ2 again
+  $ cvs -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/systemtap co ptrace-tests
+  $ gcc -o erestartsys-trap-debuggee ptrace-tests/tests/erestartsys-trap-debuggee.c --m32
+  $ gcc -o erestartsys-trap-debugger ptrace-tests/tests/erestartsys-trap-debugger.c -lutil
+  $ ./erestartsys-trap-debugger
+  Unexpected: retval 1, errno 22
+  erestartsys-trap-debugger: ptrace-tests/tests/erestartsys-trap-debugger.c:421
 
-Kan Liang <kan.liang@linux.intel.com>
-    perf/x86/intel: Fix a crash caused by zero PEBS status
+Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
+Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210201174709.GA17895@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/x86/include/asm/thread_info.h |   14 +++++++++++++-
+ arch/x86/kernel/signal.c           |   24 +-----------------------
+ 2 files changed, 14 insertions(+), 24 deletions(-)
 
-Tyrel Datwyler <tyreld@linux.ibm.com>
-    PCI: rpadlpar: Fix potential drc_name corruption in store functions
-
-Ye Xiang <xiang.ye@intel.com>
-    iio: hid-sensor-temperature: Fix issues of timestamp channel
-
-Ye Xiang <xiang.ye@intel.com>
-    iio: hid-sensor-prox: Fix scale not correct issue
-
-Ye Xiang <xiang.ye@intel.com>
-    iio: hid-sensor-humidity: Fix alignment issue of timestamp channel
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    iio: adis16400: Fix an error code in adis16400_initial_setup()
-
-Jonathan Albrieux <jonathan.albrieux@gmail.com>
-    iio:adc:qcom-spmi-vadc: add default scale to LR_MUX2_BAT_ID channel
-
-Jonathan Cameron <Jonathan.Cameron@huawei.com>
-    iio:adc:stm32-adc: Add HAS_IOMEM dependency
-
-Jim Lin <jilin@nvidia.com>
-    usb: gadget: configfs: Fix KASAN use-after-free
-
-Macpaul Lin <macpaul.lin@mediatek.com>
-    USB: replace hardcode maximum usb string length by definition
-
-Alan Stern <stern@rowland.harvard.edu>
-    usb-storage: Add quirk to defeat Kindle's automatic unload
-
-Sagi Grimberg <sagi@grimberg.me>
-    nvme-rdma: fix possible hang when failing to set io queues
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    scsi: lpfc: Fix some error codes in debugfs
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net/qrtr: fix __netdev_alloc_skb call
-
-Daniel Kobras <kobras@puzzle-itc.de>
-    sunrpc: fix refcount leak for rpc auth modules
-
-Timo Rothenpieler <timo@rothenpieler.org>
-    svcrdma: disable timeouts on rdma backchannel
-
-Joe Korty <joe.korty@concurrent-rt.com>
-    NFSD: Repair misuse of sv_lock in 5.10.16-rt30.
-
-Sagi Grimberg <sagi@grimberg.me>
-    nvmet: don't check iosqes,iocqes for discovery controllers
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix race when cloning extent buffer during rewind of an old root
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    tools build feature: Check if pthread_barrier_t is available
-
-Changbin Du <changbin.du@gmail.com>
-    perf: Make perf able to build with latest libbfd
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    tools build: Check if gettid() is available before providing helper
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    tools build feature: Check if eventfd() is available
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    tools build feature: Check if get_current_dir_name() is available
-
-Jiri Olsa <jolsa@redhat.com>
-    perf tools: Use %define api.pure full instead of %pure-parser
-
-Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-    Revert "PM: runtime: Update device status before letting suppliers suspend"
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf: Prohibit alu ops for pointer types not defining ptr_limit
-
-Florian Fainelli <f.fainelli@gmail.com>
-    net: dsa: b53: Support setting learning on port
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf: Add sanity check for upper ptr_limit
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf: Simplify alu_limit masking for pointer arithmetic
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf: Fix off-by-one for area size in creating mask to left
-
-Jan Kara <jack@suse.cz>
-    ext4: check journal inode extents more carefully
-
-Jan Kara <jack@suse.cz>
-    ext4: don't allow overlapping system zones
-
-Jan Kara <jack@suse.cz>
-    ext4: handle error of ext4_setup_system_zone() on remount
-
-
--------------
-
-Diffstat:
-
- Makefile                                         |  4 +-
- arch/x86/events/intel/ds.c                       |  2 +-
- arch/x86/include/asm/processor.h                 |  9 ---
- arch/x86/include/asm/thread_info.h               | 23 +++++++-
- arch/x86/kernel/apic/io_apic.c                   | 10 ++++
- arch/x86/kernel/signal.c                         | 24 +-------
- drivers/base/power/runtime.c                     | 62 +++++++++------------
- drivers/iio/adc/Kconfig                          |  1 +
- drivers/iio/adc/qcom-spmi-vadc.c                 |  2 +-
- drivers/iio/gyro/mpu3050-core.c                  |  2 +
- drivers/iio/humidity/hid-sensor-humidity.c       | 12 ++--
- drivers/iio/imu/adis16400_core.c                 |  3 +-
- drivers/iio/light/hid-sensor-prox.c              | 13 ++++-
- drivers/iio/temperature/hid-sensor-temperature.c | 14 +++--
- drivers/net/dsa/b53/b53_common.c                 | 20 +++++++
- drivers/net/dsa/b53/b53_regs.h                   |  1 +
- drivers/net/dsa/bcm_sf2.c                        |  5 ++
- drivers/net/dsa/bcm_sf2_regs.h                   |  2 +
- drivers/nvme/host/rdma.c                         |  7 ++-
- drivers/nvme/target/core.c                       | 17 +++++-
- drivers/pci/hotplug/rpadlpar_sysfs.c             | 14 ++---
- drivers/scsi/lpfc/lpfc_debugfs.c                 |  4 +-
- drivers/usb/gadget/composite.c                   |  4 +-
- drivers/usb/gadget/configfs.c                    | 16 ++++--
- drivers/usb/gadget/usbstring.c                   |  4 +-
- drivers/usb/storage/transport.c                  |  7 +++
- drivers/usb/storage/unusual_devs.h               | 12 ++++
- fs/btrfs/ctree.c                                 |  2 +
- fs/ext4/block_validity.c                         | 71 +++++++++++-------------
- fs/ext4/ext4.h                                   |  6 +-
- fs/ext4/extents.c                                | 16 ++----
- fs/ext4/indirect.c                               |  6 +-
- fs/ext4/inode.c                                  | 13 ++---
- fs/ext4/mballoc.c                                |  4 +-
- fs/ext4/namei.c                                  | 29 +++++++++-
- fs/ext4/super.c                                  |  5 +-
- fs/ext4/xattr.c                                  |  2 +-
- fs/select.c                                      | 10 ++--
- include/linux/thread_info.h                      | 13 +++++
- include/linux/usb_usual.h                        |  2 +
- include/uapi/linux/usb/ch9.h                     |  3 +
- kernel/bpf/verifier.c                            | 33 +++++++----
- kernel/futex.c                                   |  3 +-
- kernel/irq/manage.c                              |  4 ++
- kernel/time/alarmtimer.c                         |  2 +-
- kernel/time/hrtimer.c                            |  2 +-
- kernel/time/posix-cpu-timers.c                   |  2 +-
- net/qrtr/qrtr.c                                  |  2 +-
- net/sunrpc/svc.c                                 |  6 +-
- net/sunrpc/svc_xprt.c                            |  4 +-
- net/sunrpc/xprtrdma/svc_rdma_backchannel.c       |  6 +-
- tools/build/Makefile.feature                     |  4 ++
- tools/build/feature/Makefile                     | 16 ++++++
- tools/build/feature/test-all.c                   | 20 +++++++
- tools/build/feature/test-eventfd.c               |  9 +++
- tools/build/feature/test-get_current_dir_name.c  | 10 ++++
- tools/build/feature/test-gettid.c                | 11 ++++
- tools/build/feature/test-pthread-barrier.c       | 12 ++++
- tools/perf/Makefile.config                       | 16 ++++++
- tools/perf/jvmti/jvmti_agent.c                   |  2 +
- tools/perf/util/Build                            |  1 +
- tools/perf/util/expr.y                           |  3 +-
- tools/perf/util/get_current_dir_name.c           | 18 ++++++
- tools/perf/util/parse-events.y                   |  2 +-
- tools/perf/util/srcline.c                        | 16 +++++-
- tools/perf/util/util.h                           |  4 ++
- 66 files changed, 469 insertions(+), 215 deletions(-)
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -230,10 +230,22 @@ static inline int arch_within_stack_fram
+  */
+ #define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
+ 
++#ifndef __ASSEMBLY__
+ #ifdef CONFIG_COMPAT
+ #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
++#define TS_COMPAT_RESTART	0x0008
++
++#define arch_set_restart_data	arch_set_restart_data
++
++static inline void arch_set_restart_data(struct restart_block *restart)
++{
++	struct thread_info *ti = current_thread_info();
++	if (ti->status & TS_COMPAT)
++		ti->status |= TS_COMPAT_RESTART;
++	else
++		ti->status &= ~TS_COMPAT_RESTART;
++}
+ #endif
+-#ifndef __ASSEMBLY__
+ 
+ #ifdef CONFIG_X86_32
+ #define in_ia32_syscall() true
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -770,30 +770,8 @@ handle_signal(struct ksignal *ksig, stru
+ 
+ static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
+ {
+-	/*
+-	 * This function is fundamentally broken as currently
+-	 * implemented.
+-	 *
+-	 * The idea is that we want to trigger a call to the
+-	 * restart_block() syscall and that we want in_ia32_syscall(),
+-	 * in_x32_syscall(), etc. to match whatever they were in the
+-	 * syscall being restarted.  We assume that the syscall
+-	 * instruction at (regs->ip - 2) matches whatever syscall
+-	 * instruction we used to enter in the first place.
+-	 *
+-	 * The problem is that we can get here when ptrace pokes
+-	 * syscall-like values into regs even if we're not in a syscall
+-	 * at all.
+-	 *
+-	 * For now, we maintain historical behavior and guess based on
+-	 * stored state.  We could do better by saving the actual
+-	 * syscall arch in restart_block or (with caveats on x32) by
+-	 * checking if regs->ip points to 'int $0x80'.  The current
+-	 * behavior is incorrect if a tracer has a different bitness
+-	 * than the tracee.
+-	 */
+ #ifdef CONFIG_IA32_EMULATION
+-	if (current_thread_info()->status & (TS_COMPAT|TS_I386_REGS_POKED))
++	if (current_thread_info()->status & TS_COMPAT_RESTART)
+ 		return __NR_ia32_restart_syscall;
+ #endif
+ #ifdef CONFIG_X86_X32_ABI
 
 
