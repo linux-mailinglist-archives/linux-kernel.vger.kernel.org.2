@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8AE3449DB
+	by mail.lfdr.de (Postfix) with ESMTP id C652E3449DD
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhCVPxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49030 "EHLO mail.kernel.org"
+        id S231437AbhCVPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhCVPxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230445AbhCVPxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 11:53:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B48DB6199F;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCFDD619AC;
         Mon, 22 Mar 2021 15:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616428394;
-        bh=+Zhc0a9ydorofyGsDShMu+wWptgazNqMAEcHASrxkjc=;
+        bh=p9/L/RnAIz9Ft9DWD/UAt/UImgrzNAZ5kXDabwhbbog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIFuHItZDUfQfbKDQN0PRbJrOiU/izGVQyMW3LpNgkvvtshaovfwv33tg3BwpfuTY
-         OEpk/hDoS/JJh0jOMRzOANFWMyREMG2UqJHlsO2pRphqog5C6SqObl9YQPJz5tNwxp
-         SikATzOhA+kTjvX2HS2yyoKXk6uQH1OHEq2IwRb6TG1PvbbO5eXEnGMe+j+TtTuSHA
-         j7E77jKrSm4oYG232aP0p+XwnXhwvNKgThNICffP/lpxv//wvHJENs6cK2oABfTFSf
-         CJWlNkE/wxa1TCCr0G0mfnx8KmlvmDuzwEbZmFp40Dm/fkqEa3t7UfpavJzknnjd7D
-         X41gUPuFyA7PQ==
+        b=AmDLfz0sAimC9K9jL5nqrYcoHNwbihdyfFW5tatowRlsZqw4ISqRLX4RLbM87dnE5
+         BMRNGtMVfbtSC+ffOx432iXgPLhE06CdnDYzmWpsFbd3wVNV3gbu7C8zPv95XOzow9
+         KPsWNd097AC84UN1mXT+JbiLw75g6TFneGIEtOnrD2XSfFCMzAfimd/QskQeHxDpa5
+         Bc8ZmNuxKKy1yNxHhoMGsl3xQOONcMHLCh++Fx88oz+4/PEks1czur6o89S52w0q81
+         ePNuIsPOZ3IsY9yhl6ymGwoaKmRXAu9Z/4QLwwlLnqJY/zTFtY++e1ZdccKMeqUUpc
+         PePccX4LNpoNQ==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lOMs0-0002Za-Lk; Mon, 22 Mar 2021 16:53:32 +0100
+        id 1lOMs0-0002Zd-PN; Mon, 22 Mar 2021 16:53:32 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Oliver Neukum <oneukum@suse.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: [PATCH v2 2/8] USB: cdc-acm: fix use-after-free after probe failure
-Date:   Mon, 22 Mar 2021 16:53:12 +0100
-Message-Id: <20210322155318.9837-3-johan@kernel.org>
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH v2 3/8] USB: cdc-acm: drop redundant driver-data assignment
+Date:   Mon, 22 Mar 2021 16:53:13 +0100
+Message-Id: <20210322155318.9837-4-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210322155318.9837-1-johan@kernel.org>
 References: <20210322155318.9837-1-johan@kernel.org>
@@ -44,36 +43,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If tty-device registration fails the driver would fail to release the
-data interface. When the device is later disconnected, the disconnect
-callback would still be called for the data interface and would go about
-releasing already freed resources.
+The interface driver data has already been set by
+usb_driver_claim_interface() so drop the redundant subsequent
+assignment.
 
-Fixes: c93d81955005 ("usb: cdc-acm: fix error handling in acm_probe()")
-Cc: stable@vger.kernel.org      # 3.9
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>
 Acked-by: Oliver Neukum <oneukum@suse.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/class/cdc-acm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index d75a78ad464d..dfc2480add91 100644
+index dfc2480add91..36dd1e05e455 100644
 --- a/drivers/usb/class/cdc-acm.c
 +++ b/drivers/usb/class/cdc-acm.c
-@@ -1503,6 +1503,11 @@ static int acm_probe(struct usb_interface *intf,
+@@ -1487,7 +1487,6 @@ static int acm_probe(struct usb_interface *intf,
+ 	acm_set_line(acm, &acm->line);
  
- 	return 0;
- alloc_fail6:
-+	if (!acm->combined_interfaces) {
-+		/* Clear driver data so that disconnect() returns early. */
-+		usb_set_intfdata(data_interface, NULL);
-+		usb_driver_release_interface(&acm_driver, data_interface);
-+	}
- 	if (acm->country_codes) {
- 		device_remove_file(&acm->control->dev,
- 				&dev_attr_wCountryCodes);
+ 	usb_driver_claim_interface(&acm_driver, data_interface, acm);
+-	usb_set_intfdata(data_interface, acm);
+ 
+ 	tty_dev = tty_port_register_device(&acm->port, acm_tty_driver, minor,
+ 			&control_interface->dev);
 -- 
 2.26.3
 
