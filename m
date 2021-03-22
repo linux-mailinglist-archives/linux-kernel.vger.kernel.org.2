@@ -2,105 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C25345192
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E79134519C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhCVVMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhCVVLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:11:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698FAC061574;
-        Mon, 22 Mar 2021 14:11:38 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 21:11:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616447497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rojIO89mEGlFRARFePTFk8tEEDNyJO1Urkm/8tbKYOA=;
-        b=xaW/L/9zROQKNGDnLpeOXT530jC14GFlxH6+j9M62JeKnPO+pKUA4y3KFlNIPrRses9DE2
-        N24qSQHtUz84JazaPheJyEmcq4qzxhFEDIP2gD15H2neufEVLkPHGxxZpZd8TYvXAwYlKU
-        F+VOgMK7bR42xZ6yZv+j/9gFPFxbVsYZA3Q7XX28b2pP3e6CXYtaS2OxSpGdjiLT+eKvwM
-        LgKY027dNqn0TMskHyEEZUSphNRyqbgUN8nAoklwkRYaUVKTN8Wp+xV6eAGATMpj9QsHR4
-        dBnNt+WQIqUqi0xzfwJy1ekkoolFd/kDOYZeqkh422yMy6ZuBxeY5nGc9zKuiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616447497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rojIO89mEGlFRARFePTFk8tEEDNyJO1Urkm/8tbKYOA=;
-        b=lWHTQyUcAO39ZsiMzXLphckpPmcBzerbK1RcIsCne5AdfbEurUKx9XwaXKZ9iwpfilU2d7
-        txJ3TI+T9/ZFW4Bw==
-From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] lockdep: Address clang -Wformat warning printing for %hd
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210322115531.3987555-1-arnd@kernel.org>
-References: <20210322115531.3987555-1-arnd@kernel.org>
+        id S232116AbhCVVM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:12:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:5132 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230196AbhCVVLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 17:11:47 -0400
+IronPort-SDR: lq+mZuGXpe7I/XgDGC0jUFWJKimD1xjTfv5kWHbsA+YxsAXD0jQ34sZQlykEuJBjG2MGHV1fOS
+ nsCXyYgejRGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="210424058"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="210424058"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 14:11:47 -0700
+IronPort-SDR: 2Oa3bjkD7NcBddGdIwiMO200ixVuKTIHtCHhg0Y6oOIIfX6Z0gKKTlFeL0A3ovt/fAiDpmZPoF
+ AcH8gVpRLg3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="451871773"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 22 Mar 2021 14:11:41 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2C1CC11F; Mon, 22 Mar 2021 23:11:54 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1 1/6] usb: gadget: pch_udc: Drop unneeded cpu_to_le32() call
+Date:   Mon, 22 Mar 2021 23:11:44 +0200
+Message-Id: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <161644749627.398.4415880937638801207.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Either way ~0 will be in the correct byte order,
+hence drop unneeded cpu_to_le32() call. Moreover,
+it makes sparse happy, otherwise it complains:
 
-Commit-ID:     6d48b7912cc72275dc7c59ff961c8bac7ef66a92
-Gitweb:        https://git.kernel.org/tip/6d48b7912cc72275dc7c59ff961c8bac7ef66a92
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Mon, 22 Mar 2021 12:55:25 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 22 Mar 2021 22:07:09 +01:00
+pch_udc.c:1813:27: warning: incorrect type in assignment (different base types)
+pch_udc.c:1813:27:    expected unsigned int [usertype] dataptr
+pch_udc.c:1813:27:    got restricted __le32 [usertype]
 
-lockdep: Address clang -Wformat warning printing for %hd
-
-Clang doesn't like format strings that truncate a 32-bit
-value to something shorter:
-
-  kernel/locking/lockdep.c:709:4: error: format specifies type 'short' but the argument has type 'int' [-Werror,-Wformat]
-
-In this case, the warning is a slightly questionable, as it could realize
-that both class->wait_type_outer and class->wait_type_inner are in fact
-8-bit struct members, even though the result of the ?: operator becomes an
-'int'.
-
-However, there is really no point in printing the number as a 16-bit
-'short' rather than either an 8-bit or 32-bit number, so just change
-it to a normal %d.
-
-Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210322115531.3987555-1-arnd@kernel.org
+Fixes: f646cf94520e ("USB device driver of Topcliff PCH")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- kernel/locking/lockdep.c | 2 +-
+ drivers/usb/gadget/udc/pch_udc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index c30eb88..f160f1c 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -705,7 +705,7 @@ static void print_lock_name(struct lock_class *class)
- 
- 	printk(KERN_CONT " (");
- 	__print_lock_name(class);
--	printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
-+	printk(KERN_CONT "){%s}-{%d:%d}", usage,
- 			class->wait_type_outer ?: class->wait_type_inner,
- 			class->wait_type_inner);
- }
+diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
+index a3c1fc924268..2e2dca391007 100644
+--- a/drivers/usb/gadget/udc/pch_udc.c
++++ b/drivers/usb/gadget/udc/pch_udc.c
+@@ -1756,7 +1756,7 @@ static struct usb_request *pch_udc_alloc_request(struct usb_ep *usbep,
+ 	}
+ 	/* prevent from using desc. - set HOST BUSY */
+ 	dma_desc->status |= PCH_UDC_BS_HST_BSY;
+-	dma_desc->dataptr = cpu_to_le32(DMA_ADDR_INVALID);
++	dma_desc->dataptr = DMA_ADDR_INVALID;
+ 	req->td_data = dma_desc;
+ 	req->td_data_last = dma_desc;
+ 	req->chain_len = 1;
+-- 
+2.30.2
+
