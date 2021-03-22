@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60663441D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51DE3441E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbhCVMgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S229728AbhCVMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhCVMdM (ORCPT
+        with ESMTP id S231403AbhCVMdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:12 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2A4C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:12 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id g24so12094811qts.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:12 -0700 (PDT)
+        Mon, 22 Mar 2021 08:33:14 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1ADC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:13 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id bf3so19121761edb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tylfcxECJZP31c4RSnnvxS0KkHn7aB+u1Ic56YVdIuo=;
-        b=rH9qUsPgW6cE3AOHHep9mv5GCwPYVoda2tozm1XFrhrmw8tvYjI5WvGlSjkED5GALR
-         KNR6X1S9Z3SzMvwkC7MCqS9z4tLuaeua3JkZvwxMnswcagOalHaQWPxOzpsNGJaSg4y3
-         2g9bmy9loh2dBx1l8p+Pc+e51vlk1QNTbmOkZdToXRAdX75Nmt7LXm4DQ80PEZIjVV/D
-         SpABqqGCcrJ0PulXZ6CPQesOMeboU/vRRzvY1K8BsatgG3p/ir5bOk6lA8DUbMa7oXia
-         fVMNcG8NBMolhiOu1vQMNgMbEDG5kj4dafMwK5yeFObepbinzDVO5cvVdw41LMpwTkgY
-         DuQg==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SVanQr0nOKD358IYkjRAx3PCoRE9oI5X2zMEqx499hk=;
+        b=In/2zB5DflwheyajBKF2sx8W9MNDzsh1OSXWuUfKtL/FRN8c9FQQ2cj+JpRaMJ8aAU
+         XCEdMl5E1nKXsJ7LPr/dtmRUfPx5+I1x5doeJjGnHJs2u9wPfhjKCteG52TK/mXsWmp0
+         r9Anh7nKKI7VMsuXAdYXcsCGpZElkzpp47nt0czliuc/sgnYDu/CCcQloeUW02Hubge7
+         sWrpe/oCUN6WhcZa9kKsbPAqAXLDiS1XaNnARw1txUwxLHGsZeVRD+wmAVt2sQW9eS55
+         UyTJMvhgC22uRmJJA3ffzwFbfulqEQ+Y37qGJg3epzU8Qv8Y9P3aSJ9V5kCcRG0/y2iv
+         oQLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=tylfcxECJZP31c4RSnnvxS0KkHn7aB+u1Ic56YVdIuo=;
-        b=sVcyDHjJs1zjTz2G2dqisXNvtuZfdOXbDirfR+dYUkUEB3hxNmZIFFmAAOtjqf3zqi
-         +hWGyJULjxfV3DzKWU2bACc418/H1vJ9/1YVNgRH82IToH+llvm/UnK1FMDxCynVKbEB
-         QBXtpc8vTx/eiw9JZ+Hyevix2xYV0fTnJmEXNEoyUNGyUGkYmvlRG+K/ckAT8JQz6rH8
-         ENFY8aTUMFuhlpm12FDACYXosq+0I7bmquUwTymWZvnZoQICCIWl0NiK24bwOYkcPLMp
-         3ecw1r68yDxwuFiWVUfNr41YYeQHgfOhVwoYSJ5RKNsDW25n2mtRyTHyKOZ3ryMJ6wAU
-         WiUw==
-X-Gm-Message-State: AOAM531XDMhYdvksp0pKquLnSYeKhik+0iD8kBow+Ktk1+ZS7SZU3Rzw
-        XG+mCk0NQowbt3DA5JxfCGM=
-X-Google-Smtp-Source: ABdhPJzOSAYoV4CVQmg0IM11726ZDkB3l1jN4DwIE5aV4BhdqCXHohaHnKRDTfOcwqYiTzEIJvu65A==
-X-Received: by 2002:ac8:7089:: with SMTP id y9mr9246287qto.264.1616416391503;
-        Mon, 22 Mar 2021 05:33:11 -0700 (PDT)
-Received: from localhost.localdomain ([143.244.44.200])
-        by smtp.gmail.com with ESMTPSA id l8sm8755852qtr.19.2021.03.22.05.33.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 05:33:11 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     vgupta@synopsys.com, rdunlap@infradead.org, unixbhaskar@gmail.com,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arc: include/asm: Couple of spelling fixes
-Date:   Mon, 22 Mar 2021 18:02:59 +0530
-Message-Id: <20210322123259.2894194-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        bh=SVanQr0nOKD358IYkjRAx3PCoRE9oI5X2zMEqx499hk=;
+        b=EPKgXC/GiHoSm2M+xcKebHTLIKoA+JCo0OjL8C73//3iKP32Joyx0aa6/73g8WPMwn
+         bYO0MAMaXcA3H0QxYI9PfX+J8uyE8fmXMLpcKdgc87ltHuHykPGH1wCikVi1vGaq7EMd
+         xGmVkeUstErn+gphlMBHqhrHNqL38r6Nz2SczPLQeud7vl37qrVaOp0euTP791bxbkUf
+         udACpIVR2q3QCIOvzTYs0A2C4JBhrv2KpbAjao5HuqaNRy6Ce4y5tPQ02bbAzGg+tkJy
+         Ahq6ew4oFs8juZYe8cTavHhgX3rQvPUJIhB7o4tg+cU4UddUMFrvsJGa5rLrqS3EyIw0
+         gdzA==
+X-Gm-Message-State: AOAM533kwPKLQ7Uh2NmFa/jml/xgZ6Scy5zqoyeB1OTHImkZY2IoEed1
+        GsSkp1BUW6zJ8YJ/RMGB4EFd7g==
+X-Google-Smtp-Source: ABdhPJzU8lxBAEHdWAbezgHwbSa71swddR2DYb7EY4LfoVvJcbMJx1acYwfadWxsyNH4XNxBLRVo6A==
+X-Received: by 2002:a50:f391:: with SMTP id g17mr25306211edm.26.1616416392520;
+        Mon, 22 Mar 2021 05:33:12 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
+        by smtp.gmail.com with ESMTPSA id t27sm9618783ejc.62.2021.03.22.05.33.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 05:33:12 -0700 (PDT)
+Subject: Re: [PATCH 03/13] PCI: xilinx: Convert to MSI domains
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, michal.simek@xilinx.com
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+References: <20210225151023.3642391-1-maz@kernel.org>
+ <20210225151023.3642391-4-maz@kernel.org>
+ <20210322122100.GA11469@e121166-lin.cambridge.arm.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <74cffc38-df12-7d92-1bfe-20eed4b60e86@monstr.eu>
+Date:   Mon, 22 Mar 2021 13:33:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322122100.GA11469@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-s/interrpted/interrupted/
-s/defintion/definition/
+On 3/22/21 1:21 PM, Lorenzo Pieralisi wrote:
+> On Thu, Feb 25, 2021 at 03:10:13PM +0000, Marc Zyngier wrote:
+>> In anticipation of the removal of the msi_controller structure, convert
+>> the ancient xilinx host controller driver to MSI domains.
+>>
+>> We end-up with the usual two domain structure, the top one being a
+>> generic PCI/MSI domain, the bottom one being xilinx-specific and handling
+>> the actual HW interrupt allocation.
+>>
+>> This allows us to fix some of the most appaling MSI programming, where
+>> the message programmed in the device is the virtual IRQ number instead
+>> of the allocated vector number. The allocator is also made safe with
+>> a mutex. This should allow support for MultiMSI, but I decided not to
+>> even try, since I cannot test it.
+>>
+>> Also take the opportunity to get rid of the cargo-culted memory allocation
+>> for the MSI capture address. *ANY* sufficiently aligned address should
+>> be good enough, so use the physical address of the xilinx_pcie_host
+>> structure instead.
+>>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  drivers/pci/controller/Kconfig       |   2 +-
+>>  drivers/pci/controller/pcie-xilinx.c | 238 +++++++++++----------------
+>>  2 files changed, 96 insertions(+), 144 deletions(-)
+> 
+> Michal,
+> 
+> can you please test these changes or make sure someone does and report
+> back on the mailing list please ?
+> 
+> I would like to merge this series for v5.13.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/arc/include/asm/cmpxchg.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I got just private response (not sure why) from Bharat March 5 that
+changes are fine.
+It means go ahead with it.
 
-diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
-index 9b87e162e539..dfeffa25499b 100644
---- a/arch/arc/include/asm/cmpxchg.h
-+++ b/arch/arc/include/asm/cmpxchg.h
-@@ -116,7 +116,7 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
-  *
-  * Technically the lock is also needed for UP (boils down to irq save/restore)
-  * but we can cheat a bit since cmpxchg() atomic_ops_lock() would cause irqs to
-- * be disabled thus can't possibly be interrpted/preempted/clobbered by xchg()
-+ * be disabled thus can't possibly be interrupted/preempted/clobbered by xchg()
-  * Other way around, xchg is one instruction anyways, so can't be interrupted
-  * as such
-  */
-@@ -143,7 +143,7 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
- /*
-  * "atomic" variant of xchg()
-  * REQ: It needs to follow the same serialization rules as other atomic_xxx()
-- * Since xchg() doesn't always do that, it would seem that following defintion
-+ * Since xchg() doesn't always do that, it would seem that following definition
-  * is incorrect. But here's the rationale:
-  *   SMP : Even xchg() takes the atomic_ops_lock, so OK.
-  *   LLSC: atomic_ops_lock are not relevant at all (even if SMP, since LLSC
---
-2.31.0
+Thanks,
+Michal
 
