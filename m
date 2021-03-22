@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A4E34364D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41A4343650
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCVBcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 21:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhCVBci (ORCPT
+        id S229999AbhCVBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 21:34:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14836 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhCVBeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:32:38 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD6BC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 18:32:37 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id a11so11269457qto.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 18:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MusoT+WZJheUpwgoiy/CmTBtw71iPdI3X741K/rLyjI=;
-        b=KgLSfWgFucrr0E2uyecttHhDSaWKVki3NFyii38K2eUVaAMtJp+4XzzKdjCjirjTaw
-         c5Nrmru6hTKkhe+T3Ep/ARa2OWT8i4ZmqqO5qnQHNPYY4wI41OAHgLmnp/M+plQRxx7w
-         9TWtIPnxe7SxbztUY/t6Lnoq+1dWE7QVABuukvr5xnla/4N0oZjD1hIwudIMQSm8f3C3
-         pmofjfitRvL3MIDh6n2Y/BuYfjBSBuMgJxBq3SaCIGBi61Yo74awxt4bGNn4YaeD1Can
-         2gVTjCJ9s8kdVZq5qG1Y3OimBfC3BhrG85PFQn1QEk6Vpnz/EFXzjlzaFWELn0/iU6Bz
-         YJ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MusoT+WZJheUpwgoiy/CmTBtw71iPdI3X741K/rLyjI=;
-        b=Fy00ZUiV+nDGZK2sdJdwxWe0lLRVqKGQjbkmmoMgxBp6Vzidt9RPYmRJTrhe5vuSE5
-         Gu+at/E3q3UxtxD5iSIZZ5CUwqQ0cBq50aTFQ8Zg4VFwG4g2YnwFKODXawy9jRrQO16o
-         nUjbDEG4W1HQ1B66byQ2uFzB+l/EWTH+8AUIcMfg1fTFkpQM5zCJh11xCHiYq+IoelpC
-         7DcSzD/ZwlFs2Y5/nrbc7bQQQ5dJ+gVzp89EeviDxJ2Rs+pflpohquKpaeyjM6aFcdaY
-         UI82qmrndnWkN8JD1r/jOSB6T0P4EeShum0K6iR9fRBos/G6CW/USh7/uLU9/R4+81Ds
-         UIXw==
-X-Gm-Message-State: AOAM533TR6HVUSqn62cMM+sh9krIdztZMzQvMXnu7YLbnA5eiCtSHOnj
-        Qhr36EsJa7/Xfvw2MB4wNGw=
-X-Google-Smtp-Source: ABdhPJwld9nR1hlEZLrHqQXDlqjrPPWNVRiEXwsGE3BM6SpW0C4M70PPG4tee3XHNHSVX9dNEc04LQ==
-X-Received: by 2002:ac8:109a:: with SMTP id a26mr7724497qtj.156.1616376756909;
-        Sun, 21 Mar 2021 18:32:36 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id n140sm9837724qka.124.2021.03.21.18.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 18:32:36 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     akpm@linux-foundation.org, liao.pingfang@zte.com.cn,
-        daniel.m.jordan@oracle.com, vbabka@suse.cz, gustavoars@kernel.org,
-        yanaijie@huawei.com, walken@google.com, unixbhaskar@gmail.com,
-        0x7f454c46@gmail.com, adobriyan@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] ipc/shm.c: Fix a typo
-Date:   Mon, 22 Mar 2021 07:02:23 +0530
-Message-Id: <20210322013223.1930159-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Sun, 21 Mar 2021 21:34:01 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F3cRj36j2z927r;
+        Mon, 22 Mar 2021 09:32:01 +0800 (CST)
+Received: from [10.174.176.202] (10.174.176.202) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Mar 2021 09:33:55 +0800
+Subject: Re: [GIT PULL] ext4 fixes for v5.12
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>
+CC:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+References: <YFeQ9eBFn5JELyYo@mit.edu>
+ <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
+Date:   Mon, 22 Mar 2021 09:33:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/3/22 6:23, Linus Torvalds wrote:
+> On Sun, Mar 21, 2021 at 11:31 AM Theodore Ts'o <tytso@mit.edu> wrote:
+>>
+>> zhangyi (F) (3):
+>>       ext4: find old entry again if failed to rename whiteout
+>>       ext4: do not iput inode under running transaction in ext4_rename()
+>>       ext4: do not try to set xattr into ea_inode if value is empty
+> 
+> Side note: this is obviously entirely up to the author, but I think it
+> would be nice if we would encourage people to use their native names
+> if/when they want to.
+> 
+> Maybe this "zhangyi (F)" is how they _want_ to write their name in the
+> kernel, and that's obviously fine if so.
+> 
+> But at the same time, coming from Finland, I remember how people who
+> had the "odd" characters (åäö) in their name ended up replacing them
+> with the US-ASCII version (generally "aa" "ae" and "oe"), and it
+> always just looked bad to a native speaker. Particularly annoying in
+> public contexts.
+> 
+> At the same time, for the same reason, I can also understand people
+> not wanting to even expose those characters at all, because then
+> non-native speakers invariably messed it up even worse...
+> 
+> Anyway, I think and hope that we have the infrastructure to do it
+> right not just for Latin1, but the more complex non-Western character
+> sets too.
+> 
+> And as a result should possibly encourage people to use their native
+> names if they want to. At least make people aware that it _should_
+> work.
+> 
+> Again, maybe I'm barking up the wrong tree, and in this case "zhangyi
+> (F) <yi.zhang@huawei.com>" is just what zhangyi prefers simply because
+> it's easier/more convenient.
+> 
+> But I just wanted to mention it, because we _do_ have examples of it
+> working. Not many, but some:
+> 
+>     git log --pretty="%an" --since=2.years | sort -u | tail
+> 
+> including examples of having the Westernized name in parenthesis for
+> the "use that one if you can't do the real one" case..
+> 
+Hi, Linus.
 
-s/exit\'ed/exited/
+I will use my real name "Yi Zhang" next time.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- ipc/shm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/ipc/shm.c b/ipc/shm.c
-index febd88daba8c..07fb04c20d8c 100644
---- a/ipc/shm.c
-+++ b/ipc/shm.c
-@@ -357,7 +357,7 @@ static int shm_try_destroy_orphaned(int id, void *p, void *data)
-
- 	/*
- 	 * We want to destroy segments without users and with already
--	 * exit'ed originating process.
-+	 * exited originating process.
- 	 *
- 	 * As shp->* are changed under rwsem, it's safe to skip shp locking.
- 	 */
---
-2.31.0
-
+Thanks,
+Yi.
