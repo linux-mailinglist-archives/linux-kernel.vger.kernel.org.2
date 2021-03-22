@@ -2,261 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6108E344C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C49344C4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhCVQtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231533AbhCVQsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:48:38 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25402619A0;
-        Mon, 22 Mar 2021 16:48:38 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lONjI-0037Ov-Bm; Mon, 22 Mar 2021 16:48:36 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        tabba@google.com, ardb@kernel.org, mark.rutland@arm.com,
-        dbrazdil@google.com
-Subject: [PATCH 3/3] KVM: arm64: Drop the CPU_FTR_REG_HYP_COPY infrastructure
-Date:   Mon, 22 Mar 2021 16:48:28 +0000
-Message-Id: <20210322164828.800662-4-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210322164828.800662-1-maz@kernel.org>
-References: <20210322164828.800662-1-maz@kernel.org>
+        id S229547AbhCVQud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230027AbhCVQtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:49:55 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A702C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:49:53 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id r12so22422935ejr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jXJ5Sar/Ifz6JJAimj38gRVDAr3OzSV/gaJ8wXJmb9M=;
+        b=LW9du4C9WPfXG+G3KZi3P6ozsF9gt4VrbAR4Z62UoD7bHlHwHdeQB3vQ53Ci/uZrnM
+         MCj6yCTpxhDpbCzv7Huqey/XxpEVNrkqnz+LIJg8hRLGIeATT4Jyu5l3a98TeAgR0aOk
+         Eqx37cgwY3RQze7KoCi4XrLF3XH19tHN5MKZVnCnB9OD/Nd/fkkpUT54zJ0KEONLiCNy
+         ubuzzVqkcvIrVQgwmRwnPKLJzTtyUzZL5Kmvm57shs3hdriNL/IV6SXe49tenbBIZB6+
+         kfe2MdDtVqw245DnHwSXblRbUr9RjfFer7rM588aqSzblIgHPG0vU12qMtyRTWM/TiJL
+         JDmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jXJ5Sar/Ifz6JJAimj38gRVDAr3OzSV/gaJ8wXJmb9M=;
+        b=KsuOKVtt/CUo0EFB4Fi3EUsMV9YZSMyVINyXjTPQy/iGvOoT0SeZIkSvW7HYG6dBNr
+         yRohR/Un73AweZXfZauR0qZELg9vV6nxxkCrPbo9M1QNmM8WDsrahzWtVXaPVXf/1Oed
+         V6ivf501OgkY5uWNYS3arAQN8TwNMw2YRzbuavI7+AccgAZPKb/+cEYfZ8PnINls5PbQ
+         ZB0G1F0uT+xTGqxanNni5LvrBcfxxDNVwCqMLqbGqT6f7HXnVMDVW6Z0stEN3BKIjcgy
+         0ii/rztYVaRgbhFLBRLKM94+PyFIdL8p/jrGjoaS5dtdnLxQylW620g2kZgFCCpL8hs0
+         ZWtA==
+X-Gm-Message-State: AOAM533Yh4gc6oQ2Jk/FB3L7ZHt60NknWI+1v/gLLUQ8kwXHxocP1asC
+        iGHJ5JVxgEyJ1395WrRJwNbGdktfxDvwVCPZ2Lwoig==
+X-Google-Smtp-Source: ABdhPJwMTly+dnvGOZCcyUiuvTg4XNpbJvl0rmYqw0PzBbiRyF066Lh4cY57dwH0UfNGxEzShtwgHYkpi8rizqlJ3j4=
+X-Received: by 2002:a17:906:8a65:: with SMTP id hy5mr753913ejc.250.1616431792272;
+ Mon, 22 Mar 2021 09:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: qperret@google.com, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel-team@android.com, kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org, mark.rutland@arm.com, dbrazdil@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <CACT4Y+beyZ7rjmy7im0KdSU-Pcqd4Rud3xsxonBbYVk0wU-B9g@mail.gmail.com>
+ <CAK8P3a1xBt6ucpVMhQrw4fGiLDZaJZ4_kn+qy9xAuykRRih6FA@mail.gmail.com>
+ <CACT4Y+YeeEkF65O40DMLB=cggiowZUxXDs++BNTrDMO94j=NvA@mail.gmail.com>
+ <CAK8P3a0HVu+x0T6+K3d0v1bvU-Pes0F0CSjqm5x=bxFgv5Y3mA@mail.gmail.com>
+ <CACT4Y+aWMD283vYMfoGM1fir_fPF7MPqe+vLjaoQD2iZUV4c-A@mail.gmail.com>
+ <CAK8P3a2NEcHG+nOUCc6-DPeFKkc-GF-LEOkynhNdgxiXBHdQaw@mail.gmail.com>
+ <CAFEAcA-s79=4VDSA3TO8tpLUMwJE=HcFT4eZO8L8CCkAAfj8PA@mail.gmail.com>
+ <CAK8P3a26dWjbS8CjGwc7S5S0M4SonWh4afqdxpoa8Q9vQhC0TA@mail.gmail.com>
+ <CAFEAcA-oH=9RLdzhsLcSTxNLBLcyEcJtO4L5EqRSiGWHdApgqA@mail.gmail.com>
+ <CAK8P3a2aQ0C7M2p3DBwjvK5mGyg2_8PQK2=FnkPFp3bVmt_xMw@mail.gmail.com> <771d89a8-b7e0-6095-b101-e7ae91bcdc85@huawei.com>
+In-Reply-To: <771d89a8-b7e0-6095-b101-e7ae91bcdc85@huawei.com>
+From:   Peter Maydell <peter.maydell@linaro.org>
+Date:   Mon, 22 Mar 2021 16:49:24 +0000
+Message-ID: <CAFEAcA9d5NLUcn_wdj=pUWEW9arRcZnOwUuqtoSep=FSjpB_Tw@mail.gmail.com>
+Subject: Re: arm64 syzbot instances
+To:     John Garry <john.garry@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the read_ctr macro has been specialised for nVHE,
-the whole CPU_FTR_REG_HYP_COPY infrastrcture looks completely
-overengineered.
+On Mon, 22 Mar 2021 at 16:36, John Garry <john.garry@huawei.com> wrote:
+>
+> >>
+> >> There's apparently a bit in the PCI spec that reads:
+> >>          The host bus bridge, in PC compatible systems, must return all
+> >>          1's on a read transaction and discard data on a write transaction
+> >>          when terminated with Master-Abort.
+> >>
+> >> which obviously applies only to "PC compatible systems".
+> >
+> > Right. As far as I can tell, all ARMv8 and most ARMv7 based SoCs
+> > do this to be more compatible with PC style operating systems like
+> > Linux, but you are right that the specification here does not
+> > mandate that, and the older ARMv5 SoCs seem to be compliant
+> > as well based on this.
 
-Simplify it by populating the two u64 quantities (MMFR0 and 1)
-that the hypervisor need.
+> >> TBH I'm having difficulty seeing why the kernel should be doing
+> >> this at all, though. The device tree tells you you have a PCI
+> >> controller; PCI supports enumeration of devices; you know exactly
+> >> where everything is mapped because the BARs tell you that.
+> >> I don't see anything that justifies the kernel in randomly
+> >> dereferencing areas of the IO or memory windows where it hasn't
+> >> mapped anything.
+>
+> BIOS has described a CPU-addressable PIO region in the PCI hostbridge,
+> and the kernel has mapped it:
+>
+> [    3.974309][    T1] pci-host-generic 4010000000.pcie:       IO
+> 0x003eff0000..0x003effffff -> 0x0000000000
+>
+> So I don't see why any accesses there should fault.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/include/asm/cpufeature.h     |  1 -
- arch/arm64/include/asm/kvm_cpufeature.h | 26 -------------------------
- arch/arm64/include/asm/kvm_host.h       |  4 ----
- arch/arm64/include/asm/kvm_hyp.h        |  3 +++
- arch/arm64/kernel/cpufeature.c          | 13 -------------
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c       |  6 ++----
- arch/arm64/kvm/hyp/nvhe/mem_protect.c   |  5 ++---
- arch/arm64/kvm/sys_regs.c               | 23 ++--------------------
- 8 files changed, 9 insertions(+), 72 deletions(-)
- delete mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
+As requested above, do you have the PCI spec reference for
+why the PIO region is supposed to do -1/discard for parts of
+the PIO region where the kernel hasn't mapped any devices ?
+For classic PCI, at least, the spec does not seem to mandate it.
 
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index a85cea2cac57..61177bac49fa 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -607,7 +607,6 @@ void check_local_cpu_capabilities(void);
- 
- u64 read_sanitised_ftr_reg(u32 id);
- u64 __read_sysreg_by_encoding(u32 sys_id);
--int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst);
- 
- static inline bool cpu_supports_mixed_endian_el0(void)
- {
-diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
-deleted file mode 100644
-index ff302d15e840..000000000000
---- a/arch/arm64/include/asm/kvm_cpufeature.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2020 - Google LLC
-- * Author: Quentin Perret <qperret@google.com>
-- */
--
--#ifndef __ARM64_KVM_CPUFEATURE_H__
--#define __ARM64_KVM_CPUFEATURE_H__
--
--#include <asm/cpufeature.h>
--
--#include <linux/build_bug.h>
--
--#if defined(__KVM_NVHE_HYPERVISOR__)
--#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg name
--#define DEFINE_KVM_HYP_CPU_FTR_REG(name) struct arm64_ftr_reg name
--#else
--#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg kvm_nvhe_sym(name)
--#define DEFINE_KVM_HYP_CPU_FTR_REG(name) BUILD_BUG()
--#endif
--
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
--
--#endif
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 4859c9de75d7..09979cdec28b 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -740,13 +740,9 @@ void kvm_clr_pmu_events(u32 clr);
- 
- void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
- void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
--
--void setup_kvm_el2_caps(void);
- #else
- static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
- static inline void kvm_clr_pmu_events(u32 clr) {}
--
--static inline void setup_kvm_el2_caps(void) {}
- #endif
- 
- void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
-diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-index de40a565d7e5..8ef9d88826d4 100644
---- a/arch/arm64/include/asm/kvm_hyp.h
-+++ b/arch/arm64/include/asm/kvm_hyp.h
-@@ -116,4 +116,7 @@ int __pkvm_init(phys_addr_t phys, unsigned long size, unsigned long nr_cpus,
- void __noreturn __host_enter(struct kvm_cpu_context *host_ctxt);
- #endif
- 
-+extern u64 kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val);
-+extern u64 kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val);
-+
- #endif /* __ARM64_KVM_HYP_H__ */
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 6252476e4e73..066030717a4c 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1154,18 +1154,6 @@ u64 read_sanitised_ftr_reg(u32 id)
- }
- EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
- 
--int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
--{
--	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
--
--	if (!regp)
--		return -EINVAL;
--
--	*dst = *regp;
--
--	return 0;
--}
--
- #define read_sysreg_case(r)	\
- 	case r:		val = read_sysreg_s(r); break;
- 
-@@ -2785,7 +2773,6 @@ void __init setup_cpu_features(void)
- 
- 	setup_system_capabilities();
- 	setup_elf_hwcaps(arm64_elf_hwcaps);
--	setup_kvm_el2_caps();
- 
- 	if (system_supports_32bit_el0())
- 		setup_elf_hwcaps(compat_elf_hwcaps);
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-index 17ad1b3a9530..706056013eb0 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -5,16 +5,14 @@
-  */
- 
- #include <asm/kvm_asm.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
- 
- /*
-  * Copies of the host's CPU features registers holding sanitized values.
-  */
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
-+u64 id_aa64mmfr0_el1_sys_val;
-+u64 id_aa64mmfr1_el1_sys_val;
- 
- /*
-  * nVHE copy of data structures tracking available CPU cores.
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index 808e2471091b..be1148e763d0 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -5,7 +5,6 @@
-  */
- 
- #include <linux/kvm_host.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_emulate.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
-@@ -74,8 +73,8 @@ static void prepare_host_vtcr(void)
- 	u32 parange, phys_shift;
- 	u64 mmfr0, mmfr1;
- 
--	mmfr0 = arm64_ftr_reg_id_aa64mmfr0_el1.sys_val;
--	mmfr1 = arm64_ftr_reg_id_aa64mmfr1_el1.sys_val;
-+	mmfr0 = id_aa64mmfr0_el1_sys_val;
-+	mmfr1 = id_aa64mmfr1_el1_sys_val;
- 
- 	/* The host stage 2 is id-mapped, so use parange for T0SZ */
- 	parange = kvm_get_parange(mmfr0);
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index dfb3b4f9ca84..3093ac1b1099 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -21,7 +21,6 @@
- #include <asm/debug-monitors.h>
- #include <asm/esr.h>
- #include <asm/kvm_arm.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_emulate.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
-@@ -2775,25 +2774,7 @@ void kvm_sys_reg_table_init(void)
- 			break;
- 	/* Clear all higher bits. */
- 	cache_levels &= (1 << (i*3))-1;
--}
--
--#define CPU_FTR_REG_HYP_COPY(id, name) \
--	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) }
--struct __ftr_reg_copy_entry {
--	u32			sys_id;
--	struct arm64_ftr_reg	*dst;
--} hyp_ftr_regs[] __initdata = {
--	CPU_FTR_REG_HYP_COPY(SYS_CTR_EL0, arm64_ftr_reg_ctrel0),
--	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR0_EL1, arm64_ftr_reg_id_aa64mmfr0_el1),
--	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR1_EL1, arm64_ftr_reg_id_aa64mmfr1_el1),
--};
- 
--void __init setup_kvm_el2_caps(void)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(hyp_ftr_regs); i++) {
--		WARN(copy_ftr_reg(hyp_ftr_regs[i].sys_id, hyp_ftr_regs[i].dst),
--		     "%u feature register not found\n", hyp_ftr_regs[i].sys_id);
--	}
-+	kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
-+	kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
- }
--- 
-2.29.2
-
+thanks
+-- PMM
