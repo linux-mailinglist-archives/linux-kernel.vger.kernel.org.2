@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0327F3437D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321EF3437D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhCVEO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 00:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229450AbhCVEO3 (ORCPT
+        id S229761AbhCVEQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 00:16:11 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:38802 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhCVEP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 00:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616386468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=a4v4LZd/KuNB4nVBOBAV0fJoffXp/cjO8///uHfP+rY=;
-        b=FL83ETxnQdDfI1qujRiv94Q2e/DiCAJVp5PrPuDQGLO0Ht9nYgoySNQWJAGOvQGJsTM7SV
-        UIF2xmweWJfaO8XzUqn3IxM2Rj+1IOEDDnV4cGg5yrrkWesOCsbuIhzr3oCPat4iIc9cJc
-        j+kNxjQpJncJEbniONuAfSGBDP1GB/Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-Tr9bnYNBMRihkF_mIxSP9A-1; Mon, 22 Mar 2021 00:14:25 -0400
-X-MC-Unique: Tr9bnYNBMRihkF_mIxSP9A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BCFE1084C95;
-        Mon, 22 Mar 2021 04:14:24 +0000 (UTC)
-Received: from lclaudio.dyndns.org (ovpn-117-44.rdu2.redhat.com [10.10.117.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 758F6100AE42;
-        Mon, 22 Mar 2021 04:14:23 +0000 (UTC)
-Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
-        id A7BEC3C1752; Mon, 22 Mar 2021 01:14:21 -0300 (-03)
-Date:   Mon, 22 Mar 2021 01:14:21 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.9.260-rt174
-Message-ID: <161638639759.450582.3060675159400489865@localhost.localdomain>
+        Mon, 22 Mar 2021 00:15:59 -0400
+Received: by mail-pj1-f42.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso9704021pji.3;
+        Sun, 21 Mar 2021 21:15:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+Efirn7mPRYjnQYb6tYB8IzX6m7msSwDo1WIP+IniqI=;
+        b=mqMzSidnIDS8QVW3ije1URBy6GNkZ9vmfL7/R+y2gH0rZCwbyBD01LJbk9llFQyiGY
+         I4KvCSJm4kjx26JNKMsZ+Q+t9BENKe5oPkQrFFwIRhX6gRhfZEwmFcL1uRQAIjdOw8yX
+         WEDLiN3sG4IAxL7kY/t1VARNvV1n0wuiblBS5LOlqF25EJWdvu0ZZM/XM02JTG6YGphe
+         IoDGZ7imFGCs6qBzwtvWbHEbIaHSJxB3QYzbGPYWzFT0qspHaIFYcQH60FI705IGoaa8
+         gR3SulvklHYjcaQ333/thmxU9PGkclRNBqxiLRqi1nDTxC3KpbYKIfHFa8/L7UAyGFK7
+         Pkpg==
+X-Gm-Message-State: AOAM533bsuH+/P7Clu+ZGiuVREJck21bLglcl8JW+IH3yVFARER0Th76
+        TAR+11UPKbp4W6H00abaxotbeuZv9KM=
+X-Google-Smtp-Source: ABdhPJyy4hzCQbrpDcMR1K1eXIm5TbjtV0xn05BUHoQXK4Hs10asXJH43++Y75HVrvoGvmredwk8Nw==
+X-Received: by 2002:a17:90b:b0d:: with SMTP id bf13mr10929428pjb.7.1616386558671;
+        Sun, 21 Mar 2021 21:15:58 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:73ba:f946:66fe:d3aa? ([2601:647:4000:d7:73ba:f946:66fe:d3aa])
+        by smtp.gmail.com with ESMTPSA id 9sm10411801pgy.79.2021.03.21.21.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 21:15:57 -0700 (PDT)
+Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
+To:     Ming Lei <tom.leiming@gmail.com>
+Cc:     syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com, Hillf Danton <hdanton@sina.com>
+References: <00000000000053da9405bd7d2644@google.com>
+ <f40ed33d-8ca2-a2f2-e534-9db9920570ad@acm.org>
+ <CACVXFVP0un7xv0_rZHV9d-jtDSSKpJcrFcmDsDiaj4j2CqV+DQ@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <954345c8-6010-71b5-a723-192cd1556d6d@acm.org>
+Date:   Sun, 21 Mar 2021 21:15:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CACVXFVP0un7xv0_rZHV9d-jtDSSKpJcrFcmDsDiaj4j2CqV+DQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On 3/21/21 7:35 PM, Ming Lei wrote:
+> On Mon, Mar 22, 2021 at 7:03 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>>
+>> On 3/14/21 4:08 AM, syzbot wrote:
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
+>>
+>> #syz test: https://github.com/bvanassche/linux a5f35387ebdc
+> 
+> It should be the same issue which was addressed by
+> 
+>    aebf5db91705 block: fix use-after-free in disk_part_iter_next
+> 
+> but converting to xarray introduced the issue again.
 
-I'm pleased to announce the 4.9.260-rt174 stable release.
+Hi Ming,
 
-You can get this release via the git tree at:
+Since that patch does not re-apply cleanly, do you want to convert that
+patch to the latest kernel version or do you perhaps expect me to do that?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Thanks,
 
-  branch: v4.9-rt
-  Head SHA1: a1ce8735f60285bcf3df3ab01e1ea2588e90c540
-
-Or to build 4.9.260-rt174 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.260.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.260-rt174.patch.xz
-
-Enjoy!
-Luis
+Bart.
 
