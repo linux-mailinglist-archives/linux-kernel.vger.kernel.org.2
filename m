@@ -2,180 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F993437AB
+	by mail.lfdr.de (Postfix) with ESMTP id 705C23437AA
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCVDyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
+        id S229952AbhCVDyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhCVDxx (ORCPT
+        with ESMTP id S229949AbhCVDxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:53:53 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3735C061574;
-        Sun, 21 Mar 2021 20:53:52 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gb6so7671254pjb.0;
-        Sun, 21 Mar 2021 20:53:52 -0700 (PDT)
+        Sun, 21 Mar 2021 23:53:44 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4379C061574;
+        Sun, 21 Mar 2021 20:53:44 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id o2so5839232plg.1;
+        Sun, 21 Mar 2021 20:53:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tKxk+9eb2LGFDrzO/7ZeqqJu7fcuACwOGc2Gc2Xgf/8=;
-        b=Ow5k3E6iPHAZbh9uHoSSofU/eMprWkTQkiFMxer2/+Ab5S8fCZJtYdqQM5vcJHkBx0
-         CjZytXu75j4nNL9aizy6HcRUc9RK2GSG8L7OsQwvhW8Pmyh6N9m1W742trUo0ohHmkxT
-         Svpue8aBm+5Aoa6hkDOI7FqqtCtnPc9FPNniFLtDGoGddhExGwbHjLa+5X4GUlrnrAWm
-         6KjdNCaV/KnxyfRXL3oR/z4tMbNeEm0MQdK2Bs6YvPNRi3hZ8fuSbuwKJNNRIsObemeh
-         BrTww5jTE19noJym6CXWqJUu9h1/+jQZEH+Ihv2lXjMMIEjg+Lvv9wPvlxSfVJnnn6oJ
-         dD7w==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3Ufi0jzK1QTqOk3lxQWPXZ3q8d2AUcWGXV7scJ/HqnE=;
+        b=tOor6UtxMGEMkVXErCwo73HRCp9bMB5iz5QbhQZGaYkvavoapR7f2D2gu41OORhrx4
+         Raz4bs+tUw6UAQ/J5zQunEVcUH+Ik1nJDI5aYWyeZenaM5bTnDN4HzGgRN7wvLCbuOjW
+         kyRREtfvncPA8iedHqT5ID2bVuBuFHbwAy4RXj96l4vuR6TD+feei5qyxwBXfzAc8siy
+         fLuuEcPRMGs7EhdBuYcL+cN5m8Fs+FeMLWTmg11oIJNWx2q50n0fSmqhiV2UJMgU/9HZ
+         xQAFV4QJxD3inK9b9jUjG5QNFASgIXlyq+1V/ui0C+GCFgm+JuW7/mwioiInVN0z0l64
+         M+bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tKxk+9eb2LGFDrzO/7ZeqqJu7fcuACwOGc2Gc2Xgf/8=;
-        b=miXmRQfwXiEQkALsscy6aJmKTZXg4b0cefJOcyiqMtvDacyXVcYO2JIoFp0KDtFBlJ
-         HT25WlQYrH2BRsRK15HBw0NaFn+deMpn2ytiSZbrJMrL3iV/N8PowA+zCtDxljXvyOsR
-         kgzE0x6Kd2SxhEOLC2k7tGissrQmOFDXcSgGfNccheBscRNPYYaKJK3CPAsOva5S7qF2
-         N1ufl6pXBosf3gUty4YmKZ/licNYHoCRO0SSvhdr6AWU0asZgwAbILEw3i+++LR+26el
-         ZpVBwF8QHmB0bKUh2qtsEybFfCkcXPCwqfm6+ozNKBYrYaSJ0MfKPyTF4eR1gUHS9Ba/
-         51ug==
-X-Gm-Message-State: AOAM530pE8ggyawKEO44i2+NdH8jCBDtINHCiLmMqou8rRytMIMLk91G
-        m8W35J4g4iznkZsIcaPT0ak=
-X-Google-Smtp-Source: ABdhPJyXNE7iXLyiFJsWlWHvXDqOBwRJ5F0wo3dNm/o7atNJWJdTxMj7kLUbS6duRcVqQ5h2LEjRNw==
-X-Received: by 2002:a17:902:fe09:b029:e4:951e:2d2e with SMTP id g9-20020a170902fe09b02900e4951e2d2emr25687588plj.22.1616385232453;
-        Sun, 21 Mar 2021 20:53:52 -0700 (PDT)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id f21sm11715222pjj.52.2021.03.21.20.53.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 21 Mar 2021 20:53:52 -0700 (PDT)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Hyeongseok Kim <hyeongseok@gmail.com>
-Subject: [PATCH v3] exfat: speed up iterate/lookup by fixing start point of traversing cluster chain
-Date:   Mon, 22 Mar 2021 12:53:36 +0900
-Message-Id: <20210322035336.81050-1-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3Ufi0jzK1QTqOk3lxQWPXZ3q8d2AUcWGXV7scJ/HqnE=;
+        b=boAdcYKvFIICmQAV75WXouvbfGHBXzVjG871kEpDVKX3EK0CDKb5HewA3GBweHskbP
+         U9yTW/68KBzOBhoLZwuqYunFZEmHMLvyxGCl1k0IYWcfEQjYJLMT8vjyfOcN23kxIMpw
+         L+QzxMC1eM4AyRGfUTYqX0YpmGT7q9lOLIuGyIX96S581skO4MTczmGWkDuxFqv3nT5k
+         pdbAnPcOvZkAXTSYbyQXt3LVI4tDufZRtlpQ18yjViontzSv05a/OjH6SwimpN5hrsvX
+         cGYYnjEKfcn7ExIxKc0pOFIQPRHY5HtSRBgKZS3RZATed1YmkwdErO4mqB5MCorLz+KK
+         iNCA==
+X-Gm-Message-State: AOAM5326LGsUpYM3WKvbITzmkK7ylpD2KF2BsaRkREVAcL+++FpmgcSr
+        ISlQLmnpM99nuoIKIfTJ2T2uuDa8CM4=
+X-Google-Smtp-Source: ABdhPJzuJtvnKd4bLPPWtJGao+aXEqJr4SwiqRunr75pE8Aeode2gHazhv67BpvqXqDkFet0XSuyNw==
+X-Received: by 2002:a17:902:e80a:b029:e6:c4c4:1f05 with SMTP id u10-20020a170902e80ab02900e6c4c41f05mr25320543plg.33.1616385223569;
+        Sun, 21 Mar 2021 20:53:43 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:85c2:9df1:533a:87e9])
+        by smtp.gmail.com with ESMTPSA id x1sm11759217pfj.209.2021.03.21.20.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 20:53:42 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 20:53:40 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: serio - make write method mandatory
+Message-ID: <YFgUxG/TljMuVeQ3@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When directory iterate and lookup is called, there's a buggy rewinding
-of start point for traversing cluster chain to the parent directory
-entry's first cluster. This caused repeated cluster chain traversing
-from the first entry of the parent directory that would show worse
-performance if huge amounts of files exist under the parent directory.
-Fix not to rewind, make continue from currently referenced cluster and
-dir entry.
+Given that all serio drivers except one implement write() method
+let's make it mandatory to avoid testing for its presence whenever
+we attempt to use it.
 
-Tested with 50,000 files under single directory / 256GB sdcard,
-with command "time ls -l > /dev/null",
-Before :     0m08.69s real     0m00.27s user     0m05.91s system
-After  :     0m07.01s real     0m00.25s user     0m04.34s system
-
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- fs/exfat/dir.c      | 19 +++++++++++++------
- fs/exfat/exfat_fs.h |  2 +-
- fs/exfat/namei.c    |  9 ++++++++-
- 3 files changed, 22 insertions(+), 8 deletions(-)
+ drivers/input/serio/ams_delta_serio.c | 6 ++++++
+ drivers/input/serio/serio.c           | 5 +++++
+ include/linux/serio.h                 | 5 +----
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index 7efb1c6d4808..c4523648472a 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -147,7 +147,7 @@ static int exfat_readdir(struct inode *inode, loff_t *cpos, struct exfat_dir_ent
- 					0);
+diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
+index 1c0be299f179..a1c314897951 100644
+--- a/drivers/input/serio/ams_delta_serio.c
++++ b/drivers/input/serio/ams_delta_serio.c
+@@ -89,6 +89,11 @@ static irqreturn_t ams_delta_serio_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
  
- 			*uni_name.name = 0x0;
--			exfat_get_uniname_from_ext_entry(sb, &dir, dentry,
-+			exfat_get_uniname_from_ext_entry(sb, &clu, i,
- 				uni_name.name);
- 			exfat_utf16_to_nls(sb, &uni_name,
- 				dir_entry->namebuf.lfn,
-@@ -911,14 +911,19 @@ enum {
- };
- 
- /*
-- * return values:
-- *   >= 0	: return dir entiry position with the name in dir
-- *   -ENOENT	: entry with the name does not exist
-- *   -EIO	: I/O error
-+ * @ei:         inode info of parent directory
-+ * @p_dir:      directory structure of parent directory
-+ * @num_entries:entry size of p_uniname
-+ * @hint_opt:   If p_uniname is found, filled with optimized dir/entry
-+ *              for traversing cluster chain.
-+ * @return:
-+ *   >= 0:      file directory entry position where the name exists
-+ *   -ENOENT:   entry with the name does not exist
-+ *   -EIO:      I/O error
-  */
- int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
- 		struct exfat_chain *p_dir, struct exfat_uni_name *p_uniname,
--		int num_entries, unsigned int type)
-+		int num_entries, unsigned int type, struct exfat_hint *hint_opt)
++static int ams_delta_serio_write(struct serio *serio, u8 data)
++{
++	return -EINVAL;
++}
++
+ static int ams_delta_serio_open(struct serio *serio)
  {
- 	int i, rewind = 0, dentry = 0, end_eidx = 0, num_ext = 0, len;
- 	int order, step, name_len = 0;
-@@ -995,6 +1000,8 @@ int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
+ 	struct ams_delta_serio *priv = serio->port_data;
+@@ -157,6 +162,7 @@ static int ams_delta_serio_init(struct platform_device *pdev)
+ 	priv->serio = serio;
  
- 			if (entry_type == TYPE_FILE || entry_type == TYPE_DIR) {
- 				step = DIRENT_STEP_FILE;
-+				hint_opt->clu = clu.dir;
-+				hint_opt->eidx = i;
- 				if (type == TYPE_ALL || type == entry_type) {
- 					num_ext = ep->dentry.file.num_ext;
- 					step = DIRENT_STEP_STRM;
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index e77fe2f45cf2..1d6da61157c9 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -457,7 +457,7 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es);
- int exfat_calc_num_entries(struct exfat_uni_name *p_uniname);
- int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
- 		struct exfat_chain *p_dir, struct exfat_uni_name *p_uniname,
--		int num_entries, unsigned int type);
-+		int num_entries, unsigned int type, struct exfat_hint *hint_opt);
- int exfat_alloc_new_dir(struct inode *inode, struct exfat_chain *clu);
- int exfat_find_location(struct super_block *sb, struct exfat_chain *p_dir,
- 		int entry, sector_t *sector, int *offset);
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index 1f7b3dc66fcd..24b41103d1cc 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -596,6 +596,8 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
- 	struct exfat_inode_info *ei = EXFAT_I(dir);
- 	struct exfat_dentry *ep, *ep2;
- 	struct exfat_entry_set_cache *es;
-+	/* for optimized dir & entry to prevent long traverse of cluster chain */
-+	struct exfat_hint hint_opt;
+ 	serio->id.type = SERIO_8042;
++	serio->write = ams_delta_serio_write;
+ 	serio->open = ams_delta_serio_open;
+ 	serio->close = ams_delta_serio_close;
+ 	strlcpy(serio->name, "AMS DELTA keyboard adapter", sizeof(serio->name));
+diff --git a/drivers/input/serio/serio.c b/drivers/input/serio/serio.c
+index 29f491082926..8d229a11bb6b 100644
+--- a/drivers/input/serio/serio.c
++++ b/drivers/input/serio/serio.c
+@@ -694,6 +694,11 @@ EXPORT_SYMBOL(serio_reconnect);
+  */
+ void __serio_register_port(struct serio *serio, struct module *owner)
+ {
++	if (!serio->write) {
++		pr_err("%s: refusing to register %s without write method\n",
++		       __func__, serio->name);
++		return;
++	}
+ 	serio_init_port(serio);
+ 	serio_queue_event(serio, owner, SERIO_REGISTER_PORT);
+ }
+diff --git a/include/linux/serio.h b/include/linux/serio.h
+index 6c27d413da92..075f1b8d76fa 100644
+--- a/include/linux/serio.h
++++ b/include/linux/serio.h
+@@ -121,10 +121,7 @@ void serio_unregister_driver(struct serio_driver *drv);
  
- 	if (qname->len == 0)
- 		return -ENOENT;
-@@ -619,7 +621,7 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
+ static inline int serio_write(struct serio *serio, unsigned char data)
+ {
+-	if (serio->write)
+-		return serio->write(serio, data);
+-	else
+-		return -1;
++	return serio->write(serio, data);
+ }
  
- 	/* search the file name for directories */
- 	dentry = exfat_find_dir_entry(sb, ei, &cdir, &uni_name,
--			num_entries, TYPE_ALL);
-+			num_entries, TYPE_ALL, &hint_opt);
- 
- 	if (dentry < 0)
- 		return dentry; /* -error value */
-@@ -628,6 +630,11 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
- 	info->entry = dentry;
- 	info->num_subdirs = 0;
- 
-+	/* adjust cdir to the optimized value */
-+	cdir.dir = hint_opt.clu;
-+	if (cdir.flags & ALLOC_NO_FAT_CHAIN)
-+		cdir.size -= dentry / sbi->dentries_per_clu;
-+	dentry = hint_opt.eidx;
- 	es = exfat_get_dentry_set(sb, &cdir, dentry, ES_2_ENTRIES);
- 	if (!es)
- 		return -EIO;
+ static inline void serio_drv_write_wakeup(struct serio *serio)
 -- 
-2.27.0.83.g0313f36
+2.31.0.rc2.261.g7f71774620-goog
 
+
+-- 
+Dmitry
