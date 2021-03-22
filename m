@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8A2344398
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB2A344404
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhCVMxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35490 "EHLO mail.kernel.org"
+        id S232723AbhCVM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232662AbhCVMnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:43:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C37B0619D1;
-        Mon, 22 Mar 2021 12:40:54 +0000 (UTC)
+        id S229574AbhCVMqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1EEE619AE;
+        Mon, 22 Mar 2021 12:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416855;
-        bh=sDHk8xZSZeztgc/KGiaApaFqQzV99eogsvFOk1JoAEM=;
+        s=korg; t=1616416943;
+        bh=ppBtsWCVnNAPthVrSwIWoUpdXxOmTmVAv/qfeAJpqVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gg00+PEUof8crB22nLRdIhlOAqeKF5naetNIDmO3aDGEvXLxXnxFURSTwl39rSQJk
-         eqQjvlmq3rrakDo3TksaxUkeistIWgkGzJNmsyA3c54Lm3k06HZObRB1+XZoqoqFRI
-         8tFHs0F67VLKCUokMGGEv1ZyVhptZkIPNBnXQAC8=
+        b=0q8QBw5LA7B4eh7fhS75+zjJgNwEybpJ4cIM5Iorb14IQUpS7yI47UcRHaIGpgF6O
+         YGHd4YJtJ69f3JOXe4pBy0IACbUgILJTV4R1wlVxRMZSf6C67vcav+EQlM3JLL32AP
+         XMl3gVUxvQxaXF3K2VUBFqFohPPqonOcdllUOTmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 113/157] gfs2: move freeze glock outside the make_fs_rw and _ro functions
-Date:   Mon, 22 Mar 2021 13:27:50 +0100
-Message-Id: <20210322121937.359810721@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 03/60] ALSA: dice: fix null pointer dereference when node is disconnected
+Date:   Mon, 22 Mar 2021 13:27:51 +0100
+Message-Id: <20210322121922.481220806@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,216 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 96b1454f2e8ede4c619fde405a1bb4e9ba8d218e ]
+commit dd7b836d6bc935df95c826f69ff4d051f5561604 upstream.
 
-Before this patch, sister functions gfs2_make_fs_rw and gfs2_make_fs_ro locked
-(held) the freeze glock by calling gfs2_freeze_lock and gfs2_freeze_unlock.
-The problem is, not all the callers of gfs2_make_fs_ro should be doing this.
-The three callers of gfs2_make_fs_ro are: remount (gfs2_reconfigure),
-signal_our_withdraw, and unmount (gfs2_put_super). But when unmounting the
-file system we can get into the following circular lock dependency:
+When node is removed from IEEE 1394 bus, any transaction fails to the node.
+In the case, ALSA dice driver doesn't stop isochronous contexts even if
+they are running. As a result, null pointer dereference occurs in callback
+from the running context.
 
-deactivate_super
-   down_write(&s->s_umount); <-------------------------------------- s_umount
-   deactivate_locked_super
-      gfs2_kill_sb
-         kill_block_super
-            generic_shutdown_super
-               gfs2_put_super
-                  gfs2_make_fs_ro
-                     gfs2_glock_nq_init sd_freeze_gl
-                        freeze_go_sync
-                           if (freeze glock in SH)
-                              freeze_super (vfs)
-                                 down_write(&sb->s_umount); <------- s_umount
+This commit fixes the bug to release isochronous contexts always.
 
-This patch moves the hold of the freeze glock outside the two sister rw/ro
-functions to their callers, but it doesn't request the glock from
-gfs2_put_super, thus eliminating the circular dependency.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # v5.4 or later
+Fixes: e9f21129b8d8 ("ALSA: dice: support AMDTP domain")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210312093407.23437-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/ops_fstype.c | 31 +++++++++++++++++--------------
- fs/gfs2/super.c      | 23 -----------------------
- fs/gfs2/util.c       | 18 ++++++++++++++++--
- 3 files changed, 33 insertions(+), 39 deletions(-)
+ sound/firewire/dice/dice-stream.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 4ee56f5e93cb..f2c6bbe5cdb8 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -1084,6 +1084,7 @@ static int gfs2_fill_super(struct super_block *sb, struct fs_context *fc)
- 	int silent = fc->sb_flags & SB_SILENT;
- 	struct gfs2_sbd *sdp;
- 	struct gfs2_holder mount_gh;
-+	struct gfs2_holder freeze_gh;
- 	int error;
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -489,11 +489,10 @@ void snd_dice_stream_stop_duplex(struct
+ 	struct reg_params tx_params, rx_params;
  
- 	sdp = init_sbd(sb);
-@@ -1195,23 +1196,18 @@ static int gfs2_fill_super(struct super_block *sb, struct fs_context *fc)
- 		goto fail_per_node;
- 	}
- 
--	if (sb_rdonly(sb)) {
--		struct gfs2_holder freeze_gh;
-+	error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
-+	if (error)
-+		goto fail_per_node;
- 
--		error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
--		if (error) {
--			fs_err(sdp, "can't make FS RO: %d\n", error);
--			goto fail_per_node;
+ 	if (dice->substreams_counter == 0) {
+-		if (get_register_params(dice, &tx_params, &rx_params) >= 0) {
+-			amdtp_domain_stop(&dice->domain);
++		if (get_register_params(dice, &tx_params, &rx_params) >= 0)
+ 			finish_session(dice, &tx_params, &rx_params);
 -		}
--		gfs2_freeze_unlock(&freeze_gh);
--	} else {
-+	if (!sb_rdonly(sb))
- 		error = gfs2_make_fs_rw(sdp);
--		if (error) {
--			fs_err(sdp, "can't make FS RW: %d\n", error);
--			goto fail_per_node;
--		}
--	}
  
-+	gfs2_freeze_unlock(&freeze_gh);
-+	if (error) {
-+		fs_err(sdp, "can't make FS RW: %d\n", error);
-+		goto fail_per_node;
-+	}
- 	gfs2_glock_dq_uninit(&mount_gh);
- 	gfs2_online_uevent(sdp);
- 	return 0;
-@@ -1512,6 +1508,12 @@ static int gfs2_reconfigure(struct fs_context *fc)
- 		fc->sb_flags |= SB_RDONLY;
- 
- 	if ((sb->s_flags ^ fc->sb_flags) & SB_RDONLY) {
-+		struct gfs2_holder freeze_gh;
-+
-+		error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
-+		if (error)
-+			return -EINVAL;
-+
- 		if (fc->sb_flags & SB_RDONLY) {
- 			error = gfs2_make_fs_ro(sdp);
- 			if (error)
-@@ -1521,6 +1523,7 @@ static int gfs2_reconfigure(struct fs_context *fc)
- 			if (error)
- 				errorfc(fc, "unable to remount read-write");
- 		}
-+		gfs2_freeze_unlock(&freeze_gh);
++		amdtp_domain_stop(&dice->domain);
+ 		release_resources(dice);
  	}
- 	sdp->sd_args = *newargs;
- 
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 6b0e8c0bb110..ddd40c96f7a2 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -165,7 +165,6 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
- {
- 	struct gfs2_inode *ip = GFS2_I(sdp->sd_jdesc->jd_inode);
- 	struct gfs2_glock *j_gl = ip->i_gl;
--	struct gfs2_holder freeze_gh;
- 	struct gfs2_log_header_host head;
- 	int error;
- 
-@@ -173,10 +172,6 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
- 	if (error)
- 		return error;
- 
--	error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
--	if (error)
--		goto fail_threads;
--
- 	j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
- 	if (gfs2_withdrawn(sdp)) {
- 		error = -EIO;
-@@ -203,13 +198,9 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
- 
- 	set_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
- 
--	gfs2_freeze_unlock(&freeze_gh);
--
- 	return 0;
- 
- fail:
--	gfs2_freeze_unlock(&freeze_gh);
--fail_threads:
- 	if (sdp->sd_quotad_process)
- 		kthread_stop(sdp->sd_quotad_process);
- 	sdp->sd_quotad_process = NULL;
-@@ -609,21 +600,9 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
- 
- int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
- {
--	struct gfs2_holder freeze_gh;
- 	int error = 0;
- 	int log_write_allowed = test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
- 
--	gfs2_holder_mark_uninitialized(&freeze_gh);
--	if (sdp->sd_freeze_gl &&
--	    !gfs2_glock_is_locked_by_me(sdp->sd_freeze_gl)) {
--		error = gfs2_freeze_lock(sdp, &freeze_gh,
--					 log_write_allowed ? 0 : LM_FLAG_TRY);
--		if (error == GLR_TRYFAILED)
--			error = 0;
--		if (error && !gfs2_withdrawn(sdp))
--			return error;
--	}
--
- 	gfs2_flush_delete_work(sdp);
- 	if (!log_write_allowed && current == sdp->sd_quotad_process)
- 		fs_warn(sdp, "The quotad daemon is withdrawing.\n");
-@@ -652,8 +631,6 @@ int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
- 				   atomic_read(&sdp->sd_reserving_log) == 0,
- 				   HZ * 5);
- 	}
--	gfs2_freeze_unlock(&freeze_gh);
--
- 	gfs2_quota_cleanup(sdp);
- 
- 	if (!log_write_allowed)
-diff --git a/fs/gfs2/util.c b/fs/gfs2/util.c
-index c8d55055e495..a1ecb2b48250 100644
---- a/fs/gfs2/util.c
-+++ b/fs/gfs2/util.c
-@@ -123,6 +123,7 @@ static void signal_our_withdraw(struct gfs2_sbd *sdp)
- 	struct gfs2_inode *ip = GFS2_I(inode);
- 	struct gfs2_glock *i_gl = ip->i_gl;
- 	u64 no_formal_ino = ip->i_no_formal_ino;
-+	int log_write_allowed = test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
- 	int ret = 0;
- 	int tries;
- 
-@@ -143,8 +144,21 @@ static void signal_our_withdraw(struct gfs2_sbd *sdp)
- 	 * therefore we need to clear SDF_JOURNAL_LIVE manually.
- 	 */
- 	clear_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
--	if (!sb_rdonly(sdp->sd_vfs))
--		ret = gfs2_make_fs_ro(sdp);
-+	if (!sb_rdonly(sdp->sd_vfs)) {
-+		struct gfs2_holder freeze_gh;
-+
-+		gfs2_holder_mark_uninitialized(&freeze_gh);
-+		if (sdp->sd_freeze_gl &&
-+		    !gfs2_glock_is_locked_by_me(sdp->sd_freeze_gl)) {
-+			ret = gfs2_freeze_lock(sdp, &freeze_gh,
-+				       log_write_allowed ? 0 : LM_FLAG_TRY);
-+			if (ret == GLR_TRYFAILED)
-+				ret = 0;
-+		}
-+		if (!ret)
-+			ret = gfs2_make_fs_ro(sdp);
-+		gfs2_freeze_unlock(&freeze_gh);
-+	}
- 
- 	if (sdp->sd_lockstruct.ls_ops->lm_lock == NULL) { /* lock_nolock */
- 		if (!ret)
--- 
-2.30.1
-
+ }
 
 
