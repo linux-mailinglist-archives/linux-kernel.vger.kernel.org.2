@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC31E34443C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EA53444A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhCVM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
+        id S231271AbhCVNDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232619AbhCVMr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6A0619DB;
-        Mon, 22 Mar 2021 12:43:53 +0000 (UTC)
+        id S231559AbhCVMtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C095A619FD;
+        Mon, 22 Mar 2021 12:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417034;
-        bh=3xNQcAURS3KEqsPvj//1CHY9SC+g+nrmmGzqcCoIJ2o=;
+        s=korg; t=1616417121;
+        bh=3mUy8Ax1y39CkTTXTWR8sP+mEdhZzGcJaMddrkPsuFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OHaJ90u0tx5AqRsTIhABVRpQqQ78Kapm7f3vrypRt4is/Sg5oh261d9sw71GhylrV
-         +Xywx3cya3wXwXZ8VLdpAmQKip3whYZi5LiAbvvCgr7D7fLwKQURA6/h+kVMYdOLdU
-         s3uxlP4CEP4IYGQ1uX4xnHWAeNiu9KIewdgyRA9w=
+        b=2a9sly0nttP134yL4kJsj+uKrnc518WL7ojtan2SprzVFXMgy1klByUkFCY03VFYQ
+         4oRikwpkX81Sh5StOZc2Iu/wgOkMnEyKp+ANwrHbXPHLY+MBKJTb2bNXwLd+qUd96g
+         S3XIt+fYs9oFqStj4SwyfqMIws75p0MNULdt8IEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.4 60/60] x86/apic/of: Fix CPU devicetree-node lookups
+        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 4.19 34/43] perf/x86/intel: Fix a crash caused by zero PEBS status
 Date:   Mon, 22 Mar 2021 13:28:48 +0100
-Message-Id: <20210322121924.357962787@linuxfoundation.org>
+Message-Id: <20210322121921.007117489@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit dd926880da8dbbe409e709c1d3c1620729a94732 upstream.
+commit d88d05a9e0b6d9356e97129d4ff9942d765f46ea upstream.
 
-Architectures that describe the CPU topology in devicetree and do not have
-an identity mapping between physical and logical CPU ids must override the
-default implementation of arch_match_cpu_phys_id().
+A repeatable crash can be triggered by the perf_fuzzer on some Haswell
+system.
+https://lore.kernel.org/lkml/7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu/
 
-Failing to do so breaks CPU devicetree-node lookups using of_get_cpu_node()
-and of_cpu_device_node_get() which several drivers rely on. It also causes
-the CPU struct devices exported through sysfs to point to the wrong
-devicetree nodes.
+For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+may be mistakenly set to 0. To minimize the impact of the defect, the
+commit was introduced to try to avoid dropping the PEBS record for some
+cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+the local pebs_status accordingly. However, it doesn't correct the PEBS
+status in the PEBS record, which may trigger the crash, especially for
+the large PEBS.
 
-On x86, CPUs are described in devicetree using their APIC ids and those
-do not generally coincide with the logical ids, even if CPU0 typically
-uses APIC id 0.
+It's possible that all the PEBS records in a large PEBS have the PEBS
+status 0. If so, the first get_next_pebs_record_by_bit() in the
+__intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+PEBS, the 'count' parameter must > 1. The second
+get_next_pebs_record_by_bit() will crash.
 
-Add the missing implementation of arch_match_cpu_phys_id() so that CPU-node
-lookups work also with SMP.
+Besides the local pebs_status, correct the PEBS status in the PEBS
+record as well.
 
-Apart from fixing the broken sysfs devicetree-node links this likely does
-not affect current users of mainline kernels on x86.
-
-Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210312092033.26317-1-johan@kernel.org
+Fixes: 01330d7288e0 ("perf/x86: Allow zero PEBS status with only single active event")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/1615555298-140216-1-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/apic.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/events/intel/ds.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2354,6 +2354,11 @@ static int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1557,7 +1557,7 @@ static void intel_pmu_drain_pebs_nhm(str
+ 		 */
+ 		if (!pebs_status && cpuc->pebs_enabled &&
+ 			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+-			pebs_status = cpuc->pebs_enabled;
++			pebs_status = p->status = cpuc->pebs_enabled;
  
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == cpuid_to_apicid[cpu];
-+}
-+
- #ifdef CONFIG_SMP
- /**
-  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
+ 		bit = find_first_bit((unsigned long *)&pebs_status,
+ 					x86_pmu.max_pebs_events);
 
 
