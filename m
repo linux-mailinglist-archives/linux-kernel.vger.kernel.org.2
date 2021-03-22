@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48CB34520C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB47A34520F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCVVvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhCVVuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:50:54 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D68CC061574;
-        Mon, 22 Mar 2021 14:50:53 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso17502818otq.3;
-        Mon, 22 Mar 2021 14:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EPab3DPz+6s2CYJ/lrrpciQB/ZsXIEYle+nb25umlL8=;
-        b=ETld37qyItYjVgeLdFuHZLWl7eNmx6Xk0sXkrU67RkvjzZwuNh9QrbjFVG+s+Dc+Jw
-         SCcqZ1Kj6/dFIGzlL1TQnfS49S+EnGpH7Opq6zSolY0fefjeg77h5CxIbUSTw0aBozuu
-         1NCAt1cQtoRT+3/aV0A8/gcUDNsuT0GhyVjyrEoBfojr7kp6bW0g2LFkJbx8G8DC7rBp
-         iDf3w0Pr/Dq17cO/f44FmOyo1R0XEtpUIQgSkiUwPLVO7jtHX3QeoVFKlJwFQxCfoKSz
-         kt90nUPEqc0yzv3+BOlQcW5DnYRu/YfIFYuGgfwax/pIqDs0br6BmrZVVtkmmq1wSkz0
-         94CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EPab3DPz+6s2CYJ/lrrpciQB/ZsXIEYle+nb25umlL8=;
-        b=Y0Hx4oH9aWqBFFhIF5WiNoYliV62r5mUWjxyI7eQlkQu3OD/n8U4ZUtE2vImrmBYqa
-         TeIo56X4qgwjunDdYTzVuh//5aVZD/ioYkUsdJK1xBn2DrI4DTZ++GzNV46SlFGmcHlJ
-         IcMUIH9v2oKr8QYC6+Xj1yNMqxWMG5sJJQEjchpofobiO3ji7FQUyUlVD7QqMdPyIVhh
-         GRPT2VUCRLQ4FxDSrl9SWx8EZIji/qb3rPfmmfUKv5pcVvs2KUHa+pfyWkMD/Rlzd2uo
-         ibt517NGlmWj80s4i8Nv7lN/pk0IXztml2YuxfNXlmWASTeHX7YFlX6Y9S2lxWYAu/ys
-         uQZQ==
-X-Gm-Message-State: AOAM5334wiJfH4o01xrfcVMbq3cojxXzwfQxbaYke/T7ul8MZuMhuncb
-        Or2fpsMaEFQ7HW69/iDNbX0JFzA/r3s=
-X-Google-Smtp-Source: ABdhPJwHvB27tBz+nI0nBcJG9FPJJd8nTKDC0AVrQccOQm02NvBTGqEoPzUxt5QOfCCeKYZsU0hFHg==
-X-Received: by 2002:a9d:701d:: with SMTP id k29mr1626464otj.268.1616449852872;
-        Mon, 22 Mar 2021 14:50:52 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o23sm3760197otp.45.2021.03.22.14.50.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Mar 2021 14:50:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 22 Mar 2021 14:50:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/120] 5.11.9-rc1 review
-Message-ID: <20210322215050.GA51597@roeck-us.net>
-References: <20210322121929.669628946@linuxfoundation.org>
+        id S230169AbhCVVvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:51:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229467AbhCVVv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 17:51:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D95426191D;
+        Mon, 22 Mar 2021 21:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616449888;
+        bh=vplW57jdS3sdwY5BYxTl7rROU7sS/6x0YoCPBkEaF7s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NFCk5pszFaz6NRayADSr2fVS3LN+m6B5SW1UewBb2lqJngOvQ8go3ziYYlwSZ6/hW
+         wfcDgBrl64BQuCRy3cWqPldHbMqmanTm9YQeKuk0d/SAqB3E+Q2EbHtJ+Gitm6J44v
+         LeZRod5vnYzD4XMzDtVYeseG7IBxTOQOqq+xPRP1X/FtjaSpqSz+Mur+YFaWzQOlj4
+         eIps+pvMmz27xTm/XuIf6ODQI3kj0swcbV5jEh8xCBde/cVIdhNmuYJrMZmN8I2eMZ
+         1EnMYr0YWxEqT4eIzwd/4Eg1KmIKpczFSC7WDERFdR0bpfdlN76GSGt0p3qaMr3TbD
+         RipEFz6+4ptQA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     netdev@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Gregory Greenman <gregory.greenman@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] iwlwifi: fix old-style-declaration warning
+Date:   Mon, 22 Mar 2021 22:51:16 +0100
+Message-Id: <20210322215124.1078478-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 01:26:23PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.9 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-> Anything received after that time might be too late.
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 437 pass: 437 fail: 0
+The correct order is 'static const', not 'const static', as seen from
+make W=1:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+drivers/net/wireless/intel/iwlwifi/mvm/rfi.c:14:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
 
-Guenter
+Fixes: 21254908cbe9 ("iwlwifi: mvm: add RFI-M support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+index 873919048143..4d5a99cbcc9d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+@@ -11,7 +11,7 @@
+  * DDR needs frequency in units of 16.666MHz, so provide FW with the
+  * frequency values in the adjusted format.
+  */
+-const static struct iwl_rfi_lut_entry iwl_rfi_table[IWL_RFI_LUT_SIZE] = {
++static const struct iwl_rfi_lut_entry iwl_rfi_table[IWL_RFI_LUT_SIZE] = {
+ 	/* LPDDR4 */
+ 
+ 	/* frequency 3733MHz */
+-- 
+2.29.2
+
