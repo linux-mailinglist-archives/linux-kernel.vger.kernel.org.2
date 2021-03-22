@@ -2,49 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D396343D22
+	by mail.lfdr.de (Postfix) with ESMTP id 1C712343D21
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhCVJmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:42:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42358 "EHLO mx2.suse.de"
+        id S230173AbhCVJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:41:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42326 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhCVJlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:41:50 -0400
+        id S229647AbhCVJlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:41:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616406108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1616406107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ET9tVnh7U7AfNWjmR9qfyQd1mYs0mmzEoyVOIiFE5FI=;
-        b=unHr1He0BPFNL+FpcGjhTz2ADOSJvebz/np30Jrm8MHzvwsaZ6AFi0xDG6BShaHi8Z2o4h
-        /hrTTMTKWpJ+vEwv1o2p2IGE+zk/zhlCD3WyyB8XeBOZtN/JnfEJgfK2+xSDYcZJ4qrTO2
-        o8OYpJieBr2MjOLXdn2eU6tVgQZ4sSg=
+        bh=2MrLrWusuMoiI8O7+3wbzgaIdF+kB6mkdoYQZJejkd4=;
+        b=E8D+jDAB+COFZKQcu1xIYYrlMjFnpzSSEQuIxnyvEKfQx0biUZEIj+nLhEn2vmvJUbQNmH
+        K3bE7QPucLJ9hKYrmqtXLCNBJRqkWS8KyFJRMX4AAB0BBVw0pYsDBd/0peRXIdpft3Zkrh
+        mSDjAXUSYypyfpU/g4bLolctjgMumgk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4728AD79;
-        Mon, 22 Mar 2021 09:41:48 +0000 (UTC)
-Message-ID: <00dec0f52239f6c98a405474648e6cdcd41d48e5.camel@suse.com>
-Subject: Re: [PATCH 6/7] USB: cdc-acm: use negation for NULL checks
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 22 Mar 2021 10:41:45 +0100
-In-Reply-To: <20210318155202.22230-7-johan@kernel.org>
-References: <20210318155202.22230-1-johan@kernel.org>
-         <20210318155202.22230-7-johan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by mx2.suse.de (Postfix) with ESMTP id B9D5AAD38;
+        Mon, 22 Mar 2021 09:41:47 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 10:41:47 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 1/2] mm: memcontrol: don't allocate cgroup swap arrays
+ when memcg is disabled
+Message-ID: <YFhmW63Py+UbmFTS@dhcp22.suse.cz>
+References: <20210319054944.50048-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319054944.50048-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, den 18.03.2021, 16:52 +0100 schrieb Johan Hovold:
-> Use negation consistently throughout the driver for NULL checks.
+On Fri 19-03-21 01:49:43, Johannes Weiner wrote:
+> Since commit 2d1c498072de ("mm: memcontrol: make swap tracking an
+> integral part of memory control"), the cgroup swap arrays are used to
+> track memory ownership at the time of swap readahead and swapoff, even
+> if swap space *accounting* has been turned off by the user via
+> swapaccount=0 (which sets cgroup_memory_noswap).
 > 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-Acked-by: Oliver Neukum <oneukum@suse.com>
+> However, the patch was overzealous: by simply dropping the
+> cgroup_memory_noswap conditionals in the swapon, swapoff and uncharge
+> path, it caused the cgroup arrays being allocated even when the memory
+> controller as a whole is disabled. This is a waste of that memory.
+> 
+> Restore mem_cgroup_disabled() checks, implied previously by
+> cgroup_memory_noswap, in the swapon, swapoff, and swap_entry_free
+> callbacks.
+> 
+> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c  | 3 +++
+>  mm/swap_cgroup.c | 6 ++++++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 668d1d7c2645..49bdcf603af1 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7101,6 +7101,9 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
+>  	struct mem_cgroup *memcg;
+>  	unsigned short id;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+>  	id = swap_cgroup_record(entry, 0, nr_pages);
+>  	rcu_read_lock();
+>  	memcg = mem_cgroup_from_id(id);
+> diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+> index 7f34343c075a..08c3246f9269 100644
+> --- a/mm/swap_cgroup.c
+> +++ b/mm/swap_cgroup.c
+> @@ -171,6 +171,9 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
+>  	unsigned long length;
+>  	struct swap_cgroup_ctrl *ctrl;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return 0;
+> +
+>  	length = DIV_ROUND_UP(max_pages, SC_PER_PAGE);
+>  	array_size = length * sizeof(void *);
+>  
+> @@ -206,6 +209,9 @@ void swap_cgroup_swapoff(int type)
+>  	unsigned long i, length;
+>  	struct swap_cgroup_ctrl *ctrl;
+>  
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+>  	mutex_lock(&swap_cgroup_mutex);
+>  	ctrl = &swap_cgroup_ctrl[type];
+>  	map = ctrl->map;
+> -- 
+> 2.30.1
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
