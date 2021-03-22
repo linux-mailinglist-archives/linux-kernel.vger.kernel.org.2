@@ -2,102 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1683A3450A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08533450A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhCVUUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhCVUUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:20:33 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC329C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id z9so16059730ilb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g19ekQhwWPSUVgeDRJ0qV8y1izdmXO7LuQ/4SsoZHq0=;
-        b=ejKUkIApjaWRL7dUZPBW3gdjkQxA0z+5LeJYdtHdOcPvTHkv6dxcYuQs/T9Eb549L2
-         JScgJ7XI1WwOwMqtzTcgqD2YkkvkhoyUx7XbQd2WEziLlKNurf/V2PssbH7Z0pYUk9Xc
-         AfuyvCVCu87UqeDab3IMz2K5LcAmHfd2Gj1U0b1SW3/USf84H2jS/h68st6GKZ/a0Dpd
-         kAvRpJOh1tzto7ukWq9t2ntk/DJ70L2EKrjb4YjTDoqAEnmmYitvwov1m8ogzr2becKU
-         IDClAL/p18aqeNvZXUviMX//5bqgYdGV6bK4wymFOe3DTdgdnmEOLjQsDUSEd3ccK8Hs
-         l27Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g19ekQhwWPSUVgeDRJ0qV8y1izdmXO7LuQ/4SsoZHq0=;
-        b=Cd6bPkaZNW2bokonsXPoGGiWmdwJCTKgbSezFmVq5SP1Vf5KMnWsJQVXkWw6cXFFm/
-         itA2+wJuG1QzjIwXvw1oBidAoQp6fGGTSf9l+FMcUi13u7E3JJ7q1XU2O8hfK1gmeu3t
-         1/7/e8iLysUd4CbIgXZqSFdwYpRVlwYxxSlVULUDyDr6y9ZK6qegCAgDGDhV1tHj/2vH
-         SRIK1VkFWMq2IoVLWMmizm1rkNEHE3llBKa4TzZFNtXH6OdM9j1GqwEoKGHVCNEXjabQ
-         viRXoDKkycvZFK6jvIB9uASmYOL+MEHtmrwEy81BushZFzl47dddavdya3K6UJrErQia
-         9twA==
-X-Gm-Message-State: AOAM532HlzcPizygcMUkpOCEOwdvaP8qXOJmBpIpSkCMqJtk+QOlYpwB
-        XzrNWZeBh0GOIb4XBzDJa6jkarvcYL5y89zRovMCAQ==
-X-Google-Smtp-Source: ABdhPJyDgPKhS2+tkfjzlXTtW3qCalDvZvWrOxXVsbJUcAbzzVu6aTdx240urDCi4J5764OzK5M9/G1/tTXR4uoFGBk=
-X-Received: by 2002:a92:c561:: with SMTP id b1mr1542272ilj.165.1616444428175;
- Mon, 22 Mar 2021 13:20:28 -0700 (PDT)
+        id S231663AbhCVUUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230520AbhCVUUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 25B8261993;
+        Mon, 22 Mar 2021 20:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616444408;
+        bh=4xkEVn/A3SIRrwVBluZpT/FcfIxmEl0+kTjDynHe/kc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CMc983jq8dASo6gqKog4RyHMNVG9gsKqoUjT228bWp/9df89fQbcpo5EJ2ADvMkPO
+         CjfO5itZHpl5krpUzfb8Kvhbw9pKhDoqh0vJFBuzuBVhvwdYEE1wx+mS1XpWdyibow
+         H8oDcAQasvyn31716tB7hPHdXM6gaUJB2l211FbHsX7NtXHmFlSEAoKd6H+N2gfBPJ
+         h9UTfejwmfiB8LJibd7CdMOYshcljJOjJ/tFJwPwS5kGoVdOovWUD9I6sHVFscU/Vw
+         FAh6N43M/8mhLFh+NhK7IKlbFLgbWdJO/XgBOMtvD/RGwdQpLPAODEwLwjbrw8y8gS
+         GB7Rlv1adDeaw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 15CF560074;
+        Mon, 22 Mar 2021 20:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210322175132.36659-1-peterx@redhat.com>
-In-Reply-To: <20210322175132.36659-1-peterx@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Mon, 22 Mar 2021 13:19:50 -0700
-Message-ID: <CAJHvVcjAqv3S1CTr4MrFVgLSQzsL-4HK69w77aQ_J989oQ5+=w@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd/hugetlbfs: Fix minor fault page leak
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] cxgb4: Remove redundant NULL check
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161644440808.26518.243238574763309295.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Mar 2021 20:20:08 +0000
+References: <1616406794-105194-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1616406794-105194-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     rajur@chelsio.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:51 AM Peter Xu <peterx@redhat.com> wrote:
->
-> When uffd-minor enabled, we need to put the page cache before handling the
-> userfault in hugetlb_no_page(), otherwise the page refcount got leaked.
->
-> This can be reproduced by running userfaultfd selftest with hugetlb_shared
-> mode, then cat /proc/meminfo.
->
-> Cc: Axel Rasmussen <axelrasmussen@google.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Fixes: f2bf15fb0969 ("userfaultfd: add minor fault registration mode")
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/hugetlb.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 408dbc08298a..56b78a206913 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4449,6 +4449,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->                 /* Check for page in userfault range. */
->                 if (userfaultfd_minor(vma)) {
->                         unlock_page(page);
-> +                       put_page(page);
->                         ret = hugetlb_handle_userfault(vma, mapping, idx,
->                                                        flags, haddr,
->                                                        VM_UFFD_MINOR);
-> --
-> 2.26.2
->
+Hello:
 
-Thanks for the fix, Peter! I applied the patch and verified it does
-indeed fix the issue.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+On Mon, 22 Mar 2021 17:53:14 +0800 you wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c:3540:2-8: WARNING: NULL
+> check before some freeing functions is not needed.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - cxgb4: Remove redundant NULL check
+    https://git.kernel.org/netdev/net-next/c/c3c3791ce31e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
