@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B1734478D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2D9344792
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhCVOkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S230064AbhCVOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhCVOka (ORCPT
+        with ESMTP id S229547AbhCVOlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:40:30 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13ADDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:40:29 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id bf3so19673036edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sd3NAlYTlcvi/QMV36ICDUYrz39AstS3COa8JsP44Ys=;
-        b=Q5Te0kn+z1zC6N0q+DE5A78qVYm7TD6CMBW5JAjg+LhA4c7rmhfA2DomZwU9wY6Zhf
-         hZQUtNWBtKyCmPvnpGM8zalZ/pZKqI5zrsdrswbBcvK3NxiZ6ZWcim7FW4nTlAiA9eF8
-         Qc2S7z/q8vwTuRaYhTmOWKDoZy72+UQLFG8jylpYBReD25rKjZgbD9cbhjqN8mFXmTII
-         ErO+fbwToXW/WzWd9hhL4FddqZeL5hLyfqUxBP7SUXKpkXk2VfIsNVZ+2FAeU8kLh7x4
-         zaSWxxY6b9UrNaYOsu+E5hla26QyqusiXGmmby6Vca39nMfYdDynuYTrC13bzqLienUx
-         gZwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sd3NAlYTlcvi/QMV36ICDUYrz39AstS3COa8JsP44Ys=;
-        b=OwKUv0feTNVBGIQerhouXU46IrzjmVY1vLvHcsJyitP1vQguV//yXUrLQOMFFQ8ohl
-         Gsq03mxIy44YKM0Lgn6FmUVC5MMJ1hZN56fV3B86E0k7RY6IgZxf0keJRwPoZSsaV5SY
-         u5blV/sA6bWUo4lnKEbDD/GKsr4c0xrOViVoSf9/fDsjmAAFY4q7j9FnZQh+OoXe2013
-         rW5euMEpQRqrhUV70pMG0W17W2px6KSAL7yyK7aB+1ScruoFB06rtKyj+Uu4ufAgGxMY
-         IIX08hrlj1SrhaSPGDy833ee4Sj45BTNR3+ttg1Zcsd0r4qiLctiNma3yOwZKUkGB/ZL
-         Cecg==
-X-Gm-Message-State: AOAM532g+iIPv1IOJZcOSEqrIbo8htN4h+KpuwTo67BR31L0leeDwE1x
-        8XIC+T2r5gP0Ot9z+tUI+fIReRHQwZHhpQ==
-X-Google-Smtp-Source: ABdhPJwIe7HYLh7N874sWXI9W6QN+hPz5NDVkJ/oRhJ20gHSdJ3H+XYwlDc7Cp7XcgYCPoF2KQimkw==
-X-Received: by 2002:a05:6402:3495:: with SMTP id v21mr25875834edc.117.1616424027789;
-        Mon, 22 Mar 2021 07:40:27 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id i11sm9778388ejc.101.2021.03.22.07.40.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:40:27 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:40:25 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: [GIT PULL] Immutable branch between MFD and Extcon due for the v5.13
- merge window
-Message-ID: <20210322144025.GW2916463@dell>
-References: <20210307151807.35201-1-hdegoede@redhat.com>
+        Mon, 22 Mar 2021 10:41:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C0FC061574;
+        Mon, 22 Mar 2021 07:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RaCtvaHwo/TZn625kVRWBgdSA5no54J7WgYPxjdoG7E=; b=SBc/ON5tkAeoJz8M87KOQ19vrw
+        pnuWSCSN/BuNgJ+CWCe/pwoQtp6ETfywBh/717fidsZmO2NyhCTYf/NJv13xHd/PjtpgrNamKbVFH
+        vlEZfh31D8qSobxBbpQG5m9Tiw1nuMFjPL+s+3qreV7lYaAW6refD51xr+hOOL8PPZiNkLtfOqIfw
+        cCU+1LbS6gcak/jVmi4WDUUnPCn7apvJvyX/AX7xO9oT9rSq29/O9rlZt0i5XRL6cRBVBF5In3p4E
+        nWiJaLsxIR7N/PXp9+jpOQtWHBdMQySi1wiYvoEfTXTUpiaMPUpF1VILs3rDuGGGtaxmWsqWxxfJ1
+        2gbarSiQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOLjW-008epC-Iy; Mon, 22 Mar 2021 14:40:43 +0000
+Date:   Mon, 22 Mar 2021 14:40:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
+        hyc.lee@gmail.com, viro@zeniv.linux.org.uk, hch@infradead.org,
+        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
+        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
+        colin.king@canonical.com, rdunlap@infradead.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: Re: [PATCH 3/5] cifsd: add file operations
+Message-ID: <20210322144042.GO1719932@casper.infradead.org>
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+ <CGME20210322052207epcas1p3f0a5bdfd2c994a849a67b465479d0721@epcas1p3.samsung.com>
+ <20210322051344.1706-4-namjae.jeon@samsung.com>
+ <20210322081512.GI1719932@casper.infradead.org>
+ <YFhdWeedjQQgJdbi@google.com>
+ <20210322135718.GA28451@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210307151807.35201-1-hdegoede@redhat.com>
+In-Reply-To: <20210322135718.GA28451@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
+On Mon, Mar 22, 2021 at 02:57:18PM +0100, Christoph Hellwig wrote:
+> On Mon, Mar 22, 2021 at 06:03:21PM +0900, Sergey Senozhatsky wrote:
+> > On (21/03/22 08:15), Matthew Wilcox wrote:
+> > > 
+> > > What's the scenario for which your allocator performs better than slub
+> > > 
+> > 
+> > IIRC request and reply buffers can be up to 4M in size. So this stuff
+> > just allocates a number of fat buffers and keeps them around so that
+> > it doesn't have to vmalloc(4M) for every request and every response.
+> 
+> Do we have any data suggesting it is faster than vmalloc?
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Oh, I have no trouble believing it's faster than vmalloc.  Here's
+the fast(!) path that always has memory available, never does retries.
+I'm calling out the things I perceive as expensive on the right hand side.
+Also, I'm taking the 4MB size as the example.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+vmalloc()
+  __vmalloc_node()
+    __vmalloc_node_range()
+      __get_vm_area_node()
+				[allocates vm_struct]
+	alloc_vmap_area()
+				[allocates vmap_area]
+				[takes free_vmap_area_lock]
+	  __alloc_vmap_area()
+	    find_vmap_lowest_match
+				[walks free_vmap_area_root]
+				[takes vmap_area_lock]
+      __vmalloc_area_node()
+				... array_size is 8KiB, we call __vmalloc_node
+	__vmalloc_node
+				[everything we did above, all over again,
+				 two more allocations, two more lock acquire]
+	alloc_pages_node(), 1024 times
+	vmap_pages_range_noflush()
+	  vmap_range_noflush()
+				[allocate at least two pages for PTEs]
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-extcon-v5.13
-
-for you to fetch changes up to a908a716696eee75bf85199cde2b0989290536d1:
-
-  ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c (2021-03-18 11:46:15 +0000)
-
-----------------------------------------------------------------
-Immutable branch between MFD and Extcon due for the v5.13 merge window
-
-----------------------------------------------------------------
-Hans de Goede (6):
-      mfd: arizona: Drop arizona-extcon cells
-      extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
-      extcon: arizona: Fix various races on driver unbind
-      extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol") call
-      extcon: arizona: Always use pm_runtime_get_sync() when we need the device to be awake
-      ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c
-
- MAINTAINERS                                        |  3 +-
- drivers/extcon/Kconfig                             |  8 ---
- drivers/extcon/Makefile                            |  1 -
- drivers/mfd/arizona-core.c                         | 20 -------
- .../soc/codecs/arizona-jack.c                      | 63 +++++++++++-----------
- 5 files changed, 34 insertions(+), 61 deletions(-)
- rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (98%)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+There's definitely some low handling fruit here.  __vmalloc_area_node()
+should probably call kvmalloc_node() instead of __vmalloc_node() for
+table sizes > 4KiB.  But a lot of this is inherent to how vmalloc works,
+and we need to put a cache in front of it.  Just not this one.
