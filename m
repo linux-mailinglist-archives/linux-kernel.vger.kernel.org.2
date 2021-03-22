@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CDE34464A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF1A34464E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhCVNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhCVNyO (ORCPT
+        id S231205AbhCVNzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:55:17 -0400
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:54123 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231197AbhCVNyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:54:14 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75C81C061574;
-        Mon, 22 Mar 2021 06:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ZvmwOEawDG
-        9M5i/TCmUlPJq/nlotbbYqY4IROl3iLcs=; b=MsAu2As48t7p5V+VsuWkAZNDW9
-        CNfx49DqNX7ItZhn+weTD63uPJoK9ZTk9RCg2R3f0Hw+wiXidHJvLE8Ib3pX42ny
-        FUyPusGxKYDRK9B/ACoKf3ys9G9n528aqkD8OP9YL8D20529A3Taja/GadMOfkIe
-        gUtS1+3h8/z+OYP9I=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX36d2oVhglAQOAA--.4840S4;
-        Mon, 22 Mar 2021 21:53:58 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] infiniband: Fix a use after free in isert_connect_request
-Date:   Mon, 22 Mar 2021 06:53:55 -0700
-Message-Id: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Mar 2021 09:54:51 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id OL13lgQmRGEYcOL16lXU11; Mon, 22 Mar 2021 14:54:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616421289; bh=h8yM/HE2LPgagD4ZYvzewYemBDrBXvwomEdMCVWsqt8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Z9r/4GYeT0CqV3fjqsZt2muv4G7sIy0mWczcrbxtwhTePAiOi4XgHsWI7DhtGnvVf
+         ywtS/2OFF6jIgo/mTQ/pn1TUNx57g08YnAv18A/8byWJAuQv+xtAkQLhkj/ApOocT9
+         q9Zgc2OmBzvX/S/SdOiPasJK6EuFui3jQfpd/F2PJMyb5QmjdoiC0QbJ2+K9JSZYmx
+         8kVtcdbGJvTl+p1h6rlHB5xBj7bZBLkvwEVT5+sgC9F2IY6UuwBsDprSxii80Xb4Xv
+         TpLilCrG5vqo1z78xFAytqDiKu93PNJY1tx7VWpZ9Xdx+MyjmkLbZP9IAx48wrsNGO
+         wBsvMy+240mXw==
+Subject: Re: [PATCH v5 3/5] v4l: Add HDR10 static metadata controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
+ <20210209162425.3970393-4-stanimir.varbanov@linaro.org>
+ <77ac3b63-9995-e08f-9e6e-7a7d75c64ec1@xs4all.nl>
+ <444bb318-169f-6d30-2b7c-31d19d98a548@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <ba8cb44f-18f0-5080-66ff-030c101323e8@xs4all.nl>
+Date:   Mon, 22 Mar 2021 14:54:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDX36d2oVhglAQOAA--.4840S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7GF43KrykKFy3tr48Aw18Zrb_yoW8Jry5pF
-        1DAr9YkrWDKr1UGa17ZrWDXFWYga1kAa4DKry2yw1YkFsIya4IyrWUC34Utr1UJr1fGFnr
-        XFWUJa95CF4kJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-        648v4I1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUjkhLUUUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+In-Reply-To: <444bb318-169f-6d30-2b7c-31d19d98a548@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfL4kTaQkMDNNz/DukXp11OT+wksf/zS6u7gPma8w6rBUh9lSIf0ipolJK4ZjWCff9fq/KaWjvBepF6Qfp5UeBNFwD4iX0IVR3ETALgX1Q6RafsgCaH+5
+ 5wljx41cnKh4vZtPZqkQy3c6WVW2R5bg7Qm7stX5bWONhbSp+ZMq4k3W3Tkxu/rFMNXI9o1hxzrWz1JuuO0IPihWJiKr3DpL21AKGQqj3kLmeqe8xzJ/93jO
+ AxkswYvVNJXtz2J/+yGkq/98U4OYpHP7ZIYoonjKtP7aZp8EES38lJrwLicwJFCBTxvmAuEAqNBGYcUqkkLOwJAPIFeHgcBteffc6iSieLv7gZu/IxMfIp70
+ KFCPkOqT8CVWVGUslBYCTbPU8qsT35AXMuUNnfoEXFy/4RWOgap1vAN7pL5IY78q8L2C5ln0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device is got by isert_device_get() with refcount is 1,
-and is assigned to isert_conn by isert_conn->device = device.
-When isert_create_qp() failed, device will be freed with
-isert_device_put().
+On 22/03/2021 13:56, Stanimir Varbanov wrote:
+> Hi Hans,
+> 
+> On 3/16/21 2:16 PM, Hans Verkuil wrote:
+>> On 09/02/2021 17:24, Stanimir Varbanov wrote:
+>>> Introduce Content light level and Mastering display colour
+>>> volume Colorimetry compound controls with relevant payload
+>>> structures and validation.
+>>>
+>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>> ---
+>>>  drivers/media/v4l2-core/v4l2-ctrls.c | 67 ++++++++++++++++++++++++++++
+>>>  include/media/v4l2-ctrls.h           |  4 ++
+>>>  include/uapi/linux/v4l2-controls.h   | 31 +++++++++++++
+>>>  include/uapi/linux/videodev2.h       |  3 ++
+>>>  4 files changed, 105 insertions(+)
+>>>
+>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>> index 335cf354f51b..8bd3cf0e1e4f 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>> @@ -1205,6 +1205,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>>  	/* Colorimetry controls */
+>>>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+>>>  	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
+>>> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
+>>> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
+>>>  	default:
+>>>  		return NULL;
+>>>  	}
+>>> @@ -1491,6 +1493,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>>  		*type = V4L2_CTRL_TYPE_AREA;
+>>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>>>  		break;
+>>> +	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
+>>> +		*type = V4L2_CTRL_TYPE_HDR10_CLL_INFO;
+>>> +		break;
+>>> +	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+>>> +		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+>>> +		break;
+>>>  	default:
+>>>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>>>  		break;
+>>> @@ -1786,6 +1794,12 @@ static void std_log(const struct v4l2_ctrl *ctrl)
+>>>  	case V4L2_CTRL_TYPE_FWHT_PARAMS:
+>>>  		pr_cont("FWHT_PARAMS");
+>>>  		break;
+>>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>>> +		pr_cont("HDR10_CLL_INFO");
+>>> +		break;
+>>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>>> +		pr_cont("HDR10_MASTERING_DISPLAY");
+>>> +		break;
+>>>  	default:
+>>>  		pr_cont("unknown type %d", ctrl->type);
+>>>  		break;
+>>> @@ -1838,6 +1852,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>>> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>>>  	struct v4l2_area *area;
+>>>  	void *p = ptr.p + idx * ctrl->elem_size;
+>>>  	unsigned int i;
+>>> @@ -2133,6 +2148,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>>  		zero_padding(*p_hevc_slice_params);
+>>>  		break;
+>>>  
+>>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>>> +		break;
+>>> +
+>>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>>> +		p_hdr10_mastering = p;
+>>> +
+>>> +		for (i = 0; i < 3; ++i) {
+>>> +			if (p_hdr10_mastering->display_primaries_x[i] <
+>>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_LOW ||
+>>> +			    p_hdr10_mastering->display_primaries_x[i] >
+>>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH ||
+>>> +			    p_hdr10_mastering->display_primaries_y[i] <
+>>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW ||
+>>> +			    p_hdr10_mastering->display_primaries_y[i] >
+>>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH)
+>>> +				return -EINVAL;
+>>> +		}
+>>> +
+>>> +		if (p_hdr10_mastering->white_point_x <
+>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW ||
+>>> +		    p_hdr10_mastering->white_point_x >
+>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH ||
+>>> +		    p_hdr10_mastering->white_point_y <
+>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW ||
+>>> +		    p_hdr10_mastering->white_point_y >
+>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH)
+>>> +			return -EINVAL;
+>>> +
+>>> +		if (p_hdr10_mastering->max_display_mastering_luminance <
+>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW ||
+>>> +		    p_hdr10_mastering->max_display_mastering_luminance >
+>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_HIGH ||
+>>> +		    p_hdr10_mastering->min_display_mastering_luminance <
+>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_LOW ||
+>>> +		    p_hdr10_mastering->min_display_mastering_luminance >
+>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+>>> +			return -EINVAL;
+>>> +
+>>> +		if (p_hdr10_mastering->max_display_mastering_luminance ==
+>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW &&
+>>> +		    p_hdr10_mastering->min_display_mastering_luminance ==
+>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+>>
+>> I had to think about this one :-)
+>>
+>> Isn't it clearer to write:
+>>
+>> 		if (p_hdr10_mastering->min_display_mastering_luminance >=
+>> 		    p_hdr10_mastering->max_display_mastering_luminance)
+>>
+>> (even though it can't be >, but >= is probably more robust and future proof)
+>>
+>> And is it indeed invalid if both are the same?
+> 
+> This what the ITU-T Rec. H.265 spec says:
+> 
+> "When max_display_mastering_luminance is equal to 50 000,
+> min_display_mastering_luminance shall not be equal to 50 000."
 
-Later, the device is used in isert_free_login_buf(isert_conn)
-by the isert_conn->device->ib_device statement. My patch
-exchanges the callees order to free the device late.
+OK. Just add a comment explaining that that restriction comes from the
+H.265 spec.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index 7305ed8976c2..d8a533e346b0 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
- 
- out_destroy_qp:
- 	isert_destroy_qp(isert_conn);
--out_conn_dev:
--	isert_device_put(device);
- out_rsp_dma_map:
- 	isert_free_login_buf(isert_conn);
-+out_conn_dev:
-+	isert_device_put(device);
- out:
- 	kfree(isert_conn);
- 	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
--- 
-2.25.1
+	Hans
 
+> 
+> 
 
