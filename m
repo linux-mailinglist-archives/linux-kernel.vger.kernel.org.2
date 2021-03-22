@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552213441EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32883441ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhCVMhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56342 "EHLO mail.kernel.org"
+        id S232039AbhCVMhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:37:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhCVMdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4901619A2;
-        Mon, 22 Mar 2021 12:33:30 +0000 (UTC)
+        id S231585AbhCVMde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:33:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42F3C619A8;
+        Mon, 22 Mar 2021 12:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416411;
-        bh=9YhlvAkUjho4fI62Iy6h7STp3UTA1iLhwTLyo/CnOqQ=;
+        s=korg; t=1616416413;
+        bh=b74qLjD1/EZPdXSgHwDphB8Yysweg1zXejONvSucxuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p5skutJC2R7iPBUfCB6LITD/awSKiLKRqI5xcwn8P9KKzuc4wvHml9fMw1a6eE2QN
-         8vnrvbPdo1QymWtT3lCOFDPxL9vnRjBUJOzPkGFDGbWvijbjzHHPcqQOrBH1Kdxaqv
-         99Yul/pn3aN1jQ9deumLQa+LXS6v6oo9a+X/cs8Q=
+        b=sFc6OvIJDp2S88B0KgNQ2ldVmN1CSnc0B9pQahwq9HqHelNAPctODDET/K2Aju5r6
+         6T8lE7dMQ0IJ5xiJ+WbLSPpq34Inlhjk2DBRRb67mklRlhhiUeMLKNgSmrTXFhl9vH
+         Nt497vy2vFWpAVksTeyRcIhShuqNvoZKqHdewYTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
+        stable@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.11 096/120] iio: hid-sensor-temperature: Fix issues of timestamp channel
-Date:   Mon, 22 Mar 2021 13:27:59 +0100
-Message-Id: <20210322121932.894403504@linuxfoundation.org>
+Subject: [PATCH 5.11 097/120] counter: stm32-timer-cnt: fix ceiling write max value
+Date:   Mon, 22 Mar 2021 13:28:00 +0100
+Message-Id: <20210322121932.924568605@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -40,68 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Xiang <xiang.ye@intel.com>
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-commit 141e7633aa4d2838d1f6ad5c74cccc53547c16ac upstream.
+commit e4c3e133294c0a292d21073899b05ebf530169bd upstream.
 
-This patch fixes 2 issues of timestamp channel:
-1. This patch ensures that there is sufficient space and correct
-alignment for the timestamp.
-2. Correct the timestamp channel scan index.
+The ceiling value isn't checked before writing it into registers. The user
+could write a value higher than the counter resolution (e.g. 16 or 32 bits
+indicated by max_arr). This makes most significant bits to be truncated.
+Fix it by checking the max_arr to report a range error [1] to the user.
 
-Fixes: 59d0f2da3569 ("iio: hid: Add temperature sensor support")
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+[1] https://lkml.org/lkml/2021/2/12/358
+
+Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303063615.12130-4-xiang.ye@intel.com
+Link: https://lore.kernel.org/r/1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/temperature/hid-sensor-temperature.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/counter/stm32-timer-cnt.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/iio/temperature/hid-sensor-temperature.c
-+++ b/drivers/iio/temperature/hid-sensor-temperature.c
-@@ -15,7 +15,10 @@
- struct temperature_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info temperature_attr;
--	s32 temperature_data;
-+	struct {
-+		s32 temperature_data;
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
-@@ -32,7 +35,7 @@ static const struct iio_chan_spec temper
- 			BIT(IIO_CHAN_INFO_SAMP_FREQ) |
- 			BIT(IIO_CHAN_INFO_HYSTERESIS),
- 	},
--	IIO_CHAN_SOFT_TIMESTAMP(3),
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
+--- a/drivers/counter/stm32-timer-cnt.c
++++ b/drivers/counter/stm32-timer-cnt.c
+@@ -32,6 +32,7 @@ struct stm32_timer_cnt {
+ 	struct regmap *regmap;
+ 	struct clk *clk;
+ 	u32 ceiling;
++	u32 max_arr;
+ 	bool enabled;
+ 	struct stm32_timer_regs bak;
  };
+@@ -191,6 +192,9 @@ static ssize_t stm32_count_ceiling_write
+ 	if (ret)
+ 		return ret;
  
- /* Adjust channel real bits based on report descriptor */
-@@ -123,9 +126,8 @@ static int temperature_proc_event(struct
- 	struct temperature_state *temp_st = iio_priv(indio_dev);
++	if (ceiling > priv->max_arr)
++		return -ERANGE;
++
+ 	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
+ 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
+ 	regmap_write(priv->regmap, TIM_ARR, ceiling);
+@@ -371,6 +375,7 @@ static int stm32_timer_cnt_probe(struct
+ 	priv->regmap = ddata->regmap;
+ 	priv->clk = ddata->clk;
+ 	priv->ceiling = ddata->max_arr;
++	priv->max_arr = ddata->max_arr;
  
- 	if (atomic_read(&temp_st->common_attributes.data_ready))
--		iio_push_to_buffers_with_timestamp(indio_dev,
--				&temp_st->temperature_data,
--				iio_get_time_ns(indio_dev));
-+		iio_push_to_buffers_with_timestamp(indio_dev, &temp_st->scan,
-+						   iio_get_time_ns(indio_dev));
- 
- 	return 0;
- }
-@@ -140,7 +142,7 @@ static int temperature_capture_sample(st
- 
- 	switch (usage_id) {
- 	case HID_USAGE_SENSOR_DATA_ENVIRONMENTAL_TEMPERATURE:
--		temp_st->temperature_data = *(s32 *)raw_data;
-+		temp_st->scan.temperature_data = *(s32 *)raw_data;
- 		return 0;
- 	default:
- 		return -EINVAL;
+ 	priv->counter.name = dev_name(dev);
+ 	priv->counter.parent = dev;
 
 
