@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1A73452DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189DC3452E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhCVXOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhCVXNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:13:37 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070BAC061574;
-        Mon, 22 Mar 2021 16:13:37 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x16so18864450wrn.4;
-        Mon, 22 Mar 2021 16:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tYvb3I5DkX3N6jN+5U7mg9SkFokyTC7DYO1POXsmyXA=;
-        b=JAukgRqBFlBqYxoTg07QIe3L0u4Zd4pnU8/KawSiQ9CobCuM3gzIOiljfx6LuzgDWA
-         UowTprAJ6pvQSXvs4KSQRoxyhk97bRV/HvA6p2Z7/U2jyU55VRoMchp/WW94qOWwfctx
-         xjztqDCBK6KyOMwxPOwi4e26tFik5N8gD8ME46WI4P9N9+IGYjmYXftjUoCOmT9YRUhI
-         oxS7NQe6LKxh0Fe3YkrHljuKHXVZGAd59GORjepGb1sCy/oTzRkzKEYxW8PIJ/sFr1d6
-         zI5HyhOjX7JC0HU1eEG4mNxiJ04gBc9w35eUnfsZO8LW67/ihxMVwREYJPst2Xb0XGu3
-         JGJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=tYvb3I5DkX3N6jN+5U7mg9SkFokyTC7DYO1POXsmyXA=;
-        b=YWEIQudAlD8UPdpfZbMw7eFHAPO4URDrfWpUqcL/ddYKm4xwcS86t5pnE+Fa0yyTLY
-         uRFMFx9nzVj4tAEp88qh4eei9VlLkTJTU3e3bq1FCItb3W+4ity+WGwQs1ewiFJOPcMd
-         8rwojnFSaozI5v7OFW+Qhf69y8zmNbnlVWtiQL338fUQwiK+/FB2APQ8Alg0crLkMMpM
-         LtKepgiTCrvRJsAv8J9RTsW8qxCXL31kKfvDGhJ3/dOdzHu0plT6oeFIDr16DEe+l7Zh
-         2TKcDfWVQ8reCNgb976fsOQa6oXA8+Jf2OiTF66fuixeTWxPdX9/cpk1/+pMCP/rxFO9
-         PeKQ==
-X-Gm-Message-State: AOAM531LI619K+9GVV7hIhi5qgtJ3KmDtV6vICLoPzaykVQP8ZtGzJuJ
-        aUsOe7PtC1Ri7DNmu9B5NpA=
-X-Google-Smtp-Source: ABdhPJwD5sKWkDZI+WUiEv9LaU8t0tl7e3Sco91hCCQ6VjFxt+KbUyFjpi5+6SIPcvWKZoMwC1DUgg==
-X-Received: by 2002:adf:b642:: with SMTP id i2mr867183wre.8.1616454815721;
-        Mon, 22 Mar 2021 16:13:35 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id w6sm20916828wrl.49.2021.03.22.16.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 16:13:35 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 23 Mar 2021 00:13:32 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Martin Sebor <msebor@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Ning Sun <ning.sun@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 02/11] x86: tboot: avoid Wstringop-overread-warning
-Message-ID: <20210322231332.GA1984184@gmail.com>
-References: <20210322160253.4032422-1-arnd@kernel.org>
- <20210322160253.4032422-3-arnd@kernel.org>
- <20210322202958.GA1955909@gmail.com>
- <b944a853-0e4b-b767-0175-cc2c1edba759@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b944a853-0e4b-b767-0175-cc2c1edba759@gmail.com>
+        id S230321AbhCVXRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:17:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20855 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229871AbhCVXQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:16:50 -0400
+IronPort-SDR: fWTRcO6Qf6hdgFX6REFdnHRICh7UmZu9omvZaXbMWJn64CXkq7F4Rg8m586phPVc/oy7L+AY8X
+ nv34lL+YbArQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="251719787"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="251719787"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 16:16:49 -0700
+IronPort-SDR: I7UDdE7X3uLUmkkEj1gju/L3cDboU6/HlBwuNylH8RJ/obg75rLKDw0Xtx9j00017GNiqw95EK
+ y29bMBN91acw==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="513480903"
+Received: from rmarinax-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.143.198])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 16:16:45 -0700
+Date:   Tue, 23 Mar 2021 12:16:43 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-Id: <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
+In-Reply-To: <20210322223726.GJ6481@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+        <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+        <20210322181646.GG6481@zn.tnic>
+        <YFjoZQwB7e3oQW8l@google.com>
+        <20210322191540.GH6481@zn.tnic>
+        <YFjx3vixDURClgcb@google.com>
+        <20210322210645.GI6481@zn.tnic>
+        <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+        <20210322223726.GJ6481@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Martin Sebor <msebor@gmail.com> wrote:
-
-> > I.e. the real workaround might be to turn off the -Wstringop-overread-warning,
-> > until GCC-11 gets fixed?
+On Mon, 22 Mar 2021 23:37:26 +0100 Borislav Petkov wrote:
+> On Tue, Mar 23, 2021 at 11:06:43AM +1300, Kai Huang wrote:
+> > This path is called by host SGX driver only, so yes this leaking is done by
+> > host enclaves only.
 > 
-> In GCC 10 -Wstringop-overread is a subset of -Wstringop-overflow.
-> GCC 11 breaks it out as a separate warning to make it easier to
-> control.  Both warnings have caught some real bugs but they both
-> have a nonzero rate of false positives.  Other than bug reports
-> we don't have enough data to say what their S/N ratio might be
-> but my sense is that it's fairly high in general.
+> Yes, so I was told.
 > 
->   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=wstringop-overread
->   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=wstringop-overflow
+> > This patch is purpose is to break EREMOVE out of sgx_free_epc_page() so virtual
+> > EPC code can use sgx_free_epc_page(), and handle EREMOVE logic differently.
+> > This patch doesn't have intention to bring functional change.  I changed the
+> > error msg because Dave said it worth to give a message saying EPC page is
+> > leaked, and I thought this minor change won't break anything.
 > 
-> In GCC 11, all access warnings expect objects to be either declared
-> or allocated.  Pointers with constant values are taken to point to
-> nothing valid (as Arnd mentioned above, this is to detect invalid
-> accesses to members of structs at address zero).
+> I read that already - you don't have to repeat it.
 > 
-> One possible solution to the known address problem is to extend GCC
-> attributes address and io that pin an object to a hardwired address
-> to all targets (at the moment they're supported on just one or two
-> targets).  I'm not sure this can still happen before GCC 11 releases
-> sometime in April or May.
+> > btw, currently virtual EPC code (patch 5) handles in similar way: There's one
+> > EREMOVE error is expected and virtual EPC code can handle, but for other
+> > errors, it means kernel bug, and virtual EPC code gives a WARN(), and that EPC
+> > page is leaked too:
+> > 
+> > +		WARN_ONCE(ret != SGX_CHILD_PRESENT,
+> > +			  "EREMOVE (EPC page 0x%lx): unexpected error: %d\n",
+> > +			  sgx_get_epc_phys_addr(epc_page), ret);
+> > +		return ret;
+> > 
+> > So to me they are just WARN() to catch kernel bug.
 > 
-> Until then, another workaround is to convert the fixed address to
-> a volatile pointer before using it for the access, along the lines
-> below.  It should have only a negligible effect on efficiency.
+> You don't care about users, do you? Because when that error happens,
+> they won't come crying to you to fix it.
+> 
+> Lemme save you some trouble: we don't take half-baked code into the
+> kernel until stuff has been discussed and analyzed properly. So instead
+> of trying to downplay this, try answering my questions.
+> 
+> Here's another one: when does EREMOVE fail?
+> 
+> /me goes and looks it up
+> 
+> "The instruction fails if the operand is not properly aligned or does
+> not refer to an EPC page or the page is in use by another thread, or
+> other threads are running in the enclave to which the page belongs. In
+> addition the instruction fails if the operand refers to an SECS with
+> associations."
+> 
+> And I guess those conditions will become more in the future.
+> 
+> Now, let's play. I'm the cloud admin and you're cloud OS customer
+> support. I say:
+> 
+> "I got this scary error message while running enclaves on my server
+> 
+> "EREMOVE returned ... .  EPC page leaked.  Reboot required to retrieve leaked pages."
+> 
+> but I cannot reboot that machine because there are guests running on it
+> and I'm getting paid for those guests and I might get sued if I do?"
+> 
+> Your turn, go wild.
 
-Thank you for the detailed answer!
-
-I think I'll go with Arnd's original patch - which makes the code a 
-slightly bit cleaner by separating out the check_tboot_version() check 
-into a standalone function.
-
-The only ugly aspect is the global nature of the 'tboot' pointer - but 
-that's a self-inflicted wound.
-
-I'd also guess that the S/N ratio somewhat unfairly penalizes this 
-warning right now, because the kernel had a decade of growing real 
-fixes via other efforts such as static and dynamic instrumentation as 
-well.
-
-So the probability of false positive remaining is in fact higher, and 
-going forward we should see a better S/N ratio of this warning. Most 
-of which will never be seen by upstream maintainers, as the mishaps 
-will stay at the individual developer level. :-)
-
-Thanks,
-
-	Ingo
+I suppose admin can migrate those VMs, and then engineers can analyse the root
+cause of such failure, and then fix it.
