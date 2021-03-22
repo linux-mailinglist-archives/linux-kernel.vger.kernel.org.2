@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59869344182
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8583442F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhCVMd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54700 "EHLO mail.kernel.org"
+        id S232408AbhCVMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:47:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhCVMb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:31:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD48619AB;
-        Mon, 22 Mar 2021 12:31:51 +0000 (UTC)
+        id S231963AbhCVMjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F20C619C4;
+        Mon, 22 Mar 2021 12:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416311;
-        bh=hylYkMdJLjRI1ELJ/ZdlH4z9aISO0g6s9e0Vb4SwG/E=;
+        s=korg; t=1616416693;
+        bh=GaYubZUfGfHNa855R3fiJFI6qyDaYzuNHGaK9TiWbuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SEp1avqhs2b0MqrlSfhNxQQnQA27KIu6B9HfkzGQrMXGjtZ0QUWwRRRo0F3QIlDge
-         68AaAmslAOIJss3BHKNxt9tocB27s+iTg4vSOnA0Eoc6trfF5G3W7ukikNHM753zxq
-         yj61BPK0UM1jC1vDX6dC4pNs+yo/yTxad9o9iszA=
+        b=aXzqREBB3Brk87pTKn2BnQgLLvTmkMC3qm2knhfBmKZBsc49TU/3xOr0jZWjcEYeG
+         GpvH2hVgnuUCI7u9RgrAq6M7odM0cenJ1uXERVTiToxDFyPm13QQFeY8nlfjjmxqn8
+         l5yegfPPOdfcXL70EO1JH4GcitsdxSi4D8UjsDSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 058/120] net/qrtr: fix __netdev_alloc_skb call
-Date:   Mon, 22 Mar 2021 13:27:21 +0100
-Message-Id: <20210322121931.616342028@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 085/157] RDMA/mlx5: Allow creating all QPs even when non RDMA profile is used
+Date:   Mon, 22 Mar 2021 13:27:22 +0100
+Message-Id: <20210322121936.486843189@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +42,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Mark Bloch <mbloch@nvidia.com>
 
-commit 093b036aa94e01a0bea31a38d7f0ee28a2749023 upstream.
+[ Upstream commit 2614488d1f3cd5989375042286b11424208e20c8 ]
 
-syzbot found WARNING in __alloc_pages_nodemask()[1] when order >= MAX_ORDER.
-It was caused by a huge length value passed from userspace to qrtr_tun_write_iter(),
-which tries to allocate skb. Since the value comes from the untrusted source
-there is no need to raise a warning in __alloc_pages_nodemask().
+The cited commit disallowed creating any QP which isn't raw ethernet, reg
+umr or the special UD qp for testing WC, this proved too strict.
 
-[1] WARNING in __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5014
-Call Trace:
- __alloc_pages include/linux/gfp.h:511 [inline]
- __alloc_pages_node include/linux/gfp.h:524 [inline]
- alloc_pages_node include/linux/gfp.h:538 [inline]
- kmalloc_large_node+0x60/0x110 mm/slub.c:3999
- __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4496
- __kmalloc_reserve net/core/skbuff.c:150 [inline]
- __alloc_skb+0x4e4/0x5a0 net/core/skbuff.c:210
- __netdev_alloc_skb+0x70/0x400 net/core/skbuff.c:446
- netdev_alloc_skb include/linux/skbuff.h:2832 [inline]
- qrtr_endpoint_post+0x84/0x11b0 net/qrtr/qrtr.c:442
- qrtr_tun_write_iter+0x11f/0x1a0 net/qrtr/tun.c:98
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+While modify can't be done (no GIDS/GID table for example) just creating a
+QP is okay.
 
-Reported-by: syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Alexander Lobakin <alobakin@pm.me>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch partially reverts the bellow mentioned commit and places the
+restriction at the modify QP stage and not at the creation.  DEVX commands
+should be used to manipulate such QPs.
+
+Fixes: 42caf9cb5937 ("RDMA/mlx5: Allow only raw Ethernet QPs when RoCE isn't enabled")
+Link: https://lore.kernel.org/r/20210125120709.836718-1-leon@kernel.org
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/qp.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -439,7 +439,7 @@ int qrtr_endpoint_post(struct qrtr_endpo
- 	if (len == 0 || len & 3)
- 		return -EINVAL;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 600e056798c0..75caeec378bd 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -2458,8 +2458,6 @@ static int check_qp_type(struct mlx5_ib_dev *dev, struct ib_qp_init_attr *attr,
+ 	case MLX5_IB_QPT_HW_GSI:
+ 	case IB_QPT_DRIVER:
+ 	case IB_QPT_GSI:
+-		if (dev->profile == &raw_eth_profile)
+-			goto out;
+ 	case IB_QPT_RAW_PACKET:
+ 	case IB_QPT_UD:
+ 	case MLX5_IB_QPT_REG_UMR:
+@@ -2654,10 +2652,6 @@ static int process_create_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 	int create_flags = attr->create_flags;
+ 	bool cond;
  
--	skb = netdev_alloc_skb(NULL, len);
-+	skb = __netdev_alloc_skb(NULL, len, GFP_ATOMIC | __GFP_NOWARN);
- 	if (!skb)
- 		return -ENOMEM;
+-	if (qp->type == IB_QPT_UD && dev->profile == &raw_eth_profile)
+-		if (create_flags & ~MLX5_IB_QP_CREATE_WC_TEST)
+-			return -EINVAL;
+-
+ 	if (qp_type == MLX5_IB_QPT_DCT)
+ 		return (create_flags) ? -EINVAL : 0;
  
+@@ -4235,6 +4229,23 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	return 0;
+ }
+ 
++static bool mlx5_ib_modify_qp_allowed(struct mlx5_ib_dev *dev,
++				      struct mlx5_ib_qp *qp,
++				      enum ib_qp_type qp_type)
++{
++	if (dev->profile != &raw_eth_profile)
++		return true;
++
++	if (qp_type == IB_QPT_RAW_PACKET || qp_type == MLX5_IB_QPT_REG_UMR)
++		return true;
++
++	/* Internal QP used for wc testing, with NOPs in wq */
++	if (qp->flags & MLX5_IB_QP_CREATE_WC_TEST)
++		return true;
++
++	return false;
++}
++
+ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		      int attr_mask, struct ib_udata *udata)
+ {
+@@ -4247,6 +4258,9 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	int err = -EINVAL;
+ 	int port;
+ 
++	if (!mlx5_ib_modify_qp_allowed(dev, qp, ibqp->qp_type))
++		return -EOPNOTSUPP;
++
+ 	if (ibqp->rwq_ind_tbl)
+ 		return -ENOSYS;
+ 
+-- 
+2.30.1
+
 
 
