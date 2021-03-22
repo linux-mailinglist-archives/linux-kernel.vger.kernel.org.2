@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07835343791
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8859F343795
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhCVDpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:45:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44881 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCVDpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:45:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3gPD342Bz9sW4;
-        Mon, 22 Mar 2021 14:45:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616384705;
-        bh=y5zl+b8knrXFb5tRNYcr64U2woI+Jjhequ0OvtRkpfU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cM6HvbOoK6iMG76jTu864lMolzeFWsMmNX+LwDpYRw9zx2vxVx9tgXnZPXQ8POzsw
-         41z2rcOVXFhvE8VutjddLp2mMn2YS2GGA6ujZXSY4o1V/HFCZe/rX7wPQ1KgcIlFM4
-         VMBU/p8CdTRelMAJaQsuwWxifCC27QjCOGpiDA/QQy5kPXDREdtZUWRmqiaqolXdCL
-         9PQ4qkFrbxp3eAR6SYOfKfaXpf17N4zcwapCHTIT9oTBdXSlWBg0zI0zHGfXHVRa67
-         vGL5NgA7rKoZzRebrymtgqrsIJu/g/J07ddb+dePvVL9U+aIvzgAa60LXG1LfhS4W1
-         quJWg2TwCKS0g==
-Date:   Mon, 22 Mar 2021 14:45:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the ftrace tree with the tip tree
-Message-ID: <20210322144503.26e2b6ca@canb.auug.org.au>
+        id S229979AbhCVDp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhCVDpv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 23:45:51 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0B2C061574;
+        Sun, 21 Mar 2021 20:45:51 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id f12so11405556qtq.4;
+        Sun, 21 Mar 2021 20:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+L9vBAEuavtGSZ7afVQ2uB2vTzYH5d/kdoOHfGuczc=;
+        b=RSSQiGYkp6J8bqeLbfclNWXuzmSOpCx0uqjhWnN8X/+PIKVM0Qiv7SLnV9CfnYp063
+         RFQgR1ChCo0fCKHZW4xtPw9XY4lLFvfByNAMdVBYCSDauB22bdczm7G5d3jXZGlhfDVg
+         +x4P2ULmkV/LMrAvHNFrRT5XWg5nSUSvRRbxNWGEzaSeMzFAWKTdpBJxAI6Q4iJWsqUa
+         S7xYXL5s8vXs3zvePEfk4BsKVm7HXoL6Irnpq7JSQGWV5VAT+cq7mSU/AxmBW4ZFq/Ry
+         A5y4kqy4UvNFe7RyzpvR3vJJ53Tndms8QcHJy9UvOdgVESlaltDtGL/LpAQN8fRW9Y79
+         styA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+L9vBAEuavtGSZ7afVQ2uB2vTzYH5d/kdoOHfGuczc=;
+        b=Co5WHVcH29vRMwkZJnducWNDHGdNilwy7tU0h8R5LBX6dzNLhxcxNpCIj9TdcuHpTt
+         EHAQtYkmFThtO5b4lZ3vwKVrOgVDwCSDCGW9CTz60u3VZXvz2qsy0whS5fCTJt7Dc/vx
+         doB63tB+RChVMhJIQJtCLYLWULp+5OGEt6wjukxqK21fDiN1EeOY8mjDwTJekxGJtmRz
+         +NEKoitH17WYumkcGQDA/5SemHbYDuJYddtHgHxrH2kGJ5mJmJ5TYs7yegdJUi4OWI3U
+         1YqXD5w17rF4PfGxO81QYqbHDWe+DcjP3s9PhqHEL3mnRxUI1xOE2Z1RzxO0Ga59ztXt
+         AdDA==
+X-Gm-Message-State: AOAM53030yyZb2zkwo2MMj32y+k+0aM+5LD6Ufm4HoxcRMs+Sszt9rSm
+        80VPw5RMob5433N0/6pbpAaY4P41+9hWdOxC
+X-Google-Smtp-Source: ABdhPJyx8YZNBagSuObc0hXK2pKeyBf2+klnSrVO1S9DxXiWe7XQcwUELDLFB67c/GrGe4wedUi3LA==
+X-Received: by 2002:ac8:424b:: with SMTP id r11mr8131474qtm.311.1616384750630;
+        Sun, 21 Mar 2021 20:45:50 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.190])
+        by smtp.gmail.com with ESMTPSA id d12sm8287618qth.11.2021.03.21.20.45.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 20:45:50 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     djwong@kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] xfs: Rudimentary spelling fix
+Date:   Mon, 22 Mar 2021 09:15:38 +0530
+Message-Id: <20210322034538.3022189-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RfTJIQQUr_9FkywWzfjddYi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RfTJIQQUr_9FkywWzfjddYi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+s/sytemcall/syscall/
 
-Hi all,
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+  Changes from V1:
+   Randy's suggestion incorporated.
 
-Today's linux-next merge of the ftrace tree got a conflict in:
+ fs/xfs/xfs_inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  arch/x86/kernel/kprobes/ftrace.c
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index f93370bd7b1e..3087d03a6863 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -2870,7 +2870,7 @@ xfs_finish_rename(
+ /*
+  * xfs_cross_rename()
+  *
+- * responsible for handling RENAME_EXCHANGE flag in renameat2() sytemcall
++ * responsible for handling RENAME_EXCHANGE flag in renameat2() syscall
+  */
+ STATIC int
+ xfs_cross_rename(
+--
+2.31.0
 
-between commit:
-
-  d9f6e12fb0b7 ("x86: Fix various typos in comments")
-
-from the tip tree and commit:
-
-  e0196ae73234 ("ftrace: Fix spelling mistake "disabed" -> "disabled"")
-
-from the ftrace tree.
-
-I fixed it up (I used the former - it fixed a second typo in the same
-comment) and can carry the fix as necessary. This is now fixed as far
-as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RfTJIQQUr_9FkywWzfjddYi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBYEr8ACgkQAVBC80lX
-0GwOEgf+Jr/UkBFDiY1w+66zXjvBD21avD1ugtkmvEjMayiIVNRTVjK8zr/1rRNB
-dz+I8BTDakp46UvviviRF2mV3HEUHMBVDfscGQSxRXzwlr+O8KH7ewGjCT8bAFZ+
-0TCsbgehHPu/eOVsQ6NLxYEo0F2nHuTMJonv5qJPtJVFNj7U7FXOlEbj3LkFVt5P
-yYnTlEj/qitbwfEB4tULpBj3Woqi/BiMSEfL851PuYTtMKzaLVGX9ekfCtr8lin7
-FxviRuw9jCWuL18Njo28xTfv6kQ7oKNenwFvGYsh75D2Di+4NkxJaKAXlKJ4u4IF
-Q9g+aGXZyK9HlFFjGClECULlpRkgSQ==
-=cUes
------END PGP SIGNATURE-----
-
---Sig_/RfTJIQQUr_9FkywWzfjddYi--
