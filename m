@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B009334470A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC3234470B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCVOWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:22:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230085AbhCVOWS (ORCPT
+        id S230430AbhCVOWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhCVOWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:22:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616422938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ejb4n98u9rBNHKiaP4ARz/PV6FJIULattwWWzRok730=;
-        b=ZrnQ1IOhyqSH1iWTKFxydKMwNZ8Ir7WNTvDaVxtzlTDn5xrZKQUh3DL96m5vI0Pn8mPgtH
-        5Sh3n+XCHRewkLGuTz5CsR+0y4CampdB+i4husWMMjgT7iVsVOGtfjr2x9FPMRFvZyIMmu
-        tUoNoqUG9H3tsnxeMHpSJs9yBroUsec=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383--br8DkJtPWi7qsa4i_c22Q-1; Mon, 22 Mar 2021 10:22:13 -0400
-X-MC-Unique: -br8DkJtPWi7qsa4i_c22Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3E8780364C;
-        Mon, 22 Mar 2021 14:22:11 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67B613697;
-        Mon, 22 Mar 2021 14:22:08 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 10:22:07 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Cc:     agk@redhat.com, dm-devel@redhat.com,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linfeilong <linfeilong@huawei.com>,
-        lixiaokeng <lixiaokeng@huawei.com>,
-        "wubo (T)" <wubo40@huawei.com>
-Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
- multipath_ctr()
-Message-ID: <20210322142207.GB30698@redhat.com>
-References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
- <20210322081155.GE1946905@infradead.org>
+        Mon, 22 Mar 2021 10:22:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45557C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:22:31 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOLRq-0003oj-UF; Mon, 22 Mar 2021 15:22:26 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOLRq-0007Nf-IM; Mon, 22 Mar 2021 15:22:26 +0100
+Date:   Mon, 22 Mar 2021 15:22:26 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] clk: provide new devm helpers for prepared and
+ enabled clocks
+Message-ID: <20210322142226.n7qa4rijdhsqoqgf@pengutronix.de>
+References: <20210301135053.1462168-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5phyeawdahq2t3cm"
 Content-Disposition: inline
-In-Reply-To: <20210322081155.GE1946905@infradead.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210301135053.1462168-1-u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22 2021 at  4:11am -0400,
-Christoph Hellwig <hch@infradead.org> wrote:
 
-> On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
-> > From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > 
-> > When we make IO stress test on multipath device, there will
-> > be a metadata err because of wrong path. In the test, we
-> > concurrent execute 'iscsi device login|logout' and
-> > 'multipath -r' command with IO stress on multipath device.
-> > In some case, systemd-udevd may have not time to process
-> > uevents of iscsi device logout|login, and then 'multipath -r'
-> > command triggers multipathd daemon calls ioctl to load table
-> > with incorrect old device info from systemd-udevd.
-> > Then, one iscsi path may be incorrectly attached to another
-> > multipath which has different uuid. Finally, the metadata err
-> > occurs when umounting filesystem to down write metadata on
-> > the iscsi device which is actually not owned by the multipath
-> > device.
-> > 
-> > So we need to check whether all pgpaths of one multipath have
-> > the same uuid, if not, we should throw a error.
-> > 
-> > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
-> > Signed-off-by: linfeilong <linfeilong@huawei.com>
-> > Signed-off-by: Wubo <wubo40@huawei.com>
-> > ---
-> >  drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
-> >  drivers/scsi/scsi_lib.c |  1 +
-> >  2 files changed, 53 insertions(+)
-> > 
-> > diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-> > index bced42f082b0..f0b995784b53 100644
-> > --- a/drivers/md/dm-mpath.c
-> > +++ b/drivers/md/dm-mpath.c
-> > @@ -24,6 +24,7 @@
-> >  #include <linux/workqueue.h>
-> >  #include <linux/delay.h>
-> >  #include <scsi/scsi_dh.h>
-> > +#include <linux/dm-ioctl.h>
-> >  #include <linux/atomic.h>
-> >  #include <linux/blk-mq.h>
-> > 
-> > @@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
-> >  	return r;
-> >  }
-> > 
-> > +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
-> > +#define MPATH_UUID_PREFIX_LEN 7
-> > +static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
-> > +{
-> > +	char pgpath_uuid[DM_UUID_LEN] = {0};
-> > +	struct request_queue *q;
-> > +	struct pgpath *pgpath;
-> > +	struct scsi_device *sdev;
-> > +	ssize_t count;
-> > +	int r = 0;
-> > +
-> > +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
-> > +		q = bdev_get_queue(pgpath->path.dev->bdev);
-> > +		sdev = scsi_device_from_queue(q);
-> 
-> Common dm-multipath code should never poke into scsi internals.  This
-> is something for the device handler to check.  It probably also won't
-> work for all older devices.
+--5phyeawdahq2t3cm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Definitely.
+Hello,
 
-But that aside, userspace (multipathd) _should_ be able to do extra
-validation, _before_ pushing down a new table to the kernel, rather than
-forcing the kernel to do it.
+On Mon, Mar 01, 2021 at 02:50:50PM +0100, Uwe Kleine-K=F6nig wrote:
+> Uwe Kleine-K=F6nig (3):
+>   clk: generalize devm_clk_get() a bit
+>   clk: Provide new devm_clk_helpers for prepared and enabled clocks
+>   pwm: atmel: Simplify using devm_clk_get_prepared()
+>=20
+>  drivers/clk/clk-devres.c | 96 +++++++++++++++++++++++++++++++++-------
+>  drivers/pwm/pwm-atmel.c  | 15 +------
+>  include/linux/clk.h      | 87 +++++++++++++++++++++++++++++++++++-
+>  3 files changed, 168 insertions(+), 30 deletions(-)
 
+can I get some feedback on this series please? The idea is on the list
+since October last year with absolutely no maintainer feedback.
+
+I think it's a good idea and not too hard to review, so I wonder what is
+stopping you.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5phyeawdahq2t3cm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYqB8ACgkQwfwUeK3K
+7AlcLwf+MO9wU66kI2KeEmjWTjbBNyavpby/rc/RzbJBTlUBEA+WMpbfUsZCslhW
+kYjEEdrVqJ5WnR15w/17Y5fcu6eP2McQ1gaEhYFtseU27HNy2xZ4VABnRRrtzdbX
+NJsWJrhFWVMQtGe1YXsfLFY5BdsbzJcSdhs3YY9tPUaeJMIzz3QyNEp2eVVtQZZ8
+eEggpUA/2Xz57sdS4ILGs9+QEk4y3rK1+1IERQHu3USuenA2U7KhqG3CZ2tVj+AE
+OJvOpHfmDxSEVI9MmwP5YhKYWKCbjisug3ucdjStk47ERe28t5U8c+0RBbv8xPY5
+JqKOm+ZNH6JOZYaKRd6ycYpjeXtZTQ==
+=AvXV
+-----END PGP SIGNATURE-----
+
+--5phyeawdahq2t3cm--
