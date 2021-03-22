@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9074344F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68018344F6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbhCVS7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhCVS6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:58:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2279CC061574;
-        Mon, 22 Mar 2021 11:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=EDEFJDZ99EPzhVmwaQu38D2Z521MorJ947ogN0j39Wk=; b=gdovrSPy4OwiUpMluUjNxjPbml
-        puAnHwHKUyMTK10zo7yYhV7r8rh7Q1qdrvMnSjLmOCAisumXT11bfEk/tfTEiOr2IAwiNtUZY47k+
-        oEukIBh7x54y7mZq2aDfZDpvzIRIPrBZhXzoKCu1u/qGv7d6FBdVsFFRda9JwZMr+6UvHFesxeF4a
-        Fv6qgMAV1z9XROC1MVWegIxSIIYxFcUQIkfpAB4JLJ+2UWvJJYZEGFfEZwQMcucWFBmZpINY47QCO
-        duJMS34d3uekar3BHZ0yrpZJQR1+kpqH2URK+ugH/5+B7gw5v8mnTtFDu20Amuwor9pmhsEQlHeZk
-        pNoAO+IQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOPkY-008whK-S2; Mon, 22 Mar 2021 18:58:15 +0000
-Subject: Re: [PATCH] drm/msm/dpu: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        viresh.kumar@linaro.org, dsterba@suse.com, eric@anholt.net,
-        rnayak@codeaurora.org, huawei@kernel.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210322120601.2086438-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <57ae0aab-1a1a-fada-9aef-42373d0018f1@infradead.org>
-Date:   Mon, 22 Mar 2021 11:57:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232335AbhCVS7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232030AbhCVS7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:59:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B511061994;
+        Mon, 22 Mar 2021 18:59:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616439559;
+        bh=ma5DQZiST6UuyaXhG1RK3qqQkaUKYMAQFWfliR48sPE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SSE65I6P2nTrfma4pzn7lsxd92K0aAl/O+XlncTRhO8W0n5ebTr9vJiqrSGp9SFU4
+         ZuF0GnSFVn9cAGDPux0FfqWjdO0+iYQsqrkuwY5exIOyI3baeOdK7kKv8RsFmIuYdU
+         V/EptWkZNcZwK0+OM4XQMAUwKZck6lsb7syKaECwiwy8A+p05qeIqTbB5LH2mJTwrF
+         ie89t+Tao0fEir6bV9rwwCgOTJqUJBl/eap9BV3oapVQ0gYdhpgwN8uIuUkiFW1Jgk
+         PA7jyPVE5kP94PsnmLPjtk603Do6P80UFGHG9mxQXQIJ0M9+pbkBIBgI0m7OQrFTIq
+         As88LluFAuPYg==
+From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Saenz Julienne <nsaenz@kernel.org>
+Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
+        tim.gover@raspberrypi.com, adrian.hunter@intel.com,
+        sbranden@broadcom.com, alcooperx@gmail.com, nsaenzjulienne@suse.de,
+        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org
+Subject: [PATCH 0/4] BCM2711's sdhci-iproc CMD timeouts
+Date:   Mon, 22 Mar 2021 19:58:13 +0100
+Message-Id: <20210322185816.27582-1-nsaenz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210322120601.2086438-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 5:06 AM, Bhaskar Chowdhury wrote:
-> 
-> s/poiner/pointer/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+This series tries to address rather odd behavior from BCM2711's
+integration of sdhci-iproc (Raspberry Pi 4's SoC). The controller will
+timeout on SDHCI CMDs under the following conditions:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+ - No SD card plugged in (the card polling thread is running, CD irq disabled).
+ - BCM2711's VPU clock configured at 500MHz or more, lower clocks are OK.
 
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index d6717d6672f7..a448eb039334 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -258,7 +258,7 @@ void dpu_kms_encoder_enable(struct drm_encoder *encoder);
-> 
->  /**
->   * dpu_kms_get_clk_rate() - get the clock rate
-> - * @dpu_kms:  poiner to dpu_kms structure
-> + * @dpu_kms:  pointer to dpu_kms structure
->   * @clock_name: clock name to get the rate
->   *
->   * Return: current clock rate
-> --
+There is no specific command that will time out, it seems random.
 
+I found out that by bumping the controller's frequency to 150MHz the
+issue disapears. So let's do that.
+
+Regards,
+Nicolas
+
+---
+
+Nicolas Saenz Julienne (4):
+  dt-bindings: mmc: iproc-sdhci: Convert to json-schema
+  dt-bindings: mmc: iproc-sdhci: Add clock-frequency support
+  mmc: sdhci-iproc: Set clock frequency as per DT
+  ARM: dts: Fix-up EMMC2 controller's frequency
+
+ .../bindings/mmc/brcm,iproc-sdhci.yaml        | 64 +++++++++++++++++++
+ .../bindings/mmc/brcm,sdhci-iproc.txt         | 37 -----------
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  6 ++
+ drivers/mmc/host/sdhci-iproc.c                | 10 +++
+ 4 files changed, 80 insertions(+), 37 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
 
 -- 
-~Randy
+2.30.2
 
