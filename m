@@ -2,185 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217BC343C1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA14D343C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCVIw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S229868AbhCVIyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCVIwx (ORCPT
+        with ESMTP id S229746AbhCVIyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:52:53 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EAEC061574;
-        Mon, 22 Mar 2021 01:52:53 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so8778660wmj.1;
-        Mon, 22 Mar 2021 01:52:53 -0700 (PDT)
+        Mon, 22 Mar 2021 04:54:31 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89BBC061574;
+        Mon, 22 Mar 2021 01:54:30 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x28so19979571lfu.6;
+        Mon, 22 Mar 2021 01:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=coUfxHZjnvAds7knKbvoQaJLzKIJ/fAxoytksxex/e0=;
-        b=gQnKPH4WD8KAVE6hi98zj0GjTMYc4mhAo9+IXKHtj5grOWuTQ/RJAuXAQzAcPoAT3g
-         dwAJQwpxQTRoCltxqVOeLEX2Ku3MqK10L4+fxN/YV/Trjv6d76ntdZeScmJp2TFqxkGH
-         +hGmbWyYjAdMsCHkk3/7V6yFzkkfuBOxFwmejJ3fnw0ow3WAneDVViNVYyPKZ/XXM0e9
-         W7IBzzjyAtjklz28a1VFvHUMgvQucb0kb6enWpoNUkpjZ/a0SpV/yvgnBwiQbAjAmKfj
-         PE2/T7hXB7ibH2qTYpNDKCr0qjhA7jCNxBM+gpDq6bM401EAPqCqBSo7tkMauGHMQoAs
-         llXw==
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AIJXqSZ5zt8gv47j0NQUG8EXZyVECUtsZ+x0h0P65ao=;
+        b=ta7MBBiE/qUyUJE7jspyyUViw+CCcxKRPPdFPeMzIpbpqNsJ2bjzk+Q0+xz5Kc0etM
+         2Q5Ka2JTFUfM8hydry+zjhZrDyWF09dKQ1haYngnKGdw250Ak5vr5J8mwdxP7aXcQIRx
+         oR3Q/0uWz0yONuG2blXN9G9FYRU7aXumSUaIAtXdvYwOU60jFe4YCni1WjWsMWTfpdK/
+         vMuT8NZYptppq2i9uCPef+axhsIXmEKcrx/Rn8373Wbcg3PC2HOpF8N/znAy6FaguF2h
+         2YA7wOO9DT022R5W1hlEXg8DzDLlOGgMHBRhq1WNRnjkbqSOf8uwoK0rOvpsAAp21VhQ
+         c37A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=coUfxHZjnvAds7knKbvoQaJLzKIJ/fAxoytksxex/e0=;
-        b=RFaw0cMsbQzQXNEpqsIZPAIt95Riur199RdLL4IsnHYxK6Fnz0GnmG1OgNHfry0FH+
-         lara628Gnu8Ce8gXSniMaUXpu/VoFIyEmrlpH6z0AD5Hcjz5KOF8PZ11NuGHzmxGwAf+
-         QJFHKbY4+5IIwZHEMnoK8tzFWnkNWIfmF6kzXQB8eYvN0boRVwAVwWyUmuccAq18moWT
-         hFZCaNdgIaclTnKHeEqeuD+31w5TN/eEdkP9YsYKGUmuq5iP8eqk0YN3ZqGwOwA8zCIR
-         hk6HUf/w2iMINJNxfa8K9xmMRf7Ry54zLy0+89MxYVBY6kiKMS+0qCRmGNXSN63gLZAv
-         vImQ==
-X-Gm-Message-State: AOAM532CCbVw6KaT6euEaFZA3fC7Z5tlz0QACRj3/s/bR0pb8lHTCeTZ
-        Qf0FiJffezPyCpLL6hsDki0=
-X-Google-Smtp-Source: ABdhPJxq8otrOxF4RiH0a6wdyEpM9O8GytsgnS3vYx11VW8rbYtImWmm2U0F7zHq6b8wLMqI4ADNUQ==
-X-Received: by 2002:a1c:7715:: with SMTP id t21mr14758930wmi.132.1616403172048;
-        Mon, 22 Mar 2021 01:52:52 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id p6sm18148841wru.2.2021.03.22.01.52.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 01:52:51 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 09:53:08 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <YFha9H+6ATFbb/VA@orome.fritz.box>
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com>
- <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <YAB8ZmtOxRV1QN4l@workstation.tuxnet>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=AIJXqSZ5zt8gv47j0NQUG8EXZyVECUtsZ+x0h0P65ao=;
+        b=nHG+Lc7OU3K2ykEIHGVz4QS2urwuJ7AuFq4Ge6DbCpRgam1R9UWg/9PTL6ByUwOmZo
+         i6Ye3lqdq+uUWDhqwmrchlygBGd5US43mLAsOnRPLUqtHMdR1AN0o93WOFQ3l/svJb9x
+         RsKDrQxHh5xByStffb6w6ch0JK+BLuIgFCOOh1bbZSeYaQGg6G5wjpAh+y1SCzviGdmw
+         c/duv7snQF1xNW9htWmT58phLDUUfu4ttXI5PTdUxlEEDf9RdwkQguOCbTSKuWI5oUkY
+         huPXkiR8nuE+dnXPVDR8EIfI5T3/D41DY8NWeD7d6CqRaG3mNj/KuEapxLyMJhmuMUkF
+         cNoA==
+X-Gm-Message-State: AOAM53017ny6dgBDptlj5Yd7NzVwH0LHU9BvNPw36i511HYv48O2+Mb6
+        D3IM15m/67q8HQXmy3Bxm5c=
+X-Google-Smtp-Source: ABdhPJxrDY7mwUos4IEbQFk1RZIScP8k8HR4cpBJ7iKUklgyJNZ7zTbSCe9TmX11GGO811SaFrg1Cw==
+X-Received: by 2002:ac2:4826:: with SMTP id 6mr8493824lft.629.1616403269242;
+        Mon, 22 Mar 2021 01:54:29 -0700 (PDT)
+Received: from [192.168.1.100] ([178.176.79.3])
+        by smtp.gmail.com with ESMTPSA id h24sm1865264ljg.77.2021.03.22.01.54.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:54:28 -0700 (PDT)
+Subject: Re: [PATCH 06/13] usb: xhci-mtk: support ip-sleep wakeup for MT8183
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+References: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1616382832-28450-6-git-send-email-chunfeng.yun@mediatek.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <0e660a28-d66f-a23e-3fad-8fa37b6df1b1@gmail.com>
+Date:   Mon, 22 Mar 2021 11:54:22 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="clyIA7PyjV+ubgbt"
-Content-Disposition: inline
-In-Reply-To: <YAB8ZmtOxRV1QN4l@workstation.tuxnet>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <1616382832-28450-6-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
---clyIA7PyjV+ubgbt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 22.03.2021 6:13, Chunfeng Yun wrote:
 
-On Thu, Jan 14, 2021 at 06:16:22PM +0100, Clemens Gruber wrote:
-> Hi,
->=20
-> On Mon, Jan 11, 2021 at 09:35:32PM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> > Hello,
-> >=20
-> > On Thu, Dec 17, 2020 at 06:43:04PM +0100, Clemens Gruber wrote:
-> > > On Wed, Dec 16, 2020 at 11:00:59PM -0500, Sven Van Asbroeck wrote:
-> > > > On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
-> > > > <clemens.gruber@pqgruber.com> wrote:
-> > > > >
-> > > > > Implements .get_state to read-out the current hardware state.
-> > > > >
-> > > >=20
-> > > > I am not convinced that we actually need this.
-> > > >=20
-> > > > Looking at the pwm core, .get_state() is only called right after .r=
-equest(),
-> > > > to initialize the cached value of the state. The core then uses the=
- cached
-> > > > value throughout, it'll never read out the h/w again, until the nex=
-t .request().
-> > > >=20
-> > > > In our case, we know that the state right after request is always d=
-isabled,
-> > > > because:
-> > > > - we disable all pwm channels on probe (in PATCH v5 4/7)
-> > > > - .free() disables the pwm channel
-> > > >=20
-> > > > Conclusion: .get_state() will always return "pwm disabled", so why =
-do we
-> > > > bother reading out the h/w?
-> > >=20
-> > > If there are no plans for the PWM core to call .get_state more often =
-in
-> > > the future, we could just read out the period and return 0 duty and
-> > > disabled.
-> > >=20
-> > > Thierry, Uwe, what's your take on this?
-> >=20
-> > I have some plans here. In the past I tried to implement them (see
-> > commit 01ccf903edd65f6421612321648fa5a7f4b7cb10), but this failed
-> > (commit 40a6b9a00930fd6b59aa2eb6135abc2efe5440c3).
-> >=20
-> > > > Of course, if we choose to leave the pwm enabled after .free(), then
-> > > > .get_state() can even be left out! Do we want that? Genuine questio=
-n, I do
-> > > > not know the answer.
-> > >=20
-> > > I do not think we should leave it enabled after free. It is less
-> > > complicated if we know that unrequested channels are not in use.
-> >=20
-> > My position here is: A consumer should disable a PWM before calling
-> > pwm_put. The driver should however not enforce this and so should not
-> > modify the hardware state in .free().
-> >=20
-> > Also .probe should not change the PWM configuration.
->=20
-> I see. This would also allow PWMs initialized in the bootloader (e.g.
-> backlights) to stay on between the bootloader and Linux and avoid
-> flickering.
+> Add support ip-sleep wakeup for MT8183, it's similar to MT8173,
+              ^ for
 
-Yes, that's precisely one of the reasons why we introduced the atomic
-API. One of the use-cases that led to the current design was that the
-kernel pwm-regulator on some platforms was causing devices to crash
-because the driver would reprogram the PWM and cause a glitch on the
-power supply for the CPUs.
+> and it's also a specific one, but not follow IPM rule.
 
-So it's crucial in some cases that the PWM driver don't touch the
-hardware state in ->probe(). If some drivers currently do so, that's
-something we should eventually change, but given that there haven't been
-any complaints yet, it likely means nothing breaks because of this, so
-we do have the luxury of not having to rush things.
+    Following?
 
-> If no one objects, I would then no longer reset period and duty cycles
-> in the driver (and for our projects, reset them in the bootloader code
-> to avoid leaving PWMs on after a kernel panic and watchdog reset, etc.)
+> Due to the index 2 already used by many DTS, it's better to keep
+> it unchanged for backward compatible, treat specific ones without
 
-This isn't strictly necessary, but it's obviously something that's up to
-board designers/maintainers to decide.
+    Compatibility.
 
-Thierry
+> following IPM rule as revision 1.x, meanwhile reserve 3~10 for
+> later revision that follows the IPM rule.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>   drivers/usb/host/xhci-mtk.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> index 09f2ddbfe8b9..8ba1f914cb75 100644
+> --- a/drivers/usb/host/xhci-mtk.c
+> +++ b/drivers/usb/host/xhci-mtk.c
+> @@ -57,12 +57,19 @@
+>   #define CTRL_U2_FORCE_PLL_STB	BIT(28)
+>   
+>   /* usb remote wakeup registers in syscon */
+> +
+>   /* mt8173 etc */
+>   #define PERI_WK_CTRL1	0x4
+>   #define WC1_IS_C(x)	(((x) & 0xf) << 26)  /* cycle debounce */
+>   #define WC1_IS_EN	BIT(25)
+>   #define WC1_IS_P	BIT(6)  /* polarity for ip sleep */
+>   
+> +/* mt8183 */
+> +#define PERI_WK_CTRL0	0x0
+> +#define WC0_IS_C(x)	(((x) & 0xf) << 28)  /* cycle debounce */
+> +#define WC0_IS_P	BIT(12)	/* polarity */
+> +#define WC0_IS_EN	BIT(6)
+> +
+>   /* mt2712 etc */
+>   #define PERI_SSUSB_SPM_CTRL	0x0
+>   #define SSC_IP_SLEEP_EN	BIT(4)
+> @@ -71,6 +78,7 @@
+>   enum ssusb_uwk_vers {
+>   	SSUSB_UWK_V1 = 1,
+>   	SSUSB_UWK_V2,
+> +	SSUSB_UWK_V11 = 11,	/* specific revision 1.1 */
 
---clyIA7PyjV+ubgbt
-Content-Type: application/pgp-signature; name="signature.asc"
+    SSUSB_UWK_V1_1, maybe?
 
------BEGIN PGP SIGNATURE-----
+[...]
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBYWvQACgkQ3SOs138+
-s6FcJg//ZR0zAocR/x8CX247pgq0Sjcn5fZGy46F2tlxas6t34qvHPh8FYMALIvw
-5W5EXkYsGpItoByvgtz/sKIZFaNSPnzHHdF9EQ4m/Y+4J6+stUBGTVBVNM3SvAl9
-WnSEzFs0Xin8zXi6ocFRCAJnX4yto4Su5F87lBK8hpJaEZjmP3e2GHuohvV78uSm
-0pcdaZBlmpnCSGI87YiQJeNTLAaR5RnZUEUinnda2Nxe0OXhek2olAEh5+BjfW6w
-tLLJjuGbGOAJRsE6WMrAywncLnptVKu69dB3TQXDBQW1f+BESe0B/TGJcPD9el84
-Nqd3I+IeEfsEcGGFJgG40UsqHAnOLo2uuKEDeEMzJxJh+8U6hkPok5RIrq+Z5h/e
-4rkRRCCcXUa86wBOGzFXWnNnpxPzWOgSFT9klagyGaWnMZ+av+p8bWfecx4mPSQK
-NxQH1x2sNd8Y1XdQMKt5nkU3+dix06gr44keheEUL+qHDe2rbgK0sk7Uo0aXsbgr
-KflNTTma7J/Ux9+UQqzEGmVivYeXrPBU67Tq/Th2Bxcv168an+MT2S95+CdTD2f9
-t36t+bKefy54LqPaFELYCkkAf1phPbWl67637WVls5WADNmf5Bg6N4Lt/rJzj/wd
-TOfXw0pwPiBRo3/gOs9Jm5Ak6LfcCTtuZP9tMw7DgxugDAZdTWs=
-=BSxS
------END PGP SIGNATURE-----
-
---clyIA7PyjV+ubgbt--
+MBR, Sergei
