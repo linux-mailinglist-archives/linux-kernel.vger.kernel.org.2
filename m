@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C12344CCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A563344CC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhCVRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231854AbhCVRGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:06:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725E0C061574;
-        Mon, 22 Mar 2021 10:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ZSM3dI/CckcxUOL4ke1D9dDxhlhi+GbY+VaBTYOuHtk=; b=Ng69Y6C9sxOQbarSJYTyurvkdJ
-        HN19yAakV7WBKbUqmy5Pnx/A7J9ykloIwQI3na+M4xWiy+pYmd+VxGcG/hruO5qDt7kWPskwUPubv
-        f50vCBWToTpYR18RaY6/SPcUWZLlgYGQ3fAYT42prumMZTEEXJG3vxqXUYDsyTEzQQeGbra3Ld6xK
-        gZCvDldUxGxWxvuA+sVh4174qeVCMMsldkBM4F/YotEviK+xCMQNhNbYThVuP1xMOzqP/X27Qie6E
-        8nTzPfli2hyg39x1/v3uAR+z8UV06M96sdZ+NYganVq6T6X45N53rpFTGXe57XBTXfXA11YXljw1M
-        Px0VXOXA==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOO0B-008p1B-Tu; Mon, 22 Mar 2021 17:06:15 +0000
-Subject: Re: [PATCH v8 1/3] dmaengine: ptdma: Initial driver for the AMD PTDMA
-To:     Sanjay R Mehta <Sanju.Mehta@amd.com>, vkoul@kernel.org
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <1616389172-6825-1-git-send-email-Sanju.Mehta@amd.com>
- <1616389172-6825-2-git-send-email-Sanju.Mehta@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e33e0979-6688-0da8-c5a6-6b76073dbafc@infradead.org>
-Date:   Mon, 22 Mar 2021 10:06:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231138AbhCVRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:06:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232070AbhCVRGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:06:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 289136146D;
+        Mon, 22 Mar 2021 17:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616432774;
+        bh=XAkPgjgZ2QDBE+oZCfm0SfAf6AMlPXHZkmi1dip4ApQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q1/eBxL/X/8YUjH4nRXPdv+Znw2q1MepW9PkHERmPay3Q2DA8VEF8mPbbcQ+rs2Yi
+         pTsFR1g/qKPDoBndPFkiKTrv+xemKrOZxyY0hfmNEQP8FkI0wyiS+/ZS/toERp3E0z
+         7Ugho/hbPAbJYd8H+WF6B92uTk8S/cNsxaLsj7j+qKgdbgzz5iglayv86FIs47THWq
+         cT85NRwSeMSBokVdz1jLS+Og3WcQygjPb0N/n44epdjd1VoXf7SeILdsUrsH/TDril
+         fF4Rv6jbtzWIkWRSc86MHRWem+dZhozAjON7/qLHLez1yJz0J0BM5ufpgKxZZ9wO/g
+         Sakv/4N15AHzw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Bill Metzenthen <billm@melbpc.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: math-emu: Fix function cast warning
+Date:   Mon, 22 Mar 2021 18:06:05 +0100
+Message-Id: <20210322170610.1823153-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1616389172-6825-2-git-send-email-Sanju.Mehta@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 9:59 PM, Sanjay R Mehta wrote:
-> From: Sanjay R Mehta <sanju.mehta@amd.com>
-> 
-> Add support for AMD PTDMA controller. It performs high-bandwidth
-> memory to memory and IO copy operation. Device commands are managed
-> via a circular queue of 'descriptors', each of which specifies source
-> and destination addresses for copying a single buffer of data.
-> 
-> Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
-> ---
+From: Arnd Bergmann <arnd@arndb.de>
 
-> diff --git a/drivers/dma/ptdma/Kconfig b/drivers/dma/ptdma/Kconfig
-> new file mode 100644
-> index 0000000..c4f8c6f
-> --- /dev/null
-> +++ b/drivers/dma/ptdma/Kconfig
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config AMD_PTDMA
-> +	tristate  "AMD PassThru DMA Engine"
-> +	depends on X86_64 && PCI
-> +	help
-> +	  Enable support for the AMD PTDMA controller. This controller
-> +	  provides DMA capabilities to performs high bandwidth memory to
+Building with 'make W=1', gcc points out that casting between
+incompatible function types can be dangerous:
 
-	                            to perform
+arch/x86/math-emu/fpu_trig.c:1638:60: error: cast between incompatible function types from ‘int (*)(FPU_REG *, u_char)’ {aka ‘int (*)(struct fpu__reg *, unsigned char)’} to ‘void (*)(FPU_REG *, u_char)’ {aka ‘void (*)(struct fpu__reg *, unsigned char)’} [-Werror=cast-function-type]
+ 1638 |         fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, (FUNC_ST0) fsin, fcos
+      |                                                            ^
 
-> +	  memory and IO copy operation. It performs DMA transfer through
+This one seems harmless, but it is easy enough to work around it by
+adding an intermediate function that adjusts the return type.
 
-better:	                     operations.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/math-emu/fpu_trig.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-> +	  queue based descriptor management. This DMA controller is intended
-
-	  queue-based
-
-> +	  to use with AMD Non-Transparent Bridge devices and not for general
-
-	  to be used with
-or
-	  for use with
-
-> +	  purpose peripheral DMA.
-
-
+diff --git a/arch/x86/math-emu/fpu_trig.c b/arch/x86/math-emu/fpu_trig.c
+index 4a9887851ad8..aebfdb244cb4 100644
+--- a/arch/x86/math-emu/fpu_trig.c
++++ b/arch/x86/math-emu/fpu_trig.c
+@@ -547,7 +547,7 @@ static void frndint_(FPU_REG *st0_ptr, u_char st0_tag)
+ 		single_arg_error(st0_ptr, st0_tag);
+ }
+ 
+-static int fsin(FPU_REG *st0_ptr, u_char tag)
++static int do_fsin(FPU_REG *st0_ptr, u_char tag)
+ {
+ 	u_char arg_sign = getsign(st0_ptr);
+ 
+@@ -608,6 +608,11 @@ static int fsin(FPU_REG *st0_ptr, u_char tag)
+ 	}
+ }
+ 
++static void fsin(FPU_REG *st0_ptr, u_char tag)
++{
++	fsin(st0_ptr, tag);
++}
++
+ static int f_cos(FPU_REG *st0_ptr, u_char tag)
+ {
+ 	u_char st0_sign;
+@@ -724,7 +729,7 @@ static void fsincos(FPU_REG *st0_ptr, u_char st0_tag)
+ 	}
+ 
+ 	reg_copy(st0_ptr, &arg);
+-	if (!fsin(st0_ptr, st0_tag)) {
++	if (!do_fsin(st0_ptr, st0_tag)) {
+ 		push();
+ 		FPU_copy_to_reg0(&arg, st0_tag);
+ 		f_cos(&st(0), st0_tag);
+@@ -1635,7 +1640,7 @@ void FPU_triga(void)
+ }
+ 
+ static FUNC_ST0 const trig_table_b[] = {
+-	fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, (FUNC_ST0) fsin, fcos
++	fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, fsin, fcos
+ };
+ 
+ void FPU_trigb(void)
 -- 
-~Randy
+2.29.2
 
