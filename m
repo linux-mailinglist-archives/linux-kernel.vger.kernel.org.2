@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA57344434
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FA034449F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhCVM7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:59:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40980 "EHLO mail.kernel.org"
+        id S233294AbhCVNCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232577AbhCVMry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C74619B2;
-        Mon, 22 Mar 2021 12:43:45 +0000 (UTC)
+        id S232131AbhCVMtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D77619F9;
+        Mon, 22 Mar 2021 12:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417026;
-        bh=xb6ghuOPd3lUfE0yZi8fZ0KJp+paEtbTLac7jBrUwts=;
+        s=korg; t=1616417116;
+        bh=Ukbblig6Eo+6n/L/daDVL2pKRT46kywiNyPycDq+CPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKIIblSQzq0CFiSeYOcvi/elEGeaN4Gf3JUZ58AsIe7wy1VZBmRGrajYYQw0gFWoE
-         3LOZYQ/zmRh8COUOECd0tvwGsUhRHByhX6iS+Hfv0DxFT9NvVWuG2xrHFUrSfRIO+x
-         Evz7nt8J49x488XEchyUYyWFA2aMjqE7uDrNUwmw=
+        b=tnZIALmCDdR9IR4pNmf+YVESWgfpXzGjELiqGtWgcKq6vUVdY5w0H7QxSjuWBNjeZ
+         Q0fficSUNo1lgKGylPLAta3Y4RQGOxv8YyktV0+tn8USUQYvA9Z20tSmxWLT3HtOEO
+         eMWekGF5ZK0pLwbb1pCKkup2FWDBgWDp/SjTvGdc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.4 57/60] efi: use 32-bit alignment for efi_guid_t literals
-Date:   Mon, 22 Mar 2021 13:28:45 +0100
-Message-Id: <20210322121924.261609295@linuxfoundation.org>
+        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 32/43] iio: hid-sensor-temperature: Fix issues of timestamp channel
+Date:   Mon, 22 Mar 2021 13:28:46 +0100
+Message-Id: <20210322121920.946558418@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Ye Xiang <xiang.ye@intel.com>
 
-commit fb98cc0b3af2ba4d87301dff2b381b12eee35d7d upstream.
+commit 141e7633aa4d2838d1f6ad5c74cccc53547c16ac upstream.
 
-Commit 494c704f9af0 ("efi: Use 32-bit alignment for efi_guid_t") updated
-the type definition of efi_guid_t to ensure that it always appears
-sufficiently aligned (the UEFI spec is ambiguous about this, but given
-the fact that its EFI_GUID type is defined in terms of a struct carrying
-a uint32_t, the natural alignment is definitely >= 32 bits).
+This patch fixes 2 issues of timestamp channel:
+1. This patch ensures that there is sufficient space and correct
+alignment for the timestamp.
+2. Correct the timestamp channel scan index.
 
-However, we missed the EFI_GUID() macro which is used to instantiate
-efi_guid_t literals: that macro is still based on the guid_t type,
-which does not have a minimum alignment at all. This results in warnings
-such as
-
-  In file included from drivers/firmware/efi/mokvar-table.c:35:
-  include/linux/efi.h:1093:34: warning: passing 1-byte aligned argument to
-      4-byte aligned parameter 2 of 'get_var' may result in an unaligned pointer
-      access [-Walign-mismatch]
-          status = get_var(L"SecureBoot", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size,
-                                          ^
-  include/linux/efi.h:1101:24: warning: passing 1-byte aligned argument to
-      4-byte aligned parameter 2 of 'get_var' may result in an unaligned pointer
-      access [-Walign-mismatch]
-          get_var(L"SetupMode", &EFI_GLOBAL_VARIABLE_GUID, NULL, &size, &setupmode);
-
-The distinction only matters on CPUs that do not support misaligned loads
-fully, but 32-bit ARM's load-multiple instructions fall into that category,
-and these are likely to be emitted by the compiler that built the firmware
-for loading word-aligned 128-bit GUIDs from memory
-
-So re-implement the initializer in terms of our own efi_guid_t type, so that
-the alignment becomes a property of the literal's type.
-
-Fixes: 494c704f9af0 ("efi: Use 32-bit alignment for efi_guid_t")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1327
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 59d0f2da3569 ("iio: hid: Add temperature sensor support")
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210303063615.12130-4-xiang.ye@intel.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/efi.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/iio/temperature/hid-sensor-temperature.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -63,8 +63,10 @@ typedef void *efi_handle_t;
-  */
- typedef guid_t efi_guid_t __aligned(__alignof__(u32));
+--- a/drivers/iio/temperature/hid-sensor-temperature.c
++++ b/drivers/iio/temperature/hid-sensor-temperature.c
+@@ -28,7 +28,10 @@
+ struct temperature_state {
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info temperature_attr;
+-	s32 temperature_data;
++	struct {
++		s32 temperature_data;
++		u64 timestamp __aligned(8);
++	} scan;
+ 	int scale_pre_decml;
+ 	int scale_post_decml;
+ 	int scale_precision;
+@@ -45,7 +48,7 @@ static const struct iio_chan_spec temper
+ 			BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 			BIT(IIO_CHAN_INFO_HYSTERESIS),
+ 	},
+-	IIO_CHAN_SOFT_TIMESTAMP(3),
++	IIO_CHAN_SOFT_TIMESTAMP(1),
+ };
  
--#define EFI_GUID(a,b,c,d0,d1,d2,d3,d4,d5,d6,d7) \
--	GUID_INIT(a, b, c, d0, d1, d2, d3, d4, d5, d6, d7)
-+#define EFI_GUID(a, b, c, d...) (efi_guid_t){ {					\
-+	(a) & 0xff, ((a) >> 8) & 0xff, ((a) >> 16) & 0xff, ((a) >> 24) & 0xff,	\
-+	(b) & 0xff, ((b) >> 8) & 0xff,						\
-+	(c) & 0xff, ((c) >> 8) & 0xff, d } }
+ /* Adjust channel real bits based on report descriptor */
+@@ -136,9 +139,8 @@ static int temperature_proc_event(struct
+ 	struct temperature_state *temp_st = iio_priv(indio_dev);
  
- /*
-  * Generic EFI table header
+ 	if (atomic_read(&temp_st->common_attributes.data_ready))
+-		iio_push_to_buffers_with_timestamp(indio_dev,
+-				&temp_st->temperature_data,
+-				iio_get_time_ns(indio_dev));
++		iio_push_to_buffers_with_timestamp(indio_dev, &temp_st->scan,
++						   iio_get_time_ns(indio_dev));
+ 
+ 	return 0;
+ }
+@@ -153,7 +155,7 @@ static int temperature_capture_sample(st
+ 
+ 	switch (usage_id) {
+ 	case HID_USAGE_SENSOR_DATA_ENVIRONMENTAL_TEMPERATURE:
+-		temp_st->temperature_data = *(s32 *)raw_data;
++		temp_st->scan.temperature_data = *(s32 *)raw_data;
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
 
 
