@@ -2,294 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B58344DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525BD344DF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhCVR5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhCVR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:56:46 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83F9961983;
-        Mon, 22 Mar 2021 17:56:46 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lOOnE-0038Fj-Qd; Mon, 22 Mar 2021 17:56:44 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        tabba@google.com, ardb@kernel.org, mark.rutland@arm.com,
-        dbrazdil@google.com
-Subject: [PATCH v2 3/3] KVM: arm64: Drop the CPU_FTR_REG_HYP_COPY infrastructure
-Date:   Mon, 22 Mar 2021 17:56:39 +0000
-Message-Id: <20210322175639.801566-4-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210322175639.801566-1-maz@kernel.org>
-References: <20210322175639.801566-1-maz@kernel.org>
+        id S231569AbhCVSAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:00:31 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:60872 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhCVSAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:00:20 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHs9tN175928;
+        Mon, 22 Mar 2021 17:58:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=+bWymf19onlssSJhzt3+kNTPLSdADl9aeU5yZm0l+bY=;
+ b=gMWLBqQovyaitPYeSJ1IdP5FLcSpAHQjxmgt9uh07AhxqVl56Yuol0PtWEDqrHFZmLrh
+ 3oOvkQp/B4r5r0sMxK+0mG88YBh4u2Oml3qKTxyH7If3awoApwRm9CuqwNymhfuGreCY
+ GBERc4QVk8frJnXI3Zxg7xoW3TT3eWDSiLCO1hwE9uCZ33N/pm+x9oMacBNcQjhCJIlu
+ Nn36ieIwg0MQgcIEbROftuG/+rQOwYp42EmV/6nb4aa3HyjtoSgRd04rpJ3aZKJsl7US
+ RCnh8o3QzBqfrKqE5pUdMTQMqrI/l7DRnWdukLNahrRYUb0RpRFr0sgGPK4tFt7tIK2K iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 37d6jbcfpq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 17:58:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHuJPA175004;
+        Mon, 22 Mar 2021 17:57:59 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by aserp3020.oracle.com with ESMTP id 37dtxx8kh8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 17:57:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QdPATYAp5DHSQDwJwBqC4IziaFu16AE/E4TqCSNrFXNcmRlsb7elSA6dQrX8RoU1EtZ9+QRgkHnzUGe4gy7aDONumD7JrVYwOcVHmgvgQSv3inMLIUCo8E6Tu1DkVlbVEX7ozD/ZpPc/5I9LpImp+KaXTWI8Bcza4kmICkVBs5e7QmrpreeN9qfFFbISh1pOKuUbu1MljPqpVvYnx9YlKxReFn3rP4UhqMgNhLpb9IF1ZGFu1L3lPlVbv2cNzxKh/8k9SW7ot9CQaT0TJhdbCrEsOj9GEMJuwcOCD0CjF8atVOELxeBbV2gcNQsZLVy/jfLBQ+0obnpBNe9sPq91xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bWymf19onlssSJhzt3+kNTPLSdADl9aeU5yZm0l+bY=;
+ b=dYsdFcozoZbTmvnlS8q8uOwdmkpP+oVp5AegFSFVGcd2y+xjERP9Ws5jJ4LzNa5Ln17/a8Ksn55aP5aeaT+KBwEw1zAcRLw48YU2xTtqmoObUsoP+XT4z7SUIt0fiDkzZouI3oMx+AK9qsYaFPSGCVmguoBN05NbkDFnYEAUWRxUZcny4dkNFMUYrkWqgNqlqICeKiNWYGpu76eY1h4ZdWmMCmMirzmgGytqyb2lfn3o/8Vh0kgW8Rh5+TsrsLZ/iiXgXFEdv4J1nQrBIb5xStwq1sydhJwaJxlEVuVQaUy6tWvPlX+X9fwAabQhtcPOuQ/BIolpl7seeS/7uZ7qMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bWymf19onlssSJhzt3+kNTPLSdADl9aeU5yZm0l+bY=;
+ b=lo/9AzQz1H4s+RXS83u0R7auLI6Fi6Vcg6KufXzcZsg/3877ZZAwcA3gtSMfK5g8vU9er1KfE8BLjq5DnLRQ9YpMZ9F/7LRHrNzQGZTbJVHTLeBrvQV4fjmN/l5WAJR++fH/ioHjFIbEZyYS/aTDks8uGRO8tA+XiXDt/89+oiw=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=oracle.com;
+Received: from CO1PR10MB4705.namprd10.prod.outlook.com (2603:10b6:303:96::11)
+ by MWHPR10MB1357.namprd10.prod.outlook.com (2603:10b6:300:21::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
+ 2021 17:57:57 +0000
+Received: from CO1PR10MB4705.namprd10.prod.outlook.com
+ ([fe80::7cf5:7988:6b5a:9b33]) by CO1PR10MB4705.namprd10.prod.outlook.com
+ ([fe80::7cf5:7988:6b5a:9b33%6]) with mapi id 15.20.3955.027; Mon, 22 Mar 2021
+ 17:57:57 +0000
+Subject: Re: [PATCH 2/6] sched: tagging interface for core scheduling
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210319203253.3352417-1-joel@joelfernandes.org>
+ <20210319203253.3352417-3-joel@joelfernandes.org>
+ <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
+From:   Chris Hyser <chris.hyser@oracle.com>
+Message-ID: <ff9c63f2-0953-03c1-9b1c-25cb90954dee@oracle.com>
+Date:   Mon, 22 Mar 2021 13:57:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+In-Reply-To: <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [69.207.174.138]
+X-ClientProxiedBy: CH2PR18CA0004.namprd18.prod.outlook.com
+ (2603:10b6:610:4f::14) To CO1PR10MB4705.namprd10.prod.outlook.com
+ (2603:10b6:303:96::11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: qperret@google.com, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel-team@android.com, kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org, mark.rutland@arm.com, dbrazdil@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.193] (69.207.174.138) by CH2PR18CA0004.namprd18.prod.outlook.com (2603:10b6:610:4f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 17:57:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eb3d2ea5-d1b6-4dc3-a168-08d8ed5c05f5
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1357:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB135744BBA4B8B2961227FC459B659@MWHPR10MB1357.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PEDNPpkMFDphm4/0/venxg2rMnW0uXkKBImFYO8hYkEPwg+QKpfoZ24fY2vUORv24QFb6T80oVzFSibg1KT8xzHYmjWCvqHvJS9csw2IUhEV1BmdKWNP5u79We6Hdk8s0E02QtUw+5AC7JW7v/VRz2XMNfyK4VUyJ3xtP7hwn//YdaVfMixuJgUIMtDMUH9ug136VjLEnKHdxN/goPFOdvDBRwH4O3ErjVjDzvHXb2wqKxdxxIH9cXHM9CvrGo2LEnrPjTPCqUztmRrDevuutMgE/WnjvC2qNyy8FCejCq0uWfR2ejPk/FxN2HqiUkgPzP6HU2mcxU4IKW1fNxXb39g+/86Y8/nE70eybPiChAhuVh08hArVSCRRpNJui/tvZ/Rw67TJaEU5pwn03P40fxot0MtmRGGGS5HUwPHS4R5DlHT1eNh22Vb9/kbylLhkEU9DWzZowQJR/K+CqUhBOi6S9VuyVxG/hKdBSXKqqwOY3gX33mTwaTu+FvY9dnRhGoGI/dAlY/0bnkhhQhS5ZHqXr2/zJNKaWo4z1eH7/T2N4zTY+QzV/oBKpTROW3W0pcrb0qIlMxfPxoSYC6XFj47y3W8PC7cr+uDpwKZzjjiU5EwX2ncQFbyt3P9BbprpbfXmQm1DZ2AyZO2ta22rp/4Oe1xFxxq7AjXj51z0a5Pou78UfGY4FUMmqMOWb9EA2UHJZ3hWWGuYkTu7MMiXdw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4705.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(366004)(376002)(39860400002)(31696002)(5660300002)(4326008)(31686004)(54906003)(83380400001)(110136005)(478600001)(66556008)(316002)(6486002)(86362001)(36756003)(16576012)(38100700001)(2906002)(52116002)(53546011)(7406005)(7416002)(44832011)(16526019)(956004)(2616005)(6666004)(66946007)(26005)(8936002)(186003)(8676002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U0dnUlM0L29KalljTS9vU0ZCV1NETlhQcWhGNGlVcklTZGhKZlJPSzdqQzgz?=
+ =?utf-8?B?MDZNd0FQc09Na08zVEdrWWx6TGdSMWZ5bG9ORGJRa0VnRkVEbStIMzdKbDVO?=
+ =?utf-8?B?THhSOWdURlZpSlk4Wi9jd1c5YW1FU0dERk1HNGZwcWFieTdZUEUxNi9RWXBj?=
+ =?utf-8?B?eGgvZG1sSU5MRTZ4MGdSbTFRQXpnWEY1Y0dNRXlnM25yemN0b3VES1RUdTln?=
+ =?utf-8?B?WlptZHRwU3BveHovUVBGbTBZYUNqSVdjS1IrM2tMdzlCdzhqZkRNakNSdjFW?=
+ =?utf-8?B?QllBNmVhTmtIL01TcURha1pQQmtQeU5YNEJpZXRyUitiMVYwdnc2OXFXT0R1?=
+ =?utf-8?B?SlkzWWhLRTZzZkIrSjl0dkhRcEZPcXMwdFByL3Z6c05KOE5nWnFySUMwTjQ0?=
+ =?utf-8?B?TFdXSzFlSmZGRitBU0J2b3FYMUJKM3Vub0ZMRWN0OE42R25FSWE5M2xXRVNK?=
+ =?utf-8?B?WDJ4bHZpMGd5M0V3QnhoK0o4YnM5dEc4R2NhRU9vNm9CdFNpRU1HS2RRckxs?=
+ =?utf-8?B?d29xZ0phVys2ZWdWOW14blRad01PaXkreXdoU2lzT3FUWXRBbEV4V2tEMmtW?=
+ =?utf-8?B?VGZKaU5wU3NoNUdWdXNuTDdoNG1xSUdFaW01MCtaSU1VUlFVK2JUblJCR0Vu?=
+ =?utf-8?B?MnlYekFZSTZ5Z2x0RGNhRjFtN05TQnNMbDFQYUR1T1dFZ0N4WGttcmtTeldB?=
+ =?utf-8?B?OE5pVFVESVowOUhHYW91MHpPM1hNV2Nia056b3k5RVlkUHNlRkZYZmtXaWV3?=
+ =?utf-8?B?NkdHSTZjLzROZ2hLeVdDbk45V3NqRjIxckp1NEhRWVgwdkZxSjhhNmtqUk5n?=
+ =?utf-8?B?T2lKNjBueERiNncvYzB6MmlTekd0UmFxWXJlWW51MHhxQkcwZkV6dGRaREkv?=
+ =?utf-8?B?aHBZT3REYkJlczNpYjl5cFZiVUJncU9BMTQ3MlhWK2VTa0NESnFoKzdoU3F5?=
+ =?utf-8?B?TUhtM0lCSks4dC9weUNiZmcwMzdlNzNTMnNmVXcwbXdJV2dQeTRWVDM1VnBy?=
+ =?utf-8?B?elpCOFNpNTBqdnpTRjNZTStHWFFRZGZXbEMySThpY0MzeGJNSmFkRDhKWngv?=
+ =?utf-8?B?TUl4eUt3N21DV0RWT1E3L1JKaktHc1Z1aCtBVnJRUmxqWDJuMnFOd2lsTEU1?=
+ =?utf-8?B?WmdOd2dYUERIMDFBQ3pPTlVxZFMvb1pWK29JdEl4OGR0N0wrTC9qcGVVbzhI?=
+ =?utf-8?B?YzVVR05VR0dvNnJKMWRzSXJyaEtsQ2RuVG9NV29ycE82WXVtY3VUaFpqYWFa?=
+ =?utf-8?B?Qi9hR1hXcnpBd3Jvems3bDdTMDl2eFE3QzlHN2RvRlZJaEVVS0xXejcwQU10?=
+ =?utf-8?B?M29Ta0VkQjI5RXhXQXIxUEl4bTE1LzhqbE1obGh5MHdZZDQwdi9NdW1OZ205?=
+ =?utf-8?B?ZW1ub2RyUnNzUktORkQ3TVhFMFlvN2QyZGNKRGpjN3VqcGNQOGtkTlBCa1NY?=
+ =?utf-8?B?OEZ2cTh4VTFUZVlUdWxpSVl4U2NDanljczh5WEpUVWdJcjlYSG45SjR6QjdM?=
+ =?utf-8?B?blpOajFSdFJ5eCsyVzlEcndwNFJCaGZ2V0NNU0psSzc5aFVUUWJvQWFidWRC?=
+ =?utf-8?B?dlI2TEFyOUNyeWh6ZzluZWMyVEV3VVVOU3ZXVEVUclRTamlDZEZ4WitEc0RR?=
+ =?utf-8?B?UjlqSGhiaTFSQXB1UzVCYUpPR1FDR2wybzdVNVk1ZE5WK2dLMzhlWVNoYmVR?=
+ =?utf-8?B?WTR3MDRaM0s5dXJ6V3lTZzZTVi8zbENNdnBudksya3VOTi9QN21VbzE1cTZV?=
+ =?utf-8?Q?nw/sZ4IA3HSNJL4gh2NMZYw4a4Co8+5CXn1k3qi?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb3d2ea5-d1b6-4dc3-a168-08d8ed5c05f5
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4705.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:57:56.8968
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D4wlK2XXce5eAa7SNY9glkm8LwiochB+qC5xc8yBNvemCdoWGMD2wREvctKKO7JgFCVJO5JTA/owupVQOEl4xw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1357
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=840
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103220131
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1011 priorityscore=1501
+ spamscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103220131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the read_ctr macro has been specialised for nVHE,
-the whole CPU_FTR_REG_HYP_COPY infrastrcture looks completely
-overengineered.
+On 3/20/21 11:46 AM, Peter Zijlstra wrote:
+> On Fri, Mar 19, 2021 at 04:32:49PM -0400, Joel Fernandes (Google) wrote:
+>> From: Josh Don <joshdon@google.com>
+>>
+>> Adds per-task and per-cgroup interfaces for specifying which tasks can
+>> co-execute on adjacent SMT hyperthreads via core scheduling.
+>>
+>> The per-task interface hooks are implemented here, but are not currently
+>> used. The following patch adds a prctl interface which then takes
+>> advantage of these.
+>>
+>> The cgroup interface can be used to toggle a unique cookie value for all
+>> descendent tasks, preventing these tasks from sharing with any others.
+>> See Documentation/admin-guide/hw-vuln/core-scheduling.rst for a full
+>> rundown.
+>>
+>> One important property of this interface is that neither the per-task
+>> nor the per-cgroup setting overrides the other. For example, if two
+>> tasks are in different cgroups, and one or both of the cgroups is tagged
+>> using the per-cgroup interface, then these tasks cannot share, even if
+>> they use the per-task interface to attempt to share with one another.
+>>
+>> The above is implemented by making the overall core scheduling cookie a
+>> compound structure, containing both a task-level cookie and a
+>> group-level cookie. Two tasks will only be allowed to share if all
+>> fields of their respective cookies match.
+>>
+>> Core scheduler has extra overhead.  Enable it only for machines with
+>> more than one SMT hardware thread.
+> 
+> Oh man.. I'd soooo hoped to first see the simple task interface and then
+> see the cgroup patch on top of that... I'll see if I can flip them
+> myself (on monday).
 
-Simplify it by populating the two u64 quantities (MMFR0 and 1)
-that the hypervisor need.
+Peter, given we need to rebase this and we have some cleanup, we can go ahead and flip the order if you have not yet 
+done so yet.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/include/asm/cpufeature.h     |  1 -
- arch/arm64/include/asm/kvm_cpufeature.h | 26 -------------------------
- arch/arm64/include/asm/kvm_host.h       |  4 ----
- arch/arm64/include/asm/kvm_hyp.h        |  3 +++
- arch/arm64/kernel/cpufeature.c          | 13 -------------
- arch/arm64/kvm/arm.c                    |  3 +++
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c       |  8 --------
- arch/arm64/kvm/hyp/nvhe/mem_protect.c   | 16 ++++++++-------
- arch/arm64/kvm/sys_regs.c               | 22 ---------------------
- 9 files changed, 15 insertions(+), 81 deletions(-)
- delete mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
-
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index a85cea2cac57..61177bac49fa 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -607,7 +607,6 @@ void check_local_cpu_capabilities(void);
- 
- u64 read_sanitised_ftr_reg(u32 id);
- u64 __read_sysreg_by_encoding(u32 sys_id);
--int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst);
- 
- static inline bool cpu_supports_mixed_endian_el0(void)
- {
-diff --git a/arch/arm64/include/asm/kvm_cpufeature.h b/arch/arm64/include/asm/kvm_cpufeature.h
-deleted file mode 100644
-index ff302d15e840..000000000000
---- a/arch/arm64/include/asm/kvm_cpufeature.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2020 - Google LLC
-- * Author: Quentin Perret <qperret@google.com>
-- */
--
--#ifndef __ARM64_KVM_CPUFEATURE_H__
--#define __ARM64_KVM_CPUFEATURE_H__
--
--#include <asm/cpufeature.h>
--
--#include <linux/build_bug.h>
--
--#if defined(__KVM_NVHE_HYPERVISOR__)
--#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg name
--#define DEFINE_KVM_HYP_CPU_FTR_REG(name) struct arm64_ftr_reg name
--#else
--#define DECLARE_KVM_HYP_CPU_FTR_REG(name) extern struct arm64_ftr_reg kvm_nvhe_sym(name)
--#define DEFINE_KVM_HYP_CPU_FTR_REG(name) BUILD_BUG()
--#endif
--
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
--DECLARE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
--
--#endif
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 4859c9de75d7..09979cdec28b 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -740,13 +740,9 @@ void kvm_clr_pmu_events(u32 clr);
- 
- void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
- void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
--
--void setup_kvm_el2_caps(void);
- #else
- static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
- static inline void kvm_clr_pmu_events(u32 clr) {}
--
--static inline void setup_kvm_el2_caps(void) {}
- #endif
- 
- void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
-diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-index de40a565d7e5..8ef9d88826d4 100644
---- a/arch/arm64/include/asm/kvm_hyp.h
-+++ b/arch/arm64/include/asm/kvm_hyp.h
-@@ -116,4 +116,7 @@ int __pkvm_init(phys_addr_t phys, unsigned long size, unsigned long nr_cpus,
- void __noreturn __host_enter(struct kvm_cpu_context *host_ctxt);
- #endif
- 
-+extern u64 kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val);
-+extern u64 kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val);
-+
- #endif /* __ARM64_KVM_HYP_H__ */
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 6252476e4e73..066030717a4c 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1154,18 +1154,6 @@ u64 read_sanitised_ftr_reg(u32 id)
- }
- EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
- 
--int copy_ftr_reg(u32 id, struct arm64_ftr_reg *dst)
--{
--	struct arm64_ftr_reg *regp = get_arm64_ftr_reg(id);
--
--	if (!regp)
--		return -EINVAL;
--
--	*dst = *regp;
--
--	return 0;
--}
--
- #define read_sysreg_case(r)	\
- 	case r:		val = read_sysreg_s(r); break;
- 
-@@ -2785,7 +2773,6 @@ void __init setup_cpu_features(void)
- 
- 	setup_system_capabilities();
- 	setup_elf_hwcaps(arm64_elf_hwcaps);
--	setup_kvm_el2_caps();
- 
- 	if (system_supports_32bit_el0())
- 		setup_elf_hwcaps(compat_elf_hwcaps);
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 368159021dee..2835400fd298 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1730,6 +1730,9 @@ static int kvm_hyp_init_protection(u32 hyp_va_bits)
- 	void *addr = phys_to_virt(hyp_mem_base);
- 	int ret;
- 
-+	kvm_nvhe_sym(id_aa64mmfr0_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
-+	kvm_nvhe_sym(id_aa64mmfr1_el1_sys_val) = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
-+
- 	ret = create_hyp_mappings(addr, addr + hyp_mem_size, PAGE_HYP);
- 	if (ret)
- 		return ret;
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-index 17ad1b3a9530..879559057dee 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -5,17 +5,9 @@
-  */
- 
- #include <asm/kvm_asm.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
- 
--/*
-- * Copies of the host's CPU features registers holding sanitized values.
-- */
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_ctrel0);
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr0_el1);
--DEFINE_KVM_HYP_CPU_FTR_REG(arm64_ftr_reg_id_aa64mmfr1_el1);
--
- /*
-  * nVHE copy of data structures tracking available CPU cores.
-  * Only entries for CPUs that were online at KVM init are populated.
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index 808e2471091b..f4f364aa3282 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -5,7 +5,6 @@
-  */
- 
- #include <linux/kvm_host.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_emulate.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
-@@ -27,6 +26,12 @@ struct host_kvm host_kvm;
- struct hyp_pool host_s2_mem;
- struct hyp_pool host_s2_dev;
- 
-+/*
-+ * Copies of the host's CPU features registers holding sanitized values.
-+ */
-+u64 id_aa64mmfr0_el1_sys_val;
-+u64 id_aa64mmfr1_el1_sys_val;
-+
- static const u8 pkvm_hyp_id = 1;
- 
- static void *host_s2_zalloc_pages_exact(size_t size)
-@@ -72,16 +77,13 @@ static int prepare_s2_pools(void *mem_pgt_pool, void *dev_pgt_pool)
- static void prepare_host_vtcr(void)
- {
- 	u32 parange, phys_shift;
--	u64 mmfr0, mmfr1;
--
--	mmfr0 = arm64_ftr_reg_id_aa64mmfr0_el1.sys_val;
--	mmfr1 = arm64_ftr_reg_id_aa64mmfr1_el1.sys_val;
- 
- 	/* The host stage 2 is id-mapped, so use parange for T0SZ */
--	parange = kvm_get_parange(mmfr0);
-+	parange = kvm_get_parange(id_aa64mmfr0_el1_sys_val);
- 	phys_shift = id_aa64mmfr0_parange_to_phys_shift(parange);
- 
--	host_kvm.arch.vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
-+	host_kvm.arch.vtcr = kvm_get_vtcr(id_aa64mmfr0_el1_sys_val,
-+					  id_aa64mmfr1_el1_sys_val, phys_shift);
- }
- 
- int kvm_host_prepare_stage2(void *mem_pgt_pool, void *dev_pgt_pool)
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index dfb3b4f9ca84..4f2f1e3145de 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -21,7 +21,6 @@
- #include <asm/debug-monitors.h>
- #include <asm/esr.h>
- #include <asm/kvm_arm.h>
--#include <asm/kvm_cpufeature.h>
- #include <asm/kvm_emulate.h>
- #include <asm/kvm_hyp.h>
- #include <asm/kvm_mmu.h>
-@@ -2776,24 +2775,3 @@ void kvm_sys_reg_table_init(void)
- 	/* Clear all higher bits. */
- 	cache_levels &= (1 << (i*3))-1;
- }
--
--#define CPU_FTR_REG_HYP_COPY(id, name) \
--	{ .sys_id = id, .dst = (struct arm64_ftr_reg *)&kvm_nvhe_sym(name) }
--struct __ftr_reg_copy_entry {
--	u32			sys_id;
--	struct arm64_ftr_reg	*dst;
--} hyp_ftr_regs[] __initdata = {
--	CPU_FTR_REG_HYP_COPY(SYS_CTR_EL0, arm64_ftr_reg_ctrel0),
--	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR0_EL1, arm64_ftr_reg_id_aa64mmfr0_el1),
--	CPU_FTR_REG_HYP_COPY(SYS_ID_AA64MMFR1_EL1, arm64_ftr_reg_id_aa64mmfr1_el1),
--};
--
--void __init setup_kvm_el2_caps(void)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(hyp_ftr_regs); i++) {
--		WARN(copy_ftr_reg(hyp_ftr_regs[i].sys_id, hyp_ftr_regs[i].dst),
--		     "%u feature register not found\n", hyp_ftr_regs[i].sys_id);
--	}
--}
--- 
-2.29.2
-
+-chrish
