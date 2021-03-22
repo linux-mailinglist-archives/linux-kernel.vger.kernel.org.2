@@ -2,215 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86440344904
+	by mail.lfdr.de (Postfix) with ESMTP id D21D2344905
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhCVPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:15:59 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19902 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231660AbhCVPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:15:37 -0400
-IronPort-SDR: 8nPfxkHMUeMeCzYQqzaC3SZu+D8WZqjL3PKNkyl1j4PWikIO0r8FVVqXyNgbjEtHasKt3blMM2
- pLBX7Oy2flVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="170251357"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="170251357"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 08:15:34 -0700
-IronPort-SDR: SZYRT8xe714sBHz4WH3p31ZMCmNMEqYc9rRJXpzelKEDbKsS/Ii8WwROmqt+t5/2GBsHBehzU6
- DBvpySfAVbYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="513345237"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Mar 2021 08:15:33 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lOMHE-00009A-Eb; Mon, 22 Mar 2021 15:15:32 +0000
-Date:   Mon, 22 Mar 2021 23:14:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 3b03706fa621ce31a3e9ef6307020fde4e6aae16
-Message-ID: <6058b45e.PW+o6tJ2UPhg1mE2%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231702AbhCVPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhCVPPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:15:36 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D0C061574;
+        Mon, 22 Mar 2021 08:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=7sVj0zne5uraXbQ//kjYO0Rg5Vmtx7bRBUHhpcOjtWQ=; b=19LPYNE1An4Vq30ymjKPv1ir4
+        1N4WZ2NotgqYRXFLxWXnEwIwOV0dUrwCADfnIpw65dBPGGRlqgtjlmDZdpZomzdLoTuQSl1zDGFz2
+        MQoxJBg0Tjirj7DxXvGfAOsY45sTY60WYtj/ecWab2d57FCLJMv9NjFZCP7xSvzUijmP/FKbBRfBF
+        9frim2m7D7TXIeBRPC8bWx0zyxVBpOhiLY8IQtB/VG8Cs+13h5Nv+kRwQVEGCx3dN0i5MwO5C3Kbt
+        gNbXO/w+hnl+ZIPO3hxWwCgR4bNb8EaXvi4pXvLw5+FMwe3PVnYHuypHBWrF6eQ9PT3wPT/4kHFZ2
+        jycH0GUEg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51586)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lOMGp-0006aZ-E5; Mon, 22 Mar 2021 15:15:07 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lOMGl-0003Ku-Ll; Mon, 22 Mar 2021 15:15:03 +0000
+Date:   Mon, 22 Mar 2021 15:15:03 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210322151503.GX1463@shell.armlinux.org.uk>
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-3-hch@lst.de>
+ <20210319170753.GV1463@shell.armlinux.org.uk>
+ <20210319175311.GW1463@shell.armlinux.org.uk>
+ <20210322145403.GA30942@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210322145403.GA30942@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 3b03706fa621ce31a3e9ef6307020fde4e6aae16  sched: Fix various typos
+On Mon, Mar 22, 2021 at 03:54:03PM +0100, Christoph Hellwig wrote:
+> On Fri, Mar 19, 2021 at 05:53:12PM +0000, Russell King - ARM Linux admin wrote:
+> > If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
+> > actually are not present on the CY82C693) then the IDE driver works
+> > for me, but the PATA driver does not:
+> > 
+> > cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
+> > cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
+> > legacy IDE will be removed in 2021, please switch to libata
+> > Report any missing HW support to linux-ide@vger.kernel.org
+> >     ide0: BM-DMA at 0x1080-0x1087
+> >     ide1: BM-DMA at 0x1088-0x108f
+> > Probing IDE interface ide0...
+> > hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
+> > hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
+> > ...
+> > 
+> > (unbind Cypress_IDE and try binding pata_cypress)
+> > 
+> > pata_cypress 0000:00:06.1: no available native port
+> 
+> This comes from ata_pci_sff_init_host when it tails to initialize
+> a port.  There are three cases why it can't initialize the port:
+> 
+>  1) because it is marked as dummy, which is the case for the second
+>     port of the cypress controller, but you're not using that even
+>     with the old ide driver, and we'd still not get that message just
+>     because of that second port.
+>  2) when ata_resources_present returns false because the BAR has
+>     a zero start or length
+>  3) because pcim_iomap_regions() fails.  This prints a warning to the
+>     log ("failed to request/iomap BARs for port %d (errno=%d)") that you
+>     should have seen
+> 
+> So the problem here has to be number two.  The legacy ide driver OTOH
+> seems to lack a lot of these checks, although I'm not sure how it
+> manages to actually work without those.
+> 
+> Can you show how the BAR assignment for the device looks using lscpi
+> or a tool of your choice?
 
-elapsed time: 723m
+There's a big problem here. I have to explicitly zero the resources
+(getting rid of the legacy ones assigned by the PCI probe code)
+because they are in fact _wrong_ for the CY82C693. The PCI code
+assumes that PCI function 1 (primary port) and PCI function 2
+(secondary port) are two independent dual-channel IDE ports, and
+as the PROG-IF of the class code indicates that all ports are in
+legacy mode, the PCI code assigns the legacy ioport resources to
+_both_ PCI functions. Essentially, the CY82C693 is a bit of an odd-ball
+because it splits the two IDE ports across two functions rather than a
+single function.
 
-configs tested: 153
-configs skipped: 3
+It gets worse than that though - due to a change to remove
+pcibios_min_io from the generic code, moving it into the ARM
+architecture code, this has caused a regression that prevents the
+legacy resources being registered against the bus resource. So even
+if they are there, they cause probe failures. I haven't found a
+reasonable way to solve this yet, but until there is, there is no
+way that the PATA driver can be used as the "legacy mode" support
+is effectively done via the PCI code assigning virtual IO port
+resources.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm quite surprised that the CY82C693 even works on Alpha - I've
+asked for a lspci for that last week but nothing has yet been
+forthcoming from whoever responded to your patch for Alpha - so I
+can't compare what I'm seeing with what's happening with Alpha.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-arm                         socfpga_defconfig
-m68k                         apollo_defconfig
-parisc                generic-64bit_defconfig
-xtensa                       common_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                         ps3_defconfig
-nds32                            alldefconfig
-arc                         haps_hs_defconfig
-powerpc                     mpc512x_defconfig
-mips                      maltasmvp_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                                  defconfig
-sh                          urquell_defconfig
-xtensa                    xip_kc705_defconfig
-sh                        sh7757lcr_defconfig
-m68k                        m5407c3_defconfig
-sh                          polaris_defconfig
-powerpc                      mgcoge_defconfig
-mips                      pic32mzda_defconfig
-powerpc                      arches_defconfig
-arm                            mmp2_defconfig
-riscv                               defconfig
-m68k                       m5475evb_defconfig
-mips                          rm200_defconfig
-alpha                            allyesconfig
-powerpc                     skiroot_defconfig
-arc                          axs103_defconfig
-arm                            zeus_defconfig
-arm                        mvebu_v7_defconfig
-s390                                defconfig
-arm                          pcm027_defconfig
-powerpc                       ppc64_defconfig
-mips                       lemote2f_defconfig
-arm                     eseries_pxa_defconfig
-arm                      tct_hammer_defconfig
-powerpc                      walnut_defconfig
-arm                      footbridge_defconfig
-mips                   sb1250_swarm_defconfig
-sh                               alldefconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                     ep8248e_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                    klondike_defconfig
-sh                        dreamcast_defconfig
-powerpc                     kilauea_defconfig
-i386                                defconfig
-sh                          rsk7201_defconfig
-powerpc                  iss476-smp_defconfig
-mips                           ip27_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                     kmeter1_defconfig
-ia64                          tiger_defconfig
-arm                        vexpress_defconfig
-ia64                      gensparse_defconfig
-mips                         db1xxx_defconfig
-arm                       versatile_defconfig
-arm                            dove_defconfig
-mips                        vocore2_defconfig
-mips                      fuloong2e_defconfig
-sh                          r7780mp_defconfig
-mips                        bcm47xx_defconfig
-powerpc                        icon_defconfig
-mips                           ip28_defconfig
-arm                          simpad_defconfig
-s390                       zfcpdump_defconfig
-sh                        apsh4ad0a_defconfig
-mips                      loongson3_defconfig
-powerpc                     mpc5200_defconfig
-arm                         cm_x300_defconfig
-sh                           se7722_defconfig
-powerpc                    socrates_defconfig
-mips                           gcw0_defconfig
-sh                           se7206_defconfig
-sh                 kfr2r09-romimage_defconfig
-m68k                          amiga_defconfig
-mips                          malta_defconfig
-m68k                            mac_defconfig
-powerpc                 mpc8272_ads_defconfig
-mips                            gpr_defconfig
-sh                           se7619_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                 mpc8315_rdb_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20210322
-i386                 randconfig-a003-20210322
-i386                 randconfig-a001-20210322
-i386                 randconfig-a002-20210322
-i386                 randconfig-a006-20210322
-i386                 randconfig-a005-20210322
-x86_64               randconfig-a012-20210322
-x86_64               randconfig-a015-20210322
-x86_64               randconfig-a013-20210322
-x86_64               randconfig-a014-20210322
-x86_64               randconfig-a016-20210322
-x86_64               randconfig-a011-20210322
-i386                 randconfig-a014-20210322
-i386                 randconfig-a011-20210322
-i386                 randconfig-a015-20210322
-i386                 randconfig-a016-20210322
-i386                 randconfig-a012-20210322
-i386                 randconfig-a013-20210322
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210322
-x86_64               randconfig-a003-20210322
-x86_64               randconfig-a001-20210322
-x86_64               randconfig-a006-20210322
-x86_64               randconfig-a004-20210322
-x86_64               randconfig-a005-20210322
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
