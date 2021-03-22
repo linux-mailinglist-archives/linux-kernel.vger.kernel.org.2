@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4361F344473
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3AE344247
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbhCVNAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41972 "EHLO mail.kernel.org"
+        id S231722AbhCVMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:40:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232731AbhCVMsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED88D619E6;
-        Mon, 22 Mar 2021 12:43:58 +0000 (UTC)
+        id S231748AbhCVMfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:35:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21B29619B3;
+        Mon, 22 Mar 2021 12:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417039;
-        bh=WdUFp7EHK1aaSRLs1v1yIQ1MRYtqJlMTkkRzWZBV+E0=;
+        s=korg; t=1616416492;
+        bh=1bawS5OTku2R6D5ze2GbkygzAGmlVC9GfgjGVO+5eIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SGc09lT1f0eAHsck6VA/N/F0lUjlwuEjTwDrw0o6sUKqUFGW4qXEBq9axHR5uD7k+
-         veDhLGYAo3ZSeYlrxMU7ZtduIBTX2OSYuf6CwWgSshfo6X80AqpNwyZx8FCziEHxpK
-         jhLaQu82WoVuiFUAszQ6rXldZiRjYadriFfHwUGw=
+        b=neBu/XdsMH5HX0WqJr6cw+WiEf9u2WWgNSrwNsVqmgD/3+Sd5vYirP+4dvA/8kAru
+         k1nWgU3K4vEqeY9snVGvOC57K7MqqLsjKD+lrebqxuiF9i8IhshJNkjW/Ffj6NKSz5
+         j2Ey348YHHkFAdBK3k3dJ9Mpb9RrKX91CMjxdy6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 30/60] scsi: lpfc: Fix some error codes in debugfs
-Date:   Mon, 22 Mar 2021 13:28:18 +0100
-Message-Id: <20210322121923.386911932@linuxfoundation.org>
+        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.11 116/120] static_call: Fix static_call_update() sanity check
+Date:   Mon, 22 Mar 2021 13:28:19 +0100
+Message-Id: <20210322121933.533656699@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 19f1bc7edf0f97186810e13a88f5b62069d89097 upstream.
+commit 38c93587375053c5b9ef093f4a5ea754538cba32 upstream.
 
-If copy_from_user() or kstrtoull() fail then the correct behavior is to
-return a negative error code.
+Sites that match init_section_contains() get marked as INIT. For
+built-in code init_sections contains both __init and __exit text. OTOH
+kernel_text_address() only explicitly includes __init text (and there
+are no __exit text markers).
 
-Link: https://lore.kernel.org/r/YEsbU/UxYypVrC7/@mwanda
-Fixes: f9bb2da11db8 ("[SCSI] lpfc 8.3.27: T10 additions for SLI4")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Match what jump_label already does and ignore the warning for INIT
+sites. Also see the excellent changelog for commit: 8f35eaa5f2de
+("jump_label: Don't warn on __exit jump entries")
+
+Fixes: 9183c3f9ed710 ("static_call: Add inline static call infrastructure")
+Reported-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Tested-by: Sumit Garg <sumit.garg@linaro.org>
+Link: https://lkml.kernel.org/r/20210318113610.739542434@infradead.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/lpfc/lpfc_debugfs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/jump_label.c  |    8 ++++++++
+ kernel/static_call.c |   11 ++++++++++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -2217,7 +2217,7 @@ lpfc_debugfs_dif_err_write(struct file *
- 	memset(dstbuf, 0, 33);
- 	size = (nbytes < 32) ? nbytes : 32;
- 	if (copy_from_user(dstbuf, buf, size))
--		return 0;
-+		return -EFAULT;
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -407,6 +407,14 @@ static bool jump_label_can_update(struct
+ 		return false;
  
- 	if (dent == phba->debug_InjErrLBA) {
- 		if ((buf[0] == 'o') && (buf[1] == 'f') && (buf[2] == 'f'))
-@@ -2225,7 +2225,7 @@ lpfc_debugfs_dif_err_write(struct file *
- 	}
+ 	if (!kernel_text_address(jump_entry_code(entry))) {
++		/*
++		 * This skips patching built-in __exit, which
++		 * is part of init_section_contains() but is
++		 * not part of kernel_text_address().
++		 *
++		 * Skipping built-in __exit is fine since it
++		 * will never be executed.
++		 */
+ 		WARN_ONCE(!jump_entry_is_init(entry),
+ 			  "can't patch jump_label at %pS",
+ 			  (void *)jump_entry_code(entry));
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -182,7 +182,16 @@ void __static_call_update(struct static_
+ 			}
  
- 	if ((tmp == 0) && (kstrtoull(dstbuf, 0, &tmp)))
--		return 0;
-+		return -EINVAL;
- 
- 	if (dent == phba->debug_writeGuard)
- 		phba->lpfc_injerr_wgrd_cnt = (uint32_t)tmp;
+ 			if (!kernel_text_address((unsigned long)site_addr)) {
+-				WARN_ONCE(1, "can't patch static call site at %pS",
++				/*
++				 * This skips patching built-in __exit, which
++				 * is part of init_section_contains() but is
++				 * not part of kernel_text_address().
++				 *
++				 * Skipping built-in __exit is fine since it
++				 * will never be executed.
++				 */
++				WARN_ONCE(!static_call_is_init(site),
++					  "can't patch static call site at %pS",
+ 					  site_addr);
+ 				continue;
+ 			}
 
 
