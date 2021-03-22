@@ -2,67 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1765A344AFC
+	by mail.lfdr.de (Postfix) with ESMTP id 6301A344AFD
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhCVQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:18:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56898 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231626AbhCVQSa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:18:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616429909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i5OZl+2uG3qd5KjzQMzycc1zUhTUOaFHbDQTpG9xOvc=;
-        b=YPQWy7RiWrSQ84GUsoPNWAssobf5RwLsgA9twwDowp1BDwq+WKQEDrRm635zepBCF5GoZI
-        potBOyuFoVvymwBBlaN4QiKEmmTnjjhH7YlEukewlvXTVV9njsFERG7Krw2q4W8B0Tkz93
-        ubC0csPNZY7d5pzUnTfBR1JSNfptJS4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-KLWOxJSgNQazoZUoCy9bjw-1; Mon, 22 Mar 2021 12:18:27 -0400
-X-MC-Unique: KLWOxJSgNQazoZUoCy9bjw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45A6785EE8B;
-        Mon, 22 Mar 2021 16:18:26 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 540E160C0F;
-        Mon, 22 Mar 2021 16:18:24 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 22 Mar 2021 17:18:25 +0100 (CET)
-Date:   Mon, 22 Mar 2021 17:18:23 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH 2/2] signal: don't allow STOP on PF_IO_WORKER threads
-Message-ID: <20210322161822.GC20390@redhat.com>
-References: <20210320153832.1033687-1-axboe@kernel.dk>
- <20210320153832.1033687-3-axboe@kernel.dk>
- <m1sg4paj8h.fsf@fess.ebiederm.org>
+        id S231723AbhCVQTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:19:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhCVQSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:18:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 870896197F;
+        Mon, 22 Mar 2021 16:18:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616429920;
+        bh=kSTU4aDsOvuAbAuUCXG/WhJB+C+wlLWVnpXMEQ1jxZ0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SpSi0kdOS0kxv1MsTetciTKKyrNHyjObZVRmx8C7LIiQrpYHzGtfjHU7ZXCYTyPK2
+         aWT/dAm62jjq5I5Pw9keDeFQR+CxFhcoHedF8v0TDINBG2tWMFais3v21plBIZNdAR
+         GHAu56/PRcyuTZAOjpQq10Aj57Ob4PPflbRaouyhAH0X9YCcXHAfE6Pp2zHMo3ahgy
+         DwdHQmDZApU2R3PHmJh6kw4Yx2NQL7FBxxyjRZb3lhv3w0zxMzwfoLeXH+eGZfCUlj
+         XlA3zQVkJxeFBqFv0h2kstNdIShA/M9NJTfUz/0/DvIfKa9dz3SG4ji87r3blhvjdk
+         1hjmpcFG6fWkg==
+Received: by mail-oo1-f46.google.com with SMTP id c12-20020a4ae24c0000b02901bad05f40e4so4231594oot.4;
+        Mon, 22 Mar 2021 09:18:40 -0700 (PDT)
+X-Gm-Message-State: AOAM533rtKEu4EuiKdnl90eGZFOs2PvTdzokZEqTxRvwLjGZS9aHo5si
+        rY7ByuhKBUxXecEJAYXQlD2BpoPJzzuuofMQbCg=
+X-Google-Smtp-Source: ABdhPJwJATAkvz6Hx4t7tPk8luQsFyzCoSamruM/CA7kbTtDRxjBf2ZNGWPmV0U+ze4BLpzCNUki46jerr63RaDhEzQ=
+X-Received: by 2002:a4a:244d:: with SMTP id v13mr287550oov.66.1616429919879;
+ Mon, 22 Mar 2021 09:18:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m1sg4paj8h.fsf@fess.ebiederm.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210322114441.3479365-1-arnd@kernel.org> <20210322154735.GA2079192@infradead.org>
+ <20210322155344.GA23040@1wt.eu>
+In-Reply-To: <20210322155344.GA23040@1wt.eu>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 22 Mar 2021 17:18:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1bb4QvNyM9kkt0KB9k70cdEZ-e+B-CHHtPhaPO6ouxeQ@mail.gmail.com>
+Message-ID: <CAK8P3a1bb4QvNyM9kkt0KB9k70cdEZ-e+B-CHHtPhaPO6ouxeQ@mail.gmail.com>
+Subject: Re: [PATCH] target: pscsi: avoid Wempty-body warning
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/20, Eric W. Biederman wrote:
+On Mon, Mar 22, 2021 at 4:53 PM Willy Tarreau <w@1wt.eu> wrote:
+> On Mon, Mar 22, 2021 at 03:47:35PM +0000, Christoph Hellwig wrote:
+> > On Mon, Mar 22, 2021 at 12:44:34PM +0100, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > Building with 'make W=1' shows a harmless warning for pscsi:
+> > >
+> > > drivers/target/target_core_pscsi.c: In function 'pscsi_complete_cmd':
+> > > drivers/target/target_core_pscsi.c:624:33: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+> > >   624 |                                 ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
+> > >       |                                 ^
+> > >
+> > > Rework the coding style as suggested by gcc to avoid the warning.
+> >
+> > I would much, much prefer to drop the bogus warning;
+> >
+> >       if (foo)
+> >               ; /* comment */
+> >
+> > is a fairly usual and absolutely sensible style.  The warning on hte
+> > other hand is completely stupid.
 >
-> But please tell me why is it not the right thing to have the io_uring
-> helper threads stop?  Why is it ok for that process to go on consuming
-> cpu resources in a non-stoppable way.
+> Agreed!
+>
+> These days it seems there is a competition for the stupidest warning
+> between compilers, and we've reached the point where working around
+> them manages to introduce real bugs :-(
+>
+> I predict we'll soon see warning such as "this comment looks like valid
+> C code, if you really intended to comment it out, use #if 0 instead". Oh
+> well, let's hope I have not given a new idea here...
 
-Yes, I have the same question ;)
+I agree that this instance of the warning is particularly stupid, but the
+I'd like to leave the warning option there and eventually enable it by
+default because it tends to find other more interesting cases, and this
+one is trivial to work around.
 
-Oleg.
+I remember previously fixing a few drivers that did obviously
+incorrect things like
 
+    if (error); /* note the extra ';' */
+         return error;
+
+and a lot mostly harmless code like
+
+#ifdef DEBUG_THIS_DRIVER /* always disabled */
+#define dprintk(args...) printk(args)
+#else
+#define dprintk(args...)
+#endif
+    /* note the mismatched format string */
+    dprintk(KERN_WARNING "error %d\n", &object);
+
+Turning the empty dprintk() into no_printk() means we can catch
+the wrong format string during compile testing.
+
+        Arnd
