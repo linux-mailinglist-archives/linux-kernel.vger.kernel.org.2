@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E3E34448B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE9F344416
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhCVNBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:01:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
+        id S233003AbhCVM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232842AbhCVMsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B96D3619F0;
-        Mon, 22 Mar 2021 12:44:34 +0000 (UTC)
+        id S231138AbhCVMqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61476619AB;
+        Mon, 22 Mar 2021 12:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417075;
-        bh=UyhdMlpYSEROnKi2OAQHU3TwT3viH8lrqexKT9RRmNA=;
+        s=korg; t=1616416966;
+        bh=1Ab42TiqY+7mhON/x0PDzE+X0KpbTXlLhtRYBRHphuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qqE5yc3Bwgurph3MO5qjzFKHJtO4tMQYQCnIUzBymzSHagI4b/UNntGwGkiukoIWV
-         GlGAiDPhG5sXPVbCMS0VrcfwzB1X+N7VKUZMeAgSbr1MePAV5/BV/NYvs21WL2uay+
-         2NT3RlIJnjksf/Xg89BlcRBnFvl4GLjumFQVJ/ps=
+        b=m2HV5plj2gKYzxzv5LyLMwB1b9Tfr2TUDT4W+7JZ6YpbFYpqX97VT5OoOmk+ZxRG+
+         PobnIki/AI0Rs9Xpu18Kfrl+DljGwB3zr2IAQYHLpCXpo76QyTJtB4cUi4LdIdXhV4
+         s1kXaW7QXSz0b+Vxpnp5qX+x04/DZhWk+tpJFx74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@gmail.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Jason Baron <jbaron@akamai.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wang Nan <wangnan0@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.19 09/43] tools build feature: Check if eventfd() is available
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH 5.4 35/60] usbip: Fix incorrect double assignment to udc->ud.tcp_rx
 Date:   Mon, 22 Mar 2021 13:28:23 +0100
-Message-Id: <20210322121920.231048707@linuxfoundation.org>
+Message-Id: <20210322121923.545560260@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,139 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 11c6cbe706f218a8dc7e1f962f12b3a52ddd33a9 upstream.
+commit 9858af27e69247c5d04c3b093190a93ca365f33d upstream.
 
-A new 'perf bench epoll' will use this, and to disable it for older
-systems, add a feature test for this API.
+Currently udc->ud.tcp_rx is being assigned twice, the second assignment
+is incorrect, it should be to udc->ud.tcp_tx instead of rx. Fix this.
 
-This is just a simple program that if successfully compiled, means that
-the feature is present, at least at the library level, in a build that
-sets the output directory to /tmp/build/perf (using O=/tmp/build/perf),
-we end up with:
-
-  $ ls -la /tmp/build/perf/feature/test-eventfd*
-  -rwxrwxr-x. 1 acme acme 8176 Nov 21 15:58 /tmp/build/perf/feature/test-eventfd.bin
-  -rw-rw-r--. 1 acme acme  588 Nov 21 15:58 /tmp/build/perf/feature/test-eventfd.d
-  -rw-rw-r--. 1 acme acme    0 Nov 21 15:58 /tmp/build/perf/feature/test-eventfd.make.output
-  $ ldd /tmp/build/perf/feature/test-eventfd.bin
-	  linux-vdso.so.1 (0x00007fff3bf3f000)
-	  libc.so.6 => /lib64/libc.so.6 (0x00007fa984061000)
-	  /lib64/ld-linux-x86-64.so.2 (0x00007fa984417000)
-  $ grep eventfd -A 2 -B 2 /tmp/build/perf/FEATURE-DUMP
-  feature-dwarf=1
-  feature-dwarf_getlocations=1
-  feature-eventfd=1
-  feature-fortify-source=1
-  feature-sync-compare-and-swap=1
-  $
-
-The main thing here is that in the end we'll have -DHAVE_EVENTFD in
-CFLAGS, and then the 'perf bench' entry needing that API can be
-selectively pruned.
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: David Ahern <dsahern@gmail.com>
-Cc: Davidlohr Bueso <dbueso@suse.de>
-Cc: Jason Baron <jbaron@akamai.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Wang Nan <wangnan0@huawei.com>
-Link: https://lkml.kernel.org/n/tip-wkeldwob7dpx6jvtuzl8164k@git.kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 46613c9dfa96 ("usbip: fix vudc usbip_sockfd_store races leading to gpf")
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: stable <stable@vger.kernel.org>
+Addresses-Coverity: ("Unused value")
+Link: https://lore.kernel.org/r/20210311104445.7811-1-colin.king@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/build/Makefile.feature       |    1 +
- tools/build/feature/Makefile       |    4 ++++
- tools/build/feature/test-all.c     |    5 +++++
- tools/build/feature/test-eventfd.c |    9 +++++++++
- tools/perf/Makefile.config         |    5 ++++-
- 5 files changed, 23 insertions(+), 1 deletion(-)
- create mode 100644 tools/build/feature/test-eventfd.c
+ drivers/usb/usbip/vudc_sysfs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -31,6 +31,7 @@ FEATURE_TESTS_BASIC :=
-         backtrace                       \
-         dwarf                           \
-         dwarf_getlocations              \
-+        eventfd                         \
-         fortify-source                  \
-         sync-compare-and-swap           \
-         get_current_dir_name            \
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -5,6 +5,7 @@ FILES=
-          test-bionic.bin                        \
-          test-dwarf.bin                         \
-          test-dwarf_getlocations.bin            \
-+         test-eventfd.bin                       \
-          test-fortify-source.bin                \
-          test-sync-compare-and-swap.bin         \
-          test-get_current_dir_name.bin          \
-@@ -100,6 +101,9 @@ $(OUTPUT)test-bionic.bin:
- $(OUTPUT)test-libelf.bin:
- 	$(BUILD) -lelf
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -174,7 +174,7 @@ static ssize_t usbip_sockfd_store(struct
  
-+$(OUTPUT)test-eventfd.bin:
-+	$(BUILD)
-+
- $(OUTPUT)test-get_current_dir_name.bin:
- 	$(BUILD)
+ 		udc->ud.tcp_socket = socket;
+ 		udc->ud.tcp_rx = tcp_rx;
+-		udc->ud.tcp_rx = tcp_tx;
++		udc->ud.tcp_tx = tcp_tx;
+ 		udc->ud.status = SDEV_ST_USED;
  
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -50,6 +50,10 @@
- # include "test-dwarf_getlocations.c"
- #undef main
- 
-+#define main main_test_eventfd
-+# include "test-eventfd.c"
-+#undef main
-+
- #define main main_test_libelf_getphdrnum
- # include "test-libelf-getphdrnum.c"
- #undef main
-@@ -182,6 +186,7 @@ int main(int argc, char *argv[])
- 	main_test_glibc();
- 	main_test_dwarf();
- 	main_test_dwarf_getlocations();
-+	main_test_eventfd();
- 	main_test_libelf_getphdrnum();
- 	main_test_libelf_gelf_getnote();
- 	main_test_libelf_getshdrstrndx();
---- /dev/null
-+++ b/tools/build/feature/test-eventfd.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2018, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
-+
-+#include <sys/eventfd.h>
-+
-+int main(void)
-+{
-+	return eventfd(0, EFD_NONBLOCK);
-+}
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -310,11 +310,14 @@ ifndef NO_BIONIC
-   endif
- endif
- 
-+ifeq ($(feature-eventfd), 1)
-+  CFLAGS += -DHAVE_EVENTFD
-+endif
-+
- ifeq ($(feature-get_current_dir_name), 1)
-   CFLAGS += -DHAVE_GET_CURRENT_DIR_NAME
- endif
- 
--
- ifdef NO_LIBELF
-   NO_DWARF := 1
-   NO_DEMANGLE := 1
+ 		spin_unlock_irq(&udc->ud.lock);
 
 
