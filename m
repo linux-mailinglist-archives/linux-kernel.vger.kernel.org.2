@@ -2,204 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615F9343EE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4075A343F01
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhCVLGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:06:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26191 "EHLO mga09.intel.com"
+        id S230295AbhCVLHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:07:46 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40756 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231138AbhCVLG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:06:29 -0400
-IronPort-SDR: leZDYgdw0+tMyjWU9OyBwtqYczTg2QM6vo0XRWLtf3+z6cHAJVM1+8Jf0KkoTPmS771ryCfj1r
- IBFIW/+T1E9w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="190342320"
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="190342320"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 04:06:28 -0700
-IronPort-SDR: RrajTORRYE1vsu2K4GS1pF36jNF/FsF8cZqEGA2btT7WM2zhIF5m+lFO2gaKQJwa4whLrkmRP6
- HejJt2vFNzYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="513268650"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Mar 2021 04:06:24 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: Intel: Handle device properties with software node API
-Date:   Mon, 22 Mar 2021 14:06:38 +0300
-Message-Id: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230080AbhCVLHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:07:40 -0400
+Received: from zn.tnic (p200300ec2f06670063ce2fe2d87b4e47.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:63ce:2fe2:d87b:4e47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0221F1EC0374;
+        Mon, 22 Mar 2021 12:07:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616411255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=yebnAM04kqo0Y3gumygngXabGwhPrWwTAVUbDzRwA2U=;
+        b=CKsnFcX08p4OA4OImibBpvy/4i3KTXP5s6PVr3KQkvc7NH1WZn12adajRTqNuCzUp2RJay
+        nvaGZrsLiI76hVeGNK93Am47QUctt1Uk+sXGdjX7TPZoeBCTYKTapsHgzk3mBxWOmKdIq0
+        0g+LbNY1YGY5zjO2rVmJl0IY3g2THpQ=
+Date:   Mon, 22 Mar 2021 12:07:34 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        mbenes@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/14] x86/alternatives: Optimize optimize_nops()
+Message-ID: <20210322110734.GC6481@zn.tnic>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171919.520075106@infradead.org>
+ <20210321120647.GB14446@zn.tnic>
+ <YFhStWee0OrxBn5F@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YFhStWee0OrxBn5F@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function device_add_properties() is going to be removed.
-Replacing it with software node API equivalents.
+On Mon, Mar 22, 2021 at 09:17:57AM +0100, Peter Zijlstra wrote:
+> You've make it only replace a single stream of NOPs. Which is probably
+> fine, but... :-)
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
-Hi,
+Yap, since I added the padding thing there should be no need to put NOPs
+in the middle.
 
-This patch depends on a fix from mainline, available in v5.12-rc4:
+> So mine, while a little more complicated, will replace any number of NOP
 
-	2a92c90f2ecc ("software node: Fix device_add_software_node()")
+A little? I had to sprinkle printks to figure out what it does :)
 
-Cheers,
----
- sound/soc/intel/boards/bytcht_es8316.c      |  2 +-
- sound/soc/intel/boards/bytcr_rt5640.c       |  2 +-
- sound/soc/intel/boards/bytcr_rt5651.c       |  2 +-
- sound/soc/intel/boards/sof_sdw_rt711.c      | 20 +++++++++++++++-----
- sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 20 +++++++++++++++-----
- 5 files changed, 33 insertions(+), 13 deletions(-)
+And what it does is, it calls the instruction decoder on every byte and
+advances by the length of each insn it decoded. But that is unnecessary
+because the possible opcode bytes you should get to see in any possible
+location are:
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 06df2d46d910b..4a9817a95928c 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -544,7 +544,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
- 
- 	if (cnt) {
--		ret = device_add_properties(codec_dev, props);
-+		ret = device_create_managed_software_node(codec_dev, props, NULL);
- 		if (ret) {
- 			put_device(codec_dev);
- 			return ret;
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 59d6d47c8d829..661dad81e5bce 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -918,7 +918,7 @@ static int byt_rt5640_add_codec_device_props(const char *i2c_dev_name)
- 	if (byt_rt5640_quirk & BYT_RT5640_JD_NOT_INV)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
- 
--	ret = device_add_properties(i2c_dev, props);
-+	ret = device_create_managed_software_node(i2c_dev, props, NULL);
- 	put_device(i2c_dev);
- 
- 	return ret;
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 148b7b1bd3e8c..4cb6ef4c3a3d9 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -547,7 +547,7 @@ static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
- 	if (byt_rt5651_quirk & BYT_RT5651_JD_NOT_INV)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,jack-detect-not-inverted");
- 
--	return device_add_properties(i2c_dev, props);
-+	return device_create_managed_software_node(i2c_dev, props, NULL);
- }
- 
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index 04074c09dded9..b7c635c0fadd5 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -24,19 +24,29 @@
- static int rt711_add_codec_device_props(const char *sdw_dev_name)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
-+	struct fwnode_handle *fwnode;
- 	struct device *sdw_dev;
- 	int ret;
- 
-+	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
-+		return 0;
-+
- 	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, sdw_dev_name);
- 	if (!sdw_dev)
- 		return -EPROBE_DEFER;
- 
--	if (SOF_RT711_JDSRC(sof_sdw_quirk)) {
--		props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
--					      SOF_RT711_JDSRC(sof_sdw_quirk));
-+	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
-+				      SOF_RT711_JDSRC(sof_sdw_quirk));
-+
-+	fwnode = fwnode_create_software_node(props, NULL);
-+	if (IS_ERR(fwnode)) {
-+		put_device(sdw_dev);
-+		return PTR_ERR(fwnode);
- 	}
- 
--	ret = device_add_properties(sdw_dev, props);
-+	ret = device_add_software_node(sdw_dev, to_software_node(fwnode));
-+
-+	fwnode_handle_put(fwnode);
- 	put_device(sdw_dev);
- 
- 	return ret;
-@@ -144,7 +154,7 @@ int sof_sdw_rt711_exit(struct device *dev, struct snd_soc_dai_link *dai_link)
- 	if (!sdw_dev)
- 		return -EINVAL;
- 
--	device_remove_properties(sdw_dev);
-+	device_remove_software_node(sdw_dev);
- 	put_device(sdw_dev);
- 
- 	return 0;
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-index 19496f0f9110c..300a52d155069 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-@@ -24,19 +24,29 @@
- static int rt711_sdca_add_codec_device_props(const char *sdw_dev_name)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
-+	struct fwnode_handle *fwnode;
- 	struct device *sdw_dev;
- 	int ret;
- 
-+	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
-+		return 0;
-+
- 	sdw_dev = bus_find_device_by_name(&sdw_bus_type, NULL, sdw_dev_name);
- 	if (!sdw_dev)
- 		return -EPROBE_DEFER;
- 
--	if (SOF_RT711_JDSRC(sof_sdw_quirk)) {
--		props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
--					      SOF_RT711_JDSRC(sof_sdw_quirk));
-+	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src",
-+				      SOF_RT711_JDSRC(sof_sdw_quirk));
-+
-+	fwnode = fwnode_create_software_node(props, NULL);
-+	if (IS_ERR(fwnode)) {
-+		put_device(sdw_dev);
-+		return PTR_ERR(fwnode);
- 	}
- 
--	ret = device_add_properties(sdw_dev, props);
-+	ret = device_add_software_node(sdw_dev, to_software_node(fwnode));
-+
-+	fwnode_handle_put(fwnode);
- 	put_device(sdw_dev);
- 
- 	return ret;
-@@ -144,7 +154,7 @@ int sof_sdw_rt711_sdca_exit(struct device *dev, struct snd_soc_dai_link *dai_lin
- 	if (!sdw_dev)
- 		return -EINVAL;
- 
--	device_remove_properties(sdw_dev);
-+	device_remove_software_node(sdw_dev);
- 	put_device(sdw_dev);
- 
- 	return 0;
+[(insn).* NOP*]
+
+i.e., 0 or more instructions which are non-NOPs followed by 0 or more
+NOPs. Thus my simpler solution to scan past the non-NOPs and patch the
+rest.
+
+So I don't see the need for the complexity, frankly.
+
+Btw, yours needs some adjusting to the DUMP_BYTES indices call:
+
+[    0.145789] SMP alternatives: SKIP feat: 8*32+16, old: (entry_SYSCALL_64_after_hwframe+0x49/0xc5 (ffffffff81a0006d) len: 23), repl: (ffffffff89764c3f, len: 23)
+[    0.146699] SMP alternatives: ffffffff81a0006d:		 old_insn: 48 c7 c0 90 90 00 00 90 90 90 cd 30 90 90 90 90 90 90 90 90 90 90 90
+[    0.148121] SMP alternatives: ffffffff89764c3f: 		 rpl_insn: 48 bb ef be ad de 00 00 00 00 48 31 c0 48 b9 be ba ee ff c0 00 00 00
+[    0.149405] SMP alternatives: ffffffff81a0006d:   [7:3) optimized NOPs: 48 c7 c0 90 90 00 00 0f 1f 00 cd 30 90 90 90 90 90 90 90 90 90 90 90
+[    0.150700] SMP alternatives: ffffffff81a0006d: [11:11) optimized NOPs: 48 c7 c0 90 90 00 00 0f 1f 00 cd 0f 1f 84 00 00 00 00 00 0f 1f 00 90
+
+[7:3) and [11:11) look weird.
+
+The thing I'm testing with is:
+
+        ALTERNATIVE "mov $0x9090, %rax; .byte 0x90,0x90,0x90; int $0x30", "mov $0xdeadbeef, %rbx; xor %rax, %rax; mov $0xc0ffeebabe, %rcx", \
+                X86_FEATURE_XENPV
+
+which is arbitrary, ofc.
+
+Thx.
+
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
