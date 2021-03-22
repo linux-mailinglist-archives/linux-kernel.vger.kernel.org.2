@@ -2,152 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB86344D46
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 262E3344D64
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhCVR25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:28:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231339AbhCVR2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:28:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 378016198E;
-        Mon, 22 Mar 2021 17:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616434124;
-        bh=2rwrydkysmMQSc6N3DGjAv3Amy343ZJy9rlnSY8Ka3E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TsPsyoeGWDpPaIjupNmnEfmQ/QtO7bbg1u57l7k1RKLpTpezdnr2AVK6ZSAz03vGb
-         8wOHO0tU9OWZLg1KKbxgvtdsIaJ+1UFMvNmncXKKWKz9OIWWJ6weExpxwIXklP4pLf
-         s6Oki27tUqhhMpv8GoR1LXTO7UX97LZWvWDc/u5AfhCRNhWrnXqKe57T1+c5Vg6INH
-         p12mwurwyEx8T9/BFYMHunGAZAM6N4rZ/UDeBjMYd9eECiMMAeU4ND+7s1nExIm/7m
-         d54gUt+V5LPy4r3QvIisntBJHlQJH8RByxs8v8eFFWt5jNCbQjdRQVJCiUPYDnZxoI
-         XlsJ8EKd4+lMQ==
-Received: by mail-ej1-f50.google.com with SMTP id r12so22624835ejr.5;
-        Mon, 22 Mar 2021 10:28:44 -0700 (PDT)
-X-Gm-Message-State: AOAM5305nPxjErerRhiApWKIaO6aS/dFQEODmPc0Tc72cWpqHc2491ru
-        kGmrc2brHSLkybxeLv2qGP/FMKqyOO5eDkwinw==
-X-Google-Smtp-Source: ABdhPJwEE650B2qCl+5dzHQkc1EyMEr+TgB0bws8QNe816t4WdDf58JhDwuvkc1YGlQWDvHsk10hPXfz4t7Qa3L9568=
-X-Received: by 2002:a17:906:c405:: with SMTP id u5mr867472ejz.341.1616434122830;
- Mon, 22 Mar 2021 10:28:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-16-suzuki.poulose@arm.com> <20210306210627.GA1207387@robh.at.kernel.org>
- <f69ad530-baec-2e73-827a-b5a5a6df3d23@arm.com>
-In-Reply-To: <f69ad530-baec-2e73-827a-b5a5a6df3d23@arm.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 22 Mar 2021 11:28:30 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL6ZQPFqc_Q4A6cB+8d7eGidoFhvJwa_YrZm-Xz7oC6mQ@mail.gmail.com>
-Message-ID: <CAL_JsqL6ZQPFqc_Q4A6cB+8d7eGidoFhvJwa_YrZm-Xz7oC6mQ@mail.gmail.com>
-Subject: Re: [PATCH v4 15/19] dts: bindings: Document device tree bindings for ETE
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231934AbhCVRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:32:55 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:21246 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhCVRcM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:32:12 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 22 Mar 2021 10:32:12 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 22 Mar 2021 10:32:10 -0700
+X-QCInternal: smtphost
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 22 Mar 2021 23:01:35 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id BB67B2F8E; Mon, 22 Mar 2021 23:01:34 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v5 0/4] USB DWC3 host wake up support from system suspend
+Date:   Mon, 22 Mar 2021 23:01:16 +0530
+Message-Id: <1616434280-32635-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:53 AM Suzuki K Poulose
-<suzuki.poulose@arm.com> wrote:
->
-> Hi Rob
->
-> On 06/03/2021 21:06, Rob Herring wrote:
-> > On Thu, Feb 25, 2021 at 07:35:39PM +0000, Suzuki K Poulose wrote:
-> >> Document the device tree bindings for Embedded Trace Extensions.
-> >> ETE can be connected to legacy coresight components and thus
-> >> could optionally contain a connection graph as described by
-> >> the CoreSight bindings.
-> >>
-> >> Cc: devicetree@vger.kernel.org
-> >> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >> Cc: Mike Leach <mike.leach@linaro.org>
-> >> Cc: Rob Herring <robh@kernel.org>
-> >> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> ---
-> >> Changes:
-> >>   - Fix out-ports defintion
-> >> ---
-> >>   .../devicetree/bindings/arm/ete.yaml          | 71 +++++++++++++++++++
-> >>   1 file changed, 71 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
-> >> new file mode 100644
-> >> index 000000000000..35a42d92bf97
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
-> >> @@ -0,0 +1,71 @@
-> >> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> >> +# Copyright 2021, Arm Ltd
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
-> >> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> >> +
-> >> +title: ARM Embedded Trace Extensions
-> >> +
-> >> +maintainers:
-> >> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
-> >> +
-> >> +description: |
-> >> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
-> >> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
-> >> +  architecture and has extended support for future architecture changes.
-> >> +  The trace generated by the ETE could be stored via legacy CoreSight
-> >> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
-> >> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
-> >> +  legacy CoreSight components, a node must be listed per instance, along
-> >> +  with any optional connection graph as per the coresight bindings.
-> >> +  See bindings/arm/coresight.txt.
-> >> +
-> >> +properties:
-> >> +  $nodename:
-> >> +    pattern: "^ete([0-9a-f]+)$"
-> >> +  compatible:
-> >> +    items:
-> >> +      - const: arm,embedded-trace-extension
-> >> +
-> >> +  cpu:
-> >> +    description: |
-> >> +      Handle to the cpu this ETE is bound to.
-> >> +    $ref: /schemas/types.yaml#/definitions/phandle
-> >> +
-> >> +  out-ports:
-> >> +    description: |
-> >> +      Output connections from the ETE to legacy CoreSight trace bus.
-> >> +    $ref: /schemas/graph.yaml#/properties/port
-> >
-> > s/port/ports/
->
-> Ok.
->
-> >
-> > And then you need:
-> >
-> >         properties:
-> >           port:
-> >             description: what this port is
-> >             $ref: /schemas/graph.yaml#/properties/port
->
-> Isn't this already covered by the definition of ports ? There are no
-> fixed connections for ETE. It is optional and could be connected to
-> any legacy CoreSight component. i.e, a "ports" object can have port
-> objects inside.
+Avoiding phy powerdown in host mode when wakeup capable devices are 
+connected, so that it can be wake up by devices.
+Set GENPD_FLAG_ACTIVE_WAKEUP flag to keep usb30_prim gdsc active
+when wakeup capable devices are connected to the host.
 
-'properties/ports' only defines that you have 'port' nodes within it.
+Changes in v5:
+Added phy_power_off flag to check presence of wakeup capable devices.
+Dropped patch[v4,4/5] as it is present linux-next.
+Addressed comments in host.c and dwc3-qcom.c.
 
-> Given we have defined out-ports as an object "confirming to the ports"
-> do we need to describe the individual port nodes ?
+Changes in v4:
+Addressed Matthias comments raised in v3.
 
-Yes, you have to define what the 'port' nodes are. A port is a data
-stream and you should know what your hardware has. What the data
-stream is connected to is outside the scope of the binding.
+Changes in v3:
+Removed need_phy_for_wakeup flag and by default avoiding phy powerdown.
+Addressed Matthias comments and added entry for DEV_SUPERSPEED.
+Added suspend_quirk in dwc3 host and moved the dwc3_set_phy_speed_flags.
+Added wakeup-source dt entry and reading in dwc-qcom.c glue driver.
 
-Rob
+Changes in v2:
+Dropped the patch in clock to set GENPD_FLAG_ACTIVE_WAKEUP flag and 
+setting in usb dwc3 driver.
+Separated the core patch and glue driver patch.
+Made need_phy_for_wakeup flag part of dwc structure and 
+hs_phy_flags as unsgined int.
+Adrressed the comment on device_init_wakeup call.
+Corrected offset for reading portsc register.
+Added pacth to support wakeup in xo shutdown case.
+
+Sandeep Maheswaram (4):
+  usb: dwc3: core: Host wake up support from system suspend
+  usb: dwc3: host: Add suspend_quirk for dwc3 host
+  usb: dwc3: qcom: Configure wakeup interrupts and set genpd active
+    wakeup flag
+  arm64: dts: qcom: sc7180: Add wakeup-source property for USB node in
+    IDP and trogdor
+
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts      |  1 +
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  1 +
+ drivers/usb/dwc3/core.c                      |  8 ++-
+ drivers/usb/dwc3/core.h                      |  3 +
+ drivers/usb/dwc3/dwc3-qcom.c                 | 87 ++++++++++++++++++----------
+ drivers/usb/dwc3/host.c                      | 58 +++++++++++++++++++
+ 6 files changed, 124 insertions(+), 34 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
