@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430B1344831
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35811344839
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhCVOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhCVOwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:52:30 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B697BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:52:29 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id e14so3550262ejz.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=t3gPxllU5mvJHQrjHbauoFIiAOe+NDL6oN+LzAey6V8=;
-        b=sjH9p+UuSallMkR4SpRTUbjft+fsLuUDwA1MjkXbCf5CN9AqHlCh6caKVntYKdIWkk
-         1JRFp8EjExBnVR4TKkEBU0eY+LPWQd5YIDQ7/5WmEd0/dm4DgPrqaDckcinVxBgx3F/T
-         jOdEYRBf6scpxx/kSha1gWNtwYewyMmhWOeVLllmI5ypBi3wpVv1RSxFfrht8rNCakVa
-         ZNwM4gmVL+iVl5XT2QAGChnt87ciDMZOkNVou4V0ZepvUJIv+l6tZsnfqp7H2/9uyl32
-         MGtpPMME6cvvZlXQSgvQGrlu7RpdWfoqBxPIUKTFmdNqrSsyL/evmANbntb5rnTH6SfA
-         HDng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=t3gPxllU5mvJHQrjHbauoFIiAOe+NDL6oN+LzAey6V8=;
-        b=qfyhEUK3d7vtfr5m/qrVciXlaldEW957mSnE1mzxAa4qsi5QTy4DO4plP39tlJ2Y4P
-         TIfW0jxjnOZbrhtcv3htD7QEgOViJ5XtBBWq3J8iwA1kLymIPOtBEZTcads2Ky90JpZE
-         og/ifGzc20UDcj8BZq2fHALkX4kzNV4GkqP4ve2iBwmLxEBJMdB0mMBzt1ak59WU7Ydl
-         ZWh6dhnbvijMNVDHFNQgT8cMp50SEX08w9W8GQWexRcQ9gJD7jkKnd7+fTgmnxXKfCQ/
-         6ngUavu+visGBmXs7OdtsK6uJ+bUuF07OM0NUtvDoJpL2zELBI8SKjRGXTT36ukvZMdB
-         XlPQ==
-X-Gm-Message-State: AOAM530zuPB4pkb6eZO8VvQWkfiCHJZMnCdxtxkEJn/nvILAYYQD8FPO
-        vIMnGJeG/GCB1Y2Rv+jnkvQh2g==
-X-Google-Smtp-Source: ABdhPJwKLjll+CJ3xCqUU+yWGptTPOZKXWCKcZgONpfprHFHNe+nB5P+Yyi5QKdRXZPlJj0vOu/JGg==
-X-Received: by 2002:a17:906:9509:: with SMTP id u9mr108444ejx.225.1616424748490;
-        Mon, 22 Mar 2021 07:52:28 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id v15sm11450545edw.28.2021.03.22.07.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:52:28 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:52:26 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     'Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] mfd: Make symbol 'atc260x_i2c_of_match' static
-Message-ID: <20210322145226.GX2916463@dell>
-References: <20210311131507.1902008-1-weiyongjun1@huawei.com>
+        id S230519AbhCVOyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:54:11 -0400
+Received: from mga04.intel.com ([192.55.52.120]:16678 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231394AbhCVOwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:52:55 -0400
+IronPort-SDR: PDZrzvMtyWpyPIHFH/Twk0eFOzWvkUpPcqhagvRHpupWi4PVRTdXsfeMImN3naPaAquc//CzEf
+ an1nOr6NAE0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="187962997"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="187962997"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 07:52:32 -0700
+IronPort-SDR: AcDswo0o5vJUZRQnv7Qgq4FfRiJvce9xEXN0iZXavHHDTiu8NLkg8XL3qJb8K0JAMd3q/9W2Pq
+ cGiyP/W0DPkQ==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="390502622"
+Received: from xzhan86-mobl.amr.corp.intel.com (HELO [10.209.39.64]) ([10.209.39.64])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 07:52:30 -0700
+Subject: Re: [PATCH v23 07/28] x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-8-yu-cheng.yu@intel.com>
+ <20210322091351.ulemcluuhqkzuwkm@box>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <81fa71ee-3b0b-b959-b8c2-19e1a5adc4c4@intel.com>
+Date:   Mon, 22 Mar 2021 07:52:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210311131507.1902008-1-weiyongjun1@huawei.com>
+In-Reply-To: <20210322091351.ulemcluuhqkzuwkm@box>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Mar 2021, 'Wei Yongjun wrote:
+On 3/22/2021 2:13 AM, Kirill A. Shutemov wrote:
+> On Tue, Mar 16, 2021 at 08:10:33AM -0700, Yu-cheng Yu wrote:
+>> The x86 family of processors do not directly create read-only and Dirty
+>> PTEs.  These PTEs are created by software.  One such case is that kernel
+>> read-only pages are historically setup as Dirty.
+>>
+>> New processors that support Shadow Stack regard read-only and Dirty PTEs as
+>> shadow stack pages.  This results in ambiguity between shadow stack and
+>> kernel read-only pages.  To resolve this, removed Dirty from kernel read-
+>> only pages.
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Cc: "H. Peter Anvin" <hpa@zytor.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Borislav Petkov <bp@alien8.de>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+> 
+> Looks good to me.
+> 
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> 
 
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> The sparse tool complains as follows:
-> 
-> drivers/mfd/atc260x-i2c.c:45:27: warning:
->  symbol 'atc260x_i2c_of_match' was not declared. Should it be static?
-> 
-> This symbol is not used outside of atc260x-i2c.c, so this
-> commit marks it static.
-> 
-> Fixes: f7cb7fe34db9 ("mfd: Add MFD driver for ATC260x PMICs")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/mfd/atc260x-i2c.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for reviewing.
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yu-cheng
