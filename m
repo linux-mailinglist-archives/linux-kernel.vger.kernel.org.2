@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBC4343925
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2977E343927
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhCVGEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
+        id S230101AbhCVGEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhCVGEB (ORCPT
+        with ESMTP id S229786AbhCVGEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:04:01 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C702C061574;
-        Sun, 21 Mar 2021 23:04:01 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id x2so11908437oiv.2;
-        Sun, 21 Mar 2021 23:04:01 -0700 (PDT)
+        Mon, 22 Mar 2021 02:04:38 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C67BC061574;
+        Sun, 21 Mar 2021 23:04:38 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id u7so11506822qtq.12;
+        Sun, 21 Mar 2021 23:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L7oOn/ROAR60H6KG2WZjLarg9P4X7xIFiM6//2EpiH4=;
-        b=RReUc0BWxXmf8zDGRBzHgEqjLOovym2EEzkAFzbie33DYd+hDLBPKhSOJiTdsBQbgU
-         +6SjQTr/JTuxeFwRYC4eV4CgsFfVDI1UW1c8HhqvShbc0Id3WBXxzEvIAei6v4JC/1oI
-         FLcU+hoMjXCfN63sqJBwVHHAn3Bh2r6YXf5kDHDHsR5eXQzUycYUXeegJ+nxXhHrfnz/
-         aT94jHNVS9iyveE6Lg9vG3kmjL69eAFa7iKAkGzabpUStRfjiCcy6DUpAQHU+GKVTmT5
-         h9rGCzaaTKv22nPNmy0D07bIj16570NkUcwIPP7ttKoz6NGQQc9fvSpNDB74lumXixYw
-         tEJg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lwaHqCUEUERMsP+lSCCck+2lPknx9eDdkaf0NX52J94=;
+        b=as2anY9IFqju8x6xmgL5aH/SQphhMHkDAgXdwcLNMU13gTcRuXYE44AmAZWjM5gwE2
+         8X+J8KJmgUqvCplTWsiw7JMWKfmGSG+x0mEgk+jP3CpO7C7gVynfY1qpWd0x99BI5AiA
+         zQc+CMFC6jwVg3l3r+CgB2o7XLnmmjKaKP0sANg4RODIJDlfVRKZyV7ffhHP5ilHvusw
+         a++3Q7Oes0TARj/hVRgkwbtBiL/ruQmHxPKdTjUMdirGsw8oXLIYS606FamkJBThHCwb
+         tq+pB75OVLo2ZhXd4Tofnqw/I1+bspgyHBbpOGo5UKg6PaLGK8RS94T6LNXnlphRSKO2
+         vesA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L7oOn/ROAR60H6KG2WZjLarg9P4X7xIFiM6//2EpiH4=;
-        b=KL/IcP33HTta7OLqxCDQvYed2M790G1TDPBQjRrJ42JlJmm6Bov0t6pj8/YgCbOqSL
-         uT95htuJmG93bsouTQgN/PPZ02sYahWoK8wa7z2cmpvKA/lSGxV00JZe56HiWN3fp09q
-         gC8yUsN5ighOEcTr1q5qR8ldt7BftVu0kY3L9lYOo6PRxPqfEhJWGqhfqKjIMcDSucUg
-         Lhgbbe9OHwPnmn9ibTu0uqqO/WcIZr8rvCCGC55cBMl2N+k4/KmaXzHlrK5HdQNt/pll
-         nHd2EPYG+4PBB5bWFDTLjEAVwkxFsYCaDKtoGf8HVJ3TonewPhdGkrAsjRJ3GKl+y+Qe
-         +yAA==
-X-Gm-Message-State: AOAM532BXv6OOtHpnkvHWv5IaTQ5u9nwcTQMq7+Gu/vQWODsDJrrRt6L
-        rQJqQWA7tqngVGm4Z/U2AzYAfp3h1UXXEdHu5+GKIn02qog=
-X-Google-Smtp-Source: ABdhPJwo8jDF1DKR/N3qakZot2XEAM4++S/V824wZ994yzuRdKsS/YYmW0kT1aWGYVcg4IDvgxi6A5nvGoq7Kl/jrMQ=
-X-Received: by 2002:aca:c4c7:: with SMTP id u190mr8149442oif.161.1616393040807;
- Sun, 21 Mar 2021 23:04:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lwaHqCUEUERMsP+lSCCck+2lPknx9eDdkaf0NX52J94=;
+        b=fEuFvrFbo2zAJSmoWEXbtsIpIhnmqrJShX92RvC4i9wuM3b0ED14IPSOZ5S2ltTohm
+         1fceRfy/QDMfXy8wK/7a2mi+IgyXWa5EGZpo2cb2RGtf3Fxegkw3XxT9vS+NjeuzGLMe
+         doJ0XMkVtJ1Dsp5Xhjv+wEXNEdpAgKuFl0p6gvCYby+8FOw3Oc/XUvXoCnm16feDD8+3
+         QmGYQFe/onbiT8cr62cBFn43D++WzUSx++Xuxtmot3YMGfWiw4S/dgRgmDzpTg6TyouG
+         LX/V/CvSlgQdpZkVAEM9VyYwURscnwWz3e0UZ7Q7kW26txwhiE5GKI6MPvKRKk0qZfAE
+         squQ==
+X-Gm-Message-State: AOAM530Zz/wgwKPZZa15877/XsedWl2pBGaR1FJjHR/0OLYVrtgIuzkR
+        lEPH/0Fr+8BiY0ooaxWyvIw=
+X-Google-Smtp-Source: ABdhPJyX6kPawbK5ls3W+DAKqZ3kKOxuwuIlod6H79ptvldVx6BkKPOe2vmjJ39w3EYwDOHkRRO/cw==
+X-Received: by 2002:a05:622a:114:: with SMTP id u20mr8193244qtw.317.1616393077407;
+        Sun, 21 Mar 2021 23:04:37 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.40])
+        by smtp.gmail.com with ESMTPSA id r7sm8387041qtm.88.2021.03.21.23.04.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 23:04:36 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] KVM: x86: A typo fix
+Date:   Mon, 22 Mar 2021 11:34:09 +0530
+Message-Id: <20210322060409.2605006-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <13aed72.61c7.17853a6a5cd.Coremail.linma@zju.edu.cn>
- <CABBYNZKwHEXK680Xz+W=2qXdkO2eEzTBu38Hc=5DaxggkaTSsg@mail.gmail.com> <CAO1O6sfdpWzULj_Yj1s_GTFiLaZFFjrrj_0RPAVe1hyk3uuSsg@mail.gmail.com>
-In-Reply-To: <CAO1O6sfdpWzULj_Yj1s_GTFiLaZFFjrrj_0RPAVe1hyk3uuSsg@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Sun, 21 Mar 2021 23:03:50 -0700
-Message-ID: <CABBYNZKsenDE7FYVOY8V-YS4FeLg1UA82PMAM-Bo5y6Godebyw@mail.gmail.com>
-Subject: Re: BUG: Out of bounds read in hci_le_ext_adv_report_evt()
-To:     Emil Lenngren <emil.lenngren@gmail.com>
-Cc:     =?UTF-8?B?6ams6bqf?= <linma@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yajin_zhou@zju.edu.cn, syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Emil,
 
-On Sun, Mar 21, 2021 at 4:23 PM Emil Lenngren <emil.lenngren@gmail.com> wro=
-te:
->
-> Hi,
->
-> Den m=C3=A5n 22 mars 2021 kl 00:01 skrev Luiz Augusto von Dentz
-> <luiz.dentz@gmail.com>:
-> > Or we do something like
-> > https://lore.kernel.org/linux-bluetooth/20201024002251.1389267-1-luiz.d=
-entz@gmail.com/,
-> > that said the reason we didn't applied my patches was that the
-> > controller would be the one generating invalid data, but it seems you
-> > are reproducing with vhci controller which is only used for emulating
-> > a controller and requires root privileges so it is unlikely these
-> > conditions would happens with hardware itself, in the other hand as
-> > there seems to be more and more reports using vhci to emulate broken
-> > events it perhaps more productive to introduce proper checks for all
-> > events so we don't have to deal with more reports like this in the
-> > future.
->
-> Keep in mind that when using the H4 uart protocol without any error
-> correction (as H5 has), it is possible that random bit errors occur on
-> the wire. I wouldn't like my kernel to crash due to this. Bit errors
-> happen all the time on RPi 4 for example at the default baud rate if
-> you just do some heavy stress testing, or use an application that
-> transfers a lot of data over Bluetooth.
+s/resued/reused/
 
-While we can catch some errors like that, and possible avoid crashes,
-this should be limited to just boundary checks and not actually error
-correction, that I'm afraid is out of our hands since we can still
-receive an event that does match the original packet size but meant
-something else which may break the synchronization of the states
-between the controller and the host, also perhaps we need to notify
-this type of error since even if we start discarding the events that
-can possible cause states to be out of sync and the controller will
-need to be reset in order to recover.
 
---=20
-Luiz Augusto von Dentz
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+ As Ingo found the correct word for replacement, so incorporating.
+
+ arch/x86/include/asm/kvm_host.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 3768819693e5..e37c2ebc02e5 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1488,7 +1488,7 @@ extern u64 kvm_mce_cap_supported;
+ /*
+  * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
+  *			userspace I/O) to indicate that the emulation context
+- *			should be resued as is, i.e. skip initialization of
++ *			should be reused as is, i.e. skip initialization of
+  *			emulation context, instruction fetch and decode.
+  *
+  * EMULTYPE_TRAP_UD - Set when emulating an intercepted #UD from hardware.
+--
+2.31.0
+
