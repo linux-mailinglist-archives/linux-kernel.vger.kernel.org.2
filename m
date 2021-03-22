@@ -2,175 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D14D343B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982F6343B88
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCVIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:17:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35121 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229973AbhCVIRl (ORCPT
+        id S229993AbhCVISi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhCVISI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:17:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616401061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsZodVPsWs6YP/fF4pvWwqUUa+rr5N0r5iTqRaFVfOc=;
-        b=Iz3rC6FfvjiIVTLEKk8jaR2PSkdHE3DsDI2VjqdJGkyFpd2a7+UbYpKBUnAs3NUZWEwAcB
-        gdcussZSt/hlMgQeLyD6b1dBiD2eW6FGe9kXQ5DEdMjCofKRT1mPwN0uSPIzzpH3/yTBBY
-        V310EnI3Y7G/DXOzNbKTiIDN2om6Blk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-WUO73S-YNDy47Y8XXr5rKg-1; Mon, 22 Mar 2021 04:17:39 -0400
-X-MC-Unique: WUO73S-YNDy47Y8XXr5rKg-1
-Received: by mail-wr1-f72.google.com with SMTP id p15so25404241wre.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:17:38 -0700 (PDT)
+        Mon, 22 Mar 2021 04:18:08 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E608FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:18:07 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id o19-20020a9d22130000b02901bfa5b79e18so15102587ota.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sk5nXZmNrPBhnu290SRFE/AaX0zXvxqhg24fy7HJRik=;
+        b=UsoPckqy/cBUBbKkWG7iVBL06TORbtJfQyHbYe8pqPWyQh5dez8eGB3IQJEvHOmg7G
+         ZMmlbJljicTOw9XSZNbt1qAZc3Ur+4ZDG11DBj0gtsRxDM8bgvJwy5qesu2zrTnJUvmd
+         u4Aw3PiSfzfqkzwffdfqKKIlriCizZHLJPPi7BK9KTYZVUJYflke8Z/fFMVHGrr7+D5v
+         Nw1yV+N4pVB6UyYAhV98yvt8euaZ74R03+HjtyWE+4z384GtTMTA3pKxGrnG7uyCQRxc
+         wtI07Y5BoxRPev2GwNJSwhzmFzExRkw2QIfJeCouKPL35isVkA2epjzCeJdFlBvEJJME
+         jyHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PsZodVPsWs6YP/fF4pvWwqUUa+rr5N0r5iTqRaFVfOc=;
-        b=cfwgKpiLXIJ4f90QvyMPcZCe380LtPoK9WKV+xBi7YXU6S31Jx6wbxeXOhkBnBr9jG
-         lt6VjTP1tbdZI+eZ9671jgjr19k/sQnUQjsJeorudSqs1MlGhgoZIxgNjGExodyjnMij
-         8pnbCxC1bhtdt2cqM9EIxkee958bTpq5hYGn868WtKCY6ssIhUXUSyLTK3zx0l8M9WVx
-         RGmBhHIUohqAbjfowo0U8vqIjP6P0yZ+/HTv2J3xd26A5vdrvCQ262p+nOXcCfEynla7
-         wbJW8LhpmxMehiNBLFmmqZTGanlAFxVhHj2t1pbp0o03KqKw8r5g0zqDI3vjys4oC5p9
-         61nw==
-X-Gm-Message-State: AOAM533Hg0OcUDlkjOMeBh6oU0zOixFTNOxTNv6cIiigUSACupYrHc2i
-        xP5SNGmVNKeXys0DsPwFLDMz05hXeRMlFfOrn3gB36KMJkCKOFRnhbwzshbtEZJzygbMlwzu7Hy
-        yr0hIM4xY801MY7lEJO7k/8MX
-X-Received: by 2002:a5d:4ecf:: with SMTP id s15mr17188155wrv.222.1616401057445;
-        Mon, 22 Mar 2021 01:17:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylZqhTCHG8w045DowIsxunwGOileNP81Z98LrDX9nf428OhlNQeHBKBDDVXpT/YRj5Vf8BjA==
-X-Received: by 2002:a5d:4ecf:: with SMTP id s15mr17188137wrv.222.1616401057261;
-        Mon, 22 Mar 2021 01:17:37 -0700 (PDT)
-Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
-        by smtp.gmail.com with ESMTPSA id a14sm20018493wrg.84.2021.03.22.01.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 01:17:36 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 04:17:33 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Connor Kuehl <ckuehl@redhat.com>, virtio-fs@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        vgoyal@redhat.com, miklos@szeredi.hu
-Subject: Re: [PATCH 1/3] virtio_ring: always warn when descriptor chain
- exceeds queue size
-Message-ID: <20210322041414-mutt-send-email-mst@kernel.org>
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
- <20210318135223.1342795-2-ckuehl@redhat.com>
- <fa4988fa-a671-0abf-f922-6b362faf10d5@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sk5nXZmNrPBhnu290SRFE/AaX0zXvxqhg24fy7HJRik=;
+        b=LjGar5MOug3Uh7XLrpAys2xvjPq6UvheJqsUA8Mxu6hYLx8HWS2XrFB36VqB/Urrfr
+         dkdBYdUKyRTMRIRbTOOLhr5+IajJDLjEFHfgUfeM+lpiAJm+NaFPkhwJxrsBf+wjC3Au
+         K+DdVGc/yjRAQgjt0YWvWj10d0j8eP1HE/n/WOG85v+uF0RS9Nb2qGpyUcoMD+MLyKbn
+         DVXwZBRx7YbYZ0xNcdpxK15ITfq2ArzURCfb8yEpQCEZFddEmsP/rHyLgJT5qUNV76SN
+         +4UnOCifMG7aiWoXYlfU1yjOnFHnkZ7CTLu7tx35lJEoX+jM2Yc80mIB9MfCD4tlo9a6
+         gPtQ==
+X-Gm-Message-State: AOAM531d2SWGy+NZPFaJJrqoN0chc8ZxOCFQaM5NftdA01SGjiS5ryC/
+        0mSjqIVTZ5RgFOZ9mvhGhU4106VSGraFFzT2il+GTcRzFJ4=
+X-Google-Smtp-Source: ABdhPJzvbElyZZDDIxpenI8cVDVzjmJITxV9NKesMpuZ8BW6GJm0JmhCXcsj5hWyJduf0shx2QAG0j6jEips7rMEgHY=
+X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr10905818otg.17.1616401087131;
+ Mon, 22 Mar 2021 01:18:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fa4988fa-a671-0abf-f922-6b362faf10d5@redhat.com>
+References: <20210319144058.772525-1-dja@axtens.net> <20210319144058.772525-3-dja@axtens.net>
+In-Reply-To: <20210319144058.772525-3-dja@axtens.net>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 22 Mar 2021 09:17:55 +0100
+Message-ID: <CANpmjNOGp0DLn8sMwvm5SQo4cqJDogtrEPGFhawRPd3Amr3D=w@mail.gmail.com>
+Subject: Re: [PATCH v11 2/6] kasan: allow architectures to provide an outline
+ readiness check
+To:     Daniel Axtens <dja@axtens.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        aneesh.kumar@linux.ibm.com, Balbir Singh <bsingharora@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:22:15AM +0800, Jason Wang wrote:
-> 
-> 在 2021/3/18 下午9:52, Connor Kuehl 写道:
-> >  From section 2.6.5.3.1 (Driver Requirements: Indirect Descriptors)
-> > of the virtio spec:
-> > 
-> >    "A driver MUST NOT create a descriptor chain longer than the Queue
-> >    Size of the device."
-> > 
-> > This text suggests that the warning should trigger even if
-> > indirect descriptors are in use.
-> 
-> 
-> So I think at least the commit log needs some tweak.
-> 
-> For split virtqueue. We had:
-> 
-> 2.6.5.2 Driver Requirements: The Virtqueue Descriptor Table
-> 
-> Drivers MUST NOT add a descriptor chain longer than 2^32 bytes in total;
-> this implies that loops in the descriptor chain are forbidden!
-> 
-> 2.6.5.3.1 Driver Requirements: Indirect Descriptors
-> 
-> A driver MUST NOT create a descriptor chain longer than the Queue Size of
-> the device.
-> 
-> If I understand the spec correctly, the check is only needed for a single
-> indirect descriptor table?
-> 
-> For packed virtqueue. We had:
-> 
-> 2.7.17 Driver Requirements: Scatter-Gather Support
-> 
-> A driver MUST NOT create a descriptor list longer than allowed by the
-> device.
-> 
-> A driver MUST NOT create a descriptor list longer than the Queue Size.
-> 
-> 2.7.19 Driver Requirements: Indirect Descriptors
-> 
-> A driver MUST NOT create a descriptor chain longer than allowed by the
-> device.
-> 
-> So it looks to me the packed part is fine.
-> 
-> Note that if I understand the spec correctly 2.7.17 implies 2.7.19.
-> 
-> Thanks
+On Fri, 19 Mar 2021 at 15:41, Daniel Axtens <dja@axtens.net> wrote:
+> Allow architectures to define a kasan_arch_is_ready() hook that bails
+> out of any function that's about to touch the shadow unless the arch
+> says that it is ready for the memory to be accessed. This is fairly
+> uninvasive and should have a negligible performance penalty.
+>
+> This will only work in outline mode, so an arch must specify
+> ARCH_DISABLE_KASAN_INLINE if it requires this.
+>
+> Cc: Balbir Singh <bsingharora@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Daniel Axtens <dja@axtens.net>
+>
+> --
+>
+> I discuss the justfication for this later in the series. Also,
+> both previous RFCs for ppc64 - by 2 different people - have
+> needed this trick! See:
+>  - https://lore.kernel.org/patchwork/patch/592820/ # ppc64 hash series
+>  - https://patchwork.ozlabs.org/patch/795211/      # ppc radix series
+> ---
+>  include/linux/kasan.h | 4 ++++
+>  mm/kasan/common.c     | 4 ++++
+>  mm/kasan/generic.c    | 3 +++
+>  mm/kasan/shadow.c     | 4 ++++
+>  4 files changed, 15 insertions(+)
+>
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 8b3b99d659b7..6bd8343f0033 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
 
-It would be quite strange for packed and split to differ here:
-so for packed would you say there's no limit on # of descriptors at all?
+Does kasan_arch_is_ready() need to be defined in the public interface
+of KASAN? Could it instead be moved to mm/kasan/kasan.h?
 
-I am guessing I just forgot to move this part from
-the format specific to the common part of the spec.
+> @@ -23,6 +23,10 @@ struct kunit_kasan_expectation {
+>
+>  #endif
+>
+> +#ifndef kasan_arch_is_ready
+> +static inline bool kasan_arch_is_ready(void)   { return true; }
+> +#endif
+> +
+>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>
+>  #include <linux/pgtable.h>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 6bb87f2acd4e..f23a9e2dce9f 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -345,6 +345,10 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>         if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+>                 return false;
+>
+> +       /* We can't read the shadow byte if the arch isn't ready */
+> +       if (!kasan_arch_is_ready())
+> +               return false;
+> +
 
-This needs discussion in the TC mailing list - want to start a thread
-there?
+While it probably doesn't matter much, it seems this check could be
+moved up, rather than having it in the middle here.
 
 
-
-> 
-> > 
-> > Reported-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
-> > ---
-> >   drivers/virtio/virtio_ring.c | 7 ++++---
-> >   1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 71e16b53e9c1..1bc290f9ba13 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -444,11 +444,12 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> >   	head = vq->free_head;
-> > +	WARN_ON_ONCE(total_sg > vq->split.vring.num);
-> > +
-> >   	if (virtqueue_use_indirect(_vq, total_sg))
-> >   		desc = alloc_indirect_split(_vq, total_sg, gfp);
-> >   	else {
-> >   		desc = NULL;
-> > -		WARN_ON_ONCE(total_sg > vq->split.vring.num && !vq->indirect);
-> >   	}
-> >   	if (desc) {
-> > @@ -1118,6 +1119,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
-> >   	BUG_ON(total_sg == 0);
-> > +	WARN_ON_ONCE(total_sg > vq->packed.vring.num);
-> > +
-> >   	if (virtqueue_use_indirect(_vq, total_sg))
-> >   		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
-> >   				out_sgs, in_sgs, data, gfp);
-> > @@ -1125,8 +1128,6 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
-> >   	head = vq->packed.next_avail_idx;
-> >   	avail_used_flags = vq->packed.avail_used_flags;
-> > -	WARN_ON_ONCE(total_sg > vq->packed.vring.num && !vq->indirect);
-> > -
-> >   	desc = vq->packed.vring.desc;
-> >   	i = head;
-> >   	descs_used = total_sg;
-
+>         if (!kasan_byte_accessible(tagged_object)) {
+>                 kasan_report_invalid_free(tagged_object, ip);
+>                 return true;
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 53cbf28859b5..c3f5ba7a294a 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -163,6 +163,9 @@ static __always_inline bool check_region_inline(unsigned long addr,
+>                                                 size_t size, bool write,
+>                                                 unsigned long ret_ip)
+>  {
+> +       if (!kasan_arch_is_ready())
+> +               return true;
+> +
+>         if (unlikely(size == 0))
+>                 return true;
+>
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 727ad4629173..1f650c521037 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -80,6 +80,10 @@ void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+>          */
+>         addr = kasan_reset_tag(addr);
+>
+> +       /* Don't touch the shadow memory if arch isn't ready */
+> +       if (!kasan_arch_is_ready())
+> +               return;
+> +
+>         /* Skip KFENCE memory if called explicitly outside of sl*b. */
+>         if (is_kfence_address(addr))
+>                 return;
+> --
+> 2.27.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210319144058.772525-3-dja%40axtens.net.
