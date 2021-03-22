@@ -2,71 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4180345226
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3919634522E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhCVV5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:57:38 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56150 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229730AbhCVV5J (ORCPT
+        id S230167AbhCVWAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhCVV7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:57:09 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12MLuuMT020632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 17:56:57 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 754A315C39CC; Mon, 22 Mar 2021 17:56:56 -0400 (EDT)
-Date:   Mon, 22 Mar 2021 17:56:56 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        workflows@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>
-Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
- focussed on issues/bugs and regressions
-Message-ID: <YFkSqIN90S4a3HiF@mit.edu>
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
- <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+        Mon, 22 Mar 2021 17:59:55 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E64FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:59:54 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id u126so192413pfc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=voOmLAB+ChC2A4QEJf/yJCzWFfGe3YHCm7ZcDcYjjnU=;
+        b=cd0M2VHOYGzQl8ZXH/1Sz3MjSzG2cudqMvnHDFR7ZzJq4unb+n72PKnDuWzta6zl56
+         BT1G5HDQbp9Yo8Ym/E/Ed9bxayOeNfsP3OSuab7gWEBii+DL5NwY7Nkci6JOoXtnTHlV
+         u+8jkHVP35f7FsExNWvgKUeF5xzdyzsQSZVvV/3wDVq/gUt4CajAGEJhK3ce9GVifPdN
+         MdnIBUMdevzZaCIN0LcH0J4zJgPwDJpyhZoZkgg/cVJn2t/BBRzakpwcJvig9QNFaNH5
+         4s/YDGKFKO/zGvlM7wWOFowipybMEr6brimqeTXqGP2eBz1Eh7yocLh7VM17Z/DLSKww
+         OH8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=voOmLAB+ChC2A4QEJf/yJCzWFfGe3YHCm7ZcDcYjjnU=;
+        b=h5J4gfkeqBD1leLRLOfZTiJOrJKALC1Wg2jMCR84BSCvfYVlrxMEa9Qfh/nZwFjY1B
+         ZGrm3GRZ2QC67Osc6f4XKnqyl980NItGIp5akt378OLWjw9DN6HRzWog1HJDz0FY5u3F
+         frS5fAVJLw6E8ESuyrLpNnKDaO+FGBLie9iz/33atXS5QOWsi8XSZrkOBuVxiO49W1xO
+         tj/cvx+7Zqp5ocvhssUVu5yQLw8xXh6mEuAjq0YRrhu9Gs+hP3LRWEOLro/3F5NpP2gd
+         kqbzbD2wB9tWG/eAJkasY29wySK2EVNkTj2UFeT7arKZaqhE3bKvtw4sBAnXTmZQO3sV
+         8kIA==
+X-Gm-Message-State: AOAM531xTaiuSXQPwR3HyyfVwz+b5QuclUD0rP+pT6z7dtZAl6b4mRDx
+        CA/CsrSEXZujToUcCBhC35/1vYFwgtzxvQv54fA=
+X-Google-Smtp-Source: ABdhPJwD6jhMxNK5nm1rj1xbPlntW8CX8SX1XOzhve/8dPDbQRmmU11dpDAzjKSMpeq7I2jfAjx+SWaxs9+WVLq47Hk=
+X-Received: from cfijalkovich.mtv.corp.google.com ([2620:15c:211:202:3d09:6020:a2b1:f8fb])
+ (user=cfijalkovich job=sendgmr) by 2002:a17:90a:ce0c:: with SMTP id
+ f12mr1126811pju.11.1616450394091; Mon, 22 Mar 2021 14:59:54 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 14:58:23 -0700
+Message-Id: <20210322215823.962758-1-cfijalkovich@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] mm, thp: Relax the VM_DENYWRITE constraint on file-backed THPs
+From:   Collin Fijalkovich <cfijalkovich@google.com>
+Cc:     songliubraving@fb.com, surenb@google.com, hridya@google.com,
+        kaleshsingh@google.com, hughd@google.com, timmurray@google.com,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:25:15PM +0100, Thorsten Leemhuis wrote:
-> I agree to the last point and yeah, maybe regressions are the more
-> important problem we should work on – at least from the perspective of
-> kernel development.  But from the users perspective (and
-> reporting-issues.rst is written for that perspective) it feel a bit
-> unsatisfying to not have a solution to query for existing report,
-> regressions or not. Hmmmm...
+Transparent huge pages are supported for read-only non-shmem filesystems,
+but are only used for vmas with VM_DENYWRITE. This condition ensures that
+file THPs are protected from writes while an application is running
+(ETXTBSY).  Any existing file THPs are then dropped from the page cache
+when a file is opened for write in do_dentry_open(). Since sys_mmap
+ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
+produced by execve().
 
-First of all, thanks for working on reporting-issues.rst.  If we can
-actually get users to *read* it, I think it's going to save kernel
-developers a huge amount of time and frustration.
+Systems that make heavy use of shared libraries (e.g. Android) are unable
+to apply VM_DENYWRITE through the dynamic linker, preventing them from
+benefiting from the resultant reduced contention on the TLB.
 
-I wonder if it might be useful to have a form which users could be
-encouraged to fill out so that (a) the information is available in a
-structured format so it's easier for developers to find the relevant
-information, (b) so it is easier for programs to parse, for easier
-reporting or indexing, and (c) as a nudge so that users remember to
-report critical bits of information such as the hardware
-configuration, the exact kernel version, which distribution userspace
-was in use, etc.
+This patch reduces the constraint on file THPs allowing use with any
+executable mapping from a file not opened for write (see
+inode_is_open_for_write()). It also introduces additional conditions to
+ensure that files opened for write will never be backed by file THPs.
 
-There could also be something in the text form which would make it
-easier for lore.kernel.org searches to identify bug reports.  (e.g.,
-"LINUX KERNEL BUG REPORTER TEMPLATE")
+Restricting the use of THPs to executable mappings eliminates the risk that
+a read-only file later opened for write would encounter significant
+latencies due to page cache truncation.
 
-					- Ted
+The ld linker flag '-z max-page-size=(hugepage size)' can be used to
+produce executables with the necessary layout. The dynamic linker must
+map these file's segments at a hugepage size aligned vma for the mapping to
+be backed with THPs.
+
+Signed-off-by: Collin Fijalkovich <cfijalkovich@google.com>
+---
+ fs/open.c       | 13 +++++++++++--
+ mm/khugepaged.c | 16 +++++++++++++++-
+ 2 files changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/fs/open.c b/fs/open.c
+index e53af13b5835..f76e960d10ea 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -852,8 +852,17 @@ static int do_dentry_open(struct file *f,
+ 	 * XXX: Huge page cache doesn't support writing yet. Drop all page
+ 	 * cache for this file before processing writes.
+ 	 */
+-	if ((f->f_mode & FMODE_WRITE) && filemap_nr_thps(inode->i_mapping))
+-		truncate_pagecache(inode, 0);
++	if (f->f_mode & FMODE_WRITE) {
++		/*
++		 * Paired with smp_mb() in collapse_file() to ensure nr_thps
++		 * is up to date and the update to i_writecount by
++		 * get_write_access() is visible. Ensures subsequent insertion
++		 * of THPs into the page cache will fail.
++		 */
++		smp_mb();
++		if (filemap_nr_thps(inode->i_mapping))
++			truncate_pagecache(inode, 0);
++	}
+ 
+ 	return 0;
+ 
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index a7d6cb912b05..4c7cc877d5e3 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -459,7 +459,8 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+ 
+ 	/* Read-only file mappings need to be aligned for THP to work. */
+ 	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+-	    (vm_flags & VM_DENYWRITE)) {
++	    !inode_is_open_for_write(vma->vm_file->f_inode) &&
++	    (vm_flags & VM_EXEC)) {
+ 		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+ 				HPAGE_PMD_NR);
+ 	}
+@@ -1872,6 +1873,19 @@ static void collapse_file(struct mm_struct *mm,
+ 	else {
+ 		__mod_lruvec_page_state(new_page, NR_FILE_THPS, nr);
+ 		filemap_nr_thps_inc(mapping);
++		/*
++		 * Paired with smp_mb() in do_dentry_open() to ensure
++		 * i_writecount is up to date and the update to nr_thps is
++		 * visible. Ensures the page cache will be truncated if the
++		 * file is opened writable.
++		 */
++		smp_mb();
++		if (inode_is_open_for_write(mapping->host)) {
++			result = SCAN_FAIL;
++			__mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
++			filemap_nr_thps_dec(mapping);
++			goto xa_locked;
++		}
+ 	}
+ 
+ 	if (nr_none) {
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
