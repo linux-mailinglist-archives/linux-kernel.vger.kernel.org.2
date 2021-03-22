@@ -2,114 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8CC343D57
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE89343D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCVJ5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhCVJ5O (ORCPT
+        id S230095AbhCVJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:58:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53300 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbhCVJ6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:57:14 -0400
-X-Greylist: delayed 73 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 Mar 2021 02:57:13 PDT
-Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9051BC061574;
-        Mon, 22 Mar 2021 02:57:13 -0700 (PDT)
-Received: from sas1-6b1512233ef6.qloud-c.yandex.net (sas1-6b1512233ef6.qloud-c.yandex.net [IPv6:2a02:6b8:c14:44af:0:640:6b15:1223])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 5FCED2E1A5C;
-        Mon, 22 Mar 2021 12:55:49 +0300 (MSK)
-Received: from sas1-c2bc061771d1.qloud-c.yandex.net (sas1-c2bc061771d1.qloud-c.yandex.net [2a02:6b8:c08:8c0e:0:640:c2bc:617])
-        by sas1-6b1512233ef6.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id tq3Em1ENmX-tmW4ALXt;
-        Mon, 22 Mar 2021 12:55:49 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1616406949; bh=e+/1GyuQ/kEyRFB76ojHD7RM2+yYDnoHwxj1Ys4/bkQ=;
-        h=Message-Id:Date:Subject:To:From:Cc;
-        b=aixg3KO8WFVzfgJwjAvv2KZ1t2YE3vTn+V86q8n7tj3dEvhldqP3GuxIpk1F/kumG
-         XFWb8o1aliFDhLj+3At6jZJMENF7I7Wk84RZlCOmfttJ4DyMY5zsddhR1+eVMDtwVL
-         LTbQzNYb18wLYkLcG85lXVBBUEyMAhPiOdxLONzY=
-Authentication-Results: sas1-6b1512233ef6.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:8024::1:c])
-        by sas1-c2bc061771d1.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id jsos7KcTCc-tmnOUxrn;
-        Mon, 22 Mar 2021 12:55:48 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Andrey Ryabinin <arbn@yandex-team.ru>
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrey Ryabinin <arbn@yandex-team.ru>
-Subject: [PATCH] keys: Allow disabling read permissions for key possessor
-Date:   Mon, 22 Mar 2021 12:57:26 +0300
-Message-Id: <20210322095726.14939-1-arbn@yandex-team.ru>
-X-Mailer: git-send-email 2.26.2
+        Mon, 22 Mar 2021 05:58:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616407095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U3CiK0/VZwce2e6BZhquN5P+HHtfDmL7cXJWwXvfT2A=;
+        b=F1ETdfRmUbBLUTqlNZDKlOpGOJ7OH4TkbM2/uwDCZWqc5HTLf2cX62iOMMfxAmqLOhCo7y
+        Z8NEJfnVBCTIohUqrTVjE8H/GLqxavg+PgkYiIvl88aSVQ1gtCMIQ+4ldGTtU3hbc4vzh0
+        8URB5li3V6dm4pKMLc4mZJNvXjyaMLQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-x0tWUk_RNHO605zsPmf1ng-1; Mon, 22 Mar 2021 05:58:12 -0400
+X-MC-Unique: x0tWUk_RNHO605zsPmf1ng-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C60B1922020;
+        Mon, 22 Mar 2021 09:58:08 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 905D56A03C;
+        Mon, 22 Mar 2021 09:57:42 +0000 (UTC)
+Subject: Re: [PATCH RFC 0/3] drivers/char: remove /dev/kmem for good
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kairui Song <kasong@redhat.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rich Felker <dalias@libc.org>,
+        Robert Richter <rric@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Theodore Dubois <tblodt@icloud.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210319143452.25948-1-david@redhat.com>
+ <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <97d30137-61ce-ca1b-221b-2bc5210eb259@redhat.com>
+Date:   Mon, 22 Mar 2021 10:57:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wg1HTbXkjdMYA4zADEiE8HwpZ0=uWy0ujZTJYVT-KCehQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-keyctl_read_key() has a strange code which allows possessor to read
-key's payload regardless of READ permission status:
+On 19.03.21 18:14, Linus Torvalds wrote:
+> On Fri, Mar 19, 2021 at 7:35 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> Let's start a discussion if /dev/kmem is worth keeping around and
+>> fixing/maintaining or if we should just remove it now for good.
+> 
+> I'll happily do this for the next merge window, but would really want
+> distros to confirm that they don't enable it.
+> 
 
-$ keyctl add user test test @u
-196773443
-$ keyctl print 196773443
-test
-$ keyctl describe 196773443
-196773443: alswrv-----v------------  1000  1000 user: test
-$ keyctl rdescribe 196773443
-user;1000;1000;3f010000;test
-$ keyctl setperm 196773443 0x3d010000
-$ keyctl describe 196773443
-196773443: alsw-v-----v------------  1000  1000 user: test
-$ keyctl  print 196773443
-test
+Thanks, let's wait if someone speaks up. I'll add any details that come 
+up to patch #1 and resend before the next merge window, properly 
+compile-testing on other archs.
 
-The last keyctl print should fail with -EACCESS instead of success.
-Fix this by removing weird possessor checks.
-
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.ru>
----
-
- - This was noticed by code review. It seems like a bug to me,
- but if I'm wrong and current behavior is correct, I think we need
- at least better comment here.
-   
-
- security/keys/keyctl.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
-
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 96a92a645216d..2ec021c7adc12 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -845,22 +845,9 @@ long keyctl_read_key(key_serial_t keyid, char __user *buffer, size_t buflen)
- 
- 	/* see if we can read it directly */
- 	ret = key_permission(key_ref, KEY_NEED_READ);
--	if (ret == 0)
--		goto can_read_key;
--	if (ret != -EACCES)
-+	if (ret != 0)
- 		goto key_put_out;
- 
--	/* we can't; see if it's searchable from this process's keyrings
--	 * - we automatically take account of the fact that it may be
--	 *   dangling off an instantiation key
--	 */
--	if (!is_key_possessed(key_ref)) {
--		ret = -EACCES;
--		goto key_put_out;
--	}
--
--	/* the key is probably readable - now try to read it */
--can_read_key:
- 	if (!key->type->read) {
- 		ret = -EOPNOTSUPP;
- 		goto key_put_out;
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
