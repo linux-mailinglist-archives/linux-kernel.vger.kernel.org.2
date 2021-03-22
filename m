@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C38344FB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D560B344FB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhCVTMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232071AbhCVTMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:12:12 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352FDC061574;
-        Mon, 22 Mar 2021 12:12:12 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id e18so18350578wrt.6;
-        Mon, 22 Mar 2021 12:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=1UQ+ySphikPYmcOREZJMTjlDDCrOsVCHxDYLzztStg0=;
-        b=hjnBZ4WCrjOg8NJVDbytAmHGUcSedlPsR0mtIBVSbhg58CRvPqkxgW1T94fjLTEzms
-         6pMuge+Xyvjmn3ir/XkMzb1XswBPSbiM0hQxXa6a6qiTNSHTGvkpSGl80NG8OcuEiF65
-         91M9CW5bqrN6H90JpyCHjldMhd4LtvvI8lOvao6jXADDm7vVyZOC88lU+VMYRf3cllTL
-         UAMfbhyxrkhjGKo6teeLe36+TFMy5W2qe4BWnpWISCqs/dRwrHEUZ8NFezgAtLecOPfZ
-         lVss4xenHdHJOyOTaJwpOFPWIr74azYnR13j/45r5ALlSTSwZChttRRN69P4HWgwMwYZ
-         BS+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1UQ+ySphikPYmcOREZJMTjlDDCrOsVCHxDYLzztStg0=;
-        b=jIwbeQyLKqEFF4FDze3nktq9PEQYLKS1nrD0/oxWdNAQbbdVLxYJB0ZL1vXv6gwlDd
-         bvPXa0W229gl7527CgJpp0O7zBza1BFlJDS+/IVha6F5hoNOLDG+o08acw13eGJ96QBs
-         qrC7a5Ocn18+pKjnThjDmS0zd3nZitG4wNPlX7Xs0KcUrFxXDpsC9UVDB4pS9ZRlLpfv
-         Aeh2slkUY6WuawGr3c8Nc/nvEkO+fc53Uol0YzJGdCYBLeHsH81d/LShc7KXM4HDizqf
-         E+b2gUVmiLOOkXsGkQGhw11avc/nOQrHI1VI4P02bdpRf5nekUHQJlSqf7moQToc+CMA
-         2BAg==
-X-Gm-Message-State: AOAM531vg/KjTqI5S08N8sjXhpbPZhB0kNkmkL95qySTcwFFKR4F+7Lj
-        gWBkuRjwEbUQmZU6BaHCCho=
-X-Google-Smtp-Source: ABdhPJw1QG/bCvuUg7WvQYFZRj6JGePX7C9v9hJKhGvtl6+AavLkrsgURp+lYSXZ3x1l/F9LRT28qw==
-X-Received: by 2002:a5d:6103:: with SMTP id v3mr38000wrt.375.1616440331027;
-        Mon, 22 Mar 2021 12:12:11 -0700 (PDT)
-Received: from LEGION ([111.119.187.31])
-        by smtp.gmail.com with ESMTPSA id c16sm25151135wrs.81.2021.03.22.12.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 12:12:10 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 00:12:04 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     musamaanjum@gmail.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com
-Subject: [PATCH] thermal/core: avoid memory leak
-Message-ID: <20210322191204.GA2122573@LEGION>
+        id S231550AbhCVTQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:16:11 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43944 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229854AbhCVTPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 15:15:41 -0400
+Received: from zn.tnic (p200300ec2f066700d1873920611831f8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:d187:3920:6118:31f8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 565F61EC030E;
+        Mon, 22 Mar 2021 20:15:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616440540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iJX3GF2CgIaOQc27uz5DRc8byMVlS9HWNPA5d8fZkIo=;
+        b=ltFg2Gv+bV8xd96ltmseD8+Cag/9qRazqx2m9QiOIO39sZM9++/YnT+naK5uyi15xSQDSb
+        5EHFoFX+MyhOXKQTlBd7K7A24f3AcS1M3lMZgdSiP3tfd3uaydumPdKuYqATgwtLK+KPUd
+        6rZyWTa/A7M2jphlW/okYIgwfH27+g4=
+Date:   Mon, 22 Mar 2021 20:15:40 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <20210322191540.GH6481@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+ <20210322181646.GG6481@zn.tnic>
+ <YFjoZQwB7e3oQW8l@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <YFjoZQwB7e3oQW8l@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When memory allocation for cdev is successful but ida_simple_get fails,
-branch to out_kfree_cdev label happens and cdev isn't freed. There are
-other some other branches in which the memory can leaked. Fix it by
-freeing cdev.
+On Mon, Mar 22, 2021 at 11:56:37AM -0700, Sean Christopherson wrote:
+> Not necessarily.  This can only trigger in the host, and thus require a host
+> reboot, if the host is also running enclaves.  If the CSP is not running
+> enclaves, or is running its enclaves in a separate VM, then this path cannot be
+> reached.
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- drivers/thermal/thermal_core.c | 1 +
- 1 file changed, 1 insertion(+)
+That's what I meant. Rebooting guests is a lot easier, ofc.
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index c8d4010940ef..3566fd291399 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1017,6 +1017,7 @@ __thermal_cooling_device_register(struct device_node *np,
- out_ida_remove:
- 	ida_simple_remove(&thermal_cdev_ida, cdev->id);
- out_kfree_cdev:
-+	kfree(cdev);
- 	return ERR_PTR(ret);
- }
- 
+Or are you saying, this can trigger *only* when they're running enclaves
+on the *host* too?
+
+> EREMOVE can only fail if there's a kernel or hardware bug (or a VMM bug if
+> running as a guest). 
+
+We get those on a daily basis.
+
+> IME, nearly every kernel/KVM bug that I introduced that led to EREMOVE
+> failure was also quite fatal to SGX, i.e. this is just the canary in
+> the coal mine.
+>
+> It's certainly possible to add more sophisticated error handling, e.g. through
+> the pages onto a list and periodically try to recover them.  But, since the vast
+> majority of bugs that cause EREMOVE failure are fatal to SGX, implementing
+> sophisticated handling is quite low on the list of priorities.
+> 
+> Dave wanted the "page leaked" error message so that it's abundantly clear that
+> the kernel is leaking pages on EREMOVE failure and that the WARN isn't "benign".
+
+So this sounds to me like this should BUG too eventually.
+
+Or is this one of those "this should never happen" things so no one
+should worry?
+
+Whatever it is, if an admin sees this message in dmesg and doesn't get a
+lengthy explanation what she/he is supposed to do, I don't think she/he
+will be as relaxed.
+
+Hell, people open bugs for correctable ECCs and are asking whether they
+need to replace their hardware.
+
+So let's play this out: put yourself in an admin's shoes and tell me how
+should an admin react when she/he sees that?
+
+Should the kernel probably also say: "Don't worry, you have enough
+memory and what's a 4K, who cares? You'll reboot eventually."
+
+Or should the kernel say "You need to reboot ASAP."
+
+And so on...
+
+So what is the scenario here and what kind of reaction is that message
+supposed to cause, recovery action, blabla, the whole spiel?
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
