@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBE1344E8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A378344E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhCVSaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbhCVS3l (ORCPT
+        id S231304AbhCVSbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:31:13 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:36923 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhCVSbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:29:41 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AE3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:29:40 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id w37so22795516lfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UcDkaXELEqJd1neu6XP46Ih5an6aUpGo+m2JsFqgqHo=;
-        b=R6PM24j1KIJvAANMMEfiSHd0O0WKB/lu1d0MAaSIB3vdhYP8HYxj3hFlGEobaa/kLw
-         sEAUmUPEeeRU2ZovIUzrXv8F8KBx9CnrKTCHopspm5UjpxBlPaQOuY+gOYzzGCOC0DQN
-         VPzXToesXtKJKq46pBCsvjzMPAX/U1xoek+ek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UcDkaXELEqJd1neu6XP46Ih5an6aUpGo+m2JsFqgqHo=;
-        b=PMzfUV3pwNRFkgQ+FnhRz2WodaVi1nZoPLG3AWO1mIqh5vhW8b1cvax/EG6GSmMWHe
-         QYjbnvqEYPbumuyA2VVYXcL25g/EZoUG1p2oGej+CLgDekoL+ZSVnqkExl5cXh4JxRlP
-         rWJswygRlZzmtn7iJb3PQeWhHHjC1pd3HKnHiVRwjXymCY0Ur4AFIxbKFPNLceUteKyh
-         c3WRi5D0NexjgjE2N7S7tM8hZdz5Jeh4lAZ3vxd2A1KIE3eDP8gA8dBtTH96CcxQ1KEn
-         m39GPGcWsSJkA0GtZI/Fi8EamgyYVf/SizQ+fp77AqUxvMC9xjiMN4+8DnxtBhf7xkTQ
-         d9kg==
-X-Gm-Message-State: AOAM531SQ5UdLQHJ/uSOxKPTnDK7PEXFHhmMv5VG9qb76sLg0oqOG9/m
-        tT/Kwtpsd5iFktEZrIH09N4ZA5i4153Hig==
-X-Google-Smtp-Source: ABdhPJyHRQAQWIsplt3ei+1xJ5crCuFSeRpbYRjXbjZ9WaxnpxIZfNE5cnU/S7sfWA2UcNuz9vbKpQ==
-X-Received: by 2002:a19:68c:: with SMTP id 134mr370210lfg.155.1616437779004;
-        Mon, 22 Mar 2021 11:29:39 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id o1sm1631922lfu.299.2021.03.22.11.29.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 11:29:38 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id x28so22805066lfu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:29:38 -0700 (PDT)
-X-Received: by 2002:a19:ed03:: with SMTP id y3mr331679lfy.377.1616437778161;
- Mon, 22 Mar 2021 11:29:38 -0700 (PDT)
+        Mon, 22 Mar 2021 14:31:02 -0400
+Date:   Mon, 22 Mar 2021 18:30:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616437860; bh=b5bnSC21HmdPSasvb0lPwEo3mq8xZMPl9SmiGDrxhUA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=T7gFIEvlwC6tvcyiAGO7XGyjFHGvUsCeAnSnlZePqC9ObCS2k+FPNvlA6BCtbIfvK
+         0IiSFn0JyKe8s3lslelNM21/WjpYjbT9egUHW2iXTNhB/Iz9js+pkFG3w8OFZSYBIC
+         Fp4PCGRVWGivgvfad8WOg819SMJ6F0CM5PjghkyVxGl3pO2IhW+JmhzjmK4ksM1sUO
+         cflq/xEqRaQAAdxnFDGx+PTPBngvlY6XHklEwEtu/tfaYxXsn7zcDXzEWeNGpUaWuN
+         O+jKscOJ20r9mriCfMJhbrbzHrA0KOl3WtqfLf2d6xPjBGvsS1S/XTNdwnAACN4M++
+         sAcXS508z8sVQ==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next] page_pool: let the compiler optimize and inline core functions
+Message-ID: <20210322183047.10768-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <CAHk-=whDxybSS63==ycQiNobvamDmoyxQo1JL-31Tup8azbeWw@mail.gmail.com>
- <20210322182336.GA240669@roeck-us.net>
-In-Reply-To: <20210322182336.GA240669@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 22 Mar 2021 11:29:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh8wLhXomM92Ay-7MiWYskbvvn+fCYMVhg7o-QAEiRtWA@mail.gmail.com>
-Message-ID: <CAHk-=wh8wLhXomM92Ay-7MiWYskbvvn+fCYMVhg7o-QAEiRtWA@mail.gmail.com>
-Subject: Re: Linux 5.12-rc4
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:23 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Build results:
->         total: 151 pass: 151 fail: 0
-> Qemu test results:
->         total: 437 pass: 437 fail: 0
+As per disscussion in Page Pool bulk allocator thread [0],
+there are two functions in Page Pool core code that are marked as
+'noinline'. The reason for this is not so clear, and even if it
+was made to reduce hotpath overhead, in fact it only makes things
+worse.
+As both of these functions as being called only once through the
+code, they could be inlined/folded into the non-static entry point.
+However, 'noinline' marks effectively prevent from doing that and
+induce totally unneeded fragmentation (baseline -> after removal):
 
-Thanks,
+add/remove: 0/3 grow/shrink: 1/0 up/down: 1024/-1096 (-72)
+Function                                     old     new   delta
+page_pool_alloc_pages                        100    1124   +1024
+page_pool_dma_map                            164       -    -164
+page_pool_refill_alloc_cache                 332       -    -332
+__page_pool_alloc_pages_slow                 600       -    -600
 
-            Linus
+(taken from Mel's branch, hence factored-out page_pool_dma_map())
+
+1124 is a normal hotpath frame size, but these jumps between tiny
+page_pool_alloc_pages(), page_pool_refill_alloc_cache() and
+__page_pool_alloc_pages_slow() are really redundant and harmful
+for performance.
+
+This simple removal of 'noinline' keywords bumps the throughput
+on XDP_PASS + napi_build_skb() + napi_gro_receive() on 25+ Mbps
+for 1G embedded NIC.
+
+[0] https://lore.kernel.org/netdev/20210317222506.1266004-1-alobakin@pm.me
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/core/page_pool.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ad8b0707af04..589e4df6ef2b 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -102,7 +102,6 @@ EXPORT_SYMBOL(page_pool_create);
+
+ static void page_pool_return_page(struct page_pool *pool, struct page *pag=
+e);
+
+-noinline
+ static struct page *page_pool_refill_alloc_cache(struct page_pool *pool)
+ {
+ =09struct ptr_ring *r =3D &pool->ring;
+@@ -181,7 +180,6 @@ static void page_pool_dma_sync_for_device(struct page_p=
+ool *pool,
+ }
+
+ /* slow path */
+-noinline
+ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ =09=09=09=09=09=09 gfp_t _gfp)
+ {
+--
+2.31.0
+
+
