@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1193442CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B783442D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCVMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
+        id S231475AbhCVMpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231228AbhCVMiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 650F2619AA;
-        Mon, 22 Mar 2021 12:37:13 +0000 (UTC)
+        id S231267AbhCVMiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:38:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECC666191A;
+        Mon, 22 Mar 2021 12:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416633;
-        bh=gZBIezljNxO3KscxGE9gkxFP3kEeGqVAaR4Xlvhp5mc=;
+        s=korg; t=1616416636;
+        bh=dTCL/+dN70IZPzkAaRmRsrOUjpj3Q/I6EmMdO62ctio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0kQYEVmz+jSknlGIFyPipMWqFO8A+YUjqK3tCpJMno7VnndsdHtPJQf3xLW8B0xw3
-         HuOBVf7ZoYVaWC4r6xSynaJLW/qHzeid3sbubrWzVy3Oi0ZqUhqbpBbZTtvCzKQ+62
-         a9TwF4qCu/zDru3KXU6BQChtjmEAJErjpHG6aLuc=
+        b=K+0Ynnv3LwYkKXtzq/24Y5501AFSEzrN8PgTKbmlKSI/N9zXSCFPABJ3IkLkldMgb
+         aL1VcGYTQcAEJ45IYrHjaKZkh1fAHpe1XtlqHLDxDclVFTF6gOLBvZXAYC9Q2CO3GE
+         Cqq49Y2x5AQPYHrJmFtF5xUAHZlMQa/Xsk0MuC5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/157] counter: stm32-timer-cnt: Report count function when SLAVE_MODE_DISABLED
-Date:   Mon, 22 Mar 2021 13:26:57 +0100
-Message-Id: <20210322121935.660384922@linuxfoundation.org>
+Subject: [PATCH 5.10 061/157] gpiolib: Assign fwnode to parents if no primary one provided
+Date:   Mon, 22 Mar 2021 13:26:58 +0100
+Message-Id: <20210322121935.692206059@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
 References: <20210322121933.746237845@linuxfoundation.org>
@@ -44,136 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Breathitt Gray <vilhelm.gray@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit fae6f62e6a580b663ecf42c2120a0898deae9137 ]
+[ Upstream commit 6cb59afe9e5b45a035bd6b97da6593743feefc72 ]
 
-When in SLAVE_MODE_DISABLED mode, the count still increases if the
-counter is enabled because an internal clock is used. This patch fixes
-the stm32_count_function_get() and stm32_count_function_set() functions
-to properly handle this behavior.
+In case when the properties are supplied in the secondary fwnode
+(for example, built-in device properties) the fwnode pointer left
+unassigned. This makes unable to retrieve them.
 
-Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Link: https://lore.kernel.org/r/20210226012931.161429-1-vilhelm.gray@gmail.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Assign fwnode to parent's if no primary one provided.
+
+Fixes: 7cba1a4d5e16 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+Fixes: 2afa97e9868f ("gpiolib: Read "gpio-line-names" from a firmware node")
+Reported-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Tested-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/counter/stm32-timer-cnt.c | 39 ++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ drivers/gpio/gpiolib.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index ef2a974a2f10..cd50dc12bd02 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -44,13 +44,14 @@ struct stm32_timer_cnt {
-  * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
-  */
- enum stm32_count_function {
--	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
-+	STM32_COUNT_SLAVE_MODE_DISABLED,
- 	STM32_COUNT_ENCODER_MODE_1,
- 	STM32_COUNT_ENCODER_MODE_2,
- 	STM32_COUNT_ENCODER_MODE_3,
- };
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 7f557ea90542..0a2c4adcd833 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -572,6 +572,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 			       struct lock_class_key *lock_key,
+ 			       struct lock_class_key *request_key)
+ {
++	struct fwnode_handle *fwnode = gc->parent ? dev_fwnode(gc->parent) : NULL;
+ 	unsigned long	flags;
+ 	int		ret = 0;
+ 	unsigned	i;
+@@ -601,6 +602,12 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 		gc->of_node = gdev->dev.of_node;
+ #endif
  
- static enum counter_count_function stm32_count_functions[] = {
-+	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
- 	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
- 	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
- 	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-@@ -90,6 +91,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	regmap_read(priv->regmap, TIM_SMCR, &smcr);
- 
- 	switch (smcr & TIM_SMCR_SMS) {
-+	case 0:
-+		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
-+		return 0;
- 	case 1:
- 		*function = STM32_COUNT_ENCODER_MODE_1;
- 		return 0;
-@@ -99,9 +103,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	case 3:
- 		*function = STM32_COUNT_ENCODER_MODE_3;
- 		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return -EINVAL;
- }
- 
- static int stm32_count_function_set(struct counter_device *counter,
-@@ -112,6 +116,9 @@ static int stm32_count_function_set(struct counter_device *counter,
- 	u32 cr1, sms;
- 
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		sms = 0;
-+		break;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		sms = 1;
- 		break;
-@@ -122,8 +129,7 @@ static int stm32_count_function_set(struct counter_device *counter,
- 		sms = 3;
- 		break;
- 	default:
--		sms = 0;
--		break;
-+		return -EINVAL;
- 	}
- 
- 	/* Store enable status */
-@@ -274,31 +280,36 @@ static int stm32_action_get(struct counter_device *counter,
- 	size_t function;
- 	int err;
- 
--	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
--	*action = STM32_SYNAPSE_ACTION_NONE;
--
- 	err = stm32_count_function_get(counter, count, &function);
- 	if (err)
--		return 0;
-+		return err;
- 
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		/* counts on internal clock when CEN=1 */
-+		*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
- 		if (synapse->signal->id == count->synapses[0].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_2:
- 		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
- 		if (synapse->signal->id == count->synapses[1].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_3:
- 		/* counts up/down on both TI1FP1 and TI2FP2 edges */
- 		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return 0;
- }
- 
- static const struct counter_ops stm32_timer_cnt_ops = {
++	/*
++	 * Assign fwnode depending on the result of the previous calls,
++	 * if none of them succeed, assign it to the parent's one.
++	 */
++	gdev->dev.fwnode = dev_fwnode(&gdev->dev) ?: fwnode;
++
+ 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+ 	if (gdev->id < 0) {
+ 		ret = gdev->id;
 -- 
 2.30.1
 
