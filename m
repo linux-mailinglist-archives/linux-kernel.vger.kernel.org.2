@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884E834450D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D385E3444E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhCVNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50802 "EHLO mail.kernel.org"
+        id S233553AbhCVNIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:08:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232709AbhCVM4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E82619A6;
-        Mon, 22 Mar 2021 12:48:41 +0000 (UTC)
+        id S231307AbhCVMyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:54:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07290619A5;
+        Mon, 22 Mar 2021 12:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417322;
-        bh=hRzwy2YHlwSkIjulzsFUgUm6pMZGkd6uDxTR1BAznp4=;
+        s=korg; t=1616417248;
+        bh=C8oV1pACtyAmLH2vLoVKdNyf0X+P63JRlDqmj77FC3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jgXcYH8uAy1Vbv9t78TXljUijhSQmpauLlhvnt9Cv01W4PPH9gDOBB/+pOUEKn40T
-         rX5lv74ni6TmlWe2mH4O0wMbuGwDac4NYc+nt+jFwegslxFmVC+tryzofXlbDWrBps
-         QXwKiIjYeLfCyopVb8xdSMdd6I6Xdy7J4HDC0t1A=
+        b=FlP/vX7riqSuEBF7ttpmtb3LsRFQbn0SccKF+1aFA94BFogdS+eSFg1gl6yOWo/fh
+         o/q0re+3JdTPAGa5lY+BT+8Pag6LZTkg1UA4RhG1bZ+5FnLp39X38z59RpasyG0cBf
+         X/xzURgKwE2avazT0z+Tsvtsyafg/wHy8Ub6g5Dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pavel Skripkin <paskripkin@gmail.com>,
         Alexander Lobakin <alobakin@pm.me>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 21/43] net/qrtr: fix __netdev_alloc_skb call
+Subject: [PATCH 4.9 12/25] net/qrtr: fix __netdev_alloc_skb call
 Date:   Mon, 22 Mar 2021 13:29:02 +0100
-Message-Id: <20210322121920.721967577@linuxfoundation.org>
+Message-Id: <20210322121920.790030672@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -82,7 +82,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/qrtr/qrtr.c
 +++ b/net/qrtr/qrtr.c
-@@ -235,7 +235,7 @@ int qrtr_endpoint_post(struct qrtr_endpo
+@@ -232,7 +232,7 @@ int qrtr_endpoint_post(struct qrtr_endpo
  	if (dst != QRTR_PORT_CTRL && type != QRTR_TYPE_DATA)
  		return -EINVAL;
  
