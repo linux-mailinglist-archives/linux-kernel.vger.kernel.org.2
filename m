@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F01343C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD61343C30
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhCVI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhCVI7W (ORCPT
+        id S229941AbhCVI61 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 04:58:27 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34332 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229508AbhCVI6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:59:22 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66254C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gkJyH1ka82Nqgxz80lMFhKAEIXgYyo5mEmTvgPuh6PI=; b=ixb4/abe4TfMXQTJFEsCig074d
-        CaAEl8FHq2w1iArMw3Ra3P8DuUPf8JjtK4NnXrSO77N2KeGN4JfX2Q/FViFy2smtdMtMm61bxCUxk
-        OyzJLry08t+Q4Rldf9HRgGT2X1T3eGLlxW3snWhXUXFpHKio0QUKPpgVgB9R4cckx3aYM5ZDCwqBq
-        Y4WiIrAzn1ZzIGZtpc4hpLx+0kSaSTDORivRbmTc29ySs+3u4epJhV7lMaNVrEFm9E6Z8wC8MNBde
-        ixaFLBPMrjFzqP+GYsni28LZr0oXvG940+gTyS2H6xQ/GYW6rkxHPw7ugk+vD3pZrv8UZbroRQWeD
-        CHZKGGgw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOGNl-00BCx1-Fe; Mon, 22 Mar 2021 08:57:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A274304BAE;
-        Mon, 22 Mar 2021 09:57:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 42E232BA3A2F9; Mon, 22 Mar 2021 09:57:51 +0100 (CET)
-Date:   Mon, 22 Mar 2021 09:57:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: Re: [PATCH 1/6] sched: migration changes for core scheduling
-Message-ID: <YFhcD/jz7kC8jaXa@hirez.programming.kicks-ass.net>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-2-joel@joelfernandes.org>
- <20210320153457.GX4746@worktop.programming.kicks-ass.net>
- <28e13609-c526-c6ee-22a3-898652aed5e6@linux.intel.com>
- <YFhL4CMPB+Pfo965@hirez.programming.kicks-ass.net>
- <af3f6ea6-2c71-233f-fc6b-af039b004923@linux.intel.com>
+        Mon, 22 Mar 2021 04:58:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-245-4lZc9m03OW2Pu2atP1wGzw-1; Mon, 22 Mar 2021 08:58:12 +0000
+X-MC-Unique: 4lZc9m03OW2Pu2atP1wGzw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 22 Mar 2021 08:58:11 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Mon, 22 Mar 2021 08:58:11 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Herbert Xu' <herbert@gondor.apana.org.au>,
+        "menglong8.dong@gmail.com" <menglong8.dong@gmail.com>
+CC:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH net-next 2/2] net: socket: change MSG_CMSG_COMPAT to
+ BIT(21)
+Thread-Topic: [PATCH net-next 2/2] net: socket: change MSG_CMSG_COMPAT to
+ BIT(21)
+Thread-Index: AQHXHlCgGHDgaZN5KE6t5P14se4atKqPtAlQ
+Date:   Mon, 22 Mar 2021 08:58:11 +0000
+Message-ID: <ab55a91d390c485187326c8fa3a84841@AcuMS.aculab.com>
+References: <20210321123929.142838-1-dong.menglong@zte.com.cn>
+ <20210321123929.142838-3-dong.menglong@zte.com.cn>
+ <20210321124906.GA14333@gondor.apana.org.au>
+In-Reply-To: <20210321124906.GA14333@gondor.apana.org.au>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af3f6ea6-2c71-233f-fc6b-af039b004923@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 04:12:17PM +0800, Li, Aubrey wrote:
-
-> > But suppose there is an imbalance; then this cookie crud can forever
-> > stall balance.
-> > 
-> > Imagine this cpu running a while(1); with a uniqie cookie on, then it
-> > will _never_ accept other tasks == BAD.
-> > 
+From: Herbert Xu
+> Sent: 21 March 2021 12:49
 > 
-> How about putting the following check in sched_core_cookie_match()?
+> On Sun, Mar 21, 2021 at 08:39:29PM +0800, menglong8.dong@gmail.com wrote:
+> >
+> > diff --git a/include/linux/socket.h b/include/linux/socket.h
+> > index d5ebfe30d96b..317b2933f499 100644
+> > --- a/include/linux/socket.h
+> > +++ b/include/linux/socket.h
+> > @@ -312,17 +312,18 @@ struct ucred {
+> >  					 * plain text and require encryption
+> >  					 */
+> >
+> > +#if defined(CONFIG_COMPAT)
+> > +#define MSG_CMSG_COMPAT		BIT(21)	/* This message needs 32 bit fixups */
+> > +#else
+> > +#define MSG_CMSG_COMPAT		0	/* We never have 32 bit fixups */
+> > +#endif
+> > +
+> >  #define MSG_ZEROCOPY		BIT(26)	/* Use user data in kernel path */
+> >  #define MSG_FASTOPEN		BIT(29)	/* Send data in TCP SYN */
+> >  #define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
+> >  					 * descriptor received through
+> >  					 * SCM_RIGHTS
+> >  					 */
+> > -#if defined(CONFIG_COMPAT)
+> > -#define MSG_CMSG_COMPAT		BIT(31)	/* This message needs 32 bit fixups */
+> > -#else
+> > -#define MSG_CMSG_COMPAT		0	/* We never have 32 bit fixups */
+> > -#endif
 > 
-> +	/*
-> +	 * Ignore cookie match if there is a big imbalance between the src rq
-> +	 * and dst rq.
-> +	 */
-> +	if ((src_rq->cfs.h_nr_running - rq->cfs.h_nr_running) > 1)
-> +		return true;
+> Shouldn't you add some comment here to stop people from trying to
+> use BIT(31) in the future?
 
-That's just tinkering... cookie matching should not also look at
-imbalance of any kind.
+You'd also be better using BIT(30) - ie the other end of the
+free space from the user-visible bits.
 
-> Do you have any suggestions before we drop it?
+It has to be said that the entire impossibility of writing BIT(n)
+safely almost makes it worse that just defining appropriate constants.
 
-Yeah, how about you make it part of task_hot() ? Have task_hot() refuse
-migration it the cookie doesn't match.
+Personally I like the hex constants.
+The make it much easier to work out which bits are set in a diagnostic
+print (or memory hexdump).
 
-task_hot() is a hint and will get ignored when appropriate.
+The only time I've really found BIT() type macros useful is when
+defining values that have to match hardware specs that define bit
+numbers backwards starting from 1.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
