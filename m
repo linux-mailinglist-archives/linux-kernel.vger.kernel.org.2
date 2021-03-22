@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA78344505
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E37D344507
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhCVNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50764 "EHLO mail.kernel.org"
+        id S230274AbhCVNKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhCVM41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231680AbhCVM41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 08:56:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DB97619DB;
-        Mon, 22 Mar 2021 12:48:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC4B2619B2;
+        Mon, 22 Mar 2021 12:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417314;
-        bh=m5kA/abdLW1cZgeUHA+IwCVIgm5Gqof0wPkfwUCERmw=;
+        s=korg; t=1616417317;
+        bh=6HHLKYoweAvN1wQAPx+WwW4EgHFPjS7cDzR5oirjkm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KVOlpnw7FwIv0cxr6TFLxcLqh7Q399vMaBZ+3PlwEkMaN8VX4ru58+8fLy1R7gDzI
-         vBGAQdA3LemPP9B5t5/lHaZit7tP6maCP0IUVMBtQHZIKyiP+AKEenbHWofl5zabJH
-         rz5biW9ynOQujQsbWYciIV3Z9g20qhEMD2H/OWVo=
+        b=qYkmmuejgANtQ6rp6yF34NZ/10ECLU9MqkTl49yc2KYjHyXIeZBdTUv+gxbJmxGjR
+         Uzs6MdnmAmvaqR9ZiQ8opJbuAQ6y/CpffA9jsnNzjX4wWaMk46j+fsd6ITpnRc57tv
+         q1m6mqpgUTK/uOeqG+4e6PIE0zBDEOtfdL2ZrVvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 4.14 08/43] bpf: Prohibit alu ops for pointer types not defining ptr_limit
-Date:   Mon, 22 Mar 2021 13:28:49 +0100
-Message-Id: <20210322121920.321935998@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 09/43] Revert "PM: runtime: Update device status before letting suppliers suspend"
+Date:   Mon, 22 Mar 2021 13:28:50 +0100
+Message-Id: <20210322121920.352986123@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
 References: <20210322121920.053255560@linuxfoundation.org>
@@ -40,84 +40,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Krysiuk <piotras@gmail.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit f232326f6966cf2a1d1db7bc917a4ce5f9f55f76 upstream.
+commit 0cab893f409c53634d0d818fa414641cbcdb0dab upstream.
 
-The purpose of this patch is to streamline error propagation and in particular
-to propagate retrieve_ptr_limit() errors for pointer types that are not defining
-a ptr_limit such that register-based alu ops against these types can be rejected.
+Revert commit 44cc89f76464 ("PM: runtime: Update device status
+before letting suppliers suspend") that introduced a race condition
+into __rpm_callback() which allowed a concurrent rpm_resume() to
+run and resume the device prematurely after its status had been
+changed to RPM_SUSPENDED by __rpm_callback().
 
-The main rationale is that a gap has been identified by Piotr in the existing
-protection against speculatively out-of-bounds loads, for example, in case of
-ctx pointers, unprivileged programs can still perform pointer arithmetic. This
-can be abused to execute speculatively out-of-bounds loads without restrictions
-and thus extract contents of kernel memory.
-
-Fix this by rejecting unprivileged programs that attempt any pointer arithmetic
-on unprotected pointer types. The two affected ones are pointer to ctx as well
-as pointer to map. Field access to a modified ctx' pointer is rejected at a
-later point in time in the verifier, and 7c6967326267 ("bpf: Permit map_ptr
-arithmetic with opcode add and offset 0") only relevant for root-only use cases.
-Risk of unprivileged program breakage is considered very low.
-
-Fixes: 7c6967326267 ("bpf: Permit map_ptr arithmetic with opcode add and offset 0")
-Fixes: b2157399cc98 ("bpf: prevent out-of-bounds speculation")
-Signed-off-by: Piotr Krysiuk <piotras@gmail.com>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 44cc89f76464 ("PM: runtime: Update device status before letting suppliers suspend")
+Link: https://lore.kernel.org/linux-pm/24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com/
+Reported-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/bpf/verifier.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/base/power/runtime.c |   62 +++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 37 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2104,6 +2104,7 @@ static int sanitize_ptr_alu(struct bpf_v
- 	u32 alu_state, alu_limit;
- 	struct bpf_reg_state tmp;
- 	bool ret;
-+	int err;
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -306,22 +306,22 @@ static void rpm_put_suppliers(struct dev
+ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
+ {
+-	bool use_links = dev->power.links_count > 0;
+-	bool get = false;
+ 	int retval, idx;
+-	bool put;
++	bool use_links = dev->power.links_count > 0;
  
- 	if (can_skip_alu_sanitation(env, insn))
- 		return 0;
-@@ -2119,10 +2120,13 @@ static int sanitize_ptr_alu(struct bpf_v
- 	alu_state |= ptr_is_dst_reg ?
- 		     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
+ 	if (dev->power.irq_safe) {
+ 		spin_unlock(&dev->power.lock);
+-	} else if (!use_links) {
+-		spin_unlock_irq(&dev->power.lock);
+ 	} else {
+-		get = dev->power.runtime_status == RPM_RESUMING;
+-
+ 		spin_unlock_irq(&dev->power.lock);
  
--	if (retrieve_ptr_limit(ptr_reg, &alu_limit, opcode, off_is_neg))
--		return 0;
--	if (update_alu_sanitation_state(aux, alu_state, alu_limit))
--		return -EACCES;
-+	err = retrieve_ptr_limit(ptr_reg, &alu_limit, opcode, off_is_neg);
-+	if (err < 0)
-+		return err;
-+
-+	err = update_alu_sanitation_state(aux, alu_state, alu_limit);
-+	if (err < 0)
-+		return err;
- do_sim:
- 	/* Simulate and find potential out-of-bounds access under
- 	 * speculative execution from truncation as a result of
-@@ -2215,7 +2219,7 @@ static int adjust_ptr_min_max_vals(struc
- 	case BPF_ADD:
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, dst_reg, smin_val < 0);
- 		if (ret < 0) {
--			verbose("R%d tried to add from different maps or paths\n", dst);
-+			verbose("R%d tried to add from different maps, paths, or prohibited types\n", dst);
- 			return ret;
- 		}
- 		/* We can take a fixed offset as long as it doesn't overflow
-@@ -2270,7 +2274,7 @@ static int adjust_ptr_min_max_vals(struc
- 	case BPF_SUB:
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, dst_reg, smin_val < 0);
- 		if (ret < 0) {
--			verbose("R%d tried to sub from different maps or paths\n", dst);
-+			verbose("R%d tried to sub from different maps, paths, or prohibited types\n", dst);
- 			return ret;
- 		}
- 		if (dst_reg == off_reg) {
+-		/* Resume suppliers if necessary. */
+-		if (get) {
++		/*
++		 * Resume suppliers if necessary.
++		 *
++		 * The device's runtime PM status cannot change until this
++		 * routine returns, so it is safe to read the status outside of
++		 * the lock.
++		 */
++		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
+ 			idx = device_links_read_lock();
+ 
+ 			retval = rpm_get_suppliers(dev);
+@@ -336,36 +336,24 @@ static int __rpm_callback(int (*cb)(stru
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_lock(&dev->power.lock);
+-		return retval;
+-	}
+-
+-	spin_lock_irq(&dev->power.lock);
+-
+-	if (!use_links)
+-		return retval;
+-
+-	/*
+-	 * If the device is suspending and the callback has returned success,
+-	 * drop the usage counters of the suppliers that have been reference
+-	 * counted on its resume.
+-	 *
+-	 * Do that if the resume fails too.
+-	 */
+-	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
+-	if (put)
+-		__update_runtime_status(dev, RPM_SUSPENDED);
+-	else
+-		put = get && retval;
+-
+-	if (put) {
+-		spin_unlock_irq(&dev->power.lock);
+-
+-		idx = device_links_read_lock();
++	} else {
++		/*
++		 * If the device is suspending and the callback has returned
++		 * success, drop the usage counters of the suppliers that have
++		 * been reference counted on its resume.
++		 *
++		 * Do that if resume fails too.
++		 */
++		if (use_links
++		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
++		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
++			idx = device_links_read_lock();
+ 
+-fail:
+-		rpm_put_suppliers(dev);
++ fail:
++			rpm_put_suppliers(dev);
+ 
+-		device_links_read_unlock(idx);
++			device_links_read_unlock(idx);
++		}
+ 
+ 		spin_lock_irq(&dev->power.lock);
+ 	}
 
 
