@@ -2,155 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F44344E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F39344E9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhCVScp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 14:32:45 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50021 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhCVScR (ORCPT
+        id S232177AbhCVSdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhCVSdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:32:17 -0400
-X-Originating-IP: 90.89.138.59
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 52ABA60004;
-        Mon, 22 Mar 2021 18:32:13 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 19:32:13 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-Message-ID: <20210322193213.18520b9a@xps13>
-In-Reply-To: <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
-References: <20210213095724.3411058-1-daniel@0x0f.com>
-        <20210215112409.1a755bf0@xps13>
-        <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
-        <20210215121653.4edd86c4@xps13>
-        <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 22 Mar 2021 14:33:04 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7749AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:32:52 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 75so22811042lfa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eze6fo/qU2elQxuT7PNT60Pcmqt6hp4FChAafrK7TlY=;
+        b=MxVOxL3Na62SXddwG0JngoJ0NSLgIP7LZhILCSHq0+vh3G87bf4ovXeVud9pSOr+gD
+         mBBpRsaDF/G+IuEsR3hmtNXFYGch9vLD+iOXqyJfevKWC+m4Heg8NC353wM0YauFP1sc
+         EwIEyfAPoYFmfum4Gdj/bVbPeK/XiG0jOnTLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eze6fo/qU2elQxuT7PNT60Pcmqt6hp4FChAafrK7TlY=;
+        b=cWWpZfUMLYaP2dsRSnqUet8S94+RqzbHnyb0vwIX89ELvmX9ciA7UidpfGZrynUD0I
+         DGLCouJH3l1GGVhyVhY4nzH7DEyFe6XonUkpOAzj2b4yzVTZIYt6d4Fmw6ejTssYwWRN
+         QTRdu76o0YiqzAtP1Pa5LeKrq62b9yKAI9pNuQvlCBcKgdoaHQTD13UxpxJA9gfFn7UC
+         Tcp4scEUVrR3jNUKx5VR8FqrfuZwYsAAnYjIWUHuvbxoRt0uYQcBd9WMzNS5GSjqzN/w
+         sX3emGPIdZy98V+PFmnLaqEAfg7fTy73cqdCBA9WnwvwQsbJ2D2DqglIjKbJmHzF0+vX
+         xRwg==
+X-Gm-Message-State: AOAM532eAvbNXO9bkebfjAIk6Mak5GBBvKBDhTRlk5LjVwkBoqduFMAu
+        F8fV11I4ntBD2RwYwvOPFoBj+qXSri+QOQ==
+X-Google-Smtp-Source: ABdhPJywEaErUTglRVeBW22qLWoXrI6BcDHAGMFjDWem1RMAdoNs5wYxacVXuWPUvosNfkeMR9T+Fw==
+X-Received: by 2002:ac2:5e8b:: with SMTP id b11mr353917lfq.99.1616437970655;
+        Mon, 22 Mar 2021 11:32:50 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id b25sm2023828ljo.80.2021.03.22.11.32.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 11:32:50 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id f16so22387843ljm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:32:50 -0700 (PDT)
+X-Received: by 2002:a2e:864d:: with SMTP id i13mr530535ljj.48.1616437969891;
+ Mon, 22 Mar 2021 11:32:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+In-Reply-To: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 22 Mar 2021 11:32:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+Message-ID: <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+Subject: Re: RFC: create mailing list "linux-issues" focussed on issues/bugs
+ and regressions
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        workflows@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, Mar 22, 2021 at 8:18 AM Thorsten Leemhuis <linux@leemhuis.info> wrote:
+>
+>     I even requested a
+> "linux-regressions@vger.kernel.org" a while later, but didn't hear
+> anything back; and, sadly, about the same time I started having trouble
+> finding spare time for working on regression tracking. :-/
 
-Daniel Palmer <daniel@0x0f.com> wrote on Mon, 22 Mar 2021 21:44:40
-+0900:
+Honestly, I'd much prefer the name 'linux-regressions' as being much
+more targeted than 'linux-issues'. Make it clear that the list is only
+for regressions that people can describe some way, rather than some
+general "I have issues with xyz".
 
-> Hi Miquel,
-> 
-> Sorry for the resend. Gmail randomly switched to HTML email so the
-> original version seems to have bounced.
-> 
-> On Mon, 15 Feb 2021 at 20:16, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > "2. Spare area 800H to 83FH is all available for user.
-> > >  ECC parity codes are programmed in
-> > > additional space and not user accessible."
-> > >
-> > > It would seem that the pages are actually bigger than 2K + 64 or there
-> > > is some other place they keep the ECC.
-> > > Or both datasheets are lying. Somewhere else in the datasheets it says
-> > > that writes to the ECC area will be ignored but that doesn't make a
-> > > lot of sense if the ECC area isn't user accessible in the first place.
-> > >
-> > > I didn't think about it at the time but I can take a dump of the OOB
-> > > area of my FS35ND01G-S1Y2 to confirm it's all 0xff except for any
-> > > factory marked bad blocks.  
-> >
-> > I see. Can you please try the following:
-> >
-> > nandwrite -o /dev/mtdx /dev/zero
-> > nanddump -ol1 /dev/mtdx
-> > If the entire area is effectively free to be used, you should see 0's
-> > everywhere. Otherwise you should have ff's somewhere.  
-> 
-> Sorry I didn't follow up sooner on this. I needed to order another of
-> this flash chip to test with as I couldn't destroy the data on the one
-> I have.
-> 
-> Anyhow:
-> 
-> Erased the page with flash erase (I'm forcing it to erase bad blocks
-> here as I mess up the marker, I have a hack to allow erasing bad
-> blocks..)
-> Everything is 0xFF for that page.
-> 
-> # flash_erase -N /dev/mtd1 0 1
-> Erasing 128 Kibyte @ 0 -- 100 % complete
-> # nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x00000000 and ending at 0x00000800...
-> 0x00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> ....
-> 0x000007f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
->   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
->   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
->   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
->   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 
-> Write zeros into the page and OOB.
-> Get all zeros back including the OOB.
-> 
-> # nandwrite -o /dev/mtd1 /dev/zero
-> Writing data to block 0 at offset 0x0
-> Bad block at 0, 1 block(s) will be skipped
-> Writing data to block 1 at offset 0x20000
-> # nandwrite -N -o /dev/mtd1 /dev/zero
-> Writing data to block 0 at offset 0x0
-> # nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x00000000 and ending at 0x00000800...
-> 0x00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
-> ...
-> 0x000007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
->   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
->   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
->   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  |................|
->   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> |................|
-> 
-> Erase the page again and writing random junk into it.
-> Seeing random junk everywhere including the OOB.
-> 
-> # flash_erase -N /dev/mtd1 0 1
-> Erasing 128 Kibyte @ 0 -- 100 % complete
-> # nandwrite -N -o /dev/mtd1 /dev/urandom
-> Writing data to [  230.506260] random: nandwrite: uninitialized
-> urandom read (2048 bytes read)
-> block 0 at offse[  230.514705] random: nandwrite: uninitialized
-> urandom read (64 bytes read)
-> t 0x0
-> # nanddump --bb=dumpbad -n -l2048 -o -c -s 0x0 /dev/mtd1
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x00000000 and ending at 0x00000800...
-> 0x00000000: 5e 24 bd 5f d9 c6 ce c5 b1 85 52 4d 27 94 c9 98  |^$._......RM'...|
-> ...
-> 0x000007f0: fa 9f 7f 7d ce 99 33 88 d6 9f 99 7d 84 e7 0c 4d  |...}..3....}...M|
->   OOB Data: b1 81 07 6a 8d 47 8b ed 89 88 ac 62 e8 ae 48 54  |...j.G.....b..HT|
->   OOB Data: 7d b2 ea 73 f3 29 ba 65 e6 45 cb 8b 1a c6 5b dc  |}..s.).e.E....[.|
->   OOB Data: b2 2e 77 56 e0 e1 04 59 86 31 7a e5 bd 43 f9 48  |..wV...Y.1z..C.H|
->   OOB Data: 52 05 b2 f1 65 64 59 22 79 50 ec 89 55 6b 6e 23  |R...edY"yP..Ukn#|
-> 
-> I think this shows that the datasheet is right in that the complete 64
-> bytes of "spare area" is usable.
-> I have no idea where it puts the ECC though. :)
+The more clear-cut the list is, the better, I think.
 
-Argh, I don't like when hardware tries to be smart.
-
-Ok then let's declare no ECC bytes in the OOB layout, I guess it's the
-best thing to do...
-
-Thanks for checking btw!
-
-I don't recall the state of the patch which triggered this discussion,
-so I guess it's a good time to respin.
-
-Cheers,
-Miquèl
+            Linus
