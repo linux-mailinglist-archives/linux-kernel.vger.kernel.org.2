@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D3C344549
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED21C34454A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhCVNPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:15:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:59722 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233029AbhCVNCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:02:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2A531042;
-        Mon, 22 Mar 2021 06:02:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 607AF3F719;
-        Mon, 22 Mar 2021 06:02:20 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 13:01:58 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chen Jun <chenjun102@huawei.com>,
-        Marco Elver <elver@google.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
-Message-ID: <20210322130158.GA78652@C02TD0UTHF1T.local>
-References: <20210319184106.5688-1-mark.rutland@arm.com>
- <20210319190205.GI6832@arm.com>
+        id S233125AbhCVNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233059AbhCVNC0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:02:26 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956DAC061756;
+        Mon, 22 Mar 2021 06:02:25 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c3so10359024qkc.5;
+        Mon, 22 Mar 2021 06:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMH4QAnKMYAm7SV5kDPsGP+GUy0GDEG+vPXEkoZ0Tc8=;
+        b=UiWo5DT0T6s2hIq4vT2rvCAkJOPIUgQVjcBgQe58BOP9zL6pUJF0ZKVaJ0GiW97qeK
+         hqMjKxAti3LtuoC30QcGslmlNw/9tJoC/hcDjIR/2ECJbIqxUg/uS9G222r1CulMkv4s
+         DHo/nJ4n1Y9Ee+RyyzxSahr+v5eV9Cuz/wSO7zizBtqEkPs7TtCXpv7UtRSjLD6Dz3Hv
+         fSRIePlXgSFxGJjzIJMfDS5JJOyiFhLBS5DwDsUO8yEQrTR3iR2icQVJRcNu4hORRvzd
+         45JQDRKjfEigGkKFr/peQNu3GmT7zVCA9qUComZupiOCC8chBYFGwVwQCgr6RG+VqSal
+         MmOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMH4QAnKMYAm7SV5kDPsGP+GUy0GDEG+vPXEkoZ0Tc8=;
+        b=jWbMLzYnKP941AAzjhAZEOEPyj1XmQ1ZHwBuz40cNAPziKIacgRMkF+vkFbzugyn0R
+         88yOclxkQwJa5lyk/PLWKwi5gRpkb8uauuk8dFI34wxzEBgPrW2oaAAzWob+KDyjHEYi
+         tRKg/IC9hd62MNhpQI2JKqjfInwn3njb8hkcKKzcOVk4ZnZBiKjQgVmYRG38McdWcblR
+         7dLsnnNegZPyXLTqcQi5eRn8LXmbsoNLcKzQ+kNcBdgzIUYvKrX6tQWKrqyLetYOPa54
+         CgB4wJtB0jLEkDLTZIJJiSTnmYMVL51IoXYX2Q47rUalXSIQrfFhL3rYQoM8SMTHlMSX
+         E+tQ==
+X-Gm-Message-State: AOAM533PX2GFpURyqTG/DWz9swqyjqFXjOeJ2VKHLCG4oqAItVzjmXNQ
+        GVT5YDqwZmFTu0yraYoJ4Ck=
+X-Google-Smtp-Source: ABdhPJx+9Viv9Em+PGreRyAyt7xaYv9wDXL//i4JvTFnQZYD+AXa6lRIzDFP80ZnSLA7VZ3tVkmr1w==
+X-Received: by 2002:a37:a9cf:: with SMTP id s198mr10303355qke.143.1616418144881;
+        Mon, 22 Mar 2021 06:02:24 -0700 (PDT)
+Received: from localhost.localdomain ([143.244.44.200])
+        by smtp.gmail.com with ESMTPSA id z89sm8963497qtd.5.2021.03.22.06.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 06:02:22 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     unixbhaskar@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] video: mmp: Few typo fixes
+Date:   Mon, 22 Mar 2021 18:32:10 +0530
+Message-Id: <20210322130210.3641181-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319190205.GI6832@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 07:02:06PM +0000, Catalin Marinas wrote:
-> On Fri, Mar 19, 2021 at 06:41:06PM +0000, Mark Rutland wrote:
-> > We recently converted arm64 to use arch_stack_walk() in commit:
-> > 
-> >   5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > 
-> > The core stacktrace code expects that (when tracing the current task)
-> > arch_stack_walk() starts a trace at its caller, and does not include
-> > itself in the trace. However, arm64's arch_stack_walk() includes itself,
-> > and so traces include one more entry than callers expect. The core
-> > stacktrace code which calls arch_stack_walk() tries to skip a number of
-> > entries to prevent itself appearing in a trace, and the additional entry
-> > prevents skipping one of the core stacktrace functions, leaving this in
-> > the trace unexpectedly.
-> > 
-> > We can fix this by having arm64's arch_stack_walk() begin the trace with
-> > its caller. The first value returned by the trace will be
-> > __builtin_return_address(0), i.e. the caller of arch_stack_walk(). The
-> > first frame record to be unwound will be __builtin_frame_address(1),
-> > i.e. the caller's frame record. To prevent surprises, arch_stack_walk()
-> > is also marked noinline.
 
-[...]
+s/configed/configured/
+s/registed/registered/
+s/defintions/definitions/
 
-> > Fixes: 5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Chen Jun <chenjun102@huawei.com>
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Will Deacon <will@kernel.org>
-> 
-> Thanks Mark. I think we should add a cc stable, just with Fixes doesn't
-> always seem to end up in a stable kernel:
-> 
-> Cc: <stable@vger.kernel.org> # 5.10.x
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/video/mmp_disp.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Makes sense to me, sure.
+diff --git a/include/video/mmp_disp.h b/include/video/mmp_disp.h
+index 77252cb46361..ea8b4331b7a1 100644
+--- a/include/video/mmp_disp.h
++++ b/include/video/mmp_disp.h
+@@ -172,7 +172,7 @@ struct mmp_panel {
+ 	/* use node to register to list */
+ 	struct list_head node;
+ 	const char *name;
+-	/* path name used to connect to proper path configed */
++	/* path name used to connect to proper path configured */
+ 	const char *plat_path_name;
+ 	struct device *dev;
+ 	int panel_type;
+@@ -291,7 +291,7 @@ static inline int mmp_overlay_set_addr(struct mmp_overlay *overlay,
+  * it defined a common interface that plat driver need to implement
+  */
+ struct mmp_path_info {
+-	/* driver data, set when registed*/
++	/* driver data, set when registered*/
+ 	const char *name;
+ 	struct device *dev;
+ 	int id;
+@@ -309,7 +309,7 @@ extern void mmp_unregister_path(struct mmp_path *path);
+ extern void mmp_register_panel(struct mmp_panel *panel);
+ extern void mmp_unregister_panel(struct mmp_panel *panel);
 
-> With that:
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+-/* defintions for platform data */
++/* definitions for platform data */
+ /* interface for buffer driver */
+ struct mmp_buffer_driver_mach_info {
+ 	const char	*name;
+--
+2.31.0
 
-Thanks!
-
-Will, I assume you're happy to fold in the above when picking this. If
-you'd prefer I repost with that folded in, please let me know!
-
-Mark.
