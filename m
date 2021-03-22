@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35811344839
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 833F5344840
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhCVOyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:54:11 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16678 "EHLO mga04.intel.com"
+        id S230510AbhCVOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:54:44 -0400
+Received: from verein.lst.de ([213.95.11.211]:56129 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231394AbhCVOwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:52:55 -0400
-IronPort-SDR: PDZrzvMtyWpyPIHFH/Twk0eFOzWvkUpPcqhagvRHpupWi4PVRTdXsfeMImN3naPaAquc//CzEf
- an1nOr6NAE0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="187962997"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="187962997"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 07:52:32 -0700
-IronPort-SDR: AcDswo0o5vJUZRQnv7Qgq4FfRiJvce9xEXN0iZXavHHDTiu8NLkg8XL3qJb8K0JAMd3q/9W2Pq
- cGiyP/W0DPkQ==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="390502622"
-Received: from xzhan86-mobl.amr.corp.intel.com (HELO [10.209.39.64]) ([10.209.39.64])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 07:52:30 -0700
-Subject: Re: [PATCH v23 07/28] x86/mm: Remove _PAGE_DIRTY from kernel RO pages
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-8-yu-cheng.yu@intel.com>
- <20210322091351.ulemcluuhqkzuwkm@box>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <81fa71ee-3b0b-b959-b8c2-19e1a5adc4c4@intel.com>
-Date:   Mon, 22 Mar 2021 07:52:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231366AbhCVOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:54:08 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A32F268BEB; Mon, 22 Mar 2021 15:54:03 +0100 (CET)
+Date:   Mon, 22 Mar 2021 15:54:03 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210322145403.GA30942@lst.de>
+References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de> <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210322091351.ulemcluuhqkzuwkm@box>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319175311.GW1463@shell.armlinux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/2021 2:13 AM, Kirill A. Shutemov wrote:
-> On Tue, Mar 16, 2021 at 08:10:33AM -0700, Yu-cheng Yu wrote:
->> The x86 family of processors do not directly create read-only and Dirty
->> PTEs.  These PTEs are created by software.  One such case is that kernel
->> read-only pages are historically setup as Dirty.
->>
->> New processors that support Shadow Stack regard read-only and Dirty PTEs as
->> shadow stack pages.  This results in ambiguity between shadow stack and
->> kernel read-only pages.  To resolve this, removed Dirty from kernel read-
->> only pages.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Cc: "H. Peter Anvin" <hpa@zytor.com>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: Peter Zijlstra <peterz@infradead.org>
+On Fri, Mar 19, 2021 at 05:53:12PM +0000, Russell King - ARM Linux admin wrote:
+> If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
+> actually are not present on the CY82C693) then the IDE driver works
+> for me, but the PATA driver does not:
 > 
-> Looks good to me.
+> cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
+> cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
+> legacy IDE will be removed in 2021, please switch to libata
+> Report any missing HW support to linux-ide@vger.kernel.org
+>     ide0: BM-DMA at 0x1080-0x1087
+>     ide1: BM-DMA at 0x1088-0x108f
+> Probing IDE interface ide0...
+> hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
+> hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
+> ...
 > 
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> (unbind Cypress_IDE and try binding pata_cypress)
 > 
+> pata_cypress 0000:00:06.1: no available native port
 
-Thanks for reviewing.
+This comes from ata_pci_sff_init_host when it tails to initialize
+a port.  There are three cases why it can't initialize the port:
 
-Yu-cheng
+ 1) because it is marked as dummy, which is the case for the second
+    port of the cypress controller, but you're not using that even
+    with the old ide driver, and we'd still not get that message just
+    because of that second port.
+ 2) when ata_resources_present returns false because the BAR has
+    a zero start or length
+ 3) because pcim_iomap_regions() fails.  This prints a warning to the
+    log ("failed to request/iomap BARs for port %d (errno=%d)") that you
+    should have seen
+
+So the problem here has to be number two.  The legacy ide driver OTOH
+seems to lack a lot of these checks, although I'm not sure how it
+manages to actually work without those.
+
+Can you show how the BAR assignment for the device looks using lscpi
+or a tool of your choice?
