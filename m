@@ -2,136 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91852343AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759EF343ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbhCVHjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:39:14 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:42709 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhCVHiq (ORCPT
+        id S229913AbhCVHk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:40:26 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:47285 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhCVHkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:38:46 -0400
-Received: by mail-lf1-f43.google.com with SMTP id o10so19665313lfb.9;
-        Mon, 22 Mar 2021 00:38:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ufjH8UXytToswCfYagSqIAjTWmllgUhOGrl0yZoSiKw=;
-        b=GkChdgXAzrIZgoqgg6Af14P+/THIlMkJMDidQOUJXBkaL1zlKK75qSR+KKUdoEmEnC
-         2BiNVSTtLikJLUa7qZ9kq4m8uW4WuS+UEJEF1/GVtZGSAYyGjECqYraWi9MtABw05BKH
-         NO/HmBuLKla/t500oFZ2d+7ioIC9xyfc5q95Koi4ec1aQP3YDa0q4z3n+GJYxZVXb74z
-         KUQmt1CpNOUFYJl5Bt9zd2sdnAk5gR2XEh1vearg2jF4Nki27wOed84jRbQm8rq7UaOV
-         mxSoeeMZIughIFPPa+w/QaPGes+UxinD8bbeDAeoctpWiGqpVN4+JkmBYS06LFJVWpRq
-         P6qQ==
-X-Gm-Message-State: AOAM532nV9LpCGHTqyBh1bxKbFPwtVGRI+pJ9YfYkciBdtdE4n8/5MM1
-        vQDDQEqBihcbKpGLqt9UcFk=
-X-Google-Smtp-Source: ABdhPJwi5WBaAFSOoCKTO1x7JtkTXB19ZE656ZV3ZO3mONvy2QaB4ElH5AdNKDSg+bJCT3fBinGONw==
-X-Received: by 2002:a05:6512:321a:: with SMTP id d26mr8291242lfe.353.1616398723557;
-        Mon, 22 Mar 2021 00:38:43 -0700 (PDT)
-Received: from localhost.localdomain (mobile-access-5673b7-246.dhcp.inet.fi. [86.115.183.246])
-        by smtp.gmail.com with ESMTPSA id u4sm645714lfb.98.2021.03.22.00.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 00:38:43 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 09:38:37 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [RFC RESEND PATCH v2 8/8] watchdog: retu_wdt: Clean-up by using
- managed work init
-Message-ID: <5f1a80d6f88d12b23dbb864e3201fe720cd9bb74.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 22 Mar 2021 03:40:11 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id OFAVldWQVGEYcOFAYlWJy7; Mon, 22 Mar 2021 08:40:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616398810; bh=/LqkFpqeQlWRrrHkf5urMfJTwcAt2w/dOkzEaGC+RhA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Ijo0RjnsA13TcEaA3qqGTxPs63a+O7Godz8nQpBIU/bjP9B8W/G1a5q7MA1hihIxZ
+         3muuvF84/v3XLMNvNpQU//NuuWg+jhJwBAfbE43nD6ddU1rIAjrzm/xG9BsF+9uXm9
+         GA2u+6cx7QTD+ARGzzL4LBv1rmpq8bzQC96bc6Ycla+0FUh+Cp7ixOwTxStl4wfLu6
+         H0IfaHBP5LoACwUbL5R+v8YxzNJCI28XnpNtsi6YPThzN+KjWFuOvFfxj6crTOzAsu
+         yYJJKAamWdYdfIla9XcvqPKAbQE9+ODmClE8+t075dXaUZJ5mtZuot4VyTRHPqvauA
+         soaMl806mgfKQ==
+Subject: Re: [PATCH 8/8] videobuf2: handle non-contiguous DMA allocations
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210302004624.31294-1-senozhatsky@chromium.org>
+ <20210302004624.31294-9-senozhatsky@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <4430bb1d-ab68-a76d-c408-2d5a979938fa@xs4all.nl>
+Date:   Mon, 22 Mar 2021 08:40:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210302004624.31294-9-senozhatsky@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfOwh8snBtYJb7oXL6EUyjwoE5kHJchrQs8s3EpYWvweKHUd7wZ1oFC+SPmnw8YIRVCQgb2lWSXxqdevLuFty86dZ4ZFBfrzaG4LxSihABWTFw+yKFP25
+ eQ2RnuhbRjdP49Y8dEUnyLzYD9Ov6CNH5fbvlkw80dpju4yrHpWM+7iS4WQ06knHppZ929gPH7fGrtCp6rM6miBx/W9/OEDglYR4lyZnPRi6F0PpxX4Kx7mB
+ h9MLWpmnB1f07UZY7Z3HqyPro7cAX3OEuWzra7rPdqNbqVk/6IrdltC0KFFUx31h0fpP9W7Zod1SI0NHU+anu3ywS4aQahYweKd5ChNUyPyrRiYN598IlAXu
+ uaS/ckBs
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
+On 02/03/2021 01:46, Sergey Senozhatsky wrote:
+> This adds support for new noncontiguous DMA API, which
+> requires allocators to have two execution branches: one
+> for the current API, and one for the new one.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> [hch: untested conversion to the ne API]
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  .../common/videobuf2/videobuf2-dma-contig.c   | 141 +++++++++++++++---
+>  1 file changed, 117 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> index 1e218bc440c6..d6a9f7b682f3 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/highmem.h>
+>  
+>  #include <media/videobuf2-v4l2.h>
+>  #include <media/videobuf2-dma-contig.h>
+> @@ -42,8 +43,14 @@ struct vb2_dc_buf {
+>  	struct dma_buf_attachment	*db_attach;
+>  
+>  	struct vb2_buffer		*vb;
+> +	unsigned int			non_coherent_mem:1;
 
-This change is compile-tested only. All testing is appreciated.
+Just use a bool here.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/watchdog/retu_wdt.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+>  };
+>  
+> +static bool vb2_dc_is_coherent(struct vb2_dc_buf *buf)
+> +{
+> +	return !buf->non_coherent_mem;
+> +}
 
-diff --git a/drivers/watchdog/retu_wdt.c b/drivers/watchdog/retu_wdt.c
-index 258dfcf9cbda..2b9017e1cd91 100644
---- a/drivers/watchdog/retu_wdt.c
-+++ b/drivers/watchdog/retu_wdt.c
-@@ -8,6 +8,7 @@
-  * Rewritten by Aaro Koskinen.
-  */
- 
-+#include <linux/devm-helpers.h>
- #include <linux/slab.h>
- #include <linux/errno.h>
- #include <linux/device.h>
-@@ -127,9 +128,12 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	wdev->rdev		= rdev;
- 	wdev->dev		= &pdev->dev;
- 
--	INIT_DELAYED_WORK(&wdev->ping_work, retu_wdt_ping_work);
-+	ret = devm_delayed_work_autocancel(&pdev->dev, &wdev->ping_work,
-+					   retu_wdt_ping_work);
-+	if (ret)
-+		return ret;
- 
--	ret = watchdog_register_device(retu_wdt);
-+	ret = devm_watchdog_register_device(&pdev->dev, retu_wdt);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -138,25 +142,11 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	else
- 		retu_wdt_ping_enable(wdev);
- 
--	platform_set_drvdata(pdev, retu_wdt);
--
--	return 0;
--}
--
--static int retu_wdt_remove(struct platform_device *pdev)
--{
--	struct watchdog_device *wdog = platform_get_drvdata(pdev);
--	struct retu_wdt_dev *wdev = watchdog_get_drvdata(wdog);
--
--	watchdog_unregister_device(wdog);
--	cancel_delayed_work_sync(&wdev->ping_work);
--
- 	return 0;
- }
- 
- static struct platform_driver retu_wdt_driver = {
- 	.probe		= retu_wdt_probe,
--	.remove		= retu_wdt_remove,
- 	.driver		= {
- 		.name	= "retu-wdt",
- 	},
--- 
-2.25.4
+I would just drop this 'helper' function. Testing against buf->non_coherent_mem
+seems perfectly understandable to me. And better than negating that bool in
+this helper function.
 
+You can choose to invert non_coherent_mem: i.e. add a coherent_mem bool instead
+of a non_coherent_mem bool if you think that is easier to understand. It's set
+in just one place (alloc), so that's easy enough.
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Calling it 'bool is_coherent;' would perhaps be the easiest to understand.
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> +
+>  /*********************************************/
+>  /*        scatterlist table functions        */
+>  /*********************************************/
+> @@ -78,12 +85,21 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
+>  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
+>  {
+>  	struct vb2_dc_buf *buf = buf_priv;
+> -	struct dma_buf_map map;
+> -	int ret;
+>  
+> -	if (!buf->vaddr && buf->db_attach) {
+> -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
+> -		buf->vaddr = ret ? NULL : map.vaddr;
+> +	if (buf->vaddr)
+> +		return buf->vaddr;
+> +
+> +	if (buf->db_attach) {
+> +		struct dma_buf_map map;
+> +
+> +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
+> +			buf->vaddr = map.vaddr;
+> +	}
+> +
+> +	if (!vb2_dc_is_coherent(buf)) {
+> +		buf->vaddr = dma_vmap_noncontiguous(buf->dev,
+> +						    buf->size,
+> +						    buf->dma_sgt);
+>  	}
+>  
+>  	return buf->vaddr;
+> @@ -101,13 +117,26 @@ static void vb2_dc_prepare(void *buf_priv)
+>  	struct vb2_dc_buf *buf = buf_priv;
+>  	struct sg_table *sgt = buf->dma_sgt;
+>  
+> +	/* This takes care of DMABUF and user-enforced cache sync hint */
+>  	if (buf->vb->skip_cache_sync_on_prepare)
+>  		return;
+>  
+> +	/*
+> +	 * Coherent MMAP buffers do not need to be synced, unlike coherent
+> +	 * USERPTR and non-coherent MMAP buffers.
+> +	 */
+> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && vb2_dc_is_coherent(buf))
+> +		return;
+> +
+>  	if (!sgt)
+>  		return;
+>  
+> +	/* For both USERPTR and non-coherent MMAP */
+>  	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
+> +
+> +	/* Non-coherrent MMAP only */
+
+Typo: coherrent -> coherent
+
+> +	if (!vb2_dc_is_coherent(buf) && buf->vaddr)
+> +		flush_kernel_vmap_range(buf->vaddr, buf->size);
+>  }
+>  
+>  static void vb2_dc_finish(void *buf_priv)
+> @@ -115,19 +144,46 @@ static void vb2_dc_finish(void *buf_priv)
+>  	struct vb2_dc_buf *buf = buf_priv;
+>  	struct sg_table *sgt = buf->dma_sgt;
+>  
+> +	/* This takes care of DMABUF and user-enforced cache sync hint */
+>  	if (buf->vb->skip_cache_sync_on_finish)
+>  		return;
+>  
+> +	/*
+> +	 * Coherent MMAP buffers do not need to be synced, unlike coherent
+> +	 * USERPTR and non-coherent MMAP buffers.
+> +	 */
+> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && vb2_dc_is_coherent(buf))
+> +		return;
+> +
+>  	if (!sgt)
+>  		return;
+>  
+> +	/* For both USERPTR and non-coherent MMAP */
+>  	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
+> +
+> +	/* Non-coherrent MMAP only */
+
+Same typo.
+
+> +	if (!vb2_dc_is_coherent(buf) && buf->vaddr)
+> +		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
+>  }
+>  
+>  /*********************************************/
+>  /*        callbacks for MMAP buffers         */
+>  /*********************************************/
+>  
+> +static void __vb2_dc_put(struct vb2_dc_buf *buf)
+> +{
+> +	if (vb2_dc_is_coherent(buf)) {
+> +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
+> +			       buf->dma_addr, buf->attrs);
+> +		return;
+> +	}
+> +
+> +	if (buf->vaddr)
+> +		dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
+> +	dma_free_noncontiguous(buf->dev, buf->size,
+> +			       buf->dma_sgt, buf->dma_addr);
+> +}
+> +
+>  static void vb2_dc_put(void *buf_priv)
+>  {
+>  	struct vb2_dc_buf *buf = buf_priv;
+> @@ -139,17 +195,47 @@ static void vb2_dc_put(void *buf_priv)
+>  		sg_free_table(buf->sgt_base);
+>  		kfree(buf->sgt_base);
+>  	}
+> -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
+> -		       buf->attrs);
+> +	__vb2_dc_put(buf);
+>  	put_device(buf->dev);
+>  	kfree(buf);
+>  }
+>  
+> +static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
+> +{
+> +	struct vb2_queue *q = buf->vb->vb2_queue;
+> +
+> +	buf->cookie = dma_alloc_attrs(buf->dev,
+> +				      buf->size,
+> +				      &buf->dma_addr,
+> +				      GFP_KERNEL | q->gfp_flags,
+> +				      buf->attrs);
+> +	if (!buf->cookie)
+> +		return -ENOMEM;
+> +	if ((q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
+> +		buf->vaddr = buf->cookie;
+> +	return 0;
+> +}
+> +
+> +static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
+> +{
+> +	struct vb2_queue *q = buf->vb->vb2_queue;
+> +
+> +	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
+> +					       buf->size,
+> +					       buf->dma_dir,
+> +					       GFP_KERNEL | q->gfp_flags,
+> +					       buf->attrs);
+> +	if (!buf->dma_sgt)
+> +		return -ENOMEM;
+
+DMA_ATTR_NO_KERNEL_MAPPING makes no sense here? If so, then it would be
+good to document that here.
+
+> +	return 0;
+> +}
+> +
+>  static void *vb2_dc_alloc(struct vb2_buffer *vb,
+>  			  struct device *dev,
+>  			  unsigned long size)
+>  {
+>  	struct vb2_dc_buf *buf;
+> +	int ret;
+>  
+>  	if (WARN_ON(!dev))
+>  		return ERR_PTR(-EINVAL);
+> @@ -159,27 +245,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	buf->attrs = vb->vb2_queue->dma_attrs;
+> -	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
+> -				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
+> -				      buf->attrs);
+> -	if (!buf->cookie) {
+> -		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
+> -		kfree(buf);
+> -		return ERR_PTR(-ENOMEM);
+> -	}
+> -
+> -	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
+> -		buf->vaddr = buf->cookie;
+> +	buf->dma_dir = vb->vb2_queue->dma_dir;
+> +	buf->vb = vb;
+> +	buf->non_coherent_mem = vb->vb2_queue->non_coherent_mem;
+>  
+> +	buf->size = size;
+>  	/* Prevent the device from being released while the buffer is used */
+>  	buf->dev = get_device(dev);
+> -	buf->size = size;
+> -	buf->dma_dir = vb->vb2_queue->dma_dir;
+> +
+> +	if (vb2_dc_is_coherent(buf))
+> +		ret = vb2_dc_alloc_coherent(buf);
+> +	else
+> +		ret = vb2_dc_alloc_non_coherent(buf);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "dma alloc of size %ld failed\n", size);
+> +		kfree(buf);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+>  
+>  	buf->handler.refcount = &buf->refcount;
+>  	buf->handler.put = vb2_dc_put;
+>  	buf->handler.arg = buf;
+> -	buf->vb = vb;
+>  
+>  	refcount_set(&buf->refcount, 1);
+>  
+> @@ -196,9 +283,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
+>  		return -EINVAL;
+>  	}
+>  
+> -	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
+> -		buf->dma_addr, buf->size, buf->attrs);
+> -
+> +	if (vb2_dc_is_coherent(buf))
+> +		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
+> +				     buf->size, buf->attrs);
+> +	else
+> +		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
+> +					     buf->dma_sgt);
+>  	if (ret) {
+>  		pr_err("Remapping memory failed, error: %d\n", ret);
+>  		return ret;
+> @@ -390,6 +480,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
+>  	int ret;
+>  	struct sg_table *sgt;
+>  
+> +	if (!vb2_dc_is_coherent(buf))
+> +		return buf->dma_sgt;
+> +
+>  	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
+>  	if (!sgt) {
+>  		dev_err(buf->dev, "failed to alloc sg table\n");
+> 
+
+Regards,
+
+	Hans
