@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7A53444E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33BC344516
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhCVNIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:08:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47874 "EHLO mail.kernel.org"
+        id S231172AbhCVNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:11:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhCVMxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:53:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD8D60C41;
-        Mon, 22 Mar 2021 12:47:25 +0000 (UTC)
+        id S231442AbhCVM44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:56:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C56661A15;
+        Mon, 22 Mar 2021 12:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417246;
-        bh=U6ZfX6nV1Hzo6GM4uM/Mqb54Q3FHy7Fx7i4GHRuP1TA=;
+        s=korg; t=1616417337;
+        bh=SFgLZxws0Wr+ZFsNUSgZPcb2+nEn7juNBb97dO+oS6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i+1QYtN7c+Vj3Bp0icNrqpHnuadNMzY+XLklWaIpvwmahOUquWh1VPFZwMcGqQi0C
-         4D6wEWi5tiERLWenyMUZWk5tAw/2X4NEt+VNDV9gfA3JFNDjBIAgRQneQ6VTKCaKjW
-         zIg48pNyHyWzHDIqGd2XpvszwoNhB7qhGP7dIdy4=
+        b=Y7/l3aiu+GmyfY10srahp5VM5WYJlcwQULNg3GWey8LnlYJmEZh8s2QfajL/BUQsM
+         4ITB5VXVMHvzPkMZ1SBf968IwCoYPWsNCxVDzzHAGUielncpr+3d0dmURL7DYpMDYZ
+         RFzIY3hCKhpNfYaJFQtY0te1jB69ZD5EjPgnCbik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4.9 25/25] genirq: Disable interrupts for force threaded handlers
-Date:   Mon, 22 Mar 2021 13:29:15 +0100
-Message-Id: <20210322121921.197695032@linuxfoundation.org>
+        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 4.14 35/43] perf/x86/intel: Fix a crash caused by zero PEBS status
+Date:   Mon, 22 Mar 2021 13:29:16 +0100
+Message-Id: <20210322121921.160525134@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
-References: <20210322121920.399826335@linuxfoundation.org>
+In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
+References: <20210322121920.053255560@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit 81e2073c175b887398e5bca6c004efa89983f58d upstream.
+commit d88d05a9e0b6d9356e97129d4ff9942d765f46ea upstream.
 
-With interrupt force threading all device interrupt handlers are invoked
-from kernel threads. Contrary to hard interrupt context the invocation only
-disables bottom halfs, but not interrupts. This was an oversight back then
-because any code like this will have an issue:
+A repeatable crash can be triggered by the perf_fuzzer on some Haswell
+system.
+https://lore.kernel.org/lkml/7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu/
 
-thread(irq_A)
-  irq_handler(A)
-    spin_lock(&foo->lock);
+For some old CPUs (HSW and earlier), the PEBS status in a PEBS record
+may be mistakenly set to 0. To minimize the impact of the defect, the
+commit was introduced to try to avoid dropping the PEBS record for some
+cases. It adds a check in the intel_pmu_drain_pebs_nhm(), and updates
+the local pebs_status accordingly. However, it doesn't correct the PEBS
+status in the PEBS record, which may trigger the crash, especially for
+the large PEBS.
 
-interrupt(irq_B)
-  irq_handler(B)
-    spin_lock(&foo->lock);
+It's possible that all the PEBS records in a large PEBS have the PEBS
+status 0. If so, the first get_next_pebs_record_by_bit() in the
+__intel_pmu_pebs_event() returns NULL. The at = NULL. Since it's a large
+PEBS, the 'count' parameter must > 1. The second
+get_next_pebs_record_by_bit() will crash.
 
-This has been triggered with networking (NAPI vs. hrtimers) and console
-drivers where printk() happens from an interrupt which interrupted the
-force threaded handler.
+Besides the local pebs_status, correct the PEBS status in the PEBS
+record as well.
 
-Now people noticed and started to change the spin_lock() in the handler to
-spin_lock_irqsave() which affects performance or add IRQF_NOTHREAD to the
-interrupt request which in turn breaks RT.
-
-Fix the root cause and not the symptom and disable interrupts before
-invoking the force threaded handler which preserves the regular semantics
-and the usefulness of the interrupt force threading as a general debugging
-tool.
-
-For not RT this is not changing much, except that during the execution of
-the threaded handler interrupts are delayed until the handler
-returns. Vs. scheduling and softirq processing there is no difference.
-
-For RT kernels there is no issue.
-
-Fixes: 8d32a307e4fa ("genirq: Provide forced interrupt threading")
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
+Fixes: 01330d7288e0 ("perf/x86: Allow zero PEBS status with only single active event")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/1615555298-140216-1-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/irq/manage.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/events/intel/ds.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -886,11 +886,15 @@ irq_forced_thread_fn(struct irq_desc *de
- 	irqreturn_t ret;
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1515,7 +1515,7 @@ static void intel_pmu_drain_pebs_nhm(str
+ 		 */
+ 		if (!pebs_status && cpuc->pebs_enabled &&
+ 			!(cpuc->pebs_enabled & (cpuc->pebs_enabled-1)))
+-			pebs_status = cpuc->pebs_enabled;
++			pebs_status = p->status = cpuc->pebs_enabled;
  
- 	local_bh_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT_BASE))
-+		local_irq_disable();
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
- 
- 	irq_finalize_oneshot(desc, action);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT_BASE))
-+		local_irq_enable();
- 	local_bh_enable();
- 	return ret;
- }
+ 		bit = find_first_bit((unsigned long *)&pebs_status,
+ 					x86_pmu.max_pebs_events);
 
 
