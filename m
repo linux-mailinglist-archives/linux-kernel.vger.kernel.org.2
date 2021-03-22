@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94333442C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39723442C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCVMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhCVMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B228619B1;
-        Mon, 22 Mar 2021 12:37:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616416633;
-        bh=2l6rVO3mWThw0cnnqLKMHgT4wVnMf+2Jd8waAnFXn8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m24jh1cGUbqLywhutLaMjrdVvu34FkdywLSI3gBFrxn+J5NckaCQQclp0Qwr9yDwI
-         QAgb51vca8+rIrQwaY+JQO/EegzzvMlrGIlQYtfQLa54t57BTMx398EerhdWzYaAt9
-         LovFlXP0EQk5qAkw36joqtEuP5bVxUGm+8SlBakukT3axKmdfTACUxEcd20DQAgdk5
-         PFTXAfGwtMp3ZUjrhAyYYdNYiUI39+ShuHamRc/fOx2fLNK+KUFBKpnE5Wqk1JTNTN
-         z6+QbTt+AaoUw6I+nGwjUTknAsINSj1ZkIButjUV6ML0qAeRfgnQ0TjUGteGq/d1+/
-         EWSvScn1Cro2w==
-Date:   Mon, 22 Mar 2021 12:37:07 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
-Message-ID: <20210322123707.GB4681@sirena.org.uk>
-References: <YFf2RD931nq3RudJ@google.com>
+        id S231869AbhCVMok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:44:40 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:35434 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhCVMhm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:37:42 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B907298049D;
+        Mon, 22 Mar 2021 20:37:39 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] drivers: gpu: Remove duplicate include of if000c.h
+Date:   Mon, 22 Mar 2021 20:37:15 +0800
+Message-Id: <20210322123715.129447-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1UWUbFP1cBYEclgG"
-Content-Disposition: inline
-In-Reply-To: <YFf2RD931nq3RudJ@google.com>
-X-Cookie: A friend in need is a pest indeed.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGR1ISUhOSElNTENIVkpNSk1PSk1NTUtLT0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NTI6Nzo6OD8QIUJNTj8#TwM6
+        TxcwCxZVSlVKTUpNT0pNTU1LSEJLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUhJNwY+
+X-HM-Tid: 0a7859f0d9f3d992kuwsb907298049d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+nvif/if000c.h has been included at line 33, so remove
+the duplicate include at line 36.
 
---1UWUbFP1cBYEclgG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Sun, Mar 21, 2021 at 06:43:32PM -0700, Dmitry Torokhov wrote:
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+index 92987daa5e17..f5cc057b123b 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+@@ -33,7 +33,6 @@
+ #include <nvif/if000c.h>
+ #include <nvif/if500b.h>
+ #include <nvif/if900b.h>
+-#include <nvif/if000c.h>
+ 
+ #include <nvhw/class/cla0b5.h>
+ 
+-- 
+2.25.1
 
-> Note that this is not SPI-specific issue. I already send a similar
-> patch for I2C and will be sending more.
-
-This feels like it might make sense to push up to the driver core level
-then rather than doing in individual buses?
-
---1UWUbFP1cBYEclgG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBYj3MACgkQJNaLcl1U
-h9CrkQf/UETgb5x1iLO0DKe44AggifFZVyrHWKjAAM0dcdTy/lgsg8OjXlyg1nAX
-a1/aKWMP4x/BOcIuc9aqSvvcdabFUzX6zqtjAYKAW/dcrbTZKIJuS+b+i9zk7jCI
-E63I/3H9zf2zxs6OWqFNg6qI0tajYlYj6Hleiad1xIur3IuavR+0ILA8N42x4tHh
-cWKst/QHxkYLRYsvr8MkjW9oIsZfBoXGGeT5RmWilQURGx3HsnluRrRJYFEBatRb
-sF12FvwFLjtWJ0pNwAuT6YinOrEp/UB0IQgHf053/GoFq7bUahLiDpupqiPmIuUr
-rfg+jBS2JeGxHCxWxyP5LBY1v73zUw==
-=hsLc
------END PGP SIGNATURE-----
-
---1UWUbFP1cBYEclgG--
