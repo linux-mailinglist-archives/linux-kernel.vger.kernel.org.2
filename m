@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9897F343C80
+	by mail.lfdr.de (Postfix) with ESMTP id 1B00C343C7E
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVJR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:17:57 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:28220 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCVJRt (ORCPT
+        id S229703AbhCVJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhCVJRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:17:49 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 22 Mar 2021 02:17:48 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 22 Mar 2021 02:17:46 -0700
-X-QCInternal: smtphost
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 22 Mar 2021 14:47:14 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id 831DB4315; Mon, 22 Mar 2021 02:17:13 -0700 (PDT)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     y@qualcomm.com, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyant@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org, hywu@google.com,
-        mka@google.com, midean@google.com,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Subject: [v1] drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume
-Date:   Mon, 22 Mar 2021 02:17:12 -0700
-Message-Id: <1616404632-13693-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <y>
-References: <y>
+        Mon, 22 Mar 2021 05:17:42 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA8CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:17:41 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id o126so10587559lfa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ch0dHKDeX3zEu5dljhJrXeF0NTI0JqsPh8WDLTeb26o=;
+        b=W0CqXd0mdBJEWcj1xHvO22fw1y5lVwV6toMXP9bE8URF9FKbRz8uTkWii76ECLT6oA
+         syLB7n40USNNBTBbqI4hTvUzY70X0C9Psfn2w58v0BgNqV30gFOui6hBkvluNcv/iHmO
+         bWMP7k0bUcIZamdG2NmZCJ8GLd63we95LdCKnvXx4SKntyMfslTmm/9Z0tC9gJiOUsJL
+         jXze63UDS06WNUijqL/I+8y2XzDDM9bAz4tyDATVo3qJCfE3tMahmZxxLvU0edQFWDMD
+         AgV+ctp+HQdvGTzc+uyF5eM/1fOq+n1u5b1A/1Px58hVqf5Aa0OLtsgeGjS0jRY9MoDl
+         YTag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ch0dHKDeX3zEu5dljhJrXeF0NTI0JqsPh8WDLTeb26o=;
+        b=Is5F15pJvKP34I1bwRmSadhEHogWPw/pmvzRKTeS3dwr3CeaH7Bq52yR2gT+losrv0
+         V75QWotLzb/K4hoYLVnCNi3p9nXZLZZ3NI9qB3cuhlPjJc9BETNflHubc0F6ZuCCmTT6
+         NJuQJV13snUkoWk2dd5JyceXnrN9Y/qvJ58tye+nedUnBEwugDI7dLyES8nyrQ8sjeDr
+         RZ9qV50zP0d5lo93yZWMDknzzJ8LiNm9QsF0fxuXxM/vcMEwrICbwTD/m9qcP8Pd6BOP
+         6NKE9UIJUbt7mAHi5IWZFimo977iy9rMNw23XNoZdmXh6tiZVeczipBk0iyzt6ogb04e
+         4Hug==
+X-Gm-Message-State: AOAM530512Rm5UfwHv8mrn00B0SUtovWBRS0AOF3Nho0eEscanBgkrVC
+        kcAoJroJO8y87y36uoiftLCM/vD2oE9tvXer6tocYQ==
+X-Google-Smtp-Source: ABdhPJy8h0RHjijQFNv406chmytcLenoNOeAti8xjPVpfQY7oyJFk2x/BlNSlItRdUTcLDmcN/2h1BOcw/6vI9DwVy0=
+X-Received: by 2002:a19:343:: with SMTP id 64mr6290186lfd.649.1616404659903;
+ Mon, 22 Mar 2021 02:17:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210319131205.62775-1-alexander.sverdlin@nokia.com>
+ <CAHp75Vc=HnafsnnJYceBB66k+r9NcZqn7mxjdsc7dsQd_tK=LA@mail.gmail.com>
+ <028a836c-9343-f08a-3f1b-22e45f291d1a@nokia.com> <CACRpkdbqKmKh0+g92LHJYKO2vt=-TkdTFuSrNwChCbQ-siG53g@mail.gmail.com>
+ <f7dcd087-f404-3268-426f-1b33d1419f80@nokia.com>
+In-Reply-To: <f7dcd087-f404-3268-426f-1b33d1419f80@nokia.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 22 Mar 2021 10:17:28 +0100
+Message-ID: <CACRpkdbRT1b=w6UPjK98U7Jn75Ou+7Y7YjUqa06mwp9E1TwQnQ@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: pl061: Support implementations without GPIOINTR line
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kalyan Thota <kalyant@codeaurora.org>
+On Mon, Mar 22, 2021 at 9:50 AM Alexander Sverdlin
+<alexander.sverdlin@nokia.com> wrote:
+> On 20/03/2021 12:10, Linus Walleij wrote:
+> >>> I'm wondering if the GPIO library support for IRQ hierarchy is what
+> >>> you are looking for.
+> > It is indeed what should be used.
+>
+> and what has been used in my patch?
 
-DPU runtime resume will request for a min vote on the AXI bus as
-it is a necessary step before turning ON the AXI clock.
+Yes you're right.
 
-The change does below
-1) Move the icc path set before requesting runtime get_sync.
-2) remove the dependency of hw catalog for min ib vote
-as it is initialized at a later point.
+> > I think it can be done with quite little code.
+>
+> Guys, have you actually looked onto my patch before these reviews?
 
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+I don't know why I missed it, I guess my second mail is more
+to the point.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index ed636f1..cab387f 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -44,6 +44,8 @@
- #define DPU_DEBUGFS_DIR "msm_dpu"
- #define DPU_DEBUGFS_HWMASKNAME "hw_log_mask"
- 
-+#define MIN_IB_BW	400000000ULL /* Min ib vote 400MB */
-+
- static int dpu_kms_hw_init(struct msm_kms *kms);
- static void _dpu_kms_mmu_destroy(struct dpu_kms *dpu_kms);
- 
-@@ -932,6 +934,9 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
- 		DPU_DEBUG("REG_DMA is not defined");
- 	}
- 
-+	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
-+		dpu_kms_parse_data_bus_icc_path(dpu_kms);
-+
- 	pm_runtime_get_sync(&dpu_kms->pdev->dev);
- 
- 	dpu_kms->core_rev = readl_relaxed(dpu_kms->mmio + 0x0);
-@@ -1037,9 +1042,6 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
- 
- 	dpu_vbif_init_memtypes(dpu_kms);
- 
--	if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
--		dpu_kms_parse_data_bus_icc_path(dpu_kms);
--
- 	pm_runtime_put_sync(&dpu_kms->pdev->dev);
- 
- 	return 0;
-@@ -1196,10 +1198,10 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
- 
- 	ddev = dpu_kms->dev;
- 
-+	WARN_ON(!(dpu_kms->num_paths));
- 	/* Min vote of BW is required before turning on AXI clk */
- 	for (i = 0; i < dpu_kms->num_paths; i++)
--		icc_set_bw(dpu_kms->path[i], 0,
--			dpu_kms->catalog->perf.min_dram_ib);
-+		icc_set_bw(dpu_kms->path[i], 0, Bps_to_icc(MIN_IB_BW));
- 
- 	rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, true);
- 	if (rc) {
--- 
-2.7.4
-
+Yours,
+Linus Walleij
