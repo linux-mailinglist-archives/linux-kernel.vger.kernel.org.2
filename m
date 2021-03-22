@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A6634459C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2097C34459F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhCVNYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:24:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhCVNVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF3C6198D;
-        Mon, 22 Mar 2021 13:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616419221;
-        bh=sRPo2fkNoZFZD5HrAJghuNqEYtoeifWmTP0wA1fzGyw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P17LDjr1Ea9zhliCa5LIL7TtRPyybUNW1vesTFCt5pNA48dyHHtpHCizhvknyKcSM
-         mcYT8ex3TIP4Yca0ie+2wzWCdchBkIur/A2zxTrAXkZgaav2ZsH7NWesT2o59nIJMZ
-         bEtUQcz1Do6JzKXjHob+HMu2FUJtBMSKhOeDilGEu1uwOvQMEALq3Oo5BICj1AQOb5
-         Z6L/fo43+UWskrQGiPYlB1520Wwmqa1IFlLQTGo+U8ivPT+aVwRIJ2/dg1nB89Q+oj
-         GHohKTyqhcROuSvF22G5JgolHzICjZIkLf20QTaIQrwtGYwrq5gweDuNX82uy8jn+s
-         sqyAsi9HB6Zcg==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, vincenzo.frascino@arm.com,
-        gustavoars@kernel.org, suzuki.poulose@arm.com
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] arm64: cpuinfo: Fix a typo
-Date:   Mon, 22 Mar 2021 13:20:00 +0000
-Message-Id: <161641711394.3900753.8128409981313133389.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210319222848.29928-1-unixbhaskar@gmail.com>
-References: <20210319222848.29928-1-unixbhaskar@gmail.com>
+        id S231989AbhCVNYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:24:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45812 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233240AbhCVNWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:22:38 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12MDKScU111557;
+        Mon, 22 Mar 2021 08:20:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616419228;
+        bh=26DPjYQQRL+10iBnOu2PfjSw1h9HtqmQpGx0mKS6rfc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=X1qtgf3E6OtWvC74sm9vBiyMIKB8KkHDLR26uraWd4kzAJg4cX+yZ58v2jnguNrQF
+         SE8MJz+4mLoiflb4ve9bUdtgY4xu4lsc4vh42a27i0U2VAddUv383tdkDGp4vMzgjK
+         gD0xXheAIufthqa7WfJqm6HvrJfXc1EGE9JUM72Y=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12MDKRVA120742
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Mar 2021 08:20:27 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
+ Mar 2021 08:20:08 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 22 Mar 2021 08:20:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12MDK7dk112900;
+        Mon, 22 Mar 2021 08:20:08 -0500
+Date:   Mon, 22 Mar 2021 18:50:06 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>
+CC:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
+Message-ID: <20210322132004.n4r2thznsm7poq74@ti.com>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 03:58:48 +0530, Bhaskar Chowdhury wrote:
-> s/acurate/accurate/
+On 16/03/21 12:00AM, Pratyush Yadav wrote:
+> +Cc mtd list
+> 
+> Hi,
+> 
+> On 15/03/21 05:45PM, Kuldeep Singh wrote:
+> > Convert the Freescale DSPI binding to DT schema format using json-schema.
+> > 
+> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> > ---
+> > Hi Rob,
+> > This patch is checked with following commands with no warnings observed.
+> > make distclean; make allmodconfig;
+> > make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
+> > make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
+> 
+> When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in 
+> the example and run dt_binding_check, I see the below error:
+> 
+>   /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
+>      From schema: /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> 
+> I am trying to solve a similar problem for the Cadence QSPI controller 
+> binding and I wonder what the best solution for this is. The obvious one 
+> would be to add these properties to jedec,spi-nor.yaml. I haven't 
+> managed to come up with any other solution to this problem.
+> 
+> Rob, all, any suggestions on how to best model this?
 
-Applied to arm64 (for-next/fixes), thanks!
+Ping. Any ideas?
 
-[1/1] arm64: cpuinfo: Fix a typo
-      https://git.kernel.org/arm64/c/d1296f1265f7
-
-Cheers,
 -- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
