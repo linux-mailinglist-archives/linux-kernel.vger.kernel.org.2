@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D7B34361E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EBE343621
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCVBGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 21:06:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5100 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCVBF2 (ORCPT
+        id S229979AbhCVBIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 21:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhCVBHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:05:28 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3bpx2724zYMmV;
-        Mon, 22 Mar 2021 09:03:37 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 09:05:25 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 22 Mar
- 2021 09:05:25 +0800
-Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
- for lockless qdisc
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
+        Sun, 21 Mar 2021 21:07:49 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E369EC061574;
+        Sun, 21 Mar 2021 18:07:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so2245688pjb.0;
+        Sun, 21 Mar 2021 18:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xhXt1FGcb/LZno/gC2lXGpxdzYQ5CNgHFefjTz8i1cE=;
+        b=W/gvUx583+bd2MCxyqj0q6RMqNs8nRP96JWMlaeB+CPksNRS7jz7Hbu+rpex8aBHDl
+         +MP3riYtIzJVWQzocy2aX2HdbP56o6XWo96mYKJTzsURpHZGgMfESES5joojfP9yg/3l
+         cWlzikLethtROV29IExdJXobOqd3QfjdI5lKQmBxrJRlHkHzB+MDwyscck4aA/FvlWqa
+         /3S0jA8JsXeSEeBof7qWCUkmKq0QyfvAmi+4leTcx47a0yrtm0/DYUyWZOEnZMKwav/y
+         yfmwF4V0SxuzwQaYFXl9XBhvTCbVHdzIEkDKUv2naukdSM1pxKEemiAlxgpRbTxNCW+N
+         iw2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xhXt1FGcb/LZno/gC2lXGpxdzYQ5CNgHFefjTz8i1cE=;
+        b=JNyBZDhxllQyIjF5DJhxqC4PlzF5EQEUHK58u/H+BLI1UOKkisce2Ed5CuM3L8BQZ1
+         ZdTTu0dRBNU17j/Qafr/1zRerZ9OzVlUU3Cq62i8qeD64xSg/5/lTKVKRiDbJWi9euFP
+         vFmdxJ8UPGEicj+AWRRieTvQ4YZs8fR+ebvlLWhRnx1oNI1LkLef3+SM/uqcX9zKy/1k
+         iVd6K7XDJ6q8ig4ofdxDxE04f1f67u2dAEghgxW8VFyVx26o12QySaorso4hZ7UlEHhN
+         3E/UUfiuK58Tp6H9ymChXI4Hgh4PsG8Oh4wzlIfHQNaPHwZxCoTodLHM52briWHZUntd
+         Z4yA==
+X-Gm-Message-State: AOAM530GbezsisP9djtEBsdpXqV2Ep0xnwv8pE9CSXXdloK/ZTVhDziM
+        +DUc3z00Yo5bYh/0KFQxU7KOU0/xRquSAohGfKQ=
+X-Google-Smtp-Source: ABdhPJzM4mWum4CATQ6jSa3DgF4hrMhWV7EmwvEB8HKCGtmzK9wK5E6A5Yd2+J6PovpQnYNp7qYtzPPzzPJ1O/wizuw=
+X-Received: by 2002:a17:90a:ce92:: with SMTP id g18mr10704541pju.52.1616375268541;
+ Sun, 21 Mar 2021 18:07:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210321163210.GC26497@amd>
+In-Reply-To: <20210321163210.GC26497@amd>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sun, 21 Mar 2021 18:07:37 -0700
+Message-ID: <CAM_iQpWb_s_rPzi-i=Fhgk4xCPSY7N8FBjt_p_6qoZLr5HgAwA@mail.gmail.com>
+Subject: Re: net/dev: fix information leak to userspace
+To:     Pavel Machek <pavel@denx.de>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andriin@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Eric Dumazet <edumazet@google.com>,
         Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
         Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, Thomas Gschwantner <tharre3@gmail.com>
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAM_iQpXvVZxBRHF6PBDOYSOSCj08nPyfcY0adKuuTg=cqffV+w@mail.gmail.com>
- <87eegddhsj.fsf@toke.dk>
- <CAHmME9qDU7VRmBV+v0tzLiUpMJykjswSDwqc9P43ZwG1UD7mzw@mail.gmail.com>
- <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com>
- <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <50b730de-1546-144f-6cdf-3943de0a65ad@huawei.com>
-Date:   Mon, 22 Mar 2021 09:05:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <CAHmME9qS-_H7Z5Gjw7SbZS0fO84vzpx4ZNHu0Ay=2krZpJQy3A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/20 3:03, Jason A. Donenfeld wrote:
-> On Thu, Mar 18, 2021 at 1:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>> That offer definitely still stands. Generalization sounds like a lot of fun.
->>>
->>> Keep in mind though that it's an eventually consistent queue, not an
->>> immediately consistent one, so that might not match all use cases. It
->>> works with wg because we always trigger the reader thread anew when it
->>> finishes, but that doesn't apply to everyone's queueing setup.
->>
->> Thanks for mentioning this.
->>
->> "multi-producer, single-consumer" seems to match the lockless qdisc's
->> paradigm too, for now concurrent enqueuing/dequeuing to the pfifo_fast's
->> queues() is not allowed, it is protected by producer_lock or consumer_lock.
-> 
-> The other thing is that if you've got memory for a ring buffer rather
-> than a list queue, we worked on an MPMC ring structure for WireGuard a
-> few years ago that we didn't wind up using in the end, but it lives
-> here:
-> https://git.zx2c4.com/wireguard-monolithic-historical/tree/src/mpmc_ptr_ring.h?h=tg/mpmc-benchmark
+On Sun, Mar 21, 2021 at 9:34 AM Pavel Machek <pavel@denx.de> wrote:
+>
+> dev_get_mac_address() does not always initialize whole
+> structure. Unfortunately, other code copies such structure to
+> userspace, leaking information. Fix it.
 
-Thanks for mentioning that, It seems that is exactly what the
-pfifo_fast qdisc need for locklees multi-producer, because it
-only need the memory to store the skb pointer.
+Well, most callers already initialize it with a memset() or copy_from_user(),
+for example, __tun_chr_ioctl():
 
-Does it have any limitation? More specifically, does it works with
-the process or softirq context, if not, how about context with
-rcu protection?
+        if (cmd == TUNSETIFF || cmd == TUNSETQUEUE ||
+            (_IOC_TYPE(cmd) == SOCK_IOC_TYPE && cmd != SIOCGSKNS)) {
+                if (copy_from_user(&ifr, argp, ifreq_len))
+                        return -EFAULT;
+        } else {
+                memset(&ifr, 0, sizeof(ifr));
+        }
 
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
+Except tap_ioctl(), but we can just initialize 'sa' there instead of doing
+it in dev_get_mac_address().
 
+Thanks.
