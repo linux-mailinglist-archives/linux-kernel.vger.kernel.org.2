@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D02343DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1196A343DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCVK0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S229994AbhCVK0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhCVK0A (ORCPT
+        with ESMTP id S229920AbhCVKZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:26:00 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2155CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:26:00 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id e5so7164237vse.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:26:00 -0700 (PDT)
+        Mon, 22 Mar 2021 06:25:39 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1998C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:25:38 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id f16so20392114ljm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:25:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nlgBwg2/OpoiuLdTjiONySB1mOVhMpjYXASTM5AYXtc=;
-        b=vKw7B+Wu8kUfIj79tr/6OWZCUMbwLLOqWrzzSbvl5AgKPINw+l3P2PAd12yQ95ycO9
-         PJCedxj3+roD8V0WlEcxBRwiqZqOPVWFj5jiYEmnkjEL2eQfN7x5JHGxPr3uK1ZhuvLz
-         CL2vnURayg/QDXlUeS1+8qFazYLHbcEZxNMO0BAbORU0GYJOyE/MbNq2Fni3Hvoqkjjk
-         J4zRn38kAlV3Na8cyxpNZ4lXVhPR9kbvTAN1/aPESqg6Dsqbq2lXxMRpq3RkCS7rDhNB
-         MOSmCrmJel+Sfu1pNZwg2NUX5JY8Zvvzoh2Ztt0cgxtmDQURymgvcnhgg4Ch59cPf/Mb
-         lveg==
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=BNpbhkpWxvRD4s0rKc0kS/zu20HOAYLd5FaU7tpZIbY=;
+        b=H7Bw476kMpokOGMbl0/mhGOypjDnqSOFvkPi4XbOtdGlU5scaVM8w9SZvd8a3dh4Fe
+         a6EU2uwpm08C9NMnG9IVPzdlj8Gw+cvXLHzZp6rHNn527NQc1ksDbxtF9txdafq27AY5
+         Hi0/PwFoxnf5pOZ7uzn9jvz6RxUfZH91cUJNj8zJ3uCEXu2Km9RUwaFtIQoIZ/m06CP6
+         6Tt6PVjbzdih5S7RLP1pBiAHZdZos9CXJtWBAKatyCI88wdDqItzTyFNdSTdLEQkrsO5
+         E3y1OY0MiKnC69TwtAqL9n7AwT/zX7azJJhy68brXGZUGzWWUHDhzNXZnpIFIs/6LsCW
+         xlKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nlgBwg2/OpoiuLdTjiONySB1mOVhMpjYXASTM5AYXtc=;
-        b=bbZ1SwC+wE9Z9HM8yzN69E44ofqPRfhM04pYRQyIrgnDk0ydXPkV2vfKXFZg2c2sME
-         JMgUO9nsBy+xwMVTGT0WFc/5s5OzzVUpIWEEB4N4JesUM3/Ll727BtcXfLHQGir2AdTu
-         6/kP5ix4mbf+tuIqJ4LixzA++gPE2qY/5FRF/RlSfrGnNy7oM1cLGYFMQT+tI6QVLxhF
-         uxkA9JeKe+MSva3Y+KmXEy0mUXm2jFFFQslaunjCABCXqxALIo3E1KeFEgW69NVFlM/p
-         vbEoHkAPqHkQ/Q17FypHtn/xShYPPTAKtco8vVvq/kv8WiiROlfuIsg8k+qurOtk8bRT
-         /ElQ==
-X-Gm-Message-State: AOAM531/MsVuSCw4ymMyOfR4ifpg/QHlgkdyXjvzBaQovMNrA3EPH8+a
-        iM5MbNitCU2zmV3HWTHGF4llN+u0SFUr2URjDRN9dA==
-X-Google-Smtp-Source: ABdhPJzzKFkpgT2QJlRkBleFqHPf6IQZzE/sYVHJ46Tfs8wrpgPq1bPGl5XLoyve//kAW6Uh5KEmxbAwdw5EduVrROo=
-X-Received: by 2002:a67:77c1:: with SMTP id s184mr8066406vsc.55.1616408759303;
- Mon, 22 Mar 2021 03:25:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BNpbhkpWxvRD4s0rKc0kS/zu20HOAYLd5FaU7tpZIbY=;
+        b=OsxAKpNMHByjv0GijSxvi0pUR3YZ3SwNYKX9ZrpLtwLAH7cGf/nu1r2dB6tuJV1rCm
+         wdsNwTv4NbwhnlSrrMljUosxseSM/wjeMq7edXuYaZggFj0W5kfIsvME0tHklA8lYalC
+         mS+jDpu4crIn+LFQm32y1m0dRy6td0+OYJcN3fzgLWqbRpGLd7AiHdBRKNry6eQ0vLE2
+         drd5tc/zghQFnet5608JoKQZWQ4ekwEfZytOdcAS5JF/3NjfIBlLnnadPpJ2g/Hz9ulj
+         Vuc85/CCKo9OqClkxj5FrGBqzrR4IcdT+/MuWpRxOBW8Y8k/fdHxDxsEUY8+WOVsCdtr
+         jzNQ==
+X-Gm-Message-State: AOAM532QNAGuKDJ9mCczh2BZCHZf4qGbOSo9xDu2ufhjPMQxM1Y6sSmq
+        CejSU0l9Q8lXlBq5k+GSUySuIQ==
+X-Google-Smtp-Source: ABdhPJzF9i6/20cRJAGueFcYXoDG+YjASeeOEKPSmi0jwcQJLAxxOXXseHWIrLmeQE4pQuy6eifDig==
+X-Received: by 2002:a2e:b17b:: with SMTP id a27mr9437202ljm.62.1616408737317;
+        Mon, 22 Mar 2021 03:25:37 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id j15sm1522505lfm.138.2021.03.22.03.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 03:25:37 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 02/16] net: dsa: pass extack to dsa_port_{bridge,lag}_join
+In-Reply-To: <20210318231829.3892920-3-olteanv@gmail.com>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-3-olteanv@gmail.com>
+Date:   Mon, 22 Mar 2021 11:25:36 +0100
+Message-ID: <87blbbo57j.fsf@waldekranz.com>
 MIME-Version: 1.0
-References: <20210320045720.11872-1-chgokhl@gmail.com>
-In-Reply-To: <20210320045720.11872-1-chgokhl@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 22 Mar 2021 11:25:23 +0100
-Message-ID: <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-To:     kehuanlin <chgokhl@gmail.com>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kehuanlin@fishsemi.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
+On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 >
-> The rpm_resume() will call parent's resume callback recursively.
-> Since mmc_host has no its own pm_runtime callbacks, the mmc devices
-> may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
-> device with pm_runtime_no_callbacks can fix the issue.
-
-Can you please elaborate more on this? What do you mean by "sometimes"?
-
-More precisely, how do you trigger the rpm_callback() for mmc class
-device to return -ENOSYS?
-
-Don't get me wrong, the patch is fine, but I want to understand if it
-actually solves a problem for you - or that it's better considered as
-an optimization?
-
-Kind regards
-Uffe
-
+> This is a pretty noisy change that was broken out of the larger change
+> for replaying switchdev attributes and objects at bridge join time,
+> which is when these extack objects are actually used.
 >
-> Signed-off-by: kehuanlin <chgokhl@gmail.com>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 > ---
->  drivers/mmc/core/host.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 9b89a91b6b47..177bebd9a6c4 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pagemap.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/pm_wakeup.h>
->  #include <linux/export.h>
->  #include <linux/leds.h>
-> @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
->         host->class_dev.class = &mmc_host_class;
->         device_initialize(&host->class_dev);
->         device_enable_async_suspend(&host->class_dev);
-> +       pm_runtime_no_callbacks(&host->class_dev);
->
->         if (mmc_gpio_alloc(host)) {
->                 put_device(&host->class_dev);
-> --
-> 2.30.0
->
+
+Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
