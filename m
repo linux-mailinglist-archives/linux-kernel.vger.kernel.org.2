@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE3F3448F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E0C3448F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhCVPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231548AbhCVPMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:12:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2B9861990;
-        Mon, 22 Mar 2021 15:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616425965;
-        bh=XaGJOXpYJ2i+MQsioxl6Tg28Kym8UEMe4b4RpcUBm8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I4suPRlqsJeGbJ3kRh4ME6/eP0O/yqXU+Rr96XxgbYcvuIrIDXw4eyoxUAx3shFY3
-         EKQL2w6YUEMhzsE51MWi0icihMdRehucbnlG5qw1sdZzfAj/vvYpPzhT2/9Vzwoh7k
-         dHoP/0Vx5qwqfEnfs1Yzmdpu1roVfSG7U9Med5yw=
-Date:   Mon, 22 Mar 2021 16:12:42 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: remove the nvlink2 pci_vfio subdriver
-Message-ID: <YFiz6sIJluL/u2Cu@kroah.com>
-References: <20210322150155.797882-1-hch@lst.de>
+        id S231591AbhCVPNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231634AbhCVPNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:13:34 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE6FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:13:33 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c8so4564119wrq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=VysOd7JGH9gT3/LRqqRm69PWvwIDxPS1K6pogNzHJGI=;
+        b=ujwpfc235jQygxl1afQfSvgbeiyQCq7xew1f0IdmjzRIizEF5pX8+MFuLQsNzaVFbu
+         RnATlE6myxiWyKZRjX4/MPo1hKFSm4Y8Kj2mM41NpR8CEzQ6UlS3WvXdGm8TmBfaMM3s
+         K5yTHS8yLetw44JmMRKy2T7p2LV0vXpmxP+AKAAPywGHflw50GiwiRpBGkdhdies9K+1
+         KnE/fALxlFKZMQXXiBUUuZWU+NED0kj58lbPjtdMj3t3MFV6JzsTjiqTGg2s+Qbaof0H
+         r+vbnyagbNBYHddfBUesjwU7hIbNqHtnfHSXMr2iGFkkf50LrsQgnHkwHmcs1v8XpqHz
+         chdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=VysOd7JGH9gT3/LRqqRm69PWvwIDxPS1K6pogNzHJGI=;
+        b=om++rmP2sLHV07qR09wk3Xn2EV9+hl/B6fWWdDOBUrtH4x43EEOOMTIzxUFYwqj5pK
+         u9XD3qV+dtXkcRXn01OgWKuLAJYwa69mKf7Adk7jD+ZZIOGZhgMD8478n8xcQm7YXvB4
+         xsD+upbY7eWuvhF6rHTF7LhMYzbuv5sEGJFy5CktycjURIvfcpzWa8/WsHBW5UMLgw+B
+         pUfgCowSbz8NtOBVmIN4mnfCSDMAtudRC1SfMaeGKIm2FO8742ytb4JogCptFUAr5pKY
+         ofkRZMMOAYFKYloHo5nRMOfQZjF87fus/fNGbE3pX1gQzIDDaTQRNSfZJ2Ec3ckb+HCj
+         wlvw==
+X-Gm-Message-State: AOAM531MB/lEBNhLTokXZ1li68Ablu0GCi/8WfezaacBdSKO35TNw7aa
+        gEW4rkn9gP+lTWu6OaXmWx50agIrpEou9w==
+X-Google-Smtp-Source: ABdhPJye0gWgAG14XY6N0FMgflw27w619B5cRSFfQrBJN4jzyfBz3l7IVg1JoQgV3uGAw+nek+nZvQ==
+X-Received: by 2002:adf:e74a:: with SMTP id c10mr19475136wrn.409.1616426012462;
+        Mon, 22 Mar 2021 08:13:32 -0700 (PDT)
+Received: from LEGION ([111.119.187.56])
+        by smtp.gmail.com with ESMTPSA id u3sm20258525wrt.82.2021.03.22.08.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 08:13:32 -0700 (PDT)
+Message-ID: <440f562a5e3f56b5954f9bf3b9c155b3e173ae66.camel@gmail.com>
+Subject: Re: [PATCH] media: em28xx: fix memory leak
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        dvyukov@google.com
+Cc:     syzkaller-bugs@googlegroups.com, musamaanjum@gmail.com
+Date:   Mon, 22 Mar 2021 20:13:24 +0500
+In-Reply-To: <20210322145420.GA2063636@LEGION>
+References: <20210322145420.GA2063636@LEGION>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322150155.797882-1-hch@lst.de>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 04:01:53PM +0100, Christoph Hellwig wrote:
-> Hi all,
+On Mon, 2021-03-22 at 19:54 +0500, Muhammad Usama Anjum wrote:
+> If some error occurs, URB buffers should also be freed. If they aren't
+> freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
+> buffers as dvb is set to NULL. The function in which error occurs should
+> do all the cleanup for the allocations it had done.
 > 
-> the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
-> feature without any open source component - what would normally be
-> the normal open source userspace that we require for kernel drivers,
-> although in this particular case user space could of course be a
-> kernel driver in a VM.  It also happens to be a complete mess that
-> does not properly bind to PCI IDs, is hacked into the vfio_pci driver
-> and also pulles in over 1000 lines of code always build into powerpc
-> kernels that have Power NV support enabled.  Because of all these
-> issues and the lack of breaking userspace when it is removed I think
-> the best idea is to simply kill.
+> Tested the patch with the reproducer provided by syzbot. This patch
+> fixes the memleak.
 > 
-> Diffstat:
->  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
->  b/arch/powerpc/include/asm/opal.h            |    3 
->  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
->  b/arch/powerpc/include/asm/pci.h             |    7 
->  b/arch/powerpc/platforms/powernv/Makefile    |    2 
->  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
->  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
->  b/arch/powerpc/platforms/powernv/pci.c       |   11 
->  b/arch/powerpc/platforms/powernv/pci.h       |   17 
->  b/arch/powerpc/platforms/pseries/pci.c       |   23 
->  b/drivers/vfio/pci/Kconfig                   |    6 
->  b/drivers/vfio/pci/Makefile                  |    1 
->  b/drivers/vfio/pci/vfio_pci.c                |   18 
->  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
->  b/include/uapi/linux/vfio.h                  |   40 -
->  drivers/vfio/pci/vfio_pci_nvlink2.c          |  490 ------------------
->  16 files changed, 8 insertions(+), 1517 deletions(-)
+> Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> ---
+>  drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+> index 526424279637..471bd74667e3 100644
+> --- a/drivers/media/usb/em28xx/em28xx-dvb.c
+> +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+> @@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+>  	return result;
+>  
+>  out_free:
+> +	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
+>  	kfree(dvb);
+>  	dev->dvb = NULL;
+>  	goto ret;
+I should have replied to email originated by the syzbot. Anyhow here are some
+details from that email:
 
-I thought this was supposed to be removed a few years ago!
+syzbot found the following issue on:
 
-Anyway, no objection from me:
+HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
+dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+
+Thanks,
+Usama
+
