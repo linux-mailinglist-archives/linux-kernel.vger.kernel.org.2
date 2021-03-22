@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B639034448F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FDB3443C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhCVNBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
+        id S232110AbhCVMxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232871AbhCVMsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC94619D6;
-        Mon, 22 Mar 2021 12:44:42 +0000 (UTC)
+        id S232697AbhCVMnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:43:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B2F46199E;
+        Mon, 22 Mar 2021 12:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417083;
-        bh=+isXnmSQfrOqGIrhksB+INXNepR1esQtm6vum+oiXr4=;
+        s=korg; t=1616416875;
+        bh=ZpEdCe8QuqCUDcs5vE1hwzwaex3zGkU23O5Awm6ILJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ai14Uj6yGzZ7u5/MqjnbfuMoTZ3NWhd7WZiVV1ZXePXHKZ6P3dVw8Hq54nuh61bIi
-         ozH/Ut+BzAnrezaErhZppBnk12Hao8Kw3n8PeTubQzXzGAh2Ec0MHMb20lnyVDjJV/
-         GC4qwzulFBAMem7KkyfsAsE8H0Db59Pqbstzok0c=
+        b=kjxFC9I72dF4wwon8BeYlE/miEi2SVz8bRK8HLHfZZmvXoJChRKP40sv/DXDre4Jo
+         UdT3qz68XoCqJvNnX3WhI5xn6Xqxh4EPrUhwg+1BFvLeccjMZrLtoLv/Hj6SIDxJP5
+         0t3AZD+4GWTGqNVVV6SID62XgTqe7aeqnK+dzqc0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/43] nvme-rdma: fix possible hang when failing to set io queues
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.10 157/157] x86/apic/of: Fix CPU devicetree-node lookups
 Date:   Mon, 22 Mar 2021 13:28:34 +0100
-Message-Id: <20210322121920.578850591@linuxfoundation.org>
+Message-Id: <20210322121938.719266188@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit c4c6df5fc84659690d4391d1fba155cd94185295 ]
+commit dd926880da8dbbe409e709c1d3c1620729a94732 upstream.
 
-We only setup io queues for nvme controllers, and it makes absolutely no
-sense to allow a controller (re)connect without any I/O queues.  If we
-happen to fail setting the queue count for any reason, we should not allow
-this to be a successful reconnect as I/O has no chance in going through.
-Instead just fail and schedule another reconnect.
+Architectures that describe the CPU topology in devicetree and do not have
+an identity mapping between physical and logical CPU ids must override the
+default implementation of arch_match_cpu_phys_id().
 
-Reported-by: Chao Leng <lengchao@huawei.com>
-Fixes: 711023071960 ("nvme-rdma: add a NVMe over Fabrics RDMA host driver")
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chao Leng <lengchao@huawei.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Failing to do so breaks CPU devicetree-node lookups using of_get_cpu_node()
+and of_cpu_device_node_get() which several drivers rely on. It also causes
+the CPU struct devices exported through sysfs to point to the wrong
+devicetree nodes.
+
+On x86, CPUs are described in devicetree using their APIC ids and those
+do not generally coincide with the logical ids, even if CPU0 typically
+uses APIC id 0.
+
+Add the missing implementation of arch_match_cpu_phys_id() so that CPU-node
+lookups work also with SMP.
+
+Apart from fixing the broken sysfs devicetree-node links this likely does
+not affect current users of mainline kernels on x86.
+
+Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210312092033.26317-1-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/rdma.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/x86/kernel/apic/apic.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 134e14e778f8..8798274dc3ba 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -644,8 +644,11 @@ static int nvme_rdma_alloc_io_queues(struct nvme_rdma_ctrl *ctrl)
- 		return ret;
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2317,6 +2317,11 @@ static int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
+ };
  
- 	ctrl->ctrl.queue_count = nr_io_queues + 1;
--	if (ctrl->ctrl.queue_count < 2)
--		return 0;
-+	if (ctrl->ctrl.queue_count < 2) {
-+		dev_err(ctrl->ctrl.device,
-+			"unable to set any I/O queues\n");
-+		return -ENOMEM;
-+	}
- 
- 	dev_info(ctrl->ctrl.device,
- 		"creating %d I/O queues.\n", nr_io_queues);
--- 
-2.30.1
-
++bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
++{
++	return phys_id == cpuid_to_apicid[cpu];
++}
++
+ #ifdef CONFIG_SMP
+ /**
+  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
 
 
