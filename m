@@ -2,132 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D57343F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694A6343F9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhCVLXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCVLW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:22:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23071C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:22:58 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lOIe7-0005k5-35; Mon, 22 Mar 2021 12:22:55 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lOIe6-0000RO-C9; Mon, 22 Mar 2021 12:22:54 +0100
-Date:   Mon, 22 Mar 2021 12:22:54 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <20210322112254.5mjkajkq3wnhgnd5@pengutronix.de>
-References: <20201216125320.5277-2-clemens.gruber@pqgruber.com>
- <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
- <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
- <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
- <YBRyG0vv3gRzygSB@workstation.tuxnet>
- <YFhhGpiHDELxIo9V@orome.fritz.box>
- <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
+        id S230085AbhCVLXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229993AbhCVLXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE59E6191F;
+        Mon, 22 Mar 2021 11:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616412213;
+        bh=82zLdo1yFJpr6pZvArjJ8Qc8IXTnk3s3Wc2YLiwo6TM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IUOH6WHkIqZKfFDkBumYj6cU7V0acb3XSc6IEtt6h4BXow+9ZUPXu/EsXU978tTjf
+         YovOuh6Cv37A6fthgk+bLvxNhGQ6lv+Yn/zM8lLJh8rVDHs0q+0Vj0igy7fgJZSR7l
+         OdM54GDLMwIEfO0Q8EsKEm4oeMFDp9E0CWoEDiY8CNKMmP6OsIiTv/SSbjVc5h8p0T
+         C8LoS1MrM1aufoJ4xw3T50vurzkg0AttIJ1SGzhoc+HJTLaLE1R/SqVv9UhFwMSUay
+         N7wNdMvv8pdgCjBIymPfzQ/YqUDFkazZ1IF367JljjEw2vgXOfBNqEHcibX2geov5X
+         Hjo0K/5zeXKtw==
+Received: from johan by xi with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lOIez-0008Or-CG; Mon, 22 Mar 2021 12:23:50 +0100
+Date:   Mon, 22 Mar 2021 12:23:49 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcan@marcan.st, arnd@kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH] tty: serial: samsung_tty: remove spinlock flags in
+ interrupt handlers
+Message-ID: <YFh+RZGGvBaUJpqq@hovoldconsulting.com>
+References: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uuestpxaqacueghg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210315181212.113217-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 15, 2021 at 07:12:12PM +0100, Krzysztof Kozlowski wrote:
+> Since interrupt handler is called with disabled local interrupts, there
+> is no need to use the spinlock primitives disabling interrupts as well.
+> 
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
---uuestpxaqacueghg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Interrupts are now disabled also with forced interrupt threading even if
+this never was an issue for this driver which currently doesn't take the
+port lock in the console paths.
 
-Hello Andy,
+Reviewed-by: Johan Hovold <johan@kernel.org>
 
-On Mon, Mar 22, 2021 at 11:38:40AM +0200, Andy Shevchenko wrote:
-> On Monday, March 22, 2021, Thierry Reding <thierry.reding@gmail.com> wrot=
-e:
-> > On Fri, Jan 29, 2021 at 09:37:47PM +0100, Clemens Gruber wrote:
-> > > Thierry: Would you accept it if we continue to reset the registers in
-> > > .probe?
-> >
-> > Yes, I think it's fine to continue to reset the registers since that's
-> > basically what the driver already does. It'd be great if you could
-> > follow up with a patch that removes the reset and leaves the hardware in
-> > whatever state the bootloader has set up. Then we can take that patch
-> > for a ride and see if there are any complains about it breaking. If
-> > there are we can always try to fix them, but as a last resort we can
-> > also revert, which then may be something we have to live with. But I
-> > think we should at least try to make this consistent with how other
-> > drivers do this so that people don't stumble over this particular
-> > driver's
->=20
-> I guess we may miss (a PCB / silicon design flaw or warm boot case) when
-> boot loader left device completely untouched and device either in wrong
-> state because if failed reset (saw this on PCA9555 which has a
-> corresponding errata), or simply we have done a warm reset of the system.
-> So, we also have to understand how to properly exit.
-
-I don't think that not resetting is a real problem. My argumentation
-goes as follows:
-
-When the PWM driver is loaded and the PWM configuration is invalid, it
-was already invalid for the time between power up (or warm start) and
-PWM driver load time. Then it doesn't really hurt to keep the PWM
-in this invalid state for a little moment longer until the consumer of
-the PWM becomes active.
-
-Together with the use cases where not resetting is the right thing to
-do, I'm convinced not resetting is the better strategy.
-
-> Another point, CCF has a bit =E2=80=9Cis critical=E2=80=9D, and u guess P=
-WM may get the
-> same and make the all assumptions much easier.
-
-So I think complicating the PWM framework for this isn't the right thing
-to do.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---uuestpxaqacueghg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYfgsACgkQwfwUeK3K
-7Amw2ggAlazycDEHuJVy+VGen1qCsUrXixN776gnaT+D4vnJp8F+dMz7ife4F/4+
-wWaooH7WYHSA6yQyp95qwbiQZG89gR9fxEtG4zK3gaHttCAIZJUle1sqYQUXrePZ
-QvMbXKDKDkFL6WQDpVW0mXPbeIxnZzxSWsgvF17KPQWU2PGg4u/1AiQEntNItcgK
-syfM38UJxNncNy1OLKaiVLKu5jZ8xPD6jMJYGGTent4WephNkYv8NKLWZk6/zADC
-BTytiuUuBLWIHRABbfu8UpeQZrHdGqQm/gAoz3DMnpRxJiKt9egftHknrpSUCNv9
-pHQ3dB1c8achJ8wVsSpzU8gGtn+RpA==
-=I+uB
------END PGP SIGNATURE-----
-
---uuestpxaqacueghg--
+Johan
