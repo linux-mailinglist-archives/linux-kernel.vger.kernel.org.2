@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D10343E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C4A343E59
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhCVKs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:48:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58064 "EHLO mx2.suse.de"
+        id S229590AbhCVKsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:48:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230181AbhCVKrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:47:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616410066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4JtCXG1rJOroT9L7CmBbvZhIM6yyyU87x9CpZZfzFsk=;
-        b=Ye+G6PxX6i61dHAO9FGjbjKpwX7959c8L5jlc92IzihDvTiRPeKyxc0slp7tdYsza5QNDU
-        TN32DZcIQI6y0zIp0NfV1Exdm2oxWFSiH0xPgcCseP4ZnMSvBZVmsxCI2zwyjqs1++I/eH
-        2E7D16QuzlNUq3cxc4NYwSlFK4UDdsM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 43533AD38;
-        Mon, 22 Mar 2021 10:47:46 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 11:47:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        id S230285AbhCVKsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:48:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 806726191E;
+        Mon, 22 Mar 2021 10:48:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616410098;
+        bh=ABUH0zwdxI928odcJLs6iIYRehnrNAB/UTWqahfQtr4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y5oLFOtDZqib2GkrGm61+Ad1JnLQSSmvBEfY9Pz0YHph4UGdqa2/2qYjqs9JopTsq
+         1J3DKI5d1mWZQDK+JrwjPLp2Fhu9Lft2wUbc6xXQsL3MZRbxmRw/fZs25uYC6VLOPo
+         A5Sb4AKarUnfsmkgKnJy736vzdepSTk1ccMKW8uC7GjIcrMp4V4VZcwsfPPLhPmUMU
+         7M9yuAfAilVkI8A9NOMUVo8io/HSmVd7/caSMfH8H0mIYm/culDebFAsmzk8fKrTMT
+         1uifjbw9RXjCziflGp506Qd2rm9uzIgebRXApndppnZ3+8U+udGDWWJVmjoFJcpOQt
+         2sVH9uVb4KlYw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-bcache@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: try oom if reclaim is unable to make
- forward progress
-Message-ID: <YFh10eSTKY5lbE9u@dhcp22.suse.cz>
-References: <20210315165837.789593-1-atomlin@redhat.com>
- <YFN8wXwJA59w9twA@dhcp22.suse.cz>
- <20210319172901.cror2u53b7caws3a@ava.usersys.com>
+Subject: [PATCH] md: bcache: avoid -Wempty-body warnings
+Date:   Mon, 22 Mar 2021 11:48:10 +0100
+Message-Id: <20210322104815.1085673-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319172901.cror2u53b7caws3a@ava.usersys.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 17:29:01, Aaron Tomlin wrote:
-> Hi Michal,
-> 
-> On Thu 2021-03-18 17:16 +0100, Michal Hocko wrote:
-> > On Mon 15-03-21 16:58:37, Aaron Tomlin wrote:
-> > > In the situation where direct reclaim is required to make progress for
-> > > compaction but no_progress_loops is already over the limit of
-> > > MAX_RECLAIM_RETRIES consider invoking the oom killer.
-> 
-> Firstly, thank you for your response.
-> 
-> > What is the problem you are trying to fix?
-> 
-> If I understand correctly, in the case of a "costly" order allocation
-> request that is permitted to repeatedly retry, it is possible to exceed the
-> maximum reclaim retry threshold as long as "some" progress is being made
-> even at the highest compaction priority.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Costly orders already do have heuristics for the retry in place. Could
-you be more specific what kind of problem you see with those?
+building with 'make W=1' shows a harmless warning for each user of the
+EBUG_ON() macro:
 
-> Furthermore, if the allocator has a fatal signal pending, this is not
-> considered.
+drivers/md/bcache/bset.c: In function 'bch_btree_sort_partial':
+drivers/md/bcache/util.h:30:55: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+   30 | #define EBUG_ON(cond)                   do { if (cond); } while (0)
+      |                                                       ^
+drivers/md/bcache/bset.c:1312:9: note: in expansion of macro 'EBUG_ON'
+ 1312 |         EBUG_ON(oldsize >= 0 && bch_count_data(b) != oldsize);
+      |         ^~~~~~~
 
-Fatal signals pending are usually not a strong reason to cut retries
-count or fail allocations.
+Reword the macro slightly to avoid the warning.
 
-> In my opinion, it might be better to just give up straight away or try and
-> use the OOM killer only in the non-costly order allocation scenario to
-> assit reclaim. Looking at __alloc_pages_may_oom() the current logic is to
-> entirely skip the OOM killer for a costly order request, which makes sense.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/md/bcache/util.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Well, opinions might differ of course. The main question is whether
-there are workloads which are unhappy about the existing behavior.
-
+diff --git a/drivers/md/bcache/util.h b/drivers/md/bcache/util.h
+index c029f7443190..bca4a7c97da7 100644
+--- a/drivers/md/bcache/util.h
++++ b/drivers/md/bcache/util.h
+@@ -27,7 +27,7 @@ struct closure;
+ 
+ #else /* DEBUG */
+ 
+-#define EBUG_ON(cond)			do { if (cond); } while (0)
++#define EBUG_ON(cond)		do { if (cond) do {} while (0); } while (0)
+ #define atomic_dec_bug(v)	atomic_dec(v)
+ #define atomic_inc_bug(v, i)	atomic_inc(v)
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
