@@ -2,81 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9AF344C36
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E010344C37
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhCVQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:47:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhCVQrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:47:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3093560249;
-        Mon, 22 Mar 2021 16:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616431626;
-        bh=7jkwwQTMKRF9ZixAWWyF6DidhPZvbea3WyoahROBIyw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G8gq65AfreIBay9epyWXjQoS6rNig65gO8hvNqXH5F/0d3XGyxdKqaAcinh12c5cI
-         TshE9ie+EEOgjybdaKWMBV/mSQ+G4AiUtfN9ySg5OY8qITWuD71GZ2QVlCi2tDKczt
-         ihGwHVpod9PEWv51NVFg5eNrVo+KCH9h+i2OyOwjTKFEgwRFNd5laj7A8r3SP5b75m
-         jTZ9Q6eDSB5bh8DwdlfVu2FCj9FMGkj/8pEGIajWSNcdIY3QW9dQLEpKuaWMntywJ+
-         AO2mE2Ee4uFqt7be4EZiKpe5JBvn3i7Gu1y95B/E8z35NsJxBjwJPTR6zcGv6QiAZ3
-         9WzYB8LZXL9xg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Robert Love <robert.w.love@intel.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Vasu Dev <vasu.dev@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: fcoe: fix mismatched fcoe_wwn_from_mac declaration
-Date:   Mon, 22 Mar 2021 17:46:59 +0100
-Message-Id: <20210322164702.957810-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S230045AbhCVQsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:48:03 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:37462 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhCVQrU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:47:20 -0400
+Received: by mail-ot1-f53.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so16597853otr.4;
+        Mon, 22 Mar 2021 09:47:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ShXkEthEfrXvz174Grh0zIVOkXxgJka/xOdie336NaY=;
+        b=FHm/IdCz3hFDnq908izFMlkQ2nEaajyxiCpxPQKSc2lh+xzs5Ws9mc+3fkrihdwg7X
+         nviysmLuhc9YtF6by1c0ZY+NoAfkru6Qp4Vxtk5GNWy6UEp6RgKG3hdSoHx3Wp2Yny/a
+         iK+3+LbDc0/3iybkDIyXi7QOUZF7BGEgF4TlbGeNcEOlbT9VVR+NANeqHFydDeIB6/rS
+         hiCPonWNtrxm7KTR+Qu+r62bj5jyrqGxU8I3ywjxXsV5Lq/MrbNvI1tvl5SfWit11pVf
+         KNd13Y8tZnnf9LrsCdOZFpQjoNeJhdXjR1eC8JFsCYknAhr77vM89PHlsuSB0VSk+S8Z
+         KzWw==
+X-Gm-Message-State: AOAM532OJtar5vmnC8YbJAIOaKhAlQJCOryYMkf6883LFUq8nJLA9L8A
+        PaaVvqdNVZW4wHF0mjTIL1m7OdvQaPgB4ZnA52A=
+X-Google-Smtp-Source: ABdhPJw7j46feNwlJHUA4BdbbNfBNB/kAAXnZVyT+thDL1+acJ1rHIB5+AnQzqnRiADDnwYhoEQqObK2sxmGlW6alGU=
+X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr672314otq.260.1616431639146;
+ Mon, 22 Mar 2021 09:47:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210322163100.42617-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210322163100.42617-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 22 Mar 2021 17:47:07 +0100
+Message-ID: <CAJZ5v0hpNzCVf76npq_z+H-kBa0BurDnUDJdK5jqkpooHmTmJg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] ACPI: scan: Use unique number for instance_no
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 22, 2021 at 5:31 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The decrementation of acpi_device_bus_id->instance_no
+> in acpi_device_del() is incorrect, because it may cause
+> a duplicate instance number to be allocated next time
+> a device with the same acpi_device_bus_id is added.
+>
+> Replace above mentioned approach by using IDA framework.
+>
+> While at it, define the instance range to be [0, 4096).
+>
+> Fixes: e49bd2dd5a50 ("ACPI: use PNPID:instance_no as bus_id of ACPI device")
+> Fixes: ca9dc8d42b30 ("ACPI / scan: Fix acpi_bus_id_list bookkeeping")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-An old cleanup changed the array size from MAX_ADDR_LEN to
-unspecified in the declaration, but now gcc-11 warns about this:
+Applied as 5.12-rc material, thanks!
 
-drivers/scsi/fcoe/fcoe_ctlr.c:1972:37: error: argument 1 of type ‘unsigned char[32]’ with mismatched bound [-Werror=array-parameter=]
- 1972 | u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN],
-      |                       ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
-In file included from /git/arm-soc/drivers/scsi/fcoe/fcoe_ctlr.c:33:
-include/scsi/libfcoe.h:252:37: note: previously declared as ‘unsigned char[]’
-  252 | u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
-      |                       ~~~~~~~~~~~~~~^~~~~
-
-Change the type back to what the function definition uses.
-
-Fixes: fdd78027fd47 ("[SCSI] fcoe: cleans up libfcoe.h and adds fcoe.h for fcoe module")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/scsi/libfcoe.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/scsi/libfcoe.h b/include/scsi/libfcoe.h
-index 2568cb0627ec..fac8e89aed81 100644
---- a/include/scsi/libfcoe.h
-+++ b/include/scsi/libfcoe.h
-@@ -249,7 +249,7 @@ int fcoe_ctlr_recv_flogi(struct fcoe_ctlr *, struct fc_lport *,
- 			 struct fc_frame *);
- 
- /* libfcoe funcs */
--u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
-+u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN], unsigned int, unsigned int);
- int fcoe_libfc_config(struct fc_lport *, struct fcoe_ctlr *,
- 		      const struct libfc_function_template *, int init_fcp);
- u32 fcoe_fc_crc(struct fc_frame *fp);
--- 
-2.29.2
-
+> ---
+> v4: defined instance range [0, 4096) (Rafael)
+>  drivers/acpi/internal.h |  6 +++++-
+>  drivers/acpi/scan.c     | 33 ++++++++++++++++++++++++++++-----
+>  include/acpi/acpi_bus.h |  1 +
+>  3 files changed, 34 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+> index e6a5d997241c..cb8f70842249 100644
+> --- a/drivers/acpi/internal.h
+> +++ b/drivers/acpi/internal.h
+> @@ -9,6 +9,8 @@
+>  #ifndef _ACPI_INTERNAL_H_
+>  #define _ACPI_INTERNAL_H_
+>
+> +#include <linux/idr.h>
+> +
+>  #define PREFIX "ACPI: "
+>
+>  int early_acpi_osi_init(void);
+> @@ -96,9 +98,11 @@ void acpi_scan_table_handler(u32 event, void *table, void *context);
+>
+>  extern struct list_head acpi_bus_id_list;
+>
+> +#define ACPI_MAX_DEVICE_INSTANCES      4096
+> +
+>  struct acpi_device_bus_id {
+>         const char *bus_id;
+> -       unsigned int instance_no;
+> +       struct ida instance_ida;
+>         struct list_head node;
+>  };
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index a184529d8fa4..84bb7c1929f1 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -479,9 +479,8 @@ static void acpi_device_del(struct acpi_device *device)
+>         list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node)
+>                 if (!strcmp(acpi_device_bus_id->bus_id,
+>                             acpi_device_hid(device))) {
+> -                       if (acpi_device_bus_id->instance_no > 0)
+> -                               acpi_device_bus_id->instance_no--;
+> -                       else {
+> +                       ida_simple_remove(&acpi_device_bus_id->instance_ida, device->pnp.instance_no);
+> +                       if (ida_is_empty(&acpi_device_bus_id->instance_ida)) {
+>                                 list_del(&acpi_device_bus_id->node);
+>                                 kfree_const(acpi_device_bus_id->bus_id);
+>                                 kfree(acpi_device_bus_id);
+> @@ -631,6 +630,21 @@ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+>         return NULL;
+>  }
+>
+> +static int acpi_device_set_name(struct acpi_device *device,
+> +                               struct acpi_device_bus_id *acpi_device_bus_id)
+> +{
+> +       struct ida *instance_ida = &acpi_device_bus_id->instance_ida;
+> +       int result;
+> +
+> +       result = ida_simple_get(instance_ida, 0, ACPI_MAX_DEVICE_INSTANCES, GFP_KERNEL);
+> +       if (result < 0)
+> +               return result;
+> +
+> +       device->pnp.instance_no = result;
+> +       dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, result);
+> +       return 0;
+> +}
+> +
+>  int acpi_device_add(struct acpi_device *device,
+>                     void (*release)(struct device *))
+>  {
+> @@ -665,7 +679,9 @@ int acpi_device_add(struct acpi_device *device,
+>
+>         acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
+>         if (acpi_device_bus_id) {
+> -               acpi_device_bus_id->instance_no++;
+> +               result = acpi_device_set_name(device, acpi_device_bus_id);
+> +               if (result)
+> +                       goto err_unlock;
+>         } else {
+>                 acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
+>                                              GFP_KERNEL);
+> @@ -681,9 +697,16 @@ int acpi_device_add(struct acpi_device *device,
+>                         goto err_unlock;
+>                 }
+>
+> +               ida_init(&acpi_device_bus_id->instance_ida);
+> +
+> +               result = acpi_device_set_name(device, acpi_device_bus_id);
+> +               if (result) {
+> +                       kfree(acpi_device_bus_id);
+> +                       goto err_unlock;
+> +               }
+> +
+>                 list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+>         }
+> -       dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+>
+>         if (device->parent)
+>                 list_add_tail(&device->node, &device->parent->children);
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 02a716a0af5d..f28b097c658f 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -233,6 +233,7 @@ struct acpi_pnp_type {
+>
+>  struct acpi_device_pnp {
+>         acpi_bus_id bus_id;             /* Object name */
+> +       int instance_no;                /* Instance number of this object */
+>         struct acpi_pnp_type type;      /* ID type */
+>         acpi_bus_address bus_address;   /* _ADR */
+>         char *unique_id;                /* _UID */
+> --
+> 2.30.2
+>
