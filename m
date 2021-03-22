@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A643449D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412AF344828
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCVPxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:53:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:47408 "EHLO mga09.intel.com"
+        id S231661AbhCVOwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhCVPxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:53:09 -0400
-IronPort-SDR: hJDC15ROJmIjjRcjEzfCEoGHFnOpi3T7LV1BMJDzYFMDbWgyxkaP/bcqrza35gxFXJjZDgsAMA
- brs93IcbcEFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190391719"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="190391719"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 08:53:07 -0700
-IronPort-SDR: Z47juyE8m6ITb/B8rH3nG+QDylFyKXbk4DrllZ4mIzp4j9yqTR7dwTRtgnQcCikwZ2MaEmvjyq
- O4Adoixoz2qA==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="451782523"
-Received: from kaschuma-mobl1.amr.corp.intel.com (HELO [10.212.220.31]) ([10.212.220.31])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 08:53:05 -0700
-Subject: Re: [PATCH v4 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <perry979106@gmail.com>,
-        "Yuan, Perry" <Perry.Yuan@dell.com>,
-        "pobrn@protonmail.com" <pobrn@protonmail.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20210301093753.16300-1-Perry_Yuan@Dell.com>
- <551e30d2-0211-f3cb-fbb8-ee5b2f22a851@linux.intel.com>
- <SJ0PR19MB4528E7C88C955D2EE96CE3B484939@SJ0PR19MB4528.namprd19.prod.outlook.com>
- <ab14a0b2-3f3a-3796-8baf-76e635d82340@linux.intel.com>
- <58d2e2f2-e552-6ecf-b1c3-bf38ad5d2e35@gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7e0fc125-5a26-47d6-aa2a-7cd1b2580adf@linux.intel.com>
-Date:   Mon, 22 Mar 2021 09:49:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231415AbhCVOuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EAD96198B;
+        Mon, 22 Mar 2021 14:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616424620;
+        bh=0SF0KO5Kry00j5ygkfYySAeJ4cijAmCF74RG4JU426E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TFxB1EOHQj4T1GlljZzPBmls8JGY3vf/VfjGwEqXtxHWu9WFP7QveIDnc2DrjyU8a
+         yuJ3xBcqyMAps8f+G721IAX3Ws62Mtqia3UC0vnU7LsT89AZqdp+p2Wum/Ti9BjsS/
+         2N5zQF53nlixNQ3BqcqAdmL3aGN18K0+zQb24Cew5PwKgNRLfyesOpPKOdeT41mwm9
+         4kwp2UzJSzovUXGgobXm+ZrVYVBoafQVXcESlXDMoLPCtGVv6ils4520INQ8Vfd0EL
+         aoQETABMi8in2n02McC4+A4ToRUbTdTY1J22G38xf74gBmkjWqnlYqrVWnO/UZdH3T
+         T3UCgEzF0Op0A==
+Date:   Mon, 22 Mar 2021 15:50:14 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
+        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
+Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
+Message-ID: <YFiuphGw0RKehWsQ@gunter>
+References: <20210318113156.407406787@infradead.org>
+ <20210318113610.739542434@infradead.org>
+ <20210318161308.vu3dhezp2lczch6f@treble>
+ <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
+ <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
+ <20210319140005.7ececb11@gandalf.local.home>
+ <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
+ <20210319165749.0f3c8281@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <58d2e2f2-e552-6ecf-b1c3-bf38ad5d2e35@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210319165749.0f3c8281@gandalf.local.home>
+X-OS:   Linux gunter 5.11.2-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++++ Steven Rostedt [19/03/21 16:57 -0400]:
+>On Fri, 19 Mar 2021 20:34:24 +0100
+>Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>> On Fri, Mar 19, 2021 at 02:00:05PM -0400, Steven Rostedt wrote:
+>> > Would making __exit code the same as init code work? That is, load it just
+>> > like module init code is loaded, and free it when the init code is freed
+>>
+>> As stated, yes. But it must then also identify as init through
+>> within_module_init().
+>
+>I think that's doable. Since the usecases for that appear to be mostly
+>about "think code may no longer exist after it is used". Thus, having exit
+>code act just like init code when UNLOAD is not set, appears appropriate.
+>
+>Jessica, please correct me if I'm wrong.
 
-> As you suggested,I should add the alignment change in another patch.
-> But if i keep the old alignment, the code will be very odd.
-> Seems like that I have to change the below code to new alignment in this 
-> patch.
-> 
-> if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
->      dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) { <<--- changed back
->      if (!privacy_valid)
->              has_privacy = true;
->      else
->              has_privacy = false;
->      if (!has_privacy) {
->          micmute_led_cdev.brightness <<----------- new alignment
->          ...
->      }
-> ...
-> }
+It should be doable. If you want the exit sections to be treated the same as
+module init, the following patch should stuff any exit sections into the module
+init "region" (completely untested). Hence it should be freed together with the
+init sections and it would identify as init through within_module_init(). Let
+me know if this works for you.
 
-I don't get the point, sorry. The code above doesn't seem properly 
-indented or there were spurious tab/spaces conversions?
+---
+
+diff --git a/kernel/module.c b/kernel/module.c
+index 30479355ab85..1c3396a9dd8b 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2802,7 +2802,11 @@ void * __weak module_alloc(unsigned long size)
+
+  bool __weak module_init_section(const char *name)
+  {
+-       return strstarts(name, ".init");
++#ifndef CONFIG_UNLOAD_MODULE
++       return strstarts(name, ".init") || module_exit_section(name);
++#else
++       return strstarts(name, ".init")
++#endif
+  }
+
+  bool __weak module_exit_section(const char *name)
+@@ -3116,11 +3120,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
+                  */
+                 shdr->sh_addr = (size_t)info->hdr + shdr->sh_offset;
+
+-#ifndef CONFIG_MODULE_UNLOAD
+-               /* Don't load .exit sections */
+-               if (module_exit_section(info->secstrings+shdr->sh_name))
+-                       shdr->sh_flags &= ~(unsigned long)SHF_ALLOC;
+-#endif
+         }
+
+         /* Track but don't keep modinfo and version sections. */
+
