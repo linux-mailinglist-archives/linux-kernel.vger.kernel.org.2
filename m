@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A77D343F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2064343FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCVLUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        id S230071AbhCVLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhCVLUK (ORCPT
+        with ESMTP id S229728AbhCVLaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:20:10 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7199FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:20:09 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id w37so20625558lfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=qI7goXjjGFeqHfifATUNUhUdn1BuomusuiEhucOhm2g=;
-        b=qQ1l8VYivqDkzxJB3JRdAFBjzLic10uHyL/uUUFstkQ9ud2jIBdOHMURo/N30v5p3G
-         4tsmcJFoI/2feqcwCikMhc9nmWqbs2V4Z5ByQbXSA4FGxdoNaKFoQxjoD4/BABefTXol
-         Ju7lDesqUN9YEc7J0ZMXMN5fTvMmao+wJHvnJI1HEnUM+IRC7Wliy0/O83jTFmrNtGD9
-         h1B2Ful/MXkj8CqbzbGHcwsYi1TE1ZzlwbLZMEo7W06ki68s/V7b7iGRzu+8wPoRndPm
-         TPa9Mdki+FOnedg6gNAVgHDATWIPwg1nktRMUbuOsKzgFVx3PYvwV0OZXCPV72Hl/sXk
-         0kuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=qI7goXjjGFeqHfifATUNUhUdn1BuomusuiEhucOhm2g=;
-        b=HLQtT52FvoSAk87BOcOPTgQg4C+xCuEdfNW+Rw8FdVYBXVZULW32D5ECJsGfE18ZkU
-         QLDxNum1f6C20oJP8faLx8gLvehpoyC9OQemo9T3kmmQ+6Jvpx8+GfrRiKWKvI7NOp4S
-         jX1wlZKtlGIoqIXpuZN01+zNYDIghPVX7oAy7XbZM8y8Pq7csQdq8lXmyWSyjPtxyh9W
-         4vjJzom1GTIkBF4mxS3hsRFSUiKELGBRB7ZGNlP0fJBYa2snWf1zHOyWplNBcAu4t9yG
-         4E7n0XhCh9s8rPpQlDgaCzIvVUp4yWiq38Gp6uIUMRzs83KTbcCO+7Ah7hLZ/hhdcyMm
-         3P1w==
-X-Gm-Message-State: AOAM533PURtl5/5ZE3JNsJDFp/si2DePcNXfDxXUIGXSMTWid/5BFYkb
-        Frr4s8Vz+N8zLCDYsgEQ/b/0Ew==
-X-Google-Smtp-Source: ABdhPJwA6JgdgFdF9FQMAXM2grOYAiw4AJkNivEq2/o2XmDjXIwu0iCVDbg6X5C8BWVB/ftnv++C+Q==
-X-Received: by 2002:a19:4116:: with SMTP id o22mr8893165lfa.272.1616412007906;
-        Mon, 22 Mar 2021 04:20:07 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id e15sm1539506lfs.83.2021.03.22.04.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 04:20:07 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
+        Mon, 22 Mar 2021 07:30:08 -0400
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5501CC061574;
+        Mon, 22 Mar 2021 04:30:07 -0700 (PDT)
+Received: from mxout2.routing.net (unknown [192.168.10.82])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 9E17A2C507;
+        Mon, 22 Mar 2021 11:21:44 +0000 (UTC)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout2.routing.net (Postfix) with ESMTP id 079555FA25;
+        Mon, 22 Mar 2021 11:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1616412100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fAfm5d45zVhZhTCL6xmuYVatc8OOf7hdInt0jJzTI/s=;
+        b=tQzm0AytTusaC9sgjVBpygi4A40dsq73kw5wLj26GDKuOEY/uhrzf+W/sd9lET1f6h8BQ6
+        YPdKbuhBQZ3aCZ6AvuKpz6gzVCa8eVtUlfQf7paF6fXzYfKNbzutUVJKp9IidcCIvbQRHM
+        RfDm1cIgtKpfz58GfKc9Qrl1huE8nyw=
+Received: from localhost.localdomain (unknown [80.245.73.88])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id 25EBA36010D;
+        Mon, 22 Mar 2021 11:21:39 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [RFC PATCH v2 net-next 07/16] net: dsa: sync ageing time when joining the bridge
-In-Reply-To: <20210318231829.3892920-8-olteanv@gmail.com>
-References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-8-olteanv@gmail.com>
-Date:   Mon, 22 Mar 2021 12:20:06 +0100
-Message-ID: <87zgyvmo49.fsf@waldekranz.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] support mt7623 and ipv6
+Date:   Mon, 22 Mar 2021 12:21:15 +0100
+Message-Id: <20210322112117.16162-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: 39cf0cc5-dd48-4042-b3b9-87b31c10b3b8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->
-> The SWITCHDEV_ATTR_ID_BRIDGE_AGEING_TIME attribute is only emitted from:
->
-> sysfs/ioctl/netlink
-> -> br_set_ageing_time
->    -> __set_ageing_time
->
-> therefore not at bridge port creation time, so:
-> (a) drivers had to hardcode the initial value for the address ageing time,
->     because they didn't get any notification
-> (b) that hardcoded value can be out of sync, if the user changes the
->     ageing time before enslaving the port to the bridge
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
+From: Frank Wunderlich <frank-w@public-files.de>
 
-Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
+Extending functionality of recently sent nftables flow offload.
+
+This Series contains 2 Patches where the second is for RFC, because i cannot test it,
+but it is reported by author as working and i should send it
+
+Series depend on HW offload Patches:
+https://patchwork.ozlabs.org/project/netfilter-devel/list/?series=233310&archive=both&state=*
+
+Frank Wunderlich (2):
+  net: mediatek: add flow offload for mt7623
+  [RFC] net: ethernet: mtk_eth_soc: add ipv6 flow offload support
+
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   |  1 +
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   | 55 +++++++++++++++++++
+ 2 files changed, 56 insertions(+)
+
+-- 
+2.25.1
+
