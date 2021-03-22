@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814833450B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDCA3450BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhCVU1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232319AbhCVU0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:26:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2EBC6192D
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616444799;
-        bh=TCgVn6BB3w6F4s/+//BYt84HxccYqGXxV6srV5MngiY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fJr+bvd1OLPpHacH3GgE974NurUFyyS4cAhx9PpZakHdWqO3ribpjJ+1j3A2XTiiE
-         M0T++nbsbN98mKyTLcrDQgbPIHb7ICF6sArPQKHtfjEkyXeurFqUoAZAZBPfmURmTA
-         Uy9QdfoPYUiFCAMq1gZWqxKZon1jyItL6bn3OKfRefI8vsI8teOLbUUR43O/6+xuw2
-         n3fsnTxEiWl3PAtrGeXVKuI9IkLhA0ITfNQKh7xm+Pyw33J++UwokSC7i3qLhxkah5
-         UqoMVVDDdJC+CBrNZRaYVUVEtVDeOohUW9qQM5M8jIpce3rJgWffX7EywvNgT1NWsu
-         UYF4xCkGva6Ng==
-Received: by mail-oo1-f44.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so4429015ool.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:26:38 -0700 (PDT)
-X-Gm-Message-State: AOAM532NGMfLUqy2TNeK/CA1ldqSH7Nd8vfQaDmpSUzth271eYIvrI0c
-        OUZI2dn3klmjcVdoQTCiDQq6qG4Cba3awvFTnO4=
-X-Google-Smtp-Source: ABdhPJzLQ+qBxdCWCS2mJch1YEGt0KrEHYPlaw8sRsh2gak7YjJqhkOeJMaLBj9XQzdpKHIIP0oj6HLgGkjGyYtNyaQ=
-X-Received: by 2002:a4a:244d:: with SMTP id v13mr998106oov.66.1616444798370;
- Mon, 22 Mar 2021 13:26:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210322164308.827846-1-arnd@kernel.org> <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
- <CAK8P3a33qv79GedMCwA=GFBWYCMB2fYrq2QmGpN3TWfqgg8j2A@mail.gmail.com>
- <CAD=FV=WaOFJEnZ=b+UTaTXDWMs8JOeBw1gRFYrtSJK-+CXGPyw@mail.gmail.com> <1bdabbff-8e3f-60dd-145d-af2dc45c1da5@windriver.com>
-In-Reply-To: <1bdabbff-8e3f-60dd-145d-af2dc45c1da5@windriver.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 22 Mar 2021 21:26:22 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0URcb4ZcaTo9cBuey28EqHu_3EHBpcDAZDAt8Rde5RJA@mail.gmail.com>
-Message-ID: <CAK8P3a0URcb4ZcaTo9cBuey28EqHu_3EHBpcDAZDAt8Rde5RJA@mail.gmail.com>
-Subject: Re: [PATCH] kgdb: fix gcc-11 warning on indentation
-To:     Jason Wessel <jason.wessel@windriver.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@elte.hu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232072AbhCVU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCVU1U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:27:20 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E216C061574;
+        Mon, 22 Mar 2021 13:27:19 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id z15so14483821oic.8;
+        Mon, 22 Mar 2021 13:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=8EdwlC6mjQMaPh/szmT93V5gJUSuLrIXnwc5sVFVX2c=;
+        b=cZn/TvmaDITh0NMd2xAfoLOOj9lF76COeqeLSVCRlOsmlijzvxwrPY6I2xUjNQRfhg
+         jqDYt/TvG+RB77Z6YV3cj7LnCAlV8m26r69jUor/FXVvXVl+s9zHo7rNPci4wrg7bzQU
+         0bte99M+b+tDWfuif6181aUxZytGrEQm3rokTqSusiib8WvROJxVkU01DjPaTTilmMOQ
+         NDXaQXo3NeDCGa4PnZ8qN3dISUPLHVrjvSF35YMES7P2M83Gx98GzLa++xmsS4ibqJ18
+         KHTWSV1neD6DYIU1AD0mW/NpKlrb0wGM2j1/csMPWK9NWkGX36BLsPtOG+U81wV8evvX
+         mtJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8EdwlC6mjQMaPh/szmT93V5gJUSuLrIXnwc5sVFVX2c=;
+        b=L6y5RiX67AyjIccrffSXHcqTeXYqtgJxIXgRs98bseiQ/DH8y3/+OPtK5ndfX5woOK
+         q1qoinMvA9sCQx5ugclHmedXo8tQHXzC1ybstxDU3ascM3WrI9Kqlt08yURv7zw3399Z
+         tXnTbsHbDgelQj8hvzIrbE0f8IBGyO3mo9J98ZkUCgSjHi4wM2gf/+UppnN0LGXNv71c
+         DaIv2gX32gRTeKCsnRwH8cyuy9DlB2x2wIpOK6RyOMZyqfcLn50lkxzCHaH347T+pZoD
+         qzTHgDwJcjsLw51ix8qyA89EKN+b5U6tN/RhtdKVY4YEVIOjC173+4jLMT8DyPOyA4N4
+         rv7A==
+X-Gm-Message-State: AOAM530NNxsersXqKWIatUdNWsXkaW2j6a1oO5+gfsr2TxAGONClOAZm
+        YZ1giFL7brTzrcVFSLLVqNKbxLEYJH5m
+X-Google-Smtp-Source: ABdhPJzsMGenVsSc28CsH9Rxxaz/tDxVMOUqbp2XOQfj8nMnhZeHw6gldvTAgGU96TmI/ofhhre/MQ==
+X-Received: by 2002:aca:ef84:: with SMTP id n126mr612731oih.84.1616444838977;
+        Mon, 22 Mar 2021 13:27:18 -0700 (PDT)
+Received: from threadripper.novatech-llc.local ([216.21.169.52])
+        by smtp.gmail.com with ESMTPSA id x3sm3462766oif.22.2021.03.22.13.27.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Mar 2021 13:27:18 -0700 (PDT)
+From:   George McCollister <george.mccollister@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>
+Subject: [PATCH net] net: dsa: don't assign an error value to tag_ops
+Date:   Mon, 22 Mar 2021 15:26:50 -0500
+Message-Id: <20210322202650.45776-1-george.mccollister@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 9:14 PM Jason Wessel <jason.wessel@windriver.com> wrote:
->
-> The original board this was developed with was a 32bit eeepc.
->
-> The intent was that when v2printk() was called for a verbose > 1
-> condition the touch_nmi_watchdog() was called.   The test case
-> where a whole lot of single steps are executed sequentially was not
-> letting the watchdog get reset by the normal kernel routine.
-> The serial port was so slow it was pretty easy to hit this problem
-> and it would just power cycle itself.
->
-> The original intent would have bee:
->
-> #define v2printk(a...) do {             \
->         if (verbose > 1) {              \
->                 printk(KERN_INFO a);    \
->                 touch_nmi_watchdog();   \
->         }                               \
-> } while (0)
+Use a temporary variable to hold the return value from
+dsa_tag_driver_get() instead of assigning it to dst->tag_ops. Leaving
+an error value in dst->tag_ops can result in deferencing an invalid
+pointer when a deferred switch configuration happens later.
 
-Ok, thanks for sharing how the code was intended to work. I'll let
-you all come up with a decision on what should be done about it
-now, I'm happy to send one or two patches to address both the
-compiler warning, and the original mistake.
+Fixes: 357f203bb3b5 ("net: dsa: keep a copy of the tagging protocol in the DSA switch tree")
 
-My feeling is it would be best to address the warning first,
-pretty much with the patch I sent here, and to change the
-behavior as a second patch.
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+---
+ net/dsa/dsa2.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-That way the gcc-11 warning can be silenced in stable kernels by
-backporting the first patch, while the second patch can be tried
-out in new kernels first and might not get backported because the
-existing behavior is not harmful.
+diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
+index eb709d988c54..8f9e35e1aa89 100644
+--- a/net/dsa/dsa2.c
++++ b/net/dsa/dsa2.c
+@@ -1068,6 +1068,7 @@ static int dsa_port_parse_cpu(struct dsa_port *dp, struct net_device *master)
+ {
+ 	struct dsa_switch *ds = dp->ds;
+ 	struct dsa_switch_tree *dst = ds->dst;
++	const struct dsa_device_ops *tag_ops;
+ 	enum dsa_tag_protocol tag_protocol;
+ 
+ 	tag_protocol = dsa_get_tag_protocol(dp, master);
+@@ -1082,14 +1083,16 @@ static int dsa_port_parse_cpu(struct dsa_port *dp, struct net_device *master)
+ 		 * nothing to do here.
+ 		 */
+ 	} else {
+-		dst->tag_ops = dsa_tag_driver_get(tag_protocol);
+-		if (IS_ERR(dst->tag_ops)) {
+-			if (PTR_ERR(dst->tag_ops) == -ENOPROTOOPT)
++		tag_ops = dsa_tag_driver_get(tag_protocol);
++		if (IS_ERR(tag_ops)) {
++			if (PTR_ERR(tag_ops) == -ENOPROTOOPT)
+ 				return -EPROBE_DEFER;
+ 			dev_warn(ds->dev, "No tagger for this switch\n");
+ 			dp->master = NULL;
+-			return PTR_ERR(dst->tag_ops);
++			return PTR_ERR(tag_ops);
+ 		}
++
++		dst->tag_ops = tag_ops;
+ 	}
+ 
+ 	dp->master = master;
+-- 
+2.11.0
 
-> I'd guess this probably not the first time gcc-11 is finding brace
-> imbalances.
-
-There were only a handful of new -Wmisleading-indentation warnings
-for gcc-11, the older compilers already caught every instance in normal
-functions, while gcc-11 improved on finding them in macros as well.
-
-       Arnd
