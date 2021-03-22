@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E30A344006
+	by mail.lfdr.de (Postfix) with ESMTP id D9EC4344007
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhCVLjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCVLjN (ORCPT
+        id S230190AbhCVLju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:39:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230012AbhCVLjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:39:13 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B0CC061574;
-        Mon, 22 Mar 2021 04:39:12 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B461E22235;
-        Mon, 22 Mar 2021 12:39:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616413150;
+        Mon, 22 Mar 2021 07:39:23 -0400
+Date:   Mon, 22 Mar 2021 12:39:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616413160;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zXIdiOZ+u1eSnhElfcpPGQjBHuUV/GsmWU43M1JHSDw=;
-        b=kwrNYJs+xjQ162w/fJgDT2TBnMDzOrLV2iMBZ9o1xAJPOvmeR7KO3XQnUjUsxrZhrXNq8O
-        sA2FHNfDaJAlIFYI0d0GtiW5U8GO/FdO9YYmO+2xYPYL+BdA3DSeW1rIaoIv7SKb2/n8xh
-        Z5Ac27ObVqlNRQX3UuInL2jq/45aMOw=
+        bh=5ZhX+YE/qD6wm9rEUpODyk3JBhUspUq04ONWRA919tI=;
+        b=DLf5/KRpvDoWIs85QD34KKZvMM/CGNjcRxRY3lF40GhFLoSYDDk6UwtmSdXqYqPqT5SFcq
+        1kNJ+FbthHV/MpYxlQDutpf9KNfcekne/v9jsAk9/MGkFngNtAN9PN3Ke/TMlPVPKDvom/
+        PdyIJSuCfZRCZnnb4KdXFX/owtIz58bE/Nkz6N4RvxWepBCnun65qMkRS6b2dzhrFXCflF
+        VPbG/2BtSJPYLqYXuJCKC3fOazIQK9pxiQFnW0ddSBT1+F3/1r9yQeEruAtN3JovHR99HH
+        tJIGSKzBG5UWLccY10hOcBYO8qxt/vb1epxPVMkRTWH+ePNF4J9lNOli7+Xn6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616413160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5ZhX+YE/qD6wm9rEUpODyk3JBhUspUq04ONWRA919tI=;
+        b=lviYqnUjfYbaYCagkQiljIDSUmTIThsm8Y5+YPECy0rY8ZuMD5rQlw4Yp9vyLOhYSuTeQo
+        4oUDDcSx+Fb95fCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210322113918.ze52gq54cpsspgej@linutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
+ <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Mar 2021 12:39:10 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Sahil Malhotra <sahil.malhotra@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: Re: [PATCH] arm64: dts: ls1028a: fix optee node
-In-Reply-To: <DB7PR04MB53222C26DD58E81FEAE4A27982659@DB7PR04MB5322.eurprd04.prod.outlook.com>
-References: <DB7PR04MB53222C26DD58E81FEAE4A27982659@DB7PR04MB5322.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f3afa2197eefad9bc60be61f64ee5155@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sahil,
+On 2021-03-22 12:34:02 [+0100], Uwe Kleine-K=C3=B6nig wrote:
+> On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
+> > Force-threaded interrupt handlers used to run with interrupts enabled,
+> > something which could lead to deadlocks in case a threaded handler
+> > shared a lock with code running in hard interrupt context (e.g. timer
+> > callbacks) and did not explicitly disable interrupts.
+> >=20
+> > This was specifically the case for serial drivers that take the port
+> > lock in their console write path as printk can be called from hard
+> > interrupt context also with forced threading ("threadirqs").
+> >=20
+> > Since commit 81e2073c175b ("genirq: Disable interrupts for force
+> > threaded handlers") interrupt handlers always run with interrupts
+> > disabled on non-RT so that drivers no longer need to do handle this.
+>=20
+> So we're breaking RT knowingly here? If this is the case I'm not happy
+> with your change. (And if RT is not affected a different wording would
+> be good.)
 
-Am 2021-03-22 12:33, schrieb Sahil Malhotra:
-> Thanks for the fix, and currently we support optee only on ls1028a-rdb 
-> boards.
-> Does enabling the optee node this way, solves the issue ?
+Which wording, could you be more specific? It looks good from here and
+no, RT is not affected.
 
-What do you mean? Please note, that Shawn already reverted your commit.
-Therefore, I suggest you make a new commit where you enable optee only
-for the ls1028a-rdb board.
+> Best regards
+> Uwe
 
--michael
+Sebastian
