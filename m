@@ -2,142 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D88F344DF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C46344DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhCVR7W convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 13:59:22 -0400
-Received: from aposti.net ([89.234.176.197]:55844 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231249AbhCVR7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:59:02 -0400
-Date:   Mon, 22 Mar 2021 17:58:46 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 02/10] pinctrl: Ingenic: Add support for read the pin
- configuration of X1830.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <YXTDQQ.OYIQVLSUOAPB3@crapouillou.net>
-In-Reply-To: <1615975084-68203-3-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615975084-68203-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S231317AbhCVR7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhCVR73 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:59:29 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BE4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id q9so9096370qvm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3tW5FS73Z71P6K0t+SWrxwMHeSjJgqydDxKdhSwwjsI=;
+        b=OduhdWT/vuj5dcpPd9VCBbWHY+tZNB+b78Fy/1QK7HB2OfeTj+uFop5G8r+Me8Raaq
+         rEbomPKeULAj2SO8TB2UOjYFEyOpnopkQEB8/JXX3cfq037JoW5O6b8+DAugLgKCXEmw
+         pspEx0r8wXUxhRqVw/kTUpRNDeAwdJLG7M+nYrfjU5DMPu96zA7RtmpdC4s0MiDl6BnA
+         0IxG5fqS2WSkDcecl8K4CrzZNJXHyN4mI/+6jC7k6p1VydjOsDndV8t44hM9FmXX3iIf
+         xQhHYpd1jEvoWn9OjKC8Svo3DTrvGYLu5z6czSN9PRJRxA8o3yx8bXAPEYVxfCHDXbIV
+         mjNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3tW5FS73Z71P6K0t+SWrxwMHeSjJgqydDxKdhSwwjsI=;
+        b=msNq3CRYF1rYYnK9UgeKN/IBC8YZ1pDFWKfuFRLyS4ArNlP0hqUcUNdoTuJ/vjbySw
+         75/zG/ZAM9LFgOUpoK6VBA8SX03Jb1Rco2KYmobJziZMWga5wTT3smatPIM2ipkcAFfY
+         Hipdzb1D+zdUjD2Wr/2OPf3Bi+40JsQz4cK4YWispJniwtcDprydVr/JrO2BIgVlJk6z
+         Dy8WX1+cEzPF2LTu4PmVt6+iOLLN0EESx3JFzOY4BdMwCSUSWUWFvCalbWWbRKYkrHf2
+         K+DuRgB9qEYO3TZlG+W8GcN6fIswgvPhBVxX1FZdFjlsR0e1KIlbxp+zESrfUe1A7sbQ
+         Nq3w==
+X-Gm-Message-State: AOAM533ll5heQUV07bqZrYGe0ooVsyf6LbI8wdK/lY0RNVBNpkLX0FDE
+        LTdA68JfJw0GSAMhm2/OS68zTQ==
+X-Google-Smtp-Source: ABdhPJzoBehbHbQuiCGVnZz0UStxWXiZmLz4h7BLRs4yncS1FgXzNF2X65GrLZMvZblfqSGPbGw/UQ==
+X-Received: by 2002:a0c:9ad7:: with SMTP id k23mr958345qvf.52.1616435966072;
+        Mon, 22 Mar 2021 10:59:26 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:b54e])
+        by smtp.gmail.com with ESMTPSA id h8sm11266266qkk.116.2021.03.22.10.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:59:25 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 13:59:24 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 00/27] Memory Folios
+Message-ID: <YFja/LRC1NI6quL6@cmpxchg.org>
+References: <20210320054104.1300774-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320054104.1300774-1-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 20, 2021 at 05:40:37AM +0000, Matthew Wilcox (Oracle) wrote:
+> Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
+> exist which show the benefits of a larger "page size".  As an example,
+> an earlier iteration of this idea which used compound pages got a 7%
+> performance boost when compiling the kernel using kernbench without any
+> particular tuning.
+> 
+> Using compound pages or THPs exposes a serious weakness in our type
+> system.  Functions are often unprepared for compound pages to be passed
+> to them, and may only act on PAGE_SIZE chunks.  Even functions which are
+> aware of compound pages may expect a head page, and do the wrong thing
+> if passed a tail page.
+> 
+> There have been efforts to label function parameters as 'head' instead
+> of 'page' to indicate that the function expects a head page, but this
+> leaves us with runtime assertions instead of using the compiler to prove
+> that nobody has mistakenly passed a tail page.  Calling a struct page
+> 'head' is also inaccurate as they will work perfectly well on base pages.
+> The term 'nottail' has not proven popular.
+> 
+> We also waste a lot of instructions ensuring that we're not looking at
+> a tail page.  Almost every call to PageFoo() contains one or more hidden
+> calls to compound_head().  This also happens for get_page(), put_page()
+> and many more functions.  There does not appear to be a way to tell gcc
+> that it can cache the result of compound_head(), nor is there a way to
+> tell it that compound_head() is idempotent.
+> 
+> This series introduces the 'struct folio' as a replacement for
+> head-or-base pages.  This initial set reduces the kernel size by
+> approximately 6kB, although its real purpose is adding infrastructure
+> to enable further use of the folio.
+> 
+> The intent is to convert all filesystems and some device drivers to work
+> in terms of folios.  This series contains a lot of explicit conversions,
+> but it's important to realise it's removing a lot of implicit conversions
+> in some relatively hot paths.  There will be very few conversions from
+> folios when this work is completed; filesystems, the page cache, the
+> LRU and so on will generally only deal with folios.
 
+If that is the case, shouldn't there in the long term only be very
+few, easy to review instances of things like compound_head(),
+PAGE_SIZE etc. deep in the heart of MM? And everybody else should 1)
+never see tail pages and 2) never assume a compile-time page size?
 
-Le mer. 17 mars 2021 à 17:57, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add X1830 support in "ingenic_pinconf_get()", so that it can read the
-> configuration of X1830 SoC correctly.
-> 
-> Fixes: d7da2a1e4e08 ("pinctrl: Ingenic: Add pinctrl driver for 
-> X1830.")
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
-> 
-> Notes:
->     v2:
->     New patch.
-> 
->     v2->v3:
->     1.Add fixes tag.
->     2.Adjust the code, simplify the ingenic_pinconf_get() function.
-> 
->  drivers/pinctrl/pinctrl-ingenic.c | 38 
-> ++++++++++++++++++++++++++++++--------
->  1 file changed, 30 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 05dfa0a..1d43b98 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -2109,26 +2109,48 @@ static int ingenic_pinconf_get(struct 
-> pinctrl_dev *pctldev,
->  	enum pin_config_param param = pinconf_to_config_param(*config);
->  	unsigned int idx = pin % PINS_PER_GPIO_CHIP;
->  	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
-> -	bool pull;
-> +	unsigned int bias;
-> +	bool pull, pullup, pulldown;
-> 
-> -	if (jzpc->info->version >= ID_JZ4770)
-> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
-> -	else
-> -		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-> +	if (jzpc->info->version >= ID_X1830) {
-> +		unsigned int half = PINS_PER_GPIO_CHIP / 2;
-> +		unsigned int idxh = pin % half * 2;
+What are the higher-level places that in the long-term should be
+dealing with tail pages at all? Are there legit ones besides the page
+allocator, THP splitting internals & pte-mapped compound pages?
 
-I had to look up operator precedence in C, '*' and '%' have the same 
-priority so this reads left-to-right.
+I do agree that the current confusion around which layer sees which
+types of pages is a problem. But I also think a lot of it is the
+result of us being in a transitional period where we've added THP in
+more places but not all code and data structures are or were fully
+native yet, and so we had things leak out or into where maybe they
+shouldn't be to make things work in the short term.
 
-I'd suggest adding parentheses around the '%' to make it more obvious.
+But this part is already getting better, and has gotten better, with
+the page cache (largely?) going native for example.
 
-With that:
+Some compound_head() that are currently in the codebase are already
+unnecessary. Like the one in activate_page().
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+And looking at grep, I wouldn't be surprised if only the page table
+walkers need the page_compound() that mark_page_accessed() does. We
+would be better off if they did the translation once and explicitly in
+the outer scope, where it's clear they're dealing with a pte-mapped
+compound page, instead of having a series of rather low level helpers
+(page flags testing, refcount operations, LRU operations, stat
+accounting) all trying to be clever but really just obscuring things
+and imposing unnecessary costs on the vast majority of cases.
 
-Cheers,
--Paul
+So I fully agree with the motivation behind this patch. But I do
+wonder why it's special-casing the commmon case instead of the rare
+case. It comes at a huge cost. Short term, the churn of replacing
+'page' with 'folio' in pretty much all instances is enormous.
 
-> +
-> +		if (idx < half)
-> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-> +					X1830_GPIO_PEL, &bias);
-> +		else
-> +			regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
-> +					X1830_GPIO_PEH, &bias);
-> +
-> +		bias = (bias >> idxh) & (GPIO_PULL_UP | GPIO_PULL_DOWN);
-> +
-> +		pullup = (bias == GPIO_PULL_UP) && (jzpc->info->pull_ups[offt] & 
-> BIT(idx));
-> +		pulldown = (bias == GPIO_PULL_DOWN) && 
-> (jzpc->info->pull_downs[offt] & BIT(idx));
-> +
-> +	} else {
-> +		if (jzpc->info->version >= ID_JZ4770)
-> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
-> +		else
-> +			pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-> +
-> +		pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
-> +		pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
-> +	}
-> 
->  	switch (param) {
->  	case PIN_CONFIG_BIAS_DISABLE:
-> -		if (pull)
-> +		if (pullup || pulldown)
->  			return -EINVAL;
->  		break;
-> 
->  	case PIN_CONFIG_BIAS_PULL_UP:
-> -		if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
-> +		if (!pullup)
->  			return -EINVAL;
->  		break;
-> 
->  	case PIN_CONFIG_BIAS_PULL_DOWN:
-> -		if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
-> +		if (!pulldown)
->  			return -EINVAL;
->  		break;
-> 
-> --
-> 2.7.4
-> 
+And longer term, I'm not convinced folio is the abstraction we want
+throughout the kernel. If nobody should be dealing with tail pages in
+the first place, why are we making everybody think in 'folios'? Why
+does a filesystem care that huge pages are composed of multiple base
+pages internally? This feels like an implementation detail leaking out
+of the MM code. The vast majority of places should be thinking 'page'
+with a size of 'page_size()'. Including most parts of the MM itself.
 
+The compile-time check is nice, but I'm not sure it would be that much
+more effective at catching things than a few centrally placed warns
+inside PageFoo(), get_page() etc. and other things that should not
+encounter tail pages in the first place (with __helpers for the few
+instances that do). And given the invasiveness of this change, they
+ought to be very drastically better at it, and obviously so, IMO.
 
+>  Documentation/core-api/mm-api.rst |   7 +
+>  fs/afs/write.c                    |   3 +-
+>  fs/cachefiles/rdwr.c              |  19 ++-
+>  fs/io_uring.c                     |   2 +-
+>  include/linux/memcontrol.h        |  21 +++
+>  include/linux/mm.h                | 156 +++++++++++++++----
+>  include/linux/mm_types.h          |  52 +++++++
+>  include/linux/mmdebug.h           |  20 +++
+>  include/linux/netfs.h             |   2 +-
+>  include/linux/page-flags.h        | 120 +++++++++++---
+>  include/linux/pagemap.h           | 249 ++++++++++++++++++++++--------
+>  include/linux/swap.h              |   6 +
+>  include/linux/vmstat.h            | 107 +++++++++++++
+>  mm/Makefile                       |   2 +-
+>  mm/filemap.c                      | 237 ++++++++++++++--------------
+>  mm/folio-compat.c                 |  37 +++++
+>  mm/memory.c                       |   8 +-
+>  mm/page-writeback.c               |  62 ++++++--
+>  mm/swapfile.c                     |   8 +-
+>  mm/util.c                         |  30 ++--
+>  20 files changed, 857 insertions(+), 291 deletions(-)
+>  create mode 100644 mm/folio-compat.c
