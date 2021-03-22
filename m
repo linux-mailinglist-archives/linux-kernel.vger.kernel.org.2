@@ -2,143 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219DF344E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766FE344E1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhCVSHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:07:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21412 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229746AbhCVSHW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:07:22 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MI2n3c074628;
-        Mon, 22 Mar 2021 14:07:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vD80fTKfR53hEebwYlY0bT8fkb2aJdGP78ge/EwmS+c=;
- b=QjkEd3VzvzarDec3GfF//Y1ZYmrp72At0ZkOr5ZjXsze406nfuGr6sgUt2ncM4afov3j
- nyNZv8M7GTaempirQfrkYOM4qlxyLj9HSvTFa2eSLA3fKTAsFEgFv9dJfNDp+H+VLv2l
- EVOguApvuojT06niF0a02VtoVKPyGCcRe4McYt+Ax2RL6jqwKUb5qNwBsafMGaGBmtj8
- aaCRorlqaNHkzLcXYh2xqi9dA3dmD4VDgJzNLBvC++3VdXvVxAc4RnMl+Px7OtQ85pTN
- 2T+/+uI8Vm+FTn2FgUiMIPudwM8l5M2L5E4AT8/2vy9bn4hcCEnO/MGCf7UlAXmBUZlj FA== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4a95rc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 14:07:05 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12MI2Txn001973;
-        Mon, 22 Mar 2021 18:07:04 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 37d9amc8af-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 18:07:04 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12MI73DY28770602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 18:07:03 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F7C5C6055;
-        Mon, 22 Mar 2021 18:07:03 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C401CC605D;
-        Mon, 22 Mar 2021 18:07:02 +0000 (GMT)
-Received: from [9.211.32.185] (unknown [9.211.32.185])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 22 Mar 2021 18:07:02 +0000 (GMT)
-Subject: Re: [PATCH linux-next tag: next-20210322] ARM: aspeed: Add CPU
- hotplug callbacks for kexec support
-From:   Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
-To:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Eddie James <eajames@linux.ibm.com>
-References: <20210322155720.2161941-1-bruce.mitchell@linux.vnet.ibm.com>
- <ddb2757d-36df-8695-ce9b-ab9e26f3d457@linux.vnet.ibm.com>
-Message-ID: <7c8ca40f-3f73-d8ea-08e2-ee7c0b0b6ab1@linux.vnet.ibm.com>
-Date:   Mon, 22 Mar 2021 11:07:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230096AbhCVSJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:09:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:36370 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229746AbhCVSJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:09:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B26A113E;
+        Mon, 22 Mar 2021 11:09:23 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 698C93F718;
+        Mon, 22 Mar 2021 11:09:22 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 18:09:17 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     gustavo.pimentel@synopsys.com, robh@kernel.org,
+        bhelgaas@google.com, jingoohan1@gmail.com
+Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
+Message-ID: <20210322180917.GA15539@e121166-lin.cambridge.arm.com>
+References: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
+ <161643622212.21337.14859040633786233709.b4-ty@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <ddb2757d-36df-8695-ce9b-ab9e26f3d457@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-22_10:2021-03-22,2021-03-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103220132
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161643622212.21337.14859040633786233709.b4-ty@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/2021 09:40, Bruce Mitchell wrote:
-> On 3/22/2021 08:57, Bruce Mitchell wrote:
->> These callbacks are required for kexec to function. The AST2600 does not
->> expose any controls for powering down it's CPU cores, so we borrow the
->> approach taken from socfpga and wait in the idle loop.
->>
->> Author: Joel Stanley <joel@jms.id.au>
->>
->> Signed-off-by: Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
->> ---
->>   arch/arm/mach-aspeed/platsmp.c | 20 ++++++++++++++++++++
->>   1 file changed, 20 insertions(+)
->>
->> diff --git a/arch/arm/mach-aspeed/platsmp.c 
->> b/arch/arm/mach-aspeed/platsmp.c
->> index 2324becf7991..1ae3ff5a9701 100644
->> --- a/arch/arm/mach-aspeed/platsmp.c
->> +++ b/arch/arm/mach-aspeed/platsmp.c
->> @@ -7,6 +7,8 @@
->>   #include <linux/of.h>
->>   #include <linux/smp.h>
->>
->> +#include <asm/proc-fns.h>
->> +
->>   #define BOOT_ADDR    0x00
->>   #define BOOT_SIG    0x04
->>
->> @@ -53,9 +55,27 @@ static void __init 
->> aspeed_g6_smp_prepare_cpus(unsigned int max_cpus)
->>       iounmap(base);
->>   }
->>
->> +#ifdef CONFIG_HOTPLUG_CPU
->> +static void aspeed_g6_cpu_die(unsigned int cpu)
->> +{
->> +        /* Do WFI. If we wake up early, go back into WFI */
->> +        while (1)
->> +                cpu_do_idle();
->> +}
->> +
->> +static int aspeed_g6_cpu_kill(unsigned int cpu)
->> +{
->> +        return 1;
->> +}
->> +#endif
->> +
->>   static const struct smp_operations aspeed_smp_ops __initconst = {
->>       .smp_prepare_cpus    = aspeed_g6_smp_prepare_cpus,
->>       .smp_boot_secondary    = aspeed_g6_boot_secondary,
->> +#ifdef CONFIG_HOTPLUG_CPU
->> +    .cpu_die        = aspeed_g6_cpu_die,
->> +    .cpu_kill        = aspeed_g6_cpu_kill,
->> +#endif
->>   };
->>
->>   CPU_METHOD_OF_DECLARE(aspeed_smp, "aspeed,ast2600-smp", 
->> &aspeed_smp_ops);
->>
+On Mon, Mar 22, 2021 at 06:03:57PM +0000, Lorenzo Pieralisi wrote:
+> On Mon, 25 Jan 2021 12:48:03 +0800, Zhiqiang Hou wrote:
+> > In the dw_pcie_ep_init(), it depends on the detected iATU region
+> > numbers to allocate the in/outbound window management bit map.
+> > It fails after the commit 281f1f99cf3a ("PCI: dwc: Detect number
+> > of iATU windows").
+> > 
+> > So this patch move the iATU region detection into a new function,
+> > move forward the detection to the very beginning of functions
+> > dw_pcie_host_init() and dw_pcie_ep_init(). And also remove it
+> > from the dw_pcie_setup(), since it's more like a software
+> > perspective initialization step than hardware setup.
 > 
-> Adding Andrew Jeffery and Eddie James to the CC list.
+> Applied to pci/dwc, thanks!
 > 
+> [1/1] PCI: dwc: Move forward the iATU detection process
+>       https://git.kernel.org/lpieralisi/pci/c/5ff8ca16f8
 
-Adding linux-kernel@vger.kernel.org and 
-linux-arm-kernel@lists.infradead.org based feedback.
+Bjorn will queue it for v5.12, so I have dropped it, ignore
+this notification.
+
+Thanks,
+Lorenzo
