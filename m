@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97334345205
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25269345206
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCVVs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:48:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
+        id S229872AbhCVVui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhCVVs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:48:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DFC9619A8;
-        Mon, 22 Mar 2021 21:48:26 +0000 (UTC)
+        id S229467AbhCVVuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 17:50:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6864619A3;
+        Mon, 22 Mar 2021 21:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616449708;
-        bh=fxOmvQzfscGlkTrVh1T1r4rTQjeuugoZbSwqU6liY+4=;
+        s=k20201202; t=1616449810;
+        bh=kXIKly4tZYQVuwd+3BpHcBsCSfm7/1M3LxzZllM8rXg=;
         h=From:To:Cc:Subject:Date:From;
-        b=RYBd2GhpAt1WNKgwP+iz/VwnCbd4IjKy9taVj5rn8aiNnijCDkByNcsKwHnma5O8Z
-         w74UeNEuCNJn2CKF5j0FDyORMDLlgo85/hH4ufwDmfl3E5wJIxewdImtICHEyxa8GW
-         MRltBKmtpXJ+UU/ceouBoyz8ZDyYWkisAi6fNwpcxPu1Km5/YH2FDwGINTHYxUag1p
-         cvEoR9uLr4hNcKF1MFa1IXbBoG7zYXUyCuXV97RrR6McDUdumfIEjNS/yUy6Hcz5sV
-         2gY62/8oVg804Ba8wJNJYKnJqFhxR+fEkOde1hVkvFpiLa582bXk1H6XcTohWGiXOK
-         uA/7A12CcDZlQ==
+        b=cMt+7qQe84KlJyfvT1fhd6a7E0bUco+56VgGUjja+j0UcqTS6Id58qTDELwfvuHr5
+         Q/AJdK5LRIYs2nTp7KGW4vYkAsFnufELpKGlOe7qnAxwUHLP0PlNk1qS5at+rYDzgJ
+         pkx7ha1dvpwFCnzB5Ix+HYilsiEaxC1RLVbK730ydMnIzwmnm3fGwLAKUb/i7MOnmp
+         qRclC6vQ3iGVSqS0XwrFwwYXx4oSHqvp7x+eQxEXXZFAY9H+cmXkzcJt11nneboPN1
+         T5t6cIls9UfwaE5KCiTSBZ5H0wutuTItgtGhpAeWqeiiP+VyiKcL/JzIA69qlj//3z
+         xksU3fvLFljAA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Bill Metzenthen <billm@melbpc.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] x86: math-emu: Fix function cast warning
-Date:   Mon, 22 Mar 2021 22:48:19 +0100
-Message-Id: <20210322214824.974323-1-arnd@kernel.org>
+Subject: [PATCH] ftrace: shut up -Wcast-function-type warning for ftrace_ops_no_ops
+Date:   Mon, 22 Mar 2021 22:49:58 +0100
+Message-Id: <20210322215006.1028517-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -44,67 +47,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Building with 'make W=1', gcc points out that casting between
-incompatible function types can be dangerous:
+With 'make W=1', gcc warns about casts between incompatible function
+types:
 
-arch/x86/math-emu/fpu_trig.c:1638:60: error: cast between incompatible function types from ‘int (*)(FPU_REG *, u_char)’ {aka ‘int (*)(struct fpu__reg *, unsigned char)’} to ‘void (*)(FPU_REG *, u_char)’ {aka ‘void (*)(struct fpu__reg *, unsigned char)’} [-Werror=cast-function-type]
- 1638 |         fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, (FUNC_ST0) fsin, fcos
-      |                                                            ^
+kernel/trace/ftrace.c:128:31: error: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Werror=cast-function-type]
+  128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
+      |                               ^
 
-This one seems harmless, but it is easy enough to work around it by
-adding an intermediate function that adjusts the return type.
+As the commet here explains, this one was intentional, so shut up the
+warning harder by using a double cast.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: use consistent naming for the function types, as
-    pointed out by Ingo Molnar
----
- arch/x86/math-emu/fpu_trig.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ kernel/trace/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/math-emu/fpu_trig.c b/arch/x86/math-emu/fpu_trig.c
-index 4a9887851ad8..990d847ae902 100644
---- a/arch/x86/math-emu/fpu_trig.c
-+++ b/arch/x86/math-emu/fpu_trig.c
-@@ -547,7 +547,7 @@ static void frndint_(FPU_REG *st0_ptr, u_char st0_tag)
- 		single_arg_error(st0_ptr, st0_tag);
- }
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 4d8e35575549..d8fc87a17421 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -125,7 +125,7 @@ static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
+ #else
+ /* See comment below, where ftrace_ops_list_func is defined */
+ static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip);
+-#define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
++#define ftrace_ops_list_func ((ftrace_func_t)(void *)ftrace_ops_no_ops)
+ #endif
  
--static int fsin(FPU_REG *st0_ptr, u_char tag)
-+static int f_sin(FPU_REG *st0_ptr, u_char tag)
- {
- 	u_char arg_sign = getsign(st0_ptr);
- 
-@@ -608,6 +608,11 @@ static int fsin(FPU_REG *st0_ptr, u_char tag)
- 	}
- }
- 
-+static void fsin(FPU_REG *st0_ptr, u_char tag)
-+{
-+	f_sin(st0_ptr, tag);
-+}
-+
- static int f_cos(FPU_REG *st0_ptr, u_char tag)
- {
- 	u_char st0_sign;
-@@ -724,7 +729,7 @@ static void fsincos(FPU_REG *st0_ptr, u_char st0_tag)
- 	}
- 
- 	reg_copy(st0_ptr, &arg);
--	if (!fsin(st0_ptr, st0_tag)) {
-+	if (!f_sin(st0_ptr, st0_tag)) {
- 		push();
- 		FPU_copy_to_reg0(&arg, st0_tag);
- 		f_cos(&st(0), st0_tag);
-@@ -1635,7 +1640,7 @@ void FPU_triga(void)
- }
- 
- static FUNC_ST0 const trig_table_b[] = {
--	fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, (FUNC_ST0) fsin, fcos
-+	fprem, fyl2xp1, fsqrt_, fsincos, frndint_, fscale, fsin, fcos
- };
- 
- void FPU_trigb(void)
+ static inline void ftrace_ops_init(struct ftrace_ops *ops)
 -- 
 2.29.2
 
