@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A44343BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B74343BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhCVIaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:30:55 -0400
-Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:49739 "EHLO
-        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229665AbhCVIan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:30:43 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 5D946272A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:30:41 +0000 (GMT)
-Received: (qmail 12857 invoked from network); 22 Mar 2021 08:30:41 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 08:30:41 -0000
-Date:   Mon, 22 Mar 2021 08:30:39 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 3/7] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210322083039.GD3697@techsingularity.net>
-References: <20210312154331.32229-1-mgorman@techsingularity.net>
- <20210312154331.32229-4-mgorman@techsingularity.net>
- <7c520bbb-efd7-7cad-95df-610000832a67@suse.cz>
+        id S229715AbhCVIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:32:30 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:36704 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229647AbhCVIcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 04:32:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616401942;
+  x=1647937942;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WWBdYwCLBvXlp84iLsNbcu996K9YdjCoBkIe4q9fA74=;
+  b=WSO5wb5zeJdLUm5wGg+5521fPYLWBcKRIzl4QEVplC3N50w8qnPDMXi2
+   bM47wkUkpzJPEMgMLS7M+YBRPFTpvTy/NhUA7zk4wfnfRJuOxExnC11Y4
+   8mTWXEhgg0+fSOCRE9ckR+M4T3mW96wNQnLTRQt5bS2Ek3j+MUsoTXSBe
+   Zch+X923EpzCQtdFQ5eliQCqy9RSDRYOGb0GAHiph3ySEl6Ij/zh+SWdt
+   0oRKlHNgR2Cr9XF5Xz4ywVC/76YCOAdK/KH/AoXrwoeG/hl+4BE8XEpgv
+   LZhwb3g9SEZyDqvt8+OjEritKXfurUqpqQYr6pS2fYshsEteA1Mb+OrUG
+   w==;
+From:   Hermes Zhang <chenhui.zhang@axis.com>
+To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hermes Zhang <chenhuiz@axis.com>
+CC:     <kernel@axis.com>, <linux-leds@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-binding: leds: Document leds-multi-gpio bindings
+Date:   Mon, 22 Mar 2021 16:31:45 +0800
+Message-ID: <20210322083145.10919-1-chenhui.zhang@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <7c520bbb-efd7-7cad-95df-610000832a67@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 07:18:32PM +0100, Vlastimil Babka wrote:
-> On 3/12/21 4:43 PM, Mel Gorman wrote:
-> > This patch adds a new page allocator interface via alloc_pages_bulk,
-> > and __alloc_pages_bulk_nodemask. A caller requests a number of pages
-> > to be allocated and added to a list. They can be freed in bulk using
-> > free_pages_bulk().
-> > 
-> > The API is not guaranteed to return the requested number of pages and
-> > may fail if the preferred allocation zone has limited free memory, the
-> > cpuset changes during the allocation or page debugging decides to fail
-> > an allocation. It's up to the caller to request more pages in batch
-> > if necessary.
-> > 
-> > Note that this implementation is not very efficient and could be improved
-> > but it would require refactoring. The intent is to make it available early
-> > to determine what semantics are required by different callers. Once the
-> > full semantics are nailed down, it can be refactored.
-> > 
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Although maybe premature, if it changes significantly due to the users'
-> performance feedback, let's see :)
-> 
+From: Hermes Zhang <chenhuiz@axis.com>
 
-Indeed. The next version will have no users so that Jesper and Chuck
-can check if an array-based or LRU based version is better. There were
-also bugs such as broken accounting of stats that had to be fixed which
-increases overhead.
+Document the device tree bindings of the multiple GPIOs LED driver
+Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
 
-> Some nits below:
-> 
-> ...
-> 
-> > @@ -4963,6 +4978,107 @@ static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
-> >  	return true;
-> >  }
-> >  
-> > +/*
-> > + * This is a batched version of the page allocator that attempts to
-> > + * allocate nr_pages quickly from the preferred zone and add them to list.
-> > + *
-> > + * Returns the number of pages allocated.
-> > + */
-> > +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> > +			nodemask_t *nodemask, int nr_pages,
-> > +			struct list_head *alloc_list)
-> > +{
-> > +	struct page *page;
-> > +	unsigned long flags;
-> > +	struct zone *zone;
-> > +	struct zoneref *z;
-> > +	struct per_cpu_pages *pcp;
-> > +	struct list_head *pcp_list;
-> > +	struct alloc_context ac;
-> > +	gfp_t alloc_gfp;
-> > +	unsigned int alloc_flags;
-> > +	int allocated = 0;
-> > +
-> > +	if (WARN_ON_ONCE(nr_pages <= 0))
-> > +		return 0;
-> > +
-> > +	if (nr_pages == 1)
-> > +		goto failed;
-> > +
-> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-> > +	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac,
-> > +	&alloc_gfp, &alloc_flags))
-> 
-> Unusual identation here.
-> 
+Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+---
+ .../bindings/leds/leds-multi-gpio.yaml        | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
 
-Fixed
-
-> > +		return 0;
-> > +	gfp = alloc_gfp;
-> > +
-> > +	/* Find an allowed local zone that meets the high watermark. */
-> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
-> > +		unsigned long mark;
-> > +
-> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-> > +		    !__cpuset_zone_allowed(zone, gfp)) {
-> > +			continue;
-> > +		}
-> > +
-> > +		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
-> > +		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
-> > +			goto failed;
-> > +		}
-> > +
-> > +		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
-> > +		if (zone_watermark_fast(zone, 0,  mark,
-> > +				zonelist_zone_idx(ac.preferred_zoneref),
-> > +				alloc_flags, gfp)) {
-> > +			break;
-> > +		}
-> > +	}
-> > +	if (!zone)
-> > +		return 0;
-> 
-> Why not also "goto failed;" here?
-
-Good question. When first written, it was because the zone search for the
-normal allocator was almost certainly going to fail to find a zone and
-it was expected that callers would prefer to fail fast over blocking.
-Now we know that sunrpc can sleep on a failing allocation and it would
-be better to enter the single page allocator and reclaim pages instead of
-"sleep and hope for the best".
-
+diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+new file mode 100644
+index 000000000000..09e7b60a800e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Multiple GPIOs LED driver
++
++maintainers:
++  - Hermes Zhang <chenhuiz@axis.com>
++
++description:
++  This will support some LED made of multiple GPIOs and the brightness of the
++  LED could map to different states of the GPIOs.
++
++properties:
++  compatible:
++    const: multi-gpio-led
++
++  led-gpios:
++    description: Array of one or more GPIOs pins used to control the LED.
++    minItems: 1
++    maxItems: 8  # Should be enough
++
++  led-states:
++    description: |
++      The array list the supported states here which will map to brightness
++      from 0 to maximum. Each item in the array will present all the GPIOs
++      value by bit.
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    minItems: 1
++
++required:
++  - compatible
++  - led-gpios
++  - led-states
++
++examples:
++  - |
++    gpios-led {
++      compatible = "multi-gpio-led";
++
++      led-gpios = <&gpio0 23 0x1>,
++                  <&gpio0 24 0x1>;
++      led-states = /bit/ 8 <0x00 0x01 0x02 0x03>;
++    };
++...
 -- 
-Mel Gorman
-SUSE Labs
+2.20.1
+
