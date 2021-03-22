@@ -2,64 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B803F343FDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA84343FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCVLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:32:21 -0400
-Received: from mx3.wp.pl ([212.77.101.10]:20145 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhCVLbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:31:52 -0400
-Received: (wp-smtpd smtp.wp.pl 40326 invoked from network); 22 Mar 2021 12:31:45 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1616412705; bh=BZ6MMKjc+EXZHl3nR8G7VYMCt9QRigytS90CzC28tG8=;
-          h=From:To:Cc:Subject;
-          b=lEJVHsw8Ty2kwv6rJ8aebmvFJa2JyKNa3ezf4+c0botrpq2x1pb76A7c9PVrc8ftV
-           DbgUQm++nD3bNt3KXky9naz491XaIfte/ZjTJPVmFFPARhO4s0TTyX0Ya2F3onyn8Y
-           6v2i8lUb0+6RbcnBvx8hVB0+WMPThixcB5LiCiNs=
-Received: from ip4-46-39-164-204.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.204])
-          (envelope-sender <stf_xl@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <arnd@kernel.org>; 22 Mar 2021 12:31:45 +0100
-Date:   Mon, 22 Mar 2021 12:31:43 +0100
-From:   Stanislaw Gruszka <stf_xl@wp.pl>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/5] iwlegacy: avoid -Wempty-body warning
-Message-ID: <20210322113143.GA324121@wp.pl>
-References: <20210322104343.948660-1-arnd@kernel.org>
- <20210322104343.948660-3-arnd@kernel.org>
+        id S229951AbhCVLdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhCVLdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:33:08 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CC5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:33:07 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id o5so10063301qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OPF2bQHgVyJLJFI/awpdMJ0h6oH5lb8a5QcmD+rn2sk=;
+        b=g7W0bjQ4et0F3+fWqOnm1Td1YLTPIorlvSq2a0H9lebFXW5QCmEDb6S6TbXRd5v/M0
+         rk4DvpFuDriJ5HYQCNZKf2DiYlCj6dDDqOKiV3wfaVbgvJbV9zEklYP4AYOGh8rnitK3
+         3/8iufKDS355PXbipeFJrkxT2Mh6wdvwyspGjoWMM6PrVzxC3AT73e1VVzEPqXkwuVX6
+         oE0OcRFFiSTlLHnx7k6SkjmNzTB2H3Hn3RFEx3wf0eiAQ0RUWsnI5QRMfkioDG9bI/u6
+         zWTsHhbYPb/EDRMOPtLW96pmz/jaVIgzjQnVIvP8oHVS2R6OeqfP8gUT9jLP6JvNN6yH
+         fYEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OPF2bQHgVyJLJFI/awpdMJ0h6oH5lb8a5QcmD+rn2sk=;
+        b=CB1mu7kuo64VZzvg46HNIYpcAb4DuOI5XVuYuOt6AKKHAvM5vDztoo3zP49KJNpGmX
+         0BKXKlgy2sQN1iZXW4AI+/q9zfAgYejcxzJq7qZ+Y2USojX1VN5wjop/mmgk6gk0CI+b
+         7aw9wZ5zqkCrxcu6Iz6l+UKYZ97EU+UHWCybGaBvHIi1qtc/f4krKJo6LLC7vrr6Ad0f
+         tZtYuDyC0ocx0PtexMDUv/H1lf/krRUex80pXhd/urbvJMY5B7d1fHxFE4wwEtoURLFV
+         3aLOKEewfDZhLLKrwHb5ftk6eTtmVVhJ2dSEuQUfJW1Uy5l4pS3twVbQlp1+I9CIfSMt
+         D4Zg==
+X-Gm-Message-State: AOAM531aF//alBbHVmuQvD+gMA9ruyzLoJBeopkhk6vn1V+tdg4c1oAr
+        By2ZsaDBHs7bH0RuXCu7WhHn0g+gg2xOCdUV
+X-Google-Smtp-Source: ABdhPJweKkhkRm201awkQPyNgwLXmDUlX+n8laSHEpcJvaNBnEckFy6A5g4SgZgi1/Ckfp0K2yHUzg==
+X-Received: by 2002:a05:620a:3cb:: with SMTP id r11mr10411925qkm.148.1616412787096;
+        Mon, 22 Mar 2021 04:33:07 -0700 (PDT)
+Received: from localhost.localdomain ([143.244.44.200])
+        by smtp.gmail.com with ESMTPSA id h7sm10227746qkk.41.2021.03.22.04.33.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:33:06 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        unixbhaskar@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] powerpc/asm: Fix a typo
+Date:   Mon, 22 Mar 2021 17:02:54 +0530
+Message-Id: <20210322113254.2081445-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322104343.948660-3-arnd@kernel.org>
-X-WP-MailID: 197c071c323c67e66ef25da19382773c
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [sSOU]                               
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:43:33AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are a couple of warnings in this driver when building with W=1:
-> 
-> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_power_set_mode':
-> drivers/net/wireless/intel/iwlegacy/common.c:1195:60: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->  1195 |                                 il->chain_noise_data.state);
->       |                                                            ^
-> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_do_scan_abort':
-> drivers/net/wireless/intel/iwlegacy/common.c:1343:57: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
-> 
-> Change the empty debug macros to no_printk(), which avoids the
-> warnings and adds useful format string checks.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+
+s/poiner/pointer/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/powerpc/include/asm/cpm2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/include/asm/cpm2.h b/arch/powerpc/include/asm/cpm2.h
+index 2211b934ecb4..bda45788cfcc 100644
+--- a/arch/powerpc/include/asm/cpm2.h
++++ b/arch/powerpc/include/asm/cpm2.h
+@@ -594,7 +594,7 @@ typedef struct fcc_enet {
+ 	uint	fen_p256c;	/* Total packets 256 < bytes <= 511 */
+ 	uint	fen_p512c;	/* Total packets 512 < bytes <= 1023 */
+ 	uint	fen_p1024c;	/* Total packets 1024 < bytes <= 1518 */
+-	uint	fen_cambuf;	/* Internal CAM buffer poiner */
++	uint	fen_cambuf;	/* Internal CAM buffer pointer */
+ 	ushort	fen_rfthr;	/* Received frames threshold */
+ 	ushort	fen_rfcnt;	/* Received frames count */
+ } fcc_enet_t;
+--
+2.31.0
+
