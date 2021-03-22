@@ -2,155 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E5A344B5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB38344B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhCVQag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:30:36 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42122 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231398AbhCVQa2 (ORCPT
+        id S231789AbhCVQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhCVQ3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:30:28 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MGQcK1029398;
-        Mon, 22 Mar 2021 17:29:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Mm0KMnFbONfx62UvQTCW8mlRbXh1IVs+KqZwdCGnGDo=;
- b=ifyN3U5IykhSraPEAbvAOrXMJL+DAm8tm/j3TXqEgG/En7O4+Im8LFplB+I2UCWfZLp4
- jLxrgwazzpUTUOM8sEdDWUqINgy3obyM/0p/gksDUoFnnEkDAm7FaPh7RxWeDOvg2Naf
- tM48dzJw+cs7by/qnKcESzVUADb9ceJZ4GxeHVWmL+7X9wChf0QvWTV1mkPiBq6KXQ7A
- sZpj7h4Fbfd9Cw07HEKc0LqqDWz3HDMpQ+VR6pBclGfKca1R9DZsE4qnDPrhGEBu1APe
- Cxz4qv2V4m089rMvYQeceUy3zUN91n73sE8oLbYUO76EDc5DWH9IiG8OBoMQKcWbMXFR yA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37d996adqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 17:29:28 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6AF2110002A;
-        Mon, 22 Mar 2021 17:29:27 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 58C8223463E;
-        Mon, 22 Mar 2021 17:29:27 +0100 (CET)
-Received: from [10.211.8.180] (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
- 2021 17:29:26 +0100
-Subject: Re: [Linux-stm32] [PATCH v10 19/33] counter: Standardize to ERANGE
- for limit exceeded errors
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
-CC:     <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
-        <david@lechnology.com>, <linux-iio@vger.kernel.org>,
-        <patrick.havelange@essensium.com>, <alexandre.belloni@bootlin.com>,
-        <mcoquelin.stm32@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <o.rempel@pengutronix.de>, <kernel@pengutronix.de>,
-        <fabrice.gasnier@st.com>, <syednwaris@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <alexandre.torgue@st.com>
-References: <cover.1616150619.git.vilhelm.gray@gmail.com>
- <f09068dd8b89aa81c4310ea39cbdb0d631dddf98.1616150619.git.vilhelm.gray@gmail.com>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <1510a9e6-d1d3-c370-488d-42874f28d129@foss.st.com>
-Date:   Mon, 22 Mar 2021 17:29:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Mar 2021 12:29:53 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BDAC061574;
+        Mon, 22 Mar 2021 09:29:51 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id e7so20048616edu.10;
+        Mon, 22 Mar 2021 09:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+yQvc43S8r83HTfxyOEbHMJvrQICL6Aq5HxThzdm6Ks=;
+        b=a2GjEUZ1xP95PzLsG5fmHkO4GpwMpY7HUMMd4ayLoTo9cG/yg09LhITO4tawX3Gh2O
+         S7N+ryWZy5GouSEmtD1mb8SThKNuqs8Z9yN3ngdtTwDlYUEwij8RGRgLq1b5TWRGEUd1
+         lpEatp3TPzJo9OY97sCLpWhy9nfDF53L/h2iUXWniqZhnx142PstGYIRivRSbYwGo8Kg
+         r9rWKcxnIt5xc3nKSVK8Z7oVtV74FsmAfOQ+zP3tJthYvxIRZt7w6HZ5+SZiVyVUS3XS
+         fhbD029+04jfjdSQ9ATm5PtDSDdmIvSM8qmjNX3LIHLyZKFk8FWZuN6z7jV3s0P8r+kv
+         T80Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+yQvc43S8r83HTfxyOEbHMJvrQICL6Aq5HxThzdm6Ks=;
+        b=a56FoD21xO2pcrsouJlrk53frtqZGuW16YhpuNXRMaYmh2f+qUE66q5XnB7MHokMFx
+         HuMU2tmxNldtqO1STsv9GPCrdpRuMeghKPerzhTdMVmzTd427fKJufJD8uehRS5gRDz3
+         XpRWe/5hYVRFoNPDQehkhigi3h3LRcbne273jZIN9gYaiVIbZYjZAhAsOLtec+anXyQ1
+         wT10dS754di2HmkSB1L/jj0IK7FC9LkaPa2IWWpC0BEulzax0fw3uZoLap3/ijuYyt5v
+         DBp5BiDmib3oItHwb/a7/a5qi36kHXi3HzD3+6HjCK83UcUSOqJ/E8nrCVRtCda0mHkh
+         xaoA==
+X-Gm-Message-State: AOAM531MkV2kFgD71d2wO7ZYKH14dDLziuV5kVyf8+qpjiBEPlu9ugmt
+        bA5vd/B3tkeb/VDegmE1Jfyk76G6MjHvcXj8Xwf2fK2h
+X-Google-Smtp-Source: ABdhPJw/98e78zuT8+5qNEOuBX8v/LXRegZluDS1c2KWIdAv/JnGkF+H8KcV3lYGkdIQsLlPNh9FOV8aUahW5xm10/M=
+X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr363560edd.313.1616430590270;
+ Mon, 22 Mar 2021 09:29:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f09068dd8b89aa81c4310ea39cbdb0d631dddf98.1616150619.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-22_08:2021-03-22,2021-03-22 signatures=0
+References: <20210319005219.13595-1-zi.yan@sent.com> <CAHbLzkrys2K0A9uae+P5WqxfAMRCzurp9M-Rc3459808GAh_yg@mail.gmail.com>
+ <176A4DF5-B5B9-47E2-9B9D-CD82989AC466@nvidia.com>
+In-Reply-To: <176A4DF5-B5B9-47E2-9B9D-CD82989AC466@nvidia.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 22 Mar 2021 09:29:38 -0700
+Message-ID: <CAHbLzkrnfC8xcXhbgFpN4azZm5zEr0WO_JaBR-OTMsOT4QC4JA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mm: huge_memory: a new debugfs interface for
+ splitting THP tests.
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mika Penttila <mika.penttila@nextfour.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 12:00 PM, William Breathitt Gray wrote:
-> ERANGE is a semantically better error code to return when an argument
-> value falls outside the supported limit range of a device.
-> 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Reviewed-by: David Lechner <david@lechnology.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  drivers/counter/104-quad-8.c        | 6 +++---
->  drivers/counter/interrupt-cnt.c     | 3 +++
->  drivers/counter/stm32-lptimer-cnt.c | 2 +-
->  3 files changed, 7 insertions(+), 4 deletions(-)
+On Sun, Mar 21, 2021 at 7:11 PM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 19 Mar 2021, at 19:37, Yang Shi wrote:
+>
+> > On Thu, Mar 18, 2021 at 5:52 PM Zi Yan <zi.yan@sent.com> wrote:
+> >>
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> We did not have a direct user interface of splitting the compound page
+> >> backing a THP and there is no need unless we want to expose the THP
+> >> implementation details to users. Make <debugfs>/split_huge_pages accept
+> >> a new command to do that.
+> >>
+> >> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
+> >> <debugfs>/split_huge_pages, THPs within the given virtual address range
+> >> from the process with the given pid are split. It is used to test
+> >> split_huge_page function. In addition, a selftest program is added to
+> >> tools/testing/selftests/vm to utilize the interface by splitting
+> >> PMD THPs and PTE-mapped THPs.
+> >>
+> >> This does not change the old behavior, i.e., writing 1 to the interface
+> >> to split all THPs in the system.
+> >>
+> >> Changelog:
+> >>
+> >> From v5:
+> >> 1. Skipped special VMAs and other fixes. (suggested by Yang Shi)
+> >
+> > Looks good to me. Reviewed-by: Yang Shi <shy828301@gmail.com>
+> >
+> > Some nits below:
+> >
+> >>
+> >> From v4:
+> >> 1. Fixed the error code return issue, spotted by kernel test robot
+> >>    <lkp@intel.com>.
+> >>
+> >> From v3:
+> >> 1. Factored out split huge pages in the given pid code to a separate
+> >>    function.
+> >> 2. Added the missing put_page for not split pages.
+> >> 3. pr_debug -> pr_info, make reading results simpler.
+> >>
+> >> From v2:
+> >> 1. Reused existing <debugfs>/split_huge_pages interface. (suggested by
+> >>    Yang Shi)
+> >>
+> >> From v1:
+> >> 1. Removed unnecessary calling to vma_migratable, spotted by kernel test
+> >>    robot <lkp@intel.com>.
+> >> 2. Dropped the use of find_mm_struct and code it directly, since there
+> >>    is no need for the permission check in that function and the function
+> >>    is only available when migration is on.
+> >> 3. Added some comments in the selftest program to clarify how PTE-mapped
+> >>    THPs are formed.
+> >>
+> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >> ---
+> >>  mm/huge_memory.c                              | 143 +++++++-
+> >>  tools/testing/selftests/vm/.gitignore         |   1 +
+> >>  tools/testing/selftests/vm/Makefile           |   1 +
+> >>  .../selftests/vm/split_huge_page_test.c       | 318 ++++++++++++++++++
+> >>  4 files changed, 456 insertions(+), 7 deletions(-)
+> >>  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
+> >>
+> >> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >> index bff92dea5ab3..9bf9bc489228 100644
+> >> --- a/mm/huge_memory.c
+> >> +++ b/mm/huge_memory.c
+> >> @@ -7,6 +7,7 @@
+> >>
+> >>  #include <linux/mm.h>
+> >>  #include <linux/sched.h>
+> >> +#include <linux/sched/mm.h>
+> >>  #include <linux/sched/coredump.h>
+> >>  #include <linux/sched/numa_balancing.h>
+> >>  #include <linux/highmem.h>
+> >> @@ -2922,16 +2923,14 @@ static struct shrinker deferred_split_shrinker = {
+> >>  };
+> >>
+> >>  #ifdef CONFIG_DEBUG_FS
+> >> -static int split_huge_pages_set(void *data, u64 val)
+> >> +static void split_huge_pages_all(void)
+> >>  {
+> >>         struct zone *zone;
+> >>         struct page *page;
+> >>         unsigned long pfn, max_zone_pfn;
+> >>         unsigned long total = 0, split = 0;
+> >>
+> >> -       if (val != 1)
+> >> -               return -EINVAL;
+> >> -
+> >> +       pr_info("Split all THPs\n");
+> >>         for_each_populated_zone(zone) {
+> >>                 max_zone_pfn = zone_end_pfn(zone);
+> >>                 for (pfn = zone->zone_start_pfn; pfn < max_zone_pfn; pfn++) {
+> >> @@ -2959,11 +2958,141 @@ static int split_huge_pages_set(void *data, u64 val)
+> >>         }
+> >>
+> >>         pr_info("%lu of %lu THP split\n", split, total);
+> >> +}
+> >>
+> >> -       return 0;
+> >> +static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
+> >> +                               unsigned long vaddr_end)
+> >> +{
+> >> +       int ret = 0;
+> >> +       struct task_struct *task;
+> >> +       struct mm_struct *mm;
+> >> +       unsigned long total = 0, split = 0;
+> >> +       unsigned long addr;
+> >> +
+> >> +       vaddr_start &= PAGE_MASK;
+> >> +       vaddr_end &= PAGE_MASK;
+> >> +
+> >> +       /* Find the task_struct from pid */
+> >> +       rcu_read_lock();
+> >> +       task = find_task_by_vpid(pid);
+> >> +       if (!task) {
+> >> +               rcu_read_unlock();
+> >> +               ret = -ESRCH;
+> >> +               goto out;
+> >> +       }
+> >> +       get_task_struct(task);
+> >> +       rcu_read_unlock();
+> >> +
+> >> +       /* Find the mm_struct */
+> >> +       mm = get_task_mm(task);
+> >> +       put_task_struct(task);
+> >> +
+> >> +       if (!mm) {
+> >> +               ret = -EINVAL;
+> >> +               goto out;
+> >> +       }
+> >> +
+> >> +       pr_info("Split huge pages in pid: %d, vaddr: [0x%lx - 0x%lx]\n",
+> >> +                pid, vaddr_start, vaddr_end);
+> >> +
+> >> +       mmap_read_lock(mm);
+> >> +       /*
+> >> +        * always increase addr by PAGE_SIZE, since we could have a PTE page
+> >> +        * table filled with PTE-mapped THPs, each of which is distinct.
+> >> +        */
+> >> +       for (addr = vaddr_start; addr < vaddr_end; addr += PAGE_SIZE) {
+> >> +               struct vm_area_struct *vma = find_vma(mm, addr);
+> >> +               unsigned int follflags;
+> >> +               struct page *page;
+> >> +
+> >> +               if (!vma || addr < vma->vm_start)
+> >> +                       break;
+> >> +
+> >> +               /* skip special VMA and hugetlb VMA */
+> >> +               if (vma_is_special_huge(vma) || is_vm_hugetlb_page(vma)) {
+> >
+> > VM_IO vma should be skipped as well. And you may extract this into a helper?
+>
+> Sure. Any name suggestion? :)
 
-Hi William,
+How's about not_suitable_for_split() or suitable_for_split()?
 
-For the STM32 driver, you can add my:
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-
-Thanks,
-Fabrice
-
-> 
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index b7d6c1c43655..0409b1771fd9 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -154,7 +154,7 @@ static int quad8_count_write(struct counter_device *counter,
->  
->  	/* Only 24-bit values are supported */
->  	if (val > 0xFFFFFF)
-> -		return -EINVAL;
-> +		return -ERANGE;
->  
->  	mutex_lock(&priv->lock);
->  
-> @@ -669,7 +669,7 @@ static ssize_t quad8_count_preset_write(struct counter_device *counter,
->  
->  	/* Only 24-bit values are supported */
->  	if (preset > 0xFFFFFF)
-> -		return -EINVAL;
-> +		return -ERANGE;
->  
->  	mutex_lock(&priv->lock);
->  
-> @@ -714,7 +714,7 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
->  
->  	/* Only 24-bit values are supported */
->  	if (ceiling > 0xFFFFFF)
-> -		return -EINVAL;
-> +		return -ERANGE;
->  
->  	mutex_lock(&priv->lock);
->  
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-cnt.c
-> index 0e07607f2cd3..f27dea317965 100644
-> --- a/drivers/counter/interrupt-cnt.c
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -107,6 +107,9 @@ static int interrupt_cnt_write(struct counter_device *counter,
->  {
->  	struct interrupt_cnt_priv *priv = counter->priv;
->  
-> +	if (val != (typeof(priv->count.counter))val)
-> +		return -ERANGE;
-> +
->  	atomic_set(&priv->count, val);
->  
->  	return 0;
-> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
-> index 78f383b77bd2..49aeb9e393f3 100644
-> --- a/drivers/counter/stm32-lptimer-cnt.c
-> +++ b/drivers/counter/stm32-lptimer-cnt.c
-> @@ -283,7 +283,7 @@ static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
->  		return ret;
->  
->  	if (ceiling > STM32_LPTIM_MAX_ARR)
-> -		return -EINVAL;
-> +		return -ERANGE;
->  
->  	priv->ceiling = ceiling;
->  
-> 
+>
+>
+> >> +                       addr = vma->vm_end;
+> >> +                       continue;
+> >> +               }
+> >> +
+> >> +               /* FOLL_DUMP to ignore special (like zero) pages */
+> >> +               follflags = FOLL_GET | FOLL_DUMP;
+> >> +               page = follow_page(vma, addr, follflags);
+> >> +
+> >> +               if (IS_ERR(page))
+> >> +                       continue;
+> >> +               if (!page)
+> >> +                       continue;
+> >> +
+> >> +               if (!is_transparent_hugepage(page))
+> >> +                       goto next;
+> >> +
+> >> +               total++;
+> >> +               if (!can_split_huge_page(compound_head(page), NULL))
+> >> +                       goto next;
+> >> +
+> >> +               if (!trylock_page(page))
+> >> +                       goto next;
+> >> +
+> >> +               if (!split_huge_page(page))
+> >> +                       split++;
+> >> +
+> >> +               unlock_page(page);
+> >> +next:
+> >> +               put_page(page);
+> >> +       }
+> >> +       mmap_read_unlock(mm);
+> >> +       mmput(mm);
+> >> +
+> >> +       pr_info("%lu of %lu THP split\n", split, total);
+> >> +
+> >> +out:
+> >> +       return ret;
+> >>  }
+> >> -DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
+> >> -               "%llu\n");
+> >> +
+> >> +static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
+> >> +                               size_t count, loff_t *ppops)
+> >> +{
+> >> +       static DEFINE_MUTEX(split_debug_mutex);
+> >> +       ssize_t ret;
+> >> +       char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
+> >
+> > Why not move buf len macro in the following patch to this patch? Then
+> > you don't have to change the length again.
+>
+> Sure.
+>
+> Thanks for the comments.
+>
+> --
+> Best Regards,
+> Yan Zi
