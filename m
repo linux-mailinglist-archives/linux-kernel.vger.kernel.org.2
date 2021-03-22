@@ -2,83 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D0C34471D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5D0344724
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCVO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhCVO1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:27:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F8686197F;
-        Mon, 22 Mar 2021 14:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616423240;
-        bh=lUpsdR1/Qa0+MEXsmZEzBB4MkNLzq0yoCO/pf2fKJvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fT6Fv7v1BOXpon8Q/2bkWU0AAloiMIw25iMS8t8LlfplxBwMsWOuuYRaVfReyhOe/
-         29EG3ieGAtuGdL3w6EnigMsgjSP2zjaZiqXvqFNZzrg7eCzihfNpyaKrMNt1rvuFFn
-         2XzsuVbMpWxOCIe/kJ6hTeZ5xXXqyTI5jr4DOQqztV/5iT4xbL6Cp5QL+u54vWS1E/
-         fw0SkRtbb7il7MfZG9jz6QPODsaktthpSG70vbcQuVXFLti6+xK4uHc55f8m7LhsCa
-         UhS5Ys9p0u0Ug7I0bP0N4vpSV19NWHWz6icQ2+X2AsFKo/atRGDTpmH89rQrjrtHtg
-         5BHbhxp29cv5w==
-Date:   Mon, 22 Mar 2021 16:27:17 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] infiniband: Fix a use after free in isert_connect_request
-Message-ID: <YFipRTHpr8Xqho4V@unreal>
-References: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+        id S230338AbhCVO3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:29:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2725 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhCVO2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:28:43 -0400
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F3xXS6zLBz681n6;
+        Mon, 22 Mar 2021 22:22:16 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 22 Mar 2021 15:28:41 +0100
+Received: from localhost (10.47.84.0) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 22 Mar
+ 2021 14:28:40 +0000
+Date:   Mon, 22 Mar 2021 14:27:22 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Jonathan Cameron <jic23@kernel.org>, <devicetree@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v3 3/3] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <20210322142722.000053a6@Huawei.com>
+In-Reply-To: <20210322115635.GA14791@pengutronix.de>
+References: <20210319144509.7627-1-o.rempel@pengutronix.de>
+        <20210319144509.7627-4-o.rempel@pengutronix.de>
+        <20210320154601.0131805d@jic23-huawei>
+        <20210322115635.GA14791@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.84.0]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:53:55AM -0700, Lv Yunlong wrote:
-> The device is got by isert_device_get() with refcount is 1,
-> and is assigned to isert_conn by isert_conn->device = device.
-> When isert_create_qp() failed, device will be freed with
-> isert_device_put().
-> 
-> Later, the device is used in isert_free_login_buf(isert_conn)
-> by the isert_conn->device->ib_device statement. My patch
-> exchanges the callees order to free the device late.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 
-The fix needs to be change of isert_free_login_buf() from
-isert_free_login_buf(isert_conn) to be isert_free_login_buf(isert_conn, cma_id->device)
+> >   
+> > > +	/*
+> > > +	 * Lock to protect the layout and the spi transfer buffer.
+> > > +	 * tsc2046_adc_group_layout can be changed within update_scan_mode(),
+> > > +	 * in this case the l[] and tx/rx buffer will be out of sync to each
+> > > +	 * other.
+> > > +	 */
+> > > +	struct mutex slock;
+> > > +	struct tsc2046_adc_group_layout l[TI_TSC2046_MAX_CHAN];
+> > > +	struct tsc2046_adc_atom *rx;
+> > > +	struct tsc2046_adc_atom *tx;
+> > > +
+> > > +	struct tsc2046_adc_atom *rx_one;
+> > > +	struct tsc2046_adc_atom *tx_one;
+> > > +
+> > > +	unsigned int count;
+> > > +	unsigned int groups;
+> > > +	u32 effective_speed_hz;
+> > > +	u32 scan_interval_us;
+> > > +	u32 time_per_scan_us;
+> > > +	u32 time_per_bit_ns;
+> > > +
+> > > +	struct tsc2046_adc_ch_cfg ch_cfg[TI_TSC2046_MAX_CHAN];
+> > > +};
+> > > +
+> > > +#define TI_TSC2046_V_CHAN(index, bits, name)			\
+> > > +{								\
+> > > +	.type = IIO_VOLTAGE,					\
+> > > +	.indexed = 1,						\
+> > > +	.channel = index,					\
+> > > +	.datasheet_name = "#name",				\
+> > > +	.scan_index = index,					\
+> > > +	.scan_type = {						\
+> > > +		.sign = 'u',					\
+> > > +		.realbits = bits,				\
+> > > +		.storagebits = 16,				\
+> > > +		.endianness = IIO_CPU,				\
+> > > +	},							\
+> > > +}  
+> > 
+> > I'd not noticed this before but you are exposing nothing to the
+> > normal IIO interfaces.
+> > 
+> > That means for usecases like iio-hwmon there is no access
+> > to polled readings, or information like channel scaling.
+> > 
+> > I suppose that could be added later, but perhaps you want to call this
+> > out by mentioning it in the patch description.  
+> 
+> If it is ok for you, then I'll add some words about it in to the patch
+> description.
+Sure
 
-Thanks
+> 
+> > > +
+> > > +#define DECLARE_TI_TSC2046_8_CHANNELS(name, bits) \
+> > > +const struct iio_chan_spec name ## _channels[] = { \
+> > > +	TI_TSC2046_V_CHAN(0, bits, TEMP0), \
+> > > +	TI_TSC2046_V_CHAN(1, bits, Y), \
+> > > +	TI_TSC2046_V_CHAN(2, bits, VBAT), \
+> > > +	TI_TSC2046_V_CHAN(3, bits, Z1), \
+> > > +	TI_TSC2046_V_CHAN(4, bits, Z2), \
+> > > +	TI_TSC2046_V_CHAN(5, bits, X), \
+> > > +	TI_TSC2046_V_CHAN(6, bits, AUX), \
+> > > +	TI_TSC2046_V_CHAN(7, bits, TEMP1), \
+> > > +	IIO_CHAN_SOFT_TIMESTAMP(8), \
+> > > +}
+> > > +
+> > > +static DECLARE_TI_TSC2046_8_CHANNELS(tsc2046_adc, 12);
+> > > +
+> > > +static const struct tsc2046_adc_dcfg tsc2046_adc_dcfg_tsc2046e = {
+> > > +	.channels = tsc2046_adc_channels,
+> > > +	.num_channels = ARRAY_SIZE(tsc2046_adc_channels),
+> > > +};
+> > > +  
+> > 
+> > Hmm.  Flexibility that isn't yet used.  Normally I'm pretty resistant
+> > to this going in, unless I'm reassured that there is support for additional
+> > devices already in the pipeline.  Is that true here?  Otherwise
+> > this is basically unneeded complexity.  
+> 
+> In the long term this driver should replace
+> drivers/input/touchscreen/ads7846.c
+> 
+> This driver supports ti,ads7843, ti,ads7845, ti,ads7846.. at least with
+> following number of supported channels:
+> ti,ads7843 - 4 channels: x, y, aux0, aux1
+> ti,ads7845 - 3 channels: x, y, aux0
+> ti,ads7846 - 8 channels...
+> 
+> Currently I don't have this HW for testing and there a subtle
+> differences that have to be taken care of and tested.
+> 
 
-> 
-> diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-> index 7305ed8976c2..d8a533e346b0 100644
-> --- a/drivers/infiniband/ulp/isert/ib_isert.c
-> +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-> @@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
->  
->  out_destroy_qp:
->  	isert_destroy_qp(isert_conn);
-> -out_conn_dev:
-> -	isert_device_put(device);
->  out_rsp_dma_map:
->  	isert_free_login_buf(isert_conn);
-> +out_conn_dev:
-> +	isert_device_put(device);
->  out:
->  	kfree(isert_conn);
->  	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
-> -- 
-> 2.25.1
-> 
-> 
+Note that I'm only going to merge this driver with an explicit statement
+from Dmitry as input maintainer that he is fine with this approach.
+
+Jonathan
