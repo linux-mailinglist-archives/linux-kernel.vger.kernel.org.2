@@ -2,185 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2285343D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD51343D9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCVKPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S230050AbhCVKPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhCVKO5 (ORCPT
+        with ESMTP id S229760AbhCVKPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:14:57 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2B8C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:14:57 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id m12so20334963lfq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:14:56 -0700 (PDT)
+        Mon, 22 Mar 2021 06:15:10 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDEFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:15:09 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso3033163wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rVYaAi1eY1kPyS3/JwBek8GPGY1ptAf+8QB+EHmsqAU=;
-        b=0xAxeaYtjCj0z4GR/m+iCT1B87INTUY//rqJ+VAahUIwsVg8ZAvYyLV/C73kwEny9I
-         5bmP+Ze/gAocr73JJ11cXkYyXb0/Gf3Zd+r4R3eA58TMDA1eiMWU+rMh1/olatKyJLjo
-         4QKYJ/75INlA0ttbJG3z39uP+Gil0Esyvd0LSgK5Tvb012/4yqglr2y7lQCQCcZcuLcr
-         HPKJqoA+/yI/PbJGB9nlNL9opAR7qW1DeNwoWJ9I18hjVB4+THSiBNsRwIPj7IuDMhNl
-         fGocd8edYDD+GUhQKbrV1adoAPW9vMeyJWE2vDTyiWsTDO41apCkiT/tXVhgWd0t5/6t
-         VLKA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yRmFB0x7JQ6Z1XIDzr7msIkk8yKtGsCURuDNcE67b30=;
+        b=FN28xSfSljzW2+diT1ovn7skXDD+YwK1ElIMZVvITh8x7aXXg5NxUffEiGT4aConKF
+         d8kxqWafnKBTcC98xFnpwwFZitsdv4jJgB+z+mkRRx1Ll8R28WBurp2TgtDXH0+mQEh1
+         VVFF9DhuU67XTl8p/RFK9RrJJMgRVOvNW/iDDs3M5gjMK5g6oxGiU09MTriXNPe6orL4
+         JlzboA90bpb6mLcH7KhOuebQArHdKn++kdSzU1Xnl8xg3zB2Fo/8VoE2Ug0C0Xmhl5pN
+         EZ6FJtGZiMBelz27atee4B7dZ4fXgmLXPHs+1spUbjdKCjP+GpKxQrVoRHMV3S8RPToA
+         eXIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rVYaAi1eY1kPyS3/JwBek8GPGY1ptAf+8QB+EHmsqAU=;
-        b=nPp/IA5oZRcu70n5tjfAcT+NBniqOjm92sShq7JPaomk98rGZOGriA14iq8LuCNQms
-         TE63o0marLiQwPHgV/y1SUVDq48VjbcOsDVoNoftbw29vqMrusEljTbCyLkC3fwDaR7d
-         PiCjP8G3x/GaUcr749Ay0iPSImkwPGMGVsS9fRWpKpIhzlSTHgTV4nbS4MdiLrKGTCCs
-         mzWHHvCYxtVcTGxtwvOQJ9vIuduQF21gqG/RBqxC+pQvyAUK5N8Qo8KFLvyZrK4TvEbu
-         tlK4+lfUVgMldmeCII5NoBhbL7I7w1oz2eFBSMCtoBtZbLnDYH2fZe3JwegIDjkm28ys
-         1Bdw==
-X-Gm-Message-State: AOAM531QAIk5dlIyDC60+rMgkz4HtK27VCT8DYj7Olmu7e9jC20kNPEF
-        9aRPKLBCSrJJjk1SERV9VvjVEw==
-X-Google-Smtp-Source: ABdhPJxKaAEo8nt6OXdUuX61A1wui+fxNSys6+2rWR6UBxN18woKeXmAqW98QKT5Ba+bYjAcU7cKIw==
-X-Received: by 2002:a05:6512:348c:: with SMTP id v12mr8454102lfr.271.1616408095388;
-        Mon, 22 Mar 2021 03:14:55 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z10sm1523041lfe.114.2021.03.22.03.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:14:54 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 23BA8101DEB; Mon, 22 Mar 2021 13:15:02 +0300 (+03)
-Date:   Mon, 22 Mar 2021 13:15:02 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v23 12/28] x86/mm: Update ptep_set_wrprotect() and
- pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
-Message-ID: <20210322101502.b5hdy3qgyh6hf3sr@box>
-References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
- <20210316151054.5405-13-yu-cheng.yu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yRmFB0x7JQ6Z1XIDzr7msIkk8yKtGsCURuDNcE67b30=;
+        b=eP2eH07CM/7TGPgcSw5UjnAz/YkjhnAoP1BW6MWygjKpfHPlOgNGLuL4eA5LhWN+ah
+         nip3B0feq92qTkJKtDIUbW9vrMpiq8BUrCqTGeHN6x3az9RsNt8qIcj2kTR+QpN+/q6A
+         CDlyMgdJCpOgA96tN/O0Xo5XBjVGZqZVz63b+LwQvjvovzo7a6vnvCYqhswywg4sIdqI
+         L8DBpAx3AM77eF9MDRY1eRp4JKu+SAvdBm+JCuAWcXHRmkIkDjJhd70qCeG/HnwnbYaF
+         h1y9OextlA2QiSMOH3yy6BESbsNH4QYMa2CCwqXH8m9KBxmezRTq+7T3/o17oRXccmmZ
+         P00w==
+X-Gm-Message-State: AOAM531baaxq2lyz1QIBJ0xOcqR6BCGzk/EfRWMQ138syOrdWgdLMVJN
+        onMYVdcHR6MKcTW+Wmr97ACh5Q==
+X-Google-Smtp-Source: ABdhPJyBuXg4AjjNoGXnX8QWEFyf2he7Hq7KNB9VSlf8iUxOrh1N06npgvRT/Kc/t90cHb4X+4FNMg==
+X-Received: by 2002:a7b:c10c:: with SMTP id w12mr15705867wmi.112.1616408108134;
+        Mon, 22 Mar 2021 03:15:08 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:d8b:d5f9:2138:169c? ([2a01:e34:ed2f:f020:d8b:d5f9:2138:169c])
+        by smtp.googlemail.com with ESMTPSA id b12sm8833352wrf.39.2021.03.22.03.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 03:15:07 -0700 (PDT)
+Subject: Re: [PATCH 2/2] clocksource/drivers/timer-ti-dm: Handle dra7 timer
+ wrap errata i940
+To:     Tony Lindgren <tony@atomide.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tero Kristo <kristo@kernel.org>
+References: <20210304073737.15810-1-tony@atomide.com>
+ <20210304073737.15810-3-tony@atomide.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <1edba5bd-5408-c545-85ea-689b4171cb5b@linaro.org>
+Date:   Mon, 22 Mar 2021 11:15:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316151054.5405-13-yu-cheng.yu@intel.com>
+In-Reply-To: <20210304073737.15810-3-tony@atomide.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 08:10:38AM -0700, Yu-cheng Yu wrote:
-> When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
-> shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
+On 04/03/2021 08:37, Tony Lindgren wrote:
+> There is a timer wrap issue on dra7 for the ARM architected timer.
+> In a typical clock configuration the timer fails to wrap after 388 days.
 > 
-> When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
-> become a transient shadow stack PTE in two cases:
+> To work around the issue, we need to use timer-ti-dm percpu timers instead.
 > 
-> The first case is that some processors can start a write but end up seeing
-> a read-only PTE by the time they get to the Dirty bit, creating a transient
-> shadow stack PTE.  However, this will not occur on processors supporting
-> Shadow Stack, and a TLB flush is not necessary.
+> Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
+> the issue if the dtb is not configured properly.
 > 
-> The second case is that when _PAGE_DIRTY is replaced with _PAGE_COW non-
-> atomically, a transient shadow stack PTE can be created as a result.
-> Thus, prevent that with cmpxchg.
+> Let's do this as a single patch so it can be backported to v5.8 and later
+> kernels easily. 
+
+Cc: <stable@vger.kernel.org> # v5.8+
+
+??
+
+> Note that this patch depends on earlier timer-ti-dm
+> systimer posted mode fixes, and a preparatory clockevent patch
+> "clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue".
 > 
-> Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
-> insights to the issue.  Jann Horn provided the cmpxchg solution.
+> For more information, please see the errata for "AM572x Sitara Processors
+> Silicon Revisions 1.1, 2.0":
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+> https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
+> 
+> The concept is based on earlier reference patches done by Tero Kristo and
+> Keerthy.
+> 
+> Cc: Keerthy <j-keerthy@ti.com>
+> Cc: Tero Kristo <kristo@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
->  arch/x86/include/asm/pgtable.h | 36 ++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
+>  arch/arm/boot/dts/dra7-l4.dtsi             |  4 +-
+>  arch/arm/boot/dts/dra7.dtsi                | 20 ++++++
+>  drivers/clocksource/timer-ti-dm-systimer.c | 76 ++++++++++++++++++++++
+>  include/linux/cpuhotplug.h                 |  1 +
+>  4 files changed, 99 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> index e1739f590ca6..46d9394b884f 100644
-> --- a/arch/x86/include/asm/pgtable.h
-> +++ b/arch/x86/include/asm/pgtable.h
-> @@ -1306,6 +1306,24 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
->  static inline void ptep_set_wrprotect(struct mm_struct *mm,
->  				      unsigned long addr, pte_t *ptep)
->  {
-> +	/*
-> +	 * If Shadow Stack is enabled, pte_wrprotect() moves _PAGE_DIRTY
-> +	 * to _PAGE_COW (see comments at pte_wrprotect()).
-> +	 * When a thread reads a RW=1, Dirty=0 PTE and before changing it
-> +	 * to RW=0, Dirty=0, another thread could have written to the page
-> +	 * and the PTE is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-> +	 * PTE changes and update old_pte, then try again.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pte_t old_pte, new_pte;
+> diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
+> --- a/arch/arm/boot/dts/dra7-l4.dtsi
+> +++ b/arch/arm/boot/dts/dra7-l4.dtsi
+> @@ -1168,7 +1168,7 @@ timer2: timer@0 {
+>  			};
+>  		};
+>  
+> -		target-module@34000 {			/* 0x48034000, ap 7 46.0 */
+> +		timer3_target: target-module@34000 {	/* 0x48034000, ap 7 46.0 */
+>  			compatible = "ti,sysc-omap4-timer", "ti,sysc";
+>  			reg = <0x34000 0x4>,
+>  			      <0x34010 0x4>;
+> @@ -1195,7 +1195,7 @@ timer3: timer@0 {
+>  			};
+>  		};
+>  
+> -		target-module@36000 {			/* 0x48036000, ap 9 4e.0 */
+> +		timer4_target: target-module@36000 {	/* 0x48036000, ap 9 4e.0 */
+>  			compatible = "ti,sysc-omap4-timer", "ti,sysc";
+>  			reg = <0x36000 0x4>,
+>  			      <0x36010 0x4>;
+> diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+> --- a/arch/arm/boot/dts/dra7.dtsi
+> +++ b/arch/arm/boot/dts/dra7.dtsi
+> @@ -46,6 +46,7 @@ aliases {
+>  
+>  	timer {
+>  		compatible = "arm,armv7-timer";
+> +		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
+>  		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+>  			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+>  			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+> @@ -1241,3 +1242,22 @@ timer@0 {
+>  		assigned-clock-parents = <&sys_32k_ck>;
+>  	};
+>  };
 > +
-> +		old_pte = READ_ONCE(*ptep);
-> +		do {
-> +			new_pte = pte_wrprotect(old_pte);
-> +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
-
-I think this is wrong. You need to update old_pte on every loop iteration,
-otherwise you can get in to endless loop.
-
-The same issue for pmdp_set_wrprotect().
-
+> +/* Local timers, see ARM architected timer wrap erratum i940 */
+> +&timer3_target {
+> +	ti,no-reset-on-init;
+> +	ti,no-idle;
+> +	timer@0 {
+> +		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER3_CLKCTRL 24>;
+> +		assigned-clock-parents = <&timer_sys_clk_div>;
+> +	};
+> +};
 > +
-> +		return;
-> +	}
->  	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
+> +&timer4_target {
+> +	ti,no-reset-on-init;
+> +	ti,no-idle;
+> +	timer@0 {
+> +		assigned-clocks = <&l4per_clkctrl DRA7_L4PER_TIMER4_CLKCTRL 24>;
+> +		assigned-clock-parents = <&timer_sys_clk_div>;
+> +	};
+> +};
+> diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
+> --- a/drivers/clocksource/timer-ti-dm-systimer.c
+> +++ b/drivers/clocksource/timer-ti-dm-systimer.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/clocksource.h>
+>  #include <linux/clockchips.h>
+> +#include <linux/cpuhotplug.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/iopoll.h>
+> @@ -634,6 +635,78 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
+>  	return error;
 >  }
 >  
-> @@ -1350,6 +1368,24 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
->  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
->  				      unsigned long addr, pmd_t *pmdp)
->  {
-> +	/*
-> +	 * If Shadow Stack is enabled, pmd_wrprotect() moves _PAGE_DIRTY
-> +	 * to _PAGE_COW (see comments at pmd_wrprotect()).
-> +	 * When a thread reads a RW=1, Dirty=0 PMD and before changing it
-> +	 * to RW=0, Dirty=0, another thread could have written to the page
-> +	 * and the PMD is RW=1, Dirty=1 now.  Use try_cmpxchg() to detect
-> +	 * PMD changes and update old_pmd, then try again.
-> +	 */
-> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
-> +		pmd_t old_pmd, new_pmd;
+> +/* Dmtimer as percpu timer. See dra7 ARM architected timer wrap erratum i940 */
+> +static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
 > +
-> +		old_pmd = READ_ONCE(*pmdp);
-> +		do {
-> +			new_pmd = pmd_wrprotect(old_pmd);
-> +		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
+> +static int __init dmtimer_percpu_timer_init(struct device_node *np, int cpu)
+> +{
+> +	struct dmtimer_clockevent *clkevt;
+> +	int error;
 > +
-> +		return;
+> +	if (!cpu_possible(cpu))
+> +		return -EINVAL;
+> +
+> +	if (!of_property_read_bool(np->parent, "ti,no-reset-on-init") ||
+> +	    !of_property_read_bool(np->parent, "ti,no-idle"))
+> +		pr_warn("Incomplete dtb for percpu dmtimer %pOF\n", np->parent);
+> +
+> +	clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
+> +
+> +	error = dmtimer_clkevt_init_common(clkevt, np, CLOCK_EVT_FEAT_ONESHOT,
+> +					   cpumask_of(cpu), "percpu-dmtimer",
+> +					   500);
+> +	if (error)
+> +		return error;
+> +
+> +	return 0;
+> +}
+> +
+> +/* See TRM for timer internal resynch latency */
+> +static int omap_dmtimer_starting_cpu(unsigned int cpu)
+> +{
+> +	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
+> +	struct clock_event_device *dev = &clkevt->dev;
+> +	struct dmtimer_systimer *t = &clkevt->t;
+> +
+> +	clockevents_config_and_register(dev, t->rate, 3, ULONG_MAX);
+> +	irq_force_affinity(dev->irq, cpumask_of(cpu));
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init dmtimer_percpu_timer_startup(void)
+> +{
+> +	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, 0);
+> +	struct dmtimer_systimer *t = &clkevt->t;
+> +
+> +	if (t->sysc) {
+> +		cpuhp_setup_state(CPUHP_AP_TI_GP_TIMER_STARTING,
+> +				  "clockevents/omap/gptimer:starting",
+> +				  omap_dmtimer_starting_cpu, NULL);
 > +	}
->  	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
+> +
+> +	return 0;
+> +}
+> +subsys_initcall(dmtimer_percpu_timer_startup);
+> +
+> +static int __init dmtimer_percpu_quirk_init(struct device_node *np, u32 pa)
+> +{
+> +	struct device_node *arm_timer;
+> +
+> +	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
+> +	if (of_device_is_available(arm_timer)) {
+> +		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
+> +		return 0;
+> +	}
+> +
+> +	if (pa == 0x48034000)		/* dra7 dmtimer3 */
+> +		return dmtimer_percpu_timer_init(np, 0);
+> +	else if (pa == 0x48036000)	/* dra7 dmtimer4 */
+> +		return dmtimer_percpu_timer_init(np, 1);
+> +
+> +	return 0;
+> +}
+> +
+>  /* Clocksource */
+>  static struct dmtimer_clocksource *
+>  to_dmtimer_clocksource(struct clocksource *cs)
+> @@ -767,6 +840,9 @@ static int __init dmtimer_systimer_init(struct device_node *np)
+>  	if (clockevent == pa)
+>  		return dmtimer_clockevent_init(np);
+>  
+> +	if (of_machine_is_compatible("ti,dra7"))
+> +		return dmtimer_percpu_quirk_init(np, pa);
+> +
+>  	return 0;
 >  }
 >  
-> -- 
-> 2.21.0
+> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -135,6 +135,7 @@ enum cpuhp_state {
+>  	CPUHP_AP_RISCV_TIMER_STARTING,
+>  	CPUHP_AP_CLINT_TIMER_STARTING,
+>  	CPUHP_AP_CSKY_TIMER_STARTING,
+> +	CPUHP_AP_TI_GP_TIMER_STARTING,
+>  	CPUHP_AP_HYPERV_TIMER_STARTING,
+>  	CPUHP_AP_KVM_STARTING,
+>  	CPUHP_AP_KVM_ARM_VGIC_INIT_STARTING,
 > 
+
 
 -- 
- Kirill A. Shutemov
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
