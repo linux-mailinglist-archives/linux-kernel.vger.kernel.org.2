@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EEB3444C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D232344522
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhCVNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47874 "EHLO mail.kernel.org"
+        id S233442AbhCVNNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232464AbhCVMwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:52:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED1061A04;
-        Mon, 22 Mar 2021 12:46:32 +0000 (UTC)
+        id S233126AbhCVM5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:57:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A9561A46;
+        Mon, 22 Mar 2021 12:49:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417192;
-        bh=ypRAYgZYhiUSzwTDlQjBLcPZB4UJ0Ao3Pb7RfKwsT3k=;
+        s=korg; t=1616417369;
+        bh=1Cgt8qhkaEN0TT5xlKi2IbMMZ/fKlJLdjRUP7oIU8QQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P6pZ3zkD/N/fXGt2N7MmM4B/7UhzQnBV36DD8pywd2tA0bRFvk2P5vCweUeSxCTIo
-         FDUR3DmHRt+ghmc+TUHIhiCWmbzLXzZKnKi7cT1LBV+fEt/BvewO0dKT0+M2VwBLpn
-         hrCBpiR/hio3Zt2d3S2qDKNd+shZKpDEvWrnmPdk=
+        b=bcV2ueAYHIRdVxhsY1lhKnj/Ub/NzjZf/ExW47gIcEGD4EIyKL1INsm5ufMQb6Ovk
+         VmrEyNYFklkhs26l21a8EKL4iUW9Eh218HvwSzOtmuLnZJbYpqh5ln2ZZ7LirALnqq
+         7RYFYtJdr+DTH11tNCJ1/a8JCM1wRvTD5blyWtYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.4 11/14] x86/ioapic: Ignore IRQ2 again
-Date:   Mon, 22 Mar 2021 13:29:05 +0100
-Message-Id: <20210322121919.547111845@linuxfoundation.org>
+        stable@vger.kernel.org, Macpaul Lin <macpaul.lin@mediatek.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH 4.14 25/43] USB: replace hardcode maximum usb string length by definition
+Date:   Mon, 22 Mar 2021 13:29:06 +0100
+Message-Id: <20210322121920.846753097@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
-References: <20210322121919.202392464@linuxfoundation.org>
+In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
+References: <20210322121920.053255560@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Macpaul Lin <macpaul.lin@mediatek.com>
 
-commit a501b048a95b79e1e34f03cac3c87ff1e9f229ad upstream.
+commit 81c7462883b0cc0a4eeef0687f80ad5b5baee5f6 upstream.
 
-Vitaly ran into an issue with hotplugging CPU0 on an Amazon instance where
-the matrix allocator claimed to be out of vectors. He analyzed it down to
-the point that IRQ2, the PIC cascade interrupt, which is supposed to be not
-ever routed to the IO/APIC ended up having an interrupt vector assigned
-which got moved during unplug of CPU0.
+Replace hardcoded maximum USB string length (126 bytes) by definition
+"USB_MAX_STRING_LEN".
 
-The underlying issue is that IRQ2 for various reasons (see commit
-af174783b925 ("x86: I/O APIC: Never configure IRQ2" for details) is treated
-as a reserved system vector by the vector core code and is not accounted as
-a regular vector. The Amazon BIOS has an routing entry of pin2 to IRQ2
-which causes the IO/APIC setup to claim that interrupt which is granted by
-the vector domain because there is no sanity check. As a consequence the
-allocation counter of CPU0 underflows which causes a subsequent unplug to
-fail with:
-
-  [ ... ] CPU 0 has 4294967295 vectors, 589 available. Cannot disable CPU
-
-There is another sanity check missing in the matrix allocator, but the
-underlying root cause is that the IO/APIC code lost the IRQ2 ignore logic
-during the conversion to irqdomains.
-
-For almost 6 years nobody complained about this wreckage, which might
-indicate that this requirement could be lifted, but for any system which
-actually has a PIC IRQ2 is unusable by design so any routing entry has no
-effect and the interrupt cannot be connected to a device anyway.
-
-Due to that and due to history biased paranoia reasons restore the IRQ2
-ignore logic and treat it as non existent despite a routing entry claiming
-otherwise.
-
-Fixes: d32932d02e18 ("x86/irq: Convert IOAPIC to use hierarchical irqdomain interfaces")
-Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210318192819.636943062@linutronix.de
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/1592471618-29428-1-git-send-email-macpaul.lin@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/io_apic.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/gadget/composite.c |    4 ++--
+ drivers/usb/gadget/configfs.c  |    2 +-
+ drivers/usb/gadget/usbstring.c |    4 ++--
+ include/uapi/linux/usb/ch9.h   |    3 +++
+ 4 files changed, 8 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1040,6 +1040,16 @@ static int mp_map_pin_to_irq(u32 gsi, in
- 	if (idx >= 0 && test_bit(mp_irqs[idx].srcbus, mp_bus_not_pci)) {
- 		irq = mp_irqs[idx].srcbusirq;
- 		legacy = mp_is_legacy_irq(irq);
-+		/*
-+		 * IRQ2 is unusable for historical reasons on systems which
-+		 * have a legacy PIC. See the comment vs. IRQ2 further down.
-+		 *
-+		 * If this gets removed at some point then the related code
-+		 * in lapic_assign_system_vectors() needs to be adjusted as
-+		 * well.
-+		 */
-+		if (legacy && irq == PIC_CASCADE_IR)
-+			return -EINVAL;
- 	}
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -1080,7 +1080,7 @@ static void collect_langs(struct usb_gad
+ 	while (*sp) {
+ 		s = *sp;
+ 		language = cpu_to_le16(s->language);
+-		for (tmp = buf; *tmp && tmp < &buf[126]; tmp++) {
++		for (tmp = buf; *tmp && tmp < &buf[USB_MAX_STRING_LEN]; tmp++) {
+ 			if (*tmp == language)
+ 				goto repeat;
+ 		}
+@@ -1155,7 +1155,7 @@ static int get_string(struct usb_composi
+ 			collect_langs(sp, s->wData);
+ 		}
  
- 	mutex_lock(&ioapic_mutex);
+-		for (len = 0; len <= 126 && s->wData[len]; len++)
++		for (len = 0; len <= USB_MAX_STRING_LEN && s->wData[len]; len++)
+ 			continue;
+ 		if (!len)
+ 			return -EINVAL;
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -114,7 +114,7 @@ static int usb_string_copy(const char *s
+ 	char *str;
+ 	char *copy = *s_copy;
+ 	ret = strlen(s);
+-	if (ret > 126)
++	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
+ 
+ 	str = kstrdup(s, GFP_KERNEL);
+--- a/drivers/usb/gadget/usbstring.c
++++ b/drivers/usb/gadget/usbstring.c
+@@ -59,9 +59,9 @@ usb_gadget_get_string (struct usb_gadget
+ 		return -EINVAL;
+ 
+ 	/* string descriptors have length, tag, then UTF16-LE text */
+-	len = min ((size_t) 126, strlen (s->s));
++	len = min((size_t)USB_MAX_STRING_LEN, strlen(s->s));
+ 	len = utf8s_to_utf16s(s->s, len, UTF16_LITTLE_ENDIAN,
+-			(wchar_t *) &buf[2], 126);
++			(wchar_t *) &buf[2], USB_MAX_STRING_LEN);
+ 	if (len < 0)
+ 		return -EINVAL;
+ 	buf [0] = (len + 1) * 2;
+--- a/include/uapi/linux/usb/ch9.h
++++ b/include/uapi/linux/usb/ch9.h
+@@ -360,6 +360,9 @@ struct usb_config_descriptor {
+ 
+ /*-------------------------------------------------------------------------*/
+ 
++/* USB String descriptors can contain at most 126 characters. */
++#define USB_MAX_STRING_LEN	126
++
+ /* USB_DT_STRING: String descriptor */
+ struct usb_string_descriptor {
+ 	__u8  bLength;
 
 
