@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493CC343F92
+	by mail.lfdr.de (Postfix) with ESMTP id 99D57343F93
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCVLXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:23:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54077 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230009AbhCVLWi (ORCPT
+        id S230045AbhCVLXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhCVLW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:22:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616412158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H7FM+EfpOKgcYU35xLw4tXyD/liddu9m0RQO74OmR04=;
-        b=ix4pXxWIytgB46N0VpdUR0/1dCkljbprqN3r+vrrUrqBwUUObWDMsWUtBKBbbC7lIhLmGw
-        sR+wZXZFdqjAjV4QxqZrMgnA/S/J5GrQhfry0zN+YZGpsPSPuv7AFyjZj6JeZxp1GmTCV7
-        chxj8wZzeP2avlQxzYLLe8VUHuFAj94=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-7RJwYWYiMDyDj_DdUXUzCA-1; Mon, 22 Mar 2021 07:22:34 -0400
-X-MC-Unique: 7RJwYWYiMDyDj_DdUXUzCA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAE141034AE7;
-        Mon, 22 Mar 2021 11:22:32 +0000 (UTC)
-Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D4751B49E;
-        Mon, 22 Mar 2021 11:22:30 +0000 (UTC)
-Subject: Re: [PATCH v1 1/2] s390/kvm: split kvm_s390_real_to_abs
-From:   David Hildenbrand <david@redhat.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Thomas Huth <thuth@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-References: <20210319193354.399587-1-imbrenda@linux.ibm.com>
- <20210319193354.399587-2-imbrenda@linux.ibm.com>
- <fa583ab0-36ac-47a7-7fa3-4ce88c518488@redhat.com>
- <f76f770c-908e-4f4f-f060-15f4d30652d8@redhat.com> <YFh7nGfVZRD15Cbp@osiris>
- <c394c3ce-2d13-b3d1-c886-22478fee7dcb@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <71822096-fb31-e2ca-0cac-c6b4400a8118@redhat.com>
-Date:   Mon, 22 Mar 2021 12:22:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 22 Mar 2021 07:22:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23071C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:22:58 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOIe7-0005k5-35; Mon, 22 Mar 2021 12:22:55 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOIe6-0000RO-C9; Mon, 22 Mar 2021 12:22:54 +0100
+Date:   Mon, 22 Mar 2021 12:22:54 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <20210322112254.5mjkajkq3wnhgnd5@pengutronix.de>
+References: <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+ <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <YFhhGpiHDELxIo9V@orome.fritz.box>
+ <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c394c3ce-2d13-b3d1-c886-22478fee7dcb@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uuestpxaqacueghg"
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.03.21 12:16, David Hildenbrand wrote:
-> On 22.03.21 12:12, Heiko Carstens wrote:
->> On Mon, Mar 22, 2021 at 10:53:46AM +0100, David Hildenbrand wrote:
->>>>> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
->>>>> index daba10f76936..7c72a5e3449f 100644
->>>>> --- a/arch/s390/kvm/gaccess.h
->>>>> +++ b/arch/s390/kvm/gaccess.h
->>>>> @@ -18,17 +18,14 @@
->>>>>      /**
->>>>>       * kvm_s390_real_to_abs - convert guest real address to guest absolute address
->>>>> - * @vcpu - guest virtual cpu
->>>>> + * @prefix - guest prefix
->>>>>       * @gra - guest real address
->>>>>       *
->>>>>       * Returns the guest absolute address that corresponds to the passed guest real
->>>>> - * address @gra of a virtual guest cpu by applying its prefix.
->>>>> + * address @gra of by applying the given prefix.
->>>>>       */
->>>>> -static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
->>>>> -						 unsigned long gra)
->>>>> +static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
->>>>
->>>> <bikeshedding>
->>>> Just a matter of taste, but maybe this could be named differently?
->>>> kvm_s390_real2abs_prefix() ? kvm_s390_prefix_real_to_abs()?
->>>> </bikeshedding>
->>>
->>> +1, I also dislike these "_.*" style functions here.
->>
->> Yes, let's bikeshed then :)
->>
->> Could you then please try to rename page_to* and everything that looks
->> similar to page2* please? I'm wondering what the response will be..
-> 
-> Oh, we're bikeshedding about anything now? Cool.
 
-(I agree that real2abs is not such a good idea ;) )
+--uuestpxaqacueghg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+Hello Andy,
 
-David / dhildenb
+On Mon, Mar 22, 2021 at 11:38:40AM +0200, Andy Shevchenko wrote:
+> On Monday, March 22, 2021, Thierry Reding <thierry.reding@gmail.com> wrot=
+e:
+> > On Fri, Jan 29, 2021 at 09:37:47PM +0100, Clemens Gruber wrote:
+> > > Thierry: Would you accept it if we continue to reset the registers in
+> > > .probe?
+> >
+> > Yes, I think it's fine to continue to reset the registers since that's
+> > basically what the driver already does. It'd be great if you could
+> > follow up with a patch that removes the reset and leaves the hardware in
+> > whatever state the bootloader has set up. Then we can take that patch
+> > for a ride and see if there are any complains about it breaking. If
+> > there are we can always try to fix them, but as a last resort we can
+> > also revert, which then may be something we have to live with. But I
+> > think we should at least try to make this consistent with how other
+> > drivers do this so that people don't stumble over this particular
+> > driver's
+>=20
+> I guess we may miss (a PCB / silicon design flaw or warm boot case) when
+> boot loader left device completely untouched and device either in wrong
+> state because if failed reset (saw this on PCA9555 which has a
+> corresponding errata), or simply we have done a warm reset of the system.
+> So, we also have to understand how to properly exit.
 
+I don't think that not resetting is a real problem. My argumentation
+goes as follows:
+
+When the PWM driver is loaded and the PWM configuration is invalid, it
+was already invalid for the time between power up (or warm start) and
+PWM driver load time. Then it doesn't really hurt to keep the PWM
+in this invalid state for a little moment longer until the consumer of
+the PWM becomes active.
+
+Together with the use cases where not resetting is the right thing to
+do, I'm convinced not resetting is the better strategy.
+
+> Another point, CCF has a bit =E2=80=9Cis critical=E2=80=9D, and u guess P=
+WM may get the
+> same and make the all assumptions much easier.
+
+So I think complicating the PWM framework for this isn't the right thing
+to do.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--uuestpxaqacueghg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYfgsACgkQwfwUeK3K
+7Amw2ggAlazycDEHuJVy+VGen1qCsUrXixN776gnaT+D4vnJp8F+dMz7ife4F/4+
+wWaooH7WYHSA6yQyp95qwbiQZG89gR9fxEtG4zK3gaHttCAIZJUle1sqYQUXrePZ
+QvMbXKDKDkFL6WQDpVW0mXPbeIxnZzxSWsgvF17KPQWU2PGg4u/1AiQEntNItcgK
+syfM38UJxNncNy1OLKaiVLKu5jZ8xPD6jMJYGGTent4WephNkYv8NKLWZk6/zADC
+BTytiuUuBLWIHRABbfu8UpeQZrHdGqQm/gAoz3DMnpRxJiKt9egftHknrpSUCNv9
+pHQ3dB1c8achJ8wVsSpzU8gGtn+RpA==
+=I+uB
+-----END PGP SIGNATURE-----
+
+--uuestpxaqacueghg--
