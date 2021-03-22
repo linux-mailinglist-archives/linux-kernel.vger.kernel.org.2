@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC36E34510A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC06734510D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhCVUnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        id S231680AbhCVUoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhCVUmz (ORCPT
+        with ESMTP id S230270AbhCVUn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:42:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAD8C061574;
-        Mon, 22 Mar 2021 13:42:55 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 20:42:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616445773;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eL4EtL6oLowecQeGgdWbHbb9Yixcka2Vw8j1Ug2l4iQ=;
-        b=GePeupATapkK/WmGytwXtu+ZF3jc9VCFZcVztW8JqSBKEHfcRaYoJl2GKEt3UsPFqgFBPn
-        uIl+zUKd6rw1Y/tTKgE5i+GUTqGS+1crAjIKrzhUgAL9l3Jm/iBUOZdrbMxz/pO86wOsy3
-        VFdtnrk+TGQ5YVikXlaKWy2EQNS1eS0pjUpuR82xzFA4+5RldyBA3v0/FXkRrFOMnNloy6
-        5b4+9oI77ZAeqUJoZbfbLjjY7J2sr1TRTHBcFgAmy+HW9YKijC8HKMnCVXsym07zYlaxWE
-        N97wIsKVmY3ICP+lTzSd++F0CNURjSb7XjJc4etGIEO+VapyGi/UPM6HYxcYYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616445773;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eL4EtL6oLowecQeGgdWbHbb9Yixcka2Vw8j1Ug2l4iQ=;
-        b=p0H2hULJTQHKKtl5Si1WANMA0zKNwWwu7UdoEiE0K4/FIqhWsCsdFqaDfnadcj8/JAzLMp
-        pTWyWxa/fK9uPPBQ==
-From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/msr: Fix wr/rdmsr_safe_regs_on_cpu() prototypes
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210322164541.912261-1-arnd@kernel.org>
-References: <20210322164541.912261-1-arnd@kernel.org>
+        Mon, 22 Mar 2021 16:43:56 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D173AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zjw6xHblWwTqInlnqr5esznSG2yRgKtw4cpscwnNITo=; b=OGCKIv7xBGkVve8+JeTApeYnvj
+        3wbmkIqmwFsp3pPdWegP8YPwKY7C/Sc9zG/8ncUNvh9P0laRSC9tvS+O2DiWsx/CmG/8v908i5+bj
+        5/hdhY5wYM5slJzaY/W5TzCMguAeIdIqFFl1UfChi155LO/q5JIJSR09tGLm7sn0mygyM3R7ARn2M
+        j419ArRW2wUZfgnpbil+6iVSMKCijNLGYpb/O56SvUaP0U1BB92Ct57jjSgG+uitNgwfewnYN4e1c
+        n7/Gj+dYkL2Vgk3O6zAir1eynHCFuP/3pTpQbggH5fRCVGkfPyWr8bljXjBGUhZbcAcZVmYzaGaQR
+        8UZ35FTw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOROA-00CWug-ME; Mon, 22 Mar 2021 20:43:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A36C304BAE;
+        Mon, 22 Mar 2021 21:43:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30BB32BEF6765; Mon, 22 Mar 2021 21:43:00 +0100 (CET)
+Date:   Mon, 22 Mar 2021 21:43:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 7/8] hugetlb: add update_and_free_page_no_sleep for
+ irq context
+Message-ID: <YFkBVCcu/cmYD/hl@hirez.programming.kicks-ass.net>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-8-mike.kravetz@oracle.com>
+ <YFhYHZ9onwdZMeDi@hirez.programming.kicks-ass.net>
+ <2383057a-29dc-383b-720f-7cdcdd015e40@oracle.com>
 MIME-Version: 1.0
-Message-ID: <161644577189.398.4382487536270962603.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2383057a-29dc-383b-720f-7cdcdd015e40@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Mon, Mar 22, 2021 at 10:42:23AM -0700, Mike Kravetz wrote:
+> Cc: Roman, Christoph
+> 
+> On 3/22/21 1:41 AM, Peter Zijlstra wrote:
+> > On Fri, Mar 19, 2021 at 03:42:08PM -0700, Mike Kravetz wrote:
+> >> The locks acquired in free_huge_page are irq safe.  However, in certain
+> >> circumstances the routine update_and_free_page could sleep.  Since
+> >> free_huge_page can be called from any context, it can not sleep.
+> >>
+> >> Use a waitqueue to defer freeing of pages if the operation may sleep.  A
+> >> new routine update_and_free_page_no_sleep provides this functionality
+> >> and is only called from free_huge_page.
+> >>
+> >> Note that any 'pages' sent to the workqueue for deferred freeing have
+> >> already been removed from the hugetlb subsystem.  What is actually
+> >> deferred is returning those base pages to the low level allocator.
+> > 
+> > So maybe I'm stupid, but why do you need that work in hugetlb? Afaict it
+> > should be in cma_release().
+> 
+> My thinking (which could be totally wrong) is that cma_release makes no
+> claims about calling context.  From the code, it is pretty clear that it
+> can only be called from task context with no locks held.  Although,
+> there could be code incorrectly calling it today hugetlb does.  Since
+> hugetlb is the only code with this new requirement, it should do the
+> work.
+> 
+> Wait!!!  That made me remember something.
+> Roman had code to create a non-blocking version of cma_release().
+> https://lore.kernel.org/linux-mm/20201022225308.2927890-1-guro@fb.com/
+> 
+> There were no objections, and Christoph even thought there may be
+> problems with callers of dma_free_contiguous.
+> 
+> Perhaps, we should just move forward with Roman's patches to create
+> cma_release_nowait() and avoid this workqueue stuff?
 
-Commit-ID:     396a66aa1172ef2b78c21651f59b40b87b2e5e1e
-Gitweb:        https://git.kernel.org/tip/396a66aa1172ef2b78c21651f59b40b87b2=
-e5e1e
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Mon, 22 Mar 2021 17:45:36 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 22 Mar 2021 21:37:03 +01:00
-
-x86/msr: Fix wr/rdmsr_safe_regs_on_cpu() prototypes
-
-gcc-11 warns about mismatched prototypes here:
-
-  arch/x86/lib/msr-smp.c:255:51: error: argument 2 of type =E2=80=98u32 *=E2=
-=80=99 {aka =E2=80=98unsigned int *=E2=80=99} declared as a pointer [-Werror=
-=3Darray-parameter=3D]
-    255 | int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-        |                                              ~~~~~^~~~
-  arch/x86/include/asm/msr.h:347:50: note: previously declared as an array =
-=E2=80=98u32[8]=E2=80=99 {aka =E2=80=98unsigned int[8]=E2=80=99}
-
-GCC is right here - fix up the types.
-
-[ mingo: Twiddled the changelog. ]
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210322164541.912261-1-arnd@kernel.org
----
- arch/x86/lib/msr-smp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/lib/msr-smp.c b/arch/x86/lib/msr-smp.c
-index 75a0915..40bbe56 100644
---- a/arch/x86/lib/msr-smp.c
-+++ b/arch/x86/lib/msr-smp.c
-@@ -252,7 +252,7 @@ static void __wrmsr_safe_regs_on_cpu(void *info)
- 	rv->err =3D wrmsr_safe_regs(rv->regs);
- }
-=20
--int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-+int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 regs[8])
- {
- 	int err;
- 	struct msr_regs_info rv;
-@@ -265,7 +265,7 @@ int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
- }
- EXPORT_SYMBOL(rdmsr_safe_regs_on_cpu);
-=20
--int wrmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-+int wrmsr_safe_regs_on_cpu(unsigned int cpu, u32 regs[8])
- {
- 	int err;
- 	struct msr_regs_info rv;
+Ha!, that basically does as I suggested. Using that page is unfortunate
+in that it will destroy the contig range for allocations until the work
+happens, but I'm not sure I see a nice alternative.
