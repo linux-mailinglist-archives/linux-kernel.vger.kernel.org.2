@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883C9344C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9AF344C36
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCVQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhCVQq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:46:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E541AC061574;
-        Mon, 22 Mar 2021 09:46:56 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id w8so8783865pjf.4;
-        Mon, 22 Mar 2021 09:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kbxl2EyvYQ+iEiBcY8QE8ei5vvB+dVWj1V2/xyWw0TE=;
-        b=vE1h4GIKLa2cwkoNekpc4wTiTM8egP5qas0EmsOfTsG5h27ncb1QxZga0l31AlsSTt
-         YNEOM42+qHVSLO4n5W1fojznc+DjYhSmoOUeRw1CGhBRL4nhZczRzhvQXUeWoULl3Xff
-         StqX9j9fuqOSDwCOcICI0nD+u0QIgRKSDHVHp/S8Mb448prsly7ecY0zs0+wtXMZwGUa
-         P17eSiE+K1RFVZnFnZKjQi6x9hLMu0brG4NcTqFbhNKJNXETBXzLtGyk/e9EZK25a731
-         CAaF2ZD64GIKW/8orz8BIaBJTJSuxD4dOi6nWufjwoAPDvo+AqSYX8HD1/PzG9VsSB6H
-         GL8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=kbxl2EyvYQ+iEiBcY8QE8ei5vvB+dVWj1V2/xyWw0TE=;
-        b=BmAPlA3J3vr542/mo85MB2ZUjj1LC/BlWULZXNHzbC9XjsGw6v4qHZVqZyQ78zrkRM
-         TzIlXS7Yb1R7riJmuKDW6yQTKEwbW+xktLP8xPptf++vxYLfMYU/XUOxu5Gu8vrNGaFJ
-         eEZt63vrpGy3BKbWbGN/Y91+BicfLYUH8FENfSN5xZe491OJDIM1z0tvDgoZdEHaXlmX
-         jghqIU+aThbqzFZVaIPhZXZoywD0Qb31HtoL7RgwECAp5bWCSGxghXsXinNxsahBFep0
-         TTxk7H7H8rOcxuqpWB58xQ4tnq9zLdwfps3YlTNSlVhDXEQf2OVHvBaZNdZmyFzlNdSQ
-         WwPA==
-X-Gm-Message-State: AOAM533ySiBnl3fCew95esLOpqDKvMQFqJEfNs89pL08M8MmNKNiNRX8
-        PLDzVDOMl+xX9NjFmmOEbwU=
-X-Google-Smtp-Source: ABdhPJwbk6V2o84od6hlmEJbFwKiLBCPqnL7u6PR+tGEMrq4u+vAROD/AIzO5JdsjNRdKQbAZu1zcg==
-X-Received: by 2002:a17:90a:17c3:: with SMTP id q61mr7810pja.58.1616431616507;
-        Mon, 22 Mar 2021 09:46:56 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:6568:690d:7590:b7b5])
-        by smtp.gmail.com with ESMTPSA id h68sm4088095pfe.111.2021.03.22.09.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 09:46:55 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 22 Mar 2021 09:46:53 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
-        surenb@google.com, mhocko@suse.com, david@redhat.com,
-        vbabka@suse.cz, linux-fsdevel@vger.kernel.org,
-        oliver.sang@intel.com
-Subject: Re: [PATCH v4 3/3] mm: fs: Invalidate BH LRU during page migration
-Message-ID: <YFjJ/fpe8acRxeN5@google.com>
-References: <20210319175127.886124-1-minchan@kernel.org>
- <20210319175127.886124-3-minchan@kernel.org>
- <20210320093249.2df740cd139449312211c452@linux-foundation.org>
- <YFYuyS51hpE2gp+f@google.com>
- <20210320195439.GE3420@casper.infradead.org>
- <8a01ba3dc10be8fa9d2cb52687f3f26b@codeaurora.org>
+        id S230505AbhCVQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:47:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231304AbhCVQrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:47:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3093560249;
+        Mon, 22 Mar 2021 16:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616431626;
+        bh=7jkwwQTMKRF9ZixAWWyF6DidhPZvbea3WyoahROBIyw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=G8gq65AfreIBay9epyWXjQoS6rNig65gO8hvNqXH5F/0d3XGyxdKqaAcinh12c5cI
+         TshE9ie+EEOgjybdaKWMBV/mSQ+G4AiUtfN9ySg5OY8qITWuD71GZ2QVlCi2tDKczt
+         ihGwHVpod9PEWv51NVFg5eNrVo+KCH9h+i2OyOwjTKFEgwRFNd5laj7A8r3SP5b75m
+         jTZ9Q6eDSB5bh8DwdlfVu2FCj9FMGkj/8pEGIajWSNcdIY3QW9dQLEpKuaWMntywJ+
+         AO2mE2Ee4uFqt7be4EZiKpe5JBvn3i7Gu1y95B/E8z35NsJxBjwJPTR6zcGv6QiAZ3
+         9WzYB8LZXL9xg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Robert Love <robert.w.love@intel.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Vasu Dev <vasu.dev@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: fcoe: fix mismatched fcoe_wwn_from_mac declaration
+Date:   Mon, 22 Mar 2021 17:46:59 +0100
+Message-Id: <20210322164702.957810-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a01ba3dc10be8fa9d2cb52687f3f26b@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 03:51:40PM -0700, Chris Goldsworthy wrote:
-> On 2021-03-20 12:54, Matthew Wilcox wrote:
-> > On Sat, Mar 20, 2021 at 10:20:09AM -0700, Minchan Kim wrote:
-> > > > > Tested-by: Oliver Sang <oliver.sang@intel.com>
-> > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > > Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> > > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > > >
-> > > > The signoff chain ordering might mean that Chris was the primary author, but
-> > > > there is no From:him.  Please clarify?
-> > > 
-> > > He tried first version but was diffrent implementation since I
-> > > changed a lot. That's why I added his SoB even though current
-> > > implementaion is much different. So, maybe I am primary author?
-> 
-> Hey Minchan, let's have you as the primary author.
-> 
-> > Maybe Chris is Reported-by: ?  And don't forget Laura Abbott as original
-> > author of the patch Chris submitted.  I think she should be Reported-by:
-> > as well, since there is no code from either of them in this version of
-> > the patch.
-> 
-> Yes, let's have a Reported-by: from Laura. We can change my Signed-off-by to
-> Reported-by: as well.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks Matthew and Chris.
+An old cleanup changed the array size from MAX_ADDR_LEN to
+unspecified in the declaration, but now gcc-11 warns about this:
 
-I just wanted to give more credit(something like Co-authored-by if we have
-such kinds of tag) to Chris since I felt he had more than. :)
+drivers/scsi/fcoe/fcoe_ctlr.c:1972:37: error: argument 1 of type ‘unsigned char[32]’ with mismatched bound [-Werror=array-parameter=]
+ 1972 | u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN],
+      |                       ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+In file included from /git/arm-soc/drivers/scsi/fcoe/fcoe_ctlr.c:33:
+include/scsi/libfcoe.h:252:37: note: previously declared as ‘unsigned char[]’
+  252 | u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
+      |                       ~~~~~~~~~~~~~~^~~~~
 
-Okay, let's have something like this.
+Change the type back to what the function definition uses.
 
-From: Minchan Kim <minchan@kernel.org>
+Fixes: fdd78027fd47 ("[SCSI] fcoe: cleans up libfcoe.h and adds fcoe.h for fcoe module")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/scsi/libfcoe.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-..
+diff --git a/include/scsi/libfcoe.h b/include/scsi/libfcoe.h
+index 2568cb0627ec..fac8e89aed81 100644
+--- a/include/scsi/libfcoe.h
++++ b/include/scsi/libfcoe.h
+@@ -249,7 +249,7 @@ int fcoe_ctlr_recv_flogi(struct fcoe_ctlr *, struct fc_lport *,
+ 			 struct fc_frame *);
+ 
+ /* libfcoe funcs */
+-u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
++u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN], unsigned int, unsigned int);
+ int fcoe_libfc_config(struct fc_lport *, struct fcoe_ctlr *,
+ 		      const struct libfc_function_template *, int init_fcp);
+ u32 fcoe_fc_crc(struct fc_frame *fp);
+-- 
+2.29.2
 
-Tested-by: Oliver Sang <oliver.sang@intel.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Reported-by: Laura Abbott <lauraa@codeaurora.org>
-Reported-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-
-Andrew, if you want me resend the patch, let me know.
-
-Thank you.
