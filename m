@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED8D3448C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1273448CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhCVPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:07:55 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:50602 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhCVPH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:07:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1616425646; x=1647961646;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PKEVxUCgPKYfeTmheletBgau4WWVsW+3puprPtDA3sw=;
-  b=UqJwbP2E1/2iPZWxAne/s1a9lo7NKUVqdz8VQHpE15hmf3p7Kr6MECx9
-   g3Q7sokmdEM5Wj7umRxofohmmrHA95O1UCi248nu9U3ygX+P2lRXRQHDq
-   5OHYahKw4zEX0IRSZxzhFUu4iqKH+5VgokCCFzwdlXObaNQ12Nbg/xLkr
-   mCUNnJz+uN882/FxRsb7EQseCPyLcrXHVt5y7WBiX2nIgdiRcGGIpgxxp
-   2qHqAupXCQzu5l0k4w0Cu9k7WyrVqsY920dJCzvD98PjiQAGTwyUaAiLg
-   fu1XXJrBXpUbAu4FJCo9/9n+dtcfYkCIWOkXkByWmFHqFwYq0CXoLjZi6
-   A==;
-IronPort-SDR: 2k6wZB5WbX+HIh6DWKmt2jsnNmQ88DYxESFLawyT2CQbVn6VCxREeIZdFanxgafkNYJ/q+FZsM
- /+35jIGaslhfYDgkHTCwBNmRPN4y5Qs8fv8ambqE4V2sMN7uj90lfz/ULpyHBAwi1bbq5MtF4c
- 46Xs18xj+5zv9Rk/8t4C6YV/oAryI4PqSJ/pvHsV+z+j/X74hquJOiQNmid6rqGff4Yffi+79D
- kzvdmqB71j8VIhr7CZ9c52XuCy/2NXC3RZUu9EDsYCoVFdd+Dj402ts/9ZmC7Yi8+3ZA+s3/0D
- xm0=
-X-IronPort-AV: E=Sophos;i="5.81,269,1610434800"; 
-   d="scan'208";a="119923115"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Mar 2021 08:07:18 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 22 Mar 2021 08:07:19 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 22 Mar 2021 08:07:16 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <bbrezillon@kernel.org>,
-        <linux-mtd@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Kai Stuhlemmer (ebee Engineering)" <kai.stuhlemmer@ebee.de>,
-        <stable@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] mtd: rawnand: atmel: Update ecc_stats.corrected counter
-Date:   Mon, 22 Mar 2021 17:07:14 +0200
-Message-ID: <20210322150714.101585-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        id S231664AbhCVPI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231732AbhCVPHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:07:42 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F6876192E;
+        Mon, 22 Mar 2021 15:07:38 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 11:07:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, valentin.schneider@arm.com,
+        tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vincent.donnefort@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] cpumask: Introduce DYING mask
+Message-ID: <20210322110737.221f4b78@gandalf.local.home>
+In-Reply-To: <20210321193037.7o3mqcmwjthbos7n@e107158-lin>
+References: <20210310145258.899619710@infradead.org>
+        <20210310150109.151441252@infradead.org>
+        <20210321193037.7o3mqcmwjthbos7n@e107158-lin>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kai Stuhlemmer (ebee Engineering)" <kai.stuhlemmer@ebee.de>
+On Sun, 21 Mar 2021 19:30:37 +0000
+Qais Yousef <qais.yousef@arm.com> wrote:
 
-Update MTD ECC statistics with the number of corrected bits.
+> On 03/10/21 15:53, Peter Zijlstra wrote:
+> > --- a/kernel/cpu.c
+> > +++ b/kernel/cpu.c
+> > @@ -160,6 +160,9 @@ static int cpuhp_invoke_callback(unsigne
+> >  	int (*cb)(unsigned int cpu);
+> >  	int ret, cnt;
+> >  
+> > +	if (bringup != !cpu_dying(cpu))  
+> 
+> nit: this condition is hard to read
 
-Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kai Stuhlemmer (ebee Engineering) <kai.stuhlemmer@ebee.de>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/nand/raw/atmel/nand-controller.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Would
+	if (bringup == !!cpu_dying(cpu))
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index e6ceec8f50dc..8aab1017b460 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -883,10 +883,12 @@ static int atmel_nand_pmecc_correct_data(struct nand_chip *chip, void *buf,
- 							  NULL, 0,
- 							  chip->ecc.strength);
- 
--		if (ret >= 0)
-+		if (ret >= 0) {
-+			mtd->ecc_stats.corrected += ret;
- 			max_bitflips = max(ret, max_bitflips);
--		else
-+		} else {
- 			mtd->ecc_stats.failed++;
-+		}
- 
- 		databuf += chip->ecc.size;
- 		eccbuf += chip->ecc.bytes;
--- 
-2.25.1
+read better?
+
+-- Steve
+
+> 
+> > +		set_cpu_dying(cpu, !bringup);  
 
