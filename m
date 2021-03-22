@@ -2,115 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C5F343B49
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AB5343B52
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhCVIIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S229865AbhCVIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCVIIk (ORCPT
+        with ESMTP id S229647AbhCVIKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:08:40 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AB7C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:39 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo8689699wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b7CN6JdpOmja3Ya9/8A0Yc6qp4xL6xo6CnNKb5MDcgU=;
-        b=Qw9T73UaV1U8h8LxfGhg+9skYAOyd6FhNRHGzS4USWYsbHsCjClsUwuTZe58023L2x
-         jfJ76qnzVXyYwINInQ3FwPaBMCdLhJfnzwcKrLrSutmCMf9CXDZGsElLC8gML9xnUPjw
-         bUOUnZCl2LhHlq7VjJBqOj0h4nRIlhWnfBccMdDByAvmxboyybHI7vFlZmiKIn+SkhZt
-         9yWNmGwUZBtkyeg+8y6P+CFg6/7TVQDcZYo6vKNR5TLFVUFr3L7JoLULclDYO+tLcNsX
-         TQQYvgSAnn3l1yzRKXJDsmmFU2xK4XLnD4D1Nc59SPi5RB/isg2iMmCK1pqeopAmq0Ql
-         Dk0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b7CN6JdpOmja3Ya9/8A0Yc6qp4xL6xo6CnNKb5MDcgU=;
-        b=UaFmi5SujkBMnBSA0sdj2sBBS98Kgf1IQHrJU2kgYsUz+I+xo3JXgwPQR3JcAs5k+u
-         HSu3hiBVMSp3de399PCwrggOMvok0La2JrLhrDTV0ax/qZVHzEOZpc/3jx6XFfRf6LSA
-         e7T9fr3mjPCnuhlrtOLdNoCGaRycwpIag/p4hqEr/PyiD+mR3Y+/bE/nhG5Rrp+Fm8N5
-         KNMSyHFJ/wfNyQY5I5fBfrSYX5Qh4278vJPc9vp6M9NzyhY9KK+QQ9Qn/q+VBJgp0Vfk
-         zHNhQA3KjXO/4eOw+Fc4+40Bd20+F32fSLDRNDaVoTBaWAtr2fK97Z2gMVgb/S++Srkg
-         RvQQ==
-X-Gm-Message-State: AOAM530RUZ4syj87LO8NQqsSHd6gGeJz8pq4aZZubdghZpsBwMm6DEZJ
-        RKsd55n9CQg0n2gNMwrsWlLyT3pSOcG07g==
-X-Google-Smtp-Source: ABdhPJz2mztkkc3xYlJs3i61gDWH1UuGnnW5WMrLPF7qAO52KtghzeIEso0c8MS13TDrtALhC7NbYQ==
-X-Received: by 2002:a05:600c:2cd8:: with SMTP id l24mr14511400wmc.88.1616400518535;
-        Mon, 22 Mar 2021 01:08:38 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:d8b:d5f9:2138:169c? ([2a01:e34:ed2f:f020:d8b:d5f9:2138:169c])
-        by smtp.googlemail.com with ESMTPSA id v7sm16067242wme.47.2021.03.22.01.08.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 01:08:38 -0700 (PDT)
-Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Fix use after error
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:THERMAL/CPU_COOLING" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <YFMpUDNGIiLOzr0/@mwanda>
- <20210319202522.891061-1-daniel.lezcano@linaro.org>
- <20210322032946.jstyrnc6dctq4fzj@vireshk-i7>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <dcbf21e2-e2da-7e0d-66bb-ae7f4dc28858@linaro.org>
-Date:   Mon, 22 Mar 2021 09:08:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Mar 2021 04:10:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66962C061574;
+        Mon, 22 Mar 2021 01:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Gom5lIOcdXHDFkwwTX/JWMweB4RudLWTzTu1Kol3XM=; b=JyJG6OQw9jHUMAM4Ha8nIensbI
+        9fZiw/I5PHU+KACQauDg9T+mvu6hIIUAwAXbWasK7pdDRaKG98c2hqagwjW6Ay1hIKXKnFNc2p26o
+        BId9OrjcFEM5zhFLk9MMy6f6kGnEeXar1ZVotYRwHdZ5zBVMIZgToOz36vhi7lffHa+KFbJy2v09a
+        e8TyGo2crikf1T/fodSFlmVdvvk30haS4s95hnoSh+41au08sn8ScErTl58edbOIyZKJHKUAUUIhx
+        Lm33TT6XoLTpBOnLqhqFKKZM2Nk5r56IXwWL5vaJSjRD34k/rRMfvJ7Nht+Ov2NcRl2dipUfU9O3Y
+        M8zY187A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOFcB-008BcB-Vl; Mon, 22 Mar 2021 08:09:01 +0000
+Date:   Mon, 22 Mar 2021 08:08:43 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 03/27] afs: Use wait_on_page_writeback_killable
+Message-ID: <20210322080843.GD1946905@infradead.org>
+References: <20210320054104.1300774-1-willy@infradead.org>
+ <20210320054104.1300774-4-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210322032946.jstyrnc6dctq4fzj@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320054104.1300774-4-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/03/2021 04:29, Viresh Kumar wrote:
-> On 19-03-21, 21:25, Daniel Lezcano wrote:
->> When the function successfully finishes it logs an information about
->> the registration of the cooling device and use its name to build the
->> message. Unfortunately it was freed right before:
->>
->> drivers/thermal/cpuidle_cooling.c:218 __cpuidle_cooling_register()
->> 	warn: 'name' was already freed.
->>
->> Fix this by freeing after the message happened.
->>
->> Fixes: 6fd1b186d900 ("thermal/drivers/cpuidle_cooling: Use device name instead of auto-numbering")
+On Sat, Mar 20, 2021 at 05:40:40AM +0000, Matthew Wilcox (Oracle) wrote:
+> Open-coding this function meant it missed out on the recent bugfix
+> for waiters being woken by a delayed wake event from a previous
+> instantiation of the page.
 > 
-> Why not merge this with the Fixes patch itself since it isn't there in Linus's
-> tree yet ?
-> 
-> Or is your branch strictly immutable ?
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Hi Viresh;
+Looks good,
 
-The changes follow the path:
-
-testing -> linux-next -> next
-
-The branch next is never rebased. The patch above reached it. This is
-notified by the thermal-bot [1].
-
-  -- Daniel
-
-[1]
-https://lore.kernel.org/linux-pm/20210314111333.16551-3-daniel.lezcano@linaro.org/T/#ma257519efc70ee60faca47dbd458b05de5449bf8
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Reviewed-by: Christoph Hellwig <hch@lst.de>
