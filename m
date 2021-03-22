@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299743436BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86553436C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCVCoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 22:44:00 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14119 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCVCnt (ORCPT
+        id S229865AbhCVCqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 22:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhCVCqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:43:49 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3f0G3krZz19Gm7;
-        Mon, 22 Mar 2021 10:41:50 +0800 (CST)
-Received: from [10.174.177.87] (10.174.177.87) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 10:43:37 +0800
-Subject: Re: [PATCH] pci: fix memory leak when virtio pci hotplug
-To:     Zhiqiang Liu <liuzhiqiang26@huawei.com>, <rjw@rjwysocki.net>,
-        <lenb@kernel.org>, <bhelgaas@google.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, linfeilong <linfeilong@huawei.com>
-References: <c48998b7-5308-e196-66b5-905fc8c4edc4@huawei.com>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <768d4a60-7442-fbdd-9c00-cc927a54d340@huawei.com>
-Date:   Mon, 22 Mar 2021 10:43:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Sun, 21 Mar 2021 22:46:34 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3D0C061574;
+        Sun, 21 Mar 2021 19:46:34 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id j17so7956792qvo.13;
+        Sun, 21 Mar 2021 19:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=spy64lz/qEfRpLlios/Ez5VtddaZYk0M6Y/CQzCcQgM=;
+        b=RvKEMPQtqeNPsx1sRZAjjxq8wptO/YsAaqtEcapxQxqdOX141bNKdCap9jNkPU8uWA
+         wC4qiBvhqcF1bb+aypc6c+waOBODldSH91eb3FByef48tatnhSBSdKVCFUQldfRUdR93
+         73vXH6zWWygQP5yeBB69EDKQnIy7/rxD0HEe4R+iuKt0tvsxedi0FkY7zOQMSRPM8WN0
+         2E434pDKSoUFkFE9zik/JuJckJMVHB1Ay0HIIShkdkRB49kS7+NjyMQ81H2z2Iw2aITY
+         OGcjnkBgOQ6dW0JVJu0ls3iYqxiuWHdOrvMOd15R+eGSr7jDHKi4ndYWzOO/c/sLg4dV
+         PKpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=spy64lz/qEfRpLlios/Ez5VtddaZYk0M6Y/CQzCcQgM=;
+        b=f0rJI12L0hI3l9nQ8V6Zxec/aITYR+4EZfI6dWdrWtXWDYE5j2KqIX1WH64WdxKgQS
+         0OFg+/NLYyWlaEqPcqxUFONGeypmfSlWnYsVXaPqXA1YinIaPSFMkFqrYCg2f8v5Rbtw
+         zEdvL+s0tcyNLofx+WMsikfnItGeScBp8VZ2g/HlzBDqlOtYm3D3EVnmqhMEwBaPXtWt
+         mGckNp90RwPJ1fA4M/zvaMbfpSGuldm4wA0SNbTnzQMCKv4mCZas8K6Uzjrj9m0Xf2EZ
+         cM2PmS04DawsouSnm/1OZc6TxLniZQBFP6a4ZJtmyVvEDVcguISLasHbcfd0yRb0KcXG
+         /pXw==
+X-Gm-Message-State: AOAM530P27ahCViHfLQQ7wUeuyOOUCvG7nQLr1iLKtAQtTQgzG4kg+zS
+        rc7bKrmu1Y0/eCtfEygThw0=
+X-Google-Smtp-Source: ABdhPJztULizWvtH0x3aQWuzHYHzMRjyBlxGVD+AJG4N1BI8zg4PHZLzskhMP3U9uK1SfXUZeKqhOw==
+X-Received: by 2002:a0c:b522:: with SMTP id d34mr249327qve.3.1616381193217;
+        Sun, 21 Mar 2021 19:46:33 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.190])
+        by smtp.gmail.com with ESMTPSA id m16sm9886234qkm.100.2021.03.21.19.46.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 19:46:32 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     djwong@kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] xfs: Rudimentary spelling fix
+Date:   Mon, 22 Mar 2021 08:16:19 +0530
+Message-Id: <20210322024619.714927-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <c48998b7-5308-e196-66b5-905fc8c4edc4@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.87]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/21 23:29, Zhiqiang Liu wrote:
-> From: Feilong Lin <linfeilong@huawei.com>
-> 
-> Repeated hot-plugging of pci devices for a virtual
-> machine driven by virtio, we found that there is a
-> leak in kmalloc-4k, which was confirmed as the memory
-> of the pci_device structure. Then we found out that
-> it was missing pci_dev_put() after pci_get_slot() in
-> enable_slot() of acpiphp_glue.c.
-> 
-> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
-> Reviewed-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> ---
->   drivers/pci/hotplug/acpiphp_glue.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> index 3365c93abf0e..f031302ad401 100644
-> --- a/drivers/pci/hotplug/acpiphp_glue.c
-> +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> @@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
->   			slot->flags &= ~SLOT_ENABLED;
->   			continue;
->   		}
-> +		pci_dev_put(dev);
->   	}
->   }
-> 
-Reviewed-by: Wu Bo <wubo40@huawei.com>
+
+s/sytemcall/systemcall/
+
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/xfs/xfs_inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index f93370bd7b1e..b5eef9f09c00 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -2870,7 +2870,7 @@ xfs_finish_rename(
+ /*
+  * xfs_cross_rename()
+  *
+- * responsible for handling RENAME_EXCHANGE flag in renameat2() sytemcall
++ * responsible for handling RENAME_EXCHANGE flag in renameat2() systemcall
+  */
+ STATIC int
+ xfs_cross_rename(
+--
+2.31.0
+
