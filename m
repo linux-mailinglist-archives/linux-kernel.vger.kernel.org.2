@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941EF3441A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DA23442CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhCVMe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54802 "EHLO mail.kernel.org"
+        id S230343AbhCVMpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhCVMcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 630EB619A3;
-        Mon, 22 Mar 2021 12:32:25 +0000 (UTC)
+        id S231286AbhCVMiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:38:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68E1B61994;
+        Mon, 22 Mar 2021 12:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416345;
-        bh=oZ4IFlk/9bq4DKYKDhxL1X/+NmZqzXw5WYT/pnqiE+Q=;
+        s=korg; t=1616416639;
+        bh=1/IVbCB4L41rAqqxmzsDd9nryLAFzd61mULM2vAsHGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e72P5NaPHMw4WNsWnqe5Z0r6y7ID6Ihj1tqraCbHwGYDlgZ3CzPX0x3ud8Z/ClxGD
-         HnNQyOxpmrp3yQlY/FluBzuQ5OYd0JKAKdcxkswSrceXOzWYXU7gk6BPCyVgf1/lv9
-         S/lIdej3brUaShsmKgKFsCn2qFozee4uPZV5KYYI=
+        b=hyG9Df7WZ6rJhrec6ekkqAM1b8QALXokZwgDZkcYcu1T4WwmLKwB2o01LrFk0t6T9
+         9TiiZzm34VLX9X3uVGyLhEDhynSKiWQZigiAyf+4hQbCRoHtajxuBTI0STfTCK543i
+         dPic/R46D/NMBUD/fq6MhAaAn4DQ/tdLhsCwlLuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.11 036/120] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 062/157] nvme-rdma: fix possible hang when failing to set io queues
 Date:   Mon, 22 Mar 2021 13:26:59 +0100
-Message-Id: <20210322121930.863072727@linuxfoundation.org>
+Message-Id: <20210322121935.730037892@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 9922f50f7178496e709d3d064920b5031f0d9061 upstream.
+[ Upstream commit c4c6df5fc84659690d4391d1fba155cd94185295 ]
 
-The max boundary check while parsing dai ids makes
-sound card registration fail after common up dai ids.
+We only setup io queues for nvme controllers, and it makes absolutely no
+sense to allow a controller (re)connect without any I/O queues.  If we
+happen to fail setting the queue count for any reason, we should not allow
+this to be a successful reconnect as I/O has no chance in going through.
+Instead just fail and schedule another reconnect.
 
-Fixes: cd3484f7f138 ("ASoC: qcom: Fix broken support to MI2S TERTIARY and QUATERNARY")
-
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Link: https://lore.kernel.org/r/20210311154557.24978-1-srivasam@codeaurora.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Chao Leng <lengchao@huawei.com>
+Fixes: 711023071960 ("nvme-rdma: add a NVMe over Fabrics RDMA host driver")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -737,7 +737,7 @@ static void of_lpass_cpu_parse_dai_data(
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 195703013272..8b326508a480 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -736,8 +736,11 @@ static int nvme_rdma_alloc_io_queues(struct nvme_rdma_ctrl *ctrl)
+ 		return ret;
  
- 	for_each_child_of_node(dev->of_node, node) {
- 		ret = of_property_read_u32(node, "reg", &id);
--		if (ret || id < 0 || id >= data->variant->num_dai) {
-+		if (ret || id < 0) {
- 			dev_err(dev, "valid dai id not found: %d\n", ret);
- 			continue;
- 		}
+ 	ctrl->ctrl.queue_count = nr_io_queues + 1;
+-	if (ctrl->ctrl.queue_count < 2)
+-		return 0;
++	if (ctrl->ctrl.queue_count < 2) {
++		dev_err(ctrl->ctrl.device,
++			"unable to set any I/O queues\n");
++		return -ENOMEM;
++	}
+ 
+ 	dev_info(ctrl->ctrl.device,
+ 		"creating %d I/O queues.\n", nr_io_queues);
+-- 
+2.30.1
+
 
 
