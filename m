@@ -2,138 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C952344E6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6245344E72
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCVSXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S229764AbhCVSYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhCVSWw (ORCPT
+        with ESMTP id S231637AbhCVSXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:22:52 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5856C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:22:51 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id e7so20481016edu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:22:51 -0700 (PDT)
+        Mon, 22 Mar 2021 14:23:40 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41173C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:23:40 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so4320037ooa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=asL2ZZdtkm66EuwKx1Rl/XrY+7M28qzFVlOOJDLrX1Q=;
-        b=jKJvrSeRF6WQqvVAhseT8JuAeNVVKu5BVHgSK5zf55N/aCZZMavPrcVmTO6k2s4y6R
-         M28a6saDUEFEzuei1dG/wxw71JTuTWaTklTZp8dxzQAS8EsLE2tbS6mBsOJe5MG8kEsG
-         ptlcs01Z1gxqievx+csQxXG4RhSATpkzo0hTAK6wc3MZ/J4AfBzWc7t/GxbZjA6cMBbC
-         Lu0za++wqkBLJf914TLR/vCydahGRWYz0lCPzorsE3JBOtFv1KKmtEiJ8JV4gXAfxecf
-         gGkGuzipWzdTnARJWMxhniq2ER3gQEossUtqCZbfd3HZnb3OTXA6Q665eT7ndcbanrlX
-         6WDA==
+        bh=8IsZawFgEMa/0h+2q6OtKz/L5NfIYbaENUQzEsilOyw=;
+        b=fytfpucsCXX8JYqavXWhmK18qqDucTkmIpt34S50xGs2cV+bQypGhXDz0XGnZXIl8o
+         7WyjutBpRabNrGCSnObLGYmN9b8K0VYGZLykVOOl/hb2zSbhaTKkViRbFq48IQl+P0At
+         Pu075Xcvab7PqFOJByqhqMAXFOJwxzXwwwKYhF1eKImXTHuOzTXNRU8mzk7nuuQTztXm
+         9nNfYd897h0rImxTCRJZv0ysCHVfaIJyR2U+VPK9rfGSoEPcqr/56Ws2L/fmpr/EvgF1
+         nK2i4QI0GxFy77w8NrUEpYHLbIrY9URRvlEOIea3Kk7T0m79zpEAKtYfGfHjIsR2MDf6
+         8J9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=asL2ZZdtkm66EuwKx1Rl/XrY+7M28qzFVlOOJDLrX1Q=;
-        b=kFwYdIlLzPhJB9kMCoyxXzsZ8xrGoYXHrjnPGStcY92UGT8HcBA+skRv8SaYsfCKXm
-         4ahQfI+HbW0AB5VWi0HNp1opKjCAdvSsU3FaWyUf0nHsxor+1nRTYrhtgsA4T/o09gFV
-         Sj2ZNxEFeW+mM9KKtlTuOZouS2hUsBc8ksHG9j07z8ZhbzgAYFQZJxzVFc6EW2Evif0W
-         HgZPtR156DB+Ipm/jNKhRJx1N9XHygF2D6r06OPzXVjoFFH65/1oF6GUwdtKegUda5Zh
-         7vY6sklvY8/1fqxyr7Z7HV5dRW07lN+HdruqVjcdhdsOVfnUtEoyfq/BB5x6Sa8c+jVk
-         NcbA==
-X-Gm-Message-State: AOAM533Xn4gO8tTcUgdE8m6/tF0U2xrSW/C7QkdoVGXEG/41jG4zYp0A
-        HrPLS30MFb6js97XvRCoHdc=
-X-Google-Smtp-Source: ABdhPJzdlnMnhcI11rqCVdKyiJ4uKdceNJbkp7h+h/nHy3QamkCbfqong+uG+lmxdK0+gA5sf51O4Q==
-X-Received: by 2002:aa7:d4cb:: with SMTP id t11mr946836edr.202.1616437370465;
-        Mon, 22 Mar 2021 11:22:50 -0700 (PDT)
-Received: from agape.jhs ([151.37.41.34])
-        by smtp.gmail.com with ESMTPSA id e26sm12663906edj.29.2021.03.22.11.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 11:22:50 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 19:22:46 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     joe@perches.com, apw@canonical.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] staging: rtl8723bs: moved function prototypes out
- of core/rtw_efuse.c
-Message-ID: <20210322182245.GB1443@agape.jhs>
-References: <cover.1616422773.git.fabioaiuto83@gmail.com>
- <c46e7d7a686988bb6aaea9bc24b15188136e0aed.1616422773.git.fabioaiuto83@gmail.com>
- <YFjA2XhxhJE/iN4j@kroah.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8IsZawFgEMa/0h+2q6OtKz/L5NfIYbaENUQzEsilOyw=;
+        b=Cpm/cB/qSgpu0H5SnnQ7YNeRz4Oa6U6uFBnxiBRgEafDDz473zgXgQQ1ZEbk6kMFKY
+         1xnfcfesoNEC9CiIgnhlJiKzFTxEIQjPnPekuEOqa50WmCfQZ2V4nSpAUpAWSiv9CcaJ
+         cd6rXYiDCwfLR3AQ6TlT5/sHv2xhlwo9bRl74NYNi+52XrvkiW0L2eTEfGV8C0SGFYlb
+         ywMcQRchW0VDVA/u9tNGjYwn8KbTel/0TDqPLrMVHs1/2W1sFDqx/CitBnIxAF8db3nK
+         T0nRfYcis0Rk/AJdGXbJqismHgXV5nujIVEsHhYacu2D7vav7QF1F3MUDz4AR2toqQzv
+         aOiw==
+X-Gm-Message-State: AOAM533Cj/yLAF+My/CQWGhgmlRskc8+K0M2Yo6JAmnTCEZhPookqlZH
+        79qTErRKsxqzIBaXCoD+3tVlsXQ+jfA=
+X-Google-Smtp-Source: ABdhPJwkUL3QcO+y7QvTQQ5BhdTBa2rPlznkaQeQAqGZXrfBAvt4GV/Wff3XamSjmKgEy4giFXNGng==
+X-Received: by 2002:a4a:b987:: with SMTP id e7mr659399oop.92.1616437419169;
+        Mon, 22 Mar 2021 11:23:39 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t2sm3169939ool.18.2021.03.22.11.23.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Mar 2021 11:23:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 22 Mar 2021 11:23:36 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.12-rc4
+Message-ID: <20210322182336.GA240669@roeck-us.net>
+References: <CAHk-=whDxybSS63==ycQiNobvamDmoyxQo1JL-31Tup8azbeWw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFjA2XhxhJE/iN4j@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHk-=whDxybSS63==ycQiNobvamDmoyxQo1JL-31Tup8azbeWw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 05:07:53PM +0100, Greg KH wrote:
-> On Mon, Mar 22, 2021 at 03:31:40PM +0100, Fabio Aiuto wrote:
-> > fix the following checkpatch issues:
-> > 
-> > WARNING: externs should be avoided in .c files
-> > 35: FILE: drivers/staging/rtl8723bs/core/rtw_efuse.c:35:
-> > +bool
-> > 
-> > moved two function prototypes in include/rtw_efuse.h
-> > 
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> >  drivers/staging/rtl8723bs/core/rtw_efuse.c    | 10 ----------
-> >  drivers/staging/rtl8723bs/include/rtw_efuse.h |  3 +++
-> >  2 files changed, 3 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_efuse.c b/drivers/staging/rtl8723bs/core/rtw_efuse.c
-> > index 32ca10f01413..0772397738d4 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_efuse.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_efuse.c
-> > @@ -32,11 +32,6 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
-> >  #define REG_EFUSE_CTRL		0x0030
-> >  #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
-> >  
-> > -bool
-> > -Efuse_Read1ByteFromFakeContent(
-> > -	struct adapter *padapter,
-> > -	u16 	Offset,
-> > -	u8 *Value);
-> >  bool
-> >  Efuse_Read1ByteFromFakeContent(
-> >  	struct adapter *padapter,
-> > @@ -53,11 +48,6 @@ Efuse_Read1ByteFromFakeContent(
-> >  	return true;
-> >  }
-> >  
-> > -bool
-> > -Efuse_Write1ByteToFakeContent(
-> > -	struct adapter *padapter,
-> > -	u16 	Offset,
-> > -	u8 Value);
-> >  bool
-> >  Efuse_Write1ByteToFakeContent(
-> >  	struct adapter *padapter,
-> > diff --git a/drivers/staging/rtl8723bs/include/rtw_efuse.h b/drivers/staging/rtl8723bs/include/rtw_efuse.h
-> > index 5bae46ecd9de..1f304df8c421 100644
-> > --- a/drivers/staging/rtl8723bs/include/rtw_efuse.h
-> > +++ b/drivers/staging/rtl8723bs/include/rtw_efuse.h
-> > @@ -103,6 +103,9 @@ extern u8 fakeBTEfuseInitMap[];
-> >  extern u8 fakeBTEfuseModifiedMap[];
-> >  /*------------------------Export global variable----------------------------*/
-> >  
-> > +bool Efuse_Read1ByteFromFakeContent(struct adapter *padapter, u16 Offset, u8 *Value);
-> > +bool Efuse_Write1ByteToFakeContent(struct adapter *padapter, u16 Offset, u8 Value);
+On Sun, Mar 21, 2021 at 03:34:58PM -0700, Linus Torvalds wrote:
+> Very much an average rc4, possibly just a tad on the smaller side of average.
 > 
-> No, there's no need for this to be in a .h file, it is only called from
-> one .c file.
+> Nothing here particularly stands out. The diffstat looks a bit more
+> spread out than it perhaps normally would do, because of the removal
+> of the (never used) MODULE_SUPPORTED_DEVICE() thing that causes some
+> trivial line removal in various drivers, but not only did it never do
+> anything, it wasn't actually even all that common (ie it certainly
+> wasn't a "most drivers" kind of situation).
 > 
-> Make the thing static and all should be fine, right?
+> Anyway, drivers (sound, gpu, nvme, USB), some filesystem updates,
+> io-uring (signal fixes and cleanups), arch fixes (mostly RISC-V and
+> x86 kvm), and just random small things all over.
 > 
-> thanks,
+> So I'll just tempt the fates and say that everything looks pretty
+> normal and this release seems to look good despite the rc1 hiccup,
 > 
-> greg k-h
 
-ok, better static function when possibile. 
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 437 pass: 437 fail: 0
 
-Thank you Greg,
-
-fabio
+Guenter
