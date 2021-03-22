@@ -2,78 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3796344092
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943D7344096
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhCVMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:13:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        id S230290AbhCVMPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:15:00 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40068 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhCVMNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:13:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61EBA6198B;
-        Mon, 22 Mar 2021 12:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616415216;
-        bh=2xy/ZpPjOW0oIt6mLviODf/g/JztzLUVzbDrPox2lfE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YQSbCTQjeyS2UqljQkDqZmB9hNuuzGNxqFzi8tBD2j6ueNIDzsiCBtoliDyOuroNX
-         aaSA2/yroenyErha3H67sIq7O7AJys3qFTeKaUiHcTauU5CZnaBlMwWPz4pZYW221x
-         nU8nCIGfiXCckik4WcBuszHK5Qe18fibAQ/Fxcd0ZymHuCn8LyuV7kH+0+27U+bvgH
-         cVm8jHgfFEEQbHFh1PVaKRJo7PKBfAtZKir9yBxtBtfRcVIVixrF5FoO2zLZ6hLdI9
-         ekTb8DMBqmjxiafWkjIxXQM3TXEuK8Fxn7+pqs0ptkbKS3gpm+Uk5J9AGhIaTYbbIB
-         8qHqNpr3lwBIQ==
-Date:   Mon, 22 Mar 2021 12:13:31 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Jun <chenjun102@huawei.com>,
-        Marco Elver <elver@google.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] arm64: stacktrace: don't trace arch_stack_walk()
-Message-ID: <20210322121330.GA4681@sirena.org.uk>
-References: <20210319184106.5688-1-mark.rutland@arm.com>
+        id S230263AbhCVMOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:14:25 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lOJRu-00COZM-Nx; Mon, 22 Mar 2021 13:14:22 +0100
+Date:   Mon, 22 Mar 2021 13:14:22 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregory.clement@bootlin.com,
+        robh+dt@kernel.org
+Subject: Re: [PATCH] arm64: dts: ensure backward compatibility of the AP807
+ Xenon
+Message-ID: <YFiKHu3hlAk+joOn@lunn.ch>
+References: <20210322003915.3199775-1-mw@semihalf.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319184106.5688-1-mark.rutland@arm.com>
-X-Cookie: A friend in need is a pest indeed.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210322003915.3199775-1-mw@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 01:39:15AM +0100, Marcin Wojtas wrote:
+> A recent switch to a dedicated AP807 compatible string for the Xenon
+> SD/MMC controller result in the driver not being probed when
+> using updated device tree with the older kernel revisions.
+> It may also be problematic for other OSs/firmware that use
+> Linux device tree sources as a reference. Resolve the problem
+> with backward compatibility by restoring a previous compatible
+> string as secondary one.
+> 
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-On Fri, Mar 19, 2021 at 06:41:06PM +0000, Mark Rutland wrote:
-> We recently converted arm64 to use arch_stack_walk() in commit:
->=20
->   5fc57df2f6fd ("arm64: stacktrace: Convert to ARCH_STACKWALK")
->=20
-> The core stacktrace code expects that (when tracing the current task)
-> arch_stack_walk() starts a trace at its caller, and does not include
-> itself in the trace. However, arm64's arch_stack_walk() includes itself,
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBYiecACgkQJNaLcl1U
-h9DEbQf/RW80IksT99bCxlvuUNGMepB0HODebTps3dINdEdl0awUTI6YBtkkgbgf
-xvpA4kcJhNSyMELjqZ/fW4tleGNcrLP8O11OoUb3+eDqL6s/bvz1eKLoszb+jWDa
-XMMMjPCq7+gVNwwaSpajrys50UszkyzmlKvq5eE/7rfWHBGdjzRQ8XJwSadHuWg5
-0zJEvSQPDGEQZ+158WWs+LwhRDFuMkFs8wtVH0H0Es60AICB4rBPEkI6PLQnh6gg
-55SK9zeFuOwxTM1MTd7bgDeI3VugSBf/s0NoBqaC1TdsqYjiUk6bbKtBzpvWMPlZ
-pvnhkiUq/XGWnYLwbzV/fye8mr1zcw==
-=gunV
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+    Andrew
