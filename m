@@ -2,170 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6820344D08
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA96344D09
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhCVRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:15:24 -0400
-Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:27591
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230334AbhCVROq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:14:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EIEbxZvXpolTN4bBFMLNK8gzO7yk31UTK2s3smkBOmsQvL2nS+T88qv5UZCQ+I36/a2sJ3Ed3K+jzX6lsD6Z2Ln6gjTkF4lM8Ml+CHTtIqVFuub+R2yygehmQRh6SrXX5vpARNx7naoVucEwl6wAgg+EAnUztOMFQHh8W9OpQZHmidQ0njpELSEgT5uvmq1vUW5L9Cx7w5ekRBgeBVLlcuRz8Qre/dJ5OpIN0KsAnRmoGMCsuxKZ0vx7PsZIkrgzyyaReWlk56Ob+YzrSKVv8K7EnKWkB9UBXSurJcKPOZXAZb/+atXwHiiMpvlVWsAigaxPNTjp8jqfCA9Lz9tIMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hst/YM/qPFiQ20GaPXW7z81quuvY+QfkKCzDv7OkUzs=;
- b=JJWNyTiMcWX48PNfsoU6PQrRxGY3nEtqd9+agznmJtE0u7F6Qw/rQpZw2MLjyW69CpICaXfqWgW9ayWW+SvsiUae0uGICzwDmo3wg77infaGCyhI/Tm5QbJTkPJWBR1vqhiVfaCWR0QgM7Gai2UakSWgwMqFqYrLBTzamd5uMVWnI7PQpql8x9Ny3hRB6eeR0/3HroAxKHFlarnxhQDzibPjY8EiZxSMikr6Fzo1XrEfmF3/64juQrlvMx35e5+xl6eC4UDzpo10EE/jO9FoTMQ2XgpEuUydhk5em9jCMgmdMffnkf1wdfh5A4Nt4ybNBlm9Ap4ACOWbaf2P/CwHVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
+        id S232139AbhCVRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231409AbhCVRPP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:15:15 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E577C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:15:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id l123so11401681pfl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:15:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hst/YM/qPFiQ20GaPXW7z81quuvY+QfkKCzDv7OkUzs=;
- b=fDKpMPrTf9Q1SSRaGKtfp49/ZxuZTRQcm4MWP9HABSJ7ChE3lNaXIDUwooBQQtCs+Y3jInzr7X2JbIPmJlnj9il9u8zofqtsxWOhLVlWEoAhV2/gVKjIFuuHko0WsPuu7H/RGsNFXVC6INmc4da8DhaEJsA0zSq32Az8TmOVFsc=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SA2PR11MB5114.namprd11.prod.outlook.com (2603:10b6:806:114::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 17:14:43 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::41bc:5ce:dfa0:9701]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::41bc:5ce:dfa0:9701%7]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
- 17:14:43 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [PATCH v5 08/24] wfx: add bus_sdio.c
-Date:   Mon, 22 Mar 2021 18:14:36 +0100
-Message-ID: <4503971.bAhddQ8uqO@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <CAPDyKFqJf=vUqpQg3suDCadKrFTkQWFTY_qp=+yDK=_Lu9gJGg@mail.gmail.com>
-References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com> <20210315132501.441681-9-Jerome.Pouiller@silabs.com> <CAPDyKFqJf=vUqpQg3suDCadKrFTkQWFTY_qp=+yDK=_Lu9gJGg@mail.gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Originating-IP: [2a01:e35:2435:66a0:544b:f17b:7ae8:fb7]
-X-ClientProxiedBy: BL0PR0102CA0031.prod.exchangelabs.com
- (2603:10b6:207:18::44) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UojHEz0pk6GNebu+2HDqWhxrBOGOhUOBrfY2ndpxyhs=;
+        b=GbkaRQiTIP+rsqDnSrsNsq0ubjJxbTV3elvqtaFuk9jtLD533Hx/SL/hr04uHKdU0K
+         HhUbjafxu5+7EbRgy5WekXc4xqk2BuhFDjT2JQi/qyyKCusBYDARQmsjztyjHcuClN+w
+         /k80QBWJkHUTdFBz8K8N0+yMAP+88AU8wBcB9suJI3wJHVzoJ9y4NwpXD28oc21XjYS+
+         NX7+AAe3hEOsUkiCZe3cURdMNfnOXEeEUxMbicih/IrR82QN2+TQG8lu1ewGqgX+izM5
+         4kycprnKUPqDxuFi0mtW6m8Bthu76/7xxlJj2bylU8lfkp0m0/YVj0K8/q6QtxRsuqBO
+         e58w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UojHEz0pk6GNebu+2HDqWhxrBOGOhUOBrfY2ndpxyhs=;
+        b=r3B0k5Ftz60GZ/ymwfcLz4kHsdyJksX/ZL6u4qsRjB8vSSkIJJaS4BCcWxbeliAJ5P
+         z25iUvkbFyVP2yorUjEhB2Y50T3U551G5QrfUWUK8LCiIDxPOidswZn+ahi1QNkHGMZF
+         GSr5fJXdVjNYEoMAfsE7+8eR8kusSfILzESl52PJYI2zvFawyghU+7RlA7KVTHf2+G3e
+         H3fqoIYBBHJfXxkA1CARDve6FtoKLMIqLVGZm07O6Jf/JSu+Wa41HL4qK4q5nG+I/z+d
+         zB4iiH+fpgseHYHYH+65YbBPRMSxhSnrLPhwfD6pmn+VsIeSf+urt78j+u0hx1KOvwDA
+         I+Kg==
+X-Gm-Message-State: AOAM532w+uWuHtPbsWFMX60W8lHeUsYTV1t9oRmVJxNqTUlNfWoNf7id
+        1qLX/phtEiZWAgYrCyL64gBciTKZCJMo0ILw8p/DiYS5CMkNB5YL
+X-Google-Smtp-Source: ABdhPJwc2vn4A7n7qbnr9AqRUkT8NmfXqRbD1H48YgBvu1JCqC/2soGiI6q8Dk7W6NLU5eg2V2Dcna2D6zMHivG50vU=
+X-Received: by 2002:a05:6a00:ac8:b029:1ed:f8dc:cb3b with SMTP id
+ c8-20020a056a000ac8b02901edf8dccb3bmr805272pfl.60.1616433314431; Mon, 22 Mar
+ 2021 10:15:14 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.localnet (2a01:e35:2435:66a0:544b:f17b:7ae8:fb7) by BL0PR0102CA0031.prod.exchangelabs.com (2603:10b6:207:18::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 17:14:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 287acc7b-f23d-410c-5ec1-08d8ed55fc4f
-X-MS-TrafficTypeDiagnostic: SA2PR11MB5114:
-X-Microsoft-Antispam-PRVS: <SA2PR11MB51146055839C718D9A2C7BFA93659@SA2PR11MB5114.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e/wZfVm4O9B6wpMOwPoTmA9umYTAL+XQLoXOIULZ/DvPzjbdvvyv5Y/gHzE0gs1dAiiDlx6GgUxBztZLBF3DgbfckgHgsdkcAsDnEafAlqlhJjc+Ld1RsvZ7OMsauWSurFD5+0Kb0xH6CvN67soofzqO6PIMNyDffsGQt6tRjpHRXqK+79D2cakNL9uDWxzaRg9IG3A7UBhi4bFUSQgg+W/HtUNv4vogudoLbTeUW5s+1GgRV+i7jViQQEePqF0ltMV/D6pOUyUqU5hPL95eA+j+wmbsoKZsD3jBm6R32HRxlRm5dpCCFUmNmG37NRLEFQeYK/TAHGajcxXD9v9xfKWZ//UAVSfYTVlWJAb18g8L7eV5mL/BK9UdKiLJy1FSW1/3FJW8EctLRxwMOUd5VGIdNLBi7jAKuioCFkH4wSqFSLJLkP2ESnMYOcPs5pWQRcpnFwC2cZ/eoUrTrA9iNQ/EwWZ9kch3QSmlMWOkvIIExoR9GrYMK9/MayHHTy8u8cUdACyUTUI3N1Ioz98NDbMohYLmD6RL0w5XOjcYJ8GAXg5WVBgBjA/ZFToEhJhktE+QhqxshHzQoGH65GYk/5SJYuIE0BhiJszNrhCszglqOHQG8Jby0SqeYwEanK6C3NrmTXKw/mKotjPZZrVmKEN1GxZoPLSqYX8f7JVSkQhV0j872vY7uCK+oJveIkIB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39850400004)(396003)(346002)(6916009)(36916002)(6512007)(7416002)(478600001)(9686003)(6666004)(6486002)(5660300002)(52116002)(8676002)(4326008)(38100700001)(6506007)(2906002)(186003)(316002)(54906003)(66574015)(83380400001)(33716001)(8936002)(16526019)(66476007)(86362001)(66946007)(66556008)(39026012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?dus6qcuOBIE7CvCbfOyGS2QkrLKrI1LdJSW7ohdg5WKQrOowPgFtTOJrOV?=
- =?iso-8859-1?Q?XY+x4zh02lyBQh9/6UlIstoc28bgFw9wRbAYyFIj+5DkEggI7X4z73bGji?=
- =?iso-8859-1?Q?NP5bFx2aPyCTfvCnb9kxPRiZB6j1eKbxio8RNXGfckbQsrkUtxLpk0YQq0?=
- =?iso-8859-1?Q?W0XKn7u0TQt0NbM/Nvb8fNQRPUE9BsMy79clHCqfjko0nDMA6y29El5R/K?=
- =?iso-8859-1?Q?GNnf5aetZs835fhODUkT5aFf4EgYnZFhfnxnqQbq8oxqURy7tSpu41hPoE?=
- =?iso-8859-1?Q?e220k3DHSqiZp/IuWpNaIi4dQwKVn1OEJxtuLYWrZe7QHsb/6L/Go9OwIL?=
- =?iso-8859-1?Q?SzgOuF6SGIZhMvRHBRtUWeQu9EWO4JronMW55wd/JiijGARrkX6O1w5Mp+?=
- =?iso-8859-1?Q?Hy4gui1/SBWiUG9OFDKFD13QjQ4iwQAOHUIgujw7SKEn9VKv6u1ghAWsGK?=
- =?iso-8859-1?Q?zppUo+l8EeXncTQF7uQ+mKVW5Z5T/HT0q5lu9uC5GeJXgf2ucChDloZ86B?=
- =?iso-8859-1?Q?qKCnLL3IAP6xqhmBRwykKlSZoIxQfjR71a4XiUC6YShE9ZRMDz/QFuXDqQ?=
- =?iso-8859-1?Q?VhsQ3epZR4BFjLOdINta2SjCylsGYKCie0jwqrQGCZbKV8GoXraXagc8BZ?=
- =?iso-8859-1?Q?PytZ/NzyyOzQBT4ous9D9v1ME5mCpylTTy8OdL6aSyyda4gPDczaSg6k/p?=
- =?iso-8859-1?Q?ocHDDzK/FwP600p4fcTNUmhrqgisxCRbvZ+xeM4lR30Q9tQ9oZ/JzVP8xP?=
- =?iso-8859-1?Q?tNkOVsY+KCM+d8gMFEEdT751gBxz716XzDrak2iCsNtemcTswjDuIN1N/6?=
- =?iso-8859-1?Q?/MFKjN9i51NxFnXj7RcMrFgdAOXekq9/etF62Fjo4I6Si2L055DEXTc4bO?=
- =?iso-8859-1?Q?QubtgYFJtaIiLZyyzP8d8zgiax5Bg85OwbExS8YGHPm7mtPbMo150w+nBM?=
- =?iso-8859-1?Q?NgQb63DszfBtiUUCop9e7+QoxWYQTrD46wvKs/v/6wJkhQcUlh+yWGEMh7?=
- =?iso-8859-1?Q?a/VTwllA22PaYM/n0dclUT4JuHkMMCB9/807uwqa6tIiAANly4f8xXqS7D?=
- =?iso-8859-1?Q?CbjDUAy4LhztPS12OGI0gi+6uqZyFZfOsAzINGO8JaRRlTQoQ3HWkRqbuc?=
- =?iso-8859-1?Q?3VKucQRdNr5rAdVjnbKkUjDPJ5qYdyH3j6A8ctMsaq6BSC7JqCIVpHiU0d?=
- =?iso-8859-1?Q?yw5lXig1sQ6jUHCmu7IbVsEvjoNAoXjR4NZbtBH6B4FD6Dicm1MX+rMieo?=
- =?iso-8859-1?Q?aakaemhvsS8Uxz4lwdrzaR4ixor7b4qPTS+DlmA0leL6I2vJcg71Bo+qdF?=
- =?iso-8859-1?Q?eMPA8RGorwNyd68AQLdnsnEp4ag4yqHt5JmFcis786N3RO83Hc897exVRK?=
- =?iso-8859-1?Q?ykD9eRZvBqM61tTvb7hMAbTz+s9cwdyjOkRQiCcTrQrNrDF2OK2fEHSkfc?=
- =?iso-8859-1?Q?SJoPiRwMTOdu9n3V?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 287acc7b-f23d-410c-5ec1-08d8ed55fc4f
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:14:43.6226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aKJvcqDCXBx6CPKPkqJLId1CXCPk/V4iboYBx+KE8Volyoc6x4aaxfRYI6Mw9Rl9nh/ZXEPZSUO8e3d7fSMllg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5114
+References: <20210302034928.3761098-1-varmam@google.com> <87pmzw7gvy.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87pmzw7gvy.fsf@nanos.tec.linutronix.de>
+From:   Manish Varma <varmam@google.com>
+Date:   Mon, 22 Mar 2021 10:15:03 -0700
+Message-ID: <CAMyCerL7UkcU1YgZ=dUTZadv-YPHGccO3PR-DCt2nX7nz0afgA@mail.gmail.com>
+Subject: Re: [PATCH] fs: Improve eventpoll logging to stop indicting timerfd
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kelly Rossmoyer <krossmo@google.com>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ulf,
+Hi Thomas,
 
-On Monday 22 March 2021 13:20:35 CET Ulf Hansson wrote:
-> On Mon, 15 Mar 2021 at 14:25, Jerome Pouiller
-> <Jerome.Pouiller@silabs.com> wrote:
+On Thu, Mar 18, 2021 at 6:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Manish,
+>
+> On Mon, Mar 01 2021 at 19:49, Manish Varma wrote:
+>
+> > All together, that will give us names like the following:
 > >
-> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> > 1) timerfd file descriptor: [timerfd14:system_server]
+> > 2) eventpoll top-level per-process wakesource: epoll:system_server
+> > 3) eventpoll-on-timerfd per-descriptor wakesource:
+> > epollitem:system_server.[timerfd14:system_server]
+>
+> All together that should be splitted up into a change to eventpoll and
+> timerfd.
+>
+
+Noted.
+
+> > diff --git a/fs/timerfd.c b/fs/timerfd.c
+> > index c5509d2448e3..4249e8c9a38c 100644
+> > --- a/fs/timerfd.c
+> > +++ b/fs/timerfd.c
+> > @@ -46,6 +46,8 @@ struct timerfd_ctx {
+> >       bool might_cancel;
+> >  };
 > >
-> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> > ---
-> >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 259 +++++++++++++++++++++
-> >  1 file changed, 259 insertions(+)
-> >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
->=20
-> [...]
->=20
-> > +static const struct sdio_device_id wfx_sdio_ids[] =3D {
-> > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF20=
-0) },
-> > +       { },
-> > +};
-> > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
-> > +
-> > +struct sdio_driver wfx_sdio_driver =3D {
-> > +       .name =3D "wfx-sdio",
-> > +       .id_table =3D wfx_sdio_ids,
-> > +       .probe =3D wfx_sdio_probe,
-> > +       .remove =3D wfx_sdio_remove,
-> > +       .drv =3D {
-> > +               .owner =3D THIS_MODULE,
-> > +               .of_match_table =3D wfx_sdio_of_match,
->=20
-> It's not mandatory to support power management, like system
-> suspend/resume. However, as this looks like this is a driver for an
-> embedded SDIO device, you probably want this.
->=20
-> If that is the case, please assign the dev_pm_ops here and implement
-> the ->suspend|resume() callbacks.
+> > +static atomic_t instance_count = ATOMIC_INIT(0);
+>
+> instance_count is misleading as it does not do any accounting of
+> instances as the name suggests.
+>
 
-I have no platform to test suspend/resume, so I have only a
-theoretical understanding of this subject.
+Not sure if I am missing a broader point here, but the objective of this
+patch is to:
+A. To help find the process a given timerfd associated with, and
+B. one step further, if there are multiple fds created by a single
+process then label each instance using monotonically increasing integer
+i.e. "instance_count" to help identify each of them separately.
 
-I understanding is that with the current implementation, the
-device will be powered off on suspend and then totally reset
-(including reloading of the firmware) on resume. I am wrong?
+So, instance_count in my mind helps with "B", i.e. to keep track and
+identify each instance of timerfd individually.
 
-This behavior sounds correct to me. You would expect something
-more?=20
+> >  static LIST_HEAD(cancel_list);
+> >  static DEFINE_SPINLOCK(cancel_lock);
+> >
+> > @@ -391,6 +393,9 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
+> >  {
+> >       int ufd;
+> >       struct timerfd_ctx *ctx;
+> > +     char task_comm_buf[sizeof(current->comm)];
+> > +     char file_name_buf[32];
+> > +     int instance;
+> >
+> >       /* Check the TFD_* constants for consistency.  */
+> >       BUILD_BUG_ON(TFD_CLOEXEC != O_CLOEXEC);
+> > @@ -427,7 +432,11 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
+> >
+> >       ctx->moffs = ktime_mono_to_real(0);
+> >
+> > -     ufd = anon_inode_getfd("[timerfd]", &timerfd_fops, ctx,
+> > +     instance = atomic_inc_return(&instance_count);
+> > +     get_task_comm(task_comm_buf, current);
+>
+> How is current->comm supposed to be unique? And with a wrapping counter
+> like the above you can end up with identical file descriptor names.
+>
+> What's wrong with simply using the PID which is guaranteed to be unique
+> for the life time of a process/task?
+>
 
+Thanks, and Yes, on a second thought, PID sounds like a better option.
+I will address in v2 patch.
 
---=20
-J=E9r=F4me Pouiller
+> > +     snprintf(file_name_buf, sizeof(file_name_buf), "[timerfd%d:%s]",
+> > +              instance, task_comm_buf);
+> > +     ufd = anon_inode_getfd(file_name_buf, &timerfd_fops, ctx,
+> >                              O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
+> >       if (ufd < 0)
+> >               kfree(ctx);
+>
+> I actually wonder, whether this should be part of anon_inode_get*().
+>
 
+I am curious (and open at the same time) if that will be helpful..
+In the case of timerfd, I could see it adds up value by stuffing more
+context to the file descriptor name as eventpoll is using the same file
+descriptor names as wakesource name, and hence the cost of slightly
+longer file descriptor name justifies. But I don't have a solid reason
+if this additional cost (of longer file descriptor names) will be
+helpful in general with other file descriptors.
 
+> Aside of that this is a user space visible change both for eventpoll and
+> timerfd.
+>
+> Have you carefully investigated whether there is existing user space
+> which might depend on the existing naming conventions?
+>
+
+I am not sure how I can confirm that for all userspace, but open for
+suggestions if you can share some ideas.
+
+However, I have verified and can confirm for Android userspace that
+there is no dependency on existing naming conventions for timerfd and
+eventpoll wakesource names, if that helps.
+
+> The changelog is silent about this...
+>
+
+Noted - will add this into the revised patch.
+
+> Thanks,
+>
+>         tglx
+
+Thanks,
+Manish
