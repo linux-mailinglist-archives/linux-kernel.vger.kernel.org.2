@@ -1,124 +1,199 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8B13451AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:20:15 +0100 (CET)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id EF39E3451B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVVTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
+        id S230113AbhCVVVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhCVVTV (ORCPT
+        with ESMTP id S229992AbhCVVUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:19:21 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8F0C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:19:20 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so11230239pjq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:19:20 -0700 (PDT)
+        Mon, 22 Mar 2021 17:20:50 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD46C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:20:50 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id l3so12037615pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gyGz6jIAyesHb03GrLq2sQ8gNXK0GEF8U0hfkl4YQos=;
-        b=WFU7Cd+KSjhmC3zYLefyH/pznYkILEn4gUYD7fgJdX15GrVZXGIjvctmLzMcUMehix
-         DBe1X1g3cy/+Fh385KsKSImJA5ngvSqHLfHMA2T/6M2Vzm0ArF8tP3xMXk2oKzX9jfCl
-         /eFW9cpATHI9XDuToVZyvmbnwaxiZJE2ZKS6JAw1kodd+wtBYwgc1/INQS7ISYzJ2lrA
-         Dtyq6CFbKILtk389p0xzfizKYo9bBAoYISMoZZmM22cKcI3MpJgHYdEhXvpscEVor9kl
-         cdao8Wx9Ba+End5w8sZotV3yefDZwsz6ZyKzGmtgPONmz3bCJRLPfX9axapxptljnzDF
-         ogTQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iQ3MR3pIpBpekX6itg9dx4Nv4sSLl+GAinmP3XP/rag=;
+        b=Qa4al1wO3hx0Wz1hABtDYi2AZu8Q1dRMeszbeM7VXMqahmn0DSdSm1F+OqWk0WsIXg
+         W4Lw+Trzwrzq7r7UP2CGohdyJTB1i1kgxu1m09LAisdRqHUn3mSDovUqr0hogxNjt3fx
+         UxRfycce2tuNv7QHZLrMGxtUzpPuIdsZ0/k5m68E0krZQsm7da1deho7EUk8mZvst6P0
+         R3EIMFP4iGqKJ4ZxVNwKLR+wXbhRGIBRC9mLL+dKDGuArxPw6m6q+vac/VYQg4yi+Hb+
+         jiLjcZioEOTO6ZBrUQ3PKVBibNeIWGujLfTRIe1/t/ZR6XHyzacXgCkz24uHmJn5nHEG
+         YzPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gyGz6jIAyesHb03GrLq2sQ8gNXK0GEF8U0hfkl4YQos=;
-        b=DQbowxVXS1G+ymi6dw0d0fgNrBklak9QSJ7G7N/Cc+J4FlEm1hi6ybkczg1gTAI7NC
-         9fvdLy1uW/bJbRFNODrC0XTx15oDytG1RltHQOFvgsoO+Lx4pHxVe8/wNKSynLWAaAsM
-         Q+vL3jC5ye7GUw3kr1/88nEJ9zdPdNUCoUwQsLFo6tUyr0TlwuXAxO+LKUWLh+LhVmsn
-         h34B3hPbYyahVZSEvPk8rCzR64BZ2W6C/20eT98T6JWibe69Ce0LrWkDVncbb5NU/TqM
-         TP/rjsxaLPNdfSYTu3nd7jPQv0mTI/zVBucX+QVAMbGUOC4BChU+dbDfMxLvlk0X7LXL
-         ACtQ==
-X-Gm-Message-State: AOAM531j4r13trRwkJ8R3R9WDJh5NWz21jy85L4Xu2zIgHv08SeDCxT3
-        hwEcerW5X/DnnqAjq3pts3zQtV00vweLnRXm34hlXZN4ZYw=
-X-Google-Smtp-Source: ABdhPJztKcI5ep4UOORSfmYloXc4k3wIwkZdGAoDP8c4OKeJLhR4kr4msS8/HHYTGyPLpTJrBkJ0OlQj6jZMRzb/OAY=
-X-Received: by 2002:a17:90a:9d82:: with SMTP id k2mr1017479pjp.48.1616447959140;
- Mon, 22 Mar 2021 14:19:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iQ3MR3pIpBpekX6itg9dx4Nv4sSLl+GAinmP3XP/rag=;
+        b=ljveqgHfHrON/7UKC15ALEYCs5qUjz/9DPz2Hqc5Sq4g9ajbuzhQxPyQ93oTpZFava
+         b7nQ/upHLS1IGhnb/SFoJ4N6bMVihP3doPal7j3SG8PsZ/H1wCxFhGeUe3WairLOG5JY
+         BhzXVcUpCm1t8+zb8tC6KeKmRMZmmgSRr5+Gpp6lOvnckryE/oJrmDaDsqEfHOajFudC
+         gEjN5IY2H70ruM+KrbUmeL7wQANSPiKlIJUeqbXdmqwo6yYCgDkr2CyCGre/ltYxqQw0
+         7bckgk1YEPw60JrsFrqbihZQy5u/pS6cfyoipRDtcI4rLrCx6xtOUGrRsYgltETv7E+S
+         k+YA==
+X-Gm-Message-State: AOAM5322SBaT4Q+9la7OJTybgdONo/0A7EXPEvU+I0pbrZrBh3y1gEGW
+        QOTB22OOuTIugXMF2BAm1Eujgg==
+X-Google-Smtp-Source: ABdhPJwUrDyed61o/S8LoRZp3mZYhkx1npYyAHJUqzFytgNxanjDXd6xM/cF/YTGI2wScufOyYVDEw==
+X-Received: by 2002:aa7:9989:0:b029:1f5:aa05:94af with SMTP id k9-20020aa799890000b02901f5aa0594afmr1767101pfh.34.1616448050228;
+        Mon, 22 Mar 2021 14:20:50 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id l2sm298268pji.45.2021.03.22.14.20.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 14:20:49 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 15:20:47 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org
+Subject: Re: [PATCH v4 18/19] coresight: sink: Add TRBE driver
+Message-ID: <20210322212047.GA1684006@xps15>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-19-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-References: <20210316013003.25271-1-arjunroy.kdev@gmail.com> <20210317202123.7d2eaa0e54c36c20571a335c@linux-foundation.org>
-In-Reply-To: <20210317202123.7d2eaa0e54c36c20571a335c@linux-foundation.org>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Mon, 22 Mar 2021 14:19:08 -0700
-Message-ID: <CAOFY-A232pad5Xm0Cxx3P4oGLrSa+7=5ys8WB+LOPduz7YYfVA@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225193543.2920532-19-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 8:21 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Mon, 15 Mar 2021 18:30:03 -0700 Arjun Roy <arjunroy.kdev@gmail.com> wrote:
->
-> > From: Arjun Roy <arjunroy@google.com>
-> >
-> > TCP zerocopy receive is used by high performance network applications
-> > to further scale. For RX zerocopy, the memory containing the network
-> > data filled by the network driver is directly mapped into the address
-> > space of high performance applications. To keep the TLB cost low,
-> > these applications unmap the network memory in big batches. So, this
-> > memory can remain mapped for long time. This can cause a memory
-> > isolation issue as this memory becomes unaccounted after getting
-> > mapped into the application address space. This patch adds the memcg
-> > accounting for such memory.
-> >
-> > Accounting the network memory comes with its own unique challenges.
-> > The high performance NIC drivers use page pooling to reuse the pages
-> > to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> > keep an extra reference on the pages and thus we can not depend on the
-> > page reference for the uncharging. The page in the pool may keep a
-> > memcg pinned for arbitrary long time or may get used by other memcg.
-> >
-> > This patch decouples the uncharging of the page from the refcnt and
-> > associates it with the map count i.e. the page gets uncharged when the
-> > last address space unmaps it. Now the question is, what if the driver
-> > drops its reference while the page is still mapped? That is fine as
-> > the address space also holds a reference to the page i.e. the
-> > reference count can not drop to zero before the map count.
->
-> What tree were you hoping to get this merged through?  I'd suggest net
-> - it's more likely to get tested over there.
+On Thu, Feb 25, 2021 at 07:35:42PM +0000, Suzuki K Poulose wrote:
+> From: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
+> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
+> accessible via the system registers. The TRBE supports different addressing
+> modes including CPU virtual address and buffer modes including the circular
+> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
+> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
+> access to the trace buffer could be prohibited by a higher exception level
+> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
+> private interrupt (PPI) on address translation errors and when the buffer
+> is full. Overall implementation here is inspired from the Arm SPE driver.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Changes:
+>  - Replaced TRBLIMITR_LIMIT_SHIFT with TRBBASER_BASE_SHIFT in set_trbe_base_pointer()
+>  - Dropped TRBBASER_BASE_MASK and TRBBASER_BASE_SHIFT from get_trbe_base_pointer()
+>  - Indentation changes for TRBE_BSC_NOT_[STOPPED|FILLED|TRIGGERED] definitions
+>  - Moved DECLARE_PER_CPU(...., csdev_sink) into coresight-priv.h
+>  - Moved isb() from trbe_enable_hw() into set_trbe_limit_pointer_enabled()
+>  - Dropped the space after type casting before vmap()
+>  - Return 0 instead of EINVAL in arm_trbe_update_buffer()
+>  - Add a comment in trbe_handle_overflow()
+>  - Add a comment in arm_trbe_cpu_startup()
+>  - Unregister coresight TRBE device when not supported
+>  - Fix potential NULL handle dereference in IRQ handler with a spurious IRQ
+>  - Read TRBIDR after is_trbe_programmable() in arm_trbe_probe_coresight_cpu()
+>  - Replaced and modified trbe_drain_and_disable_local() in IRQ handler
+>  - Updated arm_trbe_update_buffer() for handling a missing interrupt
+>  - Dropped kfree() for all devm_xxx() allocated buffer
+>  - Dropped additional blank line in documentation coresight/coresight-trbe.rst
+>  - Added Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+>  - Changed CONFIG_CORESIGHT_TRBE options, dependencies and helper write up
+>  - Added comment for irq_work_run()
+>  - Updated comment for minumum buffer length in arm_trbe_alloc_buffer()
+>  - Dropped redundant smp_processor_id() from arm_trbe_probe_coresight_cpu()
+>  - Fixed indentation in arm_trbe_probe_cpuhp()
+>  - Added static for arm_trbe_free_buffer()
+>  - Added comment for trbe_base element in trbe_buf structure
+>  - Dropped IS_ERR() check from vmap() returned pointer
+>  - Added WARN_ON(trbe_csdev) in arm_trbe_probe_coresight_cpu()
+>  - Changed TRBE device names from arm_trbeX to just trbeX
+>  - Dropped unused argument perf_output_handle from trbe_get_fault_act()
+>  - Dropped IS_ERR() from kzalloc_node()/kcalloc() buffer in arm_trbe_alloc_buffer()
+>  - Dropped IS_ERR() and return -ENOMEM in arm_trbe_probe_coresight()
+>  - Moved TRBE HW disabling before coresight cleanup in arm_trbe_remove_coresight_cpu()
+>  - Changed error return codes from arm_trbe_probe_irq()
+>  - Changed error return codes from arm_trbe_device_probe()
+>  - Changed arm_trbe_remove_coresight() order in arm_trbe_device_remove()
+>  - Changed TRBE CPU support probe/remove sequence with for_each_cpu() iterator
+>  - Changed coresight_register() in arm_trbe_probe_coresight_cpu()
+>  - Changed error return code when cpuhp_setup_state_multi() fails in arm_trbe_probe_cpuhp()
+>  - Changed error return code when cpuhp_state_add_instance() fails in arm_trbe_probe_cpuhp()
+>  - Changed trbe_dbm as trbe_flag including its sysfs interface
+>  - Handle race between update_buffer & IRQ handler
+>  - Rework and split the TRBE probe to avoid lockdep due to memory allocation
+>    from IPI calls (via coresight_register())
+>  - Fix handle->head updat for snapshot mode.
+
+All of the above make this driver much easier to read.
+
+> ---
+>  .../testing/sysfs-bus-coresight-devices-trbe  |   14 +
+>  .../trace/coresight/coresight-trbe.rst        |   38 +
+>  drivers/hwtracing/coresight/Kconfig           |   14 +
+>  drivers/hwtracing/coresight/Makefile          |    1 +
+>  drivers/hwtracing/coresight/coresight-trbe.c  | 1149 +++++++++++++++++
+>  drivers/hwtracing/coresight/coresight-trbe.h  |  153 +++
+>  6 files changed, 1369 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-coresight-devices-trbe
+>  create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
 >
 
-That was one part I wasn't quite sure about - the v3 patchset makes
-things less clear even, since while v1/v2 are mostly mm heavy v3 would
-have some significant changes in both subsystems.
+[...]
+ 
+> +
+> +static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+> +				   struct perf_event *event, void **pages,
+> +				   int nr_pages, bool snapshot)
+> +{
+> +	struct trbe_buf *buf;
+> +	struct page **pglist;
+> +	int i;
+> +
+> +	/*
+> +	 * TRBE LIMIT and TRBE WRITE pointers must be page aligned. But with
+> +	 * just a single page, there would not be any room left while writing
+> +	 * into a partially filled TRBE buffer after the page size alignment.
+> +	 * Hence restrict the minimum buffer size as two pages.
+> +	 */
+> +	if (nr_pages < 2)
+> +		return NULL;
+> +
+> +	buf = kzalloc_node(sizeof(*buf), GFP_KERNEL, trbe_alloc_node(event));
+> +	if (!buf)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
+> +	if (!pglist) {
+> +		kfree(buf);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	for (i = 0; i < nr_pages; i++)
+> +		pglist[i] = virt_to_page(pages[i]);
+> +
+> +	buf->trbe_base = (unsigned long)vmap(pglist, nr_pages, VM_MAP, PAGE_KERNEL);
+> +	if (!buf->trbe_base) {
+> +		kfree(pglist);
+> +		kfree(buf);
+> +		return ERR_PTR(buf->trbe_base);
 
-I'm open to whichever is the "right" way to go, but am not currently
-certain which would be.
+return ERR_PTR(-ENOMEM); 
 
-Thanks,
--Arjun
-
-> >
-> > ...
-> >
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
->
-> These changes could be inside #ifdef CONFIG_NET.  Although I expect
-> MEMCG=y&&NET=n is pretty damn rare.
->
+> +	}
+> +	buf->trbe_limit = buf->trbe_base + nr_pages * PAGE_SIZE;
+> +	buf->trbe_write = buf->trbe_base;
+> +	buf->snapshot = snapshot;
+> +	buf->nr_pages = nr_pages;
+> +	buf->pages = pages;
+> +	kfree(pglist);
+> +	return buf;
+> +}
+> +
