@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47558345092
+	by mail.lfdr.de (Postfix) with ESMTP id 94688345093
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhCVUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:16:56 -0400
-Received: from st43p00im-zteg10063501.me.com ([17.58.63.176]:44811 "EHLO
-        st43p00im-zteg10063501.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230447AbhCVUQe (ORCPT
+        id S231911AbhCVURA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhCVUQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:16:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1616444191; bh=jtDTXY0sBs7RpioSTHC3KmbVgcFGZnI25SJuBpFiXT4=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=WzQdaSG/H1yUc/T+HpKpSaBzwkXECHZKwS4HnqEiO82RUwaYE2XyBtQdbzdzVYTss
-         abJ6oVk9mFQR7X9n0rufZlHEGiKVlWWFJaapr94xxxMBbTKs4VkBhSPHSnAt8gE1j6
-         2E4zMRgCqkRXi8VpRFt0G28pN0pkBLzB4urTi+BvPwEXzb3fPtGSWqICEn4329/kzh
-         P3cvvQmX7gr5A4+HvECEXPvxRKdFcUfKUfCvuzNjz9DfroN7HKvIsLXg0p4pUEiT34
-         4291nfZk309oIwZWsHj50Kkb/FZrvD4K9ZJJYfc84hgMsVS1eIMaiE7wfj305TCU63
-         6FCNaALLa3rjQ==
-Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-zteg10063501.me.com (Postfix) with ESMTPSA id 3D022C806BD;
-        Mon, 22 Mar 2021 20:16:23 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 21:16:20 +0100
-From:   Alain Volmat <avolmat@me.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@st.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/16] clk: st: embed clock outputs within drivers
-Message-ID: <20210322201619.GB26692@gnbcxl0029.gnb.st.com>
-Mail-Followup-To: Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210321204038.14417-1-avolmat@me.com>
+        Mon, 22 Mar 2021 16:16:49 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE4AC061574;
+        Mon, 22 Mar 2021 13:16:48 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id kt15so13902054ejb.12;
+        Mon, 22 Mar 2021 13:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9MgTlf1yAFXA1SMLrg9uUz/Zx0G39O4yukxveacwuqA=;
+        b=Hq65TokTTybC8WE57EfUDp9sTV9M9Uj3qvRaRzNi56m04h1hFo9nTnoLkJEMMfoV9Y
+         5efIFo+Xg8z+/7Cy1EnJQ5kKNCD3mcS0837WtZLhVeL1Ywv6D2fLWYo6tObqONtEbkGe
+         z4VY3XAL/fxZA4adZG8L2HbkQLKc1EQ/f2jAh85bj1+oHOPQFUth9rEm1z5oSsFI68ks
+         unegnSmcVgmWnXYbIDvM1vUGELf09x8qDEbGg1PUbXV4B1SrOAQ2vvqZ5s9TsIFvYtIU
+         0f5Z/BBoigW593g05pxWgCw56jGKV8VIN+PeAdSJYmMFeDAi8gJ47ZFMAzvz/hGyQvIR
+         OxpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9MgTlf1yAFXA1SMLrg9uUz/Zx0G39O4yukxveacwuqA=;
+        b=lpy+5+O5FlTShE5mLfFOkZQjxZ/0fr2iBjWXy7EpVN7IRoVa+RHvlXQF7zVi9AoCIr
+         Fx0qQFFyeizvFtFP7B8FfQt1sqfv+9not4gTRBM5Z7WV4VXHv9txGbtcl8J73pi8XcmE
+         tqT+ram+wM6EefXG9+gD9mdAR/S2r62trc5kRJ5cG3u8DLP9iMBpyS9d9PiQbW9Jyekz
+         2969bUVs31cFcvpkVIBcIRTPf5ztbqYU1jiFZnqq2xUmRIhKKVqvmkCOIncta79i3EnO
+         AVsJ0A3zM61xBFDuiVPXX+SLXoPWMNL7JUcLabPeQMmZZ9e2b89qPDGhEWw61eL+Q3Bz
+         wlWQ==
+X-Gm-Message-State: AOAM5330YnFes3qbd43QR5aeQfpMa0kpS/pEQZw9wKNpAMVUsfwlCJY0
+        jNEyYOUEsPTgZG+BL8ya+Tc=
+X-Google-Smtp-Source: ABdhPJzr+jqpvKPNXdzFVykPB4evgT36hacay7YqEiM9TqMNmG4Ay2EymQyc6TGf8SZzaBg3WUKMlQ==
+X-Received: by 2002:a17:907:20e4:: with SMTP id rh4mr1473531ejb.369.1616444207247;
+        Mon, 22 Mar 2021 13:16:47 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id n26sm11857852eds.22.2021.03.22.13.16.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 13:16:46 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 22 Mar 2021 21:16:44 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH V2] KVM: x86: A typo fix
+Message-ID: <20210322201644.GA1955593@gmail.com>
+References: <20210322060409.2605006-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210321204038.14417-1-avolmat@me.com>
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
- =?UTF-8?Q?=3D2021-03-22=5F10:2021-03-22=5F03,2021-03-22=5F10,2020-04-07?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1015
- spamscore=0 bulkscore=0 mlxlogscore=949 adultscore=0 phishscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103220149
+In-Reply-To: <20210322060409.2605006-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-it turns out that some CLK_IS_CRITICAL are missing in the patches I sent.
-(especially for the stih418).
-I will send a v2 soon.
+* Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 
-Alain
+> s/resued/reused/
+> 
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Changes from V1:
+>  As Ingo found the correct word for replacement, so incorporating.
+> 
+>  arch/x86/include/asm/kvm_host.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3768819693e5..e37c2ebc02e5 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1488,7 +1488,7 @@ extern u64 kvm_mce_cap_supported;
+>  /*
+>   * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
+>   *			userspace I/O) to indicate that the emulation context
+> - *			should be resued as is, i.e. skip initialization of
+> + *			should be reused as is, i.e. skip initialization of
+>   *			emulation context, instruction fetch and decode.
+>   *
+>   * EMULTYPE_TRAP_UD - Set when emulating an intercepted #UD from hardware.
 
-On Sun, Mar 21, 2021 at 09:40:22PM +0100, Alain Volmat wrote:
-> Most of ST clock drivers used by STi platform are updated in
-> order to introduce clock outputs informations within each drivers
-> and thus allow to avoid having to rely on clock-output-names properties
-> within DT clock nodes.
-> For that purpose, drivers are updated to allow handling both modes
-> (with or without clock-output-names).
-> Once all DT will have been updated, the legacy mode could be removed
-> from the drivers.
-> This will also allow, once all STi DT will be corrected, to remove the
-> of_clk_detect_critical API from clk core code since STi clock drivers
-> are the only drivers using this API.
-> 
-> This serie also contains modifications within STi DTS in order to use
-> the newly introduced compatible and remove clock-output-names
-> properties.
-> 
-> Alain Volmat (16):
->   clk: st: clkgen-pll: remove used variable of struct clkgen_pll
->   clk: st: flexgen: embed soc clock outputs within compatible data
->   dt-bindings: clock: st: flexgen: add new introduced compatible
->   clk: st: clkgen-pll: embed soc clock outputs within compatible data
->   dt-bindings: clock: st: clkgen-pll: add new introduced compatible
->   clk: st: clkgen-fsyn: embed soc clock outputs within compatible data
->   dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
->   ARM: dts: sti: update flexgen compatible within stih418-clock
->   ARM: dts: sti: update flexgen compatible within stih407-clock
->   ARM: dts: sti: update flexgen compatible within stih410-clock
->   ARM: dts: sti: update clkgen-pll entries in stih407-clock
->   ARM: dts: sti: update clkgen-pll entries in stih410-clock
->   ARM: dts: sti: update clkgen-pll entries in stih418-clock
->   ARM: dts: sti: update clkgen-fsyn entries in stih407-clock
->   ARM: dts: sti: update clkgen-fsyn entries in stih410-clock
->   ARM: dts: sti: update clkgen-fsyn entries in stih418-clock
-> 
->  .../bindings/clock/st/st,clkgen-pll.txt       |   3 +
->  .../bindings/clock/st/st,flexgen.txt          |  10 +
->  .../bindings/clock/st/st,quadfs.txt           |   3 +
->  arch/arm/boot/dts/stih407-clock.dtsi          | 128 +------
->  arch/arm/boot/dts/stih410-clock.dtsi          | 138 +------
->  arch/arm/boot/dts/stih418-clock.dtsi          | 136 +------
->  drivers/clk/st/clk-flexgen.c                  | 344 +++++++++++++++++-
->  drivers/clk/st/clkgen-fsyn.c                  | 113 +++++-
->  drivers/clk/st/clkgen-pll.c                   | 121 +++++-
->  9 files changed, 588 insertions(+), 408 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+I already fixed this typo - and another 185 typos, in this 
+comprehensive cleanup of arch/x86/ typos in tip:x86/cleanups:
+
+  d9f6e12fb0b7: ("x86: Fix various typos in comments")
+  163b099146b8: ("x86: Fix various typos in comments, take #2")
+
+Please check future typo fixes against tip:master.
+
+Thanks,
+
+	Ingo
