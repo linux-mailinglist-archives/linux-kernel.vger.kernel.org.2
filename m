@@ -2,152 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFCE344C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C0E344CB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhCVRDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:03:24 -0400
-Received: from mail-eopbgr50138.outbound.protection.outlook.com ([40.107.5.138]:25767
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230186AbhCVRDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:03:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEamDxtB/T4MUpOnAljrlOaiZNku2p37NtUE3DG0kaaA0rtoz3VMmZY9oDk0vo12EZJVzjMs/JFqO9DCk0pIEHuQZHvVuN1TWUVoJAiO0qdaryc+gw+NtkKv+8fygSlCVhjxEgf7B+NEOoMkPzdxnTXy5qoXNaBfD0pwWCwUuLO2SlPXDza+2OrzFrBPFf2V6Nt0SHcTosU32c4nUysByIRqPSEH7AjBnxuGnp2zzGWOo3yMQTYSH533l3ML4TjrvgghKNOUq3Wy1wUcXfluceCMnLEoDderg3432wJgEfh/VCeSKObMKh/fdZGASQbFKSPE5a1OKHv5xiUkMgqvFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Uuupar8H9NZhYTEciMAmBGdbqg25bF3WhB8kjW4GbI=;
- b=e8f6nJgamHYn9xt3sZUkf16w43CeVUTkRuxXh+GYEpl1kxJuPn4XT8z68KWO9zc/MruD72387ZEF8LDoZXEMsgadcfKJGIuil9q9kQ8JzBvfiudTty1N+/jKigPV2xpI5bhS6G/27boBnNtDdmavcPtEvIx5h3AdU6T5bRzjIsZERgoA7R1xbQ87TmY55Y0ekvYeSJJSPDN1aGn0bIAivpvoO1qqFu5WuonmqDaIM5ksgEEz9XGs8AcJXfsjK41L5+0Fgism8R7y0/6C0mx5NTAFfmQ7wYphYI9oIQxPw/3AdBmc5/ffR8h7M6qjGb+108FhDYPIzQ0R8Ka6gkxV0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Uuupar8H9NZhYTEciMAmBGdbqg25bF3WhB8kjW4GbI=;
- b=GV0KVqZpf3OwTAPxqq8dvi79MkZDwtgYHXexARB6fD/UQvXyBFOssKmdX7Z2Pl8LBJOiicXCEk1fTp2KHt7D2L/UN8Q2tmuwkmVG7nvCY1WR1RrePIFN2DFUWBOr1tZLZuc1I0mJsU/x+3ElGb5gBJTUCtCZBL7++ccwama/2So=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM8PR07MB7393.eurprd07.prod.outlook.com (2603:10a6:20b:246::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.10; Mon, 22 Mar
- 2021 17:03:06 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::7c49:66bd:9795:1a3f]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::7c49:66bd:9795:1a3f%3]) with mapi id 15.20.3977.019; Mon, 22 Mar 2021
- 17:03:06 +0000
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-To:     Qais Yousef <qais.yousef@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <0c122390-6e76-f773-86e9-8c085f4384f2@nokia.com>
- <20210309174201.n53za7mw33dqyleh@e107158-lin.cambridge.arm.com>
- <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
- <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
- <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
- <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
- <134e1a2c-daac-7b00-c170-bcca434d08df@gmail.com>
- <20210314220217.4mexdide7sqjfved@e107158-lin>
- <20210321190611.d6a3hbqabts3qq5v@e107158-lin>
- <20210322110106.2bed3d50@gandalf.local.home>
- <20210322163248.id7qplbk6och6kuw@e107158-lin>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <504d72ec-70a6-7e50-dbbb-16d693ce6150@nokia.com>
-Date:   Mon, 22 Mar 2021 18:02:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210322163248.id7qplbk6och6kuw@e107158-lin>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.166]
-X-ClientProxiedBy: AM0PR10CA0103.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:e6::20) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+        id S231828AbhCVRE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:04:29 -0400
+Received: from mail-ej1-f49.google.com ([209.85.218.49]:40639 "EHLO
+        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhCVRDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:03:55 -0400
+Received: by mail-ej1-f49.google.com with SMTP id u9so22491654ejj.7;
+        Mon, 22 Mar 2021 10:03:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jdgNn6wGQVPWa83h8L7hpha0BMyYWY/WMzObKAw2/sA=;
+        b=gCOm680nSnb8yTuoBmDm3wrqJY7LzA20ubfuyOBMByeWgQWxbbbSIlg1OhuYCIiYwT
+         8tSpCpyL0MGFhOM0UC2qoLpqEEcCKGyAGWIurVep7VIAyRifOVaqTQaYcWWDxpKZjXe2
+         46OZt+61t4JCVoU1b0DXxbabRS5LUbsGL5djJwlStWUQohp3OJngjOpo21Db2eAlLj0t
+         DzXR3uh6Fsw6prW0Xyqm1uU+LdN3sj6tiJJ981/y7wMaallEKxkb7krbK1U7d6D9Sxx7
+         9GOvv4jlcmJVQqS1F9n1jQNaDIy/bqTytNq0hVpwZr1gAPSqp0x5l83NJ+fWX4Xl6CgL
+         4G+g==
+X-Gm-Message-State: AOAM532OL+WNiPTYGOYyrgq7FXjgJHkwicMb9lbjsVFs4Sshb80Gcpp5
+        QYpAVg7ClFcvyO3jF7D4P6Ugd+QPi+Q=
+X-Google-Smtp-Source: ABdhPJyPV+k+08FXDbxqVyi7JYSVFfEsOJk8Frp80JIGvE1gROEYoMnyLdaKWoB++oc46RgRTI8X6w==
+X-Received: by 2002:a17:906:4d18:: with SMTP id r24mr733128eju.493.1616432634042;
+        Mon, 22 Mar 2021 10:03:54 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-2-34-63-208.cust.vodafonedsl.it. [2.34.63.208])
+        by smtp.gmail.com with ESMTPSA id h22sm9891589eji.80.2021.03.22.10.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:03:53 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH net-next 3/6] page_pool: DMA handling and allow to recycles frames via SKB
+Date:   Mon, 22 Mar 2021 18:02:58 +0100
+Message-Id: <20210322170301.26017-4-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.166) by AM0PR10CA0103.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e6::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 17:03:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bb92f6ca-c4e3-4ef2-f993-08d8ed545cb8
-X-MS-TrafficTypeDiagnostic: AM8PR07MB7393:
-X-Microsoft-Antispam-PRVS: <AM8PR07MB7393C7EC039822476D3B0EED88659@AM8PR07MB7393.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BhhBWLh/56bSSA/+jtCEzbAiJw4pUVyN1L9sUi9AOU0cTtkDPIlj8msr9/6m0riYe7SBgRwc2IB5qzjkpE850t1xhHVfqpnOQwunng5DxDYit+qQn5yIzbkrh0bzUcBR9DL5RdqFk3yp+W9rKzFwz57w60pPtX0ZVvAgmbBr4owUSMwcrSalo9Mm5zeJvJvNqmqVYlU6hOhOvQCHxY4SB0SWmczWWa9IaSoZEgIenPmLkin+/lD6lWX73uKl24uh8CIB8F9mliimPDaL4ty9mq1lnnQtP5ZZUr0+Y+qUpdWu/Cy7kL2ZZRBQ5jRBy2CoI+VvDiQ4t7JLwJM2uhhS1A4MNitl74wDoa/bJsmR2nVtfR4hn5/c0xx5WI3JXWTE4s/LZDcMvSMFA3+yhrpAw35YPZ7k/48TmUIbV0ei2xBoUBxpMkU2l3puIcysns0VJo38vYJMOS2NAphK9MGJuTy3KJZWCotvdPpZHKNxTBQQQAZ7eUEyrbpDItqTKGShOT44m5QJPsYR9YXihqTu+TxWYDMJZSSwtN/ccD7245drUw+lTQW8uRlqgeahdPp96X/vyIi8tZsswMi38y0xXcqaQmi71W9jiHhX9lScAT9mz6W8XEKDcn2j1eKqOOja+K5uKew0UnGyDStKW7mPsA0Ob/nY6KCHzQZP7aM2TGktK8Eiza/PFiQRXtassnUasqAof+cwXNvGcVGOcr0zuQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(366004)(2906002)(26005)(66476007)(4326008)(6512007)(66556008)(66946007)(8676002)(31686004)(6666004)(54906003)(44832011)(31696002)(8936002)(5660300002)(83380400001)(86362001)(4744005)(478600001)(36756003)(6486002)(6506007)(53546011)(16526019)(52116002)(316002)(38100700001)(956004)(2616005)(186003)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eTNHVzVtQmlyZTdMZ3d2RE5nbmZOUUZ4VDhZeGdqb1I0emRPaW9Ma1gwSmhx?=
- =?utf-8?B?Qzhqb3FLZ093dkhzKzB4T3oySmRRMnk2SEdRcDVoS1VMV051N2FtRHgzWUlF?=
- =?utf-8?B?V3VkSDRYWjJLQWY4SThKakJJMzZCQkQybW9iS2lMQUZndEJQdHlkeVFQL2pr?=
- =?utf-8?B?TU1SU21oZjJwNjN2NVp3VUl3R1Fjb3Q2d01ZbXRJUUFNcWphVnZQTHIwU0Zs?=
- =?utf-8?B?Kyswem9mOVdRYkdTMzJEUFM4RENNeGhIWDB6VHR3WnJaemQxU1JaK2hYN1Vq?=
- =?utf-8?B?ZVFSN0NTYmZhRnBoM0FhSXlwYUF3dmRhNjFPdUN4UXJQanRmZ01nQ1VFeVRL?=
- =?utf-8?B?VkNJdUVxR1ZqQTc1eUM0VjNDcGlpVHV3eDNYSHYvT3V1b1dHckJqa1REbk1V?=
- =?utf-8?B?OC95T0FnWnAzSi9ZVG1TSmJVRWtleWtMTndzRUZ3ODFjY1FBNXAxVk5vK0hj?=
- =?utf-8?B?MXl3ZWQ4SmtlOEc2YnpMVVpOODRkQmpBL01uTWZra0VjakRraG14SEJtY1ZX?=
- =?utf-8?B?a2hJOTlRdTNJVkVRUEJrditjN3hINlNiNThXMHpSekVaVGxZZFBsbHRhWjl5?=
- =?utf-8?B?Q2R4cGFjTlFKNi9JMFlrald2NERxUnJROG1KTk90Mm5WWGlrRkpoZVAvbjZT?=
- =?utf-8?B?T09hcXVSSHBmMDYvYmhtdDJuUWtkS3UxbzBpYjFkNGoweFAzU2dUSEE0UUd2?=
- =?utf-8?B?VmJOTml1ZEZaS0VaMXNnZ3dDdzBwNzdYQTViU3g0OUZqcEw2bERRUEVXbGlL?=
- =?utf-8?B?RFFGb1NOUm9XdjFjSkNtc1dPbndvZXlGbUZ5SWJaSWVMWDB5MUNkVjYvRVdL?=
- =?utf-8?B?ZHlqeStpeWlRZ21YOUVVQ0JsaXdNNXVTc1pMbG10MVovQ1d3SzhRQnFMN3ZU?=
- =?utf-8?B?Zy9xb0hoQlEyV0tPYk45bWtxN0szNWRWaEFOVzV5enNFT1FqVHJwSmtmNUtO?=
- =?utf-8?B?dlBQN0s2M3hqcFkxYXEvRVhVRjc2MGt1d0o5N2EyTFVUenowT3dVSmlUMVdD?=
- =?utf-8?B?MURZdHNpSmhTeHE4Z3kveTU0V0pRVXg3U0hsanNqNmFmbGx3YWU4NC9uUk9l?=
- =?utf-8?B?dXZHOHZyWVJGNHE0ZmFjbWVxSUVLb3FBNmFFQ0F1VWloYlE5ZGUvMzZ2bEV4?=
- =?utf-8?B?cHM0RXlGSDgrTDhxUGFzSjM5aXZGRkcvTHNYcXpoL1VNTDQyaHhtenNwVEFa?=
- =?utf-8?B?ZktkTjZpSWNHcUU5OXFnQXBjV3Y2VVZjSjV1bVJtYkd2Wmx6a21PQVFVN1lN?=
- =?utf-8?B?UUxBTWVTZUFDanB4SnRlazhQWnNzUmg0MDZsS1RlTmVLT0dtc0lacU5uTDJn?=
- =?utf-8?B?YjcwMURzcnl5SkJnRm0ya0VPa3dJWEcvY2J6RzFGL2V1T0ZtSUkrajk3UlNv?=
- =?utf-8?B?SEZ5bnYwdW5Ua1pHbWdIcXduekxmSE9aM0czUUhRTUw0bTlrYS84VmN0T042?=
- =?utf-8?B?blc0L3B2bDd0cUExR0RUVW1jd3dJMmlyQzV0OVYrWHVhUHFtVXJ1TXpDYUwx?=
- =?utf-8?B?bExsWURoWEVib3JzZ0EvbFVZdlc1b1I5QWNZUXNOVTMxNXRjbnhWK0x2M0ZN?=
- =?utf-8?B?NC81Q0dFNkJ5TDhsRVdkbkY1Z3kxUWZyQ1huRWF6TkwzQWtwaU1hbkxGQXhp?=
- =?utf-8?B?RzJaeldBRWJ1SUJMRkJGZWp2c01tWEowZWNHVzVjSUQ5LzFXU1ZidXpoN2w4?=
- =?utf-8?B?Q00zaGd0Vi94cGs4Uk54VGRGL2JMakp0c2tsSWxldUE2WURxZUJHMmc1NDRH?=
- =?utf-8?Q?ujYkrqNC9iLUZaWKYvtoMlsb5iY+JN8g4nSkTqb?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb92f6ca-c4e3-4ef2-f993-08d8ed545cb8
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:03:06.3498
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iTup+1VLW9h/mYzZvWvIo6dRQuHUWVznFKDrK6KZnAZV/SwDTN+I/LyRQgaPOrGgIRgiY5nDpgRQLvop4O0AFVJHLdFYnd83WhOdMqUiVjk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR07MB7393
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 
-On 22/03/2021 17:32, Qais Yousef wrote:
-> Yes you're right. I was a bit optimistic on CONFIG_DYNAMIC_FTRACE will imply
-> CONFIG_ARM_MODULE_PLTS is enabled too.
-> 
-> It only has an impact on reducing ifdefery when calling
-> 
-> 	ftrace_call_replace_mod(rec->arch.mod, ...)
-> 
-> Should be easy to wrap rec->arch.mod with its own accessor that will return
-> NULL if !CONFIG_ARM_MODULE_PLTS or just ifdef the functions.
-> 
-> Up to Alexander to pick what he prefers :-)
+During skb_release_data() intercept the packet and if it's a buffer
+coming from our page_pool API recycle it back to the pool for further
+usage.
+To achieve that we introduce a bit in struct sk_buff (pp_recycle:1) and
+store the xdp_mem_info in page->private. The SKB bit is needed since
+page->private is used by skb_copy_ubufs, so we can't rely solely on
+page->private to trigger recycling.
 
-well, I of course prefer v7 as-is, because this review is running longer than two
-years and I actually hope these patches to be finally merged at some point.
-But you are welcome to optimize them with follow up patches :)
+The driver has to take care of the sync operations on it's own
+during the buffer recycling since the buffer is never unmapped.
 
+In order to enable recycling the driver must call skb_mark_for_recycle()
+to store the information we need for recycling in page->private and
+enabling the recycling bit
+
+Storing the information in page->private allows us to recycle both SKBs
+and their fragments
+
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+---
+ include/linux/skbuff.h  | 33 +++++++++++++++++++++++++++----
+ include/net/page_pool.h | 13 +++++++++++++
+ include/net/xdp.h       |  1 +
+ net/core/page_pool.c    | 43 +++++++++++++++++++++++++++++++++++++++++
+ net/core/skbuff.c       | 20 +++++++++++++++++--
+ net/core/xdp.c          |  6 ++++++
+ 6 files changed, 110 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index ecc029674ae4..3e09a070136f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -40,6 +40,9 @@
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+ #include <linux/netfilter/nf_conntrack_common.h>
+ #endif
++#if IS_BUILTIN(CONFIG_PAGE_POOL)
++#include <net/page_pool.h>
++#endif
+ 
+ /* The interface for checksum offload between the stack and networking drivers
+  * is as follows...
+@@ -247,6 +250,7 @@ struct napi_struct;
+ struct bpf_prog;
+ union bpf_attr;
+ struct skb_ext;
++struct xdp_mem_info;
+ 
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+ struct nf_bridge_info {
+@@ -666,6 +670,8 @@ typedef unsigned char *sk_buff_data_t;
+  *	@head_frag: skb was allocated from page fragments,
+  *		not allocated by kmalloc() or vmalloc().
+  *	@pfmemalloc: skbuff was allocated from PFMEMALLOC reserves
++ *	@pp_recycle: mark the packet for recycling instead of freeing (implies
++ *		page_pool support on driver)
+  *	@active_extensions: active extensions (skb_ext_id types)
+  *	@ndisc_nodetype: router type (from link layer)
+  *	@ooo_okay: allow the mapping of a socket to a queue to be changed
+@@ -790,10 +796,12 @@ struct sk_buff {
+ 				fclone:2,
+ 				peeked:1,
+ 				head_frag:1,
+-				pfmemalloc:1;
++				pfmemalloc:1,
++				pp_recycle:1; /* page_pool recycle indicator */
+ #ifdef CONFIG_SKB_EXTENSIONS
+ 	__u8			active_extensions;
+ #endif
++
+ 	/* fields enclosed in headers_start/headers_end are copied
+ 	 * using a single memcpy() in __copy_skb_header()
+ 	 */
+@@ -3080,12 +3088,20 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+ /**
+  * __skb_frag_unref - release a reference on a paged fragment.
+  * @frag: the paged fragment
++ * @recycle: recycle the page if allocated via page_pool
+  *
+  * Releases a reference on the paged fragment @frag.
++ * or recycles the page via the page_pool API
+  */
+-static inline void __skb_frag_unref(skb_frag_t *frag)
++static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+ {
+-	put_page(skb_frag_page(frag));
++	struct page *page = skb_frag_page(frag);
++
++#if IS_BUILTIN(CONFIG_PAGE_POOL)
++	if (recycle && page_pool_return_skb_page(page_address(page)))
++		return;
++#endif
++	put_page(page);
+ }
+ 
+ /**
+@@ -3097,7 +3113,7 @@ static inline void __skb_frag_unref(skb_frag_t *frag)
+  */
+ static inline void skb_frag_unref(struct sk_buff *skb, int f)
+ {
+-	__skb_frag_unref(&skb_shinfo(skb)->frags[f]);
++	__skb_frag_unref(&skb_shinfo(skb)->frags[f], skb->pp_recycle);
+ }
+ 
+ /**
+@@ -4695,5 +4711,14 @@ static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
+ #endif
+ }
+ 
++#if IS_BUILTIN(CONFIG_PAGE_POOL)
++static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
++					struct xdp_mem_info *mem)
++{
++	skb->pp_recycle = 1;
++	page_pool_store_mem_info(page, mem);
++}
++#endif
++
+ #endif	/* __KERNEL__ */
+ #endif	/* _LINUX_SKBUFF_H */
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index b30405e84b5e..75fffc15788b 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -65,6 +65,8 @@
+ #define PP_ALLOC_CACHE_REFILL	64
+ #define PP_SIGNATURE		0x20210303
+ 
++struct xdp_mem_info;
++
+ struct pp_alloc_cache {
+ 	u32 count;
+ 	void *cache[PP_ALLOC_CACHE_SIZE];
+@@ -148,6 +150,8 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
+ 	return pool->p.dma_dir;
+ }
+ 
++bool page_pool_return_skb_page(void *data);
++
+ struct page_pool *page_pool_create(const struct page_pool_params *params);
+ 
+ #ifdef CONFIG_PAGE_POOL
+@@ -243,4 +247,13 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+ 		spin_unlock_bh(&pool->ring.producer_lock);
+ }
+ 
++/* Store mem_info on struct page and use it while recycling skb frags */
++static inline
++void page_pool_store_mem_info(struct page *page, struct xdp_mem_info *mem)
++{
++	u32 *xmi = (u32 *)mem;
++
++	set_page_private(page, *xmi);
++}
++
+ #endif /* _NET_PAGE_POOL_H */
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index c35864d59113..5d7316f1f195 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -235,6 +235,7 @@ void xdp_return_buff(struct xdp_buff *xdp);
+ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
+ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+ 			   struct xdp_frame_bulk *bq);
++void xdp_return_skb_frame(void *data, struct xdp_mem_info *mem);
+ 
+ /* When sending xdp_frame into the network stack, then there is no
+  * return point callback, which is needed to release e.g. DMA-mapping
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 2ae9b554ef98..43bfd2e3d8df 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -9,6 +9,7 @@
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/device.h>
++#include <linux/skbuff.h>
+ 
+ #include <net/page_pool.h>
+ #include <net/xdp.h>
+@@ -17,12 +18,19 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/page-flags.h>
+ #include <linux/mm.h> /* for __put_page() */
++#include <net/xdp.h>
+ 
+ #include <trace/events/page_pool.h>
+ 
+ #define DEFER_TIME (msecs_to_jiffies(1000))
+ #define DEFER_WARN_INTERVAL (60 * HZ)
+ 
++/* Used to store/retrieve hi/lo bytes from xdp_mem_info to page->private */
++union page_pool_xmi {
++	u32 raw;
++	struct xdp_mem_info mem_info;
++};
++
+ static int page_pool_init(struct page_pool *pool,
+ 			  const struct page_pool_params *params)
+ {
+@@ -587,3 +595,38 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+ 	}
+ }
+ EXPORT_SYMBOL(page_pool_update_nid);
++
++bool page_pool_return_skb_page(void *data)
++{
++	struct xdp_mem_info mem_info;
++	union page_pool_xmi info;
++	struct page *page;
++
++	page = virt_to_head_page(data);
++	if (unlikely(page->signature != PP_SIGNATURE))
++		return false;
++
++	info.raw = page_private(page);
++	mem_info = info.mem_info;
++
++	/* If a buffer is marked for recycle and does not belong to
++	 * MEM_TYPE_PAGE_POOL, the buffers will be eventually freed from the
++	 * network stack and kfree_skb, but the DMA region will *not* be
++	 * correctly unmapped. WARN here for the recycling misusage
++	 */
++	if (unlikely(mem_info.type != MEM_TYPE_PAGE_POOL)) {
++		WARN_ONCE(true, "Tried to recycle non MEM_TYPE_PAGE_POOL");
++		return false;
++	}
++
++	/* Driver set this to memory recycling info. Reset it on recycle
++	 * This will *not* work for NIC using a split-page memory model.
++	 * The page will be returned to the pool here regardless of the
++	 * 'flipped' fragment being in use or not
++	 */
++	set_page_private(page, 0);
++	xdp_return_skb_frame(data, &mem_info);
++
++	return true;
++}
++EXPORT_SYMBOL(page_pool_return_skb_page);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index e8320b5d651a..7f5c02085438 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -69,6 +69,9 @@
+ #include <net/xfrm.h>
+ #include <net/mpls.h>
+ #include <net/mptcp.h>
++#if IS_BUILTIN(CONFIG_PAGE_POOL)
++#include <net/page_pool.h>
++#endif
+ 
+ #include <linux/uaccess.h>
+ #include <trace/events/skb.h>
+@@ -644,6 +647,11 @@ static void skb_free_head(struct sk_buff *skb)
+ {
+ 	unsigned char *head = skb->head;
+ 
++#if IS_BUILTIN(CONFIG_PAGE_POOL)
++	if (skb->pp_recycle && page_pool_return_skb_page(head))
++		return;
++#endif
++
+ 	if (skb->head_frag)
+ 		skb_free_frag(head);
+ 	else
+@@ -663,7 +671,7 @@ static void skb_release_data(struct sk_buff *skb)
+ 	skb_zcopy_clear(skb, true);
+ 
+ 	for (i = 0; i < shinfo->nr_frags; i++)
+-		__skb_frag_unref(&shinfo->frags[i]);
++		__skb_frag_unref(&shinfo->frags[i], skb->pp_recycle);
+ 
+ 	if (shinfo->frag_list)
+ 		kfree_skb_list(shinfo->frag_list);
+@@ -1045,6 +1053,7 @@ static struct sk_buff *__skb_clone(struct sk_buff *n, struct sk_buff *skb)
+ 	n->nohdr = 0;
+ 	n->peeked = 0;
+ 	C(pfmemalloc);
++	C(pp_recycle);
+ 	n->destructor = NULL;
+ 	C(tail);
+ 	C(end);
+@@ -3453,7 +3462,7 @@ int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen)
+ 		fragto = &skb_shinfo(tgt)->frags[merge];
+ 
+ 		skb_frag_size_add(fragto, skb_frag_size(fragfrom));
+-		__skb_frag_unref(fragfrom);
++		__skb_frag_unref(fragfrom, skb->pp_recycle);
+ 	}
+ 
+ 	/* Reposition in the original skb */
+@@ -5234,6 +5243,13 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
+ 	if (skb_cloned(to))
+ 		return false;
+ 
++	/* We can't coalesce skb that are allocated from slab and page_pool
++	 * The recycle mark is on the skb, so that might end up trying to
++	 * recycle slab allocated skb->head
++	 */
++	if (to->pp_recycle != from->pp_recycle)
++		return false;
++
+ 	if (len <= skb_tailroom(to)) {
+ 		if (len)
+ 			BUG_ON(skb_copy_bits(from, 0, skb_put(to, len), len));
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 3dd47ed83778..d89b827e54a9 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -372,6 +372,12 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 	}
+ }
+ 
++void xdp_return_skb_frame(void *data, struct xdp_mem_info *mem)
++{
++	__xdp_return(data, mem, false, NULL);
++}
++EXPORT_SYMBOL_GPL(xdp_return_skb_frame);
++
+ void xdp_return_frame(struct xdp_frame *xdpf)
+ {
+ 	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
 -- 
-Best regards,
-Alexander Sverdlin.
+2.30.2
+
