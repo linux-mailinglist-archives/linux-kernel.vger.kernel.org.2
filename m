@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C02E3442DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F92344103
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCVMqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34122 "EHLO mail.kernel.org"
+        id S230438AbhCVMaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:30:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231704AbhCVMi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A394619B6;
-        Mon, 22 Mar 2021 12:37:36 +0000 (UTC)
+        id S230138AbhCVM3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:29:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A55356198E;
+        Mon, 22 Mar 2021 12:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416656;
-        bh=Rqh84oPfGpkLWryE55UI1gfvz+d8MIqsBpn7j7LeXzQ=;
+        s=korg; t=1616416180;
+        bh=ggPWzldjh6XxkapTvDCQwdbnHaLrXyZcERNfNTTgFFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LRkGNXQUucXwTPtE7lOmTSiw9QWTCo3n8XHJxq8RDd39uy36oeJ3SEc6oWWJTNIvv
-         44Gh0nfv8ECcQSuhBpNU1HPPFLsE7QlmZGw8zEIltzLqKaPXrRmEeL72xI8cUoKGaX
-         g1Wq7aS4njqRZySxRj7fuEvYmkaJQsXYETH6Xpks=
+        b=BWZPWvCNh+Jem4DTjyPro7tOm+N1AQS8b3D7slwDyOLtFoxXjCFbT05u0pQ04dHtS
+         jk/VWkqI9mrKqPuqeQeU+k1YQR0uBgkTveCkiHiVMieSS23pYX4Mwf5zm3wDes7DfV
+         Wqwx3FlCqZT+FGuZBAxPN0vGpR4oVoaeNPQi5Ww8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 035/157] ALSA: usb-audio: Fix unintentional sign extension issue
-Date:   Mon, 22 Mar 2021 13:26:32 +0100
-Message-Id: <20210322121934.872616590@linuxfoundation.org>
+Subject: [PATCH 5.11 010/120] ALSA: hda/realtek: fix mute/micmute LEDs for HP 850 G8
+Date:   Mon, 22 Mar 2021 13:26:33 +0100
+Message-Id: <20210322121930.004342725@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Jeremy Szu <jeremy.szu@canonical.com>
 
-commit 50b1affc891cbc103a2334ce909a026e25f4c84d upstream.
+commit 53b861bec737c189cc14ec3b5785d0f13445ac0f upstream.
 
-The shifting of the u8 integer device by 24 bits to the left will
-be promoted to a 32 bit signed int and then sign-extended to a
-64 bit unsigned long. In the event that the top bit of device is
-set then all then all the upper 32 bits of the unsigned long will
-end up as also being set because of the sign-extension. Fix this
-by casting device to an unsigned long before the shift.
+The HP EliteBook 850 G8 Notebook PC is using ALC285 codec which is
+using 0x04 to control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: a07df82c7990 ("ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210318132008.15266-1-colin.king@canonical.com
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210316094236.89028-1-jeremy.szu@canonical.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_quirks.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2883,7 +2883,7 @@ static int snd_djm_controls_put(struct s
- 	u8 group = (private_value & SND_DJM_GROUP_MASK) >> SND_DJM_GROUP_SHIFT;
- 	u16 value = elem->value.enumerated.item[0];
- 
--	kctl->private_value = ((device << SND_DJM_DEVICE_SHIFT) |
-+	kctl->private_value = (((unsigned long)device << SND_DJM_DEVICE_SHIFT) |
- 			      (group << SND_DJM_GROUP_SHIFT) |
- 			      value);
- 
-@@ -2921,7 +2921,7 @@ static int snd_djm_controls_create(struc
- 		value = device->controls[i].default_value;
- 		knew.name = device->controls[i].name;
- 		knew.private_value = (
--			(device_idx << SND_DJM_DEVICE_SHIFT) |
-+			((unsigned long)device_idx << SND_DJM_DEVICE_SHIFT) |
- 			(i << SND_DJM_GROUP_SHIFT) |
- 			value);
- 		err = snd_djm_controls_update(mixer, device_idx, i, value);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8060,6 +8060,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
++	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
 
 
