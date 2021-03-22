@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E9D34403C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84978344043
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhCVL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhCVLzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:55:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A88C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:55:41 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lOJ9l-0001wO-R7; Mon, 22 Mar 2021 12:55:37 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lOJ9k-0002yG-AV; Mon, 22 Mar 2021 12:55:36 +0100
-Date:   Mon, 22 Mar 2021 12:55:36 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>,
+        id S230289AbhCVL4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230242AbhCVL4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5740D61993;
+        Mon, 22 Mar 2021 11:56:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616414166;
+        bh=v02+Q4Y/k5N5zyuH15US/OzUofNlFXTHJrTv94Wy354=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HhEl8R7wxUe6N6+JjBywxIcTizWiUXEt1SOxVHC7RILixuJUgrUWRN3OS9QOhtXP+
+         BLNmFhlvHGPRlqU0k3AqRRg/1Zu8AffkAp+cQ9PCpvJzlOr2W6xbVUChwACDnk9/5W
+         8i0kkZZ5zSj4MCtxokKGXJVYQ7EaFMzwuJb9TDPCD1peJHsxwKhkQg5mEEil73yhfP
+         hwnJ4i3TMEv7oo5Mh4k0jfVMAs5bDN1yxe33n4jACq2hCQ6yEwdx8TVjYXRKwyKUjn
+         sbA2WUThcixS0dGT2U2hKNY1QJmVg7eJ3ohTLSzvHGqbXYVU8UQBhu/xdvFSU4mrc5
+         K1ppWa6mTt7Eg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <groeck@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
-Message-ID: <20210322115536.knkea7i6vrfpotol@pengutronix.de>
-References: <20210322111036.31966-1-johan@kernel.org>
- <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
- <20210322113918.ze52gq54cpsspgej@linutronix.de>
+        Azhar Shaikh <azhar.shaikh@intel.com>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] platform/chrome: cros_ec_typec: fix clang -Wformat warning
+Date:   Mon, 22 Mar 2021 12:55:55 +0100
+Message-Id: <20210322115602.4003221-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7izeeft7juynhm6v"
-Content-Disposition: inline
-In-Reply-To: <20210322113918.ze52gq54cpsspgej@linutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---7izeeft7juynhm6v
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Clang warns about using the %h format modifier to truncate an
+integer:
 
-Hallo Sebastian,
+drivers/platform/chrome/cros_ec_typec.c:1031:3: error: format specifies type 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
+                typec->pd_ctrl_ver);
+                ^~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:131:47: note: expanded from macro 'dev_dbg'
+                dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
+                                                    ~~~     ^~~~~~~~~~~
 
-On Mon, Mar 22, 2021 at 12:39:18PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-03-22 12:34:02 [+0100], Uwe Kleine-K=F6nig wrote:
-> > On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
-> > > Force-threaded interrupt handlers used to run with interrupts enabled,
-> > > something which could lead to deadlocks in case a threaded handler
-> > > shared a lock with code running in hard interrupt context (e.g. timer
-> > > callbacks) and did not explicitly disable interrupts.
-> > >=20
-> > > This was specifically the case for serial drivers that take the port
-> > > lock in their console write path as printk can be called from hard
-> > > interrupt context also with forced threading ("threadirqs").
-> > >=20
-> > > Since commit 81e2073c175b ("genirq: Disable interrupts for force
-> > > threaded handlers") interrupt handlers always run with interrupts
-> > > disabled on non-RT so that drivers no longer need to do handle this.
-> >=20
-> > So we're breaking RT knowingly here? If this is the case I'm not happy
-> > with your change. (And if RT is not affected a different wording would
-> > be good.)
->=20
-> Which wording, could you be more specific? It looks good from here and
-> no, RT is not affected.
+Use an explicit bit mask to limit the number to its lower eight bits
+instead.
 
-The commit log says essentially: "The change is fine on non-RT" which
-suggests there is a problem on RT. So something like:
+Fixes: ad7c0510c99e ("platform/chrome: cros_ec_typec: Update port info from EC")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/platform/chrome/cros_ec_typec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	On non-RT interrupts are disabled also for force threaded handlers
-	(since commit 81e2073c175b ...). On RT there is no problem either
-	because ... So we don't need to handle this case in the driver any more.
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 0811562deecc..f07b7e946560 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -1027,8 +1027,8 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+ 	else
+ 		typec->pd_ctrl_ver = 0;
+ 
+-	dev_dbg(typec->dev, "PD Control has version mask 0x%hhx\n",
+-		typec->pd_ctrl_ver);
++	dev_dbg(typec->dev, "PD Control has version mask 0x%02x\n",
++		typec->pd_ctrl_ver & 0xff);
+ 
+ 	return 0;
+ }
+-- 
+2.29.2
 
-would be preferable.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7izeeft7juynhm6v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYhbUACgkQwfwUeK3K
-7AkgqAgAgTgdaglMq9hbZzRXzVYb3dpQz/Wevwb7A3UCS5godfj5mzrFMKzUWz16
-MkcP7qv5pbyj5xvK4HgZWhE06mPXkR3k/H3B8yeCNG00TUe5SDM1sPbKPZLc2SzI
-uRzU0ImeVHodghGBuYKRUqEiSliwCGJzUBZFZc5Ij5tfNgXvk0kXNdxnWX7d3NzQ
-i23EdTPCDBAxSl1CmkjocnP8o9lEbBIOSVtXE8PBWKmiqqOM03xn8NsJcuTTuTji
-CkNlkvpU/QgA+/Un0fSq/gflti8zkVFz0GJFqcR5OFysAcfsIu8uc2zpcoP8aXvZ
-mERj0gQCekf6AzoeYALL2uOWeDbyRA==
-=ZyzD
------END PGP SIGNATURE-----
-
---7izeeft7juynhm6v--
