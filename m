@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAE53441A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941EF3441A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbhCVMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:34:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55266 "EHLO mail.kernel.org"
+        id S230523AbhCVMe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhCVMcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A7E619A1;
-        Mon, 22 Mar 2021 12:32:22 +0000 (UTC)
+        id S230138AbhCVMcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 630EB619A3;
+        Mon, 22 Mar 2021 12:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416343;
-        bh=yTayAIBKuIJn+gV5lv0TS3Hk7EPo/GlQvUqJXS22suA=;
+        s=korg; t=1616416345;
+        bh=oZ4IFlk/9bq4DKYKDhxL1X/+NmZqzXw5WYT/pnqiE+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPmrwzRMsLUWPCmQqtqvG/svi1YZaG7JOlH9VjJgVttnxcwCYDgfc1mhAO88op1oz
-         uLOo5OJ71vCu1u+f/gJsW4VhvsVPmFBUDVqEPMhE/gOCXHtD9+g0vh6TgUeLafl0aP
-         IRJMjMMZcdZ7M9n4NSrbwYy1PGPjhp01N2ZgoQWE=
+        b=e72P5NaPHMw4WNsWnqe5Z0r6y7ID6Ihj1tqraCbHwGYDlgZ3CzPX0x3ud8Z/ClxGD
+         HnNQyOxpmrp3yQlY/FluBzuQ5OYd0JKAKdcxkswSrceXOzWYXU7gk6BPCyVgf1/lv9
+         S/lIdej3brUaShsmKgKFsCn2qFozee4uPZV5KYYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.11 035/120] ASoC: codecs: wcd934x: add a sanity check in set channel map
-Date:   Mon, 22 Mar 2021 13:26:58 +0100
-Message-Id: <20210322121930.831408240@linuxfoundation.org>
+Subject: [PATCH 5.11 036/120] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
+Date:   Mon, 22 Mar 2021 13:26:59 +0100
+Message-Id: <20210322121930.863072727@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -40,40 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-commit 3bb4852d598f0275ed5996a059df55be7318ac2f upstream.
+commit 9922f50f7178496e709d3d064920b5031f0d9061 upstream.
 
-set channel map can be passed with a channel maps, however if
-the number of channels that are passed are more than the actual
-supported channels then we would be accessing array out of bounds.
+The max boundary check while parsing dai ids makes
+sound card registration fail after common up dai ids.
 
-So add a sanity check to validate these numbers!
+Fixes: cd3484f7f138 ("ASoC: qcom: Fix broken support to MI2S TERTIARY and QUATERNARY")
 
-Fixes: a61f3b4f476e ("ASoC: wcd934x: add support to wcd9340/wcd9341 codec")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210309142129.14182-4-srinivas.kandagatla@linaro.org
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Link: https://lore.kernel.org/r/20210311154557.24978-1-srivasam@codeaurora.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/wcd934x.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/qcom/lpass-cpu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -1873,6 +1873,12 @@ static int wcd934x_set_channel_map(struc
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -737,7 +737,7 @@ static void of_lpass_cpu_parse_dai_data(
  
- 	wcd = snd_soc_component_get_drvdata(dai->component);
- 
-+	if (tx_num > WCD934X_TX_MAX || rx_num > WCD934X_RX_MAX) {
-+		dev_err(wcd->dev, "Invalid tx %d or rx %d channel count\n",
-+			tx_num, rx_num);
-+		return -EINVAL;
-+	}
-+
- 	if (!tx_slot || !rx_slot) {
- 		dev_err(wcd->dev, "Invalid tx_slot=%p, rx_slot=%p\n",
- 			tx_slot, rx_slot);
+ 	for_each_child_of_node(dev->of_node, node) {
+ 		ret = of_property_read_u32(node, "reg", &id);
+-		if (ret || id < 0 || id >= data->variant->num_dai) {
++		if (ret || id < 0) {
+ 			dev_err(dev, "valid dai id not found: %d\n", ret);
+ 			continue;
+ 		}
 
 
