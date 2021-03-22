@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD5C344275
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B9734411A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhCVMlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:41:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
+        id S231193AbhCVMau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231837AbhCVMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:36:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2367C6191A;
-        Mon, 22 Mar 2021 12:35:45 +0000 (UTC)
+        id S230430AbhCVMaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3694661990;
+        Mon, 22 Mar 2021 12:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416546;
-        bh=5UMpya4cxfPq6S+8IcJNUKh0ZUsJOpgbphgAA8riqhk=;
+        s=korg; t=1616416207;
+        bh=qVFdITEGj6Uju4lWuxHa4nIp2q/MqQZTbAoP1JOhhno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aGEjh3QmlHTSpR/8VOlAizNsV5vveoghqOi4PmZzGRUuMnzTH6FBe+kEht2z61C1+
-         qUWbWulfIZzGd4/SegyMyAgK3DAokedTSqmp5V9xJUCrhN0VwVUtfsJODnac/Z2KT0
-         OffwmpRqSp5MErUaiXCz7L/orDFtl1QldVZ5X4ok=
+        b=o7nDEk8xjnfGLfOe8WqD1vtzDsc23IFMJBOUZ6myJinq/vYYF/Lg8pk3AYxj/adrM
+         5UJc9tpqcS4l6WmiqpcNgMKhBiuULcBw6ocvUaDVpAP9XYCGYm2jMYNRIfiJVSmMnD
+         kSRsdNPoojlnZ4HEHSnTBZzG0O7w98+9Vmk1VEy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pan Xiuli <xiuli.pan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 027/157] ASoC: SOF: intel: fix wrong poll bits in dsp power down
-Date:   Mon, 22 Mar 2021 13:26:24 +0100
-Message-Id: <20210322121934.627798262@linuxfoundation.org>
+Subject: [PATCH 5.11 002/120] ASoC: ak5558: Add MODULE_DEVICE_TABLE
+Date:   Mon, 22 Mar 2021 13:26:25 +0100
+Message-Id: <20210322121929.749699533@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-commit fd8299181995093948ec6ca75432e797b4a39143 upstream.
+commit 80cffd2468ddb850e678f17841fc356930b2304a upstream.
 
-The ADSPCS_SPA is Set Power Active bit. To check if DSP is powered
-down, we need to check ADSPCS_CPA, the Current Power Active bit.
+Add missed MODULE_DEVICE_TABLE for the driver can be loaded
+automatically at boot.
 
-Fixes: 747503b1813a3 ("ASoC: SOF: Intel: Add Intel specific HDA DSP HW operations")
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210309004127.4940-1-pierre-louis.bossart@linux.intel.com
+Fixes: 920884777480 ("ASoC: ak5558: Add support for AK5558 ADC driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1614149872-25510-2-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/sof/intel/hda-dsp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ak5558.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -207,7 +207,7 @@ int hda_dsp_core_power_down(struct snd_s
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -419,6 +419,7 @@ static const struct of_device_id ak5558_
+ 	{ .compatible = "asahi-kasei,ak5558"},
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, ak5558_i2c_dt_ids);
  
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR,
- 				HDA_DSP_REG_ADSPCS, adspcs,
--				!(adspcs & HDA_DSP_ADSPCS_SPA_MASK(core_mask)),
-+				!(adspcs & HDA_DSP_ADSPCS_CPA_MASK(core_mask)),
- 				HDA_DSP_REG_POLL_INTERVAL_US,
- 				HDA_DSP_PD_TIMEOUT * USEC_PER_MSEC);
- 	if (ret < 0)
+ static struct i2c_driver ak5558_i2c_driver = {
+ 	.driver = {
 
 
