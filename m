@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7443443C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5AE344480
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhCVMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:53:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34646 "EHLO mail.kernel.org"
+        id S232655AbhCVNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232702AbhCVMnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:43:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC90619A8;
-        Mon, 22 Mar 2021 12:41:16 +0000 (UTC)
+        id S232767AbhCVMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:48:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A39AA619C0;
+        Mon, 22 Mar 2021 12:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416877;
-        bh=ft9Lb4MR6Vk8OXPD4zVw5IuZdRbUn+8SmoXMMeTeq2s=;
+        s=korg; t=1616417050;
+        bh=gKFKmJmz7gWC8mnLNoc9cdcCFERF3Ke9B1hJzweRw6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YP/oBMA0a7aVRaTmXbCRhWEwY+GbV68ZnL+palEFQm63TdTHnR1EFTDBHJAEFekdx
-         e+Ivl9p6anN/jLP1smONp6WFLUNkdU5ljTO4fM9wqQn282CPaGueS8flwltc7FnhVQ
-         pLZ08WSvehYs2KLHU4XqLbJDAYzVGqCLUNuDZBDs=
+        b=zX9RW2Eq2VA5U4F0S7Z8d66kGZAIXFgmt71ael14z4rybv+pzC2JSiEBCJahmBqpd
+         I8VDl83k1iSMiEOmCnoyc2RrkZleapHaG5ruXA4mOQDCmxGCDgXkLJrIO4q/qn+R8F
+         0RDg+s5N66GUMQHgrFsrB0OqokMYER8lUJ8aFiUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.10 144/157] efivars: respect EFI_UNSUPPORTED return from firmware
-Date:   Mon, 22 Mar 2021 13:28:21 +0100
-Message-Id: <20210322121938.315527706@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Matthias Schwarzott <zzam@gentoo.org>
+Subject: [PATCH 5.4 34/60] usb-storage: Add quirk to defeat Kindles automatic unload
+Date:   Mon, 22 Mar 2021 13:28:22 +0100
+Message-Id: <20210322121923.515744316@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +39,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit 483028edacab374060d93955382b4865a9e07cba upstream.
+commit 546aa0e4ea6ed81b6c51baeebc4364542fa3f3a7 upstream.
 
-As per UEFI spec 2.8B section 8.2, EFI_UNSUPPORTED may be returned by
-EFI variable runtime services if no variable storage is supported by
-firmware.  In this case, there is no point for kernel to continue
-efivars initialization.  That said, efivar_init() should fail by
-returning an error code, so that efivarfs will not be mounted on
-/sys/firmware/efi/efivars at all.  Otherwise, user space like efibootmgr
-will be confused by the EFIVARFS_MAGIC seen there, while EFI variable
-calls cannot be made successfully.
+Matthias reports that the Amazon Kindle automatically removes its
+emulated media if it doesn't receive another SCSI command within about
+one second after a SYNCHRONIZE CACHE.  It does so even when the host
+has sent a PREVENT MEDIUM REMOVAL command.  The reason for this
+behavior isn't clear, although it's not hard to make some guesses.
 
-Cc: <stable@vger.kernel.org> # v5.10+
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+At any rate, the results can be unexpected for anyone who tries to
+access the Kindle in an unusual fashion, and in theory they can lead
+to data loss (for example, if one file is closed and synchronized
+while other files are still in the middle of being written).
+
+To avoid such problems, this patch creates a new usb-storage quirks
+flag telling the driver always to issue a REQUEST SENSE following a
+SYNCHRONIZE CACHE command, and adds an unusual_devs entry for the
+Kindle with the flag set.  This is sufficient to prevent the Kindle
+from doing its automatic unload, without interfering with proper
+operation.
+
+Another possible way to deal with this would be to increase the
+frequency of TEST UNIT READY polling that the kernel normally carries
+out for removable-media storage devices.  However that would increase
+the overall load on the system and it is not as reliable, because the
+user can override the polling interval.  Changing the driver's
+behavior is safer and has minimal overhead.
+
+CC: <stable@vger.kernel.org>
+Reported-and-tested-by: Matthias Schwarzott <zzam@gentoo.org>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20210317190654.GA497856@rowland.harvard.edu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/vars.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/storage/transport.c    |    7 +++++++
+ drivers/usb/storage/unusual_devs.h |   12 ++++++++++++
+ include/linux/usb_usual.h          |    2 ++
+ 3 files changed, 21 insertions(+)
 
---- a/drivers/firmware/efi/vars.c
-+++ b/drivers/firmware/efi/vars.c
-@@ -485,6 +485,10 @@ int efivar_init(int (*func)(efi_char16_t
- 			}
+--- a/drivers/usb/storage/transport.c
++++ b/drivers/usb/storage/transport.c
+@@ -651,6 +651,13 @@ void usb_stor_invoke_transport(struct sc
+ 		need_auto_sense = 1;
+ 	}
  
- 			break;
-+		case EFI_UNSUPPORTED:
-+			err = -EOPNOTSUPP;
-+			status = EFI_NOT_FOUND;
-+			break;
- 		case EFI_NOT_FOUND:
- 			break;
- 		default:
++	/* Some devices (Kindle) require another command after SYNC CACHE */
++	if ((us->fflags & US_FL_SENSE_AFTER_SYNC) &&
++			srb->cmnd[0] == SYNCHRONIZE_CACHE) {
++		usb_stor_dbg(us, "-- sense after SYNC CACHE\n");
++		need_auto_sense = 1;
++	}
++
+ 	/*
+ 	 * If we have a failure, we're going to do a REQUEST_SENSE 
+ 	 * automatically.  Note that we differentiate between a command
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -2212,6 +2212,18 @@ UNUSUAL_DEV( 0x1908, 0x3335, 0x0200, 0x0
+ 		US_FL_NO_READ_DISC_INFO ),
+ 
+ /*
++ * Reported by Matthias Schwarzott <zzam@gentoo.org>
++ * The Amazon Kindle treats SYNCHRONIZE CACHE as an indication that
++ * the host may be finished with it, and automatically ejects its
++ * emulated media unless it receives another command within one second.
++ */
++UNUSUAL_DEV( 0x1949, 0x0004, 0x0000, 0x9999,
++		"Amazon",
++		"Kindle",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_SENSE_AFTER_SYNC ),
++
++/*
+  * Reported by Oliver Neukum <oneukum@suse.com>
+  * This device morphes spontaneously into another device if the access
+  * pattern of Windows isn't followed. Thus writable media would be dirty
+--- a/include/linux/usb_usual.h
++++ b/include/linux/usb_usual.h
+@@ -86,6 +86,8 @@
+ 		/* lies about caching, so always sync */	\
+ 	US_FLAG(NO_SAME, 0x40000000)				\
+ 		/* Cannot handle WRITE_SAME */			\
++	US_FLAG(SENSE_AFTER_SYNC, 0x80000000)			\
++		/* Do REQUEST_SENSE after SYNCHRONIZE_CACHE */	\
+ 
+ #define US_FLAG(name, value)	US_FL_##name = value ,
+ enum { US_DO_ALL_FLAGS };
 
 
