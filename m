@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E738C344445
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC31E34443C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhCVM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:59:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
+        id S231765AbhCVM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232609AbhCVMrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B69619A6;
-        Mon, 22 Mar 2021 12:43:50 +0000 (UTC)
+        id S232619AbhCVMr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:47:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6A0619DB;
+        Mon, 22 Mar 2021 12:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417031;
-        bh=xTSQqhsYpOWOWXCv1XlAAQLhDge5dfgEzRmIuBFhNyg=;
+        s=korg; t=1616417034;
+        bh=3xNQcAURS3KEqsPvj//1CHY9SC+g+nrmmGzqcCoIJ2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qU9pTn8yVPDQvA+lFjhqSMRdG5/pkEDHAWyo3UtEMb96QFx33rBmhZVuPeTwbf1RZ
-         TWMjcVgH/tT9PUB/D8nHC1D+e1EO8VW7KPDfa+0ckg2s1FPcnYYkgIjl6nHWTViEQc
-         DXxPd6XLMF9zeRAxYpuBQhwJr7khQzf4rlPHmXz4=
+        b=OHaJ90u0tx5AqRsTIhABVRpQqQ78Kapm7f3vrypRt4is/Sg5oh261d9sw71GhylrV
+         +Xywx3cya3wXwXZ8VLdpAmQKip3whYZi5LiAbvvCgr7D7fLwKQURA6/h+kVMYdOLdU
+         s3uxlP4CEP4IYGQ1uX4xnHWAeNiu9KIewdgyRA9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 5.4 59/60] genirq: Disable interrupts for force threaded handlers
-Date:   Mon, 22 Mar 2021 13:28:47 +0100
-Message-Id: <20210322121924.328621958@linuxfoundation.org>
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 60/60] x86/apic/of: Fix CPU devicetree-node lookups
+Date:   Mon, 22 Mar 2021 13:28:48 +0100
+Message-Id: <20210322121924.357962787@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
 References: <20210322121922.372583154@linuxfoundation.org>
@@ -40,70 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit 81e2073c175b887398e5bca6c004efa89983f58d upstream.
+commit dd926880da8dbbe409e709c1d3c1620729a94732 upstream.
 
-With interrupt force threading all device interrupt handlers are invoked
-from kernel threads. Contrary to hard interrupt context the invocation only
-disables bottom halfs, but not interrupts. This was an oversight back then
-because any code like this will have an issue:
+Architectures that describe the CPU topology in devicetree and do not have
+an identity mapping between physical and logical CPU ids must override the
+default implementation of arch_match_cpu_phys_id().
 
-thread(irq_A)
-  irq_handler(A)
-    spin_lock(&foo->lock);
+Failing to do so breaks CPU devicetree-node lookups using of_get_cpu_node()
+and of_cpu_device_node_get() which several drivers rely on. It also causes
+the CPU struct devices exported through sysfs to point to the wrong
+devicetree nodes.
 
-interrupt(irq_B)
-  irq_handler(B)
-    spin_lock(&foo->lock);
+On x86, CPUs are described in devicetree using their APIC ids and those
+do not generally coincide with the logical ids, even if CPU0 typically
+uses APIC id 0.
 
-This has been triggered with networking (NAPI vs. hrtimers) and console
-drivers where printk() happens from an interrupt which interrupted the
-force threaded handler.
+Add the missing implementation of arch_match_cpu_phys_id() so that CPU-node
+lookups work also with SMP.
 
-Now people noticed and started to change the spin_lock() in the handler to
-spin_lock_irqsave() which affects performance or add IRQF_NOTHREAD to the
-interrupt request which in turn breaks RT.
+Apart from fixing the broken sysfs devicetree-node links this likely does
+not affect current users of mainline kernels on x86.
 
-Fix the root cause and not the symptom and disable interrupts before
-invoking the force threaded handler which preserves the regular semantics
-and the usefulness of the interrupt force threading as a general debugging
-tool.
-
-For not RT this is not changing much, except that during the execution of
-the threaded handler interrupts are delayed until the handler
-returns. Vs. scheduling and softirq processing there is no difference.
-
-For RT kernels there is no issue.
-
-Fixes: 8d32a307e4fa ("genirq: Provide forced interrupt threading")
-Reported-by: Johan Hovold <johan@kernel.org>
+Fixes: 4e07db9c8db8 ("x86/devicetree: Use CPU description from Device Tree")
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
+Link: https://lore.kernel.org/r/20210312092033.26317-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/irq/manage.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kernel/apic/apic.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1026,11 +1026,15 @@ irq_forced_thread_fn(struct irq_desc *de
- 	irqreturn_t ret;
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2354,6 +2354,11 @@ static int cpuid_to_apicid[] = {
+ 	[0 ... NR_CPUS - 1] = -1,
+ };
  
- 	local_bh_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_disable();
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
- 
- 	irq_finalize_oneshot(desc, action);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_enable();
- 	local_bh_enable();
- 	return ret;
- }
++bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
++{
++	return phys_id == cpuid_to_apicid[cpu];
++}
++
+ #ifdef CONFIG_SMP
+ /**
+  * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
 
 
