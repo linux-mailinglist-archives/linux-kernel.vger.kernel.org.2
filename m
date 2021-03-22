@@ -2,82 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EC4344007
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF6434402B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhCVLju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:39:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53608 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhCVLjX (ORCPT
+        id S230100AbhCVLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:51:41 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:58184 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhCVLvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:39:23 -0400
-Date:   Mon, 22 Mar 2021 12:39:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616413160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ZhX+YE/qD6wm9rEUpODyk3JBhUspUq04ONWRA919tI=;
-        b=DLf5/KRpvDoWIs85QD34KKZvMM/CGNjcRxRY3lF40GhFLoSYDDk6UwtmSdXqYqPqT5SFcq
-        1kNJ+FbthHV/MpYxlQDutpf9KNfcekne/v9jsAk9/MGkFngNtAN9PN3Ke/TMlPVPKDvom/
-        PdyIJSuCfZRCZnnb4KdXFX/owtIz58bE/Nkz6N4RvxWepBCnun65qMkRS6b2dzhrFXCflF
-        VPbG/2BtSJPYLqYXuJCKC3fOazIQK9pxiQFnW0ddSBT1+F3/1r9yQeEruAtN3JovHR99HH
-        tJIGSKzBG5UWLccY10hOcBYO8qxt/vb1epxPVMkRTWH+ePNF4J9lNOli7+Xn6A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616413160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ZhX+YE/qD6wm9rEUpODyk3JBhUspUq04ONWRA919tI=;
-        b=lviYqnUjfYbaYCagkQiljIDSUmTIThsm8Y5+YPECy0rY8ZuMD5rQlw4Yp9vyLOhYSuTeQo
-        4oUDDcSx+Fb95fCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
-Message-ID: <20210322113918.ze52gq54cpsspgej@linutronix.de>
-References: <20210322111036.31966-1-johan@kernel.org>
- <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+        Mon, 22 Mar 2021 07:51:08 -0400
+X-Greylist: delayed 612 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Mar 2021 07:51:08 EDT
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id E89CA980901;
+        Mon, 22 Mar 2021 19:40:54 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] drivers: bus: clk.h is included twice
+Date:   Mon, 22 Mar 2021 19:40:26 +0800
+Message-Id: <20210322114033.59149-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUxJH08YSB5CSEkZVkpNSk1PSkhJTk5KSUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NT46Ojo6UT8ROUIiMC1LN0sp
+        VhUaFA5VSlVKTUpNT0pISU5OT0xJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKSEpONwY+
+X-HM-Tid: 0a7859bce583d992kuwse89ca980901
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 12:34:02 [+0100], Uwe Kleine-K=C3=B6nig wrote:
-> On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
-> > Force-threaded interrupt handlers used to run with interrupts enabled,
-> > something which could lead to deadlocks in case a threaded handler
-> > shared a lock with code running in hard interrupt context (e.g. timer
-> > callbacks) and did not explicitly disable interrupts.
-> >=20
-> > This was specifically the case for serial drivers that take the port
-> > lock in their console write path as printk can be called from hard
-> > interrupt context also with forced threading ("threadirqs").
-> >=20
-> > Since commit 81e2073c175b ("genirq: Disable interrupts for force
-> > threaded handlers") interrupt handlers always run with interrupts
-> > disabled on non-RT so that drivers no longer need to do handle this.
->=20
-> So we're breaking RT knowingly here? If this is the case I'm not happy
-> with your change. (And if RT is not affected a different wording would
-> be good.)
+linux/clk.h is included more than once.
 
-Which wording, could you be more specific? It looks good from here and
-no, RT is not affected.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/bus/bt1-apb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Best regards
-> Uwe
+diff --git a/drivers/bus/bt1-apb.c b/drivers/bus/bt1-apb.c
+index b25ff941e7c7..74b1b712ef3a 100644
+--- a/drivers/bus/bt1-apb.c
++++ b/drivers/bus/bt1-apb.c
+@@ -22,7 +22,6 @@
+ #include <linux/clk.h>
+ #include <linux/reset.h>
+ #include <linux/time64.h>
+-#include <linux/clk.h>
+ #include <linux/sysfs.h>
+ 
+ #define APB_EHB_ISR			0x00
+-- 
+2.25.1
 
-Sebastian
