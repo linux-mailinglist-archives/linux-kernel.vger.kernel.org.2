@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C34B3452A0
+	by mail.lfdr.de (Postfix) with ESMTP id 7712F3452A1
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhCVWxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S230337AbhCVWxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhCVWxT (ORCPT
+        with ESMTP id S230272AbhCVWxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:53:19 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398F9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:53:19 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j25so12234807pfe.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:53:19 -0700 (PDT)
+        Mon, 22 Mar 2021 18:53:20 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C46C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:53:20 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso11293041pji.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=972JgSIF2IIo8wEKlvKAl0BK+0XizAKsSmH5/nQePh4=;
-        b=kyFRzjmyQNZ2Bjps4L5M0EhjRIv/RBgAPaxob3JGH3c9LC2wAXReZaM5iNFpVBAp+p
-         oJM5qZQjZZQwFcR8eFRhltYD68lbnwWZPjn28HPgNI2OgK13kT77b9RMobozUskZL8MW
-         41QvaM7ZoQUL+1lZpR1oJUqMhFDZWNFhAn5LCVnX5Sk6kiirqiUGjVTtwP3ncP5eXqM1
-         RGiuniUiRDmJ3gzjoZ/SvDXMr7ezlJ5hrJ6qwZTa9J/1niNMtKNhVe+1My9NiKTvGl6g
-         t/wBDHOpO97ENzhqOhJVJ8JmiVo3IT2drAG4lpt/YSbN9yEi7VJfmFuA+58ZSoTuDpmC
-         F1WA==
+        bh=HIOBeYfsLRdlk6IE9Mox6wnpSlCp4ziKMxvOh3LQGV0=;
+        b=f+gHS/k3aPWr0JJ8C4fAHd/OxMpzlfqzOtzSMSDqaUhVVmzLuW6gCh/jfK5pEBM28k
+         PL9Fis9GwrhhAs98EaAvcVPY1EikAsiEiT3wGtDdfs4dhc81aQHXOw+oFDbM5otgMJG/
+         dxeCzFyoKFZJdpVWVf4OpheSnOI1slZE9ZJEBdBZ4l/aeSmtU8Rh7Sv0EL2+obSXXepe
+         C3f+S3ygbdikFbs0Ejzq2S+agnW3+sqcgmH8g9PYbA9E1o2c+oquk3OuqLVPcWU9QBff
+         hcsz2Zv7JGBwNdnR6LEA3SOiWIjUFUZrt9G8lXP0aNJ6QSQG4YLtxMp4tVbGAxHiJLXb
+         9eBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=972JgSIF2IIo8wEKlvKAl0BK+0XizAKsSmH5/nQePh4=;
-        b=iTnpyJET7rig6K4AZnvP5pawmV3728dOXiL5fXzY6MHnIxdau20+YC4iuWhtsymOxz
-         6tPcjl0fpR7GbyCwM6ITk1iOJ2QejHDek3P6FUBlMpCYGEFIBcyF1yjPwCwwcQ45Mb9h
-         JID76o9XwJwfvwLYiTE7x3xh7GorRoW00zFBdUhv3S1ExAFFiHbubq+Ul9ngW0/jw/SQ
-         NbohiPgJUwhYEoR0z4Aaxp0HgE1GCdnYugDSetJhvXisGItekWLYN1lFXirq+a9EiNDb
-         IH4hcpj31LIovB6qXbjqkezKANp71h3z6QOhgZ//e44hnJmSL+RNeE2vnuoUhSM1gjjI
-         mGGg==
-X-Gm-Message-State: AOAM532YdthlbbZC9ZBRD5Hdy6JRKfJd4QFPuw7h6TsjqFbTz2VIEcU7
-        kPuaA0cgRLS0L/ViSHUdVog=
-X-Google-Smtp-Source: ABdhPJz52tT2nDR6QszbXNEnhRIexqy8hazMx7QWwYZkK74s9rdjv9EC4jYt7FLr0O944sg0Cr404w==
-X-Received: by 2002:a17:903:1c3:b029:e6:a15:751f with SMTP id e3-20020a17090301c3b02900e60a15751fmr1888188plh.44.1616453598632;
-        Mon, 22 Mar 2021 15:53:18 -0700 (PDT)
+        bh=HIOBeYfsLRdlk6IE9Mox6wnpSlCp4ziKMxvOh3LQGV0=;
+        b=JPAgyveUJyPz73ZZTuFE7oYLaB3PweKjJtrEZKnW3wmn0s0PY+uRe/AjMi7SPtaPdt
+         5+3KiGaOibb7AVEedknWxSJc8FW5YhOSMttpRlwLMiq1akSvZz6tKgw0mgjZAUX26G66
+         2wSc8rg/IN3o6J946ECe6vokK0T/q+R2PxZ/4rhtsU4OnqzcwNBBjCW+q5yg6VF1EZdZ
+         e3aWjiha++mUNRnLh5iOSE1/3AiADBFjDSw9LG8GpSge3A0mej3iZHebqsnETbMGe3ly
+         OCg/RHFA1Z94PFPezf9h9C4kRcmr71kRVt+7kVw5XJFgfqW4Psy9nX6JRkkMQZDwvVgY
+         f2/A==
+X-Gm-Message-State: AOAM532LRlxCH3vQB7LzuNXasBY+8ltLIyNwx8TbD6Q4cT13qQRZssA+
+        H+Hu+z+lugKoq/jrRXHjZz0=
+X-Google-Smtp-Source: ABdhPJxe/yfdkp/SdhyhsEJL6O/SCgA66U19AgdI04G5R9seC5UAN6x44Ebnsx4PQkM2Bgdl2U0usQ==
+X-Received: by 2002:a17:90b:1082:: with SMTP id gj2mr1299519pjb.155.1616453599974;
+        Mon, 22 Mar 2021 15:53:19 -0700 (PDT)
 Received: from laptop.hsd1.wa.comcast.net ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id j13sm8878211pfn.103.2021.03.22.15.53.17
+        by smtp.gmail.com with ESMTPSA id j13sm8878211pfn.103.2021.03.22.15.53.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 15:53:17 -0700 (PDT)
+        Mon, 22 Mar 2021 15:53:19 -0700 (PDT)
 From:   Andrei Vagin <avagin@gmail.com>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>
@@ -56,9 +56,9 @@ Cc:     Oleg Nesterov <oleg@redhat.com>,
         Andrei Vagin <avagin@gmail.com>,
         Dave Martin <Dave.Martin@arm.com>,
         Keno Fischer <keno@juliacomputing.com>
-Subject: [PATCH 3/4] selftest/arm64/ptrace: add a test for orig_x0
-Date:   Mon, 22 Mar 2021 15:50:52 -0700
-Message-Id: <20210322225053.428615-4-avagin@gmail.com>
+Subject: [PATCH 4/4] selftest/arm64/ptrace: add a test for orig_x7
+Date:   Mon, 22 Mar 2021 15:50:53 -0700
+Message-Id: <20210322225053.428615-5-avagin@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210322225053.428615-1-avagin@gmail.com>
 References: <20210322225053.428615-1-avagin@gmail.com>
@@ -68,89 +68,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test creates two processes where one traces another one.  The tracee
-executes a system call, the tracer traps it, changes orig_x0, triggers a
-signal and checks that the syscall is restarted with the setted
-argument.
+In system calls, x7 is used to indicate whether a tracee has been
+stopped on syscall-enter or syscall-exit and the origin value of x7 is
+saved in orig_x7.
 
 Test output:
- $ ./ptrace_restart_syscall_test
- 1..3
- ok 1 orig_x0: 0x3
- ok 2 x0: 0x5
- ok 3 The child exited with code 0.
- # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+ $ ./ptrace_syscall_test
+ 1..4
+ ok 1 x7: 0
+ ok 2 x7: 1
+ ok 3 x7: 686920776f726c64
+ ok 4 The child exited with code 0.
+ # Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
 
 Signed-off-by: Andrei Vagin <avagin@gmail.com>
 ---
- tools/testing/selftests/arm64/ptrace/Makefile |   6 +
- tools/testing/selftests/arm64/ptrace/lib.h    |  36 ++++++
- .../ptrace/ptrace_restart_syscall_test.c      | 122 ++++++++++++++++++
- 3 files changed, 164 insertions(+)
- create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
- create mode 100644 tools/testing/selftests/arm64/ptrace/lib.h
- create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_restart_syscall_test.c
+ tools/testing/selftests/arm64/ptrace/Makefile |   2 +-
+ .../arm64/ptrace/ptrace_syscall_test.c        | 158 ++++++++++++++++++
+ 2 files changed, 159 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_test.c
 
 diff --git a/tools/testing/selftests/arm64/ptrace/Makefile b/tools/testing/selftests/arm64/ptrace/Makefile
-new file mode 100644
-index 000000000000..1bc10e2d2ac8
---- /dev/null
+index 1bc10e2d2ac8..ea02c1a63806 100644
+--- a/tools/testing/selftests/arm64/ptrace/Makefile
 +++ b/tools/testing/selftests/arm64/ptrace/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+CFLAGS += -g -I../../../../../usr/include/
-+TEST_GEN_PROGS := ptrace_restart_syscall_test
-+
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/arm64/ptrace/lib.h b/tools/testing/selftests/arm64/ptrace/lib.h
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ CFLAGS += -g -I../../../../../usr/include/
+-TEST_GEN_PROGS := ptrace_restart_syscall_test
++TEST_GEN_PROGS := ptrace_restart_syscall_test ptrace_syscall_test
+ 
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/arm64/ptrace/ptrace_syscall_test.c b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_test.c
 new file mode 100644
-index 000000000000..14f4737188a3
+index 000000000000..ad55b44ae9f5
 --- /dev/null
-+++ b/tools/testing/selftests/arm64/ptrace/lib.h
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#ifndef __PTRACE_TEST_LOG_H
-+#define __PTRACE_TEST_LOG_H
-+
-+#define pr_p(func, fmt, ...) func("%s:%d: " fmt ": %m", \
-+				  __func__, __LINE__, ##__VA_ARGS__)
-+
-+#define pr_err(fmt, ...)						\
-+	({								\
-+		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);	\
-+		-1;							\
-+	})
-+
-+#define pr_fail(fmt, ...)					\
-+	({							\
-+		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
-+		-1;						\
-+	})
-+
-+#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
-+
-+static inline int ptrace_and_wait(pid_t pid, int cmd, int sig)
-+{
-+	int status;
-+
-+	/* Stop on syscall-exit. */
-+	if (ptrace(cmd, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	if (!WIFSTOPPED(status) || WSTOPSIG(status) != sig)
-+		return pr_err("Unexpected status: %x", status);
-+	return 0;
-+}
-+
-+#endif
-diff --git a/tools/testing/selftests/arm64/ptrace/ptrace_restart_syscall_test.c b/tools/testing/selftests/arm64/ptrace/ptrace_restart_syscall_test.c
-new file mode 100644
-index 000000000000..ce59657f41be
---- /dev/null
-+++ b/tools/testing/selftests/arm64/ptrace/ptrace_restart_syscall_test.c
-@@ -0,0 +1,122 @@
++++ b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_test.c
+@@ -0,0 +1,158 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +#include <errno.h>
 +#include <signal.h>
@@ -158,11 +113,9 @@ index 000000000000..ce59657f41be
 +#include <stdlib.h>
 +#include <string.h>
 +#include <unistd.h>
-+#include <fcntl.h>
 +
 +#include <sys/types.h>
 +#include <sys/ptrace.h>
-+#include <sys/stat.h>
 +#include <sys/user.h>
 +#include <sys/wait.h>
 +#include <sys/uio.h>
@@ -172,15 +125,53 @@ index 000000000000..ce59657f41be
 +#include "../../kselftest.h"
 +#include "lib.h"
 +
-+static int child(int fd)
-+{
-+	char c;
++#define X7_TEST_VAL 0x686920776f726c64UL
 +
-+	if (read(fd, &c, 1) != 1)
++static long test_syscall(long *x7)
++{
++	register long x0 __asm__("x0") = 0;
++	register long *x1 __asm__("x1") = x7;
++	register long x8 __asm__("x8") = 0x555;
++
++	__asm__ (
++		"ldr x7, [x1, 0]\n"
++		"svc 0\n"
++		"str x7, [x1, 0]\n"
++			   : "=r"(x0)
++			   : "r"(x0), "r"(x1), "r"(x8)
++			   :
++	);
++	return x0;
++}
++
++static int child(void)
++{
++	long  val = X7_TEST_VAL;
++
++	if (test_syscall(&val)) {
++		ksft_print_msg("The test syscall failed\n");
 +		return 1;
++	}
++	if (val != X7_TEST_VAL) {
++		ksft_print_msg("Unexpected x7: %lx\n", val);
++		return 1;
++	}
++
++	if (test_syscall(&val)) {
++		ksft_print_msg("The test syscall failed\n");
++		return 1;
++	}
++	if (val != ~X7_TEST_VAL) {
++		ksft_print_msg("Unexpected x7: %lx\n", val);
++		return 1;
++	}
 +
 +	return 0;
 +}
++
++#ifndef PTRACE_SYSEMU
++#define PTRACE_SYSEMU 31
++#endif
 +
 +int main(int argc, void **argv)
 +{
@@ -198,29 +189,20 @@ index 000000000000..ce59657f41be
 +	};
 +	int status;
 +	pid_t pid;
-+	int p[2], fdzero;
 +
-+	ksft_set_plan(3);
-+
-+	if (pipe(p))
-+		return pr_perror("Can't create a pipe");
-+	fdzero = open("/dev/zero", O_RDONLY);
-+	if (fdzero < 0)
-+		return pr_perror("Can't open /dev/zero");
++	ksft_set_plan(4);
 +
 +	pid = fork();
 +	if (pid == 0) {
 +		kill(getpid(), SIGSTOP);
-+		return child(p[0]);
++		_exit(child());
 +	}
 +	if (pid < 0)
 +		return 1;
 +
-+	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
-+		return pr_perror("Can't attach to the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	/* Skip SIGSTOP */
++	if (ptrace_and_wait(pid, PTRACE_ATTACH, SIGSTOP))
++		return 1;
++	/* skip SIGSTOP */
 +	if (ptrace_and_wait(pid, PTRACE_CONT, SIGSTOP))
 +		return 1;
 +
@@ -228,38 +210,47 @@ index 000000000000..ce59657f41be
 +	if (ptrace_and_wait(pid, PTRACE_SYSCALL, SIGTRAP))
 +		return 1;
 +
-+	/* Send a signal to interrupt the system call. */
-+	kill(pid, SIGUSR1);
++	/* Check that x7 is 0 on syscall-enter. */
++	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
++		return pr_perror("Can't get child registers");
++	if (regs.orig_x7 != X7_TEST_VAL)
++		return pr_fail("Unexpected orig_x7: %lx", regs.orig_x7);
++	if (regs.r.regs[7] != 0)
++		return pr_fail("Unexpected x7: %lx", regs.r.regs[7]);
++	ksft_test_result_pass("x7: %llx\n", regs.r.regs[7]);
 +
-+	/* Stop on syscall-exit. */
 +	if (ptrace_and_wait(pid, PTRACE_SYSCALL, SIGTRAP))
 +		return 1;
 +
++	/* Check that x7 is 1 on syscall-exit. */
 +	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
 +		return pr_perror("Can't get child registers");
-+	if (regs.orig_x0 != p[0])
-+		return pr_fail("Unexpected x0: 0x%lx", regs.r.regs[0]);
-+	ksft_test_result_pass("orig_x0: 0x%llx\n", regs.orig_x0);
++	if (regs.r.regs[7] != 1)
++		return pr_fail("Unexpected x7: %lx", regs.r.regs[7]);
++	ksft_test_result_pass("x7: %llx\n", regs.r.regs[7]);
 +
-+	/* Change orig_x0 that will be x0 for the restarted system call. */
-+	regs.orig_x0 = fdzero;
++	/* Check that the child will not see a new value of x7. */
++	regs.r.regs[0] = 0;
++	regs.r.regs[7] = ~X7_TEST_VAL;
 +	if (ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't get child registers");
++		return pr_perror("Can't set child registers");
 +
-+	/* Trap the signal and skip it. */
-+	if (ptrace_and_wait(pid, PTRACE_SYSCALL, SIGUSR1))
++	/* Resume the child to the next system call. */
++	if (ptrace_and_wait(pid, PTRACE_SYSEMU, SIGTRAP))
 +		return 1;
 +
-+	/* Trap the restarted system call. */
-+	if (ptrace_and_wait(pid, PTRACE_SYSCALL, SIGTRAP))
-+		return 1;
-+
-+	/* Check that the syscall is started with the right first argument. */
++	/* Check that orig_x7 contains the actual value of x7. */
 +	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
 +		return pr_perror("Can't get child registers");
-+	if (regs.r.regs[0] != fdzero)
-+		return pr_fail("unexpected x0: %lx", regs.r.regs[0]);
-+	ksft_test_result_pass("x0: 0x%llx\n", regs.r.regs[0]);
++	if (regs.orig_x7 != X7_TEST_VAL)
++		return pr_fail("Unexpected orig_x7: %lx", regs.orig_x7);
++	ksft_test_result_pass("x7: %llx\n", regs.orig_x7);
++
++	/* Check that the child will see a new value of x7. */
++	regs.r.regs[0] = 0;
++	regs.orig_x7 = ~X7_TEST_VAL;
++	if (ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov))
++		return pr_perror("Can't set child registers");
 +
 +	if (ptrace(PTRACE_CONT, pid, 0, 0))
 +		return pr_perror("Can't resume the child %d", pid);
