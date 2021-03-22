@@ -2,229 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F20E343C94
+	by mail.lfdr.de (Postfix) with ESMTP id 81C9C343C95
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCVJTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:19:38 -0400
-Received: from outbound-smtp07.blacknight.com ([46.22.139.12]:50103 "EHLO
-        outbound-smtp07.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229905AbhCVJTE (ORCPT
+        id S230053AbhCVJTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhCVJTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:19:04 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id 00D9C1C5842
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:18:46 +0000 (GMT)
-Received: (qmail 16194 invoked from network); 22 Mar 2021 09:18:46 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 22 Mar 2021 09:18:46 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 3/3] mm/page_alloc: Add an array-based interface to the bulk page allocator
-Date:   Mon, 22 Mar 2021 09:18:45 +0000
-Message-Id: <20210322091845.16437-4-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210322091845.16437-1-mgorman@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
+        Mon, 22 Mar 2021 05:19:07 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322D1C061574;
+        Mon, 22 Mar 2021 02:19:07 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so8809341wmi.3;
+        Mon, 22 Mar 2021 02:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wlmBqkQrU+Ev9ordquPte6bMQUpLfxlQNzEh5S+z+4E=;
+        b=vAwx7myi+A+B+Ux24DXTRG/1LSolK+gx2F4HSkx+eOKSBq3Dhuk5FbD/j11zKFPLQi
+         TP/dC8vA+BSJ3Z6CUbVKROiwXSvQHrbDzUv+ogcSeOIU6/4kU4pG6G4ITLfRzATF7woP
+         y2n2RLP8xt2pPjoJ3NjHtQR3rNiVQoP5q8Q/4jLiNsJVeqzYAgqWPlQp+xPu4maeGQqN
+         TKi7q1D7GTuMtPw+hILoyEME9crwgnKxqMM90KIEXzhlasUYNu6LIQYx5Cvn0S+NextS
+         JljMHcSfqODloUPZW/f+SF3yR2R5lDgw6/ezvvlJzyhd4AokhNBB+gY1PJosS/w0/wzq
+         TVCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wlmBqkQrU+Ev9ordquPte6bMQUpLfxlQNzEh5S+z+4E=;
+        b=i5CJgMUOX2Rz90BxnxxRJLx8HyAHSSFxm72q/6BGDqYXuhkgLsbSeQqhQaMCchpe29
+         //yQeudd7s0TIcrA86h2VR9wumluxFQIDMvijgideMsdoHPJG73qdLDptIV2sOF9mmse
+         deZS1oE6mlpRRtA/dL+LeB2k6cHEFcuzYoaEwzmNOSBkGeMtebJHFDJZ7b6RcLjdMqxh
+         20sAPyGDM5W38mYvaGSF0tJ2ao3OtXbXFjy8OWf6SirH8Dikv0hkOS7GT/5RyJQnf+Wh
+         mQPcZxbHuTHgv8TnSr8vPvl2oETt3wVjw5EGXj67xKurDa/5YS+GPTKXG7mRA50Kia7A
+         jNig==
+X-Gm-Message-State: AOAM5315kZ8yG4IBiI6sMbQm6vVYYIdqFVOQwoahxvLgV00uMvV1Aj1A
+        gIlPySC9hewC/8jqPDYHXg8=
+X-Google-Smtp-Source: ABdhPJwPr/9uXU2IvEIDs8Blv0vwef/+fetPCliQEqFevukstb4MpusHRcsi27e+QEHXp6tJJYJ4vQ==
+X-Received: by 2002:a05:600c:1550:: with SMTP id f16mr15055637wmg.97.1616404745808;
+        Mon, 22 Mar 2021 02:19:05 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id t14sm18804021wru.64.2021.03.22.02.19.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:19:04 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 10:19:22 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <YFhhGpiHDELxIo9V@orome.fritz.box>
+References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
+ <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+ <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ac7ZqnGaQdNmD+CJ"
+Content-Disposition: inline
+In-Reply-To: <YBRyG0vv3gRzygSB@workstation.tuxnet>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proposed callers for the bulk allocator store pages from the bulk
-allocator in an array. This patch adds an array-based interface to the API
-to avoid multiple list iterations. The page list interface is preserved
-to avoid requiring all users of the bulk API to allocate and manage enough
-storage to store the pages.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- include/linux/gfp.h | 13 ++++++--
- mm/page_alloc.c     | 75 ++++++++++++++++++++++++++++++++++-----------
- 2 files changed, 67 insertions(+), 21 deletions(-)
+--Ac7ZqnGaQdNmD+CJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 4a304fd39916..fb6234e1fe59 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -520,13 +520,20 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 
- int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 				nodemask_t *nodemask, int nr_pages,
--				struct list_head *list);
-+				struct list_head *page_list,
-+				struct page **page_array);
- 
- /* Bulk allocate order-0 pages */
- static inline unsigned long
--alloc_pages_bulk(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-+alloc_pages_bulk_list(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
- {
--	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list);
-+	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list, NULL);
-+}
-+
-+static inline unsigned long
-+alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
-+{
-+	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
- }
- 
- /*
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3f4d56854c74..c83d38dfe936 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4966,22 +4966,31 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- }
- 
- /*
-- * __alloc_pages_bulk - Allocate a number of order-0 pages to a list
-+ * __alloc_pages_bulk - Allocate a number of order-0 pages to a list or array
-  * @gfp: GFP flags for the allocation
-  * @preferred_nid: The preferred NUMA node ID to allocate from
-  * @nodemask: Set of nodes to allocate from, may be NULL
-  * @nr_pages: The number of pages requested
-- * @page_list: List to store the allocated pages, must be empty
-+ * @page_list: Optional list to store the allocated pages
-+ * @page_array: Optional array to store the pages
-  *
-  * This is a batched version of the page allocator that attempts to
-- * allocate nr_pages quickly and add them to a list. The list must be
-- * empty to allow new pages to be prepped with IRQs enabled.
-+ * allocate nr_pages quickly. Pages are added to page_list if page_list
-+ * is not NULL, otherwise it is assumed that the page_array is valid.
-  *
-- * Returns the number of pages allocated.
-+ * For lists, nr_pages is the number of pages that should be allocated.
-+ *
-+ * For arrays, only NULL elements are populated with pages and nr_pages
-+ * is the maximum number of pages that will be stored in the array. Note
-+ * that arrays with NULL holes in the middle may return prematurely.
-+ *
-+ * Returns the number of pages added to the page_list or the known
-+ * number of populated elements in the page_array.
-  */
- int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			nodemask_t *nodemask, int nr_pages,
--			struct list_head *page_list)
-+			struct list_head *page_list,
-+			struct page **page_array)
- {
- 	struct page *page;
- 	unsigned long flags;
-@@ -4992,14 +5001,23 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	struct alloc_context ac;
- 	gfp_t alloc_gfp;
- 	unsigned int alloc_flags;
--	int allocated = 0;
-+	int nr_populated = 0, prep_index = 0;
- 
- 	if (WARN_ON_ONCE(nr_pages <= 0))
- 		return 0;
- 
--	if (WARN_ON_ONCE(!list_empty(page_list)))
-+	if (WARN_ON_ONCE(page_list && !list_empty(page_list)))
- 		return 0;
- 
-+	/* Skip populated array elements. */
-+	if (page_array) {
-+		while (nr_populated < nr_pages && page_array[nr_populated])
-+			nr_populated++;
-+		if (nr_populated == nr_pages)
-+			return nr_populated;
-+		prep_index = nr_populated;
-+	}
-+
- 	if (nr_pages == 1)
- 		goto failed;
- 
-@@ -5044,12 +5062,22 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
- 	pcp_list = &pcp->lists[ac.migratetype];
- 
--	while (allocated < nr_pages) {
-+	while (nr_populated < nr_pages) {
-+		/*
-+		 * Stop allocating if the next index has a populated
-+		 * page or the page will be prepared a second time when
-+		 * IRQs are enabled.
-+		 */
-+		if (page_array && page_array[nr_populated]) {
-+			nr_populated++;
-+			break;
-+		}
-+
- 		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
- 		if (!page) {
- 			/* Try and get at least one page */
--			if (!allocated)
-+			if (!nr_populated)
- 				goto failed_irq;
- 			break;
- 		}
-@@ -5063,17 +5091,25 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		__count_zid_vm_events(PGALLOC, zone_idx(zone), 1);
- 		zone_statistics(ac.preferred_zoneref->zone, zone);
- 
--		list_add(&page->lru, page_list);
--		allocated++;
-+		if (page_list)
-+			list_add(&page->lru, page_list);
-+		else
-+			page_array[nr_populated] = page;
-+		nr_populated++;
- 	}
- 
- 	local_irq_restore(flags);
- 
- 	/* Prep pages with IRQs enabled. */
--	list_for_each_entry(page, page_list, lru)
--		prep_new_page(page, 0, gfp, 0);
-+	if (page_list) {
-+		list_for_each_entry(page, page_list, lru)
-+			prep_new_page(page, 0, gfp, 0);
-+	} else {
-+		while (prep_index < nr_populated)
-+			prep_new_page(page_array[prep_index++], 0, gfp, 0);
-+	}
- 
--	return allocated;
-+	return nr_populated;
- 
- failed_irq:
- 	local_irq_restore(flags);
-@@ -5081,11 +5117,14 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- failed:
- 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
- 	if (page) {
--		list_add(&page->lru, page_list);
--		allocated = 1;
-+		if (page_list)
-+			list_add(&page->lru, page_list);
-+		else
-+			page_array[nr_populated] = page;
-+		nr_populated++;
- 	}
- 
--	return allocated;
-+	return nr_populated;
- }
- EXPORT_SYMBOL_GPL(__alloc_pages_bulk);
- 
--- 
-2.26.2
+On Fri, Jan 29, 2021 at 09:37:47PM +0100, Clemens Gruber wrote:
+> Hi Sven,
+>=20
+> On Fri, Jan 29, 2021 at 01:05:14PM -0500, Sven Van Asbroeck wrote:
+> > Hi Clemens,
+> >=20
+> > On Fri, Jan 29, 2021 at 11:31 AM Clemens Gruber
+> > <clemens.gruber@pqgruber.com> wrote:
+> > >
+> > > Ok, so you suggest we extend our get_state logic to deal with cases
+> > > like the following:
+> >=20
+> > Kind of. We can't control how other actors (bootloaders etc) program the
+> > chip. As far as I know, there are many, many different register setting=
+s that
+> > result in the same physical chip outputs. So if .probe() wants to prese=
+rve the
+> > existing chip settings, .get_state() has to be able to deal with every =
+possible
+> > setting. Even invalid ones.
+>=20
+> Is the driver really responsible for bootloaders that program the chip
+> with invalid values?
+> The chip comes out of PoR with sane default values. If the bootloader of
+> a user messes them up, isn't that a bootloader problem instead of a
+> Linux kernel driver problem?
 
+It is ultimately a problem of the bootloader and where possible the
+bootloader should be fixed. However, fixing bootloaders sometimes isn't
+possible, or impractical, so the kernel has to be able to deal with
+hardware that's been badly programmed by the bootloader. Within reason,
+of course. Sometimes this can't be done in any other way than forcing a
+hard reset of the chip, but it should always be a last resort.
+
+> > In addition, .apply() cannot make any assumptions as to which bits are
+> > already set/cleared on the chip. Including preserved, invalid settings.
+> >=20
+> > This might get quite complex.
+> >=20
+> > However if we reset the chip in .probe() to a known state (a normalized=
+ state,
+> > in the mathematical sense), then both .get_state() and .apply() become
+> > much simpler. because they only need to deal with known, normalized sta=
+tes.
+>=20
+> Yes, I agree. This would however make it impossible to do a flicker-free
+> transition from bootloader to kernel, but that's not really a usecase I
+> have so I can live without it.
+>=20
+> Another point in favor of resetting is that the driver already does it.
+> Removing the reset of the OFF register may break some boards who rely on
+> that behaviour.
+> My version only extended the reset to include the ON register.
+>=20
+> >=20
+> > In short, it's a tradeoff between code complexity, and user friendlines=
+s/
+> > features.
+> >=20
+> > Sven
+>=20
+> Thierry, Uwe, what's your take on this?
+>=20
+> Thierry: Would you accept it if we continue to reset the registers in
+> .probe?
+
+Yes, I think it's fine to continue to reset the registers since that's
+basically what the driver already does. It'd be great if you could
+follow up with a patch that removes the reset and leaves the hardware in
+whatever state the bootloader has set up. Then we can take that patch
+for a ride and see if there are any complains about it breaking. If
+there are we can always try to fix them, but as a last resort we can
+also revert, which then may be something we have to live with. But I
+think we should at least try to make this consistent with how other
+drivers do this so that people don't stumble over this particular
+driver's behaviour.
+
+Thierry
+
+--Ac7ZqnGaQdNmD+CJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBYYRoACgkQ3SOs138+
+s6GNvQ/9GYrn0Z4FSaTCTsNYUop9p7uh88wwcGhGvIYnyj7MG2cotSJTo5AUFLlj
+2/SZFd4Rq1IOLCPK7kf7+aMbVBGwFDKBbY6O5joEduv6JWJWiTuFId4pGYr9jlgo
+DRUJe8/RjXB1PHFSykaSBJgWpZiKmGHvWOvfQdmgUOGIRkq6X60BmVYOsP2VU+O/
+d64nSLDQal7s82woZJ4wAKMMcqFEYwGCZW6H98WIf0wZkL84BzbgbPmDU7zmC4GH
+ZR+Fh/d7xXkqIiNNLjjSoM2x2mjoVm3lpwSLYzdSCh787TFgjbb8qbLnJ+LUOPkx
+MAzKguF4NXJ3ICvY5LQIxli8IEyEw5g/QldplrNlBAUYf+d41ocwSDCRXRtIiq5k
+0kSVNN2Wqzl5n3LTziot+WYDCDIr7Nmg5LckT8V3E4/2EK6DzRwkmEt85Ldj7t29
+pJq2HHBviHVRtz1Gkl1rcJtGZ/l1JlT8H+99p9voSFekX+dbp3knt3u2vNKZcb4R
+h0CZRDtYP8Z5ZS/AToHJtvt2fxMNVvKqOEeF1/9YyobmhtIn1nLsCqr+gCV3V9MX
+RGwV+/fNPjnjHfrMkZ8Dtp47plwYZ5FLRuw/QqU1FQwrzHOwoY5kL8Q6Xwpw2TAK
+jrPzV0n0IsRXqmFbzN0oRltORsvKc9RATtEkNKouguMNNtgdVmQ=
+=/OGw
+-----END PGP SIGNATURE-----
+
+--Ac7ZqnGaQdNmD+CJ--
