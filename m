@@ -2,62 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F70343C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA03343C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhCVJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:13:02 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:33355 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCVJM3 (ORCPT
+        id S229946AbhCVJOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhCVJNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:12:29 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id F37602223E;
-        Mon, 22 Mar 2021 10:12:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616404346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YgJiudvxY8DvM0hPuoWetWoJtQ5Ih6Qu354QJL1DFN4=;
-        b=Z8JKxdkBPC4XyEnBELWkFW7YXx6kUJqZ+iT23rZsJMa3XjhkESAFlA9dZ1miqhvxW4nli4
-        g9zlFVeUwkwlvgGs6d17axpQxaUiQ4ToBL1BHZWNFwpO4jhfbLr7aNyT1t8TvHaj968jmm
-        XvpBmyLIfj1cquSvXXEDM5d+SQp8G2w=
+        Mon, 22 Mar 2021 05:13:48 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E93C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:13:47 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f26so20089553ljp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oeb+PAJt63mP/90xgvzuCXrpKeElQVZ936dwu02SQSs=;
+        b=vzzAMo3aw5fcRzSX+G3c49ViQ1+a2Z3evKUgoQIyGT2wxwNav+apCuqkclUmMbnlaN
+         zqGSCJfOcEWSq8ssQkZwj+LJc/Ty/8pfNOYsNDllj78fk8jwexa9D9uyOL/WKSj70Usr
+         b/FnwK1wkHphsBamUAgAH2GFPKESAUjtpENKMfga60ik9YyY9NFua3ZxI2CL7RjVZn6K
+         aSBDoq5ZZSIdeXCzP2lF/W52ZHtaKfzU8cZU95Kpzj3XmLXkes3IYhX0QRvKkBO7r6B0
+         waP7sq+Dfk9clJC3leU31iwsQYM3gisuCqBiHUGWg7CkT3CIms5CXdbp1NC4TqHkgmOp
+         F7mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oeb+PAJt63mP/90xgvzuCXrpKeElQVZ936dwu02SQSs=;
+        b=XM07VOv0bLPDG2RXnJNNwVUwBDalbiLH9y9X1Q7fHTsjACrbUmJphSnzKQJlZNy7B4
+         E+PcqgrLf0mYC4a8yfC2AeHCUrtrY92zKXXiCYtx2ieumaW2bYK1/TylZ7u33aFNH39p
+         XIyno17nDcclFy2UiWskPAjQjnvHhpjfNZHtg5hOXUivawCPBszDSYJxpKE/YX9E+f0n
+         MckUVdDHMxLFcsxTMGCWWazALp+Ke10rpdvtE5rv6JQLrMlG8T2o9N/4j+FrwljkeeQM
+         8m+URGnmgFHTzdheOpvmc/xTP94mmGkwIsN9yWrGnWnONuYHfs/TLKdsD2QQprCOBnuC
+         BZsg==
+X-Gm-Message-State: AOAM530Isr9ksDQxihOP7TD8pssnHehxZrvriK2HzR+CdKscwEmYEGff
+        T9urgdUok7dfi7ABKbGhsK8ICg==
+X-Google-Smtp-Source: ABdhPJxTA9cuU0Tj6UyaICAHV1a7JefKb/E4L50FuiajXX8hVPb/1lKfnwtXmcDOwPFeHA+rJ9ZfkA==
+X-Received: by 2002:a05:651c:2005:: with SMTP id s5mr9499871ljo.491.1616404424784;
+        Mon, 22 Mar 2021 02:13:44 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b39sm1792329ljf.68.2021.03.22.02.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:13:44 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A074B101DEB; Mon, 22 Mar 2021 12:13:51 +0300 (+03)
+Date:   Mon, 22 Mar 2021 12:13:51 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v23 07/28] x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+Message-ID: <20210322091351.ulemcluuhqkzuwkm@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-8-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Mar 2021 10:12:25 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     vigneshr@ti.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
-        richard@nod.at, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Move Software Write Protection logic
- out of the core
-In-Reply-To: <20210322075131.45093-2-tudor.ambarus@microchip.com>
-References: <20210322075131.45093-1-tudor.ambarus@microchip.com>
- <20210322075131.45093-2-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <1685b2d9d1deaab55b3719d88187bcf1@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-8-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-22 08:51, schrieb Tudor Ambarus:
-> It makes the core file a bit smaller and provides better separation
-> between the Software Write Protection features and the core logic.
-> All the next generic software write protection features (e.g. 
-> Individual
-> Block Protection) will reside in swp.c.
+On Tue, Mar 16, 2021 at 08:10:33AM -0700, Yu-cheng Yu wrote:
+> The x86 family of processors do not directly create read-only and Dirty
+> PTEs.  These PTEs are created by software.  One such case is that kernel
+> read-only pages are historically setup as Dirty.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> New processors that support Shadow Stack regard read-only and Dirty PTEs as
+> shadow stack pages.  This results in ambiguity between shadow stack and
+> kernel read-only pages.  To resolve this, removed Dirty from kernel read-
+> only pages.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+Looks good to me.
 
--michael
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+-- 
+ Kirill A. Shutemov
