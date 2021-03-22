@@ -2,256 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B08C343CD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E94F343C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhCVJ2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        id S229574AbhCVJUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCVJ2m (ORCPT
+        with ESMTP id S230042AbhCVJUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:28:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2948C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:28:41 -0700 (PDT)
-Message-Id: <20210322092259.067712342@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616405320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7K2EPBKHgSmyUIUjynimZ1M/NZifCtxQWE95Wst7mRc=;
-        b=SLlVUBt+lC/5UrZ9Mu8/PIaeZNHmkFHmvBrOeS91Dw0rd2o/MG/PnjCcZrf2frThdSZgCP
-        aBiVOqPzQVq6RA+BZ/ofk4e0jdEZ1Tl2yJlpLVDhuOdC4UeWEKa4e9g0VmHpBYVpnoUEsu
-        pbZ+95dMhOy8v40zTarQMLu2AiKN2lFzjl1XJjvfgaPeOCoWZPfoshNrjJwu5zcOVUP8+L
-        YyNME9zMv9WtI/7WP+2lKVihq7acfYmXc1CoiTl5HOJjLjPjAqCsii3IbWnZLVGYfZhmUX
-        H/nfL2MGVZcgDu3mg6c1lmqK9TkGeYtXw9UPVNRBMRHGQWMWMekCZXll+/R2tw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616405320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7K2EPBKHgSmyUIUjynimZ1M/NZifCtxQWE95Wst7mRc=;
-        b=VZHh+XfKL+Gn+cHlaTlkOd/JioMpVWIucSUXkRlsCogE81cybNptxOntJiONGJXXwaKHFX
-        5u/4I9ExZK8VgkCw==
-Date:   Mon, 22 Mar 2021 10:19:43 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [patch V4 2/2] signal: Allow tasks to cache one sigqueue struct
-References: <20210322091941.909544288@linutronix.de>
+        Mon, 22 Mar 2021 05:20:10 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49817C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:20:10 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so8826206wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F5/VR6ur6ttgORsBImTX+DpB0R63FTk/snr4DsJXf+o=;
+        b=LAlde5AAdUVapw7vv1gIYubILL5Z2XANHWPhRQ/hbJ2Fou/NTJgHUFVZTaxjyRz3Ew
+         PTe96LsHdHSVzBvhe5oibh2MqK+onBku6Nwv46INNhyog8/I8FkmIm/kcSmyGuUY7ywC
+         edqX4hukcMMkcYjyrzb7l529S4IiCtdLP8oFMKrQPc5AWNL8UaydZOMkpk3Dm+IPHWcA
+         mx/Y5mzudbzTxHmc0dMQ6vbY3qw9vo3Xr8DeWuyUU2O2aEsj+t3FTqL5BXJzI0dZPni3
+         lRR9RaZM5hxKBqmrPe69kXeUTEHXrHe4wGYO4NTdmIaIfPmjAClTVL8KC1+wYVRa1a1D
+         NaBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F5/VR6ur6ttgORsBImTX+DpB0R63FTk/snr4DsJXf+o=;
+        b=IxAycOvU5XG3WimsF6Ji3EX0TEoxjzss0gFkElYTPwED3aluGzgm1O9h++OQH5/nS3
+         bsj3UXLQcOaoSh/NsMNkjAAJ4wiPaDflPVU4+oKzEuI2QiehF8E28GvOg2MlBZ7ek8IX
+         BSc3TwQKpa9f2Ij56+8YamB5kdAzQJyqcqhX8ho+YAqGhoOCMDQi1fSTt49zG1Lp355B
+         ZZTVDJPg0crDP6QCmN4YKhJg1lFK2qqjJW5QaWAMCaJjIiDaMuhleKQ9getx1HednGtk
+         Ku7GIcEvxhqSJp2DhEh38MJPDlDE1Aiajdowa0kw2lfbt29FQA8Uf3iAJcxGu2g9DE3C
+         4zlQ==
+X-Gm-Message-State: AOAM533UexkJthWvOOx8AKKxLAaUkeGrjUf6HMMzFByuRJAO7D43i0zJ
+        AmGpVY8OIkRQtoItdrlHYhSa2g==
+X-Google-Smtp-Source: ABdhPJxdUPu8j7Fbf9CICQn/Kem6MGhyHY+14eKuLhORG8IcT+mpqiseapeHYTtiETMKXgFIbIShSQ==
+X-Received: by 2002:a05:600c:4013:: with SMTP id i19mr14956538wmm.33.1616404808866;
+        Mon, 22 Mar 2021 02:20:08 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:58e2:985b:a5ad:807c])
+        by smtp.gmail.com with ESMTPSA id u3sm19133667wrt.82.2021.03.22.02.20.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:20:08 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 10:20:02 +0100
+From:   Marco Elver <elver@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
+        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
+        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
+        mascasa@google.com, pcc@google.com, irogers@google.com,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC v2 3/8] perf/core: Add support for event removal on
+ exec
+Message-ID: <YFhhQgUzXLSTlcu0@elver.google.com>
+References: <20210310104139.679618-1-elver@google.com>
+ <20210310104139.679618-4-elver@google.com>
+ <YFDbP3obvxn0SL4w@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFDbP3obvxn0SL4w@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Tue, Mar 16, 2021 at 05:22PM +0100, Peter Zijlstra wrote:
+> On Wed, Mar 10, 2021 at 11:41:34AM +0100, Marco Elver wrote:
+> > Adds bit perf_event_attr::remove_on_exec, to support removing an event
+> > from a task on exec.
+> > 
+> > This option supports the case where an event is supposed to be
+> > process-wide only, and should not propagate beyond exec, to limit
+> > monitoring to the original process image only.
+> > 
+> > Signed-off-by: Marco Elver <elver@google.com>
+> 
+> > +/*
+> > + * Removes all events from the current task that have been marked
+> > + * remove-on-exec, and feeds their values back to parent events.
+> > + */
+> > +static void perf_event_remove_on_exec(void)
+> > +{
+> > +	int ctxn;
+> > +
+> > +	for_each_task_context_nr(ctxn) {
+> > +		struct perf_event_context *ctx;
+> > +		struct perf_event *event, *next;
+> > +
+> > +		ctx = perf_pin_task_context(current, ctxn);
+> > +		if (!ctx)
+> > +			continue;
+> > +		mutex_lock(&ctx->mutex);
+> > +
+> > +		list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
+> > +			if (!event->attr.remove_on_exec)
+> > +				continue;
+> > +
+> > +			if (!is_kernel_event(event))
+> > +				perf_remove_from_owner(event);
+> > +			perf_remove_from_context(event, DETACH_GROUP);
+> 
+> There's a comment on this in perf_event_exit_event(), if this task
+> happens to have the original event, then DETACH_GROUP will destroy the
+> grouping.
+> 
+> I think this wants to be:
+> 
+> 			perf_remove_from_text(event,
+> 					      child_event->parent ?  DETACH_GROUP : 0);
+> 
+> or something.
+> 
+> > +			/*
+> > +			 * Remove the event and feed back its values to the
+> > +			 * parent event.
+> > +			 */
+> > +			perf_event_exit_event(event, ctx, current);
+> 
+> Oooh, and here we call it... but it will do list_del_even() /
+> perf_group_detach() *again*.
+> 
+> So the problem is that perf_event_exit_task_context() doesn't use
+> remove_from_context(), but instead does task_ctx_sched_out() and then
+> relies on the events not being active.
+> 
+> Whereas above you *DO* use remote_from_context(), but then
+> perf_event_exit_event() will try and remove it more.
 
-The idea for this originates from the real time tree to make signal
-delivery for realtime applications more efficient. In quite some of these
-application scenarios a control tasks signals workers to start their
-computations. There is usually only one signal per worker on flight.  This
-works nicely as long as the kmem cache allocations do not hit the slow path
-and cause latencies.
+AFAIK, we want to deallocate the events and not just remove them, so
+doing what perf_event_exit_event() is the right way forward? Or did you
+have something else in mind?
 
-To cure this an optimistic caching was introduced (limited to RT tasks)
-which allows a task to cache a single sigqueue in a pointer in task_struct
-instead of handing it back to the kmem cache after consuming a signal. When
-the next signal is sent to the task then the cached sigqueue is used
-instead of allocating a new one. This solved the problem for this set of
-application scenarios nicely.
+I'm still trying to make sense of the zoo of synchronisation mechanisms
+at play here. No matter what I try, it seems I get stuck on the fact
+that I can't cleanly "pause" the context to remove the events (warnings
+in event_function()).
 
-The task cache is not preallocated so the first signal sent to a task goes
-always to the cache allocator. The cached sigqueue stays around until the
-task exits and is freed when task::sighand is dropped.
+This is what I've been playing with to understand:
 
-After posting this solution for mainline the discussion came up whether
-this would be useful in general and should not be limited to realtime
-tasks: https://lore.kernel.org/r/m11rcu7nbr.fsf@fess.ebiederm.org
-
-One concern leading to the original limitation was to avoid a large amount
-of pointlessly cached sigqueues in alive tasks. The other concern was
-vs. RLIMIT_SIGPENDING as these cached sigqueues are not accounted for.
-
-The accounting problem is real, but on the other hand slightly academic.
-After gathering some statistics it turned out that after boot of a regular
-distro install there are less than 10 sigqueues cached in ~1500 tasks.
-
-In case of a 'mass fork and fire signal to child' scenario the extra 80
-bytes of memory per task are well in the noise of the overall memory
-consumption of the fork bomb.
-
-If this should be limited then this would need an extra counter in struct
-user, more atomic instructions and a seperate rlimit. Yet another tunable
-which is mostly unused.
-
-The caching is actually used. After boot and a full kernel compile on a
-64CPU machine with make -j128 the number of 'allocations' looks like this:
-
-  From slab: 	   23996
-  From task cache: 52223
-
-I.e. it reduces the number of slab cache operations by ~68%.
-
-A typical pattern there is:
-
-<...>-58490 __sigqueue_alloc:  for 58488 from slab ffff8881132df460
-<...>-58488 __sigqueue_free:   cache ffff8881132df460
-<...>-58488 __sigqueue_alloc:  for 1149 from cache ffff8881103dc550
-  bash-1149 exit_task_sighand: free ffff8881132df460
-  bash-1149 __sigqueue_free:   cache ffff8881103dc550
-
-The interesting sequence is that the exiting task 58488 grabs the sigqueue
-from bash's task cache to signal exit and bash sticks it back into it's own
-cache. Lather, rinse and repeat.
-
-The caching is probably not noticable for the general use case, but the
-benefit for latency sensitive applications is clear. While kmem caches are
-usually just serving from the fast path the slab merging (default) can
-depending on the usage pattern of the merged slabs cause occasional slow
-path allocations.
-
-The time spared per cached entry is a few micro seconds per signal which is
-not relevant for e.g. a kernel build, but for signal heavy workloads it's
-measurable.
-
-As there is no real downside of this caching mechanism making it
-unconditionally available is preferred over more conditional code or new
-magic tunables.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V4: Handle the self reaping case correctly (Oleg)
-
-V3: Use READ/WRITE_ONCE() for the cache operations and add commentry
-    for it.
-
-V2: Remove the realtime task restriction and get rid of the cmpxchg()
-    (Eric, Oleg)
-    Add more information to the changelog.
----
- include/linux/sched.h  |    1 +
- include/linux/signal.h |    1 +
- kernel/exit.c          |    1 +
- kernel/fork.c          |    1 +
- kernel/signal.c        |   41 +++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 43 insertions(+), 2 deletions(-)
-
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -984,6 +984,7 @@ struct task_struct {
- 	/* Signal handlers: */
- 	struct signal_struct		*signal;
- 	struct sighand_struct __rcu		*sighand;
-+	struct sigqueue			*sigqueue_cache;
- 	sigset_t			blocked;
- 	sigset_t			real_blocked;
- 	/* Restored if set_restore_sigmask() was used: */
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -265,6 +265,7 @@ static inline void init_sigpending(struc
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 450ea9415ed7..c585cef284a0 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4195,6 +4195,88 @@ static void perf_event_enable_on_exec(int ctxn)
+ 		put_ctx(clone_ctx);
  }
  
- extern void flush_sigqueue(struct sigpending *queue);
-+extern void exit_task_sigqueue_cache(struct task_struct *tsk);
- 
- /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
- static inline int valid_signal(unsigned long sig)
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -162,6 +162,7 @@ static void __exit_signal(struct task_st
- 		flush_sigqueue(&sig->shared_pending);
- 		tty_kref_put(tty);
- 	}
-+	exit_task_sigqueue_cache(tsk);
- }
- 
- static void delayed_put_task_struct(struct rcu_head *rhp)
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2003,6 +2003,7 @@ static __latent_entropy struct task_stru
- 	spin_lock_init(&p->alloc_lock);
- 
- 	init_sigpending(&p->pending);
-+	p->sigqueue_cache = NULL;
- 
- 	p->utime = p->stime = p->gtime = 0;
- #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -433,7 +433,16 @@ static struct sigqueue *
- 	rcu_read_unlock();
- 
- 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
--		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
++static void perf_remove_from_owner(struct perf_event *event);
++static void perf_event_exit_event(struct perf_event *child_event,
++				  struct perf_event_context *child_ctx,
++				  struct task_struct *child);
++
++/*
++ * Removes all events from the current task that have been marked
++ * remove-on-exec, and feeds their values back to parent events.
++ */
++static void perf_event_remove_on_exec(void)
++{
++	struct perf_event *event, *next;
++	int ctxn;
++
++	/*****************  BROKEN BROKEN BROKEN *****************/
++
++	for_each_task_context_nr(ctxn) {
++		struct perf_event_context *ctx;
++		bool removed = false;
++
++		ctx = perf_pin_task_context(current, ctxn);
++		if (!ctx)
++			continue;
++		mutex_lock(&ctx->mutex);
++
++		raw_spin_lock_irq(&ctx->lock);
 +		/*
-+		 * Preallocation does not hold sighand::siglock so it can't
-+		 * use the cache. The lockless caching requires that only
-+		 * one consumer and only one producer run at a time.
++		 * WIP: Ok, we will unschedule the context, _and_ tell everyone
++		 * still trying to use that it's dead... even though it isn't.
++		 *
++		 * This can't be right...
 +		 */
-+		q = READ_ONCE(t->sigqueue_cache);
-+		if (!q || sigqueue_flags)
-+			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-+		else
-+			WRITE_ONCE(t->sigqueue_cache, NULL);
- 	} else {
- 		print_dropped_signal(sig);
- 	}
-@@ -450,13 +459,41 @@ static struct sigqueue *
- 	return q;
- }
- 
-+static void sigqueue_cache_or_free(struct sigqueue *q, bool cache)
-+{
-+	/*
-+	 * Cache one sigqueue per task. This pairs with the consumer side
-+	 * in __sigqueue_alloc() and needs READ/WRITE_ONCE() to prevent the
-+	 * compiler from store tearing and to tell KCSAN that the data race
-+	 * is intentional when run without holding current->sighand->siglock,
-+	 * which is fine as current obviously cannot run __sigqueue_free()
-+	 * concurrently.
-+	 */
-+	if (cache && !READ_ONCE(current->sigqueue_cache))
-+		WRITE_ONCE(current->sigqueue_cache, q);
-+	else
-+		kmem_cache_free(sigqueue_cachep, q);
-+}
++		task_ctx_sched_out(__get_cpu_context(ctx), ctx, EVENT_ALL);
++		RCU_INIT_POINTER(current->perf_event_ctxp[ctxn], NULL);
++		WRITE_ONCE(ctx->task, TASK_TOMBSTONE);
+
+This code here is obviously bogus, because it removes the context from
+the task: we might still need it since this task is not dead yet.
+
+What's the right way to pause the context to remove the events from it?
+
++		raw_spin_unlock_irq(&ctx->lock);
 +
-+void exit_task_sigqueue_cache(struct task_struct *tsk)
-+{
-+	/* Race free because @tsk is mopped up */
-+	struct sigqueue *q = tsk->sigqueue_cache;
++		list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
++			if (!event->attr.remove_on_exec)
++				continue;
++			removed = true;
 +
-+	if (q) {
-+		tsk->sigqueue_cache = NULL;
-+		/* If task is self reaping, don't cache it back */
-+		sigqueue_cache_or_free(q, tsk != current);
++			if (!is_kernel_event(event))
++				perf_remove_from_owner(event);
++
++			/*
++			 * WIP: Want to free the event and feed back its values
++			 * to the parent (if any) ...
++			 */
++			perf_event_exit_event(event, ctx, current);
++		}
++
+
+... need to schedule context back in here?
+
++
++		mutex_unlock(&ctx->mutex);
++		perf_unpin_context(ctx);
++		put_ctx(ctx);
 +	}
 +}
 +
- static void __sigqueue_free(struct sigqueue *q)
- {
- 	if (q->flags & SIGQUEUE_PREALLOC)
- 		return;
- 	if (atomic_dec_and_test(&q->user->sigpending))
- 		free_uid(q->user);
--	kmem_cache_free(sigqueue_cachep, q);
-+	sigqueue_cache_or_free(q, true);
+ struct perf_read_data {
+ 	struct perf_event *event;
+ 	bool group;
+@@ -7553,6 +7635,8 @@ void perf_event_exec(void)
+ 				   true);
+ 	}
+ 	rcu_read_unlock();
++
++	perf_event_remove_on_exec();
  }
  
- void flush_sigqueue(struct sigpending *queue)
 
+Thanks,
+-- Marco
