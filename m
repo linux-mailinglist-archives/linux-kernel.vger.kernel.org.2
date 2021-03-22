@@ -2,89 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680AB343757
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F0B343758
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVDWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCVDWB (ORCPT
+        id S229866AbhCVDWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:22:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50724 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhCVDWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:22:01 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41595C061574;
-        Sun, 21 Mar 2021 20:22:01 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id cx5so8005280qvb.10;
-        Sun, 21 Mar 2021 20:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xYLZRnjHYG+bHDPM8gW4BRB6qxcozKItH3oDIxTxLds=;
-        b=I+VPygDWJcfEx9dy+CNio3QEeqYBK+PtiCIQ8dcZtS4IeZWiaXRBLpdVNj3uBjkwEF
-         eeCVvJEUgI81pADi4pczgG6yzIDNIXrgU5TzUOsN1zGdoKchIjOaZqPKVCgL6VKgaWAb
-         ABB/u35i1dmehN12NyZtEZJfuCKpU+IiP1ophhb7zVh0ovWX3W95K4EUCbEeqwOgjuwo
-         CPjm0+3vnCb64yRHG83gFBYktOg8b//b2C1tmZM6wzNzi3omL9m9DmbyY5+0VUpm4gMG
-         5t/JXKBurNjyJDh/2hB921Oy0KjDWIbG1ph4hdx0SesaVFT9K1vGm4lb/0GU4i8ypw0L
-         ADNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xYLZRnjHYG+bHDPM8gW4BRB6qxcozKItH3oDIxTxLds=;
-        b=LjIUhm8/44iIzC1HsI/vgDaICRvkISTGM0FDvQTp5HqiBOLixY+X7LQiqQoY8/HhDl
-         6cwRxnQhE6W7U8tw0gCIdoNbJWmWAbQwefJyCzV8QiS44R29e1Nc2wbh+UbHFF9L0Z0T
-         rv0vvX+AiQPv1dOePKvQ69SIswLWs6RILH5LGpZy+yl77g9VHmrXSz6vHeWpK9qwfIjC
-         mN8Ueevo4+Bl/mOjMqd+AA+xgm/71FH1hvMTcU5t487wvk3SSOkRvsg4SEYQIbSanPz4
-         CANtelqVBcw747HGnuQlxMR3wCiWukPN0uhOa7Gq/40E7r40lufpcfdFEKQeL/ujdyuL
-         +X4g==
-X-Gm-Message-State: AOAM530JZAOBhzWYk1YFQMV1cJ6Fjz+lwuSA+kdl4mGieqo0Vmx21/iC
-        DTQvxW0YUAzoc7N85VCthQw=
-X-Google-Smtp-Source: ABdhPJzFRLqbBANlRXbIPRExiU7fEpPebskd25FpiN9sB5dRQmEZeZvHisCVwadnOeQ/nbLR/GBgpg==
-X-Received: by 2002:a05:6214:15d1:: with SMTP id p17mr19404680qvz.28.1616383320293;
-        Sun, 21 Mar 2021 20:22:00 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id 18sm10235065qkr.77.2021.03.21.20.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 20:21:59 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] scsi: mpt3sas: Fix a typo
-Date:   Mon, 22 Mar 2021 08:51:45 +0530
-Message-Id: <20210322032145.2242520-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Sun, 21 Mar 2021 23:22:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616383356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7CxCPTphkLxAAe7WrRHdqu9Vis3F0z32vdPzkrtEuSY=;
+        b=ZCUVfpSav6elQAMpAGFmVj9kWjAuTkPjN1X2d6b59ouTM1YxWqy0jbAFif0ae8sL98vc0u
+        QTfpH67V0APGckVBeo8bVRXTztpzX4wRd4aOz7vpwUQ41Kv1MMZhP299X2P9jbEiU4GdY9
+        LWeLDvUkii3e3ql2EnD8oMXBgcWE0Pg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-iZsFkDiAOR6s_9WODNEMaw-1; Sun, 21 Mar 2021 23:22:32 -0400
+X-MC-Unique: iZsFkDiAOR6s_9WODNEMaw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 646D8180FCA8;
+        Mon, 22 Mar 2021 03:22:30 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-188.pek2.redhat.com [10.72.13.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 046675F9C9;
+        Mon, 22 Mar 2021 03:22:16 +0000 (UTC)
+Subject: Re: [PATCH 1/3] virtio_ring: always warn when descriptor chain
+ exceeds queue size
+To:     Connor Kuehl <ckuehl@redhat.com>, virtio-fs@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        vgoyal@redhat.com, miklos@szeredi.hu, mst@redhat.com
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-2-ckuehl@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <fa4988fa-a671-0abf-f922-6b362faf10d5@redhat.com>
+Date:   Mon, 22 Mar 2021 11:22:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210318135223.1342795-2-ckuehl@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/encloure/enclosure/
+ÔÚ 2021/3/18 ÏÂÎç9:52, Connor Kuehl Ð´µÀ:
+>  From section 2.6.5.3.1 (Driver Requirements: Indirect Descriptors)
+> of the virtio spec:
+>
+>    "A driver MUST NOT create a descriptor chain longer than the Queue
+>    Size of the device."
+>
+> This text suggests that the warning should trigger even if
+> indirect descriptors are in use.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index ac066f86bb14..398fd07ee9f5 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -5232,7 +5232,7 @@ _base_static_config_pages(struct MPT3SAS_ADAPTER *ioc)
-  * mpt3sas_free_enclosure_list - release memory
-  * @ioc: per adapter object
-  *
-- * Free memory allocated during encloure add.
-+ * Free memory allocated during enclosure add.
-  */
- void
- mpt3sas_free_enclosure_list(struct MPT3SAS_ADAPTER *ioc)
---
-2.31.0
+So I think at least the commit log needs some tweak.
+
+For split virtqueue. We had:
+
+2.6.5.2 Driver Requirements: The Virtqueue Descriptor Table
+
+Drivers MUST NOT add a descriptor chain longer than 2^32 bytes in total; 
+this implies that loops in the descriptor chain are forbidden!
+
+2.6.5.3.1 Driver Requirements: Indirect Descriptors
+
+A driver MUST NOT create a descriptor chain longer than the Queue Size 
+of the device.
+
+If I understand the spec correctly, the check is only needed for a 
+single indirect descriptor table?
+
+For packed virtqueue. We had:
+
+2.7.17 Driver Requirements: Scatter-Gather Support
+
+A driver MUST NOT create a descriptor list longer than allowed by the 
+device.
+
+A driver MUST NOT create a descriptor list longer than the Queue Size.
+
+2.7.19 Driver Requirements: Indirect Descriptors
+
+A driver MUST NOT create a descriptor chain longer than allowed by the 
+device.
+
+So it looks to me the packed part is fine.
+
+Note that if I understand the spec correctly 2.7.17 implies 2.7.19.
+
+Thanks
+
+
+>
+> Reported-by: Stefan Hajnoczi <stefanha@redhat.com>
+> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+> ---
+>   drivers/virtio/virtio_ring.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 71e16b53e9c1..1bc290f9ba13 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -444,11 +444,12 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>   
+>   	head = vq->free_head;
+>   
+> +	WARN_ON_ONCE(total_sg > vq->split.vring.num);
+> +
+>   	if (virtqueue_use_indirect(_vq, total_sg))
+>   		desc = alloc_indirect_split(_vq, total_sg, gfp);
+>   	else {
+>   		desc = NULL;
+> -		WARN_ON_ONCE(total_sg > vq->split.vring.num && !vq->indirect);
+>   	}
+>   
+>   	if (desc) {
+> @@ -1118,6 +1119,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>   
+>   	BUG_ON(total_sg == 0);
+>   
+> +	WARN_ON_ONCE(total_sg > vq->packed.vring.num);
+> +
+>   	if (virtqueue_use_indirect(_vq, total_sg))
+>   		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
+>   				out_sgs, in_sgs, data, gfp);
+> @@ -1125,8 +1128,6 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
+>   	head = vq->packed.next_avail_idx;
+>   	avail_used_flags = vq->packed.avail_used_flags;
+>   
+> -	WARN_ON_ONCE(total_sg > vq->packed.vring.num && !vq->indirect);
+> -
+>   	desc = vq->packed.vring.desc;
+>   	i = head;
+>   	descs_used = total_sg;
 
