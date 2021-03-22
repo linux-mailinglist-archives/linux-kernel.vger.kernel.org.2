@@ -2,200 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70D03452B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7989A3452B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhCVXBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:01:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:38854 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhCVXAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:00:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF45ED6E;
-        Mon, 22 Mar 2021 16:00:36 -0700 (PDT)
-Received: from [10.57.55.187] (unknown [10.57.55.187])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E16583F792;
-        Mon, 22 Mar 2021 16:00:35 -0700 (PDT)
-Subject: Re: [PATCH v4 18/19] coresight: sink: Add TRBE driver
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Leo Yan <leo.yan@linaro.org>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-19-suzuki.poulose@arm.com>
- <CAJ9a7VhHP3_mRWQujVPxcguF4W17tNhogGqAFj6MF2nJ+Y==Fw@mail.gmail.com>
- <5685C840-7F03-4A53-9183-D5771308F5B8@arm.com>
- <CAJ9a7Vikvrxzrv1vwA3327L6_3_P72YrATMmy9L+ENb9Bc2m9Q@mail.gmail.com>
- <20210322212443.GB1684006@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <29a2e793-c679-939f-70fb-455effbcaba1@arm.com>
-Date:   Mon, 22 Mar 2021 23:00:34 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S230247AbhCVXDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhCVXDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:03:03 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1A6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 16:03:02 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id g25so10080191wmh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 16:03:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=DXrkB6IjWOjCnajI5iwkJOTPzE9Rp5wKBjGagS51tx0=;
+        b=fe8Fp0Oo7v7tTyPHjXdX0kTTNfbikf5oMPoTi7J1uznby9uZPMiBgwRRaTskOC+erI
+         TMJgazby9voYYvLw7/muw9BI+ABPmNOgmZsP5EdyHiGQFbofNw2LeVLSXBDwWxAidsCv
+         zevqWlQq1PBxBbiELorkqVz2VWkLfg5xOjGFBYMae9D3hGlvilalKhcNKRDGDmWgFtDN
+         kIQWxCxozHfi+vLHVIfpCTqUC5GZ1LYl+vBKjXGexoFcoGkyjfNqRBj1UxPwJpRNvYPa
+         ZCdiY0NsEXTjV2IK8NvTFHip13jOhndOhdI/aE8Tb3Mnw8S/Ud3ZOjbOcErkBWaGdpzf
+         eZNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=DXrkB6IjWOjCnajI5iwkJOTPzE9Rp5wKBjGagS51tx0=;
+        b=Pyb0371NvwdPUhZmYJM/HC+7inAia7aHZjgJ01eXrW1F8yjOxr2Hm2GNhIvi8VGamo
+         TATjWxlGQ9HcfiaBrh7IJo+Xcp2KYVtNSxdNw75bfDj0/CYbg3BdBVapEPXjFlfbOzuG
+         /VPQNWhNOcz50nJJJnu5aegX7J3tEvbAiap760Kk8VwQ3iQryK71hGmhIf1TzCPh1G+k
+         Pvq97eBCCaJl/JNjUThGJVHfUlZlSe8DYgtGmsDPNxwWjLoACsWFBjibvQvrjvXjXwV7
+         11IolLi4nt3h19K2VLGLVqesLUoXgoaeRLUta+poIrfLUgOcirMQUKdZ7xv1G+0IxkS7
+         3gdg==
+X-Gm-Message-State: AOAM532eA0jVdPNxGwFx9us7Kr8P3qNTCHw+aujE88T3Lbky4mJZ5FWl
+        /C51C+4GOa7kYH8mMaOLZAT6YxhoxUw=
+X-Google-Smtp-Source: ABdhPJxusL1XNlVeH5NOO6IyAAt6+LmpedOhrwU96+fmt4DMtmXGdZUamKj2hTuzdH1w4h0SmErGOw==
+X-Received: by 2002:a1c:771a:: with SMTP id t26mr629357wmi.60.1616454181168;
+        Mon, 22 Mar 2021 16:03:01 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id h20sm740712wmm.19.2021.03.22.16.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 16:03:00 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 23 Mar 2021 00:02:58 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: Fix various typos in comments
+Message-ID: <20210322230258.GA1983587@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210322212443.GB1684006@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/03/2021 21:24, Mathieu Poirier wrote:
-> On Fri, Mar 19, 2021 at 11:55:10AM +0000, Mike Leach wrote:
->> HI Suzuki,
->>
->> On Fri, 19 Mar 2021 at 10:30, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>>
->>> Hi Mike
->>>
->>>> On 8 Mar 2021, at 17:26, Mike Leach <mike.leach@linaro.org> wrote:
->>>>
->>>> Hi Suzuki,
->>>>
->>>> On Thu, 25 Feb 2021 at 19:36, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>>>>
->>>>> From: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>>
->>>>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
->>>>> accessible via the system registers. The TRBE supports different addressing
->>>>> modes including CPU virtual address and buffer modes including the circular
->>>>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
->>>>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
->>>>> access to the trace buffer could be prohibited by a higher exception level
->>>>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
->>>>> private interrupt (PPI) on address translation errors and when the buffer
->>>>> is full. Overall implementation here is inspired from the Arm SPE driver.
->>>>>
->>>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>>
->>>>> +
->>>>> +static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->>>>> +                                           struct perf_output_handle *handle,
->>>>> +                                           void *config)
->>>>> +{
->>>>> +       struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->>>>> +       struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
->>>>> +       struct trbe_buf *buf = config;
->>>>> +       enum trbe_fault_action act;
->>>>> +       unsigned long size, offset;
->>>>> +       unsigned long write, base, status;
->>>>> +       unsigned long flags;
->>>>> +
->>>>> +       WARN_ON(buf->cpudata != cpudata);
->>>>> +       WARN_ON(cpudata->cpu != smp_processor_id());
->>>>> +       WARN_ON(cpudata->drvdata != drvdata);
->>>>> +       if (cpudata->mode != CS_MODE_PERF)
->>>>> +               return 0;
->>>>> +
->>>>> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
->>>>> +
->>>>> +       /*
->>>>> +        * We are about to disable the TRBE. And this could in turn
->>>>> +        * fill up the buffer triggering, an IRQ. This could be consumed
->>>>> +        * by the PE asynchronously, causing a race here against
->>>>> +        * the IRQ handler in closing out the handle. So, let us
->>>>> +        * make sure the IRQ can't trigger while we are collecting
->>>>> +        * the buffer. We also make sure that a WRAP event is handled
->>>>> +        * accordingly.
->>>>> +        */
->>>>> +       local_irq_save(flags);
->>>>> +
->>>>> +       /*
->>>>> +        * If the TRBE was disabled due to lack of space in the AUX buffer or a
->>>>> +        * spurious fault, the driver leaves it disabled, truncating the buffer.
->>>>> +        * Since the etm_perf driver expects to close out the AUX buffer, the
->>>>> +        * driver skips it. Thus, just pass in 0 size here to indicate that the
->>>>> +        * buffer was truncated.
->>>>> +        */
->>>>> +       if (!is_trbe_enabled()) {
->>>>> +               size = 0;
->>>>> +               goto done;
->>>>> +       }
->>>>> +       /*
->>>>> +        * perf handle structure needs to be shared with the TRBE IRQ handler for
->>>>> +        * capturing trace data and restarting the handle. There is a probability
->>>>> +        * of an undefined reference based crash when etm event is being stopped
->>>>> +        * while a TRBE IRQ also getting processed. This happens due the release
->>>>> +        * of perf handle via perf_aux_output_end() in etm_event_stop(). Stopping
->>>>> +        * the TRBE here will ensure that no IRQ could be generated when the perf
->>>>> +        * handle gets freed in etm_event_stop().
->>>>> +        */
->>>>> +       trbe_drain_and_disable_local();
->>>>> +       write = get_trbe_write_pointer();
->>>>> +       base = get_trbe_base_pointer();
->>>>> +
->>>>> +       /* Check if there is a pending interrupt and handle it here */
->>>>> +       status = read_sysreg_s(SYS_TRBSR_EL1);
->>>>> +       if (is_trbe_irq(status)) {
->>>>> +
->>>>> +               /*
->>>>> +                * Now that we are handling the IRQ here, clear the IRQ
->>>>> +                * from the status, to let the irq handler know that it
->>>>> +                * is taken care of.
->>>>> +                */
->>>>> +               clr_trbe_irq();
->>>>> +               isb();
->>>>> +
->>>>> +               act = trbe_get_fault_act(status);
->>>>> +               /*
->>>>> +                * If this was not due to a WRAP event, we have some
->>>>> +                * errors and as such buffer is empty.
->>>>> +                */
->>>>> +               if (act != TRBE_FAULT_ACT_WRAP) {
->>>>> +                       size = 0;
->>>>> +                       goto done;
->>>>> +               }
->>>>
->>>> We are using TRBE FILL mode - which halts capture on a full buffer and
->>>> triggers the IRQ, without disabling the source first.
->>>> This means that the mode is inherently lossy (unless by some unlikely
->>>> co-incidence the last byte that caused the wrap was also the last byte
->>>> to be sent from an ETE that was in the process of being disabled.)
->>>> Therefore we must have a perf_aux_output_flag(handle,
->>>> PERF_AUX_FLAG_TRUNCATED) call in here to signal that some trace was
->>>> lost, for consistence of operation with ETR etc, and intelpt.
->>>>
->>>
->>> I agree that the there is a bit of loss here due to the FILL mode. But it is not  comparable to that of the ETR. In this case, the WRAP event is triggered when we flush the ETE. i.e, this could be mostly due to the fact that the tracing was enabled for the kernel mode and the last few bytes of trace which caused the FILL belong to the code responsible for stopping the components in the CoreSight trace. I personally do not think this data is of any interest to the user.
->>> Otherwise, if the data didn’t belong to the perf event side, it should have triggered the IRQ.
->>>
->>> This is true in case of the buffer overflow interrupt too, with a bit more data lost. i.e, since the interrupt is PPI, the overflow is triggered when the buffer is full (which includes the data that is cached in the TRBE). But there could be a bit of data that is still cached in the ETE, before it is captured in the trace. And the moment we get a FILL event, we stop executing anything that is relevant for the Trace session (as we are in the driver handling the interrupt).
->>> And then we reconfigure the buffer to continue the execution. Now, the interrupt delivery is not necessarily synchronous and there could be data lost in the interval between WRAP event and the IRQ is triggered.
->>>
->>> I am OK with suggesting that there was some loss of trace data during the session, if we hit WRAP event. But this could cause worry to the consumers that they lost too much of trace data of their interest, while that is not the case.
->>>
->>
->> We can never know what has been lost. It may be some trace around the
->> driver of no interest to the user, it may also be an event or
->> timestamp related to an earlier marker - which could be highly
->> relevant.
->> With ETR we do not know how much is lost on wrap - it might be one
->> byte, it might be much more - but the point is we mark as truncated
->> for _any_ amount.
->>
->> It is unfortunate that we will see multiple buffers marked as
->> truncated - but this is far better than creating the false impression
->> that no trace has been lost - that there is a continuous record where
->> there is not.
->> For some users - such as autofdo where sampling is taking place anyway
->> - truncated buffers probably do not matter. For others - who are
->> looking to trace a specific section of code - then they need to be
->> aware that there could be decode anomolies relating to buffer wrap.
->>
-> 
-> I think Mike has a point here - we should report it to users when data gets
-> lost, no matter how small that lost is. If that is a problem they always have
-> the choice of dedicating more pages to the AUX buffer.
 
-Agreed, I have included this in the next version.
+Hi Paul,
 
-Thanks
-Suzuki
+Was working on automation to make it a bit more straightforward to fix 
+typos within comments (which we tend to reintroduce during 
+development), and here are the ones it found in the RCU code.
+
+Thanks,
+
+	Ingo
+
+=========>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Mon, 22 Mar 2021 23:57:26 +0100
+Subject: [PATCH] rcu: Fix various typos in comments
+
+Fix ~12 single-word typos in RCU code comments.
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/rcu/srcutree.c                                           | 4 ++--
+ kernel/rcu/sync.c                                               | 2 +-
+ kernel/rcu/tasks.h                                              | 8 ++++----
+ kernel/rcu/tree.c                                               | 4 ++--
+ kernel/rcu/tree.h                                               | 2 +-
+ kernel/rcu/tree_plugin.h                                        | 2 +-
+ tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h | 2 +-
+ 7 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index e26547b34ad3..036ff5499ad5 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -777,9 +777,9 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+ 	spin_unlock_irqrestore_rcu_node(sdp, flags);
+ 
+ 	/*
+-	 * No local callbacks, so probabalistically probe global state.
++	 * No local callbacks, so probabilistically probe global state.
+ 	 * Exact information would require acquiring locks, which would
+-	 * kill scalability, hence the probabalistic nature of the probe.
++	 * kill scalability, hence the probabilistic nature of the probe.
+ 	 */
+ 
+ 	/* First, see if enough time has passed since the last GP. */
+diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+index d4558ab7a07d..3eeb871cf0de 100644
+--- a/kernel/rcu/sync.c
++++ b/kernel/rcu/sync.c
+@@ -94,7 +94,7 @@ static void rcu_sync_func(struct rcu_head *rhp)
+ 		rcu_sync_call(rsp);
+ 	} else {
+ 		/*
+-		 * We're at least a GP after the last rcu_sync_exit(); eveybody
++		 * We're at least a GP after the last rcu_sync_exit(); everybody
+ 		 * will now have observed the write side critical section.
+ 		 * Let 'em rip!.
+ 		 */
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index af7c19439f4e..ac3c362e08a3 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -23,7 +23,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * Definition for a Tasks-RCU-like mechanism.
+  * @cbs_head: Head of callback list.
+  * @cbs_tail: Tail pointer for callback list.
+- * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
++ * @cbs_wq: Wait queue allowing new callback to get kthread's attention.
+  * @cbs_lock: Lock protecting callback list.
+  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
+  * @gp_func: This flavor's grace-period-wait function.
+@@ -504,7 +504,7 @@ DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+  * or transition to usermode execution.  As such, there are no read-side
+  * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
+  * this primitive is intended to determine that all tasks have passed
+- * through a safe state, not so much for data-strcuture synchronization.
++ * through a safe state, not so much for data-structure synchronization.
+  *
+  * See the description of call_rcu() for more detailed information on
+  * memory ordering guarantees.
+@@ -637,7 +637,7 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
+  * there are no read-side primitives analogous to rcu_read_lock() and
+  * rcu_read_unlock() because this primitive is intended to determine
+  * that all tasks have passed through a safe state, not so much for
+- * data-strcuture synchronization.
++ * data-structure synchronization.
+  *
+  * See the description of call_rcu() for more detailed information on
+  * memory ordering guarantees.
+@@ -1127,7 +1127,7 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
+  * there are no read-side primitives analogous to rcu_read_lock() and
+  * rcu_read_unlock() because this primitive is intended to determine
+  * that all tasks have passed through a safe state, not so much for
+- * data-strcuture synchronization.
++ * data-structure synchronization.
+  *
+  * See the description of call_rcu() for more detailed information on
+  * memory ordering guarantees.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index da6f5213fb74..ab5bd5b391e6 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2490,7 +2490,7 @@ int rcutree_dead_cpu(unsigned int cpu)
+ 
+ /*
+  * Invoke any RCU callbacks that have made it to the end of their grace
+- * period.  Thottle as specified by rdp->blimit.
++ * period.  Throttle as specified by rdp->blimit.
+  */
+ static void rcu_do_batch(struct rcu_data *rdp)
+ {
+@@ -4013,7 +4013,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
+ /*
+  * Propagate ->qsinitmask bits up the rcu_node tree to account for the
+  * first CPU in a given leaf rcu_node structure coming online.  The caller
+- * must hold the corresponding leaf rcu_node ->lock with interrrupts
++ * must hold the corresponding leaf rcu_node ->lock with interrupts
+  * disabled.
+  */
+ static void rcu_init_new_rnp(struct rcu_node *rnp_leaf)
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 71821d59d95c..abff7abd59ee 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -153,7 +153,7 @@ struct rcu_data {
+ 	unsigned long	gp_seq;		/* Track rsp->gp_seq counter. */
+ 	unsigned long	gp_seq_needed;	/* Track furthest future GP request. */
+ 	union rcu_noqs	cpu_no_qs;	/* No QSes yet for this CPU. */
+-	bool		core_needs_qs;	/* Core waits for quiesc state. */
++	bool		core_needs_qs;	/* Core waits for quiescent state. */
+ 	bool		beenonline;	/* CPU online at least once. */
+ 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
+ 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2d603771c7dc..2a28f05cf467 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2772,7 +2772,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+ 	wastimer = timer_pending(&rdp->nocb_bypass_timer);
+ 	wassleep = swait_active(&rdp->nocb_gp_wq);
+ 	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
+-		return;  /* Nothing untowards. */
++		return;  /* Nothing untoward. */
+ 
+ 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
+ 		"lL"[waslocked],
+diff --git a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
+index cf6938d679d7..1e24827f96f1 100644
+--- a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
++++ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
+@@ -174,7 +174,7 @@ static inline bool spin_trylock(spinlock_t *lock)
+ }
+ 
+ struct completion {
+-	/* Hopefuly this won't overflow. */
++	/* Hopefully this won't overflow. */
+ 	unsigned int count;
+ };
+ 
