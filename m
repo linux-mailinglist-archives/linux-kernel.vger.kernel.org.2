@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F143448CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BAB3448D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhCVPI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:08:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38970 "EHLO mx2.suse.de"
+        id S231453AbhCVPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhCVPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:07:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616425673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HsDSvSeowDWQ/lfKAfx8rm5MByzhwMWt8jt3AkHwgSg=;
-        b=LdyocxSHytRNTBCqzl5t9BLDlmLXU73PocsSRnAGcJk9tqwdyuwTpj8ZLL5T2Tg4J4TS0C
-        3qJC8eJiPQwdT1uDeSzxvEGAxZlyQlLjIUVe7rExuWutC9YOhhyIQYd+B5tVc2OOyBxAr1
-        Lql9uHWMR5UVf1UMD/CVEPdE4KdVDp0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CDB40AD74;
-        Mon, 22 Mar 2021 15:07:53 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 16:07:53 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v1 1/3] printk: track/limit recursion
-Message-ID: <YFiyyWnROBD29tC5@alley>
-References: <20210316233326.10778-1-john.ogness@linutronix.de>
- <20210316233326.10778-2-john.ogness@linutronix.de>
- <YFba1Fje6+TeIiGW@google.com>
- <87mtuvmpcl.fsf@jogness.linutronix.de>
- <YFh770T97jwQLRKu@google.com>
+        id S230193AbhCVPI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:08:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B086A61983;
+        Mon, 22 Mar 2021 15:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616425739;
+        bh=3PQXyCv/6RPiauJW0RbXVxOk51+3YNHHQ4q0ubjIYI0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kUnTB41nwt/2gBmhP5ra1WG35j5VTc2LbveK7j4gYYhiDA0OqxLIqzjvVOabd+9hc
+         8c5/bpXntK3H7xflMSt0Th2yx9BsVEqcuI9NF4Wn6e2wP5JfgMsrPZwU+jheE+oB+K
+         j/tjJr0G/YIBU/+PDC1QZVKxhpIwvNjiOY8bK+KxxcWMUKlT+SdzDnUQ8hd3QqNqt9
+         z+A5Ua1kThRlsTSklCyjRjlnm4zUcqkOyECsZ0CH03GglurtOgWsP56zLSaDtfWusJ
+         DoQJodK5+AjShphBYD2Pui6068ctfFfdvKYk8QbT0YAEO3PS7bcOODP+Cr1Y2UQWv4
+         A2QW0y6P5PFWg==
+Received: by mail-ej1-f41.google.com with SMTP id b7so21877397ejv.1;
+        Mon, 22 Mar 2021 08:08:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531WL76KmPDptQPGwCn+ZHinOsW/EwpJzvRy5kzDFT5oKz5VOh1G
+        RHn82X7kk59MFkvGQerVIXfYcNsr4PGifNefgA==
+X-Google-Smtp-Source: ABdhPJy9CuEFTxVWjGKeDPfSnb0lRo8CbqOcKlR4LhHv/z1CX1/0nQw1fX42KGso9lasF9MhwTQPQqeELQ+Ao8npxVA=
+X-Received: by 2002:a17:906:9888:: with SMTP id zc8mr242694ejb.310.1616425737261;
+ Mon, 22 Mar 2021 08:08:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFh770T97jwQLRKu@google.com>
+References: <1609815993-22744-1-git-send-email-yongqiang.niu@mediatek.com> <1609815993-22744-9-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1609815993-22744-9-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 22 Mar 2021 23:08:46 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__HO1AJ2xjRu7B+0Xs9MRHiifQYGNz5vr-EsVkQ7NeZBA@mail.gmail.com>
+Message-ID: <CAAOTY__HO1AJ2xjRu7B+0Xs9MRHiifQYGNz5vr-EsVkQ7NeZBA@mail.gmail.com>
+Subject: Re: [PATCH v4, 08/10] soc: mediatek: mmsys: add component RDMA4
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-03-22 20:13:51, Sergey Senozhatsky wrote:
-> On (21/03/22 11:53), John Ogness wrote:
-> > On 2021-03-21, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
-> > >> @@ -2055,6 +2122,9 @@ int vprintk_store(int facility, int level,
-> > >>  	 */
-> > >>  	ts_nsec = local_clock();
-> > >>  
-> > >> +	if (!printk_enter_irqsave(&irqflags))
-> > >> +		return 0;
-> > >
-> > > I guess it can be interesting to somehow signal us that we had
-> > > printk() recursion overflow, and how many messages we lost.
-> > 
-> > Honestly, if we hit 3 levels of recursion, we are probably dealing with
-> > an infinite recursion issue.
-> 
-> I tend to agree.
-> 
-> > I do not see the value of counting the overflows in that case. The
-> > logged messages at that recursion level would ben enough to point
-> > us to the problem.
-> >
-> > > 3 levels of recursion seem like reasonable limit, but I maybe wouldn't
-> > > mind one extra level.
-> >
-> > With 3 levels, we will see all the messages of:
-> >
-> >     printk -> WARN_ON -> WARN_ON -> WARN_ON
+Hi, Matthias:
 
-This is the worst case. Many messages are just a single line or
-we use WARN_ON_ONCE.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
+=885=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8811:07=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> This patch add component RDMA4
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+How do you think about this patch? One drm patch [1] depends on this patch.
 
-> Well, not necessarily this simple.
-> 
-> printk
->  vsprintf
->   handle_foo_specifier
->    printk
->     call_console_drivers
->      timekeeping
->       printk
->        vsprintf
-> 
-> We saw in the past that enabling CONFIG_DEBUG_OBJECTS (if I'm not
-> mistaken) can add quite a bit of extra printk recursion paths.
-> 
-> We also have other CONFIG_DEBUG_* config options that can pop up as
-> recursive printk-s here and there. For instance, from vsprintf::foo_specifier()
-> where we escape from printk() to various kernel subsystems: net, block,
-> etc.
-> 
-> Maybe sometimes on level 3+ we'll see something interesting,
-> but I've no strong opinion on this.
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2021020208123=
+7.774442-4-hsinyi@chromium.org/
 
-Honestly, my first reaction was the same as Sergey's. But John has
-a point that too many levels might be hard to read.
+Regards,
+Chun-Kuang.
 
-I think that 3 levels are a good start. We could always change it when we
-hit a problem in practice.
-
-> > Keep in mind that each additional level causes the reading of the logs
-> > to be significantly more complex. Each level increases the output
-> > exponentially:
-> 
-> Yes, I realize that. That's why I suggested that maybe recursive
-> printk-s can have some special extra prefix. Recursive printk-s
-> will interleave with whatever is being printed on this_cpu, so
-> prefix might be helpful.
-
-This is an interesting area, definitely. I am not sure if it is worth
-it though.
-
-I would keep it simple and cut output on 3rd level for now. We could
-always improve it when we hit a problem in the real life.
-
-Best Regards,
-Petr
+> ---
+>  include/linux/soc/mediatek/mtk-mmsys.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/m=
+ediatek/mtk-mmsys.h
+> index 13546e9..2c11617 100644
+> --- a/include/linux/soc/mediatek/mtk-mmsys.h
+> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
+> @@ -38,6 +38,7 @@ enum mtk_ddp_comp_id {
+>         DDP_COMPONENT_RDMA0,
+>         DDP_COMPONENT_RDMA1,
+>         DDP_COMPONENT_RDMA2,
+> +       DDP_COMPONENT_RDMA4,
+>         DDP_COMPONENT_UFOE,
+>         DDP_COMPONENT_WDMA0,
+>         DDP_COMPONENT_WDMA1,
+> --
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
